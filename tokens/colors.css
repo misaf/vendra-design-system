@@ -5,7 +5,7 @@
 --blush-100:#FCE7DC;--blush-300:#F2B89C;--blush-500:#D9805A;
 --leaf-100:#E2EEE4;--leaf-300:#A9CBB2;--leaf-500:#4E8A63;--leaf-700:#2F6244;
 --pollen-100:#FCF0CC;--pollen-400:#E2B33C;--pollen-600:#8F6400;
---lilac-100:#ECE8F7;--lilac-500:#6E5BB0;--lilac-700:#4A3B85;
+--lilac-100:#ECE8F7;--lilac-300:#A99BDD;--lilac-500:#6E5BB0;--lilac-700:#4A3B85;
 --ink-300:#A8B1AC;--ink-500:#59655E;--ink-700:#33403A;--ink-900:#17211C;
 --white:#FFFFFF;
 --success:var(--leaf-700);--success-soft:var(--leaf-100);
@@ -16,6 +16,6 @@
 --text-body:var(--ink-900);--text-secondary:var(--ink-700);--text-muted:var(--ink-500);--text-subtle:var(--ink-300);/* decorative + disabled only — never readable copy (≈2:1) */--text-on-accent:var(--white);--text-on-soft:var(--peony-700);--text-on-inverse:var(--petal-50);--text-accent:var(--peony-600);
 --accent:var(--peony-500);--accent-hover:var(--peony-600);--accent-press:var(--peony-700);--accent-soft:var(--peony-100);--accent-soft-hover:var(--peony-200);
 --border-subtle:var(--petal-200);--border-default:var(--petal-300);--border-strong:var(--ink-700);--border-input:#7E8882;/* form-control edges — 3:1 on card, page and sunken */
---focus-ring:var(--lilac-500);
+--focus-ring:var(--lilac-500);--focus-ring-on-inverse:var(--lilac-300);/* 3:1 on --surface-inverse — set via .ag-on-inverse */
 --surface-header:rgba(251,248,246,.88);--text-inverse-muted:var(--ink-300);--border-inverse:var(--ink-700);
 }

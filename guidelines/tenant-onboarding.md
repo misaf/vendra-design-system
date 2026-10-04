@@ -5,7 +5,7 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 ## 1. Theme (designer · ~1 hour)
 - [ ] Open the **Theme builder** card (Brand group, `guidelines/theme-builder.html`). Start from the Vendra or Clay preset.
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame.
-- [ ] **Done when:** all six contrast checks read *Pass*.
+- [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy tenant CSS**.
 - [ ] Paste it into `tokens/tenants/<slug>.css`. The reference for every line is `tokens/tenants/_template.css.txt`.
 - [ ] Add `@import url('tokens/tenants/<slug>.css');` to `styles.css`, above `components/components.css`.

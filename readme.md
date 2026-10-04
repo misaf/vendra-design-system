@@ -21,7 +21,7 @@ A florist restyles its storefront by setting `data-tenant="<slug>"` on `<html>` 
 - **Semantic aliases:** re-declare `--surface-*`, `--text-*`, `--accent*`, `--border-*` and `--shadow-*` in the same scope. CSS variables resolve where they're declared, so aliases inherited from `:root` would keep the default colours.
 - **Character** (`tokens/character.css`): `--font-display` (a bundled family or the tenant's own `@font-face`), `--tracking-display`, `--display-case`, `--accent-font-style` / `--accent-font-weight` (the accent word in headings), `--radius-control` (buttons, tags, badges, steppers, pill tabs, language switch), `--button-case` + `--tracking-button`, `--radius-sm/md/lg` (inputs, cards, dialogs) and `--radius-arch` (image frames).
 - **Fixed for everyone:** spacing, type scale, motion, focus ring, semantic status colours, layout, RTL rules.
-- **Contrast:** `--accent` must hit 4.5:1 with white text, `--text-accent` 4.5:1 on `--surface-page`, and `--border-input` 3:1.
+- **Contrast:** `--accent` must hit 4.5:1 with white text, `--text-accent` 4.5:1 on `--surface-page`, `--border-input` 3:1, and `--focus-ring-on-inverse` 3:1 on `--surface-inverse` (a very light footer colour can fail it).
 - **Logos:** the tenant supplies its own. Until it does, render the store name in `--font-display`, never the Vendra Florist PNGs (the templates render this name).
 
 Sample: `tokens/tenants/clay.css` — terracotta accent, sand neutrals, olive inverse; uppercase Jost headings with upright terracotta accent words; 2px squared buttons, tags and inputs; uppercase tracked button labels; square image frames instead of the arch. Persian is unaffected by case and tracking (no case; letter-spacing is forced to 0). Compare it with the default in the *Tenant themes* card (Brand), or open `templates/storefront-site/StorefrontSite.dc.html?tenant=clay`.
@@ -101,7 +101,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Transparency & blur:** only the sticky header (88% petal-50 + 10px blur) and the dialog overlay (ink 42% + 6px blur).
 - **Motion:** gentle ease-out (`cubic-bezier(.22,.61,.36,1)`), 140/240/480ms. Fades and 12px rises; image zoom 1.04 on hover. No bounces, no springs, no parallax.
 - **Hover:** peony fills deepen one step (peony-500→600); outlines fill with ink; ghosts get a petal-200 wash; links use `--accent-hover`.
-- **Press:** translateY(1px) + one more step darker. **Focus:** 2px lilac ring, 2px offset.
+- **Press:** translateY(1px) + one more step darker. **Focus:** 2px lilac ring, 2px offset; on `--surface-inverse` (footer, toast, announcement bar) add `.ag-on-inverse` so the ring switches to `--focus-ring-on-inverse` (lilac-300, 3:1).
 - **Light only:** no dark mode. Use semantic tokens (`--surface-*`, `--text-*`) — tenant themes (`data-tenant`) depend on it.
 - **Mobile first:** most customers arrive from Instagram on a phone. Breakpoints: mobile < 768px, tablet < 1100px. On mobile: 16px page gutters; a bottom tab bar (Home · Shop · WhatsApp · Bag) with safe-area padding; a sticky add-to-bag bar on product pages; horizontal snap-scrollers instead of wide grids; a 2-column product grid (12px column gap); display type at about half the desktop size (hero 48px, section titles 34px); every touch target at least 44px.
 - **RTL:** all layout uses logical properties (`padding-inline`, `inset-inline-end`). Directional icons (arrows, chevrons) mirror via `.ag-flip-rtl` — the Icon component does this automatically.

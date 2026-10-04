@@ -10,7 +10,7 @@ const { Button, Badge, Tag, ProductCard } = window.VendraDesignSystem_f4f210;
 const hx=h=>{h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));};
 const toHex=a=>'#'+a.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase();
 const mix=(a,b,t)=>{const A=hx(a),B=hx(b);return toHex(A.map((v,i)=>v+(B[i]-v)*t));};
-const W='#FFFFFF',K='#000000';
+const W='#FFFFFF',K='#000000',RING_INV='#A99BDD';/* --lilac-300 = --focus-ring-on-inverse */
 const lum=h=>{const [r,g,b]=hx(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*r+.7152*g+.0722*b;};
 const cr=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
 const FONTS={serif:"'Instrument Serif','Vazirmatn',Georgia,serif",sans:"'Jost','Vazirmatn','Segoe UI',system-ui,sans-serif",vazir:"'Vazirmatn','Segoe UI',system-ui,sans-serif"};
@@ -36,7 +36,8 @@ function checks(b){const r=b.ramps,s=b.sem;return [
   ['Muted text on muted surface',cr(s['--text-muted'],s['--surface-muted']),4.5],
   ['Body text on page',cr(s['--text-body'],s['--surface-page']),4.5],
   ['Footer text on inverse',cr(s['--text-on-inverse'],s['--surface-inverse']),4.5],
-  ['Input edge on page',cr(r['--border-input'],s['--surface-page']),3]];}
+  ['Input edge on page',cr(r['--border-input'],s['--surface-page']),3],
+  ['Focus ring on inverse',cr(RING_INV,s['--surface-inverse']),3]];}
 function css(slug,b){const line=o=>Object.entries(o).map(([k,v])=>k+':'+v+';').join('');return `[data-tenant="${slug}"]{\n${line(b.ramps)}\n${line(b.sem)}\n${line(b.ch)}\n}`;}
 function Row({label,children}){return <div className="tb-row"><label>{label}</label>{children}</div>;}
 function App(){
