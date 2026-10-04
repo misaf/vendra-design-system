@@ -8,6 +8,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | --- | --- |
 | A page's content, English/Persian copy or behavior | That page's `Storefront*.dc.html` |
 | Product names, prices, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
+| Product placeholder artwork | `../assets/placeholders/product.svg` |
 | Delivery fees, cut-offs, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
@@ -19,6 +20,8 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Colors, fonts and tenant themes | `../tokens/` |
 
 The catalog and delivery rules contain sample store data. Keep page-specific translations with the page; shared navigation labels belong in `storefront.js`.
+
+Product images intentionally use one neutral 4:5 SVG placeholder. Cards, product views and order thumbnails read image paths from the catalog. For a real store, change each product's `image` path there and keep matching crops. Image paths resolve against the design-system root configured once in `_runtime/ds-base.js`.
 
 ## Editing a page
 
