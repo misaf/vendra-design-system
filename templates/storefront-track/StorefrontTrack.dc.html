@@ -27,7 +27,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
-<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:[font-size:30px] tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
@@ -41,7 +41,7 @@
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -78,7 +78,7 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><sc-if value="{{ noOrder }}"><div class="tw:flex tw:flex-col tw:items-center tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="package-search" heading-level="{{ 1 }}" title="{{ t.missingTitle }}" body="{{ t.missingBody }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}">{{ t.browse }}</x-import></div></sc-if><sc-if value="{{ hasOrder }}"><div class="vf-track-header tw:flex tw:flex-col tw:gap-3 tw:mb-[40px]"><div class="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.orderNo }}</div><h1>{{ titleA }} <em class="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ titleB }}</em></h1><p class="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ statusP }}</p></div>
+<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><sc-if value="{{ noOrder }}"><div class="tw:flex tw:flex-col tw:items-center tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="package-search" heading-level="{{ 1 }}" title="{{ t.missingTitle }}" body="{{ t.missingBody }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}">{{ t.browse }}</x-import></div></sc-if><sc-if value="{{ hasOrder }}"><div class="vf-track-header tw:flex tw:flex-col tw:gap-3 tw:mb-7"><div class="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.orderNo }}</div><h1>{{ titleA }} <em class="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ titleB }}</em></h1><p class="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ statusP }}</p></div>
 <div class="vf-track-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-track-details tw:min-w-0 tw:flex tw:flex-col tw:gap-6 tw:[flex:999_1_440px]">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,360px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderTimeline" steps="{{ steps }}" current="{{ current }}" status="{{ tlStatus }}" label="{{ t.progress }}" done-label="{{ t.doneL }}" hint-size="100%,320px"></x-import></x-import>
@@ -91,19 +91,19 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
-<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-7 tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-y-6 tw:gap-x-7">
+<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:text-2xl tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:text-sm">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:text-sm">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.contact }}</div>
 <a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
 <a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:[font-size:15px]">
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
 </nav>
 </div>

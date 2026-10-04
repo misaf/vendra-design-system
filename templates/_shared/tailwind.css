@@ -43,6 +43,7 @@
   --text-4xl: var(--text-4xl);
   --text-5xl: var(--text-5xl);
   --leading-tight: var(--lh-tight);
+  --leading-snug: var(--lh-snug);
   --leading-body: var(--lh-body);
   --tracking-eyebrow: var(--tracking-eyebrow);
   --tracking-display: var(--tracking-display);

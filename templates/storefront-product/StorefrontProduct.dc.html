@@ -27,7 +27,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
-<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:[font-size:30px] tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
@@ -41,7 +41,7 @@
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -81,14 +81,14 @@
 
 <main id="main" tabindex="-1" class="vf-shopping tw:mx-auto">
 <nav aria-label="{{ t.crumbs }}" class="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"><a href="{{ href.shop }}" onClick="{{ go.shop }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.shop }}</a><span>·</span><a href="{{ category.href }}" onClick="{{ category.go }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.cat }}</a></nav>
-<div class="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-[56px]">
+<div class="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
 <div class="tw:flex tw:flex-col tw:gap-3">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" ratio="4/5" tone="product" placeholder-label="{{ t.photo }}" alt="{{ productImage.alt }}" hint-size="100%,640px"></x-import>
-<div class="vf-product-thumbnails tw:flex tw:gap-[10px]"><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div></div>
+<div class="vf-product-thumbnails tw:flex tw:gap-2"><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div></div>
 </div>
 <div class="vf-product-details tw:flex tw:flex-col tw:gap-5 tw:sticky tw:top-9">
-<div class="vf-product-heading tw:flex tw:flex-col tw:gap-[10px]">
-<div class="tw:flex tw:gap-2 tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="accent" hint-size="60px,24px">{{ t.badge }}</x-import><span class="vf-product-subtitle tw:[font-size:13px] tw:text-quiet">{{ t.sub }}</span></div>
+<div class="vf-product-heading tw:flex tw:flex-col tw:gap-3">
+<div class="tw:flex tw:gap-2 tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="accent" hint-size="60px,24px">{{ t.badge }}</x-import><span class="vf-product-subtitle tw:text-sm tw:text-quiet">{{ t.sub }}</span></div>
 <h1>{{ t.name }}</h1>
 <div class="vf-product-price tw:text-lg tw:font-medium">{{ unitPrice }}</div>
 <p class="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">{{ t.desc }}</p>
@@ -101,7 +101,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import>
 <sc-if value="{{ desk }}"><div class="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="100%,52px">{{ addLabel }}</x-import></div></sc-if>
 </div>
-<div class="vf-product-delivery tw:flex tw:items-center tw:gap-[10px] tw:text-sm tw:text-quiet"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="truck" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>{{ t.ship }}</span></div>
+<div class="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="truck" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>{{ t.ship }}</span></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Accordion" items="{{ faq }}" default-open-id="care" hint-size="100%,160px"></x-import>
 </div>
 </div>
@@ -110,19 +110,19 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
-<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-7 tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-y-6 tw:gap-x-7">
+<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:text-2xl tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:text-sm">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:text-sm">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.contact }}</div>
 <a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
 <a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:[font-size:15px]">
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
 </nav>
 </div>
@@ -131,7 +131,7 @@
 <div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
-<div class="vf-product-mobile-action tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:p-[10px_16px]"><div class="vf-product-mobile-total tw:flex-1 tw:font-medium tw:[font-size:15px]">{{ totalLabel }}</div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="150px,48px">{{ t.add }}</x-import></div>
+<div class="vf-product-mobile-action tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4"><div class="vf-product-mobile-total tw:flex-1 tw:font-medium tw:text-sm">{{ totalLabel }}</div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="150px,48px">{{ t.add }}</x-import></div>
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
