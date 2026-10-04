@@ -1,5 +1,5 @@
 /* Three storefront page families. Exceptions are named and kept here. */
-.vf-page {--vf-shopping-width:1240px;--vf-form-width:1088px;--vf-info-width:1088px}
+
 .vf-page .vf-shopping, .vf-page .vf-form, .vf-page .vf-info {
   margin-inline:auto;
   padding:var(--space-7) var(--space-5) 0;
@@ -21,8 +21,7 @@
 .vf-page main>h1 {margin-block-end:var(--space-6)}
 .vf-page .vf-shopping--home {max-width:none;padding:0}
 .vf-page .vf-shopping--home .vf-hero-title {font-size:clamp(48px,6cqi,88px)}
-.vf-form-narrow {max-width:420px;margin-inline:auto}
-.vf-reading {max-width:760px;margin-inline:auto}
+
 .vf-page main>aside {min-width:0}
 
 /* Share row heights without truncating names or subtitles. */
@@ -52,11 +51,9 @@
   white-space:nowrap;
 }
 .vf-page .ag-line__thumb {border-radius:var(--radius-md)}
-.vf-search-row {display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:var(--space-4);align-items:center}
-.vf-mobile-action {display:flex;align-items:center;gap:var(--space-3);padding:12px 16px;background:var(--surface-card);border-top:1px solid var(--border-subtle)}
+
 .vf-mobile-action .vf-action-total {flex:none;min-width:max-content;display:flex;flex-direction:column;gap:4px}
 .vf-mobile-action .ag-btn {height:auto;min-height:48px;white-space:normal;flex:1;min-width:0}
-.vf-action-caption {font-size:var(--text-xs);color:var(--text-muted)}
 
 /* Persian copy gets its own rhythm, including editorial text. */
 .vf-page[data-lang="fa"] main p {line-height:var(--lh-body)}

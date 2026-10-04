@@ -14,20 +14,20 @@
 </script>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:1240px] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header class="vf-shell-header">
-<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-[1240px] tw:p-[0_24px] tw:h-[72px]">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
-<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand">{{ t.brand }}</a>
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:[font-size:30px] tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
@@ -40,14 +40,14 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header class="vf-shell-header">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-[60px] tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 </div>
-<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand">{{ t.brand }}</a>
-<div class="vf-shell-mobile-tools tw:flex">
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
+<div class="vf-shell-mobile-tools tw:flex tw:justify-end">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
@@ -63,9 +63,9 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-[28px]">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3">
+<div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
 </x-import>
@@ -75,42 +75,42 @@
 </div>
 </x-import>
 </sc-if>
-<div class="vf-shell-content">
+<div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><section class="vf-weddings-hero tw:grid tw:gap-7 tw:items-center">
-<div class="vf-weddings-heading tw:flex tw:flex-col"><div class="vf-weddings-eyebrow">{{ t.eb }}</div><h1>{{ t.hA }} <em class="vf-weddings-accent">{{ t.hB }}</em></h1><p class="vf-weddings-intro tw:text-secondary">{{ t.hP }}</p><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" href="#inquiry" icon-end="arrow-down" hint-size="180px,52px">{{ t.plan }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="150px,52px">{{ t.wa }}</x-import></div></div>
+<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><section class="vf-weddings-hero tw:grid tw:gap-7 tw:items-center tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))]">
+<div class="vf-weddings-heading tw:flex tw:flex-col tw:gap-[22px]"><div class="vf-weddings-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ t.hA }} <em class="vf-weddings-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.hB }}</em></h1><p class="vf-weddings-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.hP }}</p><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" href="#inquiry" icon-end="arrow-down" hint-size="180px,52px">{{ t.plan }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="150px,52px">{{ t.wa }}</x-import></div></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" ratio="4/5" placeholder-label="{{ t.ph }}" alt="" hint-size="100%,520px"></x-import>
 </section>
-<section class="vf-weddings-services tw:grid"><sc-for list="{{ services }}" as="s" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,220px"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-weddings-service-icon tw:grid"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="{{ s.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></div><div class="vf-weddings-service-title">{{ s.title }}</div><div class="vf-weddings-service-description">{{ s.body }}</div><div class="vf-weddings-service-price">{{ s.price }}</div></div></x-import></sc-for></section>
-<section id="inquiry" class="vf-weddings-inquiry tw:grid tw:gap-7 tw:items-start">
-<div class="tw:flex tw:flex-col tw:gap-4"><h2 class="vf-weddings-inquiry-title">{{ t.fA }}</h2><p class="vf-weddings-inquiry-intro tw:text-secondary">{{ t.fP }}</p></div>
-<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div class="vf-weddings-fields tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" required="{{ true }}" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div class="vf-weddings-fields tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
+<section class="vf-weddings-services tw:grid tw:mt-9 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))] tw:gap-[20px]"><sc-for list="{{ services }}" as="s" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,220px"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-weddings-service-icon tw:grid tw:w-[44px] tw:h-[44px] tw:rounded-[50%] tw:bg-accent-soft tw:text-on-soft tw:place-items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="{{ s.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></div><div class="vf-weddings-service-title tw:text-md tw:font-medium">{{ s.title }}</div><div class="vf-weddings-service-description tw:[font-size:15px] tw:[line-height:1.6] tw:text-quiet">{{ s.body }}</div><div class="vf-weddings-service-price tw:text-sm tw:font-medium tw:text-accent">{{ s.price }}</div></div></x-import></sc-for></section>
+<section id="inquiry" class="vf-weddings-inquiry tw:grid tw:gap-7 tw:items-start tw:mt-9 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))]">
+<div class="tw:flex tw:flex-col tw:gap-4"><h2 class="vf-weddings-inquiry-title tw:m-0 tw:font-display tw:font-medium tw:[font-size:clamp(28px,3.5cqi,36px)] tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.fA }}</h2><p class="vf-weddings-inquiry-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.fP }}</p></div>
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" required="{{ true }}" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><div id="vf-weddings-success" tabindex="-1" role="region" aria-label="{{ t.okT }}" class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ editMessage }}">{{ t.editMessage }}</x-import></div></div></sc-if>
 </section></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
-<footer class="vf-shell-footer">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid">
-<div class="vf-shell-footer-brand">{{ t.brand }}</div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
-<div class="vf-shell-footer-label">{{ t.visit }}</div>
+<footer class="vf-shell-footer tw:bg-inverse tw:text-on-inverse tw:mt-9">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
-<div class="vf-shell-footer-label">{{ t.contact }}</div>
-<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link">{{ phoneLabel }}</a>
-<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link">{{ instagram.label }}</a>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.contact }}</div>
+<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
+<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2">
-<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link">{{ t.faq }}</a>
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:[font-size:15px]">
+<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
 </nav>
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-bottom-bar">
+<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 

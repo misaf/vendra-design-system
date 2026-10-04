@@ -1,9 +1,2 @@
 /* Custom styles for the contact page. */
-.vf-page .vf-contact-accent {
-  font-style:var(--accent-font-style);
-  font-weight:var(--accent-font-weight);
-  color:var(--text-accent)
-}
-.vf-page .vf-contact-details {
-  gap:20px
-}
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */

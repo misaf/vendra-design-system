@@ -1,19 +1,2 @@
 /* Custom styles for the signin page. */
-.vf-page .vf-signin-accent {
-  font-style:var(--accent-font-style);
-  font-weight:var(--accent-font-weight);
-  color:var(--text-accent)
-}
-.vf-page .vf-signin-intro {
-  margin:0;
-  max-width:56ch;
-  font-size:17px;
-  line-height:var(--lh-body);
-  text-wrap:pretty
-}
-.vf-page .vf-signin-note {
-  margin:0;
-  font-size:13px;
-  line-height:1.6;
-  color:var(--text-muted)
-}
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */

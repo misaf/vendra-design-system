@@ -1,18 +1,18 @@
-<footer class="vf-shell-footer">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid">
-<div class="vf-shell-footer-brand">{{ t.brand }}</div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
-<div class="vf-shell-footer-label">{{ t.visit }}</div>
+<footer class="vf-shell-footer tw:bg-inverse tw:text-on-inverse tw:mt-9">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
-<div class="vf-shell-footer-label">{{ t.contact }}</div>
-<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link">{{ phoneLabel }}</a>
-<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link">{{ instagram.label }}</a>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
+<div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.contact }}</div>
+<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
+<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2">
-<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link">{{ t.faq }}</a>
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:[font-size:15px]">
+<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
 </nav>
 </div>
 </footer>

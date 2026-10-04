@@ -44,5 +44,6 @@ console.log('Passed shared asset references, relocated-root URLs and repeated-lo
 const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
 assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');
 const custom = fs.readFileSync(path.join(root, '_runtime/custom.css'), 'utf8');
-assert.ok(custom.includes('.vf-page .vf-shop-category:hover'));
+assert.ok(tailwind.includes('.tw\\:hover\\:bg-sunken'), 'Tailwind must compile the migrated hover state');
+assert.ok(custom.includes('.vf-product-add .ag-btn'), 'Component internals remain explicit custom exceptions');
 assert.ok(!/@(?:apply|theme|source|import)\b/.test(custom));

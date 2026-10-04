@@ -68,9 +68,9 @@ try {
   const {customCss} = require(path.join(templates, '_build/custom-css.cjs'));
   const originalCss = customCss(templates);
   const styles = path.join(templates, 'storefront-home/styles.css');
-  fs.writeFileSync(styles, fs.readFileSync(styles, 'utf8').replace('padding:72px 24px', 'padding:80px 24px'));
+  fs.appendFileSync(styles, '\n.vf-generation-probe {scroll-margin-top:80px}\n');
   assert.notEqual(customCss(templates), originalCss, 'Adjacent page CSS edits must change the shared stylesheet');
-  assert.ok(customCss(templates).includes('padding:80px 24px'));
+  assert.ok(customCss(templates).includes('.vf-generation-probe {scroll-margin-top:80px}'));
   assert.equal(build.generate(), 0, 'Generation must be repeatable without another diff');
   build.generate(true);
   assert.ok(fs.readFileSync(homeFile, 'utf8').includes('Human-edited content survives generation.'));
