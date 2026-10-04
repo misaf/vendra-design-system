@@ -210,7 +210,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Tweaks on every template:** `lang` (en/fa: RTL, Persian copy and digits, FSI-wrapped times), `tenant` (default/clay) and `mobile` (forces a 390px preview frame with the compact header, bottom tab bar, and a sticky add-to-bag bar on Product). Layouts also adapt automatically to narrow screens.
 - **Per-page tweaks:** `frame` (Home, Shop), `step` (Checkout), `status` (Track), `tab` (Account), `doc` (Policy).
 - **Click-through:** `storefront-site` wires all 17 templates together. The header, tab bar and main buttons navigate between pages; it has `lang`, `tenant`, `mobile` and `start` tweaks. It loads the sibling template folders (`../storefront-*/`), so copy the whole `templates/` folder with it. Each page takes an optional `go(route)` prop; without one, navigation links open the click-through site and pages work standalone.
-- All 17 templates share one header, footer and tab-bar shell. They're generated from `scraps/vf-gen.js.txt` (not shipped; run via `eval(await readFile('scraps/vf-gen.js.txt'))`), so to change the shell, edit it there and regenerate all 17.
+- Shared headers, footer, navigation, catalog and delivery rules live in `templates/_shared/`. Page content and English/Persian copy stay with each page. Run `node templates/_build/generate.cjs` to update portable templates; generated sections and runtime copies are clearly marked. See [Storefront maintenance](templates/README.md) for where to edit and how to check changes.
 - `_vendor/`: offline React and Babel copies used by the cards.
 
 **Assets & other**
