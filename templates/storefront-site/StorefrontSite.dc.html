@@ -10,23 +10,23 @@
 <!-- @template name="Storefront site (click-through)" description="All 17 storefront templates wired together: navigation, mobile menu drawer, shared bag and saved items (EN/FA, tenant, mobile)" -->
 <helmet><script src="../_runtime/ds-base.js"></script><style>body{margin:0}</style></helmet>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ announcement }}</x-import>
-<sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}"><dc-import name="../storefront-home/StorefrontHome" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.shop }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-shop/StorefrontShop" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-product/StorefrontProduct" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.bag }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-bag/StorefrontBag" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.checkout }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-checkout/StorefrontCheckout" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.track }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-track/StorefrontTrack" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.signin }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-signin/StorefrontSignin" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.account }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-account/StorefrontAccount" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.weddings }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-weddings/StorefrontWeddings" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.contact }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-contact/StorefrontContact" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.journal }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-journal/StorefrontJournal" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.post }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-post/StorefrontPost" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.search }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-search/StorefrontSearch" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.saved }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-saved/StorefrontSaved" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.policy }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-policy/StorefrontPolicy" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.faq }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-faq/StorefrontFaq" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
-<sc-if value="{{ is.notfound }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-notfound/StorefrontNotfound" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}"><dc-import name="../storefront-home/StorefrontHome" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.shop }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-shop/StorefrontShop" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-product/StorefrontProduct" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.bag }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-bag/StorefrontBag" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.checkout }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-checkout/StorefrontCheckout" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.track }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-track/StorefrontTrack" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.signin }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-signin/StorefrontSignin" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.account }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-account/StorefrontAccount" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.weddings }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-weddings/StorefrontWeddings" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.contact }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-contact/StorefrontContact" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.journal }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-journal/StorefrontJournal" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.post }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-post/StorefrontPost" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.search }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-search/StorefrontSearch" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.saved }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-saved/StorefrontSaved" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.policy }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-policy/StorefrontPolicy" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.faq }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-faq/StorefrontFaq" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.notfound }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-notfound/StorefrontNotfound" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;shop&quot;,&quot;product&quot;,&quot;bag&quot;,&quot;checkout&quot;,&quot;track&quot;,&quot;signin&quot;,&quot;account&quot;,&quot;weddings&quot;,&quot;contact&quot;,&quot;journal&quot;,&quot;post&quot;,&quot;search&quot;,&quot;saved&quot;,&quot;policy&quot;,&quot;faq&quot;,&quot;notfound&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 // BEGIN GENERATED SHARED LOGIC
@@ -168,6 +168,16 @@ function vfSampleBag() {
   ];
 }
 
+// Bilingual detail copy follows the same [English, Persian] convention as the catalog.
+const VF_PRODUCT_DETAILS = {
+  ivory: ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
+  lavender: ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
+  orchid: ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
+  crimson: ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
+  blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
+  bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
+};
+
 // Source: templates/_shared/storefront.js
 // Shared navigation, shell labels, responsive behavior and page focus.
 // Page-specific copy and behavior stay in each Storefront*.dc.html file.
@@ -178,12 +188,38 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
-    id: 'ivory-classic'
+    id: 'ivory'
   },
   post: {
     post: 'morning-at-the-studio'
   }
 };
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
     brand: 'Vendra Florist',
@@ -279,14 +315,8 @@ class VFPage extends DCLogic {
         url,
         locale: lang,
         noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
-        alternates: {
-          en: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'en'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage]),
-          fa: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'fa'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage])
-        }
+        alternates: Object.fromEntries(['en','fa'].map(lang => [lang,
+          (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[this._vfPage], ...vfPageRoute(this.props),view:this._vfPage,lang})]))
       });
     }, 40);
   }
@@ -308,7 +338,7 @@ function vfShell(props, page) {
     href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
       lang: L
     }, r, VF_ROUTE_EXTRA[r]);
-    go[r] = props.go ? window.AG_SEO.linkHandler(route => props.go(route)) : undefined;
+    go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
   const close = () => self.setState({
     vfMenu: false
@@ -328,7 +358,7 @@ function vfShell(props, page) {
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go ? window.AG_SEO.linkHandler(route => {
+    go: props.go ? vfLinkHandler(route => {
       close();
       props.go(route);
     }) : undefined
@@ -338,6 +368,8 @@ function vfShell(props, page) {
   return {
     go,
     href,
+    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
@@ -424,12 +456,11 @@ function vfShell(props, page) {
 // PAGE LOGIC — edit this page’s copy and behavior below.
 const VF_BAG0=vfSampleBag();
 const VF_SESSION='vendra-template:'+location.pathname;
-function vfReadRoute(){window.AG_SEO.register(...VF_ROUTES);return window.AG_SEO.readRoute();}
 function vfSiteInitial(props){
  let saved={};try{saved=JSON.parse(sessionStorage.getItem(VF_SESSION)||'{}')||{};}catch(e){}
  const route=vfReadRoute();return {route:route.view==='home'&&!new URLSearchParams(location.search).has('view')?(props.start||'home'):route.view,
  routeInfo:route,lang:route.lang||props.lang||'en',tenant:null,mobile:null,bag:Array.isArray(saved.bag)?saved.bag:VF_BAG0,
- saved:Array.isArray(saved.saved)?saved.saved:['orchid','crimson','blush'],delivery:{...VF_DELIVERY,...saved.delivery},order:saved.order||null,announcement:''};
+ saved:Array.isArray(saved.saved)?saved.saved:['orchid','crimson','blush'],delivery:{...VF_DELIVERY,...saved.delivery},order:saved.order||null,lastOrder:saved.lastOrder||saved.order||null,announcement:''};
 }
 class Component extends DCLogic {
  state=vfSiteInitial(this.props);
@@ -438,22 +469,23 @@ class Component extends DCLogic {
   this._pop=()=>{const r=vfReadRoute();if(r.view==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean))){this.navigate({view:'bag',lang:r.lang},true);return;}this.setState({route:r.view,routeInfo:r,lang:r.lang||this.props.lang||'en'});};window.addEventListener('popstate',this._pop);
   if(this.state.route==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean)))this.navigate('bag',true);
  }
- componentDidUpdate(){try{const {bag,saved,delivery,order}=this.state;sessionStorage.setItem(VF_SESSION,JSON.stringify({bag,saved,delivery,order}));}catch(e){}}
+ componentDidUpdate(){try{const {bag,saved,delivery,order,lastOrder}=this.state;sessionStorage.setItem(VF_SESSION,JSON.stringify({bag,saved,delivery,order,lastOrder}));}catch(e){}}
  componentWillUnmount(){window.removeEventListener('popstate',this._pop);if(window.__vfSite===this)delete window.__vfSite;}
  navigate(input,replace=false){
   const candidate=typeof input==='string'?{lang:this.state.lang,view:input,...VF_ROUTE_EXTRA[input]}:{lang:this.state.lang,...input};
-  let r=window.AG_SEO.readRoute(window.AG_SEO.routeParams(candidate));
+  let r=vfReadRoute(vfRouteParams(candidate));
   if(r.view==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean)))r={lang:r.lang,view:'bag'};
-  const url=window.AG_SEO.routeParams(r);if(url!==location.search)history[replace?'replaceState':'pushState']({},'',url);
+  const url=vfRouteParams(r);if(url!==location.search)history[replace?'replaceState':'pushState']({},'',url);
   this.setState({route:r.view,routeInfo:r,lang:r.lang||this.state.lang});window.scrollTo(0,0);
  }
  renderVals(){
   const s=this.state,is={};VF_ROUTES.forEach(r=>{is[r]=r===s.route;});
-  return {is,lang:s.lang,tenant:s.tenant||this.props.tenant||'default',setLang:l=>this.navigate({...s.routeInfo,view:s.route,lang:l},true),announcement:s.announcement,
-   store:{bag:s.bag,saved:s.saved,delivery:s.delivery,order:s.order,count:s.bag.reduce((a,l)=>a+l.qty,0),
+  return {is,routeInfo:s.routeInfo,lang:s.lang,tenant:s.tenant||this.props.tenant||'default',setLang:l=>this.navigate({...s.routeInfo,view:s.route,lang:l},true),announcement:s.announcement,
+   store:{bag:s.bag,saved:s.saved,delivery:s.delivery,order:s.order,lastOrder:s.lastOrder,count:s.bag.reduce((a,l)=>a+l.qty,0),
     announce:title=>{if(this.state.announcement!==title)this.setState({announcement:title});},
     setDelivery:patch=>this.setState(p=>({delivery:{...p.delivery,...patch},order:null})),
-    complete:order=>this.setState({order,bag:[],delivery:{...VF_DELIVERY}}),
+    reorder:order=>this.setState({order:null,bag:order.lines.map(line=>({...line})),delivery:{...order.delivery}}),
+    complete:order=>this.setState({order,lastOrder:order,bag:[],delivery:{...VF_DELIVERY}}),
     add:line=>this.setState(p=>{const ex=p.bag.find(x=>x.id===line.id);return {order:null,bag:ex?p.bag.map(x=>x.id===line.id?{...x,qty:x.qty+line.qty}:x):[...p.bag,line]};}),
     setQty:(id,q)=>this.setState(p=>({order:null,bag:p.bag.map(x=>x.id===id?{...x,qty:q}:x)})),remove:id=>this.setState(p=>({order:null,bag:p.bag.filter(x=>x.id!==id)})),
     reset:()=>this.setState({order:null,bag:VF_BAG0}),clear:()=>this.setState({bag:[]}),

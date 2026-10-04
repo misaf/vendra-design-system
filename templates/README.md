@@ -131,3 +131,20 @@ Use `vf-product-grid` on product grids. Subgrid shares name, subtitle and price 
 Keep one primary action per mobile page. Product, bag and payment actions live above the mobile navigation bar; their desktop buttons remain in the content. Empty states keep their own action. Secondary messaging links use the quieter ghost variant.
 
 All catalog products use the shared neutral 4:5 placeholder. Default product/category cards and small thumbnails use soft frames. Reserve arches for the home/wedding hero and main product image. Review English and Persian independently at 320px, 390px and desktop widths after changing copy or layout.
+
+### Catalog navigation and demo orders
+
+Product cards on home, shop, saved, search and recovery pages use each catalog ID.
+`_shared/catalog.js` owns bilingual names, descriptions and prices. Ivory has three
+sizes; other sample products use their catalog price. Unknown product IDs show the
+not-found page; the previous `ivory-classic` link remains supported.
+
+Shop URLs preserve `cat`, `sort=low|high` and comma-separated `filters=under3,same,roses`.
+The template route helpers in `_shared/storefront.js` validate these values; refresh,
+Back and language switching retain selections. Home category cards link to these filters.
+
+Demo checkout stores a received order with its own ID, items, totals, recipient,
+delivery window and payment suffix in session storage. Tracking displays the last
+completed order even after starting a new bag; Order again copies that order into
+the bag. Closing the browser session clears this demo data. Standalone tracking
+still has sample preview data. This template has no payment or fulfillment backend.

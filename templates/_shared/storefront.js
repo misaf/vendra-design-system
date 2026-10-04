@@ -7,12 +7,38 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
-    id: 'ivory-classic'
+    id: 'ivory'
   },
   post: {
     post: 'morning-at-the-studio'
   }
 };
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
     brand: 'Vendra Florist',
@@ -108,14 +134,8 @@ class VFPage extends DCLogic {
         url,
         locale: lang,
         noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
-        alternates: {
-          en: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'en'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage]),
-          fa: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'fa'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage])
-        }
+        alternates: Object.fromEntries(['en','fa'].map(lang => [lang,
+          (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[this._vfPage], ...vfPageRoute(this.props),view:this._vfPage,lang})]))
       });
     }, 40);
   }
@@ -137,7 +157,7 @@ function vfShell(props, page) {
     href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
       lang: L
     }, r, VF_ROUTE_EXTRA[r]);
-    go[r] = props.go ? window.AG_SEO.linkHandler(route => props.go(route)) : undefined;
+    go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
   const close = () => self.setState({
     vfMenu: false
@@ -157,7 +177,7 @@ function vfShell(props, page) {
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go ? window.AG_SEO.linkHandler(route => {
+    go: props.go ? vfLinkHandler(route => {
       close();
       props.go(route);
     }) : undefined
@@ -167,6 +187,8 @@ function vfShell(props, page) {
   return {
     go,
     href,
+    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',

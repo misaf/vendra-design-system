@@ -50,3 +50,31 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  }
 }
 console.log('Passed delivery fees, validation, Persian digits, history, checkout state, and all '+parsed+' template logic checks.');
+// Exercise catalog navigation, URL restoration and the completed-order tracking snapshot.
+function loadPage(name, props = {}, search = '') {
+ const {ctx:c,history}=context();c.location.search=search;
+ const html=read('templates/storefront-'+name+'/Storefront'+name[0].toUpperCase()+name.slice(1)+'.dc.html');
+ vm.runInContext(html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1]+'\nthis.Logic=Component;',c);
+ return {logic:new c.Logic({lang:'en',...props}),ctx:c,history};
+}
+for(const lang of ['en','fa']) {
+ for(const id of ['ivory','lavender','orchid','crimson','blush','bridal']) {
+  let added;const {logic}=loadPage('product',{lang,routeInfo:{view:'product',id},store:{saved:[],add:line=>added=line}});
+  const v=logic.renderVals();v.add();assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);
+  assert.equal(added.unit,id==='ivory'?4900000:({lavender:2800000,orchid:3400000,crimson:5200000,blush:2200000,bridal:6500000})[id]);
+  assert.equal(v.hasSizes,id==='ivory');
+ }
+ let next;const {logic:shop}=loadPage('shop',{lang,go:r=>next=r},'?view=shop&cat=bouquets&sort=low&filters=under3,same');
+ let v=shop.renderVals();assert.equal(v.items.length,2);assert.ok(v.items[0].href.includes('id=blush'));v.chips[1].toggle();assert.ok(!next.filters.includes('same'));
+ v.categories[2].pick();assert.equal(next.cat,'boxes');
+ const {logic:site,ctx:c}=loadPage('site',{lang});site.navigate({view:'shop',cat:'bouquets',sort:'high',filters:['roses','same'],lang});
+ assert.equal(site.state.routeInfo.sort,'high');assert.equal(site.state.routeInfo.filters.join(','),'roses,same');site.renderVals().setLang(lang==='en'?'fa':'en');assert.equal(site.state.routeInfo.cat,'bouquets');
+ site.navigate({view:'product',id:'unknown'});assert.equal(site.state.route,'notfound');
+ const lines=[{id:'blush',unit:2200000,qty:2,image:'assets/placeholders/product.svg',en:['Blush morning','Garden roses'],fa:['صبح صورتی','رز باغی']}];
+ const delivery={name:'Demo recipient',phone:'09120000000',address:'Demo street 12',zone:'tehran',slot:'16',card:'Demo greeting'};
+ let order;const {logic:checkout}=loadPage('checkout',{lang,store:{bag:lines,delivery,complete:o=>order=o}});checkout.setState({last4:'1234'});checkout.renderVals().place();assert.ok(order.id.startsWith('VN-'));assert.equal(order.status,'received');
+ site.renderVals().store.complete(order);site.renderVals().store.add({...lines[0],qty:1});assert.equal(site.state.order,null);assert.equal(site.state.lastOrder.id,order.id);
+ site.renderVals().store.reorder(order);assert.equal(site.state.bag[0].qty,2);assert.equal(site.state.delivery.name,'Demo recipient');
+ const {logic:track}=loadPage('track',{lang,store:site.renderVals().store});v=track.renderVals();assert.ok(v.t.orderNo.includes(order.id));assert.equal(v.current,0);assert.equal(v.lines.length,1);assert.equal(v.lines[0].name,lines[0][lang][0]);assert.ok(v.rows.some(r=>r.value.includes('Demo recipient')));assert.equal(v.sums.at(-1).value,c.window.AG_FORMAT.money(4650000,{lang}));
+}
+console.log('Passed all product links/prices, URL filter restoration, language switching and completed-order tracking in English and Persian.');

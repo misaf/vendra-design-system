@@ -76,3 +76,13 @@ function vfSampleBag() {
     {id: orchid.id, unit: orchid.price, qty: 1, image: orchid.image, en: [...orchid.en], fa: [...orchid.fa]}
   ];
 }
+
+// Bilingual detail copy follows the same [English, Persian] convention as the catalog.
+const VF_PRODUCT_DETAILS = {
+  ivory: ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
+  lavender: ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
+  orchid: ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
+  crimson: ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
+  blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
+  bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
+};

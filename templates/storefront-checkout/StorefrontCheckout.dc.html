@@ -277,6 +277,16 @@ function vfSampleBag() {
   ];
 }
 
+// Bilingual detail copy follows the same [English, Persian] convention as the catalog.
+const VF_PRODUCT_DETAILS = {
+  ivory: ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
+  lavender: ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
+  orchid: ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
+  crimson: ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
+  blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
+  bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
+};
+
 // Source: templates/_shared/storefront.js
 // Shared navigation, shell labels, responsive behavior and page focus.
 // Page-specific copy and behavior stay in each Storefront*.dc.html file.
@@ -287,12 +297,38 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
-    id: 'ivory-classic'
+    id: 'ivory'
   },
   post: {
     post: 'morning-at-the-studio'
   }
 };
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
     brand: 'Vendra Florist',
@@ -388,14 +424,8 @@ class VFPage extends DCLogic {
         url,
         locale: lang,
         noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
-        alternates: {
-          en: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'en'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage]),
-          fa: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-            lang: 'fa'
-          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage])
-        }
+        alternates: Object.fromEntries(['en','fa'].map(lang => [lang,
+          (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[this._vfPage], ...vfPageRoute(this.props),view:this._vfPage,lang})]))
       });
     }, 40);
   }
@@ -417,7 +447,7 @@ function vfShell(props, page) {
     href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
       lang: L
     }, r, VF_ROUTE_EXTRA[r]);
-    go[r] = props.go ? window.AG_SEO.linkHandler(route => props.go(route)) : undefined;
+    go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
   const close = () => self.setState({
     vfMenu: false
@@ -437,7 +467,7 @@ function vfShell(props, page) {
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go ? window.AG_SEO.linkHandler(route => {
+    go: props.go ? vfLinkHandler(route => {
       close();
       props.go(route);
     }) : undefined
@@ -447,6 +477,8 @@ function vfShell(props, page) {
   return {
     go,
     href,
+    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
@@ -539,12 +571,12 @@ class Component extends VFPage {
       fa:{steps:'مراحل خرید',s1:'سبد',s2:'پرداخت',s3:'پایان',payA:'کارت به',payB:'کارت.',payP:'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',holder:'گل‌فروشی وندرا',bank:'بانک سامان',last4:'چهار رقم آخر کارت شما',last4Hint:'فقط همین چهار رقم ارسال می‌شود.',last4Err:'چهار رقم آخر را وارد کنید.',ref:'شماره پیگیری (اختیاری)',refHint:'از رسید بانک.',safe:'شماره کارت شما را هرگز نمی‌خواهیم و ذخیره نمی‌کنیم.',place:'پرداخت کردم — ثبت سفارش',back:'بازگشت به سبد',summary:'خلاصه سفارش',sub:'جمع جزء',fee:'هزینه ارسال',free:'رایگان',total:'جمع کل',orderNo:'سفارش VN-10522',doneA:'سپاس از شما.',doneB:'سفارش ثبت شد.',doneP:'صبح روز ارسال گل‌ها را می‌چینیم و پیش از ارسال عکسشان را برایتان پیامک می‌کنیم.',track:'پیگیری سفارش',keep:'ادامه خرید',when:'زمان ارسال',to:'تحویل به',pay:'پرداخت',card:'کارت'}}[L];
     const st=this.props.store;const order=st?st.order:s.order;const delivery=order?order.delivery:(st?st.delivery:{...VF_DELIVERY,name:'Mina',address:'12 Golha St, Azimiyeh'});
     const items=order?order.lines:(st?st.bag:vfSampleBag());const totals=order?order.totals:vfTotals(items,delivery);const {sub,fee}=totals;const slotEnd=(VF_SLOTS.find(slot=>slot[0]===delivery.slot)||VF_SLOTS[1])[1];const slotLabel=fa?'\u2068'+VF_FA_DIGITS(delivery.slot)+':۰۰\u2069 تا \u2068'+VF_FA_DIGITS(slotEnd)+':۰۰\u2069':delivery.slot+':00–'+slotEnd+':00';const done=!!order||s.placed||this.props.step==='done';
-    return {...S,t:{...S.t,...C},paying:!done,done,fmt:fa?(v=>VF_FA_DIGITS(v)):(v=>String(v)),
+    return {...S,t:{...S.t,...C,orderNo:order?(fa?'سفارش ':'Order ')+'\u2068'+order.id+'\u2069':C.orderNo},paying:!done,done,fmt:fa?(v=>VF_FA_DIGITS(v)):(v=>String(v)),
       steps:[{label:C.s1},{label:C.s2},{label:C.s3}],totalLabel:m(sub+fee),caption:fa?((n,t,l)=>'مرحله '+n+' از '+t+' · '+l):undefined,
       payLabels:fa?{card:'شماره کارت',holder:'به نام',bank:'بانک',amount:'مبلغ',copy:'کپی',copied:'کپی شد'}:{card:'Card number',holder:'Card holder',bank:'Bank',amount:'Amount',copy:'Copy',copied:'Copied'},
       last4:s.last4,last4Err:s.err?C.last4Err:undefined,ref:s.ref,setRef:e=>this.setState({ref:e.target.value}),
       setLast4:e=>this.setState({last4:e.target.value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/\D/g,'').slice(0,4),err:false}),
-      place:()=>{if(s.last4.length!==4){this.setState({err:true});setTimeout(()=>{const el=document.getElementById('vf-last4');el&&el.focus();},0);return;}const record={lines:items.map(l=>({...l})),delivery:{...delivery},totals:{...totals},last4:s.last4,ref:s.ref};if(st){st.complete(record);}else this.setState({placed:true,order:record});},
+      place:()=>{if(s.last4.length!==4){this.setState({err:true});setTimeout(()=>{const el=document.getElementById('vf-last4');el&&el.focus();},0);return;}const record={id:'VN-'+Date.now(),status:'received',createdAt:new Date().toISOString(),lines:items.map(l=>({...l})),delivery:{...delivery},totals:{...totals},last4:s.last4,ref:s.ref};if(st){st.complete(record);}else this.setState({placed:true,order:record});},
       lines:items.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · × '+(fa?VF_FA_DIGITS(l.qty):l.qty),total:m(l.unit*l.qty)})),
       sums:[{label:C.sub,value:m(sub)},{label:C.fee,value:fee?m(fee):C.free},{label:C.total,value:m(sub+fee),strong:true}],
       doneRows:[{icon:'calendar',label:C.when,value:slotLabel},{icon:'map-pin',label:C.to,value:delivery.name+' · '+delivery.address+' · \u2068'+delivery.phone+'\u2069'},{icon:'banknote',label:C.pay,value:(fa?'کارت به کارت · ':'Card to card · ')+m(sub+fee)},{icon:'receipt',label:C.card,value:'•••• '+(fa?VF_FA_DIGITS(order?order.last4:s.last4):(order?order.last4:s.last4))},{icon:'message-square',label:fa?'متن کارت':'Card message',value:delivery.card},{icon:'receipt',label:C.ref,value:order?order.ref:s.ref}].filter(r=>r.value)};
