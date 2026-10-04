@@ -1,0 +1,19 @@
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px">
+<sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="9">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
+</sc-for>
+</x-import>
+<div style="display:flex;flex-direction:column;gap:16px;margin-top:28px">
+<sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)">
+<span>{{ t.langL }}</span>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
+</x-import>
+</div>
+</sc-if>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import>
+</div>
+</x-import>
+</sc-if>

@@ -29,58 +29,389 @@
 <sc-if value="{{ is.notfound }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-notfound/StorefrontNotfound" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;shop&quot;,&quot;product&quot;,&quot;bag&quot;,&quot;checkout&quot;,&quot;track&quot;,&quot;signin&quot;,&quot;account&quot;,&quot;weddings&quot;,&quot;contact&quot;,&quot;journal&quot;,&quot;post&quot;,&quot;search&quot;,&quot;saved&quot;,&quot;policy&quot;,&quot;faq&quot;,&quot;notfound&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
-const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
-const VF_MONEY=(n,fa)=>window.AG_FORMAT.money(n,{lang:fa?'fa':'en'});
-const VF_ROUTES=['account','bag','checkout','contact','faq','home','journal','notfound','policy','post','product','saved','search','shop','signin','track','weddings'];
-const VF_ROUTE_EXTRA={product:{id:'ivory-classic'},post:{post:'morning-at-the-studio'}};
-const VF_ZONES=[['central',80000,'Karaj central','مرکز کرج','Same day before 18:00','ارسال همان روز تا \u2068۱۸:۰۰\u2069'],['outer',120000,'Karaj outer','حومه کرج','Same day before 16:00','ارسال همان روز تا \u2068۱۶:۰۰\u2069'],['alborz',180000,'Alborz province','استان البرز','Same day before 14:00','ارسال همان روز تا \u2068۱۴:۰۰\u2069'],['tehran',250000,'Tehran','تهران','Same day before 12:00','ارسال همان روز تا \u2068۱۲:۰۰\u2069']];
-const VF_DELIVERY={name:'',phone:'',address:'',card:'',zone:'central',slot:'12'};
-const vfPhone=s=>String(s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\s()-]/g,'');
-const vfErrors=d=>({name:!String(d.name||'').trim(),phone:!/^09\d{9}$/.test(vfPhone(d.phone)),address:String(d.address||'').trim().length<6});
-function vfTotals(lines,delivery){const sub=lines.reduce((a,l)=>a+l.unit*l.qty,0);const z=VF_ZONES.find(x=>x[0]===delivery.zone)||VF_ZONES[0];const fee=sub>=5000000&&['central','outer'].includes(z[0])?0:z[1];return {sub,fee,total:sub+fee};}
-const VF_SHELL={
- en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language',faq:'FAQ',skip:'Skip to main content'},
- fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان',faq:'پرسش‌های متداول',skip:'رفتن به محتوای اصلی'}};
+// BEGIN GENERATED SHARED LOGIC
+// Source: templates/_shared/delivery.js
+// Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
+// Edit this file, then run: node templates/_build/generate.cjs
+const VF_ZONES = [
+  {
+    id: 'central', fee: 80_000, cutoff: '18:00',
+    en: 'Karaj central', fa: 'مرکز کرج'
+  },
+  {
+    id: 'outer', fee: 120_000, cutoff: '16:00',
+    en: 'Karaj outer', fa: 'حومه کرج'
+  },
+  {
+    id: 'alborz', fee: 180_000, cutoff: '14:00',
+    en: 'Alborz province', fa: 'استان البرز'
+  },
+  {
+    id: 'tehran', fee: 250_000, cutoff: '12:00',
+    en: 'Tehran', fa: 'تهران'
+  }
+];
+const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
+const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
+const VF_SLOTS = [['08', '12'], ['12', '16'], ['16', '20'], ['20', '22']];
+const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', slot: '12'};
+
+function vfDeliveryCutoff(zone, persian) {
+  const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
+  return persian ? '\u2068' + time + '\u2069' : time;
+}
+
+function vfDeliveryHint(zone, persian) {
+  return (persian ? 'ارسال همان روز تا ' : 'Same day before ') + vfDeliveryCutoff(zone, persian);
+}
+
+function vfPhone(value) {
+  return String(value || '')
+    .replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))
+    .replace(/[٠-٩]/g, digit => '٠١٢٣٤٥٦٧٨٩'.indexOf(digit))
+    .replace(/[\s()-]/g, '');
+}
+
+function vfErrors(delivery) {
+  return {
+    name: !String(delivery.name || '').trim(),
+    phone: !/^09\d{9}$/.test(vfPhone(delivery.phone)),
+    address: String(delivery.address || '').trim().length < 6
+  };
+}
+
+function vfTotals(lines, delivery) {
+  const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
+  const zone = VF_ZONES.find(zone => zone.id === delivery.zone) || VF_ZONES[0];
+  const free = sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zone.id);
+  const fee = free ? 0 : zone.fee;
+  return {sub, fee, total: sub + fee};
+}
+
+// Source: templates/_shared/catalog.js
+// Shared sample catalog for home, shop, search, saved items and product pricing.
+// Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
+// Edit this file, then run: node templates/_build/generate.cjs
+const VF_PRODUCTS = [
+  {
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true,
+    en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
+    fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
+  },
+  {
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true,
+    en: ['Lavender whisper', 'Seasonal · 15 stems'],
+    fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
+  },
+  {
+    id: 'orchid', cat: 'orchids', price: 3_400_000,
+    en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
+    fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
+  },
+  {
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true,
+    en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
+    fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
+  },
+  {
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true,
+    en: ['Blush morning', 'Garden roses · eucalyptus'],
+    fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
+  },
+  {
+    id: 'bridal', cat: 'bridal', price: 6_500_000,
+    en: ['Ivory bridal posy', 'Peonies · ranunculus'],
+    fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
+  }
+];
+
+// Ivory box sizes: [id, extra price, English name, Persian name, English detail, Persian detail].
+const VF_SIZES = [
+  ['petite', 0, 'Petite', 'کوچک', '12 stems', '۱۲ شاخه'],
+  ['classic', 800_000, 'Classic', 'کلاسیک', '20 stems', '۲۰ شاخه'],
+  ['generous', 1_900_000, 'Generous', 'بزرگ', '32 stems', '۳۲ شاخه']
+];
+// Optional extras: [id, price, English name, Persian name].
+const VF_ADDONS = [
+  ['card', 150_000, 'Handwritten card', 'کارت دست‌نویس'],
+  ['vase', 650_000, 'Glass vase', 'گلدان شیشه‌ای']
+];
+
+function vfProduct(id) {
+  const product = VF_PRODUCTS.find(product => product.id === id);
+  if (!product) throw new Error('Unknown sample product: ' + id);
+  return product;
+}
+
+// Each demo gets its own bag objects; prices and names come from the same catalog.
+function vfSampleBag() {
+  const ivory = vfProduct('ivory'), orchid = vfProduct('orchid');
+  const classic = VF_SIZES.find(size => size[0] === 'classic');
+  return [
+    {
+      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1,
+      en: [ivory.en[0], classic[2] + ' · ' + classic[4], '“Happy birthday, Shirin.”'],
+      fa: [ivory.fa[0], classic[3] + ' · ' + classic[5], '«تولدت مبارک، شیرین.»']
+    },
+    {id: orchid.id, unit: orchid.price, qty: 1, en: [...orchid.en], fa: [...orchid.fa]}
+  ];
+}
+
+// Source: templates/_shared/storefront.js
+// Shared navigation, shell labels, responsive behavior and page focus.
+// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
+  lang: fa ? 'fa' : 'en'
+});
+const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTE_EXTRA = {
+  product: {
+    id: 'ivory-classic'
+  },
+  post: {
+    post: 'morning-at-the-studio'
+  }
+};
+const VF_SHELL = {
+  en: {
+    brand: 'Vendra Florist',
+    home: 'Home',
+    shop: 'Shop',
+    weddings: 'Weddings',
+    journal: 'Journal',
+    search: 'Search',
+    account: 'Account',
+    bag: 'Bag',
+    wa: 'WhatsApp',
+    menu: 'Menu',
+    mainNav: 'Main',
+    visit: 'Visit',
+    address: 'Azimiyeh, Karaj',
+    hours: 'Daily 08:00–22:00',
+    contact: 'Contact',
+    photo: 'Bouquet photo',
+    save: 'Save',
+    saved: 'Saved',
+    track: 'Track an order',
+    closeMenu: 'Close menu',
+    waLong: 'Order on WhatsApp',
+    langL: 'Language',
+    faq: 'FAQ',
+    skip: 'Skip to main content'
+  },
+  fa: {
+    brand: 'گل‌فروشی وندرا',
+    home: 'خانه',
+    shop: 'فروشگاه',
+    weddings: 'عروسی',
+    journal: 'دفترچه',
+    search: 'جستجو',
+    account: 'حساب',
+    bag: 'سبد',
+    wa: 'واتساپ',
+    menu: 'منو',
+    mainNav: 'منوی اصلی',
+    visit: 'آدرس',
+    address: 'کرج، عظیمیه',
+    hours: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',
+    contact: 'تماس',
+    photo: 'عکس دسته‌گل',
+    save: 'ذخیره',
+    saved: 'ذخیره‌ها',
+    track: 'پیگیری سفارش',
+    closeMenu: 'بستن منو',
+    waLong: 'سفارش در واتساپ',
+    langL: 'زبان',
+    faq: 'پرسش‌های متداول',
+    skip: 'رفتن به محتوای اصلی'
+  }
+};
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
- componentDidMount(){
-  this._vfMedia=window.matchMedia('(max-width:767px)');this._vfResize=()=>this.setState({vfMobile:this._vfMedia.matches});
-  this._vfMedia.addEventListener('change',this._vfResize);this._vfResize();this._vfAnnounce();
- }
- componentDidUpdate(){this._vfAnnounce();}
- componentWillUnmount(){this._vfMedia&&this._vfMedia.removeEventListener('change',this._vfResize);clearTimeout(this._vfTimer);}
- _vfAnnounce(){clearTimeout(this._vfTimer);this._vfTimer=setTimeout(()=>{
-  const h=document.querySelector('main h1');if(!h)return;const title=h.innerText.replace(/\s+/g,' ').trim();
-  if(title===this._vfTitle)return;this._vfTitle=title;window.AG_NAV.focusHeading();
-  if(this.props.store&&this.props.store.announce)this.props.store.announce(title);else this.setState({vfAnnouncement:title});
-  const lang=this.props.lang==='fa'?'fa':'en';document.documentElement.lang=lang;document.documentElement.dir=lang==='fa'?'rtl':'ltr';document.documentElement.dataset.lang=lang;
-  const url=location.href;window.AG_SEO.syncHead({title:title+' · '+VF_SHELL[lang].brand,description:title,url,locale:lang,noindex:window.AG_SEO.isNoindex(this._vfPage)||this._vfPage==='signin',alternates:{en:(this.props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:'en'},this._vfPage,VF_ROUTE_EXTRA[this._vfPage]),fa:(this.props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:'fa'},this._vfPage,VF_ROUTE_EXTRA[this._vfPage])}});
- },40);}
+  componentDidMount() {
+    this._vfMedia = window.matchMedia('(max-width:767px)');
+    this._vfResize = () => this.setState({
+      vfMobile: this._vfMedia.matches
+    });
+    this._vfMedia.addEventListener('change', this._vfResize);
+    this._vfResize();
+    this._vfAnnounce();
+  }
+  componentDidUpdate() {
+    this._vfAnnounce();
+  }
+  componentWillUnmount() {
+    this._vfMedia && this._vfMedia.removeEventListener('change', this._vfResize);
+    clearTimeout(this._vfTimer);
+  }
+  _vfAnnounce() {
+    clearTimeout(this._vfTimer);
+    this._vfTimer = setTimeout(() => {
+      const h = document.querySelector('main h1');
+      if (!h) return;
+      const title = h.innerText.replace(/\s+/g, ' ').trim();
+      if (title === this._vfTitle) return;
+      this._vfTitle = title;
+      window.AG_NAV.focusHeading();
+      if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
+        vfAnnouncement: title
+      });
+      const lang = this.props.lang === 'fa' ? 'fa' : 'en';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+      document.documentElement.dataset.lang = lang;
+      const url = location.href;
+      window.AG_SEO.syncHead({
+        title: title + ' · ' + VF_SHELL[lang].brand,
+        description: title,
+        url,
+        locale: lang,
+        noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
+        alternates: {
+          en: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
+            lang: 'en'
+          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage]),
+          fa: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
+            lang: 'fa'
+          }, this._vfPage, VF_ROUTE_EXTRA[this._vfPage])
+        }
+      });
+    }, 40);
+  }
 }
-function vfShell(props,page){
- const self=this,st=self.state||{},store=props.store;self._vfPage=page;
- window.AG_SEO.register(...VF_ROUTES);
- const fa=props.lang==='fa',L=fa?'fa':'en',T=VF_SHELL[L];const mob=!!props.mobile||(st.vfMobile===undefined?window.innerWidth<768:st.vfMobile);
- const tab=page==='home'?'home':['bag','checkout'].includes(page)?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
- const href={},go={};VF_ROUTES.forEach(r=>{
-  href[r]=(props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:L},r,VF_ROUTE_EXTRA[r]);
-  go[r]=props.go?window.AG_SEO.linkHandler(route=>props.go(route)):undefined;
- });
- const close=()=>self.setState({vfMenu:false});
- const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track',faq:page==='faq'};
- const menuItems=['home','shop','weddings','journal','saved','contact','account','track','faq'].map(r=>({label:T[r],current:cur[r],href:href[r],go:props.go?window.AG_SEO.linkHandler(route=>{close();props.go(route);}):undefined}));
- const count=store?store.count:2,favList=store?store.saved:st.vfFavs;
- return {go,href,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,previewMobile:!!props.mobile,frameW:mob?'390px':'none',
- nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
- skipGo:e=>{e.preventDefault();window.AG_NAV.focusHeading();},standalone:!props.store,vfAnnouncement:st.vfAnnouncement||'',menuOpen:!!st.vfMenu,openMenu:()=>self.setState({vfMenu:true}),closeMenu:close,menuItems,
- hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
- isFav:(id,def)=>(favList||def).includes(id),toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
- tabs:[{id:'home',icon:'house',label:T.home,href:href.home,onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:href.shop,onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:href.bag,onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
- n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+function vfShell(props, page) {
+  const self = this,
+    st = self.state || {},
+    store = props.store;
+  self._vfPage = page;
+  window.AG_SEO.register(...VF_ROUTES);
+  const fa = props.lang === 'fa',
+    L = fa ? 'fa' : 'en',
+    T = VF_SHELL[L];
+  const mob = !!props.mobile || (st.vfMobile === undefined ? window.innerWidth < 768 : st.vfMobile);
+  const tab = page === 'home' ? 'home' : ['bag', 'checkout'].includes(page) ? 'bag' : ['shop', 'product', 'saved', 'search'].includes(page) ? 'shop' : '';
+  const href = {},
+    go = {};
+  VF_ROUTES.forEach(r => {
+    href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
+      lang: L
+    }, r, VF_ROUTE_EXTRA[r]);
+    go[r] = props.go ? window.AG_SEO.linkHandler(route => props.go(route)) : undefined;
+  });
+  const close = () => self.setState({
+    vfMenu: false
+  });
+  const cur = {
+    home: page === 'home',
+    shop: ['shop', 'product'].includes(page),
+    weddings: page === 'weddings',
+    journal: ['journal', 'post'].includes(page),
+    saved: page === 'saved',
+    contact: page === 'contact',
+    account: ['account', 'signin'].includes(page),
+    track: page === 'track',
+    faq: page === 'faq'
+  };
+  const menuItems = ['home', 'shop', 'weddings', 'journal', 'saved', 'contact', 'account', 'track', 'faq'].map(r => ({
+    label: T[r],
+    current: cur[r],
+    href: href[r],
+    go: props.go ? window.AG_SEO.linkHandler(route => {
+      close();
+      props.go(route);
+    }) : undefined
+  }));
+  const count = store ? store.count : 2,
+    favList = store ? store.saved : st.vfFavs;
+  return {
+    go,
+    href,
+    lang: L,
+    fa,
+    dir: fa ? 'rtl' : 'ltr',
+    tenant: props.tenant ?? 'default',
+    mob,
+    desk: !mob,
+    previewMobile: !!props.mobile,
+    frameW: mob ? '390px' : 'none',
+    nav: {
+      shop: cur.shop,
+      weddings: cur.weddings,
+      journal: cur.journal
+    },
+    bagCount: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
+    skipGo: e => {
+      e.preventDefault();
+      window.AG_NAV.focusHeading();
+    },
+    standalone: !props.store,
+    vfAnnouncement: st.vfAnnouncement || '',
+    menuOpen: !!st.vfMenu,
+    openMenu: () => self.setState({
+      vfMenu: true
+    }),
+    closeMenu: close,
+    menuItems,
+    hasLang: !!props.setLang,
+    setLang: props.setLang,
+    langOpts: [{
+      id: 'en',
+      label: 'EN'
+    }, {
+      id: 'fa',
+      label: 'فا'
+    }],
+    waHref: 'https://wa.me/989129333034',
+    isFav: (id, def) => (favList || def).includes(id),
+    toggleFav: (id, def) => () => {
+      if (store) {
+        store.toggleSave(id);
+        return;
+      }
+      const c = st.vfFavs || def;
+      self.setState({
+        vfFavs: c.includes(id) ? c.filter(x => x !== id) : [...c, id]
+      });
+    },
+    tabs: [{
+      id: 'home',
+      icon: 'house',
+      label: T.home,
+      href: href.home,
+      onClick: go.home,
+      current: tab === 'home'
+    }, {
+      id: 'shop',
+      icon: 'layout-grid',
+      label: T.shop,
+      href: href.shop,
+      onClick: go.shop,
+      current: tab === 'shop'
+    }, {
+      id: 'wa',
+      icon: 'message-circle',
+      label: T.wa,
+      href: 'https://wa.me/989129333034',
+      target: '_blank'
+    }, {
+      id: 'bag',
+      icon: 'shopping-bag',
+      label: T.bag,
+      href: href.bag,
+      onClick: go.bag,
+      count: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
+      current: tab === 'bag'
+    }],
+    n: v => fa ? VF_FA_DIGITS(v) : String(v),
+    m: v => VF_MONEY(v, fa),
+    t: T
+  };
 }
-const VF_BAG0=[
- {id:'ivory-classic',unit:4900000,qty:1,en:['Ivory ribbon box','Classic · 20 stems','“Happy birthday, Shirin.”'],fa:['باکس روبان عاجی','کلاسیک · ۲۰ شاخه','«تولدت مبارک، شیرین.»']},
- {id:'orchid',unit:3400000,qty:1,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']}];
+// END GENERATED SHARED LOGIC
+
+// PAGE LOGIC — edit this page’s copy and behavior below.
+const VF_BAG0=vfSampleBag();
 const VF_SESSION='vendra-template:'+location.pathname;
 function vfReadRoute(){window.AG_SEO.register(...VF_ROUTES);return window.AG_SEO.readRoute();}
 function vfSiteInitial(props){

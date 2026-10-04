@@ -1,0 +1,18 @@
+<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav style="display:flex;gap:4px;flex-wrap:wrap">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
+</nav>
+<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;gap:4px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
+</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
+</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+</x-import>
+</div>
+</div>
+</header>

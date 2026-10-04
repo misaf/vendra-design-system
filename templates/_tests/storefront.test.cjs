@@ -5,7 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const generator = {};vm.runInNewContext(read('scraps/vf-gen.js.txt'), generator);
+const {sharedLogic, generate} = require('../_build/generate.cjs');
+generate(true);
 function context() {
  const history = [];
  const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout, location:{pathname:'/templates/storefront-site/StorefrontSite.dc.html',search:'',href:'http://localhost/templates/storefront-site/StorefrontSite.dc.html'},
@@ -14,7 +15,7 @@ function context() {
  ctx.window={React:{},innerWidth:390,scrollTo:()=>{}};vm.createContext(ctx);vm.runInContext(read('_ds_bundle.js'),ctx);
  return {ctx,history};
 }
-const {ctx}=context();vm.runInContext(generator.VF.COMMON_JS+'\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=vfPhone;',ctx);
+const {ctx}=context();vm.runInContext(sharedLogic+'\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=vfPhone;',ctx);
 for (const [zone,fee] of [['central',80000],['outer',120000],['alborz',180000],['tehran',250000]]) {
  assert.equal(ctx.totals([{unit:1000000,qty:2}],{zone}).fee,fee);
  assert.equal(ctx.totals([{unit:2500000,qty:2}],{zone}).fee,['central','outer'].includes(zone)?0:fee);
@@ -27,7 +28,7 @@ let parsed=0;
 for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.startsWith('storefront-'))) {
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
  const html=read('templates/'+folder+'/'+filename),script=html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
- assert.ok(html.includes(generator.VF.COMMON_JS),folder+' must use the shared generator logic');
+ assert.ok(html.includes(sharedLogic),folder+' must use the shared generator logic');
  if(folder!=='storefront-site')assert.ok(html.includes('<main id="main"'),folder+' must expose the skip-link destination');
  const {ctx:c,history}=context();vm.runInContext(script+'\nthis.Logic=Component;',c);const logic=new c.Logic({lang:'en',tenant:'default',mobile:false});
  const values=logic.renderVals();assert.ok(values);parsed++;
