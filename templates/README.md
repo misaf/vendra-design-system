@@ -9,13 +9,17 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | A page's content, English/Persian copy or behavior | That page's `Storefront*.dc.html` |
 | Product names, prices, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
 | Product placeholder artwork | `../assets/placeholders/product.svg` |
+| Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
 | Delivery fees, cut-offs, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
 | Footer | [_shared/footer.html](_shared/footer.html) |
 | Local preview server, automatic generation and reload | [_build/vite.config.mjs](_build/vite.config.mjs) |
-| Tailwind token aliases, source scanning and CSS entry point | [_shared/tailwind.css](_shared/tailwind.css) |
+| Pure Tailwind entry: token aliases and utility source scanning | [_shared/tailwind.css](_shared/tailwind.css) |
+| Custom CSS entry point (plain CSS imports) | [_shared/custom.css](_shared/custom.css) |
+| Shared shell classes | [_shared/shell.css](_shared/shell.css) |
+| Named page-specific styles | [_shared/page-styles.css](_shared/page-styles.css) |
 | Shopping/form/information layout families, card alignment and mobile actions | [_shared/page-layouts.css](_shared/page-layouts.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
@@ -94,7 +98,8 @@ All pages load the same assets. Page folders contain only their `Storefront*.dc.
 
 - `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
-- `_runtime/tailwind.css`: one generated stylesheet, compiled from `_shared/tailwind.css`.
+- `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
+- `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.
 - `../styles.css`: imports the shared design-system fonts, tokens, tenant themes and component styles.
 - `../_ds_bundle.js` and `../assets/`: shared component bundle and images.
 
@@ -116,9 +121,9 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Spacing numbers follow Vendra’s token scale: `tw:gap-5` means `--space-5` (24px), and `tw:gap-7` means `--space-7` (48px). They are not Tailwind’s default spacing numbers.
 - Colors, fonts and line heights resolve from the current tenant and language wrapper. For example, `tw:bg-page`, `tw:text-body` and `tw:font-body` use existing semantic tokens.
 - Prefer logical spacing such as `tw:ps-4` / `tw:pe-4` for RTL support. Write complete class names in source; do not construct them from string fragments.
-- Keep repeated page patterns in readable named classes. `information-pages.css` uses `@apply` and is compiled through the shared Tailwind entry point.
+- Keep repeated page patterns in readable named classes. `custom.css` imports `shell.css`, `information-pages.css`, `page-layouts.css` and `page-styles.css`. These files use plain CSS and `vf-` class names, without `@apply` or Tailwind compilation.
 - Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
-- Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
+- Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
 
 `node templates/_build/generate.cjs` remains available for shared HTML/logic propagation only; it does not compile Tailwind. Use the full build after CSS or class changes.
 
@@ -148,3 +153,34 @@ delivery window and payment suffix in session storage. Tracking displays the las
 completed order even after starting a new bag; Order again copies that order into
 the bag. Closing the browser session clears this demo data. Standalone tracking
 still has sample preview data. This template has no payment or fulfillment backend.
+
+### Store details and recovery states
+
+Edit `_shared/store-config.js` for the bilingual store name, address, hours,
+phone, WhatsApp, Instagram and demo payment details. Run `npm --prefix templates run build`
+to update every template. Shared navigation, contact, footer and checkout use this configuration.
+
+In the click-through site, tracking without a matching completed order offers a
+shop link. Standalone tracking retains its sample preview. Empty saved lists
+navigate to the shop; they do not create favorites. No-result searches offer a
+new search with focus returned to the search field, plus a shop link.
+
+Keyboard checks should cover Tab and Shift+Tab in the mobile menu, Escape and
+focus return, product/filter activation, invalid-field focus, and the contact
+and inquiry success/return actions. Check both languages. Form fields use a visible
+focus ring and scroll spacing below the sticky header. Contact and inquiry forms
+remain local demonstrations; connect their submit handlers to a backend when adapting the template.
+
+### Keep Tailwind and custom CSS separate
+
+Use `tw:` utilities in markup for standard layout and spacing. Use a descriptive
+`vf-` class for custom presentation, such as `vf-product-breadcrumb` or
+`vf-shop-category`. Put its plain CSS in the appropriate shared source file.
+Static inline styles, embedded style tags and `style-hover` attributes have been
+moved out of the storefront markup. Styles generated internally by design-system
+components remain owned by those components.
+
+The loader includes design-system styles, Tailwind utilities and custom CSS in that
+order, and deduplicates all three. Export `_runtime/custom.css` alongside the other
+shared runtime assets. The build assembles custom CSS independently from Tailwind,
+and the check command verifies both outputs. Vite watches both source sets.
