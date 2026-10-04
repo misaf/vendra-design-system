@@ -3,6 +3,8 @@
 // the project root, '../_ds/<folder>' one level down) — one line to edit.
 (() => {
   const base = '../..';
+  // Product image paths use the same editable design-system root as CSS and the bundle.
+  window.VF_ASSET_BASE = new URL(base + '/', document.currentScript.src).href;
   for (const p of ["tokens/fonts.css","tokens/colors.css","tokens/typography.css","tokens/spacing.css","tokens/effects.css","tokens/character.css","tokens/base.css","tokens/tenants/clay.css","components/components.css","styles.css"]) {
     const l = document.createElement('link');
     l.rel = 'stylesheet'; l.href = base + '/' + p;

@@ -83,7 +83,7 @@
 <h1 class="ag-display" style="font-size:32px;margin:0">{{ t.label }}</h1>
 <div style="display:flex;gap:12px;align-items:flex-end"><div style="flex:1"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-q" type="search" icon-start="search" label="{{ t.label }}" placeholder="{{ t.ph }}" value="{{ q }}" on-change="{{ setQ }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.close }}" variant="outline" href="{{ href.home }}" on-click="{{ go.home }}" hint-size="44px,44px"></x-import></div>
 <sc-if value="{{ empty }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:12px"><div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted)">{{ t.popular }}</div><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ popular }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" on-click="{{ p.pick }}" hint-size="100px,36px">{{ p.label }}</x-import></sc-for></div></div></sc-if>
-<sc-if value="{{ hasResults }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column"><div role="status" style="font-size:14px;color:var(--text-muted);margin-bottom:8px">{{ countLabel }}</div><sc-for list="{{ results }}" as="r" hint-placeholder-count="3"><a href="{{ href.product }}" onClick="{{ go.product }}" style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--border-subtle);color:var(--text-body);text-decoration:none" style-hover="background:var(--surface-sunken)"><div style="width:48px;flex:none"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" size="thumb" tone="product" alt="" hint-size="48px,60px"></x-import></div><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:500">{{ r.name }}</span><span style="font-size:14px;color:var(--text-muted)">{{ r.sub }}</span></span><span style="font-weight:500;white-space:nowrap">{{ r.price }}</span></a></sc-for></div></sc-if>
+<sc-if value="{{ hasResults }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column"><div role="status" style="font-size:14px;color:var(--text-muted);margin-bottom:8px">{{ countLabel }}</div><sc-for list="{{ results }}" as="r" hint-placeholder-count="3"><a href="{{ href.product }}" onClick="{{ go.product }}" style="display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid var(--border-subtle);color:var(--text-body);text-decoration:none" style-hover="background:var(--surface-sunken)"><div style="width:48px;flex:none"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ r.image.src }}" size="thumb" tone="product" alt="{{ r.image.alt }}" hint-size="48px,60px"></x-import></div><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-weight:500">{{ r.name }}</span><span style="font-size:14px;color:var(--text-muted)">{{ r.sub }}</span></span><span style="font-weight:500;white-space:nowrap">{{ r.price }}</span></a></sc-for></div></sc-if>
 <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="search-x" title="{{ t.noneA }}" title-accent="{{ t.noneB }}" body="{{ t.noneP }}" hint-size="100%,260px"></x-import></sc-if>
 </main>
 <!-- END PAGE CONTENT -->
@@ -186,34 +186,37 @@ function vfTotals(lines, delivery) {
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
 // Edit this file, then run: node templates/_build/generate.cjs
+// All sample products intentionally use a neutral image placeholder.
+// Set an individual product's image path when adapting the template to a real store.
+const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true,
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true,
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000,
+    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true,
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true,
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000,
+    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -237,17 +240,25 @@ function vfProduct(id) {
   return product;
 }
 
+function vfProductImage(product, lang = 'en') {
+  const asset = product.image || VF_PRODUCT_PLACEHOLDER;
+  const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
+  const name = product[lang] ? product[lang][0] : product.en[0];
+  const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
+  return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+}
+
 // Each demo gets its own bag objects; prices and names come from the same catalog.
 function vfSampleBag() {
   const ivory = vfProduct('ivory'), orchid = vfProduct('orchid');
   const classic = VF_SIZES.find(size => size[0] === 'classic');
   return [
     {
-      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1,
+      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1, image: ivory.image,
       en: [ivory.en[0], classic[2] + ' · ' + classic[4], '“Happy birthday, Shirin.”'],
       fa: [ivory.fa[0], classic[3] + ' · ' + classic[5], '«تولدت مبارک، شیرین.»']
     },
-    {id: orchid.id, unit: orchid.price, qty: 1, en: [...orchid.en], fa: [...orchid.fa]}
+    {id: orchid.id, unit: orchid.price, qty: 1, image: orchid.image, en: [...orchid.en], fa: [...orchid.fa]}
   ];
 }
 
@@ -514,7 +525,7 @@ class Component extends VFPage {
     const pop=fa?['رز','ارکیده','باکس','عروس']:['Roses','Orchid','Box','Bridal'];
     return {...S,t:{...S.t,...C},q:this.state.q,setQ:e=>this.setState({q:e.target.value}),empty:!q,hasResults:res.length>0,noResults:!!q&&!res.length,
       countLabel:fa?n(res.length)+' نتیجه':res.length+(res.length===1?' result':' results'),
-      popular:pop.map(l=>({label:l,pick:()=>this.setState({q:l})})),results:res.map(p=>({name:p[L][0],sub:p[L][1],price:S.m(p.price)}))};
+      popular:pop.map(l=>({label:l,pick:()=>this.setState({q:l})})),results:res.map(p=>({image:vfProductImage(p,L),name:p[L][0],sub:p[L][1],price:S.m(p.price)}))};
   }
 }
 

@@ -86,7 +86,7 @@
 <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start">
 <div style="flex:999 1 480px;min-width:0;display:flex;flex-direction:column;gap:40px">
 <div style="display:flex;flex-direction:column;border-top:1px solid var(--border-subtle)">
-<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div style="border-bottom:1px solid var(--border-subtle);padding:20px 0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LineItem" size="lg" name="{{ l.name }}" meta="{{ l.meta }}" note="{{ l.note }}" price="{{ l.price }}" quantity="{{ l.qty }}" on-quantity-change="{{ l.setQty }}" on-remove="{{ l.remove }}" remove-label="{{ t.remove }}" quantity-labels="{{ qtyLabels }}" format-quantity="{{ fmt }}" hint-size="100%,96px"></x-import></div></sc-for>
+<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div style="border-bottom:1px solid var(--border-subtle);padding:20px 0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LineItem" image="{{ l.image }}" size="lg" name="{{ l.name }}" meta="{{ l.meta }}" note="{{ l.note }}" price="{{ l.price }}" quantity="{{ l.qty }}" on-quantity-change="{{ l.setQty }}" on-remove="{{ l.remove }}" remove-label="{{ t.remove }}" quantity-labels="{{ qtyLabels }}" format-quantity="{{ fmt }}" hint-size="100%,96px"></x-import></div></sc-for>
 </div>
 <section style="display:flex;flex-direction:column;gap:20px">
 <h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:30px;line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.delivery }}</h2>
@@ -214,34 +214,37 @@ function vfTotals(lines, delivery) {
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
 // Edit this file, then run: node templates/_build/generate.cjs
+// All sample products intentionally use a neutral image placeholder.
+// Set an individual product's image path when adapting the template to a real store.
+const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true,
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true,
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000,
+    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true,
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true,
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000,
+    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -265,17 +268,25 @@ function vfProduct(id) {
   return product;
 }
 
+function vfProductImage(product, lang = 'en') {
+  const asset = product.image || VF_PRODUCT_PLACEHOLDER;
+  const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
+  const name = product[lang] ? product[lang][0] : product.en[0];
+  const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
+  return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+}
+
 // Each demo gets its own bag objects; prices and names come from the same catalog.
 function vfSampleBag() {
   const ivory = vfProduct('ivory'), orchid = vfProduct('orchid');
   const classic = VF_SIZES.find(size => size[0] === 'classic');
   return [
     {
-      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1,
+      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1, image: ivory.image,
       en: [ivory.en[0], classic[2] + ' · ' + classic[4], '“Happy birthday, Shirin.”'],
       fa: [ivory.fa[0], classic[3] + ' · ' + classic[5], '«تولدت مبارک، شیرین.»']
     },
-    {id: orchid.id, unit: orchid.price, qty: 1, en: [...orchid.en], fa: [...orchid.fa]}
+    {id: orchid.id, unit: orchid.price, qty: 1, image: orchid.image, en: [...orchid.en], fa: [...orchid.fa]}
   ];
 }
 
@@ -551,11 +562,11 @@ class Component extends VFPage {
       next:()=>{this.setState({submitted:true});if(Object.values(invalid).some(Boolean)){window.AG_NAV.focusFirstInvalid();return;}if(st)st.setDelivery({...delivery,phone:vfPhone(delivery.phone)});if(this.props.go)this.props.go('checkout');},
       hasItems:live.length>0,noItems:live.length===0,
       steps:[{label:C.s1},{label:C.s2},{label:C.s3}],fmt:fa?(v=>VF_FA_DIGITS(v)):(v=>String(v)),qtyLabels:{dec:C.dec,inc:C.inc},
-      lines:live.map(l=>({name:l[L][0],meta:l[L][1]+' · '+m(l.unit),note:l[L][2],price:m(l.unit*Q(l.id)),qty:Q(l.id),setQty:q=>st?st.setQty(l.id,q):this.setState({qty:{...s.qty,[l.id]:q}}),remove:()=>st?st.remove(l.id):this.setState({removed:[...s.removed,l.id]})})),
+      lines:live.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · '+m(l.unit),note:l[L][2],price:m(l.unit*Q(l.id)),qty:Q(l.id),setQty:q=>st?st.setQty(l.id,q):this.setState({qty:{...s.qty,[l.id]:q}}),remove:()=>st?st.remove(l.id):this.setState({removed:[...s.removed,l.id]})})),
       zone:delivery.zone,setZone:e=>update({zone:e.target.value}),zoneHint:vfDeliveryHint(z,fa),
       zones:VF_ZONES.map(zone=>({value:zone.id,label:(fa?zone.fa:zone.en)+' · '+m(zone.fee)})),
       slots:VF_SLOTS.map(([a,b])=>({label:fa?'\u2068'+n(a)+':۰۰\u2069 تا \u2068'+n(b)+':۰۰\u2069':a+':00–'+b+':00',on:delivery.slot===a,pick:()=>update({slot:a})})),
-      summary:live.map(l=>({name:l[L][0],meta:l[L][1]+' · × '+n(Q(l.id)),total:m(l.unit*Q(l.id))})),
+      summary:live.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · × '+n(Q(l.id)),total:m(l.unit*Q(l.id))})),
       sums:[{label:C.sub,value:m(sub)},{label:C.fee,value:fee?m(fee):C.free},{label:C.total,value:m(sub+fee),strong:true}],
       restore:e=>{e&&e.preventDefault&&e.preventDefault();if(st){st.reset();return;}this.setState({removed:[],qty:{'ivory-classic':1,orchid:1}});}
     };

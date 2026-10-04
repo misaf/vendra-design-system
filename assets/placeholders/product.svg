@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750" viewBox="0 0 600 750">
+  <!-- Neutral 4:5 template placeholder. No product depiction or embedded language. -->
+  <rect width="600" height="750" fill="#F7F4F2"/>
+  <g fill="none" stroke="#B8AAA4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="246" y="333" width="108" height="84" rx="10"/>
+    <circle cx="274" cy="358" r="8"/>
+    <path d="m248 398 28-27 21 21 20-18 35 31"/>
+  </g>
+</svg>
