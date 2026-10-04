@@ -30,25 +30,6 @@ function vfCopy(S) {
       labels: {
         onItsWay: 'On its way',
         delivered: 'Delivered',
-        mum: 'Mum',
-        value24: '24',
-        oct: 'Oct',
-        birthday: 'Birthday',
-        value3DaysBefore: '3 days before',
-        mina: 'Mina',
-        value2: '2',
-        nov: 'Nov',
-        anniversary: 'Anniversary',
-        value5DaysBefore: '5 days before',
-        sara: 'Sara',
-        value18: '18',
-        jan: 'Jan',
-        home: 'Home',
-        value12GolhaStAzimiyeh: '12 Golha St, Azimiyeh',
-        shirinAhmadi: 'Shirin Ahmadi',
-        karajCentral: 'Karaj central',
-        office: 'Office',
-        value40MoazenBlvdGohardasht: '40 Moazen Blvd, Gohardasht',
         viewOrder: 'View order',
         trackOrder: 'Track order'
       },
@@ -95,25 +76,6 @@ function vfCopy(S) {
       labels: {
         onItsWay: 'در راه',
         delivered: 'تحویل شد',
-        mum: 'مامان',
-        value24: '۲۴',
-        oct: 'مهر',
-        birthday: 'تولد',
-        value3DaysBefore: '۳ روز قبل',
-        mina: 'مینا',
-        value2: '۲',
-        nov: 'آذر',
-        anniversary: 'سالگرد',
-        value5DaysBefore: '۵ روز قبل',
-        sara: 'سارا',
-        value18: '۱۸',
-        jan: 'دی',
-        home: 'خانه',
-        value12GolhaStAzimiyeh: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲',
-        shirinAhmadi: 'شیرین احمدی',
-        karajCentral: 'مرکز کرج',
-        office: 'محل کار',
-        value40MoazenBlvdGohardasht: 'گوهردشت، بلوار موذن، پلاک ۴۰',
         viewOrder: 'مشاهده سفارش',
         trackOrder: 'پیگیری سفارش'
       },
@@ -215,12 +177,9 @@ function vfCopy(S) {
         "inDays": "روز دیگر"
       }
     }[S.lang],
-    orders: [['VN-10522', 4, 'onTheWay', 8380000, '9 Oct', '۱۷ مهر'], ['VN-10431', 1, 'delivered', 2880000, '14 Sep', '۲۳ شهریور'], ['VN-10302', 2, 'delivered', 5300000, '2 Aug', '۱۱ مرداد']],
     status: {
       onTheWay: [C.labels.onItsWay, 'accent'],
       delivered: [C.labels.delivered, 'sage']
-    },
-    reminders: [['mum', C.labels.mum, C.labels.value24, C.labels.oct, C.labels.birthday, 'cake', C.labels.value3DaysBefore, 'sms', true], ['mina', C.labels.mina, C.labels.value2, C.labels.nov, C.labels.anniversary, 'heart', C.labels.value5DaysBefore, 'wa', false], ['sara', C.labels.sara, C.labels.value18, C.labels.jan, C.labels.birthday, 'cake', C.labels.value3DaysBefore, 'sms', false]],
-    addresses: [['home', C.labels.home, C.labels.value12GolhaStAzimiyeh, C.labels.shirinAhmadi, C.labels.karajCentral], ['office', C.labels.office, C.labels.value40MoazenBlvdGohardasht, C.labels.shirinAhmadi, C.labels.karajCentral]]
+    }
   };
 }
