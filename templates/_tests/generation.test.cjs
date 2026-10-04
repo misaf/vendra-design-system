@@ -88,7 +88,7 @@ try {
   assert.equal(pageValues('home').products[0].price, '4,200,000 Toman');
   assert.equal(pageValues('shop').items[0].price, '4,200,000 Toman');
   assert.equal(pageValues('search').results[0].price, '4,200,000 Toman');
-  assert.equal(pageValues('product').unitPrice, '5,000,000 Toman');
+  assert.equal(pageValues('product').unitPrice, '4,200,000 Toman');
   assert.equal(pageValues('bag').sums.at(-1).value, '8,490,000 Toman');
   assert.equal(pageValues('checkout').sums.at(-1).value, '8,490,000 Toman');
   assert.equal(pageValues('track').sums.at(-1).value, '8,490,000 Toman');

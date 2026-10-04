@@ -61,8 +61,16 @@ for(const lang of ['en','fa']) {
  for(const id of ['ivory','lavender','orchid','crimson','blush','bridal']) {
   let added;const {logic}=loadPage('product',{lang,routeInfo:{view:'product',id},store:{saved:[],add:line=>added=line}});
   const v=logic.renderVals();v.add();if(id==='bridal'){assert.equal(added,undefined);assert.equal(v.available,false);continue;}assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);
-  assert.equal(added.unit,id==='ivory'?4900000:({lavender:2800000,orchid:3400000,crimson:5200000,blush:2200000,bridal:6500000})[id]);
+  assert.equal(added.unit,id==='ivory'?4100000:({lavender:2800000,orchid:3400000,crimson:5200000,blush:2200000,bridal:6500000})[id]);
   assert.equal(v.hasSizes,id==='ivory');
+  const listing=loadPage('shop',{lang}).logic.renderVals().items.find(item=>item.name===v.t.name);
+  assert.equal(v.unitPrice,listing.price,'Default product price must match the listing');
+  if(id==='ivory'){
+   v.sizes[1].pick();logic.renderVals().add();assert.equal(added.unit,4900000,'Classic surcharge remains selectable');
+   logic.renderVals().sizes[2].pick();logic.renderVals().add();assert.equal(added.unit,6000000,'Generous surcharge remains selectable');
+   logic._vfAnnounce=()=>{};logic._productId='orchid';logic.componentDidUpdate();
+   assert.equal(logic.renderVals().unitPrice,listing.price,'Changing products resets to the starting price');
+  }
  }
  let next;const {logic:shop}=loadPage('shop',{lang,go:r=>next=r},'?view=shop&cat=bouquets&sort=low&filters=under3,same');
  let v=shop.renderVals();assert.equal(v.items.length,2);assert.ok(v.items[0].href.includes('id=blush'));v.chips[1].toggle();assert.ok(!next.filters.includes('same'));

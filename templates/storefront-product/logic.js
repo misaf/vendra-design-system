@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
   state = {
-    size: 'classic',
+    size: 'petite',
     addons: [],
     qty: 1,
     added: false
@@ -115,7 +115,7 @@ class Component extends VFPage {
     if (this._productId !== id) {
       this._productId = id;
       this.setState({
-        size: 'classic',
+        size: 'petite',
         addons: [],
         qty: 1,
         added: false
