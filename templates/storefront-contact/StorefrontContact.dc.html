@@ -12,7 +12,68 @@
 <helmet>
 <script src="./ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
+<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}
+/* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
+.vf-page .vf-info {
+  max-width:1088px;
+  margin-inline:auto;
+  padding:var(--space-7) var(--space-5) 0;
+}
+.vf-info-header {
+  max-width:680px;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-4);
+  margin-block-end:var(--space-7);
+}
+.vf-info-eyebrow {
+  font-size:var(--text-xs);
+  font-weight:500;
+  letter-spacing:var(--tracking-eyebrow);
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+.vf-info h1, .vf-info h2 {
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:500;
+  line-height:var(--lh-tight);
+  letter-spacing:var(--tracking-display);
+  text-transform:var(--display-case);
+  text-wrap:balance;
+}
+.vf-info h1 {font-size:clamp(40px,5cqi,64px)}
+.vf-info h2 {font-size:clamp(28px,3.5cqi,36px)}
+.vf-info-intro, .vf-info-copy {
+  margin:0;
+  font-size:17px;
+  line-height:var(--lh-body);
+  color:var(--text-secondary);
+  text-wrap:pretty;
+}
+.vf-info-meta {font-size:var(--text-sm);color:var(--text-muted)}
+.vf-info-columns {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 320px;
+  gap:var(--space-7);
+  align-items:start;
+}
+.vf-info-columns--contact {grid-template-columns:repeat(2,minmax(0,1fr))}
+.vf-info-columns--policy {grid-template-columns:240px minmax(0,1fr)}
+.vf-info-sections {display:flex;flex-direction:column;gap:var(--space-7);min-width:0}
+.vf-info-section {display:flex;flex-direction:column;gap:var(--space-4);scroll-margin-top:96px}
+.vf-info-notice {margin-block-end:var(--space-7)}
+.vf-info-toc {position:sticky;top:96px;display:flex;flex-direction:column;gap:2px}
+.vf-info-toc .vf-info-eyebrow {margin-block-end:var(--space-2)}
+@media(max-width:767px) {
+  .vf-page .vf-info {padding-block-start:var(--space-6)}
+  .vf-info-header {margin-block-end:var(--space-6)}
+  .vf-info-columns {grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
+  .vf-info-sections {gap:var(--space-6)}
+  .vf-info-notice {margin-block-end:var(--space-6)}
+  .vf-info-toc {position:static}
+}
+</style>
 </helmet>
 <div style="background:var(--surface-muted);min-height:100vh">
 <div class="vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
@@ -79,11 +140,11 @@
 <div style="flex:1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" style="max-width:1240px;margin:0 auto;padding:48px 24px 0"><div style="display:flex;flex-direction:column;gap:14px;margin-bottom:40px"><div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted)">{{ t.eb }}</div><h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,5cqi,64px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case);text-wrap:balance">{{ t.hA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.hB }}</em></h1><p style="margin:0;max-width:56ch;font-size:17px;line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">{{ t.hP }}</p></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;align-items:start">
+<main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header"><div class="vf-info-eyebrow">{{ t.eb }}</div><h1>{{ t.hA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.hB }}</em></h1><p class="vf-info-intro">{{ t.hP }}</p></header>
+<div class="vf-info-columns vf-info-columns--contact">
 <div style="display:flex;flex-direction:column;gap:20px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" variant="sunken" padding="{{ 20 }}" hint-size="100%,300px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ rows }}" hint-size="100%,260px"></x-import></x-import><div style="display:flex;gap:12px;flex-wrap:wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="message-circle" href="https://wa.me/989129333034" target="_blank" hint-size="150px,48px">{{ t.wa }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="phone" href="tel:+989129333034" hint-size="120px,48px">{{ t.call }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="instagram" label="Instagram" variant="outline" href="https://instagram.com/misaf1990" target="_blank" hint-size="44px,44px"></x-import></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" shape="soft" ratio="4/3" placeholder-label="{{ t.map }}" alt="" hint-size="100%,300px"></x-import></div>
-<div style="display:flex;flex-direction:column;gap:16px"><h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(28px,3.5cqi,36px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.fA }}</h2>
+<div style="display:flex;flex-direction:column;gap:16px"><h2>{{ t.fA }}</h2>
 <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:16px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cname" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cphone" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-ctopic" label="{{ t.topic }}" options="{{ topics }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cmsg" label="{{ t.msg }}" multiline="{{ true }}" rows="{{ 5 }}" value="{{ msg }}" on-change="{{ setMsg }}" error="{{ msgErr }}" hint-size="100%,170px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="160px,52px">{{ t.send }}</x-import></div></div></sc-if>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import></sc-if>
 </div></div></main>

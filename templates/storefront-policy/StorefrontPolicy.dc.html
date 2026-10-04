@@ -12,7 +12,68 @@
 <helmet>
 <script src="./ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
+<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}
+/* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
+.vf-page .vf-info {
+  max-width:1088px;
+  margin-inline:auto;
+  padding:var(--space-7) var(--space-5) 0;
+}
+.vf-info-header {
+  max-width:680px;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-4);
+  margin-block-end:var(--space-7);
+}
+.vf-info-eyebrow {
+  font-size:var(--text-xs);
+  font-weight:500;
+  letter-spacing:var(--tracking-eyebrow);
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+.vf-info h1, .vf-info h2 {
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:500;
+  line-height:var(--lh-tight);
+  letter-spacing:var(--tracking-display);
+  text-transform:var(--display-case);
+  text-wrap:balance;
+}
+.vf-info h1 {font-size:clamp(40px,5cqi,64px)}
+.vf-info h2 {font-size:clamp(28px,3.5cqi,36px)}
+.vf-info-intro, .vf-info-copy {
+  margin:0;
+  font-size:17px;
+  line-height:var(--lh-body);
+  color:var(--text-secondary);
+  text-wrap:pretty;
+}
+.vf-info-meta {font-size:var(--text-sm);color:var(--text-muted)}
+.vf-info-columns {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 320px;
+  gap:var(--space-7);
+  align-items:start;
+}
+.vf-info-columns--contact {grid-template-columns:repeat(2,minmax(0,1fr))}
+.vf-info-columns--policy {grid-template-columns:240px minmax(0,1fr)}
+.vf-info-sections {display:flex;flex-direction:column;gap:var(--space-7);min-width:0}
+.vf-info-section {display:flex;flex-direction:column;gap:var(--space-4);scroll-margin-top:96px}
+.vf-info-notice {margin-block-end:var(--space-7)}
+.vf-info-toc {position:sticky;top:96px;display:flex;flex-direction:column;gap:2px}
+.vf-info-toc .vf-info-eyebrow {margin-block-end:var(--space-2)}
+@media(max-width:767px) {
+  .vf-page .vf-info {padding-block-start:var(--space-6)}
+  .vf-info-header {margin-block-end:var(--space-6)}
+  .vf-info-columns {grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
+  .vf-info-sections {gap:var(--space-6)}
+  .vf-info-notice {margin-block-end:var(--space-6)}
+  .vf-info-toc {position:static}
+}
+</style>
 </helmet>
 <div style="background:var(--surface-muted);min-height:100vh">
 <div class="vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
@@ -79,11 +140,11 @@
 <div style="flex:1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" style="max-width:1240px;margin:0 auto;padding:48px 24px 0"><div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px"><div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted)">{{ t.eb }}</div><h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,5cqi,60px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ doc.title }}</h1><div style="font-size:14px;color:var(--text-muted)">{{ t.updated }}</div></div>
-<div style="margin-bottom:40px;max-width:760px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="warning" title="{{ t.sampleT }}" hint-size="100%,80px">{{ t.sampleP }}</x-import></div>
-<div style="display:flex;flex-wrap:wrap;gap:56px;align-items:flex-start">
-<nav aria-label="{{ t.toc }}" style="flex:1 1 200px;max-width:260px;position:sticky;top:96px;display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">{{ t.toc }}</div><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><a href="{{ s.href }}" style="min-height:44px;display:flex;align-items:center;font-size:15px;color:var(--text-body);text-decoration:none" style-hover="color:var(--text-accent)">{{ s.title }}</a></sc-for></nav>
-<div style="flex:999 1 420px;min-width:0;max-width:720px;display:flex;flex-direction:column;gap:40px"><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><section id="{{ s.id }}" style="display:flex;flex-direction:column;gap:12px;scroll-margin-top:96px"><h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(28px,3.5cqi,36px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ s.title }}</h2><p style="margin:0;font-size:17px;line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">{{ s.body }}</p></section></sc-for></div>
+<main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header"><div class="vf-info-eyebrow">{{ t.eb }}</div><h1>{{ doc.title }}</h1><div class="vf-info-meta">{{ t.updated }}</div></header>
+<div class="vf-info-notice"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="warning" title="{{ t.sampleT }}" hint-size="100%,80px">{{ t.sampleP }}</x-import></div>
+<div class="vf-info-columns vf-info-columns--policy">
+<nav aria-label="{{ t.toc }}" class="vf-info-toc"><div class="vf-info-eyebrow">{{ t.toc }}</div><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><a href="{{ s.href }}" style="min-height:44px;display:flex;align-items:center;font-size:15px;color:var(--text-body);text-decoration:none" style-hover="color:var(--text-accent)">{{ s.title }}</a></sc-for></nav>
+<div class="vf-info-sections"><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><section id="{{ s.id }}" class="vf-info-section"><h2>{{ s.title }}</h2><p class="vf-info-copy">{{ s.body }}</p></section></sc-for></div>
 </div></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->

@@ -14,6 +14,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
 | Footer | [_shared/footer.html](_shared/footer.html) |
+| FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
 | Shared navigation, menu labels, responsive behavior or focus | [_shared/storefront.js](_shared/storefront.js) |
 | Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
