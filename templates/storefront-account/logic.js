@@ -179,6 +179,8 @@ class Component extends VFPage {
         id,
         label: C.tabs[i]
       })),
+      tabPanelId: 'vf-account-panel-' + tab,
+      tabId: 'vf-account-tab-' + tab,
       isOrders: tab === 'orders',
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',

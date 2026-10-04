@@ -127,9 +127,11 @@ a.ag-iconbtn{text-decoration:none;box-sizing:border-box}
 .ag-toast .ag-toast__action:hover:not(:disabled){background:var(--border-inverse);color:var(--text-on-inverse)}
 .ag-toast__close{margin-inline-start:auto;background:none;border:0;color:var(--text-inverse-muted);cursor:pointer;padding:2px;display:grid;place-items:center}
 .ag-tip{position:relative;display:inline-flex}
-.ag-tip__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);background:var(--ink-900);color:var(--petal-50);font-family:var(--font-body);font-size:var(--text-xs);line-height:1.4;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);z-index:var(--z-tooltip)}
+.ag-tip__bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);background:var(--surface-inverse);color:var(--text-on-inverse);font-family:var(--font-body);font-size:var(--text-xs);line-height:1.4;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);z-index:var(--z-tooltip)}
 .ag-tip__bubble--bottom{bottom:auto;top:calc(100% + 8px)}
-.ag-tip:hover .ag-tip__bubble,.ag-tip:focus-within .ag-tip__bubble,.ag-tip--open .ag-tip__bubble{opacity:1;transform:translate(-50%,0)}
+.ag-tip:hover .ag-tip__bubble,.ag-tip:focus-within .ag-tip__bubble,.ag-tip--open .ag-tip__bubble{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.ag-tip__bubble::before{content:'';position:absolute;inset-inline:0;top:100%;height:8px}.ag-tip__bubble--bottom::before{top:auto;bottom:100%}/* bridges the gap so the pointer can move onto the bubble */
+.ag-tip.ag-tip--dismissed .ag-tip__bubble{opacity:0;pointer-events:none}
 .ag-product{position:relative;display:flex;flex-direction:column;gap:var(--space-3);font-family:var(--font-body);color:var(--text-body)}
 .ag-product--link{cursor:pointer}
 .ag-product__link{box-sizing:border-box;color:inherit;text-decoration:none;font:inherit;background:none;border:0;padding:0;margin:0;text-align:inherit;cursor:pointer}

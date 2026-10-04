@@ -1370,15 +1370,42 @@ Object.assign(__ds_scope, { Toast });
 
 // components/feedback/Tooltip.jsx
 try { (() => {
+// WCAG 1.4.13: the bubble describes its trigger (aria-describedby), stays open while the pointer is over it, and Esc dismisses it until the pointer or focus leaves.
 function Tooltip({
   content,
   placement = 'top',
   open,
   children
 }) {
+  const id = React.useId();
+  const [hover, setHover] = React.useState(false);
+  const [focus, setFocus] = React.useState(false);
+  const [dismissed, setDismissed] = React.useState(false);
+  const active = hover || focus;
+  React.useEffect(() => {
+    if (!active) return;
+    const onKey = e => {
+      if (e.key === 'Escape') setDismissed(true);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [active]);
+  React.useEffect(() => {
+    if (!active) setDismissed(false);
+  }, [active]);
+  const trigger = React.isValidElement(children) ? React.cloneElement(children, {
+    'aria-describedby': [children.props['aria-describedby'], id].filter(Boolean).join(' ')
+  }) : children;
   return /*#__PURE__*/React.createElement("span", {
-    className: 'ag-tip' + (open ? ' ag-tip--open' : '')
-  }, children, /*#__PURE__*/React.createElement("span", {
+    className: 'ag-tip' + (open ? ' ag-tip--open' : '') + (dismissed ? ' ag-tip--dismissed' : ''),
+    onMouseEnter: () => setHover(true),
+    onMouseLeave: () => setHover(false),
+    onFocus: () => setFocus(true),
+    onBlur: e => {
+      if (!e.currentTarget.contains(e.relatedTarget)) setFocus(false);
+    }
+  }, trigger, /*#__PURE__*/React.createElement("span", {
+    id: id,
     role: "tooltip",
     className: 'ag-tip__bubble' + (placement === 'bottom' ? ' ag-tip__bubble--bottom' : '')
   }, content));
@@ -2481,6 +2508,7 @@ Object.assign(__ds_scope, { Stepper });
 // components/navigation/Tabs.jsx
 try { (() => {
 // role="tablist" with a roving tabindex: only the selected tab is in the Tab order; ←/→ (mirrored in RTL), Home and End move and select.
+// With idPrefix, tabs get ids `${idPrefix}-tab-${id}` and the selected tab points at its panel `${idPrefix}-panel-${id}` (render that panel with role="tabpanel").
 function Tabs({
   items = [],
   value,
@@ -2488,6 +2516,7 @@ function Tabs({
   onChange,
   variant = 'underline',
   label,
+  idPrefix,
   className = ''
 }) {
   const [inner, setInner] = React.useState(defaultValue ?? items[0]?.id);
@@ -2519,6 +2548,8 @@ function Tabs({
     ref: el => refs.current[i] = el,
     role: "tab",
     type: "button",
+    id: idPrefix ? idPrefix + '-tab-' + it.id : undefined,
+    "aria-controls": idPrefix && sel === it.id ? idPrefix + '-panel-' + it.id : undefined,
     "aria-selected": v === it.id,
     tabIndex: sel === it.id ? 0 : -1,
     className: 'ag-tab' + (v === it.id ? ' ag-tab--active' : ''),
