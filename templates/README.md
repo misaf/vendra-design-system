@@ -6,7 +6,8 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 
 | Change | File |
 | --- | --- |
-| A page's markup or behavior | That page's `Storefront*.dc.html` |
+| A page's markup | That page's `Storefront*.dc.html` |
+| Page state and behavior | `storefront-<page>/logic.js` |
 | English/Persian page copy | `storefront-<page>/copy.js` |
 | Shared navigation labels | [_shared/translations/shell.js](_shared/translations/shell.js) |
 | Category names or shared article content | `_shared/translations/categories.js` and `journal-content.js` |
@@ -26,7 +27,10 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Shopping/form/information layout families, card alignment and mobile actions | [_shared/page-layouts.css](_shared/page-layouts.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
-| Shared navigation, menu labels, responsive behavior or focus | [_shared/storefront.js](_shared/storefront.js) |
+| Shared menus, tabs, store links and shell values | [_shared/navigation.js](_shared/navigation.js) |
+| Route registration, validation and URL helpers | [_shared/routing.js](_shared/routing.js) |
+| Responsive state, heading focus, announcements and SEO | [_shared/page-lifecycle.js](_shared/page-lifecycle.js) |
+| Storefront number and currency wrappers | [_shared/formatting.js](_shared/formatting.js) |
 | Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
 | Colors, fonts and tenant themes | `../tokens/` |
 
@@ -40,12 +44,16 @@ Open its `Storefront*.dc.html` file. Edit these clearly marked regions:
 
 - `BEGIN PAGE CONTENT` / `END PAGE CONTENT`: the page's HTML inside the shared shell.
 - `BEGIN PAGE STICKY CONTENT` / `END PAGE STICKY CONTENT`: page-specific content above the mobile tab bar.
-- `PAGE LOGIC`: editable state, validation, filtering and event handlers.
-- `GENERATED PAGE COPY`: generated from the adjacent `copy.js`; edit that source file.
 
-The `@template` description and `data-props` also belong to the page. `storefront-site` is the page router; its imports and local logic are maintained directly.
+Edit state, validation, filtering and event handlers in adjacent `logic.js`.
+Edit English/Persian labels and content in adjacent `copy.js`, and custom styles
+in `styles.css`.
 
-Do not edit `GENERATED SHELL` or `GENERATED SHARED LOGIC` sections. Their comments identify the maintained source files. Generation preserves the editable regions and page properties.
+The `@template` description and `data-props` also belong to the page. `storefront-site` is the page router; its imports are maintained directly and its behavior lives in adjacent `logic.js`.
+
+Do not edit `GENERATED SHELL`, `GENERATED SHARED LOGIC`, `GENERATED PAGE LOGIC`
+or `GENERATED PAGE COPY` sections. Their comments identify the maintained source
+files. Generation preserves the editable HTML regions and page properties.
 
 ## Generate and check
 
@@ -115,7 +123,7 @@ HTML shell and page-logic sections still regenerate into each template because t
 
 ## Adding a page
 
-Copy a similar `storefront-*` folder, rename its `.dc.html` file and change its `@template` metadata, editable content and page logic. Register its route and menu label in `_shared/storefront.js`, then add its import and `start` option in `storefront-site/StorefrontSite.dc.html`. Run the build and checks above.
+Copy a similar `storefront-*` folder, rename its `.dc.html` file and change its `@template` metadata, editable content and page logic. Register its route in `_shared/routing.js` and menu label in `_shared/translations/shell.js`; add it to the menu in `_shared/navigation.js` if needed, then add its import and `start` option in `storefront-site/StorefrontSite.dc.html`. Run the build and checks above.
 
 ## Tailwind conventions
 
@@ -149,7 +157,7 @@ sizes; other sample products use their catalog price. Unknown product IDs show t
 not-found page; the previous `ivory-classic` link remains supported.
 
 Shop URLs preserve `cat`, `sort=low|high` and comma-separated `filters=under3,same,roses`.
-The template route helpers in `_shared/storefront.js` validate these values; refresh,
+The template route helpers in `_shared/routing.js` validate these values; refresh,
 Back and language switching retain selections. Home category cards link to these filters.
 
 Demo checkout stores a received order with its own ID, items, totals, recipient,
@@ -197,10 +205,12 @@ templates/
     StorefrontProduct.dc.html
     styles.css
     copy.js
+    logic.js
   storefront-shop/
     StorefrontShop.dc.html
     styles.css
     copy.js
+    logic.js
   _shared/
     custom.css
     shell.css
@@ -209,6 +219,10 @@ templates/
     catalog.js
     delivery.js
     store-config.js
+    formatting.js
+    routing.js
+    page-lifecycle.js
+    navigation.js
     translations/
       shell.js
       categories.js
@@ -219,11 +233,11 @@ templates/
     tailwind.css
 ```
 
-Each page folder owns its markup/behavior, plain custom CSS and bilingual copy.
+Each page folder owns its markup, behavior (`logic.js`), plain custom CSS and bilingual copy.
 `copy.js` exposes `vfCopy(S)` for English/Persian labels and content. Formatting
 helpers may use shared money and delivery rules; validation decisions, filtering,
-navigation and state changes stay in page logic. The click-through site is a
-composition entry and does not need separate copy or CSS.
+navigation and state changes stay in `logic.js`. The click-through site is a
+composition entry with its own `logic.js`; it does not need separate copy or CSS.
 
 Genuinely shared data, translations and layout rules stay in `_shared`. Product
 names and descriptions stay with catalog data; store identity stays in
@@ -231,11 +245,28 @@ names and descriptions stay with catalog data; store identity stays in
 
 `_shared/custom.css` explicitly imports each adjacent `styles.css` in cascade
 order. The build produces one shared `_runtime/custom.css`. The generator reads
-each adjacent `copy.js` into its template's `GENERATED PAGE COPY` region. Edit
+each adjacent `copy.js` into its template's `GENERATED PAGE COPY` region and
+`logic.js` into `GENERATED PAGE LOGIC`. Edit
 the source files, not generated sections or runtime assets.
 
 Run `npm --prefix templates run build` after source edits, then `run check` and
-`test`. Vite watches adjacent copy/CSS files as well as shared sources. When adding
-a page, provide its `copy.js` and `styles.css`, and add the CSS import to the entry
+`test`. Vite watches adjacent logic/copy/CSS files as well as shared sources. When adding
+a page, provide its `logic.js`, `copy.js` and `styles.css`, and add the CSS import to the entry
 file. Export generated HTML and shared runtime assets; browsers do not need the
-copy/CSS source files.
+logic/copy/CSS source files.
+
+The test suite compares translation keys recursively, including nested labels and
+every list item. English/Persian text and formatting functions may differ, but
+their object keys and list structures must match.
+
+### Shared behavior ownership
+
+Keep route parsing and URL creation in `routing.js`, shell/menu values in
+`navigation.js`, and mount/update/unmount behavior in `page-lifecycle.js`.
+`formatting.js` wraps the core number/currency API for storefront callers. Shared
+labels stay in `translations/shell.js`; page behavior stays in adjacent `logic.js`.
+
+The generator assembles these files in dependency order: store configuration,
+delivery, catalog, shared translations, formatting, routing, lifecycle, navigation.
+They are embedded in the existing generated shared region; no additional browser
+requests or dependencies are introduced. Run the build and checks after editing.
