@@ -6,7 +6,10 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 
 | Change | File |
 | --- | --- |
-| A page's content, English/Persian copy or behavior | That page's `Storefront*.dc.html` |
+| A page's markup or behavior | That page's `Storefront*.dc.html` |
+| English/Persian page copy | `storefront-<page>/copy.js` |
+| Shared navigation labels | [_shared/translations/shell.js](_shared/translations/shell.js) |
+| Category names or shared article content | `_shared/translations/categories.js` and `journal-content.js` |
 | Product names, prices, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
 | Product placeholder artwork | `../assets/placeholders/product.svg` |
 | Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
@@ -19,7 +22,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Pure Tailwind entry: token aliases and utility source scanning | [_shared/tailwind.css](_shared/tailwind.css) |
 | Custom CSS entry point (plain CSS imports) | [_shared/custom.css](_shared/custom.css) |
 | Shared shell classes | [_shared/shell.css](_shared/shell.css) |
-| Named page-specific styles | [_shared/page-styles.css](_shared/page-styles.css) |
+| Named page-specific styles | `storefront-<page>/styles.css` |
 | Shopping/form/information layout families, card alignment and mobile actions | [_shared/page-layouts.css](_shared/page-layouts.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
@@ -27,7 +30,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
 | Colors, fonts and tenant themes | `../tokens/` |
 
-The catalog and delivery rules contain sample store data. Keep page-specific translations with the page; shared navigation labels belong in `storefront.js`.
+The catalog and delivery rules contain sample store data. Keep page copy in `storefront-<page>/copy.js`; shared navigation labels belong in `translations/shell.js`.
 
 Product images intentionally use one neutral 4:5 SVG placeholder. Cards, product views and order thumbnails read image paths from the catalog. For a real store, change each product's `image` path there and keep matching crops. Image paths resolve against the design-system root configured once in `_runtime/ds-base.js`.
 
@@ -37,7 +40,8 @@ Open its `Storefront*.dc.html` file. Edit these clearly marked regions:
 
 - `BEGIN PAGE CONTENT` / `END PAGE CONTENT`: the page's HTML inside the shared shell.
 - `BEGIN PAGE STICKY CONTENT` / `END PAGE STICKY CONTENT`: page-specific content above the mobile tab bar.
-- `PAGE LOGIC`: the page's translations, state and event handlers.
+- `PAGE LOGIC`: editable state, validation, filtering and event handlers.
+- `GENERATED PAGE COPY`: generated from the adjacent `copy.js`; edit that source file.
 
 The `@template` description and `data-props` also belong to the page. `storefront-site` is the page router; its imports and local logic are maintained directly.
 
@@ -121,7 +125,7 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Spacing numbers follow Vendra’s token scale: `tw:gap-5` means `--space-5` (24px), and `tw:gap-7` means `--space-7` (48px). They are not Tailwind’s default spacing numbers.
 - Colors, fonts and line heights resolve from the current tenant and language wrapper. For example, `tw:bg-page`, `tw:text-body` and `tw:font-body` use existing semantic tokens.
 - Prefer logical spacing such as `tw:ps-4` / `tw:pe-4` for RTL support. Write complete class names in source; do not construct them from string fragments.
-- Keep repeated page patterns in readable named classes. `custom.css` imports `shell.css`, `information-pages.css`, `page-layouts.css` and `page-styles.css`. These files use plain CSS and `vf-` class names, without `@apply` or Tailwind compilation.
+- Keep repeated page patterns in readable named classes. `custom.css` imports `shell.css`, `information-pages.css`, `page-layouts.css` and page-specific `styles.css` files. These files use plain CSS and `vf-` class names, without `@apply` or Tailwind compilation.
 - Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
 - Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
 
@@ -184,3 +188,54 @@ The loader includes design-system styles, Tailwind utilities and custom CSS in t
 order, and deduplicates all three. Export `_runtime/custom.css` alongside the other
 shared runtime assets. The build assembles custom CSS independently from Tailwind,
 and the check command verifies both outputs. Vite watches both source sets.
+
+### Keep each page's sources together
+
+```text
+templates/
+  storefront-product/
+    StorefrontProduct.dc.html
+    styles.css
+    copy.js
+  storefront-shop/
+    StorefrontShop.dc.html
+    styles.css
+    copy.js
+  _shared/
+    custom.css
+    shell.css
+    page-layouts.css
+    information-pages.css
+    catalog.js
+    delivery.js
+    store-config.js
+    translations/
+      shell.js
+      categories.js
+      time.js
+      journal-content.js
+  _runtime/
+    custom.css
+    tailwind.css
+```
+
+Each page folder owns its markup/behavior, plain custom CSS and bilingual copy.
+`copy.js` exposes `vfCopy(S)` for English/Persian labels and content. Formatting
+helpers may use shared money and delivery rules; validation decisions, filtering,
+navigation and state changes stay in page logic. The click-through site is a
+composition entry and does not need separate copy or CSS.
+
+Genuinely shared data, translations and layout rules stay in `_shared`. Product
+names and descriptions stay with catalog data; store identity stays in
+`store-config.js`. Journal and post include the shared `journal-content.js`.
+
+`_shared/custom.css` explicitly imports each adjacent `styles.css` in cascade
+order. The build produces one shared `_runtime/custom.css`. The generator reads
+each adjacent `copy.js` into its template's `GENERATED PAGE COPY` region. Edit
+the source files, not generated sections or runtime assets.
+
+Run `npm --prefix templates run build` after source edits, then `run check` and
+`test`. Vite watches adjacent copy/CSS files as well as shared sources. When adding
+a page, provide its `copy.js` and `styles.css`, and add the CSS import to the entry
+file. Export generated HTML and shared runtime assets; browsers do not need the
+copy/CSS source files.
