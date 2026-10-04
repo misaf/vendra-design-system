@@ -1,0 +1,57 @@
+<!-- @dsCard group="Storefront" viewport="1200x2000" name="Order notifications" subtitle="SMS + WhatsApp per order status — English left, Persian right" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Order notifications</title><link rel="stylesheet" href="../../styles.css">
+<script src="../../templates/_vendor/react.production.min.js"></script>
+<script src="../../templates/_vendor/react-dom.production.min.js"></script>
+<script src="../../templates/_vendor/babel.min.js"></script>
+<script src="notifications.js"></script>
+<style>body{margin:0;padding:24px 28px;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body)}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}
+.top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}.top h1{margin:0;font-family:var(--font-display);font-weight:500;font-size:32px;line-height:1.15}.top p{margin:6px 0 0;max-width:560px;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty}
+.ctl{display:flex;gap:20px;flex-wrap:wrap}.ctl label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.seg{display:inline-flex;gap:4px;background:var(--surface-sunken);padding:4px;border-radius:999px}.seg button{border:0;background:none;font:inherit;font-size:14px;padding:8px 16px;border-radius:999px;color:var(--text-muted);cursor:pointer;min-height:36px}.seg button[aria-checked="true"]{background:var(--surface-card);color:var(--text-body);box-shadow:var(--shadow-sm);font-weight:500}.seg button:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.side{display:flex;flex-direction:column;gap:8px;min-width:0}.lk{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:500}
+.ev{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ev h2{margin:0;font-size:15px;font-weight:500;display:flex;gap:8px;align-items:center}.ev h2 span{font-size:11px;font-weight:400;color:var(--text-muted);font-family:ui-monospace,Menlo,monospace}.when{font-size:13px;color:var(--text-muted);margin:-6px 0 0}
+.thread{background:var(--surface-sunken);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;gap:6px}.thread--wa{background:color-mix(in srgb,var(--leaf-100) 70%,var(--surface-sunken))}
+.from{font-size:11px;color:var(--text-muted)}.bub{max-width:88%;align-self:flex-start;background:var(--surface-card);color:var(--text-body);padding:9px 12px;border-radius:14px;border-start-start-radius:4px;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:var(--shadow-sm)}.bub time{display:block;text-align:end;font-size:10px;color:var(--text-muted);margin-top:2px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}.pill{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--surface-sunken);color:var(--text-secondary)}.pill--warn{background:var(--warning-soft);color:var(--text-body)}
+details summary{font-size:12px;color:var(--text-muted);cursor:pointer}details pre{margin:8px 0 0;padding:10px;background:var(--surface-sunken);border-radius:8px;font-size:12px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,Menlo,monospace}
+.rules{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;font-size:13px;line-height:1.55;color:var(--text-secondary)}.rules b{display:block;color:var(--text-body);font-weight:500;margin-bottom:2px}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const N=window.AG_NOTIFY;
+const LABEL={received:'Order received',paid:'Payment confirmed',ready:'Ready — photo',onway:'On its way',delivered:'Delivered',delayed:'Running late',cancelled:'Cancelled',reminder:'Occasion reminder'};
+// SAMPLE values — the backend fills these from the order / reminder record.
+const VARS={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Mehr (1 Oct)',slot:'9:00-12:00',amount:'2,400,000 Toman',recipient:'Mina',time:'10:40',link:'vendra.ir/o/10522',remLink:'vendra.ir/r',wa:'0912 564 9438',name:'Mum',occasion:'birthday'},
+ fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۹ مهر',slot:'۹ تا ۱۲',amount:'۲٬۴۰۰٬۰۰۰ تومان',recipient:'مینا',time:'10:40',link:'vendra.ir/o/10522',remLink:'vendra.ir/r',wa:'0912 564 9438',name:'مامان',occasion:'تولد'}};
+const KEY='vendra-notify-card';
+function Seg({value,set,opts,label}){return <div><label id={label}>{label}</label><div className="seg" role="radiogroup" aria-labelledby={label}>{opts.map(([v,l])=><button key={v} role="radio" aria-checked={value===v} onClick={()=>set(v)}>{l}</button>)}</div></div>;}
+const waHtml=s=>s.split(/(\*[^*\n]+\*)/g).map((p,i)=>p.startsWith('*')&&p.endsWith('*')?<strong key={i}>{p.slice(1,-1)}</strong>:p);
+function App(){
+  const saved=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}})();
+  const [ch,setCh]=React.useState(saved.ch||'sms');
+  React.useEffect(()=>{try{localStorage.setItem(KEY,JSON.stringify({ch}));}catch(e){}},[ch]);
+  return <>
+    <div className="top"><div><h1>Order notifications</h1><p>Every message uses the customer’s <b>account language</b> (Account → Profile). Switching language from the site menu never changes their messages. English left, Persian right.</p></div>
+      <div className="ctl"><Seg label="Channel" value={ch} set={setCh} opts={[['sms','SMS'],['wa','WhatsApp']]}/></div></div>
+    <div className="grid">{N.events.map(e=>
+      <section key={e} className="ev" aria-labelledby={'h-'+e}>
+        <h2 id={'h-'+e}>{LABEL[e]}<span>{e}</span></h2><p className="when">{N.templates.en[e].when}</p>
+        <div className="pair">{['en','fa'].map(lang=>{const r=N.render(e,{preferredLocale:lang},VARS[lang],ch);const tp=N.templates[lang][e];const s=r.sms;const dir=lang==='fa'?'rtl':'ltr';
+          return <div key={lang} className="side" lang={lang} dir={dir}>
+            <div className="lk">{lang==='fa'?'فارسی':'English'}</div>
+            <div className={'thread'+(ch==='wa'?' thread--wa':'')}>
+              <div className="from">{ch==='wa'?(lang==='fa'?'وندرا · واتساپ':'Vendra · WhatsApp'):(lang==='fa'?'وندرا':'Vendra')}</div>
+              <div className="bub">{ch==='wa'?waHtml(r.text):r.text}<time>{lang==='fa'?'۱۰:۴۲':'10:42'}</time></div>
+            </div>
+            <div className="meta" dir="ltr">{s?<><span className="pill">{s.chars} chars</span><span className={'pill'+(s.parts>2?' pill--warn':'')}>{s.parts} SMS part{s.parts>1?'s':''}</span><span className="pill">{s.encoding}</span></>:<span className="pill">*bold* renders · no limit</span>}</div>
+            <details><summary>{lang==='fa'?'قالب':'Template'}</summary><pre>{tp[ch]}</pre></details>
+          </div>;})}</div>
+      </section>)}</div>
+    <div className="rules">
+      <div><b>Which language</b>The account’s <code>preferredLocale</code>, set in Profile. Guests: the page language at checkout. Neither → Persian.</div>
+      <div><b>Numbers</b>Persian messages use Persian digits for dates, times and amounts. Order numbers, links and phone numbers stay Latin so they can be tapped and searched.</div>
+      <div><b>SMS length</b>English stays in GSM-7 (160 per part): straight quotes, no dashes or emoji. Persian is UCS-2 (70 per part, 67 when split) — keep it to 2 parts.</div>
+      <div><b>Reminders</b>Promotional, so they carry an opt-out (“Reply STOP” / «لغو۱۱»). Order messages are transactional and don’t.</div>
+    </div>
+  </>;}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

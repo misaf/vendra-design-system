@@ -1,0 +1,6 @@
+function MobileNav({lang,route,go,bagCount,setCat}){
+  const {BottomTabBar}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const C=AG_DATA.contact;
+  const L=AG_NAV.link;const items=[['home','house',lang==='fa'?'خانه':'Home',L,AG_NAV.href('home')],['shop','layout-grid',T.nav[0],L,AG_NAV.href('shop')],['wa','message-circle',lang==='fa'?'واتس‌اپ':'WhatsApp',undefined,C.wa,'_blank'],['bag','shopping-bag',lang==='fa'?'سبد':'Bag',L,AG_NAV.href('bag')],['account','user',lang==='fa'?'حساب':'Account',L,AG_NAV.href('account')]];
+  return <div style={{position:'fixed',insetInline:0,bottom:0,zIndex:60}}><BottomTabBar label={lang==='fa'?'منوی اصلی':'Main'} items={items.map(([id,icon,label,onClick,href,target])=>({id,icon,label,onClick,href,target,current:route===id||(id==='shop'&&route==='product')||(id==='account'&&route==='track'),count:id==='bag'&&bagCount>0?AG_DATA.num(bagCount,lang):undefined}))}/></div>;
+}
+window.MobileNav=MobileNav;

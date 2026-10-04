@@ -1,0 +1,108 @@
+function OtpInput({value,onChange,len=5}){
+  const refs=React.useRef([]);
+  const set=(i,v)=>{v=v.replace(/[^0-9۰-۹]/g,'').slice(-1);const a=value.split('');a[i]=v;const n=a.join('').slice(0,len);onChange(n);if(v&&i<len-1)refs.current[i+1].focus();};
+  return <div dir="ltr" style={{display:'flex',gap:10,justifyContent:'center'}}>{Array.from({length:len}).map((_,i)=><input key={i} ref={el=>refs.current[i]=el} value={value[i]||''} onChange={e=>set(i,e.target.value)} onKeyDown={e=>{if(e.key==='Backspace'&&!value[i]&&i>0)refs.current[i-1].focus();}} inputMode="numeric" autoComplete={i===0?'one-time-code':'off'} aria-label={'Digit '+(i+1)} style={{width:52,height:60,textAlign:'center',fontSize:24,fontFamily:'var(--font-body)',color:'var(--text-body)',background:'var(--surface-card)',border:'1px solid '+(value[i]?'var(--border-strong)':'var(--border-default)'),borderRadius:'var(--radius-sm)',outline:'none'}}/>)}</div>;
+}
+function Login({lang,onDone}){
+  const {Button,Input,Icon}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile}=useBP();
+  const [step,setStep]=React.useState('phone');useHeadingFocus(step);const [phone,setPhone]=React.useState('0912 564 9438');const [code,setCode]=React.useState('');const [sec,setSec]=React.useState(60);
+  React.useEffect(()=>{if(step!=='code')return;setSec(60);const t=setInterval(()=>setSec(s=>s>0?s-1:0),1000);return()=>clearInterval(t);},[step]);
+  const n=v=>AG_DATA.num(v,lang);
+  return <main id="main" style={{maxWidth:440,margin:'0 auto',padding:mobile?'40px 16px':'88px var(--gutter)',textAlign:'center'}}>
+    {!document.documentElement.dataset.tenant&&<img src={lang==='fa'?'../../assets/logo-mark-fa.png':'../../assets/logo-mark.png'} alt="" style={{height:56,marginBottom:20}}/>}
+    {step==='phone'?<>
+      <h1 className="ag-display" style={{fontSize:mobile?36:48,margin:'0 0 10px'}}>{T.signIn}</h1>
+      <p style={{color:'var(--text-secondary)',margin:'0 0 28px'}}>{T.signInP}</p>
+      <div style={{textAlign:'start',marginBottom:20}}><Input label={T.mobile} value={phone} onChange={e=>setPhone(e.target.value)} dir="ltr" type="tel" inputMode="tel" autoComplete="tel" iconStart="smartphone"/></div>
+      <Button block size="lg" disabled={phone.replace(/\D/g,'').length<10} onClick={()=>setStep('code')}>{T.sendCode}</Button>
+    </>:<>
+      <h1 className="ag-display" style={{fontSize:mobile?36:48,margin:'0 0 10px'}}>{T.codeTitle}</h1>
+      <p style={{color:'var(--text-secondary)',margin:'0 0 28px'}}>{T.codeP.split('{p}')[0]}<span dir="ltr" style={{color:'var(--text-body)',fontWeight:500}}>{phone}</span>{T.codeP.split('{p}')[1]}</p>
+      <OtpInput value={code} onChange={setCode}/>
+      <div style={{margin:'24px 0'}}><Button block size="lg" disabled={code.length<5} onClick={()=>onDone(phone)}>{T.verify}</Button></div>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:14,gap:12}}>
+        <a href="#" onClick={e=>{e.preventDefault();setStep('phone');setCode('');}}>{T.changeNum}</a>
+        {sec>0?<span style={{color:'var(--text-muted)'}}>{T.resendIn.replace('{s}',n(sec))}</span>:<a href="#" onClick={e=>{e.preventDefault();setSec(60);}}>{T.resend}</a>}
+      </div>
+    </>}
+  </main>;
+}
+const acctKey=p=>'ag-account:'+AG_DATA.toLatin(String(p||'')).replace(/\D/g,'');
+// Account data is saved per phone number, so it comes back after signing out and in again. New numbers start from the SAMPLE account.
+// Account language (profile.locale) is the customer's setting: the site opens in it after sign-in, and every message, receipt and reminder uses it.
+// The header language switch only changes what they're viewing right now — it never changes profile.locale.
+const acctLocale=()=>{const ok=l=>l==='en'||l==='fa';try{const U=AG_DATA.account.user;const p=localStorage.getItem('ag-account-phone')||U.phone;const s=JSON.parse(localStorage.getItem(acctKey(p))||'null');const l=s&&s.profile&&s.profile.locale;return ok(l)?l:ok(U.locale)?U.locale:null;}catch(e){return null;}};
+window.AG_ACCOUNT={locale:acctLocale};
+const loadAcct=p=>{try{const s=JSON.parse(localStorage.getItem(acctKey(p))||'null');if(s&&s.addresses)return s;}catch(e){}const A=AG_DATA.account;return {addresses:A.addresses,reminders:A.reminders,profile:{name:null,email:'',sms:true}};};
+function OrderCard({lang,o}){
+  const {Button,Badge,Card,ArchFrame}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile}=useBP();const DT=AG_DATES;
+  const count=o.items.reduce((s,i)=>s+i.qty,0);const key=AG_DATA.orderKey(o);const closed=key==='delivered'||key==='cancelled';
+  return <Card padding={mobile?16:20} style={{display:'flex',flexDirection:'column',gap:14,minWidth:0}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:12}}>
+      <div style={{minWidth:0}}><div style={{fontWeight:500}}>{T.orderNo} <span dir="ltr">{o.id}</span></div><div style={{fontSize:13,color:'var(--text-muted)'}}>{DT.fullDate(DT.fromIso(o.placed),DT.locale(lang,lang==='fa'?'j':'g'))} · {AG_DATA.num(count,lang)} {T.items2}</div></div>
+      <Badge tone={AG_DATA.statusTone[key]}>{T.status[key]}</Badge>
+    </div>
+    <div style={{display:'flex',gap:8}}>{o.items.map(it=>{const p=AG_DATA.products.find(x=>x.id===it.id);return <ArchFrame key={it.id} size="thumb" tone="product" src={p.image} alt={p[lang]} style={{width:56}}/>;})}</div>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,borderTop:'1px solid var(--border-subtle)',paddingTop:14,flexWrap:'wrap'}}>
+      <span style={{fontWeight:500}}>{AG_DATA.money(AG_DATA.orderTotal(o),lang)}</span>
+      <Button size="sm" variant={closed?'secondary':'primary'} iconEnd="arrow-right" href={AG_NAV.href('track',o.id)} onClick={AG_NAV.link}>{closed?T.viewOrder:T.track}</Button>
+    </div>
+  </Card>;
+}
+function Account({lang,setLang,go,signedIn,setSignedIn}){
+  const {Tabs,Button,Input,Select,Switch,Dialog,AddressCard,Toast,ChoiceGroup,ChoiceTile}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile}=useBP();
+  const A=AG_DATA.account;const Z=AG_DATA.delivery.IR.zones;
+  const [phone,setPhone]=React.useState(()=>localStorage.getItem('ag-account-phone')||A.user.phone);
+  const [acct,setAcct]=React.useState(()=>loadAcct(phone));
+  React.useEffect(()=>{if(signedIn){localStorage.setItem('ag-account-phone',phone);localStorage.setItem(acctKey(phone),JSON.stringify(acct));}},[acct,signedIn,phone]);
+  const [tab,setTab]=React.useState('orders');const [toast,setToast]=React.useState('');const flash=m=>{setToast(m);setTimeout(()=>setToast(''),2400);};
+  const [form,setForm]=React.useState(null);const [errs,setErrs]=React.useState({});
+  const [prof,setProf]=React.useState(null);const [pErr,setPErr]=React.useState('');
+  const tx=v=>v==null?'':typeof v==='string'?v:(v[lang]||v.en);
+  const profile={name:acct.profile.name??A.user.name[lang],email:acct.profile.email||'',sms:acct.profile.sms!==false,locale:acct.profile.locale||lang};
+  const pf=prof||profile;
+  if(!signedIn)return <Login lang={lang} onDone={p=>{localStorage.setItem('ag-account-phone',p);setPhone(p);const a=loadAcct(p);if(!a.profile.locale)a.profile={...a.profile,locale:lang};setAcct(a);setSignedIn(true);if(setLang&&a.profile.locale!==lang)setLang(a.profile.locale);}}/>;
+  const addrs=acct.addresses;const setAddrs=f=>setAcct(a=>({...a,addresses:typeof f==='function'?f(a.addresses):f}));
+  const zoneName=id=>{const z=Z.find(x=>x.id===id);return z?z[lang].split(' (')[0]:'';};
+  const openAddr=a=>{setErrs({});setForm(a?{id:a.id,label:tx(a.label),zone:a.zone,line:tx(a.line),recipient:tx(a.recipient),phone:a.phone}:{id:null,label:'',zone:Z[0].id,line:'',recipient:profile.name,phone:''});};
+  const fset=k=>({value:form[k],onChange:e=>{setForm({...form,[k]:e.target.value});if(errs[k])setErrs({...errs,[k]:undefined});},error:errs[k]});
+  const saveAddr=()=>{const e={};if(form.line.trim().length<6)e.line=T.addrErr;if(AG_DATA.toLatin(form.phone).replace(/\D/g,'').length<10)e.phone=T.phoneErr;setErrs(e);
+    if(Object.keys(e).length){AG_NAV.focusFirstInvalid(document.querySelector('[role="dialog"]'));return;}
+    const lab=form.label.trim()||T.addrDefault;const rec={label:lab,zone:form.zone,line:form.line.trim(),recipient:form.recipient.trim(),phone:form.phone.trim()};
+    setAddrs(list=>form.id?list.map(x=>x.id===form.id?{...x,...rec}:x):[...list,{...rec,id:'a'+Date.now(),isDefault:list.length===0}]);setForm(null);flash(T.addrSaved);};
+  const delAddr=a=>{setAddrs(list=>{const rest=list.filter(x=>x.id!==a.id);return a.isDefault&&rest.length&&!rest.some(x=>x.isDefault)?rest.map((x,i)=>({...x,isDefault:i===0})):rest;});flash(T.addrDeleted);setTimeout(()=>{const b=document.getElementById('addr-add');b&&b.focus();},30);};
+  const saveProfile=()=>{if(pf.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(pf.email.trim())){setPErr(T.emailErr);AG_NAV.focusFirstInvalid();return;}setAcct(a=>({...a,profile:{name:pf.name,email:pf.email.trim(),sms:pf.sms,locale:pf.locale}}));setProf(null);flash(T.savedOk);if(setLang&&pf.locale!==lang)setLang(pf.locale);};
+  const first=(profile.name||'').split(' ')[0];
+  return <main id="main" style={{maxWidth:880,margin:'0 auto',padding:mobile?'24px 16px 0':'56px var(--gutter) 0'}}>
+    <div className="ag-eyebrow">{T.account}</div>
+    <h1 className="ag-display" style={{fontSize:mobile?38:56,margin:'8px 0 24px'}}>{first?T.hello.replace('{n}',first):T.helloAnon}</h1>
+    <div style={{marginBottom:24,maxWidth:'100%',overflowX:'auto'}}><Tabs variant="pill" items={[{id:'orders',label:T.orders},{id:'addresses',label:T.addresses},{id:'reminders',label:T.reminders},{id:'profile',label:T.profile}]} value={tab} onChange={setTab}/></div>
+    {tab==='orders'&&(A.orders.length?<div style={{display:'grid',gridTemplateColumns:mobile?'minmax(0,1fr)':'repeat(2,minmax(0,1fr))',gap:16}}>{A.orders.map(o=><OrderCard key={o.id} lang={lang} o={o}/>)}</div>:<p style={{color:'var(--text-secondary)'}}>{T.noOrders} {T.noOrdersP}</p>)}
+    {tab==='addresses'&&<div style={{display:'grid',gridTemplateColumns:mobile?'minmax(0,1fr)':'repeat(2,minmax(0,1fr))',gap:16}}>
+      {addrs.map(a=>{const lab=tx(a.label);return <AddressCard key={a.id} label={lab} line={tx(a.line)} recipient={tx(a.recipient)} phone={a.phone} zone={zoneName(a.zone)} isDefault={a.isDefault}
+        onEdit={()=>openAddr(a)} onDelete={()=>delAddr(a)} onMakeDefault={()=>setAddrs(list=>list.map(x=>({...x,isDefault:x.id===a.id})))}
+        labels={{edit:T.editN,delete:T.delN,default:T.default,makeDefault:T.makeDefault}}/>;})}
+      <button id="addr-add" type="button" onClick={()=>openAddr(null)} style={{minHeight:140,border:'1.5px dashed var(--border-default)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--text-secondary)',font:'500 15px var(--font-body)',cursor:'pointer'}}>+ {T.addAddress}</button>
+    </div>}
+    {tab==='reminders'&&<Reminders lang={lang} list={acct.reminders} setList={r=>setAcct(a=>({...a,reminders:r}))}/>}
+    {tab==='profile'&&<div style={{display:'flex',flexDirection:'column',gap:18,maxWidth:440}}>
+      <Input id="pf-name" label={T.name} value={pf.name} onChange={e=>setProf({...pf,name:e.target.value})} autoComplete="name"/>
+      <Input id="pf-mobile" label={T.mobile} value={phone} dir="ltr" disabled hint={T.mobileHint}/>
+      <Input id="pf-email" label={T.email} type="email" dir="ltr" autoComplete="email" placeholder="name@example.com" value={pf.email} onChange={e=>{setPErr('');setProf({...pf,email:e.target.value});}} error={pErr||undefined}/>
+      <ChoiceGroup legend={T.acctLang} hint={T.acctLangHint} columns={2}>{[['fa','فارسی'],['en','English']].map(([v,l])=><ChoiceTile key={v} label={<span lang={v} dir={v==='fa'?'rtl':'ltr'}>{l}</span>} selected={pf.locale===v} onSelect={()=>setProf({...pf,locale:v})}/>)}</ChoiceGroup>
+
+      <div style={{display:'flex',gap:12,marginTop:8,flexWrap:'wrap'}}><Button onClick={saveProfile}>{T.save}</Button><Button variant="ghost" iconStart="log-out" onClick={()=>{setSignedIn(false);go('home');}}>{T.signOut}</Button></div>
+    </div>}
+    <Dialog open={!!form} title={form&&form.id?T.editAddress:T.addAddress} onClose={()=>setForm(null)} footer={<><Button variant="ghost" onClick={()=>setForm(null)}>{T.cancel}</Button><Button onClick={saveAddr}>{T.save}</Button></>}>
+      {form&&<div style={{display:'flex',flexDirection:'column',gap:14,paddingTop:8}}>
+        <Input id="ad-label" label={T.label} placeholder={T.labelPh} value={form.label} onChange={e=>setForm({...form,label:e.target.value})}/>
+        <Select id="ad-zone" label={T.zone} value={form.zone} onChange={e=>setForm({...form,zone:e.target.value})} options={Z.map(z=>({value:z.id,label:z[lang]}))}/>
+        <Input id="ad-line" label={T.address} multiline rows={2} autoComplete="street-address" {...fset('line')}/>
+        <Input id="ad-rec" label={T.recipient} autoComplete="name" value={form.recipient} onChange={e=>setForm({...form,recipient:e.target.value})}/>
+        <Input id="ad-phone" label={T.phone} dir="ltr" type="tel" inputMode="tel" autoComplete="tel" {...fset('phone')}/>
+      </div>}
+    </Dialog>
+    {toast&&<div style={{position:'fixed',bottom:mobile?72:24,insetInline:mobile?'12px':'auto 24px',zIndex:120}}><Toast title={toast} onClose={()=>setToast('')} style={mobile?{width:'100%'}:undefined}/></div>}
+  </main>;
+}
+window.Account=Account;

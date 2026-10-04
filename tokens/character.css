@@ -1,0 +1,8 @@
+/* Character tokens — the shape and voice a tenant theme may change. Defaults = Vendra Florist. */
+:root{
+--radius-control:var(--radius-pill);/* buttons, tags, badges, steppers, pill tabs, language switch, header links */
+--button-case:none;/* @kind other */
+--display-case:none;/* @kind other */
+--accent-font-style:italic;/* @kind other */
+--accent-font-weight:400;/* @kind font */
+}

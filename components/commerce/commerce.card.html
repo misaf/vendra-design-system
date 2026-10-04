@@ -1,0 +1,39 @@
+<!-- @dsCard group="Components" viewport="1440x1720" name="Commerce" subtitle="ProductCard, CategoryCard, BlogCard, Gallery, PaymentCard, LineItem — English left, Persian right" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="../../templates/_vendor/react.production.min.js"></script>
+<script src="../../templates/_vendor/react-dom.production.min.js"></script>
+<script src="../../templates/_vendor/babel.min.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;padding:20px 24px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.split>div{min-width:0;display:flex;flex-direction:column;gap:20px}.lh{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:500;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)}.k{font-size:11px;color:var(--ink-500);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}[lang="fa"] .k{letter-spacing:0;font-size:12px}.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { ProductCard, CategoryCard, BlogCard, Gallery, PaymentCard, LineItem } = window.VendraDesignSystem_f4f210;
+const P='../../assets/placeholder-studio.svg',PH='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
+const fa=n=>n.toLocaleString('fa-IR');
+const T={
+en:{h:'English',dig:n=>n.toLocaleString('en-US'),cur:'Toman',
+ p:[['Lavender Whisper','Peach, pink & violet roses',2400000,null,'New','accent'],['Pampas & Rust','Dried · lasts a year',490000,560000,'Dried','ochre'],['Garden Rose','Fresh · 12 stems',3100000,null,'Seasonal','sage']],
+ kb:'BlogCard · CategoryCard',b:[['24 Sep 2026','A morning at the Vendra workbench','Buckets arrive at seven, the first bouquets leave by ten.'],['Flower care','18 Sep 2026','4 min read','Five small habits that make a bouquet last','Fresh water, a sharp cut and a cool corner.']],
+ cat:['Orchids','12 designs'],kg:'Gallery',gl:'Photos',kp:'PaymentCard',pay:{holder:'Vendra Florist',bank:'Melli',card:'6037991234567890'},labels:undefined,
+ kl:'LineItem · lg / sm',li:['Lavender Whisper','Classic','Card: “Happy birthday, Sara”'],sm:[['Ivory Rib Box',4100000,2],['Strelitzia',1800000,1]]},
+fa:{h:'فارسی',dig:fa,cur:'تومان',
+ p:[['زمزمهٔ اسطوخودوس','رز هلویی، صورتی و بنفش',2400000,null,'جدید','accent'],['پامپاس و زنگار','خشک · ماندگاری یک‌ساله',490000,560000,'خشک','ochre'],['رز باغی','تازه · ۱۲ شاخه',3100000,null,'فصلی','sage']],
+ kb:'کارت مقاله · کارت دسته',b:[['۲ مهر ۱۴۰۵','صبحی پشت میز کار وندرا','سطل‌ها ساعت هفت می‌رسند و اولین دسته‌گل‌ها تا ده راهی می‌شوند.'],['نگهداری گل','۲۷ شهریور ۱۴۰۵','۴ دقیقه مطالعه','پنج عادت کوچک برای ماندگاری دسته‌گل','آب تازه، برش تیز و گوشه‌ای خنک.']],
+ cat:['ارکیده','۱۲ طرح'],kg:'گالری',gl:'عکس‌ها',kp:'کارت پرداخت',pay:{holder:'گل‌فروشی وندرا',bank:'ملی',card:'۶۰۳۷۹۹۱۲۳۴۵۶۷۸۹۰'},labels:{card:'شماره کارت',holder:'به نام',bank:'بانک',amount:'مبلغ',copy:'کپی',copied:'کپی شد'},
+ kl:'ردیف سبد · بزرگ / کوچک',li:['زمزمهٔ اسطوخودوس','کلاسیک','کارت: «تولدت مبارک، سارا»'],sm:[['باکس عاج',4100000,2],['استرلیتزیا',1800000,1]]}};
+function Side({l}){const t=T[l];const m=n=>t.dig(n)+' '+t.cur;const [fav,setFav]=React.useState(true);const [q,setQ]=React.useState(1);const [b1,b2]=t.b;
+return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefined}><div className="lh">{t.h}</div>
+<div className="g3">{t.p.map(([n,s,pr,cmp,bd,tone],i)=><ProductCard key={n} href={'?lang='+l+'&view=product'} onClick={pd} frame={i===2?'soft':undefined} name={n} subtitle={s} price={m(pr)} compareAt={cmp?m(cmp):undefined} badge={bd} badgeTone={tone} images={i===0?[P,{src:P,crop:'50% 30%'}]:undefined} image={i?P:undefined} favorite={i===0?fav:undefined} onFavorite={i===0?()=>setFav(!fav):()=>{}}/>)}</div>
+<div><div className="k">{t.kb}</div><div className="g3">
+<BlogCard image={PH} date={b1[0]} title={b1[1]} excerpt={b1[2]} onClick={()=>{}}/>
+<BlogCard frame="soft" aspect="4/3" image={PH} meta={<><span style={{color:'var(--text-accent)',fontWeight:500}}>{b2[0]}</span><span aria-hidden="true">·</span><span>{b2[1]}</span><span aria-hidden="true">·</span><span>{b2[2]}</span></>} title={b2[3]} excerpt={b2[4]} onClick={()=>{}}/>
+<CategoryCard label={t.cat[0]} count={t.cat[1]} image={PH} href={'?lang='+l+'&view=shop&cat=orchids'} onClick={pd}/>
+</div></div>
+<div style={{display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:20,alignItems:'start'}}>
+<div><div className="k">{t.kg}</div><Gallery label={t.gl} images={[1,2,3].map(n=>({src:P,alt:t.gl+' '+t.dig(n)}))}/></div>
+<div><div className="k">{t.kp}</div><PaymentCard cardNumber={t.pay.card} holder={t.pay.holder} bank={t.pay.bank} amount={m(4600000)} labels={t.labels}/></div></div>
+<div><div className="k">{t.kl}</div>
+<LineItem image={P} name={t.li[0]} meta={t.li[1]+' · '+m(2400000)} note={t.li[2]} price={m(2400000*q)} quantity={q} onQuantityChange={setQ} onRemove={()=>{}} formatQuantity={l==='fa'?fa:undefined}/>
+<div style={{borderTop:'1px solid var(--border-subtle)',paddingTop:8}}>{t.sm.map(([n,p,qq])=><LineItem key={n} size="sm" image={P} name={n} price={m(p*qq)} quantity={qq} formatQuantity={l==='fa'?fa:undefined}/>)}</div></div>
+</div>;}
+ReactDOM.createRoot(document.getElementById('root')).render(<div className="split"><Side l="en"/><Side l="fa"/></div>);
+</script></body></html>

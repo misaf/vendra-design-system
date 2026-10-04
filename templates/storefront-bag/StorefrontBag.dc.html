@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Storefront bag" description="Florist bag + delivery step (EN/FA): stepper, line items, delivery form with zones and time slots, order summary, empty state" -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-mobile="true"]{max-width:390px;contain:layout}</style></helmet>
+<div style="background:var(--surface-muted);min-height:100vh">
+<div data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav style="display:flex;gap:4px;flex-wrap:wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import></nav>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;gap:4px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" on-click="{{ go.account }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="height:60px;padding:0 6px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px">
+<div style="display:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px"></x-import></div>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;justify-content:flex-end"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px"><sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="8"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="#" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import></sc-for></x-import><div style="display:flex;flex-direction:column;gap:16px;margin-top:28px"><sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)"><span>{{ t.langL }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px"></x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import></div></x-import></sc-if>
+<div style="flex:1">
+<main id="main" style="max-width:1240px;margin:0 auto;padding:48px 24px 0">
+<sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+<div style="margin-bottom:28px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 0 }}" format-number="{{ fmt }}" hint-size="100%,44px"></x-import></div>
+<h1 style="margin:0 0 32px;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,4.5cqi,56px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.titleA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.titleB }}</em></h1>
+<div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start">
+<div style="flex:999 1 480px;min-width:0;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;border-top:1px solid var(--border-subtle)">
+<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div style="border-bottom:1px solid var(--border-subtle);padding:20px 0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LineItem" size="lg" name="{{ l.name }}" meta="{{ l.meta }}" note="{{ l.note }}" price="{{ l.price }}" quantity="{{ l.qty }}" on-quantity-change="{{ l.setQty }}" on-remove="{{ l.remove }}" remove-label="{{ t.remove }}" quantity-labels="{{ qtyLabels }}" format-quantity="{{ fmt }}" hint-size="100%,96px"></x-import></div></sc-for>
+</div>
+<section style="display:flex;flex-direction:column;gap:20px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:30px;line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.delivery }}</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-name" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-phone" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="0912 000 0000" hint-size="100%,76px"></x-import>
+</div>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-zone" label="{{ t.zone }}" hint="{{ zoneHint }}" value="{{ zone }}" options="{{ zones }}" on-change="{{ setZone }}" hint-size="100%,96px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address" label="{{ t.address2 }}" autocomplete="street-address" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceGroup" legend="{{ t.slot }}" min-tile-width="{{ 130 }}" hint-size="100%,96px"><sc-for list="{{ slots }}" as="z" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceTile" size="sm" label="{{ z.label }}" selected="{{ z.on }}" on-select="{{ z.pick }}" hint-size="100%,44px"></x-import></sc-for></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-card" label="{{ t.card }}" hint="{{ t.cardHint }}" multiline="{{ true }}" rows="{{ 3 }}" hint-size="100%,140px"></x-import>
+</section>
+</div>
+<aside style="flex:1 1 380px;max-width:440px;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,320px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderSummary" title="{{ t.summary }}" lines="{{ summary }}" sums="{{ sums }}" hint-size="100%,280px"></x-import></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-end="arrow-right" on-click="{{ go.checkout }}" hint-size="100%,52px">{{ t.next }}</x-import>
+<p style="margin:0;font-size:13px;line-height:1.6;color:var(--text-muted);text-align:center">{{ t.payNote }}</p>
+</aside>
+</div>
+</sc-if>
+<sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
+<div style="padding:48px 0;display:flex;flex-direction:column;align-items:center;gap:20px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="shopping-bag" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,280px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="#" on-click="{{ restore }}" hint-size="160px,48px">{{ t.keep }}</x-import>
+</div>
+</sc-if>
+</main>
+</div>
+<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
+<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div><div>{{ t.address }}</div><div>{{ t.hours }}</div></div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div><div dir="ltr" style="text-align:start">+98 912 933 3034</div><div dir="ltr" style="text-align:start">@misaf1990</div></div>
+</div>
+</footer>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="position:sticky;bottom:0;z-index:60"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px"></x-import></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY=(n,fa)=>fa?n.toLocaleString('fa-IR')+' تومان':n.toLocaleString('en-US')+' Toman';
+const VF_SHELL={
+  en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language'},
+  fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان'}};
+// Shared page shell: language, tenant, mobile frame, nav, tabs, menu drawer, bag count + favourites (from props.store when wired by storefront-site). Call as vfShell.call(this,this.props,page).
+function vfShell(props,page){
+  const self=this;const st=(self&&self.state)||{};const store=props.store;
+  const fa=props.lang==='fa';const L=fa?'fa':'en';const T=VF_SHELL[L];const mob=!!props.mobile;
+  const tab=page==='home'?'home':page==='bag'||page==='checkout'?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
+  const G=r=>props.go?(e=>{if(e&&e.preventDefault)e.preventDefault();props.go(r);}):undefined;const go={};["account","bag","checkout","contact","home","journal","notfound","policy","post","product","saved","search","shop","signin","track","weddings"].forEach(r=>{go[r]=G(r);});
+  const close=()=>self&&self.setState({vfMenu:false});
+  const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track'};
+  const menuItems=['home','shop','weddings','journal','saved','contact','account','track'].map(r=>({label:T[r],current:cur[r],go:e=>{if(e&&e.preventDefault)e.preventDefault();close();if(props.go)props.go(r);}}));
+  const count=store?store.count:2;const favList=store?store.saved:st.vfFavs;
+  return {go,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,frameW:mob?'390px':'none',
+    nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},
+    bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
+    menuOpen:!!st.vfMenu,openMenu:()=>self&&self.setState({vfMenu:true}),closeMenu:close,menuItems,
+    hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
+    isFav:(id,def)=>(favList||def).includes(id),
+    toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
+    tabs:[{id:'home',icon:'house',label:T.home,href:'#',onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:'#',onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:'#',onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
+    n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+}
+const VF_LINES=[
+  {id:'ivory-classic',unit:4900000,qty:1,en:['Ivory ribbon box','Classic · 20 stems','“Happy birthday, Shirin.”'],fa:['باکس روبان عاجی','کلاسیک · ۲۰ شاخه','«تولدت مبارک، شیرین.»']},
+  {id:'orchid',unit:3400000,qty:1,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']}];
+const VF_ZONES=[['central',80000,'Karaj central','مرکز کرج','Same day before 18:00','ارسال همان روز تا \u2068۱۸:۰۰\u2069'],['outer',120000,'Karaj outer','حومه کرج','Same day before 16:00','ارسال همان روز تا \u2068۱۶:۰۰\u2069'],['alborz',180000,'Alborz province','استان البرز','Same day before 14:00','ارسال همان روز تا \u2068۱۴:۰۰\u2069'],['tehran',250000,'Tehran','تهران','Same day before 12:00','ارسال همان روز تا \u2068۱۲:۰۰\u2069']];
+const VF_SLOTS=[['08','12'],['12','16'],['16','20'],['20','22']];
+class Component extends DCLogic {
+  state={qty:{'ivory-classic':1,orchid:1},removed:[],zone:'central',slot:'12'};
+  renderVals() {
+    const fa=this.props.lang==='fa';const L=fa?'fa':'en';const S=vfShell.call(this,this.props,'bag');const s=this.state;const m=v=>VF_MONEY(v,fa);const n=v=>fa?VF_FA_DIGITS(v):String(v);
+    const C={en:{steps:'Checkout steps',s1:'Bag',s2:'Payment',s3:'Done',titleA:'Your',titleB:'bag.',remove:'Remove',dec:'Fewer',inc:'More',delivery:'Delivery',name:'Recipient name',phone:'Recipient phone',zone:'Delivery zone',address2:'Address',slot:'Time slot',card:'Card message',cardHint:'We write every card by hand. Up to 200 characters.',summary:'Order summary',sub:'Subtotal',fee:'Delivery',total:'Total',free:'Free',next:'Continue to payment',payNote:'Card-to-card payment on the next step. No card details are stored.',emptyA:'Your bag is empty',emptyB:'— for now.',emptyP:'Seasonal bouquets are hand-tied each morning.',keep:'Keep browsing'},
+      fa:{steps:'مراحل خرید',s1:'سبد',s2:'پرداخت',s3:'پایان',titleA:'سبد',titleB:'شما.',remove:'حذف',dec:'کمتر',inc:'بیشتر',delivery:'ارسال',name:'نام گیرنده',phone:'موبایل گیرنده',zone:'محدوده ارسال',address2:'آدرس',slot:'بازه زمانی',card:'متن کارت',cardHint:'همه کارت‌ها را با دست می‌نویسیم. تا ۲۰۰ نویسه.',summary:'خلاصه سفارش',sub:'جمع جزء',fee:'هزینه ارسال',total:'جمع کل',free:'رایگان',next:'ادامه و پرداخت',payNote:'پرداخت کارت‌به‌کارت در مرحله بعد. اطلاعات کارت ذخیره نمی‌شود.',emptyA:'سبد شما خالی است',emptyB:'— فعلاً.',emptyP:'دسته‌گل‌های فصلی هر صبح با دست بسته می‌شوند.',keep:'ادامه خرید'}}[L];
+    const st=this.props.store;const Q=id=>st?(st.bag.find(x=>x.id===id)||{qty:0}).qty:s.qty[id];const live=st?st.bag:VF_LINES.filter(l=>!s.removed.includes(l.id));
+    const sub=live.reduce((t,l)=>t+l.unit*Q(l.id),0);const z=VF_ZONES.find(x=>x[0]===s.zone);const fee=sub>=5000000&&(s.zone==='central'||s.zone==='outer')?0:z[1];
+    return {
+      ...S,t:{...S.t,...C},
+      hasItems:live.length>0,noItems:live.length===0,
+      steps:[{label:C.s1},{label:C.s2},{label:C.s3}],fmt:fa?(v=>VF_FA_DIGITS(v)):(v=>String(v)),qtyLabels:{dec:C.dec,inc:C.inc},
+      lines:live.map(l=>({name:l[L][0],meta:l[L][1]+' · '+m(l.unit),note:l[L][2],price:m(l.unit*Q(l.id)),qty:Q(l.id),setQty:q=>st?st.setQty(l.id,q):this.setState({qty:{...s.qty,[l.id]:q}}),remove:()=>st?st.remove(l.id):this.setState({removed:[...s.removed,l.id]})})),
+      zone:s.zone,setZone:e=>this.setState({zone:e.target.value}),zoneHint:fa?z[5]:z[4],
+      zones:VF_ZONES.map(x=>({value:x[0],label:(fa?x[3]:x[2])+' · '+m(x[1])})),
+      slots:VF_SLOTS.map(([a,b])=>({label:fa?'\u2068'+n(a)+':۰۰\u2069 تا \u2068'+n(b)+':۰۰\u2069':a+':00–'+b+':00',on:s.slot===a,pick:()=>this.setState({slot:a})})),
+      summary:live.map(l=>({name:l[L][0],meta:l[L][1]+' · × '+n(Q(l.id)),total:m(l.unit*Q(l.id))})),
+      sums:[{label:C.sub,value:m(sub)},{label:C.fee,value:fee?m(fee):C.free},{label:C.total,value:m(sub+fee),strong:true}],
+      restore:e=>{e&&e.preventDefault&&e.preventDefault();if(st){st.reset();return;}this.setState({removed:[],qty:{'ivory-classic':1,orchid:1}});}
+    };
+  }
+}
+
+</script>
+</body>
+</html>

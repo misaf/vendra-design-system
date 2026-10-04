@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Storefront journal" description="Journal list (EN/FA, mobile): category chips, a wide lead story, post grid" -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-mobile="true"]{max-width:390px;contain:layout}</style></helmet>
+<div style="background:var(--surface-muted);min-height:100vh">
+<div data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav style="display:flex;gap:4px;flex-wrap:wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import></nav>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;gap:4px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" on-click="{{ go.account }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="height:60px;padding:0 6px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px">
+<div style="display:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px"></x-import></div>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;justify-content:flex-end"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px"><sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="8"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="#" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import></sc-for></x-import><div style="display:flex;flex-direction:column;gap:16px;margin-top:28px"><sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)"><span>{{ t.langL }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px"></x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import></div></x-import></sc-if>
+<div style="flex:1">
+<main id="main" style="max-width:1240px;margin:0 auto;padding:48px 24px 0"><div style="display:flex;flex-direction:column;gap:20px;margin-bottom:40px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" level="h1" eyebrow="{{ t.eb }}" title="{{ t.hA }}" accent="{{ t.hB }}" hint-size="100%,96px"></x-import><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" hint-size="100px,36px">{{ c.label }}</x-import></sc-for></div></div>
+<sc-if value="{{ hasLead }}" hint-placeholder-val="{{ true }}"><div style="margin-bottom:56px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BlogCard" layout="{{ leadLayout }}" frame="arch" priority="{{ true }}" title="{{ lead.title }}" excerpt="{{ lead.excerpt }}" meta="{{ lead.meta }}" cta="{{ t.read }}" href="#" on-click="{{ go.post }}" hint-size="100%,420px"></x-import></div></sc-if>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:40px 24px"><sc-for list="{{ rest }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BlogCard" layout="stack" frame="soft" aspect="4/3" title="{{ p.title }}" excerpt="{{ p.excerpt }}" meta="{{ p.meta }}" href="#" on-click="{{ go.post }}" hint-size="100%,380px"></x-import></sc-for></div></main>
+</div>
+<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
+<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div><div>{{ t.address }}</div><div>{{ t.hours }}</div></div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div><div dir="ltr" style="text-align:start">+98 912 933 3034</div><div dir="ltr" style="text-align:start">@misaf1990</div></div>
+</div>
+</footer>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="position:sticky;bottom:0;z-index:60"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px"></x-import></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY=(n,fa)=>fa?n.toLocaleString('fa-IR')+' تومان':n.toLocaleString('en-US')+' Toman';
+const VF_SHELL={
+  en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language'},
+  fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان'}};
+// Shared page shell: language, tenant, mobile frame, nav, tabs, menu drawer, bag count + favourites (from props.store when wired by storefront-site). Call as vfShell.call(this,this.props,page).
+function vfShell(props,page){
+  const self=this;const st=(self&&self.state)||{};const store=props.store;
+  const fa=props.lang==='fa';const L=fa?'fa':'en';const T=VF_SHELL[L];const mob=!!props.mobile;
+  const tab=page==='home'?'home':page==='bag'||page==='checkout'?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
+  const G=r=>props.go?(e=>{if(e&&e.preventDefault)e.preventDefault();props.go(r);}):undefined;const go={};["account","bag","checkout","contact","home","journal","notfound","policy","post","product","saved","search","shop","signin","track","weddings"].forEach(r=>{go[r]=G(r);});
+  const close=()=>self&&self.setState({vfMenu:false});
+  const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track'};
+  const menuItems=['home','shop','weddings','journal','saved','contact','account','track'].map(r=>({label:T[r],current:cur[r],go:e=>{if(e&&e.preventDefault)e.preventDefault();close();if(props.go)props.go(r);}}));
+  const count=store?store.count:2;const favList=store?store.saved:st.vfFavs;
+  return {go,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,frameW:mob?'390px':'none',
+    nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},
+    bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
+    menuOpen:!!st.vfMenu,openMenu:()=>self&&self.setState({vfMenu:true}),closeMenu:close,menuItems,
+    hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
+    isFav:(id,def)=>(favList||def).includes(id),
+    toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
+    tabs:[{id:'home',icon:'house',label:T.home,href:'#',onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:'#',onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:'#',onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
+    n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+}
+const VF_POSTS=[
+  {id:'autumn',cat:'seasonal',en:['What’s in season this autumn','Chrysanthemums, dahlias and the last garden roses — and how to make them last.','5 min read','28 Sep 2026'],fa:['گل‌های فصل پاییز','داوودی، کوکب و آخرین رزهای باغی — و چطور بیشتر بمانند.','۵ دقیقه مطالعه','۶ مهر ۱۴۰۵']},
+  {id:'care',cat:'care',en:['Five ways to keep a bouquet fresh','Clean vase, angled stems, cool room. The small habits that add days.','3 min read','12 Sep 2026'],fa:['پنج راه برای تازه ماندن دسته‌گل','گلدان تمیز، ساقه مورب، اتاق خنک. عادت‌های کوچکی که روزها اضافه می‌کنند.','۳ دقیقه مطالعه','۲۱ شهریور ۱۴۰۵']},
+  {id:'bridal',cat:'weddings',en:['Choosing your bridal bouquet','Shape, scale and colour — a florist’s guide to the flowers you’ll hold all day.','6 min read','30 Aug 2026'],fa:['انتخاب دسته‌گل عروس','فرم، اندازه و رنگ — راهنمای گل‌فروش برای گلی که تمام روز در دست دارید.','۶ دقیقه مطالعه','۸ شهریور ۱۴۰۵']},
+  {id:'orchids',cat:'care',en:['Orchids that bloom again','Light, water and patience: how to bring a phalaenopsis back into flower.','4 min read','16 Aug 2026'],fa:['ارکیده‌ای که دوباره گل می‌دهد','نور، آب و حوصله: چطور فالانوپسیس دوباره گل بدهد.','۴ دقیقه مطالعه','۲۵ مرداد ۱۴۰۵']}];
+const VF_JCATS=[['all','All','همه'],['seasonal','Seasonal','فصلی'],['care','Flower care','نگهداری'],['weddings','Weddings','عروسی']];
+class Component extends DCLogic {
+  state={cat:'all'};
+  renderVals(){
+    const S=vfShell.call(this,this.props,'journal');const fa=S.fa;const L=S.lang;const s=this.state;
+    const C={en:{eb:'Notes from the studio',hA:'The',hB:'journal.',read:'Read the story'},fa:{eb:'یادداشت‌های استودیو',hA:'دفترچه',hB:'وندرا.',read:'خواندن مطلب'}}[L];
+    const list=VF_POSTS.filter(p=>s.cat==='all'||p.cat===s.cat).map(p=>{const c=VF_JCATS.find(x=>x[0]===p.cat);return {title:p[L][0],excerpt:p[L][1],meta:(fa?c[2]:c[1])+' · '+p[L][3]+' · '+p[L][2]};});
+    return {...S,leadLayout:S.mob?'stack':'wide',t:{...S.t,...C},cats:VF_JCATS.map(c=>({label:fa?c[2]:c[1],on:s.cat===c[0],pick:()=>this.setState({cat:c[0]})})),hasLead:list.length>0,lead:list[0]||{},rest:list.slice(1)};
+  }
+}
+
+</script>
+</body>
+</html>

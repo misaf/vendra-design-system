@@ -1,0 +1,23 @@
+// Contact copy (SAMPLE — replace with the real story)
+(()=>{const K=window.AG_KIT=window.AG_KIT||{};K.ext=K.ext||{};K.ext.pages=D=>{
+D.t.en.nav=['Shop','Weddings','Contact'];D.t.fa.nav=['فروشگاه','عروسی','تماس با ما'];
+D.navRoutes=['shop','weddings','contact'];
+D.t.en.footCols=[['Shop',['Bouquets','Flower boxes','Orchids','Houseplants']],['Vendra',['Weddings','Contact us','Track an order']]];
+D.t.fa.footCols=[['فروشگاه',['دسته‌گل','باکس گل','ارکیده','گیاهان آپارتمانی']],['وندرا',['عروسی','تماس با ما','پیگیری سفارش']]];
+D.footRoutes={'Contact us':'contact','Weddings':'weddings','عروسی':'weddings','Track an order':'track','تماس با ما':'contact','پیگیری سفارش':'track','Bouquets':'shop','Flower boxes':'shop','Orchids':'shop','Houseplants':'shop','دسته‌گل':'shop','باکس گل':'shop','ارکیده':'shop','گیاهان آپارتمانی':'shop'};
+Object.assign(D.t.en,{
+contactEb:'Contact',contactH:'Let’s talk flowers',contactP:'The quickest way to reach us is WhatsApp. For weddings and events, tell us the date and we’ll get back to you the same day.',
+chWa:'WhatsApp',chWaP:'Fastest reply · orders & questions',chPhone:'Call the studio',chPhoneP:'08:00–22:00, every day',chIg:'Instagram',chIgP:'New pieces every week',
+visitCard:'Visit the studio',openMaps:'Google Maps',openNeshan:'Neshan',
+formH:'Send a message',formP:'We usually reply within a few hours.',topic:'Topic',topics:['An order','Wedding or event','Corporate & gifting','Something else'],yourMsg:'Your message',send:'Send message',sent:'Message sent',sentP:'Thank you — we’ll reply soon.'});
+Object.assign(D.t.fa,{
+contactEb:'تماس',contactH:'بیایید از گل حرف بزنیم',contactP:'سریع‌ترین راه ارتباط، واتس‌اپ است. برای عروسی و مراسم، تاریخ را بگویید تا همان روز پاسخ بدهیم.',
+chWa:'واتس‌اپ',chWaP:'سریع‌ترین پاسخ · سفارش و سؤال',chPhone:'تماس با آتلیه',chPhoneP:'۰۸:۰۰ تا ۲۲:۰۰، همه‌روزه',chIg:'اینستاگرام',chIgP:'کارهای تازه هر هفته',
+visitCard:'آدرس آتلیه',openMaps:'گوگل مپ',openNeshan:'نشان',
+formH:'ارسال پیام',formP:'معمولاً ظرف چند ساعت پاسخ می‌دهیم.',topic:'موضوع',topics:['یک سفارش','عروسی یا مراسم','سازمانی و هدیه','موضوع دیگر'],yourMsg:'پیام شما',send:'ارسال پیام',sent:'پیام ارسال شد',sentP:'سپاس — به‌زودی پاسخ می‌دهیم.'});
+// SAMPLE coordinates (Azimiyeh, Karaj) — replace with the studio's exact pin
+D.contact.geo={lat:35.8390,lng:50.9770,zoom:15};
+D.contact.maps='https://www.google.com/maps/search/?api=1&query='+D.contact.geo.lat+','+D.contact.geo.lng;
+D.contact.mapEmbed=l=>'https://maps.google.com/maps?q='+D.contact.geo.lat+','+D.contact.geo.lng+'&z='+D.contact.geo.zoom+'&hl='+l+'&output=embed';
+D.contact.neshan='https://neshan.org/maps/@'+D.contact.geo.lat+','+D.contact.geo.lng+',16z';
+};K.run&&K.run();})();

@@ -1,0 +1,6 @@
+import React from 'react';
+// First element in <body>. Hidden until focused; moves focus to the target (adds tabindex="-1" if needed) without touching the URL.
+export function SkipLink({href='#main',children,className='',onClick,...rest}){
+  const go=e=>{onClick&&onClick(e);if(e.defaultPrevented||!href.startsWith('#'))return;const t=document.getElementById(href.slice(1));if(!t)return;e.preventDefault();if(!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');t.focus();};
+  return <a href={href} className={'ag-skip '+className} onClick={go} {...rest}>{children}</a>;
+}

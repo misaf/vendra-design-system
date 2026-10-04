@@ -1,0 +1,16 @@
+// Storefront navigation + focus helpers. App.jsx replaces href/link on every render (they need the current lang).
+(()=>{
+// setTimeout, not rAF: rAF is paused in background tabs/iframes and the focus move would be lost
+const after=fn=>setTimeout(fn,30);
+const N={
+  href:()=>'?',
+  link:()=>{},
+  // Screen or step change → focus the page's h1 (tabindex="-1", no focus ring, no scroll jump).
+  focusHeading(){after(()=>{const h=document.querySelector('main h1')||document.querySelector('main');if(!h)return;if(!h.hasAttribute('tabindex'))h.setAttribute('tabindex','-1');h.focus({preventScroll:true});});},
+  // Failed validation → focus the first invalid field (aria-invalid from the DS field components, or native :invalid).
+  focusFirstInvalid(root){after(()=>{const r=root||document.querySelector('main')||document;const el=r.querySelector('[aria-invalid="true"],input:invalid,select:invalid,textarea:invalid');if(el)el.focus();});}
+};
+window.AG_NAV=N;
+// Call at the top of a multi-step screen: useHeadingFocus(step)
+window.useHeadingFocus=dep=>{const first=React.useRef(true);React.useEffect(()=>{if(first.current){first.current=false;return;}N.focusHeading();},[dep]);};
+})();

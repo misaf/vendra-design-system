@@ -1,0 +1,45 @@
+function Shop({lang,go,favs,toggleFav,cat,setCat,loadFail}){
+  const {Tag,Select,Button,Dialog,EmptyState,Alert,Skeleton}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const [sort,setSort]=React.useState(0);const [filters,setFilters]=React.useState({bands:[],colors:[],price:null,inStock:false});const [sheet,setSheet]=React.useState(false);
+  let items=AG_DATA.applyFilters(AG_DATA.products.filter(p=>cat==='all'||p.cat===cat),filters);
+  if(sort==1)items=[...items].sort((a,b)=>a.price-b.price);if(sort==2)items=[...items].sort((a,b)=>b.price-a.price);
+  const active=(filters.price?1:0)+filters.colors.length+(filters.inStock?1:0);
+  const clear=()=>setFilters({bands:[],colors:[],price:null,inStock:false});
+  const tags=[['all',T.all],...AG_DATA.categories.map(c=>[c.id,c[lang]])].map(([k,v])=><Tag key={k} selected={cat===k} onClick={()=>setCat(k)} style={{flex:'none'}}>{v}</Tag>);
+  const chips=[...(filters.price?[['price','p',AG_DATA.rangeText(filters.price,lang)]]:[]),...filters.colors.map(id=>['colors',id,AG_DATA.colors.find(c=>c.id===id)[lang]]),...(filters.inStock?[['inStock',true,T.inStock]]:[])];
+  const chipRow=chips.length>0&&<div style={{display:'flex',gap:8,flexWrap:mobile?'nowrap':'wrap',overflowX:mobile?'auto':'visible',scrollbarWidth:'none',padding:mobile?'10px 16px 0':0,marginBottom:mobile?0:20}}>
+    {chips.map(([k,v,l])=><Tag key={k+v} style={{flex:'none'}} onRemove={()=>setFilters(k==='inStock'?{...filters,inStock:false}:k==='price'?{...filters,price:null}:{...filters,[k]:filters[k].filter(x=>x!==v)})}>{l}</Tag>)}
+    <Button variant="ghost" size="sm" onClick={clear} style={{flex:'none'}}>{T.clearAll}</Button></div>;
+  const sortSel=w=><Select aria-label={lang==='fa'?'مرتب‌سازی':'Sort by'} style={{width:w,flex:'none'}} value={sort} onChange={e=>setSort(+e.target.value)} options={T.sorts.map((s,i)=>({value:String(i),label:s}))}/>;
+  const [load,setLoad]=React.useState('loading');const [tries,setTries]=React.useState(0);
+  React.useEffect(()=>{setLoad('loading');const t=setTimeout(()=>setLoad(loadFail?'fail':'ok'),650);return()=>clearTimeout(t);},[cat,tries,loadFail]);
+  const fa=lang==='fa';
+  const skel=<div aria-busy="true" style={{display:'grid',gridTemplateColumns:'repeat('+(mobile?2:tablet?2:3)+',minmax(0,1fr))',gap:mobile?'28px 12px':'40px 24px'}}>{Array.from({length:mobile?4:6},(_,i)=><Skeleton key={i} shape="card"/>)}</div>;
+  const failed=<div style={{display:'flex',flexDirection:'column',gap:24}}><Alert tone="error" title={fa?'فروشگاه بارگذاری نشد':'The shop didn’t load'} action={<Button size="sm" variant="secondary" iconStart="rotate-ccw" onClick={()=>setTries(n=>n+1)}>{fa?'تلاش دوباره':'Try again'}</Button>}>{fa?'اتصال را بررسی کنید و دوباره امتحان کنید.':'Check your connection and try again.'}</Alert><EmptyState icon="flower-2" title={fa?'گل‌ها':'The flowers are'} titleAccent={fa?'کمی دیر کرده‌اند.':'running late.'} body={fa?'می‌توانید سفارش را در واتس‌اپ هم ثبت کنید.':'You can also order on WhatsApp while we fix this.'} actions={<Button variant="ghost" iconStart="message-circle" onClick={()=>window.open(AG_DATA.contact.wa,'_blank')}>WhatsApp</Button>} style={{padding:'24px 0'}}/></div>;
+  const body=g=>load==='loading'?skel:load==='fail'?failed:items.length?g:empty;
+  const empty=<EmptyState icon="sliders-horizontal" title={T.noMatch} actions={<Button variant="secondary" onClick={clear}>{T.clearAll}</Button>} style={{padding:'56px 0'}}/>;
+  return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'24px 16px 0':'56px var(--gutter) 0'}}>
+    <div className="ag-eyebrow">{T.home} / {T.shopTitle}</div>
+    <h1 className="ag-display" style={{fontSize:mobile?40:72,margin:mobile?'8px 0 6px':'12px 0 8px'}}>{cat==='all'?T.shopTitle:AG_DATA.catName(cat,lang)}</h1>
+    <p style={{color:'var(--text-secondary)',margin:mobile?'0 0 20px':'0 0 40px',fontSize:mobile?15:18}}>{T.shopSub}</p>
+    {mobile?<>
+      <div style={{position:'sticky',top:60,zIndex:5,background:'var(--surface-page)',margin:'0 -16px 20px',padding:'10px 0 12px',borderBottom:'1px solid var(--border-subtle)'}}>
+        <div style={{display:'flex',gap:8,overflowX:'auto',padding:'0 16px',scrollbarWidth:'none'}}>{tags}</div>
+        <div style={{display:'flex',alignItems:'center',gap:10,padding:'10px 16px 0'}}><Button variant="secondary" size="sm" iconStart="sliders-horizontal" onClick={()=>setSheet(true)} style={{flex:'none'}}>{T.filters}{active>0?' · '+AG_DATA.num(active,lang):''}</Button><span style={{flex:1,color:'var(--text-muted)',fontSize:13,whiteSpace:'nowrap'}}>{AG_DATA.num(items.length,lang)} {T.items}</span>{sortSel(150)}</div>
+        {chipRow}
+      </div>
+      {body(<ProductGrid lang={lang} items={items} go={go} favs={favs} toggleFav={toggleFav}/>)}
+      <Dialog open={sheet} onClose={()=>setSheet(false)} title={T.filters} footer={<><Button variant="ghost" onClick={clear}>{T.clearAll}</Button><Button onClick={()=>setSheet(false)}>{T.showN.replace('{n}',AG_DATA.num(items.length,lang))}</Button></>}>
+        <CategorySidebar lang={lang} cat={cat} setCat={setCat} filters={filters} setFilters={setFilters}/>
+      </Dialog>
+    </>:<div style={{display:'grid',gridTemplateColumns:(tablet?'220px':'250px')+' minmax(0,1fr)',gap:tablet?28:48,alignItems:'start',borderTop:'1px solid var(--border-subtle)',paddingTop:28}}>
+      <aside style={{position:'sticky',top:96,maxHeight:'calc(100vh - 120px)',overflowY:'auto',paddingInlineEnd:4}}><CategorySidebar lang={lang} cat={cat} setCat={setCat} filters={filters} setFilters={setFilters}/></aside>
+      <div>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:16,marginBottom:chips.length?14:28}}><span style={{color:'var(--text-muted)',fontSize:14,whiteSpace:'nowrap'}}>{AG_DATA.num(items.length,lang)} {T.items}</span>{sortSel(230)}</div>
+        {chipRow}
+        {body(<ProductGrid lang={lang} items={items} go={go} favs={favs} toggleFav={toggleFav} cols={tablet?2:3}/>)}
+      </div>
+    </div>}
+  </main>;
+}
+window.Shop=Shop;

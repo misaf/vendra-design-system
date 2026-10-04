@@ -1,0 +1,8 @@
+function ProductGrid({lang,items,go,favs,toggleFav,cols:colsOverride}){
+  const {ProductCard}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const cols=colsOverride||(mobile?2:tablet?3:4);
+  return <div style={{display:'grid',gridTemplateColumns:'repeat('+cols+',minmax(0,1fr))',gap:mobile?'28px 12px':'40px 24px'}}>
+    {items.map(p=><ProductCard tone="product" key={p.id} name={p[lang]} subtitle={lang==='fa'?p.subFa:p.subEn} price={AG_DATA.money(p.price,lang)} compareAt={p.compare&&AG_DATA.money(p.compare,lang)} badge={p.badge&&T.badges[p.badge]} badgeTone={AG_DATA.badgeTone[p.badge]} images={AG_DATA.imagesOf(p)} placeholder={lang==='fa'?'عکس دسته‌گل':'Bouquet photo'} favorite={favs.includes(p.id)} onFavorite={()=>toggleFav(p.id)} href={AG_NAV.href('product',p.id)} onClick={AG_NAV.link}/>)}
+  </div>;
+}
+window.ProductGrid=ProductGrid;

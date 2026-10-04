@@ -1,0 +1,17 @@
+<!-- @dsCard group="Components" viewport="760x520" name="DetailList" subtitle="Order details · confirmation rows · EN/FA" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>DetailList</title><link rel="stylesheet" href="../../styles.css">
+<script src="../../templates/_vendor/react.production.min.js"></script>
+<script src="../../templates/_vendor/react-dom.production.min.js"></script>
+<script src="../../templates/_vendor/babel.min.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;padding:20px 24px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.k{font-size:11px;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}.q{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.p{background:var(--surface-page);color:var(--text-body);padding:16px;border-radius:12px;border:1px solid var(--border-subtle);min-width:0;display:flex;flex-direction:column;gap:14px}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const NS=window.VendraDesignSystem_f4f210;const DT=NS.dates||window.AG_DATES;
+const FA={dir:'rtl',lang:'fa','data-lang':'fa'};
+// Two panels: EN / FA. Each column is ~350px wide (mobile check).
+function Quad({render,note}){return <div style={{display:'flex',flexDirection:'column',gap:16}}>{['light'].map(t=><div key={t} className="q">{['en','fa'].map(l=><div key={l} className="p" {...(l==='fa'?FA:{lang:'en',dir:'ltr'})}><div className="k">{(l==='fa'?'FA':'EN')}</div>{render(l,t)}</div>)}</div>)}</div>;}
+
+const R={en:[{icon:'map-pin',label:'Deliver to',value:'Niavaran, Bahonar St., No. 8, Tehran · Tehran'},{icon:'clock',label:'Delivery',value:'Tuesday, 29 September 2026 · 16:00–20:00'},{icon:'user',label:'Recipient',value:<>Mina Rahimi · <span dir="ltr">0912 111 2233</span></>},{icon:'mail',label:'Card message',value:'“Happy birthday, Mum.”'},{icon:'receipt',label:'Card-to-card reference',value:<span dir="ltr">482913</span>}],
+ fa:[{icon:'map-pin',label:'ارسال به',value:'تهران، نیاوران، خیابان باهنر، پلاک ۸ · تهران'},{icon:'clock',label:'زمان ارسال',value:'سه‌شنبه، ۷ مهر ۱۴۰۵ · \u2068۱۶:۰۰\u2069 تا \u2068۲۰:۰۰\u2069'},{icon:'user',label:'گیرنده',value:<>مینا رحیمی · <span dir="ltr">0912 111 2233</span></>},{icon:'mail',label:'متن کارت',value:'«تولدت مبارک مامان جان.»'},{icon:'receipt',label:'شماره پیگیری کارت‌به‌کارت',value:<span dir="ltr">۴۸۲۹۱۳</span>}]};
+ReactDOM.createRoot(document.getElementById('root')).render(<Quad render={l=><NS.Card variant="sunken" padding={16}><NS.DetailList rows={R[l]}/></NS.Card>}/>);
+</script></body></html>

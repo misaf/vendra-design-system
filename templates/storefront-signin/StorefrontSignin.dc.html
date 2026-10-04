@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Storefront sign in" description="Phone + texted 5-digit code sign-in (EN/FA, mobile) with validation and a confirmation state" -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-mobile="true"]{max-width:390px;contain:layout}</style></helmet>
+<div style="background:var(--surface-muted);min-height:100vh">
+<div data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav style="display:flex;gap:4px;flex-wrap:wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import></nav>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;gap:4px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" on-click="{{ go.account }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="height:60px;padding:0 6px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px">
+<div style="display:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px"></x-import></div>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;justify-content:flex-end"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px"><sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="8"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="#" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import></sc-for></x-import><div style="display:flex;flex-direction:column;gap:16px;margin-top:28px"><sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)"><span>{{ t.langL }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px"></x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import></div></x-import></sc-if>
+<div style="flex:1">
+<main id="main" style="max-width:1240px;margin:0 auto;padding:72px 24px 0"><div style="max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}"><h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,5cqi,64px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case);text-wrap:balance">{{ t.inA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.inB }}</em></h1><p style="margin:0;max-width:56ch;font-size:17px;line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">{{ t.inP }}</p>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-phone" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="0912 000 0000" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" on-click="{{ send }}" hint-size="100%,52px">{{ t.send }}</x-import>
+<p style="margin:0;font-size:13px;line-height:1.6;color:var(--text-muted)">{{ t.terms }}</p></sc-if>
+<sc-if value="{{ isCode }}" hint-placeholder-val="{{ false }}"><h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,5cqi,64px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case);text-wrap:balance">{{ t.codeA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.codeB }}</em></h1><p style="margin:0;max-width:56ch;font-size:17px;line-height:var(--lh-body);color:var(--text-secondary);text-wrap:pretty">{{ codeP }}</p>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-code" label="{{ t.code }}" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="5" value="{{ code }}" on-change="{{ setCode }}" error="{{ codeErr }}" hint="{{ t.codeHint }}" hint-size="100%,96px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" on-click="{{ verify }}" hint-size="100%,52px">{{ t.verify }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="arrow-left" on-click="{{ back }}" hint-size="180px,48px">{{ t.change }}</x-import></sc-if>
+<sc-if value="{{ isOk }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="check" tone="accent" title="{{ t.okA }}" title-accent="{{ t.okB }}" body="{{ t.okP }}" heading-level="{{ 1 }}" hint-size="100%,280px"></x-import>
+<div style="display:flex;justify-content:center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="#" on-click="{{ go.account }}" hint-size="170px,48px">{{ t.toAccount }}</x-import></div></sc-if>
+</div></main>
+</div>
+<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
+<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div><div>{{ t.address }}</div><div>{{ t.hours }}</div></div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div><div dir="ltr" style="text-align:start">+98 912 933 3034</div><div dir="ltr" style="text-align:start">@misaf1990</div></div>
+</div>
+</footer>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="position:sticky;bottom:0;z-index:60"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px"></x-import></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY=(n,fa)=>fa?n.toLocaleString('fa-IR')+' تومان':n.toLocaleString('en-US')+' Toman';
+const VF_SHELL={
+  en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language'},
+  fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان'}};
+// Shared page shell: language, tenant, mobile frame, nav, tabs, menu drawer, bag count + favourites (from props.store when wired by storefront-site). Call as vfShell.call(this,this.props,page).
+function vfShell(props,page){
+  const self=this;const st=(self&&self.state)||{};const store=props.store;
+  const fa=props.lang==='fa';const L=fa?'fa':'en';const T=VF_SHELL[L];const mob=!!props.mobile;
+  const tab=page==='home'?'home':page==='bag'||page==='checkout'?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
+  const G=r=>props.go?(e=>{if(e&&e.preventDefault)e.preventDefault();props.go(r);}):undefined;const go={};["account","bag","checkout","contact","home","journal","notfound","policy","post","product","saved","search","shop","signin","track","weddings"].forEach(r=>{go[r]=G(r);});
+  const close=()=>self&&self.setState({vfMenu:false});
+  const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track'};
+  const menuItems=['home','shop','weddings','journal','saved','contact','account','track'].map(r=>({label:T[r],current:cur[r],go:e=>{if(e&&e.preventDefault)e.preventDefault();close();if(props.go)props.go(r);}}));
+  const count=store?store.count:2;const favList=store?store.saved:st.vfFavs;
+  return {go,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,frameW:mob?'390px':'none',
+    nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},
+    bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
+    menuOpen:!!st.vfMenu,openMenu:()=>self&&self.setState({vfMenu:true}),closeMenu:close,menuItems,
+    hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
+    isFav:(id,def)=>(favList||def).includes(id),
+    toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
+    tabs:[{id:'home',icon:'house',label:T.home,href:'#',onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:'#',onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:'#',onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
+    n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+}
+class Component extends DCLogic {
+  state={step:'phone',phone:'',code:'',pErr:false,cErr:false};
+  renderVals(){
+    const S=vfShell.call(this,this.props,'account');const L=S.lang;const s=this.state;const lat=v=>v.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const C={en:{inA:'Sign',inB:'in.',inP:'Enter your mobile number. We’ll text you a five-digit code — no password needed.',phone:'Mobile number',phoneErr:'Enter a valid mobile number.',send:'Send code',terms:'By continuing you agree to our terms and privacy policy.',codeA:'Check your',codeB:'messages.',code:'Five-digit code',codeHint:'Any five digits work in this demo.',codeErr:'Enter all five digits.',verify:'Sign in',change:'Change number',okA:'Welcome back,',okB:'Shirin.',okP:'Your orders, addresses and reminders are waiting.',toAccount:'Go to my account'},
+      fa:{inA:'ورود',inB:'به حساب.',inP:'شماره موبایل خود را وارد کنید. یک کد پنج‌رقمی برایتان پیامک می‌کنیم — رمز لازم نیست.',phone:'شماره موبایل',phoneErr:'شماره موبایل معتبر وارد کنید.',send:'ارسال کد',terms:'با ادامه، شرایط استفاده و حریم خصوصی را می‌پذیرید.',codeA:'پیامک‌ها را',codeB:'ببینید.',code:'کد پنج‌رقمی',codeHint:'در این نمونه هر پنج رقمی پذیرفته می‌شود.',codeErr:'هر پنج رقم را وارد کنید.',verify:'ورود',change:'تغییر شماره',okA:'خوش برگشتید،',okB:'شیرین.',okP:'سفارش‌ها، آدرس‌ها و یادآورهای شما آماده‌اند.',toAccount:'رفتن به حساب'}}[L];
+    const focus=id=>setTimeout(()=>{const el=document.getElementById(id);el&&el.focus();},0);
+    return {...S,t:{...S.t,...C},isPhone:s.step==='phone',isCode:s.step==='code',isOk:s.step==='ok',
+      phone:s.phone,setPhone:e=>this.setState({phone:e.target.value,pErr:false}),phoneErr:s.pErr?C.phoneErr:undefined,
+      codeP:(L==='fa'?'کد را به ':'We sent a code to ')+'\u2066'+(s.phone||'0912 000 0000')+'\u2069'+(L==='fa'?' فرستادیم.':'.'),
+      code:s.code,setCode:e=>this.setState({code:lat(e.target.value).replace(/\D/g,'').slice(0,5),cErr:false}),codeErr:s.cErr?C.codeErr:undefined,
+      send:()=>{if(lat(s.phone).replace(/\D/g,'').length<10){this.setState({pErr:true});focus('vf-phone');return;}this.setState({step:'code'});focus('vf-code');},
+      verify:()=>{if(s.code.length!==5){this.setState({cErr:true});focus('vf-code');return;}this.setState({step:'ok'});},
+      back:()=>this.setState({step:'phone',code:''})};
+  }
+}
+
+</script>
+</body>
+</html>

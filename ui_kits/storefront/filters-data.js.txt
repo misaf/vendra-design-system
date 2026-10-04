@@ -1,0 +1,13 @@
+// Shop filters — price range slider (Toman); legacy price bands (stored in Toman), colours per product (SAMPLE tags)
+(()=>{const K=window.AG_KIT=window.AG_KIT||{};K.ext=K.ext||{};K.ext.filters=D=>{
+D.priceBands=[{id:'u2',min:0,max:2000000},{id:'2-4',min:2000000,max:4000000},{id:'4-7',min:4000000,max:7000000},{id:'7p',min:7000000,max:Infinity}];
+D.colors=[{id:'white',hex:'#F6F1E7',en:'White & ivory',fa:'سفید و عاجی'},{id:'pink',hex:'#E9A6B4',en:'Pink & blush',fa:'صورتی'},{id:'red',hex:'#A3222F',en:'Red',fa:'قرمز'},{id:'purple',hex:'#6B4AA0',en:'Purple & blue',fa:'بنفش و آبی'},{id:'peach',hex:'#E9A36A',en:'Peach & orange',fa:'هلویی و نارنجی'},{id:'green',hex:'#5E7F4E',en:'Green',fa:'سبز'}];
+const tags={'lavender-whisper':['peach','pink','purple'],'midnight-orchid':['purple','pink'],'crimson-hatbox':['red'],'dusty-rose-vase':['pink','green'],'pearl-orchid':['white'],'ivory-rib-box':['white','pink','peach'],'sunset-anthurium':['purple','peach','pink'],'orchid-bride':['white','peach'],'white-lily-column':['white','green'],'kentia-palm':['green'],'strelitzia':['green'],'blush-wrap':['pink','white'],'trio':['pink','white'],'car':['white'],'stand':['white','pink']};
+D.products.forEach(p=>p.colors=tags[p.id]||[]);
+Object.assign(D.t.en,{filters:'Filters',price:'Price',color:'Colour',availability:'Availability',inStock:'In stock only',clearAll:'Clear all',showN:'Show {n} items',noMatch:'No pieces match these filters.',categories:'Categories',bandLabel:{u2:'Under {a}','2-4':'{a} – {b}','4-7':'{a} – {b}','7p':'{a} and up'}});
+Object.assign(D.t.fa,{filters:'فیلترها',price:'قیمت',color:'رنگ',availability:'موجودی',inStock:'فقط موجودها',clearAll:'پاک کردن همه',showN:'نمایش {n} محصول',noMatch:'محصولی با این فیلترها پیدا نشد.',categories:'دسته‌بندی‌ها',bandLabel:{u2:'کمتر از {a}','2-4':'{a} تا {b}','4-7':'{a} تا {b}','7p':'{a} و بیشتر'}});
+D.bandText=(b,l)=>{const T=D.t[l];const m=v=>D.money(v,l);return T.bandLabel[b.id].replace('{a}',m(b.id==='u2'?b.max:b.min)).replace('{b}',m(b.max));};
+D.priceMax=Math.ceil(Math.max(...D.products.map(p=>p.price))/1000000)*1000000;D.priceStep=100000;
+D.rangeText=(r,l)=>D.money(r[0],l)+' – '+D.money(r[1],l);
+D.applyFilters=(items,f)=>items.filter(p=>(!f.price||(p.price>=f.price[0]&&p.price<=f.price[1]))&&(!f.bands.length||f.bands.some(id=>{const b=D.priceBands.find(x=>x.id===id);return p.price>=b.min&&p.price<b.max;}))&&(!f.colors.length||f.colors.some(c=>p.colors.includes(c)))&&(!f.inStock||p.badge!=='soldout'));
+};K.run&&K.run();})();

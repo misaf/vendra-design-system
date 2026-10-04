@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Storefront shop" description="Florist catalogue (EN/FA): category sidebar with counts, filter chips, sort, product grid, empty state" -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-mobile="true"]{max-width:390px;contain:layout}</style></helmet>
+<div style="background:var(--surface-muted);min-height:100vh">
+<div data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav style="display:flex;gap:4px;flex-wrap:wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="#" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import></nav>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;gap:4px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" on-click="{{ go.account }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+<div style="height:60px;padding:0 6px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px">
+<div style="display:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px"></x-import></div>
+<a href="#" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:22px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<div style="display:flex;justify-content:flex-end"><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" on-click="{{ go.search }}" hint-size="44px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px"></x-import></div>
+</div>
+</header></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px"><sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="8"><x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="#" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import></sc-for></x-import><div style="display:flex;flex-direction:column;gap:16px;margin-top:28px"><sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)"><span>{{ t.langL }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px"></x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import></div></x-import></sc-if>
+<div style="flex:1">
+<main id="main" style="max-width:1240px;margin:0 auto;padding:56px 24px 0;display:flex;flex-direction:column;gap:32px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" level="h1" eyebrow="{{ t.eyebrow }}" title="{{ t.titleA }}" accent="{{ t.titleB }}" hint-size="100%,96px"></x-import>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+<sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><aside style="position:sticky;top:96px;flex:1 1 200px;max-width:260px;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">{{ t.cats }}</div>
+<sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="true" style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:0 14px;border:0;border-radius:var(--radius-md);background:var(--surface-muted);color:var(--text-body);font:inherit;font-size:15px;font-weight:500;text-align:start;cursor:pointer"><span>{{ c.label }}</span><span style="font-size:13px;color:var(--text-muted)">{{ c.count }}</span></button></sc-if><sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="false" style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:0 14px;border:0;border-radius:var(--radius-md);background:transparent;color:var(--text-body);font:inherit;font-size:15px;font-weight:400;text-align:start;cursor:pointer" style-hover="background:var(--surface-sunken)"><span>{{ c.label }}</span><span style="font-size:13px;color:var(--text-muted)">{{ c.count }}</span></button></sc-if></sc-for>
+</aside></sc-if>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="{{ t.cats }}" style="display:flex;gap:8px;overflow-x:auto;width:100%;margin-inline:-24px;padding:0 24px 4px;scrollbar-width:none"><sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" style="flex:none" hint-size="110px,36px"><span style="white-space:nowrap">{{ c.label }} · {{ c.count }}</span></x-import></sc-for></div></sc-if>
+<section style="flex:999 1 480px;min-width:0;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap">
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ chips }}" as="f" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ f.on }}" on-click="{{ f.toggle }}" aria-pressed="{{ f.on }}" hint-size="110px,36px">{{ f.label }}</x-import></sc-for></div>
+<div style="display:flex;align-items:center;gap:16px"><span style="font-size:14px;color:var(--text-muted)" role="status">{{ countLabel }}</span><div style="width:200px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" aria-label="{{ t.sort }}" value="{{ sort }}" options="{{ sortOptions }}" on-change="{{ setSort }}" hint-size="200px,48px"></x-import></div></div>
+</div>
+<sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 48px) / 3)),1fr));gap:40px 24px">
+<sc-for list="{{ items }}" as="p" hint-placeholder-count="6"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="{{ frame }}" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="#" on-click="{{ go.product }}" hint-size="100%,400px"></x-import></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="flower-2" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,280px"></x-import>
+<div style="display:flex;justify-content:center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ clear }}" hint-size="140px,48px">{{ t.clear }}</x-import></div>
+</sc-if>
+</section>
+</div>
+</main>
+</div>
+<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
+<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div><div>{{ t.address }}</div><div>{{ t.hours }}</div></div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px"><div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div><div dir="ltr" style="text-align:start">+98 912 933 3034</div><div dir="ltr" style="text-align:start">@misaf1990</div></div>
+</div>
+</footer>
+<sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div style="position:sticky;bottom:0;z-index:60"><x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px"></x-import></div></sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;arch&quot;,&quot;soft&quot;],&quot;default&quot;:&quot;soft&quot;,&quot;tsType&quot;:&quot;'arch' | 'soft'&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY=(n,fa)=>fa?n.toLocaleString('fa-IR')+' تومان':n.toLocaleString('en-US')+' Toman';
+const VF_SHELL={
+  en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language'},
+  fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان'}};
+// Shared page shell: language, tenant, mobile frame, nav, tabs, menu drawer, bag count + favourites (from props.store when wired by storefront-site). Call as vfShell.call(this,this.props,page).
+function vfShell(props,page){
+  const self=this;const st=(self&&self.state)||{};const store=props.store;
+  const fa=props.lang==='fa';const L=fa?'fa':'en';const T=VF_SHELL[L];const mob=!!props.mobile;
+  const tab=page==='home'?'home':page==='bag'||page==='checkout'?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
+  const G=r=>props.go?(e=>{if(e&&e.preventDefault)e.preventDefault();props.go(r);}):undefined;const go={};["account","bag","checkout","contact","home","journal","notfound","policy","post","product","saved","search","shop","signin","track","weddings"].forEach(r=>{go[r]=G(r);});
+  const close=()=>self&&self.setState({vfMenu:false});
+  const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track'};
+  const menuItems=['home','shop','weddings','journal','saved','contact','account','track'].map(r=>({label:T[r],current:cur[r],go:e=>{if(e&&e.preventDefault)e.preventDefault();close();if(props.go)props.go(r);}}));
+  const count=store?store.count:2;const favList=store?store.saved:st.vfFavs;
+  return {go,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,frameW:mob?'390px':'none',
+    nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},
+    bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
+    menuOpen:!!st.vfMenu,openMenu:()=>self&&self.setState({vfMenu:true}),closeMenu:close,menuItems,
+    hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
+    isFav:(id,def)=>(favList||def).includes(id),
+    toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
+    tabs:[{id:'home',icon:'house',label:T.home,href:'#',onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:'#',onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:'#',onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
+    n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+}
+const VF_PRODUCTS=[
+  {id:'ivory',cat:'boxes',price:4100000,same:true,roses:true,en:['Ivory ribbon box','Roses · lisianthus · satin','New'],fa:['باکس روبان عاجی','رز · لیسیانتوس · ساتن','جدید']},
+  {id:'lavender',cat:'bouquets',price:2800000,same:true,en:['Lavender whisper','Seasonal · 15 stems'],fa:['زمزمه اسطوخودوس','فصلی · ۱۵ شاخه']},
+  {id:'orchid',cat:'orchids',price:3400000,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']},
+  {id:'crimson',cat:'boxes',price:5200000,roses:true,en:['Crimson hatbox','Red roses · velvet box','Bestseller'],fa:['باکس کلاهی سرخ','رز قرمز · باکس مخمل','پرفروش']},
+  {id:'blush',cat:'bouquets',price:2200000,same:true,roses:true,en:['Blush morning','Garden roses · eucalyptus'],fa:['صبح صورتی','رز باغی · اکالیپتوس']},
+  {id:'bridal',cat:'bridal',price:6500000,en:['Ivory bridal posy','Peonies · ranunculus'],fa:['دسته‌گل عروس عاجی','گل صد‌تومانی · آلاله']}];
+const VF_CATS=[['all','All','همه'],['bouquets','Bouquets','دسته‌گل'],['boxes','Flower boxes','باکس گل'],['orchids','Orchids','ارکیده'],['bridal','Bridal','دسته‌گل عروس']];
+const VF_CHIPS=[['under3','Under 3M','زیر ۳ میلیون',p=>p.price<3000000],['same','Same day','ارسال همان روز',p=>p.same],['roses','Roses','رز',p=>p.roses]];
+class Component extends DCLogic {
+  state={cat:'all',chips:[],sort:'featured',favs:['orchid']};
+  renderVals() {
+    const fa=this.props.lang==='fa';const L=fa?'fa':'en';const S=vfShell.call(this,this.props,'shop');const n=v=>fa?VF_FA_DIGITS(v):String(v);
+    const C={en:{eyebrow:'All flowers',titleA:'The',titleB:'shop.',cats:'Categories',sort:'Sort by',emptyA:'Nothing here',emptyB:'— for now.',emptyP:'Try another category or clear the filters.',clear:'Clear filters'},
+      fa:{eyebrow:'همه گل‌ها',titleA:'فروشگاه',titleB:'وندرا.',cats:'دسته‌بندی‌ها',sort:'مرتب‌سازی',emptyA:'چیزی پیدا نشد',emptyB:'— فعلاً.',emptyP:'دسته‌بندی دیگری را امتحان کنید یا فیلترها را پاک کنید.',clear:'پاک کردن فیلترها'}};
+    const s=this.state;
+    const inCat=p=>s.cat==='all'||p.cat===s.cat;
+    let list=VF_PRODUCTS.filter(inCat).filter(p=>s.chips.every(id=>VF_CHIPS.find(c=>c[0]===id)[3](p)));
+    if(s.sort==='low')list=[...list].sort((a,b)=>a.price-b.price);if(s.sort==='high')list=[...list].sort((a,b)=>b.price-a.price);
+    return {
+      ...S,frame:this.props.frame??'arch',
+      t:{...S.t,...C[L]},
+      categories:VF_CATS.map(([id,e,f])=>{const on=s.cat===id;return {label:fa?f:e,count:n(VF_PRODUCTS.filter(p=>id==='all'||p.cat===id).length),on,off:!on,pick:()=>this.setState({cat:id})};}),
+      chips:VF_CHIPS.map(([id,e,f])=>{const on=s.chips.includes(id);return {label:fa?f:e,on,toggle:()=>this.setState({chips:on?s.chips.filter(x=>x!==id):[...s.chips,id]})};}),
+      sort:s.sort,setSort:e=>this.setState({sort:e.target.value}),
+      sortOptions:fa?[{value:'featured',label:'پیشنهادی'},{value:'low',label:'قیمت: کم به زیاد'},{value:'high',label:'قیمت: زیاد به کم'}]:[{value:'featured',label:'Featured'},{value:'low',label:'Price: low to high'},{value:'high',label:'Price: high to low'}],
+      countLabel:fa?n(list.length)+' طرح':list.length+(list.length===1?' design':' designs'),
+      hasItems:list.length>0,noItems:list.length===0,
+      clear:()=>this.setState({chips:[],cat:'all'}),
+      items:list.map(p=>{const fav=S.isFav(p.id,['orchid']);return {name:p[L][0],sub:p[L][1],badge:p[L][2],price:VF_MONEY(p.price,fa),fav,toggleFav:S.toggleFav(p.id,['orchid'])};})
+    };
+  }
+}
+
+</script>
+</body>
+</html>

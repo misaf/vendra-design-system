@@ -1,0 +1,19 @@
+/* Sample tenant theme — "Clay". Shows how far a florist can restyle a storefront: terracotta + sand palette, sans-serif uppercase display, upright accent words, squared controls and square image frames.
+   Apply with data-tenant="clay" on <html> (or any wrapper). Semantic aliases are re-declared because CSS custom properties resolve where they are declared. */
+[data-tenant="clay"]{
+--petal-50:#F8F4EC;--petal-100:#F1EADD;--petal-200:#E6DCCB;--petal-300:#D4C7B1;--petal-400:#B8A88E;
+--peony-100:#F7E3D8;--peony-200:#EFCBB8;--peony-400:#C8714A;--peony-500:#A9532E;--peony-600:#8C4224;--peony-700:#6A3018;
+--stem-500:#5B6B3A;--stem-700:#3F4B27;--stem-900:#262E17;
+--ink-300:#ADA89A;--ink-500:#5E5A4E;--ink-700:#3A372E;--ink-900:#1F1D18;
+--success:var(--leaf-700);--success-soft:var(--leaf-100);--warning:var(--pollen-600);--warning-soft:var(--pollen-100);--info:var(--lilac-500);--info-soft:var(--lilac-100);
+--surface-page:var(--petal-50);--surface-card:var(--white);--surface-sunken:var(--petal-100);--surface-muted:var(--petal-200);--surface-inverse:var(--stem-900);--surface-overlay:rgba(31,29,24,.42);
+--text-body:var(--ink-900);--text-secondary:var(--ink-700);--text-muted:var(--ink-500);--text-subtle:var(--ink-300);--text-on-accent:var(--white);--text-on-soft:var(--peony-700);--text-on-inverse:var(--petal-50);--text-accent:var(--peony-600);
+--accent:var(--peony-500);--accent-hover:var(--peony-600);--accent-press:var(--peony-700);--accent-soft:var(--peony-100);--accent-soft-hover:var(--peony-200);
+--border-subtle:var(--petal-200);--border-default:var(--petal-300);--border-strong:var(--ink-700);--border-input:#847E70;
+--focus-ring:var(--lilac-500);--surface-header:rgba(248,244,236,.88);--text-inverse-muted:var(--ink-300);--border-inverse:var(--stem-700);
+--shadow-sm:0 1px 2px rgba(31,29,24,.06);--shadow-md:0 8px 20px -8px rgba(31,29,24,.18);--shadow-lg:0 24px 48px -16px rgba(31,29,24,.28);
+--font-display:'Jost','Vazirmatn','Segoe UI',Tahoma,system-ui,sans-serif;--tracking-display:.02em;/* @kind other */--display-case:uppercase;/* @kind other */
+--accent-font-style:normal;/* @kind other */--accent-font-weight:500;
+--radius-control:var(--radius-xs);--button-case:uppercase;/* @kind other */--tracking-button:.12em;/* @kind other */
+--radius-sm:2px;--radius-md:2px;--radius-lg:4px;--radius-arch:var(--radius-xs);
+}

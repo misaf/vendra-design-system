@@ -1,0 +1,45 @@
+function Bag({lang,bag,setBag,go,payFail}){
+  const {Button,IconButton,Input,Select,Card,QuantityStepper,Dialog,Tabs,Icon,LineItem,ChoiceGroup,ChoiceTile,Alert,EmptyState}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const [step,setStep]=React.useState('bag');useHeadingFocus(step);const [snap,setSnap]=React.useState(null);const [form,setForm]=React.useState({name:'',phone:'',address:'',msg:''});const [errs,setErrs]=React.useState({});
+  const f=k=>({value:form[k],onChange:e=>{setForm({...form,[k]:e.target.value});if(errs[k])setErrs({...errs,[k]:undefined});},error:errs[k]});
+  // Sold-out or removed products stay visible (dimmed, "No longer available") until the customer removes them; they don't count toward the total.
+  const prod=id=>AG_DATA.products.find(p=>p.id===id);const gone=l=>{const p=prod(l.id);return !p||p.badge==='soldout';};
+  const live=bag.filter(l=>!gone(l));const nGone=bag.length-live.length;
+  const sub=live.reduce((s,l)=>s+l.unit*l.qty,0);
+  const [zone,setZone]=React.useState('karaj');const [day,setDay]=React.useState('today');const [slot,setSlot]=React.useState('16-20');
+  const DR=AG_DATA.delivery.IR;const q=AG_DATA.quote('IR',zone,sub);const z=q.zone;
+  const hasFresh=live.some(l=>prod(l.id).cat!=='plants');const blocked=z.plantsOnly&&hasFresh;
+  const fa=n=>lang==='fa'?String(n).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]):n;
+  // Day chips: explicit Persian calendar in fa ("امروز · ۸ مهر"); full date below with the other calendar in brackets.
+  const DT=AG_DATES;const pc=lang==='fa'?'j':'g';const dAt=i=>{const x=new Date();x.setHours(12,0,0,0);x.setDate(x.getDate()+i);return x;};
+  const dayChip=i=>lang==='fa'?DT.dayMonth(dAt(i),DT.locale(lang,pc)):dAt(i).toLocaleDateString('en-GB',{day:'numeric',month:'short'});const dayFull=i=>DT.fullDate(dAt(i),DT.locale(lang,pc),true)+' ('+DT.fullDate(dAt(i),DT.locale(lang,pc==='j'?'g':'j'))+')';
+  const toPay=()=>{const e={};if(!form.name.trim())e.name=T.req;if(!form.phone.trim())e.phone=T.req;else if(!AG_DATA.validPhone(form.phone))e.phone=T.badPhone;if(!form.address.trim())e.address=T.req;setErrs(e);if(Object.keys(e).length){AG_NAV.focusFirstInvalid();return;}AG_TRACK.event('begin_checkout',{value:sub,items:live.map(l=>AG_TRACK.item(prod(l.id),l.qty,l.unit))});setSnap({items:live,sub,fee:q.fee});setStep('pay');window.scrollTo(0,0);};
+  if(step==='pay'&&snap)return <Checkout lang={lang} go={go} snap={snap} form={form} zone={z} day={day} slot={slot} payFail={payFail} onBack={()=>setStep('bag')} onPlaced={()=>setBag([])}/>;
+  const nErr=Object.values(errs).filter(Boolean).length;
+  if(!bag.length)return <main id="main" style={{padding:mobile?'56px 16px 32px':'112px var(--gutter) 64px'}}><EmptyState icon="shopping-bag" title={T.bag} headingLevel={1} body={T.empty} actions={<><Button size="lg" href={AG_NAV.href('shop')} onClick={AG_NAV.link} iconEnd={'arrow-right'}>{T.keep}</Button><Button size="lg" variant="secondary" iconStart="heart" href={AG_NAV.href('saved')} onClick={AG_NAV.link}>{lang==='fa'?'ذخیره‌شده‌ها':'Saved'}</Button></>}/></main>;
+  return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'24px 16px 0':'56px var(--gutter) 0'}}>
+    <CheckoutSteps lang={lang} at={0}/><h1 className="ag-display" style={{fontSize:mobile?40:64,margin:mobile?'0 0 16px':'0 0 40px'}}>{T.bag}</h1>
+    <div style={{display:'grid',gridTemplateColumns:tablet?'1fr':'1.5fr 1fr',gap:mobile?32:56,alignItems:'start'}}>
+      <div>
+        {nGone>0&&<Alert tone="error" title={lang==='fa'?(nGone===1?'یکی از گل‌ها دیگر موجود نیست':'چند گل دیگر موجود نیستند'):(nGone===1?'One item is no longer available':'Some items are no longer available')} style={{marginBottom:16}}>{lang==='fa'?'برای ادامه آن را از سبد حذف کنید. بقیه سفارش سر جایش می‌ماند.':'Remove it to continue. The rest of your bag stays as it is.'}</Alert>}
+        {bag.map((l,i)=>{const p=prod(l.id)||{image:'',en:l.name||l.id,fa:l.name||l.id};const sz=T.sizes.find(s=>s[0]===l.size)||['', '', ''];const u=gone(l);return <div key={i} style={{borderBottom:'1px solid var(--border-subtle)'}}><LineItem image={p.image} name={p[lang]} meta={sz[1]+' · '+sz[2]} unavailable={u} unavailableLabel={lang==='fa'?'دیگر موجود نیست':'No longer available'} price={AG_DATA.money(l.unit*l.qty,lang)} quantity={l.qty} formatQuantity={n=>AG_DATA.num(n,lang)} quantityLabels={{dec:lang==='fa'?'کمتر':'Decrease',inc:lang==='fa'?'بیشتر':'Increase'}} onQuantityChange={q=>setBag(bag.map((x,j)=>j===i?{...x,qty:q}:x))} onRemove={()=>{AG_TRACK.event('remove_from_cart',{items:[AG_TRACK.item(prod(l.id),l.qty,l.unit)].filter(Boolean)});setBag(bag.filter((_,j)=>j!==i));}} removeLabel={T.remove}/></div>;})}
+        <div style={{display:'grid',gridTemplateColumns:mobile?'1fr':'1fr 1fr',gap:mobile?16:20,marginTop:mobile?28:40}}>
+          <Input {...f('name')} label={T.recipient} placeholder={lang==='fa'?'مثلاً شیرین':'e.g. Shirin'} autoComplete="name"/><Input {...f('phone')} label={T.phone} placeholder="0912 000 0000" dir="ltr" type="tel" inputMode="tel" autoComplete="tel"/>
+          <Input {...f('address')} label={T.address} style={{gridColumn:'1/-1'}} autoComplete="street-address"/>
+          <Select label={T.zone} value={zone} onChange={e=>setZone(e.target.value)} options={DR.zones.map(x=>({value:x.id,label:x[lang]}))} style={{gridColumn:'1/-1'}}/>
+          {z.sameDay?<><div style={{display:'flex',flexDirection:'column',gap:6,gridColumn:'1/-1',minWidth:0}}><span className="ag-field__label">{T.day}</span><Tabs variant="pill" items={[{id:'today',label:T.today+' · '+dayChip(0)},{id:'tomorrow',label:T.tomorrow+' · '+dayChip(1)}]} value={day} onChange={setDay}/><span aria-live="polite" style={{fontSize:13,color:'var(--text-secondary)'}}>{dayFull(day==='tomorrow'?1:0)}</span></div>
+          <div style={{display:'flex',flexDirection:'column',gap:6,gridColumn:'1/-1'}}><span className="ag-field__label" id="ag-slot-label">{T.window}</span><ChoiceGroup labelledBy="ag-slot-label" columns={mobile?2:DR.slots.length}>{DR.slots.map(([id,en,f])=><ChoiceTile key={id} size="sm" label={lang==='fa'?f:en} selected={slot===id} onSelect={()=>setSlot(id)}/>)}</ChoiceGroup></div></>:null}
+          <Alert tone={blocked?'error':'neutral'} icon={blocked?undefined:'truck'} style={{gridColumn:'1/-1'}}>{blocked?T.plantsOnly:z.sameDay?T.cutoffNote.replace('{t}',fa(z.cutoff)):T.noSameDay}{!blocked&&z.free?' '+T.freeOverNote.replace('{a}',AG_DATA.money(DR.freeOver,lang)):''}</Alert>
+          <Input value={form.msg} onChange={e=>setForm({...form,msg:e.target.value})} label={T.message} multiline hint={T.msgHint} style={{gridColumn:'1/-1'}}/>
+        </div>
+      </div>
+      <Card variant="sunken" padding={mobile?20:32} style={{position:tablet?'static':'sticky',top:96}}>
+        <div className="ag-display" style={{fontSize:mobile?26:30,marginBottom:20}}>{T.summary}</div>
+        {[[T.subtotal,AG_DATA.money(sub,lang)],[T.delivery,q.fee===0?T.free:AG_DATA.money(q.fee,lang)]].map(([a,b])=><div key={a} style={{display:'flex',justifyContent:'space-between',marginBottom:10,color:'var(--text-secondary)'}}><span>{a}</span><span>{b}</span></div>)}
+        <div style={{display:'flex',justifyContent:'space-between',padding:'16px 0 24px',marginTop:8,borderTop:'1px solid var(--border-default)',fontSize:mobile?18:20,fontWeight:500,gap:12}}><span>{T.total}</span><span>{AG_DATA.money(sub+q.fee,lang)}</span></div>
+        {nErr>0&&<div role="alert" style={{display:'flex',gap:8,fontSize:13,color:'var(--danger)',marginBottom:12}}><Icon name="circle-alert" size={16} style={{flex:'none',marginTop:1}}/>{T.fixErrors}</div>}<Button block size="lg" disabled={blocked||nGone>0||!live.length} onClick={toPay} iconEnd={'arrow-right'}>{T.checkout}</Button>
+      </Card>
+    </div>
+  </main>;
+}
+window.Bag=Bag;

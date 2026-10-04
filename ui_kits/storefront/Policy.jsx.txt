@@ -1,0 +1,27 @@
+// Long-form policy layout: title, last-updated, table of contents, sections. All copy from AG_DATA.policies (admin).
+function Policy({lang,id}){
+  const {Alert}=window.VendraDesignSystem_f4f210;const {mobile,tablet}=useBP();
+  const P=AG_DATA.policies[id];const L=P[lang];const U=AG_DATA.policyUi[lang];
+  const date=new Date(P.updated+'T00:00:00').toLocaleDateString(lang==='fa'?'fa-IR':'en-GB',{year:'numeric',month:'long',day:'numeric'});
+  const jump=sid=>e=>{e.preventDefault();const el=document.getElementById(sid);if(!el)return;window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-96,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});const h=el.querySelector('h2');h.setAttribute('tabindex','-1');h.focus({preventScroll:true});};
+  return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'24px 16px 0':'56px var(--gutter) 0'}}>
+    <div className="ag-eyebrow">{U.eyebrow}</div>
+    <h1 className="ag-display" style={{fontSize:mobile?40:64,margin:mobile?'8px 0 10px':'12px 0 12px'}}>{L.title}</h1>
+    <p style={{margin:0,fontSize:14,color:'var(--text-muted)'}}>{U.updated} · <time dateTime={P.updated}>{date}</time></p>
+    {P.sample&&<Alert tone="warning" style={{marginTop:20,maxWidth:720}}>{U.sample}</Alert>}
+    <div style={{display:'grid',gridTemplateColumns:tablet?'minmax(0,1fr)':'260px minmax(0,1fr)',gap:tablet?28:72,marginTop:mobile?28:48,alignItems:'start'}}>
+      <nav aria-labelledby={id+'-toc'} style={{position:tablet?'static':'sticky',top:'calc(var(--header-h) + 24px)',padding:'18px 20px',background:'var(--surface-sunken)',borderRadius:'var(--radius-md)'}}>
+        <h2 id={id+'-toc'} className="ag-eyebrow" style={{margin:'0 0 8px'}}>{U.toc}</h2>
+        <ol style={{listStyle:'none',margin:0,padding:0,display:'flex',flexDirection:'column'}}>{L.sections.map((s,i)=><li key={s.id}><a href={'#'+s.id} onClick={jump(s.id)} style={{display:'flex',gap:10,alignItems:'center',minHeight:44,color:'var(--text-secondary)',textDecoration:'none',fontSize:15}}><span style={{color:'var(--text-muted)',fontVariantNumeric:'tabular-nums',minWidth:16}}>{AG_DATA.num(i+1,lang)}</span>{s.h}</a></li>)}</ol>
+      </nav>
+      <article style={{maxWidth:720,minWidth:0}}>
+        {L.intro&&<p style={{fontSize:mobile?17:19,color:'var(--text-secondary)',margin:'0 0 28px',textWrap:'pretty'}}>{L.intro}</p>}
+        {L.sections.map(s=><section key={s.id} id={s.id} aria-labelledby={s.id+'-h'} style={{padding:'28px 0',borderTop:'1px solid var(--border-subtle)'}}>
+          <h2 id={s.id+'-h'} className="ag-display" style={{fontSize:mobile?24:30,fontWeight:500,margin:'0 0 12px'}}>{s.h}</h2>
+          {s.body.map((b,j)=><p key={j} style={{margin:'0 0 12px',color:'var(--text-secondary)',textWrap:'pretty'}}>{b}</p>)}
+        </section>)}
+      </article>
+    </div>
+  </main>;
+}
+window.Policy=Policy;

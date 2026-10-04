@@ -1,0 +1,38 @@
+function Home({lang,go,favs,toggleFav,setCat}){
+  const {Button,Icon,CategoryCard,ArchFrame,SectionHeader,SnapScroller}=window.VendraDesignSystem_f4f210;const fa=lang==='fa';const catRef=React.useRef(null);const [cs,setCs]=React.useState({canPrev:false,canNext:true});const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const pad=mobile?'16px':'var(--gutter)';const img={width:'100%',height:'100%',objectFit:'cover',display:'block'};
+  const shopAll=()=>{setCat('all');go('shop');};
+  
+  const hImg=(i,fb)=>AG_DATA.img(fb);
+  return <main id="main">
+    <section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'20px 16px 40px':tablet?'48px var(--gutter) 64px':'72px var(--gutter) 96px',display:'grid',gridTemplateColumns:tablet?'1fr':'1.1fr 1fr',gap:mobile?28:48,alignItems:'center'}}>
+      {mobile&&<div style={{display:'grid',gridTemplateColumns:'1.4fr 1fr',gap:10,alignItems:'end'}}><ArchFrame ratio="3/4" src={hImg(0,'bouquets')} alt=""/><ArchFrame ratio="3/4" src={hImg(2,'orchids')} alt=""/></div>}
+      <div>
+        <div className="ag-eyebrow">{T.eyebrow}</div>
+        <h1 className="ag-display" style={{fontSize:mobile?(lang==='fa'?40:48):(lang==='fa'?76:96),margin:mobile?'12px 0 14px':'20px 0 24px',fontWeight:500}}>{T.heroA}<br/><span className={lang==='fa'?'':'ag-accent-italic'} style={{color:'var(--text-accent)'}}>{T.heroB}</span></h1>
+        <p style={{fontSize:mobile?16:19,color:'var(--text-secondary)',maxWidth:460,margin:mobile?'0 0 24px':'0 0 36px'}}>{T.heroP}</p>
+        <div style={{display:'flex',gap:12,flexDirection:mobile?'column':'row'}}><Button size="lg" block={mobile} iconEnd="arrow-right" href={AG_NAV.href('shop')} onClick={AG_NAV.link}>{T.shop}</Button></div>
+      </div>
+      {!mobile&&<div style={{display:'grid',gridTemplateColumns:'1.3fr 1fr',gap:16,alignItems:'end',maxWidth:tablet?620:'none'}}>
+        <ArchFrame ratio="3/4" src={hImg(0,'bouquets')} alt="" zoomOnHover/>
+        <div style={{display:'flex',flexDirection:'column',gap:16}}><ArchFrame shape="circle" src={hImg(1,'boxes')} alt="" objectPosition="50% 35%" zoomOnHover/><ArchFrame ratio="3/4" src={hImg(2,'orchids')} alt="" zoomOnHover/></div>
+      </div>}
+    </section>
+    <section style={{background:'var(--surface-sunken)'}}><div style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'18px 16px':'28px var(--gutter)',display:'flex',flexDirection:mobile?'column':'row',justifyContent:'space-around',gap:mobile?12:24,color:'var(--text-secondary)',fontSize:mobile?14:15}}>
+      {[['truck',lang==='fa'?'ارسال همان‌روز':'Same-day delivery'],['gift',lang==='fa'?'کارت دست‌نویس رایگان':'Free handwritten card'],['flower-2',lang==='fa'?'چیده با دست، هر صبح':'Arranged by hand, every morning']].map(([i,l])=><span key={i} style={{display:'flex',gap:10,alignItems:'center'}}><Icon name={i} size={20} color="var(--accent)"/>{l}</span>)}
+    </div></section>
+    
+    
+    <section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'48px 0 0':'96px var(--gutter) 0'}}>
+      <div style={{padding:mobile?'0 16px':0}}><SectionHeader id="home-cats" title={T.byCat} onPrev={mobile?undefined:()=>catRef.current.scrollPrev()} onNext={mobile?undefined:()=>catRef.current.scrollNext()} canPrev={cs.canPrev} canNext={cs.canNext} prevLabel={fa?'قبلی':'Previous'} nextLabel={fa?'بعدی':'Next'}/>
+      <p style={{color:'var(--text-secondary)',margin:mobile?'6px 0 20px':'8px 0 40px',fontSize:mobile?15:18,maxWidth:560}}>{T.byCatP}</p></div>
+      <div style={{padding:mobile?'0 16px':0}}><SnapScroller ref={catRef} onScrollStateChange={setCs} label={T.byCat} perView={tablet?4:6} perViewMobile={2.6} itemMin="160px" gap={mobile?'12px':'20px'}>{AG_DATA.categories.map(c=><CategoryCard key={c.id} label={c[lang]} image={AG_DATA.img(c.id)} href={AG_NAV.href('shopcat',c.id)} onClick={AG_NAV.link}/>)}</SnapScroller></div>
+    </section>
+    <section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'48px 16px 0':'96px var(--gutter) 0'}}>
+      <SectionHeader title={T.featured} action={<Button variant="ghost" size={mobile?'sm':'md'} iconEnd="arrow-right" href={AG_NAV.href('shop')} onClick={AG_NAV.link}>{T.viewAll}</Button>} style={{marginBottom:mobile?20:40}}/>
+      <ProductGrid lang={lang} items={AG_DATA.products.slice(0,mobile?6:8)} go={go} favs={favs} toggleFav={toggleFav}/>
+    </section>
+    <JournalSection lang={lang} go={go}/>
+  </main>;
+}
+window.Home=Home;

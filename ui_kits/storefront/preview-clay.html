@@ -1,0 +1,16 @@
+<!-- @dsCard group="Storefront" viewport="1440x1010" name="Storefront — Clay tenant" subtitle="Same store with data-tenant=&quot;clay&quot; — English left, Persian right, desktop + mobile" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Storefront — Clay · EN | FA</title><link rel="stylesheet" href="../../styles.css"><style>body{margin:0;padding:16px 20px;background:var(--petal-200);font-family:var(--font-body);color:var(--ink-900)}a{color:var(--ink-900)}a:hover{color:var(--peony-600)}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.k{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-700);font-weight:500}.k a{font-size:12px;letter-spacing:0;text-transform:none;font-weight:400}
+.desk{position:relative;width:100%;aspect-ratio:1440/900;border-radius:10px;overflow:hidden;background:var(--surface-page);box-shadow:var(--shadow-md)}.desk iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform-origin:0 0}
+.row{display:flex;gap:16px;align-items:flex-end}.ph{width:216px;height:468px;border-radius:28px;overflow:hidden;box-shadow:0 0 0 6px var(--ink-900),var(--shadow-md);background:var(--surface-page);position:relative;flex:none;margin:6px}.ph iframe{position:absolute;top:0;left:0;width:360px;height:780px;border:0;transform:scale(.6);transform-origin:0 0}
+.cap{font-size:13px;line-height:1.5;color:var(--ink-700);max-width:34ch}.cap b{display:block;color:var(--ink-900);font-weight:500}
+[dir="rtl"] .ph iframe{left:auto;right:0;transform-origin:100% 0}</style></head><body>
+<div class="cols">
+<div class="col" lang="en" dir="ltr"><div class="k"><span>English · desktop 1440</span><a href="index.html?tenant=clay&amp;lang=en" target="_blank">Open live</a></div><div class="desk"><iframe src="index.html?tenant=clay&amp;lang=en" title="English storefront, desktop" loading="lazy"></iframe></div>
+<div class="row"><div class="ph"><iframe src="index.html?tenant=clay&amp;lang=en" title="English storefront, mobile" loading="lazy"></iframe></div><div class="cap"><b>Mobile 360</b>Menu drawer, centred logo, bottom tab bar. Tap through it.</div></div></div>
+<div class="col" lang="fa" dir="rtl" data-lang="fa"><div class="k"><span>فارسی · دسکتاپ ۱۴۴۰</span><a href="index.html?tenant=clay&amp;lang=fa" target="_blank">نسخهٔ زنده</a></div><div class="desk" dir="ltr"><iframe src="index.html?tenant=clay&amp;lang=fa" title="Persian storefront, desktop" loading="lazy"></iframe></div>
+<div class="row"><div class="ph"><iframe src="index.html?tenant=clay&amp;lang=fa" title="Persian storefront, mobile" loading="lazy"></iframe></div><div class="cap"><b>موبایل ۳۶۰</b>همان چیدمان، آینه‌شده برای راست‌به‌چپ. لمس کنید و بگردید.</div></div></div>
+</div>
+<script>const fit=()=>document.querySelectorAll('.desk').forEach(d=>{d.querySelector('iframe').style.transform='scale('+(d.clientWidth/1440)+')';});fit();addEventListener('resize',fit);</script>
+</body></html>

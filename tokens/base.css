@@ -1,0 +1,15 @@
+html{-webkit-text-size-adjust:100%}
+body{transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out);margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
+.ag-display em{font-style:var(--accent-font-style);font-weight:var(--accent-font-weight)}
+:lang(fa) *{letter-spacing:0!important;font-style:normal}
+:lang(fa) em,:lang(fa) .ag-accent-italic{font-style:normal;font-weight:500}
+a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{color:var(--accent-press)}
+::selection{background:var(--blush-300);color:var(--ink-900)}
+[dir="rtl"] .ag-flip-rtl{transform:scaleX(-1)}
+:where(a,button,[role="button"],summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+:where(h1,h2,h3,main)[tabindex="-1"]:focus{outline:none}
+.ag-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+.ag-display{font-family:var(--font-display);font-weight:500;text-transform:var(--display-case);line-height:var(--lh-tight);letter-spacing:var(--tracking-display)}
+.ag-eyebrow{font-family:var(--font-body);font-size:var(--text-xs);font-weight:500;text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);color:var(--text-muted)}
+.ag-accent-italic{font-family:var(--font-display);font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)}

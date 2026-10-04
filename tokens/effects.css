@@ -1,0 +1,9 @@
+:root{
+--shadow-sm:0 1px 2px rgba(23,33,28,.06);
+--shadow-md:0 8px 20px -8px rgba(23,33,28,.18);
+--shadow-lg:0 24px 48px -16px rgba(23,33,28,.28);
+--ease-out:cubic-bezier(.22,.61,.36,1);/* @kind other */--ease-in-out:cubic-bezier(.65,0,.35,1);/* @kind other */
+--dur-fast:140ms;/* @kind other */--dur-base:240ms;/* @kind other */--dur-slow:480ms;/* @kind other */
+--blur-overlay:6px;/* @kind other */
+--z-header:50;/* @kind other */--z-overlay:100;/* @kind other */--z-toast:120;/* @kind other */--z-tooltip:130;/* @kind other */
+}

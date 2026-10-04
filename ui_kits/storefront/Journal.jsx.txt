@@ -1,0 +1,97 @@
+function JournalCard({lang,post,go,big}){
+  const {BlogCard}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile}=useBP();const P=post[lang];const c=AG_DATA.journalCats.find(x=>x.id===post.cat);
+  const meta=<div style={{display:'flex',gap:8,fontSize:13,color:'var(--text-muted)',flexWrap:'wrap'}}><span style={{color:'var(--text-accent)',fontWeight:500}}>{c[lang]}</span><span>·</span><span>{post.date[lang]}</span><span>·</span><span>{T.readMin.replace('{n}',AG_DATA.num(post.read,lang))}</span></div>;
+  {const im=AG_DATA.postImages(post)[0];return <BlogCard layout={big?'wide':'stack'} priority={big} cta={big?T.readStory:undefined} frame={big?'arch':'soft'} aspect={big?undefined:'4/3'} image={im.src} srcSet={im.srcSet} sizes={big?undefined:"(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"} meta={<><span style={{color:'var(--text-accent)',fontWeight:500}}>{c[lang]}</span><span aria-hidden="true">·</span><span>{post.date[lang]}</span><span aria-hidden="true">·</span><span>{T.readMin.replace('{n}',AG_DATA.num(post.read,lang))}</span></>} title={P.title} excerpt={P.excerpt} href={AG_NAV.href('post',post.id)} onClick={AG_NAV.link}/>;}
+}
+function useJournalLoad(dep){const [l,setL]=React.useState(true);React.useEffect(()=>{setL(true);const t=setTimeout(()=>setL(false),AG_DATA.journalDelay);return()=>clearTimeout(t);},[dep]);return l;}
+function JournalSkeleton({big}){
+  const {Skeleton}=window.VendraDesignSystem_f4f210;const {mobile}=useBP();
+  return <div aria-hidden="true" style={{display:'grid',gridTemplateColumns:big&&!mobile?'1.2fr 1fr':'1fr',gap:big&&!mobile?48:16,alignItems:big&&!mobile?'center':'start'}}>
+    <Skeleton shape="block" style={{height:'auto',aspectRatio:big?(mobile?'4/3':'5/4'):'4/3'}} radius={big?'var(--radius-arch)':'var(--radius-md)'}/>
+    <div style={{display:'flex',flexDirection:'column',gap:big?14:10}}><Skeleton width="45%" height={12}/><Skeleton width="92%" height={big?40:22}/>{big&&<Skeleton width="70%" height={40}/>}<Skeleton lines={2}/></div>
+  </div>;
+}
+function JournalSection({lang,go}){
+  const {Button}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const posts=AG_DATA.posts.slice(0,3);
+  return <section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'56px 0 0':'112px var(--gutter) 0'}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',gap:12,marginBottom:mobile?20:40,padding:mobile?'0 16px':0}}>
+      <div><h2 className="ag-display" style={{fontSize:mobile?34:52,margin:0}}>{T.fromJournal}</h2><p style={{color:'var(--text-secondary)',margin:'6px 0 0',fontSize:mobile?15:18}}>{T.fromJournalP}</p></div>
+      <Button variant="ghost" size={mobile?'sm':'md'} iconEnd={'arrow-right'} href={AG_NAV.href('journal')} onClick={AG_NAV.link} style={{flex:'none'}}>{T.allPosts}</Button>
+    </div>
+    {mobile?<div style={{display:'grid',gridAutoFlow:'column',gridAutoColumns:'78%',gap:14,overflowX:'auto',padding:'0 16px 8px',scrollSnapType:'x mandatory',scrollPaddingInline:16,scrollbarWidth:'none'}}>{posts.map(p=><div key={p.id} style={{scrollSnapAlign:'start'}}><JournalCard lang={lang} post={p} go={go}/></div>)}</div>
+    :<div style={{display:'grid',gridTemplateColumns:'repeat('+(tablet?2:3)+',minmax(0,1fr))',gap:28}}>{posts.slice(0,tablet?2:3).map(p=><JournalCard key={p.id} lang={lang} post={p} go={go}/>)}</div>}
+  </section>;
+}
+function Journal({lang,go}){
+  const {Tag,Input,Button,Icon}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const [cat,setCat]=React.useState('all');const [q,setQ]=React.useState('');const loading=useJournalLoad(cat);
+  const s=q.trim().toLowerCase();const list=AG_DATA.posts.filter(p=>(cat==='all'||p.cat===cat)&&(!s||[p.en.title,p.en.excerpt,p.fa.title,p.fa.excerpt].join(' ').toLowerCase().includes(s)));const [lead,...rest]=list;
+  const cols=mobile?'1fr':'repeat('+(tablet?2:3)+',minmax(0,1fr))';
+  return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'24px 16px 0':'56px var(--gutter) 0'}}>
+    <div className="ag-eyebrow">{T.journalEb}</div>
+    <h1 className="ag-display" style={{fontSize:mobile?42:80,margin:mobile?'8px 0 10px':'12px 0 16px',lineHeight:1}}>{T.journalH}</h1>
+    <p style={{color:'var(--text-secondary)',fontSize:mobile?16:19,maxWidth:560,margin:'0 0 28px'}}>{T.journalP}</p>
+    <div style={{display:'flex',gap:16,alignItems:'center',justifyContent:'space-between',flexDirection:tablet?'column-reverse':'row',alignItems:tablet?'stretch':'center',margin:mobile?'0 0 28px':'0 0 48px'}}><div style={{display:'flex',gap:8,overflowX:'auto',scrollbarWidth:'none',margin:mobile?'0 -16px':0,padding:mobile?'0 16px':0}}>{AG_DATA.journalCats.map(c=><Tag key={c.id} selected={cat===c.id} onClick={()=>setCat(c.id)} style={{flex:'none'}}>{c[lang]}</Tag>)}</div><div style={{width:tablet?'100%':280,flex:'none'}}><Input iconStart="search" type="search" placeholder={T.jSearch} value={q} onChange={e=>setQ(e.target.value)} aria-label={T.jSearch}/></div></div>
+    {loading?<><div style={{paddingBottom:mobile?36:64,marginBottom:mobile?36:64,borderBottom:'1px solid var(--border-subtle)'}}><JournalSkeleton big/></div><div style={{display:'grid',gridTemplateColumns:cols,gap:mobile?36:'48px 28px'}}>{[0,1,2].slice(0,mobile?1:tablet?2:3).map(i=><JournalSkeleton key={i}/>)}</div></>
+    :!list.length?<div style={{padding:mobile?'24px 0':'48px 0'}}>{s?<StateScreen icon={<Icon name="search-x" size={34}/>} title={T.jNoMatchH.replace('{q}',q.trim())} actions={<><Button onClick={()=>setQ('')}>{T.clearSearch}</Button>{cat!=='all'&&<Button variant="secondary" onClick={()=>{setQ('');setCat('all');}}>{T.allPosts}</Button>}</>}>{T.jNoMatchP}</StateScreen>
+      :<StateScreen icon={<Icon name="notebook-pen" size={34}/>} title={T.jEmptyH} actions={<><Button iconStart="instagram" onClick={()=>window.open(AG_DATA.contact.ig,'_blank')}>{T.followIg}</Button><Button variant="secondary" onClick={()=>setCat('all')}>{T.allPosts}</Button></>}>{T.jEmptyP}</StateScreen>}</div>
+    :<>{lead&&<div style={{paddingBottom:mobile?36:64,marginBottom:mobile?36:64,borderBottom:'1px solid var(--border-subtle)'}}><JournalCard lang={lang} post={lead} go={go} big/></div>}
+    {rest.length>0&&<div style={{display:'grid',gridTemplateColumns:mobile?'1fr':'repeat('+(tablet?2:3)+',minmax(0,1fr))',gap:mobile?36:'48px 28px'}}>{rest.map(p=><JournalCard key={p.id} lang={lang} post={p} go={go}/>)}</div>}</>}
+  </main>;
+}
+function Post({lang,id,go,favs,toggleFav}){
+  const {Button,IconButton,Icon}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const {mobile,tablet}=useBP();
+  const [copied,setCopied]=React.useState(false);const loading=useJournalLoad(id);
+  const found=AG_DATA.posts.find(p=>p.id===id);
+  if(loading)return <main id="main" aria-busy="true" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'20px 16px 0':'48px var(--gutter) 0'}}>
+    <div style={{maxWidth:680,margin:'0 auto',display:'flex',flexDirection:'column',alignItems:'center',gap:14}}><div className="ag-skel" style={{width:140,height:12}}></div><div className="ag-skel" style={{width:'90%',height:mobile?34:56}}></div><div className="ag-skel" style={{width:'60%',height:mobile?34:56}}></div><div className="ag-skel" style={{width:'80%',height:16,marginTop:6}}></div></div>
+    <div className="ag-skel" style={{maxWidth:1040,margin:mobile?'24px auto 0':'48px auto 0',aspectRatio:mobile?'4/3':'16/8',borderRadius:'var(--radius-lg)'}}></div>
+    <div style={{maxWidth:680,margin:'40px auto 0',display:'flex',flexDirection:'column',gap:12}}>{['100%','96%','88%','100%','72%'].map((w,i)=><div key={i} className="ag-skel" style={{width:w,height:16}}></div>)}</div>
+  </main>;
+  if(!found)return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'48px 16px 0':'104px var(--gutter) 0'}}>
+    <StateScreen icon={<Icon name="book-x" size={34}/>} eyebrow={T.journal} title={T.postNfH} actions={<Button size="lg" iconStart={lang==='fa'?'arrow-right':'arrow-left'} href={AG_NAV.href('journal')} onClick={AG_NAV.link}>{T.backJournal}</Button>}>{T.postNfP}</StateScreen>
+    <div style={{display:'grid',gridTemplateColumns:mobile?'1fr':'repeat('+(tablet?2:3)+',minmax(0,1fr))',gap:mobile?32:28,marginTop:mobile?40:72}}>{AG_DATA.posts.slice(0,tablet?2:3).map(p=><JournalCard key={p.id} lang={lang} post={p} go={go}/>)}</div>
+  </main>;
+  const post=found;const P=post[lang];const c=AG_DATA.journalCats.find(x=>x.id===post.cat);
+  const more=AG_DATA.posts.filter(p=>p.id!==post.id).slice(0,tablet?2:3);const prods=post.products.map(pid=>AG_DATA.products.find(p=>p.id===pid)).filter(Boolean);
+  const col={maxWidth:680,margin:'0 auto'};
+  const share=<div style={{display:'flex',gap:8,alignItems:'center'}}><span style={{fontSize:13,color:'var(--text-muted)',marginInlineEnd:4}}>{T.share}</span>
+    <IconButton icon="message-circle" label="WhatsApp" onClick={()=>window.open('https://wa.me/?text='+encodeURIComponent(P.title+' — vendra'),'_blank')}/>
+    <IconButton icon="instagram" label="Instagram" onClick={()=>window.open(AG_DATA.contact.ig,'_blank')}/>
+    <IconButton icon={copied?'check':'link'} label={copied?T.linkCopied:T.copyLink} onClick={()=>{navigator.clipboard&&navigator.clipboard.writeText(location.href);setCopied(true);setTimeout(()=>setCopied(false),1800);}}/></div>;
+  const block=(b,i)=>{
+    if(b[0]==='h')return <h2 key={i} className="ag-display" style={{fontSize:mobile?26:34,margin:'40px 0 12px',fontWeight:500}}>{b[1]}</h2>;
+    if(b[0]==='quote')return <blockquote key={i} className="ag-display" style={{margin:'40px 0',padding:0,fontSize:mobile?26:36,lineHeight:1.25,color:'var(--text-accent)',textAlign:'center',textWrap:'balance',fontStyle:lang==='fa'?'normal':'italic'}}>“{b[1]}”</blockquote>;
+    if(b[0]==='img')return <figure key={i} style={{margin:mobile?'32px -16px':'48px -80px'}}><div style={{aspectRatio:'16/10',borderRadius:mobile?0:'var(--radius-md)',overflow:'hidden'}}>{(()=>{const c=AG_DATA.pic(b[1]);return <img src={c.src} srcSet={c.srcSet} sizes={c.srcSet?'(max-width: 640px) 100vw, 840px':undefined} alt={c.alt||b[2]||''} loading="lazy" decoding="async" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>;})()}</div><figcaption style={{fontSize:14,color:'var(--text-muted)',marginTop:10,padding:mobile?'0 16px':'0 80px'}}>{b[2]}</figcaption></figure>;
+    if(b[0]==='tips')return <aside key={i} style={{background:'var(--surface-sunken)',borderRadius:'var(--radius-md)',padding:mobile?20:28,margin:'40px 0 0'}}><div className="ag-eyebrow" style={{marginBottom:14}}>{T.goodToKnow}</div><ul style={{listStyle:'none',margin:0,padding:0,display:'flex',flexDirection:'column',gap:12}}>{b[1].map(t=><li key={t} style={{display:'flex',gap:12,alignItems:'flex-start'}}><Icon name="flower-2" size={18} color="var(--accent)" style={{flex:'none',marginTop:3}}/><span>{t}</span></li>)}</ul></aside>;
+    return <p key={i} style={{margin:'0 0 18px'}}>{b[1]}</p>;
+  };
+  return <main id="main">
+    <article>
+      <header style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'20px 16px 0':'48px var(--gutter) 0'}}>
+        <div style={{...col,textAlign:'center'}}>
+          <a href={AG_NAV.href('journal')} onClick={AG_NAV.link} className="ag-eyebrow" style={{textDecoration:'none'}}>{T.journal} / {c[lang]}</a>
+          <h1 className="ag-display" style={{fontSize:mobile?36:64,lineHeight:1.05,margin:mobile?'14px 0':'20px 0 20px',textWrap:'balance',fontWeight:500}}>{P.title}</h1>
+          <p style={{fontSize:mobile?17:20,color:'var(--text-secondary)',margin:'0 0 18px',textWrap:'pretty'}}>{P.excerpt}</p>
+          <div style={{display:'flex',gap:8,justifyContent:'center',fontSize:14,color:'var(--text-muted)',flexWrap:'wrap'}}><span>{post.date[lang]}</span><span>·</span><span>{T.readMin.replace('{n}',AG_DATA.num(post.read,lang))}</span></div>
+        </div>
+        <div style={{maxWidth:1040,margin:mobile?'24px -16px 0':'48px auto 0',aspectRatio:mobile?'4/3':'16/8',borderRadius:mobile?0:'var(--radius-lg) var(--radius-lg) var(--radius-md) var(--radius-md)',overflow:'hidden'}}>{(()=>{const c=AG_DATA.postImages(post)[0];return <img src={c.src} srcSet={c.srcSet} sizes={c.srcSet?'(max-width: 1040px) 100vw, 1040px':undefined} alt={c.alt||''} fetchpriority="high" decoding="async" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/>;})()}</div>
+      </header>
+      <div style={{padding:mobile?'32px 16px 0':'56px var(--gutter) 0'}}><div style={{...col,fontSize:mobile?17:18,lineHeight:1.75,color:'var(--text-body)'}}>
+        {P.body.map(block)}
+        {AG_DATA.postImages(post).length>1&&<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',gap:12,margin:mobile?'32px 0 0':'48px -80px 0'}}>{AG_DATA.postImages(post).slice(1).map((c,i)=><div key={i} style={{aspectRatio:'4/5',borderRadius:'var(--radius-md)',overflow:'hidden',background:'var(--surface-sunken)'}}><img src={c.src} srcSet={c.srcSet} sizes={c.srcSet?'(max-width: 640px) 50vw, 280px':undefined} alt={c.alt||''} loading="lazy" decoding="async" style={{width:'100%',height:'100%',objectFit:'cover',display:'block'}}/></div>)}</div>}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap',marginTop:40,paddingTop:20,borderTop:'1px solid var(--border-subtle)'}}>{share}<Button variant="ghost" size="sm" iconStart={lang==='fa'?'arrow-right':'arrow-left'} href={AG_NAV.href('journal')} onClick={AG_NAV.link}>{T.allPosts}</Button></div>
+      </div></div>
+    </article>
+    {prods.length>0&&<section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'56px 16px 0':'96px var(--gutter) 0'}}>
+      <h2 className="ag-display" style={{fontSize:mobile?30:44,margin:mobile?'0 0 20px':'0 0 32px'}}>{T.shopPost}</h2>
+      <ProductGrid lang={lang} items={prods} go={go} favs={favs} toggleFav={toggleFav} cols={mobile?2:3}/>
+    </section>}
+    <section style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'56px 16px 0':'96px var(--gutter) 0'}}>
+      <h2 className="ag-display" style={{fontSize:mobile?30:44,margin:mobile?'0 0 20px':'0 0 32px'}}>{T.keepReading}</h2>
+      <div style={{display:'grid',gridTemplateColumns:mobile?'1fr':'repeat('+(tablet?2:3)+',minmax(0,1fr))',gap:mobile?32:28}}>{more.map(p=><JournalCard key={p.id} lang={lang} post={p} go={go}/>)}</div>
+    </section>
+  </main>;
+}
+Object.assign(window,{JournalCard,JournalSection,Journal,Post});

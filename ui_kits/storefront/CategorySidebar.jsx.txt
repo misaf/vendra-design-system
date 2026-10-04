@@ -1,0 +1,29 @@
+function FilterGroup({title,children}){
+  return <section style={{borderTop:'1px solid var(--border-subtle)',paddingTop:18,marginTop:18}}><div className="ag-eyebrow" style={{marginBottom:12}}>{title}</div>{children}</section>;
+}
+function PriceRange({lang,value,onChange}){
+  const {RangeSlider}=window.VendraDesignSystem_f4f210;const M=AG_DATA.priceMax,S=AG_DATA.priceStep;
+  return <RangeSlider min={0} max={M} step={S} value={value||[0,M]} onChange={([a,b])=>onChange(a<=0&&b>=M?null:[a,b])} formatValue={v=>AG_DATA.money(v,lang)} labels={{min:lang==='fa'?'حداقل قیمت':'Minimum price',max:lang==='fa'?'حداکثر قیمت':'Maximum price'}}/>;
+}
+function CategorySidebar({lang,cat,setCat,filters,setFilters,base}){
+  const {Checkbox,Switch,Button}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];
+  const f=filters;const tog=(k,v)=>setFilters({...f,[k]:f[k].includes(v)?f[k].filter(x=>x!==v):[...f[k],v]});
+  const inCat=AG_DATA.products.filter(p=>cat==='all'||p.cat===cat);
+  const count=id=>AG_DATA.applyFilters(AG_DATA.products.filter(p=>id==='all'||p.cat===id),f).length;
+  const rows=[['all',T.all],...AG_DATA.categories.map(c=>[c.id,c[lang]])];
+  const active=(f.price?1:0)+f.colors.length+(f.inStock?1:0);
+  return <div style={{display:'flex',flexDirection:'column'}}>
+    <nav aria-label={T.categories} style={{display:'flex',flexDirection:'column',gap:2}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:10}}><span className="ag-eyebrow">{T.categories}</span>{active>0&&<a href="#" onClick={e=>{e.preventDefault();setFilters({bands:[],colors:[],price:null,inStock:false});}} style={{fontSize:13}}>{T.clearAll}</a>}</div>
+      {rows.map(([id,label])=>{const on=cat===id;const n=count(id);return <button key={id} onClick={()=>setCat(id)} aria-current={on?'true':undefined}
+        style={{display:'flex',alignItems:'center',gap:10,minHeight:40,padding:'0 12px',border:0,borderRadius:'var(--radius-sm)',background:on?'var(--accent-soft)':'transparent',color:on?'var(--text-on-soft)':n?'var(--text-body)':'var(--text-subtle)',font:(on?'500 ':'400 ')+'15px var(--font-body)',textAlign:'start',cursor:'pointer'}}
+        onMouseEnter={e=>{if(!on)e.currentTarget.style.background='var(--surface-muted)';}} onMouseLeave={e=>{if(!on)e.currentTarget.style.background='transparent';}}>
+        <span style={{width:4,height:18,borderRadius:2,background:on?'var(--text-accent)':'transparent',flex:'none',marginInlineStart:-6}}></span>
+        <span style={{flex:1,minWidth:0}}>{label}</span>
+      </button>;})}
+    </nav>
+    <FilterGroup title={T.price}><PriceRange lang={lang} value={f.price} onChange={v=>setFilters({...f,price:v})}/></FilterGroup>
+    <FilterGroup title={T.availability}><Switch label={T.inStock} checked={f.inStock} onChange={e=>setFilters({...f,inStock:e.target.checked})}/></FilterGroup>
+  </div>;
+}
+window.CategorySidebar=CategorySidebar;

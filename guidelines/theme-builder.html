@@ -1,0 +1,78 @@
+<!-- @dsCard group="Brand" viewport="700x560" name="Theme builder" subtitle="Pick a tenant's colours, font and shape — live preview, contrast checks, copyable CSS" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<script src="../templates/_vendor/react.production.min.js"></script>
+<script src="../templates/_vendor/react-dom.production.min.js"></script>
+<script src="../templates/_vendor/babel.min.js"></script>
+<script src="../_ds_bundle.js"></script>
+<style>body{margin:0;font-family:var(--font-body);color:var(--ink-900);background:var(--white);font-size:13px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.tb{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:560px}.tb-c{padding:12px 16px;border-inline-end:1px solid var(--petal-200);display:flex;flex-direction:column;gap:7px;background:var(--petal-50)}.tb-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.tb-row label{color:var(--ink-700)}.tb-row input[type=color]{width:44px;height:28px;border:1px solid var(--border-input);border-radius:4px;padding:0;background:none;cursor:pointer}.tb-row select{font:inherit;font-size:12px;height:28px;border:1px solid var(--border-input);border-radius:4px;background:var(--white);color:var(--ink-900);max-width:120px}.tb-k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-500);margin-top:2px}.tb-pre{display:flex;gap:6px}.tb-pre button{flex:1;font:inherit;font-size:12px;height:30px;border:1px solid var(--border-input);background:var(--white);border-radius:4px;cursor:pointer;color:var(--ink-900)}.tb-pre button:hover{border-color:var(--ink-700)}.tb-p{padding:18px 20px;display:flex;flex-direction:column;gap:12px;background:var(--surface-page);color:var(--text-body)}.tb-h{font-family:var(--font-display);font-weight:500;font-size:32px;line-height:1.05;letter-spacing:var(--tracking-display);text-transform:var(--display-case);margin:0}.tb-h em{color:var(--text-accent);font-style:var(--accent-font-style);font-weight:var(--accent-font-weight)}.tb-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tb-g{display:grid;grid-template-columns:104px 1fr;gap:14px}.tb-inv{background:var(--surface-inverse);color:var(--text-on-inverse);padding:10px 12px;border-radius:var(--radius-md);font-size:12px}.tb-ch{display:grid;grid-template-columns:1fr auto auto;gap:3px 10px;font-size:12px;color:var(--text-secondary)}.tb-ok{color:var(--success);font-weight:500}.tb-bad{color:var(--danger);font-weight:500}.tb-ch span:nth-child(3n+2){font-variant-numeric:tabular-nums;color:var(--text-muted)}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { Button, Badge, Tag, ProductCard } = window.VendraDesignSystem_f4f210;
+const hx=h=>{h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16));};
+const toHex=a=>'#'+a.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase();
+const mix=(a,b,t)=>{const A=hx(a),B=hx(b);return toHex(A.map((v,i)=>v+(B[i]-v)*t));};
+const W='#FFFFFF',K='#000000';
+const lum=h=>{const [r,g,b]=hx(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});return .2126*r+.7152*g+.0722*b;};
+const cr=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+const FONTS={serif:"'Instrument Serif','Vazirmatn',Georgia,serif",sans:"'Jost','Vazirmatn','Segoe UI',system-ui,sans-serif",vazir:"'Vazirmatn','Segoe UI',system-ui,sans-serif"};
+const PRESETS={vendra:{accent:'#C8405F',neutral:'#ECE4E0',ink:'#17211C',inverse:'#17211C',font:'serif',shape:'pill',caseH:'none',accentStyle:'italic',frame:'arch'},clay:{accent:'#A9532E',neutral:'#E6DCCB',ink:'#1F1D18',inverse:'#262E17',font:'sans',shape:'square',caseH:'uppercase',accentStyle:'normal',frame:'square'}};
+function build(s){
+  const a=s.accent,n=s.neutral,i=s.ink;
+  const t={'--peony-100':mix(a,W,.87),'--peony-200':mix(a,W,.75),'--peony-400':mix(a,W,.2),'--peony-500':a,'--peony-600':mix(a,K,.18),'--peony-700':mix(a,K,.38),
+  '--petal-50':mix(n,W,.82),'--petal-100':mix(n,W,.55),'--petal-200':n,'--petal-300':mix(n,K,.08),'--petal-400':mix(n,K,.2),
+  '--ink-900':i,'--ink-700':mix(i,W,.14),'--ink-500':mix(i,W,.26),'--ink-300':mix(i,W,.6),'--stem-900':s.inverse,'--stem-700':mix(s.inverse,W,.18)};
+  t['--border-input']=mix(i,W,.48);
+  const sem={'--surface-page':t['--petal-50'],'--surface-card':W,'--surface-sunken':t['--petal-100'],'--surface-muted':n,'--surface-inverse':s.inverse,
+  '--text-body':i,'--text-secondary':t['--ink-700'],'--text-muted':t['--ink-500'],'--text-subtle':t['--ink-300'],'--text-on-accent':W,'--text-on-soft':t['--peony-700'],'--text-on-inverse':t['--petal-50'],'--text-accent':t['--peony-600'],
+  '--accent':a,'--accent-hover':t['--peony-600'],'--accent-press':t['--peony-700'],'--accent-soft':t['--peony-100'],'--accent-soft-hover':t['--peony-200'],
+  '--border-subtle':n,'--border-default':t['--petal-300'],'--border-strong':t['--ink-700'],'--text-inverse-muted':t['--ink-300'],'--border-inverse':t['--stem-700']};
+  const ch={'--font-display':FONTS[s.font],'--display-case':s.caseH,'--tracking-display':s.caseH==='uppercase'?'.02em':(s.font==='serif'?'-.015em':'-.01em'),'--accent-font-style':s.accentStyle,'--accent-font-weight':s.accentStyle==='italic'?'400':'500',
+  '--radius-control':s.shape==='pill'?'var(--radius-pill)':'var(--radius-xs)','--button-case':s.shape==='pill'?'none':'uppercase','--tracking-button':s.shape==='pill'?'.02em':'.12em',
+  '--radius-arch':s.frame==='arch'?'160px 160px var(--radius-md) var(--radius-md)':s.frame==='soft'?'24px 24px var(--radius-md) var(--radius-md)':'var(--radius-xs)'};
+  return {ramps:t,sem,ch,all:{...t,...sem,...ch}};
+}
+function checks(b){const r=b.ramps,s=b.sem;return [
+  ['White on accent button',cr(W,s['--accent']),4.5],
+  ['Accent text on page',cr(s['--text-accent'],s['--surface-page']),4.5],
+  ['Muted text on muted surface',cr(s['--text-muted'],s['--surface-muted']),4.5],
+  ['Body text on page',cr(s['--text-body'],s['--surface-page']),4.5],
+  ['Footer text on inverse',cr(s['--text-on-inverse'],s['--surface-inverse']),4.5],
+  ['Input edge on page',cr(r['--border-input'],s['--surface-page']),3]];}
+function css(slug,b){const line=o=>Object.entries(o).map(([k,v])=>k+':'+v+';').join('');return `[data-tenant="${slug}"]{\n${line(b.ramps)}\n${line(b.sem)}\n${line(b.ch)}\n}`;}
+function Row({label,children}){return <div className="tb-row"><label>{label}</label>{children}</div>;}
+function App(){
+  const [s,setS]=React.useState(PRESETS.vendra);const [slug,setSlug]=React.useState('my-florist');const [copied,setCopied]=React.useState(false);
+  const up=k=>e=>setS({...s,[k]:e.target.value});const b=build(s);const cs=checks(b);const fails=cs.filter(c=>c[1]<c[2]).length;
+  const copy=()=>{navigator.clipboard&&navigator.clipboard.writeText(css(slug,b));setCopied(true);setTimeout(()=>setCopied(false),1400);};
+  return <div className="tb">
+    <div className="tb-c">
+      <div className="tb-pre"><button onClick={()=>setS(PRESETS.vendra)}>Vendra</button><button onClick={()=>setS(PRESETS.clay)}>Clay</button></div>
+      <div className="tb-k">Colour</div>
+      <Row label="Accent"><input type="color" value={s.accent} onChange={up('accent')}/></Row>
+      <Row label="Neutral"><input type="color" value={s.neutral} onChange={up('neutral')}/></Row>
+      <Row label="Ink"><input type="color" value={s.ink} onChange={up('ink')}/></Row>
+      <Row label="Footer"><input type="color" value={s.inverse} onChange={up('inverse')}/></Row>
+      <div className="tb-k">Character</div>
+      <Row label="Headings"><select value={s.font} onChange={up('font')}><option value="serif">Instrument Serif</option><option value="sans">Jost</option><option value="vazir">Vazirmatn</option></select></Row>
+      <Row label="Case"><select value={s.caseH} onChange={up('caseH')}><option value="none">Sentence</option><option value="uppercase">Uppercase</option></select></Row>
+      <Row label="Accent word"><select value={s.accentStyle} onChange={up('accentStyle')}><option value="italic">Italic</option><option value="normal">Upright</option></select></Row>
+      <Row label="Controls"><select value={s.shape} onChange={up('shape')}><option value="pill">Pill</option><option value="square">Squared</option></select></Row>
+      <Row label="Image frame"><select value={s.frame} onChange={up('frame')}><option value="arch">Arch</option><option value="soft">Soft top</option><option value="square">Square</option></select></Row>
+      <div className="tb-k">Export</div>
+      <Row label="Slug"><input value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,''))} style={{font:'inherit',fontSize:12,height:26,width:110,border:'1px solid var(--border-input)',borderRadius:4,padding:'0 6px'}}/></Row>
+      <button onClick={copy} style={{font:'inherit',height:32,borderRadius:4,border:0,background:'var(--ink-900)',color:'var(--petal-50)',cursor:'pointer'}}>{copied?'Copied':'Copy tenant CSS'}</button>
+    </div>
+    <div className="tb-p" style={b.all}>
+      <h2 className="tb-h">Wild things, <em>gathered.</em></h2>
+      <div className="tb-r"><Button variant="primary" size="sm">Add to bag</Button><Button variant="secondary" size="sm">Shop</Button><Button variant="soft" size="sm">Gift card</Button></div>
+      <div className="tb-r"><Tag selected>Roses</Tag><Tag>Orchids</Tag><Badge tone="accent">New</Badge><Badge tone="neutral">Seasonal</Badge></div>
+      <div className="tb-g"><ProductCard name="Ivory ribbon box" price="4,100,000 Toman" placeholder="Photo" frame="arch"/>
+        <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          <div className="tb-ch">{cs.map(([l,v,min])=><React.Fragment key={l}><span>{l}</span><span>{v.toFixed(1)}:1</span><span className={v>=min?'tb-ok':'tb-bad'}>{v>=min?'Pass':'Fail'}</span></React.Fragment>)}</div>
+          <div className="tb-inv">{fails?`${fails} check${fails>1?'s':''} failing — adjust before launch.`:'All contrast checks pass.'}</div>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

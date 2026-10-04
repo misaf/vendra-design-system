@@ -1,0 +1,45 @@
+<!-- @dsCard group="Components" viewport="1440x1080" name="Core" subtitle="Button, IconButton, Badge, Tag, Card, Icon, ArchFrame, SkipLink — English left, Persian right" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="../../templates/_vendor/react.production.min.js"></script>
+<script src="../../templates/_vendor/react-dom.production.min.js"></script>
+<script src="../../templates/_vendor/babel.min.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;padding:20px 24px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.split>div{min-width:0}.lh{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:500;padding-bottom:8px;margin-bottom:14px;border-bottom:1px solid var(--border-subtle)}.r{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.k{font-size:11px;color:var(--ink-500);width:84px;flex:none;letter-spacing:.06em;text-transform:uppercase}[lang="fa"] .k{letter-spacing:0;font-size:12px}.m{font-size:12px;margin-top:6px;color:var(--text-muted)}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { Button, IconButton, Badge, Tag, Card, ArchFrame, SkipLink } = window.VendraDesignSystem_f4f210;
+const T={
+en:{h:'English',k:{btn:'Button',size:'Sizes',link:'Link / skip',block:'Block',ib:'Icon btn',ol:'Outline link',badge:'Badge',tag:'Tag',card:'Card'},shop:'Shop now',det:'Details',gift:'Gift wrap',cancel:'Cancel',sm:'Small',md:'Medium',lg:'Large',sold:'Sold out',shopA:'Shop (a href)',contact:'Contact us',skip:'Skip to main content',skipHint:'Tab reveals the skip link',lblock:'Link block',bblock:'Button block',
+ il:{search:'Search',bag:'Bag',save:'Save',saved:'Saved',close:'Close',call:'Call'},badges:['Neutral','New','Seasonal','Dried','Gift','Sold out','Limited'],tags:['Fresh','Dried','Garden roses','Wild'],under:'Under 3M',cards:['Default','Sunken','Raised'],
+ af:'ArchFrame · shape, ratio, ring, placeholder',a:[['Wild Meadow bouquet','arch · 4/5 · zoom'],['Product photo','arch · 3/4 · placeholder'],['Grid tile','soft · 1/1'],['Hero','arch + circle · ring']],seasonal:'Seasonal',
+ af2:'ArchFrame · ratio="fill" · tone="product" · size="thumb"',eb:'Weddings',tA:'Bridal',tB:'florals',tx:'Bouquets, arches and tables. The text column sets the height; the frame fills it.',load:'Loading…',prod:'product · 3/4',list:['Wild Meadow','Blush Box','White Orchid']},
+fa:{h:'فارسی',k:{btn:'دکمه',size:'اندازه',link:'پیوند / پرش',block:'تمام‌عرض',ib:'دکمهٔ آیکن',ol:'پیوند خطی',badge:'نشان',tag:'برچسب',card:'کارت'},shop:'خرید کنید',det:'جزئیات',gift:'کادوپیچ',cancel:'انصراف',sm:'کوچک',md:'متوسط',lg:'بزرگ',sold:'ناموجود',shopA:'فروشگاه (پیوند)',contact:'تماس با ما',skip:'رفتن به محتوای اصلی',skipHint:'با Tab پیوند پرش دیده می‌شود',lblock:'پیوند تمام‌عرض',bblock:'دکمهٔ تمام‌عرض',
+ il:{search:'جستجو',bag:'سبد',save:'ذخیره',saved:'ذخیره‌شده',close:'بستن',call:'تماس'},badges:['عادی','جدید','فصلی','خشک','هدیه','ناموجود','محدود'],tags:['تازه','خشک','رز باغی','وحشی'],under:'زیر ۳ میلیون',cards:['پیش‌فرض','فرورفته','برجسته'],
+ af:'قاب قوسی · شکل، نسبت، حلقه، جای‌خالی',a:[['دسته‌گل وحشی','قوسی · ۴:۵ · بزرگ‌نمایی'],['عکس محصول','قوسی · ۳:۴ · جای‌خالی'],['کاشی شبکه','نرم · ۱:۱'],['تصویر اصلی','قوسی + دایره · حلقه']],seasonal:'فصلی',
+ af2:'قاب قوسی · پرکننده · محصول · بندانگشتی',eb:'عروسی',tA:'گل‌آرایی',tB:'عروس',tx:'دسته‌گل، آلاچیق و میز. ستون متن ارتفاع را تعیین می‌کند و قاب آن را پر می‌کند.',load:'در حال بارگذاری…',prod:'محصول · ۳:۴',list:['دسته‌گل وحشی','جعبهٔ صورتی','ارکیدهٔ سفید']}};
+const P='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
+function Side({l}){const t=T[l];const [sel,setSel]=React.useState(t.tags[1]);const tones=[undefined,'accent','sage','ochre','plum','danger','solid'];
+return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefined}><div className="lh">{t.h}</div>
+<div className="r"><span className="k">{t.k.btn}</span><Button iconEnd="arrow-right">{t.shop}</Button><Button variant="secondary">{t.det}</Button><Button variant="soft" iconStart="gift">{t.gift}</Button><Button variant="ghost">{t.cancel}</Button></div>
+<div className="r"><span className="k">{t.k.size}</span><Button size="sm">{t.sm}</Button><Button size="md">{t.md}</Button><Button size="lg">{t.lg}</Button><Button disabled>{t.sold}</Button></div>
+<div className="r"><span className="k">{t.k.link}</span><Button href="?view=shop" iconEnd="arrow-right" onClick={pd}>{t.shopA}</Button><Button variant="ghost" href="?view=contact" onClick={pd}>{t.contact}</Button>{SkipLink&&<SkipLink href="#root">{t.skip}</SkipLink>}<span style={{fontSize:12,color:'var(--text-muted)'}}>{t.skipHint}</span></div>
+<div className="r" style={{alignItems:'flex-start'}}><span className="k">{t.k.block}</span><div style={{width:300,display:'flex',flexDirection:'column',gap:8,outline:'1px dashed var(--border-subtle)'}}><Button block href="#" onClick={pd}>{t.lblock}</Button><Button block>{t.bblock}</Button></div></div>
+<div className="r"><span className="k">{t.k.ib}</span><IconButton icon="search" label={t.il.search}/><IconButton icon="shopping-bag" label={t.il.bag} count={2}/><IconButton icon="heart" label={t.il.save} variant="outline"/><IconButton icon="heart" label={t.il.saved} variant="solid" active/><IconButton icon="x" label={t.il.close} size="sm"/></div>
+<div className="r"><span className="k">{t.k.ol}</span><IconButton icon="instagram" label="Instagram" variant="outline" href="https://instagram.com/misaf1990" target="_blank"/><IconButton icon="message-circle" label="WhatsApp" variant="outline" href="https://wa.me/989129333034" target="_blank"/><IconButton icon="phone" label={t.il.call} variant="outline" href="tel:+989129333034"/><div style={{display:'flex',gap:8,padding:8,borderRadius:999,background:'var(--surface-inverse)'}}><IconButton icon="instagram" label="Instagram" variant="outline" className="ag-iconbtn--inverse" href="#"/><IconButton icon="message-circle" label="WhatsApp" variant="outline" className="ag-iconbtn--inverse" href="#"/><IconButton icon="phone" label={t.il.call} variant="outline" className="ag-iconbtn--inverse" href="#"/></div></div>
+<div className="r"><span className="k">{t.k.badge}</span>{t.badges.map((b,i)=><Badge key={b} tone={tones[i]}>{b}</Badge>)}</div>
+<div className="r"><span className="k">{t.k.tag}</span>{t.tags.map(x=><Tag key={x} selected={sel===x} onClick={()=>setSel(x)}>{x}</Tag>)}<Tag onRemove={()=>{}}>{t.under}</Tag></div>
+<div className="r"><span className="k">{t.k.card}</span>{t.cards.map((c,i)=><Card key={c} variant={[undefined,'sunken','raised'][i]} padding={14} style={{flex:1}}>{c}</Card>)}</div>
+<div className="k" style={{width:'auto',margin:'18px 0 10px'}}>{t.af}</div>
+<div style={{display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:16,alignItems:'end'}}>
+<div><ArchFrame src={P} alt={t.a[0][0]} zoomOnHover><div style={{position:'absolute',bottom:12,insetInlineStart:12}}><Badge tone="sage">{t.seasonal}</Badge></div></ArchFrame><div className="m">{t.a[0][1]}</div></div>
+<div><ArchFrame ratio="3/4" placeholderLabel={t.a[1][0]}/><div className="m">{t.a[1][1]}</div></div>
+<div><ArchFrame shape="soft" ratio="1/1" placeholderLabel={t.a[2][0]}/><div className="m">{t.a[2][1]}</div></div>
+<div><div style={{position:'relative',height:170}}><ArchFrame shape="arch" ring placeholderLabel={t.a[3][0]} style={{position:'absolute',insetInlineStart:0,top:0,width:'70%'}}/><ArchFrame shape="circle" ring src={P} alt="" style={{position:'absolute',insetInlineEnd:0,bottom:0,width:'55%'}}/></div><div className="m">{t.a[3][1]}</div></div>
+</div>
+<div className="k" style={{width:'auto',margin:'22px 0 10px'}}>{t.af2}</div>
+<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,alignItems:'stretch'}}>
+<div style={{display:'grid',gridTemplateColumns:'1fr 120px',gap:14,padding:14,background:'var(--surface-sunken)',borderRadius:12}}><div><div className="ag-eyebrow">{t.eb}</div><div style={{fontFamily:'var(--font-display)',fontSize:24,margin:'6px 0'}}>{t.tA} <em>{t.tB}</em></div><div style={{fontSize:13,color:'var(--text-secondary)'}}>{t.tx}</div></div><ArchFrame ratio="fill" minHeight="140px" src={P} alt=""/></div>
+<div style={{display:'flex',gap:12}}><div style={{flex:1}}><ArchFrame tone="product" ratio="3/4" placeholderLabel={t.load}/><div className="m">{t.prod}</div></div>
+<div style={{flex:1.3,display:'flex',flexDirection:'column',gap:10}}>{t.list.map((x,i)=><div key={x} style={{display:'flex',gap:10,alignItems:'center'}}><ArchFrame size="thumb" src={i?undefined:P} alt=""/><span style={{fontSize:14}}>{x}</span></div>)}</div></div>
+</div></div>;}
+ReactDOM.createRoot(document.getElementById('root')).render(<div className="split"><Side l="en"/><Side l="fa"/></div>);
+</script></body></html>

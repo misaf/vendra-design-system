@@ -1,0 +1,45 @@
+function Contact({lang,go,theme}){
+  const {Button,Icon,Card,Input,Select,Toast,Alert}=window.VendraDesignSystem_f4f210;const T=AG_DATA.t[lang];const C=AG_DATA.contact,CL=C[lang];const {mobile,tablet}=useBP();
+  const [sent,setSent]=React.useState(false);const [busy,setBusy]=React.useState(false);const [err,setErr]=React.useState(false);
+  const submit=async e=>{e.preventDefault();const f=e.target;const d=Object.fromEntries(new FormData(f));setBusy(true);setErr(false);try{await AG_API.inquiry({name:d.name,email:d.email||'',phone:d.phone||null,message:d.message,occasion:d.topic||null,preferredLocale:lang});setSent(true);setTimeout(()=>setSent(false),3000);f.reset();}catch(x){setErr(true);}setBusy(false);};
+  const ch=[['message-circle',T.chWa,T.chWaP,C.whatsapp,C.wa,true],['phone',T.chPhone,T.chPhoneP,C.phone,C.tel],['instagram',T.chIg,T.chIgP,'@'+C.instagram,C.ig]];
+  return <main id="main" style={{maxWidth:'var(--container-max)',margin:'0 auto',padding:mobile?'24px 16px 0':'64px var(--gutter) 0'}}>
+    <div className="ag-eyebrow">{T.contactEb}</div>
+    <h1 className="ag-display" style={{fontSize:mobile?44:84,margin:mobile?'12px 0 12px':'18px 0 20px'}}>{T.contactH}</h1>
+    <p style={{fontSize:mobile?16:19,color:'var(--text-secondary)',maxWidth:620,margin:mobile?'0 0 28px':'0 0 48px'}}>{T.contactP}</p>
+    <div style={{display:'grid',gridTemplateColumns:mobile?'1fr':'repeat(3,1fr)',gap:mobile?12:20}}>
+      {ch.map(([ic,h,p,v,href,primary])=><a key={ic} href={href} target={href.startsWith('http')?'_blank':undefined} rel="noopener" style={{textDecoration:'none',color:'inherit'}}>
+        <Card variant={primary?'default':'default'} padding={mobile?18:24} style={{display:'flex',alignItems:'center',gap:16,height:'100%',boxSizing:'border-box',background:primary?'var(--accent)':'var(--surface-card)',color:primary?'var(--text-on-accent)':'inherit',borderColor:primary?'transparent':'var(--border-subtle)'}}>
+          <span style={{width:48,height:48,borderRadius:'50%',display:'grid',placeItems:'center',flex:'none',background:primary?'rgba(255,255,255,.25)':'var(--accent-soft)',color:primary?'inherit':'var(--text-on-soft)'}}><Icon name={ic} size={22}/></span>
+          <span style={{flex:1,minWidth:0}}><span style={{display:'block',fontWeight:500,fontSize:17}}>{h}</span><span style={{display:'block',fontSize:13,opacity:primary?.85:1,color:primary?'inherit':'var(--text-muted)'}}>{p}</span><bdi dir="ltr" style={{display:'block',fontSize:15,marginTop:4}}>{v}</bdi></span>
+          <Icon name="arrow-right" size={18}/>
+        </Card></a>)}
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:tablet?'1fr':'1fr 1.2fr',gap:mobile?20:32,marginTop:mobile?20:32,alignItems:'start'}}>
+      <Card variant="sunken" padding={mobile?20:32} style={{display:'flex',flexDirection:'column',gap:18}}>
+        <div style={{position:'relative',aspectRatio:mobile?'4/3':'4/3',borderRadius:'var(--radius-md)',overflow:'hidden',background:'var(--surface-muted)',border:'1px solid var(--border-subtle)'}}>
+          <iframe title={T.visitCard} src={C.mapEmbed(lang)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen style={{position:'absolute',inset:0,width:'100%',height:'100%',border:0,filter:theme==='dark'?'invert(.9) hue-rotate(180deg) saturate(.7)':'saturate(.85) sepia(.12)'}}></iframe>
+          <span dir="ltr" style={{position:'absolute',bottom:10,insetInlineStart:10,background:'var(--surface-card)',color:'var(--text-secondary)',fontSize:12,padding:'4px 10px',borderRadius:999,boxShadow:'var(--shadow-sm)'}}>{C.geo.lat.toFixed(4)}, {C.geo.lng.toFixed(4)}</span>
+        </div>
+        <h2 className="ag-display" style={{fontSize:mobile?28:36,margin:0}}>{T.visitCard}</h2>
+        <div style={{display:'flex',gap:12}}><Icon name="map-pin" size={20} color="var(--text-accent)" style={{marginTop:3}}/><span style={{fontSize:17}}>{CL.address}</span></div>
+        <div style={{display:'flex',gap:12}}><Icon name="clock" size={20} color="var(--text-accent)" style={{marginTop:3}}/><span style={{fontSize:17}}>{CL.hours}</span></div>
+        <div style={{display:'flex',gap:10,flexWrap:'wrap'}}><Button variant="secondary" size="sm" iconStart="map" onClick={()=>window.open(C.neshan,'_blank')}>{T.openNeshan}</Button><Button variant="secondary" size="sm" iconStart="map" onClick={()=>window.open(C.maps,'_blank')}>{T.openMaps}</Button></div>
+      </Card>
+      <Card padding={mobile?20:32}>
+        <h2 className="ag-display" style={{fontSize:mobile?28:36,margin:'0 0 4px'}}>{T.formH}</h2>
+        <p style={{color:'var(--text-muted)',margin:'0 0 20px'}}>{T.formP}</p>
+        <form onSubmit={submit} style={{display:'grid',gridTemplateColumns:mobile?'1fr':'1fr 1fr',gap:16}}>
+          <Input name="name" label={T.name} required autoComplete="name"/><Input name="phone" label={T.phone} required dir="ltr" type="tel" inputMode="tel" autoComplete="tel" placeholder="0912 000 0000"/>
+          <Input name="email" label={lang==='fa'?'ایمیل (اختیاری)':'Email (optional)'} type="email" dir="ltr" autoComplete="email" placeholder="name@example.com"/>
+          <Select name="topic" label={T.topic} options={T.topics}/>
+          <Input name="message" label={T.yourMsg} multiline rows={4} required style={{gridColumn:'1/-1'}}/>
+          {err&&<Alert tone="error" style={{gridColumn:'1/-1'}}>{lang==='fa'?'پیام ارسال نشد. کمی بعد دوباره امتحان کنید یا در واتس‌اپ پیام دهید.':'Your message didn’t send. Try again in a moment, or message us on WhatsApp.'}</Alert>}
+          <div style={{gridColumn:'1/-1'}}><Button type="submit" size="lg" block={mobile} iconEnd="send" disabled={busy}>{T.send}</Button></div>
+        </form>
+      </Card>
+    </div>
+    {sent&&<div style={{position:'fixed',bottom:mobile?72:24,insetInline:mobile?'12px':'auto 24px',zIndex:120}}><Toast title={T.sent} message={T.sentP} onClose={()=>setSent(false)} style={mobile?{width:'100%'}:undefined}/></div>}
+  </main>;
+}
+window.Contact=Contact;

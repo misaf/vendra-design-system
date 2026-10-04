@@ -1,0 +1,24 @@
+---
+name: vendra-design
+description: Use this skill to generate well-branded interfaces and assets for Vendra (multi-tenant platform for florist websites; default tenant theme: Vendra Florist / گل‌فروشی وندرا, bilingual English/Persian), either for production or throwaway prototypes/mocks/etc. Contains essential design guidelines, colors, type, fonts, assets, and UI kit components for prototyping.
+user-invocable: true
+---
+
+Read the readme.md file (see "Multi-tenancy notes": theme via tokens, copy from data) within this skill, and explore the other available files.
+If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy assets out and create static HTML files for the user to view. If working on production code, you can copy assets and read the rules here to become an expert in designing with this brand.
+If the user invokes this skill without any other guidance, ask them what they want to build or design, ask some questions, and act as an expert designer who outputs HTML artifacts _or_ production code, depending on the need.
+
+Always support both `lang="en" dir="ltr"` and `lang="fa" dir="rtl" data-lang="fa"`; light mode only (semantic tokens only); tenants restyle via `data-tenant="<slug>"` + `tokens/tenants/<slug>.css` (see readme → Tenant themes, sample `clay`); use logical CSS properties and Persian digits for fa.
+
+Store contact: phone +98-9129333034 (`tel:+989129333034`) · WhatsApp +989129333034 (https://wa.me/989129333034) · Instagram @misaf1990. Numbers render LTR inside Persian. When a time range is written in Persian (۰۸:۰۰ تا ۲۲:۰۰), wrap each time in Unicode FSI/PDI marks (`\u2068 … \u2069`) so the order can't flip.
+
+Components (window namespace from `_ds_bundle.js`): core — Icon, Button, IconButton, Badge, Tag, Card, ArchFrame, SkipLink, DetailList · forms — Input, Select, Checkbox, Radio, Switch, QuantityStepper, ChoiceTile, ChoiceGroup, RangeSlider, DatePicker · navigation — Tabs, LanguageSwitch, Accordion, Stepper, BottomTabBar, NavLink, MenuList, SectionHeader, SnapScroller · feedback — Dialog, Toast, Tooltip, Skeleton, Alert, EmptyState, AnnouncementBar, LiveRegion · commerce — ProductCard, CategoryCard, BlogCard, PaymentCard, LineItem, Gallery, OrderTimeline, OrderSummary, AddressCard, ReminderRow. Each has a `.prompt.md` with usage. Price/number formatting: `window.VendraDesignSystem_f4f210.format` → `{ CURRENCIES, money(n,{currency,lang}), num(n,lang) }` (source `ui_kits/storefront/format.js`). Routing, <head> and JSON-LD: `window.VendraDesignSystem_f4f210.seo` (source `ui_kits/storefront/seo.js`). Jalali/Gregorian dates: `window.VendraDesignSystem_f4f210.dates` (source `ui_kits/storefront/dates.js`); Persian full dates read weekday، day month year («سه‌شنبه، ۷ مهر ۱۴۰۵») — never Intl weekday + year together in fa.
+
+Rules (details in readme.md → Links vs buttons, Routing & URLs, Accessibility, Structured data, Storefront release checklist):
+- Navigation is always `<a href>`; actions are `<button>`. Never a clickable `<div>`. `Button`, `IconButton`, `CategoryCard`, `BottomTabBar` items and `ProductCard` take `href`.
+- URLs: `?lang=en|fa&view=<screen>&id=&cat=&post=&m=`, validated with `/^[\w:-]{1,40}$/`; unknown view → notfound. Use pushState for screen changes, replaceState for language changes, and handle popstate. noindex: bag, checkout, confirm, account, track, saved, search, notfound.
+- On a screen or step change, focus the h1. On a failed submit, focus the first invalid field. Hints and errors sit outside the `<label>`, linked with `aria-describedby="{id}-hint"` (+ `aria-invalid`, `aria-errormessage`). Use SkipLink → `#main` and one LiveRegion. Dialog traps focus, closes on Esc, returns focus and locks scroll.
+- `--text-subtle` is decorative or disabled only. Check the Contrast card (Colors) in both modes.
+- Product JSON-LD publishes IRR = Toman × 10. Items priced "on request" have no Offer. PCI DSS doesn't apply (card-to-card; no card data touches the storefront).
+
+New florist? Follow guidelines/tenant-onboarding.md; generate the theme with guidelines/theme-builder.html (all contrast checks must pass).

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Storefront site (click-through)" description="All 16 storefront templates wired together: navigation, mobile menu drawer, shared bag and saved items (EN/FA, tenant, mobile)" -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0}</style></helmet>
+<sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}"><dc-import name="../storefront-home/StorefrontHome" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.shop }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-shop/StorefrontShop" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-product/StorefrontProduct" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.bag }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-bag/StorefrontBag" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.checkout }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-checkout/StorefrontCheckout" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.track }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-track/StorefrontTrack" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.signin }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-signin/StorefrontSignin" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.account }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-account/StorefrontAccount" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.weddings }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-weddings/StorefrontWeddings" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.contact }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-contact/StorefrontContact" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.journal }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-journal/StorefrontJournal" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.post }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-post/StorefrontPost" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.search }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-search/StorefrontSearch" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.saved }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-saved/StorefrontSaved" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.policy }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-policy/StorefrontPolicy" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+<sc-if value="{{ is.notfound }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-notfound/StorefrontNotfound" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;shop&quot;,&quot;product&quot;,&quot;bag&quot;,&quot;checkout&quot;,&quot;track&quot;,&quot;signin&quot;,&quot;account&quot;,&quot;weddings&quot;,&quot;contact&quot;,&quot;journal&quot;,&quot;post&quot;,&quot;search&quot;,&quot;saved&quot;,&quot;policy&quot;,&quot;notfound&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+const VF_BAG0=[
+  {id:'ivory-classic',unit:4900000,qty:1,en:['Ivory ribbon box','Classic · 20 stems','“Happy birthday, Shirin.”'],fa:['باکس روبان عاجی','کلاسیک · ۲۰ شاخه','«تولدت مبارک، شیرین.»']},
+  {id:'orchid',unit:3400000,qty:1,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']}];
+class Component extends DCLogic {
+  state={route:null,lang:null,tenant:null,mobile:null,bag:VF_BAG0,saved:['orchid','crimson','blush']};
+  componentDidMount(){window.__vfSite=this;}
+  componentWillUnmount(){if(window.__vfSite===this)delete window.__vfSite;}
+  renderVals(){
+    const s=this.state;const route=s.route||this.props.start||'home';const is={};["home","shop","product","bag","checkout","track","signin","account","weddings","contact","journal","post","search","saved","policy","notfound"].forEach(r=>{is[r]=r===route;});
+    return {is,lang:s.lang||this.props.lang||'en',tenant:s.tenant||this.props.tenant||'default',setLang:l=>this.setState({lang:l}),
+      store:{bag:s.bag,saved:s.saved,count:s.bag.reduce((a,l)=>a+l.qty,0),
+        add:line=>this.setState(p=>{const ex=p.bag.find(x=>x.id===line.id);return {bag:ex?p.bag.map(x=>x.id===line.id?{...x,qty:x.qty+line.qty}:x):[...p.bag,line]};}),
+        setQty:(id,q)=>this.setState(p=>({bag:p.bag.map(x=>x.id===id?{...x,qty:q}:x)})),
+        remove:id=>this.setState(p=>({bag:p.bag.filter(x=>x.id!==id)})),
+        reset:()=>this.setState({bag:VF_BAG0}),clear:()=>this.setState({bag:[]}),
+        toggleSave:id=>this.setState(p=>({saved:p.saved.includes(id)?p.saved.filter(x=>x!==id):[...p.saved,id]})),
+        setSaved:ids=>this.setState({saved:ids})},mobile:s.mobile!=null?s.mobile:!!this.props.mobile,
+      go:r=>{const known=["home","shop","product","bag","checkout","track","signin","account","weddings","contact","journal","post","search","saved","policy","notfound"];this.setState({route:known.includes(r)?r:(r==='signin'?'signin':'notfound')});window.scrollTo(0,0);}};
+  }
+}
+</script>
+</body>
+</html>
