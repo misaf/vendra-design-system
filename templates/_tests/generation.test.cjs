@@ -43,6 +43,8 @@ try {
     .replace("'+989129333034'", "'+989120000000'")
     .replace("'https://wa.me/989129333034'", "'https://wa.me/989120000000'"));
   const catalog = path.join(templates, '_shared/catalog.js');
+  const navigation = path.join(templates, '_shared/navigation.js');
+  fs.writeFileSync(navigation, fs.readFileSync(navigation, 'utf8').replace('phoneLabel: VF_STORE.phoneLabel', "phoneLabel: 'Shared navigation probe'"));
   fs.writeFileSync(catalog, fs.readFileSync(catalog, 'utf8').replace('price: 4_100_000', 'price: 4_200_000'));
   const delivery = path.join(templates, '_shared/delivery.js');
   fs.writeFileSync(delivery, fs.readFileSync(delivery, 'utf8')
@@ -53,7 +55,14 @@ try {
 
   const copy = path.join(templates, 'storefront-home/copy.js');
   fs.writeFileSync(copy, fs.readFileSync(copy, 'utf8').replace("heroA: 'Soft flowers,'", "heroA: 'Human title,'"));
+  const logicFile = path.join(templates, 'storefront-home/logic.js');
+  const originalLogic = fs.readFileSync(logicFile, 'utf8');
+  fs.writeFileSync(logicFile, originalLogic.replace('...S,', "...S,\n      generationProbe: 'Adjacent behavior source',"));
+  assert.notEqual(fs.readFileSync(logicFile, 'utf8'), originalLogic);
   const build = require(path.join(templates, '_build/generate.cjs'));
+  fs.unlinkSync(logicFile);
+  assert.throws(() => build.generate(), /Missing page logic source: storefront-home\/logic\.js/);
+  fs.writeFileSync(logicFile, originalLogic.replace('...S,', "...S,\n      generationProbe: 'Adjacent behavior source',"));
   assert.throws(() => build.generate(true), /Generated files are stale/);
   build.generate();
   const {customCss} = require(path.join(templates, '_build/custom-css.cjs'));
@@ -69,11 +78,13 @@ try {
     const values=pageValues(page);
     assert.equal(values.t.brand,'Demo Flowers');
     assert.equal(values.phoneHref,'tel:+989120000000');
+    assert.equal(values.phoneLabel,'Shared navigation probe');
     assert.equal(values.waHref,'https://wa.me/989120000000');
   }
   assert.equal(pageValues('home').t.eyebrow,'Demo Flowers');
   assert.equal(pageValues('checkout').payment.holder,'Demo Flowers');
   assert.equal(pageValues('home').t.heroA, 'Human title,');
+  assert.equal(pageValues('home').generationProbe, 'Adjacent behavior source');
   assert.equal(pageValues('home').products[0].price, '4,200,000 Toman');
   assert.equal(pageValues('shop').items[0].price, '4,200,000 Toman');
   assert.equal(pageValues('search').results[0].price, '4,200,000 Toman');

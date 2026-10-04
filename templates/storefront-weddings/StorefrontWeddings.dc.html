@@ -370,13 +370,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -412,6 +414,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -459,6 +464,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -606,9 +614,6 @@ function vfShell(props, page) {
 // Bilingual weddings copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
   return {
     en: {
       eb: 'Weddings & events',
@@ -670,21 +675,88 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-weddings/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-weddings/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
-  state={sent:false,name:'',phone:'',e1:false,e2:false,wDate:''};
-  renderVals(){
-    const S=vfShell.call(this,this.props,'weddings');const fa=S.fa;const L=S.lang;const s=this.state;
-    const C=vfCopy(S);
-    return {...S,t:{...S.t,...C,editMessage:C.labels.returnToForm},wDate:s.wDate,setWDate:v=>this.setState({wDate:v}),today:(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})(),
-      services:C.sv.map(x=>({icon:x[0],title:x[1],body:x[2],price:x[3]})),sent:s.sent,notSent:!s.sent,editMessage:()=>{this.setState({sent:false});S.focus('vf-wname');},
-      name:s.name,setName:e=>this.setState({name:e.target.value,e1:false}),nameErr:s.e1?C.nameErr:undefined,
-      phone:s.phone,setPhone:e=>this.setState({phone:e.target.value,e2:false}),phoneErr:s.e2?C.phoneErr:undefined,
-      types:C.types,
-      budgets:C.budgets,
-      send:()=>{const e1=!s.name.trim(),e2=!/^09\d{9}$/.test(vfPhone(s.phone));if(e1||e2){this.setState({e1,e2});setTimeout(()=>{const el=document.getElementById(e1?'vf-wname':'vf-wphone');el&&el.focus();},0);return;}this.setState({sent:true});S.focus('vf-weddings-success');}};
+  state = {
+    sent: false,
+    name: '',
+    phone: '',
+    e1: false,
+    e2: false,
+    wDate: ''
+  };
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'weddings');
+    const s = this.state;
+    const C = vfCopy(S);
+    return {
+      ...S,
+      t: {
+        ...S.t,
+        ...C,
+        editMessage: C.labels.returnToForm
+      },
+      wDate: s.wDate,
+      setWDate: v => this.setState({
+        wDate: v
+      }),
+      today: (() => {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      })(),
+      services: C.sv.map(x => ({
+        icon: x[0],
+        title: x[1],
+        body: x[2],
+        price: x[3]
+      })),
+      sent: s.sent,
+      notSent: !s.sent,
+      editMessage: () => {
+        this.setState({
+          sent: false
+        });
+        S.focus('vf-wname');
+      },
+      name: s.name,
+      setName: e => this.setState({
+        name: e.target.value,
+        e1: false
+      }),
+      nameErr: s.e1 ? C.nameErr : undefined,
+      phone: s.phone,
+      setPhone: e => this.setState({
+        phone: e.target.value,
+        e2: false
+      }),
+      phoneErr: s.e2 ? C.phoneErr : undefined,
+      types: C.types,
+      budgets: C.budgets,
+      send: () => {
+        const e1 = !s.name.trim(),
+          e2 = !/^09\d{9}$/.test(vfPhone(s.phone));
+        if (e1 || e2) {
+          this.setState({
+            e1,
+            e2
+          });
+          setTimeout(() => {
+            const el = document.getElementById(e1 ? 'vf-wname' : 'vf-wphone');
+            el && el.focus();
+          }, 0);
+          return;
+        }
+        this.setState({
+          sent: true
+        });
+        S.focus('vf-weddings-success');
+      }
+    };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

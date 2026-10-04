@@ -366,13 +366,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -408,6 +410,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -455,6 +460,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -601,9 +609,7 @@ function vfShell(props, page) {
 // Source: templates/storefront-account/copy.js
 // Bilingual account copy.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const n = S.n;
   const C = {
     en: {
       hello: 'Hello, Shirin',
@@ -749,23 +755,88 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-account/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-account/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
-  state={tab:null,def:'home',rem:{mum:true,mina:true,sara:false}};
-  renderVals(){
-    const S=vfShell.call(this,this.props,'account');const fa=S.fa;const L=S.lang;const m=S.m;const n=S.n;const s=this.state;const tab=s.tab||this.props.tab||'orders';
-    const C=vfCopy(S);
-    const ids=['orders','addresses','reminders','profile'];
-    return {...S,t:{...S.t,...C},tab,setTab:id=>this.setState({tab:id}),tabItems:ids.map((id,i)=>({id,label:C.tabs[i]})),
-      isOrders:tab==='orders',isAddresses:tab==='addresses',isReminders:tab==='reminders',isProfile:tab==='profile',
-      orders:C.orders.map(o=>({id:o[0],status:C.status[o[2]][0],tone:C.status[o[2]][1],meta:(fa?o[5]:o[4])+' · '+C.itemCount(o[1]),total:m(o[3]),cta:o[2]==='delivered'?(C.labels.viewOrder):(C.labels.trackOrder)})),
-      addresses:C.addresses.map(a=>({label:a[1],line:a[2],recipient:a[3],phone:'0912 564 9438',zone:a[4],isDefault:s.def===a[0],makeDefault:()=>this.setState({def:a[0]})})),
-      addrLabels:C.addrLabels,
-      reminders:C.reminders.map(r=>({name:r[1],day:r[2],month:r[3],occasion:r[4],icon:r[5],before:r[6],channel:r[7],soon:r[8],on:s.rem[r[0]],toggle:v=>this.setState({rem:{...s.rem,[r[0]]:v}})})),
-      remLabels:C.remLabels,
-      langOptions:C.langOptions};
+  state = {
+    tab: null,
+    def: 'home',
+    rem: {
+      mum: true,
+      mina: true,
+      sara: false
+    }
+  };
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'account');
+    const fa = S.fa;
+    const m = S.m;
+    const s = this.state;
+    const tab = s.tab || this.props.tab || 'orders';
+    const C = vfCopy(S);
+    const ids = ['orders', 'addresses', 'reminders', 'profile'];
+    return {
+      ...S,
+      t: {
+        ...S.t,
+        ...C
+      },
+      tab,
+      setTab: id => this.setState({
+        tab: id
+      }),
+      tabItems: ids.map((id, i) => ({
+        id,
+        label: C.tabs[i]
+      })),
+      isOrders: tab === 'orders',
+      isAddresses: tab === 'addresses',
+      isReminders: tab === 'reminders',
+      isProfile: tab === 'profile',
+      orders: C.orders.map(o => ({
+        id: o[0],
+        status: C.status[o[2]][0],
+        tone: C.status[o[2]][1],
+        meta: (fa ? o[5] : o[4]) + ' · ' + C.itemCount(o[1]),
+        total: m(o[3]),
+        cta: o[2] === 'delivered' ? C.labels.viewOrder : C.labels.trackOrder
+      })),
+      addresses: C.addresses.map(a => ({
+        label: a[1],
+        line: a[2],
+        recipient: a[3],
+        phone: '0912 564 9438',
+        zone: a[4],
+        isDefault: s.def === a[0],
+        makeDefault: () => this.setState({
+          def: a[0]
+        })
+      })),
+      addrLabels: C.addrLabels,
+      reminders: C.reminders.map(r => ({
+        name: r[1],
+        day: r[2],
+        month: r[3],
+        occasion: r[4],
+        icon: r[5],
+        before: r[6],
+        channel: r[7],
+        soon: r[8],
+        on: s.rem[r[0]],
+        toggle: v => this.setState({
+          rem: {
+            ...s.rem,
+            [r[0]]: v
+          }
+        })
+      })),
+      remLabels: C.remLabels,
+      langOptions: C.langOptions
+    };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

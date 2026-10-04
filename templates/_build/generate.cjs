@@ -4,8 +4,28 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const shared = name => fs.readFileSync(path.join(root, '_shared', name), 'utf8').trimEnd();
-const sharedLogic = ['store-config.js', 'delivery.js', 'catalog.js', 'translations/shell.js', 'translations/categories.js', 'translations/time.js', 'storefront.js']
-  .map(name => '// Source: templates/_shared/' + name + '\n' + shared(name)).join('\n\n') + '\n';
+const sharedLogicFiles = [
+  'store-config.js',
+  'delivery.js',
+  'catalog.js',
+  'translations/shell.js',
+  'translations/categories.js',
+  'translations/time.js',
+  'formatting.js',
+  'routing.js',
+  'page-lifecycle.js',
+  'navigation.js'
+];
+
+function sourceCode(file) {
+  return '// Source: templates/' + file + '\n' + fs.readFileSync(path.join(root, file), 'utf8').trimEnd();
+}
+
+function renderSharedLogic() {
+  return sharedLogicFiles.map(file => sourceCode('_shared/' + file)).join('\n\n') + '\n';
+}
+
+const sharedLogic = renderSharedLogic();
 
 function region(source, name, syntax = 'html') {
   const begin = syntax === 'html' ? '<!-- BEGIN ' + name + ' -->' : '// BEGIN ' + name;
@@ -15,6 +35,35 @@ function region(source, name, syntax = 'html') {
     throw new Error('Missing or duplicate region: ' + name);
   }
   return {start, end: finish + end.length, content: source.slice(start + begin.length, finish).replace(/^\n|\n$/g, '')};
+}
+
+function replaceScriptRegion(html, name, code) {
+  const bounds = region(html, name, 'js');
+  const generated = '// BEGIN ' + name + '\n' + code.trimEnd() + '\n// END ' + name;
+  return html.slice(0, bounds.start) + generated + html.slice(bounds.end);
+}
+
+function renderPageCopy(html, folder) {
+  const file = folder + '/copy.js';
+  if (!fs.existsSync(path.join(root, file))) {
+    if (folder === 'storefront-site') return html;
+    throw new Error('Missing page copy source: ' + file);
+  }
+  if (!html.includes('// BEGIN GENERATED PAGE COPY')) {
+    throw new Error('Missing generated page copy region: ' + folder);
+  }
+  const sources = [];
+  if (['storefront-journal', 'storefront-post'].includes(folder)) {
+    sources.push('_shared/translations/journal-content.js');
+  }
+  sources.push(file);
+  return replaceScriptRegion(html, 'GENERATED PAGE COPY', sources.map(sourceCode).join('\n\n'));
+}
+
+function renderPageLogic(html, folder) {
+  const file = folder + '/logic.js';
+  if (!fs.existsSync(path.join(root, file))) throw new Error('Missing page logic source: ' + file);
+  return replaceScriptRegion(html, 'GENERATED PAGE LOGIC', sourceCode(file));
 }
 
 function renderShell(source) {
@@ -40,21 +89,9 @@ function outputs() {
     if (files.length !== 1) throw new Error('Expected one template in ' + folder);
     const filename = path.join(root, folder, files[0]);
     let html = fs.readFileSync(filename, 'utf8');
-    const logic = region(html, 'GENERATED SHARED LOGIC', 'js');
-    html = html.slice(0, logic.start) + '// BEGIN GENERATED SHARED LOGIC\n' + sharedLogic + '// END GENERATED SHARED LOGIC' + html.slice(logic.end);
-    const copyFile = folder + '/copy.js';
-    if (folder !== 'storefront-site' && !fs.existsSync(path.join(root, copyFile))) {
-      throw new Error('Missing page copy source: ' + copyFile);
-    }
-    if (fs.existsSync(path.join(root, copyFile))) {
-      const generated = '// BEGIN GENERATED PAGE COPY\n// Source: templates/' + copyFile + '\n' + (['storefront-journal','storefront-post'].includes(folder) ? '// Source: templates/_shared/translations/journal-content.js\n' + shared('translations/journal-content.js') + '\n\n' : '') + fs.readFileSync(path.join(root, copyFile), 'utf8').trimEnd() + '\n// END GENERATED PAGE COPY\n\n';
-      if (html.includes('// BEGIN GENERATED PAGE COPY')) {
-        const copy = region(html, 'GENERATED PAGE COPY', 'js');
-        html = html.slice(0, copy.start) + generated.trimEnd() + html.slice(copy.end);
-      } else {
-        html = html.replace('// PAGE LOGIC —', generated + '// PAGE LOGIC —');
-      }
-    }
+    html = replaceScriptRegion(html, 'GENERATED SHARED LOGIC', sharedLogic);
+    html = renderPageCopy(html, folder);
+    html = renderPageLogic(html, folder);
     if (folder !== 'storefront-site') {
       html = html.replace(/<x-dc>\n[\s\S]*?\n<\/x-dc>/, () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>');
     }

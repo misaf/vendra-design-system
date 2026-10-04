@@ -368,13 +368,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -410,6 +412,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -457,6 +462,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -604,9 +612,7 @@ function vfShell(props, page) {
 // Bilingual contact copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const fa = S.fa;
   return {
     en: {
       eb: 'Contact',
@@ -660,17 +666,67 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-contact/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-contact/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
-  state={sent:false,msg:'',err:false};
-  renderVals(){
-    const S=vfShell.call(this,this.props,'contact');const fa=S.fa;const L=S.lang;const s=this.state;
-    const C=vfCopy(S);
-    return {...S,t:{...S.t,...C,instagram:C.labels.instagram,editMessage:C.labels.returnToForm},rows:['map-pin','clock','phone','message-circle','instagram'].map((icon,i)=>({icon,label:(C.rowLabels)[i],value:i===0?S.t.address:i===1?S.t.hours:'\u2068'+[S.phoneLabel,S.phoneLabel,S.instagram.label][i-2]+'\u2069'})),topics:C.topics,sent:s.sent,notSent:!s.sent,editMessage:()=>{this.setState({sent:false});S.focus('vf-cmsg');},
-      msg:s.msg,setMsg:e=>this.setState({msg:e.target.value,err:false}),msgErr:s.err?C.msgErr:undefined,
-      send:()=>{if(!s.msg.trim()){this.setState({err:true});setTimeout(()=>{const el=document.getElementById('vf-cmsg');el&&el.focus();},0);return;}this.setState({sent:true});S.focus('vf-contact-success');}};
+  state = {
+    sent: false,
+    msg: '',
+    err: false
+  };
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'contact');
+    const s = this.state;
+    const C = vfCopy(S);
+    return {
+      ...S,
+      t: {
+        ...S.t,
+        ...C,
+        instagram: C.labels.instagram,
+        editMessage: C.labels.returnToForm
+      },
+      rows: ['map-pin', 'clock', 'phone', 'message-circle', 'instagram'].map((icon, i) => ({
+        icon,
+        label: C.rowLabels[i],
+        value: i === 0 ? S.t.address : i === 1 ? S.t.hours : '\u2068' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '\u2069'
+      })),
+      topics: C.topics,
+      sent: s.sent,
+      notSent: !s.sent,
+      editMessage: () => {
+        this.setState({
+          sent: false
+        });
+        S.focus('vf-cmsg');
+      },
+      msg: s.msg,
+      setMsg: e => this.setState({
+        msg: e.target.value,
+        err: false
+      }),
+      msgErr: s.err ? C.msgErr : undefined,
+      send: () => {
+        if (!s.msg.trim()) {
+          this.setState({
+            err: true
+          });
+          setTimeout(() => {
+            const el = document.getElementById('vf-cmsg');
+            el && el.focus();
+          }, 0);
+          return;
+        }
+        this.setState({
+          sent: true
+        });
+        S.focus('vf-contact-success');
+      }
+    };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

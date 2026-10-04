@@ -363,13 +363,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -405,6 +407,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -452,6 +457,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -595,7 +603,6 @@ function vfShell(props, page) {
 // END GENERATED SHARED LOGIC
 
 // BEGIN GENERATED PAGE COPY
-// Source: templates/storefront-journal/copy.js
 // Source: templates/_shared/translations/journal-content.js
 // Shared sample article content for journal and post pages.
 const VF_POSTS = [{
@@ -621,12 +628,10 @@ const VF_POSTS = [{
 }];
 const VF_JCATS = [['all', 'All', 'همه'], ['seasonal', 'Seasonal', 'فصلی'], ['care', 'Flower care', 'نگهداری'], ['weddings', 'Weddings', 'عروسی']];
 
+// Source: templates/storefront-journal/copy.js
 // Bilingual journal copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
   return {
     en: {
       eb: 'Notes from the studio',
@@ -644,16 +649,48 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-journal/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-journal/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
-  state={cat:'all'};
-  renderVals(){
-    const S=vfShell.call(this,this.props,'journal');const fa=S.fa;const L=S.lang;const s=this.state;
-    const C=vfCopy(S);
-    const list=VF_POSTS.filter(p=>s.cat==='all'||p.cat===s.cat).map(p=>{const c=VF_JCATS.find(x=>x[0]===p.cat);return {title:p[L][0],excerpt:p[L][1],meta:(fa?c[2]:c[1])+' · '+p[L][3]+' · '+p[L][2]};});
-    return {...S,leadLayout:S.mob?'stack':'wide',t:{...S.t,...C},cats:VF_JCATS.map(c=>({label:fa?c[2]:c[1],on:s.cat===c[0],pick:()=>this.setState({cat:c[0]})})),hasLead:list.length>0,lead:list[0]||{},rest:list.slice(1)};
+  state = {
+    cat: 'all'
+  };
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'journal');
+    const fa = S.fa;
+    const L = S.lang;
+    const s = this.state;
+    const C = vfCopy(S);
+    const list = VF_POSTS.filter(p => s.cat === 'all' || p.cat === s.cat).map(p => {
+      const c = VF_JCATS.find(x => x[0] === p.cat);
+      return {
+        title: p[L][0],
+        excerpt: p[L][1],
+        meta: (fa ? c[2] : c[1]) + ' · ' + p[L][3] + ' · ' + p[L][2]
+      };
+    });
+    return {
+      ...S,
+      leadLayout: S.mob ? 'stack' : 'wide',
+      t: {
+        ...S.t,
+        ...C
+      },
+      cats: VF_JCATS.map(c => ({
+        label: fa ? c[2] : c[1],
+        on: s.cat === c[0],
+        pick: () => this.setState({
+          cat: c[0]
+        })
+      })),
+      hasLead: list.length > 0,
+      lead: list[0] || {},
+      rest: list.slice(1)
+    };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

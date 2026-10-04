@@ -1,8 +1,6 @@
 // Bilingual account copy.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const n = S.n;
   const C = {
     en: {
       hello: 'Hello, Shirin',

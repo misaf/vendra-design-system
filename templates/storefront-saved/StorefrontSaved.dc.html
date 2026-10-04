@@ -363,13 +363,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -405,6 +407,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -452,6 +457,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -599,9 +607,7 @@ function vfShell(props, page) {
 // Bilingual saved copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const n = S.n;
   return {
     en: {
       hA: 'Saved',
@@ -627,17 +633,47 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-saved/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-saved/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
-  state={ids:['orchid','crimson','blush']};
-  renderVals(){
-    const S=vfShell.call(this,this.props,'saved');const fa=S.fa;const L=S.lang;const n=S.n;const st=this.props.store;const ids=st?st.saved:this.state.ids;
-    const C=vfCopy(S);
-    const items=VF_PRODUCTS.filter(p=>ids.includes(p.id));
-    return {...S,t:{...S.t,...C},hasItems:items.length>0,noItems:!items.length,countLabel:C.designCount(items.length),
-      items:items.map((p,i)=>({...S.productLink(p.id),images:[vfProductImage(p,L)],name:p[L][0],sub:p[L][1],badge:p[L][2],price:S.m(p.price),remove:()=>{st?st.toggleSave(p.id):this.setState({ids:ids.filter(x=>x!==p.id)});S.focusAfterRemoval('.ag-product__fav',i);}}))};
+  state = {
+    ids: ['orchid', 'crimson', 'blush']
+  };
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'saved');
+    const L = S.lang;
+    const st = this.props.store;
+    const ids = st ? st.saved : this.state.ids;
+    const C = vfCopy(S);
+    const items = VF_PRODUCTS.filter(p => ids.includes(p.id));
+    return {
+      ...S,
+      t: {
+        ...S.t,
+        ...C
+      },
+      hasItems: items.length > 0,
+      noItems: !items.length,
+      countLabel: C.designCount(items.length),
+      items: items.map((p, i) => ({
+        ...S.productLink(p.id),
+        images: [vfProductImage(p, L)],
+        name: p[L][0],
+        sub: p[L][1],
+        badge: p[L][2],
+        price: S.m(p.price),
+        remove: () => {
+          st ? st.toggleSave(p.id) : this.setState({
+            ids: ids.filter(x => x !== p.id)
+          });
+          S.focusAfterRemoval('.ag-product__fav', i);
+        }
+      }))
+    };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

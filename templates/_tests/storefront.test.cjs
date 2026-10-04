@@ -91,10 +91,21 @@ for (const lang of ['en','fa']) {
 }
 console.log('Passed missing-order recovery, saved/search recovery, editable success states and mobile validation in both languages.');
 
-// Both locales must expose the same copy keys after edits by translators.
+// Compare nested labels and every list item; localized values may differ.
+function copyShape(value, path = 'copy') {
+ const kind = Array.isArray(value) ? 'array' : value !== null && typeof value === 'object' ? 'object' : 'value';
+ const shape = [path + ':' + kind];
+ if (kind === 'object' || kind === 'array') {
+  for (const key of Object.keys(value).sort()) shape.push(...copyShape(value[key], path + '.' + key));
+ }
+ return shape;
+}
+assert.notDeepEqual(copyShape({labels:{validation:{required:'Required'}}}), copyShape({labels:{validation:{}}}), 'Missing nested validation copy must be detected');
+assert.notDeepEqual(copyShape({items:[{title:'Title',body:'Body'}]}), copyShape({items:[{title:'Title'}]}), 'Missing labels inside lists must be detected');
+assert.notDeepEqual(copyShape({label:'Text'}), copyShape({label:{text:'Text'}}), 'Object versus leaf mismatches must be detected');
 for (const name of ['account','bag','checkout','contact','faq','home','journal','notfound','policy','post','product','saved','search','shop','signin','track','weddings']) {
  const {ctx:c}=loadPage(name);
- const keys=vm.runInContext("['en','fa'].map(lang=>Object.keys(vfCopy({lang,fa:lang==='fa',m:value=>String(value),n:value=>String(value),t:{brand:'Demo',address:'Demo'}})).sort().join(','))",c);
- assert.equal(keys[0],keys[1],name+' copy must have matching English and Persian keys');
+ const copies=vm.runInContext("['en','fa'].map(lang=>vfCopy({lang,fa:lang==='fa',m:value=>String(value),n:value=>String(value),t:{brand:'Demo',address:'Demo'}}))",c);
+ assert.deepEqual(copyShape(copies[0]),copyShape(copies[1]),name+' copy must have matching English and Persian structure');
 }
-console.log('Passed English/Persian copy-key parity for all page translation sources.');
+console.log('Passed recursive English/Persian copy parity, including nested labels and lists.');

@@ -367,13 +367,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -409,6 +411,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -456,6 +461,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -603,9 +611,7 @@ function vfShell(props, page) {
 // Bilingual faq copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const m = S.m;
   return {
     en: {
       eyebrow: 'Here to help',
@@ -635,14 +641,33 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-faq/copy.js.
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-faq/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
- renderVals(){
-  const S=vfShell.call(this,this.props,'faq'),fa=S.fa,m=S.m;
-  const C=vfCopy(S);
-  return {...S,t:{...S.t,...C},groups:C.groups.map(([id,title,items])=>({id:'faq-'+id,title,open:id==='delivery'?'zones':undefined,items:items.map(([id,title,content])=>({id,title,content}))}))};
- }
+  renderVals() {
+    const S = vfShell.call(this, this.props, 'faq');
+    const C = vfCopy(S);
+    return {
+      ...S,
+      t: {
+        ...S.t,
+        ...C
+      },
+      groups: C.groups.map(([id, title, items]) => ({
+        id: 'faq-' + id,
+        title,
+        open: id === 'delivery' ? 'zones' : undefined,
+        items: items.map(([id, title, content]) => ({
+          id,
+          title,
+          content
+        }))
+      }))
+    };
+  }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>

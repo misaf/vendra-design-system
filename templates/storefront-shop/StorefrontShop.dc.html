@@ -385,13 +385,15 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+// Source: templates/_shared/formatting.js
+// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en'
 });
+
+// Source: templates/_shared/routing.js
+// Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 const VF_ROUTE_EXTRA = {
   product: {
@@ -427,6 +429,9 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+
+// Source: templates/_shared/page-lifecycle.js
+// Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -474,6 +479,9 @@ class VFPage extends DCLogic {
     }, 40);
   }
 }
+
+// Source: templates/_shared/navigation.js
+// Shared shell values: menus, tabs, store links, favorites and focus helpers.
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -621,9 +629,7 @@ function vfShell(props, page) {
 // Bilingual shop copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  const fa = S.fa,
-    m = S.m,
-    n = S.n;
+  const n = S.n;
   return {
     en: {
       eyebrow: 'All flowers',
@@ -683,33 +689,105 @@ function vfCopy(S) {
 }
 // END GENERATED PAGE COPY
 
-// PAGE LOGIC — edit behavior here; copy lives in storefront-shop/copy.js.
-const VF_CATS=['all','bouquets','boxes','orchids','bridal'];
-const VF_CHIPS=[['under3',p=>p.price<3000000],['same',p=>p.same],['roses',p=>p.roses]];
+// BEGIN GENERATED PAGE LOGIC
+// Source: templates/storefront-shop/logic.js
+// Page behavior. Edit here, then run npm --prefix templates run build.
+const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
+const VF_CHIPS = [['under3', p => p.price < 3000000], ['same', p => p.same], ['roses', p => p.roses]];
 class Component extends VFPage {
-  state={cat:'all',chips:[],sort:'featured',favs:['orchid']};
+  state = {
+    cat: 'all',
+    chips: [],
+    sort: 'featured',
+    favs: ['orchid']
+  };
   renderVals() {
-    const fa=this.props.lang==='fa';const L=fa?'fa':'en';const S=vfShell.call(this,this.props,'shop');const n=v=>fa?VF_FA_DIGITS(v):String(v);
-    const C=vfCopy(S);
-    const route=vfPageRoute(this.props);const s={cat:route.cat||'all',sort:route.sort||'featured',chips:route.filters||[]};
-    const change=patch=>{const next={...route,view:'shop',lang:L,cat:s.cat,sort:s.sort,filters:s.chips,...patch};if(this.props.go)this.props.go(next);else location.href=S.href.shop.split('?')[0]+vfRouteParams(next);};
-    const inCat=p=>s.cat==='all'||p.cat===s.cat;
-    let list=VF_PRODUCTS.filter(inCat).filter(p=>s.chips.every(id=>VF_CHIPS.find(c=>c[0]===id)[1](p)));
-    if(s.sort==='low')list=[...list].sort((a,b)=>a.price-b.price);if(s.sort==='high')list=[...list].sort((a,b)=>b.price-a.price);
+    const fa = this.props.lang === 'fa';
+    const L = fa ? 'fa' : 'en';
+    const S = vfShell.call(this, this.props, 'shop');
+    const n = v => fa ? VF_FA_DIGITS(v) : String(v);
+    const C = vfCopy(S);
+    const route = vfPageRoute(this.props);
+    const s = {
+      cat: route.cat || 'all',
+      sort: route.sort || 'featured',
+      chips: route.filters || []
+    };
+    const change = patch => {
+      const next = {
+        ...route,
+        view: 'shop',
+        lang: L,
+        cat: s.cat,
+        sort: s.sort,
+        filters: s.chips,
+        ...patch
+      };
+      if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
+    };
+    const inCat = p => s.cat === 'all' || p.cat === s.cat;
+    let list = VF_PRODUCTS.filter(inCat).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
+    if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
+    if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
     return {
-      ...S,frame:this.props.frame??'soft',
-      t:{...S.t,...C},
-      categories:VF_CATS.map(id=>{const on=s.cat===id;return {label:VF_CATEGORY_COPY[L][id],count:n(VF_PRODUCTS.filter(p=>id==='all'||p.cat===id).length),on,off:!on,pick:()=>change({cat:id})};}),
-      chips:VF_CHIPS.map(([id])=>{const on=s.chips.includes(id);return {label:C.chipLabels[id],on,toggle:()=>change({filters:on?s.chips.filter(x=>x!==id):[...s.chips,id]})};}),
-      sort:s.sort,setSort:e=>change({sort:e.target.value}),
-      sortOptions:C.sortOptions,
-      countLabel:C.designCount(list.length),
-      hasItems:list.length>0,noItems:list.length===0,
-      clear:()=>change({filters:[],cat:'all',sort:'featured'}),
-      items:list.map(p=>{const fav=S.isFav(p.id,['orchid']);return {...S.productLink(p.id),images:[vfProductImage(p,L)],name:p[L][0],sub:p[L][1],badge:p[L][2],price:VF_MONEY(p.price,fa),fav,toggleFav:S.toggleFav(p.id,['orchid'])};})
+      ...S,
+      frame: this.props.frame ?? 'soft',
+      t: {
+        ...S.t,
+        ...C
+      },
+      categories: VF_CATS.map(id => {
+        const on = s.cat === id;
+        return {
+          label: VF_CATEGORY_COPY[L][id],
+          count: n(VF_PRODUCTS.filter(p => id === 'all' || p.cat === id).length),
+          on,
+          off: !on,
+          pick: () => change({
+            cat: id
+          })
+        };
+      }),
+      chips: VF_CHIPS.map(([id]) => {
+        const on = s.chips.includes(id);
+        return {
+          label: C.chipLabels[id],
+          on,
+          toggle: () => change({
+            filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
+          })
+        };
+      }),
+      sort: s.sort,
+      setSort: e => change({
+        sort: e.target.value
+      }),
+      sortOptions: C.sortOptions,
+      countLabel: C.designCount(list.length),
+      hasItems: list.length > 0,
+      noItems: list.length === 0,
+      clear: () => change({
+        filters: [],
+        cat: 'all',
+        sort: 'featured'
+      }),
+      items: list.map(p => {
+        const fav = S.isFav(p.id, ['orchid']);
+        return {
+          ...S.productLink(p.id),
+          images: [vfProductImage(p, L)],
+          name: p[L][0],
+          sub: p[L][1],
+          badge: p[L][2],
+          price: VF_MONEY(p.price, fa),
+          fav,
+          toggleFav: S.toggleFav(p.id, ['orchid'])
+        };
+      })
     };
   }
 }
+// END GENERATED PAGE LOGIC
 
 </script>
 </body>
