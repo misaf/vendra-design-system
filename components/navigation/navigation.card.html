@@ -7,7 +7,7 @@
 <style>body{margin:0;padding:20px 24px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.split>div{min-width:0;display:flex;flex-direction:column;gap:18px}.lh{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:500;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)}.k{font-size:11px;color:var(--ink-500);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}[lang="fa"] .k{letter-spacing:0;font-size:12px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}</style></head><body><div id="root"></div>
 <script type="text/babel">
 const { Tabs, LanguageSwitch, Accordion, Stepper, BottomTabBar, NavLink, MenuList, SectionHeader, SnapScroller, Button, ArchFrame } = window.VendraDesignSystem_f4f210;
-const fa=n=>n.toLocaleString('fa-IR');
+const fa=n=>window.AG_FORMAT.num(n,'fa');
 const chip={height:52,display:'grid',placeItems:'center',background:'var(--surface-sunken)',borderRadius:8,fontSize:14};
 const T={
 en:{h:'English',tabs:['Description','Care','Delivery'],pills:['All','Fresh','Dried'],kst:'Stepper',chk:'Checkout',steps:['Bag','Delivery','Payment','Done'],done:'(completed)',kc:'Stepper · compact (phones)',csteps:['Bag','Time & card','Confirmed'],cap:undefined,

@@ -7,9 +7,14 @@ USD:{rate:1/100000,dec:2,sym:'$',en:'USD',fa:'دلار'},
 EUR:{rate:1/110000,dec:2,sym:'€',en:'EUR',fa:'یورو'},
 AED:{rate:1/27000,dec:0,sym:'',en:'AED',fa:'درهم'}};
 const loc=l=>l==='fa'?'fa-IR':'en-US';
-const num=(n,lang='en')=>Number(n).toLocaleString(loc(lang));
+// Normalize separators explicitly so Persian output is stable across browser locale data.
+const formatNumber=(n,lang,options={})=>{
+const formatter=new Intl.NumberFormat(loc(lang),{...options,...(lang==='fa'?{numberingSystem:'arabext'}:{})});
+return formatter.formatToParts(Number(n)).map(p=>lang==='fa'?(p.type==='group'?'٬':p.type==='decimal'?'٫':p.value):p.value).join('');
+};
+const num=(n,lang='en')=>formatNumber(n,lang);
 // fa: number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first ($42.00), words after (4,200,000 Toman)
-const money=(n,{currency='IRT',lang='en'}={})=>{const c=CURRENCIES[currency]||CURRENCIES.IRT;const s=(Number(n)*c.rate).toLocaleString(loc(lang),{minimumFractionDigits:c.dec,maximumFractionDigits:c.dec});
+const money=(n,{currency='IRT',lang='en'}={})=>{const c=CURRENCIES[currency]||CURRENCIES.IRT;const s=formatNumber(Number(n)*c.rate,lang,{minimumFractionDigits:c.dec,maximumFractionDigits:c.dec});
 if(lang==='fa')return s+' '+c.fa;return c.sym?c.sym+s:s+' '+c.en;};
 const F={CURRENCIES,money,num};
 window.AG_FORMAT=F;
