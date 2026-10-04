@@ -63,7 +63,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-[28px]">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
@@ -79,7 +79,7 @@
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
 <main id="main" tabindex="-1" class="vf-form tw:mx-auto"><sc-if value="{{ paying }}" hint-placeholder-val="{{ true }}">
-<div class="vf-checkout-steps tw:mb-[28px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 1 }}" format-number="{{ fmt }}" compact="{{ mob }}" caption-format="{{ caption }}" hint-size="100%,44px"></x-import></div>
+<div class="vf-checkout-steps tw:mb-5h"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 1 }}" format-number="{{ fmt }}" compact="{{ mob }}" caption-format="{{ caption }}" hint-size="100%,44px"></x-import></div>
 <div class="vf-checkout-heading tw:mb-6"><h1>{{ t.payA }} <em class="vf-checkout-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.payB }}</em></h1></div>
 <div class="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
@@ -93,7 +93,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
-<div class="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-[28px]">
+<div class="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-5h">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 2 }}" format-number="{{ fmt }}" compact="{{ mob }}" caption-format="{{ caption }}" hint-size="100%,44px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="check" tone="accent" eyebrow="{{ t.orderNo }}" title="{{ t.doneA }}" title-accent="{{ t.doneB }}" body="{{ t.doneP }}" heading-level="{{ 1 }}" hint-size="100%,300px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="accent">{{ paymentStatus }}</x-import><div class="tw:w-full"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ doneRows }}" hint-size="100%,220px"></x-import></div>

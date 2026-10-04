@@ -63,7 +63,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-[28px]">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
@@ -80,7 +80,7 @@
 <!-- BEGIN PAGE CONTENT -->
 
 <main id="main" tabindex="-1" class="vf-shopping tw:mx-auto">
-<nav aria-label="{{ t.crumbs }}" class="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-[28px]"><a href="{{ href.shop }}" onClick="{{ go.shop }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.shop }}</a><span>·</span><a href="{{ category.href }}" onClick="{{ category.go }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.cat }}</a></nav>
+<nav aria-label="{{ t.crumbs }}" class="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"><a href="{{ href.shop }}" onClick="{{ go.shop }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.shop }}</a><span>·</span><a href="{{ category.href }}" onClick="{{ category.go }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.cat }}</a></nav>
 <div class="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-[56px]">
 <div class="tw:flex tw:flex-col tw:gap-3">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" ratio="4/5" tone="product" placeholder-label="{{ t.photo }}" alt="{{ productImage.alt }}" hint-size="100%,640px"></x-import>

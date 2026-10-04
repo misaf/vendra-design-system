@@ -63,7 +63,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-[28px]">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
@@ -80,7 +80,7 @@
 <!-- BEGIN PAGE CONTENT -->
 <main id="main" tabindex="-1" class="vf-shopping tw:mx-auto"><div class="vf-saved-header tw:mb-6"><x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" level="h1" eyebrow="{{ countLabel }}" title="{{ t.hA }}" accent="{{ t.hB }}" hint-size="100%,96px"></x-import></div>
 <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}"><div class="vf-saved-product-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-[40px_24px]"><sc-for list="{{ items }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if>
-<sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}"><div class="vf-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-[20px] tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="heart" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></main>
+<sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}"><div class="vf-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="heart" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>

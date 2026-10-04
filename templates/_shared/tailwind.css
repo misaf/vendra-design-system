@@ -31,6 +31,7 @@
   --color-subtle: var(--border-subtle);
   --color-input: var(--border-input);
   --radius-md: var(--radius-md);
+  --text-2xs: var(--text-2xs);
   --text-xs: var(--text-xs);
   --text-sm: var(--text-sm);
   --text-base: var(--text-base);
@@ -50,7 +51,9 @@
   --spacing-2: var(--space-2);
   --spacing-3: var(--space-3);
   --spacing-4: var(--space-4);
+  --spacing-4h: var(--space-4h);
   --spacing-5: var(--space-5);
+  --spacing-5h: var(--space-5h);
   --spacing-6: var(--space-6);
   --spacing-7: var(--space-7);
   --spacing-8: var(--space-8);

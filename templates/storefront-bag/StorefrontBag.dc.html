@@ -63,7 +63,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-[28px]">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
@@ -80,14 +80,14 @@
 <!-- BEGIN PAGE CONTENT -->
 <main id="main" tabindex="-1" class="vf-form tw:mx-auto">
 <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
-<div class="vf-bag-steps tw:mb-[28px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 0 }}" format-number="{{ fmt }}" hint-size="100%,44px"></x-import></div>
+<div class="vf-bag-steps tw:mb-5h"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 0 }}" format-number="{{ fmt }}" hint-size="100%,44px"></x-import></div>
 <h1>{{ t.titleA }} <em class="vf-bag-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.titleB }}</em></h1>
 <div class="vf-bag-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-bag-items tw:min-w-0 tw:flex tw:flex-col tw:[flex:999_1_480px] tw:gap-[40px]">
 <div class="vf-bag-line-list tw:flex tw:flex-col tw:[border-top:1px_solid_var(--border-subtle)]">
-<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div class="vf-bag-line tw:[border-bottom:1px_solid_var(--border-subtle)] tw:p-[20px_0]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LineItem" image="{{ l.image }}" size="lg" unavailable="{{ l.unavailable }}" unavailable-label="{{ l.unavailableLabel }}" name="{{ l.name }}" meta="{{ l.meta }}" note="{{ l.note }}" price="{{ l.price }}" quantity="{{ l.qty }}" on-quantity-change="{{ l.setQty }}" on-remove="{{ l.remove }}" remove-label="{{ t.remove }}" quantity-labels="{{ qtyLabels }}" format-quantity="{{ fmt }}" hint-size="100%,96px"></x-import></div></sc-for>
+<sc-for list="{{ lines }}" as="l" hint-placeholder-count="2"><div class="vf-bag-line tw:[border-bottom:1px_solid_var(--border-subtle)] tw:py-4h tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LineItem" image="{{ l.image }}" size="lg" unavailable="{{ l.unavailable }}" unavailable-label="{{ l.unavailableLabel }}" name="{{ l.name }}" meta="{{ l.meta }}" note="{{ l.note }}" price="{{ l.price }}" quantity="{{ l.qty }}" on-quantity-change="{{ l.setQty }}" on-remove="{{ l.remove }}" remove-label="{{ t.remove }}" quantity-labels="{{ qtyLabels }}" format-quantity="{{ fmt }}" hint-size="100%,96px"></x-import></div></sc-for>
 </div>
-<section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-[20px]">
+<section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h">
 <h2 class="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:[font-size:30px]! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.delivery }}</h2>
 <div class="vf-bag-recipient-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))]">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-name" value="{{ delivery.name }}" on-change="{{ setName }}" error="{{ nameError }}" required="{{ true }}" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import>
@@ -107,7 +107,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
-<div class="vf-bag-empty tw:flex tw:flex-col tw:items-center tw:py-7 tw:px-0 tw:gap-[20px]">
+<div class="vf-bag-empty tw:flex tw:flex-col tw:items-center tw:py-7 tw:px-0 tw:gap-4h">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="shopping-bag" heading-level="{{ 1 }}" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,280px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" on-click="{{ restore }}" hint-size="160px,48px">{{ t.keep }}</x-import>
 </div>
