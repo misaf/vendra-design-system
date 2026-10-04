@@ -210,7 +210,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Tweaks on every template:** `lang` (en/fa: RTL, Persian copy and digits, FSI-wrapped times), `tenant` (default/clay) and `mobile` (forces a 390px preview frame with the compact header, bottom tab bar, and a sticky add-to-bag bar on Product). Layouts also adapt automatically to narrow screens.
 - **Per-page tweaks:** `frame` (Home, Shop), `step` (Checkout), `status` (Track), `tab` (Account), `doc` (Policy).
 - **Click-through:** `storefront-site` wires all 17 templates together. The header, tab bar and main buttons navigate between pages; it has `lang`, `tenant`, `mobile` and `start` tweaks. It loads the sibling template folders (`../storefront-*/`), so copy the whole `templates/` folder with it. Each page takes an optional `go(route)` prop; without one, navigation links open the click-through site and pages work standalone.
-- Shared headers, footer, navigation, catalog and delivery rules live in `templates/_shared/`. Page content and English/Persian copy stay with each page. Run `node templates/_build/generate.cjs` to update portable templates; generated sections and runtime copies are clearly marked. See [Storefront maintenance](templates/README.md) for where to edit and how to check changes.
+- Shared headers, footer, navigation, catalog and delivery rules live in `templates/_shared/`. Page content and English/Persian copy stay with each page. Run `npm --prefix templates run build` to compile Tailwind and update generated template sections. All pages share runtime JS and compiled CSS from `templates/_runtime/`. See [Storefront maintenance](templates/README.md) for where to edit and how to check changes.
 - `_vendor/`: offline React and Babel copies used by the cards.
 
 **Assets & other**
@@ -289,3 +289,9 @@ These came from the source system, which authored a standard set plus:
 - **Icon:** Lucide wrapper with RTL mirroring.
 - **QuantityStepper**, **ProductCard** and **CategoryCard:** commerce needs.
 - **LanguageSwitch:** the EN/FA requirement.
+
+## Storefront Tailwind build
+
+The official templates use Tailwind CSS 4.3.3 for layout utilities, mapped to Vendra’s semantic tokens. Shared component CSS and tenant tokens remain the design system’s source of truth. For installation, builds and editing conventions, see [Storefront maintenance](templates/README.md#tailwind-conventions).
+
+For local preview commands and English/Persian URLs, see [Preview the website locally](templates/README.md#preview-the-website-locally).

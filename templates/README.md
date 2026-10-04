@@ -14,6 +14,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
 | Footer | [_shared/footer.html](_shared/footer.html) |
+| Tailwind token aliases, source scanning and CSS entry point | [_shared/tailwind.css](_shared/tailwind.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
 | Shared navigation, menu labels, responsive behavior or focus | [_shared/storefront.js](_shared/storefront.js) |
@@ -41,26 +42,78 @@ Do not edit `GENERATED SHELL` or `GENERATED SHARED LOGIC` sections. Their commen
 From the repository root:
 
 ```sh
-node templates/_build/generate.cjs
-node templates/_tests/storefront.test.cjs
-node templates/_tests/generation.test.cjs
+npm --prefix templates run build
+npm --prefix templates test
 git diff --check
 ```
 
 To verify generated files without changing them:
 
 ```sh
-node templates/_build/generate.cjs --check
+npm --prefix templates run check
 ```
 
-No package install is needed. After generation, preview the affected page in English and Persian at desktop and mobile widths. Review the generated changes together with their source changes.
+For the first build, install the locked development dependencies with `npm --prefix templates ci`. Node.js 20 or newer is required. Exported templates use the checked-in compiled CSS and do not need npm in the browser. After generation, preview the affected page in English and Persian at desktop and mobile widths. Review the generated changes together with their source changes. The test command covers storefront logic, generation, shared asset paths and repeated-loader deduplication.
 
-## Why portable pages contain copies
+## Preview the website locally
 
-Each `storefront-*` folder still contains its own runtime files and generated shared sections so it can be exported as a portable template. These copies are outputs, not separate sources to maintain.
+Run these commands from the repository root. On a fresh checkout, install the build dependencies once:
 
-`_runtime/support.js` is a generated upstream runtime; replace it with an upstream build when upgrading. `_runtime/ds-base.js` is the maintained asset loader. The generation command copies both to every page folder.
+```sh
+npm --prefix templates ci
+```
+
+After editing Tailwind classes, CSS or shared template sources, rebuild:
+
+```sh
+npm --prefix templates run build
+```
+
+Start a local web server:
+
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1
+```
+
+Open the click-through storefront in your browser:
+
+- [English storefront](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=en)
+- [Persian storefront](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=fa)
+
+Keep the server terminal running while previewing. Refresh the browser after rebuilding. Press **Ctrl+C** in the server terminal to stop it. The preview requires Python 3; Node.js and npm are needed only for installing dependencies and rebuilding.
+
+If the first load displays a design-system loading error, refresh once. The current preview can start before its design-system bundle finishes loading.
+
+## Shared assets and exporting
+
+All pages load the same assets. Page folders contain only their `Storefront*.dc.html` source.
+
+- `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
+- `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
+- `_runtime/tailwind.css`: one generated stylesheet, compiled from `_shared/tailwind.css`.
+- `../styles.css`: imports the shared design-system fonts, tokens, tenant themes and component styles.
+- `../_ds_bundle.js` and `../assets/`: shared component bundle and images.
+
+Pages reference `../_runtime/support.js` and `../_runtime/ds-base.js`; browsers can reuse the same cached files across pages. The loader adds each shared stylesheet and component bundle only once per document.
+
+When exporting, include `_runtime/` alongside the selected `storefront-*` folders, and include the design-system root assets. Preserve their relative structure, or change `base` once in `_runtime/ds-base.js` to point to the exported design-system root. Exporting one page folder alone is insufficient.
+
+HTML shell and page-logic sections still regenerate into each template because the template runtime consumes inline markup and logic. These generated sections are maintained in `_shared/`; the static JS and CSS assets are shared at runtime.
 
 ## Adding a page
 
-Copy a similar `storefront-*` folder, rename its `.dc.html` file and change its `@template` metadata, editable content and page logic. Register its route and menu label in `_shared/storefront.js`, then add its import and `start` option in `storefront-site/StorefrontSite.dc.html`. Run generation and the checks above.
+Copy a similar `storefront-*` folder, rename its `.dc.html` file and change its `@template` metadata, editable content and page logic. Register its route and menu label in `_shared/storefront.js`, then add its import and `start` option in `storefront-site/StorefrontSite.dc.html`. Run the build and checks above.
+
+## Tailwind conventions
+
+Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockfile. Use the local build; no Tailwind CDN script is needed.
+
+- Utilities use the `tw:` prefix, for example `tw:flex tw:flex-col tw:gap-4`.
+- Spacing numbers follow Vendra’s token scale: `tw:gap-5` means `--space-5` (24px), and `tw:gap-7` means `--space-7` (48px). They are not Tailwind’s default spacing numbers.
+- Colors, fonts and line heights resolve from the current tenant and language wrapper. For example, `tw:bg-page`, `tw:text-body` and `tw:font-body` use existing semantic tokens.
+- Prefer logical spacing such as `tw:ps-4` / `tw:pe-4` for RTL support. Write complete class names in source; do not construct them from string fragments.
+- Keep repeated page patterns in readable named classes. `information-pages.css` uses `@apply` and is compiled through the shared Tailwind entry point.
+- Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
+- Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
+
+`node templates/_build/generate.cjs` remains available for shared HTML/logic propagation only; it does not compile Tailwind. Use the full build after CSS or class changes.
