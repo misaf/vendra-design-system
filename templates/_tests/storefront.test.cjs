@@ -32,6 +32,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  const {ctx:c,history}=context();vm.runInContext(script+'\nthis.Logic=Component;',c);const logic=new c.Logic({lang:'en',tenant:'default',mobile:false});
  const values=logic.renderVals();assert.ok(values);parsed++;
  if(folder==='storefront-site') {
+  logic.navigate('faq');assert.equal(logic.state.route,'faq');assert.ok(history.at(-1)[1].includes('view=faq'));history.length=0;
   logic.navigate('shop');assert.equal(logic.state.route,'shop');assert.deepEqual(history[0],['push','?lang=en&view=shop']);
   logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.lang,'fa');
   logic.navigate({view:'shop',lang:'en'},true);assert.equal(history.at(-1)[0],'replace');
@@ -42,5 +43,8 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
   const order={lines:logic.state.bag,delivery:logic.state.delivery,totals:{sub:8300000,fee:0,total:8300000},last4:'1234'};
   logic.renderVals().store.complete(order);assert.equal(logic.state.bag.length,0);assert.equal(logic.state.order.totals.total,8300000);assert.equal(logic.state.order.delivery.name,'Sample');
  } else {assert.equal(values.mob,true);assert.ok(values.href.shop.includes('view=shop'));}
+ if(folder==='storefront-faq'){
+  const fa=new c.Logic({lang:'fa',tenant:'clay',mobile:false}).renderVals();assert.equal(fa.dir,'rtl');assert.equal(fa.tenant,'clay');assert.equal(fa.groups.length,3);assert.equal(fa.groups.reduce((n,g)=>n+g.items.length,0),9);assert.ok(fa.groups[0].items[0].content.includes('۸۰٬۰۰۰'));
+ }
 }
 console.log('Passed delivery fees, validation, Persian digits, history, checkout state, and all '+parsed+' template logic checks.');
