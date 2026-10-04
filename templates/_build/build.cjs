@@ -1,4 +1,4 @@
-// Compile Tailwind, then refresh all storefront templates. --check writes nothing.
+// Refresh storefront templates, then compile Tailwind. --check writes nothing.
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -7,6 +7,8 @@ const root = path.resolve(__dirname, '..');
 const check = process.argv.includes('--check');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-tailwind-'));
 try {
+  // Update generated markup before Tailwind scans it, including removed classes.
+  const count = require('./generate.cjs').generate(check);
   const output = path.join(temporary, 'tailwind.css');
   const cliFolder = path.join(root, 'node_modules/@tailwindcss/cli');
   const cliPackage = JSON.parse(fs.readFileSync(path.join(cliFolder, 'package.json'), 'utf8'));
@@ -23,7 +25,6 @@ try {
   } else if (!fs.existsSync(target) || css !== fs.readFileSync(target, 'utf8')) {
     fs.writeFileSync(target, css);
   }
-  const count = require('./generate.cjs').generate(check);
   console.log(check ? 'Tailwind and storefront templates are current.' : 'Built Tailwind; updated ' + count + ' template files.');
 } catch (error) {
   console.error(error.message);

@@ -4,10 +4,15 @@
   "scripts": {
     "build": "node _build/build.cjs",
     "check": "node _build/build.cjs --check",
-    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs"
+    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs",
+    "dev": "vite --config _build/vite.config.mjs"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",
-    "tailwindcss": "4.3.3"
+    "tailwindcss": "4.3.3",
+    "vite": "8.3.2"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   }
 }
