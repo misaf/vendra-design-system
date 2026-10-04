@@ -36,6 +36,7 @@ class Component extends VFPage {
         ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
       },
       hasSizes,
+      available: product.inStock !== false,unavailable:product.inStock===false,
       category: S.shopLink(product.cat),
       productImage: vfProductImage(product, L),
       unitPrice: m(base + (hasSizes ? sz[1] : 0)),
@@ -66,15 +67,18 @@ class Component extends VFPage {
         dec: C.dec,
         inc: C.inc
       },
-      addLabel: (s.added ? C.added : C.add) + ' · ' + m(total),
+      addLabel: (product.inStock === false ? fa ? 'ناموجود' : 'Sold out' : s.added ? C.added : C.add) + ' · ' + m(total),
       totalLabel: m(total),
       add: () => {
+        if (product.inStock === false) return;
         const st = this.props.store;
         if (st) {
           const ad = availableAddons.filter(a => s.addons.includes(a[0]));
           st.add({
             image: product.image,
             productId: product.id,
+            size: hasSizes ? s.size : null,
+            addons: ad.map(a => a[0]),
             id: product.id + (hasSizes ? '-' + s.size : '') + (ad.length ? '-' + ad.map(a => a[0]).join('+') : ''),
             unit,
             qty: s.qty,

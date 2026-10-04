@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=home</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=home</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=shop</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=shop</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=weddings</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=weddings</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=contact</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=contact</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=journal</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=journal</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=en&amp;view=faq</loc></url>
+<url><loc>https://example.test/templates/storefront-site/StorefrontSite.dc.html?lang=fa&amp;view=faq</loc></url>
+</urlset>

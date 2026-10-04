@@ -8,6 +8,9 @@ class VFPage extends DCLogic {
     });
     this._vfMedia.addEventListener('change', this._vfResize);
     this._vfResize();
+    const route=vfPageRoute(this.props);
+    const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {

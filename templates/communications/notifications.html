@@ -1,8 +1,8 @@
 <!-- @dsCard group="Storefront" viewport="1200x2000" name="Order notifications" subtitle="SMS + WhatsApp per order status — English left, Persian right" -->
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Order notifications</title><link rel="stylesheet" href="../../styles.css">
-<script src="../../templates/_vendor/react.production.min.js"></script>
-<script src="../../templates/_vendor/react-dom.production.min.js"></script>
-<script src="../../templates/_vendor/babel.min.js"></script>
+<script src="../_vendor/react.production.min.js"></script>
+<script src="../_vendor/react-dom.production.min.js"></script>
+<script src="../_vendor/babel.min.js"></script>
 <script src="notifications.js"></script>
 <style>body{margin:0;padding:24px 28px;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body)}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}
 .top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}.top h1{margin:0;font-family:var(--font-display);font-weight:500;font-size:32px;line-height:1.15}.top p{margin:6px 0 0;max-width:560px;font-size:14px;line-height:1.55;color:var(--text-secondary);text-wrap:pretty}
@@ -20,8 +20,8 @@ details summary{font-size:12px;color:var(--text-muted);cursor:pointer}details pr
 const N=window.AG_NOTIFY;
 const LABEL={received:'Order received',paid:'Payment confirmed',ready:'Ready — photo',onway:'On its way',delivered:'Delivered',delayed:'Running late',cancelled:'Cancelled',reminder:'Occasion reminder'};
 // SAMPLE values — the backend fills these from the order / reminder record.
-const VARS={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Mehr (1 Oct)',slot:'9:00-12:00',amount:'2,400,000 Toman',recipient:'Mina',time:'10:40',link:'vendra.ir/o/10522',remLink:'vendra.ir/r',wa:'0912 564 9438',name:'Mum',occasion:'birthday'},
- fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۹ مهر',slot:'۹ تا ۱۲',amount:'۲٬۴۰۰٬۰۰۰ تومان',recipient:'مینا',time:'10:40',link:'vendra.ir/o/10522',remLink:'vendra.ir/r',wa:'0912 564 9438',name:'مامان',occasion:'تولد'}};
+const VARS={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Mehr (1 Oct)',slot:'9:00-12:00',amount:'2,400,000 Toman',recipient:'Mina',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'Mum',occasion:'birthday'},
+ fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۹ مهر',slot:'۹ تا ۱۲',amount:'۲٬۴۰۰٬۰۰۰ تومان',recipient:'مینا',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'مامان',occasion:'تولد'}};
 const KEY='vendra-notify-card';
 function Seg({value,set,opts,label}){return <div><label id={label}>{label}</label><div className="seg" role="radiogroup" aria-labelledby={label}>{opts.map(([v,l])=><button key={v} role="radio" aria-checked={value===v} onClick={()=>set(v)}>{l}</button>)}</div></div>;}
 const waHtml=s=>s.split(/(\*[^*\n]+\*)/g).map((p,i)=>p.startsWith('*')&&p.endsWith('*')?<strong key={i}>{p.slice(1,-1)}</strong>:p);

@@ -84,10 +84,10 @@
 <div class="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
 <p class="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.payP }}</p>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.PaymentCard" card-number="{{ payment.cardNumber }}" holder="{{ payment.holder }}" bank="{{ payment.bank }}" amount="{{ totalLabel }}" labels="{{ payLabels }}" hint-size="100%,220px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ migration.choose }}" options="{{ methodOptions }}" value="{{ method }}" on-change="{{ setMethod }}" disabled="{{ busy }}"></x-import><p class="tw:text-sm tw:text-quiet">{{ paymentNotice }}</p><sc-if value="{{ codOff }}"><p>{{ migration.codOff }}</p></sc-if><sc-if value="{{ isCard }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.PaymentCard" card-number="{{ payment.cardNumber }}" holder="{{ payment.holder }}" bank="{{ payment.bank }}" amount="{{ totalLabel }}" labels="{{ payLabels }}" hint-size="100%,220px"></x-import><sc-if value="{{ payment.sheba }}"><p class="tw:text-sm">{{ lang === 'fa' ? 'شبا' : 'Sheba' }}: <bdi dir="ltr">{{ payment.sheba }}</bdi></p><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="sm" on-click="{{ copySheba }}">{{ payLabels.copy }}</x-import></sc-if>
 <div class="vf-checkout-receipt-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-last4" label="{{ t.last4 }}" hint="{{ t.last4Hint }}" error="{{ last4Err }}" inputmode="numeric" maxlength="4" dir="ltr" value="{{ last4 }}" on-change="{{ setLast4 }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-ref" value="{{ ref }}" on-change="{{ setRef }}" label="{{ t.ref }}" hint="{{ t.refHint }}" inputmode="numeric" dir="ltr" hint-size="100%,96px"></x-import></div>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" icon="shield-check" hint-size="100%,60px">{{ t.safe }}</x-import>
-<div class="tw:flex tw:gap-3 tw:flex-wrap"><sc-if value="{{ desk }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="arrow-right" on-click="{{ place }}" hint-size="200px,52px">{{ t.place }}</x-import></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="arrow-left" href="{{ href.bag }}" on-click="{{ go.bag }}" hint-size="140px,52px">{{ t.back }}</x-import></div>
+</sc-if><sc-if value="{{ isWa }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" href="{{ waOrder }}" target="_blank" rel="noopener noreferrer">{{ migration.openWa }}</x-import></sc-if><sc-if value="{{ busy }}"><p role="status">{{ migration.processing }}</p></sc-if><sc-if value="{{ failed }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ migration.failed }}" >{{ migration.failureBody }}</x-import><div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ retry }}">{{ migration.retry }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ otherMethod }}">{{ migration.other }}</x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" icon="shield-check" hint-size="100%,60px">{{ t.safe }}</x-import>
+<div class="tw:flex tw:gap-3 tw:flex-wrap"><sc-if value="{{ desk }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="arrow-right" on-click="{{ place }}" loading="{{ busy }}" disabled="{{ placeDisabled }}" hint-size="200px,52px">{{ t.place }}</x-import></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="arrow-left" href="{{ href.bag }}" on-click="{{ go.bag }}" hint-size="140px,52px">{{ t.back }}</x-import></div>
 </div>
 <aside class="vf-checkout-summary tw:[flex:1_1_360px] tw:max-w-[440px] tw:sticky tw:top-9"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,300px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderSummary" title="{{ t.summary }}" lines="{{ lines }}" sums="{{ sums }}" hint-size="100%,260px"></x-import></x-import></aside>
 </div>
@@ -96,7 +96,7 @@
 <div class="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-[28px]">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 2 }}" format-number="{{ fmt }}" compact="{{ mob }}" caption-format="{{ caption }}" hint-size="100%,44px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="check" tone="accent" eyebrow="{{ t.orderNo }}" title="{{ t.doneA }}" title-accent="{{ t.doneB }}" body="{{ t.doneP }}" heading-level="{{ 1 }}" hint-size="100%,300px"></x-import>
-<div class="tw:w-full"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ doneRows }}" hint-size="100%,220px"></x-import></div>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="accent">{{ paymentStatus }}</x-import><div class="tw:w-full"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ doneRows }}" hint-size="100%,220px"></x-import></div>
 <div class="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="package-search" href="{{ href.track }}" on-click="{{ go.track }}" hint-size="170px,48px">{{ t.track }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.keep }}</x-import></div>
 </div>
 </sc-if></main>
@@ -125,7 +125,7 @@
 <div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
-<sc-if value="{{ paying }}"><div class="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:p-[12px_16px] tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]"><div class="vf-action-total"><span class="vf-action-caption tw:text-xs tw:text-quiet">{{ t.total }}</span><span class="vf-price">{{ totalLabel }}</span></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-end="arrow-right" on-click="{{ place }}" hint-size="180px,48px">{{ t.place }}</x-import></div></sc-if>
+<sc-if value="{{ paying }}"><div class="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:p-[12px_16px] tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]"><div class="vf-action-total"><span class="vf-action-caption tw:text-xs tw:text-quiet">{{ t.total }}</span><span class="vf-price">{{ totalLabel }}</span></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-end="arrow-right" on-click="{{ place }}" loading="{{ busy }}" disabled="{{ placeDisabled }}" hint-size="180px,48px">{{ t.place }}</x-import></div></sc-if>
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
@@ -142,6 +142,10 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 const VF_STORE = {
+  currency: 'IRT',
+  apiBase: '', // Empty keeps every integration in local demo mode.
+  occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
+  paymentDemo: {online: 'success', codZones: ['central', 'outer']},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -244,7 +248,7 @@ const VF_PRODUCTS = [
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -299,6 +303,19 @@ const VF_PRODUCT_DETAILS = {
   blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
+
+function vfReorderLines(lines) {
+ return lines.flatMap(line => {
+  const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
+  if(!product||product.inStock===false)return [];
+  const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
+  const addons=line.addons||VF_ADDONS.filter(a=>line.id.includes(a[0])).map(a=>a[0]);
+  const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
+  return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
+ });
+}
+
+function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
 
 // Source: templates/_shared/translations/shell.js
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
@@ -382,11 +399,470 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
+// Source: templates/_shared/account-data.js
+// Local demo accounts. Persistence is per phone number; no authentication service is implied.
+function vfLatin(value) {
+  return String(value).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
+function vfAccountPhone() {
+  try {
+    return localStorage.getItem('vf-account-phone') || '';
+  } catch {
+    return '';
+  }
+}
+function vfAccountKey(phone) {
+  return 'vf-account:' + vfLatin(phone).replace(/\D/g, '');
+}
+function vfAccountLoad(phone, lang = 'en') {
+  try {
+    const data = JSON.parse(localStorage.getItem(vfAccountKey(phone)) || 'null');
+    if (data && Array.isArray(data.addresses) && Array.isArray(data.reminders) && data.profile) {
+      data.reminders = data.reminders.map(vfNormalizeReminder);
+      return data;
+    }
+  } catch {}
+  return {
+    profile: {
+      name: '',
+      email: '',
+      locale: lang,
+      sms: true
+    },
+    addresses: [{
+      id: 'home',
+      label: {
+        en: 'Home',
+        fa: 'خانه'
+      },
+      line: {
+        en: '12 Golha St, Azimiyeh',
+        fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: true
+    }, {
+      id: 'office',
+      label: {
+        en: 'Office',
+        fa: 'محل کار'
+      },
+      line: {
+        en: '40 Moazen Blvd, Gohardasht',
+        fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: false
+    }],
+    reminders: [{
+      id: 'mum',
+      name: {
+        en: 'Mum',
+        fa: 'مامان'
+      },
+      occ: 'birthday',
+      cal: 'j',
+      m: 7,
+      d: 9,
+      before: 3,
+      channel: 'sms',
+      on: true
+    }, {
+      id: 'mina',
+      name: {
+        en: 'Our anniversary',
+        fa: 'سالگرد خودمان'
+      },
+      occ: 'anniversary',
+      cal: 'g',
+      m: 11,
+      d: 12,
+      before: 7,
+      channel: 'wa',
+      on: true
+    }, {
+      id: 'sara',
+      name: {
+        en: 'Yalda at Grandma’s',
+        fa: 'یلدا خانه مادربزرگ'
+      },
+      occ: 'yalda',
+      cal: 'j',
+      m: 9,
+      d: 30,
+      before: 7,
+      channel: 'sms',
+      on: false
+    }]
+  };
+}
+function vfAccountSave(phone, data) {
+  try {
+    localStorage.setItem(vfAccountKey(phone), JSON.stringify(data));
+  } catch {}
+}
+function vfAccountLogin(phone, lang) {
+  phone = vfLatin(phone).replace(/\D/g, '');
+  try {
+    localStorage.setItem('vf-account-phone', phone);
+  } catch {}
+  const data = vfAccountLoad(phone, lang);
+  vfAccountSave(phone, data);
+  return data;
+}
+function vfAccountSignOut() {
+  try {
+    localStorage.removeItem('vf-account-phone');
+  } catch {}
+}
+function vfAccountLocale() {
+  const phone = vfAccountPhone();
+  return phone ? vfAccountLoad(phone).profile.locale : null;
+}
+const VF_OCCASIONS = [{
+  id: 'birthday',
+  icon: 'cake',
+  en: 'Birthday',
+  fa: 'تولد'
+}, {
+  id: 'anniversary',
+  icon: 'gem',
+  en: 'Anniversary',
+  fa: 'سالگرد ازدواج'
+}, {
+  id: 'mothers',
+  icon: 'flower-2',
+  en: 'Mother’s Day',
+  fa: 'روز مادر',
+  hijri: [6, 20]
+}, {
+  id: 'valentine',
+  icon: 'heart',
+  en: 'Valentine’s Day',
+  fa: 'ولنتاین',
+  fixed: {
+    cal: 'g',
+    m: 2,
+    d: 14
+  }
+}, {
+  id: 'nowruz',
+  icon: 'sprout',
+  en: 'Nowruz',
+  fa: 'نوروز',
+  fixed: {
+    cal: 'j',
+    m: 1,
+    d: 1
+  }
+}, {
+  id: 'yalda',
+  icon: 'moon',
+  en: 'Yalda night',
+  fa: 'شب یلدا',
+  fixed: {
+    cal: 'j',
+    m: 9,
+    d: 30
+  }
+}, {
+  id: 'other',
+  icon: 'calendar-heart',
+  en: 'Other occasion',
+  fa: 'مناسبت دیگر'
+}];
+function vfNormalizeReminder(r) {
+  if (r.date && !r.m) {
+    const d = window.AG_DATES.fromIso(r.date);
+    if (d) return {
+      ...r,
+      cal: 'g',
+      m: d.getMonth() + 1,
+      d: d.getDate()
+    };
+  }
+  return r;
+}
+function vfReminderNext(r, today = new Date()) {
+  r = vfNormalizeReminder(r);
+  const D = window.AG_DATES,
+    occasion = VF_OCCASIONS.find(o => o.id === r.occ);
+  if (occasion && occasion.hijri) {
+    const t = new Date(today);
+    t.setHours(12, 0, 0, 0);
+    const date = (VF_STORE.occasionDates.mothers || []).map(D.fromIso).filter(d => d && d >= t).sort((a, b) => a - b)[0];
+    if (date) return {
+      date,
+      days: D.daysBetween(t, date),
+      published: true
+    };
+    return D.nextHijri(...occasion.hijri, t);
+  }
+  return D.nextYearly({
+    ...r,
+    ...(occasion && occasion.fixed)
+  }, today);
+}
+function vfSampleOrders() {
+  const delivery = {
+    ...VF_DELIVERY,
+    name: 'Shirin Ahmadi',
+    phone: '09125649438',
+    address: '12 Golha St, Azimiyeh'
+  };
+  return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
+    const lines = vfSampleBag();
+    return {
+      id,
+      status,
+      lines,
+      delivery,
+      totals: vfTotals(lines, delivery),
+      method: 'card',
+      last4: '1234',
+      preferredLocale: 'fa'
+    };
+  });
+}
+
+// Source: templates/_shared/payments.js
+// Sample bank prefixes and card configuration; adapt from your payment provider.
+(() => {
+  const D = {};
+  D.banks = [['603799', 'Bank Melli', 'بانک ملی'], ['610433', 'Bank Mellat', 'بانک ملت'], ['991975', 'Bank Mellat', 'بانک ملت'], ['603769', 'Bank Saderat', 'بانک صادرات'], ['627353', 'Bank Tejarat', 'بانک تجارت'], ['585983', 'Bank Tejarat', 'بانک تجارت'], ['502229', 'Bank Pasargad', 'بانک پاسارگاد'], ['639347', 'Bank Pasargad', 'بانک پاسارگاد'], ['621986', 'Saman Bank', 'بانک سامان'], ['622106', 'Parsian Bank', 'بانک پارسیان'], ['639194', 'Parsian Bank', 'بانک پارسیان'], ['589210', 'Bank Sepah', 'بانک سپه'], ['603770', 'Bank Keshavarzi', 'بانک کشاورزی'], ['639217', 'Bank Keshavarzi', 'بانک کشاورزی'], ['504172', 'Resalat Bank', 'بانک رسالت'], ['628023', 'Bank Maskan', 'بانک مسکن'], ['627412', 'Eghtesad Novin', 'بانک اقتصاد نوین'], ['627488', 'Karafarin Bank', 'بانک کارآفرین'], ['502908', 'Tosee Taavon', 'بانک توسعه تعاون'], ['627648', 'Tosee Saderat', 'بانک توسعه صادرات'], ['505785', 'Iran Zamin', 'بانک ایران زمین'], ['636214', 'Bank Ayandeh', 'بانک آینده'], ['502806', 'Bank Shahr', 'بانک شهر'], ['502938', 'Bank Day', 'بانک دی'], ['639607', 'Sarmayeh Bank', 'بانک سرمایه'], ['627381', 'Bank Ansar', 'بانک انصار'], ['636795', 'Central Bank', 'بانک مرکزی']];
+  D.bankOf = card => {
+    const b = D.banks.find(x => vfLatin(card).replace(/\D/g, '').startsWith(x[0]));
+    return b ? {
+      en: b[1],
+      fa: b[2]
+    } : {
+      en: 'Bank card',
+      fa: 'کارت بانکی'
+    };
+  };
+  D.luhn = n => {
+    n = vfLatin(n).replace(/\D/g, '');
+    if (n.length !== 16) return false;
+    let s = 0;
+    for (let i = 0; i < 16; i++) {
+      let v = +n[i];
+      if (i % 2 === 0) {
+        v *= 2;
+        if (v > 9) v -= 9;
+      }
+      s += v;
+    }
+    return s % 10 === 0;
+  };
+  D.setPayCard = ({
+    cardNumber,
+    holderEn,
+    holderFa,
+    sheba
+  }) => {
+    const n = vfLatin(cardNumber || '').replace(/\D/g, '').slice(0, 16);
+    Object.assign(VF_STORE.payment, {
+      card: n.replace(/(\d{4})(?=\d)/g, '$1 '),
+      holder: {
+        en: holderEn || '',
+        fa: holderFa || holderEn || ''
+      },
+      bank: D.bankOf(n),
+      sheba: (sheba || '').replace(/\s/g, '').toUpperCase(),
+      cardValid: D.luhn(n)
+    });
+  };
+  window.VF_PAYMENT = D;
+})();
+
+// Source: templates/_shared/integrations/api.js
+// Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
+// base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
+(() => {
+  const KEY = 'vendra-saved-map';
+  if (window.VF_API) return;
+  const A = {
+    base: VF_STORE.apiBase || '',
+    setBase(b) {
+      A.base = (b || '').replace(/\/$/, '');
+    },
+    get live() {
+      return !!A.base;
+    }
+  };
+  const req = async (method, path, body) => {
+    const r = await fetch(A.base + path, {
+      method,
+      headers: {
+        'Accept': 'application/ld+json',
+        ...(body ? {
+          'Content-Type': 'application/json'
+        } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'include'
+    });
+    if (!r.ok) {
+      const e = new Error('HTTP ' + r.status);
+      e.status = r.status;
+      try {
+        e.body = await r.json();
+      } catch (_) {}
+      throw e;
+    }
+    return r.status === 204 ? null : r.json().catch(() => null);
+  };
+  const map = () => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  };
+  const setMap = m => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(m));
+    } catch (e) {}
+  };
+  // Product slug -> numeric catalog id. Fill p.apiId when the catalog comes from GET /api/catalog/products.
+  const pid = slug => {
+    const p = VF_PRODUCTS.find(x => x.id === slug);
+    return p && p.apiId;
+  };
+  // POST /api/customers/saved-items  {sellableType, sellableId, metadata}
+  A.saveItem = async slug => {
+    const id = pid(slug);
+    if (!A.live || id == null) return null;
+    const r = await req('POST', '/api/customers/saved-items', {
+      sellableType: 'product',
+      sellableId: id,
+      metadata: {
+        slug
+      }
+    });
+    const m = map();
+    if (r && r.id != null) {
+      m[slug] = r.id;
+      setMap(m);
+    }
+    return r;
+  };
+  // DELETE /api/customers/saved-items/{id}
+  A.unsaveItem = async slug => {
+    const m = map();
+    const sid = m[slug];
+    if (!A.live || sid == null) return null;
+    await req('DELETE', '/api/customers/saved-items/' + sid);
+    delete m[slug];
+    setMap(m);
+    return true;
+  };
+  // GET /api/customers/wishlists -> default list's items -> product slugs
+  A.loadSaved = async () => {
+    if (!A.live) return null;
+    const r = await req('GET', '/api/customers/wishlists');
+    const lists = r && (r['hydra:member'] || r.member || r.data) || [];
+    const w = lists.find(l => l.isDefault) || lists[0];
+    if (!w) return [];
+    const m = map();
+    const byApi = {};
+    VF_PRODUCTS.forEach(p => {
+      if (p.apiId != null) byApi[p.apiId] = p.id;
+    });
+    const slugs = [];
+    (w.items || []).forEach(it => {
+      const s = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      if (s) {
+        slugs.push(s);
+        m[s] = it.id;
+      }
+    });
+    setMap(m);
+    return slugs;
+  };
+  // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
+  A.inquiry = async body => {
+    if (!A.live) {
+      await new Promise(r => setTimeout(r, 600));
+      return null;
+    }
+    return req('POST', '/api/support/inquiries', body);
+  };
+  // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
+  // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
+  A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
+  window.AG_API = window.VF_API = A;
+})();
+
+// Source: templates/_shared/integrations/analytics.js
+// Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
+// AG_TRACK.event(name, params). Sends to window.dataLayer (GTM) if present; otherwise keeps the last 50 in AG_TRACK.log for QA.
+// No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
+(() => {
+  if (window.VF_TRACK) return;
+  const EVENTS = {
+    view_item: 'Product page opened',
+    add_to_cart: 'Added to bag',
+    remove_from_cart: 'Removed from bag',
+    view_cart: 'Bag opened',
+    begin_checkout: 'Bag → payment step',
+    add_payment_info: 'Pay / Place order pressed',
+    purchase: 'Order placed',
+    add_to_wishlist: 'Product saved',
+    search: 'Search submitted',
+    reminder_created: 'Occasion reminder saved',
+    sign_up: 'First sign-in',
+    login: 'Sign-in',
+    language_switch: 'Header language changed',
+    order_again: '“Order again” pressed',
+    contact_whatsapp: 'WhatsApp link opened'
+  };
+  const log = [];
+  const ctx = () => ({
+    language: document.documentElement?.lang || 'en',
+    currency: VF_STORE.currency || 'IRT'
+  });
+  const item = (p, qty = 1, unit) => p ? {
+    item_id: p.id,
+    item_name: Array.isArray(p.en) ? p.en[0] : p.en,
+    item_category: p.cat,
+    price: unit ?? p.price,
+    quantity: qty
+  } : null;
+  const event = (name, params = {}) => {
+    if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
+    const e = {
+      event: name,
+      ...ctx(),
+      ...params
+    };
+    log.push(e);
+    if (log.length > 50) log.shift();
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+  };
+  window.AG_TRACK = window.VF_TRACK = {
+    event,
+    item,
+    EVENTS,
+    log
+  };
+})();
+
 // Source: templates/_shared/formatting.js
 // Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
+  lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
 });
 
 // Source: templates/_shared/routing.js
@@ -404,17 +880,26 @@ const VF_ROUTE_EXTRA = {
 function vfReadRoute(search = location.search) {
   window.AG_SEO.register(...VF_ROUTES);
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    const max=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
+    route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
   }
   return route;
 }
 function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if(route.demo)query.set('demo',route.demo);
   if (route.view === 'shop') {
+    if(route.min>0)query.set('min',route.min);
+    const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    if(route.max!=null&&route.max<priceMax)query.set('max',route.max);
+    if(route.stock)query.set('stock','1');
     if (route.cat === 'all') query.delete('cat');
     if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
@@ -438,6 +923,9 @@ class VFPage extends DCLogic {
     });
     this._vfMedia.addEventListener('change', this._vfResize);
     this._vfResize();
+    const route=vfPageRoute(this.props);
+    const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {
@@ -626,7 +1114,7 @@ function vfShell(props, page) {
 // Bilingual checkout copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  return {
+  const result = {
     en: {
       steps: 'Checkout steps',
       s1: 'Bag',
@@ -716,6 +1204,77 @@ function vfCopy(S) {
       caption: (step, total, label) => 'مرحله ' + step + ' از ' + total + ' · ' + label
     }
   }[S.lang];
+  return {
+    ...result,
+    migration: {
+      "en": {
+        "actions": {
+          "online": "Simulate online payment",
+          "cod": "Confirm demo order",
+          "wa": "Confirm demo order"
+        },
+        "descriptions": {
+          "online": "Try the online payment flow using a simulated result.",
+          "cod": "Payment would be collected on delivery. Confirm this sample order.",
+          "wa": "Open WhatsApp to review the prepared message, or confirm the sample order here."
+        },
+        "choose": "Choose a payment method",
+        "methods": {
+          "card": "Card-to-card transfer",
+          "online": "Online card demo",
+          "cod": "Pay on delivery",
+          "wa": "Confirm on WhatsApp"
+        },
+        "codOff": "Available for Karaj delivery only.",
+        "demo": "Template preview: no money is transferred and no messages are sent.",
+        "processing": "Processing demo payment…",
+        "failed": "Demo payment failed",
+        "failureBody": "Your bag is preserved. Retry or choose another payment method.",
+        "retry": "Try again",
+        "other": "Choose another method",
+        "openWa": "Open order in WhatsApp",
+        "statuses": {
+          "card": "Awaiting transfer check",
+          "online": "Demo paid",
+          "cod": "Pay on delivery",
+          "wa": "Awaiting WhatsApp confirmation"
+        }
+      },
+      "fa": {
+        "actions": {
+          "online": "شبیه‌سازی پرداخت آنلاین",
+          "cod": "تأیید سفارش نمونه",
+          "wa": "تأیید سفارش نمونه"
+        },
+        "descriptions": {
+          "online": "روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.",
+          "cod": "مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.",
+          "wa": "واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید."
+        },
+        "choose": "انتخاب روش پرداخت",
+        "methods": {
+          "card": "کارت به کارت",
+          "online": "نمونه پرداخت آنلاین",
+          "cod": "پرداخت در محل",
+          "wa": "تأیید در واتس‌اپ"
+        },
+        "codOff": "فقط برای ارسال در کرج در دسترس است.",
+        "demo": "پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.",
+        "processing": "در حال انجام پرداخت نمونه…",
+        "failed": "پرداخت نمونه ناموفق بود",
+        "failureBody": "سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.",
+        "retry": "تلاش دوباره",
+        "other": "انتخاب روش دیگر",
+        "openWa": "باز کردن سفارش در واتس‌اپ",
+        "statuses": {
+          "card": "در انتظار بررسی واریز",
+          "online": "پرداخت نمونه انجام شد",
+          "cod": "پرداخت در محل",
+          "wa": "در انتظار تأیید واتس‌اپ"
+        }
+      }
+    }[S.lang]
+  };
 }
 // END GENERATED PAGE COPY
 
@@ -728,7 +1287,10 @@ class Component extends VFPage {
     last4: '',
     ref: '',
     err: false,
-    order: null
+    order: null,
+    method: 'card',
+    busy: false,
+    failed: false
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'checkout');
@@ -752,15 +1314,49 @@ class Component extends VFPage {
     } = totals;
     const slotEnd = (VF_SLOTS.find(slot => slot[0] === delivery.slot) || VF_SLOTS[1])[1];
     const slotLabel = vfSlotLabel(delivery.slot, slotEnd, fa);
+    const method = order ? order.method || 'card' : s.method,
+      codOk = VF_STORE.paymentDemo.codZones.includes(delivery.zone),
+      P = C.migration;
     const done = !!order || s.placed || this.props.step === 'done';
     return {
       ...S,
       t: {
         ...S.t,
         ...C,
+        payA: method === 'card' ? C.payA : P.methods[method],
+        payB: method === 'card' ? C.payB : '',
+        payP: method === 'card' ? C.payP : P.descriptions[method],
+        place: method === 'card' ? C.place : P.actions[method],
         orderNo: order ? C.labels.order + '\u2068' + order.id + '\u2069' : C.orderNo
       },
       paying: !done,
+      isCard: method === 'card',
+      isWa: method === 'wa',
+      busy: s.busy,placeDisabled:s.busy||s.failed||done,
+      failed: s.failed,
+      paymentNotice: P.demo,
+      method,
+      methodOptions: Object.entries(P.methods).map(([id, label]) => ({
+        value: id,
+        label,
+        disabled: id === 'cod' && !codOk
+      })),
+      setMethod: e => !s.busy&&this.setState({
+        method: e.target.value,
+        err: false,
+        failed: false
+      }),
+      migration: P,
+      codOff: !codOk,
+      waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => l[L][0] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
+      retry: () => this.setState({
+        failed: false
+      }),
+      otherMethod: () => this.setState({
+        failed: false,
+        method: 'card'
+      }),
+      paymentStatus: P.statuses[method],
       done,
       fmt: fa ? v => VF_FA_DIGITS(v) : v => String(v),
       steps: [{
@@ -773,6 +1369,7 @@ class Component extends VFPage {
       totalLabel: m(sub + fee),
       caption: C.caption,
       payLabels: C.payLabels,
+      copySheba: () => navigator.clipboard.writeText(VF_STORE.payment.sheba || ''),
       last4: s.last4,
       last4Err: s.err ? C.last4Err : undefined,
       ref: s.ref,
@@ -784,7 +1381,9 @@ class Component extends VFPage {
         err: false
       }),
       place: () => {
-        if (s.last4.length !== 4) {
+        if (s.busy || done || items.some(l => !vfLineAvailable(l))) return;
+        if (method === 'cod' && !codOk) return;
+        if (method === 'card' && s.last4.length !== 4) {
           this.setState({
             err: true
           });
@@ -794,28 +1393,58 @@ class Component extends VFPage {
           }, 0);
           return;
         }
-        const record = {
-          id: 'VN-' + Date.now(),
-          status: 'received',
-          createdAt: new Date().toISOString(),
-          lines: items.map(l => ({
-            ...l
-          })),
-          delivery: {
-            ...delivery
-          },
-          totals: {
-            ...totals
-          },
-          last4: s.last4,
-          ref: s.ref
-        };
-        if (st) {
-          st.complete(record);
-        } else this.setState({
-          placed: true,
-          order: record
+        window.VF_TRACK.event('add_payment_info', {
+          payment_type: method
         });
+        const complete = () => {
+          const record = {
+            method,
+            paymentStatus: P.statuses[method],
+            preferredLocale: vfAccountLocale() || L,
+            id: 'VN-' + Date.now(),
+            status: 'received',
+            createdAt: new Date().toISOString(),
+            lines: items.map(l => ({
+              ...l
+            })),
+            delivery: {
+              ...delivery
+            },
+            totals: {
+              ...totals
+            },
+            last4: s.last4,
+            ref: s.ref
+          };
+          if (st) {
+            st.complete(record);
+          } else this.setState({
+            placed: true,
+            order: record
+          });
+          window.VF_TRACK.event('purchase', {
+            transaction_id: record.id,
+            value: totals.total,
+            payment_type: method
+          });
+        };
+        if (method === 'online') {
+          this.setState({
+            busy: true
+          });
+          this._paymentTimer = setTimeout(() => {
+            this.setState({
+              busy: false
+            });
+            if (this.props.payFail || vfPageRoute(this.props).demo === 'error' || VF_STORE.paymentDemo.online === 'failure') {
+              this.setState({
+                failed: true
+              });
+              return;
+            }
+            complete();
+          }, 500);
+        } else complete();
       },
       lines: items.map(l => ({
         image: vfProductImage(l, L).src,
@@ -845,11 +1474,11 @@ class Component extends VFPage {
       }, {
         icon: 'banknote',
         label: C.pay,
-        value: C.labels.cardToCard + m(sub + fee)
+        value: P.methods[method] + ' · ' + m(sub + fee)
       }, {
         icon: 'receipt',
         label: C.card,
-        value: '•••• ' + (fa ? VF_FA_DIGITS(order ? order.last4 : s.last4) : order ? order.last4 : s.last4)
+        value: method === 'card' ? '•••• ' + (fa ? VF_FA_DIGITS(order ? order.last4 : s.last4) : order ? order.last4 : s.last4) : ''
       }, {
         icon: 'message-square',
         label: C.labels.cardMessage,
@@ -860,6 +1489,10 @@ class Component extends VFPage {
         value: order ? order.ref : s.ref
       }].filter(r => r.value)
     };
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    clearTimeout(this._paymentTimer);
   }
 }
 // END GENERATED PAGE LOGIC

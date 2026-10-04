@@ -4,6 +4,8 @@ function vfCopy(S) {
   const fa = S.fa;
   return {
     en: {
+      integrationError: 'Could not send your message. Your draft is saved; please try again.',
+      emailLabel: 'Email (optional)',
       eb: 'Contact',
       hA: 'Visit the',
       hB: 'studio.',
@@ -28,6 +30,8 @@ function vfCopy(S) {
       rowLabels: ['Address', 'Hours', 'Phone', 'WhatsApp', 'Instagram']
     },
     fa: {
+      integrationError: 'ارسال پیام ناموفق بود. متن شما حفظ شده؛ دوباره تلاش کنید.',
+      emailLabel: 'ایمیل (اختیاری)',
       eb: 'تماس',
       hA: 'به استودیو',
       hB: 'سر بزنید.',

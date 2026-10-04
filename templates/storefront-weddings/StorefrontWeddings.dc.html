@@ -83,11 +83,12 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" ratio="4/5" placeholder-label="{{ t.ph }}" alt="" hint-size="100%,520px"></x-import>
 </section>
 <section class="vf-weddings-services tw:grid tw:mt-9 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))] tw:gap-[20px]"><sc-for list="{{ services }}" as="s" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,220px"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-weddings-service-icon tw:grid tw:w-[44px] tw:h-[44px] tw:rounded-[50%] tw:bg-accent-soft tw:text-on-soft tw:place-items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="{{ s.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></div><div class="vf-weddings-service-title tw:text-md tw:font-medium">{{ s.title }}</div><div class="vf-weddings-service-description tw:[font-size:15px] tw:[line-height:1.6] tw:text-quiet">{{ s.body }}</div><div class="vf-weddings-service-price tw:text-sm tw:font-medium tw:text-accent">{{ s.price }}</div></div></x-import></sc-for></section>
+<section class="tw:mt-9"><h2>{{ t.galleryTitle }}</h2><div class="tw:grid tw:grid-cols-3 tw:gap-4"><sc-for list="{{ gallery }}" as="photo"><img src="{{ photo.src }}" alt="{{ photo.alt }}" loading="lazy" class="tw:w-full tw:rounded-md"></sc-for></div><h2 class="tw:mt-7">{{ t.processTitle }}</h2><ol class="tw:grid tw:gap-5 tw:md:grid-cols-3"><sc-for list="{{ process }}" as="step"><li>{{ step }}</li></sc-for></ol></section>
 <section id="inquiry" class="vf-weddings-inquiry tw:grid tw:gap-7 tw:items-start tw:mt-9 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))]">
 <div class="tw:flex tw:flex-col tw:gap-4"><h2 class="vf-weddings-inquiry-title tw:m-0 tw:font-display tw:font-medium tw:[font-size:clamp(28px,3.5cqi,36px)] tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.fA }}</h2><p class="vf-weddings-inquiry-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.fP }}</p></div>
-<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" required="{{ true }}" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" required="{{ true }}" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ t.emailLabel }}" value="{{ email }}" on-change="{{ setEmail }}" type="email" dir="ltr" autocomplete="email"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div class="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" value="{{ type }}" on-change="{{ setType }}" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ t.guests }}" inputmode="numeric" value="{{ guests }}" on-change="{{ setGuests }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" value="{{ budget }}" on-change="{{ setBudget }}" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" value="{{ notes }}" on-change="{{ setNotes }}" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" loading="{{ busy }}" disabled="{{ busy }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><div id="vf-weddings-success" tabindex="-1" role="region" aria-label="{{ t.okT }}" class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ editMessage }}">{{ t.editMessage }}</x-import></div></div></sc-if>
-</section></main>
+</section><sc-if value="{{ apiError }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ apiError }}"></x-import></sc-if></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
@@ -130,6 +131,10 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 const VF_STORE = {
+  currency: 'IRT',
+  apiBase: '', // Empty keeps every integration in local demo mode.
+  occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
+  paymentDemo: {online: 'success', codZones: ['central', 'outer']},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -232,7 +237,7 @@ const VF_PRODUCTS = [
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -287,6 +292,19 @@ const VF_PRODUCT_DETAILS = {
   blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
+
+function vfReorderLines(lines) {
+ return lines.flatMap(line => {
+  const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
+  if(!product||product.inStock===false)return [];
+  const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
+  const addons=line.addons||VF_ADDONS.filter(a=>line.id.includes(a[0])).map(a=>a[0]);
+  const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
+  return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
+ });
+}
+
+function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
 
 // Source: templates/_shared/translations/shell.js
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
@@ -370,11 +388,470 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
+// Source: templates/_shared/account-data.js
+// Local demo accounts. Persistence is per phone number; no authentication service is implied.
+function vfLatin(value) {
+  return String(value).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
+function vfAccountPhone() {
+  try {
+    return localStorage.getItem('vf-account-phone') || '';
+  } catch {
+    return '';
+  }
+}
+function vfAccountKey(phone) {
+  return 'vf-account:' + vfLatin(phone).replace(/\D/g, '');
+}
+function vfAccountLoad(phone, lang = 'en') {
+  try {
+    const data = JSON.parse(localStorage.getItem(vfAccountKey(phone)) || 'null');
+    if (data && Array.isArray(data.addresses) && Array.isArray(data.reminders) && data.profile) {
+      data.reminders = data.reminders.map(vfNormalizeReminder);
+      return data;
+    }
+  } catch {}
+  return {
+    profile: {
+      name: '',
+      email: '',
+      locale: lang,
+      sms: true
+    },
+    addresses: [{
+      id: 'home',
+      label: {
+        en: 'Home',
+        fa: 'خانه'
+      },
+      line: {
+        en: '12 Golha St, Azimiyeh',
+        fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: true
+    }, {
+      id: 'office',
+      label: {
+        en: 'Office',
+        fa: 'محل کار'
+      },
+      line: {
+        en: '40 Moazen Blvd, Gohardasht',
+        fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: false
+    }],
+    reminders: [{
+      id: 'mum',
+      name: {
+        en: 'Mum',
+        fa: 'مامان'
+      },
+      occ: 'birthday',
+      cal: 'j',
+      m: 7,
+      d: 9,
+      before: 3,
+      channel: 'sms',
+      on: true
+    }, {
+      id: 'mina',
+      name: {
+        en: 'Our anniversary',
+        fa: 'سالگرد خودمان'
+      },
+      occ: 'anniversary',
+      cal: 'g',
+      m: 11,
+      d: 12,
+      before: 7,
+      channel: 'wa',
+      on: true
+    }, {
+      id: 'sara',
+      name: {
+        en: 'Yalda at Grandma’s',
+        fa: 'یلدا خانه مادربزرگ'
+      },
+      occ: 'yalda',
+      cal: 'j',
+      m: 9,
+      d: 30,
+      before: 7,
+      channel: 'sms',
+      on: false
+    }]
+  };
+}
+function vfAccountSave(phone, data) {
+  try {
+    localStorage.setItem(vfAccountKey(phone), JSON.stringify(data));
+  } catch {}
+}
+function vfAccountLogin(phone, lang) {
+  phone = vfLatin(phone).replace(/\D/g, '');
+  try {
+    localStorage.setItem('vf-account-phone', phone);
+  } catch {}
+  const data = vfAccountLoad(phone, lang);
+  vfAccountSave(phone, data);
+  return data;
+}
+function vfAccountSignOut() {
+  try {
+    localStorage.removeItem('vf-account-phone');
+  } catch {}
+}
+function vfAccountLocale() {
+  const phone = vfAccountPhone();
+  return phone ? vfAccountLoad(phone).profile.locale : null;
+}
+const VF_OCCASIONS = [{
+  id: 'birthday',
+  icon: 'cake',
+  en: 'Birthday',
+  fa: 'تولد'
+}, {
+  id: 'anniversary',
+  icon: 'gem',
+  en: 'Anniversary',
+  fa: 'سالگرد ازدواج'
+}, {
+  id: 'mothers',
+  icon: 'flower-2',
+  en: 'Mother’s Day',
+  fa: 'روز مادر',
+  hijri: [6, 20]
+}, {
+  id: 'valentine',
+  icon: 'heart',
+  en: 'Valentine’s Day',
+  fa: 'ولنتاین',
+  fixed: {
+    cal: 'g',
+    m: 2,
+    d: 14
+  }
+}, {
+  id: 'nowruz',
+  icon: 'sprout',
+  en: 'Nowruz',
+  fa: 'نوروز',
+  fixed: {
+    cal: 'j',
+    m: 1,
+    d: 1
+  }
+}, {
+  id: 'yalda',
+  icon: 'moon',
+  en: 'Yalda night',
+  fa: 'شب یلدا',
+  fixed: {
+    cal: 'j',
+    m: 9,
+    d: 30
+  }
+}, {
+  id: 'other',
+  icon: 'calendar-heart',
+  en: 'Other occasion',
+  fa: 'مناسبت دیگر'
+}];
+function vfNormalizeReminder(r) {
+  if (r.date && !r.m) {
+    const d = window.AG_DATES.fromIso(r.date);
+    if (d) return {
+      ...r,
+      cal: 'g',
+      m: d.getMonth() + 1,
+      d: d.getDate()
+    };
+  }
+  return r;
+}
+function vfReminderNext(r, today = new Date()) {
+  r = vfNormalizeReminder(r);
+  const D = window.AG_DATES,
+    occasion = VF_OCCASIONS.find(o => o.id === r.occ);
+  if (occasion && occasion.hijri) {
+    const t = new Date(today);
+    t.setHours(12, 0, 0, 0);
+    const date = (VF_STORE.occasionDates.mothers || []).map(D.fromIso).filter(d => d && d >= t).sort((a, b) => a - b)[0];
+    if (date) return {
+      date,
+      days: D.daysBetween(t, date),
+      published: true
+    };
+    return D.nextHijri(...occasion.hijri, t);
+  }
+  return D.nextYearly({
+    ...r,
+    ...(occasion && occasion.fixed)
+  }, today);
+}
+function vfSampleOrders() {
+  const delivery = {
+    ...VF_DELIVERY,
+    name: 'Shirin Ahmadi',
+    phone: '09125649438',
+    address: '12 Golha St, Azimiyeh'
+  };
+  return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
+    const lines = vfSampleBag();
+    return {
+      id,
+      status,
+      lines,
+      delivery,
+      totals: vfTotals(lines, delivery),
+      method: 'card',
+      last4: '1234',
+      preferredLocale: 'fa'
+    };
+  });
+}
+
+// Source: templates/_shared/payments.js
+// Sample bank prefixes and card configuration; adapt from your payment provider.
+(() => {
+  const D = {};
+  D.banks = [['603799', 'Bank Melli', 'بانک ملی'], ['610433', 'Bank Mellat', 'بانک ملت'], ['991975', 'Bank Mellat', 'بانک ملت'], ['603769', 'Bank Saderat', 'بانک صادرات'], ['627353', 'Bank Tejarat', 'بانک تجارت'], ['585983', 'Bank Tejarat', 'بانک تجارت'], ['502229', 'Bank Pasargad', 'بانک پاسارگاد'], ['639347', 'Bank Pasargad', 'بانک پاسارگاد'], ['621986', 'Saman Bank', 'بانک سامان'], ['622106', 'Parsian Bank', 'بانک پارسیان'], ['639194', 'Parsian Bank', 'بانک پارسیان'], ['589210', 'Bank Sepah', 'بانک سپه'], ['603770', 'Bank Keshavarzi', 'بانک کشاورزی'], ['639217', 'Bank Keshavarzi', 'بانک کشاورزی'], ['504172', 'Resalat Bank', 'بانک رسالت'], ['628023', 'Bank Maskan', 'بانک مسکن'], ['627412', 'Eghtesad Novin', 'بانک اقتصاد نوین'], ['627488', 'Karafarin Bank', 'بانک کارآفرین'], ['502908', 'Tosee Taavon', 'بانک توسعه تعاون'], ['627648', 'Tosee Saderat', 'بانک توسعه صادرات'], ['505785', 'Iran Zamin', 'بانک ایران زمین'], ['636214', 'Bank Ayandeh', 'بانک آینده'], ['502806', 'Bank Shahr', 'بانک شهر'], ['502938', 'Bank Day', 'بانک دی'], ['639607', 'Sarmayeh Bank', 'بانک سرمایه'], ['627381', 'Bank Ansar', 'بانک انصار'], ['636795', 'Central Bank', 'بانک مرکزی']];
+  D.bankOf = card => {
+    const b = D.banks.find(x => vfLatin(card).replace(/\D/g, '').startsWith(x[0]));
+    return b ? {
+      en: b[1],
+      fa: b[2]
+    } : {
+      en: 'Bank card',
+      fa: 'کارت بانکی'
+    };
+  };
+  D.luhn = n => {
+    n = vfLatin(n).replace(/\D/g, '');
+    if (n.length !== 16) return false;
+    let s = 0;
+    for (let i = 0; i < 16; i++) {
+      let v = +n[i];
+      if (i % 2 === 0) {
+        v *= 2;
+        if (v > 9) v -= 9;
+      }
+      s += v;
+    }
+    return s % 10 === 0;
+  };
+  D.setPayCard = ({
+    cardNumber,
+    holderEn,
+    holderFa,
+    sheba
+  }) => {
+    const n = vfLatin(cardNumber || '').replace(/\D/g, '').slice(0, 16);
+    Object.assign(VF_STORE.payment, {
+      card: n.replace(/(\d{4})(?=\d)/g, '$1 '),
+      holder: {
+        en: holderEn || '',
+        fa: holderFa || holderEn || ''
+      },
+      bank: D.bankOf(n),
+      sheba: (sheba || '').replace(/\s/g, '').toUpperCase(),
+      cardValid: D.luhn(n)
+    });
+  };
+  window.VF_PAYMENT = D;
+})();
+
+// Source: templates/_shared/integrations/api.js
+// Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
+// base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
+(() => {
+  const KEY = 'vendra-saved-map';
+  if (window.VF_API) return;
+  const A = {
+    base: VF_STORE.apiBase || '',
+    setBase(b) {
+      A.base = (b || '').replace(/\/$/, '');
+    },
+    get live() {
+      return !!A.base;
+    }
+  };
+  const req = async (method, path, body) => {
+    const r = await fetch(A.base + path, {
+      method,
+      headers: {
+        'Accept': 'application/ld+json',
+        ...(body ? {
+          'Content-Type': 'application/json'
+        } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'include'
+    });
+    if (!r.ok) {
+      const e = new Error('HTTP ' + r.status);
+      e.status = r.status;
+      try {
+        e.body = await r.json();
+      } catch (_) {}
+      throw e;
+    }
+    return r.status === 204 ? null : r.json().catch(() => null);
+  };
+  const map = () => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  };
+  const setMap = m => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(m));
+    } catch (e) {}
+  };
+  // Product slug -> numeric catalog id. Fill p.apiId when the catalog comes from GET /api/catalog/products.
+  const pid = slug => {
+    const p = VF_PRODUCTS.find(x => x.id === slug);
+    return p && p.apiId;
+  };
+  // POST /api/customers/saved-items  {sellableType, sellableId, metadata}
+  A.saveItem = async slug => {
+    const id = pid(slug);
+    if (!A.live || id == null) return null;
+    const r = await req('POST', '/api/customers/saved-items', {
+      sellableType: 'product',
+      sellableId: id,
+      metadata: {
+        slug
+      }
+    });
+    const m = map();
+    if (r && r.id != null) {
+      m[slug] = r.id;
+      setMap(m);
+    }
+    return r;
+  };
+  // DELETE /api/customers/saved-items/{id}
+  A.unsaveItem = async slug => {
+    const m = map();
+    const sid = m[slug];
+    if (!A.live || sid == null) return null;
+    await req('DELETE', '/api/customers/saved-items/' + sid);
+    delete m[slug];
+    setMap(m);
+    return true;
+  };
+  // GET /api/customers/wishlists -> default list's items -> product slugs
+  A.loadSaved = async () => {
+    if (!A.live) return null;
+    const r = await req('GET', '/api/customers/wishlists');
+    const lists = r && (r['hydra:member'] || r.member || r.data) || [];
+    const w = lists.find(l => l.isDefault) || lists[0];
+    if (!w) return [];
+    const m = map();
+    const byApi = {};
+    VF_PRODUCTS.forEach(p => {
+      if (p.apiId != null) byApi[p.apiId] = p.id;
+    });
+    const slugs = [];
+    (w.items || []).forEach(it => {
+      const s = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      if (s) {
+        slugs.push(s);
+        m[s] = it.id;
+      }
+    });
+    setMap(m);
+    return slugs;
+  };
+  // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
+  A.inquiry = async body => {
+    if (!A.live) {
+      await new Promise(r => setTimeout(r, 600));
+      return null;
+    }
+    return req('POST', '/api/support/inquiries', body);
+  };
+  // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
+  // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
+  A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
+  window.AG_API = window.VF_API = A;
+})();
+
+// Source: templates/_shared/integrations/analytics.js
+// Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
+// AG_TRACK.event(name, params). Sends to window.dataLayer (GTM) if present; otherwise keeps the last 50 in AG_TRACK.log for QA.
+// No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
+(() => {
+  if (window.VF_TRACK) return;
+  const EVENTS = {
+    view_item: 'Product page opened',
+    add_to_cart: 'Added to bag',
+    remove_from_cart: 'Removed from bag',
+    view_cart: 'Bag opened',
+    begin_checkout: 'Bag → payment step',
+    add_payment_info: 'Pay / Place order pressed',
+    purchase: 'Order placed',
+    add_to_wishlist: 'Product saved',
+    search: 'Search submitted',
+    reminder_created: 'Occasion reminder saved',
+    sign_up: 'First sign-in',
+    login: 'Sign-in',
+    language_switch: 'Header language changed',
+    order_again: '“Order again” pressed',
+    contact_whatsapp: 'WhatsApp link opened'
+  };
+  const log = [];
+  const ctx = () => ({
+    language: document.documentElement?.lang || 'en',
+    currency: VF_STORE.currency || 'IRT'
+  });
+  const item = (p, qty = 1, unit) => p ? {
+    item_id: p.id,
+    item_name: Array.isArray(p.en) ? p.en[0] : p.en,
+    item_category: p.cat,
+    price: unit ?? p.price,
+    quantity: qty
+  } : null;
+  const event = (name, params = {}) => {
+    if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
+    const e = {
+      event: name,
+      ...ctx(),
+      ...params
+    };
+    log.push(e);
+    if (log.length > 50) log.shift();
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+  };
+  window.AG_TRACK = window.VF_TRACK = {
+    event,
+    item,
+    EVENTS,
+    log
+  };
+})();
+
 // Source: templates/_shared/formatting.js
 // Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
+  lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
 });
 
 // Source: templates/_shared/routing.js
@@ -392,17 +869,26 @@ const VF_ROUTE_EXTRA = {
 function vfReadRoute(search = location.search) {
   window.AG_SEO.register(...VF_ROUTES);
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    const max=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
+    route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
   }
   return route;
 }
 function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if(route.demo)query.set('demo',route.demo);
   if (route.view === 'shop') {
+    if(route.min>0)query.set('min',route.min);
+    const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    if(route.max!=null&&route.max<priceMax)query.set('max',route.max);
+    if(route.stock)query.set('stock','1');
     if (route.cat === 'all') query.delete('cat');
     if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
@@ -426,6 +912,9 @@ class VFPage extends DCLogic {
     });
     this._vfMedia.addEventListener('change', this._vfResize);
     this._vfResize();
+    const route=vfPageRoute(this.props);
+    const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {
@@ -616,6 +1105,12 @@ function vfShell(props, page) {
 function vfCopy(S) {
   return {
     en: {
+      galleryTitle: 'Recent work placeholders',
+      processTitle: 'How it works',
+      steps: ['Tell us about your day', 'Choose a floral proposal', 'We arrange and deliver'],
+      guests: 'Number of guests',
+      integrationError: 'Could not send your message. Your draft is saved; please try again.',
+      emailLabel: 'Email (optional)',
       eb: 'Weddings & events',
       hA: 'Flowers for',
       hB: 'your biggest day.',
@@ -644,6 +1139,12 @@ function vfCopy(S) {
       budgets: ['Under 20M Toman', '20–50M Toman', 'Over 50M Toman', 'Not sure yet']
     },
     fa: {
+      galleryTitle: 'جای تصاویر نمونه‌کار',
+      processTitle: 'مراحل کار',
+      steps: ['از روز مراسم بگویید', 'پیشنهاد گل‌آرایی را انتخاب کنید', 'گل‌آرایی و تحویل با ما'],
+      guests: 'تعداد مهمان‌ها',
+      integrationError: 'ارسال پیام ناموفق بود. متن شما حفظ شده؛ دوباره تلاش کنید.',
+      emailLabel: 'ایمیل (اختیاری)',
       eb: 'عروسی و مراسم',
       hA: 'گل برای',
       hB: 'بزرگ‌ترین روزتان.',
@@ -681,11 +1182,18 @@ function vfCopy(S) {
 class Component extends VFPage {
   state = {
     sent: false,
+    email: '',
+    apiError: '',
+    busy: false,
     name: '',
     phone: '',
     e1: false,
     e2: false,
-    wDate: ''
+    guests: '',
+    wDate: '',
+    notes: '',
+    type: '',
+    budget: ''
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'weddings');
@@ -698,6 +1206,15 @@ class Component extends VFPage {
         ...C,
         editMessage: C.labels.returnToForm
       },
+      gallery: [1, 2, 3].map(n => ({
+        src: (window.VF_ASSET_BASE || '../../') + VF_PRODUCT_PLACEHOLDER,
+        alt: C.galleryTitle + ' ' + S.n(n)
+      })),
+      process: C.steps,
+      guests: s.guests,
+      setGuests: e => this.setState({
+        guests: e.target.value
+      }),
       wDate: s.wDate,
       setWDate: v => this.setState({
         wDate: v
@@ -712,6 +1229,13 @@ class Component extends VFPage {
         body: x[2],
         price: x[3]
       })),
+      apiError: s.apiError,
+      busy: s.busy,
+      email: s.email,
+      setEmail: e => this.setState({
+        email: e.target.value,
+        apiError: ''
+      }),
       sent: s.sent,
       notSent: !s.sent,
       editMessage: () => {
@@ -732,6 +1256,18 @@ class Component extends VFPage {
         e2: false
       }),
       phoneErr: s.e2 ? C.phoneErr : undefined,
+      type: s.type,
+      budget: s.budget,
+      setType: e => this.setState({
+        type: e.target.value
+      }),
+      setBudget: e => this.setState({
+        budget: e.target.value
+      }),
+      notes: s.notes,
+      setNotes: e => this.setState({
+        notes: e.target.value
+      }),
       types: C.types,
       budgets: C.budgets,
       send: () => {
@@ -748,10 +1284,33 @@ class Component extends VFPage {
           }, 0);
           return;
         }
+        const success = () => {
+          this.setState({
+            sent: true,
+            busy: false,
+            apiError: ''
+          });
+          S.focus('vf-weddings-success');
+        };
+        if (!window.VF_API.live) {
+          success();
+          return;
+        }
         this.setState({
-          sent: true
+          busy: true,
+          apiError: ''
         });
-        S.focus('vf-weddings-success');
+        return window.VF_API.inquiry({
+          name: s.name || '',
+          phone: s.phone || '',
+          email: s.email || '',
+          message: [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') || 'Wedding inquiry',
+          occasion: 'weddings',
+          preferredLocale: window.VF_API.preferredLocale()
+        }).then(success).catch(() => this.setState({
+          busy: false,
+          apiError: C.integrationError
+        }));
       }
     };
   }

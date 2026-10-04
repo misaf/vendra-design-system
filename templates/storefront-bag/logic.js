@@ -33,7 +33,7 @@ class Component extends VFPage {
     const {
       sub,
       fee
-    } = vfTotals(items, delivery);
+    } = vfTotals(items.filter(vfLineAvailable), delivery);
     const z = VF_ZONES.find(x => x[0] === delivery.zone) || VF_ZONES[0];
     const invalid = vfErrors(delivery);
     const update = patch => st ? st.setDelivery(patch) : this.setState({
@@ -66,6 +66,7 @@ class Component extends VFPage {
       phoneError: s.submitted && invalid.phone ? errors.phone : undefined,
       addressError: s.submitted && invalid.address ? errors.address : undefined,
       next: () => {
+        if (live.some(l => !vfLineAvailable(l))) return;
         this.setState({
           submitted: true
         });
@@ -94,6 +95,8 @@ class Component extends VFPage {
         inc: C.inc
       },
       lines: live.map((l, i) => ({
+        unavailable: !vfLineAvailable(l),
+        unavailableLabel: fa ? 'ناموجود؛ برای ادامه از سبد حذف کنید' : 'Unavailable; remove to continue',
         image: vfProductImage(l, L).src,
         name: l[L][0],
         meta: l[L][1] + ' · ' + C.labels.each + m(l.unit),

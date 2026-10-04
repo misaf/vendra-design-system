@@ -1,7 +1,7 @@
 // Bilingual checkout copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  return {
+  const result = {
     en: {
       steps: 'Checkout steps',
       s1: 'Bag',
@@ -91,4 +91,75 @@ function vfCopy(S) {
       caption: (step, total, label) => 'مرحله ' + step + ' از ' + total + ' · ' + label
     }
   }[S.lang];
+  return {
+    ...result,
+    migration: {
+      "en": {
+        "actions": {
+          "online": "Simulate online payment",
+          "cod": "Confirm demo order",
+          "wa": "Confirm demo order"
+        },
+        "descriptions": {
+          "online": "Try the online payment flow using a simulated result.",
+          "cod": "Payment would be collected on delivery. Confirm this sample order.",
+          "wa": "Open WhatsApp to review the prepared message, or confirm the sample order here."
+        },
+        "choose": "Choose a payment method",
+        "methods": {
+          "card": "Card-to-card transfer",
+          "online": "Online card demo",
+          "cod": "Pay on delivery",
+          "wa": "Confirm on WhatsApp"
+        },
+        "codOff": "Available for Karaj delivery only.",
+        "demo": "Template preview: no money is transferred and no messages are sent.",
+        "processing": "Processing demo payment…",
+        "failed": "Demo payment failed",
+        "failureBody": "Your bag is preserved. Retry or choose another payment method.",
+        "retry": "Try again",
+        "other": "Choose another method",
+        "openWa": "Open order in WhatsApp",
+        "statuses": {
+          "card": "Awaiting transfer check",
+          "online": "Demo paid",
+          "cod": "Pay on delivery",
+          "wa": "Awaiting WhatsApp confirmation"
+        }
+      },
+      "fa": {
+        "actions": {
+          "online": "شبیه‌سازی پرداخت آنلاین",
+          "cod": "تأیید سفارش نمونه",
+          "wa": "تأیید سفارش نمونه"
+        },
+        "descriptions": {
+          "online": "روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.",
+          "cod": "مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.",
+          "wa": "واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید."
+        },
+        "choose": "انتخاب روش پرداخت",
+        "methods": {
+          "card": "کارت به کارت",
+          "online": "نمونه پرداخت آنلاین",
+          "cod": "پرداخت در محل",
+          "wa": "تأیید در واتس‌اپ"
+        },
+        "codOff": "فقط برای ارسال در کرج در دسترس است.",
+        "demo": "پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.",
+        "processing": "در حال انجام پرداخت نمونه…",
+        "failed": "پرداخت نمونه ناموفق بود",
+        "failureBody": "سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.",
+        "retry": "تلاش دوباره",
+        "other": "انتخاب روش دیگر",
+        "openWa": "باز کردن سفارش در واتس‌اپ",
+        "statuses": {
+          "card": "در انتظار بررسی واریز",
+          "online": "پرداخت نمونه انجام شد",
+          "cod": "پرداخت در محل",
+          "wa": "در انتظار تأیید واتس‌اپ"
+        }
+      }
+    }[S.lang]
+  };
 }

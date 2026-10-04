@@ -59,6 +59,9 @@ class Component extends VFPage {
           focus('vf-code');
           return;
         }
+        const account = vfAccountLogin(s.phone, S.lang);
+        window.VF_TRACK.event('login');
+        if (this.props.setLang) this.props.setLang(account.profile.locale);
         this.setState({
           step: 'ok'
         });

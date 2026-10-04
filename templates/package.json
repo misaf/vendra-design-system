@@ -4,7 +4,7 @@
   "scripts": {
     "build": "node _build/build.cjs",
     "check": "node _build/build.cjs --check",
-    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs",
+    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs",
     "dev": "vite --config _build/vite.config.mjs"
   },
   "devDependencies": {

@@ -1,7 +1,0 @@
-# SAMPLE — move to the site root on launch.
-# Private screens (bag, checkout, account, track, saved, search) are kept out of search with <meta name="robots" content="noindex"> (components/utils/seo.js).
-# Don't Disallow them here — crawlers must be able to load a page to see its noindex.
-User-agent: *
-Allow: /
-
-Sitemap: https://vendra.ir/sitemap.xml

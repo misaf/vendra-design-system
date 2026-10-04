@@ -1,7 +1,7 @@
 // Bilingual post copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  return {
+  const result = {
     en: {
       back: 'Journal',
       meta: 'Seasonal · 28 Sep 2026 · 5 min read',
@@ -35,4 +35,19 @@ function vfCopy(S) {
       p2: ['پیش از گذاشتن در گلدان، هر ساقه را مورب کوتاه کنید و برگ‌هایی را که زیر آب می‌روند جدا کنید. هر دو روز آب را عوض کنید و گلدان را از میوه و بخاری دور نگه دارید.', 'داوودی به‌راحتی دو هفته می‌ماند. کوکب عمر کوتاه‌تری دارد — پنج یا شش روز — پس تا بهترین حالتش است لذت ببرید.']
     }
   }[S.lang];
+  return {
+    ...result,
+    migration: {
+      "en": {
+        "missing": "This story has moved",
+        "back": "Back to the journal",
+        "loading": "Loading story"
+      },
+      "fa": {
+        "missing": "این مطلب جابه‌جا شده است",
+        "back": "بازگشت به دفترچه",
+        "loading": "در حال بارگذاری مطلب"
+      }
+    }[S.lang]
+  };
 }

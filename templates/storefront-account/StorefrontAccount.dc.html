@@ -78,12 +78,30 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-[28px]"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-[10px]"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="log-out" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
+<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-[28px]"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-[10px]"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
 <div class="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tabs" variant="pill" items="{{ tabItems }}" value="{{ tab }}" on-change="{{ setTab }}" label="{{ t.accA }}" hint-size="420px,44px"></x-import></div>
-<sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-[14px]"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" href="{{ href.track }}" on-click="{{ go.track }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button type="button" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
-<sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pname" label="{{ t.name }}" default-value="{{ t.nameV }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pphone" label="{{ t.phone }}" default-value="0912 564 9438" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pemail" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ lang }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ t.sms }}" default-checked="{{ true }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></main>
+<sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-[14px]"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
+<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
+<sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile('name') }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile('email') }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile('locale') }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile('sms') }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" open="{{ formOpen }}" title="{{ formTitle }}" on-close="{{ closeForm }}">
+<div class="tw:flex tw:flex-col tw:gap-4">
+<sc-if value="{{ isAddress }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ setField('label') }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ setField('zone') }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ setField('line') }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ setField('recipient') }}" autocomplete="name"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ setField('phone') }}" error="{{ errors.phone }}" dir="ltr" type="tel" autocomplete="tel"></x-import>
+</sc-if>
+<sc-if value="{{ isReminder }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-reminder-name" label="{{ editor.reminderName }}" value="{{ form.name }}" on-change="{{ setField('name') }}" error="{{ errors.name }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.occasion }}" options="{{ occasionOptions }}" value="{{ form.occ }}" on-change="{{ setOccasion }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" id="vf-reminder-date" yearly="{{ true }}" lang="{{ lang }}" label="{{ editor.date }}" value="{{ dateValue }}" on-change="{{ setDate }}" disabled="{{ dateLocked }}" hint="{{ dateHint }}" labels="{{ dateLabels }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.before }}" options="{{ beforeOptions }}" value="{{ form.before }}" on-change="{{ setBefore }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.via }}" options="{{ channelOptions }}" value="{{ form.channel }}" on-change="{{ setField('channel') }}"></x-import>
+</sc-if>
+<div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ saveForm }}">{{ editor.save }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ closeForm }}">{{ editor.cancel }}</x-import></div>
+</div></x-import></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
@@ -126,6 +144,10 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 const VF_STORE = {
+  currency: 'IRT',
+  apiBase: '', // Empty keeps every integration in local demo mode.
+  occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
+  paymentDemo: {online: 'success', codZones: ['central', 'outer']},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -228,7 +250,7 @@ const VF_PRODUCTS = [
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -283,6 +305,19 @@ const VF_PRODUCT_DETAILS = {
   blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
+
+function vfReorderLines(lines) {
+ return lines.flatMap(line => {
+  const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
+  if(!product||product.inStock===false)return [];
+  const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
+  const addons=line.addons||VF_ADDONS.filter(a=>line.id.includes(a[0])).map(a=>a[0]);
+  const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
+  return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
+ });
+}
+
+function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
 
 // Source: templates/_shared/translations/shell.js
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
@@ -366,11 +401,470 @@ function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
 }
 
+// Source: templates/_shared/account-data.js
+// Local demo accounts. Persistence is per phone number; no authentication service is implied.
+function vfLatin(value) {
+  return String(value).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
+function vfAccountPhone() {
+  try {
+    return localStorage.getItem('vf-account-phone') || '';
+  } catch {
+    return '';
+  }
+}
+function vfAccountKey(phone) {
+  return 'vf-account:' + vfLatin(phone).replace(/\D/g, '');
+}
+function vfAccountLoad(phone, lang = 'en') {
+  try {
+    const data = JSON.parse(localStorage.getItem(vfAccountKey(phone)) || 'null');
+    if (data && Array.isArray(data.addresses) && Array.isArray(data.reminders) && data.profile) {
+      data.reminders = data.reminders.map(vfNormalizeReminder);
+      return data;
+    }
+  } catch {}
+  return {
+    profile: {
+      name: '',
+      email: '',
+      locale: lang,
+      sms: true
+    },
+    addresses: [{
+      id: 'home',
+      label: {
+        en: 'Home',
+        fa: 'خانه'
+      },
+      line: {
+        en: '12 Golha St, Azimiyeh',
+        fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: true
+    }, {
+      id: 'office',
+      label: {
+        en: 'Office',
+        fa: 'محل کار'
+      },
+      line: {
+        en: '40 Moazen Blvd, Gohardasht',
+        fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
+      },
+      recipient: {
+        en: 'Shirin Ahmadi',
+        fa: 'شیرین احمدی'
+      },
+      phone: '09125649438',
+      zone: 'central',
+      isDefault: false
+    }],
+    reminders: [{
+      id: 'mum',
+      name: {
+        en: 'Mum',
+        fa: 'مامان'
+      },
+      occ: 'birthday',
+      cal: 'j',
+      m: 7,
+      d: 9,
+      before: 3,
+      channel: 'sms',
+      on: true
+    }, {
+      id: 'mina',
+      name: {
+        en: 'Our anniversary',
+        fa: 'سالگرد خودمان'
+      },
+      occ: 'anniversary',
+      cal: 'g',
+      m: 11,
+      d: 12,
+      before: 7,
+      channel: 'wa',
+      on: true
+    }, {
+      id: 'sara',
+      name: {
+        en: 'Yalda at Grandma’s',
+        fa: 'یلدا خانه مادربزرگ'
+      },
+      occ: 'yalda',
+      cal: 'j',
+      m: 9,
+      d: 30,
+      before: 7,
+      channel: 'sms',
+      on: false
+    }]
+  };
+}
+function vfAccountSave(phone, data) {
+  try {
+    localStorage.setItem(vfAccountKey(phone), JSON.stringify(data));
+  } catch {}
+}
+function vfAccountLogin(phone, lang) {
+  phone = vfLatin(phone).replace(/\D/g, '');
+  try {
+    localStorage.setItem('vf-account-phone', phone);
+  } catch {}
+  const data = vfAccountLoad(phone, lang);
+  vfAccountSave(phone, data);
+  return data;
+}
+function vfAccountSignOut() {
+  try {
+    localStorage.removeItem('vf-account-phone');
+  } catch {}
+}
+function vfAccountLocale() {
+  const phone = vfAccountPhone();
+  return phone ? vfAccountLoad(phone).profile.locale : null;
+}
+const VF_OCCASIONS = [{
+  id: 'birthday',
+  icon: 'cake',
+  en: 'Birthday',
+  fa: 'تولد'
+}, {
+  id: 'anniversary',
+  icon: 'gem',
+  en: 'Anniversary',
+  fa: 'سالگرد ازدواج'
+}, {
+  id: 'mothers',
+  icon: 'flower-2',
+  en: 'Mother’s Day',
+  fa: 'روز مادر',
+  hijri: [6, 20]
+}, {
+  id: 'valentine',
+  icon: 'heart',
+  en: 'Valentine’s Day',
+  fa: 'ولنتاین',
+  fixed: {
+    cal: 'g',
+    m: 2,
+    d: 14
+  }
+}, {
+  id: 'nowruz',
+  icon: 'sprout',
+  en: 'Nowruz',
+  fa: 'نوروز',
+  fixed: {
+    cal: 'j',
+    m: 1,
+    d: 1
+  }
+}, {
+  id: 'yalda',
+  icon: 'moon',
+  en: 'Yalda night',
+  fa: 'شب یلدا',
+  fixed: {
+    cal: 'j',
+    m: 9,
+    d: 30
+  }
+}, {
+  id: 'other',
+  icon: 'calendar-heart',
+  en: 'Other occasion',
+  fa: 'مناسبت دیگر'
+}];
+function vfNormalizeReminder(r) {
+  if (r.date && !r.m) {
+    const d = window.AG_DATES.fromIso(r.date);
+    if (d) return {
+      ...r,
+      cal: 'g',
+      m: d.getMonth() + 1,
+      d: d.getDate()
+    };
+  }
+  return r;
+}
+function vfReminderNext(r, today = new Date()) {
+  r = vfNormalizeReminder(r);
+  const D = window.AG_DATES,
+    occasion = VF_OCCASIONS.find(o => o.id === r.occ);
+  if (occasion && occasion.hijri) {
+    const t = new Date(today);
+    t.setHours(12, 0, 0, 0);
+    const date = (VF_STORE.occasionDates.mothers || []).map(D.fromIso).filter(d => d && d >= t).sort((a, b) => a - b)[0];
+    if (date) return {
+      date,
+      days: D.daysBetween(t, date),
+      published: true
+    };
+    return D.nextHijri(...occasion.hijri, t);
+  }
+  return D.nextYearly({
+    ...r,
+    ...(occasion && occasion.fixed)
+  }, today);
+}
+function vfSampleOrders() {
+  const delivery = {
+    ...VF_DELIVERY,
+    name: 'Shirin Ahmadi',
+    phone: '09125649438',
+    address: '12 Golha St, Azimiyeh'
+  };
+  return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
+    const lines = vfSampleBag();
+    return {
+      id,
+      status,
+      lines,
+      delivery,
+      totals: vfTotals(lines, delivery),
+      method: 'card',
+      last4: '1234',
+      preferredLocale: 'fa'
+    };
+  });
+}
+
+// Source: templates/_shared/payments.js
+// Sample bank prefixes and card configuration; adapt from your payment provider.
+(() => {
+  const D = {};
+  D.banks = [['603799', 'Bank Melli', 'بانک ملی'], ['610433', 'Bank Mellat', 'بانک ملت'], ['991975', 'Bank Mellat', 'بانک ملت'], ['603769', 'Bank Saderat', 'بانک صادرات'], ['627353', 'Bank Tejarat', 'بانک تجارت'], ['585983', 'Bank Tejarat', 'بانک تجارت'], ['502229', 'Bank Pasargad', 'بانک پاسارگاد'], ['639347', 'Bank Pasargad', 'بانک پاسارگاد'], ['621986', 'Saman Bank', 'بانک سامان'], ['622106', 'Parsian Bank', 'بانک پارسیان'], ['639194', 'Parsian Bank', 'بانک پارسیان'], ['589210', 'Bank Sepah', 'بانک سپه'], ['603770', 'Bank Keshavarzi', 'بانک کشاورزی'], ['639217', 'Bank Keshavarzi', 'بانک کشاورزی'], ['504172', 'Resalat Bank', 'بانک رسالت'], ['628023', 'Bank Maskan', 'بانک مسکن'], ['627412', 'Eghtesad Novin', 'بانک اقتصاد نوین'], ['627488', 'Karafarin Bank', 'بانک کارآفرین'], ['502908', 'Tosee Taavon', 'بانک توسعه تعاون'], ['627648', 'Tosee Saderat', 'بانک توسعه صادرات'], ['505785', 'Iran Zamin', 'بانک ایران زمین'], ['636214', 'Bank Ayandeh', 'بانک آینده'], ['502806', 'Bank Shahr', 'بانک شهر'], ['502938', 'Bank Day', 'بانک دی'], ['639607', 'Sarmayeh Bank', 'بانک سرمایه'], ['627381', 'Bank Ansar', 'بانک انصار'], ['636795', 'Central Bank', 'بانک مرکزی']];
+  D.bankOf = card => {
+    const b = D.banks.find(x => vfLatin(card).replace(/\D/g, '').startsWith(x[0]));
+    return b ? {
+      en: b[1],
+      fa: b[2]
+    } : {
+      en: 'Bank card',
+      fa: 'کارت بانکی'
+    };
+  };
+  D.luhn = n => {
+    n = vfLatin(n).replace(/\D/g, '');
+    if (n.length !== 16) return false;
+    let s = 0;
+    for (let i = 0; i < 16; i++) {
+      let v = +n[i];
+      if (i % 2 === 0) {
+        v *= 2;
+        if (v > 9) v -= 9;
+      }
+      s += v;
+    }
+    return s % 10 === 0;
+  };
+  D.setPayCard = ({
+    cardNumber,
+    holderEn,
+    holderFa,
+    sheba
+  }) => {
+    const n = vfLatin(cardNumber || '').replace(/\D/g, '').slice(0, 16);
+    Object.assign(VF_STORE.payment, {
+      card: n.replace(/(\d{4})(?=\d)/g, '$1 '),
+      holder: {
+        en: holderEn || '',
+        fa: holderFa || holderEn || ''
+      },
+      bank: D.bankOf(n),
+      sheba: (sheba || '').replace(/\s/g, '').toUpperCase(),
+      cardValid: D.luhn(n)
+    });
+  };
+  window.VF_PAYMENT = D;
+})();
+
+// Source: templates/_shared/integrations/api.js
+// Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
+// base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
+(() => {
+  const KEY = 'vendra-saved-map';
+  if (window.VF_API) return;
+  const A = {
+    base: VF_STORE.apiBase || '',
+    setBase(b) {
+      A.base = (b || '').replace(/\/$/, '');
+    },
+    get live() {
+      return !!A.base;
+    }
+  };
+  const req = async (method, path, body) => {
+    const r = await fetch(A.base + path, {
+      method,
+      headers: {
+        'Accept': 'application/ld+json',
+        ...(body ? {
+          'Content-Type': 'application/json'
+        } : {})
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      credentials: 'include'
+    });
+    if (!r.ok) {
+      const e = new Error('HTTP ' + r.status);
+      e.status = r.status;
+      try {
+        e.body = await r.json();
+      } catch (_) {}
+      throw e;
+    }
+    return r.status === 204 ? null : r.json().catch(() => null);
+  };
+  const map = () => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  };
+  const setMap = m => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(m));
+    } catch (e) {}
+  };
+  // Product slug -> numeric catalog id. Fill p.apiId when the catalog comes from GET /api/catalog/products.
+  const pid = slug => {
+    const p = VF_PRODUCTS.find(x => x.id === slug);
+    return p && p.apiId;
+  };
+  // POST /api/customers/saved-items  {sellableType, sellableId, metadata}
+  A.saveItem = async slug => {
+    const id = pid(slug);
+    if (!A.live || id == null) return null;
+    const r = await req('POST', '/api/customers/saved-items', {
+      sellableType: 'product',
+      sellableId: id,
+      metadata: {
+        slug
+      }
+    });
+    const m = map();
+    if (r && r.id != null) {
+      m[slug] = r.id;
+      setMap(m);
+    }
+    return r;
+  };
+  // DELETE /api/customers/saved-items/{id}
+  A.unsaveItem = async slug => {
+    const m = map();
+    const sid = m[slug];
+    if (!A.live || sid == null) return null;
+    await req('DELETE', '/api/customers/saved-items/' + sid);
+    delete m[slug];
+    setMap(m);
+    return true;
+  };
+  // GET /api/customers/wishlists -> default list's items -> product slugs
+  A.loadSaved = async () => {
+    if (!A.live) return null;
+    const r = await req('GET', '/api/customers/wishlists');
+    const lists = r && (r['hydra:member'] || r.member || r.data) || [];
+    const w = lists.find(l => l.isDefault) || lists[0];
+    if (!w) return [];
+    const m = map();
+    const byApi = {};
+    VF_PRODUCTS.forEach(p => {
+      if (p.apiId != null) byApi[p.apiId] = p.id;
+    });
+    const slugs = [];
+    (w.items || []).forEach(it => {
+      const s = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      if (s) {
+        slugs.push(s);
+        m[s] = it.id;
+      }
+    });
+    setMap(m);
+    return slugs;
+  };
+  // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
+  A.inquiry = async body => {
+    if (!A.live) {
+      await new Promise(r => setTimeout(r, 600));
+      return null;
+    }
+    return req('POST', '/api/support/inquiries', body);
+  };
+  // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
+  // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
+  A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
+  window.AG_API = window.VF_API = A;
+})();
+
+// Source: templates/_shared/integrations/analytics.js
+// Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
+// AG_TRACK.event(name, params). Sends to window.dataLayer (GTM) if present; otherwise keeps the last 50 in AG_TRACK.log for QA.
+// No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
+(() => {
+  if (window.VF_TRACK) return;
+  const EVENTS = {
+    view_item: 'Product page opened',
+    add_to_cart: 'Added to bag',
+    remove_from_cart: 'Removed from bag',
+    view_cart: 'Bag opened',
+    begin_checkout: 'Bag → payment step',
+    add_payment_info: 'Pay / Place order pressed',
+    purchase: 'Order placed',
+    add_to_wishlist: 'Product saved',
+    search: 'Search submitted',
+    reminder_created: 'Occasion reminder saved',
+    sign_up: 'First sign-in',
+    login: 'Sign-in',
+    language_switch: 'Header language changed',
+    order_again: '“Order again” pressed',
+    contact_whatsapp: 'WhatsApp link opened'
+  };
+  const log = [];
+  const ctx = () => ({
+    language: document.documentElement?.lang || 'en',
+    currency: VF_STORE.currency || 'IRT'
+  });
+  const item = (p, qty = 1, unit) => p ? {
+    item_id: p.id,
+    item_name: Array.isArray(p.en) ? p.en[0] : p.en,
+    item_category: p.cat,
+    price: unit ?? p.price,
+    quantity: qty
+  } : null;
+  const event = (name, params = {}) => {
+    if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
+    const e = {
+      event: name,
+      ...ctx(),
+      ...params
+    };
+    log.push(e);
+    if (log.length > 50) log.shift();
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+  };
+  window.AG_TRACK = window.VF_TRACK = {
+    event,
+    item,
+    EVENTS,
+    log
+  };
+})();
+
 // Source: templates/_shared/formatting.js
 // Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
+  lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
 });
 
 // Source: templates/_shared/routing.js
@@ -388,17 +882,26 @@ const VF_ROUTE_EXTRA = {
 function vfReadRoute(search = location.search) {
   window.AG_SEO.register(...VF_ROUTES);
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    const max=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
+    route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
   }
   return route;
 }
 function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if(route.demo)query.set('demo',route.demo);
   if (route.view === 'shop') {
+    if(route.min>0)query.set('min',route.min);
+    const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
+    if(route.max!=null&&route.max<priceMax)query.set('max',route.max);
+    if(route.stock)query.set('stock','1');
     if (route.cat === 'all') query.delete('cat');
     if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
@@ -422,6 +925,9 @@ class VFPage extends DCLogic {
     });
     this._vfMedia.addEventListener('change', this._vfResize);
     this._vfResize();
+    const route=vfPageRoute(this.props);
+    const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {
@@ -744,6 +1250,86 @@ function vfCopy(S) {
   }[S.lang];
   return {
     ...C,
+    editor: {
+      "en": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "label": "Label",
+        "zone": "Delivery zone",
+        "address": "Address",
+        "recipient": "Recipient",
+        "phone": "Phone",
+        "editAddress": "Edit address",
+        "addReminder": "Add a reminder",
+        "editReminder": "Edit reminder",
+        "reminderName": "Who is it for?",
+        "occasion": "Occasion",
+        "date": "Date",
+        "before": "Remind me",
+        "via": "Send by",
+        "sms": "Text message",
+        "wa": "WhatsApp",
+        "required": "Please fill this in",
+        "addressError": "Enter an address with at least 6 characters",
+        "phoneError": "Enter a valid mobile number",
+        "emailError": "Enter a valid email address",
+        "saved": "Changes saved",
+        "deleted": "Removed",
+        "empty": "No reminders yet",
+        "coming": "Coming up",
+        "day": "Day",
+        "month": "Month",
+        "jalali": "Shamsi",
+        "gregorian": "Gregorian",
+        "fixed": "This occasion has a fixed date.",
+        "movable": "Uses the studio’s published date, otherwise an estimated date.",
+        "beforeOptions": {
+          "1": "1 day before",
+          "3": "3 days before",
+          "7": "1 week before"
+        },
+        "inDays": "days away"
+      },
+      "fa": {
+        "save": "ذخیره",
+        "cancel": "انصراف",
+        "label": "عنوان",
+        "zone": "محدوده ارسال",
+        "address": "نشانی",
+        "recipient": "گیرنده",
+        "phone": "تلفن",
+        "editAddress": "ویرایش نشانی",
+        "addReminder": "افزودن یادآور",
+        "editReminder": "ویرایش یادآور",
+        "reminderName": "برای چه کسی؟",
+        "occasion": "مناسبت",
+        "date": "تاریخ",
+        "before": "یادآوری",
+        "via": "روش ارسال",
+        "sms": "پیامک",
+        "wa": "واتس‌اپ",
+        "required": "این قسمت را کامل کنید",
+        "addressError": "نشانی حداقل ۶ حرف داشته باشد",
+        "phoneError": "شماره موبایل معتبر وارد کنید",
+        "emailError": "ایمیل معتبر وارد کنید",
+        "saved": "تغییرات ذخیره شد",
+        "deleted": "حذف شد",
+        "empty": "هنوز یادآوری ندارید",
+        "coming": "به‌زودی",
+        "day": "روز",
+        "month": "ماه",
+        "jalali": "شمسی",
+        "gregorian": "میلادی",
+        "fixed": "تاریخ این مناسبت ثابت است.",
+        "movable": "از تاریخ منتشرشده استودیو و در غیر این صورت تاریخ تخمینی استفاده می‌شود.",
+        "beforeOptions": {
+          "1": "۱ روز قبل",
+          "3": "۳ روز قبل",
+          "7": "۱ هفته قبل"
+        },
+        "inDays": "روز دیگر"
+      }
+    }[S.lang],
     orders: [['VN-10522', 4, 'onTheWay', 8380000, '9 Oct', '۱۷ مهر'], ['VN-10431', 1, 'delivered', 2880000, '14 Sep', '۲۳ شهریور'], ['VN-10302', 2, 'delivered', 5300000, '2 Aug', '۱۱ مرداد']],
     status: {
       onTheWay: [C.labels.onItsWay, 'accent'],
@@ -757,36 +1343,184 @@ function vfCopy(S) {
 
 // BEGIN GENERATED PAGE LOGIC
 // Source: templates/storefront-account/logic.js
-// Page behavior. Edit here, then run npm --prefix templates run build.
+// Account preview with local, per-phone persistence. Copy and layout live beside this file.
 class Component extends VFPage {
   state = {
     tab: null,
-    def: 'home',
-    rem: {
-      mum: true,
-      mina: true,
-      sara: false
-    }
+    account: null,
+    form: null,
+    errors: {},
+    notice: '',
+    profile: null
   };
   renderVals() {
-    const S = vfShell.call(this, this.props, 'account');
-    const fa = S.fa;
-    const m = S.m;
-    const s = this.state;
-    const tab = s.tab || this.props.tab || 'orders';
-    const C = vfCopy(S);
-    const ids = ['orders', 'addresses', 'reminders', 'profile'];
+    const S = vfShell.call(this, this.props, 'account'),
+      C = vfCopy(S),
+      E = C.editor,
+      s = this.state,
+      L = S.lang;
+    const phone = vfAccountPhone() || '09125649438',
+      account = s.account || vfAccountLoad(phone, L),
+      profile = s.profile || account.profile;
+    const latest = this.props.store && (this.props.store.lastOrder || this.props.store.order);
+    const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter((o, i, list) => list.findIndex(x => x.id === o.id) === i);
+    const tab = s.tab || this.props.tab || 'orders',
+      tx = v => typeof v === 'string' ? v : v[L] || v.en;
+    const commit = data => {
+      vfAccountSave(phone, data);
+      this.setState({
+        account: data,
+        form: null,
+        profile: null,
+        errors: {},
+        notice: E.saved
+      });
+    };
+    const focusError = () => setTimeout(() => window.AG_NAV.focusFirstInvalid(), 0);
+    const openAddress = a => this.setState({
+      errors: {},
+      form: {
+        kind: 'address',
+        id: a && a.id,
+        label: a ? tx(a.label) : '',
+        line: a ? tx(a.line) : '',
+        recipient: a ? tx(a.recipient) : profile.name || C.nameV,
+        phone: a ? a.phone : '',
+        zone: a ? a.zone : 'central'
+      }
+    });
+    const openReminder = r => this.setState({
+      errors: {},
+      form: {
+        kind: 'reminder',
+        id: null,
+        name: '',
+        occ: 'birthday',
+        cal: L === 'fa' ? 'j' : 'g',
+        m: 1,
+        d: 1,
+        before: 3,
+        channel: 'sms',
+        on: true,
+        ...r,
+        ...(r ? {
+          name: tx(r.name)
+        } : {})
+      }
+    });
+    const removeAddress = a => {
+      let rest = account.addresses.filter(x => x.id !== a.id);
+      if (a.isDefault && rest.length) rest = rest.map((x, i) => ({
+        ...x,
+        isDefault: i === 0
+      }));
+      commit({
+        ...account,
+        addresses: rest
+      });
+      S.focus('vf-add-address');
+    };
+    const reminders = account.reminders.slice().sort((a, b) => Number(b.on) - Number(a.on) || vfReminderNext(a).days - vfReminderNext(b).days).map(r => {
+      const next = vfReminderNext(r),
+        o = VF_OCCASIONS.find(o => o.id === r.occ) || VF_OCCASIONS[0],
+        date = window.AG_DATES.parts(r.cal, next.date);
+      return {
+        name: tx(r.name),
+        day: S.n(date[2]),
+        month: window.AG_DATES.monthNames(r.cal, L)[date[1] - 1],
+        occasion: o[L],
+        icon: o.icon,
+        before: E.beforeOptions[r.before],
+        channel: r.channel,
+        on: r.on,
+        soon: r.on && next.days <= 14,
+        when: S.n(next.days) + ' ' + E.inDays,
+        altDate: window.AG_DATES.dayMonth(next.date, window.AG_DATES.locale(L, r.cal === 'j' ? 'g' : 'j')),
+        toggle: v => commit({
+          ...account,
+          reminders: account.reminders.map(x => x.id === r.id ? {
+            ...x,
+            on: v
+          } : x)
+        }),
+        edit: () => openReminder(r),
+        remove: () => {
+          commit({
+            ...account,
+            reminders: account.reminders.filter(x => x.id !== r.id)
+          });
+          S.focus('vf-add-reminder');
+        }
+      };
+    });
+    const f = s.form || {},
+      isAddress = f.kind === 'address',
+      isReminder = f.kind === 'reminder',
+      occasion = VF_OCCASIONS.find(o => o.id === f.occ);
+    const setField = k => e => this.setState({
+      form: {
+        ...f,
+        [k]: e.target.value
+      },
+      errors: {
+        ...s.errors,
+        [k]: undefined
+      }
+    });
+    const saveForm = () => {
+      const errors = {};
+      if (isAddress) {
+        if (f.line.trim().length < 6) errors.line = E.addressError;
+        if (vfLatin(f.phone).replace(/\D/g, '').length < 10) errors.phone = E.phoneError;
+      } else {
+        if (!f.name.trim()) errors.name = E.required;
+        if (!(f.m >= 1 && f.m <= 12 && f.d >= 1 && f.d <= window.AG_DATES.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m))) errors.name = E.required;
+      }
+      if (Object.keys(errors).length) {
+        this.setState({
+          errors
+        });
+        focusError();
+        return;
+      }
+      const row = {
+        ...f,
+        id: f.id || f.kind + '-' + Date.now()
+      };
+      delete row.kind;
+      if (isAddress) {
+        row.isDefault = f.id ? account.addresses.find(a => a.id === f.id).isDefault : !account.addresses.length;
+        row.label = row.label.trim() || C.addAddr;
+        commit({
+          ...account,
+          addresses: f.id ? account.addresses.map(a => a.id === f.id ? row : a) : [...account.addresses, row]
+        });
+      } else {
+        if (!f.id) window.VF_TRACK.event('reminder_created', {
+          occasion: f.occ,
+          calendar: f.cal,
+          days_before: f.before,
+          channel: f.channel
+        });
+        commit({
+          ...account,
+          reminders: f.id ? account.reminders.map(r => r.id === f.id ? row : r) : [...account.reminders, row]
+        });
+      }
+    };
     return {
       ...S,
       t: {
         ...S.t,
         ...C
       },
+      editor: E,
+      notice: s.notice,
       tab,
       setTab: id => this.setState({
         tab: id
       }),
-      tabItems: ids.map((id, i) => ({
+      tabItems: ['orders', 'addresses', 'reminders', 'profile'].map((id, i) => ({
         id,
         label: C.tabs[i]
       })),
@@ -794,45 +1528,159 @@ class Component extends VFPage {
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
-      orders: C.orders.map(o => ({
-        id: o[0],
-        status: C.status[o[2]][0],
-        tone: C.status[o[2]][1],
-        meta: (fa ? o[5] : o[4]) + ' · ' + C.itemCount(o[1]),
-        total: m(o[3]),
-        cta: o[2] === 'delivered' ? C.labels.viewOrder : C.labels.trackOrder
+      orders: orders.map(o => ({
+        href: S.href.track.split('?')[0] + vfRouteParams({
+          view: 'track',
+          id: o.id,
+          lang: L
+        }),
+        go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
+        id: o.id,
+        status: (C.status[o.status] || [o.status === 'cancelled' ? S.fa ? 'لغو شده' : 'Cancelled' : S.fa ? 'دریافت شد' : 'Received', 'neutral'])[0],
+        tone: (C.status[o.status] || ['', 'neutral'])[1],
+        meta: C.itemCount(o.lines.reduce((sum, l) => sum + l.qty, 0)),
+        total: S.m(o.totals.total),
+        cta: o.status === 'delivered' || o.status === 'cancelled' ? C.labels.viewOrder : C.labels.trackOrder
       })),
-      addresses: C.addresses.map(a => ({
-        label: a[1],
-        line: a[2],
-        recipient: a[3],
-        phone: '0912 564 9438',
-        zone: a[4],
-        isDefault: s.def === a[0],
-        makeDefault: () => this.setState({
-          def: a[0]
+      addresses: account.addresses.map(a => ({
+        ...a,
+        label: tx(a.label),
+        line: tx(a.line),
+        recipient: tx(a.recipient),
+        zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
+        edit: () => openAddress(a),
+        remove: () => removeAddress(a),
+        makeDefault: () => commit({
+          ...account,
+          addresses: account.addresses.map(x => ({
+            ...x,
+            isDefault: x.id === a.id
+          }))
         })
       })),
       addrLabels: C.addrLabels,
-      reminders: C.reminders.map(r => ({
-        name: r[1],
-        day: r[2],
-        month: r[3],
-        occasion: r[4],
-        icon: r[5],
-        before: r[6],
-        channel: r[7],
-        soon: r[8],
-        on: s.rem[r[0]],
-        toggle: v => this.setState({
-          rem: {
-            ...s.rem,
-            [r[0]]: v
-          }
-        })
-      })),
+      addAddress: () => openAddress(null),
+      reminders,
       remLabels: C.remLabels,
-      langOptions: C.langOptions
+      hasReminders: reminders.length > 0,
+      noReminders: !reminders.length,
+      coming: reminders.find(r => r.soon),
+      addReminder: () => openReminder(null),
+      profile: {
+        ...profile,
+        name: profile.name || C.nameV,
+        phone
+      },
+      setProfile: k => e => this.setState({
+        profile: {
+          ...profile,
+          [k]: k === 'sms' ? e.target.checked : e.target.value
+        },
+        errors: {}
+      }),
+      emailError: s.errors.email,
+      saveProfile: () => {
+        if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
+          this.setState({
+            errors: {
+              email: E.emailError
+            }
+          });
+          focusError();
+          return;
+        }
+        commit({
+          ...account,
+          profile
+        });
+        if (this.props.setLang) this.props.setLang(profile.locale);
+      },
+      signOut: () => {
+        vfAccountSignOut();
+        if (this.props.go) this.props.go({
+          view: 'home',
+          lang: L
+        });else location.href = S.href.home;
+      },
+      langOptions: C.langOptions,
+      formOpen: !!s.form,
+      isAddress,
+      isReminder,
+      formTitle: isAddress ? f.id ? E.editAddress : C.addAddr : f.id ? E.editReminder : E.addReminder,
+      form: f,
+      errors: s.errors,
+      setField,
+      saveForm,
+      closeForm: () => this.setState({
+        form: null,
+        errors: {}
+      }),
+      zoneOptions: VF_ZONES.map(z => ({
+        value: z.id,
+        label: z[L]
+      })),
+      occasionOptions: VF_OCCASIONS.map(o => ({
+        value: o.id,
+        label: o[L]
+      })),
+      beforeOptions: [1, 3, 7].map(n => ({
+        value: String(n),
+        label: E.beforeOptions[n]
+      })),
+      channelOptions: [{
+        value: 'sms',
+        label: E.sms
+      }, {
+        value: 'wa',
+        label: E.wa
+      }],
+      dateValue: {
+        cal: f.cal,
+        m: f.m,
+        d: f.d
+      },
+      dateLocked: !!(occasion && (occasion.fixed || occasion.hijri)),
+      dateHint: occasion && occasion.fixed ? E.fixed : occasion && occasion.hijri ? E.movable : undefined,
+      dateLabels: {
+        jalali: E.jalali,
+        gregorian: E.gregorian,
+        month: E.month,
+        day: E.day
+      },
+      setDate: value => this.setState({
+        form: {
+          ...f,
+          ...value
+        }
+      }),
+      setBefore: e => this.setState({
+        form: {
+          ...f,
+          before: +e.target.value
+        }
+      }),
+      setOccasion: e => {
+        const o = VF_OCCASIONS.find(o => o.id === e.target.value);
+        let date = o.fixed || {};
+        if (o.hijri) {
+          const n = vfReminderNext({
+              occ: o.id
+            }),
+            p = window.AG_DATES.parts(f.cal, n.date);
+          date = {
+            cal: f.cal,
+            m: p[1],
+            d: p[2]
+          };
+        }
+        this.setState({
+          form: {
+            ...f,
+            occ: o.id,
+            ...date
+          }
+        });
+      }
     };
   }
 }

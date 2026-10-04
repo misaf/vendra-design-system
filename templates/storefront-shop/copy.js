@@ -2,7 +2,7 @@
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
   const n = S.n;
-  return {
+  const result = {
     en: {
       eyebrow: 'All flowers',
       titleA: 'The',
@@ -58,4 +58,27 @@ function vfCopy(S) {
       designCount: value => n(value) + ' طرح'
     }
   }[S.lang];
+  return {
+    ...result,
+    migration: {
+      "en": {
+        "price": "Price range",
+        "stock": "In stock only",
+        "filters": "Filters",
+        "close": "Show results",
+        "loading": "Loading products",
+        "failed": "Products could not be loaded",
+        "retry": "Try again"
+      },
+      "fa": {
+        "price": "بازه قیمت",
+        "stock": "فقط موجود",
+        "filters": "فیلترها",
+        "close": "نمایش نتایج",
+        "loading": "در حال بارگذاری محصولات",
+        "failed": "بارگذاری محصولات ناموفق بود",
+        "retry": "تلاش دوباره"
+      }
+    }[S.lang]
+  };
 }

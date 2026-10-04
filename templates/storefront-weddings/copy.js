@@ -3,6 +3,12 @@
 function vfCopy(S) {
   return {
     en: {
+      galleryTitle: 'Recent work placeholders',
+      processTitle: 'How it works',
+      steps: ['Tell us about your day', 'Choose a floral proposal', 'We arrange and deliver'],
+      guests: 'Number of guests',
+      integrationError: 'Could not send your message. Your draft is saved; please try again.',
+      emailLabel: 'Email (optional)',
       eb: 'Weddings & events',
       hA: 'Flowers for',
       hB: 'your biggest day.',
@@ -31,6 +37,12 @@ function vfCopy(S) {
       budgets: ['Under 20M Toman', '20–50M Toman', 'Over 50M Toman', 'Not sure yet']
     },
     fa: {
+      galleryTitle: 'جای تصاویر نمونه‌کار',
+      processTitle: 'مراحل کار',
+      steps: ['از روز مراسم بگویید', 'پیشنهاد گل‌آرایی را انتخاب کنید', 'گل‌آرایی و تحویل با ما'],
+      guests: 'تعداد مهمان‌ها',
+      integrationError: 'ارسال پیام ناموفق بود. متن شما حفظ شده؛ دوباره تلاش کنید.',
+      emailLabel: 'ایمیل (اختیاری)',
       eb: 'عروسی و مراسم',
       hA: 'گل برای',
       hB: 'بزرگ‌ترین روزتان.',

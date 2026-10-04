@@ -3,6 +3,12 @@
 function vfCopy(S) {
   return {
     en: {
+      paymentMethods: {
+        card: 'Card to card',
+        online: 'Online payment',
+        cod: 'Pay on delivery',
+        wa: 'WhatsApp confirmation'
+      },
       orderNo: 'Order VN-10522',
       progress: 'Order progress',
       doneL: 'done',
@@ -38,6 +44,12 @@ function vfCopy(S) {
       }
     },
     fa: {
+      paymentMethods: {
+        card: 'کارت به کارت',
+        online: 'پرداخت آنلاین',
+        cod: 'پرداخت هنگام تحویل',
+        wa: 'تأیید در واتساپ'
+      },
       orderNo: 'سفارش VN-10522',
       progress: 'وضعیت سفارش',
       doneL: 'انجام شد',

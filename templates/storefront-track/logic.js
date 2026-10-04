@@ -5,10 +5,16 @@ class Component extends VFPage {
     const fa = S.fa;
     const L = S.lang;
     const m = S.m;
-    const order = this.props.store && (this.props.store.lastOrder || this.props.store.order);
     const requested = vfPageRoute(this.props).id;
+    const snapshot = this.props.store && (this.props.store.lastOrder || this.props.store.order);
+    const order = requested ? snapshot && snapshot.id === requested ? snapshot : vfSampleOrders().find(o => o.id === requested) : snapshot;
     const hasOrder = !this.props.store || !!order && (!requested || requested === order.id);
-    const st = order ? order.status || 'received' : this.props.status ?? 'onTheWay';
+    const rawStatus = order ? order.status || 'received' : this.props.status ?? 'onTheWay';
+    const st = /cancel|refund/.test(rawStatus) ? 'cancelled' : {
+      arranging: 'preparing',
+      ready: 'preparing',
+      out_for_delivery: 'onTheWay'
+    }[rawStatus] || rawStatus;
     const C = vfCopy(S);
     const sampleLines = order ? order.lines : vfSampleBag();
     const sampleTotals = order ? order.totals : vfTotals(sampleLines, {
@@ -19,7 +25,7 @@ class Component extends VFPage {
       const zone = VF_ZONES.find(z => z.id === d.zone) || VF_ZONES[0];
       const end = (VF_SLOTS.find(s => s[0] === d.slot) || VF_SLOTS[1])[1];
       C.orderNo = C.labels.order + '\u2068' + order.id + '\u2069';
-      C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, '\u2068' + S.n(d.slot + ':00') + '–' + S.n(end + ':00') + '\u2069'], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, d.card || C.labels.noMessage], ['banknote', C.labels.payment, C.labels.cardToCard + ' · •••• ' + S.n(order.last4)]];
+      C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, '\u2068' + S.n(d.slot + ':00') + '–' + S.n(end + ':00') + '\u2069'], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, d.card || C.labels.noMessage], ['banknote', C.labels.payment, (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) + (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))]];
       C.times = ['', '', '', '', ''];
     }
     const idx = {
@@ -29,14 +35,18 @@ class Component extends VFPage {
       delivered: 4,
       cancelled: 1
     }[st];
-    const h = C.h[st];
+    const h = C.h[st] || C.h.received;
     return {
       ...S,
       hasOrder,
+      waHref: order ? VF_STORE.whatsapp + '?text=' + encodeURIComponent((fa ? 'درباره سفارش ' : 'About order ') + order.id) : S.waHref,
       noOrder: !hasOrder,
       reorder: order ? e => {
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
+        window.VF_TRACK.event('order_again', {
+          transaction_id: order.id
+        });
         this.props.store.reorder(order);
         this.props.go('bag');
       } : S.go.bag,

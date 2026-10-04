@@ -10,8 +10,8 @@ function vfSiteInitial(props) {
   return {
     route: route.view === 'home' && !new URLSearchParams(location.search).has('view') ? props.start || 'home' : route.view,
     routeInfo: route,
-    lang: route.lang || props.lang || 'en',
-    tenant: null,
+    lang: new URLSearchParams(location.search).has('lang') ? route.lang : vfAccountLocale() || props.lang || 'en',
+    tenant: new URLSearchParams(location.search).get('tenant') === 'clay' ? 'clay' : null,
     mobile: null,
     bag: Array.isArray(saved.bag) ? saved.bag : VF_BAG0,
     saved: Array.isArray(saved.saved) ? saved.saved : ['orchid', 'crimson', 'blush'],
@@ -28,6 +28,13 @@ class Component extends DCLogic {
   state = vfSiteInitial(this.props);
   componentDidMount() {
     window.__vfSite = this;
+    if (window.VF_API.live) window.VF_API.loadSaved().then(saved => {
+      if (saved) this.setState({
+        saved
+      });
+    }).catch(() => this.setState({
+      integrationError: true
+    }));
     this._pop = () => {
       const r = vfReadRoute();
       if (r.view === 'checkout' && !this.state.order && (!this.state.bag.length || Object.values(vfErrors(this.state.delivery)).some(Boolean))) {
@@ -99,6 +106,8 @@ class Component extends DCLogic {
     });
     return {
       is,
+      integrationError: !!s.integrationError,
+      integrationErrorText: s.lang === 'fa' ? 'همگام‌سازی انجام نشد؛ اطلاعات محلی حفظ شده است.' : 'Server sync failed; your local data is kept.',
       routeInfo: s.routeInfo,
       lang: s.lang,
       tenant: s.tenant || this.props.tenant || 'default',
@@ -129,9 +138,7 @@ class Component extends DCLogic {
         })),
         reorder: order => this.setState({
           order: null,
-          bag: order.lines.map(line => ({
-            ...line
-          })),
+          bag: vfReorderLines(order.lines),
           delivery: {
             ...order.delivery
           }
@@ -145,6 +152,13 @@ class Component extends DCLogic {
           }
         }),
         add: line => this.setState(p => {
+          window.VF_TRACK.event('add_to_cart', {
+            items: [{
+              item_id: line.productId || line.id,
+              price: line.unit,
+              quantity: line.qty
+            }]
+          });
           const ex = p.bag.find(x => x.id === line.id);
           return {
             order: null,
@@ -172,9 +186,19 @@ class Component extends DCLogic {
         clear: () => this.setState({
           bag: []
         }),
-        toggleSave: id => this.setState(p => ({
-          saved: p.saved.includes(id) ? p.saved.filter(x => x !== id) : [...p.saved, id]
-        })),
+        toggleSave: id => {
+          const removing = this.state.saved.includes(id);
+          this.setState(p => ({
+            saved: removing ? p.saved.filter(x => x !== id) : [...p.saved, id]
+          }));
+          if (!removing) window.VF_TRACK.event('add_to_wishlist', {
+            items: [window.VF_TRACK.item(vfProduct(id))]
+          });
+          return (removing ? window.VF_API.unsaveItem(id) : window.VF_API.saveItem(id)).catch(() => this.setState({
+            integrationError: true,
+            announcement: this.state.lang === 'fa' ? 'ذخیره در سرور انجام نشد؛ فهرست محلی حفظ شد.' : 'Server sync failed; your local saved list is kept.'
+          }));
+        },
         setSaved: ids => this.setState({
           saved: ids
         })

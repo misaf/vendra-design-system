@@ -31,7 +31,7 @@ const VF_PRODUCTS = [
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -86,3 +86,16 @@ const VF_PRODUCT_DETAILS = {
   blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
+
+function vfReorderLines(lines) {
+ return lines.flatMap(line => {
+  const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
+  if(!product||product.inStock===false)return [];
+  const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
+  const addons=line.addons||VF_ADDONS.filter(a=>line.id.includes(a[0])).map(a=>a[0]);
+  const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
+  return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
+ });
+}
+
+function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}

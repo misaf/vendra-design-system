@@ -60,7 +60,7 @@ function loadPage(name, props = {}, search = '') {
 for(const lang of ['en','fa']) {
  for(const id of ['ivory','lavender','orchid','crimson','blush','bridal']) {
   let added;const {logic}=loadPage('product',{lang,routeInfo:{view:'product',id},store:{saved:[],add:line=>added=line}});
-  const v=logic.renderVals();v.add();assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);
+  const v=logic.renderVals();v.add();if(id==='bridal'){assert.equal(added,undefined);assert.equal(v.available,false);continue;}assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);
   assert.equal(added.unit,id==='ivory'?4900000:({lavender:2800000,orchid:3400000,crimson:5200000,blush:2200000,bridal:6500000})[id]);
   assert.equal(v.hasSizes,id==='ivory');
  }

@@ -1,0 +1,4 @@
+# Publishing example: replace the domain and deployment paths.
+User-agent: *
+Allow: /
+Sitemap: https://example.test/templates/deployment/sitemap.xml

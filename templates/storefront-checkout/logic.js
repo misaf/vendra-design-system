@@ -5,7 +5,10 @@ class Component extends VFPage {
     last4: '',
     ref: '',
     err: false,
-    order: null
+    order: null,
+    method: 'card',
+    busy: false,
+    failed: false
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'checkout');
@@ -29,15 +32,49 @@ class Component extends VFPage {
     } = totals;
     const slotEnd = (VF_SLOTS.find(slot => slot[0] === delivery.slot) || VF_SLOTS[1])[1];
     const slotLabel = vfSlotLabel(delivery.slot, slotEnd, fa);
+    const method = order ? order.method || 'card' : s.method,
+      codOk = VF_STORE.paymentDemo.codZones.includes(delivery.zone),
+      P = C.migration;
     const done = !!order || s.placed || this.props.step === 'done';
     return {
       ...S,
       t: {
         ...S.t,
         ...C,
+        payA: method === 'card' ? C.payA : P.methods[method],
+        payB: method === 'card' ? C.payB : '',
+        payP: method === 'card' ? C.payP : P.descriptions[method],
+        place: method === 'card' ? C.place : P.actions[method],
         orderNo: order ? C.labels.order + '\u2068' + order.id + '\u2069' : C.orderNo
       },
       paying: !done,
+      isCard: method === 'card',
+      isWa: method === 'wa',
+      busy: s.busy,placeDisabled:s.busy||s.failed||done,
+      failed: s.failed,
+      paymentNotice: P.demo,
+      method,
+      methodOptions: Object.entries(P.methods).map(([id, label]) => ({
+        value: id,
+        label,
+        disabled: id === 'cod' && !codOk
+      })),
+      setMethod: e => !s.busy&&this.setState({
+        method: e.target.value,
+        err: false,
+        failed: false
+      }),
+      migration: P,
+      codOff: !codOk,
+      waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => l[L][0] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
+      retry: () => this.setState({
+        failed: false
+      }),
+      otherMethod: () => this.setState({
+        failed: false,
+        method: 'card'
+      }),
+      paymentStatus: P.statuses[method],
       done,
       fmt: fa ? v => VF_FA_DIGITS(v) : v => String(v),
       steps: [{
@@ -50,6 +87,7 @@ class Component extends VFPage {
       totalLabel: m(sub + fee),
       caption: C.caption,
       payLabels: C.payLabels,
+      copySheba: () => navigator.clipboard.writeText(VF_STORE.payment.sheba || ''),
       last4: s.last4,
       last4Err: s.err ? C.last4Err : undefined,
       ref: s.ref,
@@ -61,7 +99,9 @@ class Component extends VFPage {
         err: false
       }),
       place: () => {
-        if (s.last4.length !== 4) {
+        if (s.busy || done || items.some(l => !vfLineAvailable(l))) return;
+        if (method === 'cod' && !codOk) return;
+        if (method === 'card' && s.last4.length !== 4) {
           this.setState({
             err: true
           });
@@ -71,28 +111,58 @@ class Component extends VFPage {
           }, 0);
           return;
         }
-        const record = {
-          id: 'VN-' + Date.now(),
-          status: 'received',
-          createdAt: new Date().toISOString(),
-          lines: items.map(l => ({
-            ...l
-          })),
-          delivery: {
-            ...delivery
-          },
-          totals: {
-            ...totals
-          },
-          last4: s.last4,
-          ref: s.ref
-        };
-        if (st) {
-          st.complete(record);
-        } else this.setState({
-          placed: true,
-          order: record
+        window.VF_TRACK.event('add_payment_info', {
+          payment_type: method
         });
+        const complete = () => {
+          const record = {
+            method,
+            paymentStatus: P.statuses[method],
+            preferredLocale: vfAccountLocale() || L,
+            id: 'VN-' + Date.now(),
+            status: 'received',
+            createdAt: new Date().toISOString(),
+            lines: items.map(l => ({
+              ...l
+            })),
+            delivery: {
+              ...delivery
+            },
+            totals: {
+              ...totals
+            },
+            last4: s.last4,
+            ref: s.ref
+          };
+          if (st) {
+            st.complete(record);
+          } else this.setState({
+            placed: true,
+            order: record
+          });
+          window.VF_TRACK.event('purchase', {
+            transaction_id: record.id,
+            value: totals.total,
+            payment_type: method
+          });
+        };
+        if (method === 'online') {
+          this.setState({
+            busy: true
+          });
+          this._paymentTimer = setTimeout(() => {
+            this.setState({
+              busy: false
+            });
+            if (this.props.payFail || vfPageRoute(this.props).demo === 'error' || VF_STORE.paymentDemo.online === 'failure') {
+              this.setState({
+                failed: true
+              });
+              return;
+            }
+            complete();
+          }, 500);
+        } else complete();
       },
       lines: items.map(l => ({
         image: vfProductImage(l, L).src,
@@ -122,11 +192,11 @@ class Component extends VFPage {
       }, {
         icon: 'banknote',
         label: C.pay,
-        value: C.labels.cardToCard + m(sub + fee)
+        value: P.methods[method] + ' · ' + m(sub + fee)
       }, {
         icon: 'receipt',
         label: C.card,
-        value: '•••• ' + (fa ? VF_FA_DIGITS(order ? order.last4 : s.last4) : order ? order.last4 : s.last4)
+        value: method === 'card' ? '•••• ' + (fa ? VF_FA_DIGITS(order ? order.last4 : s.last4) : order ? order.last4 : s.last4) : ''
       }, {
         icon: 'message-square',
         label: C.labels.cardMessage,
@@ -137,5 +207,9 @@ class Component extends VFPage {
         value: order ? order.ref : s.ref
       }].filter(r => r.value)
     };
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    clearTimeout(this._paymentTimer);
   }
 }
