@@ -1,4 +1,4 @@
-// Refresh storefront templates, then compile Tailwind. --check writes nothing.
+// Refresh templates; build separate Tailwind and plain custom CSS. --check writes nothing.
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -16,16 +16,17 @@ try {
   const result = spawnSync(process.execPath, [cli, '-i', '_shared/tailwind.css', '-o', output, '--minify'], {cwd: root, stdio: 'inherit'});
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error('Tailwind compilation failed');
-  const css = fs.readFileSync(output, 'utf8');
-  const target = path.join(root, '_runtime/tailwind.css');
-  if (check) {
-    if (!fs.existsSync(target) || css !== fs.readFileSync(target, 'utf8')) {
-      throw new Error('Tailwind CSS is stale. Run npm --prefix templates run build.');
-    }
-  } else if (!fs.existsSync(target) || css !== fs.readFileSync(target, 'utf8')) {
-    fs.writeFileSync(target, css);
+  const customEntry = fs.readFileSync(path.join(root, '_shared/custom.css'), 'utf8');
+  const custom = customEntry.replace(/@import "\.\/([a-z-]+\.css)";/g, (_, file) =>
+    '\n/* Source: _shared/' + file + ' */\n' + fs.readFileSync(path.join(root, '_shared', file), 'utf8'));
+  if (/@(?:apply|theme|source|import)\b/.test(custom)) throw new Error('Custom CSS must contain plain CSS only.');
+  for (const [file, css] of [['tailwind.css', fs.readFileSync(output, 'utf8')], ['custom.css', custom]]) {
+    const target = path.join(root, '_runtime', file);
+    const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
+    if (check && css !== current) throw new Error(file + ' is stale. Run npm --prefix templates run build.');
+    if (!check && css !== current) fs.writeFileSync(target, css);
   }
-  console.log(check ? 'Tailwind and storefront templates are current.' : 'Built Tailwind; updated ' + count + ' template files.');
+  console.log(check ? 'Tailwind, custom CSS and storefront templates are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;

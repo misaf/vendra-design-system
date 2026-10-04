@@ -41,7 +41,7 @@ function vfLinkHandler(go) {
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
-    brand: 'Vendra Florist',
+    brand: VF_STORE.brand.en,
     home: 'Home',
     shop: 'Shop',
     weddings: 'Weddings',
@@ -53,8 +53,8 @@ const VF_SHELL = {
     menu: 'Menu',
     mainNav: 'Main',
     visit: 'Visit',
-    address: 'Azimiyeh, Karaj',
-    hours: 'Daily 08:00–22:00',
+    address: VF_STORE.address.en,
+    hours: VF_STORE.hours.en,
     contact: 'Contact',
     photo: 'Bouquet photo',
     save: 'Save',
@@ -67,7 +67,7 @@ const VF_SHELL = {
     skip: 'Skip to main content'
   },
   fa: {
-    brand: 'گل‌فروشی وندرا',
+    brand: VF_STORE.brand.fa,
     home: 'خانه',
     shop: 'فروشگاه',
     weddings: 'عروسی',
@@ -79,8 +79,8 @@ const VF_SHELL = {
     menu: 'منو',
     mainNav: 'منوی اصلی',
     visit: 'آدرس',
-    address: 'کرج، عظیمیه',
-    hours: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',
+    address: VF_STORE.address.fa,
+    hours: VF_STORE.hours.fa,
     contact: 'تماس',
     photo: 'عکس دسته‌گل',
     save: 'ذخیره',
@@ -210,6 +210,12 @@ function vfShell(props, page) {
     standalone: !props.store,
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
+    focusAfterRemoval: (selector, index) => setTimeout(()=>{
+      const targets=[...document.querySelectorAll('main '+selector)];
+      const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
+      if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
+    },0),
+    focus: id => setTimeout(()=>{const el=document.getElementById(id);if(el)el.focus();},0),
     openMenu: () => self.setState({
       vfMenu: true
     }),
@@ -224,7 +230,11 @@ function vfShell(props, page) {
       id: 'fa',
       label: 'فا'
     }],
-    waHref: 'https://wa.me/989129333034',
+    waHref: VF_STORE.whatsapp,
+    phoneHref: 'tel:'+VF_STORE.phone,
+    phoneLabel: VF_STORE.phoneLabel,
+    instagram: VF_STORE.instagram,
+    payment: {...VF_STORE.payment,holder:VF_STORE.payment.holder[L],bank:VF_STORE.payment.bank[L]},
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {
@@ -254,7 +264,7 @@ function vfShell(props, page) {
       id: 'wa',
       icon: 'message-circle',
       label: T.wa,
-      href: 'https://wa.me/989129333034',
+      href: VF_STORE.whatsapp,
       target: '_blank'
     }, {
       id: 'bag',

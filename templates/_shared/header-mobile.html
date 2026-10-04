@@ -1,11 +1,11 @@
-<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="height:60px;padding:0 6px;grid-template-columns:44px minmax(0,1fr) 88px" class="tw:grid tw:items-center tw:gap-1">
+<header class="vf-shell-header">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 </div>
-<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:18px;text-align:center;overflow:hidden;text-overflow:ellipsis;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
-<div style="justify-content:flex-end" class="tw:flex">
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand">{{ t.brand }}</a>
+<div class="vf-shell-mobile-tools tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">

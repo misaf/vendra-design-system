@@ -1,0 +1,5 @@
+/* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
+@import "./shell.css";
+@import "./information-pages.css";
+@import "./page-layouts.css";
+@import "./page-styles.css";

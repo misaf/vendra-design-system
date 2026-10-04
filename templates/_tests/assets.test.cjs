@@ -19,15 +19,23 @@ vm.runInContext(loader, context);
 assert.equal(context.window.VF_ASSET_BASE, 'https://example.test/design/');
 assert.deepEqual(elements.filter(e => e.tag === 'link').map(e => e.href), [
   'https://example.test/design/styles.css',
-  'https://example.test/design/templates/_runtime/tailwind.css'
+  'https://example.test/design/templates/_runtime/tailwind.css',
+  'https://example.test/design/templates/_runtime/custom.css'
 ]);
 assert.equal(elements.filter(e => e.tag === 'script').length, 1);
 assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/design/_ds_bundle.js');
 for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
   const files = fs.readdirSync(path.join(root, folder));
-  for (const name of ['support.js', 'ds-base.js', 'tailwind.css']) assert.ok(!files.includes(name), folder + ' duplicates ' + name);
+  for (const name of ['support.js', 'ds-base.js', 'tailwind.css', 'custom.css']) assert.ok(!files.includes(name), folder + ' duplicates ' + name);
   const html = fs.readFileSync(path.join(root, folder, files.find(name => name.endsWith('.dc.html'))), 'utf8');
+  assert.ok(!/\bstyle(?:-hover)?=|<style[\s>]/.test(html.split('<x-dc>')[1].split('</x-dc>')[0]), folder + ' must keep custom styles in CSS classes');
   assert.ok(html.includes('src="../_runtime/support.js"'), folder + ' must use the shared runtime');
   assert.ok(html.includes('src="../_runtime/ds-base.js"'), folder + ' must use the shared loader');
 }
 console.log('Passed shared asset references, relocated-root URLs and repeated-loader deduplication.');
+
+const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
+assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');
+const custom = fs.readFileSync(path.join(root, '_runtime/custom.css'), 'utf8');
+assert.ok(custom.includes('.vf-page .vf-shop-category:hover'));
+assert.ok(!/@(?:apply|theme|source|import)\b/.test(custom));

@@ -79,3 +79,7 @@
   .vf-search-row {grid-template-columns:48px minmax(0,1fr);column-gap:var(--space-3)}
   .vf-search-row .vf-price {grid-column:2}
 }
+
+/* Keep keyboard targets clear of the sticky header and give form fields a visible ring. */
+.vf-page :is(input,textarea,select,button,a,[tabindex]) {scroll-margin-block:100px}
+.vf-page :is(input,textarea,select):focus-visible {outline:2px solid var(--focus-ring);outline-offset:3px}

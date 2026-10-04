@@ -9,7 +9,7 @@ const {sharedLogic, generate} = require('../_build/generate.cjs');
 generate(true);
 function context() {
  const history = [];
- const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout, location:{pathname:'/templates/storefront-site/StorefrontSite.dc.html',search:'',href:'http://localhost/templates/storefront-site/StorefrontSite.dc.html'},
+ const ctx = {URL, URLSearchParams, console, document:{getElementById:()=>null}, setTimeout, clearTimeout, location:{pathname:'/templates/storefront-site/StorefrontSite.dc.html',search:'',href:'http://localhost/templates/storefront-site/StorefrontSite.dc.html'},
   history:{pushState:(_,__,url)=>history.push(['push',url]),replaceState:(_,__,url)=>history.push(['replace',url])},sessionStorage:{getItem:()=>null,setItem:()=>{}},
   DCLogic:class {constructor(props){this.props=props;this.state={};}setState(update,cb){Object.assign(this.state,typeof update==='function'?update(this.state):update);if(cb)cb();}}};
  ctx.window={React:{},innerWidth:390,scrollTo:()=>{}};vm.createContext(ctx);vm.runInContext(read('_ds_bundle.js'),ctx);
@@ -78,3 +78,15 @@ for(const lang of ['en','fa']) {
  const {logic:track}=loadPage('track',{lang,store:site.renderVals().store});v=track.renderVals();assert.ok(v.t.orderNo.includes(order.id));assert.equal(v.current,0);assert.equal(v.lines.length,1);assert.equal(v.lines[0].name,lines[0][lang][0]);assert.ok(v.rows.some(r=>r.value.includes('Demo recipient')));assert.equal(v.sums.at(-1).value,c.window.AG_FORMAT.money(4650000,{lang}));
 }
 console.log('Passed all product links/prices, URL filter restoration, language switching and completed-order tracking in English and Persian.');
+// Recovery states are real navigation, and form errors retain a usable draft.
+for (const lang of ['en','fa']) {
+ const {logic:track}=loadPage('track',{lang,store:{saved:[],lastOrder:null}});
+ assert.equal(track.renderVals().noOrder,true);
+ const {logic:unknown}=loadPage('track',{lang,routeInfo:{view:'track',id:'wrong'},store:{saved:[],lastOrder:{id:'VN-demo',status:'received',lines:[],delivery:{zone:'central',slot:'12',name:'Demo',phone:'09120000000',address:'Demo road'},totals:{sub:0,fee:0,total:0},last4:'1234'}}});
+ assert.equal(unknown.renderVals().noOrder,true);
+ const {logic:saved}=loadPage('saved',{lang,store:{saved:[]}});assert.equal(saved.renderVals().noItems,true);assert.ok(saved.renderVals().href.shop.includes('view=shop'));assert.equal(saved.renderVals().restore,undefined);
+ const {logic:search}=loadPage('search',{lang});search.state.q='no-such-flower';assert.equal(search.renderVals().noResults,true);search.renderVals().clearSearch();assert.equal(search.renderVals().empty,true);
+ const {logic:contact}=loadPage('contact',{lang});contact.state.msg='Demo message';contact.renderVals().send();assert.equal(contact.state.sent,true);contact.renderVals().editMessage();assert.equal(contact.state.sent,false);assert.equal(contact.state.msg,'Demo message');
+ const {logic:wedding}=loadPage('weddings',{lang});wedding.setState({name:'Demo',phone:'1234567890'});wedding.renderVals().send();assert.equal(wedding.state.e2,true);assert.equal(wedding.state.sent,false);wedding.state.phone='۰۹۱۲۰۰۰۰۰۰۰';wedding.renderVals().send();assert.equal(wedding.state.sent,true);
+}
+console.log('Passed missing-order recovery, saved/search recovery, editable success states and mobile validation in both languages.');

@@ -37,6 +37,11 @@ try {
   for (const folder of ['_build', '_shared', '_runtime', ...pages.map(page => 'storefront-' + page)]) {
     fs.cpSync(path.join(root, 'templates', folder), path.join(templates, folder), {recursive: true});
   }
+  const config = path.join(templates, '_shared/store-config.js');
+  fs.writeFileSync(config, fs.readFileSync(config, 'utf8')
+    .replaceAll("en: 'Vendra Florist'", "en: 'Demo Flowers'")
+    .replace("'+989129333034'", "'+989120000000'")
+    .replace("'https://wa.me/989129333034'", "'https://wa.me/989120000000'"));
   const catalog = path.join(templates, '_shared/catalog.js');
   fs.writeFileSync(catalog, fs.readFileSync(catalog, 'utf8').replace('price: 4_100_000', 'price: 4_200_000'));
   const delivery = path.join(templates, '_shared/delivery.js');
@@ -53,6 +58,14 @@ try {
   assert.equal(build.generate(), 0, 'Generation must be repeatable without another diff');
   build.generate(true);
   assert.ok(fs.readFileSync(homeFile, 'utf8').includes('Human-edited content survives generation.'));
+  for (const page of ['home','shop','checkout','faq']) {
+    const values=pageValues(page);
+    assert.equal(values.t.brand,'Demo Flowers');
+    assert.equal(values.phoneHref,'tel:+989120000000');
+    assert.equal(values.waHref,'https://wa.me/989120000000');
+  }
+  assert.equal(pageValues('home').t.eyebrow,'Demo Flowers');
+  assert.equal(pageValues('checkout').payment.holder,'Demo Flowers');
   assert.equal(pageValues('home').t.heroA, 'Human title,');
   assert.equal(pageValues('home').products[0].price, '4,200,000 Toman');
   assert.equal(pageValues('shop').items[0].price, '4,200,000 Toman');

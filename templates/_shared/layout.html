@@ -1,10 +1,9 @@
 <helmet>
 <script src="../_runtime/ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="container-type:inline-size">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
@@ -16,12 +15,12 @@
 <!-- MOBILE_HEADER -->
 </sc-if>
 <!-- MOBILE_MENU -->
-<div style="flex:1">
+<div class="vf-shell-content">
 <!-- PAGE_CONTENT -->
 </div>
 <!-- FOOTER -->
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div style="position:sticky;bottom:0;z-index:60">
+<div class="vf-shell-bottom-bar">
 <!-- STICKY_CONTENT -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
 </x-import>

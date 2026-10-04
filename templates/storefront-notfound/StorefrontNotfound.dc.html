@@ -12,23 +12,22 @@
 <helmet>
 <script src="../_runtime/ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="container-type:inline-size">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="max-width:1240px;padding:0 24px;height:72px" class="tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
+<header class="vf-shell-header">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
-<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
@@ -41,14 +40,14 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="height:60px;padding:0 6px;grid-template-columns:44px minmax(0,1fr) 88px" class="tw:grid tw:items-center tw:gap-1">
+<header class="vf-shell-header">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 </div>
-<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:18px;text-align:center;overflow:hidden;text-overflow:ellipsis;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
-<div style="justify-content:flex-end" class="tw:flex">
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand">{{ t.brand }}</a>
+<div class="vf-shell-mobile-tools tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
@@ -64,9 +63,9 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div style="margin-top:28px" class="tw:flex tw:flex-col tw:gap-4">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
-<div style="font-size:14px;color:var(--text-muted)" class="tw:flex tw:items-center tw:justify-between tw:gap-3">
+<div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3">
 <span>{{ t.langL }}</span>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
 </x-import>
@@ -76,34 +75,34 @@
 </div>
 </x-import>
 </sc-if>
-<div style="flex:1">
+<div class="vf-shell-content">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-shopping tw:mx-auto"><div style="max-width:600px;gap:20px" class="tw:mx-auto tw:flex tw:flex-col tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="flower-2" eyebrow="{{ t.code }}" title="{{ t.hA }}" title-accent="{{ t.hB }}" body="{{ t.hP }}" heading-level="{{ 1 }}" hint-size="100%,300px"></x-import><div class="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="house" href="{{ href.home }}" on-click="{{ go.home }}" hint-size="140px,48px">{{ t.home }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="search" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="120px,48px">{{ t.search }}</x-import></div></div>
-<section style="margin-top:80px;gap:28px" class="tw:flex tw:flex-col"><x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" title="{{ t.popA }}" accent="{{ t.popB }}" hint-size="100%,64px"></x-import><div style="grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));gap:40px 24px" class="vf-product-grid tw:grid"><sc-for list="{{ items }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></section></main>
+<main id="main" tabindex="-1" class="vf-shopping tw:mx-auto"><div class="vf-notfound-message tw:mx-auto tw:flex tw:flex-col tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="flower-2" eyebrow="{{ t.code }}" title="{{ t.hA }}" title-accent="{{ t.hB }}" body="{{ t.hP }}" heading-level="{{ 1 }}" hint-size="100%,300px"></x-import><div class="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="house" href="{{ href.home }}" on-click="{{ go.home }}" hint-size="140px,48px">{{ t.home }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="search" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="120px,48px">{{ t.search }}</x-import></div></div>
+<section class="vf-notfound-recommendations tw:flex tw:flex-col"><x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" title="{{ t.popA }}" accent="{{ t.popB }}" hint-size="100%,64px"></x-import><div class="vf-notfound-product-grid vf-product-grid tw:grid"><sc-for list="{{ items }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></section></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
-<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
-<div style="max-width:1240px;padding:56px 24px 40px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px" class="tw:mx-auto tw:grid">
-<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div>
+<footer class="vf-shell-footer">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid">
+<div class="vf-shell-footer-brand">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div>
-<div dir="ltr" style="text-align:start">+98 912 933 3034</div>
-<div dir="ltr" style="text-align:start">@misaf1990</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.contact }}</div>
+<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link">{{ phoneLabel }}</a>
+<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" style="align-items:flex-start;font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<a href="{{ href.faq }}" onClick="{{ go.faq }}" style="color:var(--text-on-inverse);text-underline-offset:4px">{{ t.faq }}</a>
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2">
+<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link">{{ t.faq }}</a>
 </nav>
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div style="position:sticky;bottom:0;z-index:60">
+<div class="vf-shell-bottom-bar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 
@@ -119,6 +118,20 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 // BEGIN GENERATED SHARED LOGIC
+// Source: templates/_shared/store-config.js
+// Store identity and contact details. Change these once, then run npm --prefix templates run build.
+// Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
+const VF_STORE = {
+  brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+  address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
+  phone: '+989129333034',
+  phoneLabel: '+98 912 933 3034',
+  whatsapp: 'https://wa.me/989129333034',
+  instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
+  payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
+};
+
 // Source: templates/_shared/delivery.js
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
 // Edit this file, then run: node templates/_build/generate.cjs
@@ -311,7 +324,7 @@ function vfLinkHandler(go) {
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
-    brand: 'Vendra Florist',
+    brand: VF_STORE.brand.en,
     home: 'Home',
     shop: 'Shop',
     weddings: 'Weddings',
@@ -323,8 +336,8 @@ const VF_SHELL = {
     menu: 'Menu',
     mainNav: 'Main',
     visit: 'Visit',
-    address: 'Azimiyeh, Karaj',
-    hours: 'Daily 08:00–22:00',
+    address: VF_STORE.address.en,
+    hours: VF_STORE.hours.en,
     contact: 'Contact',
     photo: 'Bouquet photo',
     save: 'Save',
@@ -337,7 +350,7 @@ const VF_SHELL = {
     skip: 'Skip to main content'
   },
   fa: {
-    brand: 'گل‌فروشی وندرا',
+    brand: VF_STORE.brand.fa,
     home: 'خانه',
     shop: 'فروشگاه',
     weddings: 'عروسی',
@@ -349,8 +362,8 @@ const VF_SHELL = {
     menu: 'منو',
     mainNav: 'منوی اصلی',
     visit: 'آدرس',
-    address: 'کرج، عظیمیه',
-    hours: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',
+    address: VF_STORE.address.fa,
+    hours: VF_STORE.hours.fa,
     contact: 'تماس',
     photo: 'عکس دسته‌گل',
     save: 'ذخیره',
@@ -480,6 +493,12 @@ function vfShell(props, page) {
     standalone: !props.store,
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
+    focusAfterRemoval: (selector, index) => setTimeout(()=>{
+      const targets=[...document.querySelectorAll('main '+selector)];
+      const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
+      if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
+    },0),
+    focus: id => setTimeout(()=>{const el=document.getElementById(id);if(el)el.focus();},0),
     openMenu: () => self.setState({
       vfMenu: true
     }),
@@ -494,7 +513,11 @@ function vfShell(props, page) {
       id: 'fa',
       label: 'فا'
     }],
-    waHref: 'https://wa.me/989129333034',
+    waHref: VF_STORE.whatsapp,
+    phoneHref: 'tel:'+VF_STORE.phone,
+    phoneLabel: VF_STORE.phoneLabel,
+    instagram: VF_STORE.instagram,
+    payment: {...VF_STORE.payment,holder:VF_STORE.payment.holder[L],bank:VF_STORE.payment.bank[L]},
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {
@@ -524,7 +547,7 @@ function vfShell(props, page) {
       id: 'wa',
       icon: 'message-circle',
       label: T.wa,
-      href: 'https://wa.me/989129333034',
+      href: VF_STORE.whatsapp,
       target: '_blank'
     }, {
       id: 'bag',

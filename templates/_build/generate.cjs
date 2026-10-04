@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const shared = name => fs.readFileSync(path.join(root, '_shared', name), 'utf8').trimEnd();
-const sharedLogic = ['delivery.js', 'catalog.js', 'storefront.js']
+const sharedLogic = ['store-config.js', 'delivery.js', 'catalog.js', 'storefront.js']
   .map(name => '// Source: templates/_shared/' + name + '\n' + shared(name)).join('\n\n') + '\n';
 
 function region(source, name, syntax = 'html') {

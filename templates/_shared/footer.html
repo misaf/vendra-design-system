@@ -1,18 +1,18 @@
-<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
-<div style="max-width:1240px;padding:56px 24px 40px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px" class="tw:mx-auto tw:grid">
-<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div>
+<footer class="vf-shell-footer">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid">
+<div class="vf-shell-footer-brand">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div>
-<div dir="ltr" style="text-align:start">+98 912 933 3034</div>
-<div dir="ltr" style="text-align:start">@misaf1990</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.contact }}</div>
+<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link">{{ phoneLabel }}</a>
+<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" style="align-items:flex-start;font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<a href="{{ href.faq }}" onClick="{{ go.faq }}" style="color:var(--text-on-inverse);text-underline-offset:4px">{{ t.faq }}</a>
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2">
+<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link">{{ t.faq }}</a>
 </nav>
 </div>
 </footer>

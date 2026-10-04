@@ -12,23 +12,22 @@
 <helmet>
 <script src="../_runtime/ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="container-type:inline-size">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="max-width:1240px;padding:0 24px;height:72px" class="tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
+<header class="vf-shell-header">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
-<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
@@ -41,14 +40,14 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="height:60px;padding:0 6px;grid-template-columns:44px minmax(0,1fr) 88px" class="tw:grid tw:items-center tw:gap-1">
+<header class="vf-shell-header">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 </div>
-<a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:18px;text-align:center;overflow:hidden;text-overflow:ellipsis;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
-<div style="justify-content:flex-end" class="tw:flex">
+<a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand">{{ t.brand }}</a>
+<div class="vf-shell-mobile-tools tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
@@ -64,9 +63,9 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div style="margin-top:28px" class="tw:flex tw:flex-col tw:gap-4">
+<div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
-<div style="font-size:14px;color:var(--text-muted)" class="tw:flex tw:items-center tw:justify-between tw:gap-3">
+<div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3">
 <span>{{ t.langL }}</span>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
 </x-import>
@@ -76,42 +75,42 @@
 </div>
 </x-import>
 </sc-if>
-<div style="flex:1">
+<div class="vf-shell-content">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><section style="grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))" class="tw:grid tw:gap-7 tw:items-center">
-<div style="gap:22px" class="tw:flex tw:flex-col"><div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted)">{{ t.eb }}</div><h1>{{ t.hA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.hB }}</em></h1><p style="margin:0;max-width:56ch;font-size:17px;line-height:var(--lh-body);text-wrap:pretty" class="tw:text-secondary">{{ t.hP }}</p><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" href="#inquiry" icon-end="arrow-down" hint-size="180px,52px">{{ t.plan }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="message-circle" href="https://wa.me/989129333034" target="_blank" hint-size="150px,52px">{{ t.wa }}</x-import></div></div>
+<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><section class="vf-weddings-hero tw:grid tw:gap-7 tw:items-center">
+<div class="vf-weddings-heading tw:flex tw:flex-col"><div class="vf-weddings-eyebrow">{{ t.eb }}</div><h1>{{ t.hA }} <em class="vf-weddings-accent">{{ t.hB }}</em></h1><p class="vf-weddings-intro tw:text-secondary">{{ t.hP }}</p><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" href="#inquiry" icon-end="arrow-down" hint-size="180px,52px">{{ t.plan }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="150px,52px">{{ t.wa }}</x-import></div></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" ratio="4/5" placeholder-label="{{ t.ph }}" alt="" hint-size="100%,520px"></x-import>
 </section>
-<section style="margin-top:96px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:20px" class="tw:grid"><sc-for list="{{ services }}" as="s" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,220px"><div class="tw:flex tw:flex-col tw:gap-3"><div style="width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--text-on-soft);place-items:center" class="tw:grid"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="{{ s.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></div><div style="font-size:18px;font-weight:500">{{ s.title }}</div><div style="font-size:15px;line-height:1.6;color:var(--text-muted)">{{ s.body }}</div><div style="font-size:14px;font-weight:500;color:var(--text-accent)">{{ s.price }}</div></div></x-import></sc-for></section>
-<section id="inquiry" style="margin-top:96px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))" class="tw:grid tw:gap-7 tw:items-start">
-<div class="tw:flex tw:flex-col tw:gap-4"><h2 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(28px,3.5cqi,36px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.fA }}</h2><p style="margin:0;max-width:56ch;font-size:17px;line-height:var(--lh-body);text-wrap:pretty" class="tw:text-secondary">{{ t.fP }}</p></div>
-<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div style="grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))" class="tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div style="grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))" class="tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
-<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import></sc-if>
+<section class="vf-weddings-services tw:grid"><sc-for list="{{ services }}" as="s" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,220px"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-weddings-service-icon tw:grid"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="{{ s.icon }}" size="{{ 20 }}" hint-size="20px,20px"></x-import></div><div class="vf-weddings-service-title">{{ s.title }}</div><div class="vf-weddings-service-description">{{ s.body }}</div><div class="vf-weddings-service-price">{{ s.price }}</div></div></x-import></sc-for></section>
+<section id="inquiry" class="vf-weddings-inquiry tw:grid tw:gap-7 tw:items-start">
+<div class="tw:flex tw:flex-col tw:gap-4"><h2 class="vf-weddings-inquiry-title">{{ t.fA }}</h2><p class="vf-weddings-inquiry-intro tw:text-secondary">{{ t.fP }}</p></div>
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,560px"><div class="tw:flex tw:flex-col tw:gap-4"><div class="vf-weddings-fields tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wname" required="{{ true }}" label="{{ t.name }}" autocomplete="name" value="{{ name }}" on-change="{{ setName }}" error="{{ nameErr }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wphone" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import></div><div class="vf-weddings-fields tw:grid tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wtype" label="{{ t.type }}" options="{{ types }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" label="{{ t.date }}" value="{{ wDate }}" on-change="{{ setWDate }}" lang="{{ lang }}" min-date="{{ today }}" hint-size="100%,150px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-wbudget" label="{{ t.budget }}" options="{{ budgets }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-wmsg" label="{{ t.msg }}" hint="{{ t.msgHint }}" multiline="{{ true }}" rows="{{ 4 }}" hint-size="100%,160px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" hint-size="180px,52px">{{ t.send }}</x-import></div></div></x-import></sc-if>
+<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><div id="vf-weddings-success" tabindex="-1" role="region" aria-label="{{ t.okT }}" class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ editMessage }}">{{ t.editMessage }}</x-import></div></div></sc-if>
 </section></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
-<footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
-<div style="max-width:1240px;padding:56px 24px 40px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px" class="tw:mx-auto tw:grid">
-<div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div>
+<footer class="vf-shell-footer">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid">
+<div class="vf-shell-footer-brand">{{ t.brand }}</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div>
-<div dir="ltr" style="text-align:start">+98 912 933 3034</div>
-<div dir="ltr" style="text-align:start">@misaf1990</div>
+<div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2">
+<div class="vf-shell-footer-label">{{ t.contact }}</div>
+<a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link">{{ phoneLabel }}</a>
+<a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" style="align-items:flex-start;font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
-<a href="{{ href.faq }}" onClick="{{ go.faq }}" style="color:var(--text-on-inverse);text-underline-offset:4px">{{ t.faq }}</a>
+<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2">
+<a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link">{{ t.faq }}</a>
 </nav>
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div style="position:sticky;bottom:0;z-index:60">
+<div class="vf-shell-bottom-bar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 
@@ -127,6 +126,20 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 // BEGIN GENERATED SHARED LOGIC
+// Source: templates/_shared/store-config.js
+// Store identity and contact details. Change these once, then run npm --prefix templates run build.
+// Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
+const VF_STORE = {
+  brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+  address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
+  phone: '+989129333034',
+  phoneLabel: '+98 912 933 3034',
+  whatsapp: 'https://wa.me/989129333034',
+  instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
+  payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
+};
+
 // Source: templates/_shared/delivery.js
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
 // Edit this file, then run: node templates/_build/generate.cjs
@@ -319,7 +332,7 @@ function vfLinkHandler(go) {
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 const VF_SHELL = {
   en: {
-    brand: 'Vendra Florist',
+    brand: VF_STORE.brand.en,
     home: 'Home',
     shop: 'Shop',
     weddings: 'Weddings',
@@ -331,8 +344,8 @@ const VF_SHELL = {
     menu: 'Menu',
     mainNav: 'Main',
     visit: 'Visit',
-    address: 'Azimiyeh, Karaj',
-    hours: 'Daily 08:00–22:00',
+    address: VF_STORE.address.en,
+    hours: VF_STORE.hours.en,
     contact: 'Contact',
     photo: 'Bouquet photo',
     save: 'Save',
@@ -345,7 +358,7 @@ const VF_SHELL = {
     skip: 'Skip to main content'
   },
   fa: {
-    brand: 'گل‌فروشی وندرا',
+    brand: VF_STORE.brand.fa,
     home: 'خانه',
     shop: 'فروشگاه',
     weddings: 'عروسی',
@@ -357,8 +370,8 @@ const VF_SHELL = {
     menu: 'منو',
     mainNav: 'منوی اصلی',
     visit: 'آدرس',
-    address: 'کرج، عظیمیه',
-    hours: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',
+    address: VF_STORE.address.fa,
+    hours: VF_STORE.hours.fa,
     contact: 'تماس',
     photo: 'عکس دسته‌گل',
     save: 'ذخیره',
@@ -488,6 +501,12 @@ function vfShell(props, page) {
     standalone: !props.store,
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
+    focusAfterRemoval: (selector, index) => setTimeout(()=>{
+      const targets=[...document.querySelectorAll('main '+selector)];
+      const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
+      if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
+    },0),
+    focus: id => setTimeout(()=>{const el=document.getElementById(id);if(el)el.focus();},0),
     openMenu: () => self.setState({
       vfMenu: true
     }),
@@ -502,7 +521,11 @@ function vfShell(props, page) {
       id: 'fa',
       label: 'فا'
     }],
-    waHref: 'https://wa.me/989129333034',
+    waHref: VF_STORE.whatsapp,
+    phoneHref: 'tel:'+VF_STORE.phone,
+    phoneLabel: VF_STORE.phoneLabel,
+    instagram: VF_STORE.instagram,
+    payment: {...VF_STORE.payment,holder:VF_STORE.payment.holder[L],bank:VF_STORE.payment.bank[L]},
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {
@@ -532,7 +555,7 @@ function vfShell(props, page) {
       id: 'wa',
       icon: 'message-circle',
       label: T.wa,
-      href: 'https://wa.me/989129333034',
+      href: VF_STORE.whatsapp,
       target: '_blank'
     }, {
       id: 'bag',
@@ -559,14 +582,13 @@ class Component extends VFPage {
         sv:[['gem','Bridal bouquet','Hand-tied to your dress and season, with a matching buttonhole.','From 6,500,000 Toman'],['car','Wedding car','Bonnet and door arrangements that hold at speed.','From 9,000,000 Toman'],['flower-2','Ceremony stands','Floor-standing arrangements for the aisle and backdrop.','From 12,000,000 Toman'],['sprout','Table flowers','Low centrepieces so guests can see each other.','From 1,800,000 Toman a table']]},
       fa:{eb:'عروسی و مراسم',hA:'گل برای',hB:'بزرگ‌ترین روزتان.',hP:'دسته‌گل عروس، گل‌آرایی ماشین، استند مراسم و گل میز — با شما برنامه‌ریزی می‌شود و صبح همان روز چیده می‌شود.',plan:'برنامه‌ریزی گل‌ها',ph:'عکس عروسی',fA:'از روز مراسم بگویید.',fP:'چند جزئیات بنویسید؛ ظرف یک روز با ایده و قیمت تماس می‌گیریم. مشاوره رایگان است.',name:'نام شما',nameErr:'نام خود را وارد کنید.',phone:'موبایل',phoneErr:'شماره موبایل معتبر وارد کنید.',type:'نوع مراسم',date:'تاریخ',budget:'بودجه',msg:'رنگ‌ها، محل، ایده‌ها',msgHint:'هر چه از الان می‌دانید کمک می‌کند.',send:'ارسال درخواست',okT:'ممنون — درخواست رسید.',okP:'ظرف یک روز کاری تماس می‌گیریم. برای کارهای فوری در واتساپ پیام دهید.',
         sv:[['gem','دسته‌گل عروس','هماهنگ با لباس و فصل، همراه با گل کت داماد.','از ۶٬۵۰۰٬۰۰۰ تومان'],['car','گل‌آرایی ماشین','گل‌آرایی کاپوت و درها که در حرکت محکم می‌ماند.','از ۹٬۰۰۰٬۰۰۰ تومان'],['flower-2','استند مراسم','گل‌آرایی ایستاده برای مسیر و پس‌زمینه.','از ۱۲٬۰۰۰٬۰۰۰ تومان'],['sprout','گل میز','گل‌آرایی کوتاه تا مهمان‌ها همدیگر را ببینند.','از ۱٬۸۰۰٬۰۰۰ تومان هر میز']]}}[L];
-    const lat=v=>v.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-    return {...S,t:{...S.t,...C},wDate:s.wDate,setWDate:v=>this.setState({wDate:v}),today:(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})(),
-      services:C.sv.map(x=>({icon:x[0],title:x[1],body:x[2],price:x[3]})),sent:s.sent,notSent:!s.sent,
+    return {...S,t:{...S.t,...C,editMessage:fa?'بازگشت به فرم':'Return to form'},wDate:s.wDate,setWDate:v=>this.setState({wDate:v}),today:(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})(),
+      services:C.sv.map(x=>({icon:x[0],title:x[1],body:x[2],price:x[3]})),sent:s.sent,notSent:!s.sent,editMessage:()=>{this.setState({sent:false});S.focus('vf-wname');},
       name:s.name,setName:e=>this.setState({name:e.target.value,e1:false}),nameErr:s.e1?C.nameErr:undefined,
       phone:s.phone,setPhone:e=>this.setState({phone:e.target.value,e2:false}),phoneErr:s.e2?C.phoneErr:undefined,
       types:fa?['عقد','عروسی','نامزدی','تولد','مراسم شرکتی']:['Wedding ceremony','Wedding reception','Engagement','Birthday','Corporate event'],
       budgets:fa?['کمتر از ۲۰ میلیون','۲۰ تا ۵۰ میلیون','بیش از ۵۰ میلیون','هنوز نمی‌دانم']:['Under 20M Toman','20–50M Toman','Over 50M Toman','Not sure yet'],
-      send:()=>{const e1=!s.name.trim(),e2=lat(s.phone).replace(/\D/g,'').length<10;if(e1||e2){this.setState({e1,e2});setTimeout(()=>{const el=document.getElementById(e1?'vf-wname':'vf-wphone');el&&el.focus();},0);return;}this.setState({sent:true});}};
+      send:()=>{const e1=!s.name.trim(),e2=!/^09\d{9}$/.test(vfPhone(s.phone));if(e1||e2){this.setState({e1,e2});setTimeout(()=>{const el=document.getElementById(e1?'vf-wname':'vf-wphone');el&&el.focus();},0);return;}this.setState({sent:true});S.focus('vf-weddings-success');}};
   }
 }
 

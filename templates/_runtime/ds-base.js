@@ -8,7 +8,7 @@
   const assetRoot = new URL(base + '/', document.currentScript.src);
   const runtimeRoot = new URL('./', document.currentScript.src);
   // styles.css imports all fonts, tokens, tenant themes and component styles.
-  for (const url of [new URL('styles.css', assetRoot), new URL('tailwind.css', runtimeRoot)]) {
+  for (const url of [new URL('styles.css', assetRoot), new URL('tailwind.css', runtimeRoot), new URL('custom.css', runtimeRoot)]) {
     if (Array.from(document.querySelectorAll('link[rel="stylesheet"]')).some(link => link.href === url.href)) continue;
     const link = document.createElement('link');
     link.rel = 'stylesheet'; link.href = url.href;
