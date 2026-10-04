@@ -14,14 +14,14 @@
 </script>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:1240px] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-[1240px] tw:p-[0_24px] tw:h-[72px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
@@ -40,8 +40,8 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-[60px] tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -78,13 +78,13 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><sc-if value="{{ loading }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Skeleton" shape="card"></x-import><p role="status">{{ migration.loading }}</p></sc-if><sc-if value="{{ missing }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" title="{{ migration.missing }}" heading-level="{{ 1 }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" href="{{ href.journal }}" on-click="{{ go.journal }}">{{ migration.back }}</x-import></sc-if><sc-if value="{{ hasPost }}"><div class="vf-reading tw:max-w-[760px] tw:mx-auto"><article class="vf-post-article tw:max-w-[720px] tw:m-[0_auto] tw:flex tw:flex-col tw:gap-5"><sc-if value="{{ hasBlocks }}"><sc-for list="{{ blocks }}" as="b"><sc-if value="{{ b.paragraph }}"><p>{{ b.value }}</p></sc-if><sc-if value="{{ b.heading }}"><h2>{{ b.value }}</h2></sc-if><sc-if value="{{ b.quote }}"><blockquote>{{ b.value }}</blockquote></sc-if><sc-if value="{{ b.image }}"><figure><img src="{{ b.src }}" alt="{{ b.caption }}" class="tw:w-full tw:rounded-md" loading="lazy"><figcaption class="tw:text-sm tw:text-quiet">{{ b.caption }}</figcaption></figure></sc-if><sc-if value="{{ b.tips }}"><div class="tw:bg-sunken tw:p-5 tw:rounded-md"><ul><sc-for list="{{ b.value }}" as="tip"><li>{{ tip }}</li></sc-for></ul></div></sc-if></sc-for></sc-if><sc-if value="{{ hasClassic }}">
+<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><sc-if value="{{ loading }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Skeleton" shape="card"></x-import><p role="status">{{ migration.loading }}</p></sc-if><sc-if value="{{ missing }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" title="{{ migration.missing }}" heading-level="{{ 1 }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" href="{{ href.journal }}" on-click="{{ go.journal }}">{{ migration.back }}</x-import></sc-if><sc-if value="{{ hasPost }}"><div class="vf-reading tw:max-w-[760px] tw:mx-auto"><article class="vf-post-article tw:max-w-[720px] tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5"><sc-if value="{{ hasBlocks }}"><sc-for list="{{ blocks }}" as="b"><sc-if value="{{ b.paragraph }}"><p>{{ b.value }}</p></sc-if><sc-if value="{{ b.heading }}"><h2>{{ b.value }}</h2></sc-if><sc-if value="{{ b.quote }}"><blockquote>{{ b.value }}</blockquote></sc-if><sc-if value="{{ b.image }}"><figure><img src="{{ b.src }}" alt="{{ b.caption }}" class="tw:w-full tw:rounded-md" loading="lazy"><figcaption class="tw:text-sm tw:text-quiet">{{ b.caption }}</figcaption></figure></sc-if><sc-if value="{{ b.tips }}"><div class="tw:bg-sunken tw:p-5 tw:rounded-md"><ul><sc-for list="{{ b.value }}" as="tip"><li>{{ tip }}</li></sc-for></ul></div></sc-if></sc-for></sc-if><sc-if value="{{ hasClassic }}">
 <a href="{{ href.journal }}" onClick="{{ go.journal }}" class="vf-post-back tw:[display:inline-flex] tw:items-center tw:gap-[6px] tw:text-sm tw:text-quiet! tw:no-underline!"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="arrow-left" size="{{ 16 }}" hint-size="16px,16px"></x-import>{{ t.back }}</a>
 <div class="vf-post-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.meta }}</div><h1>{{ t.title }}</h1>
 <p class="vf-post-intro tw:text-secondary tw:m-0 tw:[font-size:20px] tw:leading-body tw:text-pretty">{{ t.lede }}</p>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" ratio="4/3" shape="soft" placeholder-label="{{ t.ph }}" alt="" hint-size="100%,480px"></x-import>
 <div class="vf-post-copy tw:flex tw:flex-col tw:text-body tw:gap-[18px] tw:[font-size:17px] tw:leading-body"><sc-for list="{{ paras1 }}" as="p" hint-placeholder-count="2"><p class="vf-post-paragraph tw:m-0 tw:text-pretty">{{ p }}</p></sc-for>
-<blockquote class="vf-post-quote tw:m-[12px_0] tw:[padding-inline-start:20px] tw:[border-inline-start:2px_solid_var(--text-accent)] tw:font-display tw:[font-size:26px] tw:[line-height:var(--lh-snug)] tw:text-body">{{ t.quote }}</blockquote>
+<blockquote class="vf-post-quote tw:my-3 tw:mx-0 tw:[padding-inline-start:20px] tw:[border-inline-start:2px_solid_var(--text-accent)] tw:font-display tw:[font-size:26px] tw:[line-height:var(--lh-snug)] tw:text-body">{{ t.quote }}</blockquote>
 <h2 class="vf-post-heading tw:m-0 tw:font-display tw:font-medium tw:[font-size:clamp(28px,3.5cqi,36px)] tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.h2 }}</h2><sc-for list="{{ paras2 }}" as="p" hint-placeholder-count="2"><p class="vf-post-paragraph tw:m-0 tw:text-pretty">{{ p }}</p></sc-for></div>
 </sc-if><div class="vf-post-actions tw:flex tw:gap-3 tw:flex-wrap tw:pt-2 tw:[border-top:1px_solid_var(--border-subtle)]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" icon-start="link" on-click="{{ copy }}" hint-size="130px,36px">{{ copyLabel }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="sm" icon-end="arrow-right" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="170px,36px">{{ t.shopIt }}</x-import></div>
 </article>
@@ -93,7 +93,7 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
 <div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
 <div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
@@ -111,7 +111,7 @@
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
+<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 

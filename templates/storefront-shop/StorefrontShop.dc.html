@@ -14,14 +14,14 @@
 </script>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:1240px] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-[1240px] tw:p-[0_24px] tw:h-[72px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
@@ -40,8 +40,8 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-[60px] tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -83,7 +83,7 @@
 <div class="vf-shop-columns tw:flex tw:flex-wrap tw:gap-[40px] tw:items-start">
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><aside class="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 tw:sticky tw:top-9 tw:[flex:1_1_200px] tw:max-w-[260px]">
 <div class="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">{{ t.cats }}</div>
-<sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="true" class="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-[44px] tw:p-[0_14px] tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:font-medium tw:text-start tw:cursor-pointer"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:[font-size:13px] tw:text-quiet">{{ c.count }}</span></button></sc-if><sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="false" class="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-[44px] tw:p-[0_14px] tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:[font-size:13px] tw:text-quiet">{{ c.count }}</span></button></sc-if></sc-for>
+<sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="true" class="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:p-[0_14px] tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:font-medium tw:text-start tw:cursor-pointer"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:[font-size:13px] tw:text-quiet">{{ c.count }}</span></button></sc-if><sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="false" class="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:p-[0_14px] tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:[font-size:15px] tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:[font-size:13px] tw:text-quiet">{{ c.count }}</span></button></sc-if></sc-for>
 <div class="tw:flex tw:flex-col tw:gap-4 tw:mt-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.RangeSlider" min="{{ 0 }}" max="{{ priceMax }}" step="{{ 100000 }}" value="{{ price }}" on-change="{{ setPrice }}" format-value="{{ formatPrice }}" labels="{{ priceLabels }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ migration.stock }}" checked="{{ inStock }}" on-change="{{ setStock }}"></x-import></div></aside></sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="{{ t.cats }}" class="vf-shop-mobile-categories tw:flex tw:gap-2 tw:w-full tw:overflow-x-auto tw:pb-1 tw:[scrollbar-width:none]"><sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><div class="vf-shop-category-chip tw:flex-none"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" hint-size="110px,36px"><span class="vf-shop-category-label tw:whitespace-nowrap">{{ c.label }} · {{ c.count }}</span></x-import></div></sc-for></div></sc-if>
 <sc-if value="{{ mob }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ openFilters }}" icon-start="sliders-horizontal">{{ migration.filters }}</x-import></sc-if><section class="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
@@ -107,7 +107,7 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
 <div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
 <div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
@@ -125,7 +125,7 @@
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
+<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 

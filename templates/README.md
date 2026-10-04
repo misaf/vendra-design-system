@@ -131,6 +131,7 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 
 - Utilities use the `tw:` prefix, for example `tw:flex tw:flex-col tw:gap-4`.
 - Spacing numbers follow Vendra’s token scale: `tw:gap-5` means `--space-5` (24px), and `tw:gap-7` means `--space-7` (48px). They are not Tailwind’s default spacing numbers.
+- Layout tokens have named utilities — use them instead of arbitrary values: `tw:max-w-page` (`--container-max`), `tw:max-w-measure` (`--measure`, readable line length), `tw:px-gutter` (`--gutter`), `tw:h-header` / `tw:h-header-mobile`, `tw:min-h-tap` / `tw:h-tap` / `tw:w-tap` (`--tap-min`, 44px touch target), `tw:z-header` / `tw:z-tabbar` / `tw:z-overlay` / `tw:z-toast` / `tw:z-tooltip`, `tw:rounded-xs|sm|md|lg|pill|control` and `tw:shadow-sm|md|lg`.
 - Colors, fonts and line heights resolve from the current tenant and language wrapper. For example, `tw:bg-page`, `tw:text-body` and `tw:font-body` use existing semantic tokens.
 - Prefer logical spacing such as `tw:ps-4` / `tw:pe-4` for RTL support. Write complete class names in source; do not construct them from string fragments.
 - Use Tailwind first for layout, spacing, sizing, typography, colors, borders and hover/responsive states. Add missing semantic tokens to the Tailwind theme rather than repeating CSS declarations. Use arbitrary values for exact template measurements and layouts that have no matching token.

@@ -5,5 +5,5 @@
 --ease-out:cubic-bezier(.22,.61,.36,1);/* @kind other */--ease-in-out:cubic-bezier(.65,0,.35,1);/* @kind other */
 --dur-fast:140ms;/* @kind other */--dur-base:240ms;/* @kind other */--dur-slow:480ms;/* @kind other */
 --blur-overlay:6px;/* @kind other */
---z-header:50;/* @kind other */--z-overlay:100;/* @kind other */--z-toast:120;/* @kind other */--z-tooltip:130;/* @kind other */
+--z-header:50;/* @kind other */--z-tabbar:60;/* @kind other */--z-overlay:100;/* @kind other */--z-toast:120;/* @kind other */--z-tooltip:130;/* @kind other */
 }

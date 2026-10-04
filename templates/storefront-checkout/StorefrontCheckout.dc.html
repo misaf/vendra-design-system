@@ -14,14 +14,14 @@
 </script>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:1240px] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-[1240px] tw:p-[0_24px] tw:h-[72px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
@@ -40,8 +40,8 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-[60px] tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -83,7 +83,7 @@
 <div class="vf-checkout-heading tw:mb-6"><h1>{{ t.payA }} <em class="vf-checkout-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.payB }}</em></h1></div>
 <div class="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
-<p class="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-[56ch] tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.payP }}</p>
+<p class="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:[font-size:17px] tw:leading-body tw:text-pretty">{{ t.payP }}</p>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ migration.choose }}" options="{{ methodOptions }}" value="{{ method }}" on-change="{{ setMethod }}" disabled="{{ busy }}"></x-import><p class="tw:text-sm tw:text-quiet">{{ paymentNotice }}</p><sc-if value="{{ codOff }}"><p>{{ migration.codOff }}</p></sc-if><sc-if value="{{ isCard }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.PaymentCard" card-number="{{ payment.cardNumber }}" holder="{{ payment.holder }}" bank="{{ payment.bank }}" amount="{{ totalLabel }}" labels="{{ payLabels }}" hint-size="100%,220px"></x-import><sc-if value="{{ payment.sheba }}"><p class="tw:text-sm">{{ lang === 'fa' ? 'شبا' : 'Sheba' }}: <bdi dir="ltr">{{ payment.sheba }}</bdi></p><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="sm" on-click="{{ copySheba }}">{{ payLabels.copy }}</x-import></sc-if>
 <div class="vf-checkout-receipt-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-last4" label="{{ t.last4 }}" hint="{{ t.last4Hint }}" error="{{ last4Err }}" inputmode="numeric" maxlength="4" dir="ltr" value="{{ last4 }}" on-change="{{ setLast4 }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-ref" value="{{ ref }}" on-change="{{ setRef }}" label="{{ t.ref }}" hint="{{ t.refHint }}" inputmode="numeric" dir="ltr" hint-size="100%,96px"></x-import></div>
 </sc-if><sc-if value="{{ isWa }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" href="{{ waOrder }}" target="_blank" rel="noopener noreferrer">{{ migration.openWa }}</x-import></sc-if><sc-if value="{{ busy }}"><p role="status">{{ migration.processing }}</p></sc-if><sc-if value="{{ failed }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ migration.failed }}" >{{ migration.failureBody }}</x-import><div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ retry }}">{{ migration.retry }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ otherMethod }}">{{ migration.other }}</x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" icon="shield-check" hint-size="100%,60px">{{ t.safe }}</x-import>
@@ -104,7 +104,7 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
 <div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
 <div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
@@ -122,10 +122,10 @@
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
+<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
-<sc-if value="{{ paying }}"><div class="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:p-[12px_16px] tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]"><div class="vf-action-total"><span class="vf-action-caption tw:text-xs tw:text-quiet">{{ t.total }}</span><span class="vf-price">{{ totalLabel }}</span></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-end="arrow-right" on-click="{{ place }}" loading="{{ busy }}" disabled="{{ placeDisabled }}" hint-size="180px,48px">{{ t.place }}</x-import></div></sc-if>
+<sc-if value="{{ paying }}"><div class="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:py-3 tw:px-4 tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]"><div class="vf-action-total"><span class="vf-action-caption tw:text-xs tw:text-quiet">{{ t.total }}</span><span class="vf-price">{{ totalLabel }}</span></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-end="arrow-right" on-click="{{ place }}" loading="{{ busy }}" disabled="{{ placeDisabled }}" hint-size="180px,48px">{{ t.place }}</x-import></div></sc-if>
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">

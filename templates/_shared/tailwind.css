@@ -56,4 +56,24 @@
   --spacing-8: var(--space-8);
   --spacing-9: var(--space-9);
   --spacing-10: var(--space-10);
+  /* Layout tokens — use these instead of arbitrary values. */
+  --spacing-gutter: var(--gutter);
+  --spacing-header: var(--header-h);
+  --spacing-header-mobile: var(--header-h-mobile);
+  --spacing-tap: var(--tap-min);
+  --container-page: var(--container-max);
+  --container-measure: var(--measure);
+  --z-index-header: var(--z-header);
+  --z-index-tabbar: var(--z-tabbar);
+  --z-index-overlay: var(--z-overlay);
+  --z-index-toast: var(--z-toast);
+  --z-index-tooltip: var(--z-tooltip);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+  --radius-control: var(--radius-control);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 }

@@ -14,14 +14,14 @@
 </script>
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
-<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:1240px] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
+<div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-[1240px] tw:p-[0_24px] tw:h-[72px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
@@ -40,8 +40,8 @@
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<header class="vf-shell-header tw:sticky tw:top-0 tw:z-[50] tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-[60px] tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:p-[0_6px] tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
@@ -81,14 +81,14 @@
 <main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ doc.title }}</h1><div class="vf-info-meta tw:text-sm tw:text-quiet">{{ t.updated }}</div></header>
 <div class="vf-info-notice tw:mb-7"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="warning" title="{{ t.sampleT }}" hint-size="100%,80px">{{ t.sampleP }}</x-import></div>
 <div class="vf-info-columns vf-info-columns--policy tw:grid tw:[grid-template-columns:240px_minmax(0,1fr)] tw:gap-7 tw:items-start">
-<nav aria-label="{{ t.toc }}" class="vf-info-toc tw:sticky tw:top-9 tw:flex tw:flex-col tw:gap-[2px]"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.toc }}</div><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><a href="{{ s.href }}" class="vf-policy-toc-link tw:min-h-[44px] tw:flex tw:items-center tw:[font-size:15px] tw:text-body! tw:no-underline! tw:hover:text-accent">{{ s.title }}</a></sc-for></nav>
+<nav aria-label="{{ t.toc }}" class="vf-info-toc tw:sticky tw:top-9 tw:flex tw:flex-col tw:gap-[2px]"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.toc }}</div><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><a href="{{ s.href }}" class="vf-policy-toc-link tw:min-h-tap tw:flex tw:items-center tw:[font-size:15px] tw:text-body! tw:no-underline! tw:hover:text-accent">{{ s.title }}</a></sc-for></nav>
 <div class="vf-info-sections tw:flex tw:flex-col tw:gap-7 tw:min-w-0"><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><section id="{{ s.id }}" class="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"><h2>{{ s.title }}</h2><p class="vf-info-copy tw:m-0 tw:[font-size:17px] tw:leading-body tw:text-secondary tw:text-pretty">{{ s.body }}</p></section></sc-for></div>
 </div></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer class="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-[1240px] tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
+<div class="vf-shell-footer-content tw:mx-auto tw:grid tw:max-w-page tw:p-[56px_24px_40px] tw:[grid-template-columns:repeat(auto-fit,minmax(160px,1fr))] tw:gap-[32px_40px]">
 <div class="vf-shell-footer-brand tw:font-display tw:font-medium tw:[font-size:34px] tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</div>
 <div class="vf-shell-footer-details tw:flex tw:flex-col tw:gap-2 tw:[font-size:15px]">
 <div class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.visit }}</div>
@@ -106,7 +106,7 @@
 </div>
 </footer>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-[60]">
+<div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
 
