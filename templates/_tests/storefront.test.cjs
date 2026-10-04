@@ -32,6 +32,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  if(folder!=='storefront-site')assert.ok(html.includes('<main id="main"'),folder+' must expose the skip-link destination');
  const {ctx:c,history}=context();vm.runInContext(script+'\nthis.Logic=Component;',c);const logic=new c.Logic({lang:'en',tenant:'default',mobile:false});
  const values=logic.renderVals();assert.ok(values);parsed++;
+ if(['storefront-bag','storefront-checkout'].includes(folder)) assert.equal(values.totalLabel, values.sums.at(-1).value, 'Sticky action total must match the order summary');
  if(folder==='storefront-site') {
   logic.navigate('faq');assert.equal(logic.state.route,'faq');assert.ok(history.at(-1)[1].includes('view=faq'));history.length=0;
   logic.navigate('shop');assert.equal(logic.state.route,'shop');assert.deepEqual(history[0],['push','?lang=en&view=shop']);

@@ -79,7 +79,7 @@
 <div style="flex:1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" style="max-width:1240px;padding:56px 24px 0" class="tw:mx-auto tw:flex tw:flex-col tw:gap-6">
+<main id="main" tabindex="-1" class="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-6">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" level="h1" eyebrow="{{ t.eyebrow }}" title="{{ t.titleA }}" accent="{{ t.titleB }}" hint-size="100%,96px"></x-import>
 <div style="gap:40px;align-items:flex-start" class="tw:flex tw:flex-wrap">
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><aside style="position:sticky;top:96px;flex:1 1 200px;max-width:260px" class="tw:flex tw:flex-col tw:gap-1">
@@ -93,7 +93,7 @@
 <div class="tw:flex tw:items-center tw:gap-4"><span style="font-size:14px;color:var(--text-muted)" role="status">{{ countLabel }}</span><div style="width:200px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" aria-label="{{ t.sort }}" value="{{ sort }}" options="{{ sortOptions }}" on-change="{{ setSort }}" hint-size="200px,48px"></x-import></div></div>
 </div>
 <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
-<div style="grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 48px) / 3)),1fr));gap:40px 24px" class="tw:grid">
+<div style="grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 48px) / 3)),1fr));gap:40px 24px" class="vf-product-grid tw:grid">
 <sc-for list="{{ items }}" as="p" hint-placeholder-count="6"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="{{ frame }}" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ href.product }}" on-click="{{ go.product }}" hint-size="100%,400px"></x-import></sc-for>
 </div>
 </sc-if>
@@ -547,7 +547,7 @@ class Component extends VFPage {
     let list=VF_PRODUCTS.filter(inCat).filter(p=>s.chips.every(id=>VF_CHIPS.find(c=>c[0]===id)[3](p)));
     if(s.sort==='low')list=[...list].sort((a,b)=>a.price-b.price);if(s.sort==='high')list=[...list].sort((a,b)=>b.price-a.price);
     return {
-      ...S,frame:this.props.frame??'arch',
+      ...S,frame:this.props.frame??'soft',
       t:{...S.t,...C[L]},
       categories:VF_CATS.map(([id,e,f])=>{const on=s.cat===id;return {label:fa?f:e,count:n(VF_PRODUCTS.filter(p=>id==='all'||p.cat===id).length),on,off:!on,pick:()=>this.setState({cat:id})};}),
       chips:VF_CHIPS.map(([id,e,f])=>{const on=s.chips.includes(id);return {label:fa?f:e,on,toggle:()=>this.setState({chips:on?s.chips.filter(x=>x!==id):[...s.chips,id]})};}),

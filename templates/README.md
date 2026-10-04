@@ -16,6 +16,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Footer | [_shared/footer.html](_shared/footer.html) |
 | Local preview server, automatic generation and reload | [_build/vite.config.mjs](_build/vite.config.mjs) |
 | Tailwind token aliases, source scanning and CSS entry point | [_shared/tailwind.css](_shared/tailwind.css) |
+| Shopping/form/information layout families, card alignment and mobile actions | [_shared/page-layouts.css](_shared/page-layouts.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
 | Shared navigation, menu labels, responsive behavior or focus | [_shared/storefront.js](_shared/storefront.js) |
@@ -120,3 +121,13 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
 
 `node templates/_build/generate.cjs` remains available for shared HTML/logic propagation only; it does not compile Tailwind. Use the full build after CSS or class changes.
+
+## Storefront layout and image rules
+
+`page-layouts.css` defines three page families: shopping (1240px), forms/checkout (1088px), and information (1088px). Use `vf-shopping`, `vf-form` or `vf-info` on the page's main element. The home hero, 420px sign-in form and 760px reading column are named exceptions. Heading sizes, mobile top spacing and Persian typography belong in the shared stylesheet.
+
+Use `vf-product-grid` on product grids. Subgrid shares name, subtitle and price row heights without truncating copy. Prices in cards, search and the bag share a 16px weight and aligned numerals; narrow search rows move the price below the description. Bag line amounts are quantity totals, while their metadata retains the unit price.
+
+Keep one primary action per mobile page. Product, bag and payment actions live above the mobile navigation bar; their desktop buttons remain in the content. Empty states keep their own action. Secondary messaging links use the quieter ghost variant.
+
+All catalog products use the shared neutral 4:5 placeholder. Default product/category cards and small thumbnails use soft frames. Reserve arches for the home/wedding hero and main product image. Review English and Persian independently at 320px, 390px and desktop widths after changing copy or layout.

@@ -79,13 +79,13 @@
 <div style="flex:1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1">
+<main id="main" tabindex="-1" class="vf-shopping vf-shopping--home">
 <section style="max-width:1240px;padding:72px 24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px" class="tw:mx-auto tw:grid tw:items-center">
 <div class="tw:flex tw:flex-col tw:gap-5">
 <div style="font-size:12px;font-weight:500;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-muted)">{{ t.eyebrow }}</div>
-<h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(48px,6cqi,88px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case);text-wrap:balance">{{ t.heroA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.heroB }}</em></h1>
+<h1 class="vf-hero-title">{{ t.heroA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.heroB }}</em></h1>
 <p style="margin:0;max-width:44ch;font-size:18px;line-height:var(--lh-body);text-wrap:pretty" class="tw:text-secondary">{{ t.heroP }}</p>
-<div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="arrow-right" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="180px,52px">{{ t.cta }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="lg" icon-start="message-circle" href="{{ waHref }}" target="_blank" hint-size="160px,52px">{{ t.wa }}</x-import></div>
+<div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="arrow-right" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="180px,52px">{{ t.cta }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="message-circle" href="{{ waHref }}" target="_blank" hint-size="160px,52px">{{ t.wa }}</x-import></div>
 </div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" ratio="4/5" placeholder-label="{{ t.heroPh }}" alt="" hint-size="100%,560px"></x-import>
 </section>
@@ -97,7 +97,7 @@
 </section>
 <section style="max-width:1240px;padding:96px 24px 0" class="tw:mx-auto tw:flex tw:flex-col tw:gap-6">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" eyebrow="{{ t.newEb }}" title="{{ t.newA }}" accent="{{ t.newB }}" hint-size="100%,80px"></x-import>
-<div style="grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));gap:40px 24px" class="tw:grid">
+<div style="grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));gap:40px 24px" class="vf-product-grid tw:grid">
 <sc-for list="{{ products }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="{{ frame }}" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ href.product }}" on-click="{{ go.product }}" hint-size="100%,420px"></x-import></sc-for>
 </div>
 </section>
@@ -138,7 +138,7 @@
 </div>
 <!-- END GENERATED SHELL -->
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;arch&quot;,&quot;soft&quot;],&quot;default&quot;:&quot;arch&quot;,&quot;tsType&quot;:&quot;'arch' | 'soft'&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;arch&quot;,&quot;soft&quot;],&quot;default&quot;:&quot;soft&quot;,&quot;tsType&quot;:&quot;'arch' | 'soft'&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
 // BEGIN GENERATED SHARED LOGIC
 // Source: templates/_shared/delivery.js
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
@@ -539,7 +539,7 @@ class Component extends VFPage {
       fa:{eyebrow:'گل‌فروشی وندرا · کرج',heroA:'گل‌های لطیف،',heroB:'چیده با دست.',heroP:'رز صورتی، لیلیوم و اکالیپتوس، پیچیده در کاغذ و ساتن. هر صبح از گل‌هایی که باغدارها می‌آورند، با دست بسته می‌شود.',cta:'خرید دسته‌گل',wa:'سفارش در واتساپ',heroPh:'عکس اصلی',catEb:'خرید بر اساس مناسبت',catA:'چیزی برای',catB:'هر روز.',newEb:'این هفته',newA:'تازه از',newB:'استودیو.'}};
     const cats=[['Bouquets','دسته‌گل',24],['Flower boxes','باکس گل',12],['Orchids','ارکیده',8],['Bridal','دسته‌گل عروس',10]];
     return {
-      ...S,frame:this.props.frame??'arch',
+      ...S,frame:this.props.frame??'soft',
       t:{...S.t,...C[L]},
       categories:cats.map(([e,f,n])=>({label:fa?f:e,count:fa?VF_FA_DIGITS(n)+' طرح':n+' designs'})),
       products:VF_PRODUCTS.slice(0,4).map(p=>({fav:S.isFav(p.id,[]),toggleFav:S.toggleFav(p.id,[]),images:[vfProductImage(p,L)],name:p[L][0],sub:p[L][1],badge:p[L][2],price:VF_MONEY(p.price,fa)}))

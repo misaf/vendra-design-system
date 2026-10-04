@@ -80,17 +80,17 @@
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
 <style>.vf-product-add .ag-btn{white-space:normal;height:auto;min-height:52px}</style>
-<main id="main" tabindex="-1" style="max-width:1240px;padding:32px 24px 0" class="tw:mx-auto">
+<main id="main" tabindex="-1" class="vf-shopping tw:mx-auto">
 <nav aria-label="{{ t.crumbs }}" style="font-size:14px;color:var(--text-muted);margin-bottom:28px" class="tw:flex tw:gap-2"><a href="{{ href.shop }}" onClick="{{ go.shop }}" style="color:var(--text-muted)">{{ t.shop }}</a><span>·</span><a href="{{ href.shop }}" onClick="{{ go.shop }}" style="color:var(--text-muted)">{{ t.cat }}</a></nav>
 <div style="grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px" class="tw:grid tw:items-start">
 <div class="tw:flex tw:flex-col tw:gap-3">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" ratio="4/5" tone="product" placeholder-label="{{ t.photo }}" alt="{{ productImage.alt }}" hint-size="100%,640px"></x-import>
-<div style="gap:10px" class="tw:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import></div>
+<div style="gap:10px" class="tw:flex"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" style="width:56px" hint-size="56px,70px"></x-import></div>
 </div>
 <div style="position:sticky;top:96px" class="tw:flex tw:flex-col tw:gap-5">
 <div style="gap:10px" class="tw:flex tw:flex-col">
 <div class="tw:flex tw:gap-2 tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="accent" hint-size="60px,24px">{{ t.badge }}</x-import><span style="font-size:13px;color:var(--text-muted)">{{ t.sub }}</span></div>
-<h1 style="margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,4.5cqi,56px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.name }}</h1>
+<h1>{{ t.name }}</h1>
 <div style="font-size:22px;font-weight:500">{{ unitPrice }}</div>
 <p style="margin:0;max-width:52ch;font-size:16px;line-height:var(--lh-body);text-wrap:pretty" class="tw:text-secondary">{{ t.desc }}</p>
 </div>
@@ -100,7 +100,7 @@
 </fieldset>
 <div class="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import>
-<div class="tw:min-w-0 vf-product-add" style="flex:1 1 260px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" hint-size="100%,52px">{{ addLabel }}</x-import></div>
+<sc-if value="{{ desk }}"><div class="tw:min-w-0 vf-product-add" style="flex:1 1 260px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" hint-size="100%,52px">{{ addLabel }}</x-import></div></sc-if>
 </div>
 <div style="gap:10px;font-size:14px;color:var(--text-muted)" class="tw:flex tw:items-center"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="truck" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>{{ t.ship }}</span></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Accordion" items="{{ faq }}" default-open-id="care" hint-size="100%,160px"></x-import>

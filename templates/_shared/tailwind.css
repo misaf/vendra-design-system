@@ -3,6 +3,7 @@
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
 @import "tailwindcss/utilities.css" layer(utilities) prefix(tw) source(none);
 @import "./information-pages.css";
+@import "./page-layouts.css";
 
 /* Scan maintained markup only, never generated runtimes or dependencies. */
 @source "./*.html";

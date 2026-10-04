@@ -79,10 +79,10 @@
 <div style="flex:1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" style="max-width:1240px;padding:48px 24px 0" class="tw:mx-auto">
+<main id="main" tabindex="-1" class="vf-form tw:mx-auto">
 <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
 <div style="margin-bottom:28px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Stepper" label="{{ t.steps }}" steps="{{ steps }}" current="{{ 0 }}" format-number="{{ fmt }}" hint-size="100%,44px"></x-import></div>
-<h1 style="margin:0 0 32px;font-family:var(--font-display);font-weight:500;font-size:clamp(40px,4.5cqi,56px);line-height:var(--lh-tight);letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.titleA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.titleB }}</em></h1>
+<h1>{{ t.titleA }} <em style="font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)">{{ t.titleB }}</em></h1>
 <div style="align-items:flex-start" class="tw:flex tw:flex-wrap tw:gap-7">
 <div style="flex:999 1 480px;gap:40px" class="tw:min-w-0 tw:flex tw:flex-col">
 <div style="border-top:1px solid var(--border-subtle)" class="tw:flex tw:flex-col">
@@ -102,7 +102,7 @@
 </div>
 <aside style="flex:1 1 380px;max-width:440px;position:sticky;top:96px" class="tw:flex tw:flex-col tw:gap-4">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,320px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderSummary" title="{{ t.summary }}" lines="{{ summary }}" sums="{{ sums }}" hint-size="100%,280px"></x-import></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-end="arrow-right" on-click="{{ next }}" hint-size="100%,52px">{{ t.next }}</x-import>
+<sc-if value="{{ desk }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-end="arrow-right" on-click="{{ next }}" hint-size="100%,52px">{{ t.next }}</x-import></sc-if>
 <p style="margin:0;font-size:13px;line-height:1.6;color:var(--text-muted);text-align:center">{{ t.payNote }}</p>
 </aside>
 </div>
@@ -139,7 +139,7 @@
 <div style="position:sticky;bottom:0;z-index:60">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
-
+<sc-if value="{{ hasItems }}"><div class="vf-mobile-action"><div class="vf-action-total"><span class="vf-action-caption">{{ t.total }}</span><span class="vf-price">{{ totalLabel }}</span></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-end="arrow-right" on-click="{{ next }}" hint-size="180px,48px">{{ t.next }}</x-import></div></sc-if>
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
@@ -562,11 +562,12 @@ class Component extends VFPage {
       next:()=>{this.setState({submitted:true});if(Object.values(invalid).some(Boolean)){window.AG_NAV.focusFirstInvalid();return;}if(st)st.setDelivery({...delivery,phone:vfPhone(delivery.phone)});if(this.props.go)this.props.go('checkout');},
       hasItems:live.length>0,noItems:live.length===0,
       steps:[{label:C.s1},{label:C.s2},{label:C.s3}],fmt:fa?(v=>VF_FA_DIGITS(v)):(v=>String(v)),qtyLabels:{dec:C.dec,inc:C.inc},
-      lines:live.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · '+m(l.unit),note:l[L][2],price:m(l.unit*Q(l.id)),qty:Q(l.id),setQty:q=>st?st.setQty(l.id,q):this.setState({qty:{...s.qty,[l.id]:q}}),remove:()=>st?st.remove(l.id):this.setState({removed:[...s.removed,l.id]})})),
+      lines:live.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · '+(fa?'هر عدد: ':'Each: ')+m(l.unit),note:l[L][2],price:m(l.unit*Q(l.id)),qty:Q(l.id),setQty:q=>st?st.setQty(l.id,q):this.setState({qty:{...s.qty,[l.id]:q}}),remove:()=>st?st.remove(l.id):this.setState({removed:[...s.removed,l.id]})})),
       zone:delivery.zone,setZone:e=>update({zone:e.target.value}),zoneHint:vfDeliveryHint(z,fa),
       zones:VF_ZONES.map(zone=>({value:zone.id,label:(fa?zone.fa:zone.en)+' · '+m(zone.fee)})),
       slots:VF_SLOTS.map(([a,b])=>({label:fa?'\u2068'+n(a)+':۰۰\u2069 تا \u2068'+n(b)+':۰۰\u2069':a+':00–'+b+':00',on:delivery.slot===a,pick:()=>update({slot:a})})),
       summary:live.map(l=>({image:vfProductImage(l,L).src,name:l[L][0],meta:l[L][1]+' · × '+n(Q(l.id)),total:m(l.unit*Q(l.id))})),
+      totalLabel:m(sub+fee),
       sums:[{label:C.sub,value:m(sub)},{label:C.fee,value:fee?m(fee):C.free},{label:C.total,value:m(sub+fee),strong:true}],
       restore:e=>{e&&e.preventDefault&&e.preventDefault();if(st){st.reset();return;}this.setState({removed:[],qty:{'ivory-classic':1,orchid:1}});}
     };
