@@ -133,7 +133,10 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Spacing numbers follow Vendra’s token scale: `tw:gap-5` means `--space-5` (24px), and `tw:gap-7` means `--space-7` (48px). They are not Tailwind’s default spacing numbers.
 - Colors, fonts and line heights resolve from the current tenant and language wrapper. For example, `tw:bg-page`, `tw:text-body` and `tw:font-body` use existing semantic tokens.
 - Prefer logical spacing such as `tw:ps-4` / `tw:pe-4` for RTL support. Write complete class names in source; do not construct them from string fragments.
-- Keep repeated page patterns in readable named classes. `custom.css` imports `shell.css`, `information-pages.css`, `page-layouts.css` and page-specific `styles.css` files. These files use plain CSS and `vf-` class names, without `@apply` or Tailwind compilation.
+- Use Tailwind first for layout, spacing, sizing, typography, colors, borders and hover/responsive states. Add missing semantic tokens to the Tailwind theme rather than repeating CSS declarations. Use arbitrary values for exact template measurements and layouts that have no matching token.
+- Keep custom CSS for contextual rules that are clearer as shared selectors: component internals, responsive heading families, Persian typography and keyboard focus. `custom.css` imports these plain CSS exceptions independently, without `@apply`. Page `styles.css` files may contain only a comment when utilities handle the entire page.
+- Existing `vf-` classes also identify page sections for shared contextual rules and DOM hooks. A named class does not require a matching custom CSS rule.
+- Use the `!` suffix only where a utility must override existing unlayered component or document styles, for example `tw:text-body!` on a brand link. Avoid blanket important utilities.
 - Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
 - Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
 
@@ -185,9 +188,11 @@ remain local demonstrations; connect their submit handlers to a backend when ada
 
 ### Keep Tailwind and custom CSS separate
 
-Use `tw:` utilities in markup for standard layout and spacing. Use a descriptive
-`vf-` class for custom presentation, such as `vf-product-breadcrumb` or
-`vf-shop-category`. Put its plain CSS in the appropriate shared source file.
+Use `tw:` utilities in markup as the first choice for storefront presentation.
+For example, a muted label uses `tw:text-sm tw:text-quiet`; a hover background
+uses `tw:hover:bg-sunken`. Reserve plain CSS for rules that need shared contextual
+selectors or component internals, such as `.vf-product-add .ag-btn`. Put those
+exceptions in the appropriate shared or adjacent `styles.css` source file.
 Static inline styles, embedded style tags and `style-hover` attributes have been
 moved out of the storefront markup. Styles generated internally by design-system
 components remain owned by those components.
