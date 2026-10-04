@@ -1,6 +1,6 @@
 # Storefront maintenance
 
-Start here when changing the official storefront. The `ui_kits/storefront/` folder is a separate sandbox.
+Start here when changing the official storefront. All storefront examples live here. See [Migration and feature map](MIGRATION.md) for account, payment, communications, previews and integration examples.
 
 ## Where to edit
 

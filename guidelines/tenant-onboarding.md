@@ -26,7 +26,7 @@ Never ship a tenant with Vendra Florist's logo. Until the real files arrive, the
 - [ ] Regenerate the social images and icons from `assets/brand-export-source.html` with the tenant's logo and colours.
 
 ## 3. Store data (florist · entered in admin)
-The storefront reads all of this as data (`ui_kits/storefront/data.js` stands in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
+The storefront reads all of this as data (`templates/_shared/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
 - [ ] **Store name** in EN and FA. **Contact:** phone, WhatsApp, Instagram, address (EN + FA), map pin, opening hours.
 - [ ] **Currency:** one active currency (Toman, Rial, USD, EUR or AED).
 - [ ] **Delivery:** zones per country, with fee, same-day cut-off, time slots and free-delivery threshold.

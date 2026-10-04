@@ -4,11 +4,11 @@
 
 The reference tenant shipped with the system is **Vendra Florist** (below). Its brand (logo, peony/stem palette, arch motif) is the *default theme*; other tenants keep the same components, layout rules and semantic tokens and swap brand assets + accent tokens.
 
-**Source:** local codebase `Vendra Florist/` (attached folder — an existing design-system export: tokens, 47 React components, foundation cards, a storefront UI kit, fonts, logos, an OpenAPI spec in `uploads/`). All files were imported verbatim; only the window namespace was renamed to `VendraDesignSystem_f4f210`.
+**Source:** local codebase `Vendra Florist/` (attached folder — an existing design-system export: tokens, 47 React components, foundation cards, storefront compositions, fonts, logos, an OpenAPI spec in `uploads/`). All files were imported verbatim; only the window namespace was renamed to `VendraDesignSystem_f4f210`.
 
 ## Multi-tenancy notes
 - **Theme by tokens only.** Components reference semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant theme overrides those in its own CSS scope; never fork component CSS.
-- **Copy & settings come from data.** No component hard-codes copy, currency, phone or address — the kit reads them from `ui_kits/storefront/data.js.txt` (`AG_DATA`), standing in for per-tenant admin data / the API in `uploads/openapi-*.json`.
+- **Copy & settings come from data.** No component hard-codes copy, currency, phone or address — the templates read them from `templates/_shared/store-config.js`, `catalog.js` and `delivery.js`, standing in for per-tenant admin data / the API in `uploads/openapi-*.json`.
 - **Tenant brand assets** replace `assets/logo-*`, `assets/social/*` and `assets/icons/*`; regenerate from `assets/logo-source.html` / `brand-export-source.html`.
 - Admin screens are out of scope (separate framework).
 - **No separate platform brand.** The Vendra Florist look *is* the system; Vendra itself has no logo or marketing identity here.
@@ -22,9 +22,9 @@ A florist restyles its storefront by setting `data-tenant="<slug>"` on `<html>` 
 - **Character** (`tokens/character.css`): `--font-display` (a bundled family or the tenant's own `@font-face`), `--tracking-display`, `--display-case`, `--accent-font-style` / `--accent-font-weight` (the accent word in headings), `--radius-control` (buttons, tags, badges, steppers, pill tabs, language switch), `--button-case` + `--tracking-button`, `--radius-sm/md/lg` (inputs, cards, dialogs) and `--radius-arch` (image frames).
 - **Fixed for everyone:** spacing, type scale, motion, focus ring, semantic status colours, layout, RTL rules.
 - **Contrast:** `--accent` must hit 4.5:1 with white text, `--text-accent` 4.5:1 on `--surface-page`, and `--border-input` 3:1.
-- **Logos:** the tenant supplies its own. Until it does, render the store name in `--font-display`, never the Vendra Florist PNGs (the UI kit does this automatically).
+- **Logos:** the tenant supplies its own. Until it does, render the store name in `--font-display`, never the Vendra Florist PNGs (the templates render this name).
 
-Sample: `tokens/tenants/clay.css` — terracotta accent, sand neutrals, olive inverse; uppercase Jost headings with upright terracotta accent words; 2px squared buttons, tags and inputs; uppercase tracked button labels; square image frames instead of the arch. Persian is unaffected by case and tracking (no case; letter-spacing is forced to 0). Compare it with the default in the *Tenant themes* card (Brand), or turn it on with Tweaks → Tenant theme in `ui_kits/storefront/index.html`.
+Sample: `tokens/tenants/clay.css` — terracotta accent, sand neutrals, olive inverse; uppercase Jost headings with upright terracotta accent words; 2px squared buttons, tags and inputs; uppercase tracked button labels; square image frames instead of the arch. Persian is unaffected by case and tracking (no case; letter-spacing is forced to 0). Compare it with the default in the *Tenant themes* card (Brand), or open `templates/storefront-site/StorefrontSite.dc.html?tenant=clay`.
 
 ---
 
@@ -49,7 +49,7 @@ Sample: `tokens/tenants/clay.css` — terracotta accent, sand neutrals, olive in
 This system covers the **customer-facing storefront** only. Admin tasks (products, orders, currency, delivery rules, hours) are managed in a separate framework, so don't design admin screens here. The storefront reads those settings as data.
 
 ## Delivery rules
-Rules are stored per country (`delivery.IR` in `ui_kits/storefront/data.js.txt`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
+Rules are stored per country (`templates/_shared/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
 **Iran (IR)** — fees in Toman; time slots 08–12, 12–16, 16–20 and 20–22 (the shop is open 08:00–22:00):
 - **Karaj central** (Azimiyeh, Gohardasht, Mehrshahr…): 80,000; same day if ordered before 18:00
 - **Karaj outer** (Fardis, Mohammadshahr, Kamalshahr): 120,000; same day before 16:00
@@ -63,7 +63,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 (fa: دسته‌گل · باکس گل · گل‌آرایی · رز · لاکچری · ارکیده · گیاهان آپارتمانی · ست هدیه · دسته‌گل عروس · ماشین عروس · استند گل · ترحیم)
 
 ## Products
-- **Storefront website** (e-commerce) — `ui_kits/storefront/`. A reference composition; no existing UI was provided to recreate.
+- **Storefront website** (e-commerce) — `templates/`. A reference composition; no existing UI was provided to recreate.
 
 ---
 
@@ -77,7 +77,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Body:** concrete sensory detail over adjectives — stems, paper, twine, growers, morning. *"Hand-tied each morning from what the growers bring in."*
 - **UI labels:** verbs, 1–3 words: `Add to bag`, `Place order`, `Keep browsing`. Bag, not cart.
 - **Empty / error states:** gentle and human: *"Your bag is empty — for now."* · *"Enter a full postcode."* No exclamation marks, no blame.
-- **Numbers:** Persian UI uses Persian digits (۱۲۳) and ٬ separators via `toLocaleString('fa-IR')`; prices in **Toman (تومان) by default**. The store has **one active currency**, which the admin can change (Toman, Rial, USD, EUR, AED in the kit). Always format prices through a single `money()` helper — never hard-code "Toman" in copy. Label position: Persian labels always follow the number (۴٬۲۰۰٬۰۰۰ تومان); in English, symbol currencies go first ($42.00) and word currencies go after (4,200,000 Toman). Phone numbers & emails stay LTR inside RTL (`dir="ltr"` on the field).
+- **Numbers:** Persian UI uses Persian digits (۱۲۳) and ٬ separators via `toLocaleString('fa-IR')`; prices in **Toman (تومان) by default**. The store has **one active currency**, which the admin can change (Toman, Rial, USD, EUR, AED through the shared formatter). Always format prices through a single `money()` helper — never hard-code "Toman" in copy. Label position: Persian labels always follow the number (۴٬۲۰۰٬۰۰۰ تومان); in English, symbol currencies go first ($42.00) and word currencies go after (4,200,000 Toman). Phone numbers & emails stay LTR inside RTL (`dir="ltr"` on the field).
 - **Dates:** Dates in Persian use the Shamsi calendar with Persian digits. Show the other calendar alongside when a customer picks a date. Persian full dates read weekday، day month year («سه‌شنبه، ۷ مهر ۱۴۰۵») — build them with `dates.fullDate()`, never Intl weekday + year in one call.
 - **Time ranges in Persian:** when a time range is written in Persian (۰۸:۰۰ تا ۲۲:۰۰), wrap each time in Unicode FSI/PDI marks (`\u2068 … \u2069`) so the order can't flip.
 - **Emoji:** never. **Brand name:** "Vendra Florist" / «گل‌فروشی وندرا» in full; "Vendra" / «وندرا» alone is fine in running copy. Never "Boho" — that name is retired.
@@ -126,7 +126,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 `components/utils/seo.js` → `window.VendraDesignSystem_f4f210.seo` (also `window.AG_SEO`).
 
 - Scheme: `?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>`. Home omits `view`.
-- Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the UI kit registers weddings, about, policy).
+- Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
 - Every value read from the URL must match `/^[\w:-]{1,40}$/`; numeric ids (`m` by default, see `seo.setNumeric`) must be digits only. Anything else is dropped. An unknown view, or a product/post/moment with no valid id, becomes `notfound`.
 - `routeParams(state)`, `readRoute(search)`, `hrefFor(state, screen, extra)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
@@ -148,7 +148,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Structured data
 
-- `seo.productJsonLd(product, {url, lang, currency})` returns a Schema.org **Product** with name, description, image[], sku, brand, url and an **Offer**. The Offer has price, priceCurrency (the active currency from format.js; Toman isn't ISO 4217, so it's published as **IRR = Toman × 10**), availability (InStock/OutOfStock), itemCondition NewCondition, url and seller. It also gets `shippingDetails` (one OfferShippingDetails per `delivery.IR` zone: fee, region, same-day or 3–5 days) and `hasMerchantReturnPolicy` (from `AG_DATA.admin.returnPolicy` = `{default, byCat:{<category>:…}}`: fresh flowers default to **MerchantReturnNotPermitted** with no days/method/fees, and damaged or wrong orders are replaced under the Returns policy; houseplants and gift sets have a 3-day in-store window — SAMPLE values, confirm with the owner). Items priced "on request" (`price == null` or `onRequest`) output no Offer.
+- `seo.productJsonLd(product, {url, lang, currency})` returns a Schema.org **Product** with name, description, image[], sku, brand, url and an **Offer**. The Offer has price, priceCurrency (the active currency from format.js; Toman isn't ISO 4217, so it's published as **IRR = Toman × 10**), availability (InStock/OutOfStock), itemCondition NewCondition, url and seller. It also gets `shippingDetails` (one OfferShippingDetails per `delivery.IR` zone: fee, region, same-day or 3–5 days) and `hasMerchantReturnPolicy` (from the consuming project’s return-policy configuration = `{default, byCat:{<category>:…}}`: fresh flowers default to **MerchantReturnNotPermitted** with no days/method/fees, and damaged or wrong orders are replaced under the Returns policy; houseplants and gift sets have a 3-day in-store window — SAMPLE values, confirm with the owner). Items priced "on request" (`price == null` or `onRequest`) output no Offer.
 - `seo.storeJsonLd()` returns a **Florist** with name, logo, address (Azimiyeh, Karaj, Alborz, IR), telephone +989129333034, openingHours `Mo-Su 08:00-22:00`, geo (the sample pin; replace it with the real one) and sameAs `https://instagram.com/misaf1990`. It's output on home and contact.
 - `seo.setJsonLd(id, data)` upserts or removes a `<script type="application/ld+json">`.
 - **PCI DSS**: doesn't apply. Payment is card-to-card (customer bank → shop card), so no card data passes through or is stored by the storefront. Only the last 4 digits and the tracking number the customer types are sent, as a transfer reference.
@@ -193,15 +193,12 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Spacing:** spacing, radii, shadows, motion.
 - **Brand:** logo, wordmark, arch, icons, imagery, photo brief, RTL, rules, **Tenant themes** (default vs Clay) and the **Theme builder** (interactive generator with contrast checks and a copyable tenant CSS file).
 
-**UI kit** (`ui_kits/storefront/`) — *sandbox/demo; the templates below are the source of truth*
-- `preview.html` (card): English left, Persian right, desktop + mobile, all live. `preview-clay.html`: the same with the Clay tenant (`index.html?tenant=clay`).
-- `index.html`: bilingual click-through store. Tweaks: tenant theme, currency, payment and API behaviour.
-- `mobile.html`: the same store at 360px.
-- `emails.html`: order and reminder emails in EN/FA, following the tenant theme.
-- `notifications.html`: SMS and WhatsApp messages.
-- Shared helpers live in `components/utils/`: `format.js` (money, numbers), `dates.js` (Shamsi/Gregorian), `seo.js` (routing, `<head>`, JSON-LD), `nav.js`, `responsive.js`. Storefront-only helpers stay in the kit: `email-templates.js`, `notifications.js`, `api.js`, `analytics.js`.
-- Sample data: `data.js.txt` and `*-data.js.txt`.
-- See `ui_kits/storefront/README.md`.
+**Storefront examples**
+- `templates/previews/`: bilingual desktop, mobile and Clay theme previews.
+- `templates/communications/`: standalone email, SMS and WhatsApp examples.
+- `templates/deployment/`: manifest, robots and sitemap publishing samples.
+- Store configuration, local account data and optional API/analytics helpers live in `templates/_shared/`.
+- See [Migration and feature map](templates/MIGRATION.md) for ownership, states and integration boundaries.
 
 **Templates** (`templates/`, for consuming projects) — *source of truth for the storefront*
 - **Shopping:** `storefront-home`, `-shop`, `-product`, `-bag`, `-checkout` (payment and confirmation), `-search`, `-saved`.
@@ -281,7 +278,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - `format.js` → `.format`: `CURRENCIES`, `money()`, `num()`.
 - `dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`.
 - `seo.js` → `.seo`: see *Routing & URLs* and *Structured data*.
-- `ui_kits/storefront/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, `'clay'` or the palette from `AG_EMAIL.themeFromCSS(el)`.
+- `templates/communications/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, `'clay'` or the palette from `AG_EMAIL.themeFromCSS(el)`.
 - The first three hang off `window.VendraDesignSystem_f4f210` (`.format`, `.dates`, `.seo`). Each also has an `AG_*` alias (`AG_FORMAT`, `AG_DATES`, `AG_SEO`).
 
 ### Intentional additions
