@@ -1,0 +1,51 @@
+// Bilingual signin copy. Edit here, then run npm --prefix templates run build.
+// Formatting helpers keep delivery fees and tenant-specific store details current.
+function vfCopy(S) {
+  const fa = S.fa,
+    m = S.m,
+    n = S.n;
+  return {
+    en: {
+      inA: 'Sign',
+      inB: 'in.',
+      inP: 'Enter your mobile number. We’ll text you a five-digit code — no password needed.',
+      phone: 'Mobile number',
+      phoneErr: 'Enter a valid mobile number.',
+      send: 'Send code',
+      terms: 'By continuing you agree to our terms and privacy policy.',
+      codeA: 'Check your',
+      codeB: 'messages.',
+      code: 'Five-digit code',
+      codeHint: 'Any five digits work in this demo.',
+      codeErr: 'Enter all five digits.',
+      verify: 'Sign in',
+      change: 'Change number',
+      okA: 'Welcome back,',
+      okB: 'Shirin.',
+      okP: 'Your orders, addresses and reminders are waiting.',
+      toAccount: 'Go to my account',
+      codeMessage: phone => 'We sent a code to \u2066' + phone + '\u2069.'
+    },
+    fa: {
+      inA: 'ورود',
+      inB: 'به حساب.',
+      inP: 'شماره موبایل خود را وارد کنید. یک کد پنج‌رقمی برایتان پیامک می‌کنیم — رمز لازم نیست.',
+      phone: 'شماره موبایل',
+      phoneErr: 'شماره موبایل معتبر وارد کنید.',
+      send: 'ارسال کد',
+      terms: 'با ادامه، شرایط استفاده و حریم خصوصی را می‌پذیرید.',
+      codeA: 'پیامک‌ها را',
+      codeB: 'ببینید.',
+      code: 'کد پنج‌رقمی',
+      codeHint: 'در این نمونه هر پنج رقمی پذیرفته می‌شود.',
+      codeErr: 'هر پنج رقم را وارد کنید.',
+      verify: 'ورود',
+      change: 'تغییر شماره',
+      okA: 'خوش برگشتید،',
+      okB: 'شیرین.',
+      okP: 'سفارش‌ها، آدرس‌ها و یادآورهای شما آماده‌اند.',
+      toAccount: 'رفتن به حساب',
+      codeMessage: phone => 'کد را به \u2066' + phone + '\u2069 فرستادیم.'
+    }
+  }[S.lang];
+}

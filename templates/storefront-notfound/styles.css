@@ -1,0 +1,13 @@
+/* Custom styles for the notfound page. */
+.vf-page .vf-notfound-message {
+  max-width:600px;
+  gap:20px
+}
+.vf-page .vf-notfound-recommendations {
+  margin-top:80px;
+  gap:28px
+}
+.vf-page .vf-notfound-product-grid {
+  grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));
+  gap:40px 24px
+}

@@ -27,7 +27,12 @@ assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/d
 for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
   const files = fs.readdirSync(path.join(root, folder));
   for (const name of ['support.js', 'ds-base.js', 'tailwind.css', 'custom.css']) assert.ok(!files.includes(name), folder + ' duplicates ' + name);
+  if (folder !== 'storefront-site') {
+    assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
+    assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
+  }
   const html = fs.readFileSync(path.join(root, folder, files.find(name => name.endsWith('.dc.html'))), 'utf8');
+  if (folder !== 'storefront-site') assert.ok(html.includes('// Source: templates/' + folder + '/copy.js'), folder + ' must generate its adjacent copy source');
   assert.ok(!/\bstyle(?:-hover)?=|<style[\s>]/.test(html.split('<x-dc>')[1].split('</x-dc>')[0]), folder + ' must keep custom styles in CSS classes');
   assert.ok(html.includes('src="../_runtime/support.js"'), folder + ' must use the shared runtime');
   assert.ok(html.includes('src="../_runtime/ds-base.js"'), folder + ' must use the shared loader');

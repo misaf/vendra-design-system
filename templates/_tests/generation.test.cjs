@@ -34,7 +34,7 @@ function pageValues(page) {
 }
 
 try {
-  for (const folder of ['_build', '_shared', '_runtime', ...pages.map(page => 'storefront-' + page)]) {
+  for (const folder of ['_build', '_shared', '_runtime', ...fs.readdirSync(path.join(root, 'templates')).filter(folder=>folder.startsWith('storefront-'))]) {
     fs.cpSync(path.join(root, 'templates', folder), path.join(templates, folder), {recursive: true});
   }
   const config = path.join(templates, '_shared/store-config.js');
@@ -49,12 +49,19 @@ try {
     .replace('fee: 80_000', 'fee: 90_000').replace('= 5_000_000', '= 9_000_000'));
   const homeFile = path.join(templates, 'storefront-home/StorefrontHome.dc.html');
   fs.writeFileSync(homeFile, fs.readFileSync(homeFile, 'utf8')
-    .replace('<!-- END PAGE CONTENT -->', '<p>Human-edited content survives generation.</p>\n<!-- END PAGE CONTENT -->')
-    .replace("heroA:'Soft flowers,'", "heroA:'Human title,'"));
+    .replace('<!-- END PAGE CONTENT -->', '<p>Human-edited content survives generation.</p>\n<!-- END PAGE CONTENT -->'));
 
+  const copy = path.join(templates, 'storefront-home/copy.js');
+  fs.writeFileSync(copy, fs.readFileSync(copy, 'utf8').replace("heroA: 'Soft flowers,'", "heroA: 'Human title,'"));
   const build = require(path.join(templates, '_build/generate.cjs'));
   assert.throws(() => build.generate(true), /Generated files are stale/);
   build.generate();
+  const {customCss} = require(path.join(templates, '_build/custom-css.cjs'));
+  const originalCss = customCss(templates);
+  const styles = path.join(templates, 'storefront-home/styles.css');
+  fs.writeFileSync(styles, fs.readFileSync(styles, 'utf8').replace('padding:72px 24px', 'padding:80px 24px'));
+  assert.notEqual(customCss(templates), originalCss, 'Adjacent page CSS edits must change the shared stylesheet');
+  assert.ok(customCss(templates).includes('padding:80px 24px'));
   assert.equal(build.generate(), 0, 'Generation must be repeatable without another diff');
   build.generate(true);
   assert.ok(fs.readFileSync(homeFile, 'utf8').includes('Human-edited content survives generation.'));

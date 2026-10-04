@@ -90,3 +90,11 @@ for (const lang of ['en','fa']) {
  const {logic:wedding}=loadPage('weddings',{lang});wedding.setState({name:'Demo',phone:'1234567890'});wedding.renderVals().send();assert.equal(wedding.state.e2,true);assert.equal(wedding.state.sent,false);wedding.state.phone='۰۹۱۲۰۰۰۰۰۰۰';wedding.renderVals().send();assert.equal(wedding.state.sent,true);
 }
 console.log('Passed missing-order recovery, saved/search recovery, editable success states and mobile validation in both languages.');
+
+// Both locales must expose the same copy keys after edits by translators.
+for (const name of ['account','bag','checkout','contact','faq','home','journal','notfound','policy','post','product','saved','search','shop','signin','track','weddings']) {
+ const {ctx:c}=loadPage(name);
+ const keys=vm.runInContext("['en','fa'].map(lang=>Object.keys(vfCopy({lang,fa:lang==='fa',m:value=>String(value),n:value=>String(value),t:{brand:'Demo',address:'Demo'}})).sort().join(','))",c);
+ assert.equal(keys[0],keys[1],name+' copy must have matching English and Persian keys');
+}
+console.log('Passed English/Persian copy-key parity for all page translation sources.');

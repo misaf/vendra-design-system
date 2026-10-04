@@ -1,0 +1,12 @@
+/* Custom styles for the journal page. */
+.vf-page .vf-journal-header {
+  gap:20px;
+  margin-bottom:40px
+}
+.vf-page .vf-journal-featured {
+  margin-bottom:56px
+}
+.vf-page .vf-journal-article-grid {
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));
+  gap:40px 24px
+}

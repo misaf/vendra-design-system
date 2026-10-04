@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const shared = name => fs.readFileSync(path.join(root, '_shared', name), 'utf8').trimEnd();
-const sharedLogic = ['store-config.js', 'delivery.js', 'catalog.js', 'storefront.js']
+const sharedLogic = ['store-config.js', 'delivery.js', 'catalog.js', 'translations/shell.js', 'translations/categories.js', 'translations/time.js', 'storefront.js']
   .map(name => '// Source: templates/_shared/' + name + '\n' + shared(name)).join('\n\n') + '\n';
 
 function region(source, name, syntax = 'html') {
@@ -42,6 +42,19 @@ function outputs() {
     let html = fs.readFileSync(filename, 'utf8');
     const logic = region(html, 'GENERATED SHARED LOGIC', 'js');
     html = html.slice(0, logic.start) + '// BEGIN GENERATED SHARED LOGIC\n' + sharedLogic + '// END GENERATED SHARED LOGIC' + html.slice(logic.end);
+    const copyFile = folder + '/copy.js';
+    if (folder !== 'storefront-site' && !fs.existsSync(path.join(root, copyFile))) {
+      throw new Error('Missing page copy source: ' + copyFile);
+    }
+    if (fs.existsSync(path.join(root, copyFile))) {
+      const generated = '// BEGIN GENERATED PAGE COPY\n// Source: templates/' + copyFile + '\n' + (['storefront-journal','storefront-post'].includes(folder) ? '// Source: templates/_shared/translations/journal-content.js\n' + shared('translations/journal-content.js') + '\n\n' : '') + fs.readFileSync(path.join(root, copyFile), 'utf8').trimEnd() + '\n// END GENERATED PAGE COPY\n\n';
+      if (html.includes('// BEGIN GENERATED PAGE COPY')) {
+        const copy = region(html, 'GENERATED PAGE COPY', 'js');
+        html = html.slice(0, copy.start) + generated.trimEnd() + html.slice(copy.end);
+      } else {
+        html = html.replace('// PAGE LOGIC —', generated + '// PAGE LOGIC —');
+      }
+    }
     if (folder !== 'storefront-site') {
       html = html.replace(/<x-dc>\n[\s\S]*?\n<\/x-dc>/, () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>');
     }

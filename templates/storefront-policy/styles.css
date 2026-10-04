@@ -1,0 +1,12 @@
+/* Custom styles for the policy page. */
+.vf-page .vf-policy-toc-link {
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  font-size:15px;
+  color:var(--text-body);
+  text-decoration:none
+}
+.vf-page .vf-policy-toc-link:hover {
+  color:var(--text-accent)
+}

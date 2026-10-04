@@ -1,0 +1,12 @@
+/* Custom styles for the saved page. */
+.vf-page .vf-saved-header {
+  margin-bottom:32px
+}
+.vf-page .vf-saved-product-grid {
+  grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));
+  gap:40px 24px
+}
+.vf-page .vf-saved-empty {
+  gap:20px;
+  padding:32px 0
+}

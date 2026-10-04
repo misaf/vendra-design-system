@@ -303,48 +303,8 @@ const VF_PRODUCT_DETAILS = {
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
-const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
-});
-const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
-const VF_ROUTE_EXTRA = {
-  product: {
-    id: 'ivory'
-  },
-  post: {
-    post: 'morning-at-the-studio'
-  }
-};
-// Keep template-only shopping parameters out of the core design-system router.
-function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
-  if (route.view === 'shop') {
-    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
-    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
-  }
-  return route;
-}
-function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
-  if (route.view === 'shop') {
-    if (route.cat === 'all') query.delete('cat');
-    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
-    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
-  }
-  return '?' + query.toString();
-}
-function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
-}
-function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+// Source: templates/_shared/translations/shell.js
+// Shared bilingual navigation labels. Store identity stays in store-config.js.
 const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
@@ -399,6 +359,74 @@ const VF_SHELL = {
     skip: 'رفتن به محتوای اصلی'
   }
 };
+
+// Source: templates/_shared/translations/categories.js
+// Shared category names; product IDs and filter behavior stay in page logic.
+const VF_CATEGORY_COPY = {
+  en: {
+    all: 'All',
+    bouquets: 'Bouquets',
+    boxes: 'Flower boxes',
+    orchids: 'Orchids',
+    bridal: 'Bridal'
+  },
+  fa: {
+    all: 'همه',
+    bouquets: 'دسته‌گل',
+    boxes: 'باکس گل',
+    orchids: 'ارکیده',
+    bridal: 'دسته‌گل عروس'
+  }
+};
+
+// Source: templates/_shared/translations/time.js
+// Shared localized delivery-window text. Parameters are the chosen start/end hours.
+function vfSlotLabel(start, end, fa) {
+  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+}
+
+// Source: templates/_shared/storefront.js
+// Shared navigation, shell labels, responsive behavior and page focus.
+// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
+  lang: fa ? 'fa' : 'en'
+});
+const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTE_EXTRA = {
+  product: {
+    id: 'ivory'
+  },
+  post: {
+    post: 'morning-at-the-studio'
+  }
+};
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -588,28 +616,94 @@ function vfShell(props, page) {
 }
 // END GENERATED SHARED LOGIC
 
-// PAGE LOGIC — edit this page’s copy and behavior below.
-const VF_CATS=[['all','All','همه'],['bouquets','Bouquets','دسته‌گل'],['boxes','Flower boxes','باکس گل'],['orchids','Orchids','ارکیده'],['bridal','Bridal','دسته‌گل عروس']];
-const VF_CHIPS=[['under3','Under 3M','زیر ۳ میلیون',p=>p.price<3000000],['same','Same day','ارسال همان روز',p=>p.same],['roses','Roses','رز',p=>p.roses]];
+// BEGIN GENERATED PAGE COPY
+// Source: templates/storefront-shop/copy.js
+// Bilingual shop copy. Edit here, then run npm --prefix templates run build.
+// Formatting helpers keep delivery fees and tenant-specific store details current.
+function vfCopy(S) {
+  const fa = S.fa,
+    m = S.m,
+    n = S.n;
+  return {
+    en: {
+      eyebrow: 'All flowers',
+      titleA: 'The',
+      titleB: 'shop.',
+      cats: 'Categories',
+      sort: 'Sort by',
+      emptyA: 'Nothing here',
+      emptyB: '— for now.',
+      emptyP: 'Try another category or clear the filters.',
+      clear: 'Clear filters',
+      sortOptions: [{
+        value: 'featured',
+        label: 'Featured'
+      }, {
+        value: 'low',
+        label: 'Price: low to high'
+      }, {
+        value: 'high',
+        label: 'Price: high to low'
+      }],
+      chipLabels: {
+        under3: 'Under 3M',
+        same: 'Same day',
+        roses: 'Roses'
+      },
+      designCount: value => value + (value === 1 ? ' design' : ' designs')
+    },
+    fa: {
+      eyebrow: 'همه گل‌ها',
+      titleA: 'فروشگاه',
+      titleB: 'وندرا.',
+      cats: 'دسته‌بندی‌ها',
+      sort: 'مرتب‌سازی',
+      emptyA: 'چیزی پیدا نشد',
+      emptyB: '— فعلاً.',
+      emptyP: 'دسته‌بندی دیگری را امتحان کنید یا فیلترها را پاک کنید.',
+      clear: 'پاک کردن فیلترها',
+      sortOptions: [{
+        value: 'featured',
+        label: 'پیشنهادی'
+      }, {
+        value: 'low',
+        label: 'قیمت: کم به زیاد'
+      }, {
+        value: 'high',
+        label: 'قیمت: زیاد به کم'
+      }],
+      chipLabels: {
+        under3: 'زیر ۳ میلیون',
+        same: 'ارسال همان روز',
+        roses: 'رز'
+      },
+      designCount: value => n(value) + ' طرح'
+    }
+  }[S.lang];
+}
+// END GENERATED PAGE COPY
+
+// PAGE LOGIC — edit behavior here; copy lives in storefront-shop/copy.js.
+const VF_CATS=['all','bouquets','boxes','orchids','bridal'];
+const VF_CHIPS=[['under3',p=>p.price<3000000],['same',p=>p.same],['roses',p=>p.roses]];
 class Component extends VFPage {
   state={cat:'all',chips:[],sort:'featured',favs:['orchid']};
   renderVals() {
     const fa=this.props.lang==='fa';const L=fa?'fa':'en';const S=vfShell.call(this,this.props,'shop');const n=v=>fa?VF_FA_DIGITS(v):String(v);
-    const C={en:{eyebrow:'All flowers',titleA:'The',titleB:'shop.',cats:'Categories',sort:'Sort by',emptyA:'Nothing here',emptyB:'— for now.',emptyP:'Try another category or clear the filters.',clear:'Clear filters'},
-      fa:{eyebrow:'همه گل‌ها',titleA:'فروشگاه',titleB:'وندرا.',cats:'دسته‌بندی‌ها',sort:'مرتب‌سازی',emptyA:'چیزی پیدا نشد',emptyB:'— فعلاً.',emptyP:'دسته‌بندی دیگری را امتحان کنید یا فیلترها را پاک کنید.',clear:'پاک کردن فیلترها'}};
+    const C=vfCopy(S);
     const route=vfPageRoute(this.props);const s={cat:route.cat||'all',sort:route.sort||'featured',chips:route.filters||[]};
     const change=patch=>{const next={...route,view:'shop',lang:L,cat:s.cat,sort:s.sort,filters:s.chips,...patch};if(this.props.go)this.props.go(next);else location.href=S.href.shop.split('?')[0]+vfRouteParams(next);};
     const inCat=p=>s.cat==='all'||p.cat===s.cat;
-    let list=VF_PRODUCTS.filter(inCat).filter(p=>s.chips.every(id=>VF_CHIPS.find(c=>c[0]===id)[3](p)));
+    let list=VF_PRODUCTS.filter(inCat).filter(p=>s.chips.every(id=>VF_CHIPS.find(c=>c[0]===id)[1](p)));
     if(s.sort==='low')list=[...list].sort((a,b)=>a.price-b.price);if(s.sort==='high')list=[...list].sort((a,b)=>b.price-a.price);
     return {
       ...S,frame:this.props.frame??'soft',
-      t:{...S.t,...C[L]},
-      categories:VF_CATS.map(([id,e,f])=>{const on=s.cat===id;return {label:fa?f:e,count:n(VF_PRODUCTS.filter(p=>id==='all'||p.cat===id).length),on,off:!on,pick:()=>change({cat:id})};}),
-      chips:VF_CHIPS.map(([id,e,f])=>{const on=s.chips.includes(id);return {label:fa?f:e,on,toggle:()=>change({filters:on?s.chips.filter(x=>x!==id):[...s.chips,id]})};}),
+      t:{...S.t,...C},
+      categories:VF_CATS.map(id=>{const on=s.cat===id;return {label:VF_CATEGORY_COPY[L][id],count:n(VF_PRODUCTS.filter(p=>id==='all'||p.cat===id).length),on,off:!on,pick:()=>change({cat:id})};}),
+      chips:VF_CHIPS.map(([id])=>{const on=s.chips.includes(id);return {label:C.chipLabels[id],on,toggle:()=>change({filters:on?s.chips.filter(x=>x!==id):[...s.chips,id]})};}),
       sort:s.sort,setSort:e=>change({sort:e.target.value}),
-      sortOptions:fa?[{value:'featured',label:'پیشنهادی'},{value:'low',label:'قیمت: کم به زیاد'},{value:'high',label:'قیمت: زیاد به کم'}]:[{value:'featured',label:'Featured'},{value:'low',label:'Price: low to high'},{value:'high',label:'Price: high to low'}],
-      countLabel:fa?n(list.length)+' طرح':list.length+(list.length===1?' design':' designs'),
+      sortOptions:C.sortOptions,
+      countLabel:C.designCount(list.length),
       hasItems:list.length>0,noItems:list.length===0,
       clear:()=>change({filters:[],cat:'all',sort:'featured'}),
       items:list.map(p=>{const fav=S.isFav(p.id,['orchid']);return {...S.productLink(p.id),images:[vfProductImage(p,L)],name:p[L][0],sub:p[L][1],badge:p[L][2],price:VF_MONEY(p.price,fa),fav,toggleFav:S.toggleFav(p.id,['orchid'])};})

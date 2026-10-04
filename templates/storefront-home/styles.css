@@ -1,0 +1,41 @@
+/* Custom styles for the home page. */
+.vf-page .vf-home-hero {
+  max-width:1240px;
+  padding:72px 24px;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));
+  gap:56px
+}
+.vf-page .vf-home-eyebrow {
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:var(--tracking-eyebrow);
+  text-transform:uppercase;
+  color:var(--text-muted)
+}
+.vf-page .vf-home-accent {
+  font-style:var(--accent-font-style);
+  font-weight:var(--accent-font-weight);
+  color:var(--text-accent)
+}
+.vf-page .vf-home-intro {
+  margin:0;
+  max-width:44ch;
+  font-size:18px;
+  line-height:var(--lh-body);
+  text-wrap:pretty
+}
+.vf-page .vf-home-categories {
+  max-width:1240px;
+  padding:24px 24px 0
+}
+.vf-page .vf-home-category-grid {
+  grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr))
+}
+.vf-page .vf-home-arrivals {
+  max-width:1240px;
+  padding:96px 24px 0
+}
+.vf-page .vf-home-product-grid {
+  grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100% - 72px) / 4)),1fr));
+  gap:40px 24px
+}

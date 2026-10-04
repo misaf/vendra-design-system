@@ -287,48 +287,8 @@ const VF_PRODUCT_DETAILS = {
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
-const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
-});
-const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
-const VF_ROUTE_EXTRA = {
-  product: {
-    id: 'ivory'
-  },
-  post: {
-    post: 'morning-at-the-studio'
-  }
-};
-// Keep template-only shopping parameters out of the core design-system router.
-function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
-  if (route.view === 'shop') {
-    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
-    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
-  }
-  return route;
-}
-function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
-  if (route.view === 'shop') {
-    if (route.cat === 'all') query.delete('cat');
-    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
-    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
-  }
-  return '?' + query.toString();
-}
-function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
-}
-function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+// Source: templates/_shared/translations/shell.js
+// Shared bilingual navigation labels. Store identity stays in store-config.js.
 const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
@@ -383,6 +343,74 @@ const VF_SHELL = {
     skip: 'رفتن به محتوای اصلی'
   }
 };
+
+// Source: templates/_shared/translations/categories.js
+// Shared category names; product IDs and filter behavior stay in page logic.
+const VF_CATEGORY_COPY = {
+  en: {
+    all: 'All',
+    bouquets: 'Bouquets',
+    boxes: 'Flower boxes',
+    orchids: 'Orchids',
+    bridal: 'Bridal'
+  },
+  fa: {
+    all: 'همه',
+    bouquets: 'دسته‌گل',
+    boxes: 'باکس گل',
+    orchids: 'ارکیده',
+    bridal: 'دسته‌گل عروس'
+  }
+};
+
+// Source: templates/_shared/translations/time.js
+// Shared localized delivery-window text. Parameters are the chosen start/end hours.
+function vfSlotLabel(start, end, fa) {
+  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+}
+
+// Source: templates/_shared/storefront.js
+// Shared navigation, shell labels, responsive behavior and page focus.
+// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
+  lang: fa ? 'fa' : 'en'
+});
+const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTE_EXTRA = {
+  product: {
+    id: 'ivory'
+  },
+  post: {
+    post: 'morning-at-the-studio'
+  }
+};
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -572,31 +600,107 @@ function vfShell(props, page) {
 }
 // END GENERATED SHARED LOGIC
 
-// PAGE LOGIC — edit this page’s copy and behavior below.
+// BEGIN GENERATED PAGE COPY
+// Source: templates/storefront-track/copy.js
+// Bilingual track copy. Edit here, then run npm --prefix templates run build.
+// Formatting helpers keep delivery fees and tenant-specific store details current.
+function vfCopy(S) {
+  const fa = S.fa,
+    m = S.m,
+    n = S.n;
+  return {
+    en: {
+      orderNo: 'Order VN-10522',
+      progress: 'Order progress',
+      doneL: 'done',
+      ask: 'Ask about this order',
+      again: 'Order again',
+      summary: 'Order summary',
+      sub: 'Subtotal',
+      fee: 'Delivery',
+      total: 'Total',
+      steps: ['Order received', 'Payment confirmed', 'Being arranged', 'On its way', 'Delivered'],
+      times: ['09:12', '09:40', '11:05', '15:30', ''],
+      h: {
+        received: ['Order', 'received.', 'We’ve got it. We’ll confirm your payment shortly.'],
+        preparing: ['Being', 'arranged.', 'Your flowers are being hand-tied in the studio now.'],
+        onTheWay: ['On its', 'way.', 'The courier left the studio at 15:30. Delivery between 12:00 and 16:00.'],
+        delivered: ['Delivered,', 'with love.', 'Mina received the flowers at 15:52.'],
+        cancelled: ['Order', 'cancelled.', 'Your refund was sent to the card you paid from. It can take up to three working days.']
+      },
+      rows: [['map-pin', 'Deliver to', 'Mina · 12 Golha St, Azimiyeh · Karaj central'], ['calendar', 'Delivery', 'Fri 9 Oct, 12:00–16:00'], ['user', 'Recipient', 'Mina · 0912 000 0000'], ['quote', 'Card message', '“Happy birthday, Shirin.”'], ['banknote', 'Payment', 'Card to card · •••• 5437']],
+      labels: {
+        order: 'Order ',
+        deliverTo: 'Deliver to',
+        delivery: 'Delivery',
+        recipient: 'Recipient',
+        cardMessage: 'Card message',
+        noMessage: 'No message',
+        payment: 'Payment',
+        cardToCard: 'Card to card',
+        noOrderFound: 'No order found.',
+        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'There is no completed order matching this link in this browser session. Complete a demo checkout to see your order here.',
+        browseTheShop: 'Browse the shop',
+        free: 'Free'
+      }
+    },
+    fa: {
+      orderNo: 'سفارش VN-10522',
+      progress: 'وضعیت سفارش',
+      doneL: 'انجام شد',
+      ask: 'پرسش درباره این سفارش',
+      again: 'سفارش دوباره',
+      summary: 'خلاصه سفارش',
+      sub: 'جمع جزء',
+      fee: 'هزینه ارسال',
+      total: 'جمع کل',
+      steps: ['سفارش ثبت شد', 'پرداخت تأیید شد', 'در حال چیدن', 'در راه', 'تحویل شد'],
+      times: ['۰۹:۱۲', '۰۹:۴۰', '۱۱:۰۵', '۱۵:۳۰', ''],
+      h: {
+        received: ['سفارش', 'ثبت شد.', 'سفارش شما رسید. به‌زودی پرداخت را تأیید می‌کنیم.'],
+        preparing: ['در حال', 'چیدن.', 'گل‌های شما همین حالا در استودیو با دست بسته می‌شوند.'],
+        onTheWay: ['سفارش', 'در راه است.', 'پیک ساعت \u2068۱۵:۳۰\u2069 از استودیو راه افتاد. تحویل بین \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069.'],
+        delivered: ['تحویل شد،', 'با عشق.', 'مینا گل‌ها را ساعت \u2068۱۵:۵۲\u2069 تحویل گرفت.'],
+        cancelled: ['سفارش', 'لغو شد.', 'مبلغ به کارتی که از آن پرداخت کردید برگشت داده شد. ممکن است تا سه روز کاری طول بکشد.']
+      },
+      rows: [['map-pin', 'تحویل به', 'مینا · عظیمیه، خیابان گل‌ها، پلاک ۱۲ · مرکز کرج'], ['calendar', 'زمان ارسال', 'جمعه ۱۷ مهر، \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069'], ['user', 'گیرنده', 'مینا · ۰۹۱۲ ۰۰۰ ۰۰۰۰'], ['quote', 'متن کارت', '«تولدت مبارک، شیرین.»'], ['banknote', 'پرداخت', 'کارت به کارت · •••• ۵۴۳۷']],
+      labels: {
+        order: 'سفارش ',
+        deliverTo: 'تحویل به',
+        delivery: 'زمان ارسال',
+        recipient: 'گیرنده',
+        cardMessage: 'متن کارت',
+        noMessage: 'بدون پیام',
+        payment: 'پرداخت',
+        cardToCard: 'کارت به کارت',
+        noOrderFound: 'سفارشی پیدا نشد.',
+        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'در این مرورگر سفارشی با این شماره ثبت نشده است. پس از پایان خرید، سفارش خود را اینجا ببینید.',
+        browseTheShop: 'رفتن به فروشگاه',
+        free: 'رایگان'
+      }
+    }
+  }[S.lang];
+}
+// END GENERATED PAGE COPY
+
+// PAGE LOGIC — edit behavior here; copy lives in storefront-track/copy.js.
 class Component extends VFPage {
   renderVals(){
     const S=vfShell.call(this,this.props,'track');const fa=S.fa;const L=S.lang;const m=S.m;const order=this.props.store&&(this.props.store.lastOrder||this.props.store.order);const requested=vfPageRoute(this.props).id;const hasOrder=!this.props.store||!!order&&(!requested||requested===order.id);const st=order?order.status||'received':this.props.status??'onTheWay';
-    const C={en:{orderNo:'Order VN-10522',progress:'Order progress',doneL:'done',ask:'Ask about this order',again:'Order again',summary:'Order summary',sub:'Subtotal',fee:'Delivery',total:'Total',
-        steps:['Order received','Payment confirmed','Being arranged','On its way','Delivered'],times:['09:12','09:40','11:05','15:30',''],
-        h:{received:['Order','received.','We’ve got it. We’ll confirm your payment shortly.'],preparing:['Being','arranged.','Your flowers are being hand-tied in the studio now.'],onTheWay:['On its','way.','The courier left the studio at 15:30. Delivery between 12:00 and 16:00.'],delivered:['Delivered,','with love.','Mina received the flowers at 15:52.'],cancelled:['Order','cancelled.','Your refund was sent to the card you paid from. It can take up to three working days.']},
-        rows:[['map-pin','Deliver to','Mina · 12 Golha St, Azimiyeh · Karaj central'],['calendar','Delivery','Fri 9 Oct, 12:00–16:00'],['user','Recipient','Mina · 0912 000 0000'],['quote','Card message','“Happy birthday, Shirin.”'],['banknote','Payment','Card to card · •••• 5437']]},
-      fa:{orderNo:'سفارش VN-10522',progress:'وضعیت سفارش',doneL:'انجام شد',ask:'پرسش درباره این سفارش',again:'سفارش دوباره',summary:'خلاصه سفارش',sub:'جمع جزء',fee:'هزینه ارسال',total:'جمع کل',
-        steps:['سفارش ثبت شد','پرداخت تأیید شد','در حال چیدن','در راه','تحویل شد'],times:['۰۹:۱۲','۰۹:۴۰','۱۱:۰۵','۱۵:۳۰',''],
-        h:{received:['سفارش','ثبت شد.','سفارش شما رسید. به‌زودی پرداخت را تأیید می‌کنیم.'],preparing:['در حال','چیدن.','گل‌های شما همین حالا در استودیو با دست بسته می‌شوند.'],onTheWay:['سفارش','در راه است.','پیک ساعت \u2068۱۵:۳۰\u2069 از استودیو راه افتاد. تحویل بین \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069.'],delivered:['تحویل شد،','با عشق.','مینا گل‌ها را ساعت \u2068۱۵:۵۲\u2069 تحویل گرفت.'],cancelled:['سفارش','لغو شد.','مبلغ به کارتی که از آن پرداخت کردید برگشت داده شد. ممکن است تا سه روز کاری طول بکشد.']},
-        rows:[['map-pin','تحویل به','مینا · عظیمیه، خیابان گل‌ها، پلاک ۱۲ · مرکز کرج'],['calendar','زمان ارسال','جمعه ۱۷ مهر، \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069'],['user','گیرنده','مینا · ۰۹۱۲ ۰۰۰ ۰۰۰۰'],['quote','متن کارت','«تولدت مبارک، شیرین.»'],['banknote','پرداخت','کارت به کارت · •••• ۵۴۳۷']]}}[L];
+    const C=vfCopy(S);
     const sampleLines=order?order.lines:vfSampleBag();const sampleTotals=order?order.totals:vfTotals(sampleLines,{zone:'central'});
     if(order){
       const d=order.delivery;const zone=VF_ZONES.find(z=>z.id===d.zone)||VF_ZONES[0];const end=(VF_SLOTS.find(s=>s[0]===d.slot)||VF_SLOTS[1])[1];
-      C.orderNo=(fa?'سفارش ':'Order ')+'\u2068'+order.id+'\u2069';
-      C.rows=[['map-pin',fa?'تحویل به':'Deliver to',d.address+' · '+zone[L]],['calendar',fa?'زمان ارسال':'Delivery','\u2068'+S.n(d.slot+':00')+'–'+S.n(end+':00')+'\u2069'],['user',fa?'گیرنده':'Recipient',d.name+' · '+(fa?VF_FA_DIGITS(d.phone):d.phone)],['quote',fa?'متن کارت':'Card message',d.card||(fa?'بدون پیام':'No message')],['banknote',fa?'پرداخت':'Payment',(fa?'کارت به کارت':'Card to card')+' · •••• '+S.n(order.last4)]];
+      C.orderNo=(C.labels.order)+'\u2068'+order.id+'\u2069';
+      C.rows=[['map-pin',C.labels.deliverTo,d.address+' · '+zone[L]],['calendar',C.labels.delivery,'\u2068'+S.n(d.slot+':00')+'–'+S.n(end+':00')+'\u2069'],['user',C.labels.recipient,d.name+' · '+(fa?VF_FA_DIGITS(d.phone):d.phone)],['quote',C.labels.cardMessage,d.card||(C.labels.noMessage)],['banknote',C.labels.payment,(C.labels.cardToCard)+' · •••• '+S.n(order.last4)]];
       C.times=['','','','',''];
     }
     const idx={received:0,preparing:2,onTheWay:3,delivered:4,cancelled:1}[st];const h=C.h[st];
-    return {...S,hasOrder,noOrder:!hasOrder,reorder:order?e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();this.props.store.reorder(order);this.props.go('bag');}:S.go.bag,t:{...S.t,...C,missingTitle:fa?'سفارشی پیدا نشد.':'No order found.',missingBody:fa?'در این مرورگر سفارشی با این شماره ثبت نشده است. پس از پایان خرید، سفارش خود را اینجا ببینید.':'There is no completed order matching this link in this browser session. Complete a demo checkout to see your order here.',browse:fa?'رفتن به فروشگاه':'Browse the shop'},titleA:h[0],titleB:h[1],statusP:h[2],current:idx,tlStatus:st==='cancelled'?'cancelled':st==='delivered'?'done':'active',
+    return {...S,hasOrder,noOrder:!hasOrder,reorder:order?e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();this.props.store.reorder(order);this.props.go('bag');}:S.go.bag,t:{...S.t,...C,missingTitle:C.labels.noOrderFound,missingBody:C.labels.thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere,browse:C.labels.browseTheShop},titleA:h[0],titleB:h[1],statusP:h[2],current:idx,tlStatus:st==='cancelled'?'cancelled':st==='delivered'?'done':'active',
       steps:C.steps.map((l,i)=>({label:l,time:i<=idx?C.times[i]||undefined:undefined})),
       rows:C.rows.map(r=>({icon:r[0],label:r[1],value:r[2]})),
       lines:sampleLines.map(line=>({image:vfProductImage(line,L).src,name:line[L][0],meta:line[L][1]+' · × '+S.n(line.qty),note:line[L][2],total:m(line.unit*line.qty)})),
-      sums:[{label:C.sub,value:m(sampleTotals.sub)},{label:C.fee,value:sampleTotals.fee?m(sampleTotals.fee):(fa?'رایگان':'Free')},{label:C.total,value:m(sampleTotals.total),strong:true}]};
+      sums:[{label:C.sub,value:m(sampleTotals.sub)},{label:C.fee,value:sampleTotals.fee?m(sampleTotals.fee):(C.labels.free)},{label:C.total,value:m(sampleTotals.total),strong:true}]};
   }
 }
 

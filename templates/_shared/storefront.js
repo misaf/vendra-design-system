@@ -39,60 +39,6 @@ function vfLinkHandler(go) {
   return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
 }
 function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
-const VF_SHELL = {
-  en: {
-    brand: VF_STORE.brand.en,
-    home: 'Home',
-    shop: 'Shop',
-    weddings: 'Weddings',
-    journal: 'Journal',
-    search: 'Search',
-    account: 'Account',
-    bag: 'Bag',
-    wa: 'WhatsApp',
-    menu: 'Menu',
-    mainNav: 'Main',
-    visit: 'Visit',
-    address: VF_STORE.address.en,
-    hours: VF_STORE.hours.en,
-    contact: 'Contact',
-    photo: 'Bouquet photo',
-    save: 'Save',
-    saved: 'Saved',
-    track: 'Track an order',
-    closeMenu: 'Close menu',
-    waLong: 'Order on WhatsApp',
-    langL: 'Language',
-    faq: 'FAQ',
-    skip: 'Skip to main content'
-  },
-  fa: {
-    brand: VF_STORE.brand.fa,
-    home: 'خانه',
-    shop: 'فروشگاه',
-    weddings: 'عروسی',
-    journal: 'دفترچه',
-    search: 'جستجو',
-    account: 'حساب',
-    bag: 'سبد',
-    wa: 'واتساپ',
-    menu: 'منو',
-    mainNav: 'منوی اصلی',
-    visit: 'آدرس',
-    address: VF_STORE.address.fa,
-    hours: VF_STORE.hours.fa,
-    contact: 'تماس',
-    photo: 'عکس دسته‌گل',
-    save: 'ذخیره',
-    saved: 'ذخیره‌ها',
-    track: 'پیگیری سفارش',
-    closeMenu: 'بستن منو',
-    waLong: 'سفارش در واتساپ',
-    langL: 'زبان',
-    faq: 'پرسش‌های متداول',
-    skip: 'رفتن به محتوای اصلی'
-  }
-};
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {

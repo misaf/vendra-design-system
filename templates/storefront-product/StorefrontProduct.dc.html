@@ -306,48 +306,8 @@ const VF_PRODUCT_DETAILS = {
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
-const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
-});
-const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
-const VF_ROUTE_EXTRA = {
-  product: {
-    id: 'ivory'
-  },
-  post: {
-    post: 'morning-at-the-studio'
-  }
-};
-// Keep template-only shopping parameters out of the core design-system router.
-function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
-  if (route.view === 'shop') {
-    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
-    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
-  }
-  return route;
-}
-function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
-  if (route.view === 'shop') {
-    if (route.cat === 'all') query.delete('cat');
-    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
-    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
-  }
-  return '?' + query.toString();
-}
-function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
-}
-function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+// Source: templates/_shared/translations/shell.js
+// Shared bilingual navigation labels. Store identity stays in store-config.js.
 const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
@@ -402,6 +362,74 @@ const VF_SHELL = {
     skip: 'رفتن به محتوای اصلی'
   }
 };
+
+// Source: templates/_shared/translations/categories.js
+// Shared category names; product IDs and filter behavior stay in page logic.
+const VF_CATEGORY_COPY = {
+  en: {
+    all: 'All',
+    bouquets: 'Bouquets',
+    boxes: 'Flower boxes',
+    orchids: 'Orchids',
+    bridal: 'Bridal'
+  },
+  fa: {
+    all: 'همه',
+    bouquets: 'دسته‌گل',
+    boxes: 'باکس گل',
+    orchids: 'ارکیده',
+    bridal: 'دسته‌گل عروس'
+  }
+};
+
+// Source: templates/_shared/translations/time.js
+// Shared localized delivery-window text. Parameters are the chosen start/end hours.
+function vfSlotLabel(start, end, fa) {
+  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+}
+
+// Source: templates/_shared/storefront.js
+// Shared navigation, shell labels, responsive behavior and page focus.
+// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
+  lang: fa ? 'fa' : 'en'
+});
+const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTE_EXTRA = {
+  product: {
+    id: 'ivory'
+  },
+  post: {
+    post: 'morning-at-the-studio'
+  }
+};
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -591,21 +619,83 @@ function vfShell(props, page) {
 }
 // END GENERATED SHARED LOGIC
 
-// PAGE LOGIC — edit this page’s copy and behavior below.
+// BEGIN GENERATED PAGE COPY
+// Source: templates/storefront-product/copy.js
+// Bilingual product copy. Edit here, then run npm --prefix templates run build.
+// Formatting helpers keep delivery fees and tenant-specific store details current.
+function vfCopy(S) {
+  const fa = S.fa,
+    m = S.m,
+    n = S.n;
+  return {
+    en: {
+      crumbs: 'Breadcrumb',
+      cat: 'Flower boxes',
+      photo: 'Product photo',
+      badge: 'New',
+      sub: 'Roses · lisianthus · satin',
+      name: 'Ivory ribbon box',
+      desc: 'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin. We write every card by hand.',
+      size: 'Size',
+      extras: 'Add a little more',
+      ship: 'Same-day delivery in Karaj if you order by ' + vfDeliveryCutoff(VF_ZONES[0], false) + '.',
+      dec: 'Fewer',
+      inc: 'More',
+      add: 'Add to bag',
+      added: 'Added to bag',
+      care: 'Care',
+      careT: 'Trim the stems at an angle and change the water every two days. Keep away from direct sun and fruit.',
+      del: 'Delivery',
+      delT: 'Karaj central ' + m(VF_ZONES[0].fee) + ', ' + vfDeliveryHint(VF_ZONES[0], false) + '. Tehran ' + m(VF_ZONES[3].fee) + ', ' + vfDeliveryHint(VF_ZONES[3], false) + '.',
+      labels: {
+        vendraFlowers: 'Vendra flowers',
+        chooseYourDeliveryWindowAtCheckout: 'Choose your delivery window at checkout.',
+        base: 'Base'
+      }
+    },
+    fa: {
+      crumbs: 'مسیر صفحه',
+      cat: 'باکس گل',
+      photo: 'عکس محصول',
+      badge: 'جدید',
+      sub: 'رز · لیسیانتوس · ساتن',
+      name: 'باکس روبان عاجی',
+      desc: 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان، بسته با روبان ساتن. همه کارت‌ها را با دست می‌نویسیم.',
+      size: 'اندازه',
+      extras: 'کمی بیشتر',
+      ship: 'ارسال همان روز در کرج برای سفارش تا ساعت ' + vfDeliveryCutoff(VF_ZONES[0], true) + '.',
+      dec: 'کمتر',
+      inc: 'بیشتر',
+      add: 'افزودن به سبد',
+      added: 'به سبد اضافه شد',
+      care: 'نگهداری',
+      careT: 'ساقه‌ها را مورب کوتاه کنید و هر دو روز آب را عوض کنید. دور از آفتاب مستقیم و میوه نگه دارید.',
+      del: 'ارسال',
+      delT: 'مرکز کرج ' + m(VF_ZONES[0].fee) + '، ' + vfDeliveryHint(VF_ZONES[0], true) + '. تهران ' + m(VF_ZONES[3].fee) + '، ' + vfDeliveryHint(VF_ZONES[3], true) + '.',
+      labels: {
+        vendraFlowers: 'گل‌های وندرا',
+        chooseYourDeliveryWindowAtCheckout: 'زمان ارسال هنگام ثبت سفارش انتخاب می‌شود.',
+        base: 'پایه'
+      }
+    }
+  }[S.lang];
+}
+// END GENERATED PAGE COPY
+
+// PAGE LOGIC — edit behavior here; copy lives in storefront-product/copy.js.
 class Component extends VFPage {
   state={size:'classic',addons:[],qty:1,added:false};
   renderVals() {
     const fa=this.props.lang==='fa';const L=fa?'fa':'en';const S=vfShell.call(this,this.props,'product');const s=this.state;const m=v=>VF_MONEY(v,fa);
-    const C={en:{crumbs:'Breadcrumb',cat:'Flower boxes',photo:'Product photo',badge:'New',sub:'Roses · lisianthus · satin',name:'Ivory ribbon box',desc:'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin. We write every card by hand.',size:'Size',extras:'Add a little more',ship:'Same-day delivery in Karaj if you order by '+vfDeliveryCutoff(VF_ZONES[0],false)+'.',dec:'Fewer',inc:'More',add:'Add to bag',added:'Added to bag',care:'Care',careT:'Trim the stems at an angle and change the water every two days. Keep away from direct sun and fruit.',del:'Delivery',delT:'Karaj central '+m(VF_ZONES[0].fee)+', '+vfDeliveryHint(VF_ZONES[0],false)+'. Tehran '+m(VF_ZONES[3].fee)+', '+vfDeliveryHint(VF_ZONES[3],false)+'.'},
-      fa:{crumbs:'مسیر صفحه',cat:'باکس گل',photo:'عکس محصول',badge:'جدید',sub:'رز · لیسیانتوس · ساتن',name:'باکس روبان عاجی',desc:'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان، بسته با روبان ساتن. همه کارت‌ها را با دست می‌نویسیم.',size:'اندازه',extras:'کمی بیشتر',ship:'ارسال همان روز در کرج برای سفارش تا ساعت '+vfDeliveryCutoff(VF_ZONES[0],true)+'.',dec:'کمتر',inc:'بیشتر',add:'افزودن به سبد',added:'به سبد اضافه شد',care:'نگهداری',careT:'ساقه‌ها را مورب کوتاه کنید و هر دو روز آب را عوض کنید. دور از آفتاب مستقیم و میوه نگه دارید.',del:'ارسال',delT:'مرکز کرج '+m(VF_ZONES[0].fee)+'، '+vfDeliveryHint(VF_ZONES[0],true)+'. تهران '+m(VF_ZONES[3].fee)+'، '+vfDeliveryHint(VF_ZONES[3],true)+'.'}}[L];
+    const C=vfCopy(S);
     const id=vfPageRoute(this.props).id||'ivory';const product=vfProduct(id==='ivory-classic'?'ivory':id);const base=product.price;const availableAddons=VF_ADDONS.filter(a=>product.id!=='orchid'||a[0]!=='vase');const hasSizes=product.id==='ivory';
     const sz=VF_SIZES.find(z=>z[0]===s.size);const extra=availableAddons.filter(a=>s.addons.includes(a[0])).reduce((t,a)=>t+a[1],0);
     const unit=base+(hasSizes?sz[1]:0)+extra;const total=unit*s.qty;
     return {
-      ...S,t:{...S.t,...C,name:product[L][0],sub:product[L][1],badge:product[L][2]||(fa?'گل‌های وندرا':'Vendra flowers'),desc:VF_PRODUCT_DETAILS[product.id][fa?1:0],cat:({boxes:['Flower boxes','باکس گل'],bouquets:['Bouquets','دسته‌گل'],orchids:['Orchids','ارکیده'],bridal:['Bridal','دسته‌گل عروس']})[product.cat][fa?1:0],careT:product.id==='orchid'?VF_PRODUCT_DETAILS.orchid[fa?1:0]:C.careT,ship:product.same?C.ship:(fa?'زمان ارسال هنگام ثبت سفارش انتخاب می‌شود.':'Choose your delivery window at checkout.')},
+      ...S,t:{...S.t,...C,name:product[L][0],sub:product[L][1],badge:product[L][2]||(C.labels.vendraFlowers),desc:VF_PRODUCT_DETAILS[product.id][fa?1:0],cat:VF_CATEGORY_COPY[L][product.cat],careT:product.id==='orchid'?VF_PRODUCT_DETAILS.orchid[fa?1:0]:C.careT,ship:product.same?C.ship:(C.labels.chooseYourDeliveryWindowAtCheckout)},
       hasSizes,category:S.shopLink(product.cat),productImage:vfProductImage(product,L),
       unitPrice:m(base+(hasSizes?sz[1]:0)),
-      sizes:VF_SIZES.map(z=>({label:fa?z[3]:z[2],desc:(fa?z[5]:z[4])+' · '+(z[1]?'+'+m(z[1]):(fa?'پایه':'Base')),on:s.size===z[0],pick:()=>this.setState({size:z[0]})})),
+      sizes:VF_SIZES.map(z=>({label:fa?z[3]:z[2],desc:(fa?z[5]:z[4])+' · '+(z[1]?'+'+m(z[1]):(C.labels.base)),on:s.size===z[0],pick:()=>this.setState({size:z[0]})})),
       addons:availableAddons.map(a=>{const on=s.addons.includes(a[0]);return {label:(fa?a[3]:a[2])+' · +'+m(a[1]),on,toggle:()=>this.setState({addons:on?s.addons.filter(x=>x!==a[0]):[...s.addons,a[0]]})};}),
       qty:s.qty,setQty:q=>this.setState({qty:q}),fmt:fa?(n=>VF_FA_DIGITS(n)):(n=>String(n)),qtyLabels:{dec:C.dec,inc:C.inc},
       addLabel:(s.added?C.added:C.add)+' · '+m(total),

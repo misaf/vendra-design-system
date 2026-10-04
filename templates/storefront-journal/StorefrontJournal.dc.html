@@ -281,48 +281,8 @@ const VF_PRODUCT_DETAILS = {
   bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
 
-// Source: templates/_shared/storefront.js
-// Shared navigation, shell labels, responsive behavior and page focus.
-// Page-specific copy and behavior stay in each Storefront*.dc.html file.
-const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en'
-});
-const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
-const VF_ROUTE_EXTRA = {
-  product: {
-    id: 'ivory'
-  },
-  post: {
-    post: 'morning-at-the-studio'
-  }
-};
-// Keep template-only shopping parameters out of the core design-system router.
-function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
-  if (route.view === 'shop') {
-    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
-    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
-  }
-  return route;
-}
-function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
-  if (route.view === 'shop') {
-    if (route.cat === 'all') query.delete('cat');
-    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
-    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
-  }
-  return '?' + query.toString();
-}
-function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
-}
-function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+// Source: templates/_shared/translations/shell.js
+// Shared bilingual navigation labels. Store identity stays in store-config.js.
 const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
@@ -377,6 +337,74 @@ const VF_SHELL = {
     skip: 'رفتن به محتوای اصلی'
   }
 };
+
+// Source: templates/_shared/translations/categories.js
+// Shared category names; product IDs and filter behavior stay in page logic.
+const VF_CATEGORY_COPY = {
+  en: {
+    all: 'All',
+    bouquets: 'Bouquets',
+    boxes: 'Flower boxes',
+    orchids: 'Orchids',
+    bridal: 'Bridal'
+  },
+  fa: {
+    all: 'همه',
+    bouquets: 'دسته‌گل',
+    boxes: 'باکس گل',
+    orchids: 'ارکیده',
+    bridal: 'دسته‌گل عروس'
+  }
+};
+
+// Source: templates/_shared/translations/time.js
+// Shared localized delivery-window text. Parameters are the chosen start/end hours.
+function vfSlotLabel(start, end, fa) {
+  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+}
+
+// Source: templates/_shared/storefront.js
+// Shared navigation, shell labels, responsive behavior and page focus.
+// Page-specific copy and behavior stay in each Storefront*.dc.html file.
+const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
+  lang: fa ? 'fa' : 'en'
+});
+const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTE_EXTRA = {
+  product: {
+    id: 'ivory'
+  },
+  post: {
+    post: 'morning-at-the-studio'
+  }
+};
+// Keep template-only shopping parameters out of the core design-system router.
+function vfReadRoute(search = location.search) {
+  window.AG_SEO.register(...VF_ROUTES);
+  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
+  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'shop') {
+    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+  }
+  return route;
+}
+function vfRouteParams(route) {
+  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  if (route.view === 'shop') {
+    if (route.cat === 'all') query.delete('cat');
+    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+  }
+  return '?' + query.toString();
+}
+function vfLinkHandler(go) {
+  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+}
+function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 class VFPage extends DCLogic {
   componentDidMount() {
@@ -566,18 +594,62 @@ function vfShell(props, page) {
 }
 // END GENERATED SHARED LOGIC
 
-// PAGE LOGIC — edit this page’s copy and behavior below.
-const VF_POSTS=[
-  {id:'autumn',cat:'seasonal',en:['What’s in season this autumn','Chrysanthemums, dahlias and the last garden roses — and how to make them last.','5 min read','28 Sep 2026'],fa:['گل‌های فصل پاییز','داوودی، کوکب و آخرین رزهای باغی — و چطور بیشتر بمانند.','۵ دقیقه مطالعه','۶ مهر ۱۴۰۵']},
-  {id:'care',cat:'care',en:['Five ways to keep a bouquet fresh','Clean vase, angled stems, cool room. The small habits that add days.','3 min read','12 Sep 2026'],fa:['پنج راه برای تازه ماندن دسته‌گل','گلدان تمیز، ساقه مورب، اتاق خنک. عادت‌های کوچکی که روزها اضافه می‌کنند.','۳ دقیقه مطالعه','۲۱ شهریور ۱۴۰۵']},
-  {id:'bridal',cat:'weddings',en:['Choosing your bridal bouquet','Shape, scale and colour — a florist’s guide to the flowers you’ll hold all day.','6 min read','30 Aug 2026'],fa:['انتخاب دسته‌گل عروس','فرم، اندازه و رنگ — راهنمای گل‌فروش برای گلی که تمام روز در دست دارید.','۶ دقیقه مطالعه','۸ شهریور ۱۴۰۵']},
-  {id:'orchids',cat:'care',en:['Orchids that bloom again','Light, water and patience: how to bring a phalaenopsis back into flower.','4 min read','16 Aug 2026'],fa:['ارکیده‌ای که دوباره گل می‌دهد','نور، آب و حوصله: چطور فالانوپسیس دوباره گل بدهد.','۴ دقیقه مطالعه','۲۵ مرداد ۱۴۰۵']}];
-const VF_JCATS=[['all','All','همه'],['seasonal','Seasonal','فصلی'],['care','Flower care','نگهداری'],['weddings','Weddings','عروسی']];
+// BEGIN GENERATED PAGE COPY
+// Source: templates/storefront-journal/copy.js
+// Source: templates/_shared/translations/journal-content.js
+// Shared sample article content for journal and post pages.
+const VF_POSTS = [{
+  id: 'autumn',
+  cat: 'seasonal',
+  en: ['What’s in season this autumn', 'Chrysanthemums, dahlias and the last garden roses — and how to make them last.', '5 min read', '28 Sep 2026'],
+  fa: ['گل‌های فصل پاییز', 'داوودی، کوکب و آخرین رزهای باغی — و چطور بیشتر بمانند.', '۵ دقیقه مطالعه', '۶ مهر ۱۴۰۵']
+}, {
+  id: 'care',
+  cat: 'care',
+  en: ['Five ways to keep a bouquet fresh', 'Clean vase, angled stems, cool room. The small habits that add days.', '3 min read', '12 Sep 2026'],
+  fa: ['پنج راه برای تازه ماندن دسته‌گل', 'گلدان تمیز، ساقه مورب، اتاق خنک. عادت‌های کوچکی که روزها اضافه می‌کنند.', '۳ دقیقه مطالعه', '۲۱ شهریور ۱۴۰۵']
+}, {
+  id: 'bridal',
+  cat: 'weddings',
+  en: ['Choosing your bridal bouquet', 'Shape, scale and colour — a florist’s guide to the flowers you’ll hold all day.', '6 min read', '30 Aug 2026'],
+  fa: ['انتخاب دسته‌گل عروس', 'فرم، اندازه و رنگ — راهنمای گل‌فروش برای گلی که تمام روز در دست دارید.', '۶ دقیقه مطالعه', '۸ شهریور ۱۴۰۵']
+}, {
+  id: 'orchids',
+  cat: 'care',
+  en: ['Orchids that bloom again', 'Light, water and patience: how to bring a phalaenopsis back into flower.', '4 min read', '16 Aug 2026'],
+  fa: ['ارکیده‌ای که دوباره گل می‌دهد', 'نور، آب و حوصله: چطور فالانوپسیس دوباره گل بدهد.', '۴ دقیقه مطالعه', '۲۵ مرداد ۱۴۰۵']
+}];
+const VF_JCATS = [['all', 'All', 'همه'], ['seasonal', 'Seasonal', 'فصلی'], ['care', 'Flower care', 'نگهداری'], ['weddings', 'Weddings', 'عروسی']];
+
+// Bilingual journal copy. Edit here, then run npm --prefix templates run build.
+// Formatting helpers keep delivery fees and tenant-specific store details current.
+function vfCopy(S) {
+  const fa = S.fa,
+    m = S.m,
+    n = S.n;
+  return {
+    en: {
+      eb: 'Notes from the studio',
+      hA: 'The',
+      hB: 'journal.',
+      read: 'Read the story'
+    },
+    fa: {
+      eb: 'یادداشت‌های استودیو',
+      hA: 'دفترچه',
+      hB: 'وندرا.',
+      read: 'خواندن مطلب'
+    }
+  }[S.lang];
+}
+// END GENERATED PAGE COPY
+
+// PAGE LOGIC — edit behavior here; copy lives in storefront-journal/copy.js.
 class Component extends VFPage {
   state={cat:'all'};
   renderVals(){
     const S=vfShell.call(this,this.props,'journal');const fa=S.fa;const L=S.lang;const s=this.state;
-    const C={en:{eb:'Notes from the studio',hA:'The',hB:'journal.',read:'Read the story'},fa:{eb:'یادداشت‌های استودیو',hA:'دفترچه',hB:'وندرا.',read:'خواندن مطلب'}}[L];
+    const C=vfCopy(S);
     const list=VF_POSTS.filter(p=>s.cat==='all'||p.cat===s.cat).map(p=>{const c=VF_JCATS.find(x=>x[0]===p.cat);return {title:p[L][0],excerpt:p[L][1],meta:(fa?c[2]:c[1])+' · '+p[L][3]+' · '+p[L][2]};});
     return {...S,leadLayout:S.mob?'stack':'wide',t:{...S.t,...C},cats:VF_JCATS.map(c=>({label:fa?c[2]:c[1],on:s.cat===c[0],pick:()=>this.setState({cat:c[0]})})),hasLead:list.length>0,lead:list[0]||{},rest:list.slice(1)};
   }

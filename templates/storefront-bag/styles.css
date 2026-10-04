@@ -1,0 +1,55 @@
+/* Custom styles for the bag page. */
+.vf-page .vf-bag-steps {
+  margin-bottom:28px
+}
+.vf-page .vf-bag-accent {
+  font-style:var(--accent-font-style);
+  font-weight:var(--accent-font-weight);
+  color:var(--text-accent)
+}
+.vf-page .vf-bag-columns {
+  align-items:flex-start
+}
+.vf-page .vf-bag-items {
+  flex:999 1 480px;
+  gap:40px
+}
+.vf-page .vf-bag-line-list {
+  border-top:1px solid var(--border-subtle)
+}
+.vf-page .vf-bag-line {
+  border-bottom:1px solid var(--border-subtle);
+  padding:20px 0
+}
+.vf-page .vf-bag-delivery {
+  gap:20px
+}
+.vf-page .vf-bag-delivery-title {
+  margin:0;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:30px;
+  line-height:var(--lh-tight);
+  letter-spacing:var(--tracking-display);
+  text-transform:var(--display-case)
+}
+.vf-page .vf-bag-recipient-grid {
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))
+}
+.vf-page .vf-bag-summary {
+  flex:1 1 380px;
+  max-width:440px;
+  position:sticky;
+  top:96px
+}
+.vf-page .vf-bag-payment-note {
+  margin:0;
+  font-size:13px;
+  line-height:1.6;
+  color:var(--text-muted);
+  text-align:center
+}
+.vf-page .vf-bag-empty {
+  padding:48px 0;
+  gap:20px
+}

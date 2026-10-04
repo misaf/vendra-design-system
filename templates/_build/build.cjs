@@ -16,10 +16,7 @@ try {
   const result = spawnSync(process.execPath, [cli, '-i', '_shared/tailwind.css', '-o', output, '--minify'], {cwd: root, stdio: 'inherit'});
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error('Tailwind compilation failed');
-  const customEntry = fs.readFileSync(path.join(root, '_shared/custom.css'), 'utf8');
-  const custom = customEntry.replace(/@import "\.\/([a-z-]+\.css)";/g, (_, file) =>
-    '\n/* Source: _shared/' + file + ' */\n' + fs.readFileSync(path.join(root, '_shared', file), 'utf8'));
-  if (/@(?:apply|theme|source|import)\b/.test(custom)) throw new Error('Custom CSS must contain plain CSS only.');
+  const custom = require('./custom-css.cjs').customCss(root);
   for (const [file, css] of [['tailwind.css', fs.readFileSync(output, 'utf8')], ['custom.css', custom]]) {
     const target = path.join(root, '_runtime', file);
     const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
