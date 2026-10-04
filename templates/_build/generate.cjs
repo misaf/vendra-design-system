@@ -1,4 +1,4 @@
-// Regenerate shared sections and portable runtime copies without touching page content.
+// Regenerate shared sections without touching page content.
 // Run from anywhere: node /path/to/templates/_build/generate.cjs [--check]
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,8 +22,7 @@ function renderShell(source) {
   if (!metadata) throw new Error('Missing @template metadata');
   const body = region(source, 'PAGE CONTENT').content;
   const sticky = region(source, 'PAGE STICKY CONTENT').content;
-  let layout = shared('layout.html').replace('\n/* INFORMATION_PAGE_STYLES */\n',
-    body.includes('class="vf-info"') ? '\n' + shared('information-pages.css') + '\n' : '');
+  let layout = shared('layout.html');
   for (const [token, file] of [['DESKTOP_HEADER', 'header-desktop.html'], ['MOBILE_HEADER', 'header-mobile.html'], ['MOBILE_MENU', 'mobile-menu.html'], ['FOOTER', 'footer.html']]) {
     layout = layout.replace('<!-- ' + token + ' -->', shared(file));
   }
@@ -47,9 +46,6 @@ function outputs() {
       html = html.replace(/<x-dc>\n[\s\S]*?\n<\/x-dc>/, () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>');
     }
     result.set(filename, html);
-    for (const name of ['support.js', 'ds-base.js']) {
-      result.set(path.join(root, folder, name), fs.readFileSync(path.join(root, '_runtime', name), 'utf8'));
-    }
   }
   return result;
 }
@@ -71,7 +67,7 @@ if (require.main === module) {
   try {
     const check = process.argv.includes('--check');
     const count = generate(check);
-    console.log(check ? 'All generated sections and runtime copies are current.' : 'Updated ' + count + ' generated files; page content preserved.');
+    console.log(check ? 'All generated sections are current.' : 'Updated ' + count + ' generated files; page content preserved.');
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

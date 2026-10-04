@@ -5,9 +5,9 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div style="display:flex;flex-direction:column;gap:16px;margin-top:28px">
+<div style="margin-top:28px" class="tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)">
+<div style="font-size:14px;color:var(--text-muted)" class="tw:flex tw:items-center tw:justify-between tw:gap-3">
 <span>{{ t.langL }}</span>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
 </x-import>

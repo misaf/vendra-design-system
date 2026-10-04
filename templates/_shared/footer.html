@@ -1,17 +1,17 @@
 <footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
-<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="max-width:1240px;padding:56px 24px 40px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px" class="tw:mx-auto tw:grid">
 <div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px">
+<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px">
+<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div>
 <div dir="ltr" style="text-align:start">+98 912 933 3034</div>
 <div dir="ltr" style="text-align:start">@misaf1990</div>
 </div>
-<nav aria-label="{{ t.faq }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;font-size:15px">
+<nav aria-label="{{ t.faq }}" style="align-items:flex-start;font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" style="color:var(--text-on-inverse);text-underline-offset:4px">{{ t.faq }}</a>
 </nav>
 </div>

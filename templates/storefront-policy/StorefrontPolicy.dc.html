@@ -3,94 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+<script src="../_runtime/support.js"></script>
 </head>
 <body>
 <x-dc>
 <!-- @template name="Storefront policy page" description="Long-form policy (EN/FA, mobile): SAMPLE banner, last updated, table of contents, numbered sections" -->
 <!-- BEGIN GENERATED SHELL -->
 <helmet>
-<script src="./ds-base.js">
+<script src="../_runtime/ds-base.js">
 </script>
-<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}
-/* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
-.vf-page .vf-info {
-  max-width:1088px;
-  margin-inline:auto;
-  padding:var(--space-7) var(--space-5) 0;
-}
-.vf-info-header {
-  max-width:680px;
-  display:flex;
-  flex-direction:column;
-  gap:var(--space-4);
-  margin-block-end:var(--space-7);
-}
-.vf-info-eyebrow {
-  font-size:var(--text-xs);
-  font-weight:500;
-  letter-spacing:var(--tracking-eyebrow);
-  text-transform:uppercase;
-  color:var(--text-muted);
-}
-.vf-info h1, .vf-info h2 {
-  margin:0;
-  font-family:var(--font-display);
-  font-weight:500;
-  line-height:var(--lh-tight);
-  letter-spacing:var(--tracking-display);
-  text-transform:var(--display-case);
-  text-wrap:balance;
-}
-.vf-info h1 {font-size:clamp(40px,5cqi,64px)}
-.vf-info h2 {font-size:clamp(28px,3.5cqi,36px)}
-.vf-info-intro, .vf-info-copy {
-  margin:0;
-  font-size:17px;
-  line-height:var(--lh-body);
-  color:var(--text-secondary);
-  text-wrap:pretty;
-}
-.vf-info-meta {font-size:var(--text-sm);color:var(--text-muted)}
-.vf-info-columns {
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 320px;
-  gap:var(--space-7);
-  align-items:start;
-}
-.vf-info-columns--contact {grid-template-columns:repeat(2,minmax(0,1fr))}
-.vf-info-columns--policy {grid-template-columns:240px minmax(0,1fr)}
-.vf-info-sections {display:flex;flex-direction:column;gap:var(--space-7);min-width:0}
-.vf-info-section {display:flex;flex-direction:column;gap:var(--space-4);scroll-margin-top:96px}
-.vf-info-notice {margin-block-end:var(--space-7)}
-.vf-info-toc {position:sticky;top:96px;display:flex;flex-direction:column;gap:2px}
-.vf-info-toc .vf-info-eyebrow {margin-block-end:var(--space-2)}
-@media(max-width:767px) {
-  .vf-page .vf-info {padding-block-start:var(--space-6)}
-  .vf-info-header {margin-block-end:var(--space-6)}
-  .vf-info-columns {grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
-  .vf-info-sections {gap:var(--space-6)}
-  .vf-info-notice {margin-block-end:var(--space-6)}
-  .vf-info-toc {position:static}
-}
-</style>
+<style>body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}</style>
 </helmet>
-<div style="background:var(--surface-muted);min-height:100vh">
-<div class="vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="margin:0 auto;container-type:inline-size;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column">
+<div class="tw:bg-muted tw:min-h-screen">
+<div class="tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}" style="container-type:inline-size">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px">
-<nav style="display:flex;gap:4px;flex-wrap:wrap">
+<div style="max-width:1240px;padding:0 24px;height:72px" class="tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5">
+<nav class="tw:flex tw:gap-1 tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
 <a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:30px;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
-<div style="display:flex;gap:4px">
+<div class="tw:flex tw:gap-1">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
@@ -103,13 +42,13 @@
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
 <header style="position:sticky;top:0;z-index:50;background:var(--surface-header);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
-<div style="height:60px;padding:0 6px;display:grid;grid-template-columns:44px minmax(0,1fr) 88px;align-items:center;gap:4px">
-<div style="display:flex">
+<div style="height:60px;padding:0 6px;grid-template-columns:44px minmax(0,1fr) 88px" class="tw:grid tw:items-center tw:gap-1">
+<div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 </div>
 <a href="{{ href.home }}" onClick="{{ go.home }}" style="font-family:var(--font-display);font-weight:500;font-size:18px;text-align:center;overflow:hidden;text-overflow:ellipsis;letter-spacing:var(--tracking-display);text-transform:var(--display-case);color:var(--text-body);text-decoration:none;white-space:nowrap">{{ t.brand }}</a>
-<div style="display:flex;justify-content:flex-end">
+<div style="justify-content:flex-end" class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
@@ -125,9 +64,9 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
-<div style="display:flex;flex-direction:column;gap:16px;margin-top:28px">
+<div style="margin-top:28px" class="tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--text-muted)">
+<div style="font-size:14px;color:var(--text-muted)" class="tw:flex tw:items-center tw:justify-between tw:gap-3">
 <span>{{ t.langL }}</span>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
 </x-import>
@@ -150,19 +89,19 @@
 <!-- BEGIN GENERATED SHELL -->
 </div>
 <footer style="background:var(--surface-inverse);color:var(--text-on-inverse);margin-top:96px">
-<div style="max-width:1240px;margin:0 auto;padding:56px 24px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px">
+<div style="max-width:1240px;padding:56px 24px 40px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px 40px" class="tw:mx-auto tw:grid">
 <div style="font-family:var(--font-display);font-weight:500;font-size:34px;letter-spacing:var(--tracking-display);text-transform:var(--display-case)">{{ t.brand }}</div>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px">
+<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.visit }}</div>
 <div>{{ t.address }}</div>
 <div>{{ t.hours }}</div>
 </div>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px">
+<div style="font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <div style="font-size:12px;letter-spacing:var(--tracking-eyebrow);text-transform:uppercase;color:var(--text-inverse-muted)">{{ t.contact }}</div>
 <div dir="ltr" style="text-align:start">+98 912 933 3034</div>
 <div dir="ltr" style="text-align:start">@misaf1990</div>
 </div>
-<nav aria-label="{{ t.faq }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;font-size:15px">
+<nav aria-label="{{ t.faq }}" style="align-items:flex-start;font-size:15px" class="tw:flex tw:flex-col tw:gap-2">
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" style="color:var(--text-on-inverse);text-underline-offset:4px">{{ t.faq }}</a>
 </nav>
 </div>
