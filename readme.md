@@ -295,3 +295,5 @@ These came from the source system, which authored a standard set plus:
 The official templates use Tailwind CSS 4.3.3 for layout utilities, mapped to Vendra’s semantic tokens. Shared component CSS and tenant tokens remain the design system’s source of truth. For installation, builds and editing conventions, see [Storefront maintenance](templates/README.md#tailwind-conventions).
 
 For local preview commands and English/Persian URLs, see [Preview the website locally](templates/README.md#preview-the-website-locally).
+
+For development, run `npm --prefix templates run dev` and open `http://127.0.0.1:5173/`. Vite rebuilds the shared templates and Tailwind CSS when source files change.

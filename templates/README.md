@@ -14,6 +14,7 @@ Start here when changing the official storefront. The `ui_kits/storefront/` fold
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
 | Footer | [_shared/footer.html](_shared/footer.html) |
+| Local preview server, automatic generation and reload | [_build/vite.config.mjs](_build/vite.config.mjs) |
 | Tailwind token aliases, source scanning and CSS entry point | [_shared/tailwind.css](_shared/tailwind.css) |
 | FAQ, policy and contact widths, headings and spacing | [_shared/information-pages.css](_shared/information-pages.css) |
 | Shared page layout | [_shared/layout.html](_shared/layout.html) |
@@ -53,36 +54,38 @@ To verify generated files without changing them:
 npm --prefix templates run check
 ```
 
-For the first build, install the locked development dependencies with `npm --prefix templates ci`. Node.js 20 or newer is required. Exported templates use the checked-in compiled CSS and do not need npm in the browser. After generation, preview the affected page in English and Persian at desktop and mobile widths. Review the generated changes together with their source changes. The test command covers storefront logic, generation, shared asset paths and repeated-loader deduplication.
+For the first build, install the locked development dependencies with `npm --prefix templates ci`. Node.js 20.19+ or 22.12+ is required. Exported templates use the checked-in compiled CSS and do not need npm in the browser. After generation, preview the affected page in English and Persian at desktop and mobile widths. Review the generated changes together with their source changes. The test command covers storefront logic, generation, shared asset paths and repeated-loader deduplication.
 
 ## Preview the website locally
 
-Run these commands from the repository root. On a fresh checkout, install the build dependencies once:
+Run these commands from the repository root. On a fresh checkout, install the locked development dependencies once:
 
 ```sh
 npm --prefix templates ci
 ```
 
-After editing Tailwind classes, CSS or shared template sources, rebuild:
+Start Vite:
+
+```sh
+npm --prefix templates run dev
+```
+
+Open [the storefront](http://127.0.0.1:5173/) or [the Persian storefront](http://127.0.0.1:5173/?lang=fa). Vite redirects to the click-through template and preserves the language query.
+
+Vite builds Tailwind and shared template sections before serving the preview. Saving page content, shared HTML/logic or Tailwind source automatically rebuilds and reloads the browser. Asset and token changes also reload the preview. Keep the terminal running; press **Ctrl+C** to stop it. Port 5173 is fixed, so stop another process using that port before starting Vite.
+
+Node.js **20.19+ or 22.12+** is required. Vite 8.3.2 is pinned in the lockfile. The small integration in `_build/vite.config.mjs` supports our dynamic `.dc.html` runtime and preloads the design-system bundle before the preview boots. Tailwind remains compiled through the existing CLI, giving Vite and exported templates the same shared CSS.
+
+For a static export or a preview without Vite, rebuild explicitly:
 
 ```sh
 npm --prefix templates run build
-```
-
-Start a local web server:
-
-```sh
 python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-Open the click-through storefront in your browser:
+Then open [English](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=en) or [Persian](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=fa). Static preview requires Python 3 and manual browser refresh after rebuilding. If its first load displays a design-system loading error, refresh once; Vite's preview preload avoids this startup race.
 
-- [English storefront](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=en)
-- [Persian storefront](http://127.0.0.1:8765/templates/storefront-site/StorefrontSite.dc.html?lang=fa)
-
-Keep the server terminal running while previewing. Refresh the browser after rebuilding. Press **Ctrl+C** in the server terminal to stop it. The preview requires Python 3; Node.js and npm are needed only for installing dependencies and rebuilding.
-
-If the first load displays a design-system loading error, refresh once. The current preview can start before its design-system bundle finishes loading.
+`npm --prefix templates run build` produces the shared export assets and generated templates; this project does not use `vite build` to package the custom template runtime.
 
 ## Shared assets and exporting
 
