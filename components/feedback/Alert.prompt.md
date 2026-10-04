@@ -1,6 +1,6 @@
-Inline, persistent message with a soft tone fill (no side stripe). error/warning announce as role="alert", others as role="status". Message wraps; the action stays on one line.
+Inline, persistent message with a soft tone fill (no side stripe). danger/warning announce as role="alert", others as role="status". Message wraps; the action stays on one line.
 ```jsx
-<Alert tone="error" title="We couldn't load the shop" action={<Button size="sm" variant="secondary">Try again</Button>}>Check your connection.</Alert>
+<Alert tone="danger" title="We couldn't load the shop" action={<Button size="sm" variant="secondary">Try again</Button>}>Check your connection.</Alert>
 ```
 
 ## Usage

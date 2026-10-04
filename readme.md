@@ -188,7 +188,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - `components/{core,forms,navigation,feedback,commerce}/`: React primitives. Each has `.jsx`, `.d.ts` and `.prompt.md`, plus a `@dsCard` card per folder.
 
 **Cards** (`guidelines/*.html`)
-- **Colors:** ink, linen, clay, botanicals, semantic, surfaces, contrast.
+- **Colors:** ink, petal, peony, botanicals, semantic, surfaces, contrast.
 - **Type:** display and body (Latin and Persian), eyebrow, scale.
 - **Spacing:** spacing, radii, shadows, motion.
 - **Brand:** logo, wordmark, arch, icons, imagery, photo brief, RTL, rules, **Tenant themes** (default vs Clay) and the **Theme builder** (interactive generator with contrast checks and a copyable tenant CSS file).
@@ -223,7 +223,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Icon:** Lucide glyph via CSS mask. Inherits `currentColor`; arrows and chevrons mirror in RTL.
 - **Button:** `primary` (accent fill, one per view), `secondary` (ink outline), `soft`, `ghost`. Sizes sm/md/lg; `iconStart`/`iconEnd`; `href` renders `<a>`.
 - **IconButton:** ghost / outline (44px circle) / solid. `active`, `count`, `href`; add `ag-iconbtn--inverse` on dark surfaces.
-- **Badge:** neutral, accent, sage, ochre, plum, danger, solid. Uppercase in EN, never in FA.
+- **Badge:** neutral, accent, success, warning, info, danger, solid (status tones shared with Alert and Toast; `sage`/`ochre`/`plum` are deprecated aliases). Uppercase in EN, never in FA.
 - **Tag:** filter chip; `selected` fills with ink; `onRemove`.
 - **Card:** default (white + hairline), `sunken`, `raised`.
 - **ArchFrame:** image window on `--radius-arch`.
@@ -258,7 +258,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Dialog:** focus trap, Esc closes, returns focus, locks scroll.
 - **Toast:** success, info, warning, danger. Follow-up actions go in `action`.
 - **Tooltip**, **Skeleton**.
-- **Alert:** neutral, warning, error (alias `danger`), success; `action` slot.
+- **Alert:** neutral, warning, danger (deprecated alias `error`), success; `action` slot.
 - **EmptyState:** icon disc, eyebrow, title + `titleAccent`, body, actions.
 - **AnnouncementBar:** dismissible top strip.
 - **LiveRegion:** one polite `role="status"` per page.

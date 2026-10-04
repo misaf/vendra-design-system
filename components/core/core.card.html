@@ -17,7 +17,7 @@ fa:{h:'فارسی',k:{btn:'دکمه',size:'اندازه',link:'پیوند / پر
  af:'قاب قوسی · شکل، نسبت، حلقه، جای‌خالی',a:[['دسته‌گل وحشی','قوسی · ۴:۵ · بزرگ‌نمایی'],['عکس محصول','قوسی · ۳:۴ · جای‌خالی'],['کاشی شبکه','نرم · ۱:۱'],['تصویر اصلی','قوسی + دایره · حلقه']],seasonal:'فصلی',
  af2:'قاب قوسی · پرکننده · محصول · بندانگشتی',eb:'عروسی',tA:'گل‌آرایی',tB:'عروس',tx:'دسته‌گل، آلاچیق و میز. ستون متن ارتفاع را تعیین می‌کند و قاب آن را پر می‌کند.',load:'در حال بارگذاری…',prod:'محصول · ۳:۴',list:['دسته‌گل وحشی','جعبهٔ صورتی','ارکیدهٔ سفید']}};
 const P='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
-function Side({l}){const t=T[l];const [sel,setSel]=React.useState(t.tags[1]);const tones=[undefined,'accent','sage','ochre','plum','danger','solid'];
+function Side({l}){const t=T[l];const [sel,setSel]=React.useState(t.tags[1]);const tones=[undefined,'accent','success','warning','info','danger','solid'];
 return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefined}><div className="lh">{t.h}</div>
 <div className="r"><span className="k">{t.k.btn}</span><Button iconEnd="arrow-right">{t.shop}</Button><Button variant="secondary">{t.det}</Button><Button variant="soft" iconStart="gift">{t.gift}</Button><Button variant="ghost">{t.cancel}</Button></div>
 <div className="r"><span className="k">{t.k.size}</span><Button size="sm">{t.sm}</Button><Button size="md">{t.md}</Button><Button size="lg">{t.lg}</Button><Button disabled>{t.sold}</Button></div>
@@ -30,7 +30,7 @@ return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefin
 <div className="r"><span className="k">{t.k.card}</span>{t.cards.map((c,i)=><Card key={c} variant={[undefined,'sunken','raised'][i]} padding={14} style={{flex:1}}>{c}</Card>)}</div>
 <div className="k" style={{width:'auto',margin:'18px 0 10px'}}>{t.af}</div>
 <div style={{display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:16,alignItems:'end'}}>
-<div><ArchFrame src={P} alt={t.a[0][0]} zoomOnHover><div style={{position:'absolute',bottom:12,insetInlineStart:12}}><Badge tone="sage">{t.seasonal}</Badge></div></ArchFrame><div className="m">{t.a[0][1]}</div></div>
+<div><ArchFrame src={P} alt={t.a[0][0]} zoomOnHover><div style={{position:'absolute',bottom:12,insetInlineStart:12}}><Badge tone="success">{t.seasonal}</Badge></div></ArchFrame><div className="m">{t.a[0][1]}</div></div>
 <div><ArchFrame ratio="3/4" placeholderLabel={t.a[1][0]}/><div className="m">{t.a[1][1]}</div></div>
 <div><ArchFrame shape="soft" ratio="1/1" placeholderLabel={t.a[2][0]}/><div className="m">{t.a[2][1]}</div></div>
 <div><div style={{position:'relative',height:170}}><ArchFrame shape="arch" ring placeholderLabel={t.a[3][0]} style={{position:'absolute',insetInlineStart:0,top:0,width:'70%'}}/><ArchFrame shape="circle" ring src={P} alt="" style={{position:'absolute',insetInlineEnd:0,bottom:0,width:'55%'}}/></div><div className="m">{t.a[3][1]}</div></div>

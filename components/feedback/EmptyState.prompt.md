@@ -4,6 +4,6 @@ Centered empty/error screen (max ~560px): shop failed to load, no search results
 ```
 
 ## Usage
-**Use when:** Empty bag, no orders, no reminders, no search results, and page-level errors (`tone="error"`). Always give one next action.
+**Use when:** Empty bag, no orders, no reminders, no search results, and page-level errors (`tone="danger"`). Always give one next action.
 
 **Don’t use when:** Don’t use for loading (Skeleton) or small inline errors (Alert / field error).

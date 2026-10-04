@@ -1,6 +1,6 @@
 export interface AlertProps {
-  /** danger is an alias of error (e.g. an order failing mid-checkout) */
-  tone?: 'neutral' | 'warning' | 'error' | 'danger' | 'success';
+  /** Matches Badge and Toast. 'error' is a deprecated alias of danger. */
+  tone?: 'neutral' | 'warning' | 'danger' | 'success';
   /** Lucide icon name; defaults per tone. Pass false to hide. */
   icon?: string | false;
   title?: React.ReactNode;

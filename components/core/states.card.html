@@ -20,7 +20,7 @@ const ROWS=[
  ['LineItem','busy · unavailable',(t)=>{const {LineItem}=NS;return <div className="col" style={{display:'flex',width:'100%'}}><LineItem name={t.rose} meta={t.cls} price={t.p1} quantity={1} busy onQuantityChange={()=>{}} onRemove={()=>{}} removeLabel={t.rm} formatQuantity={t.n} quantityLabels={{dec:t.dec,inc:t.inc}}/><LineItem name={t.rose} meta={t.cls} price={t.p1} quantity={1} unavailable unavailableLabel={t.gone} onQuantityChange={()=>{}} onRemove={()=>{}} removeLabel={t.rm}/></div>;},true],
  ['Loading','Skeleton for a product card',()=>{const {Skeleton}=NS;return <div style={{width:'100%'}}><Skeleton shape="card"/></div>;},true],
  ['Empty','EmptyState',(t)=>{const {EmptyState,Button}=NS;return <EmptyState icon="shopping-bag" title={t.empT} body={t.empB} headingLevel={3} actions={<Button size="sm" variant="secondary">{t.shop}</Button>}/>;},true],
- ['Error','Alert',(t)=>{const {Alert,Button}=NS;return <Alert tone="error" title={t.errT} action={<Button size="sm" variant="secondary">{t.retry}</Button>}>{t.errB}</Alert>;},true]];
+ ['Error','Alert',(t)=>{const {Alert,Button}=NS;return <Alert tone="danger" title={t.errT} action={<Button size="sm" variant="secondary">{t.retry}</Button>}>{t.errB}</Alert>;},true]];
 const COLS=[['en','light'],['fa','light']];
 function App(){return <div className="grid"><div></div>{COLS.map(([l,th])=><div key={l+th} className="h">{l.toUpperCase()}</div>)}
  {ROWS.map(([name,sub,r,col])=><React.Fragment key={name}><div className="rl">{name}<small>{sub}</small></div>{COLS.map(([l,th])=><div key={l+th} className={'p'+(col?' col':'')}  {...(l==='fa'?{dir:'rtl',lang:'fa','data-lang':'fa'}:{dir:'ltr',lang:'en'})}>{r(T[l])}</div>)}</React.Fragment>)}</div>;}

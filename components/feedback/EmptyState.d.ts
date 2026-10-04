@@ -1,8 +1,8 @@
 export interface EmptyStateProps {
   /** Lucide icon name, or any node (e.g. a spinner or "404") */
   icon?: string | React.ReactNode;
-  /** Icon disc colour: neutral (sunken), accent (soft gold, success), error */
-  tone?: 'neutral' | 'accent' | 'error';
+  /** Icon disc colour: neutral (sunken), accent (soft peony), danger. 'error' is a deprecated alias of danger. */
+  tone?: 'neutral' | 'accent' | 'danger';
   /** Small label above the title */
   eyebrow?: React.ReactNode;
   title: React.ReactNode;

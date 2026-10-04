@@ -94,7 +94,7 @@ function ArchFrame({
   placeholderLabel,
   ring,
   minHeight,
-  tone = 'linen',
+  tone = 'petal',
   size,
   zoomOnHover,
   objectPosition,
@@ -189,14 +189,21 @@ Object.assign(__ds_scope, { OrderSummary });
 // components/core/Badge.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+// Retired palette names → shared status tones (kept so older markup still renders).
+const BADGE_TONE_ALIASES = {
+  sage: 'success',
+  ochre: 'warning',
+  plum: 'info'
+};
 function Badge({
   tone = 'neutral',
   className = '',
   children,
   ...rest
 }) {
+  const t = BADGE_TONE_ALIASES[tone] || tone;
   return /*#__PURE__*/React.createElement("span", _extends({
-    className: 'ag-badge ag-badge--' + tone + ' ' + className
+    className: 'ag-badge ag-badge--' + t + ' ' + className
   }, rest), children);
 }
 Object.assign(__ds_scope, { Badge });
@@ -978,7 +985,7 @@ try { (() => {
 const ALERT_ICONS = {
   neutral: 'info',
   warning: 'triangle-alert',
-  error: 'circle-alert',
+  danger: 'circle-alert',
   success: 'circle-check'
 };
 function Alert({
@@ -992,8 +999,8 @@ function Alert({
   className = '',
   style
 }) {
-  const t = tone === 'danger' ? 'error' : tone;
-  const role = t === 'error' || t === 'warning' ? 'alert' : 'status';
+  const t = tone === 'error' ? 'danger' : tone;
+  const role = t === 'danger' || t === 'warning' ? 'alert' : 'status';
   return /*#__PURE__*/React.createElement("div", {
     role: role,
     className: 'ag-alert ag-alert--' + t + ' ' + className,
@@ -1198,11 +1205,12 @@ function EmptyState({
   style
 }) {
   const H = 'h' + headingLevel;
+  const t = tone === 'error' ? 'danger' : tone;
   return /*#__PURE__*/React.createElement("div", {
     className: 'ag-empty ' + className,
     style: style
   }, icon && /*#__PURE__*/React.createElement("span", {
-    className: 'ag-empty__icon ag-empty__icon--' + tone
+    className: 'ag-empty__icon ag-empty__icon--' + t
   }, typeof icon === 'string' ? /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: icon,
     size: 28

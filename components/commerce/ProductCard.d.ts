@@ -1,6 +1,7 @@
 export interface ProductCardProps {
   /** product = plain linen backdrop (--linen-100) behind the photo while it loads; default linen */
-  tone?: 'linen' | 'product';
+  /** petal (default) or product (studio backdrop). 'linen' is a deprecated alias of petal. */
+  tone?: 'petal' | 'product';
   name: string;
   subtitle?: string;
   /** Pre-formatted price string (e.g. "$68" or "۱٬۲۰۰٬۰۰۰ تومان") */
@@ -14,7 +15,7 @@ export interface ProductCardProps {
   /** All product photos, first is the cover. The second crossfades in on hover. Overrides image/srcSet. */
   images?: Array<string | { src: string; srcSet?: string; alt?: string; /** object-position for a zoomed detail crop, e.g. "50% 30%" */ crop?: string }>;
   badge?: string;
-  badgeTone?: 'neutral' | 'accent' | 'sage' | 'ochre' | 'plum' | 'danger' | 'solid';
+  badgeTone?: 'neutral' | 'accent' | 'success' | 'warning' | 'info' | 'danger' | 'solid';
   /** arch = signature rounded-top window; soft = 8px corners */
   frame?: 'arch' | 'soft';
   favorite?: boolean;
