@@ -9,6 +9,7 @@
 <x-dc>
 <!-- @template name="Storefront site (click-through)" description="All 16 storefront templates wired together: navigation, mobile menu drawer, shared bag and saved items (EN/FA, tenant, mobile)" -->
 <helmet><script src="./ds-base.js"></script><style>body{margin:0}</style></helmet>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ announcement }}</x-import>
 <sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}"><dc-import name="../storefront-home/StorefrontHome" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 <sc-if value="{{ is.shop }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-shop/StorefrontShop" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 <sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-product/StorefrontProduct" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
@@ -27,26 +28,97 @@
 <sc-if value="{{ is.notfound }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-notfound/StorefrontNotfound" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;shop&quot;,&quot;product&quot;,&quot;bag&quot;,&quot;checkout&quot;,&quot;track&quot;,&quot;signin&quot;,&quot;account&quot;,&quot;weddings&quot;,&quot;contact&quot;,&quot;journal&quot;,&quot;post&quot;,&quot;search&quot;,&quot;saved&quot;,&quot;policy&quot;,&quot;notfound&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
-const VF_BAG0=[
-  {id:'ivory-classic',unit:4900000,qty:1,en:['Ivory ribbon box','Classic · 20 stems','“Happy birthday, Shirin.”'],fa:['باکس روبان عاجی','کلاسیک · ۲۰ شاخه','«تولدت مبارک، شیرین.»']},
-  {id:'orchid',unit:3400000,qty:1,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']}];
-class Component extends DCLogic {
-  state={route:null,lang:null,tenant:null,mobile:null,bag:VF_BAG0,saved:['orchid','crimson','blush']};
-  componentDidMount(){window.__vfSite=this;}
-  componentWillUnmount(){if(window.__vfSite===this)delete window.__vfSite;}
-  renderVals(){
-    const s=this.state;const route=s.route||this.props.start||'home';const is={};["home","shop","product","bag","checkout","track","signin","account","weddings","contact","journal","post","search","saved","policy","notfound"].forEach(r=>{is[r]=r===route;});
-    return {is,lang:s.lang||this.props.lang||'en',tenant:s.tenant||this.props.tenant||'default',setLang:l=>this.setState({lang:l}),
-      store:{bag:s.bag,saved:s.saved,count:s.bag.reduce((a,l)=>a+l.qty,0),
-        add:line=>this.setState(p=>{const ex=p.bag.find(x=>x.id===line.id);return {bag:ex?p.bag.map(x=>x.id===line.id?{...x,qty:x.qty+line.qty}:x):[...p.bag,line]};}),
-        setQty:(id,q)=>this.setState(p=>({bag:p.bag.map(x=>x.id===id?{...x,qty:q}:x)})),
-        remove:id=>this.setState(p=>({bag:p.bag.filter(x=>x.id!==id)})),
-        reset:()=>this.setState({bag:VF_BAG0}),clear:()=>this.setState({bag:[]}),
-        toggleSave:id=>this.setState(p=>({saved:p.saved.includes(id)?p.saved.filter(x=>x!==id):[...p.saved,id]})),
-        setSaved:ids=>this.setState({saved:ids})},mobile:s.mobile!=null?s.mobile:!!this.props.mobile,
-      go:r=>{const known=["home","shop","product","bag","checkout","track","signin","account","weddings","contact","journal","post","search","saved","policy","notfound"];this.setState({route:known.includes(r)?r:(r==='signin'?'signin':'notfound')});window.scrollTo(0,0);}};
-  }
+const VF_FA_DIGITS=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const VF_MONEY=(n,fa)=>window.AG_FORMAT.money(n,{lang:fa?'fa':'en'});
+const VF_ROUTES=['account','bag','checkout','contact','home','journal','notfound','policy','post','product','saved','search','shop','signin','track','weddings'];
+const VF_ROUTE_EXTRA={product:{id:'ivory-classic'},post:{post:'morning-at-the-studio'}};
+const VF_ZONES=[['central',80000,'Karaj central','مرکز کرج','Same day before 18:00','ارسال همان روز تا \u2068۱۸:۰۰\u2069'],['outer',120000,'Karaj outer','حومه کرج','Same day before 16:00','ارسال همان روز تا \u2068۱۶:۰۰\u2069'],['alborz',180000,'Alborz province','استان البرز','Same day before 14:00','ارسال همان روز تا \u2068۱۴:۰۰\u2069'],['tehran',250000,'Tehran','تهران','Same day before 12:00','ارسال همان روز تا \u2068۱۲:۰۰\u2069']];
+const VF_DELIVERY={name:'',phone:'',address:'',card:'',zone:'central',slot:'12'};
+const vfPhone=s=>String(s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\s()-]/g,'');
+const vfErrors=d=>({name:!String(d.name||'').trim(),phone:!/^09\d{9}$/.test(vfPhone(d.phone)),address:String(d.address||'').trim().length<6});
+function vfTotals(lines,delivery){const sub=lines.reduce((a,l)=>a+l.unit*l.qty,0);const z=VF_ZONES.find(x=>x[0]===delivery.zone)||VF_ZONES[0];const fee=sub>=5000000&&['central','outer'].includes(z[0])?0:z[1];return {sub,fee,total:sub+fee};}
+const VF_SHELL={
+ en:{brand:'Vendra Florist',home:'Home',shop:'Shop',weddings:'Weddings',journal:'Journal',search:'Search',account:'Account',bag:'Bag',wa:'WhatsApp',menu:'Menu',mainNav:'Main',visit:'Visit',address:'Azimiyeh, Karaj',hours:'Daily 08:00–22:00',contact:'Contact',photo:'Bouquet photo',save:'Save',saved:'Saved',track:'Track an order',closeMenu:'Close menu',waLong:'Order on WhatsApp',langL:'Language',skip:'Skip to main content'},
+ fa:{brand:'گل‌فروشی وندرا',home:'خانه',shop:'فروشگاه',weddings:'عروسی',journal:'دفترچه',search:'جستجو',account:'حساب',bag:'سبد',wa:'واتساپ',menu:'منو',mainNav:'منوی اصلی',visit:'آدرس',address:'کرج، عظیمیه',hours:'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069',contact:'تماس',photo:'عکس دسته‌گل',save:'ذخیره',saved:'ذخیره‌ها',track:'پیگیری سفارش',closeMenu:'بستن منو',waLong:'سفارش در واتساپ',langL:'زبان',skip:'رفتن به محتوای اصلی'}};
+// Shared lifecycle for standalone templates and pages inside the click-through site.
+class VFPage extends DCLogic {
+ componentDidMount(){
+  this._vfMedia=window.matchMedia('(max-width:767px)');this._vfResize=()=>this.setState({vfMobile:this._vfMedia.matches});
+  this._vfMedia.addEventListener('change',this._vfResize);this._vfResize();this._vfAnnounce();
+ }
+ componentDidUpdate(){this._vfAnnounce();}
+ componentWillUnmount(){this._vfMedia&&this._vfMedia.removeEventListener('change',this._vfResize);clearTimeout(this._vfTimer);}
+ _vfAnnounce(){clearTimeout(this._vfTimer);this._vfTimer=setTimeout(()=>{
+  const h=document.querySelector('main h1');if(!h)return;const title=h.innerText.replace(/\s+/g,' ').trim();
+  if(title===this._vfTitle)return;this._vfTitle=title;window.AG_NAV.focusHeading();
+  if(this.props.store&&this.props.store.announce)this.props.store.announce(title);else this.setState({vfAnnouncement:title});
+  const lang=this.props.lang==='fa'?'fa':'en';document.documentElement.lang=lang;document.documentElement.dir=lang==='fa'?'rtl':'ltr';document.documentElement.dataset.lang=lang;
+  const url=location.href;window.AG_SEO.syncHead({title:title+' · '+VF_SHELL[lang].brand,description:title,url,locale:lang,noindex:window.AG_SEO.isNoindex(this._vfPage)||this._vfPage==='signin',alternates:{en:(this.props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:'en'},this._vfPage,VF_ROUTE_EXTRA[this._vfPage]),fa:(this.props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:'fa'},this._vfPage,VF_ROUTE_EXTRA[this._vfPage])}});
+ },40);}
 }
+function vfShell(props,page){
+ const self=this,st=self.state||{},store=props.store;self._vfPage=page;
+ window.AG_SEO.register(...VF_ROUTES);
+ const fa=props.lang==='fa',L=fa?'fa':'en',T=VF_SHELL[L];const mob=!!props.mobile||(st.vfMobile===undefined?window.innerWidth<768:st.vfMobile);
+ const tab=page==='home'?'home':['bag','checkout'].includes(page)?'bag':['shop','product','saved','search'].includes(page)?'shop':'';
+ const href={},go={};VF_ROUTES.forEach(r=>{
+  href[r]=(props.go?'':'../storefront-site/StorefrontSite.dc.html')+window.AG_SEO.hrefFor({lang:L},r,VF_ROUTE_EXTRA[r]);
+  go[r]=props.go?window.AG_SEO.linkHandler(route=>props.go(route)):undefined;
+ });
+ const close=()=>self.setState({vfMenu:false});
+ const cur={home:page==='home',shop:['shop','product'].includes(page),weddings:page==='weddings',journal:['journal','post'].includes(page),saved:page==='saved',contact:page==='contact',account:['account','signin'].includes(page),track:page==='track'};
+ const menuItems=['home','shop','weddings','journal','saved','contact','account','track'].map(r=>({label:T[r],current:cur[r],href:href[r],go:props.go?window.AG_SEO.linkHandler(route=>{close();props.go(route);}):undefined}));
+ const count=store?store.count:2,favList=store?store.saved:st.vfFavs;
+ return {go,href,lang:L,fa,dir:fa?'rtl':'ltr',tenant:props.tenant??'default',mob,desk:!mob,previewMobile:!!props.mobile,frameW:mob?'390px':'none',
+ nav:{shop:cur.shop,weddings:cur.weddings,journal:cur.journal},bagCount:count?(fa?VF_FA_DIGITS(count):count):undefined,
+ skipGo:e=>{e.preventDefault();window.AG_NAV.focusHeading();},standalone:!props.store,vfAnnouncement:st.vfAnnouncement||'',menuOpen:!!st.vfMenu,openMenu:()=>self.setState({vfMenu:true}),closeMenu:close,menuItems,
+ hasLang:!!props.setLang,setLang:props.setLang,langOpts:[{id:'en',label:'EN'},{id:'fa',label:'فا'}],waHref:'https://wa.me/989129333034',
+ isFav:(id,def)=>(favList||def).includes(id),toggleFav:(id,def)=>()=>{if(store){store.toggleSave(id);return;}const c=st.vfFavs||def;self.setState({vfFavs:c.includes(id)?c.filter(x=>x!==id):[...c,id]});},
+ tabs:[{id:'home',icon:'house',label:T.home,href:href.home,onClick:go.home,current:tab==='home'},{id:'shop',icon:'layout-grid',label:T.shop,href:href.shop,onClick:go.shop,current:tab==='shop'},{id:'wa',icon:'message-circle',label:T.wa,href:'https://wa.me/989129333034',target:'_blank'},{id:'bag',icon:'shopping-bag',label:T.bag,href:href.bag,onClick:go.bag,count:count?(fa?VF_FA_DIGITS(count):count):undefined,current:tab==='bag'}],
+ n:v=>fa?VF_FA_DIGITS(v):String(v),m:v=>VF_MONEY(v,fa),t:T};
+}
+const VF_BAG0=[
+ {id:'ivory-classic',unit:4900000,qty:1,en:['Ivory ribbon box','Classic · 20 stems','“Happy birthday, Shirin.”'],fa:['باکس روبان عاجی','کلاسیک · ۲۰ شاخه','«تولدت مبارک، شیرین.»']},
+ {id:'orchid',unit:3400000,qty:1,en:['Pearl orchid','Phalaenopsis · ceramic pot'],fa:['ارکیده مروارید','فالانوپسیس · گلدان سرامیکی']}];
+const VF_SESSION='vendra-template:'+location.pathname;
+function vfReadRoute(){window.AG_SEO.register(...VF_ROUTES);return window.AG_SEO.readRoute();}
+function vfSiteInitial(props){
+ let saved={};try{saved=JSON.parse(sessionStorage.getItem(VF_SESSION)||'{}')||{};}catch(e){}
+ const route=vfReadRoute();return {route:route.view==='home'&&!new URLSearchParams(location.search).has('view')?(props.start||'home'):route.view,
+ routeInfo:route,lang:route.lang||props.lang||'en',tenant:null,mobile:null,bag:Array.isArray(saved.bag)?saved.bag:VF_BAG0,
+ saved:Array.isArray(saved.saved)?saved.saved:['orchid','crimson','blush'],delivery:{...VF_DELIVERY,...saved.delivery},order:saved.order||null,announcement:''};
+}
+class Component extends DCLogic {
+ state=vfSiteInitial(this.props);
+ componentDidMount(){
+  window.__vfSite=this;
+  this._pop=()=>{const r=vfReadRoute();if(r.view==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean))){this.navigate({view:'bag',lang:r.lang},true);return;}this.setState({route:r.view,routeInfo:r,lang:r.lang||this.props.lang||'en'});};window.addEventListener('popstate',this._pop);
+  if(this.state.route==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean)))this.navigate('bag',true);
+ }
+ componentDidUpdate(){try{const {bag,saved,delivery,order}=this.state;sessionStorage.setItem(VF_SESSION,JSON.stringify({bag,saved,delivery,order}));}catch(e){}}
+ componentWillUnmount(){window.removeEventListener('popstate',this._pop);if(window.__vfSite===this)delete window.__vfSite;}
+ navigate(input,replace=false){
+  const candidate=typeof input==='string'?{lang:this.state.lang,view:input,...VF_ROUTE_EXTRA[input]}:{lang:this.state.lang,...input};
+  let r=window.AG_SEO.readRoute(window.AG_SEO.routeParams(candidate));
+  if(r.view==='checkout'&&!this.state.order&&(!this.state.bag.length||Object.values(vfErrors(this.state.delivery)).some(Boolean)))r={lang:r.lang,view:'bag'};
+  const url=window.AG_SEO.routeParams(r);if(url!==location.search)history[replace?'replaceState':'pushState']({},'',url);
+  this.setState({route:r.view,routeInfo:r,lang:r.lang||this.state.lang});window.scrollTo(0,0);
+ }
+ renderVals(){
+  const s=this.state,is={};VF_ROUTES.forEach(r=>{is[r]=r===s.route;});
+  return {is,lang:s.lang,tenant:s.tenant||this.props.tenant||'default',setLang:l=>this.navigate({...s.routeInfo,view:s.route,lang:l},true),announcement:s.announcement,
+   store:{bag:s.bag,saved:s.saved,delivery:s.delivery,order:s.order,count:s.bag.reduce((a,l)=>a+l.qty,0),
+    announce:title=>{if(this.state.announcement!==title)this.setState({announcement:title});},
+    setDelivery:patch=>this.setState(p=>({delivery:{...p.delivery,...patch},order:null})),
+    complete:order=>this.setState({order,bag:[],delivery:{...VF_DELIVERY}}),
+    add:line=>this.setState(p=>{const ex=p.bag.find(x=>x.id===line.id);return {order:null,bag:ex?p.bag.map(x=>x.id===line.id?{...x,qty:x.qty+line.qty}:x):[...p.bag,line]};}),
+    setQty:(id,q)=>this.setState(p=>({order:null,bag:p.bag.map(x=>x.id===id?{...x,qty:q}:x)})),remove:id=>this.setState(p=>({order:null,bag:p.bag.filter(x=>x.id!==id)})),
+    reset:()=>this.setState({order:null,bag:VF_BAG0}),clear:()=>this.setState({bag:[]}),
+    toggleSave:id=>this.setState(p=>({saved:p.saved.includes(id)?p.saved.filter(x=>x!==id):[...p.saved,id]})),setSaved:ids=>this.setState({saved:ids})},
+   mobile:s.mobile!=null?s.mobile:!!this.props.mobile,go:r=>this.navigate(r)};
+ }
+}
+
 </script>
 </body>
 </html>
