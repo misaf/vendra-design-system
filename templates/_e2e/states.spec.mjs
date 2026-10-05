@@ -5,8 +5,8 @@ import {LANGS, openSite, scanAxe} from './helpers.mjs';
 // open menus and dialogs, expanded accordions, other tabs, validation errors,
 // later checkout steps and the ?demo=loading|error states.
 const L = {
-  en: {menu: 'Menu', filters: 'Filters', addresses: 'Addresses', reminders: 'Reminders', profile: 'Profile', addAddr: 'Add an address', addReminder: 'Add a reminder', care: 'Care', send: 'Send', sendInquiry: 'Send inquiry', sendCode: 'Send code', next: 'Continue to payment', remove: 'Remove'},
-  fa: {menu: 'منو', filters: 'فیلترها', addresses: 'آدرس‌ها', reminders: 'یادآورها', profile: 'پروفایل', addAddr: 'افزودن آدرس', addReminder: 'افزودن یادآور', care: 'نگهداری', send: 'ارسال', sendInquiry: 'ارسال درخواست', sendCode: 'ارسال کد', next: 'ادامه و پرداخت', remove: 'حذف'}
+  en: {menu: 'Menu', filters: 'Filters', addresses: 'Addresses', reminders: 'Reminders', profile: 'Profile', addAddr: 'Add an address', addReminder: 'Add a reminder', care: 'Care', send: 'Send', sendInquiry: 'Send inquiry', sendCode: 'Send code', next: 'Continue to payment', remove: 'Remove', place: 'I’ve paid — place order', verify: 'Sign in'},
+  fa: {menu: 'منو', filters: 'فیلترها', addresses: 'آدرس‌ها', reminders: 'یادآورها', profile: 'پروفایل', addAddr: 'افزودن آدرس', addReminder: 'افزودن یادآور', care: 'نگهداری', send: 'ارسال', sendInquiry: 'ارسال درخواست', sendCode: 'ارسال کد', next: 'ادامه و پرداخت', remove: 'حذف', place: 'پرداخت کردم — ثبت سفارش', verify: 'ورود'}
 };
 
 const main = page => page.locator('main');
@@ -31,6 +31,22 @@ async function expectModal(page) {
   await expect(dialog).toBeVisible();
   await expect(dialog).toHaveAccessibleName(/.+/);
   await expect.poll(() => dialog.evaluate(d => d.contains(document.activeElement))).toBe(true);
+}
+
+// Valid delivery details take the bag on to checkout's payment step.
+async function toPayment(page, t) {
+  await page.fill('#vf-name', 'Shirin Ahmadi');
+  await page.fill('#vf-phone', '09121234567');
+  await page.fill('#vf-address', '12 Golestan St, Karaj');
+  await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
+  await expect(page.locator('#vf-last4')).toBeVisible();
+}
+
+// Any five digits are accepted in the demo; this stops at the code screen.
+async function toCode(page, t) {
+  await page.fill('#vf-phone', '09121234567');
+  await main(page).getByRole('button', {name: t.sendCode}).click();
+  await expect(page.locator('#vf-code')).toBeVisible();
 }
 
 const STATES = [
@@ -98,6 +114,25 @@ const STATES = [
   {name: 'bag errors', view: 'bag', act: async (page, t) => {
     // On mobile the button lives in the sticky bar outside <main>.
     await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
+    await expectDescribedErrors(page);
+  }},
+  {name: 'checkout payment step', view: 'bag', act: toPayment},
+  {name: 'checkout payment errors', view: 'bag', act: async (page, t) => {
+    await toPayment(page, t);
+    await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();
+    await expectDescribedErrors(page);
+  }},
+  {name: 'checkout done', view: 'bag', act: async (page, t) => {
+    await toPayment(page, t);
+    await page.fill('#vf-last4', '6037');
+    await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();
+    await expect(page.locator('#vf-last4')).toBeHidden();
+    await expect(page.locator('main h1')).toBeFocused();
+  }},
+  {name: 'signin code step', view: 'signin', act: toCode},
+  {name: 'signin code errors', view: 'signin', act: async (page, t) => {
+    await toCode(page, t);
+    await main(page).getByRole('button', {name: t.verify, exact: true}).click();
     await expectDescribedErrors(page);
   }},
   {name: 'bag empty', view: 'bag', act: async (page, t) => {
