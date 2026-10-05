@@ -387,9 +387,20 @@ function vfTileLayer(Leaflet) {
 }
 
 // Leaflet sizes itself once; a map that opens inside an animating dialog or a resized column needs telling.
+// The centre is restored without animation: back-to-back resizes interrupted Leaflet's animated pan and
+// drifted the pin, and map.resizing lets moveend listeners tell a resize from the customer moving the map.
 function vfWatchSize(map) {
   if (!window.ResizeObserver) return;
-  const watcher = new ResizeObserver(() => map.invalidateSize());
+  const watcher = new ResizeObserver(() => {
+    const centre = map.getCenter(), zoom = map.getZoom();
+    map.resizing = true;
+    try {
+      map.invalidateSize({pan: false});
+      map.setView(centre, zoom, {animate: false});
+    } finally {
+      map.resizing = false;
+    }
+  });
   watcher.observe(map.getContainer());
   map.on('unload', () => watcher.disconnect());
 }
@@ -415,7 +426,7 @@ function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
         map = Leaflet.map(el, {center: ok ? [at.lat, at.lng] : VF_STORE.map.center, zoom: ok ? zoom : VF_STORE.map.zoom, scrollWheelZoom: false});
         vfTileLayer(Leaflet).addTo(map);
         vfWatchSize(map);
-        map.on('moveend', () => onMove(vfPinLocation(map.getCenter())));
+        map.on('moveend', () => { if (!map.resizing) onMove(vfPinLocation(map.getCenter())); });
         map.on('click', e => map.panTo(e.latlng));
         if (onReady) onReady();
       }).catch(() => {

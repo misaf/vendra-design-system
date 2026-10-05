@@ -39,6 +39,29 @@ export async function openSite(page, view, lang, extra) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+// Before a full-page screenshot: load every declared font face (fonts.ready only covers faces
+// already requested, so a late Persian or display face can re-wrap text after it resolves),
+// load lazy images, then wait until the page height holds still for a few frames.
+export async function settlePage(page) {
+  await page.evaluate(async () => {
+    await Promise.all([...document.fonts].map(face => face.load().catch(() => null)));
+    const imgs = [...document.images];
+    imgs.forEach(img => { img.loading = 'eager'; });
+    await Promise.all(imgs.map(img => img.complete ? null : new Promise(r => { img.onload = img.onerror = r; })));
+    await document.fonts.ready;
+  });
+  await page.waitForLoadState('networkidle');
+  await page.waitForFunction(() => new Promise(resolve => {
+    let last = document.documentElement.scrollHeight, still = 0;
+    const tick = () => {
+      const now = document.documentElement.scrollHeight;
+      still = now === last ? still + 1 : 0; last = now;
+      if (still >= 5) resolve(true); else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }));
+}
+
 // Vite reports transform errors as an overlay element (pushed to every open page).
 export async function expectNoViteError(page) {
   await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
