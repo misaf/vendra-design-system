@@ -1,3 +1,7 @@
 templates/node_modules/
 templates/_e2e/test-results/
 templates/_e2e/playwright-report/
+
+# OS and scratch files
+.DS_Store
+scraps/
