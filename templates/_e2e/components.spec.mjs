@@ -100,3 +100,18 @@ test.describe('Toast', () => {
     expect(contrast(ring, bg)).toBeGreaterThanOrEqual(3);
   });
 });
+
+test.describe('Reduced motion', () => {
+  const tipDuration = page => page.getByRole('tooltip').evaluate(el => getComputedStyle(el).transitionDuration);
+
+  test('motion tokens keep their durations by default', async ({page}) => {
+    await expect.poll(() => tipDuration(page)).toBe('0.14s, 0.14s');
+  });
+
+  test('every token-based transition becomes instant', async ({page}) => {
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await expect.poll(() => tipDuration(page)).toBe('1e-05s, 1e-05s');
+    const slow = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dur-slow').trim());
+    expect(slow).toBe('.01ms');
+  });
+});
