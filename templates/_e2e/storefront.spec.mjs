@@ -1,21 +1,12 @@
 import {test, expect} from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
-import {LANGS, VIEWS, openSite, contrast, backgroundBehind} from './helpers.mjs';
+import {LANGS, VIEWS, openSite, scanAxe, contrast, backgroundBehind} from './helpers.mjs';
 
 // axe checks every routed view in both languages at both widths (mobile/desktop projects).
 for (const lang of LANGS) {
   for (const view of Object.keys(VIEWS)) {
     test(`axe: ${view} (${lang})`, async ({page}) => {
       await openSite(page, view, lang);
-      // The sticky mobile tab bar overlaps whatever sits at the bottom of a single
-      // static viewport, which axe reads as obscured targets. Unstick it so content
-      // is judged on its own; the bar itself is still scanned.
-      await page.addStyleTag({content: '.vf-shell-bottom-bar{position:static!important}'});
-      const {violations} = await new AxeBuilder({page})
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
-        .analyze();
-      const summary = violations.map(v => `${v.id} (${v.impact}): ${v.nodes.length}× ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`);
-      expect(summary).toEqual([]);
+      expect(await scanAxe(page)).toEqual([]);
     });
   }
 }

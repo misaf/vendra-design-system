@@ -1,4 +1,5 @@
 import {expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 export const SITE = '/templates/storefront-site/StorefrontSite.dc.html';
 export const LANGS = ['en', 'fa'];
@@ -46,4 +47,21 @@ export function backgroundBehind(locator) {
     }
     return getComputedStyle(document.body).backgroundColor;
   });
+}
+
+// WCAG 2.2 A/AA scan, one line per violation for readable diffs.
+export async function scanAxe(page) {
+  // The sticky mobile tab bar overlaps whatever sits at the bottom of a single
+  // static viewport, which axe reads as obscured targets. Unstick it so content
+  // is judged on its own; the bar itself is still scanned.
+  await page.addStyleTag({content: '.vf-shell-bottom-bar{position:static!important}'});
+  // Let dialog and accordion transitions finish so axe sees final colours.
+  // Infinite ones (skeleton shimmer) are skipped.
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter(a => a.effect?.getComputedTiming().endTime !== Infinity)
+    .map(a => a.finished.catch(() => {}))));
+  const {violations} = await new AxeBuilder({page})
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
+    .analyze();
+  return violations.map(v => `${v.id} (${v.impact}): ${v.nodes.length}× ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`);
 }
