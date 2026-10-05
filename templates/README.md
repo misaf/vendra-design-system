@@ -116,10 +116,11 @@ They run on the installed Google Chrome (`channel: 'chrome'`), so `npx playwrigh
 
 - `storefront.spec.mjs` runs axe (WCAG 2.2 A/AA) on every routed view in English and Persian, and checks `dir`/`lang`, horizontal overflow, the footer's on-inverse focus ring and the account tabs/tabpanel linkage.
 - `states.spec.mjs` runs the same axe scan on states a first load never reaches: the mobile menu, the shop filter and account dialogs (open, labelled, holding focus), each account tab, expanded accordions, search results, an emptied bag, form validation (every `aria-invalid` field must point at visible error text) and the `?demo=loading|error` states.
+- `pages.spec.mjs` compares full-page screenshots of every routed view in English and Persian at both widths, with the clock frozen at 2026-10-05 so relative dates stay put.
 - `components.spec.mjs` exercises Tooltip (hover, bubble hover, Esc, focus), Tabs (arrow keys mirrored in RTL, Home/End, roving tabindex, `aria-controls`) and Toast (44px close button, on-inverse ring at 3:1) on `_e2e/fixtures/components.html`.
 - `cards.spec.mjs` loads every `@dsCard` at its declared viewport, fails on runtime errors or a Vite error overlay, checks the Contrast card has no failing pairs for the default and `clay` tenants, and compares each card with its screenshot in `_e2e/__screenshots__/`.
 
-Screenshot baselines are per platform (`-darwin.png`, `-linux.png`) because font rendering differs. After an intended visual change, review the diff in `_e2e/playwright-report/` and refresh the baselines:
+Screenshot baselines are per platform (`-darwin.png`, `-linux.png`) because font rendering differs. Comparisons use exact colours (`threshold: 0`) with up to 25 differing pixels for anti-aliasing; the default tolerance hid a whole drop shadow. After an intended visual change, review the diff in `_e2e/playwright-report/` and refresh the baselines:
 
 ```sh
 npm --prefix templates run test:e2e:update

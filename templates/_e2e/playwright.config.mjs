@@ -16,7 +16,9 @@ export default defineConfig({
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
   reporter: [['list'], ['html', {outputFolder: './playwright-report', open: 'never'}]],
-  expect: {toHaveScreenshot: {maxDiffPixelRatio: 0.002, animations: 'disabled'}},
+  // Exact colours, with a few pixels of slack for anti-aliasing. The default
+  // per-pixel threshold (0.2) hid an 8,500-pixel shadow change.
+  expect: {toHaveScreenshot: {animations: 'disabled', threshold: 0, maxDiffPixels: 25}},
   use: {
     baseURL: 'http://127.0.0.1:5173',
     channel: 'chrome',
