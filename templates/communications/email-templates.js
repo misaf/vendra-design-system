@@ -1,11 +1,14 @@
 // Transactional + reminder emails, EN and FA. window.AG_EMAIL.render(event, customer, vars, order) → {lang, dir, subject, preheader, html, text}
 // Language: same rule as SMS — customer's account language (AG_NOTIFY.localeFor). Send-ready HTML: tables, inline styles, 600px, hex colours, web-safe fonts.
-// Theme: vars.theme = a theme name ('default' | 'clay'), a palette object (keys below), or omit for default. AG_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
+// Theme: vars.theme = 'default' or a tenant slug from tokens/tenants/, a palette object (keys below), or omit for default. Tenant palettes are generated from tokens/tenants/<slug>.json by npm --prefix templates run build. AG_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
 // vars.assetBase must be an absolute URL to where logo-horizontal.png / logo-horizontal-fa.png are hosted (emails can't load relative files).
 (()=>{
 const THEMES={
  default:{bg:'#FBF8F6',card:'#FFFFFF',ink:'#17211C',ink2:'#33403A',muted:'#59655E',line:'#ECE4E0',sunk:'#F5F0ED',gold:'#C8405F',goldInk:'#FFFFFF',accent:'#A8304D',btnRadius:'999px',btnCase:'none',btnTrack:'.02em',cardRadius:'20px',disp:null,dispCase:'none'},
- clay:{bg:'#F8F4EC',card:'#FFFFFF',ink:'#1F1D18',ink2:'#3A372E',muted:'#5E5A4E',line:'#E6DCCB',sunk:'#F1EADD',gold:'#A9532E',goldInk:'#FFFFFF',accent:'#8C4224',btnRadius:'2px',btnCase:'uppercase',btnTrack:'.12em',cardRadius:'4px',disp:"'Jost','Helvetica Neue',Helvetica,Arial,sans-serif",dispCase:'uppercase'}};
+// BEGIN GENERATED TENANT EMAIL THEMES
+ clay:{bg:'#F6F2EA',card:'#FFFFFF',ink:'#1F1D18',ink2:'#3C3931',muted:'#615D54',line:'#E6DCCB',sunk:'#F0E9DD',gold:'#A9532E',goldInk:'#FFFFFF',accent:'#8C4221',btnRadius:'2px',btnCase:'uppercase',btnTrack:'.12em',cardRadius:'4px',disp:"'Jost','Helvetica Neue',Helvetica,Arial,sans-serif",dispCase:'uppercase'},
+// END GENERATED TENANT EMAIL THEMES
+};
 const resolveTheme=t=>t&&typeof t==='object'?{...THEMES.default,...t}:(THEMES[t]||THEMES.default);
 const toHex=c=>{const m=String(c).match(/rgba?\(([^)]+)\)/);if(!m)return String(c).trim();return '#'+m[1].split(',').slice(0,3).map(v=>Math.round(parseFloat(v)).toString(16).padStart(2,'0')).join('').toUpperCase();};
 const themeFromCSS=(el=document.documentElement)=>{

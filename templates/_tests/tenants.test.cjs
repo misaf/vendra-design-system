@@ -56,4 +56,16 @@ for (const [file, content] of tenantOutputs()) {
   assert.equal(fs.readFileSync(file, 'utf8'), content, path.relative(root, file) + ' is current (run the build)');
 }
 
-console.log('Passed: tenant theme generator');
+// 6. Emails carry each tenant's palette, generated from the same spec.
+const vm = require('node:vm');
+const context = {window: {}};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../communications/email-templates.js'), 'utf8'), context);
+const emailThemes = context.window.AG_EMAIL.themes;
+for (const [slug, spec] of Object.entries(tenantSpecs())) {
+  assert.deepEqual({...emailThemes[slug]}, theme.email(spec), slug + ' email palette matches its spec');
+}
+const {disp, ...shape} = theme.email(theme.VENDRA);
+for (const key of ['btnRadius', 'btnCase', 'btnTrack', 'cardRadius', 'dispCase']) assert.equal(emailThemes.default[key], shape[key], 'default email ' + key);
+assert.equal(emailThemes.default.disp, disp);
+
+console.log('Passed: tenant theme generator and email palettes');

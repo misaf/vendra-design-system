@@ -157,6 +157,17 @@
     ].map(([label, ratio, min]) => ({label, ratio, min, pass: ratio >= min}));
   }
 
+  // Email clients need hex colours and web-safe fallbacks, so emails get a flat palette
+  // (keys match AG_EMAIL in templates/communications/email-templates.js).
+  const EMAIL_FONTS = {sans: "'Jost','Helvetica Neue',Helvetica,Arial,sans-serif", vazir: "Vazirmatn,Tahoma,'Segoe UI',Arial,sans-serif"};
+  function email(spec) {
+    const r = tokens(spec).ramps, ch = spec.character, square = ch.controls === 'square';
+    return {bg: r['--petal-50'], card: '#FFFFFF', ink: r['--ink-900'], ink2: r['--ink-700'], muted: r['--ink-500'], line: r['--petal-200'], sunk: r['--petal-100'],
+      gold: r['--peony-500'], goldInk: '#FFFFFF', accent: r['--peony-600'],
+      btnRadius: square ? '2px' : '999px', btnCase: square ? 'uppercase' : 'none', btnTrack: square ? '.12em' : '.02em', cardRadius: square ? '4px' : '20px',
+      disp: ch.headings === 'serif' ? null : EMAIL_FONTS[ch.headings], dispCase: ch.case};
+  }
+
   function css(slug, spec) {
     const t = tokens(spec);
     // Claude Design reads @kind to classify tokens that are not colours, sizes or fonts.
@@ -168,5 +179,5 @@
       '[data-tenant="' + slug + '"]{\n' + line(t.ramps) + '\n' + line(t.semantic) + '\n' + line(t.character) + '\n}\n';
   }
 
-  return {RAMPS, FONTS, CHOICES, VENDRA, oklch, fromOklch, contrast, shade, validate, tokens, checks, css};
+  return {RAMPS, FONTS, CHOICES, VENDRA, oklch, fromOklch, contrast, shade, validate, tokens, checks, css, email};
 });

@@ -106,6 +106,25 @@ for (const tenant of TENANTS) {
   });
 }
 
+// Each email palette matches what the browser renders for that theme. themeFromCSS
+// reads live tokens; the display font is left out because it adds web fallbacks.
+for (const tenant of ['default', ...TENANTS]) {
+  test(`email palette matches the rendered theme (${tenant})`, async ({page}) => {
+    await page.goto('/templates/_e2e/fixtures/tokens.html');
+    await page.addStyleTag({url: '/tokens/tenants.css'});
+    await page.addScriptTag({url: '/templates/communications/email-templates.js'});
+    const {live, shipped} = await page.evaluate(tenant => {
+      const wrap = document.createElement('div');
+      if (tenant !== 'default') wrap.setAttribute('data-tenant', tenant);
+      document.body.append(wrap);
+      const {disp: a, ...live} = window.AG_EMAIL.themeFromCSS(wrap);
+      const {disp: b, ...shipped} = window.AG_EMAIL.themes[tenant];
+      return {live, shipped};
+    }, tenant);
+    expect(shipped).toEqual(live);
+  });
+}
+
 // Every "Start from" choice in the builder (Vendra plus each tenant) must pass.
 for (const start of ['vendra', ...TENANTS]) {
   test(`theme builder: starting from ${start} passes all seven checks`, async ({page}) => {

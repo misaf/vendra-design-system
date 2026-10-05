@@ -33,7 +33,7 @@ Start here when changing the official storefront. All storefront examples live h
 | Storefront number and currency wrappers | [_shared/formatting.js](_shared/formatting.js) |
 | Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
 | Colors and fonts | `../tokens/` |
-| Tenant themes (generated into `../tokens/tenants/<slug>.css`) | `../tokens/tenants/<slug>.json`; generator in [_shared/tenant-theme.js](_shared/tenant-theme.js) |
+| Tenant themes (generated into `../tokens/tenants/<slug>.css` and the email palettes in `communications/email-templates.js`) | `../tokens/tenants/<slug>.json`; generator in [_shared/tenant-theme.js](_shared/tenant-theme.js) |
 
 The catalog and delivery rules contain sample store data. Keep page copy in `storefront-<page>/copy.js`; shared navigation labels belong in `translations/shell.js`.
 

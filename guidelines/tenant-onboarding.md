@@ -7,7 +7,7 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
-- [ ] Save it as `tokens/tenants/<slug>.json` and run `npm --prefix templates run build`. The build writes `tokens/tenants/<slug>.css` (never edit that file) and refuses a theme that fails any of the seven checks.
+- [ ] Save it as `tokens/tenants/<slug>.json` and run `npm --prefix templates run build`. The build writes `tokens/tenants/<slug>.css` and the tenant's email palette in `templates/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
 - [ ] For the florist's own deployment, set `tenant: '<slug>'` in `templates/_shared/store-config.js` and rebuild. The storefront then loads only `tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `tokens/tenants.css`).
 
