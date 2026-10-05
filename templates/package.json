@@ -5,9 +5,13 @@
     "build": "node _build/build.cjs",
     "check": "node _build/build.cjs --check",
     "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs",
-    "dev": "vite --config _build/vite.config.mjs"
+    "dev": "vite --config _build/vite.config.mjs",
+    "test:e2e": "playwright test -c _e2e/playwright.config.mjs",
+    "test:e2e:update": "playwright test -c _e2e/playwright.config.mjs --update-snapshots"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/cli": "4.3.3",
     "tailwindcss": "4.3.3",
     "vite": "8.3.2"

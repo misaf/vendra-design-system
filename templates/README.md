@@ -104,6 +104,26 @@ Then open [English](http://127.0.0.1:8765/templates/storefront-site/StorefrontSi
 
 `npm --prefix templates run build` produces the shared export assets and generated templates; this project does not use `vite build` to package the custom template runtime.
 
+## Browser tests
+
+Playwright tests live in `_e2e/` and run against the Vite preview (an already running `npm run dev` is reused; otherwise Playwright starts one):
+
+```sh
+npm --prefix templates run test:e2e
+```
+
+They run on the installed Google Chrome (`channel: 'chrome'`), so `npx playwright install` is not needed. Each storefront test runs at 390px (`mobile` project) and 1280px (`desktop` project).
+
+- `storefront.spec.mjs` runs axe (WCAG 2.2 A/AA) on every routed view in English and Persian, and checks `dir`/`lang`, horizontal overflow, the footer's on-inverse focus ring and the account tabs/tabpanel linkage.
+- `components.spec.mjs` exercises Tooltip (hover, bubble hover, Esc, focus), Tabs (arrow keys mirrored in RTL, Home/End, roving tabindex, `aria-controls`) and Toast (44px close button, on-inverse ring at 3:1) on `_e2e/fixtures/components.html`.
+- `cards.spec.mjs` loads every `@dsCard` at its declared viewport, fails on runtime errors or a Vite error overlay, checks the Contrast card has no failing pairs for the default and `clay` tenants, and compares each card with its screenshot in `_e2e/__screenshots__/`.
+
+Screenshot baselines are per platform (`-darwin.png`, `-linux.png`) because font rendering differs. After an intended visual change, review the diff in `_e2e/playwright-report/` and refresh the baselines:
+
+```sh
+npm --prefix templates run test:e2e:update
+```
+
 ## Shared assets and exporting
 
 All pages load the same assets. Page folders contain only their `Storefront*.dc.html` source.
