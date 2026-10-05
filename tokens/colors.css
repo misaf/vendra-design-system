@@ -17,5 +17,7 @@
 --accent:var(--peony-500);--accent-hover:var(--peony-600);--accent-press:var(--peony-700);--accent-soft:var(--peony-100);--accent-soft-hover:var(--peony-200);
 --border-subtle:var(--petal-200);--border-default:var(--petal-300);--border-strong:var(--ink-700);--border-input:#7E8882;/* form-control edges — 3:1 on card, page and sunken */
 --focus-ring:var(--lilac-500);--focus-ring-on-inverse:var(--lilac-300);/* 3:1 on --surface-inverse — set via .ag-on-inverse */
+--surface-hover:var(--petal-200);--surface-disabled:var(--petal-100);--surface-strong:var(--ink-900);--text-on-strong:var(--petal-50);/* selected, pressed and checked controls */--border-input-strong:var(--ink-500);/* input hover, checkbox and radio edges */
+--focus-ring-soft:var(--lilac-100);--text-info:var(--lilac-700);--control-on:var(--leaf-500);--success-on-inverse:var(--leaf-300);--warning-on-inverse:var(--pollen-400);--info-on-inverse:var(--blush-300);
 --surface-header:rgba(251,248,246,.88);--text-inverse-muted:var(--ink-300);--border-inverse:var(--ink-700);
 }

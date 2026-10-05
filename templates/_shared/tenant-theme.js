@@ -125,6 +125,8 @@
       '--text-body': 'var(--ink-900)', '--text-secondary': 'var(--ink-700)', '--text-muted': 'var(--ink-500)', '--text-subtle': 'var(--ink-300)', '--text-on-accent': 'var(--white)', '--text-on-soft': 'var(--peony-700)', '--text-on-inverse': 'var(--petal-50)', '--text-accent': 'var(--peony-600)',
       '--accent': 'var(--peony-500)', '--accent-hover': 'var(--peony-600)', '--accent-press': 'var(--peony-700)', '--accent-soft': 'var(--peony-100)', '--accent-soft-hover': 'var(--peony-200)',
       '--border-subtle': 'var(--petal-200)', '--border-default': 'var(--petal-300)', '--border-strong': 'var(--ink-700)',
+      '--surface-hover': 'var(--petal-200)', '--surface-disabled': 'var(--petal-100)', '--surface-strong': 'var(--ink-900)', '--text-on-strong': 'var(--petal-50)', '--border-input-strong': 'var(--ink-500)',
+      '--focus-ring-soft': 'var(--lilac-100)', '--text-info': 'var(--lilac-700)', '--control-on': 'var(--leaf-500)', '--success-on-inverse': 'var(--leaf-300)', '--warning-on-inverse': 'var(--pollen-400)', '--info-on-inverse': 'var(--blush-300)',
       '--focus-ring': 'var(--lilac-500)', '--focus-ring-on-inverse': 'var(--lilac-300)', '--surface-header': 'rgba(' + rgbParts(ramps['--petal-50']) + ',.88)', '--text-inverse-muted': 'var(--ink-300)', '--border-inverse': 'var(--stem-700)',
       '--shadow-sm': '0 1px 2px rgba(' + ink + ',.06)', '--shadow-md': '0 8px 20px -8px rgba(' + ink + ',.18)', '--shadow-lg': '0 24px 48px -16px rgba(' + ink + ',.28)'
     };
