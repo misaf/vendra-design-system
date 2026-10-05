@@ -935,10 +935,16 @@ class VFPage extends DCLogic {
       const title = h.innerText.replace(/\s+/g, ' ').trim();
       if (title === this._vfTitle) return;
       this._vfTitle = title;
-      window.AG_NAV.focusHeading();
-      if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
-        vfAnnouncement: title
-      });
+      // On the first view of a document, leave focus at the top so Tab reaches the
+      // skip link and header; the browser already reads the new page. Only later
+      // views (in-site navigation, a replaced h1) move focus and announce.
+      if (window.VF_VIEWED) {
+        window.AG_NAV.focusHeading();
+        if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
+          vfAnnouncement: title
+        });
+      }
+      window.VF_VIEWED = true;
       const url = location.href;
       window.AG_SEO.syncHead({
         title: title + ' · ' + VF_SHELL[lang].brand,

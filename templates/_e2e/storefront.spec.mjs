@@ -33,6 +33,21 @@ test.describe('shell', () => {
     expect(contrast(ring, await backgroundBehind(link))).toBeGreaterThanOrEqual(3);
   });
 
+  test('first load leaves focus at the top; in-site navigation focuses the heading', async ({page}, info) => {
+    test.skip(info.project.name !== 'desktop', 'uses the desktop header links');
+    await openSite(page, 'home', 'en');
+    await page.waitForTimeout(200);
+    await page.keyboard.press('Tab');
+    await expect(page.locator('.ag-skip')).toBeFocused();
+    // Keep tabbing (as a keyboard user would) to the header's Shop link.
+    const shop = page.getByRole('navigation').getByRole('link', {name: 'Shop', exact: true}).first();
+    for (let i = 0; i < 10 && !(await shop.evaluate(el => el === document.activeElement)); i++) await page.keyboard.press('Tab');
+    await expect(shop).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/view=shop/);
+    await expect(page.locator('main h1')).toBeFocused();
+  });
+
   test('account tabs drive a linked tabpanel', async ({page}) => {
     await openSite(page, 'account', 'en');
     const tablist = page.getByRole('tablist');
