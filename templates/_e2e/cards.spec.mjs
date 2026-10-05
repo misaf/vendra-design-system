@@ -1,10 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {expectNoViteError} from './helpers.mjs';
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+import {ROOT as root, TENANTS, expectNoViteError} from './helpers.mjs';
 
 // Every @dsCard in guidelines/ and components/, at the viewport its header declares.
 function cards() {
@@ -35,7 +32,7 @@ async function openCard(page, card, tenant) {
   return errors;
 }
 
-for (const tenant of [null, 'clay']) {
+for (const tenant of [null, ...TENANTS]) {
   test(`contrast card passes (${tenant || 'default'} tenant)`, async ({page}) => {
     await openCard(page, {file: 'guidelines/colors-contrast.html', width: 700, height: 1920}, tenant);
     await expect(page.locator('#rows .r.pass').first()).toBeVisible();

@@ -1,5 +1,14 @@
 import {expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+
+// Every tenant theme in tokens/tenants/ (the _template file is a .txt, so it is skipped).
+export const TENANTS = fs.readdirSync(path.join(ROOT, 'tokens/tenants'))
+  .filter(f => f.endsWith('.css')).map(f => f.slice(0, -4)).sort();
 
 export const SITE = '/templates/storefront-site/StorefrontSite.dc.html';
 export const LANGS = ['en', 'fa'];
