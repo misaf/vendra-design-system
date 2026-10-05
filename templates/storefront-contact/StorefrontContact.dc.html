@@ -86,9 +86,9 @@
 <main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ t.hA }} <em class="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.hB }}</em></h1><p class="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">{{ t.hP }}</p></header>
 <div class="vf-info-columns vf-info-columns--contact tw:grid tw:[grid-template-columns:repeat(2,minmax(0,1fr))] tw:gap-7 tw:items-start">
 <div class="vf-contact-details tw:flex tw:flex-col tw:gap-4h"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" variant="sunken" padding="{{ 20 }}" hint-size="100%,300px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ rows }}" hint-size="100%,260px"></x-import></x-import><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="150px,48px">{{ t.wa }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="phone" href="{{ phoneHref }}" hint-size="120px,48px">{{ t.call }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="instagram" label="{{ t.instagram }}" variant="outline" href="{{ instagram.url }}" rel="noopener noreferrer" target="_blank" hint-size="44px,44px"></x-import></div>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" shape="soft" ratio="4/3" placeholder-label="{{ t.map }}" alt="" hint-size="100%,300px"></x-import></div>
+<sc-if value="{{ studioMap }}" hint-placeholder-val="{{ true }}"><div class="vf-contact-map vf-map-box tw:h-[300px]"><div id="vf-contact-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><sc-if value="{{ hasDirections }}" hint-placeholder-val="{{ true }}"><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="map-pin" href="{{ directions }}" rel="noopener noreferrer" target="_blank" hint-size="190px,48px">{{ t.directions }}</x-import></div></sc-if></div>
 <div class="tw:flex tw:flex-col tw:gap-4"><h2>{{ t.fA }}</h2>
-<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><div class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cname" value="{{ name }}" on-change="{{ setName }}" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cphone" value="{{ phone }}" on-change="{{ setPhone }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-ctopic" label="{{ t.topic }}" options="{{ topics }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ t.emailLabel }}" value="{{ email }}" on-change="{{ setEmail }}" type="email" dir="ltr" autocomplete="email"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cmsg" required="{{ true }}" label="{{ t.msg }}" multiline="{{ true }}" rows="{{ 5 }}" value="{{ msg }}" on-change="{{ setMsg }}" error="{{ msgErr }}" hint-size="100%,170px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" loading="{{ busy }}" disabled="{{ busy }}" hint-size="160px,52px">{{ t.send }}</x-import></div></div></sc-if>
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><div class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cname" value="{{ name }}" on-change="{{ setName }}" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cphone" value="{{ phone }}" on-change="{{ setPhone }}" label="{{ t.phone }}" hint="{{ phoneHint }}" error="{{ phoneErr }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-ctopic" label="{{ t.topic }}" options="{{ topics }}" value="{{ topic }}" on-change="{{ setTopic }}" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cemail" label="{{ t.emailLabel }}" value="{{ email }}" on-change="{{ setEmail }}" error="{{ emailErr }}" type="email" dir="ltr" autocomplete="email" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-cmsg" required="{{ true }}" label="{{ t.msg }}" multiline="{{ true }}" rows="{{ 5 }}" value="{{ msg }}" on-change="{{ setMsg }}" error="{{ msgErr }}" hint-size="100%,170px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" loading="{{ busy }}" disabled="{{ busy }}" hint-size="160px,52px">{{ t.send }}</x-import></div></div></sc-if>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><div id="vf-contact-success" tabindex="-1" role="region" aria-label="{{ t.okT }}" class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ editMessage }}">{{ t.editMessage }}</x-import></div></div></sc-if>
 </div></div><sc-if value="{{ apiError }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ apiError }}"></x-import></sc-if></main>
 <!-- END PAGE CONTENT -->
@@ -145,6 +145,7 @@ const VF_STORE = {
   announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  studio: {lat: 35.8352, lng: 50.9750}, // The shop's front door, shown on the contact map and used for directions.
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',
@@ -279,6 +280,11 @@ function vfLocationText(location, fa) {
   // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
   const num = v => fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5);
   return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
+}
+
+// A route to the place in the visitor's own maps app (Google Maps opens natively on phones).
+function vfDirectionsUrl(location) {
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng;
 }
 
 // Loads Leaflet once (from templates/_vendor/leaflet) and resolves with window.L.
@@ -1522,7 +1528,6 @@ function vfShell(props, page) {
 // BEGIN GENERATED PAGE COPY
 // Source: templates/storefront-contact/copy.js
 // Bilingual contact copy. Edit here, then run npm --prefix templates run build.
-// Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
   const fa = S.fa;
   return {
@@ -1535,10 +1540,15 @@ function vfCopy(S) {
       hP: 'Come and choose your stems in person, or message us — we usually reply within the hour.',
       wa: 'WhatsApp',
       call: 'Call',
-      map: (fa ? 'نقشه — ' : 'Map — ') + S.t.address,
+      mapL: 'The studio on the map',
+      directions: 'Get directions',
+      directionsTo: 'Directions to the studio (opens in a new tab)',
       fA: 'Send a message.',
       name: 'Name',
       phone: 'Mobile',
+      phoneHint: 'We reply by text or WhatsApp. Leave an email instead if you prefer.',
+      phoneErr: 'Enter a mobile like 0912 345 6789, or leave an email instead.',
+      emailErr: 'Enter an email like name@example.com.',
       topic: 'About',
       msg: 'Message',
       msgErr: 'Write a short message.',
@@ -1561,10 +1571,15 @@ function vfCopy(S) {
       hP: 'حضوری بیایید و گل‌هایتان را انتخاب کنید، یا پیام بدهید — معمولاً ظرف یک ساعت پاسخ می‌دهیم.',
       wa: 'واتساپ',
       call: 'تماس',
-      map: (fa ? 'نقشه — ' : 'Map — ') + S.t.address,
+      mapL: 'استودیو روی نقشه',
+      directions: 'مسیریابی',
+      directionsTo: 'مسیریابی تا استودیو (در زبانه تازه باز می‌شود)',
       fA: 'پیام بفرستید.',
       name: 'نام',
       phone: 'موبایل',
+      phoneHint: 'با پیامک یا واتساپ پاسخ می‌دهیم. اگر ترجیح می‌دهید، به‌جایش ایمیل بگذارید.',
+      phoneErr: 'شماره موبایل را مثل ۰۹۱۲۳۴۵۶۷۸۹ وارد کنید، یا به‌جایش ایمیل بگذارید.',
+      emailErr: 'ایمیل را مثل name@example.com وارد کنید.',
       topic: 'موضوع',
       msg: 'پیام',
       msgErr: 'یک پیام کوتاه بنویسید.',
@@ -1585,6 +1600,14 @@ function vfCopy(S) {
 // BEGIN GENERATED PAGE LOGIC
 // Source: templates/storefront-contact/logic.js
 // Page behavior. Edit here, then run npm --prefix templates run build.
+const VF_CONTACT_TOPICS = ['order', 'weddings', 'corporate', 'other'];
+// A signed-in customer starts with their own name, mobile and email filled in.
+function vfContactPrefill() {
+  const phone = vfAccountPhone();
+  if (!phone) return {};
+  const {profile} = vfAccountLoad(phone);
+  return {name: profile.name || '', phone, email: profile.email || ''};
+}
 class Component extends VFPage {
   state = {
     sent: false,
@@ -1594,12 +1617,26 @@ class Component extends VFPage {
     msg: '',
     name: '',
     phone: '',
-    err: false
+    topic: 'order',
+    submitted: false,
+    mapFailed: false,
+    ...vfContactPrefill()
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'contact');
     const s = this.state;
     const C = vfCopy(S);
+    const invalid = this._invalid();
+    const studio = VF_STORE.studio;
+    const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
+    this._places = directions ? [{
+      id: 'studio',
+      label: VF_STORE.brand[S.lang],
+      title: C.directionsTo,
+      location: studio,
+      pick: () => window.open(directions, '_blank', 'noopener')
+    }] : [];
+    const field = key => e => this.setState({[key]: e.target.value, apiError: ''});
     return {
       ...S,
       t: {
@@ -1611,16 +1648,19 @@ class Component extends VFPage {
       rows: ['map-pin', 'clock', 'phone', 'message-circle', 'instagram'].map((icon, i) => ({
         icon,
         label: C.rowLabels[i],
-        value: i === 0 ? S.t.address : i === 1 ? S.t.hours : '\u2068' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '\u2069'
+        value: i === 0 ? S.t.address : i === 1 ? S.t.hours : '⁨' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '⁩'
       })),
-      topics: C.topics,
+      studioMap: !!directions && !s.mapFailed,
+      hasDirections: !!directions,
+      directions,
+      topics: VF_CONTACT_TOPICS.map((value, i) => ({value, label: C.topics[i]})),
+      topic: s.topic,
+      setTopic: field('topic'),
       apiError: s.apiError,
       busy: s.busy,
       email: s.email,
-      setEmail: e => this.setState({
-        email: e.target.value,
-        apiError: ''
-      }),
+      setEmail: field('email'),
+      emailErr: s.submitted && invalid.email ? C.emailErr : undefined,
       sent: s.sent,
       notSent: !s.sent,
       editMessage: () => {
@@ -1631,34 +1671,28 @@ class Component extends VFPage {
       },
       name: s.name,
       phone: s.phone,
-      setName: e => this.setState({
-        name: e.target.value
-      }),
-      setPhone: e => this.setState({
-        phone: e.target.value
-      }),
+      setName: field('name'),
+      setPhone: field('phone'),
+      phoneHint: C.phoneHint,
+      phoneErr: s.submitted && invalid.phone ? C.phoneErr : undefined,
       msg: s.msg,
-      setMsg: e => this.setState({
-        msg: e.target.value,
-        err: false
-      }),
-      msgErr: s.err ? C.msgErr : undefined,
+      setMsg: field('msg'),
+      msgErr: s.submitted && invalid.msg ? C.msgErr : undefined,
       send: () => {
-        if (!s.msg.trim()) {
-          this.setState({
-            err: true
-          });
-          setTimeout(() => {
-            const el = document.getElementById('vf-cmsg');
-            el && el.focus();
-          }, 0);
+        this.setState({
+          submitted: true
+        });
+        const first = ['phone', 'email', 'msg'].find(k => invalid[k]);
+        if (first) {
+          S.focus({phone: 'vf-cphone', email: 'vf-cemail', msg: 'vf-cmsg'}[first]);
           return;
         }
         const success = () => {
           this.setState({
             sent: true,
             busy: false,
-            apiError: ''
+            apiError: '',
+            submitted: false
           });
           S.focus('vf-contact-success');
         };
@@ -1671,10 +1705,11 @@ class Component extends VFPage {
           apiError: ''
         });
         return window.VF_API.inquiry({
-          name: s.name || '',
-          phone: s.phone || '',
-          email: s.email || '',
-          message: s.msg || s.notes || 'Wedding inquiry',
+          name: s.name.trim(),
+          phone: s.phone ? vfPhone(s.phone) : '',
+          email: s.email.trim(),
+          topic: s.topic,
+          message: s.msg.trim(),
           occasion: 'contact',
           preferredLocale: window.VF_API.preferredLocale()
         }).then(success).catch(() => this.setState({
@@ -1683,6 +1718,36 @@ class Component extends VFPage {
         }));
       }
     };
+  }
+  // The studio replies by text or WhatsApp, so a mobile is needed unless the visitor leaves an email instead.
+  _invalid() {
+    const s = this.state;
+    const email = s.email.trim();
+    return {
+      phone: s.phone.trim() || !email ? !/^09\d{9}$/.test(vfPhone(s.phone)) : false,
+      email: !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+      msg: !s.msg.trim()
+    };
+  }
+  _studioMap() {
+    if (!this._studioView) this._studioView = vfPlacesMap({
+      id: 'vf-contact-map',
+      places: () => this._places || [],
+      onFail: () => this.setState({mapFailed: true})
+    });
+    return this._studioView;
+  }
+  componentDidMount() {
+    super.componentDidMount();
+    this._studioMap().sync();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this._studioMap().sync();
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._studioMap().remove();
   }
 }
 // END GENERATED PAGE LOGIC

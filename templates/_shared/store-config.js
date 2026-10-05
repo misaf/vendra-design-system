@@ -10,6 +10,7 @@ const VF_STORE = {
   announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  studio: {lat: 35.8352, lng: 50.9750}, // The shop's front door, shown on the contact map and used for directions.
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',

@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
 // Delivery days, promo codes, shop occasions, recently viewed products, the delivery photo,
-// delivery pins and saved addresses and products in the account, in the click-through site.
+// delivery pins, saved addresses and products in the account, and the contact page, in the click-through site.
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 
 test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
@@ -200,4 +200,26 @@ test('profile edits are kept', async ({page}) => {
   await page.reload();
   await page.getByRole('tab', {name: 'Profile'}).click();
   await expect(page.locator('#vf-pname')).toHaveValue('Shirin A.');
+});
+
+test('contact shows the studio on a map and needs a way to reply', async ({page}) => {
+  await openSite(page, 'contact', 'en');
+  const map = page.getByRole('region', {name: 'The studio on the map'});
+  await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
+  await expect(page.getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
+  await page.getByRole('combobox', {name: 'About'}).selectOption('weddings');
+  await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
+  await page.getByRole('button', {name: 'Send', exact: true}).click();
+  await expect(page.locator('#vf-cphone')).toBeFocused();
+  await expect(page.locator('#vf-cphone')).toHaveAccessibleDescription(/or leave an email instead/);
+  expect(await scanAxe(page)).toEqual([]);
+  await page.fill('#vf-cemail', 'shirin@example.com');
+  await page.getByRole('button', {name: 'Send', exact: true}).click();
+  await expect(page.getByRole('region', {name: 'Message sent.'})).toBeFocused();
+});
+
+test('contact fills in a signed-in customer', async ({page}) => {
+  await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09125649438'));
+  await openSite(page, 'contact', 'fa');
+  await expect(page.locator('#vf-cphone')).toHaveValue('09125649438');
 });

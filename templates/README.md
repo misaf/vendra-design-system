@@ -16,7 +16,7 @@ Start here when changing the official storefront. All storefront examples live h
 | Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
 | Delivery fees, cut-offs, delivery days, sold-out dates, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
-| Delivery map tiles, attribution and starting view | `map` in [_shared/store-config.js](_shared/store-config.js) |
+| Map tiles, attribution and starting view; the studio's own pin (`studio`) | `map` and `studio` in [_shared/store-config.js](_shared/store-config.js) |
 | Delivery pin and saved-places maps, loading and formatting | [_shared/location.js](_shared/location.js), styles in `location.css`, copy in `translations/location.js` |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
@@ -235,6 +235,9 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   bag's delivery from a saved address in one tap.
 - **Saved products.** The account has a Saved tab listing the customer's saved products; it shares
   the list with the Saved page.
+- **Contact.** The contact page maps the studio from `studio` in `store-config.js` with a Get
+  directions link (Google Maps). A message needs a valid mobile or an email so the studio can
+  reply; the topic is sent with it, and signed-in customers start with their details filled in.
 - **Language.** The header has an EN / فا switch (on phones, one button for the other language).
   In the click-through site it switches in place; on a standalone page it opens that page in the
   site in the other language.

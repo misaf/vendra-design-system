@@ -139,6 +139,7 @@ const VF_STORE = {
   announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  studio: {lat: 35.8352, lng: 50.9750}, // The shop's front door, shown on the contact map and used for directions.
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',
@@ -273,6 +274,11 @@ function vfLocationText(location, fa) {
   // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
   const num = v => fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5);
   return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
+}
+
+// A route to the place in the visitor's own maps app (Google Maps opens natively on phones).
+function vfDirectionsUrl(location) {
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng;
 }
 
 // Loads Leaflet once (from templates/_vendor/leaflet) and resolves with window.L.

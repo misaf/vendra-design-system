@@ -18,6 +18,11 @@ function vfLocationText(location, fa) {
   return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
 }
 
+// A route to the place in the visitor's own maps app (Google Maps opens natively on phones).
+function vfDirectionsUrl(location) {
+  return 'https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng;
+}
+
 // Loads Leaflet once (from templates/_vendor/leaflet) and resolves with window.L.
 function vfLoadLeaflet() {
   if (window.L && window.L.map) return Promise.resolve(window.L);
