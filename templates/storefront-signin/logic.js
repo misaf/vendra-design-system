@@ -18,6 +18,8 @@ class Component extends VFPage {
     }, 0);
     return {
       ...S,
+      termsLink: S.policyLink('terms'),
+      privacyLink: S.policyLink('privacy'),
       t: {
         ...S.t,
         ...C

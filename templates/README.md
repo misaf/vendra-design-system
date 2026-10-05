@@ -235,6 +235,11 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   bag's delivery from a saved address in one tap.
 - **Saved products.** The product page has a save (heart) button, and the account has a Saved tab
   listing the customer's saved products; both share the list with the Saved page.
+- **Policies.** Shipping & delivery, Returns & refunds, Privacy and Terms of use live on the policy
+  page (`?view=policy&id=shipping|returns|privacy|terms`; the list is `VF_POLICIES` in `routing.js`).
+  The footer's Help column and sign-in link to them. Fees, cut-offs, time slots, free delivery and
+  pay-on-delivery areas are read from `delivery.js` and `store-config.js`, so the text stays current.
+  The copy is sample text: have the florist's own policies checked before launch.
 - **Home carousels.** Shop-by-occasion and new arrivals are snap carousels (arrows on desktop,
   swipe on phones).
 - **Contact.** The contact page maps the studio from `studio` in `store-config.js` with a Get

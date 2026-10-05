@@ -256,3 +256,36 @@ test('home occasions scroll as a carousel', async ({page}, info) => {
   }
   expect(await scanAxe(page)).toEqual([]);
 });
+
+test('the footer opens each policy and the policy page switches between them', async ({page}) => {
+  await openSite(page, 'home', 'fa');
+  const help = page.getByRole('navigation', {name: 'راهنما'});
+  for (const name of ['ارسال و تحویل', 'بازگشت و بازپرداخت', 'حریم خصوصی', 'شرایط استفاده']) await expect(help.getByRole('link', {name})).toBeVisible();
+  await help.getByRole('link', {name: 'شرایط استفاده'}).click();
+  await expect(page).toHaveURL(/view=policy&id=terms/);
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('شرایط استفاده');
+  const switcher = page.getByRole('navigation', {name: 'قوانین'});
+  await expect(switcher.getByRole('link', {name: 'شرایط استفاده'})).toHaveAttribute('aria-current', 'page');
+  expect(await scanAxe(page)).toEqual([]);
+  await switcher.getByRole('link', {name: 'بازگشت و بازپرداخت'}).click();
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('بازگشت و بازپرداخت');
+  await expect(page.locator('main')).toContainText('۲۴ ساعت');
+});
+
+test('policies quote the live delivery rules', async ({page}) => {
+  await openSite(page, 'policy', 'en', {id: 'shipping'});
+  await expect(page.locator('main li')).toContainText(['Karaj central: 80,000 Toman, same day when you order by 18:00']);
+  await expect(page.locator('main')).toContainText('on orders over 5,000,000 Toman');
+});
+
+test('an unknown policy is not found', async ({page}) => {
+  await openSite(page, 'policy', 'en', {id: 'nope'});
+  await expect(page.getByRole('link', {name: 'Terms of use'})).toBeVisible();
+  await expect(page.getByRole('heading', {level: 1})).not.toHaveText(/Shipping/);
+});
+
+test('sign-in links to the terms and privacy policy', async ({page}) => {
+  await openSite(page, 'signin', 'en');
+  await page.getByRole('main').getByRole('link', {name: 'privacy policy'}).click();
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('Privacy');
+});

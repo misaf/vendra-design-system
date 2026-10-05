@@ -109,8 +109,10 @@
 <a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
 <a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<nav aria-labelledby="vf-footer-help" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<div id="vf-footer-help" class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.help }}</div>
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
+<sc-for list="{{ policyLinks }}" as="p" hint-placeholder-count="4"><a href="{{ p.href }}" onClick="{{ p.go }}" aria-current="{{ p.current }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ p.label }}</a></sc-for>
 </nav>
 </div>
 </footer>
@@ -634,6 +636,8 @@ const VF_SHELL = {
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
+    help: 'Help',
+    policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
     skip: 'Skip to main content'
   },
   fa: {
@@ -665,6 +669,8 @@ const VF_SHELL = {
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
+    help: 'راهنما',
+    policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
     skip: 'رفتن به محتوای اصلی'
   }
 };
@@ -1224,6 +1230,8 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 // Source: templates/_shared/routing.js
 // Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+// Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
+const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
 const VF_ROUTE_EXTRA = {
   product: {
     id: 'ivory'
@@ -1238,6 +1246,7 @@ function vfReadRoute(search = location.search) {
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
@@ -1408,6 +1417,11 @@ function vfShell(props, page) {
       props.go(route);
     }) : undefined
   }));
+  const policyLink = doc => ({
+    href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'policy', id: doc}),
+    go: props.go ? vfLinkHandler(props.go) : undefined
+  });
+  const policyDoc = page === 'policy' ? props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0] : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
   const setLang = props.setLang || (lang => {
     location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
@@ -1417,6 +1431,8 @@ function vfShell(props, page) {
   return {
     go,
     href,
+    policyLink,
+    policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
     productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),

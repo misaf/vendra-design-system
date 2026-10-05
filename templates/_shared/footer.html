@@ -11,8 +11,10 @@
 <a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
 <a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<nav aria-labelledby="vf-footer-help" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<div id="vf-footer-help" class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.help }}</div>
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
+<sc-for list="{{ policyLinks }}" as="p" hint-placeholder-count="4"><a href="{{ p.href }}" onClick="{{ p.go }}" aria-current="{{ p.current }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ p.label }}</a></sc-for>
 </nav>
 </div>
 </footer>

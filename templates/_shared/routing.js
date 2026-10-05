@@ -1,5 +1,7 @@
 // Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+// Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
+const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
 const VF_ROUTE_EXTRA = {
   product: {
     id: 'ivory'
@@ -14,6 +16,7 @@ function vfReadRoute(search = location.search) {
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';

@@ -29,6 +29,8 @@ const VF_SHELL = {
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
+    help: 'Help',
+    policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
     skip: 'Skip to main content'
   },
   fa: {
@@ -60,6 +62,8 @@ const VF_SHELL = {
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
+    help: 'راهنما',
+    policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
     skip: 'رفتن به محتوای اصلی'
   }
 };

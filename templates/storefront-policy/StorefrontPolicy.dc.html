@@ -83,11 +83,11 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ doc.title }}</h1><div class="vf-info-meta tw:text-sm tw:text-quiet">{{ t.updated }}</div></header>
+<main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ doc.title }}</h1><p class="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">{{ doc.intro }}</p><div class="vf-info-meta tw:text-sm tw:text-quiet">{{ t.updated }}</div></header><nav aria-label="{{ t.policiesL }}" class="vf-policy-switch tw:mb-7"><ul class="tw:flex tw:flex-wrap tw:gap-2 tw:m-0 tw:p-0 tw:list-none"><sc-for list="{{ policyLinks }}" as="p" hint-placeholder-count="4"><li><a href="{{ p.href }}" onClick="{{ p.go }}" aria-current="{{ p.current }}" class="vf-policy-switch-link tw:min-h-tap tw:inline-flex tw:items-center tw:px-4 tw:rounded-full tw:border tw:border-solid tw:border-input tw:text-sm tw:text-body! tw:no-underline! tw:hover:border-body tw:aria-[current=page]:bg-inverse tw:aria-[current=page]:border-inverse tw:aria-[current=page]:text-on-inverse!">{{ p.label }}</a></li></sc-for></ul></nav>
 <div class="vf-info-notice tw:mb-7"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="warning" title="{{ t.sampleT }}" hint-size="100%,80px">{{ t.sampleP }}</x-import></div>
 <div class="vf-info-columns vf-info-columns--policy tw:grid tw:[grid-template-columns:240px_minmax(0,1fr)] tw:gap-7 tw:items-start">
 <nav aria-label="{{ t.toc }}" class="vf-info-toc tw:sticky tw:top-9 tw:flex tw:flex-col tw:gap-1"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.toc }}</div><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><a href="{{ s.href }}" class="vf-policy-toc-link tw:min-h-tap tw:flex tw:items-center tw:text-sm tw:text-body! tw:no-underline! tw:hover:text-accent">{{ s.title }}</a></sc-for></nav>
-<div class="vf-info-sections tw:flex tw:flex-col tw:gap-7 tw:min-w-0"><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><section id="{{ s.id }}" class="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"><h2>{{ s.title }}</h2><p class="vf-info-copy tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">{{ s.body }}</p></section></sc-for></div>
+<div class="vf-info-sections tw:flex tw:flex-col tw:gap-7 tw:min-w-0"><sc-for list="{{ doc.sections }}" as="s" hint-placeholder-count="4"><section id="{{ s.id }}" class="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"><h2>{{ s.title }}</h2><sc-for list="{{ s.paras }}" as="para" hint-placeholder-count="1"><p class="vf-info-copy tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">{{ para.text }}</p></sc-for><sc-if value="{{ s.hasItems }}"><ul class="vf-policy-list tw:m-0 tw:ps-5 tw:flex tw:flex-col tw:gap-2 tw:text-md tw:leading-body tw:text-secondary"><sc-for list="{{ s.items }}" as="item" hint-placeholder-count="3"><li>{{ item.text }}</li></sc-for></ul></sc-if></section></sc-for></div>
 </div></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
@@ -105,8 +105,10 @@
 <a href="{{ phoneHref }}" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ phoneLabel }}</a>
 <a href="{{ instagram.url }}" target="_blank" rel="noopener noreferrer" dir="ltr" class="vf-shell-footer-contact-link tw:text-inherit! tw:[text-underline-offset:4px]">{{ instagram.label }}</a>
 </div>
-<nav aria-label="{{ t.faq }}" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<nav aria-labelledby="vf-footer-help" class="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-2 tw:items-start tw:text-sm">
+<div id="vf-footer-help" class="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet">{{ t.help }}</div>
 <a href="{{ href.faq }}" onClick="{{ go.faq }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.faq }}</a>
+<sc-for list="{{ policyLinks }}" as="p" hint-placeholder-count="4"><a href="{{ p.href }}" onClick="{{ p.go }}" aria-current="{{ p.current }}" class="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ p.label }}</a></sc-for>
 </nav>
 </div>
 </footer>
@@ -630,6 +632,8 @@ const VF_SHELL = {
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
+    help: 'Help',
+    policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
     skip: 'Skip to main content'
   },
   fa: {
@@ -661,6 +665,8 @@ const VF_SHELL = {
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
+    help: 'راهنما',
+    policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
     skip: 'رفتن به محتوای اصلی'
   }
 };
@@ -1220,6 +1226,8 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 // Source: templates/_shared/routing.js
 // Storefront route registration, validation and links. Uses the core AG_SEO router.
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+// Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
+const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
 const VF_ROUTE_EXTRA = {
   product: {
     id: 'ivory'
@@ -1234,6 +1242,7 @@ function vfReadRoute(search = location.search) {
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
     route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
@@ -1404,6 +1413,11 @@ function vfShell(props, page) {
       props.go(route);
     }) : undefined
   }));
+  const policyLink = doc => ({
+    href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'policy', id: doc}),
+    go: props.go ? vfLinkHandler(props.go) : undefined
+  });
+  const policyDoc = page === 'policy' ? props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0] : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
   const setLang = props.setLang || (lang => {
     location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
@@ -1413,6 +1427,8 @@ function vfShell(props, page) {
   return {
     go,
     href,
+    policyLink,
+    policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
     productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
@@ -1526,31 +1542,157 @@ function vfShell(props, page) {
 // BEGIN GENERATED PAGE COPY
 // Source: templates/storefront-policy/copy.js
 // Bilingual policy copy. Edit here, then run npm --prefix templates run build.
-// Formatting helpers keep delivery fees and tenant-specific store details current.
+// Fees, cut-offs, time slots and store details come from the shared config, so the policies stay current.
+// Each document is {title, intro, sections: [{title, paras: [...], items?: [...]}]}.
 function vfCopy(S) {
+  const fa = S.fa;
+  const L = fa ? 'fa' : 'en';
+  const m = v => VF_MONEY(v, fa);
+  const n = v => fa ? VF_FA_DIGITS(v) : String(v);
+  const zoneList = (names, sep) => names.map(id => vfZone(id)[L]).join(sep);
+  const zones = VF_ZONES.map(z => fa
+    ? z.fa + ': ' + m(z.fee) + '، ارسال همان روز برای سفارش تا ساعت ' + vfDeliveryCutoff(z, true)
+    : z.en + ': ' + m(z.fee) + ', same day when you order by ' + vfDeliveryCutoff(z, false));
+  const slots = VF_SLOTS.map(([a, b]) => vfSlotLabel(a, b, fa)).join(fa ? '، ' : ', ');
+  const freeZones = zoneList(VF_FREE_DELIVERY_ZONES, fa ? ' و ' : ' and ');
+  const codZones = zoneList(VF_STORE.paymentDemo.codZones, fa ? ' و ' : ' and ');
+  const brand = VF_STORE.brand[L], address = VF_STORE.address[L], hours = VF_STORE.hours[L];
+  // LRI keeps the + in front of the number inside Persian sentences.
+  const phone = '\u2066' + VF_STORE.phoneLabel + '\u2069';
+  const T = VF_SHELL[L].policies;
   return {
     en: {
       eb: 'Policies',
+      policiesL: 'Policies',
       updated: 'Last updated 1 October 2026',
       toc: 'On this page',
       sampleT: 'Sample text',
-      sampleP: 'Replace with the florist’s own policy before launch.',
+      sampleP: 'Replace with the florist’s own policies, checked by a lawyer, before launch.',
       docs: {
-        shipping: ['Shipping & delivery', [['Delivery zones', 'We deliver across Karaj, Alborz province and Tehran. Fees are shown at checkout for your zone.'], ['Same-day delivery', 'Order before the cut-off for your zone (' + vfDeliveryCutoff(VF_ZONES[0], false) + ' in central Karaj) and we deliver the same day, within the time slot you choose.'], ['Other provinces', 'Houseplants can be sent by post in 3–5 days. Fresh flowers can’t travel that far.'], ['If no one is home', 'The courier will call the recipient. If we can’t reach them, we’ll call you and arrange a second delivery the same day where possible.']]],
-        returns: ['Returns & refunds', [['Fresh flowers', 'Fresh flowers can’t be returned. If anything arrives damaged or wrong, send us a photo within 24 hours and we’ll replace it.'], ['Plants and gift sets', 'Unused plants and gift sets can be returned to the studio within 3 days.'], ['Refunds', 'Refunds go back to the card you paid from within 3 working days.'], ['Cancelling an order', 'Cancel free of charge until we start arranging — usually the morning of delivery.']]],
-        privacy: ['Privacy', [['What we keep', 'Your name, mobile number, addresses, orders and reminders. Never your card number.'], ['Why', 'To deliver your orders, send updates and the reminders you ask for.'], ['Who sees it', 'Only our studio team and the courier for your delivery.'], ['Your choices', 'Change your details or delete your account at any time from your account page.']]]
+        shipping: {
+          title: T.shipping,
+          intro: 'Where we deliver, what it costs and how your flowers reach the door.',
+          sections: [
+            {title: 'Where we deliver', paras: ['We deliver across Karaj, Alborz province and Tehran. Pick your area at checkout to see its fee:'], items: zones},
+            {title: 'Free delivery', paras: ['Delivery is free in ' + freeZones + ' on orders over ' + m(VF_FREE_DELIVERY_THRESHOLD) + '. Promo discounts don’t count towards that total.']},
+            {title: 'Days and times', paras: ['Choose any of the next ' + n(VF_DELIVERY_DAYS) + ' days and one of these time slots: ' + slots + '. Busy days such as Valentine’s Day or Mother’s Day can sell out; those days are greyed out at checkout.']},
+            {title: 'The address and map pin', paras: ['Put the pin on the recipient’s front door and add the plaque, unit and floor in the address field. The courier uses both, and calls the recipient when they arrive.']},
+            {title: 'If no one is home', paras: ['If the courier can’t reach the recipient, we call you. Where we can, we arrange a second delivery the same day. Flowers are never left with a neighbour or at the door without your say-so.']},
+            {title: 'Delivery photo', paras: ['The courier takes a photo of the flowers at the door. You can see it on the order tracking page once the order is delivered.']},
+            {title: 'Tracking', paras: ['We text you when your order is being arranged, when it leaves the studio and when it is delivered. You can follow it any time with your order number on the Track an order page.']},
+            {title: 'Outside our area', paras: ['Fresh flowers don’t travel well, so we don’t send them outside the areas above. For somewhere else, message us and we’ll suggest a florist we trust.']}
+          ]
+        },
+        returns: {
+          title: T.returns,
+          intro: 'Flowers are fresh and made to order, so returns work a little differently from other shops.',
+          sections: [
+            {title: 'If something is wrong', paras: ['If your order arrives damaged, wilted or different from what you ordered, send us a photo within 24 hours of delivery. We’ll replace it the same or next day, or refund you in full; you choose.']},
+            {title: 'Fresh flowers', paras: ['We can’t take back fresh flowers because you’ve changed your mind. Every bouquet is handmade from the day’s stems, so colours and flowers can vary a little by season. If a stem is out of stock, we use one of the same or higher value in the same style.']},
+            {title: 'Plants, vases and gift sets', paras: ['Unused plants, vases and gift sets in their original packaging can be returned to the studio within 3 days of delivery for a full refund.']},
+            {title: 'Changing or cancelling an order', paras: ['You can cancel for free, or change the time, address or card message, until we start arranging (usually the morning of delivery). Call or message us on WhatsApp as early as you can.'], items: ['Before we start arranging: full refund.', 'After we’ve started arranging: we can still change the delivery time or address, but we can’t refund the flowers.', 'If the address was wrong or the recipient couldn’t be reached: a second delivery is charged at the zone’s delivery fee.']},
+            {title: 'Refunds', paras: ['Refunds go back to the card you paid with, within 3 working days of our confirming them. We refund the delivery fee too when the problem was ours. A promo code discount is not paid out as cash.']},
+            {title: 'How to reach us', paras: ['Call or WhatsApp ' + phone + ' (' + hours + '), or use the contact page. Have your order number ready.']}
+          ]
+        },
+        privacy: {
+          title: T.privacy,
+          intro: 'What we keep about you and the people you send flowers to, and what we do with it.',
+          sections: [
+            {title: 'What we keep', paras: ['Only what we need to take and deliver your orders:'], items: ['Your name, mobile number and, if you give it, your email.', 'Recipients’ names, mobile numbers, addresses and map pins.', 'Your orders, card messages and delivery photos.', 'Addresses, saved products and occasion reminders you keep in your account.']},
+            {title: 'What we don’t keep', paras: ['We never see or store your full card number. Online payments are handled by the bank’s payment page; for card-to-card transfers we only ask for the last four digits so we can match the payment.']},
+            {title: 'Why we use it', paras: ['To arrange and deliver your orders, keep you updated about them, send the reminders you set up, and reply when you contact us.']},
+            {title: 'Who sees it', paras: ['Our studio team, and the courier for your delivery (only the recipient’s name, mobile, address and pin). Payments go through our bank. We never sell or rent your details, and only share them with the authorities when the law requires it.']},
+            {title: 'Messages from us', paras: ['Order updates are sent by text. Occasion reminders and news are only sent if you turn them on, and you can turn them off at any time in your account.']},
+            {title: 'On your device', paras: ['The site keeps your bag, saved products, language and sign-in in your browser’s storage so they’re there when you come back. We use simple visit counts to improve the site, and no advertising trackers.']},
+            {title: 'How long we keep it', paras: ['We keep order records for as long as the tax and accounting rules require. Everything else stays until you delete it or close your account.']},
+            {title: 'Your choices', paras: ['You can see and change your details, addresses and reminders in your account, and ask us to delete your account at any time. Contact us with any question about your data.']}
+          ]
+        },
+        terms: {
+          title: T.terms,
+          intro: 'The terms for using this site and ordering from ' + brand + '. By placing an order, you agree to them.',
+          sections: [
+            {title: 'Who we are', paras: [brand + ', ' + address + '. Call or WhatsApp us on ' + phone + '.']},
+            {title: 'Orders', paras: ['Your order is confirmed once payment is received (or, for pay on delivery, once we confirm it by text). If we can’t fulfil an order, for example because a day sells out, we tell you straight away and refund you in full.']},
+            {title: 'Prices and payment', paras: ['Prices are in Toman and include everything except delivery, which is shown at checkout before you pay. You can pay online, by card-to-card transfer, or on delivery in ' + codZones + '.']},
+            {title: 'Promo codes', paras: ['One code per order. Some codes need a minimum order, and codes can’t be exchanged for cash or used on orders already placed. We may end a promotion at any time.']},
+            {title: 'Flowers and photos', paras: ['Each arrangement is made by hand on the day, so it will look close to, but never exactly like, the photos. If a flower is unavailable, we replace it with one of the same or higher value in the same style.']},
+            {title: 'Delivery', paras: ['Delivery is covered in the Shipping & delivery policy. Please make sure the recipient’s address, pin and mobile number are right; a second delivery caused by wrong details is charged again.']},
+            {title: 'Your account', paras: ['You sign in with a code sent to your mobile, so keep your phone secure. You are responsible for orders placed from your account.']},
+            {title: 'Fair use', paras: ['Don’t use the site to break the law, to send card messages that are abusive or threatening, or to interfere with how the site works. We may refuse orders that do.']},
+            {title: 'Our photos and text', paras: ['The photos, designs and words on this site belong to ' + brand + '. Please ask before using them.']},
+            {title: 'Our responsibility', paras: ['If something goes wrong with an order, our responsibility is limited to replacing it or refunding what you paid for it. This doesn’t affect your rights as a consumer under the law.']},
+            {title: 'Changes and law', paras: ['We may update these terms; the date at the top shows the latest version, and the version in place when you ordered applies to that order. These terms are governed by the laws of the Islamic Republic of Iran.']}
+          ]
+        }
       }
     },
     fa: {
       eb: 'قوانین',
+      policiesL: 'قوانین',
       updated: 'آخرین به‌روزرسانی ۹ مهر ۱۴۰۵',
       toc: 'در این صفحه',
       sampleT: 'متن نمونه',
-      sampleP: 'پیش از راه‌اندازی، متن قوانین خود گل‌فروشی را جایگزین کنید.',
+      sampleP: 'پیش از راه‌اندازی، قوانین خود گل‌فروشی را که وکیل بررسی کرده جایگزین کنید.',
       docs: {
-        shipping: ['ارسال و تحویل', [['محدوده ارسال', 'در کرج، استان البرز و تهران ارسال داریم. هزینه هر محدوده هنگام پرداخت نمایش داده می‌شود.'], ['ارسال همان روز', 'اگر پیش از ساعت پایانی محدوده خود (' + vfDeliveryCutoff(VF_ZONES[0], true) + ' در مرکز کرج) سفارش دهید، همان روز در بازه زمانی انتخابی شما ارسال می‌کنیم.'], ['سایر استان‌ها', 'گیاهان آپارتمانی با پست در ۳ تا ۵ روز ارسال می‌شوند. گل تازه این مسیر را تحمل نمی‌کند.'], ['اگر کسی خانه نبود', 'پیک با گیرنده تماس می‌گیرد. اگر در دسترس نبود، با شما تماس می‌گیریم و در صورت امکان همان روز دوباره ارسال می‌کنیم.']]],
-        returns: ['بازگشت و بازپرداخت', [['گل تازه', 'گل تازه قابل بازگشت نیست. اگر سفارش آسیب‌دیده یا اشتباه رسید، تا ۲۴ ساعت عکس بفرستید تا جایگزین کنیم.'], ['گیاه و ست هدیه', 'گیاه و ست هدیه استفاده‌نشده را تا ۳ روز می‌توانید به استودیو برگردانید.'], ['بازپرداخت', 'مبلغ ظرف ۳ روز کاری به کارتی که از آن پرداخت کردید برمی‌گردد.'], ['لغو سفارش', 'تا پیش از شروع چیدن — معمولاً صبح روز ارسال — لغو رایگان است.']]],
-        privacy: ['حریم خصوصی', [['چه چیزی نگه می‌داریم', 'نام، شماره موبایل، آدرس‌ها، سفارش‌ها و یادآورها. هرگز شماره کارت شما را نه.'], ['چرا', 'برای ارسال سفارش، اطلاع‌رسانی و یادآورهایی که خودتان می‌خواهید.'], ['چه کسی می‌بیند', 'فقط تیم استودیو و پیک سفارش شما.'], ['انتخاب شما', 'هر زمان از صفحه حساب، اطلاعات خود را تغییر دهید یا حساب را حذف کنید.']]]
+        shipping: {
+          title: T.shipping,
+          intro: 'کجا ارسال داریم، هزینه‌اش چقدر است و گل‌ها چطور به دستِ گیرنده می‌رسند.',
+          sections: [
+            {title: 'محدوده ارسال', paras: ['در کرج، استان البرز و تهران ارسال داریم. هنگام پرداخت، محدوده را انتخاب کنید تا هزینه‌اش را ببینید:'], items: zones},
+            {title: 'ارسال رایگان', paras: ['ارسال در ' + freeZones + ' برای سفارش‌های بالای ' + m(VF_FREE_DELIVERY_THRESHOLD) + ' رایگان است. تخفیف کد تخفیف در این مبلغ حساب نمی‌شود.']},
+            {title: 'روز و ساعت ارسال', paras: ['یکی از ' + n(VF_DELIVERY_DAYS) + ' روز آینده و یکی از این بازه‌ها را انتخاب کنید: ' + slots + '. روزهای شلوغ مثل ولنتاین یا روز مادر ممکن است پر شوند؛ این روزها هنگام پرداخت غیرفعال نمایش داده می‌شوند.']},
+            {title: 'نشانی و پین نقشه', paras: ['پین را روی درِ ورودی گیرنده بگذارید و پلاک، واحد و طبقه را در نشانی بنویسید. پیک از هر دو استفاده می‌کند و هنگام رسیدن با گیرنده تماس می‌گیرد.']},
+            {title: 'اگر کسی خانه نبود', paras: ['اگر پیک به گیرنده دسترسی پیدا نکند، با شما تماس می‌گیریم و در صورت امکان همان روز دوباره ارسال می‌کنیم. بدون اجازه شما گل را به همسایه نمی‌دهیم یا دمِ در نمی‌گذاریم.']},
+            {title: 'عکس تحویل', paras: ['پیک هنگام تحویل از گل‌ها دمِ در عکس می‌گیرد. پس از تحویل، عکس را در صفحه پیگیری سفارش می‌بینید.']},
+            {title: 'پیگیری', paras: ['وقتی سفارش در حال آماده‌سازی است، از استودیو خارج می‌شود و تحویل داده می‌شود، پیامک می‌فرستیم. هر زمان هم می‌توانید با شماره سفارش در صفحه پیگیری سفارش وضعیت را ببینید.']},
+            {title: 'خارج از محدوده', paras: ['گل تازه سفر طولانی را تحمل نمی‌کند، پس خارج از محدوده‌های بالا ارسال نداریم. برای جای دیگر پیام بدهید تا یک گل‌فروشی مطمئن معرفی کنیم.']}
+          ]
+        },
+        returns: {
+          title: T.returns,
+          intro: 'گل‌ها تازه‌اند و برای هر سفارش جداگانه چیده می‌شوند، پس بازگشت کالا کمی با فروشگاه‌های دیگر فرق دارد.',
+          sections: [
+            {title: 'اگر مشکلی بود', paras: ['اگر سفارش آسیب‌دیده، پژمرده یا متفاوت با سفارش شما رسید، تا ۲۴ ساعت پس از تحویل عکسش را برایمان بفرستید. همان روز یا روز بعد آن را عوض می‌کنیم یا کل مبلغ را برمی‌گردانیم؛ انتخاب با شماست.']},
+            {title: 'گل تازه', paras: ['گل تازه را به دلیل تغییر نظر پس نمی‌گیریم. هر دسته‌گل با گل‌های همان روز دست‌ساز است، پس رنگ و نوع گل‌ها بسته به فصل کمی فرق می‌کند. اگر گلی تمام شده باشد، گلی هم‌ارزش یا گران‌تر در همان سبک جایگزین می‌کنیم.']},
+            {title: 'گیاه، گلدان و ست هدیه', paras: ['گیاه، گلدان و ست هدیه استفاده‌نشده در بسته‌بندی اصلی را تا ۳ روز پس از تحویل می‌توانید به استودیو برگردانید و کل مبلغ را پس بگیرید.']},
+            {title: 'تغییر یا لغو سفارش', paras: ['تا پیش از شروع چیدمان (معمولاً صبحِ روز ارسال) می‌توانید سفارش را رایگان لغو کنید یا ساعت، نشانی یا متن کارت را تغییر دهید. هرچه زودتر تماس بگیرید یا در واتساپ پیام بدهید.'], items: ['پیش از شروع چیدمان: بازپرداخت کامل.', 'پس از شروع چیدمان: ساعت یا نشانی ارسال را هنوز می‌شود تغییر داد، اما هزینه گل‌ها بازگردانده نمی‌شود.', 'اگر نشانی اشتباه بود یا گیرنده در دسترس نبود: ارسال دوباره با هزینه ارسال همان محدوده حساب می‌شود.']},
+            {title: 'بازپرداخت', paras: ['مبلغ به همان کارتی که با آن پرداخت کرده‌اید، تا ۳ روز کاری پس از تأیید بازگردانده می‌شود. اگر مشکل از ما بوده، هزینه ارسال هم بازگردانده می‌شود. تخفیف کد تخفیف به‌صورت نقدی پرداخت نمی‌شود.']},
+            {title: 'راه تماس', paras: ['با ' + phone + ' تماس بگیرید یا در واتساپ پیام بدهید (' + hours + ')، یا از صفحه تماس استفاده کنید. شماره سفارش را دمِ دست داشته باشید.']}
+          ]
+        },
+        privacy: {
+          title: T.privacy,
+          intro: 'چه اطلاعاتی از شما و کسانی که برایشان گل می‌فرستید نگه می‌داریم و با آن چه می‌کنیم.',
+          sections: [
+            {title: 'چه چیزی نگه می‌داریم', paras: ['فقط آنچه برای ثبت و ارسال سفارش لازم است:'], items: ['نام، شماره موبایل و اگر بدهید، ایمیل شما.', 'نام، شماره موبایل، نشانی و پین نقشه گیرندگان.', 'سفارش‌ها، متن کارت‌ها و عکس‌های تحویل.', 'نشانی‌ها، محصولات ذخیره‌شده و یادآورهای مناسبتی که در حساب خود نگه می‌دارید.']},
+            {title: 'چه چیزی نگه نمی‌داریم', paras: ['شماره کامل کارت شما را هرگز نمی‌بینیم و ذخیره نمی‌کنیم. پرداخت آنلاین در درگاه بانک انجام می‌شود و برای کارت به کارت فقط چهار رقم آخر را می‌پرسیم تا پرداخت را تطبیق دهیم.']},
+            {title: 'چرا از آن استفاده می‌کنیم', paras: ['برای آماده‌سازی و ارسال سفارش، خبر دادن درباره وضعیت آن، فرستادن یادآورهایی که خودتان تنظیم کرده‌اید و پاسخ به پیام‌هایتان.']},
+            {title: 'چه کسی آن را می‌بیند', paras: ['تیم استودیو و پیکِ همان سفارش (فقط نام، موبایل، نشانی و پین گیرنده). پرداخت‌ها از طریق بانک انجام می‌شود. اطلاعات شما را هرگز نمی‌فروشیم یا اجاره نمی‌دهیم و فقط در صورت الزام قانونی در اختیار مراجع قانونی می‌گذاریم.']},
+            {title: 'پیام‌های ما', paras: ['خبرهای سفارش با پیامک فرستاده می‌شود. یادآورهای مناسبتی و خبرها فقط اگر خودتان روشنشان کنید فرستاده می‌شوند و هر زمان در حساب کاربری می‌توانید خاموششان کنید.']},
+            {title: 'روی دستگاه شما', paras: ['سایت سبد خرید، محصولات ذخیره‌شده، زبان و ورود شما را در حافظه مرورگر نگه می‌دارد تا وقتی برگشتید سر جایشان باشند. برای بهتر کردن سایت فقط آمار ساده بازدید را می‌شماریم و از ردیاب تبلیغاتی استفاده نمی‌کنیم.']},
+            {title: 'تا کی نگه می‌داریم', paras: ['سوابق سفارش را تا زمانی که قوانین مالیاتی و حسابداری لازم می‌داند نگه می‌داریم. بقیه اطلاعات تا وقتی که خودتان پاکشان کنید یا حساب را ببندید می‌ماند.']},
+            {title: 'اختیار با شماست', paras: ['اطلاعات، نشانی‌ها و یادآورهایتان را در حساب کاربری می‌بینید و تغییر می‌دهید و هر زمان می‌توانید حذف حساب را از ما بخواهید. برای هر پرسشی درباره اطلاعاتتان با ما تماس بگیرید.']}
+          ]
+        },
+        terms: {
+          title: T.terms,
+          intro: 'شرایط استفاده از این سایت و سفارش از ' + brand + '. با ثبت سفارش، این شرایط را می‌پذیرید.',
+          sections: [
+            {title: 'ما که هستیم', paras: [brand + '، ' + address + '. شماره تماس و واتساپ: ' + phone + '.']},
+            {title: 'سفارش', paras: ['سفارش شما پس از دریافت پرداخت (یا برای پرداخت در محل، پس از تأیید ما با پیامک) قطعی می‌شود. اگر نتوانیم سفارشی را انجام دهیم، مثلاً چون ظرفیت آن روز پر شده، فوراً خبر می‌دهیم و کل مبلغ را برمی‌گردانیم.']},
+            {title: 'قیمت و پرداخت', paras: ['قیمت‌ها به تومان است و همه‌چیز جز هزینه ارسال را شامل می‌شود؛ هزینه ارسال پیش از پرداخت نمایش داده می‌شود. می‌توانید آنلاین، کارت به کارت، یا در ' + codZones + ' هنگام تحویل پرداخت کنید.']},
+            {title: 'کد تخفیف', paras: ['در هر سفارش یک کد. بعضی کدها حداقل مبلغ سفارش دارند. کد تخفیف قابل تبدیل به پول نقد نیست و برای سفارش‌های ثبت‌شده استفاده نمی‌شود. ممکن است هر زمان طرحی را تمام کنیم.']},
+            {title: 'گل‌ها و عکس‌ها', paras: ['هر چیدمان همان روز با دست ساخته می‌شود، پس به عکس‌ها نزدیک است اما هیچ‌وقت دقیقاً یکی نیست. اگر گلی موجود نباشد، گلی هم‌ارزش یا گران‌تر در همان سبک جایگزین می‌کنیم.']},
+            {title: 'ارسال', paras: ['جزئیات ارسال در قوانین ارسال و تحویل آمده است. لطفاً از درستی نشانی، پین و موبایل گیرنده مطمئن شوید؛ ارسال دوباره به دلیل اطلاعات نادرست دوباره حساب می‌شود.']},
+            {title: 'حساب کاربری', paras: ['ورود با کدی است که به موبایلتان فرستاده می‌شود، پس از گوشی خود محافظت کنید. مسئولیت سفارش‌هایی که از حساب شما ثبت می‌شود با شماست.']},
+            {title: 'استفاده درست', paras: ['از سایت برای کار غیرقانونی، فرستادن کارت با متن توهین‌آمیز یا تهدیدآمیز، یا اخلال در کار سایت استفاده نکنید. ممکن است چنین سفارش‌هایی را نپذیریم.']},
+            {title: 'عکس‌ها و متن‌های ما', paras: ['عکس‌ها، طرح‌ها و متن‌های این سایت متعلق به ' + brand + ' است. پیش از استفاده از ما اجازه بگیرید.']},
+            {title: 'مسئولیت ما', paras: ['اگر در سفارشی مشکلی پیش بیاید، مسئولیت ما به تعویض آن یا بازگرداندن مبلغ پرداختی همان سفارش محدود است. این بند حقوق قانونی شما به‌عنوان مصرف‌کننده را محدود نمی‌کند.']},
+            {title: 'تغییرات و قانون حاکم', paras: ['ممکن است این شرایط را به‌روز کنیم؛ تاریخ بالای صفحه آخرین نسخه را نشان می‌دهد و برای هر سفارش، نسخه‌ای معتبر است که هنگام ثبت آن برقرار بوده. این شرایط تابع قوانین جمهوری اسلامی ایران است.']}
+          ]
+        }
       }
     }
   }[S.lang];
@@ -1564,9 +1706,10 @@ class Component extends VFPage {
   renderVals() {
     const S = vfShell.call(this, this.props, 'policy');
     const L = S.lang;
-    const id = this.props.doc ?? 'shipping';
+    // A standalone page can be given props.doc; the site opens ?view=policy&id=<doc>.
+    const id = this.props.doc ?? vfPageRoute(this.props).id ?? VF_POLICIES[0];
     const C = vfCopy(S);
-    const d = C.docs[id] || C.docs.shipping;
+    const d = C.docs[id] || C.docs[VF_POLICIES[0]];
     return {
       ...S,
       t: {
@@ -1574,12 +1717,15 @@ class Component extends VFPage {
         ...C
       },
       doc: {
-        title: d[0],
-        sections: d[1].map((x, i) => ({
+        title: d.title,
+        intro: d.intro,
+        sections: d.sections.map((x, i) => ({
           id: 's' + (i + 1),
           href: '#s' + (i + 1),
-          title: (L === 'fa' ? VF_FA_DIGITS(i + 1) : i + 1) + '. ' + x[0],
-          body: x[1]
+          title: (L === 'fa' ? VF_FA_DIGITS(i + 1) : i + 1) + '. ' + x.title,
+          paras: x.paras.map(text => ({text})),
+          hasItems: !!(x.items && x.items.length),
+          items: (x.items || []).map(text => ({text}))
         }))
       }
     };
