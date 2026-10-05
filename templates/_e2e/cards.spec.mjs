@@ -34,7 +34,7 @@ async function openCard(page, card, tenant) {
 
 for (const tenant of [null, ...TENANTS]) {
   test(`contrast card passes (${tenant || 'default'} tenant)`, async ({page}) => {
-    await openCard(page, {file: 'guidelines/colors-contrast.html', width: 700, height: 1920}, tenant);
+    await openCard(page, {file: 'guidelines/colors-contrast.html', width: 700, height: 2320}, tenant);
     await expect(page.locator('#rows .r.pass').first()).toBeVisible();
     const fails = await page.locator('#rows tr:has(.r.fail) code').allTextContents();
     expect(fails).toEqual([]);
