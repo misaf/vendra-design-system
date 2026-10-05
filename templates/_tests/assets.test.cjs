@@ -12,7 +12,7 @@ const document = {
   querySelectorAll: () => elements.filter(element => element.tag === 'link'),
   querySelector: () => elements.find(element => element['data-vf-bundle'])
 };
-const context = vm.createContext({window: {}, document, URL, console});
+const context = vm.createContext({window: {React: {}}, document, URL, console, setTimeout});
 const loader = fs.readFileSync(path.join(root, '_runtime/ds-base.js'), 'utf8');
 vm.runInContext(loader, context);
 vm.runInContext(loader, context);
@@ -24,6 +24,17 @@ assert.deepEqual(elements.filter(e => e.tag === 'link').map(e => e.href), [
 ]);
 assert.equal(elements.filter(e => e.tag === 'script').length, 1);
 assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/design/_ds_bundle.js');
+// Without React the bundle waits: SnapScroller calls React.forwardRef as it loads.
+{
+  const added = [], timers = [];
+  const doc = {...document, head: {appendChild: element => added.push(element)}, querySelectorAll: () => [], querySelector: () => null};
+  const waiting = vm.createContext({window: {}, document: doc, URL, console, setTimeout: fn => timers.push(fn)});
+  vm.runInContext(loader, waiting);
+  assert.equal(added.filter(e => e.tag === 'script').length, 0);
+  waiting.window.React = {};
+  timers.shift()();
+  assert.equal(added.filter(e => e.tag === 'script').length, 1);
+}
 for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
   const files = fs.readdirSync(path.join(root, folder));
   for (const name of ['support.js', 'ds-base.js', 'tailwind.css', 'custom.css']) assert.ok(!files.includes(name), folder + ' duplicates ' + name);

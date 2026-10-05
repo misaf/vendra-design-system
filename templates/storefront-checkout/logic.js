@@ -57,7 +57,9 @@ class Component extends VFPage {
       methodOptions: Object.entries(P.methods).map(([id, label]) => ({
         value: id,
         label,
-        disabled: id === 'cod' && !codOk
+        description: id === 'cod' && !codOk ? P.codOff : undefined,
+        checked: id === method,
+        disabled: s.busy || id === 'cod' && !codOk
       })),
       setMethod: e => !s.busy&&this.setState({
         method: e.target.value,
@@ -65,7 +67,6 @@ class Component extends VFPage {
         failed: false
       }),
       migration: P,
-      codOff: !codOk,
       waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => l[L][0] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
       retry: () => this.setState({
         failed: false

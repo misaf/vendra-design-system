@@ -200,6 +200,15 @@ Edit `_shared/store-config.js` for the bilingual store name, address, hours,
 phone, WhatsApp, Instagram and demo payment details. Run `npm --prefix templates run build`
 to update every template. Shared navigation, contact, footer and checkout use this configuration.
 
+`announcement` is the bilingual message in the bar above the header (`null` hides it;
+`{freeDelivery}` becomes the free-delivery threshold). Visitors can close it for the
+session; changing the English text shows it again. Add `sheba` to the payment details
+(through `VF_PAYMENT.setPayCard`) to show the Sheba number, with its info tooltip, at checkout.
+Give a product an `images` list in `_shared/catalog.js` to fill its product page gallery.
+
+Every design-system component is used by at least one template; `npm --prefix templates test`
+fails if one stops being used.
+
 In the click-through site, tracking without a matching completed order offers a
 shop link. Standalone tracking retains its sample preview. Empty saved lists
 navigate to the shop; they do not create favorites. No-result searches offer a

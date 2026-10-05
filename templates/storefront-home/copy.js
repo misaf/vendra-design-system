@@ -17,6 +17,9 @@ function vfCopy(S) {
       newEb: 'This week',
       newA: 'Fresh from',
       newB: 'the studio.',
+      newLabel: 'New this week',
+      prev: 'Previous designs',
+      next: 'More designs',
       designCount: value => value + ' designs'
     },
     fa: {
@@ -33,6 +36,9 @@ function vfCopy(S) {
       newEb: 'این هفته',
       newA: 'تازه از',
       newB: 'استودیو.',
+      newLabel: 'تازه‌های این هفته',
+      prev: 'طرح‌های قبلی',
+      next: 'طرح‌های بیشتر',
       designCount: value => n(value) + ' طرح'
     }
   }[S.lang];

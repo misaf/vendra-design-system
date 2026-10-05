@@ -21,7 +21,7 @@ class Component extends VFPage {
           count: C.designCount(count)
         };
       }),
-      products: VF_PRODUCTS.slice(0, 4).map(p => ({
+      products: VF_PRODUCTS.filter(p => p.inStock !== false).map(p => ({
         fav: S.isFav(p.id, []),
         toggleFav: S.toggleFav(p.id, []),
         ...S.productLink(p.id),

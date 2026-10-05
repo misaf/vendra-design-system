@@ -19,6 +19,9 @@
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
+<sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+</sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
@@ -83,8 +86,7 @@
 <nav aria-label="{{ t.crumbs }}" class="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"><a href="{{ href.shop }}" onClick="{{ go.shop }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.shop }}</a><span>·</span><a href="{{ category.href }}" onClick="{{ category.go }}" class="vf-product-breadcrumb-link tw:text-quiet!">{{ t.cat }}</a></nav>
 <div class="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
 <div class="tw:flex tw:flex-col tw:gap-3">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" ratio="4/5" tone="product" placeholder-label="{{ t.photo }}" alt="{{ productImage.alt }}" hint-size="100%,640px"></x-import>
-<div class="vf-product-thumbnails tw:flex tw:gap-2"><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div><div class="vf-product-thumbnail tw:w-[56px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ productImage.src }}" shape="soft" size="thumb" alt="" hint-size="56px,70px"></x-import></div></div>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Gallery" images="{{ productImages }}" aspect="4/5" label="{{ t.photos }}" slide-label="{{ t.slide }}" sizes="(max-width: 767px) 100vw, 50vw" hint-size="100%,680px"></x-import>
 </div>
 <div class="vf-product-details tw:flex tw:flex-col tw:gap-5 tw:sticky tw:top-9">
 <div class="vf-product-heading tw:flex tw:flex-col tw:gap-3">
@@ -99,6 +101,7 @@
 </fieldset>
 <div class="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import>
+<sc-if value="{{ desk }}"><sc-if value="{{ toast }}"><div class="vf-product-toast tw:fixed tw:z-toast tw:bottom-6 tw:end-6 tw:max-w-[calc(100%_-_48px)]" onMouseEnter="{{ holdToast }}" onMouseLeave="{{ releaseToast }}" onFocus="{{ holdToast }}" onBlur="{{ releaseToast }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Toast" title="{{ t.added }}" message="{{ toast.message }}" action="{{ toast.action }}" on-close="{{ toast.close }}" close-label="{{ t.dismiss }}" hint-size="360px,96px"></x-import></div></sc-if></sc-if>
 <sc-if value="{{ desk }}"><div class="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="100%,52px">{{ addLabel }}</x-import></div></sc-if>
 </div>
 <div class="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="truck" size="{{ 18 }}" hint-size="18px,18px"></x-import><span>{{ t.ship }}</span></div>
@@ -131,7 +134,7 @@
 <div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE STICKY CONTENT -->
-<div class="vf-product-mobile-action tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4"><div class="vf-product-mobile-total tw:flex-1 tw:font-medium tw:text-sm">{{ totalLabel }}</div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="150px,48px">{{ t.add }}</x-import></div>
+<div class="vf-product-mobile-action tw:relative tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4"><div class="vf-product-mobile-total tw:flex-1 tw:font-medium tw:text-sm">{{ totalLabel }}</div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="150px,48px">{{ t.add }}</x-import><sc-if value="{{ toast }}"><div class="vf-product-toast tw:absolute tw:bottom-full tw:inset-x-4 tw:mb-3" onMouseEnter="{{ holdToast }}" onMouseLeave="{{ releaseToast }}" onFocus="{{ holdToast }}" onBlur="{{ releaseToast }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Toast" title="{{ t.added }}" message="{{ toast.message }}" action="{{ toast.action }}" on-close="{{ toast.close }}" close-label="{{ t.dismiss }}" hint-size="360px,96px"></x-import></div></sc-if></div>
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
@@ -156,6 +159,8 @@ const VF_STORE = {
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
+  // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
+  announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -230,35 +235,37 @@ function vfTotals(lines, delivery) {
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
+// `image` is the card photo; optional `images` lists every photo for the product page gallery.
 const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
+const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -282,12 +289,16 @@ function vfProduct(id) {
   return product;
 }
 
-function vfProductImage(product, lang = 'en') {
-  const asset = product.image || VF_PRODUCT_PLACEHOLDER;
+function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
   const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
   const name = product[lang] ? product[lang][0] : product.en[0];
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+}
+
+// Every product page photo; falls back to the card photo.
+function vfProductImages(product, lang = 'en') {
+  return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
 }
 
 // Each demo gets its own bag objects; prices and names come from the same catalog.
@@ -351,6 +362,8 @@ const VF_SHELL = {
     saved: 'Saved',
     track: 'Track an order',
     closeMenu: 'Close menu',
+    news: 'Store news',
+    dismissNews: 'Dismiss message',
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
@@ -377,6 +390,8 @@ const VF_SHELL = {
     saved: 'ذخیره‌ها',
     track: 'پیگیری سفارش',
     closeMenu: 'بستن منو',
+    news: 'خبر فروشگاه',
+    dismissNews: 'بستن پیام',
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
@@ -1008,6 +1023,16 @@ class VFPage extends DCLogic {
 
 // Source: templates/_shared/navigation.js
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+
+// The store's announcement in this language, or '' once the visitor has closed it this session.
+function vfAnnouncementText(lang, st) {
+  const text = VF_STORE.announcement && VF_STORE.announcement[lang];
+  if (!text || st.vfAnnouncementClosed) return '';
+  try {
+    if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
+  } catch (_) {}
+  return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -1076,6 +1101,12 @@ function vfShell(props, page) {
       window.AG_NAV.focusHeading();
     },
     standalone: !props.store,
+    announcement: vfAnnouncementText(L, st),
+    closeAnnouncement: () => {
+      // Keyed by the message, so a new announcement shows again.
+      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      self.setState({vfAnnouncementClosed: true});
+    },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{
@@ -1172,6 +1203,10 @@ function vfCopy(S) {
       inc: 'More',
       add: 'Add to bag',
       added: 'Added to bag',
+      viewBag: 'View bag',
+      dismiss: 'Dismiss',
+      photos: 'Product photos',
+      slide: (i, n) => 'Photo ' + i + ' of ' + n,
       care: 'Care',
       careT: 'Trim the stems at an angle and change the water every two days. Keep away from direct sun and fruit.',
       del: 'Delivery',
@@ -1197,6 +1232,10 @@ function vfCopy(S) {
       inc: 'بیشتر',
       add: 'افزودن به سبد',
       added: 'به سبد اضافه شد',
+      viewBag: 'مشاهده سبد',
+      dismiss: 'بستن',
+      photos: 'عکس‌های محصول',
+      slide: (i, n) => 'عکس ' + S.n(i) + ' از ' + S.n(n),
       care: 'نگهداری',
       careT: 'ساقه‌ها را مورب کوتاه کنید و هر دو روز آب را عوض کنید. دور از آفتاب مستقیم و میوه نگه دارید.',
       del: 'ارسال',
@@ -1219,7 +1258,7 @@ class Component extends VFPage {
     size: 'petite',
     addons: [],
     qty: 1,
-    added: false
+    toast: null
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -1253,7 +1292,7 @@ class Component extends VFPage {
       hasSizes,
       available: product.inStock !== false,unavailable:product.inStock===false,
       category: S.shopLink(product.cat),
-      productImage: vfProductImage(product, L),
+      productImages: vfProductImages(product, L),
       unitPrice: m(base + (hasSizes ? sz[1] : 0)),
       sizes: VF_SIZES.map(z => ({
         label: fa ? z[3] : z[2],
@@ -1282,7 +1321,7 @@ class Component extends VFPage {
         dec: C.dec,
         inc: C.inc
       },
-      addLabel: (product.inStock === false ? fa ? 'ناموجود' : 'Sold out' : s.added ? C.added : C.add) + ' · ' + m(total),
+      addLabel: (product.inStock === false ? fa ? 'ناموجود' : 'Sold out' : C.add) + ' · ' + m(total),
       totalLabel: m(total),
       add: () => {
         if (product.inStock === false) return;
@@ -1302,12 +1341,30 @@ class Component extends VFPage {
           });
         }
         this.setState({
-          added: true
+          toast: {
+            qty: s.qty
+          }
         });
+        this._hideToastLater();
+      },
+      toast: s.toast && {
+        message: product[L][0] + ' × ' + (fa ? VF_FA_DIGITS(s.toast.qty) : s.toast.qty),
+        action: {
+          label: C.viewBag,
+          href: S.href.bag,
+          onClick: S.go.bag
+        },
+        close: () => this._hideToast()
+      },
+      // Stay while the pointer or focus is on the toast; WCAG 2.2.1.
+      holdToast: () => {
+        this._toastHeld = true;
         clearTimeout(this._t);
-        this._t = setTimeout(() => this.setState({
-          added: false
-        }), 1800);
+      },
+      releaseToast: e => {
+        if (e && e.currentTarget && e.currentTarget.contains(e.relatedTarget)) return;
+        this._toastHeld = false;
+        this._hideToastLater();
       },
       faq: [{
         id: 'care',
@@ -1320,12 +1377,30 @@ class Component extends VFPage {
       }]
     };
   }
+  _hideToastLater() {
+    clearTimeout(this._t);
+    if (!this._toastHeld) this._t = setTimeout(() => this._hideToast(), 6000);
+  }
+  _hideToast() {
+    clearTimeout(this._t);
+    this._toastHeld = false;
+    if (this.state.toast) this.setState({
+      toast: null
+    });
+  }
+  // Gallery.jsx now makes its track focusable; until _ds_bundle.js is regenerated
+  // from it (Claude Design self-check), do the same here. Remove after that.
+  _focusableGallery() {
+    setTimeout(() => document.querySelectorAll?.('.ag-gallery__track:not([tabindex])').forEach(track => { track.tabIndex = 0; }), 0);
+  }
   componentDidMount() {
     this._productId = vfPageRoute(this.props).id;
     super.componentDidMount();
+    this._focusableGallery();
   }
   componentDidUpdate() {
     super.componentDidUpdate();
+    this._focusableGallery();
     const id = vfPageRoute(this.props).id;
     if (this._productId !== id) {
       this._productId = id;
@@ -1333,7 +1408,7 @@ class Component extends VFPage {
         size: 'petite',
         addons: [],
         qty: 1,
-        added: false
+        toast: null
       });
     }
   }

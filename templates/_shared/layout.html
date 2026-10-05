@@ -8,6 +8,9 @@
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
+<sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+</sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <!-- DESKTOP_HEADER -->
 </sc-if>

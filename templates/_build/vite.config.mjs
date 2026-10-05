@@ -78,8 +78,11 @@ function storefrontPreview() {
     },
     transformIndexHtml(html) {
       if (!html.includes('<x-dc>')) return;
-      // Load the namespace before support.js boots the page on a cold start.
-      return [{tag: 'script', attrs: {src: '/_ds_bundle.js'}, injectTo: 'head-prepend'}];
+      // Load the namespace before support.js boots the page on a cold start. The bundle
+      // needs React while it evaluates (SnapScroller calls React.forwardRef), so the local
+      // React copies go first; support.js reuses them instead of fetching unpkg.
+      return ['/templates/_vendor/react.production.min.js', '/templates/_vendor/react-dom.production.min.js', '/_ds_bundle.js']
+        .map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));
     }
   };
 }

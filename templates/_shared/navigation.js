@@ -1,4 +1,14 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+
+// The store's announcement in this language, or '' once the visitor has closed it this session.
+function vfAnnouncementText(lang, st) {
+  const text = VF_STORE.announcement && VF_STORE.announcement[lang];
+  if (!text || st.vfAnnouncementClosed) return '';
+  try {
+    if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
+  } catch (_) {}
+  return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -67,6 +77,12 @@ function vfShell(props, page) {
       window.AG_NAV.focusHeading();
     },
     standalone: !props.store,
+    announcement: vfAnnouncementText(L, st),
+    closeAnnouncement: () => {
+      // Keyed by the message, so a new announcement shows again.
+      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      self.setState({vfAnnouncementClosed: true});
+    },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{

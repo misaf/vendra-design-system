@@ -5,6 +5,8 @@ export function Tooltip({content,placement='top',open,children}){
   const active=hover||focus;
   React.useEffect(()=>{if(!active)return;const onKey=e=>{if(e.key==='Escape')setDismissed(true);};document.addEventListener('keydown',onKey);return()=>document.removeEventListener('keydown',onKey);},[active]);
   React.useEffect(()=>{if(!active)setDismissed(false);},[active]);
-  const trigger=React.isValidElement(children)?React.cloneElement(children,{'aria-describedby':[children.props['aria-describedby'],id].filter(Boolean).join(' ')}):children;
+  // Template runtimes pass even a single child as an array, so unwrap a lone element before linking it.
+  const kids=React.Children.toArray(children);const only=kids.length===1&&React.isValidElement(kids[0])?kids[0]:null;
+  const trigger=only?React.cloneElement(only,{'aria-describedby':[only.props['aria-describedby'],id].filter(Boolean).join(' ')}):children;
   return <span className={'ag-tip'+(open?' ag-tip--open':'')+(dismissed?' ag-tip--dismissed':'')} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onFocus={()=>setFocus(true)} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setFocus(false);}}>{trigger}<span id={id} role="tooltip" className={'ag-tip__bubble'+(placement==='bottom'?' ag-tip__bubble--bottom':'')}>{content}</span></span>;
 }

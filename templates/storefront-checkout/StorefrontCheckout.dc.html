@@ -19,6 +19,9 @@
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
+<sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+</sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
@@ -84,7 +87,7 @@
 <div class="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
 <p class="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.payP }}</p>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ migration.choose }}" options="{{ methodOptions }}" value="{{ method }}" on-change="{{ setMethod }}" disabled="{{ busy }}"></x-import><p class="tw:text-sm tw:text-quiet">{{ paymentNotice }}</p><sc-if value="{{ codOff }}"><p>{{ migration.codOff }}</p></sc-if><sc-if value="{{ isCard }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.PaymentCard" card-number="{{ payment.cardNumber }}" holder="{{ payment.holder }}" bank="{{ payment.bank }}" amount="{{ totalLabel }}" labels="{{ payLabels }}" hint-size="100%,220px"></x-import><sc-if value="{{ payment.sheba }}"><p class="tw:text-sm">{{ lang === 'fa' ? 'شبا' : 'Sheba' }}: <bdi dir="ltr">{{ payment.sheba }}</bdi></p><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="sm" on-click="{{ copySheba }}">{{ payLabels.copy }}</x-import></sc-if>
+<fieldset class="vf-checkout-methods tw:[border:0] tw:p-0 tw:m-0 tw:flex tw:flex-col tw:gap-3"><legend class="vf-checkout-methods-legend tw:text-sm tw:font-medium tw:mb-3 tw:p-0">{{ migration.choose }}</legend><sc-for list="{{ methodOptions }}" as="o" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Radio" name="vf-pay-method" value="{{ o.value }}" label="{{ o.label }}" description="{{ o.description }}" checked="{{ o.checked }}" disabled="{{ o.disabled }}" on-change="{{ setMethod }}" hint-size="100%,24px"></x-import></sc-for></fieldset><p class="tw:text-sm tw:text-quiet">{{ paymentNotice }}</p><sc-if value="{{ isCard }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.PaymentCard" card-number="{{ payment.cardNumber }}" holder="{{ payment.holder }}" bank="{{ payment.bank }}" amount="{{ totalLabel }}" labels="{{ payLabels }}" hint-size="100%,220px"></x-import><sc-if value="{{ payment.sheba }}"><p class="vf-checkout-sheba tw:text-sm tw:flex tw:items-center tw:gap-1 tw:flex-wrap tw:m-0">{{ t.sheba }}: <bdi dir="ltr">{{ payment.sheba }}</bdi><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tooltip" content="{{ t.shebaTip }}" hint-size="44px,44px"><button type="button" class="vf-checkout-info tw:inline-grid tw:place-items-center tw:size-[44px] tw:-my-2 tw:p-0 tw:[border:0] tw:bg-transparent tw:text-quiet tw:cursor-pointer tw:rounded-full" aria-label="{{ t.shebaInfo }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="info" size="{{ 16 }}" hint-size="16px,16px"></x-import></button></x-import></p><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="sm" on-click="{{ copySheba }}">{{ payLabels.copy }}</x-import></sc-if>
 <div class="vf-checkout-receipt-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-last4" label="{{ t.last4 }}" hint="{{ t.last4Hint }}" error="{{ last4Err }}" inputmode="numeric" maxlength="4" dir="ltr" value="{{ last4 }}" on-change="{{ setLast4 }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-ref" value="{{ ref }}" on-change="{{ setRef }}" label="{{ t.ref }}" hint="{{ t.refHint }}" inputmode="numeric" dir="ltr" hint-size="100%,96px"></x-import></div>
 </sc-if><sc-if value="{{ isWa }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" href="{{ waOrder }}" target="_blank" rel="noopener noreferrer">{{ migration.openWa }}</x-import></sc-if><sc-if value="{{ busy }}"><p role="status">{{ migration.processing }}</p></sc-if><sc-if value="{{ failed }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ migration.failed }}" >{{ migration.failureBody }}</x-import><div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ retry }}">{{ migration.retry }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ otherMethod }}">{{ migration.other }}</x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" icon="shield-check" hint-size="100%,60px">{{ t.safe }}</x-import>
 <div class="tw:flex tw:gap-3 tw:flex-wrap"><sc-if value="{{ desk }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" icon-end="arrow-right" on-click="{{ place }}" loading="{{ busy }}" disabled="{{ placeDisabled }}" hint-size="200px,52px">{{ t.place }}</x-import></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="lg" icon-start="arrow-left" href="{{ href.bag }}" on-click="{{ go.bag }}" hint-size="140px,52px">{{ t.back }}</x-import></div>
@@ -150,6 +153,8 @@ const VF_STORE = {
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
+  // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
+  announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -224,35 +229,37 @@ function vfTotals(lines, delivery) {
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
+// `image` is the card photo; optional `images` lists every photo for the product page gallery.
 const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
+const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -276,12 +283,16 @@ function vfProduct(id) {
   return product;
 }
 
-function vfProductImage(product, lang = 'en') {
-  const asset = product.image || VF_PRODUCT_PLACEHOLDER;
+function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
   const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
   const name = product[lang] ? product[lang][0] : product.en[0];
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+}
+
+// Every product page photo; falls back to the card photo.
+function vfProductImages(product, lang = 'en') {
+  return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
 }
 
 // Each demo gets its own bag objects; prices and names come from the same catalog.
@@ -345,6 +356,8 @@ const VF_SHELL = {
     saved: 'Saved',
     track: 'Track an order',
     closeMenu: 'Close menu',
+    news: 'Store news',
+    dismissNews: 'Dismiss message',
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
@@ -371,6 +384,8 @@ const VF_SHELL = {
     saved: 'ذخیره‌ها',
     track: 'پیگیری سفارش',
     closeMenu: 'بستن منو',
+    news: 'خبر فروشگاه',
+    dismissNews: 'بستن پیام',
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
@@ -1002,6 +1017,16 @@ class VFPage extends DCLogic {
 
 // Source: templates/_shared/navigation.js
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+
+// The store's announcement in this language, or '' once the visitor has closed it this session.
+function vfAnnouncementText(lang, st) {
+  const text = VF_STORE.announcement && VF_STORE.announcement[lang];
+  if (!text || st.vfAnnouncementClosed) return '';
+  try {
+    if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
+  } catch (_) {}
+  return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -1070,6 +1095,12 @@ function vfShell(props, page) {
       window.AG_NAV.focusHeading();
     },
     standalone: !props.store,
+    announcement: vfAnnouncementText(L, st),
+    closeAnnouncement: () => {
+      // Keyed by the message, so a new announcement shows again.
+      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      self.setState({vfAnnouncementClosed: true});
+    },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{
@@ -1160,6 +1191,9 @@ function vfCopy(S) {
       payP: 'Transfer the total from your banking app to the card below, then enter the last four digits of your card so we can match the payment.',
       last4: 'Last 4 digits of your card',
       last4Hint: 'Only these four digits are sent.',
+      sheba: 'Sheba',
+      shebaInfo: 'About Sheba',
+      shebaTip: 'Iranian IBAN',
       last4Err: 'Enter the last four digits.',
       ref: 'Tracking number (optional)',
       refHint: 'From your bank receipt.',
@@ -1204,6 +1238,9 @@ function vfCopy(S) {
       payP: 'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',
       last4: 'چهار رقم آخر کارت شما',
       last4Hint: 'فقط همین چهار رقم ارسال می‌شود.',
+      sheba: 'شبا',
+      shebaInfo: 'درباره شبا',
+      shebaTip: 'شماره حساب بین‌بانکی',
       last4Err: 'چهار رقم آخر را وارد کنید.',
       ref: 'شماره پیگیری (اختیاری)',
       refHint: 'از رسید بانک.',
@@ -1374,7 +1411,9 @@ class Component extends VFPage {
       methodOptions: Object.entries(P.methods).map(([id, label]) => ({
         value: id,
         label,
-        disabled: id === 'cod' && !codOk
+        description: id === 'cod' && !codOk ? P.codOff : undefined,
+        checked: id === method,
+        disabled: s.busy || id === 'cod' && !codOk
       })),
       setMethod: e => !s.busy&&this.setState({
         method: e.target.value,
@@ -1382,7 +1421,6 @@ class Component extends VFPage {
         failed: false
       }),
       migration: P,
-      codOff: !codOk,
       waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => l[L][0] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
       retry: () => this.setState({
         failed: false

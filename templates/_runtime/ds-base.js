@@ -48,10 +48,14 @@
     if (window.VF_TENANT) window.VF_USE_TENANT(window.VF_TENANT);
   }
   // Imported pages reuse the same design-system bundle and styles.
-  if (window.VendraDesignSystem_f4f210 || document.querySelector('script[data-vf-bundle]')) return;
+  if (window.VendraDesignSystem_f4f210 || window.VF_BUNDLE_LOADING || document.querySelector('script[data-vf-bundle]')) return;
+  window.VF_BUNDLE_LOADING = true;
   const s = document.createElement('script');
   s.src = new URL('_ds_bundle.js', assetRoot).href;
   s.setAttribute('data-vf-bundle', '');
   s.onerror = () => console.error('ds-base.js: failed to load ' + s.src + ' — if this is a consuming project, point the base line in ds-base.js at the bound _ds/<folder> tree relative to this page (e.g. _ds/<folder> at the project root, ../_ds/<folder> one level down); in a fresh design system this can just mean the bundle is not compiled yet');
-  document.head.appendChild(s);
+  // The DC runtime fetches React, and SnapScroller calls React.forwardRef while the
+  // bundle evaluates, so the bundle waits for React.
+  const add = () => window.React ? document.head.appendChild(s) : setTimeout(add, 10);
+  add();
 })();

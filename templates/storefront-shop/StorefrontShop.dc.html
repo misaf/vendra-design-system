@@ -19,6 +19,9 @@
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
+<sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+</sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
@@ -153,6 +156,8 @@ const VF_STORE = {
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
+  // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
+  announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -227,35 +232,37 @@ function vfTotals(lines, delivery) {
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
+// `image` is the card photo; optional `images` lists every photo for the product page gallery.
 const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
+const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER,
+    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -279,12 +286,16 @@ function vfProduct(id) {
   return product;
 }
 
-function vfProductImage(product, lang = 'en') {
-  const asset = product.image || VF_PRODUCT_PLACEHOLDER;
+function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
   const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
   const name = product[lang] ? product[lang][0] : product.en[0];
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+}
+
+// Every product page photo; falls back to the card photo.
+function vfProductImages(product, lang = 'en') {
+  return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
 }
 
 // Each demo gets its own bag objects; prices and names come from the same catalog.
@@ -348,6 +359,8 @@ const VF_SHELL = {
     saved: 'Saved',
     track: 'Track an order',
     closeMenu: 'Close menu',
+    news: 'Store news',
+    dismissNews: 'Dismiss message',
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
@@ -374,6 +387,8 @@ const VF_SHELL = {
     saved: 'ذخیره‌ها',
     track: 'پیگیری سفارش',
     closeMenu: 'بستن منو',
+    news: 'خبر فروشگاه',
+    dismissNews: 'بستن پیام',
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
@@ -1005,6 +1020,16 @@ class VFPage extends DCLogic {
 
 // Source: templates/_shared/navigation.js
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+
+// The store's announcement in this language, or '' once the visitor has closed it this session.
+function vfAnnouncementText(lang, st) {
+  const text = VF_STORE.announcement && VF_STORE.announcement[lang];
+  if (!text || st.vfAnnouncementClosed) return '';
+  try {
+    if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
+  } catch (_) {}
+  return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -1073,6 +1098,12 @@ function vfShell(props, page) {
       window.AG_NAV.focusHeading();
     },
     standalone: !props.store,
+    announcement: vfAnnouncementText(L, st),
+    closeAnnouncement: () => {
+      // Keyed by the message, so a new announcement shows again.
+      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      self.setState({vfAnnouncementClosed: true});
+    },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{

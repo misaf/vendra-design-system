@@ -4,7 +4,7 @@ class Component extends VFPage {
     size: 'petite',
     addons: [],
     qty: 1,
-    added: false
+    toast: null
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -38,7 +38,7 @@ class Component extends VFPage {
       hasSizes,
       available: product.inStock !== false,unavailable:product.inStock===false,
       category: S.shopLink(product.cat),
-      productImage: vfProductImage(product, L),
+      productImages: vfProductImages(product, L),
       unitPrice: m(base + (hasSizes ? sz[1] : 0)),
       sizes: VF_SIZES.map(z => ({
         label: fa ? z[3] : z[2],
@@ -67,7 +67,7 @@ class Component extends VFPage {
         dec: C.dec,
         inc: C.inc
       },
-      addLabel: (product.inStock === false ? fa ? 'ناموجود' : 'Sold out' : s.added ? C.added : C.add) + ' · ' + m(total),
+      addLabel: (product.inStock === false ? fa ? 'ناموجود' : 'Sold out' : C.add) + ' · ' + m(total),
       totalLabel: m(total),
       add: () => {
         if (product.inStock === false) return;
@@ -87,12 +87,30 @@ class Component extends VFPage {
           });
         }
         this.setState({
-          added: true
+          toast: {
+            qty: s.qty
+          }
         });
+        this._hideToastLater();
+      },
+      toast: s.toast && {
+        message: product[L][0] + ' × ' + (fa ? VF_FA_DIGITS(s.toast.qty) : s.toast.qty),
+        action: {
+          label: C.viewBag,
+          href: S.href.bag,
+          onClick: S.go.bag
+        },
+        close: () => this._hideToast()
+      },
+      // Stay while the pointer or focus is on the toast; WCAG 2.2.1.
+      holdToast: () => {
+        this._toastHeld = true;
         clearTimeout(this._t);
-        this._t = setTimeout(() => this.setState({
-          added: false
-        }), 1800);
+      },
+      releaseToast: e => {
+        if (e && e.currentTarget && e.currentTarget.contains(e.relatedTarget)) return;
+        this._toastHeld = false;
+        this._hideToastLater();
       },
       faq: [{
         id: 'care',
@@ -105,12 +123,30 @@ class Component extends VFPage {
       }]
     };
   }
+  _hideToastLater() {
+    clearTimeout(this._t);
+    if (!this._toastHeld) this._t = setTimeout(() => this._hideToast(), 6000);
+  }
+  _hideToast() {
+    clearTimeout(this._t);
+    this._toastHeld = false;
+    if (this.state.toast) this.setState({
+      toast: null
+    });
+  }
+  // Gallery.jsx now makes its track focusable; until _ds_bundle.js is regenerated
+  // from it (Claude Design self-check), do the same here. Remove after that.
+  _focusableGallery() {
+    setTimeout(() => document.querySelectorAll?.('.ag-gallery__track:not([tabindex])').forEach(track => { track.tabIndex = 0; }), 0);
+  }
   componentDidMount() {
     this._productId = vfPageRoute(this.props).id;
     super.componentDidMount();
+    this._focusableGallery();
   }
   componentDidUpdate() {
     super.componentDidUpdate();
+    this._focusableGallery();
     const id = vfPageRoute(this.props).id;
     if (this._productId !== id) {
       this._productId = id;
@@ -118,7 +154,7 @@ class Component extends VFPage {
         size: 'petite',
         addons: [],
         qty: 1,
-        added: false
+        toast: null
       });
     }
   }
