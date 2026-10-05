@@ -4,7 +4,7 @@
 
 The reference tenant shipped with the system is **Vendra Florist** (below). Its brand (logo, peony/stem palette, arch motif) is the *default theme*; other tenants keep the same components, layout rules and semantic tokens and swap brand assets + accent tokens.
 
-**Source:** local codebase `Vendra Florist/` (attached folder — an existing design-system export: tokens, 47 React components, foundation cards, storefront compositions, fonts, logos, an OpenAPI spec in `uploads/`). All files were imported verbatim; only the window namespace was renamed to `VendraDesignSystem_f4f210`.
+**Source:** local codebase `Vendra Florist/` (attached folder — an existing design-system export: tokens, 47 React components (46 today), foundation cards, storefront compositions, fonts, logos, an OpenAPI spec in `uploads/`). All files were imported verbatim; only the window namespace was renamed to `VendraDesignSystem_f4f210`.
 
 ## Multi-tenancy notes
 - **Theme by tokens only.** Components reference semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant theme overrides those in its own CSS scope; never fork component CSS.
