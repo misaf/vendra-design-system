@@ -233,11 +233,13 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   that address), and the address editor has the same centre pin as the bag; a pin is required
   unless the map fails to load. Addresses keep it as `location`. Signed-in customers can fill the
   bag's delivery from a saved address in one tap.
-- **Saved products.** The account has a Saved tab listing the customer's saved products; it shares
-  the list with the Saved page.
+- **Saved products.** The product page has a save (heart) button, and the account has a Saved tab
+  listing the customer's saved products; both share the list with the Saved page.
+- **Home carousels.** Shop-by-occasion and new arrivals are snap carousels (arrows on desktop,
+  swipe on phones).
 - **Contact.** The contact page maps the studio from `studio` in `store-config.js` with a Get
   directions link (Google Maps). A message needs a valid mobile or an email so the studio can
-  reply; the topic is sent with it, and signed-in customers start with their details filled in.
+  reply. Signed-in customers start with their saved name, mobile and email filled in.
 - **Language.** The header has an EN / فا switch (on phones, one button for the other language).
   In the click-through site it switches in place; on a standalone page it opens that page in the
   site in the other language.

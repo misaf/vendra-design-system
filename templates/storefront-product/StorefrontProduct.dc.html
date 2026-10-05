@@ -102,7 +102,7 @@
 <sc-for list="{{ addons }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Checkbox" label="{{ a.label }}" checked="{{ a.on }}" on-change="{{ a.toggle }}" hint-size="100%,24px"></x-import></sc-for>
 </fieldset>
 <div class="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="heart" label="{{ t.saveDesign }}" variant="outline" size="lg" active="{{ fav }}" on-click="{{ toggleSave }}" class-name="vf-product-save" hint-size="44px,44px"></x-import>
 <sc-if value="{{ desk }}"><sc-if value="{{ toast }}"><div class="vf-product-toast tw:fixed tw:z-toast tw:bottom-6 tw:end-6 tw:max-w-[calc(100%_-_48px)]" onMouseEnter="{{ holdToast }}" onMouseLeave="{{ releaseToast }}" onFocus="{{ holdToast }}" onBlur="{{ releaseToast }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Toast" title="{{ t.added }}" message="{{ toast.message }}" action="{{ toast.action }}" on-close="{{ toast.close }}" close-label="{{ t.dismiss }}" hint-size="360px,96px"></x-import></div></sc-if></sc-if>
 <sc-if value="{{ desk }}"><div class="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="100%,52px">{{ addLabel }}</x-import></div></sc-if>
 </div>
@@ -1564,6 +1564,7 @@ function vfCopy(S) {
       size: 'Size',
       extras: 'Add a little more',
       recentEb: 'Still deciding?',
+      saveDesign: 'Save this design',
       recentA: 'Recently',
       recentB: 'viewed.',
       ship: 'Same-day delivery in Karaj if you order by ' + vfDeliveryCutoff(VF_ZONES[0], false) + '.',
@@ -1596,6 +1597,7 @@ function vfCopy(S) {
       size: 'اندازه',
       extras: 'کمی بیشتر',
       recentEb: 'هنوز انتخاب نکرده‌اید؟',
+      saveDesign: 'ذخیره این طرح',
       recentA: 'اخیراً',
       recentB: 'دیده‌اید.',
       ship: 'ارسال همان روز در کرج برای سفارش تا ساعت ' + vfDeliveryCutoff(VF_ZONES[0], true) + '.',
@@ -1661,6 +1663,9 @@ class Component extends VFPage {
         ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
       },
       hasSizes,
+      // Saved products are shared with the Saved page and the account's Saved tab.
+      fav: S.isFav(product.id, []),
+      toggleSave: S.toggleFav(product.id, []),
       recentLabel: C.recentA + ' ' + C.recentB,
       hasRecent: vfRecentlyViewed().some(x => x !== product.id),
       available: product.inStock !== false,unavailable:product.inStock===false,

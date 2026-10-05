@@ -36,6 +36,9 @@ class Component extends VFPage {
         ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
       },
       hasSizes,
+      // Saved products are shared with the Saved page and the account's Saved tab.
+      fav: S.isFav(product.id, []),
+      toggleSave: S.toggleFav(product.id, []),
       recentLabel: C.recentA + ' ' + C.recentB,
       hasRecent: vfRecentlyViewed().some(x => x !== product.id),
       available: product.inStock !== false,unavailable:product.inStock===false,

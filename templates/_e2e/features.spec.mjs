@@ -207,7 +207,6 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   const map = page.getByRole('region', {name: 'The studio on the map'});
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
   await expect(page.getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
-  await page.getByRole('combobox', {name: 'About'}).selectOption('weddings');
   await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
   await expect(page.locator('#vf-cphone')).toBeFocused();
@@ -219,7 +218,41 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
 });
 
 test('contact fills in a signed-in customer', async ({page}) => {
-  await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09125649438'));
+  await page.addInitScript(() => {
+    localStorage.setItem('vf-account-phone', '09125649438');
+    const key = 'vf-account:09125649438';
+    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({profile: {name: 'شیرین احمدی', email: 'shirin@example.com', locale: 'fa', sms: true}, addresses: [], reminders: []}));
+  });
   await openSite(page, 'contact', 'fa');
+  await expect(page.locator('#vf-cname')).toHaveValue('شیرین احمدی');
   await expect(page.locator('#vf-cphone')).toHaveValue('09125649438');
+  await expect(page.locator('#vf-cemail')).toHaveValue('shirin@example.com');
+  await expect(page.getByRole('combobox')).toHaveCount(0);
+});
+
+test('a guest gets an empty contact form', async ({page}) => {
+  await openSite(page, 'contact', 'en');
+  await expect(page.locator('#vf-cname')).toHaveValue('');
+  await expect(page.locator('#vf-cphone')).toHaveValue('');
+});
+
+test('the product page saves the design to the saved list', async ({page}) => {
+  await openSite(page, 'product', 'en', {id: 'ivory'});
+  const save = page.getByRole('button', {name: 'Save this design'});
+  await expect(save).toHaveAttribute('aria-pressed', 'false');
+  await save.click();
+  await expect(save).toHaveAttribute('aria-pressed', 'true');
+  expect(await scanAxe(page)).toEqual([]);
+  await openSite(page, 'saved', 'en');
+  await expect(page.locator('main .ag-product__name')).toContainText(['Ivory ribbon box']);
+});
+
+test('home occasions scroll as a carousel', async ({page}, info) => {
+  await openSite(page, 'home', 'en');
+  const row = page.getByRole('region', {name: 'Occasions'});
+  await expect(row.locator('.ag-cat')).not.toHaveCount(0);
+  if (info.project.name === 'desktop') {
+    await expect(page.getByRole('button', {name: 'More occasions'})).toBeVisible();
+  }
+  expect(await scanAxe(page)).toEqual([]);
 });

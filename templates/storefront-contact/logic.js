@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-const VF_CONTACT_TOPICS = ['order', 'weddings', 'corporate', 'other'];
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();
@@ -16,7 +15,6 @@ class Component extends VFPage {
     msg: '',
     name: '',
     phone: '',
-    topic: 'order',
     submitted: false,
     mapFailed: false,
     ...vfContactPrefill()
@@ -52,9 +50,6 @@ class Component extends VFPage {
       studioMap: !!directions && !s.mapFailed,
       hasDirections: !!directions,
       directions,
-      topics: VF_CONTACT_TOPICS.map((value, i) => ({value, label: C.topics[i]})),
-      topic: s.topic,
-      setTopic: field('topic'),
       apiError: s.apiError,
       busy: s.busy,
       email: s.email,
@@ -107,7 +102,6 @@ class Component extends VFPage {
           name: s.name.trim(),
           phone: s.phone ? vfPhone(s.phone) : '',
           email: s.email.trim(),
-          topic: s.topic,
           message: s.msg.trim(),
           occasion: 'contact',
           preferredLocale: window.VF_API.preferredLocale()

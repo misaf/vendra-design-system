@@ -95,9 +95,7 @@
 </section>
 <section class="vf-home-categories tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-5 tw:px-gutter tw:pb-0">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" eyebrow="{{ t.catEb }}" title="{{ t.catA }}" accent="{{ t.catB }}" hint-size="100%,80px"></x-import>
-<div class="vf-home-category-grid tw:grid tw:gap-5 tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))]">
-<sc-for list="{{ occasions }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.CategoryCard" label="{{ c.label }}" count="{{ c.count }}" frame="{{ frame }}" href="{{ c.href }}" on-click="{{ c.go }}" hint-size="100%,340px"></x-import></sc-for>
-</div>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.SnapScroller" class-name="vf-home-category-row" label="{{ t.catLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="150px" gap="20px" arrows="{{ desk }}" prev-label="{{ t.catPrev }}" next-label="{{ t.catNext }}" hint-size="100%,360px"><sc-for list="{{ occasions }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.CategoryCard" label="{{ c.label }}" count="{{ c.count }}" frame="{{ frame }}" href="{{ c.href }}" on-click="{{ c.go }}" hint-size="100%,340px"></x-import></sc-for></x-import>
 </section>
 <section class="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.SectionHeader" eyebrow="{{ t.newEb }}" title="{{ t.newA }}" accent="{{ t.newB }}" hint-size="100%,80px"></x-import>
@@ -1561,6 +1559,9 @@ function vfCopy(S) {
       newEb: 'This week',
       newA: 'Fresh from',
       newB: 'the studio.',
+      catLabel: 'Occasions',
+      catPrev: 'Previous occasions',
+      catNext: 'More occasions',
       newLabel: 'New this week',
       prev: 'Previous designs',
       next: 'More designs',
@@ -1580,6 +1581,9 @@ function vfCopy(S) {
       newEb: 'این هفته',
       newA: 'تازه از',
       newB: 'استودیو.',
+      catLabel: 'مناسبت‌ها',
+      catPrev: 'مناسبت‌های قبلی',
+      catNext: 'مناسبت‌های بیشتر',
       newLabel: 'تازه‌های این هفته',
       prev: 'طرح‌های قبلی',
       next: 'طرح‌های بیشتر',
