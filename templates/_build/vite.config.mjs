@@ -58,7 +58,7 @@ function storefrontPreview() {
         const relative = path.relative(root, file).replaceAll(path.sep, '/');
         const isPage = /^templates\/storefront-[^/]+\/[^/]+\.dc\.html$/.test(relative);
         if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8')) return;
-        const isSource = relative.startsWith('templates/_shared/') || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
+        const isSource = relative.startsWith('templates/_shared/') || /^tokens\/tenants\/[^/]+\.json$/.test(relative) || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
         const isAsset = /^(tokens|assets)\//.test(relative) || ['styles.css', 'components/components.css', '_ds_bundle.js'].includes(relative) || relative.startsWith('templates/_runtime/');
         if (!isSource && !isAsset) return;
         // Generated CSS writes follow a source rebuild; they need no extra rebuild.

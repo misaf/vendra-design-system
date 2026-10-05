@@ -8,7 +8,7 @@ Read the readme.md file (see "Multi-tenancy notes": theme via tokens, copy from 
 If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy assets out and create static HTML files for the user to view. If working on production code, you can copy assets and read the rules here to become an expert in designing with this brand.
 If the user invokes this skill without any other guidance, ask them what they want to build or design, ask some questions, and act as an expert designer who outputs HTML artifacts _or_ production code, depending on the need.
 
-Always support both `lang="en" dir="ltr"` and `lang="fa" dir="rtl" data-lang="fa"`; light mode only (semantic tokens only); tenants restyle via `data-tenant="<slug>"` + `tokens/tenants/<slug>.css` (see readme → Tenant themes, sample `clay`); use logical CSS properties and Persian digits for fa.
+Always support both `lang="en" dir="ltr"` and `lang="fa" dir="rtl" data-lang="fa"`; light mode only (semantic tokens only); tenants restyle via `data-tenant="<slug>"` + `tokens/tenants/<slug>.json`, generated into `<slug>.css` (see readme → Tenant themes, sample `clay`); use logical CSS properties and Persian digits for fa.
 
 Store contact: phone +98-9129333034 (`tel:+989129333034`) · WhatsApp +989129333034 (https://wa.me/989129333034) · Instagram @misaf1990. Numbers render LTR inside Persian. When a time range is written in Persian (۰۸:۰۰ تا ۲۲:۰۰), wrap each time in Unicode FSI/PDI marks (`\u2068 … \u2069`) so the order can't flip.
 

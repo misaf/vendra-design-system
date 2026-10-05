@@ -3,14 +3,20 @@
 A florist gets the same storefront as every other Vendra tenant. Only the **theme**, **brand assets** and **store data** change. Work through these in order. Every item has a clear owner and a "done when" check.
 
 ## 1. Theme (designer · ~1 hour)
-- [ ] Open the **Theme builder** card (Brand group, `guidelines/theme-builder.html`). Start from the Vendra or Clay preset.
-- [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame.
+- [ ] Open the **Theme builder** card (Brand group, `guidelines/theme-builder.html`). In **Start from**, pick Vendra or an existing tenant.
+- [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
-- [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy tenant CSS**.
-- [ ] Paste it into `tokens/tenants/<slug>.css`. The reference for every line is `tokens/tenants/_template.css.txt`.
+- [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
+- [ ] Save it as `tokens/tenants/<slug>.json` and run `npm --prefix templates run build`. The build writes `tokens/tenants/<slug>.css` (never edit that file) and refuses a theme that fails any of the seven checks.
 - [ ] Add `@import url('tokens/tenants/<slug>.css');` to `styles.css`, above `components/components.css`.
 - [ ] Set `data-tenant="<slug>"` on `<html>`. Check Home, Product and Bag in **both EN and FA**.
-- Own font? Add its `@font-face` to the tenant file and put the family first in `--font-display`. Keep `'Vazirmatn'` second so Persian still renders.
+
+**The tenant JSON**
+- `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
+- `character`: `headings` (`serif`, `sans`, `vazir`), `case` (`none`, `uppercase`), `accentWord` (`italic`, `upright`), `controls` (`pill`, `square`), `frame` (`arch`, `soft`, `square`).
+- `overrides` (optional): a generated shade the designer wants to set by hand, for example `{"--border-input": "#847E70"}`. Only shade names are accepted (`--peony-*`, `--petal-*`, `--ink-*`, `--stem-*`, `--border-input`). Changing a base colour in the Theme builder drops the overrides tuned for it.
+- `description` (optional): one line, copied into the generated CSS.
+- Own font? That needs a new `headings` choice in `templates/_shared/tenant-theme.js` (the generator) with its `@font-face` in `tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
 
 ## 2. Brand assets (florist supplies · designer prepares)
 Never ship a tenant with Vendra Florist's logo. Until the real files arrive, the store name renders in `--font-display` (the kit already does this when `data-tenant` is set).

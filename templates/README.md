@@ -32,7 +32,8 @@ Start here when changing the official storefront. All storefront examples live h
 | Responsive state, heading focus, announcements and SEO | [_shared/page-lifecycle.js](_shared/page-lifecycle.js) |
 | Storefront number and currency wrappers | [_shared/formatting.js](_shared/formatting.js) |
 | Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
-| Colors, fonts and tenant themes | `../tokens/` |
+| Colors and fonts | `../tokens/` |
+| Tenant themes (generated into `../tokens/tenants/<slug>.css`) | `../tokens/tenants/<slug>.json`; generator in [_shared/tenant-theme.js](_shared/tenant-theme.js) |
 
 The catalog and delivery rules contain sample store data. Keep page copy in `storefront-<page>/copy.js`; shared navigation labels belong in `translations/shell.js`.
 
@@ -119,7 +120,7 @@ They run on the installed Google Chrome (`channel: 'chrome'`), so `npx playwrigh
 - `pages.spec.mjs` compares full-page screenshots of every routed view in English and Persian at both widths, with the clock frozen at 2026-10-05 so relative dates stay put.
 - `components.spec.mjs` exercises Tooltip (hover, bubble hover, Esc, focus), Tabs (arrow keys mirrored in RTL, Home/End, roving tabindex, `aria-controls`) and Toast (44px close button, on-inverse ring at 3:1) on `_e2e/fixtures/components.html`.
 - `cards.spec.mjs` loads every `@dsCard` at its declared viewport, fails on runtime errors or a Vite error overlay, checks the Contrast card has no failing pairs for the default theme and every tenant in `tokens/tenants/`, and compares each card with its screenshot in `_e2e/__screenshots__/`.
-- `tenants.spec.mjs` runs the seven Theme builder contrast checks against the default theme and every `tokens/tenants/*.css` file as shipped, checks each tenant is imported by `styles.css`, and checks the builder's Vendra and Clay presets start from a passing theme. A new tenant file is picked up automatically.
+- `tenants.spec.mjs` runs the seven Theme builder contrast checks against the default theme and every generated `tokens/tenants/*.css` file as the browser resolves it, checks each tenant is imported by `styles.css`, and checks every **Start from** choice in the builder passes. A new tenant file is picked up automatically.
 
 Screenshot baselines are per platform (`-darwin.png`, `-linux.png`) because font rendering differs. Comparisons use exact colours (`threshold: 0`) with up to 25 differing pixels for anti-aliasing; the default tolerance hid a whole drop shadow. After an intended visual change, review the diff in `_e2e/playwright-report/` and refresh the baselines:
 
@@ -162,7 +163,7 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Existing `vf-` classes also identify page sections for shared contextual rules and DOM hooks. A named class does not require a matching custom CSS rule.
 - Use the `!` suffix only where a utility must override existing unlayered component or document styles, for example `tw:text-body!` on a brand link. Avoid blanket important utilities.
 - Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
-- Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet or generated template is stale.
+- Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet, a generated template or a generated tenant theme is stale. The build also refuses a tenant JSON that fails any of the seven contrast checks.
 
 `node templates/_build/generate.cjs` remains available for shared HTML/logic propagation only; it does not compile Tailwind. Use the full build after CSS or class changes.
 

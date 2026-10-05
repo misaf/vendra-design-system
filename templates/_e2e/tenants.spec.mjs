@@ -57,15 +57,33 @@ test('every tenant is imported by styles.css', () => {
   for (const tenant of TENANTS) expect(styles).toContain(`@import url('tokens/tenants/${tenant}.css');`);
 });
 
-// The builder's own presets must start a new tenant from a passing theme.
-for (const preset of ['Vendra', 'Clay']) {
-  test(`theme builder: ${preset} preset passes all seven checks`, async ({page}) => {
+// Every "Start from" choice in the builder (Vendra plus each tenant) must pass.
+for (const start of ['vendra', ...TENANTS]) {
+  test(`theme builder: starting from ${start} passes all seven checks`, async ({page}) => {
     await page.goto('/guidelines/theme-builder.html');
     await expectNoViteError(page);
-    await page.getByRole('button', {name: preset, exact: true}).click();
+    await page.locator('.tb-row select').first().selectOption(start);
     const verdicts = page.locator('.tb-ch span:nth-child(3n)');
     await expect(verdicts).toHaveCount(7);
     await expect(verdicts).toHaveText(Array(7).fill('Pass'));
     await expect(page.locator('.tb-inv')).toHaveText('All contrast checks pass.');
   });
 }
+
+// Hand-set shades survive opening a tenant, and a new base colour drops only its own.
+test('theme builder keeps overrides until their base colour changes', async ({page}) => {
+  const spec = {description: '', colours: {accent: '#A9532E', neutral: '#E6DCCB', ink: '#1F1D18', footer: '#262E17'},
+    character: {headings: 'sans', case: 'uppercase', accentWord: 'upright', controls: 'square', frame: 'square'},
+    overrides: {'--peony-600': '#8C4224', '--border-input': '#847E70'}};
+  await page.route('**/_runtime/tenants.js', route => route.fulfill({contentType: 'text/javascript', body: 'window.VF_TENANTS = ' + JSON.stringify({tuned: spec})}));
+  await page.goto('/guidelines/theme-builder.html');
+  await page.locator('.tb-row select').first().selectOption('tuned');
+  await expect(page.locator('.tb-note')).toContainText('2 hand-tuned shades kept');
+  await expect(page.locator('.tb-p')).toHaveAttribute('style', /--peony-600: #8C4224/);
+  await page.locator('.tb-row', {hasText: 'Accent'}).locator('input[type=color]').fill('#2e6ba9');
+  await expect(page.locator('.tb-note')).toContainText('1 hand-tuned shade kept');
+  await expect(page.locator('.tb-p')).toHaveAttribute('style', /--border-input: #847E70/);
+  await expect(page.locator('.tb-p')).not.toHaveAttribute('style', /--peony-600: #8C4224/);
+  await page.getByRole('button', {name: 'Reset'}).click();
+  await expect(page.locator('.tb-note')).toHaveCount(0);
+});

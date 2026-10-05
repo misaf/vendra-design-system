@@ -9,6 +9,12 @@ const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-tailwind-'));
 try {
   // Update generated markup before Tailwind scans it, including removed classes.
   const count = require('./generate.cjs').generate(check);
+  // Tenant themes are generated from JSON before anything reads them.
+  for (const [target, content] of require('./tenants.cjs').tenantOutputs()) {
+    const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
+    if (check && content !== current) throw new Error(path.relative(path.dirname(root), target) + ' is stale. Run npm --prefix templates run build.');
+    if (!check && content !== current) fs.writeFileSync(target, content);
+  }
   const output = path.join(temporary, 'tailwind.css');
   const cliFolder = path.join(root, 'node_modules/@tailwindcss/cli');
   const cliPackage = JSON.parse(fs.readFileSync(path.join(cliFolder, 'package.json'), 'utf8'));
@@ -23,7 +29,7 @@ try {
     if (check && css !== current) throw new Error(file + ' is stale. Run npm --prefix templates run build.');
     if (!check && css !== current) fs.writeFileSync(target, css);
   }
-  console.log(check ? 'Tailwind, custom CSS and storefront templates are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
+  console.log(check ? 'Tailwind, custom CSS, tenant themes and storefront templates are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;
