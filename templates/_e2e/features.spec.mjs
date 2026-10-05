@@ -69,8 +69,12 @@ test('home occasions open the shop filtered', async ({page}) => {
 test('the shop filters by occasion', async ({page}, info) => {
   await openSite(page, 'shop', 'en');
   if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Filters'}).click();
-  await page.getByRole('combobox', {name: 'Occasion'}).selectOption('anniversary');
+  const occasions = page.getByRole('group', {name: 'Occasion'}).locator('visible=true');
+  await expect(occasions.getByRole('button', {name: 'All', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  await occasions.getByRole('button', {name: 'Anniversary'}).click();
   await expect(page).toHaveURL(/occasion=anniversary/);
+  await expect(occasions.getByRole('button', {name: 'Anniversary'})).toHaveAttribute('aria-pressed', 'true');
+  expect(await scanAxe(page)).toEqual([]);
   if (info.project.name === 'mobile') await page.keyboard.press('Escape');
   await expect(page.locator('main .ag-product')).toHaveCount(2);
 });

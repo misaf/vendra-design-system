@@ -81,14 +81,13 @@ class Component extends VFPage {
         min,
         max
       }),
-      occasion: s.occasion,
       occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
-        value: id,
-        label: VF_SHOP_OCCASION_COPY[L][id]
+        label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
+        on: s.occasion === id,
+        pick: () => change({
+          occasion: id
+        })
       })),
-      setOccasion: e => change({
-        occasion: e.target.value
-      }),
       inStock,
       setStock: e => change({
         stock: e.target.checked
