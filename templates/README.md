@@ -189,7 +189,7 @@ sizes; other sample products use their catalog price. Unknown product IDs show t
 not-found page; the previous `ivory-classic` link remains supported.
 
 Shop URLs preserve `cat`, `sort=low|high`, comma-separated `filters=under3,same,roses`,
-`occasion`, `color=white|pink|red|purple`, `min`/`max` price and `stock=1`.
+`occasion`, `min`/`max` price and `stock=1`.
 The template route helpers in `_shared/routing.js` validate these values; refresh,
 Back and language switching retain selections. Home category cards link to these filters.
 
@@ -222,9 +222,7 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   applied code travels with the checkout details and shows as a discount line in every summary.
 - **Shop by occasion.** Products list `occasions`; the shop filters by `?occasion=` and the home
   page links to each one. (Reminder dates on the account page are a separate list, `VF_OCCASIONS`.)
-- **Shop by colour.** Products list `colors` (ids in `VF_SHOP_COLORS`, `translations/categories.js`);
-  the shop filters by `?color=` with swatches whose shades are in `storefront-shop/styles.css`.
-  Active filters show as removable tags with a Clear all button, and the phone Filters button
+- **Active shop filters** show as removable tags with a Clear all button, and the phone Filters button
   counts them.
 - **Recently viewed.** The product page remembers viewed products in this browser and lists them.
 - **Delivery photo.** A delivered order shows the courier's photo (`order.deliveryPhoto`) on the

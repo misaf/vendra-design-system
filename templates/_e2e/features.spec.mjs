@@ -290,23 +290,22 @@ test('sign-in links to the terms and privacy policy', async ({page}) => {
   await expect(page.getByRole('heading', {level: 1})).toHaveText('Privacy');
 });
 
-test('the shop filters by colour and clears every filter at once', async ({page}, info) => {
+test('the shop clears every filter at once', async ({page}, info) => {
   const mobile = info.project.name === 'mobile';
   await openSite(page, 'shop', 'en', {stock: '1'});
   if (mobile) await page.getByRole('button', {name: 'Filters (1)'}).click();
-  const colours = page.getByRole('group', {name: 'Colour'}).locator('visible=true');
-  await expect(colours.getByRole('button', {name: 'All colours'})).toHaveAttribute('aria-pressed', 'true');
-  await colours.getByRole('button', {name: 'Red', exact: true}).click();
-  await expect(page).toHaveURL(/color=red/);
-  await expect(colours.getByRole('button', {name: 'Red', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  const occasions = page.getByRole('group', {name: 'Occasion'}).locator('visible=true');
+  await occasions.getByRole('button', {name: 'Anniversary', exact: true}).click();
+  await expect(page).toHaveURL(/occasion=anniversary/);
+  await expect(occasions.getByRole('button', {name: 'Anniversary', exact: true})).toHaveAttribute('aria-pressed', 'true');
   expect(await scanAxe(page)).toEqual([]);
   if (mobile) {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', {name: 'Filters (2)'})).toBeVisible();
   }
-  await expect(page.locator('main .ag-product__name')).toHaveText(['Crimson hatbox']);
+  await expect(page.locator('main .ag-product__name')).toHaveText(['Crimson hatbox', 'Blush morning']);
   await page.getByRole('button', {name: 'Clear all'}).click();
-  await expect(page).not.toHaveURL(/color=|stock=/);
+  await expect(page).not.toHaveURL(/occasion=|stock=/);
   await expect(page.locator('main .ag-product')).toHaveCount(6);
   await expect(page.locator('#vf-shop-count')).toBeFocused();
 });

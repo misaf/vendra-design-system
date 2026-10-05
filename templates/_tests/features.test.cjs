@@ -1,4 +1,4 @@
-// Delivery days, promo codes, shop occasions and colours, recently viewed products and analytics consent.
+// Delivery days, promo codes, shop occasions, recently viewed products and analytics consent.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -60,13 +60,6 @@ assert.equal(ctx.vfReadRoute('?view=shop&occasion=halloween').occasion, 'all');
 assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'birthday'}), /occasion=birthday/);
 assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'all'}), /occasion/);
 
-// Shop colours work the same way, and every sample product has a known colour.
-assert.equal(ctx.vfReadRoute('?view=shop&color=red').color, 'red');
-assert.equal(ctx.vfReadRoute('?view=shop&color=teal').color, 'all');
-assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', color: 'pink'}), /color=pink/);
-assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', color: 'all'}), /color/);
-vm.runInContext('VF_PRODUCTS', ctx).forEach(p => assert.ok(p.colors.length && p.colors.every(c => vm.runInContext('VF_SHOP_COLORS', ctx).includes(c)), p.id + ' colours'));
-
 // Analytics: events stay in the local log until the visitor allows visit counts.
 const track = ctx.window.AG_TRACK;
 ctx.window.dataLayer = [];
@@ -91,4 +84,4 @@ assert.deepEqual([...ctx.vfRecentlyViewed()], ['blush']);
 store['vendra-recently-viewed'] = 'not json';
 assert.deepEqual([...ctx.vfRecentlyViewed()], []);
 
-console.log('Passed delivery days, promo codes, delivery pins, shop occasions and colours, recently viewed products and analytics consent.');
+console.log('Passed delivery days, promo codes, delivery pins, shop occasions, recently viewed products and analytics consent.');

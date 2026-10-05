@@ -89,7 +89,7 @@
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}"><aside class="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 tw:sticky tw:top-9 tw:[flex:1_1_200px] tw:max-w-[260px]">
 <div class="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">{{ t.cats }}</div>
 <sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="true" class="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-medium tw:text-start tw:cursor-pointer"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:text-xs tw:text-quiet">{{ c.count }}</span></button></sc-if><sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ c.pick }}" aria-pressed="false" class="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"><span>{{ c.label }}</span><span class="vf-shop-category-count tw:text-xs tw:text-quiet">{{ c.count }}</span></button></sc-if></sc-for>
-<div class="tw:flex tw:flex-col tw:gap-4 tw:mt-4"><fieldset class="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">{{ t.occasion }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ occasionOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px">{{ o.label }}</x-import></sc-for></div></fieldset><fieldset class="vf-shop-colors tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">{{ t.color }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ colorOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px"><span class="tw:inline-flex tw:items-center tw:gap-2"><span class="vf-shop-swatch" data-color="{{ o.id }}" aria-hidden="true"></span>{{ o.label }}</span></x-import></sc-for></div></fieldset><x-import component-from-global-scope="VendraDesignSystem_f4f210.RangeSlider" min="{{ 0 }}" max="{{ priceMax }}" step="{{ 100000 }}" value="{{ price }}" on-change="{{ setPrice }}" format-value="{{ formatPrice }}" labels="{{ priceLabels }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ migration.stock }}" checked="{{ inStock }}" on-change="{{ setStock }}"></x-import></div></aside></sc-if>
+<div class="tw:flex tw:flex-col tw:gap-4 tw:mt-4"><fieldset class="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">{{ t.occasion }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ occasionOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px">{{ o.label }}</x-import></sc-for></div></fieldset><x-import component-from-global-scope="VendraDesignSystem_f4f210.RangeSlider" min="{{ 0 }}" max="{{ priceMax }}" step="{{ 100000 }}" value="{{ price }}" on-change="{{ setPrice }}" format-value="{{ formatPrice }}" labels="{{ priceLabels }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ migration.stock }}" checked="{{ inStock }}" on-change="{{ setStock }}"></x-import></div></aside></sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}"><div role="group" aria-label="{{ t.cats }}" class="vf-shop-mobile-categories tw:flex tw:gap-2 tw:w-full tw:overflow-x-auto tw:pb-1 tw:[scrollbar-width:none]"><sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><div class="vf-shop-category-chip tw:flex-none"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" hint-size="110px,36px"><span class="vf-shop-category-label tw:whitespace-nowrap">{{ c.label }} · {{ c.count }}</span></x-import></div></sc-for></div></sc-if>
 <sc-if value="{{ mob }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" on-click="{{ openFilters }}" icon-start="sliders-horizontal">{{ filtersLabel }}</x-import></sc-if><section class="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
 <sc-if value="{{ hasActive }}"><div class="vf-shop-active-filters tw:flex tw:gap-2 tw:flex-wrap tw:items-center"><sc-for list="{{ activeFilters }}" as="filter"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ true }}" on-remove="{{ filter.remove }}" on-click="{{ filter.remove }}">{{ filter.label }}</x-import></sc-for><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" size="sm" on-click="{{ clearFilters }}" class-name="vf-shop-clear-all">{{ t.clearAll }}</x-import></div></sc-if><div class="vf-shop-toolbar tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end">
@@ -107,7 +107,7 @@
 </sc-if>
 </section>
 </div>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" title="{{ migration.filters }}" open="{{ filterOpen }}" on-close="{{ closeFilters }}"><div class="tw:flex tw:flex-col tw:gap-4 tw:mt-4"><fieldset class="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="ag-field__label tw:p-0 tw:mb-2">{{ t.occasion }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ occasionOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px">{{ o.label }}</x-import></sc-for></div></fieldset><fieldset class="vf-shop-colors tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="ag-field__label tw:p-0 tw:mb-2">{{ t.color }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ colorOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px"><span class="tw:inline-flex tw:items-center tw:gap-2"><span class="vf-shop-swatch" data-color="{{ o.id }}" aria-hidden="true"></span>{{ o.label }}</span></x-import></sc-for></div></fieldset><x-import component-from-global-scope="VendraDesignSystem_f4f210.RangeSlider" min="{{ 0 }}" max="{{ priceMax }}" step="{{ 100000 }}" value="{{ price }}" on-change="{{ setPrice }}" format-value="{{ formatPrice }}" labels="{{ priceLabels }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ migration.stock }}" checked="{{ inStock }}" on-change="{{ setStock }}"></x-import></div><div class="tw:mt-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ closeFilters }}">{{ migration.close }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ clear }}">{{ t.clear }}</x-import></div></x-import></main>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" title="{{ migration.filters }}" open="{{ filterOpen }}" on-close="{{ closeFilters }}"><div class="tw:flex tw:flex-col tw:gap-4 tw:mt-4"><fieldset class="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="ag-field__label tw:p-0 tw:mb-2">{{ t.occasion }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ occasionOptions }}" as="o" hint-placeholder-count="5"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ o.on }}" on-click="{{ o.pick }}" hint-size="96px,36px">{{ o.label }}</x-import></sc-for></div></fieldset><x-import component-from-global-scope="VendraDesignSystem_f4f210.RangeSlider" min="{{ 0 }}" max="{{ priceMax }}" step="{{ 100000 }}" value="{{ price }}" on-change="{{ setPrice }}" format-value="{{ formatPrice }}" labels="{{ priceLabels }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ migration.stock }}" checked="{{ inStock }}" on-change="{{ setStock }}"></x-import></div><div class="tw:mt-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ closeFilters }}">{{ migration.close }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ clear }}">{{ t.clear }}</x-import></div></x-import></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
 </div>
@@ -550,7 +550,7 @@ function vfSummaryRows(totals, code, labels, money) {
 // Source: templates/_shared/catalog.js
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
-// occasions and colors use the ids in VF_SHOP_OCCASIONS and VF_SHOP_COLORS (translations/categories.js).
+// occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
@@ -559,32 +559,32 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', occasions: ['birthday', 'thanks'], colors: ['white'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', occasions: ['birthday', 'sympathy'], colors: ['purple'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', occasions: ['thanks', 'sympathy'], colors: ['white'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', occasions: ['anniversary'], colors: ['red'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', occasions: ['anniversary', 'birthday'], colors: ['pink'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', occasions: [], colors: ['white'], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -839,25 +839,6 @@ const VF_SHOP_OCCASION_COPY = {
     anniversary: 'سالگرد ازدواج',
     thanks: 'تشکر',
     sympathy: 'تسلیت'
-  }
-};
-
-// Main flower colours the shop filters by; products list theirs in catalog.js.
-const VF_SHOP_COLORS = ['white', 'pink', 'red', 'purple'];
-const VF_SHOP_COLOR_COPY = {
-  en: {
-    all: 'All colours',
-    white: 'White & ivory',
-    pink: 'Pink',
-    red: 'Red',
-    purple: 'Purple'
-  },
-  fa: {
-    all: 'همه رنگ‌ها',
-    white: 'سفید و عاجی',
-    pink: 'صورتی',
-    red: 'قرمز',
-    purple: 'بنفش'
   }
 };
 
@@ -1432,7 +1413,6 @@ function vfReadRoute(search = location.search) {
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
-    route.color = VF_SHOP_COLORS.includes(query.get('color')) ? query.get('color') : 'all';
   }
   return route;
 }
@@ -1449,7 +1429,6 @@ function vfRouteParams(route) {
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
-    if (VF_SHOP_COLORS.includes(route.color)) query.set('color', route.color);
   }
   return '?' + query.toString();
 }
@@ -1841,7 +1820,6 @@ function vfCopy(S) {
       cats: 'Categories',
       sort: 'Sort by',
       occasion: 'Occasion',
-      color: 'Colour',
       clearAll: 'Clear all',
       emptyA: 'Nothing here',
       emptyB: '— for now.',
@@ -1871,7 +1849,6 @@ function vfCopy(S) {
       cats: 'دسته‌بندی‌ها',
       sort: 'مرتب‌سازی',
       occasion: 'مناسبت',
-      color: 'رنگ',
       clearAll: 'پاک کردن همه',
       emptyA: 'چیزی پیدا نشد',
       emptyB: '— فعلاً.',
@@ -1944,8 +1921,7 @@ class Component extends VFPage {
       cat: route.cat || 'all',
       sort: route.sort || 'featured',
       chips: route.filters || [],
-      occasion: route.occasion || 'all',
-      color: route.color || 'all'
+      occasion: route.occasion || 'all'
     };
     const change = patch => {
       const next = {
@@ -1956,7 +1932,6 @@ class Component extends VFPage {
         sort: s.sort,
         filters: s.chips,
         occasion: s.occasion,
-        color: s.color,
         ...patch
       };
       if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
@@ -1964,7 +1939,7 @@ class Component extends VFPage {
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion)) && (s.color === 'all' || (p.colors || []).includes(s.color));
+      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
     let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
@@ -1974,11 +1949,6 @@ class Component extends VFPage {
       label: VF_SHOP_OCCASION_COPY[L][s.occasion],
       remove: () => change({
         occasion: 'all'
-      })
-    }] : []), ...(s.color !== 'all' ? [{
-      label: VF_SHOP_COLOR_COPY[L][s.color],
-      remove: () => change({
-        color: 'all'
       })
     }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
       label: S.m(price[0]) + ' – ' + S.m(price[1]),
@@ -1999,8 +1969,7 @@ class Component extends VFPage {
       min: 0,
       max: priceMax,
       stock: false,
-      occasion: 'all',
-      color: 'all'
+      occasion: 'all'
     });
     return {
       ...S,
@@ -2020,8 +1989,7 @@ class Component extends VFPage {
           min: 0,
           max: priceMax,
           stock: false,
-          occasion: 'all',
-          color: 'all'
+          occasion: 'all'
         });
         // The button goes away with the filters, so focus moves to the updated result count.
         S.focus('vf-shop-count');
@@ -2043,14 +2011,6 @@ class Component extends VFPage {
         on: s.occasion === id,
         pick: () => change({
           occasion: id
-        })
-      })),
-      colorOptions: ['all', ...VF_SHOP_COLORS].map(id => ({
-        id,
-        label: VF_SHOP_COLOR_COPY[L][id],
-        on: s.color === id,
-        pick: () => change({
-          color: id
         })
       })),
       inStock,

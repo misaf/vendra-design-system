@@ -19,8 +19,7 @@ class Component extends VFPage {
       cat: route.cat || 'all',
       sort: route.sort || 'featured',
       chips: route.filters || [],
-      occasion: route.occasion || 'all',
-      color: route.color || 'all'
+      occasion: route.occasion || 'all'
     };
     const change = patch => {
       const next = {
@@ -31,7 +30,6 @@ class Component extends VFPage {
         sort: s.sort,
         filters: s.chips,
         occasion: s.occasion,
-        color: s.color,
         ...patch
       };
       if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
@@ -39,7 +37,7 @@ class Component extends VFPage {
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion)) && (s.color === 'all' || (p.colors || []).includes(s.color));
+      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
     let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
@@ -49,11 +47,6 @@ class Component extends VFPage {
       label: VF_SHOP_OCCASION_COPY[L][s.occasion],
       remove: () => change({
         occasion: 'all'
-      })
-    }] : []), ...(s.color !== 'all' ? [{
-      label: VF_SHOP_COLOR_COPY[L][s.color],
-      remove: () => change({
-        color: 'all'
       })
     }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
       label: S.m(price[0]) + ' – ' + S.m(price[1]),
@@ -74,8 +67,7 @@ class Component extends VFPage {
       min: 0,
       max: priceMax,
       stock: false,
-      occasion: 'all',
-      color: 'all'
+      occasion: 'all'
     });
     return {
       ...S,
@@ -95,8 +87,7 @@ class Component extends VFPage {
           min: 0,
           max: priceMax,
           stock: false,
-          occasion: 'all',
-          color: 'all'
+          occasion: 'all'
         });
         // The button goes away with the filters, so focus moves to the updated result count.
         S.focus('vf-shop-count');
@@ -118,14 +109,6 @@ class Component extends VFPage {
         on: s.occasion === id,
         pick: () => change({
           occasion: id
-        })
-      })),
-      colorOptions: ['all', ...VF_SHOP_COLORS].map(id => ({
-        id,
-        label: VF_SHOP_COLOR_COPY[L][id],
-        on: s.color === id,
-        pick: () => change({
-          color: id
         })
       })),
       inStock,
