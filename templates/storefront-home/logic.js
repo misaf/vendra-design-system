@@ -5,7 +5,6 @@ class Component extends VFPage {
     const L = fa ? 'fa' : 'en';
     const S = vfShell.call(this, this.props, 'home');
     const C = vfCopy(S);
-    const cats = ['bouquets', 'boxes', 'orchids', 'bridal'];
     return {
       ...S,
       frame: this.props.frame ?? 'soft',
@@ -13,14 +12,11 @@ class Component extends VFPage {
         ...S.t,
         ...C
       },
-      categories: cats.map(id => {
-        const count = VF_PRODUCTS.filter(p => p.cat === id).length;
-        return {
-          ...S.shopLink(id),
-          label: VF_CATEGORY_COPY[L][id],
-          count: C.designCount(count)
-        };
-      }),
+      occasions: VF_SHOP_OCCASIONS.map(id => ({
+        ...S.occasionLink(id),
+        label: VF_SHOP_OCCASION_COPY[L][id],
+        count: C.designCount(VF_PRODUCTS.filter(p => p.occasions.includes(id)).length)
+      })),
       products: VF_PRODUCTS.filter(p => p.inStock !== false).map(p => ({
         fav: S.isFav(p.id, []),
         toggleFav: S.toggleFav(p.id, []),

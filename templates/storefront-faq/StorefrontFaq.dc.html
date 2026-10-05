@@ -174,7 +174,14 @@ const VF_ZONES = [
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
 const VF_SLOTS = [['08', '12'], ['12', '16'], ['16', '20'], ['20', '22']];
-const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', slot: '12'};
+// Delivery days offered, counting today. Today drops off after the zone's cut-off.
+const VF_DELIVERY_DAYS = 7;
+// Days with no capacity left, as ISO dates (e.g. '2027-02-14').
+const VF_SOLD_OUT_DATES = [];
+// Sample only: shows a sold-out day this many days ahead. Set to null for a real store.
+const VF_SAMPLE_SOLD_OUT_IN_DAYS = 2;
+// An empty date means the first day still available.
+const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', date: '', slot: '12', promo: ''};
 
 function vfDeliveryCutoff(zone, persian) {
   const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
@@ -183,6 +190,35 @@ function vfDeliveryCutoff(zone, persian) {
 
 function vfDeliveryHint(zone, persian) {
   return (persian ? 'ارسال همان روز تا ' : 'Same day before ') + vfDeliveryCutoff(zone, persian);
+}
+
+function vfZone(id) {
+  return VF_ZONES.find(zone => zone.id === id) || VF_ZONES[0];
+}
+
+function vfIsoDate(date) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+// The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
+function vfDeliveryDays(zoneId, now = new Date()) {
+  const [hour, minute] = vfZone(zoneId).cutoff.split(':').map(Number);
+  const pastCutoff = now.getHours() * 60 + now.getMinutes() >= hour * 60 + minute;
+  return Array.from({length: VF_DELIVERY_DAYS}, (_, offset) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
+    const iso = vfIsoDate(date);
+    return {
+      iso, date, offset,
+      soldOut: VF_SOLD_OUT_DATES.includes(iso) || offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
+      pastCutoff: offset === 0 && pastCutoff
+    };
+  });
+}
+
+// The chosen day when it is still open, otherwise the first open day.
+function vfDeliveryDate(delivery, now = new Date()) {
+  const open = vfDeliveryDays(delivery.zone, now).filter(day => !day.soldOut && !day.pastCutoff);
+  return (open.find(day => day.iso === delivery.date) || open[0]).iso;
 }
 
 function vfPhone(value) {
@@ -202,15 +238,54 @@ function vfErrors(delivery) {
 
 function vfTotals(lines, delivery) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
-  const zone = VF_ZONES.find(zone => zone.id === delivery.zone) || VF_ZONES[0];
+  const zone = vfZone(delivery.zone);
   const free = sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zone.id);
   const fee = free ? 0 : zone.fee;
-  return {sub, fee, total: sub + fee};
+  // The applied promo code travels with the checkout details.
+  const discount = vfDiscount(delivery.promo, sub);
+  return {sub, fee, discount, total: sub - discount + fee};
+}
+
+// Source: templates/_shared/promotions.js
+// Sample promo codes. Amounts are in Toman.
+// Edit this file, then run: npm --prefix templates run build
+// percent comes off the subtotal; min is the smallest subtotal the code accepts.
+const VF_PROMOS = [
+  {code: 'WELCOME10', percent: 10, min: 0},
+  {code: 'ROSES15', percent: 15, min: 4_000_000}
+];
+
+// Codes are matched without case, spaces or Persian digits.
+function vfPromoCode(value) {
+  return vfLatin(value || '').replace(/\s/g, '').toUpperCase();
+}
+
+// {promo} when the code applies to this subtotal, otherwise {error: 'unknown' | 'min', min}.
+function vfPromoCheck(value, sub) {
+  const promo = VF_PROMOS.find(p => p.code === vfPromoCode(value));
+  if (!promo) return {error: 'unknown'};
+  if (sub < promo.min) return {error: 'min', min: promo.min};
+  return {promo};
+}
+
+// The discount for the bag's applied code; 0 once the subtotal drops below its minimum.
+function vfDiscount(code, sub) {
+  const {promo} = code ? vfPromoCheck(code, sub) : {};
+  return promo ? Math.round(sub * promo.percent / 100) : 0;
+}
+
+// Order summary rows; the discount, when there is one, sits under the subtotal.
+function vfSummaryRows(totals, code, labels, money) {
+  return [{label: labels.sub, value: money(totals.sub)},
+    ...(totals.discount ? [{label: labels.discount + ' · ' + vfPromoCode(code), value: '−⁨' + money(totals.discount) + '⁩'}] : []),
+    {label: labels.fee, value: totals.fee ? money(totals.fee) : labels.free},
+    {label: labels.total, value: money(totals.total), strong: true}];
 }
 
 // Source: templates/_shared/catalog.js
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
+// occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
@@ -219,32 +294,32 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -317,6 +392,22 @@ function vfReorderLines(lines) {
 
 function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
 
+// Recently viewed products, newest first, kept in this browser only.
+const VF_RECENT_KEY = 'vendra-recently-viewed';
+function vfRecentlyViewed() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
+    return Array.isArray(ids) ? ids.filter(id => VF_PRODUCTS.some(p => p.id === id)) : [];
+  } catch (_) {
+    return [];
+  }
+}
+function vfRememberViewed(id) {
+  try {
+    localStorage.setItem(VF_RECENT_KEY, JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8)));
+  } catch (_) {}
+}
+
 // Source: templates/_shared/translations/shell.js
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
 const VF_SHELL = {
@@ -341,6 +432,7 @@ const VF_SHELL = {
     saved: 'Saved',
     track: 'Track an order',
     closeMenu: 'Close menu',
+    discount: 'Discount',
     news: 'Store news',
     dismissNews: 'Dismiss message',
     waLong: 'Order on WhatsApp',
@@ -369,6 +461,7 @@ const VF_SHELL = {
     saved: 'ذخیره‌ها',
     track: 'پیگیری سفارش',
     closeMenu: 'بستن منو',
+    discount: 'تخفیف',
     news: 'خبر فروشگاه',
     dismissNews: 'بستن پیام',
     waLong: 'سفارش در واتساپ',
@@ -397,10 +490,52 @@ const VF_CATEGORY_COPY = {
   }
 };
 
+// Occasions the shop filters by; products list theirs in catalog.js. (Reminder dates are VF_OCCASIONS in account-data.js.)
+const VF_SHOP_OCCASIONS = ['birthday', 'anniversary', 'thanks', 'sympathy'];
+const VF_SHOP_OCCASION_COPY = {
+  en: {
+    all: 'All occasions',
+    birthday: 'Birthday',
+    anniversary: 'Anniversary',
+    thanks: 'Thank you',
+    sympathy: 'Sympathy'
+  },
+  fa: {
+    all: 'همه مناسبت‌ها',
+    birthday: 'تولد',
+    anniversary: 'سالگرد ازدواج',
+    thanks: 'تشکر',
+    sympathy: 'تسلیت'
+  }
+};
+
 // Source: templates/_shared/translations/time.js
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
 function vfSlotLabel(start, end, fa) {
   return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+}
+
+// "Today", "Tomorrow" or the weekday, for delivery day choices.
+function vfDayName(day, fa) {
+  if (day.offset === 0) return fa ? 'امروز' : 'Today';
+  if (day.offset === 1) return fa ? 'فردا' : 'Tomorrow';
+  return new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(day.date);
+}
+
+// "5 October" or «۱۴ مهر».
+function vfDayMonth(date, fa) {
+  const D = window.AG_DATES;
+  return D.dayMonth(date, D.locale(fa ? 'fa' : 'en', fa ? 'j' : 'g'));
+}
+
+// When an order arrives: «سه‌شنبه، ۱۴ مهر · ۱۲:۰۰ تا ۱۶:۰۰» / "Tue 6 October · 12:00–16:00".
+function vfDeliveryWhen(delivery, fa) {
+  const end = (VF_SLOTS.find(slot => slot[0] === delivery.slot) || VF_SLOTS[1])[1];
+  const slot = vfSlotLabel(delivery.slot, end, fa);
+  if (!delivery.date) return slot;
+  const date = window.AG_DATES.fromIso(delivery.date);
+  const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(date);
+  return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + ' · ' + slot;
 }
 
 // Source: templates/_shared/account-data.js
@@ -893,6 +1028,7 @@ function vfReadRoute(search = location.search) {
     const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+    route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
   }
   return route;
 }
@@ -908,6 +1044,7 @@ function vfRouteParams(route) {
     if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+    if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
   }
   return '?' + query.toString();
 }
@@ -1060,6 +1197,7 @@ function vfShell(props, page) {
     go,
     href,
     productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     lang: L,
     fa,

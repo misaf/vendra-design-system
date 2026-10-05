@@ -21,6 +21,7 @@ function vfReadRoute(search = location.search) {
     const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
+    route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
   }
   return route;
 }
@@ -36,6 +37,7 @@ function vfRouteParams(route) {
     if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+    if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
   }
   return '?' + query.toString();
 }

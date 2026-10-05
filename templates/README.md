@@ -10,11 +10,12 @@ Start here when changing the official storefront. All storefront examples live h
 | Page state and behavior | `storefront-<page>/logic.js` |
 | English/Persian page copy | `storefront-<page>/copy.js` |
 | Shared navigation labels | [_shared/translations/shell.js](_shared/translations/shell.js) |
-| Category names or shared article content | `_shared/translations/categories.js` and `journal-content.js` |
-| Product names, prices, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
+| Category and shop-occasion names, or shared article content | `_shared/translations/categories.js` and `journal-content.js` |
+| Product names, prices, photos, occasions, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
 | Product placeholder artwork | `../assets/placeholders/product.svg` |
 | Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
-| Delivery fees, cut-offs, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
+| Delivery fees, cut-offs, delivery days, sold-out dates, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
+| Promo codes | [_shared/promotions.js](_shared/promotions.js) |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
@@ -205,6 +206,19 @@ to update every template. Shared navigation, contact, footer and checkout use th
 session; changing the English text shows it again. Add `sheba` to the payment details
 (through `VF_PAYMENT.setPayCard`) to show the Sheba number, with its info tooltip, at checkout.
 Give a product an `images` list in `_shared/catalog.js` to fill its product page gallery.
+
+### Florist features
+
+- **Delivery day.** The bag offers `VF_DELIVERY_DAYS` days from today. Today closes at the
+  zone's cut-off, and dates in `VF_SOLD_OUT_DATES` show as sold out. `VF_SAMPLE_SOLD_OUT_IN_DAYS`
+  only exists for the demo; set it to `null` for a real store. Checkout and tracking show the day.
+- **Promo codes.** `VF_PROMOS` in `_shared/promotions.js` (percent off, minimum subtotal). The
+  applied code travels with the checkout details and shows as a discount line in every summary.
+- **Shop by occasion.** Products list `occasions`; the shop filters by `?occasion=` and the home
+  page links to each one. (Reminder dates on the account page are a separate list, `VF_OCCASIONS`.)
+- **Recently viewed.** The product page remembers viewed products in this browser and lists them.
+- **Delivery photo.** A delivered order shows the courier's photo (`order.deliveryPhoto`) on the
+  tracking page; samples show a placeholder.
 
 Every design-system component is used by at least one template; `npm --prefix templates test`
 fails if one stops being used.

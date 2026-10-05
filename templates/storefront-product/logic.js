@@ -36,6 +36,8 @@ class Component extends VFPage {
         ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
       },
       hasSizes,
+      recentLabel: C.recentA + ' ' + C.recentB,
+      hasRecent: vfRecentlyViewed().some(x => x !== product.id),
       available: product.inStock !== false,unavailable:product.inStock===false,
       category: S.shopLink(product.cat),
       productImages: vfProductImages(product, L),
@@ -112,6 +114,15 @@ class Component extends VFPage {
         this._toastHeld = false;
         this._hideToastLater();
       },
+      recent: vfRecentlyViewed().filter(x => x !== product.id).slice(0, 4).map(vfProduct).map(p => ({
+        ...S.productLink(p.id),
+        images: [vfProductImage(p, L)],
+        name: p[L][0],
+        sub: p[L][1],
+        price: m(p.price),
+        fav: S.isFav(p.id, []),
+        toggleFav: S.toggleFav(p.id, [])
+      })),
       faq: [{
         id: 'care',
         title: C.care,
@@ -139,9 +150,14 @@ class Component extends VFPage {
   _focusableGallery() {
     setTimeout(() => document.querySelectorAll?.('.ag-gallery__track:not([tabindex])').forEach(track => { track.tabIndex = 0; }), 0);
   }
+  _rememberProduct() {
+    const id = vfPageRoute(this.props).id || 'ivory';
+    vfRememberViewed(id === 'ivory-classic' ? 'ivory' : id);
+  }
   componentDidMount() {
     this._productId = vfPageRoute(this.props).id;
     super.componentDidMount();
+    this._rememberProduct();
     this._focusableGallery();
   }
   componentDidUpdate() {
@@ -150,6 +166,7 @@ class Component extends VFPage {
     const id = vfPageRoute(this.props).id;
     if (this._productId !== id) {
       this._productId = id;
+      this._rememberProduct();
       this.setState({
         size: 'petite',
         addons: [],

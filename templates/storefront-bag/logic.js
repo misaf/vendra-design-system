@@ -10,7 +10,9 @@ class Component extends VFPage {
     delivery: {
       ...VF_DELIVERY
     },
-    submitted: false
+    submitted: false,
+    promoDraft: '',
+    promoError: null
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -30,11 +32,10 @@ class Component extends VFPage {
       ...l,
       qty: Q(l.id)
     }));
-    const {
-      sub,
-      fee
-    } = vfTotals(items.filter(vfLineAvailable), delivery);
-    const z = VF_ZONES.find(x => x[0] === delivery.zone) || VF_ZONES[0];
+    const totals = vfTotals(items.filter(vfLineAvailable), delivery);
+    const {sub, total} = totals;
+    const z = vfZone(delivery.zone);
+    const date = vfDeliveryDate(delivery);
     const invalid = vfErrors(delivery);
     const update = patch => st ? st.setDelivery(patch) : this.setState({
       delivery: {
@@ -76,6 +77,7 @@ class Component extends VFPage {
         }
         if (st) st.setDelivery({
           ...delivery,
+          date,
           phone: vfPhone(delivery.phone)
         });
         if (this.props.go) this.props.go('checkout');
@@ -125,6 +127,18 @@ class Component extends VFPage {
         value: zone.id,
         label: (fa ? zone.fa : zone.en) + ' · ' + m(zone.fee)
       })),
+      days: vfDeliveryDays(delivery.zone).map(day => {
+        const off = day.soldOut || day.pastCutoff;
+        return {
+          label: vfDayName(day, fa),
+          desc: day.soldOut ? C.soldOut : day.pastCutoff ? C.pastCutoff.replace('{time}', vfDeliveryCutoff(z, fa)) : vfDayMonth(day.date, fa),
+          on: day.iso === date,
+          off,
+          pick: () => update({
+            date: day.iso
+          })
+        };
+      }),
       slots: VF_SLOTS.map(([a, b]) => ({
         label: vfSlotLabel(a, b, fa),
         on: delivery.slot === a,
@@ -138,18 +152,45 @@ class Component extends VFPage {
         meta: l[L][1] + ' · × ' + n(Q(l.id)),
         total: m(l.unit * Q(l.id))
       })),
-      totalLabel: m(sub + fee),
-      sums: [{
-        label: C.sub,
-        value: m(sub)
-      }, {
-        label: C.fee,
-        value: fee ? m(fee) : C.free
-      }, {
-        label: C.total,
-        value: m(sub + fee),
-        strong: true
-      }],
+      totalLabel: m(total),
+      promoDraft: s.promoDraft,
+      setPromoDraft: e => this.setState({
+        promoDraft: e.target.value,
+        promoError: null
+      }),
+      applyPromo: e => {
+        e && e.preventDefault && e.preventDefault();
+        const check = vfPromoCheck(s.promoDraft, sub);
+        if (check.error) {
+          this.setState({
+            promoError: check
+          });
+          S.focus('vf-promo');
+          return;
+        }
+        update({
+          promo: check.promo.code
+        });
+        this.setState({
+          promoDraft: '',
+          promoError: null
+        });
+      },
+      promoError: s.promoError ? s.promoError.error === 'min' ? C.promoMin.replace('{min}', m(s.promoError.min)) : C.promoUnknown : undefined,
+      hasPromo: !!delivery.promo,
+      noPromo: !delivery.promo,
+      promoStatus: (() => {
+        const promo = VF_PROMOS.find(p => p.code === delivery.promo);
+        if (!promo) return '';
+        return (totals.discount ? C.promoOn.replace('{percent}', n(promo.percent)) : C.promoPaused.replace('{min}', m(promo.min))).replace('{code}', promo.code);
+      })(),
+      removePromo: () => {
+        update({
+          promo: ''
+        });
+        S.focus('vf-promo');
+      },
+      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount}, m),
       restore: e => {
         e && e.preventDefault && e.preventDefault();
         if (st) {

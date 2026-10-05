@@ -22,10 +22,9 @@ class Component extends VFPage {
     });
     if (order) {
       const d = order.delivery;
-      const zone = VF_ZONES.find(z => z.id === d.zone) || VF_ZONES[0];
-      const end = (VF_SLOTS.find(s => s[0] === d.slot) || VF_SLOTS[1])[1];
+      const zone = vfZone(d.zone);
       C.orderNo = C.labels.order + '\u2068' + order.id + '\u2069';
-      C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, '\u2068' + S.n(d.slot + ':00') + '–' + S.n(end + ':00') + '\u2069'], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, d.card || C.labels.noMessage], ['banknote', C.labels.payment, (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) + (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))]];
+      C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, vfDeliveryWhen(d, fa)], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, d.card || C.labels.noMessage], ['banknote', C.labels.payment, (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) + (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))]];
       C.times = ['', '', '', '', ''];
     }
     const idx = {
@@ -61,6 +60,9 @@ class Component extends VFPage {
       titleB: h[1],
       statusP: h[2],
       current: idx,
+      delivered: st === 'delivered',
+      // A real order carries the courier's photo URL; samples show the placeholder.
+      photo: order && order.deliveryPhoto || undefined,
       tlStatus: st === 'cancelled' ? 'cancelled' : st === 'delivered' ? 'done' : 'active',
       steps: C.steps.map((l, i) => ({
         label: l,
@@ -78,17 +80,7 @@ class Component extends VFPage {
         note: line[L][2],
         total: m(line.unit * line.qty)
       })),
-      sums: [{
-        label: C.sub,
-        value: m(sampleTotals.sub)
-      }, {
-        label: C.fee,
-        value: sampleTotals.fee ? m(sampleTotals.fee) : C.labels.free
-      }, {
-        label: C.total,
-        value: m(sampleTotals.total),
-        strong: true
-      }]
+      sums: vfSummaryRows(sampleTotals, order && order.delivery.promo, {...C, free: C.labels.free, discount: S.t.discount}, m)
     };
   }
 }

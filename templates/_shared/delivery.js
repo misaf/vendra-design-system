@@ -21,7 +21,14 @@ const VF_ZONES = [
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
 const VF_SLOTS = [['08', '12'], ['12', '16'], ['16', '20'], ['20', '22']];
-const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', slot: '12'};
+// Delivery days offered, counting today. Today drops off after the zone's cut-off.
+const VF_DELIVERY_DAYS = 7;
+// Days with no capacity left, as ISO dates (e.g. '2027-02-14').
+const VF_SOLD_OUT_DATES = [];
+// Sample only: shows a sold-out day this many days ahead. Set to null for a real store.
+const VF_SAMPLE_SOLD_OUT_IN_DAYS = 2;
+// An empty date means the first day still available.
+const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', date: '', slot: '12', promo: ''};
 
 function vfDeliveryCutoff(zone, persian) {
   const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
@@ -30,6 +37,35 @@ function vfDeliveryCutoff(zone, persian) {
 
 function vfDeliveryHint(zone, persian) {
   return (persian ? 'ارسال همان روز تا ' : 'Same day before ') + vfDeliveryCutoff(zone, persian);
+}
+
+function vfZone(id) {
+  return VF_ZONES.find(zone => zone.id === id) || VF_ZONES[0];
+}
+
+function vfIsoDate(date) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+// The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
+function vfDeliveryDays(zoneId, now = new Date()) {
+  const [hour, minute] = vfZone(zoneId).cutoff.split(':').map(Number);
+  const pastCutoff = now.getHours() * 60 + now.getMinutes() >= hour * 60 + minute;
+  return Array.from({length: VF_DELIVERY_DAYS}, (_, offset) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
+    const iso = vfIsoDate(date);
+    return {
+      iso, date, offset,
+      soldOut: VF_SOLD_OUT_DATES.includes(iso) || offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
+      pastCutoff: offset === 0 && pastCutoff
+    };
+  });
+}
+
+// The chosen day when it is still open, otherwise the first open day.
+function vfDeliveryDate(delivery, now = new Date()) {
+  const open = vfDeliveryDays(delivery.zone, now).filter(day => !day.soldOut && !day.pastCutoff);
+  return (open.find(day => day.iso === delivery.date) || open[0]).iso;
 }
 
 function vfPhone(value) {
@@ -49,8 +85,10 @@ function vfErrors(delivery) {
 
 function vfTotals(lines, delivery) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
-  const zone = VF_ZONES.find(zone => zone.id === delivery.zone) || VF_ZONES[0];
+  const zone = vfZone(delivery.zone);
   const free = sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zone.id);
   const fee = free ? 0 : zone.fee;
-  return {sub, fee, total: sub + fee};
+  // The applied promo code travels with the checkout details.
+  const discount = vfDiscount(delivery.promo, sub);
+  return {sub, fee, discount, total: sub - discount + fee};
 }

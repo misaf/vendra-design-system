@@ -26,12 +26,7 @@ class Component extends VFPage {
     };
     const items = order ? order.lines : st ? st.bag : vfSampleBag();
     const totals = order ? order.totals : vfTotals(items, delivery);
-    const {
-      sub,
-      fee
-    } = totals;
-    const slotEnd = (VF_SLOTS.find(slot => slot[0] === delivery.slot) || VF_SLOTS[1])[1];
-    const slotLabel = vfSlotLabel(delivery.slot, slotEnd, fa);
+    const slotLabel = vfDeliveryWhen({...delivery, date: delivery.date || vfDeliveryDate(delivery)}, fa);
     const method = order ? order.method || 'card' : s.method,
       codOk = VF_STORE.paymentDemo.codZones.includes(delivery.zone),
       P = C.migration;
@@ -85,7 +80,7 @@ class Component extends VFPage {
       }, {
         label: C.s3
       }],
-      totalLabel: m(sub + fee),
+      totalLabel: m(totals.total),
       caption: C.caption,
       payLabels: C.payLabels,
       copySheba: () => navigator.clipboard.writeText(VF_STORE.payment.sheba || ''),
@@ -127,7 +122,8 @@ class Component extends VFPage {
               ...l
             })),
             delivery: {
-              ...delivery
+              ...delivery,
+              date: delivery.date || vfDeliveryDate(delivery)
             },
             totals: {
               ...totals
@@ -171,17 +167,7 @@ class Component extends VFPage {
         meta: l[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(l.qty) : l.qty),
         total: m(l.unit * l.qty)
       })),
-      sums: [{
-        label: C.sub,
-        value: m(sub)
-      }, {
-        label: C.fee,
-        value: fee ? m(fee) : C.free
-      }, {
-        label: C.total,
-        value: m(sub + fee),
-        strong: true
-      }],
+      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount}, m),
       doneRows: [{
         icon: 'calendar',
         label: C.when,
@@ -193,7 +179,7 @@ class Component extends VFPage {
       }, {
         icon: 'banknote',
         label: C.pay,
-        value: P.methods[method] + ' · ' + m(sub + fee)
+        value: P.methods[method] + ' · ' + m(totals.total)
       }, {
         icon: 'receipt',
         label: C.card,

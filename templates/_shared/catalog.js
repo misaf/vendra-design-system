@@ -1,5 +1,6 @@
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
+// occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
@@ -8,32 +9,32 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -105,3 +106,19 @@ function vfReorderLines(lines) {
 }
 
 function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
+
+// Recently viewed products, newest first, kept in this browser only.
+const VF_RECENT_KEY = 'vendra-recently-viewed';
+function vfRecentlyViewed() {
+  try {
+    const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
+    return Array.isArray(ids) ? ids.filter(id => VF_PRODUCTS.some(p => p.id === id)) : [];
+  } catch (_) {
+    return [];
+  }
+}
+function vfRememberViewed(id) {
+  try {
+    localStorage.setItem(VF_RECENT_KEY, JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8)));
+  } catch (_) {}
+}

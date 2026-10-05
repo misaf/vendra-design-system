@@ -7,6 +7,7 @@ const shared = name => fs.readFileSync(path.join(root, '_shared', name), 'utf8')
 const sharedLogicFiles = [
   'store-config.js',
   'delivery.js',
+  'promotions.js',
   'catalog.js',
   'translations/shell.js',
   'translations/categories.js',

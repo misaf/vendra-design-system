@@ -18,7 +18,8 @@ class Component extends VFPage {
     const s = {
       cat: route.cat || 'all',
       sort: route.sort || 'featured',
-      chips: route.filters || []
+      chips: route.filters || [],
+      occasion: route.occasion || 'all'
     };
     const change = patch => {
       const next = {
@@ -28,6 +29,7 @@ class Component extends VFPage {
         cat: s.cat,
         sort: s.sort,
         filters: s.chips,
+        occasion: s.occasion,
         ...patch
       };
       if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
@@ -35,7 +37,7 @@ class Component extends VFPage {
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false);
+      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
     let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
@@ -51,7 +53,12 @@ class Component extends VFPage {
       closeFilters: () => this.setState({
         filterOpen: false
       }),
-      activeFilters: [...(price[0] > 0 || price[1] < priceMax ? [{
+      activeFilters: [...(s.occasion !== 'all' ? [{
+        label: VF_SHOP_OCCASION_COPY[L][s.occasion],
+        remove: () => change({
+          occasion: 'all'
+        })
+      }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
         label: S.m(price[0]) + ' – ' + S.m(price[1]),
         remove: () => change({
           min: 0,
@@ -73,6 +80,14 @@ class Component extends VFPage {
       setPrice: ([min, max]) => change({
         min,
         max
+      }),
+      occasion: s.occasion,
+      occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
+        value: id,
+        label: VF_SHOP_OCCASION_COPY[L][id]
+      })),
+      setOccasion: e => change({
+        occasion: e.target.value
       }),
       inStock,
       setStock: e => change({
@@ -124,7 +139,8 @@ class Component extends VFPage {
         sort: 'featured',
         min: 0,
         max: priceMax,
-        stock: false
+        stock: false,
+        occasion: 'all'
       }),
       items: list.map(p => {
         const fav = S.isFav(p.id, ['orchid']);
