@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import {ROOT, TENANTS, contrast, expectNoViteError} from './helpers.mjs';
+import {ROOT, TENANTS, contrast, expectNoViteError, openSite} from './helpers.mjs';
 
 // The seven Theme builder checks (guidelines/theme-builder.html), run against
 // each shipped tenant file rather than the builder's generated ramps, so a
@@ -52,10 +52,59 @@ for (const tenant of [null, ...TENANTS]) {
   });
 }
 
-test('every tenant is imported by styles.css', () => {
-  const styles = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
-  for (const tenant of TENANTS) expect(styles).toContain(`@import url('tokens/tenants/${tenant}.css');`);
+test('styles.css carries no tenant; tokens/tenants.css carries them all for cards', () => {
+  expect(fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8')).not.toContain('tokens/tenants');
+  const all = fs.readFileSync(path.join(ROOT, 'tokens/tenants.css'), 'utf8');
+  for (const tenant of TENANTS) expect(all).toContain(`@import url('tenants/${tenant}.css');`);
 });
+
+// Records what each frame showed: 'hidden' or the shell's background colour.
+async function recordFrames(page) {
+  await page.addInitScript(() => {
+    window.__vfFrames = [];
+    const tick = () => {
+      const el = document.querySelector('.vf-shell-container');
+      if (el) window.__vfFrames.push(getComputedStyle(document.body).visibility === 'hidden' ? 'hidden' : getComputedStyle(el).backgroundColor);
+      if (window.__vfFrames.length < 120) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+// Every visible frame had the final page colour: no flash of the default theme.
+async function expectNoThemeFlash(page) {
+  const final = await page.locator('.vf-shell-container').evaluate(el => getComputedStyle(el).backgroundColor);
+  const seen = [...new Set(await page.evaluate(() => window.__vfFrames))].filter(f => f !== 'hidden');
+  expect(seen).toEqual([final]);
+}
+
+// A storefront downloads only its own theme, after styles.css.
+for (const tenant of ['default', ...TENANTS, 'not-a-tenant']) {
+  test(`storefront loads only its own theme (?tenant=${tenant})`, async ({page}) => {
+    const requested = [];
+    page.on('request', r => { if (r.url().includes('/tokens/tenants')) requested.push(r.url().split('/tokens/')[1]); });
+    await recordFrames(page);
+    await openSite(page, 'home', 'en', {tenant});
+    const expected = TENANTS.includes(tenant) ? tenant : 'default';
+    expect(requested).toEqual(expected === 'default' ? [] : [`tenants/${expected}.css`]);
+    await expect(page.locator('.vf-shell-container')).toHaveAttribute('data-tenant', expected);
+    const sheets = await page.evaluate(() => [...document.head.querySelectorAll('link[rel=stylesheet]')].map(l => l.href.split('/').pop()));
+    if (expected !== 'default') expect(sheets.indexOf(`${expected}.css`)).toBeGreaterThan(sheets.indexOf('styles.css'));
+    await expectNoThemeFlash(page);
+  });
+}
+
+// On a slow connection the page stays hidden until the theme arrives.
+for (const tenant of TENANTS) {
+  test(`slow theme file never shows the default colours (${tenant})`, async ({page}) => {
+    await page.route('**/tokens/tenants/*.css', async route => { await new Promise(r => setTimeout(r, 800)); await route.continue(); });
+    await recordFrames(page);
+    await openSite(page, 'home', 'en', {tenant});
+    await expect(page.locator('body')).toBeVisible();
+    expect(await page.evaluate(() => window.__vfFrames)).toContain('hidden');
+    await expectNoThemeFlash(page);
+  });
+}
 
 // Every "Start from" choice in the builder (Vendra plus each tenant) must pass.
 for (const start of ['vendra', ...TENANTS]) {

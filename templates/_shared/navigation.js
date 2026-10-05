@@ -51,7 +51,7 @@ function vfShell(props, page) {
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
-    tenant: props.tenant ?? 'default',
+    tenant: vfPageTenant(props),
     mob,
     desk: !mob,
     previewMobile: !!props.mobile,

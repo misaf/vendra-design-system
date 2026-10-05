@@ -21,12 +21,16 @@ const sharedLogicFiles = [
   'navigation.js'
 ];
 
+// The tenant list the storefront accepts in ?tenant= and offers in each page's Theme setting.
+const tenantSlugs = require('./tenants.cjs').tenantSlugs();
+const tenantList = '// Source: tokens/tenants/*.json (generated)\nconst VF_TENANT_SLUGS = ' + JSON.stringify(tenantSlugs) + ';';
+
 function sourceCode(file) {
   return '// Source: templates/' + file + '\n' + fs.readFileSync(path.join(root, file), 'utf8').trimEnd();
 }
 
 function renderSharedLogic() {
-  return sharedLogicFiles.map(file => sourceCode('_shared/' + file)).join('\n\n') + '\n';
+  return [tenantList, ...sharedLogicFiles.map(file => sourceCode('_shared/' + file))].join('\n\n') + '\n';
 }
 
 const sharedLogic = renderSharedLogic();
@@ -70,6 +74,14 @@ function renderPageLogic(html, folder) {
   return replaceScriptRegion(html, 'GENERATED PAGE LOGIC', sourceCode(file));
 }
 
+// Keep the editor's Theme choices in step with tokens/tenants/.
+function renderTenantProp(html, folder) {
+  const prop = /(tenant&quot;:\{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:)\[[^\]]*\](,&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;)[^&]*(&quot;)/;
+  if (!prop.test(html)) throw new Error('Missing tenant prop in ' + folder);
+  const options = ['default', ...tenantSlugs];
+  return html.replace(prop, (_, start, middle, end) => start + '[' + options.map(o => '&quot;' + o + '&quot;').join(',') + ']' + middle + options.map(o => "'" + o + "'").join(' | ') + end);
+}
+
 function renderShell(source) {
   const metadata = source.match(/<!-- @template[^\n]*-->/);
   if (!metadata) throw new Error('Missing @template metadata');
@@ -96,6 +108,7 @@ function outputs() {
     html = replaceScriptRegion(html, 'GENERATED SHARED LOGIC', sharedLogic);
     html = renderPageCopy(html, folder);
     html = renderPageLogic(html, folder);
+    html = renderTenantProp(html, folder);
     if (folder !== 'storefront-site') {
       html = html.replace(/<x-dc>\n[\s\S]*?\n<\/x-dc>/, () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>');
     }

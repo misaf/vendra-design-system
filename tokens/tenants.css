@@ -1,0 +1,3 @@
+/* GENERATED from tokens/tenants/*.json by npm --prefix templates run build. Every tenant theme, for
+   design-system cards that compare tenants. Storefront pages load only their own tenant file. */
+@import url('tenants/clay.css');

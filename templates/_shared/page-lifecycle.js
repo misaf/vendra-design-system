@@ -1,5 +1,29 @@
 // Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
+
+// The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
+function vfTenant() {
+  const asked = new URLSearchParams(location.search).get('tenant');
+  if (VF_TENANT_SLUGS.includes(asked)) return asked;
+  return VF_TENANT_SLUGS.includes(VF_STORE.tenant) ? VF_STORE.tenant : 'default';
+}
+
+// A page's tenant: its own Theme setting when one is chosen, otherwise vfTenant().
+function vfPageTenant(props) {
+  const tenant = VF_TENANT_SLUGS.includes(props.tenant) ? props.tenant : vfTenant();
+  vfApplyTenant(tenant);
+  return tenant;
+}
+
+// Asks ds-base.js to load this tenant's stylesheet, and only that one. The loader
+// arrives asynchronously, so whichever of the two runs second does the loading.
+function vfApplyTenant(tenant) {
+  if (window.VF_TENANT === tenant) return;
+  window.VF_TENANT = tenant;
+  if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
+}
+// Start the request before the first render so the theme arrives with the page.
+vfApplyTenant(vfTenant());
 class VFPage extends DCLogic {
   componentDidMount() {
     this._vfMedia = window.matchMedia('(max-width:767px)');

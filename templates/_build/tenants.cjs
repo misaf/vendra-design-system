@@ -1,4 +1,5 @@
-// Generate tokens/tenants/<slug>.css and the runtime tenant list from tokens/tenants/<slug>.json.
+// Generate tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
+// and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 const fs = require('node:fs');
 const path = require('node:path');
 const theme = require('../_shared/tenant-theme.js');
@@ -26,9 +27,18 @@ function tenantOutputs() {
   for (const [slug, spec] of Object.entries(specs)) result.set(path.join(folder, slug + '.css'), theme.css(slug, spec));
   const orphans = fs.readdirSync(folder).filter(name => name.endsWith('.css') && !specs[name.slice(0, -4)]);
   if (orphans.length) throw new Error('Tenant CSS without a JSON source (tokens/tenants/): ' + orphans.join(', '));
+  // Storefronts load only their own tenant file; cards that compare tenants load them all.
+  result.set(path.resolve(folder, '../tenants.css'),
+    '/* GENERATED from tokens/tenants/*.json by npm --prefix templates run build. Every tenant theme, for\n   design-system cards that compare tenants. Storefront pages load only their own tenant file. */\n' +
+    Object.keys(specs).map(slug => "@import url('tenants/" + slug + ".css');\n").join(''));
   result.set(path.join(root, '_runtime/tenants.js'),
     '// GENERATED from tokens/tenants/*.json by npm --prefix templates run build.\nwindow.VF_TENANTS = ' + JSON.stringify(specs, null, 2) + ';\n');
   return result;
 }
 
-module.exports = {tenantSpecs, tenantOutputs};
+// Slugs only; storefront pages load one tenant's CSS and never need the specs.
+function tenantSlugs() {
+  return fs.readdirSync(folder).filter(name => name.endsWith('.json')).map(name => name.slice(0, -5)).sort();
+}
+
+module.exports = {tenantSpecs, tenantOutputs, tenantSlugs};

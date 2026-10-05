@@ -1,6 +1,7 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 const VF_STORE = {
+  tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
   currency: 'IRT',
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.

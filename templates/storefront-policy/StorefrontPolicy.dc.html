@@ -122,10 +122,14 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;fa&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en' | 'fa'&quot;,&quot;section&quot;:&quot;Language&quot;},&quot;tenant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;default&quot;,&quot;clay&quot;],&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;'default' | 'clay'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;doc&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;shipping&quot;,&quot;returns&quot;,&quot;privacy&quot;],&quot;default&quot;:&quot;shipping&quot;,&quot;tsType&quot;:&quot;'shipping' | 'returns' | 'privacy'&quot;,&quot;section&quot;:&quot;Content&quot;}}">
 // BEGIN GENERATED SHARED LOGIC
+// Source: tokens/tenants/*.json (generated)
+const VF_TENANT_SLUGS = ["clay"];
+
 // Source: templates/_shared/store-config.js
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 const VF_STORE = {
+  tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
   currency: 'IRT',
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
@@ -899,6 +903,30 @@ function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
 // Source: templates/_shared/page-lifecycle.js
 // Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
+
+// The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
+function vfTenant() {
+  const asked = new URLSearchParams(location.search).get('tenant');
+  if (VF_TENANT_SLUGS.includes(asked)) return asked;
+  return VF_TENANT_SLUGS.includes(VF_STORE.tenant) ? VF_STORE.tenant : 'default';
+}
+
+// A page's tenant: its own Theme setting when one is chosen, otherwise vfTenant().
+function vfPageTenant(props) {
+  const tenant = VF_TENANT_SLUGS.includes(props.tenant) ? props.tenant : vfTenant();
+  vfApplyTenant(tenant);
+  return tenant;
+}
+
+// Asks ds-base.js to load this tenant's stylesheet, and only that one. The loader
+// arrives asynchronously, so whichever of the two runs second does the loading.
+function vfApplyTenant(tenant) {
+  if (window.VF_TENANT === tenant) return;
+  window.VF_TENANT = tenant;
+  if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
+}
+// Start the request before the first render so the theme arrives with the page.
+vfApplyTenant(vfTenant());
 class VFPage extends DCLogic {
   componentDidMount() {
     this._vfMedia = window.matchMedia('(max-width:767px)');
@@ -1010,7 +1038,7 @@ function vfShell(props, page) {
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
-    tenant: props.tenant ?? 'default',
+    tenant: vfPageTenant(props),
     mob,
     desk: !mob,
     previewMobile: !!props.mobile,

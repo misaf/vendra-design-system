@@ -120,7 +120,7 @@ They run on the installed Google Chrome (`channel: 'chrome'`), so `npx playwrigh
 - `pages.spec.mjs` compares full-page screenshots of every routed view in English and Persian at both widths, with the clock frozen at 2026-10-05 so relative dates stay put.
 - `components.spec.mjs` exercises Tooltip (hover, bubble hover, Esc, focus), Tabs (arrow keys mirrored in RTL, Home/End, roving tabindex, `aria-controls`) and Toast (44px close button, on-inverse ring at 3:1) on `_e2e/fixtures/components.html`.
 - `cards.spec.mjs` loads every `@dsCard` at its declared viewport, fails on runtime errors or a Vite error overlay, checks the Contrast card has no failing pairs for the default theme and every tenant in `tokens/tenants/`, and compares each card with its screenshot in `_e2e/__screenshots__/`.
-- `tenants.spec.mjs` runs the seven Theme builder contrast checks against the default theme and every generated `tokens/tenants/*.css` file as the browser resolves it, checks each tenant is imported by `styles.css`, and checks every **Start from** choice in the builder passes. A new tenant file is picked up automatically.
+- `tenants.spec.mjs` runs the seven Theme builder contrast checks against the default theme and every generated `tokens/tenants/*.css` file as the browser resolves it, checks a storefront downloads only its own tenant file (after `styles.css`, with no flash of the default colours even when the file is slow), and checks every **Start from** choice in the builder passes. A new tenant file is picked up automatically.
 
 Screenshot baselines are per platform (`-darwin.png`, `-linux.png`) because font rendering differs. Comparisons use exact colours (`threshold: 0`) with up to 25 differing pixels for anti-aliasing; the default tolerance hid a whole drop shadow. After an intended visual change, review the diff in `_e2e/playwright-report/` and refresh the baselines:
 
@@ -136,7 +136,7 @@ All pages load the same assets. Page folders contain only their `Storefront*.dc.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
 - `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
 - `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.
-- `../styles.css`: imports the shared design-system fonts, tokens, tenant themes and component styles.
+- `../styles.css`: imports the shared design-system fonts, tokens and component styles. `_runtime/ds-base.js` adds the active tenant's `../tokens/tenants/<slug>.css` after it (chosen by `tenant` in `_shared/store-config.js` or `?tenant=`).
 - `../_ds_bundle.js` and `../assets/`: shared component bundle and images.
 
 Pages reference `../_runtime/support.js` and `../_runtime/ds-base.js`; browsers can reuse the same cached files across pages. The loader adds each shared stylesheet and component bundle only once per document.

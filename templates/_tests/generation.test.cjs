@@ -37,6 +37,8 @@ try {
   for (const folder of ['_build', '_shared', '_runtime', ...fs.readdirSync(path.join(root, 'templates')).filter(folder=>folder.startsWith('storefront-'))]) {
     fs.cpSync(path.join(root, 'templates', folder), path.join(templates, folder), {recursive: true});
   }
+  // Generation reads the tenant list from tokens/tenants/.
+  fs.cpSync(path.join(root, 'tokens/tenants'), path.join(temp, 'tokens/tenants'), {recursive: true});
   const config = path.join(templates, '_shared/store-config.js');
   fs.writeFileSync(config, fs.readFileSync(config, 'utf8')
     .replaceAll("en: 'Vendra Florist'", "en: 'Demo Flowers'")

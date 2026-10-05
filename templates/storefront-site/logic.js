@@ -11,7 +11,6 @@ function vfSiteInitial(props) {
     route: route.view === 'home' && !new URLSearchParams(location.search).has('view') ? props.start || 'home' : route.view,
     routeInfo: route,
     lang: new URLSearchParams(location.search).has('lang') ? route.lang : vfAccountLocale() || props.lang || 'en',
-    tenant: new URLSearchParams(location.search).get('tenant') === 'clay' ? 'clay' : null,
     mobile: null,
     bag: Array.isArray(saved.bag) ? saved.bag : VF_BAG0,
     saved: Array.isArray(saved.saved) ? saved.saved : ['orchid', 'crimson', 'blush'],
@@ -110,7 +109,7 @@ class Component extends DCLogic {
       integrationErrorText: s.lang === 'fa' ? 'همگام‌سازی انجام نشد؛ اطلاعات محلی حفظ شده است.' : 'Server sync failed; your local data is kept.',
       routeInfo: s.routeInfo,
       lang: s.lang,
-      tenant: s.tenant || this.props.tenant || 'default',
+      tenant: vfPageTenant(this.props),
       setLang: l => this.navigate({
         ...s.routeInfo,
         view: s.route,

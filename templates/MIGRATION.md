@@ -29,7 +29,7 @@ No duplicate storefront application remains.
 
 Run `npm --prefix templates run dev` from the project root. Open
 `http://localhost:5173/templates/storefront-site/StorefrontSite.dc.html`.
-Use `?lang=en` or `?lang=fa`; add `&tenant=clay` for the second theme.
+Use `?lang=en` or `?lang=fa`; add `&tenant=clay` (any tenant in `tokens/tenants/`) to preview another theme.
 
 Useful route examples:
 
