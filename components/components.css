@@ -362,9 +362,9 @@ a.ag-tabbar__item,a.ag-tabbar__item:hover{text-decoration:none;color:var(--text-
 @media (prefers-reduced-motion:no-preference){.ag-gallery__track,.ag-snap__track{scroll-behavior:smooth}}
 @media (prefers-reduced-motion:reduce){.ag-skel::after{display:none;animation:none}.ag-acc__panel,.ag-acc__chev,.ag-choice,.ag-gallery__dot span,.ag-blog__media img,.ag-arch img{transition:none}.ag-arch--zoom:hover img{transform:none}}
 
-.ag-skip{position:fixed;top:12px;inset-inline-start:12px;z-index:calc(var(--z-overlay) + 10);display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box;padding:0 var(--space-4h);border-radius:var(--radius-control);background:var(--surface-inverse);color:var(--text-on-inverse);font-family:var(--font-body);font-size:var(--text-sm);font-weight:var(--weight-medium);text-decoration:none;box-shadow:var(--shadow-lg);transform:translateY(calc(-100% - 24px));transition:transform var(--dur-fast) var(--ease-out)}
+.ag-skip{position:fixed;top:12px;inset-inline-start:12px;z-index:calc(var(--z-overlay) + 10);display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box;padding:0 var(--space-4h);border-radius:var(--radius-control);background:var(--surface-inverse);color:var(--text-on-inverse);font-family:var(--font-body);font-size:var(--text-sm);font-weight:var(--weight-medium);text-decoration:none;transform:translateY(calc(-100% - 24px));transition:transform var(--dur-fast) var(--ease-out)}
 .ag-skip:hover{color:var(--text-on-inverse)}
-.ag-skip:focus,.ag-skip:focus-visible{transform:none;outline:2px solid var(--focus-ring);outline-offset:2px}
+.ag-skip:focus,.ag-skip:focus-visible{transform:none;box-shadow:var(--shadow-lg);/* shadow only once shown: hidden, it bled into the header */outline:2px solid var(--focus-ring);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.ag-skip{transition:none}}
 
 /* DatePicker */
