@@ -4,7 +4,7 @@
   "scripts": {
     "build": "node _build/build.cjs",
     "check": "node _build/build.cjs --check",
-    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs && node _tests/tenants.test.cjs && node _tests/components.test.cjs && node _tests/features.test.cjs",
+    "test": "node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/bundle.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs && node _tests/tenants.test.cjs && node _tests/components.test.cjs && node _tests/features.test.cjs",
     "dev": "vite --config _build/vite.config.mjs",
     "test:e2e": "playwright test -c _e2e/playwright.config.mjs",
     "test:e2e:update": "playwright test -c _e2e/playwright.config.mjs --update-snapshots"

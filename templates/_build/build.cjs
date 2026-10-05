@@ -29,7 +29,12 @@ try {
     if (check && css !== current) throw new Error(file + ' is stale. Run npm --prefix templates run build.');
     if (!check && css !== current) fs.writeFileSync(target, css);
   }
-  console.log(check ? 'Tailwind, custom CSS, tenant themes and storefront templates are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
+  // The component bundle comes from the Claude Design self-check, so a build can only warn about it.
+  const {staleBundleSources, bundleMessage} = require('./bundle.cjs');
+  const stale = staleBundleSources();
+  if (check && stale.length) throw new Error(bundleMessage(stale));
+  if (stale.length) console.warn('Warning: ' + bundleMessage(stale));
+  console.log(check ? 'Tailwind, custom CSS, tenant themes, storefront templates and the component bundle are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;
