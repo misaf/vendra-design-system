@@ -51,6 +51,10 @@ function vfShell(props, page) {
       props.go(route);
     }) : undefined
   }));
+  // The click-through site switches in place; a standalone page opens itself in the site in that language.
+  const setLang = props.setLang || (lang => {
+    location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
+  });
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
   return {
@@ -73,6 +77,7 @@ function vfShell(props, page) {
       journal: cur.journal
     },
     bagCount: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
+    bagLabel: !count ? T.bag : count === 1 ? T.bagOne : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
       window.AG_NAV.focusHeading();
@@ -97,8 +102,15 @@ function vfShell(props, page) {
     }),
     closeMenu: close,
     menuItems,
-    hasLang: !!props.setLang,
-    setLang: props.setLang,
+    hasLang: true,
+    setLang,
+    // Mobile headers have room for one button: it switches to the other language.
+    otherLang: {
+      label: fa ? 'EN' : 'فا',
+      name: fa ? 'English' : 'فارسی',
+      lang: fa ? 'en' : 'fa',
+      pick: () => setLang(fa ? 'en' : 'fa')
+    },
     langOpts: [{
       id: 'en',
       label: 'EN'

@@ -8,3 +8,8 @@
 /* One focus ring around the whole field, not just the text box beside the button. */
 .vf-bag-promo-row input:focus-visible{outline:none}
 .vf-bag-promo-row .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+/* Delivery pin: the pin stays at the map's centre; Leaflet's panes stay inside the map (isolation on .vf-bag-map). */
+.vf-bag-map-pin{position:absolute;left:50%;top:50%;z-index:1000;transform:translate(-50%,-100%);color:var(--accent);pointer-events:none;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .3))}
+.vf-bag-map .leaflet-container{font-family:var(--font-body);background:var(--surface-muted)}
+#vf-map:focus-visible{outline:none}
+.vf-bag-map:has(#vf-map:focus-visible){outline:2px solid var(--focus-ring);outline-offset:2px}

@@ -27,6 +27,7 @@ export function siteUrl(view, lang, extra = {}) {
 
 // Waits for the DC runtime to render the page shell and settle the language.
 export async function openSite(page, view, lang, extra) {
+  await stubMapTiles(page);
   await page.goto(siteUrl(view, lang, extra));
   await expect(page.locator('#main')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
@@ -73,4 +74,22 @@ export async function scanAxe(page) {
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
   return violations.map(v => `${v.id} (${v.impact}): ${v.nodes.length}× ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`);
+}
+
+// Map tiles come from the network; serve one blank tile instead so runs are offline and screenshots stable.
+const BLANK_TILE = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/6XqTHQAAAAASUVORK5CYII=', 'base64');
+export async function stubMapTiles(page) {
+  if (page.vfTilesStubbed) return;
+  page.vfTilesStubbed = true;
+  await page.route(/tile\.openstreetmap\.org/, route => route.fulfill({contentType: 'image/png', body: BLANK_TILE}));
+}
+
+// Drops the delivery pin the way a keyboard user would: focus the map and nudge it.
+export async function pinDelivery(page) {
+  const map = page.locator('#vf-map.leaflet-container');
+  await expect(map).toBeVisible();
+  await map.focus();
+  await page.keyboard.press('ArrowUp');
+  // Only a placed pin shows coordinates (Latin or Persian digits); the instructions have none.
+  await expect(page.locator('#vf-pin-status')).toHaveText(/[0-9۰-۹]{2}[.٫][0-9۰-۹]/);
 }

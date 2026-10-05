@@ -16,7 +16,15 @@ function vfCopy(S) {
       name: 'Recipient name',
       phone: 'Recipient phone',
       zone: 'Delivery zone',
-      address2: 'Address',
+      address2: 'Plaque, unit and floor',
+      addressHint: 'Anything the map can’t show, like the name on the bell.',
+      addressFull: 'Full address',
+      pin: 'Delivery location',
+      pinHint: 'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
+      pinSet: 'Pin placed at {location}. Move the map to adjust it.',
+      locate: 'Use my location',
+      locateFailed: 'We couldn’t get your location. Move the map instead.',
+      mapFailed: 'The map didn’t load. Write the full address and we’ll call to confirm it.',
       day: 'Delivery day',
       soldOut: 'Sold out',
       pastCutoff: 'Order by {time}',
@@ -47,7 +55,9 @@ function vfCopy(S) {
       errors: {
         name: 'Enter the recipient’s name.',
         phone: 'Enter an 11-digit mobile number starting with 09.',
-        address: 'Enter a full address (at least 6 characters).'
+        location: 'Place the pin on the delivery address.',
+        address: 'Add the plaque and unit, or the house number.',
+        addressFull: 'Enter a full address (at least 6 characters).'
       }
     },
     fa: {
@@ -64,7 +74,15 @@ function vfCopy(S) {
       name: 'نام گیرنده',
       phone: 'موبایل گیرنده',
       zone: 'محدوده ارسال',
-      address2: 'آدرس',
+      address2: 'پلاک، واحد و طبقه',
+      addressHint: 'هر چیزی که روی نقشه دیده نمی‌شود، مثل نام روی زنگ.',
+      addressFull: 'آدرس کامل',
+      pin: 'محل تحویل',
+      pinHint: 'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
+      pinSet: 'سوزن روی {location} است. برای اصلاح، نقشه را جابه‌جا کنید.',
+      locate: 'موقعیت فعلی من',
+      locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.',
+      mapFailed: 'نقشه بارگذاری نشد. آدرس کامل را بنویسید؛ برای تأیید تماس می‌گیریم.',
       day: 'روز ارسال',
       soldOut: 'تکمیل',
       pastCutoff: 'سفارش تا {time}',
@@ -95,7 +113,9 @@ function vfCopy(S) {
       errors: {
         name: 'نام گیرنده را وارد کنید.',
         phone: 'شماره موبایل ۱۱ رقمی با ۰۹ وارد کنید.',
-        address: 'آدرس کامل را وارد کنید؛ دست‌کم ۶ نویسه.'
+        location: 'سوزن را روی محل تحویل بگذارید.',
+        address: 'پلاک و واحد یا شماره خانه را بنویسید.',
+        addressFull: 'آدرس کامل را وارد کنید؛ دست‌کم ۶ نویسه.'
       }
     }
   }[S.lang];

@@ -12,7 +12,10 @@ class Component extends VFPage {
     },
     submitted: false,
     promoDraft: '',
-    promoError: null
+    promoError: null,
+    mapFailed: false,
+    locating: false,
+    locateFailed: false
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -37,12 +40,7 @@ class Component extends VFPage {
     const z = vfZone(delivery.zone);
     const date = vfDeliveryDate(delivery);
     const invalid = vfErrors(delivery);
-    const update = patch => st ? st.setDelivery(patch) : this.setState({
-      delivery: {
-        ...s.delivery,
-        ...patch
-      }
-    });
+    const update = patch => this._update(patch);
     const errors = C.errors;
     return {
       ...S,
@@ -65,14 +63,24 @@ class Component extends VFPage {
       }),
       nameError: s.submitted && invalid.name ? errors.name : undefined,
       phoneError: s.submitted && invalid.phone ? errors.phone : undefined,
-      addressError: s.submitted && invalid.address ? errors.address : undefined,
+      addressError: s.submitted && invalid.address ? s.mapFailed ? errors.addressFull : errors.address : undefined,
+      addressLabel: s.mapFailed ? C.addressFull : C.address2,
+      addressHint: s.mapFailed ? undefined : C.addressHint,
+      mapOk: !s.mapFailed,
+      mapFailed: s.mapFailed,
+      pinStatus: vfValidLocation(delivery.location) ? C.pinSet.replace('{location}', vfLocationText(delivery.location, fa)) : C.pinHint,
+      pinError: s.submitted && invalid.location ? errors.location : s.locateFailed ? C.locateFailed : '',
+      locating: s.locating,
+      locate: () => this._locate(),
       next: () => {
         if (live.some(l => !vfLineAvailable(l))) return;
         this.setState({
           submitted: true
         });
         if (Object.values(invalid).some(Boolean)) {
-          window.AG_NAV.focusFirstInvalid();
+          // The map can't carry aria-invalid, so focus it directly when the pin is the first problem.
+          if (['name', 'phone', 'location', 'address'].find(k => invalid[k]) === 'location') S.focus('vf-map');
+          else window.AG_NAV.focusFirstInvalid();
           return;
         }
         if (st) st.setDelivery({
@@ -206,5 +214,107 @@ class Component extends VFPage {
         });
       }
     };
+  }
+  _update(patch) {
+    const st = this.props.store;
+    if (st) st.setDelivery(patch);
+    else this.setState(prev => ({
+      delivery: {
+        ...prev.delivery,
+        ...patch
+      }
+    }));
+  }
+  _delivery() {
+    return this.props.store ? this.props.store.delivery : this.state.delivery;
+  }
+  // Leaflet owns #vf-map's contents. Create the map once the element exists, and again if the page replaces it.
+  _syncMap() {
+    const box = document.getElementById('vf-map');
+    if (this._map && (!box || this._map.getContainer() !== box)) {
+      this._map.remove();
+      this._map = null;
+    }
+    if (!box || this._map || this._mapPending || this.state.mapFailed) return;
+    this._mapPending = true;
+    vfLoadLeaflet().then(Leaflet => {
+      this._mapPending = false;
+      const el = document.getElementById('vf-map');
+      if (!el || this._map || this._unmounted) return;
+      const pinned = this._delivery().location;
+      const ok = vfValidLocation(pinned);
+      const map = Leaflet.map(el, {
+        center: ok ? [pinned.lat, pinned.lng] : VF_STORE.map.center,
+        zoom: ok ? 17 : VF_STORE.map.zoom,
+        scrollWheelZoom: false
+      });
+      Leaflet.tileLayer(VF_STORE.map.tiles, {
+        maxZoom: 19,
+        attribution: VF_STORE.map.attribution
+      }).addTo(map);
+      // The pin is fixed at the centre, so wherever the map stops is the delivery point.
+      map.on('moveend', () => this._update({
+        location: vfPinLocation(map.getCenter())
+      }));
+      map.on('click', e => map.panTo(e.latlng));
+      this._map = map;
+      if (this._delivery().noMap) this._update({
+        noMap: false
+      });
+    }).catch(() => {
+      this._mapPending = false;
+      if (this._unmounted) return;
+      this.setState({
+        mapFailed: true
+      });
+      this._update({
+        noMap: true
+      });
+    });
+  }
+  _locate() {
+    if (!navigator.geolocation) {
+      this.setState({
+        locateFailed: true
+      });
+      return;
+    }
+    this.setState({
+      locating: true,
+      locateFailed: false
+    });
+    navigator.geolocation.getCurrentPosition(position => {
+      const here = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      this.setState({
+        locating: false
+      });
+      if (this._map) this._map.setView([here.lat, here.lng], 17);
+      else this._update({
+        location: vfPinLocation(here)
+      });
+    }, () => this.setState({
+      locating: false,
+      locateFailed: true
+    }), {
+      enableHighAccuracy: true,
+      timeout: 10000
+    });
+  }
+  componentDidMount() {
+    super.componentDidMount();
+    this._syncMap();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this._syncMap();
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._unmounted = true;
+    if (this._map) this._map.remove();
+    this._map = null;
   }
 }

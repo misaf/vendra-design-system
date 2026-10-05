@@ -28,7 +28,9 @@ const VF_SOLD_OUT_DATES = [];
 // Sample only: shows a sold-out day this many days ahead. Set to null for a real store.
 const VF_SAMPLE_SOLD_OUT_IN_DAYS = 2;
 // An empty date means the first day still available.
-const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', date: '', slot: '12', promo: ''};
+// location is the map pin, {lat, lng}; address holds what a map can't show (plaque, unit, floor).
+// noMap is set when the map couldn't load: a typed full address then stands in for the pin.
+const VF_DELIVERY = {name: '', phone: '', address: '', location: null, noMap: false, card: '', zone: 'central', date: '', slot: '12', promo: ''};
 
 function vfDeliveryCutoff(zone, persian) {
   const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
@@ -79,7 +81,8 @@ function vfErrors(delivery) {
   return {
     name: !String(delivery.name || '').trim(),
     phone: !/^09\d{9}$/.test(vfPhone(delivery.phone)),
-    address: String(delivery.address || '').trim().length < 6
+    location: !delivery.noMap && !vfValidLocation(delivery.location),
+    address: delivery.noMap ? String(delivery.address || '').trim().length < 6 : !String(delivery.address || '').trim()
   };
 }
 

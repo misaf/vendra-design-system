@@ -1,6 +1,6 @@
 EN / فا segmented toggle for the header. Consumers set `lang` + `dir` on the root when it changes.
 ```jsx
-<LanguageSwitch value={lang} onChange={l=>{setLang(l);const h=document.documentElement;h.lang=h.dataset.lang=l;h.dir=l==='fa'?'rtl':'ltr';}} />
+<LanguageSwitch value={lang} label={fa?'زبان':'Language'} onChange={l=>{setLang(l);const h=document.documentElement;h.lang=h.dataset.lang=l;h.dir=l==='fa'?'rtl':'ltr';}} />
 ```
 
 ## Usage

@@ -22,8 +22,12 @@ for (const [zone,fee] of [['central',80000],['outer',120000],['alborz',180000],[
 }
 assert.equal(ctx.totals([{unit:4900000,qty:1},{unit:3400000,qty:1}],{zone:'central'}).total,8300000);
 assert.equal(ctx.phone('۰۹۱۲ ۳۴۵ ۶۷۸۹'),'09123456789');assert.equal(ctx.phone('٠٩١٢٣٤٥٦٧٨٩'),'09123456789');
-assert.equal(Object.values(ctx.errors({name:'',phone:'0912',address:'short'})).filter(Boolean).length,3);
-assert.equal(Object.values(ctx.errors({name:'Sample',phone:'۰۹۱۲۳۴۵۶۷۸۹',address:'Sample address'})).some(Boolean),false);
+assert.equal(Object.values(ctx.errors({name:'',phone:'0912',address:'',location:null})).filter(Boolean).length,4);
+assert.equal(Object.values(ctx.errors({name:'Sample',phone:'۰۹۱۲۳۴۵۶۷۸۹',address:'Unit 3',location:{lat:35.83,lng:50.96}})).some(Boolean),false);
+// Without a map the pin isn't required, but the typed address must be a full one.
+assert.deepEqual({...ctx.errors({name:'Sample',phone:'09123456789',address:'Unit',location:null,noMap:true})},{name:false,phone:false,location:false,address:true});
+assert.equal(Object.values(ctx.errors({name:'Sample',phone:'09123456789',address:'12 Golestan St, Karaj',location:null,noMap:true})).some(Boolean),false);
+assert.equal(ctx.errors({name:'S',phone:'09123456789',address:'U',location:{lat:'x',lng:50}}).location,true,'a broken pin is not a pin');
 let parsed=0;
 for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.startsWith('storefront-'))) {
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
@@ -39,7 +43,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
   logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.lang,'fa');
   logic.navigate({view:'shop',lang:'en'},true);assert.equal(history.at(-1)[0],'replace');
   logic.navigate('checkout');assert.equal(logic.state.route,'bag');
-  let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',zone:'central'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
+  let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',location:{lat:35.83,lng:50.96},zone:'central'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
   const originalBag=logic.state.bag;logic.setState({bag:[]});logic.navigate('checkout');assert.equal(logic.state.route,'bag');logic.setState({bag:originalBag});logic.navigate('checkout');
   const totals=c.window.AG_FORMAT.num(8300000,'en');assert.equal(totals,'8,300,000');
   const order={lines:logic.state.bag,delivery:logic.state.delivery,totals:{sub:8300000,fee:0,total:8300000},last4:'1234'};

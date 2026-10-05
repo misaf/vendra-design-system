@@ -99,3 +99,41 @@ test('the Sheba hint describes its button', async ({page}) => {
   test.skip(!/Template runtimes pass even a single child/.test(bundle), 'Tooltip fix not in _ds_bundle.js yet — run the Claude Design self-check');
   await expect(info).toHaveAccessibleDescription('Iranian IBAN');
 });
+
+test('the bag icon shows and announces how many items are in the bag', async ({page}) => {
+  await openSite(page, 'home', 'en');
+  const bag = page.locator('header').getByRole('link', {name: 'Bag, 2 items'}).locator('visible=true');
+  await expect(bag).toHaveCount(1);
+  await expect(bag.locator('.ag-iconbtn__count')).toHaveText('2');
+  await openSite(page, 'home', 'fa');
+  const sabad = page.locator('header').getByRole('link', {name: 'سبد، ۲ کالا'}).locator('visible=true');
+  await expect(sabad).toHaveCount(1);
+  const bundle = fs.readFileSync(path.join(ROOT, '_ds_bundle.js'), 'utf8');
+  test.skip(/count > 0 && /.test(bundle), 'IconButton count fix not in _ds_bundle.js yet — run the Claude Design self-check');
+  await expect(sabad.locator('.ag-iconbtn__count')).toHaveText('۲');
+});
+
+test('the header switches language and keeps the page', async ({page}, info) => {
+  await openSite(page, 'shop', 'en', {cat: 'orchids'});
+  if (info.project.name === 'mobile') {
+    await page.locator('header').getByRole('button', {name: 'فارسی'}).click();
+  } else {
+    const lang = page.locator('header').getByRole('group', {name: 'Language'});
+    await expect(lang.getByRole('button', {name: 'EN'})).toHaveAttribute('aria-pressed', 'true');
+    await lang.getByRole('button', {name: 'فا'}).click();
+  }
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page).toHaveURL(/cat=orchids/);
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('a standalone page opens itself in the other language', async ({page}, info) => {
+  test.skip(info.project.name === 'mobile', 'Same link on both; desktop covers it');
+  await page.goto('/templates/storefront-faq/StorefrontFaq.dc.html');
+  await expect(page.locator('#main')).toBeVisible();
+  await page.locator('header').getByRole('group', {name: 'Language'}).getByRole('button', {name: 'فا'}).click();
+  await expect(page).toHaveURL(/StorefrontSite\.dc\.html\?.*lang=fa/);
+  await expect(page).toHaveURL(/view=faq/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+});

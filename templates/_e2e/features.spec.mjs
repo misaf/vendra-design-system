@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
 // Delivery days, promo codes, shop occasions, recently viewed
 // products and the delivery photo, in the click-through site.
@@ -25,7 +25,8 @@ test('after the cut-off, today is closed', async ({page}) => {
 });
 
 test('a promo code discounts the bag and carries to checkout', async ({page}) => {
-  await page.clock.setFixedTime(MORNING);
+  // Time keeps running from 09:00: the map's pan animation needs a moving clock.
+  await page.clock.setSystemTime(MORNING);
   await openSite(page, 'bag', 'en');
   const code = page.getByRole('textbox', {name: 'Promo code'});
   await code.fill('nope');
@@ -41,7 +42,8 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   expect(await scanAxe(page)).toEqual([]);
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
-  await page.fill('#vf-address', '12 Golestan St, Karaj');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
   await expect(page.locator('#vf-last4')).toBeVisible();
   await expect(page.locator('main')).toContainText('Discount · ROSES15');
@@ -95,4 +97,35 @@ test('a delivered order shows the delivery photo', async ({page}) => {
   await expect(photo).toContainText('پیک این عکس را هنگام تحویل دمِ در گرفته است.');
   await openSite(page, 'track', 'fa', {id: 'VN-10522'});
   await expect(page.locator('figure.vf-track-photo')).toHaveCount(0);
+});
+
+test('the delivery pin is required and travels with the order', async ({page}) => {
+  await openSite(page, 'bag', 'en');
+  await page.fill('#vf-name', 'Shirin Ahmadi');
+  await page.fill('#vf-phone', '09121234567');
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  const next = page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first();
+  await next.click();
+  // The pin is the only problem, so the map takes focus and is described by the error.
+  await expect(page.locator('#vf-map')).toBeFocused();
+  await expect(page.locator('#vf-map')).toHaveAccessibleDescription(/Place the pin on the delivery address\./);
+  expect(await scanAxe(page)).toEqual([]);
+  await pinDelivery(page);
+  await expect(page.locator('#vf-pin-error')).toHaveCount(0);
+  await next.click();
+  await expect(page.locator('#vf-last4')).toBeVisible();
+  const location = await page.evaluate(() => JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname) || '{}').delivery?.location);
+  expect(location).toEqual({lat: expect.any(Number), lng: expect.any(Number)});
+});
+
+test('without a map, a full typed address is enough', async ({page}) => {
+  await page.route(/_vendor\/leaflet\/leaflet\.js/, route => route.abort());
+  await openSite(page, 'bag', 'fa');
+  await expect(page.locator('#vf-map')).toHaveCount(0);
+  await expect(page.locator('main')).toContainText('نقشه بارگذاری نشد');
+  await page.fill('#vf-name', 'شیرین احمدی');
+  await page.fill('#vf-phone', '09121234567');
+  await page.fill('#vf-address', 'کرج، عظیمیه، خیابان گلستان، پلاک ۱۲');
+  await page.getByRole('button', {name: 'ادامه و پرداخت'}).locator('visible=true').first().click();
+  await expect(page.locator('#vf-last4')).toBeVisible();
 });

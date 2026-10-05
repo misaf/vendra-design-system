@@ -14,7 +14,7 @@ const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout,
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(path.join(root, '_ds_bundle.js'), 'utf8'), ctx);
-vm.runInContext(sharedLogic + '\nObject.assign(this, {vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
+vm.runInContext(sharedLogic + '\nObject.assign(this, {vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
 
 // Delivery days: seven from today, the sample sold-out day, and today closing at the zone cut-off.
 const morning = new Date(2026, 9, 5, 9, 0), evening = new Date(2026, 9, 5, 19, 0);
@@ -46,6 +46,14 @@ const rows = ctx.vfSummaryRows(totals, 'roses15', {sub: 'Subtotal', discount: 'D
 assert.deepEqual([...rows.map(r => r.label)], ['Subtotal', 'Discount · ROSES15', 'Delivery', 'Total']);
 assert.equal(ctx.vfSummaryRows(ctx.vfTotals(lines, {zone: 'central'}), '', {sub: 'S', fee: 'F', free: '0', total: 'T'}, String).length, 3);
 
+// The delivery pin: rounded to six decimals, validated, and shown with each language's digits.
+assert.deepEqual({...ctx.vfPinLocation({lat: 35.83271234567, lng: 50.96540987654})}, {lat: 35.832712, lng: 50.96541});
+assert.equal(ctx.vfValidLocation({lat: 35.8, lng: 50.9}), true);
+assert.equal(ctx.vfValidLocation({lat: 95, lng: 50.9}), false);
+assert.equal(ctx.vfValidLocation(null), false);
+assert.equal(ctx.vfLocationText({lat: 35.8327, lng: 50.9654}, false), '\u206835.83270, 50.96540\u2069');
+assert.equal(ctx.vfLocationText({lat: 35.8327, lng: 50.9654}, true), '\u2068۳۵٫۸۳۲۷۰، ۵۰٫۹۶۵۴۰\u2069');
+
 // Shop occasions round-trip through the URL; unknown ones fall back to all.
 assert.equal(ctx.vfReadRoute('?view=shop&occasion=sympathy').occasion, 'sympathy');
 assert.equal(ctx.vfReadRoute('?view=shop&occasion=halloween').occasion, 'all');
@@ -60,4 +68,4 @@ assert.deepEqual([...ctx.vfRecentlyViewed()], ['blush']);
 store['vendra-recently-viewed'] = 'not json';
 assert.deepEqual([...ctx.vfRecentlyViewed()], []);
 
-console.log('Passed delivery days, promo codes, shop occasions and recently viewed products.');
+console.log('Passed delivery days, promo codes, delivery pins, shop occasions and recently viewed products.');

@@ -15,5 +15,13 @@ const VF_STORE = {
   phoneLabel: '+98 912 933 3034',
   whatsapp: 'https://wa.me/989129333034',
   instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
+  // Delivery pin map. OpenStreetMap's tile server is for light use: a busy store should switch
+  // `tiles` to a commercial or self-hosted tile service. center is [latitude, longitude].
+  map: {
+    tiles: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    center: [35.8327, 50.9654],
+    zoom: 13
+  },
   payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
 };

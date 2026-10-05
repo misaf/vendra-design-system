@@ -4,5 +4,7 @@ export interface LanguageSwitchProps {
   value?: string;
   onChange?: (id: string) => void;
   options?: LanguageOption[];
+  /** Group name for screen readers, in the page's language (default "Language") */
+  label?: string;
 }
 export declare function LanguageSwitch(props: LanguageSwitchProps): JSX.Element;

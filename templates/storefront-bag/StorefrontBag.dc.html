@@ -31,12 +31,13 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
-<div class="tw:flex tw:gap-1">
+<div class="tw:flex tw:gap-1 tw:items-center">
+<div class="vf-shell-header-lang tw:me-2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,38px"></x-import></div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>
@@ -44,16 +45,17 @@
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:44px_minmax(0,1fr)_88px]">
+<div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
+<button type="button" onClick="{{ otherLang.pick }}" lang="{{ otherLang.lang }}" aria-label="{{ otherLang.name }}" class="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer">{{ otherLang.label }}</button>
 </div>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="vf-shell-mobile-tools tw:flex tw:justify-end">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ t.bag }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>
@@ -70,7 +72,7 @@
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" hint-size="96px,36px">
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,36px">
 </x-import>
 </div>
 </sc-if>
@@ -97,7 +99,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-phone" value="{{ delivery.phone }}" on-change="{{ setPhone }}" error="{{ phoneError }}" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="0912 000 0000" hint-size="100%,76px"></x-import>
 </div>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-zone" label="{{ t.zone }}" hint="{{ zoneHint }}" value="{{ zone }}" options="{{ zones }}" on-change="{{ setZone }}" hint-size="100%,96px"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address" value="{{ delivery.address }}" on-change="{{ setAddress }}" error="{{ addressError }}" required="{{ true }}" label="{{ t.address2 }}" autocomplete="street-address" hint-size="100%,76px"></x-import>
+<div class="vf-bag-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-pin-label" class="ag-field__label">{{ t.pin }}</span><sc-if value="{{ mapOk }}" hint-placeholder-val="{{ true }}"><div class="vf-bag-map tw:relative tw:h-[280px] tw:overflow-hidden tw:rounded-md tw:bg-muted tw:[isolation:isolate] tw:[border:1px_solid_var(--border-input)]"><div id="vf-map" dir="ltr" role="region" aria-labelledby="vf-pin-label" aria-describedby="vf-pin-status vf-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-bag-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="map-pin" size="{{ 36 }}" hint-size="36px,36px"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}" hint-size="140px,36px">{{ t.locate }}</x-import></div><sc-if value="{{ pinError }}" hint-placeholder-val="{{ false }}"><span id="vf-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if></sc-if><sc-if value="{{ mapFailed }}" hint-placeholder-val="{{ false }}"><p class="ag-field__hint tw:m-0">{{ t.mapFailed }}</p></sc-if></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address" value="{{ delivery.address }}" on-change="{{ setAddress }}" error="{{ addressError }}" required="{{ true }}" label="{{ addressLabel }}" hint="{{ addressHint }}" autocomplete="address-line2" hint-size="100%,96px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceGroup" legend="{{ t.day }}" min-tile-width="{{ 104 }}" hint-size="100%,96px"><sc-for list="{{ days }}" as="d" hint-placeholder-count="7"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceTile" size="sm" label="{{ d.label }}" description="{{ d.desc }}" selected="{{ d.on }}" disabled="{{ d.off }}" on-select="{{ d.pick }}" hint-size="100%,56px"></x-import></sc-for></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceGroup" legend="{{ t.slot }}" min-tile-width="{{ 130 }}" hint-size="100%,96px"><sc-for list="{{ slots }}" as="z" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ChoiceTile" size="sm" label="{{ z.label }}" selected="{{ z.on }}" on-select="{{ z.pick }}" hint-size="100%,44px"></x-import></sc-for></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-card" value="{{ delivery.card }}" on-change="{{ setCard }}" max-length="{{ 200 }}" label="{{ t.card }}" hint="{{ t.cardHint }}" multiline="{{ true }}" rows="{{ 3 }}" hint-size="100%,140px"></x-import>
@@ -178,6 +180,14 @@ const VF_STORE = {
   phoneLabel: '+98 912 933 3034',
   whatsapp: 'https://wa.me/989129333034',
   instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
+  // Delivery pin map. OpenStreetMap's tile server is for light use: a busy store should switch
+  // `tiles` to a commercial or self-hosted tile service. center is [latitude, longitude].
+  map: {
+    tiles: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    center: [35.8327, 50.9654],
+    zoom: 13
+  },
   payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
 };
 
@@ -212,7 +222,9 @@ const VF_SOLD_OUT_DATES = [];
 // Sample only: shows a sold-out day this many days ahead. Set to null for a real store.
 const VF_SAMPLE_SOLD_OUT_IN_DAYS = 2;
 // An empty date means the first day still available.
-const VF_DELIVERY = {name: '', phone: '', address: '', card: '', zone: 'central', date: '', slot: '12', promo: ''};
+// location is the map pin, {lat, lng}; address holds what a map can't show (plaque, unit, floor).
+// noMap is set when the map couldn't load: a typed full address then stands in for the pin.
+const VF_DELIVERY = {name: '', phone: '', address: '', location: null, noMap: false, card: '', zone: 'central', date: '', slot: '12', promo: ''};
 
 function vfDeliveryCutoff(zone, persian) {
   const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
@@ -263,7 +275,8 @@ function vfErrors(delivery) {
   return {
     name: !String(delivery.name || '').trim(),
     phone: !/^09\d{9}$/.test(vfPhone(delivery.phone)),
-    address: String(delivery.address || '').trim().length < 6
+    location: !delivery.noMap && !vfValidLocation(delivery.location),
+    address: delivery.noMap ? String(delivery.address || '').trim().length < 6 : !String(delivery.address || '').trim()
   };
 }
 
@@ -275,6 +288,52 @@ function vfTotals(lines, delivery) {
   // The applied promo code travels with the checkout details.
   const discount = vfDiscount(delivery.promo, sub);
   return {sub, fee, discount, total: sub - discount + fee};
+}
+
+// Source: templates/_shared/location.js
+// The delivery pin: loads the vendored Leaflet map on demand and formats a pinned location.
+// Map tiles and the starting view are set in store-config.js (VF_STORE.map).
+
+function vfValidLocation(location) {
+  return !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
+}
+
+// Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
+function vfPinLocation(latlng) {
+  const round = v => Math.round(v * 1e6) / 1e6;
+  return {lat: round(latlng.lat), lng: round(latlng.lng)};
+}
+
+function vfLocationText(location, fa) {
+  if (!vfValidLocation(location)) return '';
+  // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
+  const num = v => fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5);
+  return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
+}
+
+// Loads Leaflet once (from templates/_vendor/leaflet) and resolves with window.L.
+function vfLoadLeaflet() {
+  if (window.L && window.L.map) return Promise.resolve(window.L);
+  if (window.vfLeafletLoading) return window.vfLeafletLoading;
+  const base = (window.VF_ASSET_BASE || '../../') + 'templates/_vendor/leaflet/';
+  if (!document.getElementById('vf-leaflet-css')) {
+    const link = document.createElement('link');
+    link.id = 'vf-leaflet-css';
+    link.rel = 'stylesheet';
+    link.href = base + 'leaflet.css';
+    document.head.appendChild(link);
+  }
+  window.vfLeafletLoading = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = base + 'leaflet.js';
+    script.onload = () => resolve(window.L);
+    script.onerror = () => {
+      window.vfLeafletLoading = null;
+      reject(new Error('Leaflet failed to load'));
+    };
+    document.head.appendChild(script);
+  });
+  return window.vfLeafletLoading;
 }
 
 // Source: templates/_shared/promotions.js
@@ -451,6 +510,8 @@ const VF_SHELL = {
     search: 'Search',
     account: 'Account',
     bag: 'Bag',
+    bagOne: 'Bag, 1 item',
+    bagMany: 'Bag, {count} items',
     wa: 'WhatsApp',
     menu: 'Menu',
     mainNav: 'Main',
@@ -480,6 +541,8 @@ const VF_SHELL = {
     search: 'جستجو',
     account: 'حساب',
     bag: 'سبد',
+    bagOne: 'سبد، ۱ کالا',
+    bagMany: 'سبد، {count} کالا',
     wa: 'واتساپ',
     menu: 'منو',
     mainNav: 'منوی اصلی',
@@ -1222,6 +1285,10 @@ function vfShell(props, page) {
       props.go(route);
     }) : undefined
   }));
+  // The click-through site switches in place; a standalone page opens itself in the site in that language.
+  const setLang = props.setLang || (lang => {
+    location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
+  });
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
   return {
@@ -1244,6 +1311,7 @@ function vfShell(props, page) {
       journal: cur.journal
     },
     bagCount: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
+    bagLabel: !count ? T.bag : count === 1 ? T.bagOne : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
       window.AG_NAV.focusHeading();
@@ -1268,8 +1336,15 @@ function vfShell(props, page) {
     }),
     closeMenu: close,
     menuItems,
-    hasLang: !!props.setLang,
-    setLang: props.setLang,
+    hasLang: true,
+    setLang,
+    // Mobile headers have room for one button: it switches to the other language.
+    otherLang: {
+      label: fa ? 'EN' : 'فا',
+      name: fa ? 'English' : 'فارسی',
+      lang: fa ? 'en' : 'fa',
+      pick: () => setLang(fa ? 'en' : 'fa')
+    },
     langOpts: [{
       id: 'en',
       label: 'EN'
@@ -1349,7 +1424,15 @@ function vfCopy(S) {
       name: 'Recipient name',
       phone: 'Recipient phone',
       zone: 'Delivery zone',
-      address2: 'Address',
+      address2: 'Plaque, unit and floor',
+      addressHint: 'Anything the map can’t show, like the name on the bell.',
+      addressFull: 'Full address',
+      pin: 'Delivery location',
+      pinHint: 'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
+      pinSet: 'Pin placed at {location}. Move the map to adjust it.',
+      locate: 'Use my location',
+      locateFailed: 'We couldn’t get your location. Move the map instead.',
+      mapFailed: 'The map didn’t load. Write the full address and we’ll call to confirm it.',
       day: 'Delivery day',
       soldOut: 'Sold out',
       pastCutoff: 'Order by {time}',
@@ -1380,7 +1463,9 @@ function vfCopy(S) {
       errors: {
         name: 'Enter the recipient’s name.',
         phone: 'Enter an 11-digit mobile number starting with 09.',
-        address: 'Enter a full address (at least 6 characters).'
+        location: 'Place the pin on the delivery address.',
+        address: 'Add the plaque and unit, or the house number.',
+        addressFull: 'Enter a full address (at least 6 characters).'
       }
     },
     fa: {
@@ -1397,7 +1482,15 @@ function vfCopy(S) {
       name: 'نام گیرنده',
       phone: 'موبایل گیرنده',
       zone: 'محدوده ارسال',
-      address2: 'آدرس',
+      address2: 'پلاک، واحد و طبقه',
+      addressHint: 'هر چیزی که روی نقشه دیده نمی‌شود، مثل نام روی زنگ.',
+      addressFull: 'آدرس کامل',
+      pin: 'محل تحویل',
+      pinHint: 'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
+      pinSet: 'سوزن روی {location} است. برای اصلاح، نقشه را جابه‌جا کنید.',
+      locate: 'موقعیت فعلی من',
+      locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.',
+      mapFailed: 'نقشه بارگذاری نشد. آدرس کامل را بنویسید؛ برای تأیید تماس می‌گیریم.',
       day: 'روز ارسال',
       soldOut: 'تکمیل',
       pastCutoff: 'سفارش تا {time}',
@@ -1428,7 +1521,9 @@ function vfCopy(S) {
       errors: {
         name: 'نام گیرنده را وارد کنید.',
         phone: 'شماره موبایل ۱۱ رقمی با ۰۹ وارد کنید.',
-        address: 'آدرس کامل را وارد کنید؛ دست‌کم ۶ نویسه.'
+        location: 'سوزن را روی محل تحویل بگذارید.',
+        address: 'پلاک و واحد یا شماره خانه را بنویسید.',
+        addressFull: 'آدرس کامل را وارد کنید؛ دست‌کم ۶ نویسه.'
       }
     }
   }[S.lang];
@@ -1451,7 +1546,10 @@ class Component extends VFPage {
     },
     submitted: false,
     promoDraft: '',
-    promoError: null
+    promoError: null,
+    mapFailed: false,
+    locating: false,
+    locateFailed: false
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -1476,12 +1574,7 @@ class Component extends VFPage {
     const z = vfZone(delivery.zone);
     const date = vfDeliveryDate(delivery);
     const invalid = vfErrors(delivery);
-    const update = patch => st ? st.setDelivery(patch) : this.setState({
-      delivery: {
-        ...s.delivery,
-        ...patch
-      }
-    });
+    const update = patch => this._update(patch);
     const errors = C.errors;
     return {
       ...S,
@@ -1504,14 +1597,24 @@ class Component extends VFPage {
       }),
       nameError: s.submitted && invalid.name ? errors.name : undefined,
       phoneError: s.submitted && invalid.phone ? errors.phone : undefined,
-      addressError: s.submitted && invalid.address ? errors.address : undefined,
+      addressError: s.submitted && invalid.address ? s.mapFailed ? errors.addressFull : errors.address : undefined,
+      addressLabel: s.mapFailed ? C.addressFull : C.address2,
+      addressHint: s.mapFailed ? undefined : C.addressHint,
+      mapOk: !s.mapFailed,
+      mapFailed: s.mapFailed,
+      pinStatus: vfValidLocation(delivery.location) ? C.pinSet.replace('{location}', vfLocationText(delivery.location, fa)) : C.pinHint,
+      pinError: s.submitted && invalid.location ? errors.location : s.locateFailed ? C.locateFailed : '',
+      locating: s.locating,
+      locate: () => this._locate(),
       next: () => {
         if (live.some(l => !vfLineAvailable(l))) return;
         this.setState({
           submitted: true
         });
         if (Object.values(invalid).some(Boolean)) {
-          window.AG_NAV.focusFirstInvalid();
+          // The map can't carry aria-invalid, so focus it directly when the pin is the first problem.
+          if (['name', 'phone', 'location', 'address'].find(k => invalid[k]) === 'location') S.focus('vf-map');
+          else window.AG_NAV.focusFirstInvalid();
           return;
         }
         if (st) st.setDelivery({
@@ -1645,6 +1748,108 @@ class Component extends VFPage {
         });
       }
     };
+  }
+  _update(patch) {
+    const st = this.props.store;
+    if (st) st.setDelivery(patch);
+    else this.setState(prev => ({
+      delivery: {
+        ...prev.delivery,
+        ...patch
+      }
+    }));
+  }
+  _delivery() {
+    return this.props.store ? this.props.store.delivery : this.state.delivery;
+  }
+  // Leaflet owns #vf-map's contents. Create the map once the element exists, and again if the page replaces it.
+  _syncMap() {
+    const box = document.getElementById('vf-map');
+    if (this._map && (!box || this._map.getContainer() !== box)) {
+      this._map.remove();
+      this._map = null;
+    }
+    if (!box || this._map || this._mapPending || this.state.mapFailed) return;
+    this._mapPending = true;
+    vfLoadLeaflet().then(Leaflet => {
+      this._mapPending = false;
+      const el = document.getElementById('vf-map');
+      if (!el || this._map || this._unmounted) return;
+      const pinned = this._delivery().location;
+      const ok = vfValidLocation(pinned);
+      const map = Leaflet.map(el, {
+        center: ok ? [pinned.lat, pinned.lng] : VF_STORE.map.center,
+        zoom: ok ? 17 : VF_STORE.map.zoom,
+        scrollWheelZoom: false
+      });
+      Leaflet.tileLayer(VF_STORE.map.tiles, {
+        maxZoom: 19,
+        attribution: VF_STORE.map.attribution
+      }).addTo(map);
+      // The pin is fixed at the centre, so wherever the map stops is the delivery point.
+      map.on('moveend', () => this._update({
+        location: vfPinLocation(map.getCenter())
+      }));
+      map.on('click', e => map.panTo(e.latlng));
+      this._map = map;
+      if (this._delivery().noMap) this._update({
+        noMap: false
+      });
+    }).catch(() => {
+      this._mapPending = false;
+      if (this._unmounted) return;
+      this.setState({
+        mapFailed: true
+      });
+      this._update({
+        noMap: true
+      });
+    });
+  }
+  _locate() {
+    if (!navigator.geolocation) {
+      this.setState({
+        locateFailed: true
+      });
+      return;
+    }
+    this.setState({
+      locating: true,
+      locateFailed: false
+    });
+    navigator.geolocation.getCurrentPosition(position => {
+      const here = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      this.setState({
+        locating: false
+      });
+      if (this._map) this._map.setView([here.lat, here.lng], 17);
+      else this._update({
+        location: vfPinLocation(here)
+      });
+    }, () => this.setState({
+      locating: false,
+      locateFailed: true
+    }), {
+      enableHighAccuracy: true,
+      timeout: 10000
+    });
+  }
+  componentDidMount() {
+    super.componentDidMount();
+    this._syncMap();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this._syncMap();
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._unmounted = true;
+    if (this._map) this._map.remove();
+    this._map = null;
   }
 }
 // END GENERATED PAGE LOGIC

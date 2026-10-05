@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {LANGS, openSite, scanAxe} from './helpers.mjs';
+import {LANGS, openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
 // Interactive states the first-load scan in storefront.spec.mjs never reaches:
 // open menus and dialogs, expanded accordions, other tabs, validation errors,
@@ -37,7 +37,8 @@ async function expectModal(page) {
 async function toPayment(page, t) {
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
-  await page.fill('#vf-address', '12 Golestan St, Karaj');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
   await expect(page.locator('#vf-last4')).toBeVisible();
 }

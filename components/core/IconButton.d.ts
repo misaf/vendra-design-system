@@ -7,8 +7,8 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   size?: 'sm' | 'md' | 'lg';
   /** Toggled on (e.g. favourited) */
   active?: boolean;
-  /** Small count bubble (bag items) */
-  count?: number;
+  /** Small count bubble (bag items). Number or pre-localized string; hidden when 0/empty. Put the count in `label` too, for screen readers. */
+  count?: number | string;
   /** Renders an <a> instead of a <button> (tel:, wa.me, Instagram) */
   href?: string;
   target?: string;

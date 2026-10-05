@@ -16,6 +16,8 @@ Start here when changing the official storefront. All storefront examples live h
 | Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
 | Delivery fees, cut-offs, delivery days, sold-out dates, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
+| Delivery map tiles, attribution and starting view | `map` in [_shared/store-config.js](_shared/store-config.js) |
+| Delivery pin loading and formatting | [_shared/location.js](_shared/location.js) |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
@@ -219,6 +221,17 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
 - **Recently viewed.** The product page remembers viewed products in this browser and lists them.
 - **Delivery photo.** A delivered order shows the courier's photo (`order.deliveryPhoto`) on the
   tracking page; samples show a placeholder.
+- **Delivery pin.** The bag shows a map with a pin fixed at its centre: customers drag or tap the
+  map (or press arrow keys) to put the pin on the door, or use their current location, then type
+  only the plaque, unit and floor. The pin is saved as `delivery.location` (`{lat, lng}`) with the
+  order. The map is [Leaflet](https://leafletjs.com) 1.9.4, vendored in `_vendor/leaflet/` and
+  loaded only on the bag page; tiles come from OpenStreetMap, whose tile server is meant for light
+  use, so a busy store should point `VF_STORE.map.tiles` at a commercial or self-hosted tile
+  service. If the map can't load, the delivery is marked `noMap` and a full typed address (6+
+  characters) replaces the pin.
+- **Language.** The header has an EN / فا switch (on phones, one button for the other language).
+  In the click-through site it switches in place; on a standalone page it opens that page in the
+  site in the other language.
 
 Every design-system component is used by at least one template; `npm --prefix templates test`
 fails if one stops being used.
