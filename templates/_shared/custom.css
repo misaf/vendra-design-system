@@ -2,6 +2,7 @@
 @import "./shell.css";
 @import "./information-pages.css";
 @import "./page-layouts.css";
+@import "./location.css";
 @import "../storefront-account/styles.css";
 @import "../storefront-bag/styles.css";
 @import "../storefront-checkout/styles.css";

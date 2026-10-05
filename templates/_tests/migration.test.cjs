@@ -15,12 +15,12 @@ function page(name,c,props={}){const s=read(`templates/storefront-${name}/Storef
  const a=c.vfAccountLoad('09123456789');a.profile.name='Demo A';c.vfAccountSave('09123456789',a);c.vfAccountSignOut();
  c.vfAccountLogin('09999999999','en');assert.equal(c.vfAccountLoad('09999999999').profile.name,'');assert.equal(c.vfAccountLocale(),'en');
  c.vfAccountLogin('09123456789','en');assert.equal(c.vfAccountLocale(),'fa');assert.equal(c.vfAccountLoad('09123456789').profile.name,'Demo A');
- const account=page('account',c);let v=account.renderVals();v.addAddress();account.renderVals().saveForm();assert.ok(account.state.errors.line);assert.ok(account.state.errors.phone);
- for(const [key,value] of Object.entries({label:'Test',line:'Example address',phone:'۰۹۱۲۳۴۵۶۷۸۹',recipient:'Demo'}))account.renderVals().setField(key)({target:{value}});
- account.renderVals().saveForm();v=account.renderVals();assert.equal(v.addresses.length,3);v.addresses[2].makeDefault();assert.equal(account.renderVals().addresses.filter(a=>a.isDefault).length,1);
+ const account=page('account',c);let v=account.renderVals();v.addAddress();account.renderVals().saveForm();assert.ok(account.state.errors.line);assert.ok(account.state.errors.phone);assert.ok(account.state.errors.location);
+ for(const [key,value] of Object.entries({label:'Test',line:'Example address',phone:'۰۹۱۲۳۴۵۶۷۸۹',recipient:'Demo'}))account.renderVals().set[key]({target:{value}});
+ account._setLocation({lat:35.83,lng:50.96});assert.equal(account.state.errors.location,undefined); account.renderVals().saveForm();v=account.renderVals();assert.equal(v.addresses.length,3);assert.equal(JSON.stringify(c.vfAccountLoad('09123456789').addresses[2].location),'{"lat":35.83,"lng":50.96}');v.addresses[2].makeDefault();assert.equal(account.renderVals().addresses.filter(a=>a.isDefault).length,1);
  account.renderVals().addresses[2].remove();assert.equal(account.renderVals().addresses[0].isDefault,true);
  v=account.renderVals();v.addReminder();v=account.renderVals();v.setOccasion({target:{value:'nowruz'}});v=account.renderVals();assert.equal(v.dateLocked,true);assert.equal(v.dateValue.m,1);assert.equal(v.dateValue.d,1);
- v.setField('name')({target:{value:'Test occasion'}});account.renderVals().saveForm();assert.equal(c.vfAccountLoad('09123456789').reminders.length,4);
+ v.set.name({target:{value:'Test occasion'}});account.renderVals().saveForm();assert.equal(c.vfAccountLoad('09123456789').reminders.length,4);
  const normalized=c.vfNormalizeReminder({date:'2026-02-14',occ:'birthday'});assert.equal(normalized.cal,'g');assert.equal(normalized.m,2);assert.equal(normalized.d,14);
  const next=c.vfReminderNext({occ:'valentine',cal:'j',m:1,d:1},new Date(2026,1,13));assert.equal(next.days,1);
  const route=c.vfReadRoute('?lang=fa&view=shop&min=NaN&max=-5&stock=1');assert.equal(route.min,0);assert.equal(route.max,0);assert.equal(route.stock,true);

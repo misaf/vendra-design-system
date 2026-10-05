@@ -1,4 +1,5 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
+const VF_ACCOUNT_SAVED = ['orchid', 'crimson', 'blush'];
 class Component extends VFPage {
   state = {
     tab: null,
@@ -6,7 +7,11 @@ class Component extends VFPage {
     form: null,
     errors: {},
     notice: '',
-    profile: null
+    profile: null,
+    mapFailed: false,
+    placesFailed: false,
+    locating: false,
+    locateFailed: false
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'account'),
@@ -34,6 +39,7 @@ class Component extends VFPage {
     const focusError = () => setTimeout(() => window.AG_NAV.focusFirstInvalid(), 0);
     const openAddress = a => this.setState({
       errors: {},
+      locateFailed: false,
       form: {
         kind: 'address',
         id: a && a.id,
@@ -41,7 +47,8 @@ class Component extends VFPage {
         line: a ? tx(a.line) : '',
         recipient: a ? tx(a.recipient) : profile.name || C.nameV,
         phone: a ? a.phone : '',
-        zone: a ? a.zone : 'central'
+        zone: a ? a.zone : 'central',
+        location: a && vfValidLocation(a.location) ? a.location : null
       }
     });
     const openReminder = r => this.setState({
@@ -112,6 +119,7 @@ class Component extends VFPage {
       isAddress = f.kind === 'address',
       isReminder = f.kind === 'reminder',
       occasion = VF_OCCASIONS.find(o => o.id === f.occ);
+    // Templates can't call functions, so each field gets its own handler.
     const setField = k => e => this.setState({
       form: {
         ...f,
@@ -125,6 +133,7 @@ class Component extends VFPage {
     const saveForm = () => {
       const errors = {};
       if (isAddress) {
+        if (!s.mapFailed && !vfValidLocation(f.location)) errors.location = E.pinError;
         if (f.line.trim().length < 6) errors.line = E.addressError;
         if (vfLatin(f.phone).replace(/\D/g, '').length < 10) errors.phone = E.phoneError;
       } else {
@@ -135,7 +144,9 @@ class Component extends VFPage {
         this.setState({
           errors
         });
-        focusError();
+        // The map comes first in the form and can't carry aria-invalid, so it takes focus itself.
+        if (errors.location) S.focus('vf-address-map');
+        else focusError();
         return;
       }
       const row = {
@@ -144,6 +155,7 @@ class Component extends VFPage {
       };
       delete row.kind;
       if (isAddress) {
+        if (!row.location) delete row.location;
         row.isDefault = f.id ? account.addresses.find(a => a.id === f.id).isDefault : !account.addresses.length;
         row.label = row.label.trim() || C.addAddr;
         commit({
@@ -163,6 +175,31 @@ class Component extends VFPage {
         });
       }
     };
+    const addresses = account.addresses.map(a => ({
+      ...a,
+      label: tx(a.label),
+      line: tx(a.line),
+      recipient: tx(a.recipient),
+      zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
+      edit: () => openAddress(a),
+      remove: () => removeAddress(a),
+      makeDefault: () => commit({
+        ...account,
+        addresses: account.addresses.map(x => ({
+          ...x,
+          isDefault: x.id === a.id
+        }))
+      })
+    }));
+    // Read by the addresses map after each render.
+    this._places = addresses.map(a => ({
+      id: a.id,
+      label: a.label,
+      title: C.addrLabels.edit.replace('{name}', a.label),
+      location: a.location,
+      pick: a.edit
+    }));
+    const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
     return {
       ...S,
       t: {
@@ -175,13 +212,14 @@ class Component extends VFPage {
       setTab: id => this.setState({
         tab: id
       }),
-      tabItems: ['orders', 'addresses', 'reminders', 'profile'].map((id, i) => ({
+      tabItems: ['orders', 'saved', 'addresses', 'reminders', 'profile'].map((id, i) => ({
         id,
         label: C.tabs[i]
       })),
       tabPanelId: 'vf-account-panel-' + tab,
       tabId: 'vf-account-tab-' + tab,
       isOrders: tab === 'orders',
+      isSaved: tab === 'saved',
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
@@ -199,23 +237,23 @@ class Component extends VFPage {
         total: S.m(o.totals.total),
         cta: o.status === 'delivered' || o.status === 'cancelled' ? C.labels.viewOrder : C.labels.trackOrder
       })),
-      addresses: account.addresses.map(a => ({
-        ...a,
-        label: tx(a.label),
-        line: tx(a.line),
-        recipient: tx(a.recipient),
-        zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
-        edit: () => openAddress(a),
-        remove: () => removeAddress(a),
-        makeDefault: () => commit({
-          ...account,
-          addresses: account.addresses.map(x => ({
-            ...x,
-            isDefault: x.id === a.id
-          }))
-        })
-      })),
+      addresses,
+      placesMap: !s.placesFailed && addresses.some(a => vfValidLocation(a.location)),
       addrLabels: C.addrLabels,
+      hasSaved: saved.length > 0,
+      noSaved: !saved.length,
+      savedItems: saved.map((p, i) => ({
+        ...S.productLink(p.id),
+        images: [vfProductImage(p, L)],
+        name: p[L][0],
+        sub: p[L][1],
+        badge: p[L][2],
+        price: S.m(p.price),
+        remove: () => {
+          S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
+          S.focusAfterRemoval('.ag-product__fav', i);
+        }
+      })),
       addAddress: () => openAddress(null),
       reminders,
       remLabels: C.remLabels,
@@ -228,13 +266,13 @@ class Component extends VFPage {
         name: profile.name || C.nameV,
         phone
       },
-      setProfile: k => e => this.setState({
+      setProfile: Object.fromEntries(['name', 'email', 'locale', 'sms'].map(k => [k, e => this.setState({
         profile: {
           ...profile,
           [k]: k === 'sms' ? e.target.checked : e.target.value
         },
         errors: {}
-      }),
+      })])),
       emailError: s.errors.email,
       saveProfile: () => {
         if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
@@ -263,10 +301,16 @@ class Component extends VFPage {
       formOpen: !!s.form,
       isAddress,
       isReminder,
+      mapOk: !s.mapFailed,
+      mapFailed: s.mapFailed,
+      pinStatus: vfValidLocation(f.location) ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa)) : E.pinHint,
+      pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
+      locating: s.locating,
+      locate: () => this._locate(),
       formTitle: isAddress ? f.id ? E.editAddress : C.addAddr : f.id ? E.editReminder : E.addReminder,
       form: f,
       errors: s.errors,
-      setField,
+      set: Object.fromEntries(['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [k, setField(k)])),
       saveForm,
       closeForm: () => this.setState({
         form: null,
@@ -339,5 +383,52 @@ class Component extends VFPage {
         });
       }
     };
+  }
+  // The pin in the address editor. Its element only exists while the editor is open.
+  _pin() {
+    if (!this._pinMap) this._pinMap = vfPinMap({
+      id: 'vf-address-map',
+      location: () => this.state.form && this.state.form.location,
+      onMove: location => this._setLocation(location),
+      onFail: () => this.setState({mapFailed: true})
+    });
+    return this._pinMap;
+  }
+  _setLocation(location) {
+    this.setState(prev => prev.form ? {
+      form: {...prev.form, location},
+      errors: {...prev.errors, location: undefined},
+      locateFailed: false
+    } : null);
+  }
+  _placesMap() {
+    if (!this._placesView) this._placesView = vfPlacesMap({
+      id: 'vf-account-map',
+      places: () => this._places || [],
+      onFail: () => this.setState({placesFailed: true})
+    });
+    return this._placesView;
+  }
+  _locate() {
+    this.setState({locating: true, locateFailed: false});
+    vfLocate(here => {
+      this.setState({locating: false});
+      if (!this._pin().moveTo(here)) this._setLocation(here);
+    }, () => this.setState({locating: false, locateFailed: true}));
+  }
+  componentDidMount() {
+    super.componentDidMount();
+    this._pin().sync();
+    this._placesMap().sync();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this._pin().sync();
+    this._placesMap().sync();
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._pin().remove();
+    this._placesMap().remove();
   }
 }

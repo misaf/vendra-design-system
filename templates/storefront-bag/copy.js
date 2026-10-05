@@ -1,7 +1,7 @@
 // Bilingual bag copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 function vfCopy(S) {
-  return {
+  const C = {
     en: {
       steps: 'Checkout steps',
       s1: 'Bag',
@@ -16,14 +16,11 @@ function vfCopy(S) {
       name: 'Recipient name',
       phone: 'Recipient phone',
       zone: 'Delivery zone',
+      saved: 'Send to a saved address',
       address2: 'Plaque, unit and floor',
       addressHint: 'Anything the map can’t show, like the name on the bell.',
       addressFull: 'Full address',
       pin: 'Delivery location',
-      pinHint: 'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
-      pinSet: 'Pin placed at {location}. Move the map to adjust it.',
-      locate: 'Use my location',
-      locateFailed: 'We couldn’t get your location. Move the map instead.',
       mapFailed: 'The map didn’t load. Write the full address and we’ll call to confirm it.',
       day: 'Delivery day',
       soldOut: 'Sold out',
@@ -74,14 +71,11 @@ function vfCopy(S) {
       name: 'نام گیرنده',
       phone: 'موبایل گیرنده',
       zone: 'محدوده ارسال',
+      saved: 'ارسال به نشانی ذخیره‌شده',
       address2: 'پلاک، واحد و طبقه',
       addressHint: 'هر چیزی که روی نقشه دیده نمی‌شود، مثل نام روی زنگ.',
       addressFull: 'آدرس کامل',
       pin: 'محل تحویل',
-      pinHint: 'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
-      pinSet: 'سوزن روی {location} است. برای اصلاح، نقشه را جابه‌جا کنید.',
-      locate: 'موقعیت فعلی من',
-      locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.',
       mapFailed: 'نقشه بارگذاری نشد. آدرس کامل را بنویسید؛ برای تأیید تماس می‌گیریم.',
       day: 'روز ارسال',
       soldOut: 'تکمیل',
@@ -119,4 +113,5 @@ function vfCopy(S) {
       }
     }
   }[S.lang];
+  return {...VF_PIN_COPY[S.lang], ...C};
 }

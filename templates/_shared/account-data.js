@@ -43,6 +43,7 @@ function vfAccountLoad(phone, lang = 'en') {
       },
       phone: '09125649438',
       zone: 'central',
+      location: {lat: 35.8398, lng: 50.9925},
       isDefault: true
     }, {
       id: 'office',
@@ -60,6 +61,7 @@ function vfAccountLoad(phone, lang = 'en') {
       },
       phone: '09125649438',
       zone: 'central',
+      location: {lat: 35.8162, lng: 50.9391},
       isDefault: false
     }],
     reminders: [{

@@ -1,8 +1,8 @@
 import {test, expect} from '@playwright/test';
 import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
-// Delivery days, promo codes, shop occasions, recently viewed
-// products and the delivery photo, in the click-through site.
+// Delivery days, promo codes, shop occasions, recently viewed products, the delivery photo,
+// delivery pins and saved addresses and products in the account, in the click-through site.
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 
 test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
@@ -128,4 +128,76 @@ test('without a map, a full typed address is enough', async ({page}) => {
   await page.fill('#vf-address', 'کرج، عظیمیه، خیابان گلستان، پلاک ۱۲');
   await page.getByRole('button', {name: 'ادامه و پرداخت'}).locator('visible=true').first().click();
   await expect(page.locator('#vf-last4')).toBeVisible();
+});
+
+test('the account maps saved addresses and the editor pins new ones', async ({page}) => {
+  await openSite(page, 'account', 'en');
+  await page.getByRole('tab', {name: 'Addresses'}).click();
+  const map = page.getByRole('region', {name: 'Your saved addresses on the map'});
+  await expect(map.locator('.leaflet-tooltip')).toHaveText(['Home', 'Office']);
+  expect(await scanAxe(page)).toEqual([]);
+  // A marker is a keyboard-reachable way into that address.
+  await map.getByRole('button', {name: 'Edit Office'}).press('Enter');
+  const dialog = page.getByRole('dialog', {name: 'Edit address'});
+  await expect(dialog.locator('#vf-address-pin-status')).toContainText('35.81620, 50.93910');
+  await dialog.getByRole('button', {name: 'Cancel'}).click();
+  // A new address needs a pin before it saves.
+  await page.getByRole('button', {name: 'Add an address'}).click();
+  await page.fill('#vf-address-label', 'Studio');
+  await page.fill('#vf-address-line', '7 Talaghani St, unit 2');
+  await page.fill('#vf-address-phone', '09121234567');
+  await page.getByRole('dialog').getByRole('button', {name: 'Save'}).click();
+  const pin = page.locator('#vf-address-map');
+  await expect(pin).toBeFocused();
+  await expect(pin).toHaveAccessibleDescription(/Place the pin on the address\./);
+  expect(await scanAxe(page)).toEqual([]);
+  await page.keyboard.press('ArrowUp');
+  await expect(page.locator('#vf-address-pin-status')).toHaveText(/Pin placed at/);
+  await page.getByRole('dialog').getByRole('button', {name: 'Save'}).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(map.locator('.leaflet-tooltip')).toHaveText(['Home', 'Office', 'Studio']);
+});
+
+test('the account lists saved products, shared with the saved page', async ({page}) => {
+  await openSite(page, 'account', 'fa');
+  await page.getByRole('tab', {name: 'ذخیره‌ها'}).click();
+  const panel = page.getByRole('tabpanel');
+  await expect(panel.locator('.ag-product')).toHaveCount(3);
+  expect(await scanAxe(page)).toEqual([]);
+  await panel.getByRole('button', {name: 'حذف از ذخیره‌ها'}).first().click();
+  await expect(panel.locator('.ag-product')).toHaveCount(2);
+  await openSite(page, 'saved', 'fa');
+  await expect(page.locator('main .ag-product')).toHaveCount(2);
+});
+
+test('a signed-in customer can send to a saved address', async ({page}) => {
+  await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09125649438'));
+  await openSite(page, 'bag', 'en');
+  const saved = page.getByRole('group', {name: 'Send to a saved address'});
+  await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'false');
+  await saved.getByRole('button', {name: 'Office'}).click();
+  await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
+  await expect(page.locator('#vf-address')).toHaveValue('40 Moazen Blvd, Gohardasht');
+  await expect(page.locator('#vf-pin-status')).toContainText('35.81620, 50.93910');
+  expect(await scanAxe(page)).toEqual([]);
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await expect(page.locator('#vf-last4')).toBeVisible();
+});
+
+test('a guest sees no saved addresses in the bag', async ({page}) => {
+  await openSite(page, 'bag', 'en');
+  await expect(page.getByRole('group', {name: 'Send to a saved address'})).toHaveCount(0);
+});
+
+test('profile edits are kept', async ({page}) => {
+  await openSite(page, 'account', 'en');
+  await page.getByRole('tab', {name: 'Profile'}).click();
+  await page.fill('#vf-pname', 'Shirin A.');
+  await expect(page.locator('#vf-pname')).toHaveValue('Shirin A.');
+  await page.getByRole('button', {name: 'Save changes'}).click();
+  await expect(page.getByRole('status').filter({hasText: 'Changes saved'})).toBeVisible();
+  await page.reload();
+  await page.getByRole('tab', {name: 'Profile'}).click();
+  await expect(page.locator('#vf-pname')).toHaveValue('Shirin A.');
 });

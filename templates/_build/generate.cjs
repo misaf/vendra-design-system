@@ -13,6 +13,7 @@ const sharedLogicFiles = [
   'translations/shell.js',
   'translations/categories.js',
   'translations/time.js',
+  'translations/location.js',
   'account-data.js',
   'payments.js',
   'integrations/api.js',

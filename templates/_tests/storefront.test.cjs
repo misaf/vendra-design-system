@@ -121,3 +121,11 @@ for (const name of ['account','bag','checkout','contact','faq','home','journal',
  assert.deepEqual(copyShape(copies[0]),copyShape(copies[1]),name+' copy must have matching English and Persian structure');
 }
 console.log('Passed recursive English/Persian copy parity, including nested labels and lists.');
+// The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
+for (const name of ['account','bag','checkout','contact','faq','home','journal','notfound','policy','post','product','saved','search','shop','signin','site','track','weddings']) {
+ const folder=path.join(__dirname,'..','storefront-'+name);
+ const html=fs.readFileSync(path.join(folder,fs.readdirSync(folder).find(f=>f.endsWith('.dc.html'))),'utf8');
+ const calls=html.match(/\{\{\s*[\w.]+\(/g);
+ assert.equal(calls,null,name+' template calls a function in a binding: '+calls);
+}
+console.log('Passed: no template binding calls a function.');

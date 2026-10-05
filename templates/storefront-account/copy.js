@@ -7,7 +7,13 @@ function vfCopy(S) {
       accA: 'Your',
       accB: 'account.',
       signOut: 'Sign out',
-      tabs: ['Orders', 'Addresses', 'Reminders', 'Profile'],
+      tabs: ['Orders', 'Saved', 'Addresses', 'Reminders', 'Profile'],
+      mapL: 'Your saved addresses on the map',
+      unsave: 'Remove from saved',
+      savedEmptyA: 'Nothing saved',
+      savedEmptyB: '— yet.',
+      savedEmptyP: 'Tap the heart on any bouquet to keep it here.',
+      browse: 'Browse the shop',
       addAddr: 'Add an address',
       remP: 'We’ll remind you a few days before, so there’s time to order.',
       name: 'Name',
@@ -53,7 +59,13 @@ function vfCopy(S) {
       accA: 'حساب',
       accB: 'شما.',
       signOut: 'خروج',
-      tabs: ['سفارش‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      tabs: ['سفارش‌ها', 'ذخیره‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      mapL: 'نشانی‌های ذخیره‌شده روی نقشه',
+      unsave: 'حذف از ذخیره‌ها',
+      savedEmptyA: 'چیزی ذخیره نشده',
+      savedEmptyB: '— فعلاً.',
+      savedEmptyP: 'روی قلب هر دسته‌گل بزنید تا این‌جا بماند.',
+      browse: 'رفتن به فروشگاه',
       addAddr: 'افزودن آدرس',
       remP: 'چند روز قبل یادآوری می‌کنیم تا برای سفارش وقت داشته باشید.',
       name: 'نام',
@@ -98,12 +110,17 @@ function vfCopy(S) {
   return {
     ...C,
     editor: {
+      ...VF_PIN_COPY[S.lang],
+      ...{
       "en": {
         "save": "Save",
         "cancel": "Cancel",
         "label": "Label",
         "zone": "Delivery zone",
         "address": "Address",
+        "pin": "Location on the map",
+        "pinError": "Place the pin on the address.",
+        "mapFailed": "The map didn’t load. The written address is enough for now.",
         "recipient": "Recipient",
         "phone": "Phone",
         "editAddress": "Edit address",
@@ -143,6 +160,9 @@ function vfCopy(S) {
         "label": "عنوان",
         "zone": "محدوده ارسال",
         "address": "نشانی",
+        "pin": "موقعیت روی نقشه",
+        "pinError": "سوزن را روی نشانی بگذارید.",
+        "mapFailed": "نقشه بارگذاری نشد؛ فعلاً نشانی نوشته‌شده کافی است.",
         "recipient": "گیرنده",
         "phone": "تلفن",
         "editAddress": "ویرایش نشانی",
@@ -176,7 +196,8 @@ function vfCopy(S) {
         },
         "inDays": "روز دیگر"
       }
-    }[S.lang],
+    }[S.lang]
+    },
     status: {
       onTheWay: [C.labels.onItsWay, 'accent'],
       delivered: [C.labels.delivered, 'success']

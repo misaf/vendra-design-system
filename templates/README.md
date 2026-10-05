@@ -17,7 +17,7 @@ Start here when changing the official storefront. All storefront examples live h
 | Delivery fees, cut-offs, delivery days, sold-out dates, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
 | Delivery map tiles, attribution and starting view | `map` in [_shared/store-config.js](_shared/store-config.js) |
-| Delivery pin loading and formatting | [_shared/location.js](_shared/location.js) |
+| Delivery pin and saved-places maps, loading and formatting | [_shared/location.js](_shared/location.js), styles in `location.css`, copy in `translations/location.js` |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
@@ -225,10 +225,16 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   map (or press arrow keys) to put the pin on the door, or use their current location, then type
   only the plaque, unit and floor. The pin is saved as `delivery.location` (`{lat, lng}`) with the
   order. The map is [Leaflet](https://leafletjs.com) 1.9.4, vendored in `_vendor/leaflet/` and
-  loaded only on the bag page; tiles come from OpenStreetMap, whose tile server is meant for light
+  loaded only on pages with a map (bag, account); tiles come from OpenStreetMap, whose tile server is meant for light
   use, so a busy store should point `VF_STORE.map.tiles` at a commercial or self-hosted tile
   service. If the map can't load, the delivery is marked `noMap` and a full typed address (6+
   characters) replaces the pin.
+- **Saved addresses.** The account's Addresses tab maps every pinned address (each marker opens
+  that address), and the address editor has the same centre pin as the bag; a pin is required
+  unless the map fails to load. Addresses keep it as `location`. Signed-in customers can fill the
+  bag's delivery from a saved address in one tap.
+- **Saved products.** The account has a Saved tab listing the customer's saved products; it shares
+  the list with the Saved page.
 - **Language.** The header has an EN / فا switch (on phones, one button for the other language).
   In the click-through site it switches in place; on a standalone page it opens that page in the
   site in the other language.
@@ -293,6 +299,7 @@ templates/
       shell.js
       categories.js
       time.js
+      location.js
       journal-content.js
   _runtime/
     custom.css

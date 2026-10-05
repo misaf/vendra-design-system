@@ -5,8 +5,8 @@ import {LANGS, openSite, pinDelivery, scanAxe} from './helpers.mjs';
 // open menus and dialogs, expanded accordions, other tabs, validation errors,
 // later checkout steps and the ?demo=loading|error states.
 const L = {
-  en: {menu: 'Menu', filters: 'Filters', addresses: 'Addresses', reminders: 'Reminders', profile: 'Profile', addAddr: 'Add an address', addReminder: 'Add a reminder', care: 'Care', send: 'Send', sendInquiry: 'Send inquiry', sendCode: 'Send code', next: 'Continue to payment', remove: 'Remove', place: 'I’ve paid — place order', verify: 'Sign in'},
-  fa: {menu: 'منو', filters: 'فیلترها', addresses: 'آدرس‌ها', reminders: 'یادآورها', profile: 'پروفایل', addAddr: 'افزودن آدرس', addReminder: 'افزودن یادآور', care: 'نگهداری', send: 'ارسال', sendInquiry: 'ارسال درخواست', sendCode: 'ارسال کد', next: 'ادامه و پرداخت', remove: 'حذف', place: 'پرداخت کردم — ثبت سفارش', verify: 'ورود'}
+  en: {menu: 'Menu', filters: 'Filters', saved: 'Saved', addresses: 'Addresses', reminders: 'Reminders', profile: 'Profile', addAddr: 'Add an address', addReminder: 'Add a reminder', care: 'Care', send: 'Send', sendInquiry: 'Send inquiry', sendCode: 'Send code', next: 'Continue to payment', remove: 'Remove', place: 'I’ve paid — place order', verify: 'Sign in'},
+  fa: {menu: 'منو', filters: 'فیلترها', saved: 'ذخیره‌ها', addresses: 'آدرس‌ها', reminders: 'یادآورها', profile: 'پروفایل', addAddr: 'افزودن آدرس', addReminder: 'افزودن یادآور', care: 'نگهداری', send: 'ارسال', sendInquiry: 'ارسال درخواست', sendCode: 'ارسال کد', next: 'ادامه و پرداخت', remove: 'حذف', place: 'پرداخت کردم — ثبت سفارش', verify: 'ورود'}
 };
 
 const main = page => page.locator('main');
@@ -64,6 +64,9 @@ const STATES = [
   {name: 'journal loading', view: 'journal', extra: {demo: 'loading'}},
   {name: 'post loading', view: 'post', extra: {demo: 'loading'}},
   {name: 'checkout payment failed', view: 'checkout', extra: {demo: 'error'}},
+  {name: 'account saved', view: 'account', act: async (page, t) => {
+    await page.getByRole('tab', {name: t.saved}).click();
+  }},
   {name: 'account addresses', view: 'account', act: async (page, t) => {
     await page.getByRole('tab', {name: t.addresses}).click();
   }},

@@ -86,24 +86,26 @@
 <main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-3"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
 <div class="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tabs" variant="pill" items="{{ tabItems }}" value="{{ tab }}" on-change="{{ setTab }}" label="{{ t.accA }}" id-prefix="vf-account" hint-size="420px,44px"></x-import></div>
 <div role="tabpanel" id="{{ tabPanelId }}" aria-labelledby="{{ tabId }}" tabindex="0" class="vf-account-panel"><sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-3"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
+<sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}"><div class="vf-account-saved-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if><sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}"><div class="vf-account-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="heart" title="{{ t.savedEmptyA }}" title-accent="{{ t.savedEmptyB }}" body="{{ t.savedEmptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></sc-if>
+<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><div class="vf-account-map vf-map-box tw:h-[260px] tw:mb-4"><div id="vf-account-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
 <sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile('name') }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile('email') }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile('locale') }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile('sms') }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></div><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile.email }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile.locale }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile.sms }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></div><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Dialog" open="{{ formOpen }}" title="{{ formTitle }}" on-close="{{ closeForm }}">
 <div class="tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ isAddress }}">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ setField('label') }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ setField('zone') }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ setField('line') }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ setField('recipient') }}" autocomplete="name"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ setField('phone') }}" error="{{ errors.phone }}" dir="ltr" type="tel" autocomplete="tel"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ set.label }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ set.zone }}"></x-import>
+<div class="vf-account-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-address-pin-label" class="ag-field__label">{{ editor.pin }}</span><sc-if value="{{ mapOk }}"><div class="vf-map-box tw:h-[220px]"><div id="vf-address-map" dir="ltr" role="region" aria-labelledby="vf-address-pin-label" aria-describedby="vf-address-pin-status vf-address-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="map-pin" size="{{ 32 }}"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-address-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}">{{ editor.locate }}</x-import></div><sc-if value="{{ pinError }}"><span id="vf-address-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if></sc-if><sc-if value="{{ mapFailed }}"><p class="ag-field__hint tw:m-0">{{ editor.mapFailed }}</p></sc-if></div>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ set.line }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ set.recipient }}" autocomplete="name"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ set.phone }}" error="{{ errors.phone }}" dir="ltr" type="tel" autocomplete="tel"></x-import>
 </sc-if>
 <sc-if value="{{ isReminder }}">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-reminder-name" label="{{ editor.reminderName }}" value="{{ form.name }}" on-change="{{ setField('name') }}" error="{{ errors.name }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-reminder-name" label="{{ editor.reminderName }}" value="{{ form.name }}" on-change="{{ set.name }}" error="{{ errors.name }}"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.occasion }}" options="{{ occasionOptions }}" value="{{ form.occ }}" on-change="{{ setOccasion }}"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.DatePicker" id="vf-reminder-date" yearly="{{ true }}" lang="{{ lang }}" label="{{ editor.date }}" value="{{ dateValue }}" on-change="{{ setDate }}" disabled="{{ dateLocked }}" hint="{{ dateHint }}" labels="{{ dateLabels }}"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.before }}" options="{{ beforeOptions }}" value="{{ form.before }}" on-change="{{ setBefore }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.via }}" options="{{ channelOptions }}" value="{{ form.channel }}" on-change="{{ setField('channel') }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_f4f210.Select" label="{{ editor.via }}" options="{{ channelOptions }}" value="{{ form.channel }}" on-change="{{ set.channel }}"></x-import>
 </sc-if>
 <div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" on-click="{{ saveForm }}">{{ editor.save }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" on-click="{{ closeForm }}">{{ editor.cancel }}</x-import></div>
 </div></x-import></main>
@@ -277,7 +279,7 @@ function vfTotals(lines, delivery) {
 }
 
 // Source: templates/_shared/location.js
-// The delivery pin: loads the vendored Leaflet map on demand and formats a pinned location.
+// Delivery locations: loads the vendored Leaflet map on demand, runs the pin and saved-places maps, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 
 function vfValidLocation(location) {
@@ -320,6 +322,132 @@ function vfLoadLeaflet() {
     document.head.appendChild(script);
   });
   return window.vfLeafletLoading;
+}
+
+// Asks the browser where the visitor is; calls found(location) or failed().
+function vfLocate(found, failed) {
+  if (!navigator.geolocation) return failed();
+  navigator.geolocation.getCurrentPosition(
+    position => found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
+    () => failed(),
+    {enableHighAccuracy: true, timeout: 10000}
+  );
+}
+
+function vfTileLayer(Leaflet) {
+  return Leaflet.tileLayer(VF_STORE.map.tiles, {maxZoom: 19, attribution: VF_STORE.map.attribution});
+}
+
+// Leaflet sizes itself once; a map that opens inside an animating dialog or a resized column needs telling.
+function vfWatchSize(map) {
+  if (!window.ResizeObserver) return;
+  const watcher = new ResizeObserver(() => map.invalidateSize());
+  watcher.observe(map.getContainer());
+  map.on('unload', () => watcher.disconnect());
+}
+
+// Keeps a centre-pin map on the element #id: wherever the map stops is the pinned point.
+// Call sync() after every render (the element can appear, disappear or be replaced) and remove() on unmount.
+function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
+  let map = null, pending = false, failed = false, dead = false;
+  return {
+    sync() {
+      const box = document.getElementById(id);
+      if (map && (!box || map.getContainer() !== box)) {
+        map.remove();
+        map = null;
+      }
+      if (!box || map || pending || failed || dead) return;
+      pending = true;
+      vfLoadLeaflet().then(Leaflet => {
+        pending = false;
+        const el = document.getElementById(id);
+        if (!el || map || dead) return;
+        const at = location(), ok = vfValidLocation(at);
+        map = Leaflet.map(el, {center: ok ? [at.lat, at.lng] : VF_STORE.map.center, zoom: ok ? zoom : VF_STORE.map.zoom, scrollWheelZoom: false});
+        vfTileLayer(Leaflet).addTo(map);
+        vfWatchSize(map);
+        map.on('moveend', () => onMove(vfPinLocation(map.getCenter())));
+        map.on('click', e => map.panTo(e.latlng));
+        if (onReady) onReady();
+      }).catch(() => {
+        pending = false;
+        failed = true;
+        if (!dead && onFail) onFail();
+      });
+    },
+    // Moves the map (and so the pin); false when there is no map to move.
+    moveTo(at) {
+      if (!map) return false;
+      map.setView([at.lat, at.lng], zoom);
+      return true;
+    },
+    remove() {
+      dead = true;
+      if (map) map.remove();
+      map = null;
+    }
+  };
+}
+
+// A read-only map of saved places on the element #id. places() returns [{id, label, title, location, pick}];
+// each pinned place gets a labelled, keyboard-reachable marker that calls pick.
+function vfPlacesMap({id, places, onFail}) {
+  let map = null, layer = null, pending = false, failed = false, dead = false, drawn = '';
+  const draw = Leaflet => {
+    const list = places().filter(p => vfValidLocation(p.location));
+    const key = JSON.stringify(list.map(p => [p.id, p.label, p.title, p.location]));
+    if (key === drawn) return;
+    drawn = key;
+    layer.clearLayers();
+    list.forEach(p => {
+      const icon = Leaflet.divIcon({className: 'vf-place-marker', html: '<span class="vf-place-marker__dot"></span>', iconSize: [24, 24], iconAnchor: [12, 12]});
+      Leaflet.marker([p.location.lat, p.location.lng], {icon, title: p.title, keyboard: true})
+        .bindTooltip(p.label, {permanent: true, direction: 'top', offset: [0, -12], className: 'vf-place-label'})
+        .on('click', () => p.pick())
+        // Leaflet gives markers role="button" but only clicks them with a pointer.
+        .on('keydown', e => {
+          if (e.originalEvent.key !== 'Enter' && e.originalEvent.key !== ' ') return;
+          e.originalEvent.preventDefault();
+          p.pick();
+        })
+        .addTo(layer);
+    });
+    if (list.length > 1) map.fitBounds(list.map(p => [p.location.lat, p.location.lng]), {padding: [48, 48], maxZoom: 15});
+    else if (list.length) map.setView([list[0].location.lat, list[0].location.lng], 15);
+  };
+  return {
+    sync() {
+      const box = document.getElementById(id);
+      if (map && (!box || map.getContainer() !== box)) {
+        map.remove();
+        map = null;
+        drawn = '';
+      }
+      if (map) return draw(window.L);
+      if (!box || pending || failed || dead) return;
+      pending = true;
+      vfLoadLeaflet().then(Leaflet => {
+        pending = false;
+        const el = document.getElementById(id);
+        if (!el || map || dead) return;
+        map = Leaflet.map(el, {center: VF_STORE.map.center, zoom: VF_STORE.map.zoom, scrollWheelZoom: false});
+        vfTileLayer(Leaflet).addTo(map);
+        vfWatchSize(map);
+        layer = Leaflet.layerGroup().addTo(map);
+        draw(Leaflet);
+      }).catch(() => {
+        pending = false;
+        failed = true;
+        if (!dead && onFail) onFail();
+      });
+    },
+    remove() {
+      dead = true;
+      if (map) map.remove();
+      map = null;
+    }
+  };
 }
 
 // Source: templates/_shared/promotions.js
@@ -618,6 +746,23 @@ function vfDeliveryWhen(delivery, fa) {
   return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + ' · ' + slot;
 }
 
+// Source: templates/_shared/translations/location.js
+// Shared copy for the delivery pin map (bag and account addresses).
+const VF_PIN_COPY = {
+  en: {
+    pinHint: 'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
+    pinSet: 'Pin placed at {location}. Move the map to adjust it.',
+    locate: 'Use my location',
+    locateFailed: 'We couldn’t get your location. Move the map instead.'
+  },
+  fa: {
+    pinHint: 'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
+    pinSet: 'سوزن روی {location} است. برای اصلاح، نقشه را جابه‌جا کنید.',
+    locate: 'موقعیت فعلی من',
+    locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.'
+  }
+};
+
 // Source: templates/_shared/account-data.js
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
 function vfLatin(value) {
@@ -664,6 +809,7 @@ function vfAccountLoad(phone, lang = 'en') {
       },
       phone: '09125649438',
       zone: 'central',
+      location: {lat: 35.8398, lng: 50.9925},
       isDefault: true
     }, {
       id: 'office',
@@ -681,6 +827,7 @@ function vfAccountLoad(phone, lang = 'en') {
       },
       phone: '09125649438',
       zone: 'central',
+      location: {lat: 35.8162, lng: 50.9391},
       isDefault: false
     }],
     reminders: [{
@@ -1401,7 +1548,13 @@ function vfCopy(S) {
       accA: 'Your',
       accB: 'account.',
       signOut: 'Sign out',
-      tabs: ['Orders', 'Addresses', 'Reminders', 'Profile'],
+      tabs: ['Orders', 'Saved', 'Addresses', 'Reminders', 'Profile'],
+      mapL: 'Your saved addresses on the map',
+      unsave: 'Remove from saved',
+      savedEmptyA: 'Nothing saved',
+      savedEmptyB: '— yet.',
+      savedEmptyP: 'Tap the heart on any bouquet to keep it here.',
+      browse: 'Browse the shop',
       addAddr: 'Add an address',
       remP: 'We’ll remind you a few days before, so there’s time to order.',
       name: 'Name',
@@ -1447,7 +1600,13 @@ function vfCopy(S) {
       accA: 'حساب',
       accB: 'شما.',
       signOut: 'خروج',
-      tabs: ['سفارش‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      tabs: ['سفارش‌ها', 'ذخیره‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      mapL: 'نشانی‌های ذخیره‌شده روی نقشه',
+      unsave: 'حذف از ذخیره‌ها',
+      savedEmptyA: 'چیزی ذخیره نشده',
+      savedEmptyB: '— فعلاً.',
+      savedEmptyP: 'روی قلب هر دسته‌گل بزنید تا این‌جا بماند.',
+      browse: 'رفتن به فروشگاه',
       addAddr: 'افزودن آدرس',
       remP: 'چند روز قبل یادآوری می‌کنیم تا برای سفارش وقت داشته باشید.',
       name: 'نام',
@@ -1492,12 +1651,17 @@ function vfCopy(S) {
   return {
     ...C,
     editor: {
+      ...VF_PIN_COPY[S.lang],
+      ...{
       "en": {
         "save": "Save",
         "cancel": "Cancel",
         "label": "Label",
         "zone": "Delivery zone",
         "address": "Address",
+        "pin": "Location on the map",
+        "pinError": "Place the pin on the address.",
+        "mapFailed": "The map didn’t load. The written address is enough for now.",
         "recipient": "Recipient",
         "phone": "Phone",
         "editAddress": "Edit address",
@@ -1537,6 +1701,9 @@ function vfCopy(S) {
         "label": "عنوان",
         "zone": "محدوده ارسال",
         "address": "نشانی",
+        "pin": "موقعیت روی نقشه",
+        "pinError": "سوزن را روی نشانی بگذارید.",
+        "mapFailed": "نقشه بارگذاری نشد؛ فعلاً نشانی نوشته‌شده کافی است.",
         "recipient": "گیرنده",
         "phone": "تلفن",
         "editAddress": "ویرایش نشانی",
@@ -1570,7 +1737,8 @@ function vfCopy(S) {
         },
         "inDays": "روز دیگر"
       }
-    }[S.lang],
+    }[S.lang]
+    },
     status: {
       onTheWay: [C.labels.onItsWay, 'accent'],
       delivered: [C.labels.delivered, 'success']
@@ -1582,6 +1750,7 @@ function vfCopy(S) {
 // BEGIN GENERATED PAGE LOGIC
 // Source: templates/storefront-account/logic.js
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
+const VF_ACCOUNT_SAVED = ['orchid', 'crimson', 'blush'];
 class Component extends VFPage {
   state = {
     tab: null,
@@ -1589,7 +1758,11 @@ class Component extends VFPage {
     form: null,
     errors: {},
     notice: '',
-    profile: null
+    profile: null,
+    mapFailed: false,
+    placesFailed: false,
+    locating: false,
+    locateFailed: false
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'account'),
@@ -1617,6 +1790,7 @@ class Component extends VFPage {
     const focusError = () => setTimeout(() => window.AG_NAV.focusFirstInvalid(), 0);
     const openAddress = a => this.setState({
       errors: {},
+      locateFailed: false,
       form: {
         kind: 'address',
         id: a && a.id,
@@ -1624,7 +1798,8 @@ class Component extends VFPage {
         line: a ? tx(a.line) : '',
         recipient: a ? tx(a.recipient) : profile.name || C.nameV,
         phone: a ? a.phone : '',
-        zone: a ? a.zone : 'central'
+        zone: a ? a.zone : 'central',
+        location: a && vfValidLocation(a.location) ? a.location : null
       }
     });
     const openReminder = r => this.setState({
@@ -1695,6 +1870,7 @@ class Component extends VFPage {
       isAddress = f.kind === 'address',
       isReminder = f.kind === 'reminder',
       occasion = VF_OCCASIONS.find(o => o.id === f.occ);
+    // Templates can't call functions, so each field gets its own handler.
     const setField = k => e => this.setState({
       form: {
         ...f,
@@ -1708,6 +1884,7 @@ class Component extends VFPage {
     const saveForm = () => {
       const errors = {};
       if (isAddress) {
+        if (!s.mapFailed && !vfValidLocation(f.location)) errors.location = E.pinError;
         if (f.line.trim().length < 6) errors.line = E.addressError;
         if (vfLatin(f.phone).replace(/\D/g, '').length < 10) errors.phone = E.phoneError;
       } else {
@@ -1718,7 +1895,9 @@ class Component extends VFPage {
         this.setState({
           errors
         });
-        focusError();
+        // The map comes first in the form and can't carry aria-invalid, so it takes focus itself.
+        if (errors.location) S.focus('vf-address-map');
+        else focusError();
         return;
       }
       const row = {
@@ -1727,6 +1906,7 @@ class Component extends VFPage {
       };
       delete row.kind;
       if (isAddress) {
+        if (!row.location) delete row.location;
         row.isDefault = f.id ? account.addresses.find(a => a.id === f.id).isDefault : !account.addresses.length;
         row.label = row.label.trim() || C.addAddr;
         commit({
@@ -1746,6 +1926,31 @@ class Component extends VFPage {
         });
       }
     };
+    const addresses = account.addresses.map(a => ({
+      ...a,
+      label: tx(a.label),
+      line: tx(a.line),
+      recipient: tx(a.recipient),
+      zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
+      edit: () => openAddress(a),
+      remove: () => removeAddress(a),
+      makeDefault: () => commit({
+        ...account,
+        addresses: account.addresses.map(x => ({
+          ...x,
+          isDefault: x.id === a.id
+        }))
+      })
+    }));
+    // Read by the addresses map after each render.
+    this._places = addresses.map(a => ({
+      id: a.id,
+      label: a.label,
+      title: C.addrLabels.edit.replace('{name}', a.label),
+      location: a.location,
+      pick: a.edit
+    }));
+    const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
     return {
       ...S,
       t: {
@@ -1758,13 +1963,14 @@ class Component extends VFPage {
       setTab: id => this.setState({
         tab: id
       }),
-      tabItems: ['orders', 'addresses', 'reminders', 'profile'].map((id, i) => ({
+      tabItems: ['orders', 'saved', 'addresses', 'reminders', 'profile'].map((id, i) => ({
         id,
         label: C.tabs[i]
       })),
       tabPanelId: 'vf-account-panel-' + tab,
       tabId: 'vf-account-tab-' + tab,
       isOrders: tab === 'orders',
+      isSaved: tab === 'saved',
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
@@ -1782,23 +1988,23 @@ class Component extends VFPage {
         total: S.m(o.totals.total),
         cta: o.status === 'delivered' || o.status === 'cancelled' ? C.labels.viewOrder : C.labels.trackOrder
       })),
-      addresses: account.addresses.map(a => ({
-        ...a,
-        label: tx(a.label),
-        line: tx(a.line),
-        recipient: tx(a.recipient),
-        zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
-        edit: () => openAddress(a),
-        remove: () => removeAddress(a),
-        makeDefault: () => commit({
-          ...account,
-          addresses: account.addresses.map(x => ({
-            ...x,
-            isDefault: x.id === a.id
-          }))
-        })
-      })),
+      addresses,
+      placesMap: !s.placesFailed && addresses.some(a => vfValidLocation(a.location)),
       addrLabels: C.addrLabels,
+      hasSaved: saved.length > 0,
+      noSaved: !saved.length,
+      savedItems: saved.map((p, i) => ({
+        ...S.productLink(p.id),
+        images: [vfProductImage(p, L)],
+        name: p[L][0],
+        sub: p[L][1],
+        badge: p[L][2],
+        price: S.m(p.price),
+        remove: () => {
+          S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
+          S.focusAfterRemoval('.ag-product__fav', i);
+        }
+      })),
       addAddress: () => openAddress(null),
       reminders,
       remLabels: C.remLabels,
@@ -1811,13 +2017,13 @@ class Component extends VFPage {
         name: profile.name || C.nameV,
         phone
       },
-      setProfile: k => e => this.setState({
+      setProfile: Object.fromEntries(['name', 'email', 'locale', 'sms'].map(k => [k, e => this.setState({
         profile: {
           ...profile,
           [k]: k === 'sms' ? e.target.checked : e.target.value
         },
         errors: {}
-      }),
+      })])),
       emailError: s.errors.email,
       saveProfile: () => {
         if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
@@ -1846,10 +2052,16 @@ class Component extends VFPage {
       formOpen: !!s.form,
       isAddress,
       isReminder,
+      mapOk: !s.mapFailed,
+      mapFailed: s.mapFailed,
+      pinStatus: vfValidLocation(f.location) ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa)) : E.pinHint,
+      pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
+      locating: s.locating,
+      locate: () => this._locate(),
       formTitle: isAddress ? f.id ? E.editAddress : C.addAddr : f.id ? E.editReminder : E.addReminder,
       form: f,
       errors: s.errors,
-      setField,
+      set: Object.fromEntries(['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [k, setField(k)])),
       saveForm,
       closeForm: () => this.setState({
         form: null,
@@ -1922,6 +2134,53 @@ class Component extends VFPage {
         });
       }
     };
+  }
+  // The pin in the address editor. Its element only exists while the editor is open.
+  _pin() {
+    if (!this._pinMap) this._pinMap = vfPinMap({
+      id: 'vf-address-map',
+      location: () => this.state.form && this.state.form.location,
+      onMove: location => this._setLocation(location),
+      onFail: () => this.setState({mapFailed: true})
+    });
+    return this._pinMap;
+  }
+  _setLocation(location) {
+    this.setState(prev => prev.form ? {
+      form: {...prev.form, location},
+      errors: {...prev.errors, location: undefined},
+      locateFailed: false
+    } : null);
+  }
+  _placesMap() {
+    if (!this._placesView) this._placesView = vfPlacesMap({
+      id: 'vf-account-map',
+      places: () => this._places || [],
+      onFail: () => this.setState({placesFailed: true})
+    });
+    return this._placesView;
+  }
+  _locate() {
+    this.setState({locating: true, locateFailed: false});
+    vfLocate(here => {
+      this.setState({locating: false});
+      if (!this._pin().moveTo(here)) this._setLocation(here);
+    }, () => this.setState({locating: false, locateFailed: true}));
+  }
+  componentDidMount() {
+    super.componentDidMount();
+    this._pin().sync();
+    this._placesMap().sync();
+  }
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this._pin().sync();
+    this._placesMap().sync();
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._pin().remove();
+    this._placesMap().remove();
   }
 }
 // END GENERATED PAGE LOGIC
