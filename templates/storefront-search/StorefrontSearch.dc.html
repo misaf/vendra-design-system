@@ -923,6 +923,11 @@ class VFPage extends DCLogic {
   _vfAnnounce() {
     clearTimeout(this._vfTimer);
     this._vfTimer = setTimeout(() => {
+      // Language and direction never wait for a heading (loading states have none).
+      const lang = this.props.lang === 'fa' ? 'fa' : 'en';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+      document.documentElement.dataset.lang = lang;
       const h = document.querySelector('main h1');
       if (!h) return;
       const title = h.innerText.replace(/\s+/g, ' ').trim();
@@ -932,10 +937,6 @@ class VFPage extends DCLogic {
       if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
         vfAnnouncement: title
       });
-      const lang = this.props.lang === 'fa' ? 'fa' : 'en';
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
-      document.documentElement.dataset.lang = lang;
       const url = location.href;
       window.AG_SEO.syncHead({
         title: title + ' · ' + VF_SHELL[lang].brand,

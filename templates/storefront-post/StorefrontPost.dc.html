@@ -78,7 +78,7 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><sc-if value="{{ loading }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Skeleton" shape="card"></x-import><p role="status">{{ migration.loading }}</p></sc-if><sc-if value="{{ missing }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" title="{{ migration.missing }}" heading-level="{{ 1 }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" href="{{ href.journal }}" on-click="{{ go.journal }}">{{ migration.back }}</x-import></sc-if><sc-if value="{{ hasPost }}"><div class="vf-reading tw:max-w-[760px] tw:mx-auto"><article class="vf-post-article tw:max-w-[720px] tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5"><a href="{{ href.journal }}" onClick="{{ go.journal }}" class="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="arrow-left" size="{{ 16 }}" hint-size="16px,16px"></x-import>{{ t.back }}</a>
+<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><sc-if value="{{ loading }}"><h1>{{ t.title }}</h1><x-import component-from-global-scope="VendraDesignSystem_f4f210.Skeleton" shape="card"></x-import><p role="status">{{ migration.loading }}</p></sc-if><sc-if value="{{ missing }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" title="{{ migration.missing }}" heading-level="{{ 1 }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" href="{{ href.journal }}" on-click="{{ go.journal }}">{{ migration.back }}</x-import></sc-if><sc-if value="{{ hasPost }}"><div class="vf-reading tw:max-w-[760px] tw:mx-auto"><article class="vf-post-article tw:max-w-[720px] tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5"><a href="{{ href.journal }}" onClick="{{ go.journal }}" class="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Icon" name="arrow-left" size="{{ 16 }}" hint-size="16px,16px"></x-import>{{ t.back }}</a>
 <div class="vf-post-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.meta }}</div><h1>{{ t.title }}</h1>
 <p class="vf-post-intro tw:text-secondary tw:m-0 tw:text-lg tw:leading-body tw:text-pretty">{{ t.lede }}</p>
 <sc-if value="{{ hasBlocks }}"><sc-for list="{{ blocks }}" as="b"><sc-if value="{{ b.paragraph }}"><p>{{ b.value }}</p></sc-if><sc-if value="{{ b.heading }}"><h2>{{ b.value }}</h2></sc-if><sc-if value="{{ b.quote }}"><blockquote>{{ b.value }}</blockquote></sc-if><sc-if value="{{ b.image }}"><figure><img src="{{ b.src }}" alt="{{ b.caption }}" class="tw:w-full tw:rounded-md" loading="lazy"><figcaption class="tw:text-sm tw:text-quiet">{{ b.caption }}</figcaption></figure></sc-if><sc-if value="{{ b.tips }}"><div class="tw:bg-sunken tw:p-5 tw:rounded-md"><ul><sc-for list="{{ b.value }}" as="tip"><li>{{ tip }}</li></sc-for></ul></div></sc-if></sc-for></sc-if><sc-if value="{{ hasClassic }}">
@@ -927,6 +927,11 @@ class VFPage extends DCLogic {
   _vfAnnounce() {
     clearTimeout(this._vfTimer);
     this._vfTimer = setTimeout(() => {
+      // Language and direction never wait for a heading (loading states have none).
+      const lang = this.props.lang === 'fa' ? 'fa' : 'en';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+      document.documentElement.dataset.lang = lang;
       const h = document.querySelector('main h1');
       if (!h) return;
       const title = h.innerText.replace(/\s+/g, ' ').trim();
@@ -936,10 +941,6 @@ class VFPage extends DCLogic {
       if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
         vfAnnouncement: title
       });
-      const lang = this.props.lang === 'fa' ? 'fa' : 'en';
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
-      document.documentElement.dataset.lang = lang;
       const url = location.href;
       window.AG_SEO.syncHead({
         title: title + ' · ' + VF_SHELL[lang].brand,
