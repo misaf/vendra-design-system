@@ -1,5 +1,6 @@
 // Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
-// AG_TRACK.event(name, params). Sends to window.dataLayer (GTM) if present; otherwise keeps the last 50 in AG_TRACK.log for QA.
+// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and sends to window.dataLayer (GTM) or gtag
+// only after the visitor accepts analytics in the consent banner (AG_TRACK.consent() === 'all').
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
 (() => {
   if (window.VF_TRACK) return;
@@ -18,7 +19,24 @@
     login: 'Sign-in',
     language_switch: 'Header language changed',
     order_again: '“Order again” pressed',
-    contact_whatsapp: 'WhatsApp link opened'
+    contact_whatsapp: 'WhatsApp link opened',
+    generate_lead: 'Newsletter sign-up'
+  };
+  // The visitor's choice from the consent banner: 'all', 'essential', or '' before they choose.
+  const KEY = 'vf-consent';
+  const consent = () => {
+    try {
+      const value = localStorage.getItem(KEY);
+      return ['all', 'essential'].includes(value) ? value : '';
+    } catch (_) {
+      return '';
+    }
+  };
+  const setConsent = value => {
+    try {
+      localStorage.setItem(KEY, value);
+    } catch (_) {}
+    if (typeof window.gtag === 'function') window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
   const log = [];
   const ctx = () => ({
@@ -41,12 +59,15 @@
     };
     log.push(e);
     if (log.length > 50) log.shift();
+    if (consent() !== 'all') return;
     if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
   };
   window.AG_TRACK = window.VF_TRACK = {
     event,
     item,
     EVENTS,
-    log
+    log,
+    consent,
+    setConsent
   };
 })();

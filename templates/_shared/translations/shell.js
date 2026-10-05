@@ -30,7 +30,37 @@ const VF_SHELL = {
     langL: 'Language',
     faq: 'FAQ',
     help: 'Help',
+    footer: {
+      shop: 'Shop',
+      allFlowers: 'All flowers',
+      studio: 'The studio',
+      social: 'Follow and message us',
+      instagram: 'Instagram',
+      call: 'Call',
+      directions: 'Get directions',
+      rights: 'All rights reserved.',
+      credit: 'Designed and built by'
+    },
     policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
+    newsletter: {
+      title: 'Letters from the studio',
+      body: 'New seasonal designs and occasion reminders, about twice a month.',
+      label: 'Email address',
+      submit: 'Subscribe',
+      sending: 'Subscribing…',
+      error: 'Enter an email address like name@example.com.',
+      failed: 'We couldn’t sign you up just now. Please try again.',
+      done: 'Thanks! {email} is on the list. Every email has an unsubscribe link.'
+    },
+    consent: {
+      title: 'Your privacy',
+      body: 'We keep your bag, saved designs and sign-in on this device so the shop works. With your OK, we also count visits (no names or numbers) to improve the site.',
+      accept: 'Allow visit counts',
+      essential: 'Essential only',
+      policy: 'Privacy policy',
+      settings: 'Cookie settings',
+      close: 'Close without choosing'
+    },
     skip: 'Skip to main content'
   },
   fa: {
@@ -63,7 +93,37 @@ const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
+    footer: {
+      shop: 'فروشگاه',
+      allFlowers: 'همه گل‌ها',
+      studio: 'استودیو',
+      social: 'دنبال کنید و پیام دهید',
+      instagram: 'اینستاگرام',
+      call: 'تماس تلفنی',
+      directions: 'مسیریابی',
+      rights: 'همه حقوق محفوظ است.',
+      credit: 'طراحی و ساخت:'
+    },
     policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
+    newsletter: {
+      title: 'نامه‌های استودیو',
+      body: 'طرح‌های تازه فصل و یادآور مناسبت‌ها، حدود دو بار در ماه.',
+      label: 'نشانی ایمیل',
+      submit: 'عضویت',
+      sending: 'در حال عضویت…',
+      error: 'ایمیلی مانند name@example.com وارد کنید.',
+      failed: 'الان نتوانستیم عضویت را ثبت کنیم. لطفاً دوباره امتحان کنید.',
+      done: 'ممنون! {email} به فهرست اضافه شد. در هر ایمیل پیوند لغو عضویت هست.'
+    },
+    consent: {
+      title: 'حریم خصوصی شما',
+      body: 'سبد خرید، طرح‌های ذخیره‌شده و ورود شما را روی همین دستگاه نگه می‌داریم تا فروشگاه کار کند. اگر اجازه دهید، تعداد بازدیدها را هم (بدون نام یا شماره) می‌شماریم تا سایت را بهتر کنیم.',
+      accept: 'اجازه شمارش بازدید',
+      essential: 'فقط ضروری',
+      policy: 'حریم خصوصی',
+      settings: 'تنظیمات کوکی',
+      close: 'بستن بدون انتخاب'
+    },
     skip: 'رفتن به محتوای اصلی'
   }
 };

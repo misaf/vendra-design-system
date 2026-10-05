@@ -10,6 +10,9 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 export const TENANTS = fs.readdirSync(path.join(ROOT, 'tokens/tenants'))
   .filter(f => f.endsWith('.css')).map(f => f.slice(0, -4)).sort();
 
+// A fresh visitor who has not made a cookie choice yet (the config pre-sets one for every other test).
+export const NO_CONSENT = {cookies: [], origins: []};
+
 export const SITE = '/templates/storefront-site/StorefrontSite.dc.html';
 export const LANGS = ['en', 'fa'];
 

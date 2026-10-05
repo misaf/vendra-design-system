@@ -9,6 +9,14 @@ function vfAnnouncementText(lang, st) {
   } catch (_) {}
   return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
 }
+// A value saved on this device, or '' when storage is empty or blocked.
+function vfStored(key) {
+  try {
+    return localStorage.getItem(key) || '';
+  } catch (_) {
+    return '';
+  }
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -60,6 +68,100 @@ function vfShell(props, page) {
   const setLang = props.setLang || (lang => {
     location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
   });
+  // Focuses an element by id, waiting a few frames for one that this update is about to render.
+  const focus = (id, tries = 10) => setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.focus();
+    else if (tries > 1) focus(id, tries - 1);
+  }, tries === 10 ? 0 : 50);
+  // Footer newsletter: the draft lives in page state; a finished sign-up is remembered on this device.
+  const N = T.newsletter, news = st.vfNews || {};
+  const signedUp = news.done || vfStored('vf-newsletter');
+  const accountPhone = vfAccountPhone();
+  const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
+  const draft = news.draft ?? profile.email ?? '';
+  const newsletter = {
+    open: !signedUp,
+    done: !!signedUp,
+    doneText: N.done.replace('{email}', '\u2066' + signedUp + '\u2069'),
+    draft,
+    sending: !!news.sending,
+    error: news.error || undefined,
+    setDraft: e => self.setState({vfNews: {...news, draft: e.target.value, error: ''}}),
+    submit: e => {
+      e && e.preventDefault && e.preventDefault();
+      if (news.sending) return;
+      const email = draft.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        self.setState({vfNews: {...news, draft, error: N.error}});
+        focus('vf-news-email');
+        return;
+      }
+      self.setState({vfNews: {...news, draft, error: '', sending: true}});
+      window.AG_API.newsletter(email, profile.name).then(() => {
+        try { localStorage.setItem('vf-newsletter', email); } catch (_) {}
+        window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+        self.setState({vfNews: {done: email}});
+        focus('vf-news-done');
+      }, () => {
+        self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
+        focus('vf-news-email');
+      });
+    }
+  };
+  // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
+  // Closing it makes no choice (so nothing is sent) and hides it for this browser session only.
+  let dismissed = !!st.vfConsentDismissed;
+  try {
+    dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
+  } catch (_) {}
+  const consentShown = !(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed || !!st.vfConsentOpen;
+  const hideConsent = patch => {
+    const reopened = st.vfConsentOpen;
+    self.setState({...patch, vfConsentOpen: false});
+    if (reopened) focus('vf-consent-settings');
+  };
+  const choose = value => {
+    window.AG_TRACK.setConsent(value);
+    hideConsent({vfConsent: value});
+  };
+  const consent = {
+    desk: consentShown && !mob,
+    mob: consentShown && mob,
+    accept: () => choose('all'),
+    essential: () => choose('essential'),
+    close: () => {
+      try {
+        sessionStorage.setItem('vf-consent-dismissed', '1');
+      } catch (_) {}
+      hideConsent({vfConsentDismissed: true});
+    },
+    policy: policyLink('privacy'),
+    open: () => {
+      self.setState({vfConsentOpen: true});
+      focus('vf-consent');
+    }
+  };
+  const shopLink = cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'shop', cat}), go: props.go ? vfLinkHandler(props.go) : undefined});
+  // Footer link columns, social links, contact lines and the bottom line.
+  const F = T.footer;
+  const footerLink = (r, label) => ({label, href: href[r], go: go[r], current: cur[r] ? 'page' : undefined});
+  const footer = {
+    tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
+    faqCurrent: cur.faq ? 'page' : undefined,
+    shop: [{...shopLink('all'), label: F.allFlowers}, ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({...shopLink(cat), label: VF_CATEGORY_COPY[L][cat]}))],
+    studio: [footerLink('weddings', T.weddings), footerLink('journal', T.journal), footerLink('contact', T.contact), footerLink('track', T.track), footerLink('account', T.account), footerLink('saved', T.saved)],
+    social: [
+      ...(VF_STORE.instagram ? [{icon: 'instagram', label: F.instagram + ' ' + VF_STORE.instagram.label, href: VF_STORE.instagram.url, target: '_blank'}] : []),
+      ...(VF_STORE.whatsapp ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}] : []),
+      {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
+    ],
+    directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
+    email: VF_STORE.email || '',
+    emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
+    copyright: '© ' + (fa ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date()) : new Date().getFullYear()) + ' ' + T.brand + '. ' + F.rights,
+    credit: VF_STORE.credit ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url} : null
+  };
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
   return {
@@ -69,7 +171,7 @@ function vfShell(props, page) {
     policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
     productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
-    shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    shopLink,
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
@@ -103,7 +205,10 @@ function vfShell(props, page) {
       const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
       if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
     },0),
-    focus: id => setTimeout(()=>{const el=document.getElementById(id);if(el)el.focus();},0),
+    focus,
+    newsletter,
+    footer,
+    consent,
     openMenu: () => self.setState({
       vfMenu: true
     }),

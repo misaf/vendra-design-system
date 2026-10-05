@@ -21,7 +21,8 @@ Start here when changing the official storefront. All storefront examples live h
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
 | Mobile header | [_shared/header-mobile.html](_shared/header-mobile.html) |
 | Mobile menu layout | [_shared/mobile-menu.html](_shared/mobile-menu.html) |
-| Footer | [_shared/footer.html](_shared/footer.html) |
+| Footer: brand, tagline and social links, newsletter, Shop / Studio / Help / Visit columns, copyright and credit | [_shared/footer.html](_shared/footer.html); values from `footer` in `navigation.js` |
+| Cookie consent banner (placed twice by `layout.html`: docked on desktop, above the phone tab bar) | [_shared/consent.html](_shared/consent.html) |
 | Local preview server, automatic generation and reload | [_build/vite.config.mjs](_build/vite.config.mjs) |
 | Pure Tailwind entry: token aliases and utility source scanning | [_shared/tailwind.css](_shared/tailwind.css) |
 | Custom CSS entry point (plain CSS imports) | [_shared/custom.css](_shared/custom.css) |
@@ -187,7 +188,8 @@ Product cards on home, shop, saved, search and recovery pages use each catalog I
 sizes; other sample products use their catalog price. Unknown product IDs show the
 not-found page; the previous `ivory-classic` link remains supported.
 
-Shop URLs preserve `cat`, `sort=low|high` and comma-separated `filters=under3,same,roses`.
+Shop URLs preserve `cat`, `sort=low|high`, comma-separated `filters=under3,same,roses`,
+`occasion`, `color=white|pink|red|purple`, `min`/`max` price and `stock=1`.
 The template route helpers in `_shared/routing.js` validate these values; refresh,
 Back and language switching retain selections. Home category cards link to these filters.
 
@@ -199,8 +201,10 @@ still has sample preview data. This template has no payment or fulfillment backe
 
 ### Store details and recovery states
 
-Edit `_shared/store-config.js` for the bilingual store name, address, hours,
-phone, WhatsApp, Instagram and demo payment details. Run `npm --prefix templates run build`
+Edit `_shared/store-config.js` for the bilingual store name, footer tagline, address, hours,
+phone, WhatsApp, Instagram, optional public email and demo payment details. `credit` names who
+built the storefront in the footer's bottom line (it links to GitHub; set it to `null` to hide it).
+The copyright year is the current year, in the Persian calendar on Persian pages. Run `npm --prefix templates run build`
 to update every template. Shared navigation, contact, footer and checkout use this configuration.
 
 `announcement` is the bilingual message in the bar above the header (`null` hides it;
@@ -218,6 +222,10 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
   applied code travels with the checkout details and shows as a discount line in every summary.
 - **Shop by occasion.** Products list `occasions`; the shop filters by `?occasion=` and the home
   page links to each one. (Reminder dates on the account page are a separate list, `VF_OCCASIONS`.)
+- **Shop by colour.** Products list `colors` (ids in `VF_SHOP_COLORS`, `translations/categories.js`);
+  the shop filters by `?color=` with swatches whose shades are in `storefront-shop/styles.css`.
+  Active filters show as removable tags with a Clear all button, and the phone Filters button
+  counts them.
 - **Recently viewed.** The product page remembers viewed products in this browser and lists them.
 - **Delivery photo.** A delivered order shows the courier's photo (`order.deliveryPhoto`) on the
   tracking page; samples show a placeholder.
@@ -245,6 +253,17 @@ Give a product an `images` list in `_shared/catalog.js` to fill its product page
 - **Contact.** The contact page maps the studio from `studio` in `store-config.js` with a Get
   directions link (Google Maps). A message needs a valid mobile or an email so the studio can
   reply. Signed-in customers start with their saved name, mobile and email filled in.
+- **Newsletter.** The footer has an email sign-up (`VF_API.newsletter`, which posts to
+  `/api/marketing/newsletter-subscriptions`). Signed-in customers start with their saved email, and
+  a finished sign-up is remembered in this browser (`vf-newsletter`).
+- **Cookie consent.** A first visit shows a banner: bag, saved designs and sign-in are kept on the
+  device either way, and visit counts are only sent once the visitor allows them. `AG_TRACK.event`
+  always keeps its local QA log but pushes to `dataLayer` / `gtag` only when `AG_TRACK.consent()`
+  is `'all'` (it also sends a `gtag('consent', 'update', …)`). The choice is stored as `vf-consent`;
+  The close button makes no choice (nothing is sent) and hides the banner for this browser
+  session (`vf-consent-dismissed` in session storage); the next visit asks again. Cookie settings in
+  the footer asks again. End-to-end tests start with the choice made
+  (`storageState` in the Playwright config); consent tests use `NO_CONSENT` from `helpers.mjs`.
 - **Language.** The header has an EN / فا switch (on phones, one button for the other language).
   In the click-through site it switches in place; on a standalone page it opens that page in the
   site in the other language.

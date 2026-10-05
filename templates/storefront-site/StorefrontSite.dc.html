@@ -46,6 +46,8 @@ const VF_STORE = {
   // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
   announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+  // One or two sentences under the brand in the footer.
+  tagline: {en: 'Hand-tied flowers from our Karaj studio, delivered across Karaj and Tehran.', fa: 'گل‌های دست‌بسته از استودیوی ما در کرج، با ارسال در کرج و تهران.'},
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
   studio: {lat: 35.8352, lng: 50.9750}, // The shop's front door, shown on the contact map and used for directions.
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
@@ -53,6 +55,9 @@ const VF_STORE = {
   phoneLabel: '+98 912 933 3034',
   whatsapp: 'https://wa.me/989129333034',
   instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
+  email: '', // Optional public email, shown in the footer; '' hides it.
+  // Who built the storefront, credited in the footer's bottom line; null hides it.
+  credit: {name: 'Misaf', url: 'https://github.com/misaf'},
   // Delivery pin map. OpenStreetMap's tile server is for light use: a busy store should switch
   // `tiles` to a commercial or self-hosted tile service. center is [latitude, longitude].
   map: {
@@ -379,7 +384,7 @@ function vfSummaryRows(totals, code, labels, money) {
 // Source: templates/_shared/catalog.js
 // Shared sample catalog for home, shop, search, saved items and product pricing.
 // Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
-// occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
+// occasions and colors use the ids in VF_SHOP_OCCASIONS and VF_SHOP_COLORS (translations/categories.js).
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
 // Set an individual product's image path when adapting the template to a real store.
@@ -388,32 +393,32 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'ivory', occasions: ['birthday', 'thanks'], colors: ['white'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
     fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
   },
   {
-    id: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'lavender', occasions: ['birthday', 'sympathy'], colors: ['purple'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Lavender whisper', 'Seasonal · 15 stems'],
     fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
   },
   {
-    id: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'orchid', occasions: ['thanks', 'sympathy'], colors: ['white'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
     fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
   },
   {
-    id: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'crimson', occasions: ['anniversary'], colors: ['red'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
     fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
   },
   {
-    id: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'blush', occasions: ['anniversary', 'birthday'], colors: ['pink'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Blush morning', 'Garden roses · eucalyptus'],
     fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
   },
   {
-    id: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'bridal', occasions: [], colors: ['white'], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
     en: ['Ivory bridal posy', 'Peonies · ranunculus'],
     fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
   }
@@ -535,7 +540,37 @@ const VF_SHELL = {
     langL: 'Language',
     faq: 'FAQ',
     help: 'Help',
+    footer: {
+      shop: 'Shop',
+      allFlowers: 'All flowers',
+      studio: 'The studio',
+      social: 'Follow and message us',
+      instagram: 'Instagram',
+      call: 'Call',
+      directions: 'Get directions',
+      rights: 'All rights reserved.',
+      credit: 'Designed and built by'
+    },
     policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
+    newsletter: {
+      title: 'Letters from the studio',
+      body: 'New seasonal designs and occasion reminders, about twice a month.',
+      label: 'Email address',
+      submit: 'Subscribe',
+      sending: 'Subscribing…',
+      error: 'Enter an email address like name@example.com.',
+      failed: 'We couldn’t sign you up just now. Please try again.',
+      done: 'Thanks! {email} is on the list. Every email has an unsubscribe link.'
+    },
+    consent: {
+      title: 'Your privacy',
+      body: 'We keep your bag, saved designs and sign-in on this device so the shop works. With your OK, we also count visits (no names or numbers) to improve the site.',
+      accept: 'Allow visit counts',
+      essential: 'Essential only',
+      policy: 'Privacy policy',
+      settings: 'Cookie settings',
+      close: 'Close without choosing'
+    },
     skip: 'Skip to main content'
   },
   fa: {
@@ -568,7 +603,37 @@ const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
+    footer: {
+      shop: 'فروشگاه',
+      allFlowers: 'همه گل‌ها',
+      studio: 'استودیو',
+      social: 'دنبال کنید و پیام دهید',
+      instagram: 'اینستاگرام',
+      call: 'تماس تلفنی',
+      directions: 'مسیریابی',
+      rights: 'همه حقوق محفوظ است.',
+      credit: 'طراحی و ساخت:'
+    },
     policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
+    newsletter: {
+      title: 'نامه‌های استودیو',
+      body: 'طرح‌های تازه فصل و یادآور مناسبت‌ها، حدود دو بار در ماه.',
+      label: 'نشانی ایمیل',
+      submit: 'عضویت',
+      sending: 'در حال عضویت…',
+      error: 'ایمیلی مانند name@example.com وارد کنید.',
+      failed: 'الان نتوانستیم عضویت را ثبت کنیم. لطفاً دوباره امتحان کنید.',
+      done: 'ممنون! {email} به فهرست اضافه شد. در هر ایمیل پیوند لغو عضویت هست.'
+    },
+    consent: {
+      title: 'حریم خصوصی شما',
+      body: 'سبد خرید، طرح‌های ذخیره‌شده و ورود شما را روی همین دستگاه نگه می‌داریم تا فروشگاه کار کند. اگر اجازه دهید، تعداد بازدیدها را هم (بدون نام یا شماره) می‌شماریم تا سایت را بهتر کنیم.',
+      accept: 'اجازه شمارش بازدید',
+      essential: 'فقط ضروری',
+      policy: 'حریم خصوصی',
+      settings: 'تنظیمات کوکی',
+      close: 'بستن بدون انتخاب'
+    },
     skip: 'رفتن به محتوای اصلی'
   }
 };
@@ -608,6 +673,25 @@ const VF_SHOP_OCCASION_COPY = {
     anniversary: 'سالگرد ازدواج',
     thanks: 'تشکر',
     sympathy: 'تسلیت'
+  }
+};
+
+// Main flower colours the shop filters by; products list theirs in catalog.js.
+const VF_SHOP_COLORS = ['white', 'pink', 'red', 'purple'];
+const VF_SHOP_COLOR_COPY = {
+  en: {
+    all: 'All colours',
+    white: 'White & ivory',
+    pink: 'Pink',
+    red: 'Red',
+    purple: 'Purple'
+  },
+  fa: {
+    all: 'همه رنگ‌ها',
+    white: 'سفید و عاجی',
+    pink: 'صورتی',
+    red: 'قرمز',
+    purple: 'بنفش'
   }
 };
 
@@ -1058,6 +1142,14 @@ function vfSampleOrders() {
     }
     return req('POST', '/api/support/inquiries', body);
   };
+  // POST /api/marketing/newsletter-subscriptions {email, name} -> 204
+  A.newsletter = async (email, name) => {
+    if (!A.live) {
+      await new Promise(r => setTimeout(r, 600));
+      return null;
+    }
+    return req('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
+  };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
   // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
   A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
@@ -1066,7 +1158,8 @@ function vfSampleOrders() {
 
 // Source: templates/_shared/integrations/analytics.js
 // Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
-// AG_TRACK.event(name, params). Sends to window.dataLayer (GTM) if present; otherwise keeps the last 50 in AG_TRACK.log for QA.
+// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and sends to window.dataLayer (GTM) or gtag
+// only after the visitor accepts analytics in the consent banner (AG_TRACK.consent() === 'all').
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
 (() => {
   if (window.VF_TRACK) return;
@@ -1085,7 +1178,24 @@ function vfSampleOrders() {
     login: 'Sign-in',
     language_switch: 'Header language changed',
     order_again: '“Order again” pressed',
-    contact_whatsapp: 'WhatsApp link opened'
+    contact_whatsapp: 'WhatsApp link opened',
+    generate_lead: 'Newsletter sign-up'
+  };
+  // The visitor's choice from the consent banner: 'all', 'essential', or '' before they choose.
+  const KEY = 'vf-consent';
+  const consent = () => {
+    try {
+      const value = localStorage.getItem(KEY);
+      return ['all', 'essential'].includes(value) ? value : '';
+    } catch (_) {
+      return '';
+    }
+  };
+  const setConsent = value => {
+    try {
+      localStorage.setItem(KEY, value);
+    } catch (_) {}
+    if (typeof window.gtag === 'function') window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
   const log = [];
   const ctx = () => ({
@@ -1108,13 +1218,16 @@ function vfSampleOrders() {
     };
     log.push(e);
     if (log.length > 50) log.shift();
+    if (consent() !== 'all') return;
     if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
   };
   window.AG_TRACK = window.VF_TRACK = {
     event,
     item,
     EVENTS,
-    log
+    log,
+    consent,
+    setConsent
   };
 })();
 
@@ -1153,6 +1266,7 @@ function vfReadRoute(search = location.search) {
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
+    route.color = VF_SHOP_COLORS.includes(query.get('color')) ? query.get('color') : 'all';
   }
   return route;
 }
@@ -1169,6 +1283,7 @@ function vfRouteParams(route) {
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
+    if (VF_SHOP_COLORS.includes(route.color)) query.set('color', route.color);
   }
   return '?' + query.toString();
 }
@@ -1273,6 +1388,14 @@ function vfAnnouncementText(lang, st) {
   } catch (_) {}
   return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
 }
+// A value saved on this device, or '' when storage is empty or blocked.
+function vfStored(key) {
+  try {
+    return localStorage.getItem(key) || '';
+  } catch (_) {
+    return '';
+  }
+}
 function vfShell(props, page) {
   const self = this,
     st = self.state || {},
@@ -1324,6 +1447,100 @@ function vfShell(props, page) {
   const setLang = props.setLang || (lang => {
     location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
   });
+  // Focuses an element by id, waiting a few frames for one that this update is about to render.
+  const focus = (id, tries = 10) => setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.focus();
+    else if (tries > 1) focus(id, tries - 1);
+  }, tries === 10 ? 0 : 50);
+  // Footer newsletter: the draft lives in page state; a finished sign-up is remembered on this device.
+  const N = T.newsletter, news = st.vfNews || {};
+  const signedUp = news.done || vfStored('vf-newsletter');
+  const accountPhone = vfAccountPhone();
+  const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
+  const draft = news.draft ?? profile.email ?? '';
+  const newsletter = {
+    open: !signedUp,
+    done: !!signedUp,
+    doneText: N.done.replace('{email}', '\u2066' + signedUp + '\u2069'),
+    draft,
+    sending: !!news.sending,
+    error: news.error || undefined,
+    setDraft: e => self.setState({vfNews: {...news, draft: e.target.value, error: ''}}),
+    submit: e => {
+      e && e.preventDefault && e.preventDefault();
+      if (news.sending) return;
+      const email = draft.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        self.setState({vfNews: {...news, draft, error: N.error}});
+        focus('vf-news-email');
+        return;
+      }
+      self.setState({vfNews: {...news, draft, error: '', sending: true}});
+      window.AG_API.newsletter(email, profile.name).then(() => {
+        try { localStorage.setItem('vf-newsletter', email); } catch (_) {}
+        window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+        self.setState({vfNews: {done: email}});
+        focus('vf-news-done');
+      }, () => {
+        self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
+        focus('vf-news-email');
+      });
+    }
+  };
+  // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
+  // Closing it makes no choice (so nothing is sent) and hides it for this browser session only.
+  let dismissed = !!st.vfConsentDismissed;
+  try {
+    dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
+  } catch (_) {}
+  const consentShown = !(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed || !!st.vfConsentOpen;
+  const hideConsent = patch => {
+    const reopened = st.vfConsentOpen;
+    self.setState({...patch, vfConsentOpen: false});
+    if (reopened) focus('vf-consent-settings');
+  };
+  const choose = value => {
+    window.AG_TRACK.setConsent(value);
+    hideConsent({vfConsent: value});
+  };
+  const consent = {
+    desk: consentShown && !mob,
+    mob: consentShown && mob,
+    accept: () => choose('all'),
+    essential: () => choose('essential'),
+    close: () => {
+      try {
+        sessionStorage.setItem('vf-consent-dismissed', '1');
+      } catch (_) {}
+      hideConsent({vfConsentDismissed: true});
+    },
+    policy: policyLink('privacy'),
+    open: () => {
+      self.setState({vfConsentOpen: true});
+      focus('vf-consent');
+    }
+  };
+  const shopLink = cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'shop', cat}), go: props.go ? vfLinkHandler(props.go) : undefined});
+  // Footer link columns, social links, contact lines and the bottom line.
+  const F = T.footer;
+  const footerLink = (r, label) => ({label, href: href[r], go: go[r], current: cur[r] ? 'page' : undefined});
+  const footer = {
+    tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
+    faqCurrent: cur.faq ? 'page' : undefined,
+    shop: [{...shopLink('all'), label: F.allFlowers}, ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({...shopLink(cat), label: VF_CATEGORY_COPY[L][cat]}))],
+    studio: [footerLink('weddings', T.weddings), footerLink('journal', T.journal), footerLink('contact', T.contact), footerLink('track', T.track), footerLink('account', T.account), footerLink('saved', T.saved)],
+    social: [
+      ...(VF_STORE.instagram ? [{icon: 'instagram', label: F.instagram + ' ' + VF_STORE.instagram.label, href: VF_STORE.instagram.url, target: '_blank'}] : []),
+      ...(VF_STORE.whatsapp ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}] : []),
+      {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
+    ],
+    directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
+    email: VF_STORE.email || '',
+    emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
+    copyright: '© ' + (fa ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date()) : new Date().getFullYear()) + ' ' + T.brand + '. ' + F.rights,
+    credit: VF_STORE.credit ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url} : null
+  };
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
   return {
@@ -1333,7 +1550,7 @@ function vfShell(props, page) {
     policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
     productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
-    shopLink: cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    shopLink,
     lang: L,
     fa,
     dir: fa ? 'rtl' : 'ltr',
@@ -1367,7 +1584,10 @@ function vfShell(props, page) {
       const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
       if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
     },0),
-    focus: id => setTimeout(()=>{const el=document.getElementById(id);if(el)el.focus();},0),
+    focus,
+    newsletter,
+    footer,
+    consent,
     openMenu: () => self.setState({
       vfMenu: true
     }),

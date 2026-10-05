@@ -34,3 +34,22 @@ const VF_SHOP_OCCASION_COPY = {
     sympathy: 'تسلیت'
   }
 };
+
+// Main flower colours the shop filters by; products list theirs in catalog.js.
+const VF_SHOP_COLORS = ['white', 'pink', 'red', 'purple'];
+const VF_SHOP_COLOR_COPY = {
+  en: {
+    all: 'All colours',
+    white: 'White & ivory',
+    pink: 'Pink',
+    red: 'Red',
+    purple: 'Purple'
+  },
+  fa: {
+    all: 'همه رنگ‌ها',
+    white: 'سفید و عاجی',
+    pink: 'صورتی',
+    red: 'قرمز',
+    purple: 'بنفش'
+  }
+};

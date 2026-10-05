@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {NO_CONSENT, openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
 // Delivery days, promo codes, shop occasions, recently viewed products, the delivery photo,
 // delivery pins, saved addresses and products in the account, and the contact page, in the click-through site.
@@ -206,7 +206,7 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   await openSite(page, 'contact', 'en');
   const map = page.getByRole('region', {name: 'The studio on the map'});
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
-  await expect(page.getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
+  await expect(page.getByRole('main').getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
   await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
   await expect(page.locator('#vf-cphone')).toBeFocused();
@@ -288,4 +288,121 @@ test('sign-in links to the terms and privacy policy', async ({page}) => {
   await openSite(page, 'signin', 'en');
   await page.getByRole('main').getByRole('link', {name: 'privacy policy'}).click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('Privacy');
+});
+
+test('the shop filters by colour and clears every filter at once', async ({page}, info) => {
+  const mobile = info.project.name === 'mobile';
+  await openSite(page, 'shop', 'en', {stock: '1'});
+  if (mobile) await page.getByRole('button', {name: 'Filters (1)'}).click();
+  const colours = page.getByRole('group', {name: 'Colour'}).locator('visible=true');
+  await expect(colours.getByRole('button', {name: 'All colours'})).toHaveAttribute('aria-pressed', 'true');
+  await colours.getByRole('button', {name: 'Red', exact: true}).click();
+  await expect(page).toHaveURL(/color=red/);
+  await expect(colours.getByRole('button', {name: 'Red', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  expect(await scanAxe(page)).toEqual([]);
+  if (mobile) {
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', {name: 'Filters (2)'})).toBeVisible();
+  }
+  await expect(page.locator('main .ag-product__name')).toHaveText(['Crimson hatbox']);
+  await page.getByRole('button', {name: 'Clear all'}).click();
+  await expect(page).not.toHaveURL(/color=|stock=/);
+  await expect(page.locator('main .ag-product')).toHaveCount(6);
+  await expect(page.locator('#vf-shop-count')).toBeFocused();
+});
+
+test('the footer newsletter checks the address and confirms the sign-up', async ({page}) => {
+  await openSite(page, 'home', 'en');
+  const form = page.getByRole('region', {name: 'Letters from the studio'});
+  await form.getByRole('button', {name: 'Subscribe'}).click();
+  const email = page.locator('#vf-news-email');
+  await expect(email).toBeFocused();
+  await expect(email).toHaveAttribute('aria-invalid', 'true');
+  expect(await scanAxe(page)).toEqual([]);
+  await email.fill('rose@example.com');
+  await email.press('Enter');
+  // The address is wrapped in bidi isolates so it reads correctly inside Persian text.
+  const done = page.locator('#vf-news-done');
+  await expect(done).toHaveText(/rose@example\.com\u2069? is on the list/);
+  await expect(done).toBeFocused();
+  await page.reload();
+  await expect(done).toBeVisible();
+  await expect(page.locator('#vf-news-email')).toHaveCount(0);
+});
+
+test('the newsletter fills in a signed-in customer’s email', async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('vf-account-phone', '09125649438');
+    localStorage.setItem('vf-account:09125649438', JSON.stringify({profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true}, addresses: [], reminders: []}));
+  });
+  await openSite(page, 'home', 'fa');
+  await expect(page.locator('#vf-news-email')).toHaveValue('shirin@example.com');
+  await expect(page.getByRole('heading', {name: 'نامه‌های استودیو'})).toBeVisible();
+});
+
+test.describe('a first visit', () => {
+  test.use({storageState: NO_CONSENT});
+
+  test('asks about visit counts and remembers the choice', async ({page}) => {
+    await openSite(page, 'home', 'en');
+    const banner = page.getByRole('region', {name: 'Your privacy'});
+    await expect(banner).toBeVisible();
+    await expect(banner.getByRole('link', {name: 'Privacy policy'})).toHaveAttribute('href', /view=policy&id=privacy/);
+    expect(await scanAxe(page)).toEqual([]);
+    await banner.getByRole('button', {name: 'Essential only'}).click();
+    await expect(banner).toHaveCount(0);
+    expect(await page.evaluate(() => localStorage.getItem('vf-consent'))).toBe('essential');
+    await page.reload();
+    await expect(page.locator('#main')).toBeVisible();
+    await expect(banner).toHaveCount(0);
+    // Cookie settings in the footer asks again and hands focus back afterwards.
+    const settings = page.getByRole('button', {name: 'Cookie settings'});
+    await settings.click();
+    await expect(banner).toBeFocused();
+    await banner.getByRole('button', {name: 'Allow visit counts'}).click();
+    await expect(settings).toBeFocused();
+    expect(await page.evaluate(() => [localStorage.getItem('vf-consent'), (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length)])).toEqual(['all', 1]);
+  });
+
+  test('can be closed without choosing, for this session only', async ({page}) => {
+    await openSite(page, 'home', 'en');
+    const banner = page.getByRole('region', {name: 'Your privacy'});
+    await banner.getByRole('button', {name: 'Close without choosing'}).click();
+    await expect(banner).toHaveCount(0);
+    expect(await page.evaluate(() => [localStorage.getItem('vf-consent'), (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length)])).toEqual([null, 0]);
+    await page.reload();
+    await expect(page.locator('#main')).toBeVisible();
+    await expect(banner).toHaveCount(0);
+    await page.evaluate(() => sessionStorage.clear());
+    await page.reload();
+    await expect(banner).toBeVisible();
+  });
+
+  test('sends nothing to analytics before a choice', async ({page}) => {
+    await openSite(page, 'home', 'fa');
+    await expect(page.getByRole('region', {name: 'حریم خصوصی شما'})).toBeVisible();
+    expect(await page.evaluate(() => (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length))).toBe(0);
+  });
+});
+
+test('the footer lists shop and studio links, social links, contact details and the credit', async ({page}) => {
+  await openSite(page, 'home', 'en');
+  const footer = page.getByRole('contentinfo');
+  await footer.getByRole('navigation', {name: 'Shop'}).getByRole('link', {name: 'Orchids'}).click();
+  await expect(page).toHaveURL(/view=shop&cat=orchids/);
+  await expect(footer.getByRole('navigation', {name: 'The studio'}).getByRole('link', {name: 'Journal'})).toBeVisible();
+  const social = footer.getByRole('list', {name: 'Follow and message us'});
+  await expect(social.getByRole('link')).toHaveCount(3);
+  await expect(social.getByRole('link', {name: /^Instagram/})).toHaveAttribute('target', '_blank');
+  await expect(footer.getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
+  await expect(footer).toContainText('© ' + new Date().getFullYear() + ' Vendra Florist. All rights reserved.');
+  await expect(footer.getByRole('link', {name: 'Misaf', exact: true})).toHaveAttribute('href', 'https://github.com/misaf');
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('the Persian footer dates the copyright in the Persian calendar', async ({page}) => {
+  await openSite(page, 'home', 'fa');
+  const year = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date());
+  await expect(page.getByRole('contentinfo')).toContainText('© ' + year + ' گل‌فروشی وندرا. همه حقوق محفوظ است.');
+  expect(await scanAxe(page)).toEqual([]);
 });

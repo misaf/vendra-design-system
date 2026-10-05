@@ -19,7 +19,8 @@ class Component extends VFPage {
       cat: route.cat || 'all',
       sort: route.sort || 'featured',
       chips: route.filters || [],
-      occasion: route.occasion || 'all'
+      occasion: route.occasion || 'all',
+      color: route.color || 'all'
     };
     const change = patch => {
       const next = {
@@ -30,6 +31,7 @@ class Component extends VFPage {
         sort: s.sort,
         filters: s.chips,
         occasion: s.occasion,
+        color: s.color,
         ...patch
       };
       if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
@@ -37,12 +39,44 @@ class Component extends VFPage {
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion));
+      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion)) && (s.color === 'all' || (p.colors || []).includes(s.color));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
     let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
     if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
+    const activeFilters = [...(s.occasion !== 'all' ? [{
+      label: VF_SHOP_OCCASION_COPY[L][s.occasion],
+      remove: () => change({
+        occasion: 'all'
+      })
+    }] : []), ...(s.color !== 'all' ? [{
+      label: VF_SHOP_COLOR_COPY[L][s.color],
+      remove: () => change({
+        color: 'all'
+      })
+    }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
+      label: S.m(price[0]) + ' – ' + S.m(price[1]),
+      remove: () => change({
+        min: 0,
+        max: priceMax
+      })
+    }] : []), ...(inStock ? [{
+      label: C.migration.stock,
+      remove: () => change({
+        stock: false
+      })
+    }] : [])];
+    const clear = () => change({
+      filters: [],
+      cat: 'all',
+      sort: 'featured',
+      min: 0,
+      max: priceMax,
+      stock: false,
+      occasion: 'all',
+      color: 'all'
+    });
     return {
       ...S,
       migration: C.migration,
@@ -53,23 +87,21 @@ class Component extends VFPage {
       closeFilters: () => this.setState({
         filterOpen: false
       }),
-      activeFilters: [...(s.occasion !== 'all' ? [{
-        label: VF_SHOP_OCCASION_COPY[L][s.occasion],
-        remove: () => change({
-          occasion: 'all'
-        })
-      }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
-        label: S.m(price[0]) + ' – ' + S.m(price[1]),
-        remove: () => change({
+      activeFilters,
+      // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
+      hasActive: activeFilters.length > 0,
+      clearFilters: () => {
+        change({
           min: 0,
-          max: priceMax
-        })
-      }] : []), ...(inStock ? [{
-        label: C.migration.stock,
-        remove: () => change({
-          stock: false
-        })
-      }] : [])],
+          max: priceMax,
+          stock: false,
+          occasion: 'all',
+          color: 'all'
+        });
+        // The button goes away with the filters, so focus moves to the updated result count.
+        S.focus('vf-shop-count');
+      },
+      filtersLabel: activeFilters.length ? C.migration.filters + ' (' + n(activeFilters.length) + ')' : C.migration.filters,
       price,
       priceMax,
       priceLabels: {
@@ -86,6 +118,14 @@ class Component extends VFPage {
         on: s.occasion === id,
         pick: () => change({
           occasion: id
+        })
+      })),
+      colorOptions: ['all', ...VF_SHOP_COLORS].map(id => ({
+        id,
+        label: VF_SHOP_COLOR_COPY[L][id],
+        on: s.color === id,
+        pick: () => change({
+          color: id
         })
       })),
       inStock,
@@ -132,15 +172,7 @@ class Component extends VFPage {
       countLabel: C.designCount(list.length),
       hasItems: !demo && list.length > 0,
       noItems: !demo && list.length === 0,
-      clear: () => change({
-        filters: [],
-        cat: 'all',
-        sort: 'featured',
-        min: 0,
-        max: priceMax,
-        stock: false,
-        occasion: 'all'
-      }),
+      clear,
       items: list.map(p => {
         const fav = S.isFav(p.id, ['orchid']);
         return {

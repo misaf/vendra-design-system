@@ -22,8 +22,18 @@
 <!-- PAGE_CONTENT -->
 </div>
 <!-- FOOTER -->
+<sc-if value="{{ consent.desk }}" hint-placeholder-val="{{ false }}">
+<div class="vf-shell-consent-dock tw:fixed tw:bottom-6 tw:start-6 tw:z-toast tw:max-w-[420px]">
+<!-- CONSENT -->
+</div>
+</sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
+<sc-if value="{{ consent.mob }}" hint-placeholder-val="{{ false }}">
+<div class="vf-shell-consent-dock tw:px-3 tw:pb-3">
+<!-- CONSENT -->
+</div>
+</sc-if>
 <!-- STICKY_CONTENT -->
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
 </x-import>

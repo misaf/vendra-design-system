@@ -1,4 +1,4 @@
-// Delivery days, promo codes, shop occasions and recently viewed products.
+// Delivery days, promo codes, shop occasions and colours, recently viewed products and analytics consent.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -60,6 +60,29 @@ assert.equal(ctx.vfReadRoute('?view=shop&occasion=halloween').occasion, 'all');
 assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'birthday'}), /occasion=birthday/);
 assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'all'}), /occasion/);
 
+// Shop colours work the same way, and every sample product has a known colour.
+assert.equal(ctx.vfReadRoute('?view=shop&color=red').color, 'red');
+assert.equal(ctx.vfReadRoute('?view=shop&color=teal').color, 'all');
+assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', color: 'pink'}), /color=pink/);
+assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', color: 'all'}), /color/);
+vm.runInContext('VF_PRODUCTS', ctx).forEach(p => assert.ok(p.colors.length && p.colors.every(c => vm.runInContext('VF_SHOP_COLORS', ctx).includes(c)), p.id + ' colours'));
+
+// Analytics: events stay in the local log until the visitor allows visit counts.
+const track = ctx.window.AG_TRACK;
+ctx.window.dataLayer = [];
+assert.equal(track.consent(), '');
+track.event('search', {search_term: 'roses'});
+track.setConsent('essential');
+track.event('search', {search_term: 'roses'});
+assert.equal(ctx.window.dataLayer.length, 0, 'nothing is sent before consent or with essential only');
+track.setConsent('all');
+track.event('generate_lead', {lead_source: 'newsletter'});
+assert.equal(ctx.window.dataLayer.length, 1);
+assert.equal(ctx.window.dataLayer[0].event, 'generate_lead');
+assert.equal(track.log.length, 3, 'the local QA log keeps every event');
+store['vf-consent'] = 'maybe';
+assert.equal(track.consent(), '', 'an unknown stored choice asks again');
+
 // Recently viewed: newest first, no repeats, at most eight, unknown ids dropped.
 ['ivory', 'orchid', 'ivory'].forEach(ctx.vfRememberViewed);
 assert.deepEqual([...ctx.vfRecentlyViewed()], ['ivory', 'orchid']);
@@ -68,4 +91,4 @@ assert.deepEqual([...ctx.vfRecentlyViewed()], ['blush']);
 store['vendra-recently-viewed'] = 'not json';
 assert.deepEqual([...ctx.vfRecentlyViewed()], []);
 
-console.log('Passed delivery days, promo codes, delivery pins, shop occasions and recently viewed products.');
+console.log('Passed delivery days, promo codes, delivery pins, shop occasions and colours, recently viewed products and analytics consent.');

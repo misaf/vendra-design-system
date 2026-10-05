@@ -91,8 +91,8 @@ function renderShell(source) {
   const body = region(source, 'PAGE CONTENT').content;
   const sticky = region(source, 'PAGE STICKY CONTENT').content;
   let layout = shared('layout.html');
-  for (const [token, file] of [['DESKTOP_HEADER', 'header-desktop.html'], ['MOBILE_HEADER', 'header-mobile.html'], ['MOBILE_MENU', 'mobile-menu.html'], ['FOOTER', 'footer.html']]) {
-    layout = layout.replace('<!-- ' + token + ' -->', shared(file));
+  for (const [token, file] of [['DESKTOP_HEADER', 'header-desktop.html'], ['MOBILE_HEADER', 'header-mobile.html'], ['MOBILE_MENU', 'mobile-menu.html'], ['FOOTER', 'footer.html'], ['CONSENT', 'consent.html']]) {
+    layout = layout.replaceAll('<!-- ' + token + ' -->', shared(file));
   }
   const editable = (name, content) => '<!-- END GENERATED SHELL -->\n<!-- BEGIN ' + name + ' -->\n' + content + '\n<!-- END ' + name + ' -->\n<!-- BEGIN GENERATED SHELL -->';
   layout = layout.replace('<!-- PAGE_CONTENT -->', editable('PAGE CONTENT', body));

@@ -21,6 +21,9 @@ export default defineConfig({
   expect: {toHaveScreenshot: {animations: 'disabled', threshold: 0, maxDiffPixels: 25}},
   use: {
     baseURL: 'http://127.0.0.1:5173',
+    // Every test starts with the cookie choice made, so the consent banner stays out of
+    // screenshots and clicks. Consent tests opt out with test.use({storageState: NO_CONSENT}).
+    storageState: {cookies: [], origins: [{origin: 'http://127.0.0.1:5173', localStorage: [{name: 'vf-consent', value: 'essential'}]}]},
     channel: 'chrome',
     trace: 'retain-on-failure'
   },

@@ -110,6 +110,14 @@
     }
     return req('POST', '/api/support/inquiries', body);
   };
+  // POST /api/marketing/newsletter-subscriptions {email, name} -> 204
+  A.newsletter = async (email, name) => {
+    if (!A.live) {
+      await new Promise(r => setTimeout(r, 600));
+      return null;
+    }
+    return req('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
+  };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
   // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
   A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
