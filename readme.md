@@ -81,7 +81,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Dates:** Dates in Persian use the Shamsi calendar with Persian digits. Show the other calendar alongside when a customer picks a date. Persian full dates read weekday، day month year («سه‌شنبه، ۷ مهر ۱۴۰۵») — build them with `dates.fullDate()`, never Intl weekday + year in one call.
 - **Time ranges in Persian:** when a time range is written in Persian (۰۸:۰۰ تا ۲۲:۰۰), wrap each time in Unicode FSI/PDI marks (`\u2068 … \u2069`) so the order can't flip.
 - **Emoji:** never. **Brand name:** "Vendra Florist" / «گل‌فروشی وندرا» in full; "Vendra" / «وندرا» alone is fine in running copy. Never "Boho" — that name is retired.
-- **Unicode ornaments: none; use the em dash and middle dot (`Seasonal · 15 stems`) as separators.
+- **Unicode ornaments:** none; use the em dash and middle dot (`Seasonal · 15 stems`) as separators.
 - **Translation:** write each language natively, don't mirror sentence structure. Persian copy runs ~10–20% longer; layouts must allow it.
 
 ## VISUAL FOUNDATIONS
@@ -132,7 +132,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
 - `syncHead({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` sets `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default, and robots.
 - **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound.
-- **track** takes an optional `id` = order number (`?view=track&id=VN-10522`, SAFE pattern). With a known id it shows the order page (OrderDetail.jsx.txt); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
+- **track** takes an optional `id` = order number (`?view=track&id=VN-10522`, SAFE pattern). With a known id it shows the order page (`templates/storefront-track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
 
 ## Accessibility (WCAG 2.2 AA)
 
@@ -144,7 +144,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Focus**: all `.ag-*` controls and any plain `a`, `button`, `[role=button]`, `summary` or `[tabindex]` get `2px solid var(--focus-ring)` at a 2px offset on `:focus-visible`.
 - **Dialog**: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` pointing to the title. Focus moves inside on open (`initialFocus` selector, else the first control, else the close button). Tab and Shift+Tab stay inside, Esc closes, focus returns to the opener, and the page behind can't scroll.
 - **Touch targets**: at least 44px (tab bar, stepper circles, footer and TOC links).
-- **Contrast**: see the *Contrast* card in Colors. Every text token passes 4.5:1 on the surfaces it's used on. `--ink-500` / `--text-muted` (#59655E) passes on `--surface-muted`. Form-control edges (inputs, choice tiles, steppers, switch track, slider track) use `--border-input` #808B83 for 3:1; `--border-default` is for dividers only. Non-text accent indicators (active tab line, slider, current order step, saved heart) use `--text-accent`, because `--accent` gold is under 3:1 on cream — it is for button fills only. `--text-subtle` (about 2:1) is **decorative or disabled only, never readable copy**; placeholders now use `--text-muted`. `--warning` and `--info` are icon/border colours (3:1); the text beside them uses `--text-body`.
+- **Contrast**: see the *Contrast* card in Colors. Every text token passes 4.5:1 on the surfaces it's used on. `--ink-500` / `--text-muted` (#59655E) passes on `--surface-muted`. Form-control edges (inputs, choice tiles, steppers, switch track, slider track) use `--border-input` #808B83 for 3:1; `--border-default` is for dividers only. Non-text accent indicators (active tab line, slider, current order step, saved heart) use `--text-accent`, because `--accent` is only guaranteed 4.5:1 against white text, not 3:1 on page surfaces (tenant accents can fail it) — it is for button fills only. `--text-subtle` (about 2:1) is **decorative or disabled only, never readable copy**; placeholders now use `--text-muted`. `--warning` and `--info` are icon/border colours (3:1); the text beside them uses `--text-body`.
 
 ## Structured data
 
@@ -196,7 +196,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 **Storefront examples**
 - `templates/previews/`: bilingual desktop, mobile and Clay theme previews.
 - `templates/communications/`: standalone email, SMS and WhatsApp examples.
-- `templates/deployment/`: manifest, robots and sitemap publishing samples.
+- `templates/deployment/`: robots and sitemap publishing samples.
 - Store configuration, local account data and optional API/analytics helpers live in `templates/_shared/`.
 - See [Migration and feature map](templates/MIGRATION.md) for ownership, states and integration boundaries.
 
@@ -223,7 +223,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Icon:** Lucide glyph via CSS mask. Inherits `currentColor`; arrows and chevrons mirror in RTL.
 - **Button:** `primary` (accent fill, one per view), `secondary` (ink outline), `soft`, `ghost`. Sizes sm/md/lg; `iconStart`/`iconEnd`; `href` renders `<a>`.
 - **IconButton:** ghost / outline (44px circle) / solid. `active`, `count`, `href`; add `ag-iconbtn--inverse` on dark surfaces.
-- **Badge:** neutral, accent, success, warning, info, danger, solid (status tones shared with Alert and Toast; `sage`/`ochre`/`plum` are deprecated aliases). Uppercase in EN, never in FA.
+- **Badge:** neutral, accent, success, warning, info, danger, solid (status tones shared with Alert and Toast). Uppercase in EN, never in FA.
 - **Tag:** filter chip; `selected` fills with ink; `onRemove`.
 - **Card:** default (white + hairline), `sunken`, `raised`.
 - **ArchFrame:** image window on `--radius-arch`.
@@ -258,7 +258,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Dialog:** focus trap, Esc closes, returns focus, locks scroll.
 - **Toast:** success, info, warning, danger. Follow-up actions go in `action`.
 - **Tooltip**, **Skeleton**.
-- **Alert:** neutral, warning, danger (deprecated alias `error`), success; `action` slot.
+- **Alert:** neutral, warning, danger, success; `action` slot.
 - **EmptyState:** icon disc, eyebrow, title + `titleAccent`, body, actions.
 - **AnnouncementBar:** dismissible top strip.
 - **LiveRegion:** one polite `role="status"` per page.
