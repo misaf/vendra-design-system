@@ -83,13 +83,13 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><sc-if value="{{ noOrder }}"><div class="tw:flex tw:flex-col tw:items-center tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="package-search" heading-level="{{ 1 }}" title="{{ t.missingTitle }}" body="{{ t.missingBody }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}">{{ t.browse }}</x-import></div></sc-if><sc-if value="{{ hasOrder }}"><div class="vf-track-header tw:flex tw:flex-col tw:gap-3 tw:mb-7"><div class="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.orderNo }}</div><h1>{{ titleA }} <em class="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ titleB }}</em></h1><p class="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ statusP }}</p></div>
+<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><sc-if value="{{ noOrder }}"><form class="vf-track-lookup tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto" onSubmit="{{ findOrder }}" novalidate=""><h1>{{ t.lookup.titleA }} <em class="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.lookup.titleB }}</em></h1><p class="tw:text-secondary tw:m-0 tw:text-md tw:leading-body tw:text-pretty">{{ t.lookup.intro }}</p><sc-if value="{{ lookupFailed }}" hint-placeholder-val="{{ false }}"><div id="vf-lookup-failed" tabindex="-1"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="warning" hint-size="100%,72px">{{ t.lookup.failed }}</x-import></div></sc-if><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-lookup-id" label="{{ t.lookup.id }}" hint="{{ t.lookup.idHint }}" value="{{ lookupId }}" on-change="{{ setLookupId }}" error="{{ lookupIdError }}" required="{{ true }}" dir="ltr" autocomplete="off" autocapitalize="characters" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-lookup-phone" label="{{ t.lookup.phone }}" value="{{ lookupPhone }}" on-change="{{ setLookupPhone }}" error="{{ lookupPhoneError }}" required="{{ true }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="0912 000 0000" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" size="lg" block="{{ true }}" type="submit" icon-start="package-search" hint-size="100%,52px">{{ t.lookup.submit }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="160px,48px">{{ t.browse }}</x-import></form></sc-if><sc-if value="{{ hasOrder }}"><div class="vf-track-header tw:flex tw:flex-col tw:gap-3 tw:mb-7"><div class="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.orderNo }}</div><h1>{{ titleA }} <em class="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ titleB }}</em></h1><p class="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ statusP }}</p><sc-if value="{{ pending }}" hint-placeholder-val="{{ false }}"><div class="tw:max-w-measure"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" icon="clock" title="{{ pendingTitle }}" hint-size="100%,96px">{{ pendingBody }}</x-import></div></sc-if></div>
 <div class="vf-track-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
 <div class="vf-track-details tw:min-w-0 tw:flex tw:flex-col tw:gap-6 tw:[flex:999_1_440px]">
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,360px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderTimeline" steps="{{ steps }}" current="{{ current }}" status="{{ tlStatus }}" label="{{ t.progress }}" done-label="{{ t.doneL }}" hint-size="100%,320px"></x-import></x-import>
 <sc-if value="{{ delivered }}"><figure class="vf-track-photo tw:m-0 tw:flex tw:flex-col tw:gap-3"><div class="vf-track-photo-frame tw:max-w-[320px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ArchFrame" src="{{ photo }}" ratio="4/5" shape="soft" tone="product" placeholder-label="{{ t.photoPh }}" alt="{{ t.photoAlt }}" hint-size="320px,400px"></x-import></div><figcaption class="vf-track-photo-caption tw:text-sm tw:text-quiet">{{ t.photoCap }}</figcaption></figure></sc-if>
 <x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" variant="sunken" padding="{{ 20 }}" hint-size="100%,280px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.DetailList" rows="{{ rows }}" hint-size="100%,240px"></x-import></x-import>
-<div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="200px,48px">{{ t.ask }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="rotate-ccw" href="{{ href.bag }}" on-click="{{ reorder }}" hint-size="150px,48px">{{ t.again }}</x-import></div>
+<div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="200px,48px">{{ t.ask }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" icon-start="rotate-ccw" href="{{ href.bag }}" on-click="{{ reorder }}" hint-size="150px,48px">{{ t.again }}</x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="package-search" on-click="{{ trackAnother }}" hint-size="190px,48px">{{ t.lookup.another }}</x-import></div>
 </div>
 <aside class="vf-track-summary tw:[flex:1_1_360px] tw:max-w-[440px] tw:sticky tw:top-9"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,300px"><x-import component-from-global-scope="VendraDesignSystem_f4f210.OrderSummary" title="{{ t.summary }}" lines="{{ lines }}" sums="{{ sums }}" hint-size="100%,260px"></x-import></x-import></aside>
 </div></sc-if></main>
@@ -142,13 +142,13 @@
 </div>
 </footer>
 <sc-if value="{{ consent.desk }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-consent-dock tw:fixed tw:bottom-6 tw:start-6 tw:z-toast tw:max-w-[420px]">
-<section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-3 tw:p-5 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
-<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-lg tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
+<div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-toast">
+<section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
+<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
 <p class="tw:m-0">{{ t.consent.body }} <a href="{{ consent.policy.href }}" onClick="{{ consent.policy.go }}" class="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.consent.policy }}</a></p>
-<div class="tw:flex tw:flex-wrap tw:gap-3">
-<button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:min-h-tap tw:px-5 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
-<button type="button" onClick="{{ consent.essential }}" class="vf-shell-consent-essential tw:min-h-tap tw:px-5 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]">{{ t.consent.essential }}</button>
+<div class="tw:flex tw:flex-wrap tw:gap-2">
+<button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
+<button type="button" onClick="{{ consent.essential }}" class="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]">{{ t.consent.essential }}</button>
 </div>
 </section>
 </div>
@@ -157,12 +157,12 @@
 <div class="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <sc-if value="{{ consent.mob }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-consent-dock tw:px-3 tw:pb-3">
-<section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-3 tw:p-5 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
-<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-lg tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
+<section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
+<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
 <p class="tw:m-0">{{ t.consent.body }} <a href="{{ consent.policy.href }}" onClick="{{ consent.policy.go }}" class="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.consent.policy }}</a></p>
-<div class="tw:flex tw:flex-wrap tw:gap-3">
-<button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:min-h-tap tw:px-5 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
-<button type="button" onClick="{{ consent.essential }}" class="vf-shell-consent-essential tw:min-h-tap tw:px-5 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]">{{ t.consent.essential }}</button>
+<div class="tw:flex tw:flex-wrap tw:gap-2">
+<button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
+<button type="button" onClick="{{ consent.essential }}" class="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]">{{ t.consent.essential }}</button>
 </div>
 </section>
 </div>
@@ -304,6 +304,14 @@ function vfDeliveryDays(zoneId, now = new Date()) {
       pastCutoff: offset === 0 && pastCutoff
     };
   });
+}
+
+// Whether a product can be delivered on a day in the main delivery zone: it is in stock, the day is open,
+// and it is a same-day design or the day is tomorrow or later.
+function vfDeliverableOn(product, iso, now = new Date()) {
+  if (product.inStock === false) return false;
+  const day = vfDeliveryDays(VF_ZONES[0].id, now).find(d => d.iso === iso);
+  return !!day && !day.soldOut && !day.pastCutoff && (!!product.same || day.offset > 0);
 }
 
 // The chosen day when it is still open, otherwise the first open day.
@@ -1185,6 +1193,8 @@ function vfSampleOrders() {
     ...VF_DELIVERY,
     name: 'Shirin Ahmadi',
     phone: '09125649438',
+    sender: 'Shirin Ahmadi',
+    senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
   };
   return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
@@ -1481,6 +1491,8 @@ function vfReadRoute(search = location.search) {
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // Sign-in started from checkout returns there (?view=signin&next=delivery).
+  if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
@@ -1491,6 +1503,8 @@ function vfReadRoute(search = location.search) {
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
+    // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
+    route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
   }
   return route;
 }
@@ -1498,6 +1512,7 @@ function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
   if(route.demo)query.set('demo',route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
+  if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
@@ -1508,6 +1523,7 @@ function vfRouteParams(route) {
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
+    if (route.date) query.set('date', route.date);
   }
   return '?' + query.toString();
 }
@@ -1929,10 +1945,26 @@ function vfCopy(S) {
         noMessage: 'No message',
         payment: 'Payment',
         cardToCard: 'Card to card',
-        noOrderFound: 'No order found.',
-        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'There is no completed order matching this link in this browser session. Complete a demo checkout to see your order here.',
         browseTheShop: 'Browse the shop',
         free: 'Free'
+      },
+      pending: {
+        title: 'Payment being confirmed',
+        card: 'We’re matching your transfer from the card ending {last4}, usually within an hour. We’ll text {phone} once it’s confirmed and start arranging your flowers.',
+        wa: 'Confirm the order on WhatsApp so we can start arranging your flowers.'
+      },
+      lookup: {
+        titleA: 'Track an',
+        titleB: 'order.',
+        intro: 'Enter your order number and the mobile used for the order — yours or the recipient’s.',
+        id: 'Order number',
+        idHint: 'From your confirmation text, e.g. VN-10522.',
+        phone: 'Mobile number',
+        submit: 'Find my order',
+        idErr: 'Enter the order number.',
+        phoneErr: 'Enter an 11-digit mobile number starting with 09.',
+        failed: 'We couldn’t find an order with that number and mobile. Check both, or ask us on WhatsApp.',
+        another: 'Track another order'
       }
     },
     fa: {
@@ -1973,10 +2005,26 @@ function vfCopy(S) {
         noMessage: 'بدون پیام',
         payment: 'پرداخت',
         cardToCard: 'کارت به کارت',
-        noOrderFound: 'سفارشی پیدا نشد.',
-        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'در این مرورگر سفارشی با این شماره ثبت نشده است. پس از پایان خرید، سفارش خود را اینجا ببینید.',
         browseTheShop: 'رفتن به فروشگاه',
         free: 'رایگان'
+      },
+      pending: {
+        title: 'در حال تأیید پرداخت',
+        card: 'واریز از کارتِ با پایانِ {last4} را بررسی می‌کنیم؛ معمولاً تا یک ساعت. پس از تأیید به {phone} پیامک می‌دهیم و چیدن گل‌ها را شروع می‌کنیم.',
+        wa: 'سفارش را در واتساپ تأیید کنید تا چیدن گل‌ها را شروع کنیم.'
+      },
+      lookup: {
+        titleA: 'پیگیری',
+        titleB: 'سفارش.',
+        intro: 'شماره سفارش و موبایلی را که برای سفارش ثبت شد وارد کنید؛ موبایل خودتان یا گیرنده.',
+        id: 'شماره سفارش',
+        idHint: 'از پیامک تأیید سفارش، مثلاً VN-10522.',
+        phone: 'شماره موبایل',
+        submit: 'پیدا کردن سفارش',
+        idErr: 'شماره سفارش را وارد کنید.',
+        phoneErr: 'شماره موبایل ۱۱ رقمی با ۰۹ وارد کنید.',
+        failed: 'سفارشی با این شماره و موبایل پیدا نشد. هر دو را بررسی کنید یا در واتساپ از ما بپرسید.',
+        another: 'پیگیری سفارش دیگر'
       }
     }
   }[S.lang];
@@ -1986,16 +2034,30 @@ function vfCopy(S) {
 // BEGIN GENERATED PAGE LOGIC
 // Source: templates/storefront-track/logic.js
 // Page behavior. Edit here, then run npm --prefix templates run build.
+// Orders this browser can look up: the latest order from this session, then the sample orders.
+function vfKnownOrders(store) {
+  const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];
+  return [...own, ...vfSampleOrders()];
+}
 class Component extends VFPage {
+  state = {
+    lookup: false,
+    lookupId: '',
+    lookupPhone: '',
+    lookupTried: false,
+    lookupFailed: false,
+    found: null
+  };
   renderVals() {
     const S = vfShell.call(this, this.props, 'track');
     const fa = S.fa;
     const L = S.lang;
     const m = S.m;
-    const requested = vfPageRoute(this.props).id;
+    const ls = this.state;
+    const requested = ls.found || vfPageRoute(this.props).id;
     const snapshot = this.props.store && (this.props.store.lastOrder || this.props.store.order);
     const order = requested ? snapshot && snapshot.id === requested ? snapshot : vfSampleOrders().find(o => o.id === requested) : snapshot;
-    const hasOrder = !this.props.store || !!order && (!requested || requested === order.id);
+    const hasOrder = !ls.lookup && (!this.props.store || !!order && (!requested || requested === order.id));
     const rawStatus = order ? order.status || 'received' : this.props.status ?? 'onTheWay';
     const st = /cancel|refund/.test(rawStatus) ? 'cancelled' : {
       arranging: 'preparing',
@@ -2014,6 +2076,14 @@ class Component extends VFPage {
       C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, vfDeliveryWhen(d, fa)], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, vfCardMessages(order.lines, d, L) || C.labels.noMessage], ['banknote', C.labels.payment, (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) + (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))]];
       C.times = ['', '', '', '', ''];
     }
+    // A card-to-card or WhatsApp order waits for the studio to confirm payment before it is arranged.
+    const method = order ? order.method || 'card' : 'card';
+    const pending = !!order && st === 'received' && ['card', 'wa'].includes(method);
+    const contact = order ? order.delivery.senderPhone || order.delivery.phone : '';
+    const lookupErrors = {
+      id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
+      phone: ls.lookupTried && !/^09\d{9}$/.test(vfPhone(ls.lookupPhone)) ? C.lookup.phoneErr : undefined
+    };
     const idx = {
       received: 0,
       preparing: 2,
@@ -2027,6 +2097,39 @@ class Component extends VFPage {
       hasOrder,
       waHref: order ? VF_STORE.whatsapp + '?text=' + encodeURIComponent((fa ? 'درباره سفارش ' : 'About order ') + order.id) : S.waHref,
       noOrder: !hasOrder,
+      pending,
+      pendingTitle: C.pending.title,
+      pendingBody: method === 'wa' ? C.pending.wa : C.pending.card.replace('{last4}', S.n(order && order.last4 || '')).replace('{phone}', '\u2068' + S.n(contact) + '\u2069'),
+      // Guests find an order with its number and the mobile used for it (the recipient's or their own).
+      lookupId: ls.lookupId,
+      lookupPhone: ls.lookupPhone,
+      setLookupId: e => this.setState({lookupId: e.target.value, lookupFailed: false}),
+      setLookupPhone: e => this.setState({lookupPhone: e.target.value, lookupFailed: false}),
+      lookupIdError: lookupErrors.id,
+      lookupPhoneError: lookupErrors.phone,
+      lookupFailed: ls.lookupFailed,
+      findOrder: e => {
+        e && e.preventDefault && e.preventDefault();
+        const id = vfLatin(ls.lookupId).trim().toUpperCase(), phone = vfPhone(ls.lookupPhone);
+        this.setState({lookupTried: true});
+        if (!id || !/^09\d{9}$/.test(phone)) {
+          window.AG_NAV.focusFirstInvalid();
+          return;
+        }
+        const match = vfKnownOrders(this.props.store).find(o => o.id.toUpperCase() === id && [o.delivery.phone, o.delivery.senderPhone].some(p => p && vfPhone(p) === phone));
+        if (!match) {
+          this.setState({lookupFailed: true});
+          S.focus('vf-lookup-failed');
+          return;
+        }
+        this.setState({lookup: false, lookupTried: false, lookupId: '', lookupPhone: ''});
+        if (this.props.go) this.props.go({view: 'track', id: match.id});
+        else this.setState({found: match.id});
+      },
+      trackAnother: () => {
+        this.setState({lookup: true, lookupFailed: false});
+        S.focus('vf-lookup-id');
+      },
       reorder: order ? e => {
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
@@ -2039,8 +2142,6 @@ class Component extends VFPage {
       t: {
         ...S.t,
         ...C,
-        missingTitle: C.labels.noOrderFound,
-        missingBody: C.labels.thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere,
         browse: C.labels.browseTheShop
       },
       titleA: h[0],
@@ -2064,7 +2165,7 @@ class Component extends VFPage {
         image: vfProductImage(line, L).src,
         name: line[L][0],
         meta: line[L][1] + ' · × ' + S.n(line.qty),
-        note: line[L][2],
+        note: vfCardMessages([line], {}, L) || undefined,
         total: m(line.unit * line.qty)
       })),
       sums: vfSummaryRows(sampleTotals, order && order.delivery.promo, {...C, free: C.labels.free, discount: S.t.discount}, m)

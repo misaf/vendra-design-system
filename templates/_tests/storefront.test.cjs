@@ -46,7 +46,12 @@ assert.equal(ctx.zoneAt({lat:35.8327,lng:50.9654}),'central');assert.equal(ctx.z
 const afternoon=new Date(2026,9,6,14,30),iso='2026-10-06';
 assert.equal(ctx.slots(iso,afternoon).map(x=>x.closed).join(),'true,true,false,false');
 assert.equal(ctx.slots('2026-10-07',afternoon).map(x=>x.closed).join(),'false,false,false,false','other days keep every slot');
-assert.equal(ctx.slot({zone:'central',date:iso,slot:'08'},afternoon),'16');assert.equal(ctx.slot({zone:'central',date:'2026-10-07',slot:'08'},afternoon),'08');
+assert.equal(ctx.slot({zone:'central',date:iso,slot:'08'},afternoon),'16');
+// The shop's delivery-day filter: same-day designs from today, the rest from tomorrow, never sold out or out of stock.
+vm.runInContext('this.deliverable=vfDeliverableOn;this.product=vfProduct;',ctx);
+const morning=new Date(2026,9,6,9,0),evening=new Date(2026,9,6,19,0);
+assert.equal(ctx.deliverable(ctx.product('ivory'),'2026-10-06',morning),true);assert.equal(ctx.deliverable(ctx.product('orchid'),'2026-10-06',morning),false);assert.equal(ctx.deliverable(ctx.product('orchid'),'2026-10-07',morning),true);
+assert.equal(ctx.deliverable(ctx.product('ivory'),'2026-10-06',evening),false,'today closes at the cut-off');assert.equal(ctx.deliverable(ctx.product('ivory'),'2026-10-08',morning),false,'sold-out day');assert.equal(ctx.deliverable(ctx.product('bridal'),'2026-10-09',morning),false,'out of stock');assert.equal(ctx.slot({zone:'central',date:'2026-10-07',slot:'08'},afternoon),'08');
 let parsed=0;
 for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.startsWith('storefront-'))) {
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
@@ -61,6 +66,8 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
   logic.navigate('shop');assert.equal(logic.state.route,'shop');assert.deepEqual(history[0],['push','?lang=en&view=shop']);
   logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.lang,'fa');
   logic.navigate({view:'shop',lang:'en'},true);assert.equal(history.at(-1)[0],'replace');
+  logic.navigate({view:'shop',date:'2026-10-09'});assert.ok(history.at(-1)[1].includes('date=2026-10-09'));logic.navigate({view:'signin',next:'delivery'});assert.equal(logic.state.routeInfo.next,'delivery');assert.ok(history.at(-1)[1].includes('next=delivery'));
+  logic.renderVals().go({view:'shop'},true);assert.equal(history.at(-1)[0],'replace','go can refine without a new history entry');
   logic.navigate('checkout');assert.equal(logic.state.route,'bag');assert.equal(logic.state.routeInfo.step,'delivery','incomplete details return to the delivery step');assert.ok(history.at(-1)[1].includes('step=delivery'));
   let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',location:{lat:35.83,lng:50.96},zone:'central',sender:'Buyer',senderPhone:'09121112233'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
   const originalBag=logic.state.bag;logic.setState({bag:[]});logic.navigate('checkout');assert.equal(logic.state.route,'bag');assert.equal(logic.state.routeInfo.step,'bag','an empty bag returns to the bag');logic.setState({bag:originalBag});logic.navigate('checkout');

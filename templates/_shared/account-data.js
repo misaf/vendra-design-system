@@ -218,6 +218,8 @@ function vfSampleOrders() {
     ...VF_DELIVERY,
     name: 'Shirin Ahmadi',
     phone: '09125649438',
+    sender: 'Shirin Ahmadi',
+    senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
   };
   return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {

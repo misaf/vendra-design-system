@@ -43,6 +43,9 @@ class Component extends VFPage {
         orderNo: order ? C.labels.order + '\u2068' + order.id + '\u2069' : C.orderNo
       },
       paying: !done,
+      // After an order, a guest can sign in with the mobile they gave to keep it with their account.
+      offerAccount: done && !vfAccountPhone(),
+      accountBody: C.accountBody.replace('{phone}', '\u2068' + (fa ? VF_FA_DIGITS(delivery.senderPhone || '') : delivery.senderPhone || '') + '\u2069'),
       isCard: method === 'card',
       isWa: method === 'wa',
       busy: s.busy,placeDisabled:s.busy||s.failed||done,

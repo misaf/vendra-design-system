@@ -225,7 +225,8 @@ class Component extends DCLogic {
         })
       },
       mobile: s.mobile != null ? s.mobile : !!this.props.mobile,
-      go: r => this.navigate(r)
+      // replace: refine the current page (e.g. shop filters) without adding a history entry.
+      go: (r, replace) => this.navigate(r, !!replace)
     };
   }
 }

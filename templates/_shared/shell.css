@@ -5,3 +5,10 @@ body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data
 /* The newsletter field and its button share one 48px row. */
 .vf-shell-newsletter-form .ag-input{box-sizing:border-box;height:48px;min-height:0}.vf-shell-newsletter-form .ag-input input{padding-block:0;align-self:stretch}
 .vf-shell-newsletter-form .ag-input input:focus-visible{outline:none}.vf-shell-newsletter-form .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+/* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
+   The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
+.vf-shell-consent-bar .vf-shell-consent{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;column-gap:var(--space-5);border-radius:0;box-shadow:none;padding:var(--space-3) var(--space-6)}
+.vf-shell-consent-bar .vf-shell-consent>div:first-child{display:contents}
+.vf-shell-consent-bar .vf-shell-consent>p{order:1}
+.vf-shell-consent-bar .vf-shell-consent>div:last-child{order:2;flex-wrap:nowrap}
+.vf-shell-consent-bar .vf-shell-consent-close{order:3}

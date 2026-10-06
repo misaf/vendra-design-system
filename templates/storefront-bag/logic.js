@@ -106,6 +106,14 @@ class Component extends VFPage {
       zoneText: pinned && !invalid.outside ? zoneLabel(z) : '',
       zoneStatus: pinned && !invalid.outside ? C.zoneSet + vfDeliveryHint(z, fa) : C.zonePending,
       hasSaved: saved.length > 0,
+      // Guests can sign in to use saved addresses, then come back to this step.
+      guest: !phone,
+      signinHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'signin', next: 'delivery'}),
+      goSignin: e => {
+        if (!this.props.go) return;
+        e && e.preventDefault && e.preventDefault();
+        this.props.go({view: 'signin', next: 'delivery'});
+      },
       savedAddresses: saved.map(a => ({
         label: tx(a.label),
         on: tx(a.line) === delivery.address && (!vfValidLocation(a.location) || vfLocationText(a.location) === vfLocationText(delivery.location)),

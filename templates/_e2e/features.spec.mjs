@@ -265,6 +265,96 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
   await expect(page.locator('#vf-last4')).toBeVisible();
 });
 
+test('a guest can sign in from checkout and come back to it', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.locator('.vf-bag-signin').getByRole('link', {name: 'Sign in'}).click();
+  await expect(page).toHaveURL(/view=signin&next=delivery/);
+  await page.fill('#vf-phone', '09125649438');
+  await page.locator('main').getByRole('button', {name: 'Send code'}).click();
+  await page.fill('#vf-code', '12345');
+  await page.locator('main').getByRole('button', {name: 'Sign in', exact: true}).click();
+  await page.getByRole('link', {name: 'Back to checkout'}).click();
+  await expect(page).toHaveURL(/step=delivery/);
+  await expect(page.getByRole('group', {name: 'Send to a saved address'})).toBeVisible();
+  await expect(page.locator('#vf-sender-phone')).toHaveValue('09125649438');
+  await expect(page.locator('.vf-bag-signin')).toHaveCount(0);
+});
+
+test('a new code can be sent once the countdown ends', async ({page}) => {
+  await page.clock.install();
+  await openSite(page, 'signin', 'en');
+  await page.fill('#vf-phone', '09125649438');
+  await page.locator('main').getByRole('button', {name: 'Send code'}).click();
+  await expect(page.locator('main')).toContainText('You can ask for a new code in 1:00.');
+  await expect(page.getByRole('button', {name: 'Send a new code'})).toHaveCount(0);
+  await page.clock.runFor(61000);
+  await page.getByRole('button', {name: 'Send a new code'}).click();
+  await expect(page.getByRole('status').filter({hasText: 'We sent a new code.'})).toBeVisible();
+  await expect(page.locator('#vf-code')).toBeFocused();
+  await expect(page.locator('main')).toContainText('You can ask for a new code in 1:00.');
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('a guest finds an order with its number and mobile', async ({page}) => {
+  await openSite(page, 'track', 'en');
+  await expect(page.locator('main h1')).toHaveText('Track an order.');
+  await page.getByRole('button', {name: 'Find my order'}).click();
+  await expect(page.locator('#vf-lookup-id')).toBeFocused();
+  expect(await scanAxe(page)).toEqual([]);
+  await page.fill('#vf-lookup-id', 'vn-10522');
+  await page.fill('#vf-lookup-phone', '09120000000');
+  await page.getByRole('button', {name: 'Find my order'}).click();
+  await expect(page.locator('#vf-lookup-failed')).toBeFocused();
+  await expect(page.locator('#vf-lookup-failed')).toContainText('We couldn’t find an order');
+  await page.fill('#vf-lookup-phone', '0912 564 9438');
+  await page.getByRole('button', {name: 'Find my order'}).click();
+  await expect(page).toHaveURL(/view=track&id=VN-10522/);
+  await expect(page.locator('main h1')).toHaveText('On its way.');
+  await page.getByRole('button', {name: 'Track another order'}).click();
+  await expect(page.locator('#vf-lookup-id')).toBeFocused();
+});
+
+test('a card-to-card order says its payment is being confirmed, and offers an account', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.fill('#vf-name', 'Shirin Ahmadi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await fillSender(page);
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page.fill('#vf-last4', '6037');
+  await page.getByRole('button', {name: 'I’ve paid — place order'}).locator('visible=true').first().click();
+  await expect(page.locator('.vf-checkout-account')).toContainText('Sign in with \u206809121112233\u2069');
+  await page.getByRole('link', {name: 'Track order'}).click();
+  const pending = page.getByRole('status').filter({hasText: 'Payment being confirmed'});
+  await expect(pending).toContainText('card ending 6037');
+  await expect(pending).toContainText('09121112233');
+  expect(await scanAxe(page)).toEqual([]);
+  // Signing in from there fills the mobile the order used.
+  await page.goto(page.url().replace(/view=track.*/, 'view=signin'));
+  await expect(page.locator('#vf-phone')).toHaveValue('09121112233');
+});
+
+test('the shop filters by delivery day', async ({page}, info) => {
+  await page.clock.setFixedTime(MORNING);
+  await openSite(page, 'shop', 'en');
+  if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Filters'}).click();
+  const day = page.getByRole('combobox', {name: 'Delivery day'}).locator('visible=true');
+  await expect(day.locator('option', {hasText: 'sold out'})).toBeDisabled();
+  await day.selectOption({label: 'Today · 5 October'});
+  await expect(page).toHaveURL(/date=2026-10-05/);
+  if (info.project.name === 'mobile') {
+    await expect(page.getByRole('button', {name: 'Show 3 designs'})).toBeVisible();
+    await page.getByRole('button', {name: 'Show 3 designs'}).click();
+  }
+  // Only same-day designs go today.
+  await expect(page.locator('main .ag-product')).toHaveCount(3);
+  await page.getByRole('button', {name: /Delivers Today/}).first().click();
+  await expect(page.locator('main .ag-product')).toHaveCount(6);
+  // Filters replace the history entry, so Back leaves the shop instead of undoing each one.
+  expect(await page.evaluate(() => history.length)).toBeLessThanOrEqual(2);
+});
+
 test('a guest sees no saved addresses in the bag', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await expect(page.getByRole('group', {name: 'Send to a saved address'})).toHaveCount(0);
@@ -455,6 +545,20 @@ test.describe('a first visit', () => {
     await page.evaluate(() => sessionStorage.clear());
     await page.reload();
     await expect(banner).toBeVisible();
+  });
+
+  test('on desktop the banner is a bar along the bottom that leaves the shop uncovered', async ({page}, info) => {
+    test.skip(info.project.name !== 'desktop', 'desktop layout');
+    await openSite(page, 'shop', 'en');
+    const banner = page.getByRole('region', {name: 'Your privacy'});
+    await expect(banner).toBeVisible();
+    const bar = await banner.boundingBox(), view = page.viewportSize();
+    expect(bar.height).toBeLessThan(120);
+    expect(bar.y + bar.height).toBeGreaterThanOrEqual(view.height - 1);
+    // The filters sit above it: the sidebar's first controls are not underneath the bar.
+    const filters = await page.locator('.vf-shop-sidebar').boundingBox();
+    expect(filters.y).toBeLessThan(bar.y);
+    expect(await scanAxe(page)).toEqual([]);
   });
 
   test('sends nothing to analytics before a choice', async ({page}) => {

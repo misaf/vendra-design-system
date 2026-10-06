@@ -40,10 +40,26 @@ function vfCopy(S) {
         noMessage: 'No message',
         payment: 'Payment',
         cardToCard: 'Card to card',
-        noOrderFound: 'No order found.',
-        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'There is no completed order matching this link in this browser session. Complete a demo checkout to see your order here.',
         browseTheShop: 'Browse the shop',
         free: 'Free'
+      },
+      pending: {
+        title: 'Payment being confirmed',
+        card: 'We’re matching your transfer from the card ending {last4}, usually within an hour. We’ll text {phone} once it’s confirmed and start arranging your flowers.',
+        wa: 'Confirm the order on WhatsApp so we can start arranging your flowers.'
+      },
+      lookup: {
+        titleA: 'Track an',
+        titleB: 'order.',
+        intro: 'Enter your order number and the mobile used for the order — yours or the recipient’s.',
+        id: 'Order number',
+        idHint: 'From your confirmation text, e.g. VN-10522.',
+        phone: 'Mobile number',
+        submit: 'Find my order',
+        idErr: 'Enter the order number.',
+        phoneErr: 'Enter an 11-digit mobile number starting with 09.',
+        failed: 'We couldn’t find an order with that number and mobile. Check both, or ask us on WhatsApp.',
+        another: 'Track another order'
       }
     },
     fa: {
@@ -84,10 +100,26 @@ function vfCopy(S) {
         noMessage: 'بدون پیام',
         payment: 'پرداخت',
         cardToCard: 'کارت به کارت',
-        noOrderFound: 'سفارشی پیدا نشد.',
-        thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere: 'در این مرورگر سفارشی با این شماره ثبت نشده است. پس از پایان خرید، سفارش خود را اینجا ببینید.',
         browseTheShop: 'رفتن به فروشگاه',
         free: 'رایگان'
+      },
+      pending: {
+        title: 'در حال تأیید پرداخت',
+        card: 'واریز از کارتِ با پایانِ {last4} را بررسی می‌کنیم؛ معمولاً تا یک ساعت. پس از تأیید به {phone} پیامک می‌دهیم و چیدن گل‌ها را شروع می‌کنیم.',
+        wa: 'سفارش را در واتساپ تأیید کنید تا چیدن گل‌ها را شروع کنیم.'
+      },
+      lookup: {
+        titleA: 'پیگیری',
+        titleB: 'سفارش.',
+        intro: 'شماره سفارش و موبایلی را که برای سفارش ثبت شد وارد کنید؛ موبایل خودتان یا گیرنده.',
+        id: 'شماره سفارش',
+        idHint: 'از پیامک تأیید سفارش، مثلاً VN-10522.',
+        phone: 'شماره موبایل',
+        submit: 'پیدا کردن سفارش',
+        idErr: 'شماره سفارش را وارد کنید.',
+        phoneErr: 'شماره موبایل ۱۱ رقمی با ۰۹ وارد کنید.',
+        failed: 'سفارشی با این شماره و موبایل پیدا نشد. هر دو را بررسی کنید یا در واتساپ از ما بپرسید.',
+        another: 'پیگیری سفارش دیگر'
       }
     }
   }[S.lang];

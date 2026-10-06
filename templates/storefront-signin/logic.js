@@ -1,11 +1,15 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+// Seconds before another code can be requested.
+const VF_SIGNIN_RESEND_SECONDS = 60;
 class Component extends VFPage {
   state = {
     step: 'phone',
     phone: '',
     code: '',
     pErr: false,
-    cErr: false
+    cErr: false,
+    left: 0,
+    resent: false
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'account');
@@ -16,6 +20,12 @@ class Component extends VFPage {
       const el = document.getElementById(id);
       el && el.focus();
     }, 0);
+    const n = v => S.fa ? VF_FA_DIGITS(v) : String(v);
+    // Signing in from checkout goes back there; the mobile from the last order fills the field.
+    const fromCheckout = vfPageRoute(this.props).next === 'delivery';
+    const store = this.props.store;
+    const last = store && store.lastOrder;
+    const phone = s.phone || (s.phoneTouched ? '' : last && last.delivery.senderPhone || '');
     return {
       ...S,
       termsLink: S.policyLink('terms'),
@@ -27,13 +37,34 @@ class Component extends VFPage {
       isPhone: s.step === 'phone',
       isCode: s.step === 'code',
       isOk: s.step === 'ok',
-      phone: s.phone,
+      // Greets the customer by first name when the account has one.
+      okName: s.name ? s.name.trim().split(/\s+/)[0] + '.' : C.okB,
+      phone,
       setPhone: e => this.setState({
         phone: e.target.value,
+        phoneTouched: true,
         pErr: false
       }),
       phoneErr: s.pErr ? C.phoneErr : undefined,
-      codeP: C.codeMessage(s.phone || '0912 000 0000'),
+      codeP: C.codeMessage(phone || '0912 000 0000'),
+      // A new code can be sent once the countdown ends.
+      waiting: s.left > 0,
+      canResend: s.left === 0,
+      resendIn: C.resendIn.replace('{time}', n(Math.floor(s.left / 60)) + ':' + n(String(s.left % 60).padStart(2, '0'))),
+      resentText: s.resent ? C.resent : '',
+      resend: () => {
+        this.setState({code: '', cErr: false, resent: true});
+        this._countdown();
+        focus('vf-code');
+      },
+      fromCheckout,
+      notFromCheckout: !fromCheckout,
+      backToCheckout: e => {
+        if (!this.props.go) return;
+        e && e.preventDefault && e.preventDefault();
+        this.props.go({view: 'bag', step: 'delivery'});
+      },
+      checkoutHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
       code: s.code,
       setCode: e => this.setState({
         code: lat(e.target.value).replace(/\D/g, '').slice(0, 5),
@@ -41,7 +72,7 @@ class Component extends VFPage {
       }),
       codeErr: s.cErr ? C.codeErr : undefined,
       send: () => {
-        if (lat(s.phone).replace(/\D/g, '').length < 10) {
+        if (lat(phone).replace(/\D/g, '').length < 10) {
           this.setState({
             pErr: true
           });
@@ -49,8 +80,11 @@ class Component extends VFPage {
           return;
         }
         this.setState({
-          step: 'code'
+          step: 'code',
+          phone,
+          resent: false
         });
+        this._countdown();
         focus('vf-code');
       },
       verify: () => {
@@ -62,16 +96,44 @@ class Component extends VFPage {
           return;
         }
         const account = vfAccountLogin(s.phone, S.lang);
+        // The name given at checkout becomes the profile name when the account has none.
+        if (last && last.delivery.sender && !account.profile.name && vfPhone(last.delivery.senderPhone) === vfPhone(lat(s.phone))) {
+          account.profile.name = last.delivery.sender;
+          vfAccountSave(vfLatin(s.phone).replace(/\D/g, ''), account);
+        }
+        this._stopCountdown();
         window.VF_TRACK.event('login');
         if (this.props.setLang) this.props.setLang(account.profile.locale);
         this.setState({
-          step: 'ok'
+          step: 'ok',
+          name: account.profile.name
         });
       },
-      back: () => this.setState({
-        step: 'phone',
-        code: ''
-      })
+      back: () => {
+        this._stopCountdown();
+        this.setState({
+          step: 'phone',
+          code: '',
+          left: 0,
+          resent: false
+        });
+      }
     };
+  }
+  _countdown() {
+    this._stopCountdown();
+    this.setState({left: VF_SIGNIN_RESEND_SECONDS});
+    this._tick = setInterval(() => {
+      const left = Math.max(0, this.state.left - 1);
+      this.setState({left});
+      if (!left) this._stopCountdown();
+    }, 1000);
+  }
+  _stopCountdown() {
+    clearInterval(this._tick);
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    this._stopCountdown();
   }
 }

@@ -4,6 +4,7 @@ class Component extends VFPage {
     size: 'petite',
     addons: [],
     qty: 1,
+    added: null,
     toast: null
   };
   renderVals() {
@@ -38,7 +39,18 @@ class Component extends VFPage {
       hasSizes,
       // Saved products are shared with the Saved page and the account's Saved tab.
       fav: S.isFav(product.id, []),
-      toggleSave: S.toggleFav(product.id, []),
+      // Saving confirms with a toast that links to the saved list.
+      toggleSave: () => {
+        const saving = !S.isFav(product.id, []);
+        S.toggleFav(product.id, [])();
+        this.setState({
+          toast: {
+            title: saving ? C.savedTitle : C.unsavedTitle,
+            saving
+          }
+        });
+        this._hideToastLater();
+      },
       recentLabel: C.recentA + ' ' + C.recentB,
       hasRecent: vfRecentlyViewed().some(x => x !== product.id),
       available: product.inStock !== false,unavailable:product.inStock===false,
@@ -91,20 +103,48 @@ class Component extends VFPage {
             fa: [product.fa[0], (hasSizes ? [sz[3], sz[5]] : [product.fa[1]]).concat(ad.map(a => a[3])).join(' · ')]
           });
         }
+        // A small bag panel confirms what was added and offers the next step.
+        this._hideToast();
         this.setState({
-          toast: {
-            qty: s.qty
+          added: {
+            line: {
+              image: vfProductImage(product, L).src,
+              name: product[L][0],
+              meta: (hasSizes ? [fa ? sz[3] : sz[2]] : [product[L][1]]).concat(availableAddons.filter(a => s.addons.includes(a[0])).map(a => fa ? a[3] : a[2])).join(' · ') + ' · × ' + (fa ? VF_FA_DIGITS(s.qty) : s.qty),
+              total: m(total)
+            }
           }
         });
-        this._hideToastLater();
+      },
+      addedOpen: !!s.added,
+      addedLines: s.added ? [s.added.line] : [],
+      addedSums: (() => {
+        const st = this.props.store;
+        if (!st || !st.bag || !s.added) return [];
+        const count = st.bag.reduce((n, l) => n + l.qty, 0);
+        const sub = st.bag.reduce((n, l) => n + l.unit * l.qty, 0);
+        return [{
+          label: C.bagSubtotal.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
+          value: m(sub),
+          strong: true
+        }];
+      })(),
+      closeAdded: () => this.setState({
+        added: null
+      }),
+      checkout: e => {
+        this.setState({
+          added: null
+        });
+        if (S.go.bag) S.go.bag(e);
       },
       toast: s.toast && {
-        message: product[L][0] + ' × ' + (fa ? VF_FA_DIGITS(s.toast.qty) : s.toast.qty),
-        action: {
-          label: C.viewBag,
-          href: S.href.bag,
-          onClick: S.go.bag
-        },
+        title: s.toast.title,
+        action: s.toast.saving ? {
+          label: C.viewSaved,
+          href: S.href.saved,
+          onClick: S.go.saved
+        } : undefined,
         close: () => this._hideToast()
       },
       // Stay while the pointer or focus is on the toast; WCAG 2.2.1.
@@ -174,6 +214,7 @@ class Component extends VFPage {
         size: 'petite',
         addons: [],
         qty: 1,
+        added: null,
         toast: null
       });
     }

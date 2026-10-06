@@ -155,6 +155,14 @@ function vfDeliveryDays(zoneId, now = new Date()) {
   });
 }
 
+// Whether a product can be delivered on a day in the main delivery zone: it is in stock, the day is open,
+// and it is a same-day design or the day is tomorrow or later.
+function vfDeliverableOn(product, iso, now = new Date()) {
+  if (product.inStock === false) return false;
+  const day = vfDeliveryDays(VF_ZONES[0].id, now).find(d => d.iso === iso);
+  return !!day && !day.soldOut && !day.pastCutoff && (!!product.same || day.offset > 0);
+}
+
 // The chosen day when it is still open, otherwise the first open day.
 function vfDeliveryDate(delivery, now = new Date()) {
   const open = vfDeliveryDays(delivery.zone, now).filter(day => !day.soldOut && !day.pastCutoff);
@@ -1034,6 +1042,8 @@ function vfSampleOrders() {
     ...VF_DELIVERY,
     name: 'Shirin Ahmadi',
     phone: '09125649438',
+    sender: 'Shirin Ahmadi',
+    senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
   };
   return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
@@ -1330,6 +1340,8 @@ function vfReadRoute(search = location.search) {
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // Sign-in started from checkout returns there (?view=signin&next=delivery).
+  if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
@@ -1340,6 +1352,8 @@ function vfReadRoute(search = location.search) {
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
+    // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
+    route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
   }
   return route;
 }
@@ -1347,6 +1361,7 @@ function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
   if(route.demo)query.set('demo',route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
+  if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
@@ -1357,6 +1372,7 @@ function vfRouteParams(route) {
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
+    if (route.date) query.set('date', route.date);
   }
   return '?' + query.toString();
 }
@@ -1963,7 +1979,8 @@ class Component extends DCLogic {
         })
       },
       mobile: s.mobile != null ? s.mobile : !!this.props.mobile,
-      go: r => this.navigate(r)
+      // replace: refine the current page (e.g. shop filters) without adding a history entry.
+      go: (r, replace) => this.navigate(r, !!replace)
     };
   }
 }

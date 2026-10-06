@@ -1,14 +1,28 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+// Orders this browser can look up: the latest order from this session, then the sample orders.
+function vfKnownOrders(store) {
+  const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];
+  return [...own, ...vfSampleOrders()];
+}
 class Component extends VFPage {
+  state = {
+    lookup: false,
+    lookupId: '',
+    lookupPhone: '',
+    lookupTried: false,
+    lookupFailed: false,
+    found: null
+  };
   renderVals() {
     const S = vfShell.call(this, this.props, 'track');
     const fa = S.fa;
     const L = S.lang;
     const m = S.m;
-    const requested = vfPageRoute(this.props).id;
+    const ls = this.state;
+    const requested = ls.found || vfPageRoute(this.props).id;
     const snapshot = this.props.store && (this.props.store.lastOrder || this.props.store.order);
     const order = requested ? snapshot && snapshot.id === requested ? snapshot : vfSampleOrders().find(o => o.id === requested) : snapshot;
-    const hasOrder = !this.props.store || !!order && (!requested || requested === order.id);
+    const hasOrder = !ls.lookup && (!this.props.store || !!order && (!requested || requested === order.id));
     const rawStatus = order ? order.status || 'received' : this.props.status ?? 'onTheWay';
     const st = /cancel|refund/.test(rawStatus) ? 'cancelled' : {
       arranging: 'preparing',
@@ -27,6 +41,14 @@ class Component extends VFPage {
       C.rows = [['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]], ['calendar', C.labels.delivery, vfDeliveryWhen(d, fa)], ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)], ['quote', C.labels.cardMessage, vfCardMessages(order.lines, d, L) || C.labels.noMessage], ['banknote', C.labels.payment, (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) + (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))]];
       C.times = ['', '', '', '', ''];
     }
+    // A card-to-card or WhatsApp order waits for the studio to confirm payment before it is arranged.
+    const method = order ? order.method || 'card' : 'card';
+    const pending = !!order && st === 'received' && ['card', 'wa'].includes(method);
+    const contact = order ? order.delivery.senderPhone || order.delivery.phone : '';
+    const lookupErrors = {
+      id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
+      phone: ls.lookupTried && !/^09\d{9}$/.test(vfPhone(ls.lookupPhone)) ? C.lookup.phoneErr : undefined
+    };
     const idx = {
       received: 0,
       preparing: 2,
@@ -40,6 +62,39 @@ class Component extends VFPage {
       hasOrder,
       waHref: order ? VF_STORE.whatsapp + '?text=' + encodeURIComponent((fa ? 'درباره سفارش ' : 'About order ') + order.id) : S.waHref,
       noOrder: !hasOrder,
+      pending,
+      pendingTitle: C.pending.title,
+      pendingBody: method === 'wa' ? C.pending.wa : C.pending.card.replace('{last4}', S.n(order && order.last4 || '')).replace('{phone}', '\u2068' + S.n(contact) + '\u2069'),
+      // Guests find an order with its number and the mobile used for it (the recipient's or their own).
+      lookupId: ls.lookupId,
+      lookupPhone: ls.lookupPhone,
+      setLookupId: e => this.setState({lookupId: e.target.value, lookupFailed: false}),
+      setLookupPhone: e => this.setState({lookupPhone: e.target.value, lookupFailed: false}),
+      lookupIdError: lookupErrors.id,
+      lookupPhoneError: lookupErrors.phone,
+      lookupFailed: ls.lookupFailed,
+      findOrder: e => {
+        e && e.preventDefault && e.preventDefault();
+        const id = vfLatin(ls.lookupId).trim().toUpperCase(), phone = vfPhone(ls.lookupPhone);
+        this.setState({lookupTried: true});
+        if (!id || !/^09\d{9}$/.test(phone)) {
+          window.AG_NAV.focusFirstInvalid();
+          return;
+        }
+        const match = vfKnownOrders(this.props.store).find(o => o.id.toUpperCase() === id && [o.delivery.phone, o.delivery.senderPhone].some(p => p && vfPhone(p) === phone));
+        if (!match) {
+          this.setState({lookupFailed: true});
+          S.focus('vf-lookup-failed');
+          return;
+        }
+        this.setState({lookup: false, lookupTried: false, lookupId: '', lookupPhone: ''});
+        if (this.props.go) this.props.go({view: 'track', id: match.id});
+        else this.setState({found: match.id});
+      },
+      trackAnother: () => {
+        this.setState({lookup: true, lookupFailed: false});
+        S.focus('vf-lookup-id');
+      },
       reorder: order ? e => {
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         e.preventDefault();
@@ -52,8 +107,6 @@ class Component extends VFPage {
       t: {
         ...S.t,
         ...C,
-        missingTitle: C.labels.noOrderFound,
-        missingBody: C.labels.thereIsNoCompletedOrderMatchingThisLinkInThisBrowserSessionCompleteADemoCheckoutToSeeYourOrderHere,
         browse: C.labels.browseTheShop
       },
       titleA: h[0],
@@ -77,7 +130,7 @@ class Component extends VFPage {
         image: vfProductImage(line, L).src,
         name: line[L][0],
         meta: line[L][1] + ' · × ' + S.n(line.qty),
-        note: line[L][2],
+        note: vfCardMessages([line], {}, L) || undefined,
         total: m(line.unit * line.qty)
       })),
       sums: vfSummaryRows(sampleTotals, order && order.delivery.promo, {...C, free: C.labels.free, discount: S.t.discount}, m)

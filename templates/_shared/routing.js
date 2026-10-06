@@ -17,6 +17,8 @@ function vfReadRoute(search = location.search) {
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // Sign-in started from checkout returns there (?view=signin&next=delivery).
+  if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
@@ -27,6 +29,8 @@ function vfReadRoute(search = location.search) {
     route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
     route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
+    // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
+    route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
   }
   return route;
 }
@@ -34,6 +38,7 @@ function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
   if(route.demo)query.set('demo',route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
+  if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
@@ -44,6 +49,7 @@ function vfRouteParams(route) {
     const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
+    if (route.date) query.set('date', route.date);
   }
   return '?' + query.toString();
 }

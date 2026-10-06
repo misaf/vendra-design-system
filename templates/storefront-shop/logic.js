@@ -19,8 +19,13 @@ class Component extends VFPage {
       cat: route.cat || 'all',
       sort: route.sort || 'featured',
       chips: route.filters || [],
-      occasion: route.occasion || 'all'
+      occasion: route.occasion || 'all',
+      date: route.date || ''
     };
+    // Delivery days use the main zone's cut-off; a closed or unknown day in the URL is ignored.
+    const days = vfDeliveryDays(VF_ZONES[0].id);
+    const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
+    const dayLabel = d => vfDayName(d, fa) + ' · ' + vfDayMonth(d.date, fa);
     const change = patch => {
       const next = {
         ...route,
@@ -30,14 +35,16 @@ class Component extends VFPage {
         sort: s.sort,
         filters: s.chips,
         occasion: s.occasion,
+        date,
         ...patch
       };
-      if (this.props.go) this.props.go(next);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
+      // Filters refine this page, so they replace the history entry instead of adding one per tap.
+      if (this.props.go) this.props.go(next, true);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
     };
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion));
+      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion)) && (!date || vfDeliverableOn(p, date));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
     let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
@@ -54,6 +61,11 @@ class Component extends VFPage {
         min: 0,
         max: priceMax
       })
+    }] : []), ...(date ? [{
+      label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
+      remove: () => change({
+        date: ''
+      })
     }] : []), ...(inStock ? [{
       label: C.migration.stock,
       remove: () => change({
@@ -67,7 +79,8 @@ class Component extends VFPage {
       min: 0,
       max: priceMax,
       stock: false,
-      occasion: 'all'
+      occasion: 'all',
+      date: ''
     });
     return {
       ...S,
@@ -87,10 +100,12 @@ class Component extends VFPage {
           min: 0,
           max: priceMax,
           stock: false,
-          occasion: 'all'
+          occasion: 'all',
+          date: ''
         });
-        // The button goes away with the filters, so focus moves to the updated result count.
-        S.focus('vf-shop-count');
+        // The button goes away with the filters, so focus moves to the updated result count
+        // (the filters dialog keeps focus while it is open).
+        if (!this.state.filterOpen) S.focus('vf-shop-count');
       },
       filtersLabel: activeFilters.length ? C.migration.filters + ' (' + n(activeFilters.length) + ')' : C.migration.filters,
       price,
@@ -111,6 +126,19 @@ class Component extends VFPage {
           occasion: id
         })
       })),
+      date,
+      dateOptions: [{
+        value: '',
+        label: C.anyDay
+      }, ...days.map(d => ({
+        value: d.iso,
+        label: dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
+        disabled: d.soldOut || d.pastCutoff
+      }))],
+      setDate: e => change({
+        date: e.target.value
+      }),
+      showResults: C.showResults.replace('{count}', C.designCount(list.length)),
       inStock,
       setStock: e => change({
         stock: e.target.checked

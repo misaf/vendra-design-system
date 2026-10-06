@@ -15,6 +15,13 @@ function vfCopy(S) {
       emptyB: '— for now.',
       emptyP: 'Try another category or clear the filters.',
       clear: 'Clear filters',
+      deliverOn: 'Delivery day',
+      dateHint: 'Same-day designs can go today; the rest from tomorrow. Times follow Karaj delivery cut-offs.',
+      anyDay: 'Any day',
+      soldOut: 'sold out',
+      closed: 'closed',
+      deliversOn: 'Delivers {day}',
+      showResults: 'Show {count}',
       sortOptions: [{
         value: 'featured',
         label: 'Featured'
@@ -44,6 +51,13 @@ function vfCopy(S) {
       emptyB: '— فعلاً.',
       emptyP: 'دسته‌بندی دیگری را امتحان کنید یا فیلترها را پاک کنید.',
       clear: 'پاک کردن فیلترها',
+      deliverOn: 'روز ارسال',
+      dateHint: 'طرح‌های ارسال همان روز از امروز و بقیه از فردا ارسال می‌شوند. زمان‌ها بر اساس مهلت سفارش در کرج است.',
+      anyDay: 'هر روز',
+      soldOut: 'تکمیل',
+      closed: 'بسته',
+      deliversOn: 'ارسال {day}',
+      showResults: 'نمایش {count}',
       sortOptions: [{
         value: 'featured',
         label: 'پیشنهادی'
@@ -69,7 +83,6 @@ function vfCopy(S) {
         "price": "Price range",
         "stock": "In stock only",
         "filters": "Filters",
-        "close": "Show results",
         "loading": "Loading products",
         "failed": "Products could not be loaded",
         "retry": "Try again"
@@ -78,7 +91,6 @@ function vfCopy(S) {
         "price": "بازه قیمت",
         "stock": "فقط موجود",
         "filters": "فیلترها",
-        "close": "نمایش نتایج",
         "loading": "در حال بارگذاری محصولات",
         "failed": "بارگذاری محصولات ناموفق بود",
         "retry": "تلاش دوباره"

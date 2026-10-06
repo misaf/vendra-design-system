@@ -83,6 +83,14 @@ function vfDeliveryDays(zoneId, now = new Date()) {
   });
 }
 
+// Whether a product can be delivered on a day in the main delivery zone: it is in stock, the day is open,
+// and it is a same-day design or the day is tomorrow or later.
+function vfDeliverableOn(product, iso, now = new Date()) {
+  if (product.inStock === false) return false;
+  const day = vfDeliveryDays(VF_ZONES[0].id, now).find(d => d.iso === iso);
+  return !!day && !day.soldOut && !day.pastCutoff && (!!product.same || day.offset > 0);
+}
+
 // The chosen day when it is still open, otherwise the first open day.
 function vfDeliveryDate(delivery, now = new Date()) {
   const open = vfDeliveryDays(delivery.zone, now).filter(day => !day.soldOut && !day.pastCutoff);

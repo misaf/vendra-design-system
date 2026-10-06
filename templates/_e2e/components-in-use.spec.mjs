@@ -4,7 +4,7 @@ import path from 'node:path';
 import {ROOT, openSite, scanAxe} from './helpers.mjs';
 
 // Behaviour of the components the storefront picked up last: AnnouncementBar,
-// Gallery, Toast, SnapScroller, Radio and Tooltip.
+// Gallery, Toast, Dialog, SnapScroller, Radio and Tooltip.
 
 test('announcement bar closes for the rest of the session', async ({page}) => {
   await openSite(page, 'home', 'en');
@@ -25,32 +25,38 @@ test('product gallery moves between photos', async ({page}) => {
   await expect(second).toHaveAttribute('aria-current', 'true');
 });
 
-test('adding to the bag shows a toast that links to the bag', async ({page}, info) => {
+test('adding to the bag opens a bag panel that leads to checkout', async ({page}) => {
   await openSite(page, 'product', 'en');
   const add = page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first();
   await add.click();
-  const toast = page.getByRole('status').filter({hasText: 'Added to bag'});
-  await expect(toast).toBeVisible();
-  await expect(toast).toContainText('Ivory ribbon box × 1');
+  const panel = page.getByRole('dialog', {name: 'Added to your bag'});
+  await expect(panel).toContainText('Ivory ribbon box');
+  await expect(panel).toContainText('Petite · × 1');
+  await expect(panel).toContainText('Bag subtotal · 3 items');
+  await expect(panel.getByRole('link', {name: 'View bag and check out'})).toBeFocused();
   expect(await scanAxe(page)).toEqual([]);
+  // Keep shopping closes it and hands focus back to the button that opened it.
+  await panel.getByRole('button', {name: 'Keep shopping'}).click();
+  await expect(panel).toHaveCount(0);
+  await expect(add).toBeFocused();
+  await add.click();
+  await panel.getByRole('link', {name: 'View bag and check out'}).click();
+  await expect(page.locator('main h1')).toContainText('Your bag');
+});
+
+test('saving a design shows a toast that waits while the pointer is on it', async ({page}, info) => {
+  await page.clock.install();
+  await openSite(page, 'product', 'en');
+  await page.getByRole('button', {name: 'Save this design'}).click();
+  const toast = page.getByRole('status').filter({hasText: 'Saved to your list'});
+  await expect(toast).toBeVisible();
+  await expect(toast.getByRole('link', {name: 'View saved'})).toHaveAttribute('href', /view=saved/);
   // The toast stays clear of the mobile action bar.
   if (info.project.name === 'mobile') {
     const bar = await page.locator('.vf-product-mobile-action').boundingBox();
     const box = await toast.boundingBox();
     expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
   }
-  await toast.getByRole('button', {name: 'Dismiss'}).click();
-  await expect(toast).toHaveCount(0);
-  await add.click();
-  await page.getByRole('link', {name: 'View bag'}).click();
-  await expect(page.locator('main h1')).toContainText('Your bag');
-});
-
-test('the toast waits while the pointer is on it', async ({page}) => {
-  await page.clock.install();
-  await openSite(page, 'product', 'en');
-  await page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first().click();
-  const toast = page.getByRole('status').filter({hasText: 'Added to bag'});
   await toast.hover();
   await page.clock.runFor(10000);
   await expect(toast).toBeVisible();
