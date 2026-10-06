@@ -22,12 +22,31 @@ for (const [zone,fee] of [['central',80000],['outer',120000],['alborz',180000],[
 }
 assert.equal(ctx.totals([{unit:4900000,qty:1},{unit:3400000,qty:1}],{zone:'central'}).total,8300000);
 assert.equal(ctx.phone('۰۹۱۲ ۳۴۵ ۶۷۸۹'),'09123456789');assert.equal(ctx.phone('٠٩١٢٣٤٥٦٧٨٩'),'09123456789');
-assert.equal(Object.values(ctx.errors({name:'',phone:'0912',address:'',location:null})).filter(Boolean).length,4);
-assert.equal(Object.values(ctx.errors({name:'Sample',phone:'۰۹۱۲۳۴۵۶۷۸۹',address:'Unit 3',location:{lat:35.83,lng:50.96}})).some(Boolean),false);
+const sender={sender:'Buyer',senderPhone:'09121112233'};
+assert.equal(Object.values(ctx.errors({name:'',phone:'0912',address:'',location:null})).filter(Boolean).length,6,'recipient, pin, address and the sender\'s own name and mobile');
+assert.equal(Object.values(ctx.errors({name:'Sample',phone:'۰۹۱۲۳۴۵۶۷۸۹',address:'Unit 3',location:{lat:35.83,lng:50.96},...sender})).some(Boolean),false);
 // Without a map the pin isn't required, but the typed address must be a full one.
-assert.deepEqual({...ctx.errors({name:'Sample',phone:'09123456789',address:'Unit',location:null,noMap:true})},{name:false,phone:false,location:false,address:true});
-assert.equal(Object.values(ctx.errors({name:'Sample',phone:'09123456789',address:'12 Golestan St, Karaj',location:null,noMap:true})).some(Boolean),false);
+assert.deepEqual({...ctx.errors({name:'Sample',phone:'09123456789',address:'Unit',location:null,noMap:true,...sender})},{name:false,phone:false,location:false,outside:false,address:true,cards:false,sender:false,senderPhone:false});
+assert.equal(Object.values(ctx.errors({name:'Sample',phone:'09123456789',address:'12 Golestan St, Karaj',location:null,noMap:true,...sender})).some(Boolean),false);
 assert.equal(ctx.errors({name:'S',phone:'09123456789',address:'U',location:{lat:'x',lng:50}}).location,true,'a broken pin is not a pin');
+assert.equal(ctx.errors({...sender,name:'S',phone:'09123456789',address:'U',location:{lat:32.65,lng:51.67}}).outside,true,'a pin beyond every zone is outside the delivery area');
+// A bought handwritten card needs its message; a line without one does not.
+vm.runInContext('this.withCard=vfLineWithCard;this.hasCard=vfLineHasCard;this.zoneAt=vfZoneAt;this.slots=vfDeliverySlots;this.slot=vfDeliverySlot;this.cardText=vfCardMessages;this.sample=vfSampleBag;',ctx);
+const plain={id:'blush',productId:'blush',unit:2200000,qty:1,en:['Blush morning','Garden roses · eucalyptus'],fa:['صبح صورتی','رز باغی · اکالیپتوس']};
+const carded=ctx.withCard(plain);
+assert.equal(carded.id,'blush-card');assert.equal(carded.unit,2350000);assert.equal(carded.en[1],'Garden roses · eucalyptus · Handwritten card');assert.ok(ctx.hasCard(carded));assert.equal(ctx.hasCard(plain),false);
+assert.equal(ctx.withCard({id:'ivory-classic-vase',unit:5550000,qty:1,en:['Ivory ribbon box','Classic · 20 stems · Glass vase'],fa:['باکس','کلاسیک · ۲۰ شاخه · گلدان شیشه‌ای']}).id,'ivory-classic-card+vase','addons keep the product page order');
+const base={name:'S',phone:'09123456789',address:'U',location:{lat:35.83,lng:50.96},...sender};
+assert.equal(ctx.errors(base,[plain]).cards,false);assert.equal(ctx.errors(base,[carded]).cards,true);assert.equal(ctx.errors(base,[{...carded,card:'Love'}]).cards,false);
+assert.ok(ctx.hasCard(ctx.sample()[0])&&ctx.sample()[0].card,'the sample bag pays for the card it writes');
+assert.equal(ctx.cardText([{...carded,card:'Love'}],{},'en'),'“\u2068Love\u2069”');assert.equal(ctx.cardText([],{card:'Old'},'en'),'Old','older orders keep their order-wide message');
+// The pin picks the smallest zone that reaches it.
+assert.equal(ctx.zoneAt({lat:35.8327,lng:50.9654}),'central');assert.equal(ctx.zoneAt({lat:35.80,lng:50.86}),'outer');assert.equal(ctx.zoneAt({lat:35.70,lng:51.40}),'tehran');assert.equal(ctx.zoneAt({lat:36.05,lng:50.60}),'alborz');assert.equal(ctx.zoneAt(null),null);
+// Today's slots close two hours before they end; the chosen slot falls forward to the next open one.
+const afternoon=new Date(2026,9,6,14,30),iso='2026-10-06';
+assert.equal(ctx.slots(iso,afternoon).map(x=>x.closed).join(),'true,true,false,false');
+assert.equal(ctx.slots('2026-10-07',afternoon).map(x=>x.closed).join(),'false,false,false,false','other days keep every slot');
+assert.equal(ctx.slot({zone:'central',date:iso,slot:'08'},afternoon),'16');assert.equal(ctx.slot({zone:'central',date:'2026-10-07',slot:'08'},afternoon),'08');
 let parsed=0;
 for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.startsWith('storefront-'))) {
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
@@ -42,9 +61,13 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
   logic.navigate('shop');assert.equal(logic.state.route,'shop');assert.deepEqual(history[0],['push','?lang=en&view=shop']);
   logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.lang,'fa');
   logic.navigate({view:'shop',lang:'en'},true);assert.equal(history.at(-1)[0],'replace');
-  logic.navigate('checkout');assert.equal(logic.state.route,'bag');
-  let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',location:{lat:35.83,lng:50.96},zone:'central'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
-  const originalBag=logic.state.bag;logic.setState({bag:[]});logic.navigate('checkout');assert.equal(logic.state.route,'bag');logic.setState({bag:originalBag});logic.navigate('checkout');
+  logic.navigate('checkout');assert.equal(logic.state.route,'bag');assert.equal(logic.state.routeInfo.step,'delivery','incomplete details return to the delivery step');assert.ok(history.at(-1)[1].includes('step=delivery'));
+  let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',location:{lat:35.83,lng:50.96},zone:'central',sender:'Buyer',senderPhone:'09121112233'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
+  const originalBag=logic.state.bag;logic.setState({bag:[]});logic.navigate('checkout');assert.equal(logic.state.route,'bag');assert.equal(logic.state.routeInfo.step,'bag','an empty bag returns to the bag');logic.setState({bag:originalBag});logic.navigate('checkout');
+  // A card added from the delivery step joins the line's price and needs a message before checkout.
+  store=logic.renderVals().store;store.addCard('orchid');const orchid=logic.state.bag.find(l=>l.id==='orchid-card');assert.equal(orchid.unit,3550000);logic.navigate('checkout');assert.equal(logic.state.route,'bag');
+  logic.renderVals().store.setCard('orchid-card','With love');logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
+  logic.renderVals().store.remove('orchid-card');logic.renderVals().store.add({...originalBag[1]});
   const totals=c.window.AG_FORMAT.num(8300000,'en');assert.equal(totals,'8,300,000');
   const order={lines:logic.state.bag,delivery:logic.state.delivery,totals:{sub:8300000,fee:0,total:8300000},last4:'1234'};
   logic.renderVals().store.complete(order);assert.equal(logic.state.bag.length,0);assert.equal(logic.state.order.totals.total,8300000);assert.equal(logic.state.order.delivery.name,'Sample');
@@ -83,7 +106,7 @@ for(const lang of ['en','fa']) {
  assert.equal(site.state.routeInfo.sort,'high');assert.equal(site.state.routeInfo.filters.join(','),'roses,same');site.renderVals().setLang(lang==='en'?'fa':'en');assert.equal(site.state.routeInfo.cat,'bouquets');
  site.navigate({view:'product',id:'unknown'});assert.equal(site.state.route,'notfound');
  const lines=[{id:'blush',unit:2200000,qty:2,image:'assets/placeholders/product.svg',en:['Blush morning','Garden roses'],fa:['صبح صورتی','رز باغی']}];
- const delivery={name:'Demo recipient',phone:'09120000000',address:'Demo street 12',zone:'tehran',slot:'16',card:'Demo greeting'};
+ const delivery={name:'Demo recipient',phone:'09120000000',address:'Demo street 12',zone:'tehran',slot:'16',sender:'Demo sender',senderPhone:'09121112233'};
  let order;const {logic:checkout}=loadPage('checkout',{lang,store:{bag:lines,delivery,complete:o=>order=o}});checkout.setState({last4:'1234'});checkout.renderVals().place();assert.ok(order.id.startsWith('VN-'));assert.equal(order.status,'received');
  site.renderVals().store.complete(order);site.renderVals().store.add({...lines[0],qty:1});assert.equal(site.state.order,null);assert.equal(site.state.lastOrder.id,order.id);
  site.renderVals().store.reorder(order);assert.equal(site.state.bag[0].qty,2);assert.equal(site.state.delivery.name,'Demo recipient');

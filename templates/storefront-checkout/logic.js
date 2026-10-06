@@ -73,13 +73,17 @@ class Component extends VFPage {
       paymentStatus: P.statuses[method],
       done,
       fmt: fa ? v => VF_FA_DIGITS(v) : v => String(v),
-      steps: [{
-        label: C.s1
-      }, {
-        label: C.s2
-      }, {
-        label: C.s3
-      }],
+      steps: [C.s1, C.s2, C.s3, C.s4].map(label => ({
+        label
+      })),
+      // Earlier steps stay reachable: the bag, then delivery details.
+      stepClick: i => !done && this.props.go && i < 2 && this.props.go(i === 0 ? 'bag' : {view: 'bag', step: 'delivery'}),
+      backHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'bag', step: 'delivery'}),
+      goBack: e => {
+        if (!this.props.go) return;
+        e && e.preventDefault && e.preventDefault();
+        this.props.go({view: 'bag', step: 'delivery'});
+      },
       totalLabel: m(totals.total),
       caption: C.caption,
       payLabels: C.payLabels,
@@ -177,6 +181,10 @@ class Component extends VFPage {
         label: C.to,
         value: delivery.name + ' · ' + delivery.address + ' · \u2068' + delivery.phone + '\u2069'
       }, {
+        icon: 'user',
+        label: C.labels.from,
+        value: delivery.sender ? delivery.sender + ' · \u2068' + delivery.senderPhone + '\u2069' : ''
+      }, {
         icon: 'banknote',
         label: C.pay,
         value: P.methods[method] + ' · ' + m(totals.total)
@@ -187,7 +195,7 @@ class Component extends VFPage {
       }, {
         icon: 'message-square',
         label: C.labels.cardMessage,
-        value: delivery.card
+        value: vfCardMessages(items, delivery, L)
       }, {
         icon: 'receipt',
         label: C.ref,

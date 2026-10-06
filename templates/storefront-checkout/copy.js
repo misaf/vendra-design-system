@@ -5,8 +5,10 @@ function vfCopy(S) {
     en: {
       steps: 'Checkout steps',
       s1: 'Bag',
-      s2: 'Payment',
-      s3: 'Done',
+      s2: 'Delivery',
+      s3: 'Payment',
+      s4: 'Done',
+      doneStep: '(completed)',
       payA: 'Card to',
       payB: 'card.',
       payP: 'Transfer the total from your banking app to the card below, then enter the last four digits of your card so we can match the payment.',
@@ -20,7 +22,7 @@ function vfCopy(S) {
       refHint: 'From your bank receipt.',
       safe: 'We never ask for or store your card number.',
       place: 'I’ve paid — place order',
-      back: 'Back to bag',
+      back: 'Back to delivery',
       summary: 'Order summary',
       sub: 'Subtotal',
       fee: 'Delivery',
@@ -39,7 +41,8 @@ function vfCopy(S) {
       labels: {
         order: 'Order ',
         cardToCard: 'Card to card · ',
-        cardMessage: 'Card message'
+        cardMessage: 'Card message',
+        from: 'From'
       },
       payLabels: {
         card: 'Card number',
@@ -52,8 +55,10 @@ function vfCopy(S) {
     fa: {
       steps: 'مراحل خرید',
       s1: 'سبد',
-      s2: 'پرداخت',
-      s3: 'پایان',
+      s2: 'ارسال',
+      s3: 'پرداخت',
+      s4: 'پایان',
+      doneStep: '(انجام شد)',
       payA: 'کارت به',
       payB: 'کارت.',
       payP: 'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',
@@ -67,7 +72,7 @@ function vfCopy(S) {
       refHint: 'از رسید بانک.',
       safe: 'شماره کارت شما را هرگز نمی‌خواهیم و ذخیره نمی‌کنیم.',
       place: 'پرداخت کردم — ثبت سفارش',
-      back: 'بازگشت به سبد',
+      back: 'بازگشت به ارسال',
       summary: 'خلاصه سفارش',
       sub: 'جمع جزء',
       fee: 'هزینه ارسال',
@@ -86,7 +91,8 @@ function vfCopy(S) {
       labels: {
         order: 'سفارش ',
         cardToCard: 'کارت به کارت · ',
-        cardMessage: 'متن کارت'
+        cardMessage: 'متن کارت',
+        from: 'فرستنده'
       },
       payLabels: {
         card: 'شماره کارت',

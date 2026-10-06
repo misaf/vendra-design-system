@@ -5,9 +5,15 @@ import {NO_CONSENT, openSite, pinDelivery, scanAxe} from './helpers.mjs';
 // delivery pins, saved addresses and products in the account, and the contact page, in the click-through site.
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 
+// Everything the delivery step needs apart from the recipient, pin and address.
+async function fillSender(page) {
+  await page.fill('#vf-sender', 'Sara Karimi');
+  await page.fill('#vf-sender-phone', '09121112233');
+}
+
 test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
   await page.clock.setFixedTime(MORNING);
-  await openSite(page, 'bag', 'en');
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   await expect(days.getByRole('radio')).toHaveCount(7);
   await expect(days.getByRole('radio', {name: /^Today/})).toHaveAttribute('aria-checked', 'true');
@@ -18,10 +24,74 @@ test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
 
 test('after the cut-off, today is closed', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T19:00:00+03:30'));
-  await openSite(page, 'bag', 'en');
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   await expect(days.getByRole('radio', {name: /^Today Order by 18:00/})).toBeDisabled();
   await expect(days.getByRole('radio', {name: /^Tomorrow/})).toHaveAttribute('aria-checked', 'true');
+});
+
+test('today’s slots close two hours before they end', async ({page}) => {
+  await page.clock.setFixedTime(new Date('2026-10-05T14:30:00+03:30'));
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  const slots = page.getByRole('radiogroup', {name: 'Time slot'});
+  await expect(slots.getByRole('radio', {name: /^08:00–12:00 Closed/})).toBeDisabled();
+  await expect(slots.getByRole('radio', {name: /^12:00–16:00 Closed/})).toBeDisabled();
+  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toHaveAttribute('aria-checked', 'true');
+  await page.getByRole('radiogroup', {name: 'Delivery day'}).getByRole('radio', {name: /^Tomorrow/}).click();
+  await expect(slots.getByRole('radio', {disabled: true})).toHaveCount(0);
+});
+
+test('the bag and delivery details are separate steps', async ({page}) => {
+  await openSite(page, 'bag', 'en');
+  await expect(page.locator('#vf-name')).toHaveCount(0);
+  await page.getByRole('button', {name: 'Continue to delivery'}).locator('visible=true').first().click();
+  await expect(page).toHaveURL(/step=delivery/);
+  await expect(page.locator('main h1')).toHaveText('Delivery details.');
+  await page.goBack();
+  await expect(page.locator('main h1')).toHaveText('Your bag.');
+});
+
+test('a bought card needs its message, and any item can add one', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  const ivory = page.getByRole('textbox', {name: 'Card for Ivory ribbon box'});
+  await expect(ivory).toHaveValue('Happy birthday, Shirin.');
+  await page.getByRole('button', {name: 'Add a card · +150,000 Toman, for Pearl orchid'}).click();
+  const orchid = page.getByRole('textbox', {name: 'Card for Pearl orchid'});
+  await expect(orchid).toBeFocused();
+  await expect(page.locator('main aside')).toContainText('8,600,000 Toman');
+  await page.fill('#vf-name', 'Shirin Ahmadi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await fillSender(page);
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await expect(orchid).toBeFocused();
+  await expect(orchid).toHaveAccessibleDescription(/Write what the card should say\./);
+  expect(await scanAxe(page)).toEqual([]);
+  await orchid.fill('Get well soon');
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await expect(page.locator('#vf-last4')).toBeVisible();
+});
+
+test('several problems are listed together, each linking to its field', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  const summary = page.locator('#vf-errors');
+  await expect(summary).toBeFocused();
+  await expect(summary).toContainText('Check 6 details to continue.');
+  await summary.getByRole('link', {name: 'Enter your name.'}).click();
+  await expect(page.locator('#vf-sender')).toBeFocused();
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('the delivery pin sets the zone and fee', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  const zone = page.locator('.vf-bag-zone');
+  await expect(zone).toContainText('Place the pin to see the zone and delivery fee.');
+  await pinDelivery(page);
+  // The sample bag is over the free-delivery threshold, so the zone shows Free rather than its fee.
+  await expect(zone).toContainText('Karaj central · Free');
+  await expect(zone).toContainText('Set from the pin. Same day before 18:00');
 });
 
 test('a promo code discounts the bag and carries to checkout', async ({page}) => {
@@ -37,9 +107,12 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   await expect(page.getByRole('status').filter({hasText: 'ROSES15 · 15% off'})).toBeVisible();
   const summary = page.locator('main aside');
   await expect(summary).toContainText('Discount · ROSES15');
-  await expect(summary).toContainText(/−\u20681,245,000 Toman/);
-  await expect(summary).toContainText('7,055,000 Toman');
+  await expect(summary).toContainText(/−\u20681,267,500 Toman/);
+  await expect(summary).toContainText('7,182,500 Toman');
   expect(await scanAxe(page)).toEqual([]);
+  await page.getByRole('button', {name: 'Continue to delivery'}).locator('visible=true').first().click();
+  await expect(summary).toContainText('Discount · ROSES15');
+  await fillSender(page);
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await pinDelivery(page);
@@ -100,7 +173,8 @@ test('a delivered order shows the delivery photo', async ({page}) => {
 });
 
 test('the delivery pin is required and travels with the order', async ({page}) => {
-  await openSite(page, 'bag', 'en');
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await fillSender(page);
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await page.fill('#vf-address', 'Plaque 12, unit 3');
@@ -120,9 +194,12 @@ test('the delivery pin is required and travels with the order', async ({page}) =
 
 test('without a map, a full typed address is enough', async ({page}) => {
   await page.route(/_vendor\/leaflet\/leaflet\.js/, route => route.abort());
-  await openSite(page, 'bag', 'fa');
+  await openSite(page, 'bag', 'fa', {step: 'delivery'});
   await expect(page.locator('#vf-map')).toHaveCount(0);
   await expect(page.locator('main')).toContainText('نقشه بارگذاری نشد');
+  // Without the pin, the zone is chosen from the list; zones that deliver free say so.
+  await expect(page.locator('#vf-zone')).toContainText('مرکز کرج · رایگان');
+  await fillSender(page);
   await page.fill('#vf-name', 'شیرین احمدی');
   await page.fill('#vf-phone', '09121234567');
   await page.fill('#vf-address', 'کرج، عظیمیه، خیابان گلستان، پلاک ۱۲');
@@ -172,7 +249,10 @@ test('the account lists saved products, shared with the saved page', async ({pag
 
 test('a signed-in customer can send to a saved address', async ({page}) => {
   await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09125649438'));
-  await openSite(page, 'bag', 'en');
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  // The signed-in mobile fills the customer's own details.
+  await expect(page.locator('#vf-sender-phone')).toHaveValue('09125649438');
+  await page.fill('#vf-sender', 'Shirin Ahmadi');
   const saved = page.getByRole('group', {name: 'Send to a saved address'});
   await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'false');
   await saved.getByRole('button', {name: 'Office'}).click();
@@ -186,7 +266,7 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
 });
 
 test('a guest sees no saved addresses in the bag', async ({page}) => {
-  await openSite(page, 'bag', 'en');
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
   await expect(page.getByRole('group', {name: 'Send to a saved address'})).toHaveCount(0);
 });
 

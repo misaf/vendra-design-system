@@ -33,12 +33,14 @@ async function expectModal(page) {
   await expect.poll(() => dialog.evaluate(d => d.contains(document.activeElement))).toBe(true);
 }
 
-// Valid delivery details take the bag on to checkout's payment step.
+// Valid delivery details take the delivery step on to checkout's payment step.
 async function toPayment(page, t) {
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await page.fill('#vf-sender', 'Sara Karimi');
+  await page.fill('#vf-sender-phone', '09121112233');
   await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
   await expect(page.locator('#vf-last4')).toBeVisible();
 }
@@ -115,18 +117,21 @@ const STATES = [
     await main(page).getByRole('button', {name: t.sendCode}).click();
     await expectDescribedErrors(page);
   }},
-  {name: 'bag errors', view: 'bag', act: async (page, t) => {
+  {name: 'bag delivery step', view: 'bag', extra: {step: 'delivery'}},
+  {name: 'bag errors', view: 'bag', extra: {step: 'delivery'}, act: async (page, t) => {
     // On mobile the button lives in the sticky bar outside <main>.
     await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
     await expectDescribedErrors(page);
+    // Several problems: the summary that links to each one takes focus.
+    await expect(page.locator('#vf-errors')).toBeFocused();
   }},
-  {name: 'checkout payment step', view: 'bag', act: toPayment},
-  {name: 'checkout payment errors', view: 'bag', act: async (page, t) => {
+  {name: 'checkout payment step', view: 'bag', extra: {step: 'delivery'}, act: toPayment},
+  {name: 'checkout payment errors', view: 'bag', extra: {step: 'delivery'}, act: async (page, t) => {
     await toPayment(page, t);
     await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();
     await expectDescribedErrors(page);
   }},
-  {name: 'checkout done', view: 'bag', act: async (page, t) => {
+  {name: 'checkout done', view: 'bag', extra: {step: 'delivery'}, act: async (page, t) => {
     await toPayment(page, t);
     await page.fill('#vf-last4', '6037');
     await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();

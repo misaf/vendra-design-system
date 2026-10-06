@@ -73,15 +73,53 @@ function vfProductImages(product, lang = 'en') {
 // Each demo gets its own bag objects; prices and names come from the same catalog.
 function vfSampleBag() {
   const ivory = vfProduct('ivory'), orchid = vfProduct('orchid');
-  const classic = VF_SIZES.find(size => size[0] === 'classic');
+  const classic = VF_SIZES.find(size => size[0] === 'classic'), card = VF_ADDONS.find(addon => addon[0] === 'card');
   return [
     {
-      id: 'ivory-classic', unit: ivory.price + classic[1], qty: 1, image: ivory.image,
-      en: [ivory.en[0], classic[2] + ' · ' + classic[4], '“Happy birthday, Shirin.”'],
-      fa: [ivory.fa[0], classic[3] + ' · ' + classic[5], '«تولدت مبارک، شیرین.»']
+      id: 'ivory-classic-card', productId: 'ivory', size: 'classic', addons: ['card'], unit: ivory.price + classic[1] + card[1], qty: 1, image: ivory.image,
+      card: 'Happy birthday, Shirin.',
+      en: [ivory.en[0], [classic[2], classic[4], card[2]].join(' · ')],
+      fa: [ivory.fa[0], [classic[3], classic[5], card[3]].join(' · ')]
     },
     {id: orchid.id, unit: orchid.price, qty: 1, image: orchid.image, en: [...orchid.en], fa: [...orchid.fa]}
   ];
+}
+
+// A line's extras: listed on lines added from the product page, read from the id on older lines.
+function vfLineAddons(line) {
+  return line.addons || VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon[0])).map(addon => addon[0]);
+}
+
+function vfLineHasCard(line) {
+  return vfLineAddons(line).includes('card');
+}
+
+// Card messages written for an order's lines, named when there are several. Older orders kept one
+// order-wide message in delivery.card.
+function vfCardMessages(lines, delivery, lang) {
+  // The message keeps its own direction, so English inside Persian quotes (or the reverse) reads correctly.
+  const quote = text => (lang === 'fa' ? '«\u2068' + text + '\u2069»' : '“\u2068' + text + '\u2069”');
+  const cards = (lines || []).filter(line => String(line.card || '').trim());
+  if (!cards.length) return delivery && delivery.card ? delivery.card : '';
+  return cards.length === 1 ? quote(cards[0].card) : cards.map(line => line[lang][0] + ': ' + quote(line.card)).join(' · ');
+}
+
+// The same line with a handwritten card added, priced and named as the product page would.
+function vfLineWithCard(line) {
+  const productId = line.productId || line.id.split('-')[0];
+  const size = line.size || (productId === 'ivory' ? line.id.split('-')[1] : null);
+  const addons = VF_ADDONS.filter(addon => addon[0] === 'card' || vfLineAddons(line).includes(addon[0]));
+  const names = lang => {
+    const index = lang === 'en' ? 2 : 3;
+    const detail = line[lang][1].split(' · ').filter(part => !VF_ADDONS.some(addon => addon[index] === part));
+    return [line[lang][0], detail.concat(addons.map(addon => addon[index])).join(' · ')];
+  };
+  return {
+    ...line, productId, size, addons: addons.map(addon => addon[0]),
+    id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon[0]).join('+'),
+    unit: line.unit + VF_ADDONS.find(addon => addon[0] === 'card')[1],
+    en: names('en'), fa: names('fa')
+  };
 }
 
 // Bilingual detail copy follows the same [English, Persian] convention as the catalog.
@@ -99,7 +137,7 @@ function vfReorderLines(lines) {
   const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
   if(!product||product.inStock===false)return [];
   const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
-  const addons=line.addons||VF_ADDONS.filter(a=>line.id.includes(a[0])).map(a=>a[0]);
+  const addons=vfLineAddons(line);
   const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
   return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
  });

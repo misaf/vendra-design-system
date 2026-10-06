@@ -91,10 +91,10 @@ try {
   assert.equal(pageValues('shop').items[0].price, '4,200,000 Toman');
   assert.equal(pageValues('search').results[0].price, '4,200,000 Toman');
   assert.equal(pageValues('product').unitPrice, '4,200,000 Toman');
-  assert.equal(pageValues('bag').sums.at(-1).value, '8,490,000 Toman');
-  assert.equal(pageValues('checkout').sums.at(-1).value, '8,490,000 Toman');
-  assert.equal(pageValues('track').sums.at(-1).value, '8,490,000 Toman');
-  assert.equal(pageValues('site').store.bag[0].unit, 5_000_000);
+  assert.equal(pageValues('bag').sums.at(-1).value, '8,640,000 Toman');
+  assert.equal(pageValues('checkout').sums.at(-1).value, '8,640,000 Toman');
+  assert.equal(pageValues('track').sums.at(-1).value, '8,640,000 Toman');
+  assert.equal(pageValues('site').store.bag[0].unit, 5_150_000);
   assert.ok(pageValues('faq').groups[0].items[0].content.includes('90,000 Toman'));
   console.log('Passed shared-price and delivery propagation, editable-content preservation, stale-output detection and repeatable generation.');
 } finally {

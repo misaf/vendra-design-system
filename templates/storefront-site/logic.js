@@ -1,6 +1,13 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 const VF_BAG0 = vfSampleBag();
 const VF_SESSION = 'vendra-template:' + location.pathname;
+// Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.
+function vfCheckoutBlocked(state) {
+  return !state.order && (!state.bag.length || Object.values(vfErrors(state.delivery, state.bag)).some(Boolean));
+}
+function vfCheckoutFallback(state, lang) {
+  return {lang, view: 'bag', step: state.bag.length ? 'delivery' : 'bag'};
+}
 function vfSiteInitial(props) {
   let saved = {};
   try {
@@ -36,11 +43,8 @@ class Component extends DCLogic {
     }));
     this._pop = () => {
       const r = vfReadRoute();
-      if (r.view === 'checkout' && !this.state.order && (!this.state.bag.length || Object.values(vfErrors(this.state.delivery)).some(Boolean))) {
-        this.navigate({
-          view: 'bag',
-          lang: r.lang
-        }, true);
+      if (r.view === 'checkout' && vfCheckoutBlocked(this.state)) {
+        this.navigate(vfCheckoutFallback(this.state, r.lang), true);
         return;
       }
       this.setState({
@@ -50,7 +54,7 @@ class Component extends DCLogic {
       });
     };
     window.addEventListener('popstate', this._pop);
-    if (this.state.route === 'checkout' && !this.state.order && (!this.state.bag.length || Object.values(vfErrors(this.state.delivery)).some(Boolean))) this.navigate('bag', true);
+    if (this.state.route === 'checkout' && vfCheckoutBlocked(this.state)) this.navigate(vfCheckoutFallback(this.state, this.state.lang), true);
   }
   componentDidUpdate() {
     try {
@@ -84,10 +88,7 @@ class Component extends DCLogic {
       ...input
     };
     let r = vfReadRoute(vfRouteParams(candidate));
-    if (r.view === 'checkout' && !this.state.order && (!this.state.bag.length || Object.values(vfErrors(this.state.delivery)).some(Boolean))) r = {
-      lang: r.lang,
-      view: 'bag'
-    };
+    if (r.view === 'checkout' && vfCheckoutBlocked(this.state)) r = vfReadRoute(vfRouteParams(vfCheckoutFallback(this.state, r.lang)));
     const url = vfRouteParams(r);
     if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
     this.setState({
@@ -174,6 +175,27 @@ class Component extends DCLogic {
             qty: q
           } : x)
         })),
+        // The message for a line's handwritten card.
+        setCard: (id, card) => this.setState(p => ({
+          order: null,
+          bag: p.bag.map(x => x.id === id ? {
+            ...x,
+            card
+          } : x)
+        })),
+        // Adds a handwritten card to a line, joining an identical line already in the bag.
+        addCard: id => this.setState(p => {
+          const line = p.bag.find(x => x.id === id);
+          if (!line || vfLineHasCard(line)) return null;
+          const carded = vfLineWithCard(line), twin = p.bag.find(x => x.id === carded.id);
+          return {
+            order: null,
+            bag: twin ? p.bag.filter(x => x.id !== id).map(x => x === twin ? {
+              ...x,
+              qty: x.qty + line.qty
+            } : x) : p.bag.map(x => x === line ? carded : x)
+          };
+        }),
         remove: id => this.setState(p => ({
           order: null,
           bag: p.bag.filter(x => x.id !== id)

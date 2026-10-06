@@ -15,6 +15,8 @@ function vfReadRoute(search = location.search) {
   window.AG_SEO.register(...VF_ROUTES);
   const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
+  // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
+  if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
   if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
@@ -31,6 +33,7 @@ function vfReadRoute(search = location.search) {
 function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
   if(route.demo)query.set('demo',route.demo);
+  if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
