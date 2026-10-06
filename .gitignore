@@ -5,3 +5,5 @@ templates/_e2e/playwright-report/
 # OS and scratch files
 .DS_Store
 scraps/
+scratch/
+screenshots/

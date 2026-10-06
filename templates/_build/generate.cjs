@@ -44,14 +44,20 @@ const sharedLogicFile = path.join(root, '_runtime', 'shared-logic.js');
 const sharedLogicRuntime = '// GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' + sharedLogic;
 const sharedLogicScript = '<script src="../_runtime/shared-logic.js"></script>';
 const supportScript = '<script src="../_runtime/support.js"></script>';
+// Core helpers the shared logic calls on first render (AG_SEO, AG_FORMAT, AG_DATES, AG_NAV). They are also
+// in _ds_bundle.js, but that loads asynchronously after React, so pages load them synchronously first.
+const coreHelperScripts = ['seo', 'format', 'dates', 'nav'].map(n => '<script src="../../components/utils/' + n + '.js"></script>').join('\n');
 // DCLogic only exists inside page logic, so the page base class is built there.
 const sharedLogicInline = '// Shared storefront logic loads from ../_runtime/shared-logic.js.\nconst VFPage = vfPageClass(DCLogic);';
 
 // Load the shared logic before support.js evaluates the page logic.
 function renderSharedLogicScript(html, folder) {
-  if (html.includes(sharedLogicScript + '\n' + supportScript)) return html;
+  const scripts = coreHelperScripts + '\n' + sharedLogicScript + '\n' + supportScript;
+  if (html.includes(scripts)) return html;
   if (!html.includes(supportScript)) throw new Error('Missing support.js script in ' + folder);
-  return html.replace(supportScript, sharedLogicScript + '\n' + supportScript);
+  // Drop any earlier helper / shared-logic tags so the block is written once, in order.
+  html = html.replace(/<script src="\.\.\/\.\.\/components\/utils\/\w+\.js"><\/script>\n/g, '').replace(sharedLogicScript + '\n', '');
+  return html.replace(supportScript, scripts);
 }
 
 function region(source, name, syntax = 'html') {

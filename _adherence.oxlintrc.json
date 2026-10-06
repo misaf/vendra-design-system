@@ -55,8 +55,8 @@
         "message": "<Alert> doesn't accept that prop. Declared props: tone, icon, title, children, action, onClose, closeLabel, className, style."
       },
       {
-        "selector": "JSXOpeningElement[name.name='Alert'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|warning|error|danger|success)$/]",
-        "message": "<Alert> tone must be one of 'neutral' | 'warning' | 'error' | 'danger' | 'success'."
+        "selector": "JSXOpeningElement[name.name='Alert'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|warning|danger|success)$/]",
+        "message": "<Alert> tone must be one of 'neutral' | 'warning' | 'danger' | 'success'."
       },
       {
         "selector": "JSXOpeningElement[name.name='AnnouncementBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|onClose|closeLabel|label|className|key|ref|className|style|children)$/]",
@@ -71,8 +71,8 @@
         "message": "<ArchFrame> ratio must be one of '4/5' | '3/4' | '4/3' | '1/1' | 'fill'."
       },
       {
-        "selector": "JSXOpeningElement[name.name='ArchFrame'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:linen|product)$/]",
-        "message": "<ArchFrame> tone must be one of 'linen' | 'product'."
+        "selector": "JSXOpeningElement[name.name='ArchFrame'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:petal|product)$/]",
+        "message": "<ArchFrame> tone must be one of 'petal' | 'product'."
       },
       {
         "selector": "JSXOpeningElement[name.name='ArchFrame'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:thumb)$/]",
@@ -87,8 +87,8 @@
         "message": "<Badge> doesn't accept that prop. Declared props: tone, children."
       },
       {
-        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|accent|sage|ochre|plum|danger|solid)$/]",
-        "message": "<Badge> tone must be one of 'neutral' | 'accent' | 'sage' | 'ochre' | 'plum' | 'danger' | 'solid'."
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|accent|success|warning|info|danger|solid)$/]",
+        "message": "<Badge> tone must be one of 'neutral' | 'accent' | 'success' | 'warning' | 'info' | 'danger' | 'solid'."
       },
       {
         "selector": "JSXOpeningElement[name.name='BlogCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:image|srcSet|sizes|date|meta|title|excerpt|onClick|href|frame|aspect|headingLevel|layout|cta|priority|className|key|ref|className|style|children)$/]",
@@ -175,8 +175,8 @@
         "message": "<EmptyState> doesn't accept that prop. Declared props: icon, tone, eyebrow, title, titleAccent, body, actions, headingLevel, className, style."
       },
       {
-        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|accent|error)$/]",
-        "message": "<EmptyState> tone must be one of 'neutral' | 'accent' | 'error'."
+        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|accent|danger)$/]",
+        "message": "<EmptyState> tone must be one of 'neutral' | 'accent' | 'danger'."
       },
       {
         "selector": "JSXOpeningElement[name.name='GalleryImage'] > JSXAttribute > JSXIdentifier[name!=/^(?:src|srcSet|alt|key|ref|className|style|children)$/]",
@@ -251,12 +251,12 @@
         "message": "<ProductCard> doesn't accept that prop. Declared props: tone, name, subtitle, price, compareAt, image, srcSet, sizes, images, badge, badgeTone, frame, favorite, onFavorite, href, linkLabel, onClick, placeholder, favLabel."
       },
       {
-        "selector": "JSXOpeningElement[name.name='ProductCard'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:linen|product)$/]",
-        "message": "<ProductCard> tone must be one of 'linen' | 'product'."
+        "selector": "JSXOpeningElement[name.name='ProductCard'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:petal|product)$/]",
+        "message": "<ProductCard> tone must be one of 'petal' | 'product'."
       },
       {
-        "selector": "JSXOpeningElement[name.name='ProductCard'] > JSXAttribute[name.name='badgeTone'] > Literal[value!=/^(?:neutral|accent|sage|ochre|plum|danger|solid)$/]",
-        "message": "<ProductCard> badgeTone must be one of 'neutral' | 'accent' | 'sage' | 'ochre' | 'plum' | 'danger' | 'solid'."
+        "selector": "JSXOpeningElement[name.name='ProductCard'] > JSXAttribute[name.name='badgeTone'] > Literal[value!=/^(?:neutral|accent|success|warning|info|danger|solid)$/]",
+        "message": "<ProductCard> badgeTone must be one of 'neutral' | 'accent' | 'success' | 'warning' | 'info' | 'danger' | 'solid'."
       },
       {
         "selector": "JSXOpeningElement[name.name='ProductCard'] > JSXAttribute[name.name='frame'] > Literal[value!=/^(?:arch|soft)$/]",
@@ -510,12 +510,14 @@
       "--border-default",
       "--border-hair",
       "--border-input",
+      "--border-input-strong",
       "--border-inverse",
       "--border-strong",
       "--border-subtle",
       "--border-thick",
       "--button-case",
       "--container-max",
+      "--control-on",
       "--danger",
       "--danger-on-inverse",
       "--danger-soft",
@@ -526,6 +528,8 @@
       "--ease-in-out",
       "--ease-out",
       "--focus-ring",
+      "--focus-ring-on-inverse",
+      "--focus-ring-soft",
       "--font-body",
       "--font-body-fa",
       "--font-body-latin",
@@ -534,7 +538,9 @@
       "--font-display-latin",
       "--gutter",
       "--header-h",
+      "--header-h-mobile",
       "--info",
+      "--info-on-inverse",
       "--info-soft",
       "--ink-300",
       "--ink-500",
@@ -549,8 +555,10 @@
       "--lh-snug",
       "--lh-tight",
       "--lilac-100",
+      "--lilac-300",
       "--lilac-500",
       "--lilac-700",
+      "--measure",
       "--peony-100",
       "--peony-200",
       "--peony-400",
@@ -581,7 +589,9 @@
       "--space-2",
       "--space-3",
       "--space-4",
+      "--space-4h",
       "--space-5",
+      "--space-5h",
       "--space-6",
       "--space-7",
       "--space-8",
@@ -590,21 +600,28 @@
       "--stem-700",
       "--stem-900",
       "--success",
+      "--success-on-inverse",
       "--success-soft",
       "--surface-card",
+      "--surface-disabled",
       "--surface-header",
+      "--surface-hover",
       "--surface-inverse",
       "--surface-muted",
       "--surface-overlay",
       "--surface-page",
+      "--surface-strong",
       "--surface-sunken",
+      "--tap-min",
       "--text-2xl",
+      "--text-2xs",
       "--text-3xl",
       "--text-4xl",
       "--text-5xl",
       "--text-accent",
       "--text-base",
       "--text-body",
+      "--text-info",
       "--text-inverse-muted",
       "--text-lg",
       "--text-md",
@@ -612,6 +629,7 @@
       "--text-on-accent",
       "--text-on-inverse",
       "--text-on-soft",
+      "--text-on-strong",
       "--text-secondary",
       "--text-sm",
       "--text-subtle",
@@ -621,6 +639,7 @@
       "--tracking-display",
       "--tracking-eyebrow",
       "--warning",
+      "--warning-on-inverse",
       "--warning-soft",
       "--weight-light",
       "--weight-medium",
@@ -629,6 +648,7 @@
       "--white",
       "--z-header",
       "--z-overlay",
+      "--z-tabbar",
       "--z-toast",
       "--z-tooltip"
     ],
@@ -658,6 +678,7 @@
       "--pollen-400": "color",
       "--pollen-600": "color",
       "--lilac-100": "color",
+      "--lilac-300": "color",
       "--lilac-500": "color",
       "--lilac-700": "color",
       "--ink-300": "color",
@@ -698,6 +719,18 @@
       "--border-strong": "color",
       "--border-input": "color",
       "--focus-ring": "color",
+      "--focus-ring-on-inverse": "color",
+      "--surface-hover": "color",
+      "--surface-disabled": "color",
+      "--surface-strong": "color",
+      "--text-on-strong": "font",
+      "--border-input-strong": "color",
+      "--focus-ring-soft": "color",
+      "--text-info": "font",
+      "--control-on": "color",
+      "--success-on-inverse": "color",
+      "--warning-on-inverse": "color",
+      "--info-on-inverse": "color",
       "--surface-header": "color",
       "--text-inverse-muted": "font",
       "--border-inverse": "color",
@@ -707,6 +740,7 @@
       "--font-body-fa": "font",
       "--font-display": "font",
       "--font-body": "font",
+      "--text-2xs": "font",
       "--text-xs": "font",
       "--text-sm": "font",
       "--text-base": "font",
@@ -733,7 +767,9 @@
       "--space-2": "spacing",
       "--space-3": "spacing",
       "--space-4": "spacing",
+      "--space-4h": "spacing",
       "--space-5": "spacing",
+      "--space-5h": "spacing",
       "--space-6": "spacing",
       "--space-7": "spacing",
       "--space-8": "spacing",
@@ -750,6 +786,9 @@
       "--container-max": "spacing",
       "--gutter": "spacing",
       "--header-h": "spacing",
+      "--header-h-mobile": "spacing",
+      "--tap-min": "spacing",
+      "--measure": "spacing",
       "--shadow-sm": "shadow",
       "--shadow-md": "shadow",
       "--shadow-lg": "shadow",
@@ -760,6 +799,7 @@
       "--dur-slow": "other",
       "--blur-overlay": "other",
       "--z-header": "other",
+      "--z-tabbar": "other",
       "--z-overlay": "other",
       "--z-toast": "other",
       "--z-tooltip": "other",

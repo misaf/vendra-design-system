@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../../components/utils/seo.js"></script>
+<script src="../../components/utils/format.js"></script>
+<script src="../../components/utils/dates.js"></script>
+<script src="../../components/utils/nav.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -10,8 +14,8 @@
 <x-dc>
 <!-- @template name="Storefront site (click-through)" description="All 17 storefront templates wired together: navigation, mobile menu drawer, shared bag and saved items (EN/FA, tenant, mobile)" -->
 <helmet><script src="../_runtime/ds-base.js"></script></helmet>
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ announcement }}</x-import>
-<sc-if value="{{ integrationError }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="danger" title="{{ integrationErrorText }}"></x-import></sc-if>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LiveRegion" hint-size="0px,0px">{{ announcement }}</x-import>
+<sc-if value="{{ integrationError }}"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Alert" tone="danger" title="{{ integrationErrorText }}"></x-import></sc-if>
 <sc-if value="{{ is.home }}" hint-placeholder-val="{{ true }}"><dc-import name="../storefront-home/StorefrontHome" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 <sc-if value="{{ is.shop }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-shop/StorefrontShop" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>
 <sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}"><dc-import name="../storefront-product/StorefrontProduct" route-info="{{ routeInfo }}" lang="{{ lang }}" tenant="{{ tenant }}" mobile="{{ mobile }}" go="{{ go }}" store="{{ store }}" set-lang="{{ setLang }}" hint-size="100%,100vh"></dc-import></sc-if>

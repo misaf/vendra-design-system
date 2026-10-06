@@ -1,5 +1,5 @@
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** primary = gold fill with moss text (one per view); secondary = ink outline; soft = pale gold tint; ghost = text only */
+  /** primary = accent (peony) fill, white text (one per view); secondary = ink outline; soft = pale accent tint; ghost = text only */
   variant?: 'primary' | 'secondary' | 'soft' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   /** Lucide icon name before label (inline-start, flips side in RTL) */

@@ -4,12 +4,12 @@
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
 <div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <!-- DESKTOP_HEADER -->
@@ -36,7 +36,7 @@
 </div>
 </sc-if>
 <!-- STICKY_CONTENT -->
-<x-import component-from-global-scope="VendraDesignSystem_f4f210.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
 </x-import>
 </div>
 </sc-if>

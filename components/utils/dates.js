@@ -1,4 +1,4 @@
-// Jalali (Shamsi) / Gregorian date helpers. Exposed as window.AG_DATES and window.VendraDesignSystem_f4f210.dates.
+// Jalali (Shamsi) / Gregorian date helpers. Exposed as window.AG_DATES and window.VendraDesignSystem_4ae5a2.dates.
 // Always pass explicit locales: 'fa-IR-u-ca-persian', 'fa-IR-u-ca-gregory', 'en-GB', 'en-GB-u-ca-persian' (see locale()).
 (()=>{
 const div=(a,b)=>Math.floor(a/b);
@@ -58,6 +58,6 @@ const fullDate=(date,loc='en-GB',withWeekday=false)=>{
 };
 const X={j2g,g2j,jYear,isJLeap,daysInMonth,toDate,parts,yearOf,iso,fromIso,daysBetween,nextYearly,nextHijri,locale,fullDate,dayMonth,monthNames,digits};
 window.AG_DATES=X;
-(window.VendraDesignSystem_f4f210=window.VendraDesignSystem_f4f210||{}).dates=X;
+(window.VendraDesignSystem_4ae5a2=window.VendraDesignSystem_4ae5a2||{}).dates=X;
 if(typeof module!=='undefined'&&module.exports)module.exports=X;
 })();

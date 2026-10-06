@@ -9,7 +9,6 @@ export interface ArchFrameProps extends React.HTMLAttributes<HTMLDivElement> {
   ratio?: '4/5' | '3/4' | '4/3' | '1/1' | 'fill';
   /** With ratio="fill": floor height when the parent is short, e.g. "320px" */
   minHeight?: string | number;
-  /** linen (default) = striped linen placeholder · product = plain linen backdrop (--linen-100) behind 3:4 product photos while they load */
   /** petal (default) or product (studio backdrop). 'linen' is a deprecated alias of petal. */
   tone?: 'petal' | 'product';
   /** thumb = 44–56px list thumbnail (search results, order history): smaller arch radius, no placeholder label. Set width on style. */

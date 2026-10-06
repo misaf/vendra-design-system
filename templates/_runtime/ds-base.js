@@ -48,7 +48,9 @@
     if (window.VF_TENANT) window.VF_USE_TENANT(window.VF_TENANT);
   }
   // Imported pages reuse the same design-system bundle and styles.
-  if (window.VendraDesignSystem_f4f210 || window.VF_BUNDLE_LOADING || document.querySelector('script[data-vf-bundle]')) return;
+  // seo.js loads synchronously before page logic and creates the namespace with only .seo on it,
+  // so check for a bundled component rather than the namespace itself.
+  if ((window.VendraDesignSystem_4ae5a2 && window.VendraDesignSystem_4ae5a2.LiveRegion) || window.VF_BUNDLE_LOADING || document.querySelector('script[data-vf-bundle]')) return;
   window.VF_BUNDLE_LOADING = true;
   const s = document.createElement('script');
   s.src = new URL('_ds_bundle.js', assetRoot).href;

@@ -59,6 +59,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
  const html=read('templates/'+folder+'/'+filename),script=html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
  assert.ok(html.includes('<script src="../_runtime/shared-logic.js"></script>\n<script src="../_runtime/support.js"></script>'),folder+' must load the shared logic before the runtime');
+  assert.ok(html.includes(['seo','format','dates','nav'].map(n=>'<script src="../../components/utils/'+n+'.js"></script>').join('\n')+'\n<script src="../_runtime/shared-logic.js"></script>'),folder+' must load the core helpers before the shared logic');
  assert.ok(html.includes(sharedLogicInline)&&!html.includes('// Source: templates/_shared/page-lifecycle.js'),folder+' must not carry its own copy of the shared logic');
  assert.equal(read('templates/_runtime/shared-logic.js').endsWith(sharedLogic),true,'_runtime/shared-logic.js must match _shared/');
  if(folder!=='storefront-site')assert.ok(html.includes('<main id="main"'),folder+' must expose the skip-link destination');

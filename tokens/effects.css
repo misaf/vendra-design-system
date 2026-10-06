@@ -9,4 +9,4 @@
 }
 /* Reduced motion: every transition and animation built on the duration tokens becomes instant.
    0.01ms rather than 0 so transitionend and animationend still fire. */
-@media (prefers-reduced-motion:reduce){:root{--dur-fast:.01ms;--dur-base:.01ms;--dur-slow:.01ms}}
+@media (prefers-reduced-motion:reduce){:root{--dur-fast:.01ms;/* @kind other */--dur-base:.01ms;/* @kind other */--dur-slow:.01ms;/* @kind other */}}

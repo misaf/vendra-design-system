@@ -139,6 +139,7 @@ All pages load the same assets. Page folders contain only their `Storefront*.dc.
 
 - `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
 - `_runtime/shared-logic.js`: generated from the `_shared/*.js` logic files (store config, catalog, delivery, routing, navigation, page lifecycle). Pages load it before `support.js`; never edit it.
+- `../../components/utils/{seo,format,dates,nav}.js`: core helpers (`AG_SEO`, `AG_FORMAT`, `AG_DATES`, `AG_NAV`) that the shared logic calls on first render. They are also in `_ds_bundle.js`, but the bundle loads asynchronously after React, so `_build/generate.cjs` writes these four tags before `shared-logic.js` in every page head. Don't remove them, or pages log errors until the bundle arrives.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
 - `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
 - `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.

@@ -46,6 +46,6 @@ function page(name,c,props={}){const s=read(`templates/storefront-${name}/Storef
  }
  assert.equal(fs.existsSync(path.join(root,'ui_kits')),false);
  const manifest=JSON.parse(read('_ds_manifest.json'));for(const card of manifest.cards)assert.ok(fs.existsSync(path.join(root,card.path)),card.path);
- assert.ok(!read('_ds_bundle.js').includes('ui_kits/'));assert.equal(c.VendraDesignSystem_f4f210.__errors.length,0);
+ assert.ok(!read('_ds_bundle.js').includes('ui_kits/'));assert.equal(c.VendraDesignSystem_4ae5a2.__errors.length,0);
  console.log('Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, optional API mode, article blocks, bilingual communications and relocated card paths.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

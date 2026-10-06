@@ -1,4 +1,4 @@
-// Routing, <head> and Schema.org helpers for the storefront. Exposed as window.AG_SEO and window.VendraDesignSystem_f4f210.seo.
+// Routing, <head> and Schema.org helpers for the storefront. Exposed as window.AG_SEO and window.VendraDesignSystem_4ae5a2.seo.
 // URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
 (()=>{
 const SCREENS=new Set(['home','shop','product','bag','checkout','contact','search','gifts','moment','saved','track','custom','account','journal','post','care','faq']);
@@ -111,6 +111,6 @@ const storeJsonLd=({url,logo='../../assets/logo-mark.png',image}={})=>{
 };
 const S={returnPolicy,SCREENS,NOINDEX,OPTIONAL,REQUIRED,register,setNumeric,readRoute,routeParams,hrefFor,linkHandler,isNoindex,syncHead,setJsonLd,productJsonLd,storeJsonLd,offerPrice};
 window.AG_SEO=S;
-(window.VendraDesignSystem_f4f210=window.VendraDesignSystem_f4f210||{}).seo=S;
+(window.VendraDesignSystem_4ae5a2=window.VendraDesignSystem_4ae5a2||{}).seo=S;
 if(typeof module!=='undefined'&&module.exports)module.exports=S;
 })();

@@ -4,7 +4,7 @@
 
 The reference tenant shipped with the system is **Vendra Florist** (below). Its brand (logo, peony/stem palette, arch motif) is the *default theme*; other tenants keep the same components, layout rules and semantic tokens and swap brand assets + accent tokens.
 
-**Source:** local codebase `Vendra Florist/` (attached folder — an existing design-system export: tokens, 47 React components (46 today), foundation cards, storefront compositions, fonts, logos, an OpenAPI spec in `uploads/`). All files were imported verbatim; only the window namespace was renamed to `VendraDesignSystem_f4f210`.
+**Source:** GitHub repo **[misaf/vendra-design-system](https://github.com/misaf/vendra-design-system)** (branch `master`) — an existing design-system export: tokens, 47 React components, foundation cards, 18 storefront templates, fonts, logos and an OpenAPI spec in `uploads/`. Imported verbatim; only the window namespace was renamed to `VendraDesignSystem_4ae5a2`, and the vendored Babel (missing upstream) was restored to `templates/_vendor/babel.min.js` (7.29.0, hash-verified). Browser-test screenshot baselines were not imported — run `npm --prefix templates run test:e2e:update` once to create them. Related repos worth exploring for deeper product context: [misaf/vendra](https://github.com/misaf/vendra) (Laravel platform), [misaf/vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (Next.js storefront) and [misaf/vendra-web](https://github.com/misaf/vendra-web) (product site). Browse them to design more faithfully against the real product.
 
 ## Multi-tenancy notes
 - **Theme by tokens only.** Components reference semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant theme overrides those in its own CSS scope; never fork component CSS.
@@ -123,7 +123,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Routing & URLs
 
-`components/utils/seo.js` → `window.VendraDesignSystem_f4f210.seo` (also `window.AG_SEO`).
+`components/utils/seo.js` → `window.VendraDesignSystem_4ae5a2.seo` (also `window.AG_SEO`).
 
 - Scheme: `?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>`. Home omits `view`.
 - Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
@@ -279,7 +279,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - `dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`.
 - `seo.js` → `.seo`: see *Routing & URLs* and *Structured data*.
 - `templates/communications/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, `'clay'` or the palette from `AG_EMAIL.themeFromCSS(el)`.
-- The first three hang off `window.VendraDesignSystem_f4f210` (`.format`, `.dates`, `.seo`). Each also has an `AG_*` alias (`AG_FORMAT`, `AG_DATES`, `AG_SEO`).
+- The first three hang off `window.VendraDesignSystem_4ae5a2` (`.format`, `.dates`, `.seo`). Each also has an `AG_*` alias (`AG_FORMAT`, `AG_DATES`, `AG_SEO`).
 
 ### Intentional additions
 These came from the source system, which authored a standard set plus:

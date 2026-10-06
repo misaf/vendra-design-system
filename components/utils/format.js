@@ -18,6 +18,6 @@ const money=(n,{currency='IRT',lang='en'}={})=>{const c=CURRENCIES[currency]||CU
 if(lang==='fa')return s+' '+c.fa;return c.sym?c.sym+s:s+' '+c.en;};
 const F={CURRENCIES,money,num};
 window.AG_FORMAT=F;
-(window.VendraDesignSystem_f4f210=window.VendraDesignSystem_f4f210||{}).format=F;
+(window.VendraDesignSystem_4ae5a2=window.VendraDesignSystem_4ae5a2||{}).format=F;
 if(typeof module!=='undefined'&&module.exports)module.exports=F;
 })();
