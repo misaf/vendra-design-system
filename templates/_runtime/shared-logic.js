@@ -153,10 +153,7 @@ function vfDeliverySlot(delivery, now = new Date()) {
 }
 
 function vfPhone(value) {
-  return String(value || '')
-    .replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))
-    .replace(/[٠-٩]/g, digit => '٠١٢٣٤٥٦٧٨٩'.indexOf(digit))
-    .replace(/[\s()-]/g, '');
+  return vfLatin(value || '').replace(/[\s()-]/g, '');
 }
 
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
@@ -466,12 +463,14 @@ const VF_PRODUCTS = [
 ];
 
 // Sizes for products with `sizes: true`: [id, extra price, English name, Persian name, English detail, Persian detail].
+/** @type {[id: string, price: number, en: string, fa: string, enDetail: string, faDetail: string][]} */
 const VF_SIZES = [
   ['petite', 0, 'Petite', 'کوچک', '12 stems', '۱۲ شاخه'],
   ['classic', 800_000, 'Classic', 'کلاسیک', '20 stems', '۲۰ شاخه'],
   ['generous', 1_900_000, 'Generous', 'بزرگ', '32 stems', '۳۲ شاخه']
 ];
 // Optional extras: [id, price, English name, Persian name].
+/** @type {[id: string, price: number, en: string, fa: string][]} */
 const VF_ADDONS = [
   ['card', 150_000, 'Handwritten card', 'کارت دست‌نویس'],
   ['vase', 650_000, 'Glass vase', 'گلدان شیشه‌ای']
@@ -479,8 +478,7 @@ const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 function vfNormalizeToken(text) {
-  return String(text || '').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
-    .toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return vfLatin(text || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.
@@ -871,9 +869,6 @@ const VF_PIN_COPY = {
 
 // Source: templates/_shared/account-data.js
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
-function vfLatin(value) {
-  return String(value).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
-}
 function vfAccountPhone() {
   try {
     return localStorage.getItem('vf-account-phone') || '';
@@ -1254,7 +1249,7 @@ function vfWalletChange(phone, amount, entry) {
       credentials: 'include'
     });
     if (!r.ok) {
-      const e = new Error('HTTP ' + r.status);
+      const e = /** @type {Error & {status?: number, body?: any}} */ (new Error('HTTP ' + r.status));
       e.status = r.status;
       try {
         e.body = await r.json();
@@ -1434,6 +1429,12 @@ function vfWalletChange(phone, amount, entry) {
 // Source: templates/_shared/formatting.js
 // Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+// Persian or Arabic digits typed into a field, as Latin digits; null and undefined become ''.
+function vfLatin(value) {
+  return String(value ?? '')
+    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+}
 const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
   lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
 });
@@ -1571,7 +1572,7 @@ function vfPageClass(DCLogic) {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
         document.documentElement.dataset.lang = lang;
-        const h = document.querySelector('main h1');
+        const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
         if (!h) return;
         const title = h.innerText.replace(/\s+/g, ' ').trim();
         if (title === this._vfTitle) return;
@@ -1808,7 +1809,7 @@ function vfShell(props, page) {
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{
       const targets=[...document.querySelectorAll('main '+selector)];
-      const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
+      const target=/** @type {HTMLElement} */(targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1'));
       if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
     },0),
     focus,

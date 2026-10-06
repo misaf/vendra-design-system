@@ -110,10 +110,7 @@ function vfDeliverySlot(delivery, now = new Date()) {
 }
 
 function vfPhone(value) {
-  return String(value || '')
-    .replace(/[۰-۹]/g, digit => '۰۱۲۳۴۵۶۷۸۹'.indexOf(digit))
-    .replace(/[٠-٩]/g, digit => '٠١٢٣٤٥٦٧٨٩'.indexOf(digit))
-    .replace(/[\s()-]/g, '');
+  return vfLatin(value || '').replace(/[\s()-]/g, '');
 }
 
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.

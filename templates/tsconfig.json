@@ -1,0 +1,15 @@
+{
+  // Type-checks the shared storefront logic as plain JavaScript; nothing is emitted.
+  // The _shared/ files load together as one script, so they share one global scope here too.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "target": "es2023",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "types": [],
+    "skipLibCheck": true
+  },
+  "include": ["_shared/**/*.js", "_types/*.d.ts"]
+}

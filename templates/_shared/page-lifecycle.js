@@ -55,7 +55,7 @@ function vfPageClass(DCLogic) {
         document.documentElement.lang = lang;
         document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
         document.documentElement.dataset.lang = lang;
-        const h = document.querySelector('main h1');
+        const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
         if (!h) return;
         const title = h.innerText.replace(/\s+/g, ' ').trim();
         if (title === this._vfTitle) return;

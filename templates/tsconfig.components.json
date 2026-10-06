@@ -1,0 +1,14 @@
+{
+  // Strict check of the hand-written component declarations (components/**/*.d.ts).
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "target": "es2023",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "types": ["react"]
+  },
+  "include": ["../components/**/*.d.ts"]
+}

@@ -45,12 +45,14 @@ const VF_PRODUCTS = [
 ];
 
 // Sizes for products with `sizes: true`: [id, extra price, English name, Persian name, English detail, Persian detail].
+/** @type {[id: string, price: number, en: string, fa: string, enDetail: string, faDetail: string][]} */
 const VF_SIZES = [
   ['petite', 0, 'Petite', 'کوچک', '12 stems', '۱۲ شاخه'],
   ['classic', 800_000, 'Classic', 'کلاسیک', '20 stems', '۲۰ شاخه'],
   ['generous', 1_900_000, 'Generous', 'بزرگ', '32 stems', '۳۲ شاخه']
 ];
 // Optional extras: [id, price, English name, Persian name].
+/** @type {[id: string, price: number, en: string, fa: string][]} */
 const VF_ADDONS = [
   ['card', 150_000, 'Handwritten card', 'کارت دست‌نویس'],
   ['vase', 650_000, 'Glass vase', 'گلدان شیشه‌ای']
@@ -58,8 +60,7 @@ const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 function vfNormalizeToken(text) {
-  return String(text || '').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
-    .toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return vfLatin(text || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.

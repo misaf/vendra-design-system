@@ -202,7 +202,7 @@ function vfShell(props, page) {
     menuOpen: !!st.vfMenu,
     focusAfterRemoval: (selector, index) => setTimeout(()=>{
       const targets=[...document.querySelectorAll('main '+selector)];
-      const target=targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1');
+      const target=/** @type {HTMLElement} */(targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1'));
       if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
     },0),
     focus,

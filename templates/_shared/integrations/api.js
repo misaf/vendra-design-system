@@ -25,7 +25,7 @@
       credentials: 'include'
     });
     if (!r.ok) {
-      const e = new Error('HTTP ' + r.status);
+      const e = /** @type {Error & {status?: number, body?: any}} */ (new Error('HTTP ' + r.status));
       e.status = r.status;
       try {
         e.body = await r.json();

@@ -14,7 +14,14 @@ const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout,
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(path.join(root, '_ds_bundle.js'), 'utf8'), ctx);
-vm.runInContext(sharedLogic + '\nObject.assign(this, {VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
+vm.runInContext(sharedLogic + '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
+
+// Persian and Arabic digits normalise in one place; a missing value is empty, not "undefined".
+assert.equal(ctx.vfLatin('۰۹۱۲ ٣٤٥'), '0912 345');
+assert.equal(ctx.vfLatin(undefined), '');
+assert.equal(ctx.vfLatin(null), '');
+assert.equal(ctx.vfPhone('(۰۹۱۲) ۳۴۵-۶۷۸۹'), '09123456789');
+assert.equal(ctx.vfNormalizeToken('vf-۷k2m ۴q'), 'VF7K2M4Q');
 
 // Delivery days: seven from today, the sample sold-out day, and today closing at the zone cut-off.
 const morning = new Date(2026, 9, 5, 9, 0), evening = new Date(2026, 9, 5, 19, 0);

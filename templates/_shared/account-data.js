@@ -1,7 +1,4 @@
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
-function vfLatin(value) {
-  return String(value).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
-}
 function vfAccountPhone() {
   try {
     return localStorage.getItem('vf-account-phone') || '';
