@@ -31,6 +31,12 @@ export function siteUrl(view, lang, extra = {}) {
 // Waits for the DC runtime to render the page shell and settle the language.
 export async function openSite(page, view, lang, extra) {
   await stubMapTiles(page);
+  // The account is only for signed-in customers: sign the sample customer in once per tab.
+  if (view === 'account') await page.addInitScript(() => {
+    if (sessionStorage.getItem('vf-e2e-signed-in')) return;
+    sessionStorage.setItem('vf-e2e-signed-in', '1');
+    localStorage.setItem('vf-account-phone', '09125649438');
+  });
   await page.goto(siteUrl(view, lang, extra));
   await expect(page.locator('#main')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', lang);

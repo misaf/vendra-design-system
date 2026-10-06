@@ -1762,14 +1762,26 @@ function vfCheckoutBlocked(state) {
 function vfCheckoutFallback(state, lang) {
   return {lang, view: 'bag', step: state.bag.length ? 'delivery' : 'bag'};
 }
+// The account needs a signed-in phone; signed-out customers see sign-in instead.
+function vfGuardRoute(state, r) {
+  if (r.view === 'checkout' && vfCheckoutBlocked(state)) return vfCheckoutFallback(state, r.lang);
+  if (r.view === 'account' && !vfAccountPhone()) return {lang: r.lang, view: 'signin'};
+  return null;
+}
 function vfSiteInitial(props) {
   let saved = {};
   try {
     saved = JSON.parse(sessionStorage.getItem(VF_SESSION) || '{}') || {};
   } catch (e) {}
-  const route = vfReadRoute();
+  let route = vfReadRoute();
+  if (route.view === 'home' && !new URLSearchParams(location.search).has('view') && props.start) route = {...route, view: props.start};
+  // Open sign-in straight away rather than flashing the account first.
+  if (route.view === 'account' && !vfAccountPhone()) {
+    route = vfReadRoute(vfRouteParams({lang: route.lang, view: 'signin'}));
+    if (new URLSearchParams(location.search).has('view')) history.replaceState({}, '', vfRouteParams(route));
+  }
   return {
-    route: route.view === 'home' && !new URLSearchParams(location.search).has('view') ? props.start || 'home' : route.view,
+    route: route.view,
     routeInfo: route,
     lang: new URLSearchParams(location.search).has('lang') ? route.lang : vfAccountLocale() || props.lang || 'en',
     mobile: null,
@@ -1797,8 +1809,9 @@ class Component extends DCLogic {
     }));
     this._pop = () => {
       const r = vfReadRoute();
-      if (r.view === 'checkout' && vfCheckoutBlocked(this.state)) {
-        this.navigate(vfCheckoutFallback(this.state, r.lang), true);
+      const guarded = vfGuardRoute(this.state, r);
+      if (guarded) {
+        this.navigate(guarded, true);
         return;
       }
       this.setState({
@@ -1808,7 +1821,8 @@ class Component extends DCLogic {
       });
     };
     window.addEventListener('popstate', this._pop);
-    if (this.state.route === 'checkout' && vfCheckoutBlocked(this.state)) this.navigate(vfCheckoutFallback(this.state, this.state.lang), true);
+    const guarded = vfGuardRoute(this.state, {view: this.state.route, lang: this.state.lang});
+    if (guarded) this.navigate(guarded, true);
   }
   componentDidUpdate() {
     try {
@@ -1842,7 +1856,8 @@ class Component extends DCLogic {
       ...input
     };
     let r = vfReadRoute(vfRouteParams(candidate));
-    if (r.view === 'checkout' && vfCheckoutBlocked(this.state)) r = vfReadRoute(vfRouteParams(vfCheckoutFallback(this.state, r.lang)));
+    const guarded = vfGuardRoute(this.state, r);
+    if (guarded) r = vfReadRoute(vfRouteParams(guarded));
     const url = vfRouteParams(r);
     if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
     this.setState({

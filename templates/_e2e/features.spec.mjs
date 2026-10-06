@@ -355,6 +355,20 @@ test('the shop filters by delivery day', async ({page}, info) => {
   expect(await page.evaluate(() => history.length)).toBeLessThanOrEqual(2);
 });
 
+test('signing out leaves the account behind it', async ({page}) => {
+  await openSite(page, 'account', 'en');
+  await page.getByRole('button', {name: 'Sign out'}).click();
+  await expect(page).toHaveURL(/^(?!.*view=account)/);
+  expect(await page.evaluate(() => localStorage.getItem('vf-account-phone'))).toBeNull();
+  // Back to the account, by link or by history, asks the customer to sign in again.
+  await page.goBack();
+  await expect(page).toHaveURL(/view=signin/);
+  await expect(page.locator('#vf-phone')).toBeVisible();
+  await page.goto(page.url().replace('view=signin', 'view=account'));
+  await expect(page).toHaveURL(/view=signin/);
+  await expect(page.locator('#vf-phone')).toBeVisible();
+});
+
 test('a guest sees no saved addresses in the bag', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await expect(page.getByRole('group', {name: 'Send to a saved address'})).toHaveCount(0);
