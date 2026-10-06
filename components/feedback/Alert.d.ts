@@ -1,5 +1,5 @@
 export interface AlertProps {
-  /** Matches Badge and Toast. 'error' is a deprecated alias of danger. */
+  /** Matches Badge and Toast. */
   tone?: 'neutral' | 'warning' | 'danger' | 'success';
   /** Lucide icon name; defaults per tone. Pass false to hide. */
   icon?: string | false;

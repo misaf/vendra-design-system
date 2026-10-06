@@ -4,6 +4,6 @@ Inline, persistent message with a soft tone fill (no side stripe). danger/warnin
 ```
 
 ## Usage
-**Use when:** Inline messages tied to a section: payment failed, cancelled order, delivery notes. `error` for failures with a way forward in `action`.
+**Use when:** Inline messages tied to a section: payment failed, cancelled order, delivery notes. `danger` for failures with a way forward in `action`.
 
 **Don’t use when:** Don’t use for transient confirmations (Toast) or whole-page empties (EmptyState).

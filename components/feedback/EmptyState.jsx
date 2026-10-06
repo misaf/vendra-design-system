@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from '../core/Icon.jsx';
 export function EmptyState({icon,tone='neutral',eyebrow,title,titleAccent,body,actions,headingLevel=2,className='',style}){
-  const H='h'+headingLevel;const t=tone==='error'?'danger':tone;
+  const H='h'+headingLevel;const t=tone;
   return <div className={'ag-empty '+className} style={style}>
     {icon && <span className={'ag-empty__icon ag-empty__icon--'+t}>{typeof icon==='string'?<Icon name={icon} size={28} />:icon}</span>}
     {eyebrow && <div className="ag-eyebrow ag-empty__eyebrow">{eyebrow}</div>}

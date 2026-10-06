@@ -1,5 +1,5 @@
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Status tones match Alert and Toast. Deprecated aliases: sage → success, ochre → warning, plum → info. */
+  /** Status tones match Alert and Toast. */
   tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'info' | 'danger' | 'solid';
   children?: React.ReactNode;
 }

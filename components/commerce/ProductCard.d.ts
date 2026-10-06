@@ -1,5 +1,5 @@
 export interface ProductCardProps {
-  /** petal (default) or product (studio backdrop). 'linen' is a deprecated alias of petal. */
+  /** petal (default) or product (studio backdrop). */
   tone?: 'petal' | 'product';
   name: string;
   subtitle?: string;
