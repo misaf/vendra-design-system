@@ -561,6 +561,18 @@ test.describe('a first visit', () => {
     expect(await scanAxe(page)).toEqual([]);
   });
 
+  test('a dialog dims the consent bar and keeps clicks off it', async ({page}, info) => {
+    test.skip(info.project.name !== 'desktop', 'desktop layout');
+    await openSite(page, 'product', 'en');
+    await page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first().click();
+    await expect(page.getByRole('dialog', {name: 'Added to your bag'})).toBeVisible();
+    const hit = await page.evaluate(() => {
+      const r = document.querySelector('.vf-shell-consent-bar').getBoundingClientRect();
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2).className;
+    });
+    expect(hit).toContain('ag-dialog__overlay');
+  });
+
   test('sends nothing to analytics before a choice', async ({page}) => {
     await openSite(page, 'home', 'fa');
     await expect(page.getByRole('region', {name: 'حریم خصوصی شما'})).toBeVisible();

@@ -23,7 +23,8 @@
 </div>
 <!-- FOOTER -->
 <sc-if value="{{ consent.desk }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-toast">
+<!-- The bar shares the tab bar's layer: above the page, below dialog overlays and toasts. -->
+<div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <!-- CONSENT -->
 </div>
 </sc-if>

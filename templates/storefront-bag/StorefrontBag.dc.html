@@ -191,7 +191,8 @@
 </div>
 </footer>
 <sc-if value="{{ consent.desk }}" hint-placeholder-val="{{ false }}">
-<div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-toast">
+<!-- The bar shares the tab bar's layer: above the page, below dialog overlays and toasts. -->
+<div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
 <div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_f4f210.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
 <p class="tw:m-0">{{ t.consent.body }} <a href="{{ consent.policy.href }}" onClick="{{ consent.policy.go }}" class="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.consent.policy }}</a></p>
