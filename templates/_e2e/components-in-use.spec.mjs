@@ -1,7 +1,5 @@
 import {test, expect} from '@playwright/test';
-import fs from 'node:fs';
-import path from 'node:path';
-import {ROOT, openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe} from './helpers.mjs';
 
 // Behaviour of the components the storefront picked up last: AnnouncementBar,
 // Gallery, Toast, Dialog, SnapScroller, Radio and Tooltip.
@@ -101,8 +99,6 @@ test('the Sheba hint describes its button', async ({page}) => {
   await info.hover();
   await expect(page.getByRole('tooltip')).toBeVisible();
   await expect(page.getByRole('tooltip')).toHaveText('Iranian IBAN');
-  const bundle = fs.readFileSync(path.join(ROOT, '_ds_bundle.js'), 'utf8');
-  test.skip(!/Template runtimes pass even a single child/.test(bundle), 'Tooltip fix not in _ds_bundle.js yet — run the Claude Design self-check');
   await expect(info).toHaveAccessibleDescription('Iranian IBAN');
 });
 
@@ -114,8 +110,6 @@ test('the bag icon shows and announces how many items are in the bag', async ({p
   await openSite(page, 'home', 'fa');
   const sabad = page.locator('header').getByRole('link', {name: 'سبد، ۲ کالا'}).locator('visible=true');
   await expect(sabad).toHaveCount(1);
-  const bundle = fs.readFileSync(path.join(ROOT, '_ds_bundle.js'), 'utf8');
-  test.skip(/count > 0 && /.test(bundle), 'IconButton count fix not in _ds_bundle.js yet — run the Claude Design self-check');
   await expect(sabad.locator('.ag-iconbtn__count')).toHaveText('۲');
 });
 

@@ -17,7 +17,10 @@ test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   await expect(days.getByRole('radio')).toHaveCount(7);
   await expect(days.getByRole('radio', {name: /^Today/})).toHaveAttribute('aria-checked', 'true');
-  await expect(days.getByRole('radio', {name: /Sold out/})).toBeDisabled();
+  // A tile is named by its day; why it can't be picked is its description.
+  const soldOut = days.getByRole('radio').filter({hasText: 'Sold out'});
+  await expect(soldOut).toBeDisabled();
+  await expect(soldOut).toHaveAccessibleDescription(/Sold out/);
   await days.getByRole('radio', {name: /^Thu/}).click();
   await expect(days.getByRole('radio', {name: /^Thu/})).toHaveAttribute('aria-checked', 'true');
 });
@@ -26,7 +29,9 @@ test('after the cut-off, today is closed', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T19:00:00+03:30'));
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
-  await expect(days.getByRole('radio', {name: /^Today Order by 18:00/})).toBeDisabled();
+  const today = days.getByRole('radio', {name: 'Today', exact: true});
+  await expect(today).toBeDisabled();
+  await expect(today).toHaveAccessibleDescription(/Order by 18:00/);
   await expect(days.getByRole('radio', {name: /^Tomorrow/})).toHaveAttribute('aria-checked', 'true');
 });
 
@@ -34,8 +39,11 @@ test('today’s slots close two hours before they end', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T14:30:00+03:30'));
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   const slots = page.getByRole('radiogroup', {name: 'Time slot'});
-  await expect(slots.getByRole('radio', {name: /^08:00–12:00 Closed/})).toBeDisabled();
-  await expect(slots.getByRole('radio', {name: /^12:00–16:00 Closed/})).toBeDisabled();
+  for (const name of ['08:00–12:00', '12:00–16:00']) {
+    const slot = slots.getByRole('radio', {name, exact: true});
+    await expect(slot).toBeDisabled();
+    await expect(slot).toHaveAccessibleDescription(/Closed/);
+  }
   await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toHaveAttribute('aria-checked', 'true');
   await page.getByRole('radiogroup', {name: 'Delivery day'}).getByRole('radio', {name: /^Tomorrow/}).click();
   await expect(slots.getByRole('radio', {disabled: true})).toHaveCount(0);
@@ -423,11 +431,32 @@ test('a guest is asked to sign in before paying from a balance', async ({page}) 
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
   await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
-  const balance = page.getByRole('radio', {name: 'Account balance'});
+  const balance = page.getByRole('radio', {name: 'Account balance', exact: true});
   await expect(balance).toBeDisabled();
-  // The Radio component reads its description as part of the name.
-  await expect(balance).toHaveAccessibleName(/Sign in to pay from your account balance\./);
+  // The option is named by its label alone; the reason is its description.
+  await expect(balance).toHaveAccessibleName('Account balance');
+  await expect(balance).toHaveAccessibleDescription('Sign in to pay from your account balance.');
   await expect(page.getByRole('radio', {name: 'Card-to-card transfer'})).toBeChecked();
+  await expect(page.locator('.vf-checkout-wallet-hint')).toHaveCount(0);
+});
+
+test('a balance below the discount line says what a top-up would save', async ({page}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('vf-account-phone', '09125649438');
+    localStorage.setItem('vf-account:09125649438', JSON.stringify({profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true}, addresses: [], reminders: [], wallet: {balance: 20_000_000, history: []}}));
+  });
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.fill('#vf-name', 'Mina Rahimi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await fillSender(page);
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await expect(page.locator('.vf-checkout-wallet-hint')).toHaveText(/^Top up 80,000,000 Toman and pay from your balance to get 5% off the products: [\d,]+ Toman off this order\.$/);
+  await expect(page.getByRole('link', {name: 'Top up your balance'}).locator('visible=true').first()).toHaveAttribute('href', /tab=balance/);
+  // The discount isn't taken until the balance reaches the line.
+  await expect(page.locator('.ag-osum__sums')).not.toContainText('Balance discount');
+  expect(await scanAxe(page)).toEqual([]);
 });
 
 test('signing out leaves the account behind it', async ({page}) => {

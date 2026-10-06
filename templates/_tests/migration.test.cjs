@@ -37,8 +37,11 @@ function page(name,c,props={}){const s=read(`templates/storefront-${name}/Storef
  for(const id of vm.runInContext('(()=>{'+read('templates/_shared/translations/journal-content.js')+';return VF_POSTS.map(p=>p.id);})()',c))for(const lang of ['en','fa'])assert.equal(page('post',c,{lang,routeInfo:{view:'post',post:id}}).renderVals().hasPost,true);
  const comm={window:null,console};comm.window=comm;vm.createContext(comm);vm.runInContext(read('templates/communications/notifications.js')+'\n'+read('templates/communications/email-templates.js'),comm);
  for(const lang of ['en','fa']){
-  const customer={preferredLocale:lang},vars={first:'Demo',id:'VN-123',date:'24 October',slot:'10:00',amount:'2000000',recipient:'Demo',link:'https://example.test/order',remLink:'https://example.test/reminder',wa:'https://example.test/contact',time:'12:00',name:'Demo',occasion:'Birthday',assetBase:'https://example.test/assets',unsubLink:'https://example.test/unsubscribe'};
+  const customer={preferredLocale:lang},vars={first:'Demo',id:'VN-123',date:'24 October',slot:'10:00',amount:'2000000',items:[{code:'VF-7K2M4Q',qty:2},{code:'VF-3HX9TP'}],recipient:'Demo',link:'https://example.test/order',remLink:'https://example.test/reminder',wa:'https://example.test/contact',time:'12:00',name:'Demo',occasion:'Birthday',assetBase:'https://example.test/assets',unsubLink:'https://example.test/unsubscribe'};
   for(const event of comm.AG_NOTIFY.events){const rendered=comm.AG_NOTIFY.render(typeof event==='string'?event:event.id,customer,vars);assert.equal(rendered.lang,lang);assert.ok(rendered.sms.parts>=1);assert.ok(!rendered.text.includes('{'));}
+  for(const event of ['received','ready','onway'])for(const channel of ['sms','wa']){const rendered=comm.AG_NOTIFY.render(event,customer,vars,channel);assert.ok(rendered.text.includes('VF-7K2M4Q'),event+' names the product codes');if(channel==='sms')assert.ok(rendered.sms.parts<=2,event+' fits 2 SMS parts');}
+  assert.equal(comm.AG_NOTIFY.itemsText([{code:'VF-7K2M4Q',qty:2},'VF-3HX9TP'],lang),lang==='fa'?'VF-7K2M4Q ×۲، VF-3HX9TP':'VF-7K2M4Q x2, VF-3HX9TP');
+  assert.equal(comm.AG_NOTIFY.itemsText(['A','B','C','D'],lang),lang==='fa'?'A، B و ۲ مورد دیگر':'A, B +2 more');
   for(const event of comm.AG_EMAIL.events)for(const theme of ['default','clay']){const rendered=comm.AG_EMAIL.render(event,customer,{...vars,theme});assert.equal(rendered.lang,lang);assert.ok(rendered.html.includes('<table'));assert.ok(rendered.html.includes(comm.AG_EMAIL.themes[theme].gold));}
  }
  assert.equal(fs.existsSync(path.join(root,'ui_kits')),false);

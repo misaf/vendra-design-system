@@ -39,6 +39,12 @@ class Component extends VFPage {
       .replace('{left}', m(Math.max(0, balanceTotals.total - (balance || 0))));
     const walletNote = balance == null ? PW.signIn : !canUseBalance ? fillWallet(PW.short, balance) : fillWallet(vfBalanceDiscountOn(balance) ? PW.discount : PW.balance, balance);
     const done = !!order || s.placed || this.props.step === 'done';
+    // Below the discount line, say what topping up would save on this order: enough to reach the line
+    // and to cover the discounted total.
+    const rules = VF_STORE.wallet, discounted = vfTotals(items, delivery, rules.discountFrom);
+    const discountGap = balance != null && !done && !vfBalanceDiscountOn(balance) && discounted.balanceDiscount
+      ? Math.max(rules.discountFrom, discounted.total) - balance : 0;
+    const discountHint = discountGap ? fillWallet(PW.hint, 0).replace('{gap}', m(discountGap)).replace('{saving}', m(discounted.balanceDiscount)) : '';
     return {
       ...S,
       t: {
@@ -59,7 +65,8 @@ class Component extends VFPage {
       isWallet: method === 'wallet',
       walletAfter: fillWallet(PW.after, (balance || 0) - totals.total),
       // A signed-in customer whose balance is short can top up first; the bag waits here.
-      showTopUp: balance != null && !canUseBalance && !done,
+      showTopUp: balance != null && (!canUseBalance || !!discountHint) && !done,
+      discountHint,
       topUpLabel: PW.topUp,
       topUpHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
       topUpGo: this.props.go ? vfLinkHandler(this.props.go) : undefined,

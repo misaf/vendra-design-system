@@ -186,7 +186,7 @@ All catalog products use the shared neutral 4:5 placeholder. Default product/cat
 
 Products have no names. Each one is known by its unique code (its catalog `id`, e.g.
 `VF-7K2M4Q`): the code is its title on cards, the product page, bag, checkout, orders,
-emails and WhatsApp messages, and its category says what kind of product it is
+emails, SMS and WhatsApp messages, and its category says what kind of product it is
 ("Flower box"), shown under the code. Search finds a product by its code, typed
 in any case, with spaces or Persian digits. Product URLs carry the category and code:
 `?view=product&id=VF-7K2M4Q&cat=boxes`.
@@ -197,6 +197,11 @@ care text. Unknown codes show the not-found page. Old slug links (`?id=ivory`,
 `ivory-classic`), saved lists and bag lines from before codes still resolve through each
 product's `legacy` slug.
 
+Order-confirmed, ready and on-the-way SMS and WhatsApp messages
+(`communications/notifications.js`) list the order's codes: pass the order lines as `items`
+(`[{code, qty}]`). More than three products show the first two and "+N more", so a Persian SMS
+stays within two parts.
+
 ### Account balance
 
 Signed-in customers top up their balance in the account's Balance tab (`?view=account&tab=balance`)
@@ -204,6 +209,8 @@ and can pay for an order from it at checkout. Paying from a balance of at least
 `VF_STORE.wallet.discountFrom` (100,000,000 Toman) takes `discountPercent` (5%) off the products,
 after any promo code; delivery is not discounted. The balance option is chosen by default when it
 covers the order; when it doesn't, checkout says how much to top up and links to the Balance tab.
+Below the discount line, checkout also says how much to top up to get the discount and what it
+would save on this order.
 Guests are asked to sign in. Each top-up and order payment is kept in the balance history.
 
 In this template the balance is a demo kept in the browser with the account, and top-ups use a

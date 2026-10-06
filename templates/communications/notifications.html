@@ -20,8 +20,8 @@ details summary{font-size:12px;color:var(--text-muted);cursor:pointer}details pr
 const N=window.AG_NOTIFY;
 const LABEL={received:'Order received',paid:'Payment confirmed',ready:'Ready — photo',onway:'On its way',delivered:'Delivered',delayed:'Running late',cancelled:'Cancelled',reminder:'Occasion reminder'};
 // SAMPLE values — the backend fills these from the order / reminder record.
-const VARS={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Mehr (1 Oct)',slot:'9:00-12:00',amount:'2,400,000 Toman',recipient:'Mina',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'Mum',occasion:'birthday'},
- fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۹ مهر',slot:'۹ تا ۱۲',amount:'۲٬۴۰۰٬۰۰۰ تومان',recipient:'مینا',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'مامان',occasion:'تولد'}};
+const VARS={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Mehr (1 Oct)',slot:'9:00-12:00',amount:'2,400,000 Toman',items:[{code:'VF-7K2M4Q',qty:2},{code:'VF-3HX9TP'}],recipient:'Mina',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'Mum',occasion:'birthday'},
+ fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۹ مهر',slot:'۹ تا ۱۲',amount:'۲٬۴۰۰٬۰۰۰ تومان',items:[{code:'VF-7K2M4Q',qty:2},{code:'VF-3HX9TP'}],recipient:'مینا',time:'10:40',link:'example.test/o/10522',remLink:'example.test/r',wa:'0912 564 9438',name:'مامان',occasion:'تولد'}};
 const KEY='vendra-notify-card';
 function Seg({value,set,opts,label}){return <div><label id={label}>{label}</label><div className="seg" role="radiogroup" aria-labelledby={label}>{opts.map(([v,l])=><button key={v} role="radio" aria-checked={value===v} onClick={()=>set(v)}>{l}</button>)}</div></div>;}
 const waHtml=s=>s.split(/(\*[^*\n]+\*)/g).map((p,i)=>p.startsWith('*')&&p.endsWith('*')?<strong key={i}>{p.slice(1,-1)}</strong>:p);
@@ -49,6 +49,7 @@ function App(){
     <div className="rules">
       <div><b>Which language</b>The account’s <code>preferredLocale</code>, set in Profile. Guests: the page language at checkout. Neither → Persian.</div>
       <div><b>Numbers</b>Persian messages use Persian digits for dates, times and amounts. Order numbers, links and phone numbers stay Latin so they can be tapped and searched.</div>
+      <div><b>Product codes</b>Order, ready and on-the-way messages name the products by code (<code>items</code>: the order lines), so customer, florist and courier mean the same product. Codes stay Latin; more than three products show the first two and “+N more”.</div>
       <div><b>SMS length</b>English stays in GSM-7 (160 per part): straight quotes, no dashes or emoji. Persian is UCS-2 (70 per part, 67 when split) — keep it to 2 parts.</div>
       <div><b>Reminders</b>Promotional, so they carry an opt-out (“Reply STOP” / «لغو۱۱»). Order messages are transactional and don’t.</div>
     </div>

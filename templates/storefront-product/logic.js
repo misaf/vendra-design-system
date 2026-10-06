@@ -216,11 +216,6 @@ class Component extends VFPage {
       toast: null
     });
   }
-  // Gallery.jsx now makes its track focusable; until _ds_bundle.js is regenerated
-  // from it (Claude Design self-check), do the same here. Remove after that.
-  _focusableGallery() {
-    setTimeout(() => document.querySelectorAll?.('.ag-gallery__track:not([tabindex])').forEach(track => { track.tabIndex = 0; }), 0);
-  }
   _rememberProduct() {
     vfRememberViewed(vfPageRoute(this.props).id || VF_PRODUCTS[0].id);
   }
@@ -228,11 +223,9 @@ class Component extends VFPage {
     this._productId = vfPageRoute(this.props).id;
     super.componentDidMount();
     this._rememberProduct();
-    this._focusableGallery();
   }
   componentDidUpdate() {
     super.componentDidUpdate();
-    this._focusableGallery();
     const id = vfPageRoute(this.props).id;
     if (this._productId !== id) {
       this._productId = id;

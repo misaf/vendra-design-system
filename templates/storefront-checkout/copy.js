@@ -141,6 +141,7 @@ function vfCopy(S) {
           "short": "Balance {balance}. Top up {left} more to pay from it.",
           "topUp": "Top up your balance",
           "after": "Balance after this order: {balance}.",
+          "hint": "Top up {gap} and pay from your balance to get {percent}% off the products: {saving} off this order.",
           "left": "Balance left"
         },
         "demo": "Template preview: no money is transferred and no messages are sent.",
@@ -187,6 +188,7 @@ function vfCopy(S) {
           "short": "موجودی {balance}. برای پرداخت از کیف پول {left} دیگر افزایش موجودی دهید.",
           "topUp": "افزایش موجودی",
           "after": "موجودی پس از این سفارش: {balance}.",
+          "hint": "با افزایش موجودی به اندازه {gap} و پرداخت از کیف پول، {percent}٪ تخفیف محصولات می‌گیرید: {saving} کمتر برای این سفارش.",
           "left": "موجودی باقی‌مانده"
         },
         "demo": "پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.",

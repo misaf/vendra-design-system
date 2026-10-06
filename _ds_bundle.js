@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"VendraDesignSystem_f4f210","components":[{"name":"AddressCard","sourcePath":"components/commerce/AddressCard.jsx"},{"name":"BlogCard","sourcePath":"components/commerce/BlogCard.jsx"},{"name":"CategoryCard","sourcePath":"components/commerce/CategoryCard.jsx"},{"name":"Gallery","sourcePath":"components/commerce/Gallery.jsx"},{"name":"LineItem","sourcePath":"components/commerce/LineItem.jsx"},{"name":"OrderSummary","sourcePath":"components/commerce/OrderSummary.jsx"},{"name":"OrderTimeline","sourcePath":"components/commerce/OrderTimeline.jsx"},{"name":"PaymentCard","sourcePath":"components/commerce/PaymentCard.jsx"},{"name":"ProductCard","sourcePath":"components/commerce/ProductCard.jsx"},{"name":"ReminderRow","sourcePath":"components/commerce/ReminderRow.jsx"},{"name":"ArchFrame","sourcePath":"components/core/ArchFrame.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"DetailList","sourcePath":"components/core/DetailList.jsx"},{"name":"Icon","sourcePath":"components/core/Icon.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"SkipLink","sourcePath":"components/core/SkipLink.jsx"},{"name":"Tag","sourcePath":"components/core/Tag.jsx"},{"name":"ICON_SVGS","sourcePath":"components/core/icon-svgs.js"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"AnnouncementBar","sourcePath":"components/feedback/AnnouncementBar.jsx"},{"name":"Dialog","sourcePath":"components/feedback/Dialog.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"LiveRegion","sourcePath":"components/feedback/LiveRegion.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"Toast","sourcePath":"components/feedback/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/feedback/Tooltip.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"ChoiceGroup","sourcePath":"components/forms/ChoiceGroup.jsx"},{"name":"ChoiceTile","sourcePath":"components/forms/ChoiceTile.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"QuantityStepper","sourcePath":"components/forms/QuantityStepper.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RangeSlider","sourcePath":"components/forms/RangeSlider.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"},{"name":"Accordion","sourcePath":"components/navigation/Accordion.jsx"},{"name":"BottomTabBar","sourcePath":"components/navigation/BottomTabBar.jsx"},{"name":"LanguageSwitch","sourcePath":"components/navigation/LanguageSwitch.jsx"},{"name":"MenuList","sourcePath":"components/navigation/MenuList.jsx"},{"name":"NavLink","sourcePath":"components/navigation/NavLink.jsx"},{"name":"SectionHeader","sourcePath":"components/navigation/SectionHeader.jsx"},{"name":"SnapScroller","sourcePath":"components/navigation/SnapScroller.jsx"},{"name":"Stepper","sourcePath":"components/navigation/Stepper.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"}],"sourceHashes":{"components/commerce/AddressCard.jsx":"37b220086322","components/commerce/BlogCard.jsx":"36ef083cbeb8","components/commerce/CategoryCard.jsx":"f51f60d40099","components/commerce/Gallery.jsx":"7b4e988ca335","components/commerce/LineItem.jsx":"2258f655d1d0","components/commerce/OrderSummary.jsx":"0721d0841dec","components/commerce/OrderTimeline.jsx":"601537deba31","components/commerce/PaymentCard.jsx":"125173e3d345","components/commerce/ProductCard.jsx":"277ccc1de715","components/commerce/ReminderRow.jsx":"f54847f91308","components/core/ArchFrame.jsx":"e954df835580","components/core/Badge.jsx":"decc857bcfff","components/core/Button.jsx":"5a77f8df5a87","components/core/Card.jsx":"55723458b4a2","components/core/DetailList.jsx":"15ed6e473d53","components/core/Icon.jsx":"3cfc4b4f0c8d","components/core/IconButton.jsx":"4cbda3c62944","components/core/SkipLink.jsx":"bfcefe7f715f","components/core/Tag.jsx":"c2fcd6dc5d47","components/core/icon-svgs.js":"b67f776a1172","components/feedback/Alert.jsx":"14c6b79e3f63","components/feedback/AnnouncementBar.jsx":"ff25283f4048","components/feedback/Dialog.jsx":"403f68c220c2","components/feedback/EmptyState.jsx":"f0618a7f4dea","components/feedback/LiveRegion.jsx":"55b92cf687a9","components/feedback/Skeleton.jsx":"2ae301bd9cf9","components/feedback/Toast.jsx":"c93f75a0393c","components/feedback/Tooltip.jsx":"5dcc9b476c2a","components/forms/Checkbox.jsx":"119f891c0fa7","components/forms/ChoiceGroup.jsx":"3c6e886f8ef1","components/forms/ChoiceTile.jsx":"5d37cb70ba4d","components/forms/DatePicker.jsx":"93cc16cde5ff","components/forms/Input.jsx":"2597bec4c519","components/forms/QuantityStepper.jsx":"bc1bef867d7a","components/forms/Radio.jsx":"044f21fb3560","components/forms/RangeSlider.jsx":"5d4b6d2246cc","components/forms/Select.jsx":"d543eb64c6d3","components/forms/Switch.jsx":"769640378519","components/navigation/Accordion.jsx":"acb3368cae51","components/navigation/BottomTabBar.jsx":"47dc44a47a18","components/navigation/LanguageSwitch.jsx":"1e3bf20c1cc1","components/navigation/MenuList.jsx":"43c3156bf970","components/navigation/NavLink.jsx":"9e143a04b3f0","components/navigation/SectionHeader.jsx":"f9b752923188","components/navigation/SnapScroller.jsx":"22236afd7a2f","components/navigation/Stepper.jsx":"c94f630bd8db","components/navigation/Tabs.jsx":"cfc0f4576816","components/utils/dates.js":"6e02a4c4f389","components/utils/format.js":"38da12a44fae","components/utils/nav.js":"c0187093021e","components/utils/responsive.js":"0e93a531f6e0","components/utils/seo.js":"3a06025cae1d"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"VendraDesignSystem_f4f210","components":[{"name":"AddressCard","sourcePath":"components/commerce/AddressCard.jsx"},{"name":"BlogCard","sourcePath":"components/commerce/BlogCard.jsx"},{"name":"CategoryCard","sourcePath":"components/commerce/CategoryCard.jsx"},{"name":"Gallery","sourcePath":"components/commerce/Gallery.jsx"},{"name":"LineItem","sourcePath":"components/commerce/LineItem.jsx"},{"name":"OrderSummary","sourcePath":"components/commerce/OrderSummary.jsx"},{"name":"OrderTimeline","sourcePath":"components/commerce/OrderTimeline.jsx"},{"name":"PaymentCard","sourcePath":"components/commerce/PaymentCard.jsx"},{"name":"ProductCard","sourcePath":"components/commerce/ProductCard.jsx"},{"name":"ReminderRow","sourcePath":"components/commerce/ReminderRow.jsx"},{"name":"ArchFrame","sourcePath":"components/core/ArchFrame.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"DetailList","sourcePath":"components/core/DetailList.jsx"},{"name":"Icon","sourcePath":"components/core/Icon.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"SkipLink","sourcePath":"components/core/SkipLink.jsx"},{"name":"Tag","sourcePath":"components/core/Tag.jsx"},{"name":"ICON_SVGS","sourcePath":"components/core/icon-svgs.js"},{"name":"Alert","sourcePath":"components/feedback/Alert.jsx"},{"name":"AnnouncementBar","sourcePath":"components/feedback/AnnouncementBar.jsx"},{"name":"Dialog","sourcePath":"components/feedback/Dialog.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"LiveRegion","sourcePath":"components/feedback/LiveRegion.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"Toast","sourcePath":"components/feedback/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/feedback/Tooltip.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"ChoiceGroup","sourcePath":"components/forms/ChoiceGroup.jsx"},{"name":"ChoiceTile","sourcePath":"components/forms/ChoiceTile.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"Input","sourcePath":"components/forms/Input.jsx"},{"name":"QuantityStepper","sourcePath":"components/forms/QuantityStepper.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RangeSlider","sourcePath":"components/forms/RangeSlider.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Switch","sourcePath":"components/forms/Switch.jsx"},{"name":"Accordion","sourcePath":"components/navigation/Accordion.jsx"},{"name":"BottomTabBar","sourcePath":"components/navigation/BottomTabBar.jsx"},{"name":"LanguageSwitch","sourcePath":"components/navigation/LanguageSwitch.jsx"},{"name":"MenuList","sourcePath":"components/navigation/MenuList.jsx"},{"name":"NavLink","sourcePath":"components/navigation/NavLink.jsx"},{"name":"SectionHeader","sourcePath":"components/navigation/SectionHeader.jsx"},{"name":"SnapScroller","sourcePath":"components/navigation/SnapScroller.jsx"},{"name":"Stepper","sourcePath":"components/navigation/Stepper.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"}],"sourceHashes":{"components/commerce/AddressCard.jsx":"37b220086322","components/commerce/BlogCard.jsx":"36ef083cbeb8","components/commerce/CategoryCard.jsx":"f51f60d40099","components/commerce/Gallery.jsx":"ae185b02ac38","components/commerce/LineItem.jsx":"2258f655d1d0","components/commerce/OrderSummary.jsx":"0721d0841dec","components/commerce/OrderTimeline.jsx":"601537deba31","components/commerce/PaymentCard.jsx":"125173e3d345","components/commerce/ProductCard.jsx":"277ccc1de715","components/commerce/ReminderRow.jsx":"f54847f91308","components/core/ArchFrame.jsx":"d527eb309df8","components/core/Badge.jsx":"f9cca1c95972","components/core/Button.jsx":"5a77f8df5a87","components/core/Card.jsx":"55723458b4a2","components/core/DetailList.jsx":"15ed6e473d53","components/core/Icon.jsx":"3cfc4b4f0c8d","components/core/IconButton.jsx":"014224884557","components/core/SkipLink.jsx":"bfcefe7f715f","components/core/Tag.jsx":"c2fcd6dc5d47","components/core/icon-svgs.js":"b67f776a1172","components/feedback/Alert.jsx":"9f3cb61d7064","components/feedback/AnnouncementBar.jsx":"ff25283f4048","components/feedback/Dialog.jsx":"403f68c220c2","components/feedback/EmptyState.jsx":"c3e59bea9315","components/feedback/LiveRegion.jsx":"55b92cf687a9","components/feedback/Skeleton.jsx":"2ae301bd9cf9","components/feedback/Toast.jsx":"c93f75a0393c","components/feedback/Tooltip.jsx":"77be487ea9be","components/forms/Checkbox.jsx":"119f891c0fa7","components/forms/ChoiceGroup.jsx":"3c6e886f8ef1","components/forms/ChoiceTile.jsx":"5599f09f37bd","components/forms/DatePicker.jsx":"93cc16cde5ff","components/forms/Input.jsx":"2597bec4c519","components/forms/QuantityStepper.jsx":"bc1bef867d7a","components/forms/Radio.jsx":"c5405e8e2f7c","components/forms/RangeSlider.jsx":"5d4b6d2246cc","components/forms/Select.jsx":"d543eb64c6d3","components/forms/Switch.jsx":"769640378519","components/navigation/Accordion.jsx":"acb3368cae51","components/navigation/BottomTabBar.jsx":"47dc44a47a18","components/navigation/LanguageSwitch.jsx":"9c4d7b9408e7","components/navigation/MenuList.jsx":"43c3156bf970","components/navigation/NavLink.jsx":"9e143a04b3f0","components/navigation/SectionHeader.jsx":"f9b752923188","components/navigation/SnapScroller.jsx":"22236afd7a2f","components/navigation/Stepper.jsx":"c94f630bd8db","components/navigation/Tabs.jsx":"fb4d44851b27","components/utils/dates.js":"6e02a4c4f389","components/utils/format.js":"38da12a44fae","components/utils/nav.js":"c0187093021e","components/utils/responsive.js":"0e93a531f6e0","components/utils/seo.js":"3a06025cae1d"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -10,6 +10,7 @@ const __ds_scope = {};
 
 // components/commerce/Gallery.jsx
 try { (() => {
+// The track is focusable so keyboard users can scroll it with the arrow keys (axe: scrollable-region-focusable).
 function Gallery({
   images = [],
   sizes = '(max-width: 767px) 100vw, 540px',
@@ -43,6 +44,7 @@ function Gallery({
   }, /*#__PURE__*/React.createElement("div", {
     ref: ref,
     onScroll: onScroll,
+    tabIndex: 0,
     className: 'ag-gallery__track ag-product__media--' + frame,
     style: {
       aspectRatio: aspect
@@ -766,12 +768,13 @@ function IconButton({
 }) {
   const is = size === 'sm' ? 16 : size === 'lg' ? 22 : 20;
   const cls = ['ag-iconbtn', 'ag-iconbtn--' + variant, 'ag-iconbtn--' + size, active ? 'ag-iconbtn--active' : '', className].join(' ');
+  // count may be a pre-localized string (Persian digits), so test for a value rather than count>0.
   const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(__ds_scope.Icon, {
     name: icon,
     size: is
-  }), count > 0 && /*#__PURE__*/React.createElement("span", {
+  }), count ? /*#__PURE__*/React.createElement("span", {
     className: "ag-iconbtn__count"
-  }, count));
+  }, count) : null);
   if (href) return /*#__PURE__*/React.createElement("a", _extends({
     href: href,
     target: target,
@@ -1393,8 +1396,11 @@ function Tooltip({
   React.useEffect(() => {
     if (!active) setDismissed(false);
   }, [active]);
-  const trigger = React.isValidElement(children) ? React.cloneElement(children, {
-    'aria-describedby': [children.props['aria-describedby'], id].filter(Boolean).join(' ')
+  // Template runtimes pass even a single child as an array, so unwrap a lone element before linking it.
+  const kids = React.Children.toArray(children);
+  const only = kids.length === 1 && React.isValidElement(kids[0]) ? kids[0] : null;
+  const trigger = only ? React.cloneElement(only, {
+    'aria-describedby': [only.props['aria-describedby'], id].filter(Boolean).join(' ')
   }) : children;
   return /*#__PURE__*/React.createElement("span", {
     className: 'ag-tip' + (open ? ' ag-tip--open' : '') + (dismissed ? ' ag-tip--dismissed' : ''),
@@ -1545,6 +1551,7 @@ Object.assign(__ds_scope, { ChoiceGroup });
 // components/forms/ChoiceTile.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+// The label names the tile; the description is read after it as its description, not as part of the name.
 function ChoiceTile({
   label,
   description,
@@ -1555,6 +1562,11 @@ function ChoiceTile({
   className = '',
   ...rest
 }) {
+  const auto = React.useId();
+  const lid = auto + '-label';
+  const did = auto + '-desc';
+  const named = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
+  const desc = [description ? did : null, rest['aria-describedby']].filter(Boolean).join(' ') || undefined;
   return /*#__PURE__*/React.createElement("button", _extends({
     type: "button",
     role: "radio",
@@ -1563,9 +1575,14 @@ function ChoiceTile({
     tabIndex: selected ? 0 : -1,
     className: ['ag-choice', 'ag-choice--' + size, selected ? 'ag-choice--selected' : '', className].join(' '),
     onClick: () => onSelect && onSelect()
-  }, rest), /*#__PURE__*/React.createElement("span", {
+  }, rest, {
+    "aria-labelledby": named ? lid : rest['aria-labelledby'],
+    "aria-describedby": desc
+  }), /*#__PURE__*/React.createElement("span", {
+    id: lid,
     className: "ag-choice__label"
   }, label), description && /*#__PURE__*/React.createElement("span", {
+    id: did,
     className: "ag-choice__desc"
   }, description));
 }
@@ -1753,6 +1770,7 @@ Object.assign(__ds_scope, { LineItem });
 // components/forms/Radio.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+// The label names the radio; the description is read after it as its description, not as part of the name.
 function Radio({
   label,
   description,
@@ -1767,8 +1785,11 @@ function Radio({
   const auto = React.useId();
   const fid = id || auto;
   const hid = fid + '-hint';
+  const lid = fid + '-label';
+  const did = fid + '-desc';
   const msg = error || hint;
-  const desc = [msg ? hid : null, rest['aria-describedby']].filter(Boolean).join(' ') || undefined;
+  const desc = [description ? did : null, msg ? hid : null, rest['aria-describedby']].filter(Boolean).join(' ') || undefined;
+  const named = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
   const box = /*#__PURE__*/React.createElement("label", {
     className: 'ag-check ag-check--radio' + (error ? ' ag-check--error' : '') + (disabled ? ' ag-check--disabled' : '') + (msg ? '' : ' ' + className),
     style: msg ? undefined : style
@@ -1777,6 +1798,7 @@ function Radio({
     id: id,
     disabled: disabled
   }, rest, {
+    "aria-labelledby": named ? lid : rest['aria-labelledby'],
     "aria-invalid": error ? true : undefined,
     "aria-describedby": desc,
     "aria-errormessage": error ? hid : undefined
@@ -1787,7 +1809,10 @@ function Radio({
       display: 'flex',
       flexDirection: 'column'
     }
-  }, label, description && /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", {
+    id: lid
+  }, label), description && /*#__PURE__*/React.createElement("span", {
+    id: did,
     style: {
       fontSize: 'var(--text-sm)',
       color: 'var(--text-muted)'
@@ -2192,6 +2217,7 @@ try { (() => {
 function LanguageSwitch({
   value = 'en',
   onChange,
+  label = 'Language',
   options = [{
     id: 'en',
     label: 'EN'
@@ -2203,7 +2229,7 @@ function LanguageSwitch({
   return /*#__PURE__*/React.createElement("div", {
     className: "ag-lang",
     role: "group",
-    "aria-label": "Language"
+    "aria-label": label
   }, options.map(o => /*#__PURE__*/React.createElement("button", {
     key: o.id,
     type: "button",
