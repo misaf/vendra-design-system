@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const {sharedLogic, generate} = require('../_build/generate.cjs');
+const {sharedLogic, sharedLogicInline, generate} = require('../_build/generate.cjs');
 generate(true);
 function context() {
  const history = [];
@@ -58,9 +58,11 @@ let parsed=0;
 for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.startsWith('storefront-'))) {
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
  const html=read('templates/'+folder+'/'+filename),script=html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
- assert.ok(html.includes(sharedLogic),folder+' must use the shared generator logic');
+ assert.ok(html.includes('<script src="../_runtime/shared-logic.js"></script>\n<script src="../_runtime/support.js"></script>'),folder+' must load the shared logic before the runtime');
+ assert.ok(html.includes(sharedLogicInline)&&!html.includes('// Source: templates/_shared/page-lifecycle.js'),folder+' must not carry its own copy of the shared logic');
+ assert.equal(read('templates/_runtime/shared-logic.js').endsWith(sharedLogic),true,'_runtime/shared-logic.js must match _shared/');
  if(folder!=='storefront-site')assert.ok(html.includes('<main id="main"'),folder+' must expose the skip-link destination');
- const {ctx:c,history}=context();vm.runInContext(script+'\nthis.Logic=Component;',c);const logic=new c.Logic({lang:'en',tenant:'default',mobile:false});
+ const {ctx:c,history}=context();vm.runInContext(sharedLogic,c);vm.runInContext(script+'\nthis.Logic=Component;',c);const logic=new c.Logic({lang:'en',tenant:'default',mobile:false});
  const values=logic.renderVals();assert.ok(values);parsed++;
  if(['storefront-bag','storefront-checkout'].includes(folder)) assert.equal(values.totalLabel, values.sums.at(-1).value, 'Sticky action total must match the order summary');
  if(folder==='storefront-site') {
@@ -90,7 +92,7 @@ console.log('Passed delivery fees, validation, Persian digits, history, checkout
 function loadPage(name, props = {}, search = '') {
  const {ctx:c,history}=context();c.location.search=search;
  const html=read('templates/storefront-'+name+'/Storefront'+name[0].toUpperCase()+name.slice(1)+'.dc.html');
- vm.runInContext(html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1]+'\nthis.Logic=Component;',c);
+ vm.runInContext(sharedLogic,c); vm.runInContext(html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1]+'\nthis.Logic=Component;',c);
  return {logic:new c.Logic({lang:'en',...props}),ctx:c,history};
 }
 for(const lang of ['en','fa']) {

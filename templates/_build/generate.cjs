@@ -38,6 +38,21 @@ function renderSharedLogic() {
 }
 
 const sharedLogic = renderSharedLogic();
+// Pages load the shared logic once from the runtime folder instead of carrying their own copy.
+// Its top-level declarations become globals that each page's logic reads by name.
+const sharedLogicFile = path.join(root, '_runtime', 'shared-logic.js');
+const sharedLogicRuntime = '// GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' + sharedLogic;
+const sharedLogicScript = '<script src="../_runtime/shared-logic.js"></script>';
+const supportScript = '<script src="../_runtime/support.js"></script>';
+// DCLogic only exists inside page logic, so the page base class is built there.
+const sharedLogicInline = '// Shared storefront logic loads from ../_runtime/shared-logic.js.\nconst VFPage = vfPageClass(DCLogic);';
+
+// Load the shared logic before support.js evaluates the page logic.
+function renderSharedLogicScript(html, folder) {
+  if (html.includes(sharedLogicScript + '\n' + supportScript)) return html;
+  if (!html.includes(supportScript)) throw new Error('Missing support.js script in ' + folder);
+  return html.replace(supportScript, sharedLogicScript + '\n' + supportScript);
+}
 
 function region(source, name, syntax = 'html') {
   const begin = syntax === 'html' ? '<!-- BEGIN ' + name + ' -->' : '// BEGIN ' + name;
@@ -102,14 +117,15 @@ function renderShell(source) {
 }
 
 function outputs() {
-  const result = new Map();
+  const result = new Map([[sharedLogicFile, sharedLogicRuntime]]);
   const folders = fs.readdirSync(root).filter(name => name.startsWith('storefront-')).sort();
   for (const folder of folders) {
     const files = fs.readdirSync(path.join(root, folder)).filter(name => name.endsWith('.dc.html'));
     if (files.length !== 1) throw new Error('Expected one template in ' + folder);
     const filename = path.join(root, folder, files[0]);
     let html = fs.readFileSync(filename, 'utf8');
-    html = replaceScriptRegion(html, 'GENERATED SHARED LOGIC', sharedLogic);
+    html = renderSharedLogicScript(html, folder);
+    html = replaceScriptRegion(html, 'GENERATED SHARED LOGIC', sharedLogicInline);
     html = renderPageCopy(html, folder);
     html = renderPageLogic(html, folder);
     html = renderTenantProp(html, folder);
@@ -133,7 +149,7 @@ function generate(check = false) {
   return stale.length;
 }
 
-module.exports = {sharedLogic, outputs, generate};
+module.exports = {sharedLogic, sharedLogicInline, outputs, generate};
 if (require.main === module) {
   try {
     const check = process.argv.includes('--check');

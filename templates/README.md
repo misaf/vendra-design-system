@@ -138,17 +138,18 @@ npm --prefix templates run test:e2e:update
 All pages load the same assets. Page folders contain only their `Storefront*.dc.html` source.
 
 - `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
+- `_runtime/shared-logic.js`: generated from the `_shared/*.js` logic files (store config, catalog, delivery, routing, navigation, page lifecycle). Pages load it before `support.js`; never edit it.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
 - `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
 - `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.
 - `../styles.css`: imports the shared design-system fonts, tokens and component styles. `_runtime/ds-base.js` adds the active tenant's `../tokens/tenants/<slug>.css` after it (chosen by `tenant` in `_shared/store-config.js` or `?tenant=`).
 - `../_ds_bundle.js` and `../assets/`: shared component bundle and images.
 
-Pages reference `../_runtime/support.js` and `../_runtime/ds-base.js`; browsers can reuse the same cached files across pages. The loader adds each shared stylesheet and component bundle only once per document.
+Pages reference `../_runtime/shared-logic.js`, `../_runtime/support.js` and `../_runtime/ds-base.js`; browsers can reuse the same cached files across pages. The loader adds each shared stylesheet and component bundle only once per document.
 
 When exporting, include `_runtime/` alongside the selected `storefront-*` folders, and include the design-system root assets. Preserve their relative structure, or change `base` once in `_runtime/ds-base.js` to point to the exported design-system root. Exporting one page folder alone is insufficient.
 
-HTML shell and page-logic sections still regenerate into each template because the template runtime consumes inline markup and logic. These generated sections are maintained in `_shared/`; the static JS and CSS assets are shared at runtime.
+HTML shell, page copy and page-logic sections still regenerate into each template because the template runtime consumes inline markup and logic. Shared logic does not: its top-level declarations load once as globals from `_runtime/shared-logic.js`, and each page's `GENERATED SHARED LOGIC` section is a single line, `const VFPage = vfPageClass(DCLogic);`, because the runtime only hands `DCLogic` to page logic.
 
 ## Adding a page
 
