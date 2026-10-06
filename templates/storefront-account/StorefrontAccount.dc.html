@@ -86,6 +86,7 @@
 <main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-3"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
 <div class="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tabs" variant="pill" items="{{ tabItems }}" value="{{ tab }}" on-change="{{ setTab }}" label="{{ t.accA }}" id-prefix="vf-account" hint-size="420px,44px"></x-import></div>
 <div role="tabpanel" id="{{ tabPanelId }}" aria-labelledby="{{ tabId }}" tabindex="0" class="vf-account-panel"><sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-3"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem_f4f210.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
+<sc-if value="{{ isBalance }}" hint-placeholder-val="{{ false }}"><div class="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-[760px]"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Card" padding="{{ 24 }}" hint-size="100%,150px"><div class="tw:flex tw:flex-col tw:gap-2"><span id="vf-balance-label" class="tw:text-sm tw:text-quiet">{{ t.balance.title }}</span><span id="vf-balance-amount" aria-labelledby="vf-balance-label vf-balance-amount" class="tw:text-2xl tw:font-medium">{{ balance.amount }}</span><p class="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">{{ balance.status }}</p></div></x-import><section aria-labelledby="vf-topup-title" class="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><h2 id="vf-topup-title" class="tw:m-0 tw:text-xl">{{ t.balance.topUp }}</h2><div role="group" aria-label="{{ t.balance.quick }}" class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ balance.presets }}" as="v" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Tag" selected="{{ v.pressed }}" aria-pressed="{{ v.pressed }}" on-click="{{ v.pick }}" hint-size="130px,36px">{{ v.label }}</x-import></sc-for></div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Input" id="vf-topup-amount" label="{{ t.balance.amount }}" value="{{ balance.value }}" on-change="{{ balance.set }}" hint="{{ balance.hint }}" error="{{ balance.error }}" inputmode="numeric" dir="ltr" autocomplete="off" hint-size="100%,96px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" icon-start="banknote" on-click="{{ balance.submit }}" loading="{{ balance.busy }}" disabled="{{ balance.busy }}" hint-size="200px,48px">{{ balance.payLabel }}</x-import></div><sc-if value="{{ balance.busy }}"><p role="status" class="tw:m-0 tw:text-sm">{{ t.balance.processing }}</p></sc-if><sc-if value="{{ balance.done }}"><p id="vf-topup-done" tabindex="-1" role="status" class="tw:m-0 tw:text-sm tw:font-medium">{{ balance.done }}</p></sc-if><p class="tw:m-0 tw:text-sm tw:text-quiet">{{ t.balance.demo }}</p></section><section aria-labelledby="vf-balance-history" class="tw:flex tw:flex-col tw:gap-3"><h2 id="vf-balance-history" class="tw:m-0 tw:text-xl">{{ t.balance.history }}</h2><sc-if value="{{ balance.noHistory }}"><p class="tw:m-0 tw:text-secondary">{{ t.balance.noHistory }}</p></sc-if><sc-if value="{{ balance.hasHistory }}"><ul class="vf-account-balance-history tw:list-none tw:m-0 tw:p-0 tw:flex tw:flex-col"><sc-for list="{{ balance.history }}" as="h" hint-placeholder-count="2"><li class="tw:flex tw:justify-between tw:items-baseline tw:gap-4 tw:py-3 tw:[border-top:1px_solid_var(--border-subtle)]"><div class="tw:flex tw:flex-col tw:gap-1"><span class="tw:font-medium">{{ h.label }}</span><span class="tw:text-sm tw:text-quiet">{{ h.date }}</span></div><span class="vf-account-balance-amount tw:font-medium tw:whitespace-nowrap" data-tone="{{ h.tone }}">{{ h.amount }}</span></li></sc-for></ul></sc-if></section></div></sc-if>
 <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}"><div class="vf-account-saved-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if><sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}"><div class="vf-account-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_f4f210.EmptyState" icon="heart" title="{{ t.savedEmptyA }}" title-accent="{{ t.savedEmptyB }}" body="{{ t.savedEmptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></sc-if>
 <sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><div class="vf-account-map vf-map-box tw:h-[260px] tw:mb-4"><div id="vf-account-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_f4f210.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
 <sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem_f4f210.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem_f4f210.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_f4f210.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
@@ -234,6 +235,9 @@ const VF_STORE = {
     center: [35.8327, 50.9654],
     zoom: 13
   },
+  // Account balance. Signed-in customers top up, then pay for orders from their balance. Paying from a
+  // balance of at least `discountFrom` takes `discountPercent` off the products (not delivery). Amounts are in Toman.
+  wallet: {discountFrom: 100_000_000, discountPercent: 5, topUps: [10_000_000, 50_000_000, 100_000_000], minTopUp: 1_000_000, maxTopUp: 500_000_000},
   payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
 };
 
@@ -377,13 +381,16 @@ function vfFreeDelivery(zoneId, sub) {
   return sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zoneId);
 }
 
-function vfTotals(lines, delivery) {
+// `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
+// the balance discount off the products, after any promo code.
+function vfTotals(lines, delivery, balance = null) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const zone = vfZone(delivery.zone);
   const fee = vfFreeDelivery(zone.id, sub) ? 0 : zone.fee;
   // The applied promo code travels with the checkout details.
   const discount = vfDiscount(delivery.promo, sub);
-  return {sub, fee, discount, total: sub - discount + fee};
+  const balanceDiscount = typeof vfBalanceDiscount === 'function' ? vfBalanceDiscount(balance, sub - discount) : 0;
+  return {sub, fee, discount, ...(balanceDiscount ? {balanceDiscount, balancePercent: VF_STORE.wallet.discountPercent} : {}), total: sub - discount - balanceDiscount + fee};
 }
 
 // Source: templates/_shared/location.js
@@ -602,17 +609,23 @@ function vfDiscount(code, sub) {
   return promo ? Math.round(sub * promo.percent / 100) : 0;
 }
 
-// Order summary rows; the discount, when there is one, sits under the subtotal.
-function vfSummaryRows(totals, code, labels, money) {
+// Order summary rows; discounts, when there are any, sit under the subtotal. labels.balanceDiscount
+// reads like 'Balance discount · {percent}%'; num formats its percent.
+function vfSummaryRows(totals, code, labels, money, num = String) {
   return [{label: labels.sub, value: money(totals.sub)},
     ...(totals.discount ? [{label: labels.discount + ' · ' + vfPromoCode(code), value: '−⁨' + money(totals.discount) + '⁩'}] : []),
+    ...(totals.balanceDiscount ? [{label: (labels.balanceDiscount || 'Balance discount · {percent}%').replace('{percent}', num(totals.balancePercent)), value: '−⁨' + money(totals.balanceDiscount) + '⁩'}] : []),
     {label: labels.fee, value: totals.fee ? money(totals.fee) : labels.free},
     {label: labels.total, value: money(totals.total), strong: true}];
 }
 
 // Source: templates/_shared/catalog.js
 // Shared sample catalog for home, shop, search, saved items and product pricing.
-// Amounts are in Toman. Language arrays contain [name, subtitle, optional badge].
+// Products have no names: several designs can look alike, so each one is known by its unique code (`id`),
+// which customers quote and the studio and sellers search by. Its category says what kind of product it is.
+// Amounts are in Toman. `en`/`fa` hold a short description (`sub`, searchable but not shown: cards show only the category) and an optional `badge`.
+// `sizes: true` offers VF_SIZES; `noAddons` lists extras the product can't take; `care: true` uses the
+// product's own detail text as its care advice. `legacy` is the old slug, so earlier links and saved lists still work.
 // occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
 // Edit this file, then run: node templates/_build/generate.cjs
 // All sample products intentionally use a neutral image placeholder.
@@ -622,38 +635,38 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Ivory ribbon box', 'Roses · lisianthus · satin', 'New'],
-    fa: ['باکس روبان عاجی', 'رز · لیسیانتوس · ساتن', 'جدید']
+    id: 'VF-7K2M4Q', legacy: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', sizes: true, price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Roses · lisianthus · satin', badge: 'New'},
+    fa: {sub: 'رز · لیسیانتوس · ساتن', badge: 'جدید'}
   },
   {
-    id: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Lavender whisper', 'Seasonal · 15 stems'],
-    fa: ['زمزمه اسطوخودوس', 'فصلی · ۱۵ شاخه']
+    id: 'VF-3HX9TP', legacy: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Seasonal · 15 stems'},
+    fa: {sub: 'فصلی · ۱۵ شاخه'}
   },
   {
-    id: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Pearl orchid', 'Phalaenopsis · ceramic pot'],
-    fa: ['ارکیده مروارید', 'فالانوپسیس · گلدان سرامیکی']
+    id: 'VF-8RD5WN', legacy: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', noAddons: ['vase'], care: true, price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Phalaenopsis · ceramic pot'},
+    fa: {sub: 'فالانوپسیس · گلدان سرامیکی'}
   },
   {
-    id: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Crimson hatbox', 'Red roses · velvet box', 'Bestseller'],
-    fa: ['باکس کلاهی سرخ', 'رز قرمز · باکس مخمل', 'پرفروش']
+    id: 'VF-4CJ6ZB', legacy: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Red roses · velvet box', badge: 'Bestseller'},
+    fa: {sub: 'رز قرمز · باکس مخمل', badge: 'پرفروش'}
   },
   {
-    id: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Blush morning', 'Garden roses · eucalyptus'],
-    fa: ['صبح صورتی', 'رز باغی · اکالیپتوس']
+    id: 'VF-9FA2KE', legacy: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Garden roses · eucalyptus'},
+    fa: {sub: 'رز باغی · اکالیپتوس'}
   },
   {
-    id: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
-    en: ['Ivory bridal posy', 'Peonies · ranunculus'],
-    fa: ['دسته‌گل عروس عاجی', 'گل صد‌تومانی · آلاله']
+    id: 'VF-6MT3VY', legacy: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    en: {sub: 'Peonies · ranunculus'},
+    fa: {sub: 'گل صد‌تومانی · آلاله'}
   }
 ];
 
-// Ivory box sizes: [id, extra price, English name, Persian name, English detail, Persian detail].
+// Sizes for products with `sizes: true`: [id, extra price, English name, Persian name, English detail, Persian detail].
 const VF_SIZES = [
   ['petite', 0, 'Petite', 'کوچک', '12 stems', '۱۲ شاخه'],
   ['classic', 800_000, 'Classic', 'کلاسیک', '20 stems', '۲۰ شاخه'],
@@ -665,15 +678,39 @@ const VF_ADDONS = [
   ['vase', 650_000, 'Glass vase', 'گلدان شیشه‌ای']
 ];
 
+// Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
+function vfNormalizeToken(text) {
+  return String(text || '').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
+// A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.
+function vfFindProduct(text) {
+  const raw = String(text || ''), key = vfNormalizeToken(raw);
+  const slug = raw === 'ivory-classic' ? 'ivory' : raw;
+  return VF_PRODUCTS.find(product => product.legacy === slug) || (key ? VF_PRODUCTS.find(product => vfNormalizeToken(product.id) === key) : null) || null;
+}
+
 function vfProduct(id) {
-  const product = VF_PRODUCTS.find(product => product.id === id);
+  const product = vfFindProduct(id);
   if (!product) throw new Error('Unknown sample product: ' + id);
   return product;
 }
 
+// The product's code, from a code or an old slug ('' when unknown).
+function vfProductId(id) {
+  const product = vfFindProduct(id);
+  return product ? product.id : '';
+}
+
+// Under the code, a product shows only its category, e.g. "Flower box". Its `sub` description is still searchable.
+function vfProductSub(product, lang = 'en') {
+  return VF_CATEGORY_ITEM[lang][product.cat];
+}
+
 function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
   const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
-  const name = product[lang] ? product[lang][0] : product.en[0];
+  const name = VF_CATEGORY_ITEM[lang][product.cat] + ' ' + vfTokenText(product.id);
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
 }
@@ -683,18 +720,48 @@ function vfProductImages(product, lang = 'en') {
   return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
 }
 
-// Each demo gets its own bag objects; prices and names come from the same catalog.
+// Lines added from the product page list their product, size and extras; older lines carry them in the id.
+function vfLineProductId(line) {
+  return vfProductId(line.productId || line.id.split('-')[0]) || line.productId || '';
+}
+
+function vfLineSize(line) {
+  if ('size' in line) return line.size || null;
+  const product = vfFindProduct(line.id.split('-')[0]);
+  return product && product.sizes ? line.id.split('-')[1] || null : null;
+}
+
+// The code a line was ordered with: also its title in the bag, checkout, orders and messages.
+function vfLineToken(line) {
+  return line.token || vfLineProductId(line);
+}
+
+// A code inside other text, isolated so it stays left to right in Persian.
+function vfTokenText(token) {
+  return token ? '\u2066' + token + '\u2069' : '';
+}
+
+// A bag line's details: category, size and extras, e.g. "Flower box · Classic · 20 stems · Handwritten card".
+function vfLineDetail(product, size, addons, lang) {
+  const fa = lang === 'fa';
+  return [VF_CATEGORY_ITEM[lang][product.cat]]
+    .concat(product.sizes && size ? [size[fa ? 3 : 2], size[fa ? 5 : 4]] : [])
+    .concat(addons.map(addon => addon[fa ? 3 : 2])).join(' · ');
+}
+
+// Each demo gets its own bag objects; prices and codes come from the same catalog.
 function vfSampleBag() {
-  const ivory = vfProduct('ivory'), orchid = vfProduct('orchid');
+  const box = vfProduct('VF-7K2M4Q'), orchid = vfProduct('VF-8RD5WN');
   const classic = VF_SIZES.find(size => size[0] === 'classic'), card = VF_ADDONS.find(addon => addon[0] === 'card');
   return [
     {
-      id: 'ivory-classic-card', productId: 'ivory', size: 'classic', addons: ['card'], unit: ivory.price + classic[1] + card[1], qty: 1, image: ivory.image,
+      id: box.id + '-classic-card', productId: box.id, token: box.id, size: 'classic', addons: ['card'], unit: box.price + classic[1] + card[1], qty: 1, image: box.image,
       card: 'Happy birthday, Shirin.',
-      en: [ivory.en[0], [classic[2], classic[4], card[2]].join(' · ')],
-      fa: [ivory.fa[0], [classic[3], classic[5], card[3]].join(' · ')]
+      en: [box.id, vfLineDetail(box, classic, [card], 'en')],
+      fa: [box.id, vfLineDetail(box, classic, [card], 'fa')]
     },
-    {id: orchid.id, unit: orchid.price, qty: 1, image: orchid.image, en: [...orchid.en], fa: [...orchid.fa]}
+    {id: orchid.id, productId: orchid.id, token: orchid.id, size: null, addons: [], unit: orchid.price, qty: 1, image: orchid.image,
+      en: [orchid.id, vfLineDetail(orchid, null, [], 'en')], fa: [orchid.id, vfLineDetail(orchid, null, [], 'fa')]}
   ];
 }
 
@@ -714,63 +781,69 @@ function vfCardMessages(lines, delivery, lang) {
   const quote = text => (lang === 'fa' ? '«\u2068' + text + '\u2069»' : '“\u2068' + text + '\u2069”');
   const cards = (lines || []).filter(line => String(line.card || '').trim());
   if (!cards.length) return delivery && delivery.card ? delivery.card : '';
-  return cards.length === 1 ? quote(cards[0].card) : cards.map(line => line[lang][0] + ': ' + quote(line.card)).join(' · ');
+  return cards.length === 1 ? quote(cards[0].card) : cards.map(line => vfTokenText(vfLineToken(line)) + ': ' + quote(line.card)).join(' · ');
 }
 
 // The same line with a handwritten card added, priced and named as the product page would.
 function vfLineWithCard(line) {
-  const productId = line.productId || line.id.split('-')[0];
-  const size = line.size || (productId === 'ivory' ? line.id.split('-')[1] : null);
+  const productId = vfLineProductId(line);
+  const size = vfLineSize(line);
   const addons = VF_ADDONS.filter(addon => addon[0] === 'card' || vfLineAddons(line).includes(addon[0]));
   const names = lang => {
     const index = lang === 'en' ? 2 : 3;
     const detail = line[lang][1].split(' · ').filter(part => !VF_ADDONS.some(addon => addon[index] === part));
-    return [line[lang][0], detail.concat(addons.map(addon => addon[index])).join(' · ')];
+    return [vfLineToken(line), detail.concat(addons.map(addon => addon[index])).join(' · ')];
   };
   return {
-    ...line, productId, size, addons: addons.map(addon => addon[0]),
+    ...line, productId, token: vfLineToken(line), size, addons: addons.map(addon => addon[0]),
     id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon[0]).join('+'),
     unit: line.unit + VF_ADDONS.find(addon => addon[0] === 'card')[1],
     en: names('en'), fa: names('fa')
   };
 }
 
-// Bilingual detail copy follows the same [English, Persian] convention as the catalog.
+// Bilingual detail copy follows the same [English, Persian] convention as the catalog, keyed by product code.
 const VF_PRODUCT_DETAILS = {
-  ivory: ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
-  lavender: ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
-  orchid: ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
-  crimson: ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
-  blush: ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
-  bridal: ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
+  'VF-7K2M4Q': ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
+  'VF-3HX9TP': ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
+  'VF-8RD5WN': ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
+  'VF-4CJ6ZB': ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
+  'VF-9FA2KE': ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
+  'VF-6MT3VY': ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
 };
 
 function vfReorderLines(lines) {
  return lines.flatMap(line => {
-  const product=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));
+  const product=vfFindProduct(vfLineProductId(line));
   if(!product||product.inStock===false)return [];
-  const size=VF_SIZES.find(s=>s[0]===(line.size||line.id.split('-')[1]));
+  const size=VF_SIZES.find(s=>s[0]===vfLineSize(line));
   const addons=vfLineAddons(line);
   const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
-  return [{...line,unit:product.price+(product.id==='ivory'&&size?size[1]:0)+extra}];
+  return [{...line,unit:product.price+(product.sizes&&size?size[1]:0)+extra}];
  });
 }
 
-function vfLineAvailable(line){const p=VF_PRODUCTS.find(p=>p.id===(line.productId||line.id.split('-')[0]));return !!p&&p.inStock!==false;}
+function vfLineAvailable(line){const p=vfFindProduct(vfLineProductId(line));return !!p&&p.inStock!==false;}
+
+// Saved and recently viewed lists hold product codes; older lists held slugs, read here as codes.
+function vfProductIds(ids) {
+  return Array.isArray(ids) ? [...new Set(ids.map(vfProductId).filter(Boolean))] : [];
+}
 
 // Recently viewed products, newest first, kept in this browser only.
 const VF_RECENT_KEY = 'vendra-recently-viewed';
 function vfRecentlyViewed() {
   try {
     const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
-    return Array.isArray(ids) ? ids.filter(id => VF_PRODUCTS.some(p => p.id === id)) : [];
+    return vfProductIds(ids);
   } catch (_) {
     return [];
   }
 }
 function vfRememberViewed(id) {
   try {
-    localStorage.setItem(VF_RECENT_KEY, JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8)));
+    id = vfProductId(id);
+    if (id) localStorage.setItem(VF_RECENT_KEY, JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8)));
   } catch (_) {}
 }
 
@@ -807,6 +880,7 @@ const VF_SHELL = {
     langL: 'Language',
     faq: 'FAQ',
     help: 'Help',
+    balanceDiscount: 'Balance discount · {percent}%',
     footer: {
       shop: 'Shop',
       allFlowers: 'All flowers',
@@ -870,6 +944,7 @@ const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
+    balanceDiscount: 'تخفیف کیف پول · ٪{percent}',
     footer: {
       shop: 'فروشگاه',
       allFlowers: 'همه گل‌ها',
@@ -922,6 +997,12 @@ const VF_CATEGORY_COPY = {
     orchids: 'ارکیده',
     bridal: 'دسته‌گل عروس'
   }
+};
+
+// One product of each category, used as its kind ("Flower box · Roses · satin").
+const VF_CATEGORY_ITEM = {
+  en: {bouquets: 'Bouquet', boxes: 'Flower box', orchids: 'Orchid', bridal: 'Bridal bouquet'},
+  fa: {bouquets: 'دسته‌گل', boxes: 'باکس گل', orchids: 'ارکیده', bridal: 'دسته‌گل عروس'}
 };
 
 // Occasions the shop filters by; products list theirs in catalog.js. (Reminder dates are VF_OCCASIONS in account-data.js.)
@@ -1018,6 +1099,14 @@ function vfAccountLoad(phone, lang = 'en') {
       email: '',
       locale: lang,
       sms: true
+    },
+    // A sample balance over the discount threshold (VF_STORE.wallet), so the balance discount can be tried.
+    wallet: {
+      balance: 120_000_000,
+      history: [
+        {id: 'W-SAMPLE-2', kind: 'topup', amount: 100_000_000, at: '2026-09-28T10:20:00.000Z'},
+        {id: 'W-SAMPLE-1', kind: 'topup', amount: 20_000_000, at: '2026-09-02T08:05:00.000Z'}
+      ]
     },
     addresses: [{
       id: 'home',
@@ -1229,6 +1318,65 @@ function vfSampleOrders() {
   });
 }
 
+// Source: templates/_shared/wallet.js
+// Account balance rules and history. The limits and discount live in VF_STORE.wallet (store-config.js).
+// Demo only: the balance is kept in this browser with the signed-in account. A real store must keep it on its
+// server and change it only after a confirmed top-up payment or a placed order.
+
+// {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
+function vfWalletOf(account) {
+  const wallet = account && account.wallet;
+  return {
+    balance: Math.max(0, Math.round(+(wallet && wallet.balance) || 0)),
+    history: Array.isArray(wallet && wallet.history) ? wallet.history : []
+  };
+}
+
+// The signed-in customer's balance, or null for a guest.
+function vfWalletBalance() {
+  const phone = vfAccountPhone();
+  return phone ? vfWalletOf(vfAccountLoad(phone)).balance : null;
+}
+
+// Paying from a balance of at least discountFrom earns the balance discount.
+function vfBalanceDiscountOn(balance) {
+  const rules = VF_STORE.wallet;
+  return !!rules && balance != null && balance >= rules.discountFrom;
+}
+
+// discountPercent of the products' price (after any promo code) when the balance earns it.
+function vfBalanceDiscount(balance, products) {
+  return vfBalanceDiscountOn(balance) ? Math.round(products * VF_STORE.wallet.discountPercent / 100) : 0;
+}
+
+// A top-up amount, typed with any digits and separators; '' when nothing is typed.
+function vfTopUpAmount(text) {
+  const digits = vfLatin(text || '').replace(/\D/g, '');
+  return digits ? +digits : '';
+}
+
+// 'empty' | 'min' | 'max' when a top-up can't go ahead, otherwise ''.
+function vfTopUpError(amount) {
+  const rules = VF_STORE.wallet;
+  if (!amount) return 'empty';
+  if (amount < rules.minTopUp) return 'min';
+  if (amount > rules.maxTopUp) return 'max';
+  return '';
+}
+
+// Adds a top-up (positive) or an order payment (negative) to the signed-in account and returns the account;
+// null when a payment is more than the balance.
+function vfWalletChange(phone, amount, entry) {
+  const account = vfAccountLoad(phone);
+  const wallet = vfWalletOf(account);
+  const balance = wallet.balance + amount;
+  if (balance < 0) return null;
+  const record = {id: 'W' + Date.now().toString(36).toUpperCase(), amount, at: new Date().toISOString(), ...entry};
+  const next = {...account, wallet: {balance, history: [record, ...wallet.history]}};
+  vfAccountSave(phone, next);
+  return next;
+}
+
 // Source: templates/_shared/payments.js
 // Sample bank prefixes and card configuration; adapt from your payment provider.
 (() => {
@@ -1374,8 +1522,10 @@ function vfSampleOrders() {
       if (p.apiId != null) byApi[p.apiId] = p.id;
     });
     const slugs = [];
+    // Items saved before products were known by code carry the old slug; read them as codes.
     (w.items || []).forEach(it => {
-      const s = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const raw = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const s = raw && (vfProductId(raw) || raw);
       if (s) {
         slugs.push(s);
         m[s] = it.id;
@@ -1421,6 +1571,7 @@ function vfSampleOrders() {
     begin_checkout: 'Bag → payment step',
     add_payment_info: 'Pay / Place order pressed',
     purchase: 'Order placed',
+    top_up: 'Account balance topped up',
     add_to_wishlist: 'Product saved',
     search: 'Search submitted',
     reminder_created: 'Occasion reminder saved',
@@ -1454,7 +1605,7 @@ function vfSampleOrders() {
   });
   const item = (p, qty = 1, unit) => p ? {
     item_id: p.id,
-    item_name: Array.isArray(p.en) ? p.en[0] : p.en,
+    item_name: p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
     item_category: p.cat,
     price: unit ?? p.price,
     quantity: qty
@@ -1493,9 +1644,12 @@ const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 // Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
 const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
+// Account tabs, in the order they appear.
+const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
 const VF_ROUTE_EXTRA = {
   product: {
-    id: 'ivory'
+    id: 'VF-7K2M4Q',
+    cat: 'boxes'
   },
   post: {
     post: 'morning-at-the-studio'
@@ -1508,9 +1662,19 @@ function vfReadRoute(search = location.search) {
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // An account tab can be linked to (?view=account&tab=balance).
+  if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab'))) route.tab = query.get('tab');
   // Sign-in started from checkout returns there (?view=signin&next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  // A product is addressed by its category and code (?view=product&id=VF-7K2M4Q&cat=boxes); an old slug
+  // (?id=ivory) or a code typed in another case still opens it, and the link is written back in full.
+  if (route.view === 'product') {
+    const product = vfFindProduct(route.id);
+    if (product) {
+      route.id = product.id;
+      route.cat = product.cat;
+    } else route.view = 'notfound';
+  }
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
@@ -1530,6 +1694,7 @@ function vfRouteParams(route) {
   if(route.demo)query.set('demo',route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
+  if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
@@ -1586,7 +1751,7 @@ class VFPage extends DCLogic {
     this._vfResize();
     const route=vfPageRoute(this.props);
     const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
-    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfFindProduct(route.id)||VF_PRODUCTS[0])]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {
@@ -1613,7 +1778,9 @@ class VFPage extends DCLogic {
       // skip link and header; the browser already reads the new page. Only later
       // views (in-site navigation, a replaced h1) move focus and announce.
       if (window.VF_VIEWED) {
-        window.AG_NAV.focusHeading();
+        // A form field the page has just focused (e.g. "Track another order") keeps focus; the heading is still announced.
+        const field = document.activeElement && document.activeElement.closest('main') && document.activeElement.matches('input, select, textarea');
+        if (!field) window.AG_NAV.focusHeading();
         if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
           vfAnnouncement: title
         });
@@ -1805,7 +1972,7 @@ function vfShell(props, page) {
     href,
     policyLink,
     policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
-    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id:vfProductId(id)||id,cat:(vfFindProduct(id)||{}).cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     shopLink,
     lang: L,
@@ -1867,6 +2034,8 @@ function vfShell(props, page) {
       label: 'فا'
     }],
     waHref: VF_STORE.whatsapp,
+    // A WhatsApp chat with the message already written; pages use it to quote product codes.
+    waWith: text => VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
     phoneHref: 'tel:'+VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,
@@ -1929,7 +2098,25 @@ function vfCopy(S) {
       accA: 'Your',
       accB: 'account.',
       signOut: 'Sign out',
-      tabs: ['Orders', 'Saved', 'Addresses', 'Reminders', 'Profile'],
+      tabs: ['Orders', 'Balance', 'Saved', 'Addresses', 'Reminders', 'Profile'],
+      // The account balance tab. {percent}, {from}, {left}, {min}, {max} and {amount} are filled in.
+      balance: {
+        title: 'Your balance',
+        eligible: 'Your balance is {from} or more, so you get {percent}% off products when you pay from it.',
+        progress: 'Keep a balance of {from} or more and get {percent}% off products when you pay from it. {left} to go.',
+        topUp: 'Top up',
+        quick: 'Quick amounts',
+        amount: 'Amount (Toman)',
+        amountHint: 'From {min} to {max}.',
+        pay: 'Top up {amount}',
+        processing: 'Processing demo payment…',
+        done: '{amount} added to your balance.',
+        errors: {empty: 'Enter an amount.', min: 'The smallest top-up is {min}.', max: 'The largest top-up is {max}.'},
+        history: 'History',
+        noHistory: 'No top-ups or payments yet.',
+        kinds: {topup: 'Top-up', order: 'Order {id}'},
+        demo: 'Template preview: no money is transferred.'
+      },
       mapL: 'Your saved addresses on the map',
       unsave: 'Remove from saved',
       savedEmptyA: 'Nothing saved',
@@ -1981,7 +2168,24 @@ function vfCopy(S) {
       accA: 'حساب',
       accB: 'شما.',
       signOut: 'خروج',
-      tabs: ['سفارش‌ها', 'ذخیره‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      tabs: ['سفارش‌ها', 'کیف پول', 'ذخیره‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
+      balance: {
+        title: 'موجودی شما',
+        eligible: 'موجودی شما {from} یا بیشتر است؛ پس وقتی از کیف پول پرداخت کنید، {percent}٪ تخفیف محصولات می‌گیرید.',
+        progress: 'با موجودی {from} یا بیشتر، هنگام پرداخت از کیف پول {percent}٪ تخفیف محصولات بگیرید. {left} مانده است.',
+        topUp: 'افزایش موجودی',
+        quick: 'مبلغ‌های آماده',
+        amount: 'مبلغ (تومان)',
+        amountHint: 'از {min} تا {max}.',
+        pay: 'افزایش موجودی {amount}',
+        processing: 'در حال انجام پرداخت نمونه…',
+        done: '{amount} به موجودی شما اضافه شد.',
+        errors: {empty: 'مبلغ را وارد کنید.', min: 'کمترین مبلغ افزایش موجودی {min} است.', max: 'بیشترین مبلغ افزایش موجودی {max} است.'},
+        history: 'تاریخچه',
+        noHistory: 'هنوز افزایش موجودی یا پرداختی ثبت نشده است.',
+        kinds: {topup: 'افزایش موجودی', order: 'سفارش {id}'},
+        demo: 'پیش‌نمایش قالب: پولی منتقل نمی‌شود.'
+      },
       mapL: 'نشانی‌های ذخیره‌شده روی نقشه',
       unsave: 'حذف از ذخیره‌ها',
       savedEmptyA: 'چیزی ذخیره نشده',
@@ -2131,7 +2335,7 @@ function vfCopy(S) {
 // BEGIN GENERATED PAGE LOGIC
 // Source: templates/storefront-account/logic.js
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
-const VF_ACCOUNT_SAVED = ['orchid', 'crimson', 'blush'];
+const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 class Component extends VFPage {
   state = {
     tab: null,
@@ -2143,7 +2347,11 @@ class Component extends VFPage {
     mapFailed: false,
     placesFailed: false,
     locating: false,
-    locateFailed: false
+    locateFailed: false,
+    topUp: '',
+    topUpError: '',
+    topUpBusy: false,
+    topUpDone: ''
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'account'),
@@ -2156,7 +2364,7 @@ class Component extends VFPage {
       profile = s.profile || account.profile;
     const latest = this.props.store && (this.props.store.lastOrder || this.props.store.order);
     const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter((o, i, list) => list.findIndex(x => x.id === o.id) === i);
-    const tab = s.tab || this.props.tab || 'orders',
+    const tab = s.tab || vfPageRoute(this.props).tab || this.props.tab || 'orders',
       tx = v => typeof v === 'string' ? v : v[L] || v.en;
     const commit = data => {
       vfAccountSave(phone, data);
@@ -2332,6 +2540,12 @@ class Component extends VFPage {
       pick: a.edit
     }));
     const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
+    // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
+    const W = C.balance, rules = VF_STORE.wallet, wallet = vfWalletOf(account);
+    const amount = vfTopUpAmount(s.topUp);
+    const fill = text => text.replace('{percent}', S.n(rules.discountPercent)).replace('{from}', S.m(rules.discountFrom))
+      .replace('{left}', S.m(Math.max(0, rules.discountFrom - wallet.balance))).replace('{min}', S.m(rules.minTopUp)).replace('{max}', S.m(rules.maxTopUp));
+    const when = iso => new Intl.DateTimeFormat(S.fa ? 'fa-IR-u-ca-persian' : 'en-GB', {day: 'numeric', month: 'short', year: 'numeric'}).format(new Date(iso));
     return {
       ...S,
       t: {
@@ -2344,7 +2558,7 @@ class Component extends VFPage {
       setTab: id => this.setState({
         tab: id
       }),
-      tabItems: ['orders', 'saved', 'addresses', 'reminders', 'profile'].map((id, i) => ({
+      tabItems: VF_ACCOUNT_TABS.map((id, i) => ({
         id,
         label: C.tabs[i]
       })),
@@ -2352,6 +2566,49 @@ class Component extends VFPage {
       tabId: 'vf-account-tab-' + tab,
       isOrders: tab === 'orders',
       isSaved: tab === 'saved',
+      isBalance: tab === 'balance',
+      balance: {
+        amount: S.m(wallet.balance),
+        eligible: vfBalanceDiscountOn(wallet.balance),
+        status: fill(vfBalanceDiscountOn(wallet.balance) ? W.eligible : W.progress),
+        presets: rules.topUps.map(value => ({
+          label: S.m(value),
+          pressed: amount === value,
+          pick: () => this.setState({topUp: String(value), topUpError: '', topUpDone: ''})
+        })),
+        value: s.topUp,
+        set: e => this.setState({topUp: e.target.value, topUpError: '', topUpDone: ''}),
+        hint: fill(W.amountHint),
+        error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
+        busy: s.topUpBusy,
+        payLabel: amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
+        done: s.topUpDone,
+        submit: () => {
+          if (s.topUpBusy) return;
+          const error = vfTopUpError(amount);
+          if (error) {
+            this.setState({topUpError: error, topUpDone: ''});
+            S.focus('vf-topup-amount');
+            return;
+          }
+          // Demo payment: a real store confirms the top-up with its payment provider before adding it.
+          this.setState({topUpBusy: true, topUpDone: ''});
+          this._topUpTimer = setTimeout(() => {
+            const next = vfWalletChange(phone, amount, {kind: 'topup'});
+            window.VF_TRACK.event('top_up', {value: amount});
+            this.setState({account: next, topUp: '', topUpBusy: false, topUpDone: W.done.replace('{amount}', S.m(amount))});
+            S.focus('vf-topup-done');
+          }, 600);
+        },
+        hasHistory: wallet.history.length > 0,
+        noHistory: !wallet.history.length,
+        history: wallet.history.map(h => ({
+          label: h.kind === 'order' ? W.kinds.order.replace('{id}', '\u2068' + h.order + '\u2069') : W.kinds.topup,
+          date: when(h.at),
+          amount: (h.amount < 0 ? '−' : '+') + '\u2068' + S.m(Math.abs(h.amount)) + '\u2069',
+          tone: h.amount < 0 ? 'out' : 'in'
+        }))
+      },
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
@@ -2377,9 +2634,9 @@ class Component extends VFPage {
       savedItems: saved.map((p, i) => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
-        badge: p[L][2],
+        name: p.id,
+        sub: vfProductSub(p, L),
+        badge: p[L].badge,
         price: S.m(p.price),
         remove: () => {
           S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
@@ -2560,6 +2817,7 @@ class Component extends VFPage {
   }
   componentWillUnmount() {
     super.componentWillUnmount();
+    clearTimeout(this._topUpTimer);
     this._pin().remove();
     this._placesMap().remove();
   }

@@ -13,8 +13,8 @@ class Component extends VFPage {
       items: VF_PRODUCTS.slice(0, 4).map(p => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
+        name: p.id,
+        sub: vfProductSub(p, L),
         price: S.m(p.price)
       }))
     };

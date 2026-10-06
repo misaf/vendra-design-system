@@ -128,12 +128,12 @@ class Component extends VFPage {
       })),
       lines: sampleLines.map(line => ({
         image: vfProductImage(line, L).src,
-        name: line[L][0],
+        name: vfLineToken(line),
         meta: line[L][1] + ' · × ' + S.n(line.qty),
         note: vfCardMessages([line], {}, L) || undefined,
         total: m(line.unit * line.qty)
       })),
-      sums: vfSummaryRows(sampleTotals, order && order.delivery.promo, {...C, free: C.labels.free, discount: S.t.discount}, m)
+      sums: vfSummaryRows(sampleTotals, order && order.delivery.promo, {...C, free: C.labels.free, discount: S.t.discount, balanceDiscount: S.t.balanceDiscount}, m, S.n)
     };
   }
 }

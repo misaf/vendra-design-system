@@ -1,5 +1,5 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
-const VF_ACCOUNT_SAVED = ['orchid', 'crimson', 'blush'];
+const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 class Component extends VFPage {
   state = {
     tab: null,
@@ -11,7 +11,11 @@ class Component extends VFPage {
     mapFailed: false,
     placesFailed: false,
     locating: false,
-    locateFailed: false
+    locateFailed: false,
+    topUp: '',
+    topUpError: '',
+    topUpBusy: false,
+    topUpDone: ''
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'account'),
@@ -24,7 +28,7 @@ class Component extends VFPage {
       profile = s.profile || account.profile;
     const latest = this.props.store && (this.props.store.lastOrder || this.props.store.order);
     const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter((o, i, list) => list.findIndex(x => x.id === o.id) === i);
-    const tab = s.tab || this.props.tab || 'orders',
+    const tab = s.tab || vfPageRoute(this.props).tab || this.props.tab || 'orders',
       tx = v => typeof v === 'string' ? v : v[L] || v.en;
     const commit = data => {
       vfAccountSave(phone, data);
@@ -200,6 +204,12 @@ class Component extends VFPage {
       pick: a.edit
     }));
     const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
+    // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
+    const W = C.balance, rules = VF_STORE.wallet, wallet = vfWalletOf(account);
+    const amount = vfTopUpAmount(s.topUp);
+    const fill = text => text.replace('{percent}', S.n(rules.discountPercent)).replace('{from}', S.m(rules.discountFrom))
+      .replace('{left}', S.m(Math.max(0, rules.discountFrom - wallet.balance))).replace('{min}', S.m(rules.minTopUp)).replace('{max}', S.m(rules.maxTopUp));
+    const when = iso => new Intl.DateTimeFormat(S.fa ? 'fa-IR-u-ca-persian' : 'en-GB', {day: 'numeric', month: 'short', year: 'numeric'}).format(new Date(iso));
     return {
       ...S,
       t: {
@@ -212,7 +222,7 @@ class Component extends VFPage {
       setTab: id => this.setState({
         tab: id
       }),
-      tabItems: ['orders', 'saved', 'addresses', 'reminders', 'profile'].map((id, i) => ({
+      tabItems: VF_ACCOUNT_TABS.map((id, i) => ({
         id,
         label: C.tabs[i]
       })),
@@ -220,6 +230,49 @@ class Component extends VFPage {
       tabId: 'vf-account-tab-' + tab,
       isOrders: tab === 'orders',
       isSaved: tab === 'saved',
+      isBalance: tab === 'balance',
+      balance: {
+        amount: S.m(wallet.balance),
+        eligible: vfBalanceDiscountOn(wallet.balance),
+        status: fill(vfBalanceDiscountOn(wallet.balance) ? W.eligible : W.progress),
+        presets: rules.topUps.map(value => ({
+          label: S.m(value),
+          pressed: amount === value,
+          pick: () => this.setState({topUp: String(value), topUpError: '', topUpDone: ''})
+        })),
+        value: s.topUp,
+        set: e => this.setState({topUp: e.target.value, topUpError: '', topUpDone: ''}),
+        hint: fill(W.amountHint),
+        error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
+        busy: s.topUpBusy,
+        payLabel: amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
+        done: s.topUpDone,
+        submit: () => {
+          if (s.topUpBusy) return;
+          const error = vfTopUpError(amount);
+          if (error) {
+            this.setState({topUpError: error, topUpDone: ''});
+            S.focus('vf-topup-amount');
+            return;
+          }
+          // Demo payment: a real store confirms the top-up with its payment provider before adding it.
+          this.setState({topUpBusy: true, topUpDone: ''});
+          this._topUpTimer = setTimeout(() => {
+            const next = vfWalletChange(phone, amount, {kind: 'topup'});
+            window.VF_TRACK.event('top_up', {value: amount});
+            this.setState({account: next, topUp: '', topUpBusy: false, topUpDone: W.done.replace('{amount}', S.m(amount))});
+            S.focus('vf-topup-done');
+          }, 600);
+        },
+        hasHistory: wallet.history.length > 0,
+        noHistory: !wallet.history.length,
+        history: wallet.history.map(h => ({
+          label: h.kind === 'order' ? W.kinds.order.replace('{id}', '\u2068' + h.order + '\u2069') : W.kinds.topup,
+          date: when(h.at),
+          amount: (h.amount < 0 ? '−' : '+') + '\u2068' + S.m(Math.abs(h.amount)) + '\u2069',
+          tone: h.amount < 0 ? 'out' : 'in'
+        }))
+      },
       isAddresses: tab === 'addresses',
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
@@ -245,9 +298,9 @@ class Component extends VFPage {
       savedItems: saved.map((p, i) => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
-        badge: p[L][2],
+        name: p.id,
+        sub: vfProductSub(p, L),
+        badge: p[L].badge,
         price: S.m(p.price),
         remove: () => {
           S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
@@ -428,6 +481,7 @@ class Component extends VFPage {
   }
   componentWillUnmount() {
     super.componentWillUnmount();
+    clearTimeout(this._topUpTimer);
     this._pin().remove();
     this._placesMap().remove();
   }

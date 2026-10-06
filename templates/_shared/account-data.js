@@ -27,6 +27,14 @@ function vfAccountLoad(phone, lang = 'en') {
       locale: lang,
       sms: true
     },
+    // A sample balance over the discount threshold (VF_STORE.wallet), so the balance discount can be tried.
+    wallet: {
+      balance: 120_000_000,
+      history: [
+        {id: 'W-SAMPLE-2', kind: 'topup', amount: 100_000_000, at: '2026-09-28T10:20:00.000Z'},
+        {id: 'W-SAMPLE-1', kind: 'topup', amount: 20_000_000, at: '2026-09-02T08:05:00.000Z'}
+      ]
+    },
     addresses: [{
       id: 'home',
       label: {

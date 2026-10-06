@@ -21,6 +21,8 @@ function vfSiteInitial(props) {
   } catch (e) {}
   let route = vfReadRoute();
   if (route.view === 'home' && !new URLSearchParams(location.search).has('view') && props.start) route = {...route, view: props.start};
+  // An old product link (?id=ivory) is rewritten with the product's category and code.
+  if (route.view === 'product' && vfRouteParams(route) !== location.search) history.replaceState({}, '', vfRouteParams(route));
   // Open sign-in straight away rather than flashing the account first.
   if (route.view === 'account' && !vfAccountPhone()) {
     route = vfReadRoute(vfRouteParams({lang: route.lang, view: 'signin'}));
@@ -32,7 +34,7 @@ function vfSiteInitial(props) {
     lang: new URLSearchParams(location.search).has('lang') ? route.lang : vfAccountLocale() || props.lang || 'en',
     mobile: null,
     bag: Array.isArray(saved.bag) ? saved.bag : VF_BAG0,
-    saved: Array.isArray(saved.saved) ? saved.saved : ['orchid', 'crimson', 'blush'],
+    saved: Array.isArray(saved.saved) ? vfProductIds(saved.saved) : ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'],
     delivery: {
       ...VF_DELIVERY,
       ...saved.delivery
@@ -169,7 +171,8 @@ class Component extends DCLogic {
         add: line => this.setState(p => {
           window.VF_TRACK.event('add_to_cart', {
             items: [{
-              item_id: line.productId || line.id,
+              // Analytics and the studio's reports know a product by its code.
+              item_id: vfLineToken(line) || line.id,
               price: line.unit,
               quantity: line.qty
             }]

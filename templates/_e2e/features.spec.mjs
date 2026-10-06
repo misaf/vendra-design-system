@@ -53,10 +53,10 @@ test('the bag and delivery details are separate steps', async ({page}) => {
 
 test('a bought card needs its message, and any item can add one', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
-  const ivory = page.getByRole('textbox', {name: 'Card for Ivory ribbon box'});
+  const ivory = page.getByRole('textbox', {name: /^Card for \u2066?VF-7K2M4Q/});
   await expect(ivory).toHaveValue('Happy birthday, Shirin.');
-  await page.getByRole('button', {name: 'Add a card · +150,000 Toman, for Pearl orchid'}).click();
-  const orchid = page.getByRole('textbox', {name: 'Card for Pearl orchid'});
+  await page.getByRole('button', {name: /^Add a card · \+150,000 Toman, for \u2066?VF-8RD5WN/}).click();
+  const orchid = page.getByRole('textbox', {name: /^Card for \u2066?VF-8RD5WN/});
   await expect(orchid).toBeFocused();
   await expect(page.locator('main aside')).toContainText('8,600,000 Toman');
   await page.fill('#vf-name', 'Shirin Ahmadi');
@@ -155,11 +155,11 @@ test('the shop filters by occasion', async ({page}, info) => {
 });
 
 test('the product page lists recently viewed products', async ({page}) => {
-  await openSite(page, 'product', 'en', {id: 'orchid'});
+  await openSite(page, 'product', 'en', {id: 'VF-8RD5WN'});
   await expect(page.getByRole('heading', {name: /Recently viewed/})).toHaveCount(0);
-  await openSite(page, 'product', 'en', {id: 'blush'});
+  await openSite(page, 'product', 'en', {id: 'VF-9FA2KE'});
   const recent = page.getByRole('region', {name: 'Recently viewed.'});
-  await expect(recent.locator('.ag-product__name')).toHaveText(['Pearl orchid']);
+  await expect(recent.locator('.ag-product__name')).toHaveText(['VF-8RD5WN']);
   expect(await scanAxe(page)).toEqual([]);
 });
 
@@ -262,6 +262,9 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
   await expect(page.locator('#vf-pin-status')).toContainText('35.81620, 50.93910');
   expect(await scanAxe(page)).toEqual([]);
   await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  // The sample account's balance covers the order, so it pays from the balance by default.
+  await expect(page.getByRole('radio', {name: 'Account balance'})).toBeChecked();
+  await page.getByRole('radio', {name: 'Card-to-card transfer'}).check();
   await expect(page.locator('#vf-last4')).toBeVisible();
 });
 
@@ -310,7 +313,12 @@ test('a guest finds an order with its number and mobile', async ({page}) => {
   await page.getByRole('button', {name: 'Find my order'}).click();
   await expect(page).toHaveURL(/view=track&id=VN-10522/);
   await expect(page.locator('main h1')).toHaveText('On its way.');
+  // The new view moves focus to its heading first; wait so that doesn't race the next click.
+  await expect(page.locator('main h1')).toBeFocused();
   await page.getByRole('button', {name: 'Track another order'}).click();
+  await expect(page.locator('#vf-lookup-id')).toBeFocused();
+  // It keeps focus once the heading has changed too.
+  await page.waitForTimeout(300);
   await expect(page.locator('#vf-lookup-id')).toBeFocused();
 });
 
@@ -353,6 +361,73 @@ test('the shop filters by delivery day', async ({page}, info) => {
   await expect(page.locator('main .ag-product')).toHaveCount(6);
   // Filters replace the history entry, so Back leaves the shop instead of undoing each one.
   expect(await page.evaluate(() => history.length)).toBeLessThanOrEqual(2);
+});
+
+test('products are known by their code, and the code finds them', async ({page}) => {
+  await openSite(page, 'product', 'en', {id: 'VF-8RD5WN'});
+  await expect(page.locator('main h1')).toHaveText('VF-8RD5WN');
+  await expect(page.locator('.vf-product-subtitle')).toHaveText('Orchid');
+  await expect(page.getByRole('link', {name: 'Ask about this design on WhatsApp'})).toHaveAttribute('href', /text=.*code%20VF-8RD5WN/);
+  // An old link by name opens the product, and the address is rewritten with its category and code.
+  await openSite(page, 'product', 'en', {id: 'orchid'});
+  await expect(page).toHaveURL(/view=product&id=VF-8RD5WN&cat=orchids/);
+  // The bag and the order are titled by code.
+  await openSite(page, 'bag', 'en');
+  await expect(page.locator('.ag-line__name').first()).toHaveText('VF-7K2M4Q');
+  // Search finds a product by its code, however it is typed.
+  await openSite(page, 'search', 'fa');
+  await page.fill('#vf-q', 'vf ۸rd');
+  await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveCount(1);
+  await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveAttribute('href', /id=VF-8RD5WN&cat=orchids/);
+});
+
+test('a customer tops up their balance, then pays from it with the balance discount', async ({page}) => {
+  await openSite(page, 'account', 'en', {tab: 'balance'});
+  await expect(page.getByRole('tab', {name: 'Balance'})).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#vf-balance-amount')).toHaveText('120,000,000 Toman');
+  await expect(page.locator('.vf-account-balance-status')).toContainText('you get 5% off products');
+  // An empty amount is caught; a quick amount fills it.
+  await page.getByRole('button', {name: 'Top up', exact: true}).click();
+  await expect(page.locator('#vf-topup-amount')).toBeFocused();
+  await expect(page.locator('#vf-topup-amount')).toHaveAccessibleDescription(/Enter an amount\./);
+  await page.getByRole('group', {name: 'Quick amounts'}).getByRole('button', {name: '10,000,000 Toman'}).click();
+  await page.getByRole('button', {name: 'Top up 10,000,000 Toman'}).click();
+  await expect(page.locator('#vf-topup-done')).toBeFocused();
+  await expect(page.locator('#vf-topup-done')).toHaveText('10,000,000 Toman added to your balance.');
+  await expect(page.locator('#vf-balance-amount')).toHaveText('130,000,000 Toman');
+  expect(await scanAxe(page)).toEqual([]);
+  // Checkout picks the balance, takes 5% off the products, and says what's left.
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.fill('#vf-name', 'Mina Rahimi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await page.fill('#vf-sender', 'Shirin Ahmadi');
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await expect(page.getByRole('radio', {name: 'Account balance'})).toBeChecked();
+  const summary = page.locator('.ag-osum__sums');
+  await expect(summary).toContainText('Balance discount · 5%');
+  expect(await scanAxe(page)).toEqual([]);
+  await page.getByRole('button', {name: 'Pay from balance'}).locator('visible=true').first().click();
+  await expect(page.locator('main')).toContainText('Paid from balance');
+  await expect(page.locator('main')).toContainText('Balance left');
+  await openSite(page, 'account', 'en', {tab: 'balance'});
+  await expect(page.locator('.vf-account-balance-history li').first()).toContainText(/Order \u2068?VN-/);
+});
+
+test('a guest is asked to sign in before paying from a balance', async ({page}) => {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.fill('#vf-name', 'Mina Rahimi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await fillSender(page);
+  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  const balance = page.getByRole('radio', {name: 'Account balance'});
+  await expect(balance).toBeDisabled();
+  // The Radio component reads its description as part of the name.
+  await expect(balance).toHaveAccessibleName(/Sign in to pay from your account balance\./);
+  await expect(page.getByRole('radio', {name: 'Card-to-card transfer'})).toBeChecked();
 });
 
 test('signing out leaves the account behind it', async ({page}) => {
@@ -421,14 +496,14 @@ test('a guest gets an empty contact form', async ({page}) => {
 });
 
 test('the product page saves the design to the saved list', async ({page}) => {
-  await openSite(page, 'product', 'en', {id: 'ivory'});
+  await openSite(page, 'product', 'en', {id: 'VF-7K2M4Q'});
   const save = page.getByRole('button', {name: 'Save this design'});
   await expect(save).toHaveAttribute('aria-pressed', 'false');
   await save.click();
   await expect(save).toHaveAttribute('aria-pressed', 'true');
   expect(await scanAxe(page)).toEqual([]);
   await openSite(page, 'saved', 'en');
-  await expect(page.locator('main .ag-product__name')).toContainText(['Ivory ribbon box']);
+  await expect(page.locator('main .ag-product__name')).toContainText(['VF-7K2M4Q']);
 });
 
 test('home occasions scroll as a carousel', async ({page}, info) => {
@@ -487,7 +562,7 @@ test('the shop clears every filter at once', async ({page}, info) => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', {name: 'Filters (2)'})).toBeVisible();
   }
-  await expect(page.locator('main .ag-product__name')).toHaveText(['Crimson hatbox', 'Blush morning']);
+  await expect(page.locator('main .ag-product__name')).toHaveText(['VF-4CJ6ZB', 'VF-9FA2KE']);
   await page.getByRole('button', {name: 'Clear all'}).click();
   await expect(page).not.toHaveURL(/occasion=|stock=/);
   await expect(page.locator('main .ag-product')).toHaveCount(6);

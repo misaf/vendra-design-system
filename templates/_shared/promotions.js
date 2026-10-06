@@ -25,10 +25,12 @@ function vfDiscount(code, sub) {
   return promo ? Math.round(sub * promo.percent / 100) : 0;
 }
 
-// Order summary rows; the discount, when there is one, sits under the subtotal.
-function vfSummaryRows(totals, code, labels, money) {
+// Order summary rows; discounts, when there are any, sit under the subtotal. labels.balanceDiscount
+// reads like 'Balance discount · {percent}%'; num formats its percent.
+function vfSummaryRows(totals, code, labels, money, num = String) {
   return [{label: labels.sub, value: money(totals.sub)},
     ...(totals.discount ? [{label: labels.discount + ' · ' + vfPromoCode(code), value: '−⁨' + money(totals.discount) + '⁩'}] : []),
+    ...(totals.balanceDiscount ? [{label: (labels.balanceDiscount || 'Balance discount · {percent}%').replace('{percent}', num(totals.balancePercent)), value: '−⁨' + money(totals.balanceDiscount) + '⁩'}] : []),
     {label: labels.fee, value: totals.fee ? money(totals.fee) : labels.free},
     {label: labels.total, value: money(totals.total), strong: true}];
 }

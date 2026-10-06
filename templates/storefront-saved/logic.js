@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 class Component extends VFPage {
   state = {
-    ids: ['orchid', 'crimson', 'blush']
+    ids: ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE']
   };
   renderVals() {
     const S = vfShell.call(this, this.props, 'saved');
@@ -22,9 +22,9 @@ class Component extends VFPage {
       items: items.map((p, i) => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
-        badge: p[L][2],
+        name: p.id,
+        sub: vfProductSub(p, L),
+        badge: p[L].badge,
         price: S.m(p.price),
         remove: () => {
           st ? st.toggleSave(p.id) : this.setState({

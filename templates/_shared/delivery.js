@@ -137,11 +137,14 @@ function vfFreeDelivery(zoneId, sub) {
   return sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zoneId);
 }
 
-function vfTotals(lines, delivery) {
+// `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
+// the balance discount off the products, after any promo code.
+function vfTotals(lines, delivery, balance = null) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const zone = vfZone(delivery.zone);
   const fee = vfFreeDelivery(zone.id, sub) ? 0 : zone.fee;
   // The applied promo code travels with the checkout details.
   const discount = vfDiscount(delivery.promo, sub);
-  return {sub, fee, discount, total: sub - discount + fee};
+  const balanceDiscount = typeof vfBalanceDiscount === 'function' ? vfBalanceDiscount(balance, sub - discount) : 0;
+  return {sub, fee, discount, ...(balanceDiscount ? {balanceDiscount, balancePercent: VF_STORE.wallet.discountPercent} : {}), total: sub - discount - balanceDiscount + fee};
 }

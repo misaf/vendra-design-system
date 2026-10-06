@@ -6,7 +6,7 @@ class Component extends VFPage {
     ref: '',
     err: false,
     order: null,
-    method: 'card',
+    method: null,
     busy: false,
     failed: false
   };
@@ -25,11 +25,19 @@ class Component extends VFPage {
       address: '12 Golha St, Azimiyeh'
     };
     const items = order ? order.lines : st ? st.bag : vfSampleBag();
-    const totals = order ? order.totals : vfTotals(items, delivery);
-    const slotLabel = vfDeliveryWhen({...delivery, date: delivery.date || vfDeliveryDate(delivery)}, fa);
-    const method = order ? order.method || 'card' : s.method,
+    // Signed-in customers can pay from their account balance when it covers the order; a large enough
+    // balance takes the balance discount off the products (VF_STORE.wallet).
+    const phone = vfAccountPhone(), balance = vfWalletBalance();
+    const balanceTotals = vfTotals(items, delivery, balance);
+    const canUseBalance = balance != null && balance >= balanceTotals.total;
+    const method = order ? order.method || 'card' : s.method || (canUseBalance ? 'wallet' : 'card'),
       codOk = VF_STORE.paymentDemo.codZones.includes(delivery.zone),
-      P = C.migration;
+      P = C.migration, PW = P.wallet;
+    const totals = order ? order.totals : method === 'wallet' ? balanceTotals : vfTotals(items, delivery);
+    const slotLabel = vfDeliveryWhen({...delivery, date: delivery.date || vfDeliveryDate(delivery)}, fa);
+    const fillWallet = (text, amount) => text.replace('{balance}', m(amount)).replace('{percent}', S.n(VF_STORE.wallet.discountPercent))
+      .replace('{left}', m(Math.max(0, balanceTotals.total - (balance || 0))));
+    const walletNote = balance == null ? PW.signIn : !canUseBalance ? fillWallet(PW.short, balance) : fillWallet(vfBalanceDiscountOn(balance) ? PW.discount : PW.balance, balance);
     const done = !!order || s.placed || this.props.step === 'done';
     return {
       ...S,
@@ -48,16 +56,23 @@ class Component extends VFPage {
       accountBody: C.accountBody.replace('{phone}', '\u2068' + (fa ? VF_FA_DIGITS(delivery.senderPhone || '') : delivery.senderPhone || '') + '\u2069'),
       isCard: method === 'card',
       isWa: method === 'wa',
-      busy: s.busy,placeDisabled:s.busy||s.failed||done,
+      isWallet: method === 'wallet',
+      walletAfter: fillWallet(PW.after, (balance || 0) - totals.total),
+      // A signed-in customer whose balance is short can top up first; the bag waits here.
+      showTopUp: balance != null && !canUseBalance && !done,
+      topUpLabel: PW.topUp,
+      topUpHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
+      topUpGo: this.props.go ? vfLinkHandler(this.props.go) : undefined,
+      busy: s.busy,placeDisabled:s.busy||s.failed||done||(method === 'wallet' && !canUseBalance),
       failed: s.failed,
       paymentNotice: P.demo,
       method,
       methodOptions: Object.entries(P.methods).map(([id, label]) => ({
         value: id,
         label,
-        description: id === 'cod' && !codOk ? P.codOff : undefined,
+        description: id === 'cod' && !codOk ? P.codOff : id === 'wallet' ? walletNote : undefined,
         checked: id === method,
-        disabled: s.busy || id === 'cod' && !codOk
+        disabled: s.busy || id === 'cod' && !codOk || id === 'wallet' && !canUseBalance
       })),
       setMethod: e => !s.busy&&this.setState({
         method: e.target.value,
@@ -65,7 +80,7 @@ class Component extends VFPage {
         failed: false
       }),
       migration: P,
-      waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => l[L][0] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
+      waOrder: VF_STORE.whatsapp + '?text=' + encodeURIComponent(items.map(l => vfLineToken(l) + ', ' + l[L][1] + ' × ' + l.qty).join('\n') + '\n' + m(totals.total)),
       retry: () => this.setState({
         failed: false
       }),
@@ -104,6 +119,7 @@ class Component extends VFPage {
       place: () => {
         if (s.busy || done || items.some(l => !vfLineAvailable(l))) return;
         if (method === 'cod' && !codOk) return;
+        if (method === 'wallet' && !canUseBalance) return;
         if (method === 'card' && s.last4.length !== 4) {
           this.setState({
             err: true
@@ -118,11 +134,23 @@ class Component extends VFPage {
           payment_type: method
         });
         const complete = () => {
+          const id = 'VN-' + Date.now();
+          // Paying from the balance takes the total out of it now; a failed deduction stops the order.
+          let balanceAfter;
+          if (method === 'wallet') {
+            const account = vfWalletChange(phone, -totals.total, {kind: 'order', order: id});
+            if (!account) {
+              this.setState({failed: true});
+              return;
+            }
+            balanceAfter = vfWalletOf(account).balance;
+          }
           const record = {
             method,
             paymentStatus: P.statuses[method],
             preferredLocale: vfAccountLocale() || L,
-            id: 'VN-' + Date.now(),
+            id,
+            ...(balanceAfter != null ? {balanceAfter} : {}),
             status: 'received',
             createdAt: new Date().toISOString(),
             lines: items.map(l => ({
@@ -170,11 +198,11 @@ class Component extends VFPage {
       },
       lines: items.map(l => ({
         image: vfProductImage(l, L).src,
-        name: l[L][0],
+        name: vfLineToken(l),
         meta: l[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(l.qty) : l.qty),
         total: m(l.unit * l.qty)
       })),
-      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount}, m),
+      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount, balanceDiscount: S.t.balanceDiscount}, m, S.n),
       doneRows: [{
         icon: 'calendar',
         label: C.when,
@@ -191,6 +219,10 @@ class Component extends VFPage {
         icon: 'banknote',
         label: C.pay,
         value: P.methods[method] + ' · ' + m(totals.total)
+      }, {
+        icon: 'banknote',
+        label: PW.left,
+        value: method === 'wallet' && order && order.balanceAfter != null ? m(order.balanceAfter) : ''
       }, {
         icon: 'receipt',
         label: C.card,

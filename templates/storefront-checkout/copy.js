@@ -114,23 +114,35 @@ function vfCopy(S) {
     migration: {
       "en": {
         "actions": {
+          "wallet": "Pay from balance",
           "online": "Simulate online payment",
           "cod": "Confirm demo order",
           "wa": "Confirm demo order"
         },
         "descriptions": {
+          "wallet": "The total comes out of your account balance. There’s nothing else to pay.",
           "online": "Try the online payment flow using a simulated result.",
           "cod": "Payment would be collected on delivery. Confirm this sample order.",
           "wa": "Open WhatsApp to review the prepared message, or confirm the sample order here."
         },
         "choose": "Choose a payment method",
         "methods": {
+          "wallet": "Account balance",
           "card": "Card-to-card transfer",
           "online": "Online card demo",
           "cod": "Pay on delivery",
           "wa": "Confirm on WhatsApp"
         },
         "codOff": "Available for Karaj delivery only.",
+        "wallet": {
+          "signIn": "Sign in to pay from your account balance.",
+          "balance": "Balance {balance}.",
+          "discount": "Balance {balance}: {percent}% off products.",
+          "short": "Balance {balance}. Top up {left} more to pay from it.",
+          "topUp": "Top up your balance",
+          "after": "Balance after this order: {balance}.",
+          "left": "Balance left"
+        },
         "demo": "Template preview: no money is transferred and no messages are sent.",
         "processing": "Processing demo payment…",
         "failed": "Demo payment failed",
@@ -139,6 +151,7 @@ function vfCopy(S) {
         "other": "Choose another method",
         "openWa": "Open order in WhatsApp",
         "statuses": {
+          "wallet": "Paid from balance",
           "card": "Awaiting transfer check",
           "online": "Demo paid",
           "cod": "Pay on delivery",
@@ -147,23 +160,35 @@ function vfCopy(S) {
       },
       "fa": {
         "actions": {
+          "wallet": "پرداخت از کیف پول",
           "online": "شبیه‌سازی پرداخت آنلاین",
           "cod": "تأیید سفارش نمونه",
           "wa": "تأیید سفارش نمونه"
         },
         "descriptions": {
+          "wallet": "مبلغ کل از موجودی کیف پول شما کم می‌شود و پرداخت دیگری لازم نیست.",
           "online": "روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.",
           "cod": "مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.",
           "wa": "واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید."
         },
         "choose": "انتخاب روش پرداخت",
         "methods": {
+          "wallet": "کیف پول",
           "card": "کارت به کارت",
           "online": "نمونه پرداخت آنلاین",
           "cod": "پرداخت در محل",
           "wa": "تأیید در واتس‌اپ"
         },
         "codOff": "فقط برای ارسال در کرج در دسترس است.",
+        "wallet": {
+          "signIn": "برای پرداخت از کیف پول وارد حساب شوید.",
+          "balance": "موجودی {balance}.",
+          "discount": "موجودی {balance}: {percent}٪ تخفیف محصولات.",
+          "short": "موجودی {balance}. برای پرداخت از کیف پول {left} دیگر افزایش موجودی دهید.",
+          "topUp": "افزایش موجودی",
+          "after": "موجودی پس از این سفارش: {balance}.",
+          "left": "موجودی باقی‌مانده"
+        },
         "demo": "پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.",
         "processing": "در حال انجام پرداخت نمونه…",
         "failed": "پرداخت نمونه ناموفق بود",
@@ -172,6 +197,7 @@ function vfCopy(S) {
         "other": "انتخاب روش دیگر",
         "openWa": "باز کردن سفارش در واتس‌اپ",
         "statuses": {
+          "wallet": "پرداخت از کیف پول",
           "card": "در انتظار بررسی واریز",
           "online": "پرداخت نمونه انجام شد",
           "cod": "پرداخت در محل",

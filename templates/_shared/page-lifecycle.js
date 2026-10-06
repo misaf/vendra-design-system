@@ -34,7 +34,7 @@ class VFPage extends DCLogic {
     this._vfResize();
     const route=vfPageRoute(this.props);
     const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
-    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfProduct(route.id==='ivory-classic'?'ivory':route.id||'ivory'))]}:{});
+    if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfFindProduct(route.id)||VF_PRODUCTS[0])]}:{});
     this._vfAnnounce();
   }
   componentDidUpdate() {
@@ -61,7 +61,9 @@ class VFPage extends DCLogic {
       // skip link and header; the browser already reads the new page. Only later
       // views (in-site navigation, a replaced h1) move focus and announce.
       if (window.VF_VIEWED) {
-        window.AG_NAV.focusHeading();
+        // A form field the page has just focused (e.g. "Track another order") keeps focus; the heading is still announced.
+        const field = document.activeElement && document.activeElement.closest('main') && document.activeElement.matches('input, select, textarea');
+        if (!field) window.AG_NAV.focusHeading();
         if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
           vfAnnouncement: title
         });

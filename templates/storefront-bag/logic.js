@@ -52,7 +52,7 @@ class Component extends VFPage {
       ['outside', 'vf-map', errors.outside],
       ['address', 'vf-address', s.mapFailed ? errors.addressFull : errors.address]
     ].filter(([key]) => invalid[key])
-      .concat(live.map((l, i) => vfLineHasCard(l) && !String(l.card || '').trim() ? ['cards', 'vf-card-' + i, C.cardFor.replace('{name}', l[L][0]) + ': ' + errors.card] : null).filter(Boolean))
+      .concat(live.map((l, i) => vfLineHasCard(l) && !String(l.card || '').trim() ? ['cards', 'vf-card-' + i, C.cardFor.replace('{name}', vfTokenText(vfLineToken(l))) + ': ' + errors.card] : null).filter(Boolean))
       .concat([['sender', 'vf-sender', errors.sender], ['senderPhone', 'vf-sender-phone', errors.senderPhone]].filter(([key]) => invalid[key]))
       .map(([, id, text]) => ({
         text,
@@ -66,8 +66,11 @@ class Component extends VFPage {
       if (this.props.go) this.props.go({view: 'bag', step: next});
       else this.setState({step: next});
     };
+    // "Order on WhatsApp" carries the bag, so the studio knows each product by its code.
+    const waOrder = [C.wa.order, ...live.map(l => '- ' + C.wa.line.replace('{name}', vfLineToken(l)).replace('{detail}', l[L][1]).replace('{qty}', n(l.qty)))].join('\n');
     return {
       ...S,
+      waHref: live.length ? S.waWith(waOrder) : S.waHref,
       t: {
         ...S.t,
         ...C
@@ -180,7 +183,7 @@ class Component extends VFPage {
         unavailable: !vfLineAvailable(l),
         unavailableLabel: fa ? 'ناموجود؛ برای ادامه از سبد حذف کنید' : 'Unavailable; remove to continue',
         image: vfProductImage(l, L).src,
-        name: l[L][0],
+        name: vfLineToken(l),
         meta: l[L][1] + ' · ' + C.labels.each + m(l.unit),
         note: String(l.card || '').trim() ? vfCardMessages([l], {}, L) : vfLineHasCard(l) ? C.cardNext : undefined,
         price: m(l.unit * l.qty),
@@ -196,14 +199,14 @@ class Component extends VFPage {
         id: 'vf-card-' + i,
         hasCard: vfLineHasCard(l),
         noCard: !vfLineHasCard(l),
-        label: C.cardFor.replace('{name}', l[L][0]),
-        name: l[L][0],
+        label: C.cardFor.replace('{name}', vfTokenText(vfLineToken(l))),
+        name: vfLineToken(l),
         detail: l[L][1],
         value: l.card || '',
         error: missingCard(l) ? errors.card : undefined,
         setCard: e => st ? st.setCard(l.id, e.target.value) : this._lines(lines => lines.map(x => x.id === l.id ? {...x, card: e.target.value} : x)),
         addLabel: C.addCard.replace('{price}', cardPrice),
-        addAria: C.addCardLabel.replace('{price}', cardPrice).replace('{name}', l[L][0]),
+        addAria: C.addCardLabel.replace('{price}', cardPrice).replace('{name}', vfTokenText(vfLineToken(l))),
         add: () => {
           if (st) st.addCard(l.id);
           else this._lines(lines => lines.map(x => x.id === l.id ? vfLineWithCard(x) : x));
@@ -242,7 +245,7 @@ class Component extends VFPage {
       })),
       summary: live.map(l => ({
         image: vfProductImage(l, L).src,
-        name: l[L][0],
+        name: vfLineToken(l),
         meta: l[L][1] + ' · × ' + n(l.qty),
         total: m(l.unit * l.qty)
       })),
@@ -284,7 +287,7 @@ class Component extends VFPage {
         });
         S.focus('vf-promo');
       },
-      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount}, m),
+      sums: vfSummaryRows(totals, delivery.promo, {...C, discount: S.t.discount, balanceDiscount: S.t.balanceDiscount}, m, S.n),
       restore: e => {
         e && e.preventDefault && e.preventDefault();
         if (st) {

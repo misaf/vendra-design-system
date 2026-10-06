@@ -30,8 +30,8 @@ test('adding to the bag opens a bag panel that leads to checkout', async ({page}
   const add = page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first();
   await add.click();
   const panel = page.getByRole('dialog', {name: 'Added to your bag'});
-  await expect(panel).toContainText('Ivory ribbon box');
-  await expect(panel).toContainText('Petite · × 1');
+  await expect(panel).toContainText('VF-7K2M4Q');
+  await expect(panel).toContainText('Flower box · Petite · 12 stems · × 1');
   await expect(panel).toContainText('Bag subtotal · 3 items');
   await expect(panel.getByRole('link', {name: 'View bag and check out'})).toBeFocused();
   expect(await scanAxe(page)).toEqual([]);
@@ -83,7 +83,7 @@ test('payment methods are radio buttons', async ({page}) => {
   await page.goto('/templates/storefront-checkout/StorefrontCheckout.dc.html');
   await expect(page.locator('#main')).toBeVisible();
   const group = page.getByRole('group', {name: 'Choose a payment method'});
-  await expect(group.getByRole('radio')).toHaveCount(4);
+  await expect(group.getByRole('radio')).toHaveCount(5);
   await expect(group.getByRole('radio', {name: 'Card-to-card transfer'})).toBeChecked();
   await group.getByRole('radio', {name: 'Confirm on WhatsApp'}).check();
   await expect(page.locator('main h1')).toHaveText('Confirm on WhatsApp');

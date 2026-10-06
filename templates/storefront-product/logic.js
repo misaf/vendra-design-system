@@ -14,11 +14,10 @@ class Component extends VFPage {
     const s = this.state;
     const m = v => VF_MONEY(v, fa);
     const C = vfCopy(S);
-    const id = vfPageRoute(this.props).id || 'ivory';
-    const product = vfProduct(id === 'ivory-classic' ? 'ivory' : id);
+    const product = vfFindProduct(vfPageRoute(this.props).id) || VF_PRODUCTS[0];
     const base = product.price;
-    const availableAddons = VF_ADDONS.filter(a => product.id !== 'orchid' || a[0] !== 'vase');
-    const hasSizes = product.id === 'ivory';
+    const availableAddons = VF_ADDONS.filter(a => !(product.noAddons || []).includes(a[0]));
+    const hasSizes = !!product.sizes;
     const sz = VF_SIZES.find(z => z[0] === s.size);
     const extra = availableAddons.filter(a => s.addons.includes(a[0])).reduce((t, a) => t + a[1], 0);
     const unit = base + (hasSizes ? sz[1] : 0) + extra;
@@ -28,15 +27,43 @@ class Component extends VFPage {
       t: {
         ...S.t,
         ...C,
-        name: product[L][0],
-        sub: product[L][1],
-        badge: product[L][2] || C.labels.vendraFlowers,
+        // Products have no names: the code is the title and the category says what it is.
+        name: product.id,
+        sub: vfProductSub(product, L),
+        badge: product[L].badge || C.labels.vendraFlowers,
         desc: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
         cat: VF_CATEGORY_COPY[L][product.cat],
-        careT: product.id === 'orchid' ? VF_PRODUCT_DETAILS.orchid[fa ? 1 : 0] : C.careT,
+        careT: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT,
         ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
       },
       hasSizes,
+      // WhatsApp questions quote the code, here and in the menu's WhatsApp button.
+      waHref: S.waWith(C.waAsk.replace('{kind}', fa ? VF_CATEGORY_ITEM.fa[product.cat] : VF_CATEGORY_ITEM.en[product.cat].toLowerCase()).replace('{code}', product.id)),
+      copyCode: () => {
+        const done = ok => {
+          this.setState({toast: {title: ok ? C.codeCopied.replace('{code}', vfTokenText(product.id)) : C.copyFailed}});
+          this._hideToastLater();
+        };
+        // Without clipboard access, select the code and try the older copy command; the code stays selected either way.
+        const fallback = () => {
+          const el = document.getElementById('vf-product-code');
+          let ok = false;
+          if (el) {
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            try { ok = document.execCommand('copy'); } catch {}
+          }
+          done(ok);
+        };
+        try {
+          navigator.clipboard.writeText(product.id).then(() => done(true), fallback);
+        } catch {
+          fallback();
+        }
+      },
       // Saved products are shared with the Saved page and the account's Saved tab.
       fav: S.isFav(product.id, []),
       // Saving confirms with a toast that links to the saved list.
@@ -94,13 +121,14 @@ class Component extends VFPage {
           st.add({
             image: product.image,
             productId: product.id,
+            token: product.id,
             size: hasSizes ? s.size : null,
             addons: ad.map(a => a[0]),
             id: product.id + (hasSizes ? '-' + s.size : '') + (ad.length ? '-' + ad.map(a => a[0]).join('+') : ''),
             unit,
             qty: s.qty,
-            en: [product.en[0], (hasSizes ? [sz[2], sz[4]] : [product.en[1]]).concat(ad.map(a => a[2])).join(' · ')],
-            fa: [product.fa[0], (hasSizes ? [sz[3], sz[5]] : [product.fa[1]]).concat(ad.map(a => a[3])).join(' · ')]
+            en: [product.id, vfLineDetail(product, hasSizes ? sz : null, ad, 'en')],
+            fa: [product.id, vfLineDetail(product, hasSizes ? sz : null, ad, 'fa')]
           });
         }
         // A small bag panel confirms what was added and offers the next step.
@@ -109,8 +137,8 @@ class Component extends VFPage {
           added: {
             line: {
               image: vfProductImage(product, L).src,
-              name: product[L][0],
-              meta: (hasSizes ? [fa ? sz[3] : sz[2]] : [product[L][1]]).concat(availableAddons.filter(a => s.addons.includes(a[0])).map(a => fa ? a[3] : a[2])).join(' · ') + ' · × ' + (fa ? VF_FA_DIGITS(s.qty) : s.qty),
+              name: product.id,
+              meta: vfLineDetail(product, hasSizes ? sz : null, availableAddons.filter(a => s.addons.includes(a[0])), L) + ' · × ' + (fa ? VF_FA_DIGITS(s.qty) : s.qty),
               total: m(total)
             }
           }
@@ -160,8 +188,8 @@ class Component extends VFPage {
       recent: vfRecentlyViewed().filter(x => x !== product.id).slice(0, 4).map(vfProduct).map(p => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
+        name: p.id,
+        sub: vfProductSub(p, L),
         price: m(p.price),
         fav: S.isFav(p.id, []),
         toggleFav: S.toggleFav(p.id, [])
@@ -169,7 +197,7 @@ class Component extends VFPage {
       faq: [{
         id: 'care',
         title: C.care,
-        content: product.id === 'orchid' ? VF_PRODUCT_DETAILS.orchid[fa ? 1 : 0] : C.careT
+        content: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT
       }, {
         id: 'delivery',
         title: C.del,
@@ -194,8 +222,7 @@ class Component extends VFPage {
     setTimeout(() => document.querySelectorAll?.('.ag-gallery__track:not([tabindex])').forEach(track => { track.tabIndex = 0; }), 0);
   }
   _rememberProduct() {
-    const id = vfPageRoute(this.props).id || 'ivory';
-    vfRememberViewed(id === 'ivory-classic' ? 'ivory' : id);
+    vfRememberViewed(vfPageRoute(this.props).id || VF_PRODUCTS[0].id);
   }
   componentDidMount() {
     this._productId = vfPageRoute(this.props).id;

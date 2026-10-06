@@ -12,6 +12,7 @@
     begin_checkout: 'Bag → payment step',
     add_payment_info: 'Pay / Place order pressed',
     purchase: 'Order placed',
+    top_up: 'Account balance topped up',
     add_to_wishlist: 'Product saved',
     search: 'Search submitted',
     reminder_created: 'Occasion reminder saved',
@@ -45,7 +46,7 @@
   });
   const item = (p, qty = 1, unit) => p ? {
     item_id: p.id,
-    item_name: Array.isArray(p.en) ? p.en[0] : p.en,
+    item_name: p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
     item_category: p.cat,
     price: unit ?? p.price,
     quantity: qty

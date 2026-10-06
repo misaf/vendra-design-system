@@ -16,6 +16,12 @@ const VF_CATEGORY_COPY = {
   }
 };
 
+// One product of each category, used as its kind ("Flower box · Roses · satin").
+const VF_CATEGORY_ITEM = {
+  en: {bouquets: 'Bouquet', boxes: 'Flower box', orchids: 'Orchid', bridal: 'Bridal bouquet'},
+  fa: {bouquets: 'دسته‌گل', boxes: 'باکس گل', orchids: 'ارکیده', bridal: 'دسته‌گل عروس'}
+};
+
 // Occasions the shop filters by; products list theirs in catalog.js. (Reminder dates are VF_OCCASIONS in account-data.js.)
 const VF_SHOP_OCCASIONS = ['birthday', 'anniversary', 'thanks', 'sympathy'];
 const VF_SHOP_OCCASION_COPY = {

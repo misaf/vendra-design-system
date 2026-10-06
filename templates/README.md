@@ -11,11 +11,12 @@ Start here when changing the official storefront. All storefront examples live h
 | English/Persian page copy | `storefront-<page>/copy.js` |
 | Shared navigation labels | [_shared/translations/shell.js](_shared/translations/shell.js) |
 | Category and shop-occasion names, or shared article content | `_shared/translations/categories.js` and `journal-content.js` |
-| Product names, prices, photos, occasions, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
+| Product codes, descriptions, prices, photos, occasions, box sizes or extras | [_shared/catalog.js](_shared/catalog.js) |
 | Product placeholder artwork | `../assets/placeholders/product.svg` |
 | Store name, address, hours, contact links or demo payment details | [_shared/store-config.js](_shared/store-config.js) |
 | Delivery fees, cut-offs, delivery days, sold-out dates, time slots or free-delivery rules | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
+| Account balance: discount threshold and percent, top-up amounts and limits | `wallet` in [_shared/store-config.js](_shared/store-config.js); rules and history in [_shared/wallet.js](_shared/wallet.js) |
 | Map tiles, attribution and starting view; the studio's own pin (`studio`) | `map` and `studio` in [_shared/store-config.js](_shared/store-config.js) |
 | Delivery pin and saved-places maps, loading and formatting | [_shared/location.js](_shared/location.js), styles in `location.css`, copy in `translations/location.js` |
 | Desktop header | [_shared/header-desktop.html](_shared/header-desktop.html) |
@@ -183,10 +184,31 @@ All catalog products use the shared neutral 4:5 placeholder. Default product/cat
 
 ### Catalog navigation and demo orders
 
-Product cards on home, shop, saved, search and recovery pages use each catalog ID.
-`_shared/catalog.js` owns bilingual names, descriptions and prices. Ivory has three
-sizes; other sample products use their catalog price. Unknown product IDs show the
-not-found page; the previous `ivory-classic` link remains supported.
+Products have no names. Each one is known by its unique code (its catalog `id`, e.g.
+`VF-7K2M4Q`): the code is its title on cards, the product page, bag, checkout, orders,
+emails and WhatsApp messages, and its category says what kind of product it is
+("Flower box"), shown under the code. Search finds a product by its code, typed
+in any case, with spaces or Persian digits. Product URLs carry the category and code:
+`?view=product&id=VF-7K2M4Q&cat=boxes`.
+
+`_shared/catalog.js` owns codes, bilingual descriptions and prices. Products with
+`sizes: true` offer the three box sizes; `noAddons` and `care` cover per-product extras and
+care text. Unknown codes show the not-found page. Old slug links (`?id=ivory`,
+`ivory-classic`), saved lists and bag lines from before codes still resolve through each
+product's `legacy` slug.
+
+### Account balance
+
+Signed-in customers top up their balance in the account's Balance tab (`?view=account&tab=balance`)
+and can pay for an order from it at checkout. Paying from a balance of at least
+`VF_STORE.wallet.discountFrom` (100,000,000 Toman) takes `discountPercent` (5%) off the products,
+after any promo code; delivery is not discounted. The balance option is chosen by default when it
+covers the order; when it doesn't, checkout says how much to top up and links to the Balance tab.
+Guests are asked to sign in. Each top-up and order payment is kept in the balance history.
+
+In this template the balance is a demo kept in the browser with the account, and top-ups use a
+simulated payment. A real store must hold the balance on its server, add top-ups only after the
+payment provider confirms them, and take order payments there.
 
 Shop URLs preserve `cat`, `sort=low|high`, comma-separated `filters=under3,same,roses`,
 `occasion`, `min`/`max` price and `stock=1`.

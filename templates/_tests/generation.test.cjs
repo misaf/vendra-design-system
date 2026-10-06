@@ -29,7 +29,7 @@ function pageValues(page) {
   vm.runInContext(fs.readFileSync(path.join(root, '_ds_bundle.js'), 'utf8'), context);
   vm.runInContext(script + '\nthis.Page = Component;', context);
   const logic = new context.Page({lang: 'en', tenant: 'default', mobile: false});
-  if (page === 'search') logic.state.q = 'ivory';
+  if (page === 'search') logic.state.q = 'VF-7K2';
   return logic.renderVals();
 }
 

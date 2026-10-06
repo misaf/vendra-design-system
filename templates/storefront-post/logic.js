@@ -43,7 +43,7 @@ class Component extends VFPage {
         const p = vfProduct(id);
         return {
           ...S.productLink(id),
-          name: p[L][0],
+          name: p.id,
           price: S.m(p.price),
           images: [vfProductImage(p, L)]
         };

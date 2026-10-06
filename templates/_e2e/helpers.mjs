@@ -18,7 +18,7 @@ export const LANGS = ['en', 'fa'];
 
 // Every routed view, with the parameters a view needs to render instead of falling back to notfound.
 export const VIEWS = {
-  home: {}, shop: {}, product: {id: 'ivory'}, bag: {}, checkout: {}, saved: {}, search: {},
+  home: {}, shop: {}, product: {id: 'VF-7K2M4Q', cat: 'boxes'}, bag: {}, checkout: {}, saved: {}, search: {},
   account: {}, signin: {}, track: {}, contact: {}, faq: {}, journal: {},
   post: {post: 'morning-at-the-studio'}, policy: {}, weddings: {}, notfound: {}
 };

@@ -5,12 +5,12 @@ function vfCopy(S) {
   return {
     en: {
       label: 'Search the shop',
-      ph: 'Roses, orchids, “birthday”…',
+      ph: 'Roses, “birthday” or a product code…',
       close: 'Close search',
       popular: 'Popular',
       noneA: 'No flowers match',
       noneB: '— yet.',
-      noneP: 'Try a flower, a colour or an occasion.',
+      noneP: 'Try a flower, a colour, an occasion or a product code.',
       labels: {
         tryAnotherSearch: 'Try another search',
         browseTheShop: 'Browse the shop'
@@ -20,12 +20,12 @@ function vfCopy(S) {
     },
     fa: {
       label: 'جستجو در فروشگاه',
-      ph: 'رز، ارکیده، «تولد»…',
+      ph: 'رز، «تولد» یا کد محصول…',
       close: 'بستن جستجو',
       popular: 'جستجوهای پرطرفدار',
       noneA: 'گلی پیدا نشد',
       noneB: '— فعلاً.',
-      noneP: 'نام گل، رنگ یا مناسبت را امتحان کنید.',
+      noneP: 'نام گل، رنگ، مناسبت یا کد محصول را امتحان کنید.',
       labels: {
         tryAnotherSearch: 'جستجوی دوباره',
         browseTheShop: 'رفتن به فروشگاه'

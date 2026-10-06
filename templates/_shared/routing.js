@@ -2,9 +2,12 @@
 const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
 // Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
 const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
+// Account tabs, in the order they appear.
+const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
 const VF_ROUTE_EXTRA = {
   product: {
-    id: 'ivory'
+    id: 'VF-7K2M4Q',
+    cat: 'boxes'
   },
   post: {
     post: 'morning-at-the-studio'
@@ -17,9 +20,19 @@ function vfReadRoute(search = location.search) {
   route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // An account tab can be linked to (?view=account&tab=balance).
+  if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab'))) route.tab = query.get('tab');
   // Sign-in started from checkout returns there (?view=signin&next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
-  if (route.view === 'product' && !VF_PRODUCTS.some(p => p.id === route.id || (p.id === 'ivory' && route.id === 'ivory-classic'))) route.view = 'notfound';
+  // A product is addressed by its category and code (?view=product&id=VF-7K2M4Q&cat=boxes); an old slug
+  // (?id=ivory) or a code typed in another case still opens it, and the link is written back in full.
+  if (route.view === 'product') {
+    const product = vfFindProduct(route.id);
+    if (product) {
+      route.id = product.id;
+      route.cat = product.cat;
+    } else route.view = 'notfound';
+  }
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
   if (route.view === 'shop') {
     route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
@@ -39,6 +52,7 @@ function vfRouteParams(route) {
   if(route.demo)query.set('demo',route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
+  if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
   if (route.view === 'shop') {
     if(route.min>0)query.set('min',route.min);
     const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;

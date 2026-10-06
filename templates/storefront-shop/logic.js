@@ -6,7 +6,7 @@ class Component extends VFPage {
     cat: 'all',
     chips: [],
     sort: 'featured',
-    favs: ['orchid']
+    favs: ['VF-8RD5WN']
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -185,16 +185,16 @@ class Component extends VFPage {
       noItems: !demo && list.length === 0,
       clear,
       items: list.map(p => {
-        const fav = S.isFav(p.id, ['orchid']);
+        const fav = S.isFav(p.id, ['VF-8RD5WN']);
         return {
           ...S.productLink(p.id),
           images: [vfProductImage(p, L)],
-          name: p[L][0],
-          sub: p[L][1],
-          badge: p[L][2],
+          name: p.id,
+          sub: vfProductSub(p, L),
+          badge: p[L].badge,
           price: VF_MONEY(p.price, fa),
           fav,
-          toggleFav: S.toggleFav(p.id, ['orchid'])
+          toggleFav: S.toggleFav(p.id, ['VF-8RD5WN'])
         };
       })
     };

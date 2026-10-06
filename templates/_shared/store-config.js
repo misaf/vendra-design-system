@@ -29,5 +29,8 @@ const VF_STORE = {
     center: [35.8327, 50.9654],
     zoom: 13
   },
+  // Account balance. Signed-in customers top up, then pay for orders from their balance. Paying from a
+  // balance of at least `discountFrom` takes `discountPercent` off the products (not delivery). Amounts are in Toman.
+  wallet: {discountFrom: 100_000_000, discountPercent: 5, topUps: [10_000_000, 50_000_000, 100_000_000], minTopUp: 1_000_000, maxTopUp: 500_000_000},
   payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
 };

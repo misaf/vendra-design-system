@@ -127,9 +127,9 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "lavender",
-      "blush",
-      "ivory"
+      "VF-3HX9TP",
+      "VF-9FA2KE",
+      "VF-7K2M4Q"
     ]
   },
   {
@@ -220,7 +220,7 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "blush"
+      "VF-9FA2KE"
     ]
   },
   {
@@ -335,8 +335,8 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "lavender",
-      "crimson"
+      "VF-3HX9TP",
+      "VF-4CJ6ZB"
     ]
   },
   {
@@ -427,8 +427,8 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "crimson",
-      "ivory"
+      "VF-4CJ6ZB",
+      "VF-7K2M4Q"
     ]
   },
   {
@@ -537,7 +537,7 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "orchid"
+      "VF-8RD5WN"
     ]
   },
   {
@@ -628,7 +628,7 @@ VF_POSTS.push(...[
       ]
     },
     "products": [
-      "orchid"
+      "VF-8RD5WN"
     ]
   }
 ]);

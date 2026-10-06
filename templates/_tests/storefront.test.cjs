@@ -32,10 +32,12 @@ assert.equal(ctx.errors({name:'S',phone:'09123456789',address:'U',location:{lat:
 assert.equal(ctx.errors({...sender,name:'S',phone:'09123456789',address:'U',location:{lat:32.65,lng:51.67}}).outside,true,'a pin beyond every zone is outside the delivery area');
 // A bought handwritten card needs its message; a line without one does not.
 vm.runInContext('this.withCard=vfLineWithCard;this.hasCard=vfLineHasCard;this.zoneAt=vfZoneAt;this.slots=vfDeliverySlots;this.slot=vfDeliverySlot;this.cardText=vfCardMessages;this.sample=vfSampleBag;',ctx);
-const plain={id:'blush',productId:'blush',unit:2200000,qty:1,en:['Blush morning','Garden roses · eucalyptus'],fa:['صبح صورتی','رز باغی · اکالیپتوس']};
+const plain={id:'VF-9FA2KE',productId:'VF-9FA2KE',size:null,addons:[],unit:2200000,qty:1,en:['VF-9FA2KE','Bouquet · Garden roses · eucalyptus'],fa:['VF-9FA2KE','دسته‌گل · رز باغی · اکالیپتوس']};
 const carded=ctx.withCard(plain);
-assert.equal(carded.id,'blush-card');assert.equal(carded.unit,2350000);assert.equal(carded.en[1],'Garden roses · eucalyptus · Handwritten card');assert.ok(ctx.hasCard(carded));assert.equal(ctx.hasCard(plain),false);
-assert.equal(ctx.withCard({id:'ivory-classic-vase',unit:5550000,qty:1,en:['Ivory ribbon box','Classic · 20 stems · Glass vase'],fa:['باکس','کلاسیک · ۲۰ شاخه · گلدان شیشه‌ای']}).id,'ivory-classic-card+vase','addons keep the product page order');
+assert.equal(carded.id,'VF-9FA2KE-card');assert.equal(carded.unit,2350000);assert.equal(carded.en[1],'Bouquet · Garden roses · eucalyptus · Handwritten card');assert.ok(ctx.hasCard(carded));assert.equal(ctx.hasCard(plain),false);
+// A line saved before products had codes (named, with a slug id) comes back titled by its code.
+const legacy=ctx.withCard({id:'ivory-classic-vase',unit:5550000,qty:1,en:['Ivory ribbon box','Classic · 20 stems · Glass vase'],fa:['باکس','کلاسیک · ۲۰ شاخه · گلدان شیشه‌ای']});
+assert.equal(legacy.id,'VF-7K2M4Q-classic-card+vase','addons keep the product page order');assert.equal(legacy.en[0],'VF-7K2M4Q');assert.equal(legacy.size,'classic');
 const base={name:'S',phone:'09123456789',address:'U',location:{lat:35.83,lng:50.96},...sender};
 assert.equal(ctx.errors(base,[plain]).cards,false);assert.equal(ctx.errors(base,[carded]).cards,true);assert.equal(ctx.errors(base,[{...carded,card:'Love'}]).cards,false);
 assert.ok(ctx.hasCard(ctx.sample()[0])&&ctx.sample()[0].card,'the sample bag pays for the card it writes');
@@ -64,7 +66,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  if(folder==='storefront-site') {
   logic.navigate('faq');assert.equal(logic.state.route,'faq');assert.ok(history.at(-1)[1].includes('view=faq'));history.length=0;
   logic.navigate('shop');assert.equal(logic.state.route,'shop');assert.deepEqual(history[0],['push','?lang=en&view=shop']);
-  logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.lang,'fa');
+  logic.navigate({view:'product',id:'ivory-classic',lang:'fa'});assert.equal(logic.state.route,'product');assert.equal(logic.state.routeInfo.id,'VF-7K2M4Q','an old slug opens the product by its code');assert.equal(logic.state.routeInfo.cat,'boxes');assert.equal(logic.state.lang,'fa');
   logic.navigate({view:'shop',lang:'en'},true);assert.equal(history.at(-1)[0],'replace');
   logic.navigate({view:'shop',date:'2026-10-09'});assert.ok(history.at(-1)[1].includes('date=2026-10-09'));logic.navigate({view:'signin',next:'delivery'});assert.equal(logic.state.routeInfo.next,'delivery');assert.ok(history.at(-1)[1].includes('next=delivery'));
   logic.renderVals().go({view:'shop'},true);assert.equal(history.at(-1)[0],'replace','go can refine without a new history entry');
@@ -72,9 +74,9 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
   let store=logic.renderVals().store;store.setDelivery({name:'Sample',phone:'09123456789',address:'Sample address',location:{lat:35.83,lng:50.96},zone:'central',sender:'Buyer',senderPhone:'09121112233'});logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
   const originalBag=logic.state.bag;logic.setState({bag:[]});logic.navigate('checkout');assert.equal(logic.state.route,'bag');assert.equal(logic.state.routeInfo.step,'bag','an empty bag returns to the bag');logic.setState({bag:originalBag});logic.navigate('checkout');
   // A card added from the delivery step joins the line's price and needs a message before checkout.
-  store=logic.renderVals().store;store.addCard('orchid');const orchid=logic.state.bag.find(l=>l.id==='orchid-card');assert.equal(orchid.unit,3550000);logic.navigate('checkout');assert.equal(logic.state.route,'bag');
-  logic.renderVals().store.setCard('orchid-card','With love');logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
-  logic.renderVals().store.remove('orchid-card');logic.renderVals().store.add({...originalBag[1]});
+  store=logic.renderVals().store;store.addCard('VF-8RD5WN');const orchid=logic.state.bag.find(l=>l.id==='VF-8RD5WN-card');assert.equal(orchid.unit,3550000);logic.navigate('checkout');assert.equal(logic.state.route,'bag');
+  logic.renderVals().store.setCard('VF-8RD5WN-card','With love');logic.navigate('checkout');assert.equal(logic.state.route,'checkout');
+  logic.renderVals().store.remove('VF-8RD5WN-card');logic.renderVals().store.add({...originalBag[1]});
   const totals=c.window.AG_FORMAT.num(8300000,'en');assert.equal(totals,'8,300,000');
   const order={lines:logic.state.bag,delivery:logic.state.delivery,totals:{sub:8300000,fee:0,total:8300000},last4:'1234'};
   logic.renderVals().store.complete(order);assert.equal(logic.state.bag.length,0);assert.equal(logic.state.order.totals.total,8300000);assert.equal(logic.state.order.delivery.name,'Sample');
@@ -92,27 +94,27 @@ function loadPage(name, props = {}, search = '') {
  return {logic:new c.Logic({lang:'en',...props}),ctx:c,history};
 }
 for(const lang of ['en','fa']) {
- for(const id of ['ivory','lavender','orchid','crimson','blush','bridal']) {
+ for(const id of ['VF-7K2M4Q','VF-3HX9TP','VF-8RD5WN','VF-4CJ6ZB','VF-9FA2KE','VF-6MT3VY']) {
   let added;const {logic}=loadPage('product',{lang,routeInfo:{view:'product',id},store:{saved:[],add:line=>added=line}});
-  const v=logic.renderVals();v.add();if(id==='bridal'){assert.equal(added,undefined);assert.equal(v.available,false);continue;}assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);
-  assert.equal(added.unit,id==='ivory'?4100000:({lavender:2800000,orchid:3400000,crimson:5200000,blush:2200000,bridal:6500000})[id]);
-  assert.equal(v.hasSizes,id==='ivory');
+  const v=logic.renderVals();v.add();if(id==='VF-6MT3VY'){assert.equal(added,undefined);assert.equal(v.available,false);continue;}assert.equal(added.productId,id);assert.equal(added[lang][0],v.t.name);assert.equal(v.t.name,id,'a product is titled by its code');
+  assert.equal(added.unit,({'VF-7K2M4Q':4100000,'VF-3HX9TP':2800000,'VF-8RD5WN':3400000,'VF-4CJ6ZB':5200000,'VF-9FA2KE':2200000})[id]);
+  assert.equal(v.hasSizes,id==='VF-7K2M4Q');
   const listing=loadPage('shop',{lang}).logic.renderVals().items.find(item=>item.name===v.t.name);
   assert.equal(v.unitPrice,listing.price,'Default product price must match the listing');
-  if(id==='ivory'){
+  if(id==='VF-7K2M4Q'){
    v.sizes[1].pick();logic.renderVals().add();assert.equal(added.unit,4900000,'Classic surcharge remains selectable');
    logic.renderVals().sizes[2].pick();logic.renderVals().add();assert.equal(added.unit,6000000,'Generous surcharge remains selectable');
-   logic._vfAnnounce=()=>{};logic._productId='orchid';logic.componentDidUpdate();
+   logic._vfAnnounce=()=>{};logic._productId='VF-8RD5WN';logic.componentDidUpdate();
    assert.equal(logic.renderVals().unitPrice,listing.price,'Changing products resets to the starting price');
   }
  }
  let next;const {logic:shop}=loadPage('shop',{lang,go:r=>next=r},'?view=shop&cat=bouquets&sort=low&filters=under3,same');
- let v=shop.renderVals();assert.equal(v.items.length,2);assert.ok(v.items[0].href.includes('id=blush'));v.chips[1].toggle();assert.ok(!next.filters.includes('same'));
+ let v=shop.renderVals();assert.equal(v.items.length,2);assert.ok(v.items[0].href.includes('id=VF-9FA2KE&cat=bouquets'));assert.equal(v.items[0].name,'VF-9FA2KE');v.chips[1].toggle();assert.ok(!next.filters.includes('same'));
  v.categories[2].pick();assert.equal(next.cat,'boxes');
  const {logic:site,ctx:c}=loadPage('site',{lang});site.navigate({view:'shop',cat:'bouquets',sort:'high',filters:['roses','same'],lang});
  assert.equal(site.state.routeInfo.sort,'high');assert.equal(site.state.routeInfo.filters.join(','),'roses,same');site.renderVals().setLang(lang==='en'?'fa':'en');assert.equal(site.state.routeInfo.cat,'bouquets');
  site.navigate({view:'product',id:'unknown'});assert.equal(site.state.route,'notfound');
- const lines=[{id:'blush',unit:2200000,qty:2,image:'assets/placeholders/product.svg',en:['Blush morning','Garden roses'],fa:['صبح صورتی','رز باغی']}];
+ const lines=[{id:'VF-9FA2KE',productId:'VF-9FA2KE',unit:2200000,qty:2,image:'assets/placeholders/product.svg',en:['VF-9FA2KE','Bouquet · Garden roses'],fa:['VF-9FA2KE','دسته‌گل · رز باغی']}];
  const delivery={name:'Demo recipient',phone:'09120000000',address:'Demo street 12',zone:'tehran',slot:'16',sender:'Demo sender',senderPhone:'09121112233'};
  let order;const {logic:checkout}=loadPage('checkout',{lang,store:{bag:lines,delivery,complete:o=>order=o}});checkout.setState({last4:'1234'});checkout.renderVals().place();assert.ok(order.id.startsWith('VN-'));assert.equal(order.status,'received');
  site.renderVals().store.complete(order);site.renderVals().store.add({...lines[0],qty:1});assert.equal(site.state.order,null);assert.equal(site.state.lastOrder.id,order.id);

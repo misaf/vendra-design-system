@@ -169,7 +169,7 @@ function vfShell(props, page) {
     href,
     policyLink,
     policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
-    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id:vfProductId(id)||id,cat:(vfFindProduct(id)||{}).cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
     shopLink,
     lang: L,
@@ -231,6 +231,8 @@ function vfShell(props, page) {
       label: 'فا'
     }],
     waHref: VF_STORE.whatsapp,
+    // A WhatsApp chat with the message already written; pages use it to quote product codes.
+    waWith: text => VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
     phoneHref: 'tel:'+VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,

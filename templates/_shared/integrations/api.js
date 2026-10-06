@@ -92,8 +92,10 @@
       if (p.apiId != null) byApi[p.apiId] = p.id;
     });
     const slugs = [];
+    // Items saved before products were known by code carry the old slug; read them as codes.
     (w.items || []).forEach(it => {
-      const s = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const raw = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const s = raw && (vfProductId(raw) || raw);
       if (s) {
         slugs.push(s);
         m[s] = it.id;

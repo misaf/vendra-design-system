@@ -73,6 +73,11 @@ function vfCopy(S) {
       labels: {
         each: 'Each: '
       },
+      // The WhatsApp order message lists each item with its product code.
+      wa: {
+        order: 'Hello, I’d like to order:',
+        line: '{name}, {detail} × {qty}'
+      },
       errors: {
         name: 'Enter the recipient’s name.',
         phone: 'Enter an 11-digit mobile number starting with 09.',
@@ -155,6 +160,10 @@ function vfCopy(S) {
       keep: 'ادامه خرید',
       labels: {
         each: 'هر عدد: '
+      },
+      wa: {
+        order: 'سلام، می‌خواهم این‌ها را سفارش بدهم:',
+        line: '{name}، {detail} × {qty}'
       },
       errors: {
         name: 'نام گیرنده را وارد کنید.',

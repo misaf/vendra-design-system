@@ -22,9 +22,9 @@ class Component extends VFPage {
         toggleFav: S.toggleFav(p.id, []),
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p[L][0],
-        sub: p[L][1],
-        badge: p[L][2],
+        name: p.id,
+        sub: vfProductSub(p, L),
+        badge: p[L].badge,
         price: VF_MONEY(p.price, fa)
       }))
     };

@@ -1,4 +1,4 @@
-// Delivery days, promo codes, shop occasions, recently viewed products and analytics consent.
+// Product codes, delivery days, promo codes, shop occasions, recently viewed products and analytics consent.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -14,7 +14,7 @@ const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout,
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(path.join(root, '_ds_bundle.js'), 'utf8'), ctx);
-vm.runInContext(sharedLogic + '\nObject.assign(this, {vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
+vm.runInContext(sharedLogic + '\nObject.assign(this, {VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
 
 // Delivery days: seven from today, the sample sold-out day, and today closing at the zone cut-off.
 const morning = new Date(2026, 9, 5, 9, 0), evening = new Date(2026, 9, 5, 19, 0);
@@ -77,11 +77,51 @@ store['vf-consent'] = 'maybe';
 assert.equal(track.consent(), '', 'an unknown stored choice asks again');
 
 // Recently viewed: newest first, no repeats, at most eight, unknown ids dropped.
-['ivory', 'orchid', 'ivory'].forEach(ctx.vfRememberViewed);
-assert.deepEqual([...ctx.vfRecentlyViewed()], ['ivory', 'orchid']);
+['VF-7K2M4Q', 'VF-8RD5WN', 'ivory'].forEach(ctx.vfRememberViewed);
+assert.deepEqual([...ctx.vfRecentlyViewed()], ['VF-7K2M4Q', 'VF-8RD5WN'], 'an old slug is remembered as its code');
 store['vendra-recently-viewed'] = '["gone","blush"]';
-assert.deepEqual([...ctx.vfRecentlyViewed()], ['blush']);
+assert.deepEqual([...ctx.vfRecentlyViewed()], ['VF-9FA2KE'], 'a list kept before codes is read as codes');
 store['vendra-recently-viewed'] = 'not json';
 assert.deepEqual([...ctx.vfRecentlyViewed()], []);
 
-console.log('Passed delivery days, promo codes, delivery pins, shop occasions, recently viewed products and analytics consent.');
+// Product codes: one per product, never shared, matched however the customer types them.
+const codes = ctx.VF_PRODUCTS.map(p => p.id);
+assert.ok(codes.every(code => /^[A-Z0-9-]+$/.test(code || '')), 'every product has a Latin code');
+assert.equal(new Set(codes.map(ctx.vfNormalizeToken)).size, codes.length, 'codes are unique');
+assert.equal(ctx.vfFindProduct('vf-7k2m4q').id, 'VF-7K2M4Q');
+assert.equal(ctx.vfFindProduct(' VF 7K2M4Q ').id, 'VF-7K2M4Q');
+assert.equal(ctx.vfFindProduct('VF-8RD۵WN').id, 'VF-8RD5WN', 'Persian digits match');
+assert.equal(ctx.vfFindProduct('ivory').id, 'VF-7K2M4Q', 'old slugs still resolve');
+assert.equal(ctx.vfFindProduct('VF-0000'), null);
+assert.equal(ctx.vfFindProduct(''), null);
+assert.deepEqual([...ctx.vfProductIds(['orchid', 'VF-8RD5WN', 'gone'])], ['VF-8RD5WN']);
+assert.equal(ctx.vfLineToken({id: 'ivory-classic-card', productId: 'ivory'}), 'VF-7K2M4Q', 'older lines read the catalog');
+assert.equal(ctx.vfLineToken({id: 'lavender'}), 'VF-3HX9TP');
+assert.equal(ctx.vfLineToken({id: 'ivory', token: 'VF-OLD1'}), 'VF-OLD1', 'a line keeps the code it was ordered with');
+
+// Account balance: the discount needs a balance of at least discountFrom, and comes off the products only.
+const rules = ctx.VF_STORE.wallet;
+assert.equal(ctx.vfBalanceDiscountOn(rules.discountFrom - 1), false);
+assert.equal(ctx.vfBalanceDiscountOn(rules.discountFrom), true);
+assert.equal(ctx.vfBalanceDiscountOn(null), false, 'guests have no balance');
+assert.equal(ctx.vfBalanceDiscount(rules.discountFrom, 10_000_000), 10_000_000 * rules.discountPercent / 100);
+const bag = [{id: 'VF-3HX9TP', productId: 'VF-3HX9TP', unit: 2_800_000, qty: 1}];
+const plainTotals = ctx.vfTotals(bag, {zone: 'central'});
+const balanceTotals = ctx.vfTotals(bag, {zone: 'central'}, 150_000_000);
+assert.equal(balanceTotals.balanceDiscount, 140_000);
+assert.equal(balanceTotals.total, plainTotals.total - 140_000, 'delivery is not discounted');
+assert.equal(ctx.vfTotals(bag, {zone: 'central'}, 99_000_000).balanceDiscount, undefined);
+assert.equal(ctx.vfTotals(bag, {zone: 'central', promo: 'WELCOME10'}, 150_000_000).balanceDiscount, Math.round(2_520_000 * 0.05), 'after a promo code');
+assert.equal(ctx.vfTopUpAmount('۵۰٬۰۰۰٬۰۰۰'), 50_000_000);
+assert.equal(ctx.vfTopUpAmount(''), '');
+assert.equal(ctx.vfTopUpError(''), 'empty');
+assert.equal(ctx.vfTopUpError(rules.minTopUp - 1), 'min');
+assert.equal(ctx.vfTopUpError(rules.maxTopUp + 1), 'max');
+assert.equal(ctx.vfTopUpError(rules.minTopUp), '');
+const before = ctx.vfWalletOf(ctx.vfAccountLoad('09120000001')).balance;
+assert.equal(ctx.vfWalletOf(ctx.vfWalletChange('09120000001', 2_000_000, {kind: 'topup'})).balance, before + 2_000_000);
+assert.equal(ctx.vfWalletChange('09120000001', -(before + 2_000_001), {kind: 'order', order: 'VN-1'}), null, 'a payment can’t overdraw the balance');
+assert.equal(ctx.vfWalletOf(ctx.vfAccountLoad('09120000001')).history[0].amount, 2_000_000);
+assert.equal(ctx.vfWalletOf({}).balance, 0, 'accounts from before balances start at zero');
+
+console.log('Passed account balance, product codes, delivery days, promo codes, delivery pins, shop occasions, recently viewed products and analytics consent.');

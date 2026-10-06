@@ -30,6 +30,7 @@ const VF_SHELL = {
     langL: 'Language',
     faq: 'FAQ',
     help: 'Help',
+    balanceDiscount: 'Balance discount · {percent}%',
     footer: {
       shop: 'Shop',
       allFlowers: 'All flowers',
@@ -93,6 +94,7 @@ const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
+    balanceDiscount: 'تخفیف کیف پول · ٪{percent}',
     footer: {
       shop: 'فروشگاه',
       allFlowers: 'همه گل‌ها',

@@ -8,7 +8,11 @@ class Component extends VFPage {
     const L = S.lang;
     const q = this.state.q.trim().toLowerCase();
     const C = vfCopy(S);
-    const res = q ? VF_PRODUCTS.filter(p => (p.en.join(' ') + ' ' + p.fa.join(' ')).toLowerCase().includes(q)) : [];
+    // A product code, typed whole or in part (3 or more characters), finds its product; so do its kind and description.
+    const code = vfNormalizeToken(q);
+    const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
+    const words = p => ['en', 'fa'].map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat]).join(' ').toLowerCase();
+    const res = q ? VF_PRODUCTS.filter(p => byCode(p) || words(p).includes(q)) : [];
     const pop = C.popularTerms;
     return {
       ...S,
@@ -41,8 +45,8 @@ class Component extends VFPage {
       results: res.map(p => ({
         ...S.productLink(p.id),
         image: vfProductImage(p, L),
-        name: p[L][0],
-        sub: p[L][1],
+        name: p.id,
+        sub: vfProductSub(p, L),
         price: S.m(p.price)
       }))
     };
