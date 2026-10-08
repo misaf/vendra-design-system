@@ -163,6 +163,14 @@ function page(name, c, props = {}) {
   assert.equal(contact.state.sent, false);
   assert.equal(contact.state.msg, 'Keep this draft');
   assert.ok(contact.state.apiError);
+  // With an API base, an order goes out as a Checkout request; a failed request places nothing.
+  const live = page('checkout', c);
+  live.renderVals().setLast4({target: {value: '1234'}});
+  live.renderVals().place();
+  assert.equal(live.state.busy, true);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(live.state.failed, true);
+  assert.equal(live.state.order, null);
   c.VF_API.setBase('');
   const cod = page('checkout', c);
   cod.props.store = {

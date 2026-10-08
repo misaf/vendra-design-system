@@ -303,6 +303,37 @@ function vfFreeDelivery(zoneId, sub) {
 
 // `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
 // the balance discount off the products, after any promo code.
+// The Checkout request (POST /api/sales/checkout) for a bag and its delivery details. Fields the API
+// doesn't take yet (recipient phone, sender, typed address, promo code, sizes and add-ons) are listed
+// in templates/API.md. `cartToken` is empty until the API can create carts.
+function vfCheckoutRequest(
+  lines,
+  delivery,
+  {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
+) {
+  const cards = lines.filter(line => String(line.card || '').trim());
+  const slot = VF_API_DELIVERY_SCHEDULE.slots.find(
+    item => item.startsAt.slice(0, 2) === String(delivery.slot).padStart(2, '0')
+  );
+  const location = vfValidLocation(delivery.location) ? delivery.location : null;
+  return {
+    cartToken,
+    currencyCode: VF_STORE.currency || 'IRT',
+    gateway: method,
+    paymentReference: method === 'card' ? [last4, ref].filter(Boolean).join(' ') || null : null,
+    cardMessage:
+      cards.length === 1
+        ? cards[0].card
+        : cards.map(line => vfLineToken(line) + ': ' + line.card).join('\n') || null,
+    recipientName: delivery.name || null,
+    addressId: null,
+    latitude: location ? location.lat : null,
+    longitude: location ? location.lng : null,
+    deliveryDate: delivery.date || vfDeliveryDate(delivery) || null,
+    deliverySlotId: slot ? slot.id : null
+  };
+}
+
 function vfTotals(lines, delivery, balance = null) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const zone = vfZone(delivery.zone);
@@ -2021,6 +2052,11 @@ function vfWalletChange(phone, amount, entry) {
     setMap(m);
     return slugs;
   };
+  // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
+  A.checkout = async body => {
+    if (!A.live) return null;
+    return req('POST', '/api/sales/checkout', body);
+  };
   // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
   A.inquiry = async body => {
     if (!A.live) {
@@ -2038,7 +2074,8 @@ function vfWalletChange(phone, amount, entry) {
     return req('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
   };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
-  // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
+  // Changing it in Profile should save it to the account once the API has a profile endpoint (templates/API.md B12).
+  // Guests: the page language at checkout.
   A.preferredLocale = () =>
     vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
   window.AG_API = window.VF_API = A;

@@ -244,6 +244,19 @@ class Component extends VFPage {
             payment_type: method
           });
         };
+        // With an API base, the order is sent as a Checkout request first; the demo completes at once.
+        const send = () => {
+          if (!window.VF_API.live) return complete();
+          const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
+          this.setState({busy: true});
+          window.VF_API.checkout(request).then(
+            () => {
+              this.setState({busy: false});
+              complete();
+            },
+            () => this.setState({busy: false, failed: true})
+          );
+        };
         if (method === 'online') {
           this.setState({
             busy: true
@@ -262,9 +275,9 @@ class Component extends VFPage {
               });
               return;
             }
-            complete();
+            send();
           }, 500);
-        } else complete();
+        } else send();
       },
       lines: items.map(l => ({
         image: vfProductImage(l, L).src,

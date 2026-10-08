@@ -108,6 +108,11 @@
     setMap(m);
     return slugs;
   };
+  // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
+  A.checkout = async body => {
+    if (!A.live) return null;
+    return req('POST', '/api/sales/checkout', body);
+  };
   // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
   A.inquiry = async body => {
     if (!A.live) {
@@ -125,7 +130,8 @@
     return req('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
   };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
-  // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
+  // Changing it in Profile should save it to the account once the API has a profile endpoint (templates/API.md B12).
+  // Guests: the page language at checkout.
   A.preferredLocale = () =>
     vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
   window.AG_API = window.VF_API = A;

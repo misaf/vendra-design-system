@@ -244,6 +244,37 @@ function vfFreeDelivery(zoneId, sub) {
 
 // `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
 // the balance discount off the products, after any promo code.
+// The Checkout request (POST /api/sales/checkout) for a bag and its delivery details. Fields the API
+// doesn't take yet (recipient phone, sender, typed address, promo code, sizes and add-ons) are listed
+// in templates/API.md. `cartToken` is empty until the API can create carts.
+function vfCheckoutRequest(
+  lines,
+  delivery,
+  {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
+) {
+  const cards = lines.filter(line => String(line.card || '').trim());
+  const slot = VF_API_DELIVERY_SCHEDULE.slots.find(
+    item => item.startsAt.slice(0, 2) === String(delivery.slot).padStart(2, '0')
+  );
+  const location = vfValidLocation(delivery.location) ? delivery.location : null;
+  return {
+    cartToken,
+    currencyCode: VF_STORE.currency || 'IRT',
+    gateway: method,
+    paymentReference: method === 'card' ? [last4, ref].filter(Boolean).join(' ') || null : null,
+    cardMessage:
+      cards.length === 1
+        ? cards[0].card
+        : cards.map(line => vfLineToken(line) + ': ' + line.card).join('\n') || null,
+    recipientName: delivery.name || null,
+    addressId: null,
+    latitude: location ? location.lat : null,
+    longitude: location ? location.lng : null,
+    deliveryDate: delivery.date || vfDeliveryDate(delivery) || null,
+    deliverySlotId: slot ? slot.id : null
+  };
+}
+
 function vfTotals(lines, delivery, balance = null) {
   const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const zone = vfZone(delivery.zone);
