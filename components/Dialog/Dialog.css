@@ -1,0 +1,103 @@
+.ag-dialog__overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(var(--blur-overlay));
+  -webkit-backdrop-filter: blur(var(--blur-overlay));
+  display: grid;
+  place-items: center;
+  z-index: var(--z-overlay);
+  padding: var(--space-5);
+  animation: ag-fade var(--dur-base) var(--ease-out);
+}
+.ag-dialog__overlay--inline {
+  position: absolute;
+}
+.ag-dialog {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100% - 48px);
+  overflow: auto;
+  animation: ag-rise var(--dur-slow) var(--ease-out);
+  font-family: var(--font-body);
+}
+.ag-dialog:focus {
+  outline: none;
+}
+.ag-dialog__overlay--sheet {
+  padding: 0;
+  place-items: start start;
+}
+.ag-dialog--sheet {
+  position: sticky;
+  top: 0;
+  width: min(320px, 86%);
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0;
+  border-start-end-radius: var(--radius-lg);
+  border-end-end-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  animation: ag-sheet-in var(--dur-slow) var(--ease-out);
+}
+[dir='rtl'] .ag-dialog--sheet {
+  animation-name: ag-sheet-in-rtl;
+}
+.ag-dialog--sheet .ag-dialog__head {
+  padding: var(--space-4h) var(--space-4h) 0;
+}
+.ag-dialog--sheet .ag-dialog__body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-3) var(--space-4h) var(--space-5);
+}
+@keyframes ag-sheet-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes ag-sheet-in-rtl {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-dialog--sheet {
+    animation: ag-fade var(--dur-base) linear;
+  }
+}
+.ag-dialog__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5h) var(--space-5h) 0;
+}
+.ag-dialog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-xl);
+  line-height: var(--lh-snug);
+}
+.ag-dialog__body {
+  padding: var(--space-3) var(--space-5h) var(--space-5);
+  color: var(--text-secondary);
+}
+.ag-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5h) var(--space-5);
+  border-top: var(--border-hair) solid var(--border-subtle);
+}

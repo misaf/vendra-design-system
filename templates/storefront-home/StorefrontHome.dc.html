@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="../../components/utils/seo.js"></script>
+<script src="../_shared/seo.js"></script>
 <script src="../_runtime/helpers.js"></script>
-<script src="../../components/utils/nav.js"></script>
+<script src="../_shared/page-focus.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -99,11 +99,11 @@
 </section>
 <section class="vf-home-categories tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-5 tw:px-gutter tw:pb-0">
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" eyebrow="{{ t.catEb }}" title="{{ t.catA }}" accent="{{ t.catB }}" hint-size="100%,80px"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SnapScroller" class-name="vf-home-category-row" label="{{ t.catLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="150px" gap="20px" arrows="{{ desk }}" prev-label="{{ t.catPrev }}" next-label="{{ t.catNext }}" hint-size="100%,360px"><sc-for list="{{ occasions }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.CategoryCard" label="{{ c.label }}" count="{{ c.count }}" frame="{{ frame }}" href="{{ c.href }}" on-click="{{ c.go }}" hint-size="100%,340px"></x-import></sc-for></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Carousel" class-name="vf-home-category-row" label="{{ t.catLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="150px" gap="20px" arrows="{{ desk }}" prev-label="{{ t.catPrev }}" next-label="{{ t.catNext }}" hint-size="100%,360px"><sc-for list="{{ occasions }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.CategoryCard" label="{{ c.label }}" count="{{ c.count }}" frame="{{ frame }}" href="{{ c.href }}" on-click="{{ c.go }}" hint-size="100%,340px"></x-import></sc-for></x-import>
 </section>
 <section class="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0">
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" eyebrow="{{ t.newEb }}" title="{{ t.newA }}" accent="{{ t.newB }}" hint-size="100%,80px"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SnapScroller" class-name="vf-home-product-row" label="{{ t.newLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="200px" gap="20px" arrows="{{ desk }}" prev-label="{{ t.prev }}" next-label="{{ t.next }}" hint-size="100%,460px">
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Carousel" class-name="vf-home-product-row" label="{{ t.newLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="200px" gap="20px" arrows="{{ desk }}" prev-label="{{ t.prev }}" next-label="{{ t.next }}" hint-size="100%,460px">
 <sc-for list="{{ products }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="{{ frame }}" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,420px"></x-import></sc-for>
 </x-import>
 </section>

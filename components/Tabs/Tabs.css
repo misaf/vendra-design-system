@@ -1,0 +1,55 @@
+.ag-tab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-tabs {
+  display: flex;
+  gap: var(--space-5);
+  border-bottom: var(--border-hair) solid var(--border-subtle);
+}
+.ag-tab {
+  position: relative;
+  background: none;
+  border: 0;
+  padding: var(--space-3) 0 calc(var(--space-3) + 2px);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.ag-tab:hover {
+  color: var(--text-body);
+}
+.ag-tab--active {
+  color: var(--text-body);
+}
+.ag-tab--active::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--text-accent);
+  border-radius: var(--radius-xs);
+}
+.ag-tabs--pill {
+  border: 0;
+  gap: var(--space-1);
+  background: var(--surface-sunken);
+  padding: var(--space-1);
+  border-radius: var(--radius-control);
+  display: inline-flex;
+}
+.ag-tabs--pill .ag-tab {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+}
+.ag-tabs--pill .ag-tab--active {
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.ag-tabs--pill .ag-tab--active::after {
+  display: none;
+}

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="../../components/utils/seo.js"></script>
+<script src="../_shared/seo.js"></script>
 <script src="../_runtime/helpers.js"></script>
-<script src="../../components/utils/nav.js"></script>
+<script src="../_shared/page-focus.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -90,7 +90,7 @@
 <main id="main" tabindex="-1" class="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-5"><div class="vf-reading tw:max-w-[760px] tw:mx-auto">
 <h1 class="ag-display">{{ t.label }}</h1>
 <div class="vf-search-controls tw:flex tw:gap-3 tw:items-end"><div class="vf-search-input tw:flex-1"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-q" type="search" icon-start="search" label="{{ t.label }}" placeholder="{{ t.ph }}" value="{{ q }}" on-change="{{ setQ }}" hint-size="100%,76px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="x" label="{{ t.close }}" variant="outline" href="{{ href.home }}" on-click="{{ go.home }}" hint-size="44px,44px"></x-import></div>
-<sc-if value="{{ empty }}" hint-placeholder-val="{{ true }}"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-search-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.popular }}</div><div class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ popular }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Tag" on-click="{{ p.pick }}" hint-size="100px,36px">{{ p.label }}</x-import></sc-for></div></div></sc-if>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ true }}"><div class="tw:flex tw:flex-col tw:gap-3"><div class="vf-search-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.popular }}</div><div class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ popular }}" as="p" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Chip" on-click="{{ p.pick }}" hint-size="100px,36px">{{ p.label }}</x-import></sc-for></div></div></sc-if>
 <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ false }}"><div class="tw:flex tw:flex-col"><div role="status" class="vf-search-result-count tw:text-sm tw:text-quiet tw:mb-2">{{ countLabel }}</div><sc-for list="{{ results }}" as="r" hint-placeholder-count="3"><a href="{{ r.href }}" onClick="{{ r.go }}" class="vf-search-result vf-search-row tw:grid tw:[grid-template-columns:48px_minmax(0,1fr)_auto] tw:gap-4 tw:items-center tw:py-3 tw:px-0 tw:[border-top:1px_solid_var(--border-subtle)] tw:text-body! tw:no-underline! tw:hover:bg-sunken"><div class="vf-search-thumbnail tw:w-7 tw:flex-none"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ArchFrame" src="{{ r.image.src }}" shape="soft" size="thumb" tone="product" alt="{{ r.image.alt }}" hint-size="48px,60px"></x-import></div><span class="vf-search-details tw:flex-1 tw:min-w-0 tw:flex tw:flex-col tw:gap-1"><span class="vf-search-name tw:font-medium">{{ r.name }}</span><span class="vf-search-subtitle tw:text-sm tw:text-quiet">{{ r.sub }}</span></span><span class="vf-price">{{ r.price }}</span></a></sc-for></div></sc-if>
 <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><div role="status">{{ countLabel }}</div><div class="tw:flex tw:flex-col tw:items-center tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.EmptyState" icon="search-x" title="{{ t.noneA }}" title-accent="{{ t.noneB }}" body="{{ t.noneP }}" hint-size="100%,260px"></x-import><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" on-click="{{ clearSearch }}">{{ t.tryAgain }}</x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="secondary" href="{{ href.shop }}" on-click="{{ go.shop }}">{{ t.browse }}</x-import></div></div></sc-if>
 </div></main>

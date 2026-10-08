@@ -24,7 +24,7 @@ assert.deepEqual(elements.filter(e => e.tag === 'link').map(e => e.href), [
 ]);
 assert.equal(elements.filter(e => e.tag === 'script').length, 1);
 assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/design/templates/_runtime/components.js');
-// Without React the bundle waits: SnapScroller calls React.forwardRef as it loads.
+// Without React the bundle waits: Carousel calls React.forwardRef as it loads.
 {
   const added = [], timers = [];
   const doc = {...document, head: {appendChild: element => added.push(element)}, querySelectorAll: () => [], querySelector: () => null};

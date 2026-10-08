@@ -139,7 +139,7 @@ All pages load the same assets. Page folders contain only their `Storefront*.dc.
 
 - `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
 - `_runtime/shared-logic.js`: generated from the `_shared/*.js` logic files (store config, catalog, delivery, routing, navigation, page lifecycle). Pages load it before `support.js`; never edit it.
-- `../../components/utils/{seo,nav}.js` and `_runtime/helpers.js`: core helpers (`AG_SEO`, `AG_NAV`, and `AG_FORMAT`/`AG_DATES` from the ES modules `components/utils/{format,dates}.js`, built into a classic script) that the shared logic calls on first render. They are also in `_runtime/components.js`, but the bundle loads asynchronously after React, so `_build/generate.cjs` writes these three tags before `shared-logic.js` in every page head. Don't remove them, or pages log errors until the bundle arrives.
+- `_shared/seo.js`, `_runtime/helpers.js` and `_shared/page-focus.js`: core helpers the shared logic calls on first render (`AG_SEO`; `AG_FORMAT`/`AG_DATES`, the classic build of the ES modules `../components/utils/{format,dates}.js`; `AG_NAV`). The component bundle loads asynchronously after React, so `_build/generate.cjs` writes these three tags before `shared-logic.js` in every page head. Don't remove them, or pages log errors until the bundle arrives.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
 - `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
 - `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.
@@ -169,7 +169,7 @@ Tailwind CSS and its CLI are pinned to **4.3.3** in `package.json` and the lockf
 - Keep custom CSS for contextual rules that are clearer as shared selectors: component internals, responsive heading families, Persian typography and keyboard focus. `custom.css` imports these plain CSS exceptions independently, without `@apply`. Page `styles.css` files may contain only a comment when utilities handle the entire page.
 - Existing `vf-` classes also identify page sections for shared contextual rules and DOM hooks. A named class does not require a matching custom CSS rule.
 - Use the `!` suffix only where a utility must override existing unlayered component or document styles, for example `tw:text-body!` on a brand link. Avoid blanket important utilities.
-- Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS remains in `../components/components.css`.
+- Preflight is omitted so existing design-system component styles keep their reset and defaults. Component CSS stays next to each component (`../components/<Name>/<Name>.css`, imported by `../components/index.css`).
 - Edit maintained HTML and page content, then run `npm --prefix templates run build`. Do not edit the generated `_runtime/tailwind.css` or `_runtime/custom.css`. `run check` recompiles in a temporary folder and fails when the compiled stylesheet, a generated template or a generated tenant theme is stale. The build also refuses a tenant JSON that fails any of the seven contrast checks.
 
 `node templates/_build/generate.cjs` remains available for shared HTML/logic propagation only; it does not compile Tailwind. Use the full build after CSS or class changes.

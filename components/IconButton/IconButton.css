@@ -1,0 +1,87 @@
+.ag-iconbtn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-iconbtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ag-iconbtn {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: var(--border-hair) solid transparent;
+  background: transparent;
+  color: var(--text-body);
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.ag-iconbtn--sm {
+  width: 32px;
+  height: 32px;
+}
+.ag-iconbtn--md {
+  width: var(--tap-min);
+  height: var(--tap-min);
+}
+.ag-iconbtn--lg {
+  width: 52px;
+  height: 52px;
+}
+.ag-iconbtn--ghost:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+a.ag-iconbtn {
+  text-decoration: none;
+  box-sizing: border-box;
+}
+.ag-iconbtn--outline {
+  border-color: var(--border-subtle);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.ag-iconbtn--outline:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+.ag-iconbtn--inverse {
+  color: var(--text-on-inverse);
+  border-color: var(--border-inverse);
+}
+.ag-iconbtn--inverse:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+  border-color: var(--text-inverse-muted);
+}
+.ag-iconbtn--solid {
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.ag-iconbtn--solid:hover:not(:disabled) {
+  background: var(--surface-sunken);
+}
+.ag-iconbtn--active {
+  color: var(--text-accent);
+}
+.ag-iconbtn__count {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 0;
+  min-width: 18px;
+  height: 18px;
+  padding-inline: 5px;
+  box-sizing: border-box;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-size: var(--text-2xs);
+  line-height: 18px;
+  font-weight: 500;
+  text-align: center;
+}

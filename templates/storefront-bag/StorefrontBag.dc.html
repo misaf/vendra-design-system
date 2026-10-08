@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="../../components/utils/seo.js"></script>
+<script src="../_shared/seo.js"></script>
 <script src="../_runtime/helpers.js"></script>
-<script src="../../components/utils/nav.js"></script>
+<script src="../_shared/page-focus.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -102,7 +102,7 @@
 <sc-if value="{{ guest }}" hint-placeholder-val="{{ true }}"><div class="vf-bag-signin tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-3 tw:px-4 tw:rounded-md tw:bg-sunken tw:text-sm"><span>{{ t.signinPrompt }}</span><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="secondary" size="sm" icon-start="user" href="{{ signinHref }}" on-click="{{ goSignin }}" hint-size="100px,36px">{{ t.signin }}</x-import></div></sc-if>
 <section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h" aria-labelledby="vf-recipient-title">
 <h2 id="vf-recipient-title" class="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.recipient }}</h2>
-<sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ false }}"><fieldset class="vf-bag-saved tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="ag-field__label tw:p-0 tw:mb-2">{{ t.saved }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ savedAddresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Tag" selected="{{ a.on }}" on-click="{{ a.pick }}" hint-size="90px,36px">{{ a.label }}</x-import></sc-for></div></fieldset></sc-if>
+<sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ false }}"><fieldset class="vf-bag-saved tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0"><legend class="ag-field__label tw:p-0 tw:mb-2">{{ t.saved }}</legend><div class="tw:flex tw:flex-wrap tw:gap-2"><sc-for list="{{ savedAddresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Chip" selected="{{ a.on }}" on-click="{{ a.pick }}" hint-size="90px,36px">{{ a.label }}</x-import></sc-for></div></fieldset></sc-if>
 <div class="vf-bag-recipient-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))]">
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-name" value="{{ delivery.name }}" on-change="{{ setName }}" error="{{ nameError }}" required="{{ true }}" label="{{ t.name }}" autocomplete="off" hint-size="100%,76px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-phone" value="{{ delivery.phone }}" on-change="{{ setPhone }}" error="{{ phoneError }}" required="{{ true }}" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" autocomplete="off" placeholder="0912 000 0000" hint-size="100%,76px"></x-import>

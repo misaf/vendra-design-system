@@ -1,0 +1,97 @@
+.ag-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+}
+.ag-steps__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.ag-steps__item + .ag-steps__item::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--border-default);
+}
+.ag-steps__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
+}
+button.ag-steps__btn {
+  cursor: pointer;
+}
+button.ag-steps__btn:hover .ag-steps__label {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ag-steps__btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-steps__dot {
+  flex: none;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: var(--border-hair) solid var(--border-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-body);
+}
+.ag-steps__item--done .ag-steps__dot,
+.ag-steps__item--current .ag-steps__dot {
+  background: var(--text-body);
+  border-color: var(--text-body);
+  color: var(--surface-page);
+}
+.ag-steps__item--done .ag-steps__btn {
+  color: var(--text-secondary);
+}
+.ag-steps__item--current .ag-steps__btn {
+  color: var(--text-body);
+  font-weight: 500;
+}
+.ag-steps-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.ag-steps--compact {
+  gap: 0 var(--space-1);
+}
+.ag-steps--compact .ag-steps__item {
+  gap: var(--space-1);
+}
+.ag-steps--compact .ag-steps__item + .ag-steps__item::before {
+  width: 20px;
+}
+.ag-steps--compact .ag-steps__btn {
+  min-width: 44px;
+  justify-content: center;
+}
+.ag-steps__caption {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}

@@ -1,4 +1,0 @@
-import * as React from 'react';
-export interface BottomTabItem { id: string; icon: string; label: React.ReactNode; /** Number or pre-localized string; hidden when 0/empty */ count?: number | string; current?: boolean; onClick?: (e: React.MouseEvent) => void; /** Renders <a href> (keeps aria-current) */ href?: string; target?: string; /** Defaults to "noopener noreferrer" for target="_blank" */ rel?: string; }
-export interface BottomTabBarProps { items: BottomTabItem[]; /** aria-label for the nav */ label?: string; className?: string; }
-export declare function BottomTabBar(props: BottomTabBarProps): React.JSX.Element;

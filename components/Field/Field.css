@@ -1,0 +1,97 @@
+/* Label, hint and error around a form control (.ag-field), fieldsets, and the text-control shell (.ag-input) used by Input and Select. */
+.ag-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+}
+.ag-field__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+.ag-field__hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.ag-field__hint--error {
+  color: var(--danger);
+}
+.ag-field--check {
+  gap: var(--space-1);
+}
+.ag-field--check .ag-field__hint {
+  padding-inline-start: calc(20px + var(--space-3));
+}
+.ag-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.ag-fieldset > legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+}
+.ag-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-input);
+  padding-inline: var(--space-4);
+  background: var(--white);
+  border: var(--border-hair) solid var(--border-input);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+  position: relative;
+}
+.ag-input:hover {
+  border-color: var(--border-input-strong);
+}
+.ag-input:focus-within {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px var(--focus-ring-soft);
+}
+.ag-input--error {
+  border-color: var(--danger);
+}
+.ag-input--disabled {
+  background: var(--surface-disabled);
+  opacity: 0.6;
+}
+.ag-input input,
+.ag-input textarea,
+.ag-input select {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-base);
+  color: var(--text-body);
+  padding-block: var(--space-3);
+}
+.ag-input textarea {
+  resize: vertical;
+  min-height: 96px;
+  line-height: var(--lh-body);
+}
+.ag-input input::placeholder,
+.ag-input textarea::placeholder {
+  color: var(--text-muted);
+}
+.ag-input select {
+  appearance: none;
+  cursor: pointer;
+  padding-inline-end: var(--space-5h);
+}
+.ag-input__chev {
+  position: absolute;
+  inset-inline-end: 14px;
+  pointer-events: none;
+  color: var(--text-muted);
+}

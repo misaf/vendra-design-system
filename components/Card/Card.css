@@ -1,0 +1,13 @@
+.ag-card {
+  background: var(--surface-card);
+  border: var(--border-hair) solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.ag-card--sunken {
+  background: var(--surface-sunken);
+  border-color: transparent;
+}
+.ag-card--raised {
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}

@@ -59,7 +59,7 @@ function storefrontPreview() {
         const isPage = /^templates\/storefront-[^/]+\/[^/]+\.dc\.html$/.test(relative);
         if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8')) return;
         const isSource = relative.startsWith('templates/_shared/') || /^components\/.+\.jsx?$/.test(relative) || /^tokens\/tenants\/[^/]+\.json$/.test(relative) || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
-        const isAsset = /^(tokens|assets)\//.test(relative) || ['styles.css', 'components/components.css'].includes(relative) || relative.startsWith('templates/_runtime/');
+        const isAsset = /^(tokens|assets)\//.test(relative) || relative === 'styles.css' || /^components\/.+\.css$/.test(relative) || relative.startsWith('templates/_runtime/');
         if (!isSource && !isAsset) return;
         // Generated CSS writes follow a source rebuild; they need no extra rebuild.
         if (!isSource) { if (!running) server.ws.send({type: 'full-reload', path: '*'}); return; }
@@ -79,7 +79,7 @@ function storefrontPreview() {
     transformIndexHtml(html) {
       if (!html.includes('<x-dc>')) return;
       // Load the namespace before support.js boots the page on a cold start. The bundle
-      // needs React while it evaluates (SnapScroller calls React.forwardRef), so the local
+      // needs React while it evaluates (Carousel calls React.forwardRef), so the local
       // React copies go first; support.js reuses them instead of fetching unpkg.
       return ['/templates/_vendor/react.production.min.js', '/templates/_vendor/react-dom.production.min.js', '/templates/_runtime/components.js']
         .map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));

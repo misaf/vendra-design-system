@@ -1,0 +1,54 @@
+.ag-carousel {
+  position: relative;
+}
+.ag-carousel__nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.ag-carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max(
+    var(--ss-min),
+    calc((100% - var(--ss-gap) * (var(--ss-per) - 1)) / var(--ss-per))
+  );
+  gap: var(--ss-gap);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.ag-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+.ag-carousel__track:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+.ag-carousel__item,
+.ag-carousel--contents .ag-carousel__track > * {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+.ag-carousel--contents .ag-carousel__track > [data-snap-group] {
+  display: contents;
+}
+@media (max-width: 767px) {
+  .ag-carousel__track {
+    grid-auto-columns: calc((100% - var(--ss-gap) * (var(--ss-per-m) - 1)) / var(--ss-per-m));
+  }
+  .ag-carousel--bleed .ag-carousel__track {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+    scroll-padding-inline: var(--space-4);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ag-carousel__track {
+    scroll-behavior: smooth;
+  }
+}

@@ -1,0 +1,50 @@
+.ag-pay {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4h);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  font-family: var(--font-body);
+  color: var(--text-body);
+}
+.ag-pay__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+.ag-pay__cardcol {
+  min-width: 0;
+}
+.ag-pay__k {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-1);
+}
+.ag-pay__num {
+  font-size: clamp(1.25rem, 4vw, 1.625rem);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  unicode-bidi: isolate;
+}
+.ag-pay__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3) var(--space-4h);
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: var(--border-hair) solid var(--border-default);
+}
+.ag-pay__meta dd {
+  margin: 0;
+  font-size: var(--text-base);
+}
+.ag-pay__amount dd {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}

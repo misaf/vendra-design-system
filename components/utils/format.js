@@ -1,20 +1,36 @@
 // Shared formatting helpers: import { format } (the runtime bundle also exposes window.AG_FORMAT).
 // Prices are stored in Toman; rate = units per 1 Toman. CURRENCIES holds DEMO rates: a tenant passes its own
 // table as money(n, {currencies}).
-const CURRENCIES={
-IRT:{rate:1,dec:0,sym:'',en:'Toman',fa:'تومان'},
-IRR:{rate:10,dec:0,sym:'',en:'Rial',fa:'ریال'},
-USD:{rate:1/100000,dec:2,sym:'$',en:'USD',fa:'دلار'},
-EUR:{rate:1/110000,dec:2,sym:'€',en:'EUR',fa:'یورو'},
-AED:{rate:1/27000,dec:0,sym:'',en:'AED',fa:'درهم'}};
-const loc=l=>l==='fa'?'fa-IR':'en-US';
-// Normalize separators explicitly so Persian output is stable across browser locale data.
-const formatNumber=(n,lang,options={})=>{
-const formatter=new Intl.NumberFormat(loc(lang),{...options,...(lang==='fa'?{numberingSystem:'arabext'}:{})});
-return formatter.formatToParts(Number(n)).map(p=>lang==='fa'?(p.type==='group'?'٬':p.type==='decimal'?'٫':p.value):p.value).join('');
+const CURRENCIES = {
+  IRT: {rate: 1, dec: 0, sym: '', en: 'Toman', fa: 'تومان'},
+  IRR: {rate: 10, dec: 0, sym: '', en: 'Rial', fa: 'ریال'},
+  USD: {rate: 1 / 100000, dec: 2, sym: '$', en: 'USD', fa: 'دلار'},
+  EUR: {rate: 1 / 110000, dec: 2, sym: '€', en: 'EUR', fa: 'یورو'},
+  AED: {rate: 1 / 27000, dec: 0, sym: '', en: 'AED', fa: 'درهم'}
 };
-const num=(n,lang='en')=>formatNumber(n,lang);
+const loc = l => (l === 'fa' ? 'fa-IR' : 'en-US');
+// Normalize separators explicitly so Persian output is stable across browser locale data.
+const formatNumber = (n, lang, options = {}) => {
+  const formatter = new Intl.NumberFormat(loc(lang), {
+    ...options,
+    ...(lang === 'fa' ? {numberingSystem: 'arabext'} : {})
+  });
+  return formatter
+    .formatToParts(Number(n))
+    .map(p =>
+      lang === 'fa' ? (p.type === 'group' ? '٬' : p.type === 'decimal' ? '٫' : p.value) : p.value
+    )
+    .join('');
+};
+const num = (n, lang = 'en') => formatNumber(n, lang);
 // fa: number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first ($42.00), words after (4,200,000 Toman)
-const money=(n,{currency='IRT',lang='en',currencies=CURRENCIES}={})=>{const c=currencies[currency]||currencies.IRT||CURRENCIES.IRT;const s=formatNumber(Number(n)*c.rate,lang,{minimumFractionDigits:c.dec,maximumFractionDigits:c.dec});
-if(lang==='fa')return s+' '+c.fa;return c.sym?c.sym+s:s+' '+c.en;};
-export const format={CURRENCIES,money,num};
+const money = (n, {currency = 'IRT', lang = 'en', currencies = CURRENCIES} = {}) => {
+  const c = currencies[currency] || currencies.IRT || CURRENCIES.IRT;
+  const s = formatNumber(Number(n) * c.rate, lang, {
+    minimumFractionDigits: c.dec,
+    maximumFractionDigits: c.dec
+  });
+  if (lang === 'fa') return s + ' ' + c.fa;
+  return c.sym ? c.sym + s : s + ' ' + c.en;
+};
+export const format = {CURRENCIES, money, num};

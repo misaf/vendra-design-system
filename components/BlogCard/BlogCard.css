@@ -1,0 +1,112 @@
+.ag-blog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-family: var(--font-body);
+  color: var(--text-body);
+}
+.ag-blog__media {
+  position: relative;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  background: var(--surface-muted);
+}
+.ag-blog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.ag-blog--wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-4) var(--space-7);
+  align-items: center;
+}
+.ag-blog--wide .ag-blog__media {
+  aspect-ratio: 5/4;
+}
+.ag-blog--wide .ag-blog__body {
+  gap: var(--space-3);
+}
+.ag-blog--wide .ag-blog__title {
+  font-size: clamp(1.875rem, 4vw, var(--text-3xl));
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.ag-blog--wide .ag-blog__excerpt {
+  font-size: var(--text-md);
+  color: var(--text-secondary);
+  -webkit-line-clamp: 4;
+}
+@media (max-width: 767px) {
+  .ag-blog--wide {
+    grid-template-columns: 1fr;
+  }
+  .ag-blog--wide .ag-blog__media {
+    aspect-ratio: 4/3;
+  }
+}
+.ag-blog__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-weight: 500;
+}
+.ag-blog__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+.ag-blog:hover .ag-blog__media img {
+  transform: scale(1.04);
+}
+.ag-blog__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.ag-blog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+  text-wrap: pretty;
+}
+.ag-blog__link {
+  all: unset;
+  cursor: pointer;
+  color: inherit;
+}
+.ag-blog__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+.ag-blog__link:focus-visible::after {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+.ag-blog__excerpt {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--lh-body);
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-blog__media img {
+    transition: none;
+  }
+}

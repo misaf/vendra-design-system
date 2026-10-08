@@ -49,7 +49,7 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     assert.match(link, /^<a href="\/shop" class="ag-btn ag-btn--primary ag-btn--md/);
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
     // 'use client' leads every component module so Next.js treats them as client components.
-    assert.match(fs.readFileSync(path.join(repo, 'dist/components/core/Button.js'), 'utf8'), /^'use client';\n/);
+    assert.match(fs.readFileSync(path.join(repo, 'dist/components/Button/Button.js'), 'utf8'), /^'use client';\n/);
 
     // Helpers.
     assert.equal(ds.format.money(4200000, {lang: 'en'}), '4,200,000 Toman');
@@ -74,7 +74,7 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     const styles = fs.readFileSync(path.join(repo, 'dist/styles.css'), 'utf8');
     assert.doesNotMatch(styles, /@import|\.\.\/assets/);
     for (const [, font] of styles.matchAll(/url\('\.\/(fonts\/[^']+)'\)/g)) assert.ok(files.has('dist/' + font), font + ' is missing');
-    for (const token of ['--accent:', '--control-h-md:', '.ag-btn{', '.ag-input{']) assert.ok(styles.includes(token), 'styles.css lacks ' + token);
+    for (const token of ['--accent:', '--control-h-md:', '.ag-btn {', '.ag-input {']) assert.ok(styles.includes(token), 'styles.css lacks ' + token);
     for (const name of fs.readdirSync(path.join(repo, 'tokens/tenants')).filter(n => n.endsWith('.css'))) assert.ok(files.has('dist/tenants/' + name));
 
     console.log('package tests passed (' + components.length + ' components server-rendered)');

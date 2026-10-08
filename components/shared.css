@@ -1,0 +1,38 @@
+/* Shared by several components: focus rings, disabled states, the spinner and entrance animations. */
+.ag-spin {
+  display: inline-block;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: ag-spin 0.7s linear infinite;
+  flex: none;
+}
+@keyframes ag-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-spin {
+    animation-duration: 2.4s;
+  }
+}
+@keyframes ag-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ag-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

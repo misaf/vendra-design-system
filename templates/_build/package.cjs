@@ -101,7 +101,13 @@ function buildPackage(check) {
     fs.rmSync(path.join(dist, name));
     changed++;
   }
+  if (!check) removeEmptyFolders(dist);
   return changed;
+}
+
+function removeEmptyFolders(folder) {
+  for (const entry of fs.readdirSync(folder, {withFileTypes: true})) if (entry.isDirectory()) removeEmptyFolders(path.join(folder, entry.name));
+  if (folder !== dist && !fs.readdirSync(folder).length) fs.rmdirSync(folder);
 }
 
 module.exports = {buildPackage, packageFiles, dist};

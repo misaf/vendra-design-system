@@ -17,7 +17,10 @@ export interface Dates {
   fromIso(s: string | null | undefined): Date | null;
   daysBetween(a: Date, b: Date): number;
   /** Next occurrence of a yearly date, today included. */
-  nextYearly(when: {cal?: Calendar; m: number; d: number}, today?: Date): {date: Date; days: number};
+  nextYearly(
+    when: {cal?: Calendar; m: number; d: number},
+    today?: Date
+  ): {date: Date; days: number};
   /** Next Hijri (Umm al-Qura) month/day within 400 days. */
   nextHijri(hm: number, hd: number, today?: Date): {date: Date; days: number} | null;
   /** Explicit Intl locale for a language + calendar, e.g. 'fa-IR-u-ca-persian'. */

@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {openSite, scanAxe} from './helpers.mjs';
 
 // Behaviour of the components the storefront picked up last: AnnouncementBar,
-// Gallery, Toast, Dialog, SnapScroller, Radio and Tooltip.
+// Gallery, Toast, Dialog, Carousel, Radio and Tooltip.
 
 test('announcement bar closes for the rest of the session', async ({page}) => {
   await openSite(page, 'home', 'en');

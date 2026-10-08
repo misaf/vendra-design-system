@@ -1,0 +1,38 @@
+.ag-qty {
+  display: inline-flex;
+  align-items: center;
+  border: var(--border-hair) solid var(--border-input);
+  border-radius: var(--radius-control);
+  height: var(--tap-min);
+  font-family: var(--font-body);
+}
+.ag-qty--sm {
+  height: 34px;
+}
+.ag-qty button {
+  width: 40px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--text-body);
+  border-radius: var(--radius-control);
+}
+.ag-qty button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.ag-qty button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.ag-qty--disabled {
+  border-color: var(--border-subtle);
+}
+.ag-qty__val {
+  min-width: 28px;
+  text-align: center;
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
+}

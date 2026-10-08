@@ -1,0 +1,27 @@
+.ag-lang button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-lang {
+  display: inline-flex;
+  border: var(--border-hair) solid var(--border-default);
+  border-radius: var(--radius-control);
+  padding: 3px;
+  gap: 2px;
+}
+.ag-lang button {
+  border: 0;
+  background: transparent;
+  height: 30px;
+  min-width: 40px;
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.ag-lang button[aria-pressed='true'] {
+  background: var(--surface-strong);
+  color: var(--text-on-strong);
+}

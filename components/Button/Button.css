@@ -1,0 +1,95 @@
+.ag-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: var(--button-case);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.ag-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ag-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-btn:disabled,
+.ag-btn--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ag-btn--disabled {
+  pointer-events: none;
+}
+.ag-btn--loading:disabled {
+  opacity: 1;
+  cursor: progress;
+}
+.ag-btn--loading {
+  position: relative;
+}
+.ag-btn--sm {
+  height: var(--control-h-sm);
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+}
+.ag-btn--md {
+  height: var(--control-h-md);
+  padding-inline: var(--space-5);
+  font-size: var(--text-base);
+}
+.ag-btn--lg {
+  height: var(--control-h-lg);
+  padding-inline: var(--space-6);
+  font-size: var(--text-md);
+}
+.ag-btn--primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.ag-btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.ag-btn--primary:active:not(:disabled) {
+  background: var(--accent-press);
+}
+.ag-btn--secondary {
+  background: transparent;
+  color: var(--text-body);
+  border-color: var(--border-strong);
+}
+.ag-btn--secondary:hover:not(:disabled) {
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+.ag-btn--soft {
+  background: var(--accent-soft);
+  color: var(--text-on-soft);
+}
+.ag-btn--soft:hover:not(:disabled) {
+  background: var(--accent-soft-hover);
+}
+.ag-btn--ghost {
+  background: transparent;
+  color: var(--text-body);
+}
+.ag-btn--ghost:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.ag-btn--block {
+  width: 100%;
+}

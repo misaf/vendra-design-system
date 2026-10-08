@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="../../components/utils/seo.js"></script>
+<script src="../_shared/seo.js"></script>
 <script src="../_runtime/helpers.js"></script>
-<script src="../../components/utils/nav.js"></script>
+<script src="../_shared/page-focus.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -106,7 +106,7 @@
 <sc-for list="{{ addons }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Checkbox" label="{{ a.label }}" checked="{{ a.on }}" on-change="{{ a.toggle }}" hint-size="100%,24px"></x-import></sc-for>
 </fieldset>
 <div class="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.QuantityStepper" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="heart" label="{{ t.saveDesign }}" variant="outline" size="lg" active="{{ fav }}" on-click="{{ toggleSave }}" class-name="vf-product-save" hint-size="44px,44px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.QuantityInput" value="{{ qty }}" min="{{ 1 }}" max="{{ 9 }}" on-change="{{ setQty }}" format="{{ fmt }}" labels="{{ qtyLabels }}" hint-size="130px,44px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="heart" label="{{ t.saveDesign }}" variant="outline" size="lg" active="{{ fav }}" on-click="{{ toggleSave }}" class-name="vf-product-save" hint-size="44px,44px"></x-import>
 <sc-if value="{{ desk }}"><sc-if value="{{ toast }}"><div class="vf-product-toast tw:fixed tw:z-toast tw:bottom-6 tw:end-6 tw:max-w-[calc(100%_-_48px)]" onMouseEnter="{{ holdToast }}" onMouseLeave="{{ releaseToast }}" onFocus="{{ holdToast }}" onBlur="{{ releaseToast }}"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Toast" title="{{ toast.title }}" action="{{ toast.action }}" on-close="{{ toast.close }}" close-label="{{ t.dismiss }}" hint-size="360px,72px"></x-import></div></sc-if></sc-if>
 <sc-if value="{{ desk }}"><div class="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" size="lg" block="{{ true }}" icon-start="shopping-bag" on-click="{{ add }}" disabled="{{ unavailable }}" hint-size="100%,52px">{{ addLabel }}</x-import></div></sc-if>
 </div>
@@ -114,7 +114,7 @@
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Accordion" items="{{ faq }}" default-open-id="care" hint-size="100%,160px"></x-import>
 </div>
 </div>
-<sc-if value="{{ hasRecent }}"><section class="vf-product-recent tw:flex tw:flex-col tw:gap-6 tw:mt-9"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" eyebrow="{{ t.recentEb }}" title="{{ t.recentA }}" accent="{{ t.recentB }}" hint-size="100%,80px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SnapScroller" label="{{ recentLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="200px" gap="20px" hint-size="100%,460px"><sc-for list="{{ recent }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,420px"></x-import></sc-for></x-import></section></sc-if>
+<sc-if value="{{ hasRecent }}"><section class="vf-product-recent tw:flex tw:flex-col tw:gap-6 tw:mt-9"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" eyebrow="{{ t.recentEb }}" title="{{ t.recentA }}" accent="{{ t.recentB }}" hint-size="100%,80px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Carousel" label="{{ recentLabel }}" per-view="{{ 4 }}" per-view-mobile="{{ 2.2 }}" item-min="200px" gap="20px" hint-size="100%,460px"><sc-for list="{{ recent }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,420px"></x-import></sc-for></x-import></section></sc-if>
 <x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Dialog" open="{{ addedOpen }}" on-close="{{ closeAdded }}" title="{{ t.added }}" close-label="{{ t.dismiss }}" initial-focus=".vf-product-added-checkout" max-width="{{ 440 }}" hint-size="0px,0px"><div class="vf-product-added tw:flex tw:flex-col tw:gap-5"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.OrderSummary" lines="{{ addedLines }}" sums="{{ addedSums }}" hint-size="100%,140px"></x-import><div class="tw:flex tw:flex-col tw:gap-2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" size="lg" block="{{ true }}" icon-end="arrow-right" href="{{ href.bag }}" on-click="{{ checkout }}" class-name="vf-product-added-checkout" hint-size="100%,52px">{{ t.checkout }}</x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="ghost" size="lg" block="{{ true }}" on-click="{{ closeAdded }}" hint-size="100%,52px">{{ t.keepShopping }}</x-import></div></div></x-import>
 </main>
 <!-- END PAGE CONTENT -->

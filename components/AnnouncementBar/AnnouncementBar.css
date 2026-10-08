@@ -1,0 +1,29 @@
+.ag-announce {
+  --focus-ring: var(--focus-ring-on-inverse);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding-block: var(--space-2);
+  padding-inline: calc(var(--tap-min) + var(--space-3));
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  text-align: center;
+}
+.ag-announce__text a {
+  color: inherit;
+}
+.ag-announce .ag-announce__close {
+  position: absolute;
+  inset-inline-end: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: inherit;
+}
+.ag-announce .ag-announce__close:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+}

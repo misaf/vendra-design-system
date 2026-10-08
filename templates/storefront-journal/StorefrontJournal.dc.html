@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="../../components/utils/seo.js"></script>
+<script src="../_shared/seo.js"></script>
 <script src="../_runtime/helpers.js"></script>
-<script src="../../components/utils/nav.js"></script>
+<script src="../_shared/page-focus.js"></script>
 <script src="../_runtime/shared-logic.js"></script>
 <script src="../_runtime/support.js"></script>
 </head>
@@ -87,7 +87,7 @@
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><div class="vf-journal-header tw:flex tw:flex-col tw:gap-4h tw:mb-7"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" level="h1" eyebrow="{{ t.eb }}" title="{{ t.hA }}" accent="{{ t.hB }}" hint-size="100%,96px"></x-import><div class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Tag" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" hint-size="100px,36px">{{ c.label }}</x-import></sc-for></div></div>
+<main id="main" tabindex="-1" class="vf-info tw:mx-auto"><div class="vf-journal-header tw:flex tw:flex-col tw:gap-4h tw:mb-7"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SectionHeader" level="h1" eyebrow="{{ t.eb }}" title="{{ t.hA }}" accent="{{ t.hB }}" hint-size="100%,96px"></x-import><div class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Chip" selected="{{ c.on }}" aria-pressed="{{ c.on }}" on-click="{{ c.pick }}" hint-size="100px,36px">{{ c.label }}</x-import></sc-for></div></div>
 <div class="tw:mb-5"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" label="{{ migration.search }}" value="{{ q }}" on-change="{{ setQ }}" type="search"></x-import></div><sc-if value="{{ noStories }}"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.EmptyState" title="{{ migration.empty }}" heading-level="{{ 2 }}"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" on-click="{{ clear }}">{{ migration.clear }}</x-import></sc-if><sc-if value="{{ loading }}"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Skeleton" shape="card"></x-import><p role="status">{{ migration.loading }}</p></sc-if><sc-if value="{{ hasLead }}" hint-placeholder-val="{{ true }}"><div class="vf-journal-featured tw:mb-8"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.BlogCard" layout="{{ leadLayout }}" frame="arch" priority="{{ true }}" title="{{ lead.title }}" excerpt="{{ lead.excerpt }}" meta="{{ lead.meta }}" cta="{{ t.read }}" href="{{ lead.href }}" on-click="{{ lead.go }}" hint-size="100%,420px"></x-import></div></sc-if>
 <div class="vf-journal-article-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ rest }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.BlogCard" layout="stack" frame="soft" aspect="4/3" title="{{ p.title }}" excerpt="{{ p.excerpt }}" meta="{{ p.meta }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,380px"></x-import></sc-for></div></main>
 <!-- END PAGE CONTENT -->

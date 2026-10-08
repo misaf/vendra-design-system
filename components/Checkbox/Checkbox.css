@@ -1,0 +1,64 @@
+/* .ag-check styles both Checkbox and Radio. */
+.ag-check--error .ag-check__box {
+  border-color: var(--danger);
+}
+.ag-check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-body);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.ag-check input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.ag-check__box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: var(--border-thick) solid var(--border-input-strong);
+  background: var(--white);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: all var(--dur-fast) var(--ease-out);
+  margin-top: 1px;
+}
+.ag-check--checkbox .ag-check__box {
+  border-radius: var(--radius-xs);
+}
+.ag-check--radio .ag-check__box {
+  border-radius: 50%;
+}
+.ag-check input:checked + .ag-check__box {
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+.ag-check--radio input:checked + .ag-check__box {
+  background: var(--white);
+  box-shadow: inset 0 0 0 4px var(--surface-strong);
+}
+.ag-check input:focus-visible + .ag-check__box {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-check--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ag-check__text {
+  display: flex;
+  flex-direction: column;
+}
+.ag-check__desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}

@@ -1,5 +1,6 @@
-// Every design-system component must be used by at least one storefront template,
-// so the templates stay a complete reference for the system.
+// Every design-system component must be used by at least one storefront template (or, for
+// building blocks such as Field, by another component), so the templates stay a complete
+// reference for the system.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -12,6 +13,12 @@ const walk = dir => fs.readdirSync(dir, {withFileTypes: true}).forEach(entry => 
 });
 walk(path.join(root, '..', 'components'));
 const used = new Set();
+const buildingBlocks = new Set();
+const sources = fs.readdirSync(path.join(root, '..', 'components'), {recursive: true}).filter(name => name.endsWith('.jsx'));
+for (const file of sources) {
+  const code = fs.readFileSync(path.join(root, '..', 'components', file), 'utf8');
+  for (const match of code.matchAll(/from '\.\.\/[A-Za-z]+\/([A-Za-z]+)\.jsx'/g)) buildingBlocks.add(match[1]);
+}
 for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
   for (const name of fs.readdirSync(path.join(root, folder)).filter(name => name.endsWith('.dc.html'))) {
     const html = fs.readFileSync(path.join(root, folder, name), 'utf8');
@@ -19,5 +26,5 @@ for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storef
   }
 }
 assert.ok(components.length > 40, 'found the component sources');
-assert.deepEqual(components.filter(name => !used.has(name)).sort(), [], 'components no storefront template uses');
-console.log('Passed: all ' + components.length + ' design-system components are used by a storefront template.');
+assert.deepEqual(components.filter(name => !used.has(name) && !buildingBlocks.has(name)).sort(), [], 'components no storefront template uses');
+console.log('Passed: all ' + components.length + ' design-system components are used by a storefront template or another component.');

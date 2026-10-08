@@ -1,0 +1,45 @@
+.ag-date {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ag-date__legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--space-2);
+}
+.ag-date__cal.ag-tabs--pill .ag-tab {
+  padding: var(--space-1) var(--space-3);
+  min-height: 32px;
+}
+.ag-date__grid {
+  display: grid;
+  grid-template-columns: minmax(84px, 1fr) minmax(0, 1.6fr) minmax(68px, 1fr);
+  gap: var(--space-2);
+}
+.ag-date__grid--yearly {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+.ag-date .ag-input {
+  padding-inline: var(--space-3);
+}
+.ag-date .ag-input select {
+  min-width: 0;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+.ag-date__eq {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  min-height: 1.5em;
+  overflow-wrap: anywhere;
+}
+.ag-date__eq:empty {
+  min-height: 0;
+}

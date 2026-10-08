@@ -15,6 +15,7 @@ declare class DCLogic {
 
 interface Window {
   // Design-system helpers from the component bundle (components/utils/).
+  AG_DATA?: any;
   AG_DATES: any;
   AG_FORMAT: any;
   AG_NAV: any;

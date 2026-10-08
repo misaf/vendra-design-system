@@ -1,0 +1,20 @@
+.ag-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ag-menu__title {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+.ag-menu--inverse {
+  color: var(--text-on-inverse);
+}
+.ag-menu--inverse .ag-menu__title {
+  color: var(--text-inverse-muted);
+}
+.ag-menu--inverse .ag-nav--current {
+  color: var(--text-accent);
+}
