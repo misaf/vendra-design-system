@@ -474,7 +474,7 @@ class Component extends VFPage {
     const saved = phone ? vfAccountLoad(phone, L).addresses : [];
     const zoneLabel = zone =>
       (fa ? zone.fa : zone.en) + ' · ' + (vfFreeDelivery(zone.id, sub) ? C.free : m(zone.fee));
-    const cardPrice = m(VF_ADDONS.find(a => a[0] === 'card')[1]);
+    const cardPrice = m(VF_ADDONS.find(addon => addon.id === 'card').price);
     const missingCard = l => s.submitted && vfLineHasCard(l) && !String(l.card || '').trim();
     // Error summary rows in form order; each links to the field that needs attention.
     const problems = [

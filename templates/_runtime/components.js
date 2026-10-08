@@ -2532,11 +2532,11 @@ const openDay = (days, chosen) => {
 	const open = days.filter((day) => !day.soldOut && !day.pastCutoff);
 	return (open.find((day) => day.iso === chosen) || open[0] || {}).iso;
 };
-// Every slot ([start hour, end hour]) on a day, each marked closed when it is today and fewer than
+// Every slot ({start, end} hours) on a day, each marked closed when it is today and fewer than
 // `leadMinutes` remain before it ends.
 const deliverySlots = (iso, slots, leadMinutes, now = new Date()) => {
 	const today = iso === isoDate(now), minutes = now.getHours() * 60 + now.getMinutes();
-	return slots.map(([start, end]) => ({
+	return slots.map(({ start, end }) => ({
 		start,
 		end,
 		closed: today && minutes > Number(end) * 60 - leadMinutes
@@ -2660,16 +2660,16 @@ const zoneFromApi = (zone, extras = {}) => {
 	};
 };
 // A bag line from an API OrderLine. Its metadata carries `token`, `size`, comma-separated `addons`
-// and `cardMessage`. Sizes and add-ons are rows whose first item is the id; `describe(product, size,
-// addons, lang)` writes the line's detail text.
+// and `cardMessage`, matched against `sizes` and `addons` ({id, …}); `describe(product, size, addons,
+// lang)` writes the line's detail text.
 const lineFromApi = (line, { products, sizes, addons, placeholder, describe }) => {
 	const product = products.find((item) => item.apiId === line.sellableId);
 	const meta = line.metadata || {};
 	const token = meta.token || (product ? product.id : line.name);
 	const size = meta.size || null;
 	const chosen = (meta.addons || "").split(",").filter(Boolean);
-	const sizeRow = sizes.find((row) => row[0] === size) || null;
-	const addonRows = addons.filter((row) => chosen.includes(row[0]));
+	const sizeChoice = sizes.find((item) => item.id === size) || null;
+	const addonChoices = addons.filter((item) => chosen.includes(item.id));
 	const productId = product ? product.id : token;
 	return {
 		id: productId + (size ? "-" + size : "") + (chosen.length ? "-" + chosen.join("+") : ""),
@@ -2681,8 +2681,8 @@ const lineFromApi = (line, { products, sizes, addons, placeholder, describe }) =
 		qty: line.quantity,
 		image: product ? product.image : placeholder,
 		...meta.cardMessage ? { card: meta.cardMessage } : {},
-		en: [token, product ? describe(product, sizeRow, addonRows, "en") : ""],
-		fa: [token, product ? describe(product, sizeRow, addonRows, "fa") : ""]
+		en: [token, product ? describe(product, sizeChoice, addonChoices, "en") : ""],
+		fa: [token, product ? describe(product, sizeChoice, addonChoices, "fa") : ""]
 	};
 };
 // API order statuses under the storefront's step names.

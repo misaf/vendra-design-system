@@ -24,6 +24,24 @@ export interface DeliveryDay {
   soldOut: boolean;
   pastCutoff: boolean;
 }
+/** A delivery slot's start and end hour, e.g. {start: '08', end: '12'}. */
+export interface SlotHours {
+  start: string;
+  end: string;
+}
+/** A product size; `price` is added to the product's price. */
+export interface Size {
+  id: string;
+  price: number;
+  name: Record<'en' | 'fa', string>;
+  detail: Record<'en' | 'fa', string>;
+}
+/** An extra a product can take, such as a handwritten card. */
+export interface Addon {
+  id: string;
+  price: number;
+  name: Record<'en' | 'fa', string>;
+}
 export interface DeliverySlotState {
   start: string;
   end: string;
@@ -130,7 +148,7 @@ export interface Commerce {
   openDay(days: DeliveryDay[], chosen?: string): string | undefined;
   deliverySlots(
     iso: string,
-    slots: [start: string, end: string][],
+    slots: SlotHours[],
     leadMinutes: number,
     now?: Date
   ): DeliverySlotState[];
@@ -185,10 +203,10 @@ export interface Commerce {
     line: ApiRecord,
     options: {
       products: Record<string, any>[];
-      sizes: any[][];
-      addons: any[][];
+      sizes: Size[];
+      addons: Addon[];
       placeholder: string;
-      describe(product: any, size: any[] | null, addons: any[][], lang: 'en' | 'fa'): string;
+      describe(product: any, size: Size | null, addons: Addon[], lang: 'en' | 'fa'): string;
     }
   ): Record<string, any>;
   /** API order status → storefront step. */

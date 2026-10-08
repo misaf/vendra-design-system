@@ -84,11 +84,11 @@ const VF_ZONES = [...VF_API_DELIVERY_ZONES]
 // Free delivery isn't in the API yet (templates/API.md, "Zone rules").
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
-// Each slot as [start hour, end hour]; the start hour is the slot's key in the bag and orders.
-const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => [
-  slot.startsAt.slice(0, 2),
-  slot.endsAt.slice(0, 2)
-]);
+// Each slot's start and end hour; the start hour is the slot's key in the bag and orders.
+const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => ({
+  start: slot.startsAt.slice(0, 2),
+  end: slot.endsAt.slice(0, 2)
+}));
 // A slot today stops taking orders this many minutes before it ends.
 const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.

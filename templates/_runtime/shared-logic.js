@@ -143,11 +143,11 @@ const VF_ZONES = [...VF_API_DELIVERY_ZONES]
 // Free delivery isn't in the API yet (templates/API.md, "Zone rules").
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
-// Each slot as [start hour, end hour]; the start hour is the slot's key in the bag and orders.
-const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => [
-  slot.startsAt.slice(0, 2),
-  slot.endsAt.slice(0, 2)
-]);
+// Each slot's start and end hour; the start hour is the slot's key in the bag and orders.
+const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => ({
+  start: slot.startsAt.slice(0, 2),
+  end: slot.endsAt.slice(0, 2)
+}));
 // A slot today stops taking orders this many minutes before it ends.
 const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.
@@ -874,18 +874,31 @@ function vfProductFromApi(product, sources = {}) {
 
 const VF_PRODUCTS = VF_API_PRODUCTS.map(product => vfProductFromApi(product));
 
-// Sizes for products with `sizes: true`: [id, extra price, English name, Persian name, English detail, Persian detail].
-/** @type {[id: string, price: number, en: string, fa: string, enDetail: string, faDetail: string][]} */
+// Sizes for products with `sizes: true`; price is added to the product's price.
 const VF_SIZES = [
-  ['petite', 0, 'Petite', 'کوچک', '12 stems', '۱۲ شاخه'],
-  ['classic', 800_000, 'Classic', 'کلاسیک', '20 stems', '۲۰ شاخه'],
-  ['generous', 1_900_000, 'Generous', 'بزرگ', '32 stems', '۳۲ شاخه']
+  {
+    id: 'petite',
+    price: 0,
+    name: {en: 'Petite', fa: 'کوچک'},
+    detail: {en: '12 stems', fa: '۱۲ شاخه'}
+  },
+  {
+    id: 'classic',
+    price: 800_000,
+    name: {en: 'Classic', fa: 'کلاسیک'},
+    detail: {en: '20 stems', fa: '۲۰ شاخه'}
+  },
+  {
+    id: 'generous',
+    price: 1_900_000,
+    name: {en: 'Generous', fa: 'بزرگ'},
+    detail: {en: '32 stems', fa: '۳۲ شاخه'}
+  }
 ];
-// Optional extras: [id, price, English name, Persian name].
-/** @type {[id: string, price: number, en: string, fa: string][]} */
+// Optional extras a product can take.
 const VF_ADDONS = [
-  ['card', 150_000, 'Handwritten card', 'کارت دست‌نویس'],
-  ['vase', 650_000, 'Glass vase', 'گلدان شیشه‌ای']
+  {id: 'card', price: 150_000, name: {en: 'Handwritten card', fa: 'کارت دست‌نویس'}},
+  {id: 'vase', price: 650_000, name: {en: 'Glass vase', fa: 'گلدان شیشه‌ای'}}
 ];
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
@@ -961,8 +974,8 @@ function vfTokenText(token) {
 function vfLineDetail(product, size, addons, lang) {
   const fa = lang === 'fa';
   return [VF_CATEGORY_ITEM[lang][product.cat]]
-    .concat(product.sizes && size ? [size[fa ? 3 : 2], size[fa ? 5 : 4]] : [])
-    .concat(addons.map(addon => addon[fa ? 3 : 2]))
+    .concat(product.sizes && size ? [size.name[lang], size.detail[lang]] : [])
+    .concat(addons.map(addon => addon.name[lang]))
     .join(' · ');
 }
 
@@ -970,8 +983,8 @@ function vfLineDetail(product, size, addons, lang) {
 function vfSampleBag() {
   const box = vfProduct('VF-7K2M4Q'),
     orchid = vfProduct('VF-8RD5WN');
-  const classic = VF_SIZES.find(size => size[0] === 'classic'),
-    card = VF_ADDONS.find(addon => addon[0] === 'card');
+  const classic = VF_SIZES.find(size => size.id === 'classic'),
+    card = VF_ADDONS.find(addon => addon.id === 'card');
   return [
     {
       id: box.id + '-classic-card',
@@ -979,7 +992,7 @@ function vfSampleBag() {
       token: box.id,
       size: 'classic',
       addons: ['card'],
-      unit: box.price + classic[1] + card[1],
+      unit: box.price + classic.price + card.price,
       qty: 1,
       image: box.image,
       card: 'Happy birthday, Shirin.',
@@ -1005,7 +1018,7 @@ function vfSampleBag() {
 function vfLineAddons(line) {
   return (
     line.addons ||
-    VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon[0])).map(addon => addon[0])
+    VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon.id)).map(addon => addon.id)
   );
 }
 
@@ -1031,23 +1044,22 @@ function vfLineWithCard(line) {
   const productId = vfLineProductId(line);
   const size = vfLineSize(line);
   const addons = VF_ADDONS.filter(
-    addon => addon[0] === 'card' || vfLineAddons(line).includes(addon[0])
+    addon => addon.id === 'card' || vfLineAddons(line).includes(addon.id)
   );
   const names = lang => {
-    const index = lang === 'en' ? 2 : 3;
     const detail = line[lang][1]
       .split(' · ')
-      .filter(part => !VF_ADDONS.some(addon => addon[index] === part));
-    return [vfLineToken(line), detail.concat(addons.map(addon => addon[index])).join(' · ')];
+      .filter(part => !VF_ADDONS.some(addon => addon.name[lang] === part));
+    return [vfLineToken(line), detail.concat(addons.map(addon => addon.name[lang])).join(' · ')];
   };
   return {
     ...line,
     productId,
     token: vfLineToken(line),
     size,
-    addons: addons.map(addon => addon[0]),
-    id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon[0]).join('+'),
-    unit: line.unit + VF_ADDONS.find(addon => addon[0] === 'card')[1],
+    addons: addons.map(addon => addon.id),
+    id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon.id).join('+'),
+    unit: line.unit + VF_ADDONS.find(addon => addon.id === 'card').price,
     en: names('en'),
     fa: names('fa')
   };
@@ -1062,10 +1074,13 @@ function vfReorderLines(lines) {
   return lines.flatMap(line => {
     const product = vfFindProduct(vfLineProductId(line));
     if (!product || product.inStock === false) return [];
-    const size = VF_SIZES.find(s => s[0] === vfLineSize(line));
+    const size = VF_SIZES.find(item => item.id === vfLineSize(line));
     const addons = vfLineAddons(line);
-    const extra = VF_ADDONS.filter(a => addons.includes(a[0])).reduce((sum, a) => sum + a[1], 0);
-    return [{...line, unit: product.price + (product.sizes && size ? size[1] : 0) + extra}];
+    const extra = VF_ADDONS.filter(addon => addons.includes(addon.id)).reduce(
+      (sum, addon) => sum + addon.price,
+      0
+    );
+    return [{...line, unit: product.price + (product.sizes && size ? size.price : 0) + extra}];
   });
 }
 
@@ -1305,7 +1320,7 @@ function vfDayMonth(date, fa) {
 
 // When an order arrives: «سه‌شنبه، ۱۴ مهر · ۱۲:۰۰ تا ۱۶:۰۰» / "Tue 6 October · 12:00–16:00".
 function vfDeliveryWhen(delivery, fa) {
-  const end = (VF_SLOTS.find(slot => slot[0] === delivery.slot) || VF_SLOTS[1])[1];
+  const end = (VF_SLOTS.find(slot => slot.start === delivery.slot) || VF_SLOTS[1]).end;
   const slot = vfSlotLabel(delivery.slot, end, fa);
   if (!delivery.date) return slot;
   const date = window.AG_DATES.fromIso(delivery.date);

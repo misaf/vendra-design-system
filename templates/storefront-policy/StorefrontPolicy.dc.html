@@ -203,7 +203,7 @@ function vfCopy(S) {
       ? z.fa + ': ' + m(z.fee) + '، ارسال همان روز برای سفارش تا ساعت ' + vfDeliveryCutoff(z, true)
       : z.en + ': ' + m(z.fee) + ', same day when you order by ' + vfDeliveryCutoff(z, false)
   );
-  const slots = VF_SLOTS.map(([a, b]) => vfSlotLabel(a, b, fa)).join(fa ? '، ' : ', ');
+  const slots = VF_SLOTS.map(slot => vfSlotLabel(slot.start, slot.end, fa)).join(fa ? '، ' : ', ');
   const freeZones = zoneList(VF_FREE_DELIVERY_ZONES, fa ? ' و ' : ' and ');
   const codZones = zoneList(VF_STORE.paymentDemo.codZones, fa ? ' و ' : ' and ');
   const brand = VF_STORE.brand[L],

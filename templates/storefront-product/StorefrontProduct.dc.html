@@ -349,13 +349,12 @@ class Component extends VFPage {
     const C = vfCopy(S);
     const product = vfFindProduct(vfPageRoute(this.props).id) || VF_PRODUCTS[0];
     const base = product.price;
-    const availableAddons = VF_ADDONS.filter(a => !(product.noAddons || []).includes(a[0]));
+    const availableAddons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
     const hasSizes = !!product.sizes;
-    const sz = VF_SIZES.find(z => z[0] === s.size);
-    const extra = availableAddons
-      .filter(a => s.addons.includes(a[0]))
-      .reduce((t, a) => t + a[1], 0);
-    const unit = base + (hasSizes ? sz[1] : 0) + extra;
+    const size = VF_SIZES.find(item => item.id === s.size);
+    const chosenAddons = availableAddons.filter(addon => s.addons.includes(addon.id));
+    const extra = chosenAddons.reduce((sum, addon) => sum + addon.price, 0);
+    const unit = base + (hasSizes ? size.price : 0) + extra;
     const total = unit * s.qty;
     return {
       ...S,
@@ -432,24 +431,24 @@ class Component extends VFPage {
       unavailable: product.inStock === false,
       category: S.shopLink(product.cat),
       productImages: vfProductImages(product, L),
-      unitPrice: m(base + (hasSizes ? sz[1] : 0)),
-      sizes: VF_SIZES.map(z => ({
-        label: fa ? z[3] : z[2],
-        desc: (fa ? z[5] : z[4]) + ' · ' + (z[1] ? '+' + m(z[1]) : C.labels.base),
-        on: s.size === z[0],
+      unitPrice: m(base + (hasSizes ? size.price : 0)),
+      sizes: VF_SIZES.map(item => ({
+        label: item.name[L],
+        desc: item.detail[L] + ' · ' + (item.price ? '+' + m(item.price) : C.labels.base),
+        on: s.size === item.id,
         pick: () =>
           this.setState({
-            size: z[0]
+            size: item.id
           })
       })),
-      addons: availableAddons.map(a => {
-        const on = s.addons.includes(a[0]);
+      addons: availableAddons.map(addon => {
+        const on = s.addons.includes(addon.id);
         return {
-          label: (fa ? a[3] : a[2]) + ' · +' + m(a[1]),
+          label: addon.name[L] + ' · +' + m(addon.price),
           on,
           toggle: () =>
             this.setState({
-              addons: on ? s.addons.filter(x => x !== a[0]) : [...s.addons, a[0]]
+              addons: on ? s.addons.filter(x => x !== addon.id) : [...s.addons, addon.id]
             })
         };
       }),
@@ -470,21 +469,20 @@ class Component extends VFPage {
         if (product.inStock === false) return;
         const st = this.props.store;
         if (st) {
-          const ad = availableAddons.filter(a => s.addons.includes(a[0]));
           st.add({
             image: product.image,
             productId: product.id,
             token: product.id,
             size: hasSizes ? s.size : null,
-            addons: ad.map(a => a[0]),
+            addons: chosenAddons.map(addon => addon.id),
             id:
               product.id +
               (hasSizes ? '-' + s.size : '') +
-              (ad.length ? '-' + ad.map(a => a[0]).join('+') : ''),
+              (chosenAddons.length ? '-' + chosenAddons.map(addon => addon.id).join('+') : ''),
             unit,
             qty: s.qty,
-            en: [product.id, vfLineDetail(product, hasSizes ? sz : null, ad, 'en')],
-            fa: [product.id, vfLineDetail(product, hasSizes ? sz : null, ad, 'fa')]
+            en: [product.id, vfLineDetail(product, hasSizes ? size : null, chosenAddons, 'en')],
+            fa: [product.id, vfLineDetail(product, hasSizes ? size : null, chosenAddons, 'fa')]
           });
         }
         // A small bag panel confirms what was added and offers the next step.
@@ -495,12 +493,7 @@ class Component extends VFPage {
               image: vfProductImage(product, L).src,
               name: product.id,
               meta:
-                vfLineDetail(
-                  product,
-                  hasSizes ? sz : null,
-                  availableAddons.filter(a => s.addons.includes(a[0])),
-                  L
-                ) +
+                vfLineDetail(product, hasSizes ? size : null, chosenAddons, L) +
                 ' · × ' +
                 (fa ? VF_FA_DIGITS(s.qty) : s.qty),
               total: m(total)

@@ -122,6 +122,48 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     );
     assert.equal(commerce.openDay(days), '2026-10-06');
     assert.equal(commerce.normalizeCode(' vf-7k2m ۴q '), 'VF7K2M4Q');
+    assert.deepEqual(
+      commerce
+        .deliverySlots(
+          '2026-10-05',
+          [
+            {start: '08', end: '12'},
+            {start: '16', end: '20'}
+          ],
+          120,
+          new Date(2026, 9, 5, 11, 0)
+        )
+        .map(slot => slot.closed),
+      [true, false]
+    );
+    const line = commerce.lineFromApi(
+      {
+        sellableId: 5,
+        name: 'VF-1',
+        quantity: 2,
+        unitAmount: 900_000,
+        metadata: {token: 'VF-1', size: 'large', addons: 'card'}
+      },
+      {
+        products: [{id: 'VF-1', apiId: 5, image: 'rose.jpg'}],
+        sizes: [
+          {
+            id: 'large',
+            price: 300_000,
+            name: {en: 'Large', fa: 'بزرگ'},
+            detail: {en: '30 stems', fa: '۳۰ شاخه'}
+          }
+        ],
+        addons: [{id: 'card', price: 100_000, name: {en: 'Card', fa: 'کارت'}}],
+        placeholder: 'none.svg',
+        describe: (product, size, addons, lang) =>
+          [size.name[lang], ...addons.map(addon => addon.name[lang])].join(' · ')
+      }
+    );
+    assert.deepEqual(
+      [line.id, line.qty, line.en[1], line.fa[1]],
+      ['VF-1-large-card', 2, 'Large · Card', 'بزرگ · کارت']
+    );
     assert.equal(commerce.isMobile('۰۹۱۲ ۳۴۵ ۶۷۸۹'), true);
 
     // Theme API, ESM and CommonJS.
