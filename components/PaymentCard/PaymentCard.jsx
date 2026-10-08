@@ -45,11 +45,13 @@ export function PaymentCard({
       scratch.style.opacity = '0';
       document.body.appendChild(scratch);
       scratch.select();
+      let copiedText = false;
       try {
-        document.execCommand('copy');
-      } catch (error) {}
+        copiedText = document.execCommand('copy');
+      } catch {}
       scratch.remove();
-      done();
+      // Only confirm when the copy actually happened; otherwise the digits stay visible to copy by hand.
+      if (copiedText) done();
     };
     if (navigator.clipboard && navigator.clipboard.writeText)
       navigator.clipboard.writeText(digits).then(done, fallback);

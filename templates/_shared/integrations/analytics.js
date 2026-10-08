@@ -29,14 +29,14 @@
     try {
       const value = localStorage.getItem(KEY);
       return ['all', 'essential'].includes(value) ? value : '';
-    } catch (_) {
+    } catch {
       return '';
     }
   };
   const setConsent = value => {
     try {
       localStorage.setItem(KEY, value);
-    } catch (_) {}
+    } catch {}
     if (typeof window.gtag === 'function')
       window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };

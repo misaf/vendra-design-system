@@ -89,7 +89,7 @@
   const abs = u => {
     try {
       return u ? new URL(u, location.href).href : undefined;
-    } catch (e) {
+    } catch {
       return undefined;
     }
   };

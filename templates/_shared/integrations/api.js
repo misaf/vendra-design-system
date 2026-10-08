@@ -33,7 +33,7 @@
       e.status = r.status;
       try {
         e.body = await r.json();
-      } catch (_) {}
+      } catch {}
       throw e;
     }
     return r.status === 204 ? null : r.json().catch(() => null);
@@ -41,14 +41,14 @@
   const map = () => {
     try {
       return JSON.parse(localStorage.getItem(KEY) || '{}');
-    } catch (e) {
+    } catch {
       return {};
     }
   };
   const setMap = m => {
     try {
       localStorage.setItem(KEY, JSON.stringify(m));
-    } catch (e) {}
+    } catch {}
   };
   // Product slug -> numeric catalog id. Fill p.apiId when the catalog comes from GET /api/catalog/products.
   const pid = slug => {

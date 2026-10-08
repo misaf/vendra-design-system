@@ -55,7 +55,7 @@ export const Carousel = React.forwardRef(function Carousel({ children, items, re
 		const track = trackRef.current;
 		if (!track) return;
 		const rtl = getComputedStyle(track).direction === "rtl";
-		const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		track.scrollBy({
 			left: direction * (rtl ? -1 : 1) * track.clientWidth * .85,
 			behavior: reduceMotion ? "auto" : "smooth"

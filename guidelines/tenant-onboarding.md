@@ -43,10 +43,10 @@ The storefront reads all of this as data (`templates/_shared/store-config.js`, `
 - [ ] **Return policy per category** (feeds the product JSON-LD).
 
 ## 4. Copy (florist + writer)
-- [ ] Hero eyebrow, two-beat headline (second beat is the accent word), and one-line intro, in EN and FA. Follow *Content fundamentals* in `readme.md`: "we" and "you", sentence case, no emoji, Persian written natively.
+- [ ] Hero eyebrow, two-beat headline (second beat is the accent word), and one-line intro, in EN and FA. Follow *Content fundamentals* in `brand-guide.md`: "we" and "you", sentence case, no emoji, Persian written natively.
 - [ ] Announcement bar text (optional).
 
 ## 5. Launch checks
-- [ ] Work through the *Storefront release checklist* in `readme.md`.
+- [ ] Work through the *Storefront release checklist* in `brand-guide.md`.
 - [ ] Theme builder contrast checks pass, and the *Contrast* card in Colors still passes with `data-tenant` set.
 - [ ] The Florist JSON-LD has the real address, pin and Instagram.

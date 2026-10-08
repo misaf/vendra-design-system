@@ -901,7 +901,7 @@ class Component extends VFPage {
       copy: () => {
         try {
           navigator.clipboard.writeText(location.href);
-        } catch (e) {}
+        } catch {}
         this.setState({
           copied: true
         });

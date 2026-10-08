@@ -6,14 +6,14 @@ function vfAnnouncementText(lang, st) {
   if (!text || st.vfAnnouncementClosed) return '';
   try {
     if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
-  } catch (_) {}
+  } catch {}
   return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
 }
 // A value saved on this device, or '' when storage is empty or blocked.
 function vfStored(key) {
   try {
     return localStorage.getItem(key) || '';
-  } catch (_) {
+  } catch {
     return '';
   }
 }
@@ -139,7 +139,7 @@ function vfShell(props, page) {
         () => {
           try {
             localStorage.setItem('vf-newsletter', email);
-          } catch (_) {}
+          } catch {}
           window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
           self.setState({vfNews: {done: email}});
           focus('vf-news-done');
@@ -156,7 +156,7 @@ function vfShell(props, page) {
   let dismissed = !!st.vfConsentDismissed;
   try {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
-  } catch (_) {}
+  } catch {}
   const consentShown =
     (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
@@ -176,7 +176,7 @@ function vfShell(props, page) {
     close: () => {
       try {
         sessionStorage.setItem('vf-consent-dismissed', '1');
-      } catch (_) {}
+      } catch {}
       hideConsent({vfConsentDismissed: true});
     },
     policy: policyLink('privacy'),
@@ -307,7 +307,7 @@ function vfShell(props, page) {
       // Keyed by the message, so a new announcement shows again.
       try {
         sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en);
-      } catch (_) {}
+      } catch {}
       self.setState({vfAnnouncementClosed: true});
     },
     vfAnnouncement: st.vfAnnouncement || '',

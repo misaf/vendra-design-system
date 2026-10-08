@@ -21,7 +21,7 @@ function vfSiteInitial(props) {
   let saved = {};
   try {
     saved = JSON.parse(sessionStorage.getItem(VF_SESSION) || '{}') || {};
-  } catch (e) {}
+  } catch {}
   let route = vfReadRoute();
   if (route.view === 'home' && !new URLSearchParams(location.search).has('view') && props.start)
     route = {...route, view: props.start};
@@ -101,7 +101,7 @@ class Component extends DCLogic {
           lastOrder
         })
       );
-    } catch (e) {}
+    } catch {}
   }
   componentWillUnmount() {
     window.removeEventListener('popstate', this._pop);

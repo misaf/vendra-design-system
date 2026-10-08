@@ -892,7 +892,7 @@ function vfRecentlyViewed() {
   try {
     const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
     return vfProductIds(ids);
-  } catch (_) {
+  } catch {
     return [];
   }
 }
@@ -904,7 +904,7 @@ function vfRememberViewed(id) {
         VF_RECENT_KEY,
         JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8))
       );
-  } catch (_) {}
+  } catch {}
 }
 
 // Source: templates/_shared/translations/shell.js
@@ -1600,7 +1600,7 @@ function vfWalletChange(phone, amount, entry) {
       e.status = r.status;
       try {
         e.body = await r.json();
-      } catch (_) {}
+      } catch {}
       throw e;
     }
     return r.status === 204 ? null : r.json().catch(() => null);
@@ -1608,14 +1608,14 @@ function vfWalletChange(phone, amount, entry) {
   const map = () => {
     try {
       return JSON.parse(localStorage.getItem(KEY) || '{}');
-    } catch (e) {
+    } catch {
       return {};
     }
   };
   const setMap = m => {
     try {
       localStorage.setItem(KEY, JSON.stringify(m));
-    } catch (e) {}
+    } catch {}
   };
   // Product slug -> numeric catalog id. Fill p.apiId when the catalog comes from GET /api/catalog/products.
   const pid = slug => {
@@ -1730,14 +1730,14 @@ function vfWalletChange(phone, amount, entry) {
     try {
       const value = localStorage.getItem(KEY);
       return ['all', 'essential'].includes(value) ? value : '';
-    } catch (_) {
+    } catch {
       return '';
     }
   };
   const setConsent = value => {
     try {
       localStorage.setItem(KEY, value);
-    } catch (_) {}
+    } catch {}
     if (typeof window.gtag === 'function')
       window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
@@ -2031,14 +2031,14 @@ function vfAnnouncementText(lang, st) {
   if (!text || st.vfAnnouncementClosed) return '';
   try {
     if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
-  } catch (_) {}
+  } catch {}
   return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
 }
 // A value saved on this device, or '' when storage is empty or blocked.
 function vfStored(key) {
   try {
     return localStorage.getItem(key) || '';
-  } catch (_) {
+  } catch {
     return '';
   }
 }
@@ -2164,7 +2164,7 @@ function vfShell(props, page) {
         () => {
           try {
             localStorage.setItem('vf-newsletter', email);
-          } catch (_) {}
+          } catch {}
           window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
           self.setState({vfNews: {done: email}});
           focus('vf-news-done');
@@ -2181,7 +2181,7 @@ function vfShell(props, page) {
   let dismissed = !!st.vfConsentDismissed;
   try {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
-  } catch (_) {}
+  } catch {}
   const consentShown =
     (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
@@ -2201,7 +2201,7 @@ function vfShell(props, page) {
     close: () => {
       try {
         sessionStorage.setItem('vf-consent-dismissed', '1');
-      } catch (_) {}
+      } catch {}
       hideConsent({vfConsentDismissed: true});
     },
     policy: policyLink('privacy'),
@@ -2332,7 +2332,7 @@ function vfShell(props, page) {
       // Keyed by the message, so a new announcement shows again.
       try {
         sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en);
-      } catch (_) {}
+      } catch {}
       self.setState({vfAnnouncementClosed: true});
     },
     vfAnnouncement: st.vfAnnouncement || '',

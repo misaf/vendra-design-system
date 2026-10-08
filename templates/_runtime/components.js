@@ -607,7 +607,7 @@ const Carousel = React.forwardRef(function Carousel({ children, items, renderIte
 		const track = trackRef.current;
 		if (!track) return;
 		const rtl = getComputedStyle(track).direction === "rtl";
-		const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		track.scrollBy({
 			left: direction * (rtl ? -1 : 1) * track.clientWidth * .85,
 			behavior: reduceMotion ? "auto" : "smooth"
@@ -1955,11 +1955,13 @@ function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}, onCop
 			scratch.style.opacity = "0";
 			document.body.appendChild(scratch);
 			scratch.select();
+			let copiedText = false;
 			try {
-				document.execCommand("copy");
-			} catch (error) {}
+				copiedText = document.execCommand("copy");
+			} catch {}
 			scratch.remove();
-			done();
+			// Only confirm when the copy actually happened; otherwise the digits stay visible to copy by hand.
+			if (copiedText) done();
 		};
 		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(digits).then(done, fallback);
 		else fallback();

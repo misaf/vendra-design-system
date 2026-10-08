@@ -326,7 +326,7 @@ function vfRecentlyViewed() {
   try {
     const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
     return vfProductIds(ids);
-  } catch (_) {
+  } catch {
     return [];
   }
 }
@@ -338,5 +338,5 @@ function vfRememberViewed(id) {
         VF_RECENT_KEY,
         JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8))
       );
-  } catch (_) {}
+  } catch {}
 }
