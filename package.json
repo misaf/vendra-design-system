@@ -1,0 +1,49 @@
+{
+  "name": "@vendra/design-system",
+  "version": "0.1.0",
+  "description": "Vendra design system for multi-tenant florist storefronts: React components, tokens, bilingual (English/Persian, RTL) styles and per-tenant themes.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/misaf/vendra-design-system.git"
+  },
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tenants.css": "./dist/tenants.css",
+    "./tenants/*.css": "./dist/tenants/*.css",
+    "./fonts/*": "./dist/fonts/*",
+    "./theme": {
+      "import": {
+        "types": "./dist/theme.d.ts",
+        "default": "./dist/theme.js"
+      },
+      "require": {
+        "types": "./dist/theme.d.cts",
+        "default": "./dist/theme.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
+  },
+  "scripts": {
+    "build": "npm --prefix templates run build",
+    "check": "npm --prefix templates run check",
+    "test": "npm --prefix templates test"
+  }
+}

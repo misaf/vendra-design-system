@@ -36,7 +36,7 @@ Start here when changing the official storefront. All storefront examples live h
 | Route registration, validation and URL helpers | [_shared/routing.js](_shared/routing.js) |
 | Responsive state, heading focus, announcements and SEO | [_shared/page-lifecycle.js](_shared/page-lifecycle.js) |
 | Storefront number and currency wrappers | [_shared/formatting.js](_shared/formatting.js) |
-| Currency and number formatting | `../components/utils/format.js` (requires a design-system bundle rebuild) |
+| Currency and number formatting | `../components/utils/format.js` (then run the build, which recompiles the component bundle) |
 | Colors and fonts | `../tokens/` |
 | Tenant themes (generated into `../tokens/tenants/<slug>.css` and the email palettes in `communications/email-templates.js`) | `../tokens/tenants/<slug>.json`; generator in [_shared/tenant-theme.js](_shared/tenant-theme.js) |
 
@@ -139,12 +139,12 @@ All pages load the same assets. Page folders contain only their `Storefront*.dc.
 
 - `_runtime/support.js`: shared generated upstream template runtime; replace it with an upstream build when upgrading.
 - `_runtime/shared-logic.js`: generated from the `_shared/*.js` logic files (store config, catalog, delivery, routing, navigation, page lifecycle). Pages load it before `support.js`; never edit it.
-- `../../components/utils/{seo,format,dates,nav}.js`: core helpers (`AG_SEO`, `AG_FORMAT`, `AG_DATES`, `AG_NAV`) that the shared logic calls on first render. They are also in `_ds_bundle.js`, but the bundle loads asynchronously after React, so `_build/generate.cjs` writes these four tags before `shared-logic.js` in every page head. Don't remove them, or pages log errors until the bundle arrives.
+- `../../components/utils/{seo,nav}.js` and `_runtime/helpers.js`: core helpers (`AG_SEO`, `AG_NAV`, and `AG_FORMAT`/`AG_DATES` from the ES modules `components/utils/{format,dates}.js`, built into a classic script) that the shared logic calls on first render. They are also in `_runtime/components.js`, but the bundle loads asynchronously after React, so `_build/generate.cjs` writes these three tags before `shared-logic.js` in every page head. Don't remove them, or pages log errors until the bundle arrives.
 - `_runtime/ds-base.js`: shared design-system asset loader. Its `base` resolves relative to this loader, not to a page.
 - `_runtime/tailwind.css`: generated Tailwind utilities only, compiled from `_shared/tailwind.css`.
 - `_runtime/custom.css`: separate generated plain CSS, assembled from `_shared/custom.css` and its imports.
 - `../styles.css`: imports the shared design-system fonts, tokens and component styles. `_runtime/ds-base.js` adds the active tenant's `../tokens/tenants/<slug>.css` after it (chosen by `tenant` in `_shared/store-config.js` or `?tenant=`).
-- `../_ds_bundle.js` and `../assets/`: shared component bundle and images.
+- `_runtime/components.js` and `../assets/`: shared component bundle (compiled from `../components/` by `_build/components.cjs`) and images.
 
 Pages reference `../_runtime/shared-logic.js`, `../_runtime/support.js` and `../_runtime/ds-base.js`; browsers can reuse the same cached files across pages. The loader adds each shared stylesheet and component bundle only once per document.
 

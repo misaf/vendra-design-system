@@ -1,4 +1,4 @@
-// Refresh templates; build separate Tailwind and plain custom CSS. --check writes nothing.
+// Refresh templates and the component bundle; build separate Tailwind and plain custom CSS. --check writes nothing.
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -29,12 +29,17 @@ try {
     if (check && css !== current) throw new Error(file + ' is stale. Run npm --prefix templates run build.');
     if (!check && css !== current) fs.writeFileSync(target, css);
   }
-  // The component bundle comes from the Claude Design self-check, so a build can only warn about it.
-  const {staleBundleSources, bundleMessage} = require('./bundle.cjs');
-  const stale = staleBundleSources();
-  if (check && stale.length) throw new Error(bundleMessage(stale));
-  if (stale.length) console.warn('Warning: ' + bundleMessage(stale));
-  console.log(check ? 'Tailwind, custom CSS, tenant themes, storefront templates and the component bundle are current.' : 'Built Tailwind and custom CSS; updated ' + count + ' template files.');
+  // components/**/*.{js,jsx} → _runtime/components.js, the bundle cards and pages load.
+  // The format/date helpers also go to _runtime/helpers.js, a classic script pages load first.
+  const {componentsBundle, helpersScript, target: bundle, helpersTarget} = require('./components.cjs');
+  for (const [target, compiled] of [[bundle, componentsBundle()], [helpersTarget, helpersScript()]]) {
+    const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
+    if (check && compiled !== current) throw new Error(path.basename(target) + ' is stale. Run npm --prefix templates run build.');
+    if (!check && compiled !== current) fs.writeFileSync(target, compiled);
+  }
+  // The same sources → dist/, the @vendra/design-system package.
+  require('./package.cjs').buildPackage(check);
+  console.log(check ? 'Tailwind, custom CSS, tenant themes, storefront templates, the component bundle and dist/ are current.' : 'Built components, dist/, Tailwind and custom CSS; updated ' + count + ' template files.');
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;

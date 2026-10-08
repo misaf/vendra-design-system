@@ -1,9 +1,10 @@
 import React from 'react';
+import { dates } from '../utils/dates.js';
 import { Select } from './Select.jsx';
 import { Tabs } from '../navigation/Tabs.jsx';
 // Year / month / day selects in Jalali (Shamsi) or Gregorian. Uses the date helpers (components/utils/dates.js → .dates on the namespace).
 const DP_DEF={en:{jalali:'Shamsi',gregorian:'Gregorian',year:'Year',month:'Month',day:'Day',equivalent:'That’s {date}'},fa:{jalali:'شمسی',gregorian:'میلادی',year:'سال',month:'ماه',day:'روز',equivalent:'برابر با {date}'}};
-const dpDates=()=>(window.VendraDesignSystem_4ae5a2&&window.VendraDesignSystem_4ae5a2.dates)||window.AG_DATES;
+const dpDates=()=>dates;
 const G_MAX=[31,29,31,30,31,30,31,31,30,31,30,31];
 export function DatePicker({label,value,onChange,calendar,onCalendarChange,calendars=['j','g'],yearly=false,years=3,minDate,hint,error,lang='en',labels,showEquivalent=true,disabled,id,className='',style}){
   const D=dpDates();const L={...DP_DEF[lang==='fa'?'fa':'en'],...labels};

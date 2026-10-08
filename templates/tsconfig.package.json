@@ -1,0 +1,16 @@
+{
+  // Strict check of the published declarations (dist/**/*.d.ts), as an app's compiler sees them.
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "target": "es2023",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "jsx": "react-jsx",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "types": [],
+    // dist/ sits outside templates/, so point it at the React types installed here.
+    "paths": {"react": ["./node_modules/@types/react/index.d.ts"]}
+  },
+  "include": ["../dist/**/*.d.ts", "../dist/**/*.d.cts"]
+}

@@ -1,6 +1,5 @@
-// Jalali (Shamsi) / Gregorian date helpers. Exposed as window.AG_DATES and window.VendraDesignSystem_4ae5a2.dates.
+// Jalali (Shamsi) / Gregorian date helpers: import { dates } (the runtime bundle also exposes window.AG_DATES).
 // Always pass explicit locales: 'fa-IR-u-ca-persian', 'fa-IR-u-ca-gregory', 'en-GB', 'en-GB-u-ca-persian' (see locale()).
-(()=>{
 const div=(a,b)=>Math.floor(a/b);
 const noon=d=>{const x=new Date(d);x.setHours(12,0,0,0);return x;};
 // Jalali → Gregorian — jdf 33-year-cycle algorithm. Returns a local Date at 12:00 (DST-safe).
@@ -56,8 +55,4 @@ const fullDate=(date,loc='en-GB',withWeekday=false)=>{
   const wd=new Intl.DateTimeFormat(fa?'fa-IR':'en-GB',{weekday:'long'}).format(date);
   return wd+(fa?'، ':', ')+dmy;
 };
-const X={j2g,g2j,jYear,isJLeap,daysInMonth,toDate,parts,yearOf,iso,fromIso,daysBetween,nextYearly,nextHijri,locale,fullDate,dayMonth,monthNames,digits};
-window.AG_DATES=X;
-(window.VendraDesignSystem_4ae5a2=window.VendraDesignSystem_4ae5a2||{}).dates=X;
-if(typeof module!=='undefined'&&module.exports)module.exports=X;
-})();
+export const dates={j2g,g2j,jYear,isJLeap,daysInMonth,toDate,parts,yearOf,iso,fromIso,daysBetween,nextYearly,nextHijri,locale,fullDate,dayMonth,monthNames,digits};

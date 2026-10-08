@@ -12,7 +12,7 @@ function context() {
  const ctx = {URL, URLSearchParams, console, document:{getElementById:()=>null}, setTimeout, clearTimeout, location:{pathname:'/templates/storefront-site/StorefrontSite.dc.html',search:'',href:'http://localhost/templates/storefront-site/StorefrontSite.dc.html'},
   history:{pushState:(_,__,url)=>history.push(['push',url]),replaceState:(_,__,url)=>history.push(['replace',url])},sessionStorage:{getItem:()=>null,setItem:()=>{}},
   DCLogic:class {constructor(props){this.props=props;this.state={};}setState(update,cb){Object.assign(this.state,typeof update==='function'?update(this.state):update);if(cb)cb();}}};
- ctx.window={React:{},innerWidth:390,scrollTo:()=>{}};vm.createContext(ctx);vm.runInContext(read('_ds_bundle.js'),ctx);
+ ctx.window={React:{},innerWidth:390,scrollTo:()=>{}};vm.createContext(ctx);vm.runInContext(read('templates/_runtime/components.js'),ctx);
  return {ctx,history};
 }
 const {ctx}=context();vm.runInContext(sharedLogic+'\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=vfPhone;',ctx);
@@ -59,7 +59,7 @@ for (const folder of fs.readdirSync(path.join(root,'templates')).filter(x=>x.sta
  const filename=fs.readdirSync(path.join(root,'templates',folder)).find(x=>x.endsWith('.dc.html'));
  const html=read('templates/'+folder+'/'+filename),script=html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
  assert.ok(html.includes('<script src="../_runtime/shared-logic.js"></script>\n<script src="../_runtime/support.js"></script>'),folder+' must load the shared logic before the runtime');
-  assert.ok(html.includes(['seo','format','dates','nav'].map(n=>'<script src="../../components/utils/'+n+'.js"></script>').join('\n')+'\n<script src="../_runtime/shared-logic.js"></script>'),folder+' must load the core helpers before the shared logic');
+  assert.ok(html.includes('<script src="../../components/utils/seo.js"></script>\n<script src="../_runtime/helpers.js"></script>\n<script src="../../components/utils/nav.js"></script>'+'\n<script src="../_runtime/shared-logic.js"></script>'),folder+' must load the core helpers before the shared logic');
  assert.ok(html.includes(sharedLogicInline)&&!html.includes('// Source: templates/_shared/page-lifecycle.js'),folder+' must not carry its own copy of the shared logic');
  assert.equal(read('templates/_runtime/shared-logic.js').endsWith(sharedLogic),true,'_runtime/shared-logic.js must match _shared/');
  if(folder!=='storefront-site')assert.ok(html.includes('<main id="main"'),folder+' must expose the skip-link destination');

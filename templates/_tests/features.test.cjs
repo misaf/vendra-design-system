@@ -13,7 +13,7 @@ const ctx = {URL, URLSearchParams, console, setTimeout, clearTimeout,
   document: {getElementById: () => null}, DCLogic: class {}};
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(path.join(root, '_ds_bundle.js'), 'utf8'), ctx);
+vm.runInContext(fs.readFileSync(path.join(root, 'templates/_runtime/components.js'), 'utf8'), ctx);
 vm.runInContext(sharedLogic + '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});', ctx);
 
 // Persian and Arabic digits normalise in one place; a missing value is empty, not "undefined".

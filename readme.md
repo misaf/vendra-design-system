@@ -6,6 +6,46 @@ The reference tenant shipped with the system is **Vendra Florist** (below). Its 
 
 **Source:** GitHub repo **[misaf/vendra-design-system](https://github.com/misaf/vendra-design-system)** (branch `master`) — an existing design-system export: tokens, 47 React components, foundation cards, 18 storefront templates, fonts, logos and an OpenAPI spec in `uploads/`. Imported verbatim; only the window namespace was renamed to `VendraDesignSystem_4ae5a2`, and the vendored Babel (missing upstream) was restored to `templates/_vendor/babel.min.js` (7.29.0, hash-verified). Browser-test screenshot baselines were not imported — run `npm --prefix templates run test:e2e:update` once to create them. Related repos worth exploring for deeper product context: [misaf/vendra](https://github.com/misaf/vendra) (Laravel platform), [misaf/vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (Next.js storefront) and [misaf/vendra-web](https://github.com/misaf/vendra-web) (product site). Browse them to design more faithfully against the real product.
 
+## Using the package in a tenant storefront
+The repo is an npm package, **`@vendra/design-system`** (`package.json` at the root). It publishes only `dist/`, which `npm --prefix templates run build` generates from the sources and `check` keeps current. `dist/` is committed, so an app can install a tagged commit straight from GitHub (`npm install github:misaf/vendra-design-system#v0.1.0`) or from a registry later. React 18.2+ is a peer dependency.
+
+| Import | What it is |
+|---|---|
+| `@vendra/design-system` | The 46 components plus `format`, `dates` and `ICON_SVGS`, as ES modules with types. Component modules start with `'use client'`; all of them server-render without `window`. |
+| `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class in one file (fonts in `dist/fonts/`). It styles `html`/`body` too, so load it once in the root layout. |
+| `@vendra/design-system/theme` | The tenant theme generator: `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `email`, `VENDRA` (default spec). ESM and CommonJS. |
+| `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
+
+**Tenants are data, not files.** The platform stores each florist's theme spec (the same JSON as `tokens/tenants/<slug>.json`) with the rest of its admin settings. The storefront turns it into CSS per request with `tenantCss`. That function refuses unsafe slugs, invalid specs and failing contrast, and drops the free-text `description`, so its output is safe to write into a `<style>` element. Fall back to the default theme when it throws:
+
+```jsx
+// app/layout.jsx (Next.js App Router)
+import '@vendra/design-system/styles.css';
+import {tenantCss} from '@vendra/design-system/theme';
+
+export default async function RootLayout({children}) {
+  const tenant = await getTenant(); // host → {slug, locale, theme} from the platform API
+  let css = '';
+  try { css = tenantCss(tenant.slug, tenant.theme); } catch (error) { console.error(error); }
+  return (
+    <html lang={tenant.locale} dir={tenant.locale === 'fa' ? 'rtl' : 'ltr'} data-tenant={css ? tenant.slug : undefined}>
+      <head>{css && <style dangerouslySetInnerHTML={{__html: css}} />}</head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```jsx
+import {Button, ProductCard, format} from '@vendra/design-system';
+<Button href="/shop">{t('shop')}</Button>
+format.money(product.price, {lang, currency: tenant.currency, currencies: tenant.currencies});
+```
+
+Run the same `checks(spec)` in the admin's theme editor before saving, so a florist never saves a theme the storefront would refuse. Copy, prices, currency rates, contact details and delivery rules always come from the tenant's data as props. The components hard-code none of them.
+
+What stays out of the package: `components/utils/seo.js`, `nav.js` and `responsive.js` are window-global plumbing for the reference templates (query-string routing, Vendra's own store data). The cards, the guidelines and `templates/` are the reference implementation and test bed, not something an app installs.
+
 ## Multi-tenancy notes
 - **Theme by tokens only.** Components reference semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant theme overrides those in its own CSS scope; never fork component CSS.
 - **Copy & settings come from data.** No component hard-codes copy, currency, phone or address — the templates read them from `templates/_shared/store-config.js`, `catalog.js` and `delivery.js`, standing in for per-tenant admin data / the API in `uploads/openapi-*.json`.
@@ -277,8 +317,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **AddressCard**, **ReminderRow:** account tabs.
 
 **Helpers** (not components; `components/utils/` unless noted)
-- `format.js` → `.format`: `CURRENCIES`, `money()`, `num()`.
-- `dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`.
+- `format.js` → `.format`: `CURRENCIES` (demo rates), `money(n, {currency, lang, currencies})`, `num()`. An ES module: `import {format}` from the package; pages get it from `templates/_runtime/helpers.js`.
+- `dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `seo.js` → `.seo`: see *Routing & URLs* and *Structured data*.
 - `templates/communications/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, `'clay'` or the palette from `AG_EMAIL.themeFromCSS(el)`.
 - The first three hang off `window.VendraDesignSystem_4ae5a2` (`.format`, `.dates`, `.seo`). Each also has an `AG_*` alias (`AG_FORMAT`, `AG_DATES`, `AG_SEO`).

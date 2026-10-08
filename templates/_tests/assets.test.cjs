@@ -23,7 +23,7 @@ assert.deepEqual(elements.filter(e => e.tag === 'link').map(e => e.href), [
   'https://example.test/design/templates/_runtime/custom.css'
 ]);
 assert.equal(elements.filter(e => e.tag === 'script').length, 1);
-assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/design/_ds_bundle.js');
+assert.equal(elements.find(e => e.tag === 'script').src, 'https://example.test/design/templates/_runtime/components.js');
 // Without React the bundle waits: SnapScroller calls React.forwardRef as it loads.
 {
   const added = [], timers = [];

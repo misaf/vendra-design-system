@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'../..'),read=p=>fs.readFileSync(path.join(roo
 function environment(){
  const storage=new Map(),timers=[];
  const c={URL,URLSearchParams,console,document:{getElementById:()=>null,documentElement:{lang:'en',getAttribute:()=> 'en'}},location:{pathname:'/site',search:'',href:'http://localhost/site'},history:{pushState(){},replaceState(){}},setTimeout:f=>{timers.push(f);return timers.length;},clearTimeout(){},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},sessionStorage:{getItem:()=>null,setItem(){}},fetch:()=>{throw Error('Unexpected network request');},DCLogic:class{constructor(props){this.props=props;this.state={};}setState(p){Object.assign(this.state,typeof p==='function'?p(this.state):p);}}};
- c.window=c;c.React={forwardRef:f=>f};c.innerWidth=390;c.scrollTo=()=>{};vm.createContext(c);vm.runInContext(read('_ds_bundle.js'),c);vm.runInContext(require('../_build/generate.cjs').sharedLogic,c);vm.runInContext(require('../_build/generate.cjs').sharedLogicInline,c);
+ c.window=c;c.React={forwardRef:f=>f};c.innerWidth=390;c.scrollTo=()=>{};vm.createContext(c);vm.runInContext(read('templates/_runtime/components.js'),c);vm.runInContext(require('../_build/generate.cjs').sharedLogic,c);vm.runInContext(require('../_build/generate.cjs').sharedLogicInline,c);
  return {c,storage,timers};
 }
 function page(name,c,props={}){const s=read(`templates/storefront-${name}/Storefront${name[0].toUpperCase()+name.slice(1)}.dc.html`);const script=s.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];const a=script.indexOf('// BEGIN GENERATED PAGE COPY');const logic=script.slice(a>=0?a:script.indexOf('// BEGIN GENERATED PAGE LOGIC'));return vm.runInContext(`(()=>{${logic}\nreturn new Component(${JSON.stringify({lang:'en',...props})});})()`,c);}
@@ -45,7 +45,10 @@ function page(name,c,props={}){const s=read(`templates/storefront-${name}/Storef
   for(const event of comm.AG_EMAIL.events)for(const theme of ['default','clay']){const rendered=comm.AG_EMAIL.render(event,customer,{...vars,theme});assert.equal(rendered.lang,lang);assert.ok(rendered.html.includes('<table'));assert.ok(rendered.html.includes(comm.AG_EMAIL.themes[theme].gold));}
  }
  assert.equal(fs.existsSync(path.join(root,'ui_kits')),false);
- const manifest=JSON.parse(read('_ds_manifest.json'));for(const card of manifest.cards)assert.ok(fs.existsSync(path.join(root,card.path)),card.path);
- assert.ok(!read('_ds_bundle.js').includes('ui_kits/'));assert.equal(c.VendraDesignSystem_4ae5a2.__errors.length,0);
+ // Every @dsCard page's local scripts and stylesheets resolve (cards moved folders more than once).
+ const htmlFiles=dir=>fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap(e=>e.isDirectory()?(['node_modules','_e2e'].includes(e.name)?[]:htmlFiles(dir+'/'+e.name)):e.name.endsWith('.html')?[dir+'/'+e.name]:[]);
+ const cards=['components','guidelines','templates'].flatMap(htmlFiles).filter(f=>read(f).startsWith('<!-- @dsCard'));assert.ok(cards.length>=30,'found '+cards.length+' cards');
+ for(const card of cards)for(const [,url] of read(card).matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g))assert.ok(fs.existsSync(path.join(root,path.dirname(card),url)),card+' → '+url);
+ assert.ok(!read('templates/_runtime/components.js').includes('ui_kits/'));assert.equal(c.VendraDesignSystem_4ae5a2.__errors.length,0);
  console.log('Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, optional API mode, article blocks, bilingual communications and relocated card paths.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

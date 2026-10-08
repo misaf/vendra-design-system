@@ -44,7 +44,7 @@ function storefrontPreview() {
           await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
           rememberPages();
           server.ws.send({type: 'full-reload', path: '*'});
-          server.config.logger.info('Rebuilt storefront templates and Tailwind.');
+          server.config.logger.info('Rebuilt components, storefront templates and Tailwind.');
         } catch (error) {
           const message = error.stderr || error.message;
           server.config.logger.error(message);
@@ -58,8 +58,8 @@ function storefrontPreview() {
         const relative = path.relative(root, file).replaceAll(path.sep, '/');
         const isPage = /^templates\/storefront-[^/]+\/[^/]+\.dc\.html$/.test(relative);
         if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8')) return;
-        const isSource = relative.startsWith('templates/_shared/') || /^tokens\/tenants\/[^/]+\.json$/.test(relative) || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
-        const isAsset = /^(tokens|assets)\//.test(relative) || ['styles.css', 'components/components.css', '_ds_bundle.js'].includes(relative) || relative.startsWith('templates/_runtime/');
+        const isSource = relative.startsWith('templates/_shared/') || /^components\/.+\.jsx?$/.test(relative) || /^tokens\/tenants\/[^/]+\.json$/.test(relative) || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
+        const isAsset = /^(tokens|assets)\//.test(relative) || ['styles.css', 'components/components.css'].includes(relative) || relative.startsWith('templates/_runtime/');
         if (!isSource && !isAsset) return;
         // Generated CSS writes follow a source rebuild; they need no extra rebuild.
         if (!isSource) { if (!running) server.ws.send({type: 'full-reload', path: '*'}); return; }
@@ -81,7 +81,7 @@ function storefrontPreview() {
       // Load the namespace before support.js boots the page on a cold start. The bundle
       // needs React while it evaluates (SnapScroller calls React.forwardRef), so the local
       // React copies go first; support.js reuses them instead of fetching unpkg.
-      return ['/templates/_vendor/react.production.min.js', '/templates/_vendor/react-dom.production.min.js', '/_ds_bundle.js']
+      return ['/templates/_vendor/react.production.min.js', '/templates/_vendor/react-dom.production.min.js', '/templates/_runtime/components.js']
         .map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));
     }
   };
