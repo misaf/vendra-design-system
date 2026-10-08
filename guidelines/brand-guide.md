@@ -195,10 +195,11 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Helpers** (not components)
 - `components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
 - `components/utils/format.js` → `.format`: `CURRENCIES` (demo rates), `money(n, {currency, lang, currencies})`, `num()`. An ES module: `import {format}` from the package; pages get it from `templates/_runtime/helpers.js`.
+- `components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. Pages get it as `AG_COMMERCE`.
 - `components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `templates/_shared/seo.js` → `window.AG_SEO` and `templates/_shared/page-focus.js` → `window.AG_NAV`: storefront-template helpers; see *Routing & URLs* and *Structured data*.
 - `templates/communications/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `AG_EMAIL.themeFromCSS(el)`.
-- `format` and `dates` also hang off `window.VendraDesignSystem`, with `AG_FORMAT` and `AG_DATES` aliases, for the templates.
+- `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem`, with `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE` aliases, for the templates.
 
 ### Intentional additions
 These came from the source system, which authored a standard set plus:

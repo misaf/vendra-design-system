@@ -19,15 +19,12 @@ function vfWalletBalance() {
 
 // Paying from a balance of at least discountFrom earns the balance discount.
 function vfBalanceDiscountOn(balance) {
-  const rules = VF_STORE.wallet;
-  return !!rules && balance != null && balance >= rules.discountFrom;
+  return window.AG_COMMERCE.balanceDiscountOn(balance, VF_STORE.wallet);
 }
 
 // discountPercent of the products' price (after any promo code) when the balance earns it.
 function vfBalanceDiscount(balance, products) {
-  return vfBalanceDiscountOn(balance)
-    ? Math.round((products * VF_STORE.wallet.discountPercent) / 100)
-    : 0;
+  return window.AG_COMMERCE.balanceDiscount(balance, products, VF_STORE.wallet);
 }
 
 // A top-up amount, typed with any digits and separators; '' when nothing is typed.

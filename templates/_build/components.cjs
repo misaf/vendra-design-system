@@ -8,7 +8,7 @@ const {transformSync, parseSync} = require('rolldown/experimental');
 
 const NAMESPACE = 'VendraDesignSystem';
 // Older globals the storefront templates still read: window name → export.
-const ALIASES = {AG_DATES: 'dates', AG_FORMAT: 'format'};
+const ALIASES = {AG_COMMERCE: 'commerce', AG_DATES: 'dates', AG_FORMAT: 'format'};
 const repo = path.resolve(__dirname, '../..');
 const target = path.join(repo, 'templates/_runtime/components.js');
 const helpersTarget = path.join(repo, 'templates/_runtime/helpers.js');

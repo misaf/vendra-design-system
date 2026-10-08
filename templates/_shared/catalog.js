@@ -280,45 +280,19 @@ const VF_PRODUCT_EXTRAS = {
 
 // An API record by its IRI (e.g. /api/catalog/product-prices/201) from a sample list.
 function vfApiRecord(list, iri) {
-  const id = Number(
-    String(iri || '')
-      .split('/')
-      .pop()
-  );
-  return list.find(record => record.id === id) || null;
+  return window.AG_COMMERCE.apiRecord(list, iri);
 }
 
 // The storefront's product object from an API Product, its price, photos and category, plus the
 // storefront-only extras.
 function vfProductFromApi(product, sources = {}) {
-  const prices = sources.prices || VF_API_PRODUCT_PRICES;
-  const media = sources.media || VF_API_MULTIMEDIA;
-  const categories = sources.categories || VF_API_PRODUCT_CATEGORIES;
-  const extras = (sources.extras || VF_PRODUCT_EXTRAS)[product.token] || {};
-  const price = vfApiRecord(prices, product.latestProductPrice);
-  const category = categories.find(item => item.id === product.productCategory.id);
-  const images = product.multimedia
-    .map(iri => vfApiRecord(media, iri))
-    .map(record => record && record.url)
-    .filter(Boolean);
-  const {badge, ...flags} = extras;
-  const words = lang => ({
-    sub: product.name[lang] || '',
-    ...(badge && badge[lang] ? {badge: badge[lang]} : {})
+  return window.AG_COMMERCE.productFromApi(product, {
+    prices: sources.prices || VF_API_PRODUCT_PRICES,
+    media: sources.media || VF_API_MULTIMEDIA,
+    categories: sources.categories || VF_API_PRODUCT_CATEGORIES,
+    extras: sources.extras || VF_PRODUCT_EXTRAS,
+    placeholder: VF_PRODUCT_PLACEHOLDER
   });
-  return {
-    id: product.token,
-    apiId: product.id,
-    ...flags,
-    occasions: extras.occasions || [],
-    cat: category ? category.slug.en : '',
-    ...(product.inStock ? {} : {inStock: false}),
-    price: price ? price.amount : null,
-    image: images[0] || VF_PRODUCT_PLACEHOLDER,
-    images: images.length ? images : [VF_PRODUCT_PLACEHOLDER],
-    en: words('en'),
-    fa: words('fa')
-  };
 }
 
 const VF_PRODUCTS = VF_API_PRODUCTS.map(product => vfProductFromApi(product));
@@ -339,9 +313,7 @@ const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 function vfNormalizeToken(text) {
-  return vfLatin(text || '')
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, '');
+  return window.AG_COMMERCE.normalizeCode(text);
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.

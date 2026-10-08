@@ -47,6 +47,7 @@ export * from './components/Switch/Switch.js';
 export * from './components/Tabs/Tabs.js';
 export * from './components/Toast/Toast.js';
 export * from './components/Tooltip/Tooltip.js';
+export * from './components/utils/commerce.js';
 export * from './components/utils/cx.js';
 export * from './components/utils/dates.js';
 export * from './components/utils/format.js';

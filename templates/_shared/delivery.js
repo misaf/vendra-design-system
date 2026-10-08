@@ -2,6 +2,8 @@
 // VF_API_DELIVERY_ZONES and VF_API_DELIVERY_SCHEDULE are sample responses shaped like the Vendra API
 // (DeliveryZone, DeliverySchedule); a live store replaces them with API data.
 // Edit this file, then run: node templates/_build/generate.cjs
+// The rules themselves are in components/utils/commerce.js (also exported by the package); the vf*
+// functions below pass this store's data to them.
 // maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
 // delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
 
@@ -73,17 +75,7 @@ const VF_API_DELIVERY_SCHEDULE = {
 
 // The storefront's zone object from an API DeliveryZone plus its extras.
 function vfZoneFromApi(zone, extras = VF_DELIVERY_ZONE_EXTRAS) {
-  const extra = extras[zone.id] || {};
-  return {
-    id: extra.key || String(zone.id),
-    apiId: zone.id,
-    fee: zone.feeAmount,
-    cutoff: extra.cutoff || '00:00',
-    km: zone.maxDistanceKm,
-    ...(extra.center ? {center: extra.center} : {}),
-    en: zone.name.en,
-    fa: zone.name.fa
-  };
+  return window.AG_COMMERCE.zoneFromApi(zone, extras);
 }
 
 const VF_ZONES = [...VF_API_DELIVERY_ZONES]
@@ -125,8 +117,7 @@ const VF_DELIVERY = {
 };
 
 function vfDeliveryCutoff(zone, persian) {
-  const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
-  return persian ? '\u2068' + time + '\u2069' : time;
+  return window.AG_COMMERCE.cutoffText(zone.cutoff, persian);
 }
 
 function vfDeliveryHint(zone, persian) {
@@ -136,60 +127,46 @@ function vfDeliveryHint(zone, persian) {
 // Fills delivery placeholders in text from the API (FAQ answers, pages), so fees and cut-offs stay
 // current: {fee:<zone>}, {cutoff:<zone>} (zone keys as in VF_ZONES) and {freeDeliveryFrom}.
 function vfStoreText(text, money, persian) {
-  return String(text || '')
-    .replace(/\{fee:([\w-]+)\}/g, (_, id) => money(vfZone(id).fee))
-    .replace(/\{cutoff:([\w-]+)\}/g, (_, id) => vfDeliveryCutoff(vfZone(id), persian))
-    .replace(/\{freeDeliveryFrom\}/g, () => money(VF_FREE_DELIVERY_THRESHOLD));
+  return window.AG_COMMERCE.fillText(text, {
+    fee: id => money(vfZone(id).fee),
+    cutoff: id => vfDeliveryCutoff(vfZone(id), persian),
+    freeDeliveryFrom: () => money(VF_FREE_DELIVERY_THRESHOLD)
+  });
 }
 
 function vfZone(id) {
   return VF_ZONES.find(zone => zone.id === id) || VF_ZONES[0];
 }
 
-function vfDistanceKm(a, b) {
-  const rad = Math.PI / 180,
-    dLat = (b.lat - a.lat) * rad,
-    dLng = (b.lng - a.lng) * rad;
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
-  return 12742 * Math.asin(Math.sqrt(h));
-}
-
 // The zone id for a delivery pin, or null when the pin is outside every zone.
 function vfZoneAt(location) {
-  if (!vfValidLocation(location)) return null;
-  const reach = VF_ZONES.filter(
-    zone => vfDistanceKm(zone.center || VF_STORE.studio, location) <= zone.km
-  );
-  return reach.length ? reach.reduce((a, b) => (b.km < a.km ? b : a)).id : null;
+  return window.AG_COMMERCE.zoneAt(location, VF_ZONES, VF_STORE.studio);
 }
 
 function vfIsoDate(date) {
-  return (
-    date.getFullYear() +
-    '-' +
-    String(date.getMonth() + 1).padStart(2, '0') +
-    '-' +
-    String(date.getDate()).padStart(2, '0')
-  );
+  return window.AG_COMMERCE.isoDate(date);
 }
 
 // The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
 function vfDeliveryDays(zoneId, now = new Date()) {
-  const [hour, minute] = vfZone(zoneId).cutoff.split(':').map(Number);
-  const pastCutoff = now.getHours() * 60 + now.getMinutes() >= hour * 60 + minute;
-  return Array.from({length: VF_DELIVERY_DAYS}, (_, offset) => {
-    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
-    const iso = vfIsoDate(date);
-    return {
-      iso,
-      date,
-      offset,
-      soldOut: VF_SOLD_OUT_DATES.includes(iso) || offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
-      pastCutoff: offset === 0 && pastCutoff
-    };
-  });
+  const sample =
+    VF_SAMPLE_SOLD_OUT_IN_DAYS == null
+      ? []
+      : [
+          vfIsoDate(
+            new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate() + VF_SAMPLE_SOLD_OUT_IN_DAYS,
+              12
+            )
+          )
+        ];
+  return window.AG_COMMERCE.deliveryDays(
+    vfZone(zoneId).cutoff,
+    {days: VF_DELIVERY_DAYS, soldOutDates: [...VF_SOLD_OUT_DATES, ...sample]},
+    now
+  );
 }
 
 // Whether a product can be delivered on a day in the main delivery zone: it is in stock, the day is open,
@@ -202,35 +179,29 @@ function vfDeliverableOn(product, iso, now = new Date()) {
 
 // The chosen day when it is still open, otherwise the first open day.
 function vfDeliveryDate(delivery, now = new Date()) {
-  const open = vfDeliveryDays(delivery.zone, now).filter(day => !day.soldOut && !day.pastCutoff);
-  return (open.find(day => day.iso === delivery.date) || open[0]).iso;
+  return window.AG_COMMERCE.openDay(vfDeliveryDays(delivery.zone, now), delivery.date);
 }
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 function vfDeliverySlots(iso, now = new Date()) {
-  const today = iso === vfIsoDate(now),
-    minutes = now.getHours() * 60 + now.getMinutes();
-  return VF_SLOTS.map(([start, end]) => ({
-    start,
-    end,
-    closed: today && minutes > Number(end) * 60 - VF_SLOT_LEAD_MINUTES
-  }));
+  return window.AG_COMMERCE.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now);
 }
 
 // The chosen slot when it is still open on the delivery day, otherwise the first open slot.
 function vfDeliverySlot(delivery, now = new Date()) {
-  const open = vfDeliverySlots(vfDeliveryDate(delivery, now), now).filter(slot => !slot.closed);
-  return (open.find(slot => slot.start === delivery.slot) || open[0] || {start: delivery.slot})
-    .start;
+  return window.AG_COMMERCE.openSlot(
+    vfDeliverySlots(vfDeliveryDate(delivery, now), now),
+    delivery.slot
+  );
 }
 
 function vfPhone(value) {
-  return vfLatin(value || '').replace(/[\s()-]/g, '');
+  return window.AG_COMMERCE.phone(value);
 }
 
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
 function vfErrors(delivery, lines = []) {
-  const mobile = value => !/^09\d{9}$/.test(vfPhone(value));
+  const mobile = value => !window.AG_COMMERCE.isMobile(value);
   const pinned = !delivery.noMap && vfValidLocation(delivery.location);
   return {
     name: !String(delivery.name || '').trim(),
@@ -248,11 +219,12 @@ function vfErrors(delivery, lines = []) {
 
 // Whether a zone delivers free for this subtotal.
 function vfFreeDelivery(zoneId, sub) {
-  return sub >= VF_FREE_DELIVERY_THRESHOLD && VF_FREE_DELIVERY_ZONES.includes(zoneId);
+  return window.AG_COMMERCE.freeDelivery(zoneId, sub, {
+    threshold: VF_FREE_DELIVERY_THRESHOLD,
+    zones: VF_FREE_DELIVERY_ZONES
+  });
 }
 
-// `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
-// the balance discount off the products, after any promo code.
 // The Checkout request (POST /api/sales/checkout) for a bag and its delivery details. Fields the API
 // doesn't take yet (recipient phone, sender, typed address, promo code, sizes and add-ons) are listed
 // in templates/API.md. `cartToken` is empty until the API can create carts.
@@ -261,42 +233,28 @@ function vfCheckoutRequest(
   delivery,
   {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
 ) {
-  const cards = lines.filter(line => String(line.card || '').trim());
-  const slot = VF_API_DELIVERY_SCHEDULE.slots.find(
-    item => item.startsAt.slice(0, 2) === String(delivery.slot).padStart(2, '0')
-  );
-  const location = vfValidLocation(delivery.location) ? delivery.location : null;
-  return {
-    cartToken,
+  return window.AG_COMMERCE.checkoutRequest(lines, delivery, {
+    slots: VF_API_DELIVERY_SCHEDULE.slots,
     currencyCode: VF_STORE.currency || 'IRT',
-    gateway: method,
-    paymentReference: method === 'card' ? [last4, ref].filter(Boolean).join(' ') || null : null,
-    cardMessage:
-      cards.length === 1
-        ? cards[0].card
-        : cards.map(line => vfLineToken(line) + ': ' + line.card).join('\n') || null,
-    recipientName: delivery.name || null,
-    addressId: null,
-    latitude: location ? location.lat : null,
-    longitude: location ? location.lng : null,
-    deliveryDate: delivery.date || vfDeliveryDate(delivery) || null,
-    deliverySlotId: slot ? slot.id : null
-  };
+    deliveryDate: delivery.date || vfDeliveryDate(delivery),
+    lineToken: vfLineToken,
+    method,
+    last4,
+    ref,
+    cartToken
+  });
 }
 
+// `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
+// the balance discount off the products, after any promo code.
 function vfTotals(lines, delivery, balance = null) {
-  const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
-  const zone = vfZone(delivery.zone);
-  const fee = vfFreeDelivery(zone.id, sub) ? 0 : zone.fee;
-  // The applied promo code travels with the checkout details.
-  const discount = vfDiscount(delivery.promo, sub);
-  const balanceDiscount =
-    typeof vfBalanceDiscount === 'function' ? vfBalanceDiscount(balance, sub - discount) : 0;
-  return {
-    sub,
-    fee,
-    discount,
-    ...(balanceDiscount ? {balanceDiscount, balancePercent: VF_STORE.wallet.discountPercent} : {}),
-    total: sub - discount - balanceDiscount + fee
-  };
+  return window.AG_COMMERCE.totals(
+    lines,
+    {zone: vfZone(delivery.zone), promo: delivery.promo, balance},
+    {
+      freeDelivery: {threshold: VF_FREE_DELIVERY_THRESHOLD, zones: VF_FREE_DELIVERY_ZONES},
+      promos: typeof VF_PROMOS === 'undefined' ? [] : VF_PROMOS,
+      wallet: VF_STORE.wallet
+    }
+  );
 }

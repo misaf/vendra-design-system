@@ -1,6 +1,6 @@
 # Vendra API alignment
 
-The storefront's data contract is the Vendra backend API exported in `uploads/openapi-*.json` (API Platform, JSON-LD/Hydra, 42 endpoints). Sample data in `_shared/` is written as API responses, and one adapter per resource turns them into what the pages use, so a live store only swaps the source. `npm --prefix templates test` checks every sample record and the checkout request against the spec (`_tests/api-contract.test.cjs`).
+The storefront's data contract is the Vendra backend API exported in `uploads/openapi-*.json` (API Platform, JSON-LD/Hydra, 42 endpoints). Sample data in `_shared/` is written as API responses, and one adapter per resource (in `components/utils/commerce.js`, also exported by the package) turns them into what the pages use, so a live store only swaps the source. `npm --prefix templates test` checks every sample record and the checkout request against the spec (`_tests/api-contract.test.cjs`).
 
 Part A is the state of this repo. Part B lists what the backend doesn't provide yet; those changes belong in the vendra backend.
 

@@ -21,6 +21,7 @@ The maintained bilingual storefront: 17 pages in `storefront-*`, wired together 
 | Tailwind entry and token aliases | [_shared/tailwind.css](_shared/tailwind.css) |
 | Tokens and tenant themes | `../tokens/`, `../tokens/tenants/<slug>.json` |
 | Number, currency and date formatting | `../components/utils/` (wrapped by `_shared/formatting.js`) |
+| Delivery, totals, discount and API-adapter rules | `../components/utils/commerce.js` (wrapped by `_shared/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 
@@ -62,7 +63,7 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 
 Pages share `_runtime/`; never edit it.
 
-- **Page head:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`) and `_shared/page-focus.js` before `shared-logic.js`.
+- **Page head:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`) and `_shared/page-focus.js` before `shared-logic.js`.
 - **`_runtime/ds-base.js`:** loads `../styles.css`, then the active tenant's CSS, then `tailwind.css` and `custom.css`, each once. The tenant comes from `store-config.js` or `?tenant=`.
 - **`_runtime/components.js`:** the component bundle, which loads after React.
 - **Exporting:** copy `_runtime/`, the chosen `storefront-*` folders and the design-system root assets, keeping their relative paths, or change `base` in `ds-base.js`.

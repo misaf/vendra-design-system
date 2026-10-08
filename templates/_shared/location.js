@@ -2,13 +2,7 @@
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 
 function vfValidLocation(location) {
-  return (
-    !!location &&
-    Number.isFinite(location.lat) &&
-    Number.isFinite(location.lng) &&
-    Math.abs(location.lat) <= 90 &&
-    Math.abs(location.lng) <= 180
-  );
+  return window.AG_COMMERCE.validLocation(location);
 }
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.

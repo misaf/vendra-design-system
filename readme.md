@@ -12,7 +12,7 @@
 
 | Import | What it is |
 |---|---|
-| `@vendra/design-system` | 47 components plus `format`, `dates` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
+| `@vendra/design-system` | 47 components plus `format`, `dates`, `commerce` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. Load once in the root layout. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
@@ -39,6 +39,8 @@ if (css) {
 ```
 
 A server-rendered app does the same in its document template: put the CSS in a `<style>` element and set `lang`, `dir` and `data-tenant` on `<html>`.
+
+`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions.
 
 Components take all copy, prices, currency and contact details as props. Run `checks(spec)` in the admin theme editor so a florist can't save a theme the storefront would refuse.
 

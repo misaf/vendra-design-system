@@ -2,9 +2,7 @@
 const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 // Persian or Arabic digits typed into a field, as Latin digits; null and undefined become ''.
 function vfLatin(value) {
-  return String(value ?? '')
-    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
-    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+  return window.AG_COMMERCE.latin(value);
 }
 const VF_MONEY = (n, fa) =>
   window.AG_FORMAT.money(n, {

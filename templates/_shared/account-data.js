@@ -305,56 +305,25 @@ const VF_SAMPLE_ORDER_EXTRAS = {
   }
 };
 
-// API order statuses the storefront shows under its own step names.
-const VF_ORDER_STATUS = {
-  placed: 'received',
-  arranging: 'preparing',
-  ready: 'preparing',
-  out_for_delivery: 'onTheWay'
-};
-
 // The storefront's bag line from an API OrderLine.
 function vfLineFromApi(line) {
-  const product = VF_PRODUCTS.find(item => item.apiId === line.sellableId);
-  const meta = line.metadata || {};
-  const token = meta.token || (product ? product.id : line.name);
-  const size = meta.size || null;
-  const addons = (meta.addons || '').split(',').filter(Boolean);
-  const sizeRow = VF_SIZES.find(row => row[0] === size) || null;
-  const addonRows = VF_ADDONS.filter(row => addons.includes(row[0]));
-  const productId = product ? product.id : token;
-  return {
-    id: productId + (size ? '-' + size : '') + (addons.length ? '-' + addons.join('+') : ''),
-    productId,
-    token,
-    size,
-    addons,
-    unit: line.unitAmount,
-    qty: line.quantity,
-    image: product ? product.image : VF_PRODUCT_PLACEHOLDER,
-    ...(meta.cardMessage ? {card: meta.cardMessage} : {}),
-    en: [token, product ? vfLineDetail(product, sizeRow, addonRows, 'en') : ''],
-    fa: [token, product ? vfLineDetail(product, sizeRow, addonRows, 'fa') : '']
-  };
+  return window.AG_COMMERCE.lineFromApi(line, {
+    products: VF_PRODUCTS,
+    sizes: VF_SIZES,
+    addons: VF_ADDONS,
+    placeholder: VF_PRODUCT_PLACEHOLDER,
+    describe: vfLineDetail
+  });
 }
 
 // The storefront's order object from an API Order plus its extras.
 function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
-  return {
-    id: order.number,
-    status: VF_ORDER_STATUS[order.status] || order.status,
-    lines: order.lines.map(vfLineFromApi),
+  return window.AG_COMMERCE.orderFromApi(order, {
+    line: vfLineFromApi,
     delivery: {...VF_DELIVERY, ...extras.delivery},
-    totals: {
-      sub: order.itemsAmount,
-      fee: order.deliveryAmount,
-      discount: order.itemsAmount + order.deliveryAmount - order.totalAmount,
-      total: order.totalAmount
-    },
     method: extras.method,
-    last4: order.paymentReference,
     preferredLocale: extras.preferredLocale
-  };
+  });
 }
 
 function vfSampleOrders() {

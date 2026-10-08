@@ -87,6 +87,43 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     );
     assert.deepEqual([...ds.dates.g2j(new Date(2026, 2, 21, 12))], [1405, 1, 1]);
 
+    // Commerce rules run on a tenant's own data, passed in: no globals, no window.
+    const {commerce} = ds;
+    const zones = [
+      commerce.zoneFromApi(
+        {id: 7, name: {en: 'Centre', fa: 'مرکز'}, maxDistanceKm: 5, feeAmount: 90_000, position: 1},
+        {7: {key: 'centre', cutoff: '17:00'}}
+      )
+    ];
+    const studio = {lat: 35.7, lng: 51.4};
+    assert.equal(commerce.zoneAt({lat: 35.71, lng: 51.41}, zones, studio), 'centre');
+    assert.equal(commerce.zoneAt({lat: 36.5, lng: 51.4}, zones, studio), null);
+    const rules = {
+      freeDelivery: {threshold: 1_000_000, zones: ['centre']},
+      promos: [{code: 'SPRING', percent: 20, min: 0}],
+      wallet: {discountFrom: 5_000_000, discountPercent: 5}
+    };
+    assert.deepEqual(
+      commerce.totals([{unit: 400_000, qty: 2}], {zone: zones[0], promo: 'spring '}, rules),
+      {sub: 800_000, fee: 90_000, discount: 160_000, total: 730_000}
+    );
+    assert.equal(
+      commerce.totals([{unit: 600_000, qty: 2}], {zone: zones[0], balance: 5_000_000}, rules).total,
+      1_140_000
+    );
+    const days = commerce.deliveryDays('17:00', {days: 3}, new Date(2026, 9, 5, 18, 0));
+    assert.deepEqual(
+      days.map(day => [day.iso, day.pastCutoff]),
+      [
+        ['2026-10-05', true],
+        ['2026-10-06', false],
+        ['2026-10-07', false]
+      ]
+    );
+    assert.equal(commerce.openDay(days), '2026-10-06');
+    assert.equal(commerce.normalizeCode(' vf-7k2m ۴q '), 'VF7K2M4Q');
+    assert.equal(commerce.isMobile('۰۹۱۲ ۳۴۵ ۶۷۸۹'), true);
+
     // Theme API, ESM and CommonJS.
     assert.equal(
       require_(manifest.name + '/theme').tenantCss,
