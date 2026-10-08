@@ -90,7 +90,7 @@ try {
   );
   fs.writeFileSync(
     catalog,
-    fs.readFileSync(catalog, 'utf8').replace('price: 4_100_000', 'price: 4_200_000')
+    fs.readFileSync(catalog, 'utf8').replace('\n    amount: 4_100_000,', '\n    amount: 4_200_000,')
   );
   const delivery = path.join(templates, '_shared/delivery.js');
   fs.writeFileSync(

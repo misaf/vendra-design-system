@@ -1,19 +1,12 @@
 // Shared category names; product IDs and filter behavior stay in page logic.
+// Category names come from the catalog's ProductCategory records (catalog.js), keyed by English slug.
+const vfCategoryNames = lang =>
+  Object.fromEntries(
+    VF_API_PRODUCT_CATEGORIES.map(category => [category.slug.en, category.name[lang]])
+  );
 const VF_CATEGORY_COPY = {
-  en: {
-    all: 'All',
-    bouquets: 'Bouquets',
-    boxes: 'Flower boxes',
-    orchids: 'Orchids',
-    bridal: 'Bridal'
-  },
-  fa: {
-    all: 'همه',
-    bouquets: 'دسته‌گل',
-    boxes: 'باکس گل',
-    orchids: 'ارکیده',
-    bridal: 'دسته‌گل عروس'
-  }
+  en: {all: 'All', ...vfCategoryNames('en')},
+  fa: {all: 'همه', ...vfCategoryNames('fa')}
 };
 
 // One product of each category, used as its kind ("Flower box · Roses · satin").

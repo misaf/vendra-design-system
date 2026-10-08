@@ -1,94 +1,327 @@
 // Shared sample catalog for home, shop, search, saved items and product pricing.
-// Products have no names: several designs can look alike, so each one is known by its unique code (`id`),
-// which customers quote and the studio and sellers search by. Its category says what kind of product it is.
-// Amounts are in Toman. `en`/`fa` hold a short description (`sub`, searchable but not shown: cards show only the category) and an optional `badge`.
-// `sizes: true` offers VF_SIZES; `noAddons` lists extras the product can't take; `care: true` uses the
-// product's own detail text as its care advice. `legacy` is the old slug, so earlier links and saved lists still work.
-// occasions use the ids in VF_SHOP_OCCASIONS (translations/categories.js).
+// The VF_API_* lists are sample responses shaped like the Vendra API (uploads/openapi-*.json):
+// ProductCategory, ProductPrice, Multimedia and Product. A live store replaces them with API data;
+// vfProductFromApi turns each Product into the storefront's product object, VF_PRODUCTS.
+// Products have no shown names: several designs can look alike, so each one is known by its unique code,
+// Product.token (e.g. VF-7K2M4Q), which customers quote and the studio and sellers search by. Its category
+// says what kind of product it is. Product.name holds a short searchable description that cards don't show.
+// Amounts are in Toman. All sample products intentionally use a neutral image placeholder.
 // Edit this file, then run: node templates/_build/generate.cjs
-// All sample products intentionally use a neutral image placeholder.
-// Set an individual product's image path when adapting the template to a real store.
-// `image` is the card photo; optional `images` lists every photo for the product page gallery.
 const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
-const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
-const VF_PRODUCTS = [
+
+// GET /api/catalog/product-categories
+const VF_API_PRODUCT_CATEGORIES = [
   {
-    id: 'VF-7K2M4Q',
-    legacy: 'ivory',
-    occasions: ['birthday', 'thanks'],
-    cat: 'boxes',
-    sizes: true,
-    price: 4_100_000,
-    same: true,
-    roses: true,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Roses · lisianthus · satin', badge: 'New'},
-    fa: {sub: 'رز · لیسیانتوس · ساتن', badge: 'جدید'}
+    id: 11,
+    name: {en: 'Bouquets', fa: 'دسته‌گل'},
+    slug: {en: 'bouquets', fa: 'دسته-گل'},
+    description: {},
+    position: 1,
+    active: true
   },
   {
-    id: 'VF-3HX9TP',
-    legacy: 'lavender',
-    occasions: ['birthday', 'sympathy'],
-    cat: 'bouquets',
-    price: 2_800_000,
-    same: true,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Seasonal · 15 stems'},
-    fa: {sub: 'فصلی · ۱۵ شاخه'}
+    id: 12,
+    name: {en: 'Flower boxes', fa: 'باکس گل'},
+    slug: {en: 'boxes', fa: 'باکس-گل'},
+    description: {},
+    position: 2,
+    active: true
   },
   {
-    id: 'VF-8RD5WN',
-    legacy: 'orchid',
-    occasions: ['thanks', 'sympathy'],
-    cat: 'orchids',
-    noAddons: ['vase'],
-    care: true,
-    price: 3_400_000,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Phalaenopsis · ceramic pot'},
-    fa: {sub: 'فالانوپسیس · گلدان سرامیکی'}
+    id: 13,
+    name: {en: 'Orchids', fa: 'ارکیده'},
+    slug: {en: 'orchids', fa: 'ارکیده'},
+    description: {},
+    position: 3,
+    active: true
   },
   {
-    id: 'VF-4CJ6ZB',
-    legacy: 'crimson',
-    occasions: ['anniversary'],
-    cat: 'boxes',
-    price: 5_200_000,
-    roses: true,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Red roses · velvet box', badge: 'Bestseller'},
-    fa: {sub: 'رز قرمز · باکس مخمل', badge: 'پرفروش'}
-  },
-  {
-    id: 'VF-9FA2KE',
-    legacy: 'blush',
-    occasions: ['anniversary', 'birthday'],
-    cat: 'bouquets',
-    price: 2_200_000,
-    same: true,
-    roses: true,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Garden roses · eucalyptus'},
-    fa: {sub: 'رز باغی · اکالیپتوس'}
-  },
-  {
-    id: 'VF-6MT3VY',
-    legacy: 'bridal',
-    occasions: [],
-    cat: 'bridal',
-    inStock: false,
-    price: 6_500_000,
-    image: VF_PRODUCT_PLACEHOLDER,
-    images: VF_SAMPLE_GALLERY,
-    en: {sub: 'Peonies · ranunculus'},
-    fa: {sub: 'گل صد‌تومانی · آلاله'}
+    id: 14,
+    name: {en: 'Bridal', fa: 'دسته‌گل عروس'},
+    slug: {en: 'bridal', fa: 'دسته-گل-عروس'},
+    description: {},
+    position: 4,
+    active: true
   }
 ];
+
+// GET /api/catalog/product-prices (the latest price of each product)
+const VF_API_PRODUCT_PRICES = [
+  {
+    id: 201,
+    minorAmount: 4_100_000,
+    amount: 4_100_000,
+    currency: 'IRT',
+    formatted: '4,100,000 Toman'
+  },
+  {
+    id: 202,
+    minorAmount: 2_800_000,
+    amount: 2_800_000,
+    currency: 'IRT',
+    formatted: '2,800,000 Toman'
+  },
+  {
+    id: 203,
+    minorAmount: 3_400_000,
+    amount: 3_400_000,
+    currency: 'IRT',
+    formatted: '3,400,000 Toman'
+  },
+  {
+    id: 204,
+    minorAmount: 5_200_000,
+    amount: 5_200_000,
+    currency: 'IRT',
+    formatted: '5,200,000 Toman'
+  },
+  {
+    id: 205,
+    minorAmount: 2_200_000,
+    amount: 2_200_000,
+    currency: 'IRT',
+    formatted: '2,200,000 Toman'
+  },
+  {
+    id: 206,
+    minorAmount: 6_500_000,
+    amount: 6_500_000,
+    currency: 'IRT',
+    formatted: '6,500,000 Toman'
+  }
+];
+
+// GET /api/content/multimedia (the first photo is the card photo; the rest fill the product page gallery)
+const VF_API_MULTIMEDIA = [301, 302, 303].map(id => ({
+  id,
+  uuid: 'sample-' + id,
+  name: 'Product placeholder',
+  fileName: 'product.svg',
+  collection: 'images',
+  mimeType: 'image/svg+xml',
+  bytes: 0,
+  disk: 'public',
+  url: VF_PRODUCT_PLACEHOLDER,
+  generatedConversions: {},
+  customProperties: {},
+  responsiveImages: {}
+}));
+const VF_SAMPLE_MEDIA = [
+  '/api/content/multimedia/301',
+  '/api/content/multimedia/302',
+  '/api/content/multimedia/303'
+];
+
+// GET /api/catalog/products
+const VF_API_PRODUCTS = [
+  {
+    id: 101,
+    token: 'VF-7K2M4Q',
+    name: {en: 'Roses · lisianthus · satin', fa: 'رز · لیسیانتوس · ساتن'},
+    slug: {en: 'roses-lisianthus-satin', fa: 'رز-لیسیانتوس-ساتن'},
+    description: {
+      en: 'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.',
+      fa: 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'
+    },
+    quantity: 12,
+    inStock: true,
+    stockThreshold: null,
+    position: 1,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 12, type: 'ProductCategory', label: 'Flower boxes'},
+    productPrices: ['/api/catalog/product-prices/201'],
+    latestProductPrice: '/api/catalog/product-prices/201',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  },
+  {
+    id: 102,
+    token: 'VF-3HX9TP',
+    name: {en: 'Seasonal · 15 stems', fa: 'فصلی · ۱۵ شاخه'},
+    slug: {en: 'seasonal-15-stems', fa: 'فصلی-۱۵-شاخه'},
+    description: {
+      en: 'A seasonal bouquet of fifteen stems in soft lavender tones.',
+      fa: 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'
+    },
+    quantity: 20,
+    inStock: true,
+    stockThreshold: null,
+    position: 2,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 11, type: 'ProductCategory', label: 'Bouquets'},
+    productPrices: ['/api/catalog/product-prices/202'],
+    latestProductPrice: '/api/catalog/product-prices/202',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  },
+  {
+    id: 103,
+    token: 'VF-8RD5WN',
+    name: {en: 'Phalaenopsis · ceramic pot', fa: 'فالانوپسیس · گلدان سرامیکی'},
+    slug: {en: 'phalaenopsis-ceramic-pot', fa: 'فالانوپسیس-گلدان-سرامیکی'},
+    description: {
+      en: 'A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.',
+      fa: 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
+    },
+    quantity: 8,
+    inStock: true,
+    stockThreshold: null,
+    position: 3,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 13, type: 'ProductCategory', label: 'Orchids'},
+    productPrices: ['/api/catalog/product-prices/203'],
+    latestProductPrice: '/api/catalog/product-prices/203',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  },
+  {
+    id: 104,
+    token: 'VF-4CJ6ZB',
+    name: {en: 'Red roses · velvet box', fa: 'رز قرمز · باکس مخمل'},
+    slug: {en: 'red-roses-velvet-box', fa: 'رز-قرمز-باکس-مخمل'},
+    description: {
+      en: 'Red roses arranged in a velvet hatbox for a bold gift.',
+      fa: 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'
+    },
+    quantity: 6,
+    inStock: true,
+    stockThreshold: null,
+    position: 4,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 12, type: 'ProductCategory', label: 'Flower boxes'},
+    productPrices: ['/api/catalog/product-prices/204'],
+    latestProductPrice: '/api/catalog/product-prices/204',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  },
+  {
+    id: 105,
+    token: 'VF-9FA2KE',
+    name: {en: 'Garden roses · eucalyptus', fa: 'رز باغی · اکالیپتوس'},
+    slug: {en: 'garden-roses-eucalyptus', fa: 'رز-باغی-اکالیپتوس'},
+    description: {
+      en: 'Garden roses and eucalyptus arranged in a soft pink bouquet.',
+      fa: 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'
+    },
+    quantity: 15,
+    inStock: true,
+    stockThreshold: null,
+    position: 5,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 11, type: 'ProductCategory', label: 'Bouquets'},
+    productPrices: ['/api/catalog/product-prices/205'],
+    latestProductPrice: '/api/catalog/product-prices/205',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  },
+  {
+    id: 106,
+    token: 'VF-6MT3VY',
+    name: {en: 'Peonies · ranunculus', fa: 'گل صد‌تومانی · آلاله'},
+    slug: {en: 'peonies-ranunculus', fa: 'گل-صد‌تومانی-آلاله'},
+    description: {
+      en: 'An ivory bridal posy of peonies and ranunculus.',
+      fa: 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.'
+    },
+    quantity: 0,
+    inStock: false,
+    stockThreshold: null,
+    position: 6,
+    availableSoon: null,
+    availabilityDate: null,
+    productCategory: {id: 14, type: 'ProductCategory', label: 'Bridal'},
+    productPrices: ['/api/catalog/product-prices/206'],
+    latestProductPrice: '/api/catalog/product-prices/206',
+    multimedia: VF_SAMPLE_MEDIA,
+    options: []
+  }
+];
+
+// Storefront fields the API doesn't provide yet (templates/API.md, "Product data the storefront
+// shows"), keyed by Product.token. `legacy` is the old slug, so earlier links and saved lists still
+// work; `occasions` use the ids in VF_SHOP_OCCASIONS; `sizes: true` offers VF_SIZES; `noAddons`
+// lists extras the product can't take; `care: true` uses the description as care advice; `same` is
+// same-day delivery; `roses` feeds the roses filter.
+const VF_PRODUCT_EXTRAS = {
+  'VF-7K2M4Q': {
+    legacy: 'ivory',
+    occasions: ['birthday', 'thanks'],
+    sizes: true,
+    same: true,
+    roses: true,
+    badge: {en: 'New', fa: 'جدید'}
+  },
+  'VF-3HX9TP': {legacy: 'lavender', occasions: ['birthday', 'sympathy'], same: true},
+  'VF-8RD5WN': {
+    legacy: 'orchid',
+    occasions: ['thanks', 'sympathy'],
+    noAddons: ['vase'],
+    care: true
+  },
+  'VF-4CJ6ZB': {
+    legacy: 'crimson',
+    occasions: ['anniversary'],
+    roses: true,
+    badge: {en: 'Bestseller', fa: 'پرفروش'}
+  },
+  'VF-9FA2KE': {
+    legacy: 'blush',
+    occasions: ['anniversary', 'birthday'],
+    same: true,
+    roses: true
+  },
+  'VF-6MT3VY': {legacy: 'bridal', occasions: []}
+};
+
+// An API record by its IRI (e.g. /api/catalog/product-prices/201) from a sample list.
+function vfApiRecord(list, iri) {
+  const id = Number(
+    String(iri || '')
+      .split('/')
+      .pop()
+  );
+  return list.find(record => record.id === id) || null;
+}
+
+// The storefront's product object from an API Product, its price, photos and category, plus the
+// storefront-only extras.
+function vfProductFromApi(product, sources = {}) {
+  const prices = sources.prices || VF_API_PRODUCT_PRICES;
+  const media = sources.media || VF_API_MULTIMEDIA;
+  const categories = sources.categories || VF_API_PRODUCT_CATEGORIES;
+  const extras = (sources.extras || VF_PRODUCT_EXTRAS)[product.token] || {};
+  const price = vfApiRecord(prices, product.latestProductPrice);
+  const category = categories.find(item => item.id === product.productCategory.id);
+  const images = product.multimedia
+    .map(iri => vfApiRecord(media, iri))
+    .map(record => record && record.url)
+    .filter(Boolean);
+  const {badge, ...flags} = extras;
+  const words = lang => ({
+    sub: product.name[lang] || '',
+    ...(badge && badge[lang] ? {badge: badge[lang]} : {})
+  });
+  return {
+    id: product.token,
+    apiId: product.id,
+    ...flags,
+    occasions: extras.occasions || [],
+    cat: category ? category.slug.en : '',
+    ...(product.inStock ? {} : {inStock: false}),
+    price: price ? price.amount : null,
+    image: images[0] || VF_PRODUCT_PLACEHOLDER,
+    images: images.length ? images : [VF_PRODUCT_PLACEHOLDER],
+    en: words('en'),
+    fa: words('fa')
+  };
+}
+
+const VF_PRODUCTS = VF_API_PRODUCTS.map(product => vfProductFromApi(product));
 
 // Sizes for products with `sizes: true`: [id, extra price, English name, Persian name, English detail, Persian detail].
 /** @type {[id: string, price: number, en: string, fa: string, enDetail: string, faDetail: string][]} */
@@ -271,33 +504,10 @@ function vfLineWithCard(line) {
   };
 }
 
-// Bilingual detail copy follows the same [English, Persian] convention as the catalog, keyed by product code.
-const VF_PRODUCT_DETAILS = {
-  'VF-7K2M4Q': [
-    'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.',
-    'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'
-  ],
-  'VF-3HX9TP': [
-    'A seasonal bouquet of fifteen stems in soft lavender tones.',
-    'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'
-  ],
-  'VF-8RD5WN': [
-    'A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.',
-    'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
-  ],
-  'VF-4CJ6ZB': [
-    'Red roses arranged in a velvet hatbox for a bold gift.',
-    'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'
-  ],
-  'VF-9FA2KE': [
-    'Garden roses and eucalyptus arranged in a soft pink bouquet.',
-    'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'
-  ],
-  'VF-6MT3VY': [
-    'An ivory bridal posy of peonies and ranunculus.',
-    'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.'
-  ]
-};
+// Each product's [English, Persian] detail text, from Product.description, keyed by product code.
+const VF_PRODUCT_DETAILS = Object.fromEntries(
+  VF_API_PRODUCTS.map(product => [product.token, [product.description.en, product.description.fa]])
+);
 
 function vfReorderLines(lines) {
   return lines.flatMap(line => {
