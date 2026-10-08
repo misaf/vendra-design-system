@@ -1,0 +1,37 @@
+import React from 'react';
+import {Input} from '../Input/Input.jsx';
+import {commerce} from '../utils/commerce.js';
+import {cx} from '../utils/cx.js';
+
+// A one-time code field, such as the sign-in code sent by SMS: one input (screen readers and SMS
+// autofill handle it better than a box per digit), digits only, Persian digits accepted.
+// `onValueChange` gets the cleaned code; `onComplete` runs once it has `length` digits (the form
+// decides whether to submit, so nothing changes on input unless it asks for it).
+export function CodeInput({
+  length = 5,
+  value,
+  onChange,
+  onValueChange,
+  onComplete,
+  className,
+  ...rest
+}) {
+  const change = event => {
+    onChange && onChange(event);
+    const code = commerce.latin(event.target.value).replace(/\D/g, '').slice(0, length);
+    onValueChange && onValueChange(code);
+    if (onComplete && code.length === length && code !== value) onComplete(code);
+  };
+  return (
+    <Input
+      className={cx('ag-code-input', className)}
+      inputMode="numeric"
+      autoComplete="one-time-code"
+      dir="ltr"
+      maxLength={length}
+      value={value}
+      onChange={change}
+      {...rest}
+    />
+  );
+}

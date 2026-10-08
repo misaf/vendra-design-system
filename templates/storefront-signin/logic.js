@@ -73,9 +73,10 @@ class Component extends VFPage {
         (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
         vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
       code: s.code,
-      setCode: e =>
+      // CodeInput hands over the cleaned code: Latin digits, at most five.
+      setCode: code =>
         this.setState({
-          code: lat(e.target.value).replace(/\D/g, '').slice(0, 5),
+          code,
           cErr: false
         }),
       codeErr: s.cErr ? C.codeErr : undefined,

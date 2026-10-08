@@ -89,11 +89,11 @@
 <!-- BEGIN PAGE CONTENT -->
 <main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-form-narrow tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto">
 <sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}"><h1>{{ t.inA }} <em class="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.inB }}</em></h1><p class="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.inP }}</p>
-<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-phone" label="{{ t.phone }}" type="tel" dir="ltr" inputmode="tel" autocomplete="tel" placeholder="0912 000 0000" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.PhoneInput" id="vf-phone" label="{{ t.phone }}" placeholder="0912 000 0000" value="{{ phone }}" on-change="{{ setPhone }}" error="{{ phoneErr }}" hint-size="100%,76px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" size="lg" block="{{ true }}" on-click="{{ send }}" hint-size="100%,52px">{{ t.send }}</x-import>
 <p class="vf-signin-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">{{ t.terms.before }}<a href="{{ termsLink.href }}" onClick="{{ termsLink.go }}" class="tw:text-inherit! tw:[text-underline-offset:3px]">{{ t.terms.terms }}</a>{{ t.terms.and }}<a href="{{ privacyLink.href }}" onClick="{{ privacyLink.go }}" class="tw:text-inherit! tw:[text-underline-offset:3px]">{{ t.terms.privacy }}</a>{{ t.terms.after }}</p></sc-if>
 <sc-if value="{{ isCode }}" hint-placeholder-val="{{ false }}"><h1>{{ t.codeA }} <em class="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.codeB }}</em></h1><p class="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ codeP }}</p>
-<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-code" label="{{ t.code }}" inputmode="numeric" autocomplete="one-time-code" dir="ltr" maxlength="5" value="{{ code }}" on-change="{{ setCode }}" error="{{ codeErr }}" hint="{{ t.codeHint }}" hint-size="100%,96px"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.CodeInput" id="vf-code" label="{{ t.code }}" value="{{ code }}" length="{{ 5 }}" on-value-change="{{ setCode }}" error="{{ codeErr }}" hint="{{ t.codeHint }}" hint-size="100%,96px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" size="lg" block="{{ true }}" on-click="{{ verify }}" hint-size="100%,52px">{{ t.verify }}</x-import><div class="vf-signin-resend tw:flex tw:flex-col tw:gap-2 tw:items-start"><sc-if value="{{ waiting }}" hint-placeholder-val="{{ true }}"><p class="tw:m-0 tw:text-sm tw:text-quiet">{{ resendIn }}</p></sc-if><sc-if value="{{ canResend }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" icon-start="rotate-ccw" on-click="{{ resend }}" hint-size="180px,48px">{{ t.resend }}</x-import></sc-if><p role="status" class="tw:m-0 tw:text-sm">{{ resentText }}</p></div>
 <x-import component-from-global-scope="VendraDesignSystem.Button" variant="ghost" icon-start="arrow-left" on-click="{{ back }}" hint-size="180px,48px">{{ t.change }}</x-import></sc-if>
 <sc-if value="{{ isOk }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem.EmptyState" icon="check" tone="accent" title="{{ t.okA }}" title-accent="{{ okName }}" body="{{ t.okP }}" heading-level="{{ 1 }}" hint-size="100%,280px"></x-import>
@@ -342,9 +342,10 @@ class Component extends VFPage {
         (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
         vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
       code: s.code,
-      setCode: e =>
+      // CodeInput hands over the cleaned code: Latin digits, at most five.
+      setCode: code =>
         this.setState({
-          code: lat(e.target.value).replace(/\D/g, '').slice(0, 5),
+          code,
           cErr: false
         }),
       codeErr: s.cErr ? C.codeErr : undefined,

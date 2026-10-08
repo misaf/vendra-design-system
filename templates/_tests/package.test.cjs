@@ -122,6 +122,25 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     );
     assert.equal(commerce.openDay(days), '2026-10-06');
     assert.equal(commerce.normalizeCode(' vf-7k2m ۴q '), 'VF7K2M4Q');
+    // PhoneInput and CodeInput clean what is typed: Persian digits, spaces and dashes.
+    let phoneValue;
+    ds.PhoneInput({
+      onValueChange: (number, mobile) => (phoneValue = [number, mobile])
+    }).props.onChange({
+      target: {value: '۰۹۱۲ ۳۴۵-۶۷۸۹'}
+    });
+    assert.deepEqual(phoneValue, ['09123456789', true]);
+    let codeValue, completed;
+    const codeInput = ds.CodeInput({
+      length: 5,
+      value: '1234',
+      onValueChange: code => (codeValue = code),
+      onComplete: code => (completed = code)
+    });
+    assert.equal(codeInput.props.autoComplete, 'one-time-code');
+    codeInput.props.onChange({target: {value: '۱۲۳۴۵۶ '}});
+    assert.equal(codeValue, '12345');
+    assert.equal(completed, '12345');
     const letters = ['a', 'b', 'c', 'd', 'e'];
     assert.deepEqual(commerce.page(letters, 1, 2), {
       items: ['a', 'b'],

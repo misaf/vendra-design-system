@@ -758,6 +758,15 @@ a.ag-iconbtn {
   color: var(--text-muted);
 }
 
+/* components/CodeInput/CodeInput.css */
+.ag-code-input input,
+/* The code is Latin digits read left to right, so it keeps its spacing on Persian pages, where
+   base.css otherwise sets letter-spacing to 0 (spacing breaks Persian letter joins). */
+:lang(fa) .ag-code-input input {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3em !important;
+}
+
 /* components/Checkbox/Checkbox.css */
 /* .ag-check styles both Checkbox and Radio. */
 .ag-check--error .ag-check__box {

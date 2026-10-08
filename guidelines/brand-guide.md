@@ -154,6 +154,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Forms**
 - **Field:** `useField` (ids and `aria-*` wiring) and `FieldMessage` (hint or error), the base every control below is built on.
 - **Input:** label, hint, error (wired with `aria-describedby`), `iconStart`, `multiline`.
+- **PhoneInput:** Input for phone numbers: tel keypad, autofill (`autoComplete="off"` for a recipient), left to right in Persian; `onValueChange(number, isMobile)` gives Latin digits.
+- **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill; `onComplete` never submits by itself.
 - **Select:** same field pattern, with `options`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.
