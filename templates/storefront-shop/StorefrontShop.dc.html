@@ -105,6 +105,7 @@
 <div class="vf-shop-product-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_48px)_/_3)),1fr))] tw:gap-y-7 tw:gap-x-5">
 <sc-for list="{{ items }}" as="p" hint-placeholder-count="6"><x-import component-from-global-scope="VendraDesignSystem.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="{{ frame }}" placeholder="{{ t.photo }}" fav-label="{{ t.save }}" favorite="{{ p.fav }}" on-favorite="{{ p.toggleFav }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for>
 </div>
+<sc-if value="{{ showPaging }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VendraDesignSystem.LoadMore" shown="{{ paging.shown }}" total="{{ paging.total }}" status="{{ paging.status }}" label="{{ paging.label }}" href="{{ paging.href }}" on-click="{{ paging.onClick }}" hint-size="100%,140px"></x-import></sc-if>
 </sc-if>
 <sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
 <x-import component-from-global-scope="VendraDesignSystem.EmptyState" icon="flower-2" title="{{ t.emptyA }}" title-accent="{{ t.emptyB }}" body="{{ t.emptyP }}" hint-size="100%,280px"></x-import>
@@ -253,7 +254,12 @@ function vfCopy(S) {
         same: 'Same day',
         roses: 'Roses'
       },
-      designCount: value => value + (value === 1 ? ' design' : ' designs')
+      designCount: value => value + (value === 1 ? ' design' : ' designs'),
+      showMore: 'Show more',
+      showing: (shown, total) =>
+        shown < total
+          ? 'Showing ' + shown + ' of ' + total + ' designs'
+          : 'Showing all ' + total + ' designs'
     },
     fa: {
       eyebrow: 'همه گل‌ها',
@@ -294,7 +300,12 @@ function vfCopy(S) {
         same: 'ارسال همان روز',
         roses: 'رز'
       },
-      designCount: value => n(value) + ' طرح'
+      designCount: value => n(value) + ' طرح',
+      showMore: 'نمایش بیشتر',
+      showing: (shown, total) =>
+        shown < total
+          ? 'نمایش ' + n(shown) + ' از ' + n(total) + ' طرح'
+          : 'نمایش همه ' + n(total) + ' طرح'
     }
   }[S.lang];
   return {
@@ -365,6 +376,8 @@ class Component extends VFPage {
         filters: s.chips,
         occasion: s.occasion,
         date,
+        // A new filter or sort starts again from the first page.
+        page: 1,
         ...patch
       };
       // Filters refine this page, so they replace the history entry instead of adding one per tap.
@@ -387,6 +400,7 @@ class Component extends VFPage {
       .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
     if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
+    const paged = window.AG_COMMERCE.page(list, route.page, VF_STORE.shopPageSize);
     const activeFilters = [
       ...(s.occasion !== 'all'
         ? [
@@ -560,10 +574,31 @@ class Component extends VFPage {
         }),
       sortOptions: C.sortOptions,
       countLabel: C.designCount(list.length),
+      paging: {
+        shown: paged.shown,
+        total: paged.total,
+        status: C.showing(paged.shown, paged.total),
+        label: C.showMore,
+        href:
+          S.href.shop.split('?')[0] +
+          vfRouteParams({...route, view: 'shop', lang: L, page: paged.page + 1}),
+        // Loads the next page in place, then moves focus to its first product.
+        onClick: event => {
+          if (!this.props.go) return;
+          event.preventDefault();
+          const first = paged.shown;
+          change({page: paged.page + 1});
+          setTimeout(() => {
+            const links = document.querySelectorAll('.vf-shop-product-grid .ag-product__link');
+            links[first] && links[first].focus();
+          }, 0);
+        }
+      },
+      showPaging: paged.total > VF_STORE.shopPageSize,
       hasItems: !demo && list.length > 0,
       noItems: !demo && list.length === 0,
       clear,
-      items: list.map(p => {
+      items: paged.items.map(p => {
         const fav = S.isFav(p.id, ['VF-8RD5WN']);
         return {
           ...S.productLink(p.id),

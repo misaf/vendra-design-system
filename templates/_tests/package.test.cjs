@@ -122,6 +122,23 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     );
     assert.equal(commerce.openDay(days), '2026-10-06');
     assert.equal(commerce.normalizeCode(' vf-7k2m ۴q '), 'VF7K2M4Q');
+    const letters = ['a', 'b', 'c', 'd', 'e'];
+    assert.deepEqual(commerce.page(letters, 1, 2), {
+      items: ['a', 'b'],
+      page: 1,
+      shown: 2,
+      total: 5,
+      hasMore: true
+    });
+    assert.deepEqual(commerce.page(letters, 3, 2).items, letters);
+    assert.equal(commerce.page(letters, 'x', 2).page, 1);
+    assert.deepEqual(commerce.page(['a', 'b'], 1, 2, 40), {
+      items: ['a', 'b'],
+      page: 1,
+      shown: 2,
+      total: 40,
+      hasMore: true
+    });
     assert.deepEqual(
       commerce
         .deliverySlots(

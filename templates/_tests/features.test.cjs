@@ -151,6 +151,13 @@ assert.doesNotMatch(
   /occasion/
 );
 
+// "Show more" pages round-trip through the URL; anything but a small positive number is page 1.
+assert.equal(ctx.vfReadRoute('?view=shop&page=2').page, 2);
+for (const bad of ['0', '-1', '2.5', 'two', '1000'])
+  assert.equal(ctx.vfReadRoute('?view=shop&page=' + bad).page, 1);
+assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 3}), /page=3/);
+assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
+
 // Analytics: events stay in the local log until the visitor allows visit counts.
 const track = ctx.window.AG_TRACK;
 const sent = [];

@@ -171,6 +171,14 @@ export interface Commerce {
     money: (amount: number) => string,
     num?: (value: number) => string
   ): SummaryRow[];
+  /** "Show more" paging: the first `page` pages of `size` items. `total` defaults to the list's
+   * length; pass the API's total when the list holds only the pages loaded so far. */
+  page<T>(
+    list: T[],
+    page: number,
+    size: number,
+    total?: number
+  ): {items: T[]; page: number; shown: number; total: number; hasMore: boolean};
   /** Fills {fee:<zone>}, {cutoff:<zone>} and {freeDeliveryFrom}. */
   fillText(
     text: string,

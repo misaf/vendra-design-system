@@ -1822,6 +1822,38 @@ function LiveRegion({ children, politeness = "polite", atomic = true, id, classN
 Object.assign(__ds_scope, { LiveRegion });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/LiveRegion/LiveRegion.jsx", error: String((e && e.message) || e) }); }
 
+// components/LoadMore/LoadMore.jsx
+try { (() => {
+const { Button } = __ds_scope;
+const { cx } = __ds_scope;
+// "Show more" for a long list: how many of the total are showing, a progress bar, and a button that
+// loads the next page. `href` makes the button a real link to the next page (it works without
+// JavaScript and for crawlers); `onClick` loads in place. When everything is showing, only the
+// status stays.
+function LoadMore({ shown, total, status, label, href, onClick, busy = false, className = "", style }) {
+	const percent = total > 0 ? Math.min(100, Math.round(shown / total * 100)) : 100;
+	return /* @__PURE__ */ React.createElement("div", {
+		className: cx("ag-loadmore", className),
+		style
+	}, /* @__PURE__ */ React.createElement("p", {
+		className: "ag-loadmore__status",
+		role: "status"
+	}, status), /* @__PURE__ */ React.createElement("div", {
+		className: "ag-loadmore__bar",
+		"aria-hidden": "true"
+	}, /* @__PURE__ */ React.createElement("span", {
+		className: "ag-loadmore__fill",
+		style: { inlineSize: percent + "%" }
+	})), shown < total && /* @__PURE__ */ React.createElement(Button, {
+		variant: "secondary",
+		href,
+		onClick,
+		loading: busy
+	}, label));
+}
+Object.assign(__ds_scope, { LoadMore });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/LoadMore/LoadMore.jsx", error: String((e && e.message) || e) }); }
+
 // components/MenuList/MenuList.jsx
 try { (() => {
 const { cx } = __ds_scope;
@@ -2611,6 +2643,19 @@ const summaryRows = (result, code, labels, money, num = String) => [
 		strong: true
 	}
 ];
+// "Show more" paging: the first `page` pages of `size` items (page 1 = the first page). `total`
+// defaults to the list's length; pass the API's total when the list holds only the pages loaded so far.
+const page = (list, current, size, total = list.length) => {
+	const pages = Math.max(1, Math.floor(Number(current)) || 1);
+	const shown = Math.min(total, pages * size);
+	return {
+		items: list.slice(0, shown),
+		page: pages,
+		shown,
+		total,
+		hasMore: shown < total
+	};
+};
 // Fills placeholders in text from the API: {fee:<zone>}, {cutoff:<zone>} and {freeDeliveryFrom}.
 // `values` gives each one's text: {fee(zoneId), cutoff(zoneId), freeDeliveryFrom()}.
 const fillText = (text, values) => String(text || "").replace(/\{fee:([\w-]+)\}/g, (_, id) => values.fee(id)).replace(/\{cutoff:([\w-]+)\}/g, (_, id) => values.cutoff(id)).replace(/\{freeDeliveryFrom\}/g, () => values.freeDeliveryFrom());
@@ -2751,6 +2796,7 @@ const commerce = {
 	balanceDiscount,
 	totals,
 	summaryRows,
+	page,
 	fillText,
 	apiRecord,
 	productFromApi,
@@ -2867,6 +2913,7 @@ __ds_ns.LanguageSwitch = __ds_scope.LanguageSwitch;
 __ds_ns.QuantityInput = __ds_scope.QuantityInput;
 __ds_ns.LineItem = __ds_scope.LineItem;
 __ds_ns.LiveRegion = __ds_scope.LiveRegion;
+__ds_ns.LoadMore = __ds_scope.LoadMore;
 __ds_ns.MenuList = __ds_scope.MenuList;
 __ds_ns.NavLink = __ds_scope.NavLink;
 __ds_ns.OrderSummary = __ds_scope.OrderSummary;

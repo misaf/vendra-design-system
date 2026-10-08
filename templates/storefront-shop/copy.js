@@ -42,7 +42,12 @@ function vfCopy(S) {
         same: 'Same day',
         roses: 'Roses'
       },
-      designCount: value => value + (value === 1 ? ' design' : ' designs')
+      designCount: value => value + (value === 1 ? ' design' : ' designs'),
+      showMore: 'Show more',
+      showing: (shown, total) =>
+        shown < total
+          ? 'Showing ' + shown + ' of ' + total + ' designs'
+          : 'Showing all ' + total + ' designs'
     },
     fa: {
       eyebrow: 'همه گل‌ها',
@@ -83,7 +88,12 @@ function vfCopy(S) {
         same: 'ارسال همان روز',
         roses: 'رز'
       },
-      designCount: value => n(value) + ' طرح'
+      designCount: value => n(value) + ' طرح',
+      showMore: 'نمایش بیشتر',
+      showing: (shown, total) =>
+        shown < total
+          ? 'نمایش ' + n(shown) + ' از ' + n(total) + ' طرح'
+          : 'نمایش همه ' + n(total) + ' طرح'
     }
   }[S.lang];
   return {

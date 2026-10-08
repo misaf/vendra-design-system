@@ -169,6 +169,14 @@ const summaryRows = (result, code, labels, money, num = String) => [
   {label: labels.total, value: money(result.total), strong: true}
 ];
 
+// "Show more" paging: the first `page` pages of `size` items (page 1 = the first page). `total`
+// defaults to the list's length; pass the API's total when the list holds only the pages loaded so far.
+const page = (list, current, size, total = list.length) => {
+  const pages = Math.max(1, Math.floor(Number(current)) || 1);
+  const shown = Math.min(total, pages * size);
+  return {items: list.slice(0, shown), page: pages, shown, total, hasMore: shown < total};
+};
+
 // Fills placeholders in text from the API: {fee:<zone>}, {cutoff:<zone>} and {freeDeliveryFrom}.
 // `values` gives each one's text: {fee(zoneId), cutoff(zoneId), freeDeliveryFrom()}.
 const fillText = (text, values) =>
@@ -346,6 +354,7 @@ export const commerce = {
   balanceDiscount,
   totals,
   summaryRows,
+  page,
   fillText,
   apiRecord,
   productFromApi,

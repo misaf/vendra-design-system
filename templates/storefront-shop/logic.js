@@ -40,6 +40,8 @@ class Component extends VFPage {
         filters: s.chips,
         occasion: s.occasion,
         date,
+        // A new filter or sort starts again from the first page.
+        page: 1,
         ...patch
       };
       // Filters refine this page, so they replace the history entry instead of adding one per tap.
@@ -62,6 +64,7 @@ class Component extends VFPage {
       .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
     if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
+    const paged = window.AG_COMMERCE.page(list, route.page, VF_STORE.shopPageSize);
     const activeFilters = [
       ...(s.occasion !== 'all'
         ? [
@@ -235,10 +238,31 @@ class Component extends VFPage {
         }),
       sortOptions: C.sortOptions,
       countLabel: C.designCount(list.length),
+      paging: {
+        shown: paged.shown,
+        total: paged.total,
+        status: C.showing(paged.shown, paged.total),
+        label: C.showMore,
+        href:
+          S.href.shop.split('?')[0] +
+          vfRouteParams({...route, view: 'shop', lang: L, page: paged.page + 1}),
+        // Loads the next page in place, then moves focus to its first product.
+        onClick: event => {
+          if (!this.props.go) return;
+          event.preventDefault();
+          const first = paged.shown;
+          change({page: paged.page + 1});
+          setTimeout(() => {
+            const links = document.querySelectorAll('.vf-shop-product-grid .ag-product__link');
+            links[first] && links[first].focus();
+          }, 0);
+        }
+      },
+      showPaging: paged.total > VF_STORE.shopPageSize,
       hasItems: !demo && list.length > 0,
       noItems: !demo && list.length === 0,
       clear,
-      items: list.map(p => {
+      items: paged.items.map(p => {
         const fav = S.isFav(p.id, ['VF-8RD5WN']);
         return {
           ...S.productLink(p.id),

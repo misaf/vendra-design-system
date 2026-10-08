@@ -1,0 +1,26 @@
+.ag-loadmore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-7);
+  font-family: var(--font-body);
+  text-align: center;
+}
+.ag-loadmore__status {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.ag-loadmore__bar {
+  inline-size: min(240px, 100%);
+  block-size: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--border-default);
+  overflow: hidden;
+}
+.ag-loadmore__fill {
+  display: block;
+  block-size: 100%;
+  background: var(--text-accent);
+}

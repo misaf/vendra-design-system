@@ -79,7 +79,7 @@ Pages share `_runtime/`; never edit it.
 ## Demo behavior
 
 - **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `?view=product&id=VF-7K2M4Q&cat=boxes`. Old slugs resolve through `legacy`.
-- **Shop URLs** keep `cat`, `sort`, `filters`, `occasion`, `min`/`max` and `stock` through reload, Back and language switches.
+- **Shop URLs** keep `cat`, `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (4 in the sample); a new filter or sort starts again from page 1.
 - **Checkout** stores the finished order in session storage. Track shows it, and Order again refills the bag.
 - **Account balance:** top-ups are simulated. Paying from a balance of at least `wallet.discountFrom` takes `discountPercent` off the products. A real store keeps the balance on its server.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.

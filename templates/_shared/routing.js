@@ -78,6 +78,8 @@ function vfReadRoute(search = location.search) {
       : 'all';
     // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
     route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
+    // How many "Show more" pages are open (?page=2 shows the first two pages).
+    route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
   return route;
 }
@@ -98,6 +100,7 @@ function vfRouteParams(route) {
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
     if (route.date) query.set('date', route.date);
+    if (route.page > 1) query.set('page', route.page);
   }
   return '?' + query.toString();
 }

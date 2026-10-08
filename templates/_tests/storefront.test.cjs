@@ -431,7 +431,8 @@ for (const lang of ['en', 'fa']) {
       }[id]
     );
     assert.equal(v.hasSizes, id === 'VF-7K2M4Q');
-    const listing = loadPage('shop', {lang})
+    // Page 2 of the shop shows every sample product (four per page).
+    const listing = loadPage('shop', {lang, routeInfo: {view: 'shop', lang, page: 2}})
       .logic.renderVals()
       .items.find(item => item.name === v.t.name);
     assert.equal(v.unitPrice, listing.price, 'Default product price must match the listing');

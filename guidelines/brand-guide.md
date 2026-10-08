@@ -171,6 +171,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **MenuList:** titled list of NavLinks.
 - **SectionHeader:** title + accent word, eyebrow, level h1–h3, action slot, prev/next arrows.
 - **Carousel:** scroll-snap row (`perView`, `perViewMobile`); `ref.scrollPrev()`/`scrollNext()`.
+- **LoadMore:** "Showing 4 of 6" status (a polite live region), progress bar and a "Show more" link to the next page; pair with `commerce.page`.
 
 **Feedback and overlays**
 - **Dialog:** focus trap, Esc closes, returns focus, locks scroll.

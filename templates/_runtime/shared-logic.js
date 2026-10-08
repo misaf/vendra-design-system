@@ -8,6 +8,9 @@ const VF_TENANT_SLUGS = ["clay","fern"];
 const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
   currency: 'IRT',
+  // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
+  // a real store usually shows 12–24 (the API's itemsPerPage).
+  shopPageSize: 4,
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
@@ -2142,6 +2145,8 @@ function vfReadRoute(search = location.search) {
       : 'all';
     // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
     route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
+    // How many "Show more" pages are open (?page=2 shows the first two pages).
+    route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
   return route;
 }
@@ -2162,6 +2167,7 @@ function vfRouteParams(route) {
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
     if (route.date) query.set('date', route.date);
+    if (route.page > 1) query.set('page', route.page);
   }
   return '?' + query.toString();
 }

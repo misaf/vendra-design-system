@@ -28,6 +28,7 @@ export * from './components/Input/Input.js';
 export * from './components/LanguageSwitch/LanguageSwitch.js';
 export * from './components/LineItem/LineItem.js';
 export * from './components/LiveRegion/LiveRegion.js';
+export * from './components/LoadMore/LoadMore.js';
 export * from './components/MenuList/MenuList.js';
 export * from './components/NavLink/NavLink.js';
 export * from './components/OrderSummary/OrderSummary.js';

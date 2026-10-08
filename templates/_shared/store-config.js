@@ -3,6 +3,9 @@
 const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
   currency: 'IRT',
+  // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
+  // a real store usually shows 12–24 (the API's itemsPerPage).
+  shopPageSize: 4,
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
