@@ -58,52 +58,104 @@ const VF_STORE = {
 
 // Source: templates/_shared/delivery.js
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
+// VF_API_DELIVERY_ZONES and VF_API_DELIVERY_SCHEDULE are sample responses shaped like the Vendra API
+// (DeliveryZone, DeliverySchedule); a live store replaces them with API data.
 // Edit this file, then run: node templates/_build/generate.cjs
-// km is the zone's reach from `center` (default: the studio pin in store-config.js). The delivery
-// pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
-const VF_ZONES = [
+// maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
+// delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
+
+// GET /api/delivery/zones
+const VF_API_DELIVERY_ZONES = [
   {
-    id: 'central',
-    fee: 80_000,
-    cutoff: '18:00',
-    km: 5,
-    en: 'Karaj central',
-    fa: 'مرکز کرج'
+    id: 1,
+    name: {en: 'Karaj central', fa: 'مرکز کرج'},
+    description: null,
+    maxDistanceKm: 5,
+    currencyCode: 'IRT',
+    feeAmount: 80_000,
+    requiresQuote: false,
+    position: 1
   },
   {
-    id: 'outer',
-    fee: 120_000,
-    cutoff: '16:00',
-    km: 12,
-    en: 'Karaj outer',
-    fa: 'حومه کرج'
+    id: 2,
+    name: {en: 'Karaj outer', fa: 'حومه کرج'},
+    description: null,
+    maxDistanceKm: 12,
+    currencyCode: 'IRT',
+    feeAmount: 120_000,
+    requiresQuote: false,
+    position: 2
   },
   {
-    id: 'alborz',
-    fee: 180_000,
-    cutoff: '14:00',
-    km: 60,
-    en: 'Alborz province',
-    fa: 'استان البرز'
+    id: 3,
+    name: {en: 'Alborz province', fa: 'استان البرز'},
+    description: null,
+    maxDistanceKm: 60,
+    currencyCode: 'IRT',
+    feeAmount: 180_000,
+    requiresQuote: false,
+    position: 3
   },
   {
-    id: 'tehran',
-    fee: 250_000,
-    cutoff: '12:00',
-    km: 25,
-    center: {lat: 35.6961, lng: 51.4231},
-    en: 'Tehran',
-    fa: 'تهران'
+    id: 4,
+    name: {en: 'Tehran', fa: 'تهران'},
+    description: null,
+    maxDistanceKm: 25,
+    currencyCode: 'IRT',
+    feeAmount: 250_000,
+    requiresQuote: false,
+    position: 4
   }
 ];
+
+// Zone fields the API doesn't provide yet (templates/API.md, "Zone rules"), keyed by DeliveryZone.id:
+// the storefront's key for the zone, its same-day cut-off and, when it isn't the studio, the point its
+// distance is measured from.
+const VF_DELIVERY_ZONE_EXTRAS = {
+  1: {key: 'central', cutoff: '18:00'},
+  2: {key: 'outer', cutoff: '16:00'},
+  3: {key: 'alborz', cutoff: '14:00'},
+  4: {key: 'tehran', cutoff: '12:00', center: {lat: 35.6961, lng: 51.4231}}
+};
+
+// GET /api/delivery/schedule (dates are worked out from the rules below until the API sends them)
+const VF_API_DELIVERY_SCHEDULE = {
+  id: 'default',
+  dates: [],
+  slots: [
+    {id: 1, name: {en: 'Morning', fa: 'صبح'}, startsAt: '08:00', endsAt: '12:00'},
+    {id: 2, name: {en: 'Midday', fa: 'ظهر'}, startsAt: '12:00', endsAt: '16:00'},
+    {id: 3, name: {en: 'Afternoon', fa: 'عصر'}, startsAt: '16:00', endsAt: '20:00'},
+    {id: 4, name: {en: 'Evening', fa: 'شب'}, startsAt: '20:00', endsAt: '22:00'}
+  ]
+};
+
+// The storefront's zone object from an API DeliveryZone plus its extras.
+function vfZoneFromApi(zone, extras = VF_DELIVERY_ZONE_EXTRAS) {
+  const extra = extras[zone.id] || {};
+  return {
+    id: extra.key || String(zone.id),
+    apiId: zone.id,
+    fee: zone.feeAmount,
+    cutoff: extra.cutoff || '00:00',
+    km: zone.maxDistanceKm,
+    ...(extra.center ? {center: extra.center} : {}),
+    en: zone.name.en,
+    fa: zone.name.fa
+  };
+}
+
+const VF_ZONES = [...VF_API_DELIVERY_ZONES]
+  .sort((a, b) => a.position - b.position)
+  .map(zone => vfZoneFromApi(zone));
+// Free delivery isn't in the API yet (templates/API.md, "Zone rules").
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
-const VF_SLOTS = [
-  ['08', '12'],
-  ['12', '16'],
-  ['16', '20'],
-  ['20', '22']
-];
+// Each slot as [start hour, end hour]; the start hour is the slot's key in the bag and orders.
+const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => [
+  slot.startsAt.slice(0, 2),
+  slot.endsAt.slice(0, 2)
+]);
 // A slot today stops taking orders this many minutes before it ends.
 const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.

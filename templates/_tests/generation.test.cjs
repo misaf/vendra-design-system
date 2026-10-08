@@ -97,7 +97,7 @@ try {
     delivery,
     fs
       .readFileSync(delivery, 'utf8')
-      .replace('fee: 80_000', 'fee: 90_000')
+      .replace('feeAmount: 80_000', 'feeAmount: 90_000')
       .replace('= 5_000_000', '= 9_000_000')
   );
   const homeFile = path.join(templates, 'storefront-home/StorefrontHome.dc.html');
