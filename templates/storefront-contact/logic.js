@@ -109,7 +109,7 @@ class Component extends VFPage {
         });
         return window.VF_API.inquiry({
           name: s.name.trim(),
-          phone: s.phone ? vfPhone(s.phone) : '',
+          phone: s.phone ? vfPhone(s.phone) : null,
           email: s.email.trim(),
           message: s.msg.trim(),
           occasion: 'contact',

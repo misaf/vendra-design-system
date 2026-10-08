@@ -69,3 +69,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
     - `publishedAt`: date-time of publication (journal cards show it in the Persian or Gregorian calendar). The storefront works out reading time from `content`.
 21. **Journal extras on `BlogPost`:** `relatedProducts` as product references (the post page lists them under the article), and the cover photo embedded with URL and alt text (see 9).
 22. **Policy placeholders.** Policy text lists live values: delivery zones with fees and cut-offs, time slots, delivery days, free-delivery and cash-on-delivery zones, store name, phone, address and hours. Either allow these placeholders in `content` (`{deliveryZones}`, `{slots}`, `{deliveryDays}`, `{freeDeliveryZones}`, `{codZones}`, `{brand}`, `{phone}`, `{address}`, `{hours}`; the storefront fills them), or expose the values through the store-settings endpoint (18) and let the admin write them out.
+
+### Inquiries
+23. **Phone-only messages.** `Inquiry.email` is a required string, but the contact form accepts a mobile number *or* an email so the studio can reply. Make `email` nullable when `phone` is given (the storefront sends `''` until then).
+24. **Wedding inquiries** send their type, date, budget and guest count joined into `message`. Optional: add structured fields (or a `metadata` object) if the studio wants to filter them.
