@@ -16,7 +16,7 @@ const isModule = file =>
   parseSync(file, read(file)).program.body.some(node => node.type === 'ExportNamedDeclaration');
 
 // components/x/Y.jsx → {path: 'components/x/Y.js', code}. Relative .jsx imports become .js;
-// React components get 'use client' so server-rendered apps (Next.js) load them as client modules.
+// React components get 'use client' so React Server Components frameworks load them as client modules; other bundlers ignore it.
 function esm(file) {
   const {code, errors} = transformSync(file, read(file), {jsx: {runtime: 'classic'}});
   if (errors.length) throw new Error(file + ': ' + errors.map(e => e.message).join('; '));

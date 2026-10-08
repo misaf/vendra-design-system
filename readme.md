@@ -2,7 +2,7 @@
 
 **Vendra** is a multi-tenant platform for florist websites. Each florist (tenant) gets a bilingual English/Persian storefront: catalogue, bag, checkout, delivery zones, account and order tracking. This repo is the shared visual and component layer those storefronts are built from. The reference tenant, **Vendra Florist** (گل‌فروشی وندرا), supplies the default theme.
 
-- **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (Next.js storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
+- **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (tenant storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
 - **Scope:** the customer-facing storefront only. Admin screens live in a separate framework; the storefront reads products, currency, delivery rules, hours and contact details as data.
 - **Rules and brand:** [guidelines/brand-guide.md](guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, structured data and the release checklist.
 
@@ -12,30 +12,33 @@
 
 | Import | What it is |
 |---|---|
-| `@vendra/design-system` | 47 components plus `format`, `dates` and `ICON_SVGS`: ES modules with types, `'use client'`, server-render safe. |
+| `@vendra/design-system` | 47 components plus `format`, `dates` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. Load once in the root layout. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
 
 Tenants are data, not files: the platform stores each theme spec and the storefront renders it per request. `tenantCss` refuses unsafe slugs, invalid specs and failing contrast, so its output is safe for a `<style>` element. Fall back to the default theme when it throws:
 
-```jsx
-// app/layout.jsx (Next.js App Router)
+```js
 import '@vendra/design-system/styles.css';
 import {tenantCss} from '@vendra/design-system/theme';
 
-export default async function RootLayout({children}) {
-  const tenant = await getTenant(); // host → {slug, locale, theme} from the platform API
-  let css = '';
-  try { css = tenantCss(tenant.slug, tenant.theme); } catch (error) { console.error(error); }
-  return (
-    <html lang={tenant.locale} dir={tenant.locale === 'fa' ? 'rtl' : 'ltr'} data-tenant={css ? tenant.slug : undefined}>
-      <head>{css && <style dangerouslySetInnerHTML={{__html: css}} />}</head>
-      <body>{children}</body>
-    </html>
-  );
+// tenant = {slug, locale, theme} from the platform API
+function themeFor(tenant) {
+  try { return tenantCss(tenant.slug, tenant.theme); } catch (error) { console.error(error); return ''; }
+}
+
+const css = themeFor(tenant);
+const root = document.documentElement;
+root.lang = tenant.locale;
+root.dir = tenant.locale === 'fa' ? 'rtl' : 'ltr';
+if (css) {
+  root.dataset.tenant = tenant.slug;
+  document.head.append(Object.assign(document.createElement('style'), {textContent: css}));
 }
 ```
+
+A server-rendered app does the same in its document template: put the CSS in a `<style>` element and set `lang`, `dir` and `data-tenant` on `<html>`.
 
 Components take all copy, prices, currency and contact details as props. Run `checks(spec)` in the admin theme editor so a florist can't save a theme the storefront would refuse.
 

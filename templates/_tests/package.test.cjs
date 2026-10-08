@@ -69,7 +69,7 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     const link = renderToString(React.createElement(ds.Button, {href: '/shop'}, 'Shop'));
     assert.match(link, /^<a href="\/shop" class="ag-btn ag-btn--primary ag-btn--md/);
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
-    // 'use client' leads every component module so Next.js treats them as client components.
+    // 'use client' leads every component module so React Server Components frameworks treat them as client components.
     assert.match(
       fs.readFileSync(path.join(repo, 'dist/components/Button/Button.js'), 'utf8'),
       /^'use client';\n/
