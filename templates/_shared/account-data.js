@@ -241,31 +241,122 @@ function vfReminderNext(r, today = new Date()) {
     today
   );
 }
-function vfSampleOrders() {
-  const delivery = {
-    ...VF_DELIVERY,
+// GET /api/sales/orders — sample orders shaped like the Vendra API (Order, OrderLine). Each line's
+// metadata carries what the order needs beyond the API's fields, as strings: the product code
+// (`token`), `size`, comma-separated `addons` and the handwritten `cardMessage`.
+/** @type {[id: number, number: string, status: string, placedAt: string][]} */
+const VF_SAMPLE_ORDER_ROWS = [
+  [9001, 'VN-10522', 'out_for_delivery', '2026-10-04T09:30:00+03:30'],
+  [9002, 'VN-10431', 'delivered', '2026-09-21T11:05:00+03:30'],
+  [9003, 'VN-10302', 'delivered', '2026-09-02T16:40:00+03:30'],
+  [9004, 'VB-TEST-1', 'cancelled', '2026-08-28T10:15:00+03:30']
+];
+const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, placedAt]) => ({
+  id,
+  number,
+  status,
+  currencyCode: 'IRT',
+  itemsAmount: 8_450_000,
+  deliveryAmount: 0,
+  totalAmount: 8_450_000,
+  paymentReference: '1234',
+  cardMessage: null,
+  placedAt,
+  lines: [
+    {
+      id: id * 10 + 1,
+      sellableType: 'product',
+      sellableId: 101,
+      name: 'VF-7K2M4Q',
+      quantity: 1,
+      unitAmount: 5_050_000,
+      lineAmount: 5_050_000,
+      metadata: {
+        token: 'VF-7K2M4Q',
+        size: 'classic',
+        addons: 'card',
+        cardMessage: 'Happy birthday, Shirin.'
+      }
+    },
+    {
+      id: id * 10 + 2,
+      sellableType: 'product',
+      sellableId: 103,
+      name: 'VF-8RD5WN',
+      quantity: 1,
+      unitAmount: 3_400_000,
+      lineAmount: 3_400_000,
+      metadata: {token: 'VF-8RD5WN'}
+    }
+  ]
+}));
+
+// Order fields the API doesn't provide yet (templates/API.md, "Order detail"), keyed by Order.number:
+// the delivery details, payment method and the customer's preferred language. The sample orders share them.
+const VF_SAMPLE_ORDER_EXTRAS = {
+  method: 'card',
+  preferredLocale: 'fa',
+  delivery: {
     name: 'Shirin Ahmadi',
     phone: '09125649438',
     sender: 'Shirin Ahmadi',
     senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
+  }
+};
+
+// API order statuses the storefront shows under its own step names.
+const VF_ORDER_STATUS = {
+  placed: 'received',
+  arranging: 'preparing',
+  ready: 'preparing',
+  out_for_delivery: 'onTheWay'
+};
+
+// The storefront's bag line from an API OrderLine.
+function vfLineFromApi(line) {
+  const product = VF_PRODUCTS.find(item => item.apiId === line.sellableId);
+  const meta = line.metadata || {};
+  const token = meta.token || (product ? product.id : line.name);
+  const size = meta.size || null;
+  const addons = (meta.addons || '').split(',').filter(Boolean);
+  const sizeRow = VF_SIZES.find(row => row[0] === size) || null;
+  const addonRows = VF_ADDONS.filter(row => addons.includes(row[0]));
+  const productId = product ? product.id : token;
+  return {
+    id: productId + (size ? '-' + size : '') + (addons.length ? '-' + addons.join('+') : ''),
+    productId,
+    token,
+    size,
+    addons,
+    unit: line.unitAmount,
+    qty: line.quantity,
+    image: product ? product.image : VF_PRODUCT_PLACEHOLDER,
+    ...(meta.cardMessage ? {card: meta.cardMessage} : {}),
+    en: [token, product ? vfLineDetail(product, sizeRow, addonRows, 'en') : ''],
+    fa: [token, product ? vfLineDetail(product, sizeRow, addonRows, 'fa') : '']
   };
-  return [
-    ['VN-10522', 'onTheWay'],
-    ['VN-10431', 'delivered'],
-    ['VN-10302', 'delivered'],
-    ['VB-TEST-1', 'cancelled']
-  ].map(([id, status]) => {
-    const lines = vfSampleBag();
-    return {
-      id,
-      status,
-      lines,
-      delivery,
-      totals: vfTotals(lines, delivery),
-      method: 'card',
-      last4: '1234',
-      preferredLocale: 'fa'
-    };
-  });
+}
+
+// The storefront's order object from an API Order plus its extras.
+function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
+  return {
+    id: order.number,
+    status: VF_ORDER_STATUS[order.status] || order.status,
+    lines: order.lines.map(vfLineFromApi),
+    delivery: {...VF_DELIVERY, ...extras.delivery},
+    totals: {
+      sub: order.itemsAmount,
+      fee: order.deliveryAmount,
+      discount: order.itemsAmount + order.deliveryAmount - order.totalAmount,
+      total: order.totalAmount
+    },
+    method: extras.method,
+    last4: order.paymentReference,
+    preferredLocale: extras.preferredLocale
+  };
+}
+
+function vfSampleOrders() {
+  return VF_API_ORDERS.map(order => vfOrderFromApi(order));
 }
