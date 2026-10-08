@@ -796,7 +796,13 @@ test.describe('a first visit', () => {
     expect(
       await page.evaluate(() => [
         localStorage.getItem('vf-consent'),
-        ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+        (() => {
+          const sent = [];
+          const stop = AG_TRACK.subscribe(event => sent.push(event));
+          AG_TRACK.event('search', {});
+          stop();
+          return sent.length;
+        })()
       ])
     ).toEqual(['all', 1]);
   });
@@ -809,7 +815,13 @@ test.describe('a first visit', () => {
     expect(
       await page.evaluate(() => [
         localStorage.getItem('vf-consent'),
-        ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+        (() => {
+          const sent = [];
+          const stop = AG_TRACK.subscribe(event => sent.push(event));
+          AG_TRACK.event('search', {});
+          stop();
+          return sent.length;
+        })()
       ])
     ).toEqual([null, 0]);
     await page.reload();
@@ -857,8 +869,14 @@ test.describe('a first visit', () => {
     await openSite(page, 'home', 'fa');
     await expect(page.getByRole('region', {name: 'حریم خصوصی شما'})).toBeVisible();
     expect(
-      await page.evaluate(
-        () => ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+      await page.evaluate(() =>
+        (() => {
+          const sent = [];
+          const stop = AG_TRACK.subscribe(event => sent.push(event));
+          AG_TRACK.event('search', {});
+          stop();
+          return sent.length;
+        })()
       )
     ).toBe(0);
   });

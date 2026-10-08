@@ -13,7 +13,6 @@ Part A is work in this repo. Part B lists what the backend doesn't provide yet; 
 | Sample orders (`account-data.js`, track) | `Order`, `OrderLine` | Map to `number`, `status`, `itemsAmount`, `deliveryAmount`, `totalAmount`, `lines[{name, quantity, unitAmount, lineAmount}]`. |
 | Checkout state (`storefront-checkout`) | `Checkout` | Payload should be built from `cartToken`, `deliveryDate`, `deliverySlotId`, `addressId` or `latitude`/`longitude`, `recipientName`, `cardMessage`, `gateway`, `paymentReference`. |
 | FAQ, journal, policy copy | `Faq`, `BlogPost`, `CustomPage` (+ categories) | Localized `name`/`description`, `slug`, `position`, `active`. |
-| `seo.js` JSON-LD helpers | none | `productJsonLd`, `storeJsonLd` and `setJsonLd` target Google rich results, which the platform doesn't use, and no page calls them. Candidates for removal with their docs. |
 | `api.js` comment | none | Mentions `PATCH /api/customers/me`, which the spec doesn't have. |
 
 ## B. Backend requests (vendra)

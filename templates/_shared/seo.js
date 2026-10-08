@@ -1,4 +1,4 @@
-// Routing, <head> and Schema.org helpers for the storefront (window.AG_SEO). Pages load this
+// Routing and <head> helpers for the storefront (window.AG_SEO). Pages load this
 // before shared-logic.js.
 // URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
 (() => {
@@ -146,150 +146,7 @@
     }
     meta('name', 'robots', noindex ? 'noindex, follow' : null);
   };
-  const setJsonLd = (id, data) => {
-    const sel = 'script[type="application/ld+json"][data-ag-ld="' + id + '"]';
-    if (!data) {
-      drop(sel);
-      return;
-    }
-    const el = upsert(sel, 'script', {type: 'application/ld+json', 'data-ag-ld': id});
-    el.textContent = JSON.stringify(data);
-  };
-
-  const D = () => window.AG_DATA || {};
-  const STORE_NAME = 'Vendra Florist';
-  const ISO = {toman: 'IRT', rial: 'IRR', usd: 'USD', eur: 'EUR', aed: 'AED'};
-  // Prices are stored in Toman. Toman isn't ISO 4217, so IRT is published as IRR (× 10).
-  const offerPrice = (toman, code) => {
-    const F = window.AG_FORMAT || {CURRENCIES: {}};
-    let c = code || ISO[D().getCurrency && D().getCurrency()] || 'IRT';
-    if (c === 'IRT') return {price: String(Math.round(Number(toman) * 10)), priceCurrency: 'IRR'};
-    const cur = F.CURRENCIES[c];
-    if (!cur) return {price: String(Math.round(Number(toman) * 10)), priceCurrency: 'IRR'};
-    return {price: (Number(toman) * cur.rate).toFixed(cur.dec), priceCurrency: c};
-  };
-  const seller = url => ({
-    '@type': 'Florist',
-    name: STORE_NAME,
-    url: abs(url || location.pathname)
-  });
-  const shippingDetails = currency => {
-    const z = (D().delivery && D().delivery.IR && D().delivery.IR.zones) || [];
-    return z.map(x => {
-      const p = offerPrice(x.fee, currency);
-      return {
-        '@type': 'OfferShippingDetails',
-        shippingRate: {'@type': 'MonetaryAmount', value: p.price, currency: p.priceCurrency},
-        shippingDestination: {'@type': 'DefinedRegion', addressCountry: 'IR', addressRegion: x.en},
-        deliveryTime: {
-          '@type': 'ShippingDeliveryTime',
-          handlingTime: {'@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY'},
-          transitTime: {
-            '@type': 'QuantitativeValue',
-            minValue: x.sameDay ? 0 : 3,
-            maxValue: x.sameDay ? 0 : 5,
-            unitCode: 'DAY'
-          }
-        }
-      };
-    });
-  };
-  // admin.returnPolicy: {default:{…}, byCat:{<categoryId>:{…}}} (or a single policy). Each: {category, days, method, fees, country, url}.
-  // MerchantReturnNotPermitted (perishables) publishes no days/method/fees, as Google expects.
-  const returnPolicy = p => {
-    const R = D().admin && D().admin.returnPolicy;
-    if (!R) return undefined;
-    const r = Object.assign(
-      {},
-      R.default || (R.byCat ? {} : R),
-      (R.byCat && p && R.byCat[p.cat]) || {}
-    );
-    if (!r.category && !r.days) return undefined;
-    const cat = r.category || 'MerchantReturnFiniteReturnWindow';
-    const base = {
-      '@type': 'MerchantReturnPolicy',
-      applicableCountry: r.country || 'IR',
-      returnPolicyCategory: 'https://schema.org/' + cat,
-      ...(r.url ? {merchantReturnLink: abs(r.url)} : {})
-    };
-    if (cat === 'MerchantReturnNotPermitted') return base;
-    return {
-      ...base,
-      ...(r.days != null && cat === 'MerchantReturnFiniteReturnWindow'
-        ? {merchantReturnDays: r.days}
-        : {}),
-      ...(r.method ? {returnMethod: 'https://schema.org/' + r.method} : {}),
-      ...(r.fees ? {returnFees: 'https://schema.org/' + r.fees} : {})
-    };
-  };
-  // Schema.org Product. Items priced "on request" (price == null or onRequest) carry no Offer.
-  /** @param {any} p @param {{url?: string, lang?: string, currency?: string, shipping?: boolean, returns?: boolean}} [options] */
-  const productJsonLd = (p, {url, lang = 'en', currency, shipping = true, returns = true} = {}) => {
-    if (!p) return null;
-    const imgs = (D().imagesOf ? D().imagesOf(p) : [{src: p.image}])
-      .filter(x => x && x.src && !x.crop)
-      .map(x => abs(x.src));
-    const ld = {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: p[lang] || p.name || p.en,
-      description: (lang === 'fa' ? p.subFa : p.subEn) || p.description,
-      image: [...new Set(imgs)],
-      sku: p.sku || p.id,
-      brand: {'@type': 'Brand', name: STORE_NAME},
-      url: abs(url)
-    };
-    const onRequest = p.onRequest || p.price == null;
-    if (!onRequest) {
-      const sold = p.badge === 'soldout' || p.soldOut || p.inStock === false;
-      /** @type {Record<string, any>} */
-      const offer = {
-        '@type': 'Offer',
-        ...offerPrice(p.price, currency),
-        availability: 'https://schema.org/' + (sold ? 'OutOfStock' : 'InStock'),
-        itemCondition: 'https://schema.org/NewCondition',
-        url: abs(url),
-        seller: seller()
-      };
-      if (shipping) {
-        const s = shippingDetails(currency);
-        if (s.length) offer.shippingDetails = s;
-      }
-      if (returns) {
-        const r = returnPolicy(p);
-        if (r) offer.hasMerchantReturnPolicy = r;
-      }
-      ld.offers = offer;
-    }
-    return ld;
-  };
-  // Schema.org Florist for the studio (home + contact).
-  /** @param {{url?: string, logo?: string, image?: string}} [options] */
-  const storeJsonLd = ({url, logo = '../../assets/logo-mark.png', image} = {}) => {
-    const C = D().contact || {};
-    const g = C.geo || {lat: 35.839, lng: 50.977};
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'Florist',
-      name: STORE_NAME,
-      url: abs(url || location.pathname),
-      logo: abs(logo),
-      ...(image ? {image: abs(image)} : {}),
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'Azimiyeh',
-        addressLocality: 'Karaj',
-        addressRegion: 'Alborz',
-        addressCountry: 'IR'
-      },
-      telephone: '+989129333034',
-      openingHours: 'Mo-Su 08:00-22:00',
-      geo: {'@type': 'GeoCoordinates', latitude: g.lat, longitude: g.lng},
-      sameAs: ['https://instagram.com/misaf1990']
-    };
-  };
   const S = {
-    returnPolicy,
     SCREENS,
     NOINDEX,
     OPTIONAL,
@@ -301,11 +158,7 @@
     hrefFor,
     linkHandler,
     isNoindex,
-    syncHead,
-    setJsonLd,
-    productJsonLd,
-    storeJsonLd,
-    offerPrice
+    syncHead
   };
   window.AG_SEO = S;
   if (typeof module !== 'undefined' && module.exports) module.exports = S;

@@ -58,8 +58,9 @@ when clicked. Communication renderers return strings; they do not send anything.
 The default API base is empty. Setting it opts into requests through the client;
 products need numeric `apiId` values to sync saved items. API failures retain
 local saved items or form drafts. Authentication and payment services must be
-provided by the consuming project. Analytics retain a small local log and use an
-existing `dataLayer` or `gtag` if configured; event payloads omit contact details.
+provided by the consuming project. Analytics keep a small local log and pass events to
+`AG_TRACK.subscribe` listeners only after consent; none is registered, and event
+payloads omit contact details.
 
 A signed-in demo account's saved language is used for processing examples. The
 header language switch changes the current page independently. Communication

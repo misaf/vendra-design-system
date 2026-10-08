@@ -15,7 +15,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 - **Phone:** +98-9129333034 · `tel:+989129333034`
 - **WhatsApp:** +989129333034 · https://wa.me/989129333034
 - **Instagram:** @misaf1990
-- **Map pin (SAMPLE):** 35.8390, 50.9770 — Azimiyeh, Karaj; replace with the exact studio location
+- **Map pin:** `studio` in `templates/_shared/store-config.js` (sample; replace with the studio's door)
 - **Hours:** daily 08:00–22:00 (fa: همه‌روزه ۰۸:۰۰ تا ۲۲:۰۰)
 - Phone numbers and handles always render LTR (`dir="ltr"`) inside Persian text.
 
@@ -29,7 +29,6 @@ Rules are stored per country (`templates/_shared/delivery.js`) so more countries
 - **Karaj outer** (Fardis, Mohammadshahr, Kamalshahr): 120,000; same day before 16:00
 - **Alborz province** (Hashtgerd, Nazarabad, Savojbolagh): 180,000; same day before 14:00
 - **Tehran:** 250,000; same day before 12:00
-- **Other provinces:** 150,000; plants only, sent by post in 3–5 days; fresh flowers blocked at checkout
 - **Free delivery** in the Karaj zones for orders of 5,000,000 or more
 
 ## Product categories
@@ -115,21 +114,16 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Touch targets**: at least 44px (tab bar, stepper circles, footer and TOC links).
 - **Contrast**: see the *Contrast* card in Colors. Every text token passes 4.5:1 on the surfaces it's used on. `--ink-500` / `--text-muted` (#59655E) passes on `--surface-muted`. Form-control edges (inputs, choice tiles, steppers, switch track, slider track) use `--border-input` #808B83 for 3:1; `--border-default` is for dividers only. Non-text accent indicators (active tab line, slider, current order step, saved heart) use `--text-accent`, because `--accent` is only guaranteed 4.5:1 against white text, not 3:1 on page surfaces (tenant accents can fail it) — it is for button fills only. `--text-subtle` (about 2:1) is **decorative or disabled only, never readable copy**; placeholders now use `--text-muted`. `--warning` and `--info` are icon/border colours (3:1); the text beside them uses `--text-body`.
 
-## Structured data
+## Payments
 
-- `seo.productJsonLd(product, {url, lang, currency})` returns a Schema.org **Product** with name, description, image[], sku, brand, url and an **Offer**. The Offer has price, priceCurrency (the active currency from format.js; Toman isn't ISO 4217, so it's published as **IRR = Toman × 10**), availability (InStock/OutOfStock), itemCondition NewCondition, url and seller. It also gets `shippingDetails` (one OfferShippingDetails per `delivery.IR` zone: fee, region, same-day or 3–5 days) and `hasMerchantReturnPolicy` (from the consuming project’s return-policy configuration = `{default, byCat:{<category>:…}}`: fresh flowers default to **MerchantReturnNotPermitted** with no days/method/fees, and damaged or wrong orders are replaced under the Returns policy; houseplants and gift sets have a 3-day in-store window — SAMPLE values, confirm with the owner). Items priced "on request" (`price == null` or `onRequest`) output no Offer.
-- `seo.storeJsonLd()` returns a **Florist** with name, logo, address (Azimiyeh, Karaj, Alborz, IR), telephone +989129333034, openingHours `Mo-Su 08:00-22:00`, geo (the sample pin; replace it with the real one) and sameAs `https://instagram.com/misaf1990`. It's output on home and contact.
-- `seo.setJsonLd(id, data)` upserts or removes a `<script type="application/ld+json">`.
 - **PCI DSS**: doesn't apply. Payment is card-to-card (customer bank → shop card), so no card data passes through or is stored by the storefront. Only the last 4 digits and the tracking number the customer types are sent, as a transfer reference.
 
 ## Storefront release checklist
 
-- [ ] Product pages show price and availability; the default configuration's visible price equals the JSON-LD price (IRR = Toman × 10). Paid add-ons are never pre-selected.
-
+- [ ] Product pages show price and availability. Paid add-ons are never pre-selected.
 - [ ] Every navigation is a real `<a href>` using the URL scheme above; back/forward, reload and deep links restore the screen.
 - [ ] Unknown or invalid URLs show the 404 screen with `noindex, follow`; noindex screens are excluded from the sitemap.
 - [ ] Each indexable screen has a unique title and description, a canonical link, hreflang en/fa/x-default and og/twitter tags.
-- [ ] Product JSON-LD validates in the Rich Results Test; IRR prices = Toman × 10; the Florist JSON-LD has the real address and pin.
 - [ ] Keyboard only: skip link, visible focus everywhere, dialog focus trap and return, focus moves to the h1 on screen change and to the first error on submit.
 - [ ] Screen reader (VoiceOver and TalkBack, EN and FA): field errors are read with their field; page changes and "Added to bag" are announced.
 - [ ] Contrast card passes; no `--text-subtle` used for copy.

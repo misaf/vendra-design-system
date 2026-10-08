@@ -153,21 +153,21 @@ assert.doesNotMatch(
 
 // Analytics: events stay in the local log until the visitor allows visit counts.
 const track = ctx.window.AG_TRACK;
-ctx.window.dataLayer = [];
+const sent = [];
+const unsubscribe = track.subscribe(event => sent.push(event));
 assert.equal(track.consent(), '');
 track.event('search', {search_term: 'roses'});
 track.setConsent('essential');
 track.event('search', {search_term: 'roses'});
-assert.equal(
-  ctx.window.dataLayer.length,
-  0,
-  'nothing is sent before consent or with essential only'
-);
+assert.equal(sent.length, 0, 'nothing is sent before consent or with essential only');
 track.setConsent('all');
 track.event('generate_lead', {lead_source: 'newsletter'});
-assert.equal(ctx.window.dataLayer.length, 1);
-assert.equal(ctx.window.dataLayer[0].event, 'generate_lead');
+assert.equal(sent.length, 1);
+assert.equal(sent[0].event, 'generate_lead');
 assert.equal(track.log.length, 3, 'the local QA log keeps every event');
+unsubscribe();
+track.event('search', {search_term: 'roses'});
+assert.equal(sent.length, 1, 'an unsubscribed listener receives nothing');
 store['vf-consent'] = 'maybe';
 assert.equal(track.consent(), '', 'an unknown stored choice asks again');
 

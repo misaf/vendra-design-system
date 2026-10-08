@@ -1699,9 +1699,10 @@ function vfWalletChange(phone, amount, entry) {
 })();
 
 // Source: templates/_shared/integrations/analytics.js
-// Analytics — one wrapper for every tracked event. Names and params follow GA4 ecommerce, so GA4 / GTM / Matomo map them without changes.
-// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and sends to window.dataLayer (GTM) or gtag
-// only after the visitor accepts analytics in the consent banner (AG_TRACK.consent() === 'all').
+// Analytics — one wrapper for every tracked event, using common ecommerce event names.
+// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and hands each event to the
+// AG_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
+// (AG_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
 (() => {
   if (window.VF_TRACK) return;
@@ -1738,10 +1739,13 @@ function vfWalletChange(phone, amount, entry) {
     try {
       localStorage.setItem(KEY, value);
     } catch {}
-    if (typeof window.gtag === 'function')
-      window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
   const log = [];
+  const listeners = [];
+  const subscribe = listener => {
+    listeners.push(listener);
+    return () => listeners.splice(listeners.indexOf(listener), 1);
+  };
   const ctx = () => ({
     language: document.documentElement?.lang || 'en',
     currency: VF_STORE.currency || 'IRT'
@@ -1767,8 +1771,7 @@ function vfWalletChange(phone, amount, entry) {
     log.push(e);
     if (log.length > 50) log.shift();
     if (consent() !== 'all') return;
-    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);
-    else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+    listeners.forEach(listener => listener(e));
   };
   window.AG_TRACK = window.VF_TRACK = {
     event,
@@ -1776,7 +1779,8 @@ function vfWalletChange(phone, amount, entry) {
     EVENTS,
     log,
     consent,
-    setConsent
+    setConsent,
+    subscribe
   };
 })();
 

@@ -35,7 +35,4 @@ interface Window {
   // Leaflet, loaded on demand by _shared/location.js.
   L: any;
   vfLeafletLoading?: Promise<any>;
-  // Google Analytics, loaded only after analytics consent.
-  dataLayer?: any[];
-  gtag?: (...args: any[]) => void;
 }
