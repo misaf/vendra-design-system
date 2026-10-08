@@ -1,0 +1,7 @@
+/* Applied to every screenshot comparison. Native <select> text is drawn by the operating system and
+   shifts by a pixel or two between runs, so only its text is hidden; borders, background and arrow
+   are still compared. */
+select {
+  color: transparent !important;
+  text-shadow: none !important;
+}
