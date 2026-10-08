@@ -12,7 +12,8 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 | Delivery | `delivery.js`: `VF_API_DELIVERY_ZONES`, `VF_API_DELIVERY_SCHEDULE` | `vfZoneFromApi` → `VF_ZONES`, `VF_SLOTS` | `VF_DELIVERY_ZONE_EXTRAS` by zone id: key, same-day cut-off, distance centre; free-delivery and sold-out constants (B5, B6) |
 | Orders | `account-data.js`: `VF_API_ORDERS` | `vfOrderFromApi`, `vfLineFromApi` | `VF_SAMPLE_ORDER_EXTRAS`: delivery details, payment method, preferred language (B17) |
 | Checkout | built per order | `vfCheckoutRequest` → `VF_API.checkout` | everything in B4 |
-| FAQ, journal, policies | page `copy.js`, `translations/journal-content.js` | not converted yet | |
+| FAQ | `storefront-faq/copy.js`: `VF_API_FAQ_CATEGORIES`, `VF_API_FAQS` | `vfFaqGroups` | none; answers use delivery placeholders (below) |
+| Journal, policies | `translations/journal-content.js`, `storefront-policy/copy.js` | waiting for B20–B21 | |
 
 **Conventions the backend should accept**
 
@@ -23,6 +24,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 - **Order statuses:** `placed`, `arranging`, `ready`, `out_for_delivery`, `delivered`, `cancelled` (the storefront shows them as received, preparing, on the way, delivered, cancelled).
 - **Line metadata:** `OrderLine.metadata` (and `CartLine.metadata`) carry `token`, `size`, comma-separated `addons` and `cardMessage`, as strings.
 - **Checkout:** `gateway` is `card`, `online`, `cod` or `wallet`; for card-to-card, `paymentReference` is the card's last 4 digits and the transfer reference, separated by a space. Several card messages go in `cardMessage` as `CODE: message` lines.
+- **Text placeholders:** content text may contain `{fee:<zone>}`, `{cutoff:<zone>}` (zone keys `central`, `outer`, `alborz`, `tehran`) and `{freeDeliveryFrom}`; the storefront fills them from the delivery rules (`vfStoreText`), so fees in FAQ answers never go stale.
 - **Order totals:** the discount is `itemsAmount + deliveryAmount - totalAmount` until `Order` reports it (B17).
 
 ## B. Backend requests (vendra)
@@ -59,3 +61,11 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 ### Marketing
 19. **Promo codes:** validate a code against a cart and return the discount.
+
+### Content
+20. **Rich content for `BlogPost` and `CustomPage`.** Journal posts and policy pages are structured documents; `description` (a string or list of strings per language) can't hold them. Add to both:
+    - `summary`: `{en, fa}` string — the line under the title on cards and at the top of the page.
+    - `content`: `{en: Block[], fa: Block[]}`, where a block is one of `{type: "paragraph", text}`, `{type: "heading", text}`, `{type: "list", items: string[]}`, `{type: "quote", text}`, `{type: "tips", items: string[]}`, `{type: "image", url, alt, caption}`. Structured blocks keep HTML out of the storefront; text may use the placeholders above.
+    - `publishedAt`: date-time of publication (journal cards show it in the Persian or Gregorian calendar). The storefront works out reading time from `content`.
+21. **Journal extras on `BlogPost`:** `relatedProducts` as product references (the post page lists them under the article), and the cover photo embedded with URL and alt text (see 9).
+22. **Policy placeholders.** Policy text lists live values: delivery zones with fees and cut-offs, time slots, delivery days, free-delivery and cash-on-delivery zones, store name, phone, address and hours. Either allow these placeholders in `content` (`{deliveryZones}`, `{slots}`, `{deliveryDays}`, `{freeDeliveryZones}`, `{codZones}`, `{brand}`, `{phone}`, `{address}`, `{hours}`; the storefront fills them), or expose the values through the store-settings endpoint (18) and let the admin write them out.

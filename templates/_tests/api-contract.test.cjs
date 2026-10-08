@@ -89,6 +89,20 @@ expectSchema(ctx.VF_API_DELIVERY_ZONES, 'DeliveryZone');
 expectSchema(ctx.VF_API_DELIVERY_SCHEDULE, 'DeliverySchedule');
 expectSchema(ctx.VF_API_ORDERS, 'Order');
 
+// The FAQ page's questions (storefront-faq/copy.js).
+vm.runInContext(
+  fs.readFileSync(path.join(root, 'templates/storefront-faq/copy.js'), 'utf8') +
+    '\nObject.assign(this, {VF_API_FAQ_CATEGORIES, VF_API_FAQS});',
+  ctx
+);
+expectSchema(ctx.VF_API_FAQ_CATEGORIES, 'FaqCategory');
+expectSchema(ctx.VF_API_FAQS, 'Faq');
+for (const faq of ctx.VF_API_FAQS)
+  assert.ok(
+    ctx.VF_API_FAQ_CATEGORIES.some(category => category.id === faq.faqCategory.id),
+    faq.slug.en
+  );
+
 // Every product's price, photos and category resolve to sample records.
 for (const product of ctx.VF_API_PRODUCTS) {
   assert.ok(ctx.vfApiRecord(ctx.VF_API_PRODUCT_PRICES, product.latestProductPrice), product.token);
@@ -121,5 +135,5 @@ assert.equal(request.cardMessage, 'Happy birthday, Shirin.');
 assert.equal(request.latitude, 35.8352);
 
 console.log(
-  'Passed: sample catalog, delivery, orders and the checkout request match the Vendra API spec.'
+  'Passed: sample catalog, delivery, orders, FAQ and the checkout request match the Vendra API spec.'
 );

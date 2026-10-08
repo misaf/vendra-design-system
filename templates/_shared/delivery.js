@@ -133,6 +133,15 @@ function vfDeliveryHint(zone, persian) {
   return (persian ? 'ارسال همان روز تا ' : 'Same day before ') + vfDeliveryCutoff(zone, persian);
 }
 
+// Fills delivery placeholders in text from the API (FAQ answers, pages), so fees and cut-offs stay
+// current: {fee:<zone>}, {cutoff:<zone>} (zone keys as in VF_ZONES) and {freeDeliveryFrom}.
+function vfStoreText(text, money, persian) {
+  return String(text || '')
+    .replace(/\{fee:([\w-]+)\}/g, (_, id) => money(vfZone(id).fee))
+    .replace(/\{cutoff:([\w-]+)\}/g, (_, id) => vfDeliveryCutoff(vfZone(id), persian))
+    .replace(/\{freeDeliveryFrom\}/g, () => money(VF_FREE_DELIVERY_THRESHOLD));
+}
+
 function vfZone(id) {
   return VF_ZONES.find(zone => zone.id === id) || VF_ZONES[0];
 }
