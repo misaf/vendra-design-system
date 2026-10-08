@@ -9,9 +9,7 @@ Pill-shaped action button; use primary for the one main action per view (Add to 
 
 Variants: primary · secondary · soft · ghost. Sizes: sm 36 / md 46 / lg 56px. `block` for full-width.
 
-`href` (+ `target`, `rel`) renders `<a>` — use it for navigation ("Shop now", "View all"). Without href it's a `<button>` for actions. Disabled links drop the href and get `aria-disabled`.
-
-Renders <a> with `href`, <button> without; both use border-box, so `block` fills the container exactly.
+`href` (+ `target`, `rel`) renders `<a>` for navigation ("Shop now", "View all"); without it, a `<button>` for actions. Disabled links drop the href and get `aria-disabled`.
 
 ## Usage
 

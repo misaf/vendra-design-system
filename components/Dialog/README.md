@@ -15,12 +15,6 @@ Modal on a blurred warm overlay; use for quick-view, delivery details, confirmat
 
 Built in: role=dialog, aria-modal, aria-labelledby → title, focus moves in (`initialFocus` selector), Tab trapped, Esc closes, focus returns to the opener, body scroll locked (not for `inline`).
 
-## Usage
-
-**Use when:** Short confirmations and focused edits (delete reminder, edit address).
-
-**Don’t use when:** Don’t use for long forms, pages or information that can sit inline.
-
 **Drawer:** `placement="start"` turns it into a full-height sheet from the start edge (left in EN, right in FA), used for the storefront mobile menu.
 
 ```jsx
@@ -38,3 +32,9 @@ Built in: role=dialog, aria-modal, aria-labelledby → title, focus moves in (`i
   </MenuList>
 </Dialog>
 ```
+
+## Usage
+
+**Use when:** Short confirmations and focused edits (delete reminder, edit address).
+
+**Don’t use when:** Don’t use for long forms, pages or information that can sit inline.
