@@ -10,15 +10,16 @@ const ALERT_ICONS = {
 	danger: "circle-alert",
 	success: "circle-check"
 };
+// An inline message. danger and warning interrupt screen readers (role="alert"); the others are
+// announced politely (role="status"). `icon={false}` hides the icon.
 export function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel = "Dismiss", className = "", style }) {
-	const t = tone;
-	const role = t === "danger" || t === "warning" ? "alert" : "status";
+	const role = tone === "danger" || tone === "warning" ? "alert" : "status";
 	return /* @__PURE__ */ React.createElement("div", {
 		role,
-		className: cx("ag-alert", "ag-alert--" + t, className),
+		className: cx("ag-alert", "ag-alert--" + tone, className),
 		style
 	}, icon !== false && /* @__PURE__ */ React.createElement(Icon, {
-		name: icon || ALERT_ICONS[t] || ALERT_ICONS.neutral,
+		name: icon || ALERT_ICONS[tone] || ALERT_ICONS.neutral,
 		size: 20,
 		className: "ag-alert__icon"
 	}), /* @__PURE__ */ React.createElement("div", { className: "ag-alert__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-alert__msg" }, title && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__title" }, title), children && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__text" }, children)), action && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__action" }, action)), onClose && /* @__PURE__ */ React.createElement(IconButton, {

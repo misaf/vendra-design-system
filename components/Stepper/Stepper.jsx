@@ -1,12 +1,16 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
-const defaultCaption = (n, total, label) => 'Step ' + n + ' of ' + total + ' · ' + label;
+
+const defaultCaption = (number, total, label) => 'Step ' + number + ' of ' + total + ' · ' + label;
+
+// Checkout progress as an ordered list; done steps can be revisited with `onStepClick`.
+// `compact` (phones) shows only the dots plus a "Step 2 of 3 · Label" caption.
 export function Stepper({
   steps = [],
   current = 0,
   onStepClick,
-  formatNumber = n => String(n),
+  formatNumber = number => String(number),
   doneLabel,
   label,
   compact = false,
@@ -18,31 +22,35 @@ export function Stepper({
       aria-label={label}
       className={cx('ag-steps', compact && 'ag-steps--compact', !compact && className)}
     >
-      {steps.map((s, i) => {
-        const st = i < current ? 'done' : i === current ? 'current' : 'upcoming';
-        const inner = (
+      {steps.map((step, i) => {
+        const state = i < current ? 'done' : i === current ? 'current' : 'upcoming';
+        const content = (
           <>
             <span className="ag-steps__dot" aria-hidden={compact || undefined}>
-              {st === 'done' ? <Icon name="check" size={14} /> : (s.number ?? formatNumber(i + 1))}
+              {state === 'done' ? (
+                <Icon name="check" size={14} />
+              ) : (
+                (step.number ?? formatNumber(i + 1))
+              )}
             </span>
             <span className={compact ? 'ag-sr-only' : 'ag-steps__label'}>
-              {s.label}
-              {st === 'done' && doneLabel && <span className="ag-sr-only"> {doneLabel}</span>}
+              {step.label}
+              {state === 'done' && doneLabel && <span className="ag-sr-only"> {doneLabel}</span>}
             </span>
           </>
         );
         return (
           <li
             key={i}
-            className={cx('ag-steps__item', 'ag-steps__item--' + st)}
-            aria-current={st === 'current' ? 'step' : undefined}
+            className={cx('ag-steps__item', 'ag-steps__item--' + state)}
+            aria-current={state === 'current' ? 'step' : undefined}
           >
-            {st === 'done' && onStepClick ? (
+            {state === 'done' && onStepClick ? (
               <button type="button" className="ag-steps__btn" onClick={() => onStepClick(i)}>
-                {inner}
+                {content}
               </button>
             ) : (
-              <span className="ag-steps__btn">{inner}</span>
+              <span className="ag-steps__btn">{content}</span>
             )}
           </li>
         );
@@ -50,14 +58,18 @@ export function Stepper({
     </ol>
   );
   if (!compact) return list;
-  const ci = Math.min(Math.max(current, 0), steps.length - 1);
-  const cur = steps[ci];
+  const currentIndex = Math.min(Math.max(current, 0), steps.length - 1);
+  const currentStep = steps[currentIndex];
   return (
     <div className={cx('ag-steps-wrap', className)}>
       {list}
-      {cur && (
+      {currentStep && (
         <p className="ag-steps__caption" aria-hidden="true">
-          {captionFormat(cur.number ?? formatNumber(ci + 1), formatNumber(steps.length), cur.label)}
+          {captionFormat(
+            currentStep.number ?? formatNumber(currentIndex + 1),
+            formatNumber(steps.length),
+            currentStep.label
+          )}
         </p>
       )}
     </div>

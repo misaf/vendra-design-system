@@ -1,6 +1,6 @@
 // GENERATED from components/utils/dates.js, components/utils/format.js by npm --prefix templates run build. Edit the sources, not this file.
 (() => {
-const __ds_ns = (window.VendraDesignSystem_4ae5a2 = window.VendraDesignSystem_4ae5a2 || {});
+const __ds_ns = (window.VendraDesignSystem = window.VendraDesignSystem || {});
 const __ds_scope = {};
 // components/utils/dates.js
 (() => {

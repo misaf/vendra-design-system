@@ -27,9 +27,11 @@ class Component extends VFPage {
         badge: p[L].badge,
         price: S.m(p.price),
         remove: () => {
-          st ? st.toggleSave(p.id) : this.setState({
-            ids: ids.filter(x => x !== p.id)
-          });
+          st
+            ? st.toggleSave(p.id)
+            : this.setState({
+                ids: ids.filter(x => x !== p.id)
+              });
           S.focusAfterRemoval('.ag-product__fav', i);
         }
       }))

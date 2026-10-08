@@ -1,13 +1,17 @@
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
 function vfSlotLabel(start, end, fa) {
-  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+  return fa
+    ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069'
+    : start + ':00–' + end + ':00';
 }
 
 // "Today", "Tomorrow" or the weekday, for delivery day choices.
 function vfDayName(day, fa) {
   if (day.offset === 0) return fa ? 'امروز' : 'Today';
   if (day.offset === 1) return fa ? 'فردا' : 'Tomorrow';
-  return new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(day.date);
+  return new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(
+    day.date
+  );
 }
 
 // "5 October" or «۱۴ مهر».
@@ -22,6 +26,8 @@ function vfDeliveryWhen(delivery, fa) {
   const slot = vfSlotLabel(delivery.slot, end, fa);
   if (!delivery.date) return slot;
   const date = window.AG_DATES.fromIso(delivery.date);
-  const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(date);
+  const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {
+    weekday: fa ? 'long' : 'short'
+  }).format(date);
   return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + ' · ' + slot;
 }

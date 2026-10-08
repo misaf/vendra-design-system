@@ -4,12 +4,12 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.package.json",
     "build": "node _build/build.cjs",
-    "check": "node _build/build.cjs --check && prettier --check ../components",
+    "check": "node _build/build.cjs --check && prettier --ignore-path ../.prettierignore --check ../components .",
     "test": "npm run typecheck && node _tests/storefront.test.cjs && node _tests/generation.test.cjs && node _tests/bundle.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs && node _tests/tenants.test.cjs && node _tests/components.test.cjs && node _tests/features.test.cjs && node _tests/package.test.cjs",
     "dev": "vite --config _build/vite.config.mjs",
     "test:e2e": "playwright test -c _e2e/playwright.config.mjs",
     "test:e2e:update": "playwright test -c _e2e/playwright.config.mjs --update-snapshots",
-    "format": "prettier --write ../components"
+    "format": "prettier --ignore-path ../.prettierignore --write ../components ."
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

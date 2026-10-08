@@ -3,23 +3,25 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
+// the text; the title is the only link (or a button without `href`).
 export function BlogCard({ image, srcSet, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "" }) {
-	const H = "h" + headingLevel;
-	const L = href ? "a" : "button";
+	const Heading = "h" + headingLevel;
+	const Link = href ? "a" : "button";
 	const wide = layout === "wide";
-	const sz = sizes || (wide ? "(max-width: 767px) 100vw, 55vw" : "(max-width: 767px) 100vw, 400px");
+	const imageSizes = sizes || (wide ? "(max-width: 767px) 100vw, 55vw" : "(max-width: 767px) 100vw, 400px");
 	return /* @__PURE__ */ React.createElement("article", { className: cx("ag-blog", wide && "ag-blog--wide", className) }, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-blog__media", "ag-product__media--" + frame),
 		style: aspect ? { aspectRatio: aspect } : undefined
 	}, image ? /* @__PURE__ */ React.createElement("img", {
 		src: image,
 		srcSet,
-		sizes: srcSet ? sz : undefined,
+		sizes: srcSet ? imageSizes : undefined,
 		alt: "",
 		loading: priority ? undefined : "lazy",
 		fetchpriority: priority ? "high" : undefined,
 		decoding: "async"
-	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-blog__body" }, date && /* @__PURE__ */ React.createElement("span", { className: "ag-eyebrow ag-blog__date" }, date), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-blog__meta" }, meta), /* @__PURE__ */ React.createElement(H, { className: "ag-blog__title" }, /* @__PURE__ */ React.createElement(L, {
+	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-blog__body" }, date && /* @__PURE__ */ React.createElement("span", { className: "ag-eyebrow ag-blog__date" }, date), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-blog__meta" }, meta), /* @__PURE__ */ React.createElement(Heading, { className: "ag-blog__title" }, /* @__PURE__ */ React.createElement(Link, {
 		href,
 		type: href ? undefined : "button",
 		className: "ag-blog__link",

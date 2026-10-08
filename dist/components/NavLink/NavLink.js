@@ -3,9 +3,11 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// A navigation link (or a button without `href`) in header, footer or menu style;
+// `current` marks it aria-current="page". The menu style adds a chevron.
 export function NavLink({ href, current, variant = "header", onClick, children, className = "", ...rest }) {
-	const T = href ? "a" : "button";
-	return /* @__PURE__ */ React.createElement(T, {
+	const Element = href ? "a" : "button";
+	return /* @__PURE__ */ React.createElement(Element, {
 		href,
 		type: href ? undefined : "button",
 		onClick,

@@ -1,5 +1,7 @@
 import React from 'react';
 import {cx} from '../utils/cx.js';
+
+// A plain surface: default (white with a hairline), `sunken` or `raised`. `padding` takes px (number) or any CSS length.
 export function Card({
   variant = 'default',
   padding = 24,

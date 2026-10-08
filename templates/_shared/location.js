@@ -2,7 +2,13 @@
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 
 function vfValidLocation(location) {
-  return !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
+  return (
+    !!location &&
+    Number.isFinite(location.lat) &&
+    Number.isFinite(location.lng) &&
+    Math.abs(location.lat) <= 90 &&
+    Math.abs(location.lng) <= 180
+  );
 }
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
@@ -14,7 +20,7 @@ function vfPinLocation(latlng) {
 function vfLocationText(location, fa) {
   if (!vfValidLocation(location)) return '';
   // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
-  const num = v => fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5);
+  const num = v => (fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5));
   return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
 }
 
@@ -52,14 +58,18 @@ function vfLoadLeaflet() {
 function vfLocate(found, failed) {
   if (!navigator.geolocation) return failed();
   navigator.geolocation.getCurrentPosition(
-    position => found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
+    position =>
+      found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
     () => failed(),
     {enableHighAccuracy: true, timeout: 10000}
   );
 }
 
 function vfTileLayer(Leaflet) {
-  return Leaflet.tileLayer(VF_STORE.map.tiles, {maxZoom: 19, attribution: VF_STORE.map.attribution});
+  return Leaflet.tileLayer(VF_STORE.map.tiles, {
+    maxZoom: 19,
+    attribution: VF_STORE.map.attribution
+  });
 }
 
 // Leaflet sizes itself once; a map that opens inside an animating dialog or a resized column needs telling.
@@ -68,7 +78,8 @@ function vfTileLayer(Leaflet) {
 function vfWatchSize(map) {
   if (!window.ResizeObserver) return;
   const watcher = new ResizeObserver(() => {
-    const centre = map.getCenter(), zoom = map.getZoom();
+    const centre = map.getCenter(),
+      zoom = map.getZoom();
     map.resizing = true;
     try {
       map.invalidateSize({pan: false});
@@ -84,7 +95,10 @@ function vfWatchSize(map) {
 // Keeps a centre-pin map on the element #id: wherever the map stops is the pinned point.
 // Call sync() after every render (the element can appear, disappear or be replaced) and remove() on unmount.
 function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
-  let map = null, pending = false, failed = false, dead = false;
+  let map = null,
+    pending = false,
+    failed = false,
+    dead = false;
   return {
     sync() {
       const box = document.getElementById(id);
@@ -94,22 +108,31 @@ function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
       }
       if (!box || map || pending || failed || dead) return;
       pending = true;
-      vfLoadLeaflet().then(Leaflet => {
-        pending = false;
-        const el = document.getElementById(id);
-        if (!el || map || dead) return;
-        const at = location(), ok = vfValidLocation(at);
-        map = Leaflet.map(el, {center: ok ? [at.lat, at.lng] : VF_STORE.map.center, zoom: ok ? zoom : VF_STORE.map.zoom, scrollWheelZoom: false});
-        vfTileLayer(Leaflet).addTo(map);
-        vfWatchSize(map);
-        map.on('moveend', () => { if (!map.resizing) onMove(vfPinLocation(map.getCenter())); });
-        map.on('click', e => map.panTo(e.latlng));
-        if (onReady) onReady();
-      }).catch(() => {
-        pending = false;
-        failed = true;
-        if (!dead && onFail) onFail();
-      });
+      vfLoadLeaflet()
+        .then(Leaflet => {
+          pending = false;
+          const el = document.getElementById(id);
+          if (!el || map || dead) return;
+          const at = location(),
+            ok = vfValidLocation(at);
+          map = Leaflet.map(el, {
+            center: ok ? [at.lat, at.lng] : VF_STORE.map.center,
+            zoom: ok ? zoom : VF_STORE.map.zoom,
+            scrollWheelZoom: false
+          });
+          vfTileLayer(Leaflet).addTo(map);
+          vfWatchSize(map);
+          map.on('moveend', () => {
+            if (!map.resizing) onMove(vfPinLocation(map.getCenter()));
+          });
+          map.on('click', e => map.panTo(e.latlng));
+          if (onReady) onReady();
+        })
+        .catch(() => {
+          pending = false;
+          failed = true;
+          if (!dead && onFail) onFail();
+        });
     },
     // Moves the map (and so the pin); false when there is no map to move.
     moveTo(at) {
@@ -128,7 +151,12 @@ function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
 // A read-only map of saved places on the element #id. places() returns [{id, label, title, location, pick}];
 // each pinned place gets a labelled, keyboard-reachable marker that calls pick.
 function vfPlacesMap({id, places, onFail}) {
-  let map = null, layer = null, pending = false, failed = false, dead = false, drawn = '';
+  let map = null,
+    layer = null,
+    pending = false,
+    failed = false,
+    dead = false,
+    drawn = '';
   const draw = Leaflet => {
     const list = places().filter(p => vfValidLocation(p.location));
     const key = JSON.stringify(list.map(p => [p.id, p.label, p.title, p.location]));
@@ -136,9 +164,19 @@ function vfPlacesMap({id, places, onFail}) {
     drawn = key;
     layer.clearLayers();
     list.forEach(p => {
-      const icon = Leaflet.divIcon({className: 'vf-place-marker', html: '<span class="vf-place-marker__dot"></span>', iconSize: [24, 24], iconAnchor: [12, 12]});
+      const icon = Leaflet.divIcon({
+        className: 'vf-place-marker',
+        html: '<span class="vf-place-marker__dot"></span>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
       Leaflet.marker([p.location.lat, p.location.lng], {icon, title: p.title, keyboard: true})
-        .bindTooltip(p.label, {permanent: true, direction: 'top', offset: [0, -12], className: 'vf-place-label'})
+        .bindTooltip(p.label, {
+          permanent: true,
+          direction: 'top',
+          offset: [0, -12],
+          className: 'vf-place-label'
+        })
         .on('click', () => p.pick())
         // Leaflet gives markers role="button" but only clicks them with a pointer.
         .on('keydown', e => {
@@ -148,7 +186,11 @@ function vfPlacesMap({id, places, onFail}) {
         })
         .addTo(layer);
     });
-    if (list.length > 1) map.fitBounds(list.map(p => [p.location.lat, p.location.lng]), {padding: [48, 48], maxZoom: 15});
+    if (list.length > 1)
+      map.fitBounds(
+        list.map(p => [p.location.lat, p.location.lng]),
+        {padding: [48, 48], maxZoom: 15}
+      );
     else if (list.length) map.setView([list[0].location.lat, list[0].location.lng], 15);
   };
   return {
@@ -162,20 +204,26 @@ function vfPlacesMap({id, places, onFail}) {
       if (map) return draw(window.L);
       if (!box || pending || failed || dead) return;
       pending = true;
-      vfLoadLeaflet().then(Leaflet => {
-        pending = false;
-        const el = document.getElementById(id);
-        if (!el || map || dead) return;
-        map = Leaflet.map(el, {center: VF_STORE.map.center, zoom: VF_STORE.map.zoom, scrollWheelZoom: false});
-        vfTileLayer(Leaflet).addTo(map);
-        vfWatchSize(map);
-        layer = Leaflet.layerGroup().addTo(map);
-        draw(Leaflet);
-      }).catch(() => {
-        pending = false;
-        failed = true;
-        if (!dead && onFail) onFail();
-      });
+      vfLoadLeaflet()
+        .then(Leaflet => {
+          pending = false;
+          const el = document.getElementById(id);
+          if (!el || map || dead) return;
+          map = Leaflet.map(el, {
+            center: VF_STORE.map.center,
+            zoom: VF_STORE.map.zoom,
+            scrollWheelZoom: false
+          });
+          vfTileLayer(Leaflet).addTo(map);
+          vfWatchSize(map);
+          layer = Leaflet.layerGroup().addTo(map);
+          draw(Leaflet);
+        })
+        .catch(() => {
+          pending = false;
+          failed = true;
+          if (!dead && onFail) onFail();
+        });
     },
     remove() {
       dead = true;

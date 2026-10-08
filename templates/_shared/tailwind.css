@@ -1,7 +1,7 @@
 /* Tailwind utilities use Vendra tokens. Preflight is deliberately omitted. */
 @layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme) prefix(tw);
-@import "tailwindcss/utilities.css" layer(utilities) prefix(tw) source(none);
+@import 'tailwindcss/theme.css' layer(theme) prefix(tw);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) source(none);
 
 /* Scan maintained markup only, never generated runtimes or dependencies. */
 @source "./*.html";

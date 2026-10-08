@@ -1,5 +1,6 @@
 import React from 'react';
 import {cx} from '../utils/cx.js';
+
 // Mount once, keep mounted, change children to announce. polite → role="status"; assertive → role="alert" (errors only).
 export function LiveRegion({children, politeness = 'polite', atomic = true, id, className = ''}) {
   return (

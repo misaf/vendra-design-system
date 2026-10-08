@@ -5,7 +5,7 @@ import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
 import { Button } from "../Button/Button.js";
 import { cx } from "../utils/cx.js";
-const AC_DEF = {
+const DEFAULT_LABELS = {
 	edit: "Edit {name}",
 	delete: "Delete {name}",
 	default: "Default",
@@ -13,23 +13,23 @@ const AC_DEF = {
 };
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
 export function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, onDelete, onMakeDefault, labels, className = "", style }) {
-	const L = {
-		...AC_DEF,
+	const text = {
+		...DEFAULT_LABELS,
 		...labels
 	};
-	const nm = (s) => s.replace("{name}", label || "");
+	const named = (template) => template.replace("{name}", label || "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-card", "ag-addr", className),
 		style
-	}, /* @__PURE__ */ React.createElement("div", { className: "ag-addr__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-addr__label" }, label), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__tools" }, isDefault && /* @__PURE__ */ React.createElement(Badge, { tone: "accent" }, L.default), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
+	}, /* @__PURE__ */ React.createElement("div", { className: "ag-addr__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-addr__label" }, label), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__tools" }, isDefault && /* @__PURE__ */ React.createElement(Badge, { tone: "accent" }, text.default), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "pencil",
 		size: "sm",
-		label: nm(L.edit),
+		label: named(text.edit),
 		onClick: onEdit
 	}), onDelete && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "trash-2",
 		size: "sm",
-		label: nm(L.delete),
+		label: named(text.delete),
 		onClick: onDelete
 	}))), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__line" }, line), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__meta" }, [
 		recipient,
@@ -38,10 +38,10 @@ export function AddressCard({ label, line, recipient, phone, zone, isDefault, on
 			dir: "ltr"
 		}, phone),
 		zone
-	].filter(Boolean).map((x, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, i > 0 && /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, " · "), x))), !isDefault && onMakeDefault && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(Button, {
+	].filter(Boolean).map((part, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, i > 0 && /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, " · "), part))), !isDefault && onMakeDefault && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(Button, {
 		variant: "ghost",
 		size: "sm",
 		onClick: onMakeDefault,
 		className: "ag-addr__default"
-	}, L.makeDefault)));
+	}, text.makeDefault)));
 }

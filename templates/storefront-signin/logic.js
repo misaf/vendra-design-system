@@ -16,16 +16,17 @@ class Component extends VFPage {
     const s = this.state;
     const lat = v => v.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
     const C = vfCopy(S);
-    const focus = id => setTimeout(() => {
-      const el = document.getElementById(id);
-      el && el.focus();
-    }, 0);
-    const n = v => S.fa ? VF_FA_DIGITS(v) : String(v);
+    const focus = id =>
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        el && el.focus();
+      }, 0);
+    const n = v => (S.fa ? VF_FA_DIGITS(v) : String(v));
     // Signing in from checkout goes back there; the mobile from the last order fills the field.
     const fromCheckout = vfPageRoute(this.props).next === 'delivery';
     const store = this.props.store;
     const last = store && store.lastOrder;
-    const phone = s.phone || (s.phoneTouched ? '' : last && last.delivery.senderPhone || '');
+    const phone = s.phone || (s.phoneTouched ? '' : (last && last.delivery.senderPhone) || '');
     return {
       ...S,
       termsLink: S.policyLink('terms'),
@@ -40,17 +41,21 @@ class Component extends VFPage {
       // Greets the customer by first name when the account has one.
       okName: s.name ? s.name.trim().split(/\s+/)[0] + '.' : C.okB,
       phone,
-      setPhone: e => this.setState({
-        phone: e.target.value,
-        phoneTouched: true,
-        pErr: false
-      }),
+      setPhone: e =>
+        this.setState({
+          phone: e.target.value,
+          phoneTouched: true,
+          pErr: false
+        }),
       phoneErr: s.pErr ? C.phoneErr : undefined,
       codeP: C.codeMessage(phone || '0912 000 0000'),
       // A new code can be sent once the countdown ends.
       waiting: s.left > 0,
       canResend: s.left === 0,
-      resendIn: C.resendIn.replace('{time}', n(Math.floor(s.left / 60)) + ':' + n(String(s.left % 60).padStart(2, '0'))),
+      resendIn: C.resendIn.replace(
+        '{time}',
+        n(Math.floor(s.left / 60)) + ':' + n(String(s.left % 60).padStart(2, '0'))
+      ),
       resentText: s.resent ? C.resent : '',
       resend: () => {
         this.setState({code: '', cErr: false, resent: true});
@@ -64,12 +69,15 @@ class Component extends VFPage {
         e && e.preventDefault && e.preventDefault();
         this.props.go({view: 'bag', step: 'delivery'});
       },
-      checkoutHref: (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
+      checkoutHref:
+        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
       code: s.code,
-      setCode: e => this.setState({
-        code: lat(e.target.value).replace(/\D/g, '').slice(0, 5),
-        cErr: false
-      }),
+      setCode: e =>
+        this.setState({
+          code: lat(e.target.value).replace(/\D/g, '').slice(0, 5),
+          cErr: false
+        }),
       codeErr: s.cErr ? C.codeErr : undefined,
       send: () => {
         if (lat(phone).replace(/\D/g, '').length < 10) {
@@ -97,7 +105,12 @@ class Component extends VFPage {
         }
         const account = vfAccountLogin(s.phone, S.lang);
         // The name given at checkout becomes the profile name when the account has none.
-        if (last && last.delivery.sender && !account.profile.name && vfPhone(last.delivery.senderPhone) === vfPhone(lat(s.phone))) {
+        if (
+          last &&
+          last.delivery.sender &&
+          !account.profile.name &&
+          vfPhone(last.delivery.senderPhone) === vfPhone(lat(s.phone))
+        ) {
           account.profile.name = last.delivery.sender;
           vfAccountSave(vfLatin(s.phone).replace(/\D/g, ''), account);
         }

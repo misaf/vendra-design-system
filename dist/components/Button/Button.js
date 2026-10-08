@@ -7,21 +7,21 @@ import { cx } from "../utils/cx.js";
 // loading: spinner replaces iconStart, label stays (width doesn't jump), button is disabled + aria-busy; loadingLabel is announced to screen readers.
 export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, ...rest }) {
 	if (loading) disabled = true;
-	const is = size === "sm" ? 16 : size === "lg" ? 20 : 18;
-	const cls = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
+	const iconSize = size === "sm" ? 16 : size === "lg" ? 20 : 18;
+	const classes = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
+	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
 		className: "ag-spin",
 		style: {
-			width: is,
-			height: is
+			width: iconSize,
+			height: iconSize
 		},
 		"aria-hidden": "true"
 	}) : iconStart && /* @__PURE__ */ React.createElement(Icon, {
 		name: iconStart,
-		size: is
+		size: iconSize
 	}), children, !loading && iconEnd && /* @__PURE__ */ React.createElement(Icon, {
 		name: iconEnd,
-		size: is
+		size: iconSize
 	}), loading && loadingLabel && /* @__PURE__ */ React.createElement("span", {
 		className: "ag-sr-only",
 		role: "status"
@@ -31,14 +31,14 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		"aria-disabled": disabled || undefined,
-		className: cls + (disabled ? " ag-btn--disabled" : ""),
+		className: classes + (disabled ? " ag-btn--disabled" : ""),
 		...rest
-	}, inner);
+	}, content);
 	return /* @__PURE__ */ React.createElement("button", {
 		type,
 		disabled,
 		"aria-busy": loading || undefined,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 }

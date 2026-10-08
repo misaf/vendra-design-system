@@ -1,6 +1,9 @@
 import React from 'react';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
+
+// A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
+// shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
 export function LineItem({
   image,
   srcSet,
@@ -20,25 +23,25 @@ export function LineItem({
   busy,
   className = ''
 }) {
-  const lg = size !== 'sm';
-  const tw = lg ? 88 : 44;
+  const large = size !== 'sm';
+  const thumbWidth = large ? 88 : 44;
   return (
     <div className="ag-linewrap">
       <div
         className={cx(
           'ag-line',
-          'ag-line--' + (lg ? 'lg' : 'sm'),
+          'ag-line--' + (large ? 'lg' : 'sm'),
           unavailable && 'ag-line--unavailable',
           className
         )}
         aria-busy={busy || undefined}
       >
-        <span className="ag-line__thumb" style={{width: tw}}>
+        <span className="ag-line__thumb" style={{width: thumbWidth}}>
           {image ? (
             <img
               src={image}
               srcSet={srcSet}
-              sizes={srcSet ? tw + 'px' : undefined}
+              sizes={srcSet ? thumbWidth + 'px' : undefined}
               alt=""
               loading="lazy"
               decoding="async"
@@ -52,7 +55,7 @@ export function LineItem({
           {meta && <div className="ag-line__meta">{meta}</div>}
           {note && <div className="ag-line__note">{note}</div>}
           {unavailable && <div className="ag-line__flag">{unavailableLabel}</div>}
-          {lg && (onQuantityChange || onRemove) && (
+          {large && (onQuantityChange || onRemove) && (
             <div className="ag-line__actions">
               {onQuantityChange && !unavailable && (
                 <QuantityInput
@@ -72,7 +75,7 @@ export function LineItem({
           )}
         </div>
         <div className="ag-line__end">
-          {!lg && quantity != null && (
+          {!large && quantity != null && (
             <span className="ag-line__qty">×{formatQuantity(quantity)}</span>
           )}
           {!unavailable && <span className="ag-line__price">{price}</span>}

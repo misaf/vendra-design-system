@@ -5,23 +5,23 @@ import { ArchFrame } from "../ArchFrame/ArchFrame.js";
 import { cx } from "../utils/cx.js";
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
 export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", className = "", style }) {
-	const H = titleAs;
+	const Title = titleAs;
 	return /* @__PURE__ */ React.createElement("section", {
 		className: cx("ag-osum", className),
 		style
-	}, title && /* @__PURE__ */ React.createElement(H, { className: "ag-osum__title" }, title), /* @__PURE__ */ React.createElement("ul", { className: "ag-osum__lines" }, lines.map((l, i) => /* @__PURE__ */ React.createElement("li", {
+	}, title && /* @__PURE__ */ React.createElement(Title, { className: "ag-osum__title" }, title), /* @__PURE__ */ React.createElement("ul", { className: "ag-osum__lines" }, lines.map((line, i) => /* @__PURE__ */ React.createElement("li", {
 		key: i,
 		className: "ag-osum__line"
 	}, /* @__PURE__ */ React.createElement(ArchFrame, {
 		size: "thumb",
 		tone: "product",
-		src: l.image,
+		src: line.image,
 		alt: ""
-	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, l.href ? /* @__PURE__ */ React.createElement("a", {
-		href: l.href,
-		onClick: l.onClick
-	}, l.name) : l.name), l.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, l.meta), l.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, l.note)), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__total" }, l.total)))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((s, i) => /* @__PURE__ */ React.createElement("div", {
+	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement("a", {
+		href: line.href,
+		onClick: line.onClick
+	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__total" }, line.total)))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
-		className: cx("ag-osum__sum", s.strong && "ag-osum__sum--strong")
-	}, /* @__PURE__ */ React.createElement("dt", null, s.label), /* @__PURE__ */ React.createElement("dd", null, s.value)))));
+		className: cx("ag-osum__sum", sum.strong && "ag-osum__sum--strong")
+	}, /* @__PURE__ */ React.createElement("dt", null, sum.label), /* @__PURE__ */ React.createElement("dd", null, sum.value)))));
 }

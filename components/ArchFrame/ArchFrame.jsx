@@ -1,6 +1,10 @@
 import React from 'react';
 import {cx} from '../utils/cx.js';
+
 const ARCH_RATIOS = {'4/5': '4 / 5', '3/4': '3 / 4', '4/3': '4 / 3', '1/1': '1 / 1'};
+
+// The brand's image window: an arch (or circle, soft or square) on --radius-arch, with a
+// striped placeholder until `src` is set. `ratio="fill"` stretches to the parent's height.
 export function ArchFrame({
   src,
   srcSet,
@@ -22,14 +26,14 @@ export function ArchFrame({
   ...rest
 }) {
   const fill = ratio === 'fill' && shape !== 'circle';
-  const ar =
+  const aspectRatio =
     shape === 'circle'
       ? '1 / 1'
       : fill
         ? undefined
         : ARCH_RATIOS[ratio] || ratio.replace('/', ' / ');
   const thumb = size === 'thumb';
-  const cls = cx(
+  const classes = cx(
     'ag-arch',
     'ag-arch--' + shape,
     ring && 'ag-arch--ring',
@@ -41,8 +45,8 @@ export function ArchFrame({
   );
   return (
     <div
-      className={cls}
-      style={{aspectRatio: ar, minHeight: fill ? minHeight : undefined, ...style}}
+      className={classes}
+      style={{aspectRatio, minHeight: fill ? minHeight : undefined, ...style}}
       {...rest}
     >
       {src ? (

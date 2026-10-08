@@ -1,6 +1,9 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
+
+// A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
+// the text; the title is the only link (or a button without `href`).
 export function BlogCard({
   image,
   srcSet,
@@ -19,10 +22,11 @@ export function BlogCard({
   priority,
   className = ''
 }) {
-  const H = 'h' + headingLevel;
-  const L = href ? 'a' : 'button';
+  const Heading = 'h' + headingLevel;
+  const Link = href ? 'a' : 'button';
   const wide = layout === 'wide';
-  const sz = sizes || (wide ? '(max-width: 767px) 100vw, 55vw' : '(max-width: 767px) 100vw, 400px');
+  const imageSizes =
+    sizes || (wide ? '(max-width: 767px) 100vw, 55vw' : '(max-width: 767px) 100vw, 400px');
   return (
     <article className={cx('ag-blog', wide && 'ag-blog--wide', className)}>
       <div
@@ -33,7 +37,7 @@ export function BlogCard({
           <img
             src={image}
             srcSet={srcSet}
-            sizes={srcSet ? sz : undefined}
+            sizes={srcSet ? imageSizes : undefined}
             alt=""
             loading={priority ? undefined : 'lazy'}
             fetchpriority={priority ? 'high' : undefined}
@@ -46,16 +50,16 @@ export function BlogCard({
       <div className="ag-blog__body">
         {date && <span className="ag-eyebrow ag-blog__date">{date}</span>}
         {meta && <div className="ag-blog__meta">{meta}</div>}
-        <H className="ag-blog__title">
-          <L
+        <Heading className="ag-blog__title">
+          <Link
             href={href}
             type={href ? undefined : 'button'}
             className="ag-blog__link"
             onClick={onClick}
           >
             {title}
-          </L>
-        </H>
+          </Link>
+        </Heading>
         {excerpt && <p className="ag-blog__excerpt">{excerpt}</p>}
         {cta && (
           <span className="ag-blog__cta" aria-hidden="true">

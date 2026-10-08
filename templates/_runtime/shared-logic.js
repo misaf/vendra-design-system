@@ -12,12 +12,18 @@ const VF_STORE = {
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},
   // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
-  announcement: {en: 'Free delivery in Karaj on orders over {freeDelivery}.', fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'},
+  announcement: {
+    en: 'Free delivery in Karaj on orders over {freeDelivery}.',
+    fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'
+  },
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   // One or two sentences under the brand in the footer.
-  tagline: {en: 'Hand-tied flowers from our Karaj studio, delivered across Karaj and Tehran.', fa: 'گل‌های دست‌بسته از استودیوی ما در کرج، با ارسال در کرج و تهران.'},
+  tagline: {
+    en: 'Hand-tied flowers from our Karaj studio, delivered across Karaj and Tehran.',
+    fa: 'گل‌های دست‌بسته از استودیوی ما در کرج، با ارسال در کرج و تهران.'
+  },
   address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
-  studio: {lat: 35.8352, lng: 50.9750}, // The shop's front door, shown on the contact map and used for directions.
+  studio: {lat: 35.8352, lng: 50.975}, // The shop's front door, shown on the contact map and used for directions.
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',
@@ -36,8 +42,18 @@ const VF_STORE = {
   },
   // Account balance. Signed-in customers top up, then pay for orders from their balance. Paying from a
   // balance of at least `discountFrom` takes `discountPercent` off the products (not delivery). Amounts are in Toman.
-  wallet: {discountFrom: 100_000_000, discountPercent: 5, topUps: [10_000_000, 50_000_000, 100_000_000], minTopUp: 1_000_000, maxTopUp: 500_000_000},
-  payment: {cardNumber: '6221061072645437', holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'}, bank: {en: 'Saman Bank', fa: 'بانک سامان'}}
+  wallet: {
+    discountFrom: 100_000_000,
+    discountPercent: 5,
+    topUps: [10_000_000, 50_000_000, 100_000_000],
+    minTopUp: 1_000_000,
+    maxTopUp: 500_000_000
+  },
+  payment: {
+    cardNumber: '6221061072645437',
+    holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+    bank: {en: 'Saman Bank', fa: 'بانک سامان'}
+  }
 };
 
 // Source: templates/_shared/delivery.js
@@ -47,25 +63,47 @@ const VF_STORE = {
 // pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
 const VF_ZONES = [
   {
-    id: 'central', fee: 80_000, cutoff: '18:00', km: 5,
-    en: 'Karaj central', fa: 'مرکز کرج'
+    id: 'central',
+    fee: 80_000,
+    cutoff: '18:00',
+    km: 5,
+    en: 'Karaj central',
+    fa: 'مرکز کرج'
   },
   {
-    id: 'outer', fee: 120_000, cutoff: '16:00', km: 12,
-    en: 'Karaj outer', fa: 'حومه کرج'
+    id: 'outer',
+    fee: 120_000,
+    cutoff: '16:00',
+    km: 12,
+    en: 'Karaj outer',
+    fa: 'حومه کرج'
   },
   {
-    id: 'alborz', fee: 180_000, cutoff: '14:00', km: 60,
-    en: 'Alborz province', fa: 'استان البرز'
+    id: 'alborz',
+    fee: 180_000,
+    cutoff: '14:00',
+    km: 60,
+    en: 'Alborz province',
+    fa: 'استان البرز'
   },
   {
-    id: 'tehran', fee: 250_000, cutoff: '12:00', km: 25, center: {lat: 35.6961, lng: 51.4231},
-    en: 'Tehran', fa: 'تهران'
+    id: 'tehran',
+    fee: 250_000,
+    cutoff: '12:00',
+    km: 25,
+    center: {lat: 35.6961, lng: 51.4231},
+    en: 'Tehran',
+    fa: 'تهران'
   }
 ];
 const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
 const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
-const VF_SLOTS = [['08', '12'], ['12', '16'], ['16', '20'], ['20', '22']];
+const VF_SLOTS = [
+  ['08', '12'],
+  ['12', '16'],
+  ['16', '20'],
+  ['20', '22']
+];
 // A slot today stops taking orders this many minutes before it ends.
 const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.
@@ -79,7 +117,19 @@ const VF_SAMPLE_SOLD_OUT_IN_DAYS = 2;
 // noMap is set when the map couldn't load: a typed full address then stands in for the pin.
 // sender and senderPhone are the customer's own details, for order texts and the delivery photo.
 // Card messages live on each bag line that includes a handwritten card (line.card).
-const VF_DELIVERY = {name: '', phone: '', sender: '', senderPhone: '', address: '', location: null, noMap: false, zone: 'central', date: '', slot: '12', promo: ''};
+const VF_DELIVERY = {
+  name: '',
+  phone: '',
+  sender: '',
+  senderPhone: '',
+  address: '',
+  location: null,
+  noMap: false,
+  zone: 'central',
+  date: '',
+  slot: '12',
+  promo: ''
+};
 
 function vfDeliveryCutoff(zone, persian) {
   const time = persian ? zone.cutoff.replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]) : zone.cutoff;
@@ -95,20 +145,32 @@ function vfZone(id) {
 }
 
 function vfDistanceKm(a, b) {
-  const rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+  const rad = Math.PI / 180,
+    dLat = (b.lat - a.lat) * rad,
+    dLng = (b.lng - a.lng) * rad;
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
   return 12742 * Math.asin(Math.sqrt(h));
 }
 
 // The zone id for a delivery pin, or null when the pin is outside every zone.
 function vfZoneAt(location) {
   if (!vfValidLocation(location)) return null;
-  const reach = VF_ZONES.filter(zone => vfDistanceKm(zone.center || VF_STORE.studio, location) <= zone.km);
-  return reach.length ? reach.reduce((a, b) => b.km < a.km ? b : a).id : null;
+  const reach = VF_ZONES.filter(
+    zone => vfDistanceKm(zone.center || VF_STORE.studio, location) <= zone.km
+  );
+  return reach.length ? reach.reduce((a, b) => (b.km < a.km ? b : a)).id : null;
 }
 
 function vfIsoDate(date) {
-  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+  return (
+    date.getFullYear() +
+    '-' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(date.getDate()).padStart(2, '0')
+  );
 }
 
 // The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
@@ -119,7 +181,9 @@ function vfDeliveryDays(zoneId, now = new Date()) {
     const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
     const iso = vfIsoDate(date);
     return {
-      iso, date, offset,
+      iso,
+      date,
+      offset,
       soldOut: VF_SOLD_OUT_DATES.includes(iso) || offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
       pastCutoff: offset === 0 && pastCutoff
     };
@@ -142,14 +206,20 @@ function vfDeliveryDate(delivery, now = new Date()) {
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 function vfDeliverySlots(iso, now = new Date()) {
-  const today = iso === vfIsoDate(now), minutes = now.getHours() * 60 + now.getMinutes();
-  return VF_SLOTS.map(([start, end]) => ({start, end, closed: today && minutes > Number(end) * 60 - VF_SLOT_LEAD_MINUTES}));
+  const today = iso === vfIsoDate(now),
+    minutes = now.getHours() * 60 + now.getMinutes();
+  return VF_SLOTS.map(([start, end]) => ({
+    start,
+    end,
+    closed: today && minutes > Number(end) * 60 - VF_SLOT_LEAD_MINUTES
+  }));
 }
 
 // The chosen slot when it is still open on the delivery day, otherwise the first open slot.
 function vfDeliverySlot(delivery, now = new Date()) {
   const open = vfDeliverySlots(vfDeliveryDate(delivery, now), now).filter(slot => !slot.closed);
-  return (open.find(slot => slot.start === delivery.slot) || open[0] || {start: delivery.slot}).start;
+  return (open.find(slot => slot.start === delivery.slot) || open[0] || {start: delivery.slot})
+    .start;
 }
 
 function vfPhone(value) {
@@ -165,7 +235,9 @@ function vfErrors(delivery, lines = []) {
     phone: mobile(delivery.phone),
     location: !delivery.noMap && !vfValidLocation(delivery.location),
     outside: pinned && !vfZoneAt(delivery.location),
-    address: delivery.noMap ? String(delivery.address || '').trim().length < 6 : !String(delivery.address || '').trim(),
+    address: delivery.noMap
+      ? String(delivery.address || '').trim().length < 6
+      : !String(delivery.address || '').trim(),
     cards: lines.some(line => vfLineHasCard(line) && !String(line.card || '').trim()),
     sender: !String(delivery.sender || '').trim(),
     senderPhone: mobile(delivery.senderPhone)
@@ -185,8 +257,15 @@ function vfTotals(lines, delivery, balance = null) {
   const fee = vfFreeDelivery(zone.id, sub) ? 0 : zone.fee;
   // The applied promo code travels with the checkout details.
   const discount = vfDiscount(delivery.promo, sub);
-  const balanceDiscount = typeof vfBalanceDiscount === 'function' ? vfBalanceDiscount(balance, sub - discount) : 0;
-  return {sub, fee, discount, ...(balanceDiscount ? {balanceDiscount, balancePercent: VF_STORE.wallet.discountPercent} : {}), total: sub - discount - balanceDiscount + fee};
+  const balanceDiscount =
+    typeof vfBalanceDiscount === 'function' ? vfBalanceDiscount(balance, sub - discount) : 0;
+  return {
+    sub,
+    fee,
+    discount,
+    ...(balanceDiscount ? {balanceDiscount, balancePercent: VF_STORE.wallet.discountPercent} : {}),
+    total: sub - discount - balanceDiscount + fee
+  };
 }
 
 // Source: templates/_shared/location.js
@@ -194,7 +273,13 @@ function vfTotals(lines, delivery, balance = null) {
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 
 function vfValidLocation(location) {
-  return !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
+  return (
+    !!location &&
+    Number.isFinite(location.lat) &&
+    Number.isFinite(location.lng) &&
+    Math.abs(location.lat) <= 90 &&
+    Math.abs(location.lng) <= 180
+  );
 }
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
@@ -206,7 +291,7 @@ function vfPinLocation(latlng) {
 function vfLocationText(location, fa) {
   if (!vfValidLocation(location)) return '';
   // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
-  const num = v => fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5);
+  const num = v => (fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5));
   return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
 }
 
@@ -244,14 +329,18 @@ function vfLoadLeaflet() {
 function vfLocate(found, failed) {
   if (!navigator.geolocation) return failed();
   navigator.geolocation.getCurrentPosition(
-    position => found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
+    position =>
+      found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
     () => failed(),
     {enableHighAccuracy: true, timeout: 10000}
   );
 }
 
 function vfTileLayer(Leaflet) {
-  return Leaflet.tileLayer(VF_STORE.map.tiles, {maxZoom: 19, attribution: VF_STORE.map.attribution});
+  return Leaflet.tileLayer(VF_STORE.map.tiles, {
+    maxZoom: 19,
+    attribution: VF_STORE.map.attribution
+  });
 }
 
 // Leaflet sizes itself once; a map that opens inside an animating dialog or a resized column needs telling.
@@ -260,7 +349,8 @@ function vfTileLayer(Leaflet) {
 function vfWatchSize(map) {
   if (!window.ResizeObserver) return;
   const watcher = new ResizeObserver(() => {
-    const centre = map.getCenter(), zoom = map.getZoom();
+    const centre = map.getCenter(),
+      zoom = map.getZoom();
     map.resizing = true;
     try {
       map.invalidateSize({pan: false});
@@ -276,7 +366,10 @@ function vfWatchSize(map) {
 // Keeps a centre-pin map on the element #id: wherever the map stops is the pinned point.
 // Call sync() after every render (the element can appear, disappear or be replaced) and remove() on unmount.
 function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
-  let map = null, pending = false, failed = false, dead = false;
+  let map = null,
+    pending = false,
+    failed = false,
+    dead = false;
   return {
     sync() {
       const box = document.getElementById(id);
@@ -286,22 +379,31 @@ function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
       }
       if (!box || map || pending || failed || dead) return;
       pending = true;
-      vfLoadLeaflet().then(Leaflet => {
-        pending = false;
-        const el = document.getElementById(id);
-        if (!el || map || dead) return;
-        const at = location(), ok = vfValidLocation(at);
-        map = Leaflet.map(el, {center: ok ? [at.lat, at.lng] : VF_STORE.map.center, zoom: ok ? zoom : VF_STORE.map.zoom, scrollWheelZoom: false});
-        vfTileLayer(Leaflet).addTo(map);
-        vfWatchSize(map);
-        map.on('moveend', () => { if (!map.resizing) onMove(vfPinLocation(map.getCenter())); });
-        map.on('click', e => map.panTo(e.latlng));
-        if (onReady) onReady();
-      }).catch(() => {
-        pending = false;
-        failed = true;
-        if (!dead && onFail) onFail();
-      });
+      vfLoadLeaflet()
+        .then(Leaflet => {
+          pending = false;
+          const el = document.getElementById(id);
+          if (!el || map || dead) return;
+          const at = location(),
+            ok = vfValidLocation(at);
+          map = Leaflet.map(el, {
+            center: ok ? [at.lat, at.lng] : VF_STORE.map.center,
+            zoom: ok ? zoom : VF_STORE.map.zoom,
+            scrollWheelZoom: false
+          });
+          vfTileLayer(Leaflet).addTo(map);
+          vfWatchSize(map);
+          map.on('moveend', () => {
+            if (!map.resizing) onMove(vfPinLocation(map.getCenter()));
+          });
+          map.on('click', e => map.panTo(e.latlng));
+          if (onReady) onReady();
+        })
+        .catch(() => {
+          pending = false;
+          failed = true;
+          if (!dead && onFail) onFail();
+        });
     },
     // Moves the map (and so the pin); false when there is no map to move.
     moveTo(at) {
@@ -320,7 +422,12 @@ function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
 // A read-only map of saved places on the element #id. places() returns [{id, label, title, location, pick}];
 // each pinned place gets a labelled, keyboard-reachable marker that calls pick.
 function vfPlacesMap({id, places, onFail}) {
-  let map = null, layer = null, pending = false, failed = false, dead = false, drawn = '';
+  let map = null,
+    layer = null,
+    pending = false,
+    failed = false,
+    dead = false,
+    drawn = '';
   const draw = Leaflet => {
     const list = places().filter(p => vfValidLocation(p.location));
     const key = JSON.stringify(list.map(p => [p.id, p.label, p.title, p.location]));
@@ -328,9 +435,19 @@ function vfPlacesMap({id, places, onFail}) {
     drawn = key;
     layer.clearLayers();
     list.forEach(p => {
-      const icon = Leaflet.divIcon({className: 'vf-place-marker', html: '<span class="vf-place-marker__dot"></span>', iconSize: [24, 24], iconAnchor: [12, 12]});
+      const icon = Leaflet.divIcon({
+        className: 'vf-place-marker',
+        html: '<span class="vf-place-marker__dot"></span>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
       Leaflet.marker([p.location.lat, p.location.lng], {icon, title: p.title, keyboard: true})
-        .bindTooltip(p.label, {permanent: true, direction: 'top', offset: [0, -12], className: 'vf-place-label'})
+        .bindTooltip(p.label, {
+          permanent: true,
+          direction: 'top',
+          offset: [0, -12],
+          className: 'vf-place-label'
+        })
         .on('click', () => p.pick())
         // Leaflet gives markers role="button" but only clicks them with a pointer.
         .on('keydown', e => {
@@ -340,7 +457,11 @@ function vfPlacesMap({id, places, onFail}) {
         })
         .addTo(layer);
     });
-    if (list.length > 1) map.fitBounds(list.map(p => [p.location.lat, p.location.lng]), {padding: [48, 48], maxZoom: 15});
+    if (list.length > 1)
+      map.fitBounds(
+        list.map(p => [p.location.lat, p.location.lng]),
+        {padding: [48, 48], maxZoom: 15}
+      );
     else if (list.length) map.setView([list[0].location.lat, list[0].location.lng], 15);
   };
   return {
@@ -354,20 +475,26 @@ function vfPlacesMap({id, places, onFail}) {
       if (map) return draw(window.L);
       if (!box || pending || failed || dead) return;
       pending = true;
-      vfLoadLeaflet().then(Leaflet => {
-        pending = false;
-        const el = document.getElementById(id);
-        if (!el || map || dead) return;
-        map = Leaflet.map(el, {center: VF_STORE.map.center, zoom: VF_STORE.map.zoom, scrollWheelZoom: false});
-        vfTileLayer(Leaflet).addTo(map);
-        vfWatchSize(map);
-        layer = Leaflet.layerGroup().addTo(map);
-        draw(Leaflet);
-      }).catch(() => {
-        pending = false;
-        failed = true;
-        if (!dead && onFail) onFail();
-      });
+      vfLoadLeaflet()
+        .then(Leaflet => {
+          pending = false;
+          const el = document.getElementById(id);
+          if (!el || map || dead) return;
+          map = Leaflet.map(el, {
+            center: VF_STORE.map.center,
+            zoom: VF_STORE.map.zoom,
+            scrollWheelZoom: false
+          });
+          vfTileLayer(Leaflet).addTo(map);
+          vfWatchSize(map);
+          layer = Leaflet.layerGroup().addTo(map);
+          draw(Leaflet);
+        })
+        .catch(() => {
+          pending = false;
+          failed = true;
+          if (!dead && onFail) onFail();
+        });
     },
     remove() {
       dead = true;
@@ -388,7 +515,9 @@ const VF_PROMOS = [
 
 // Codes are matched without case, spaces or Persian digits.
 function vfPromoCode(value) {
-  return vfLatin(value || '').replace(/\s/g, '').toUpperCase();
+  return vfLatin(value || '')
+    .replace(/\s/g, '')
+    .toUpperCase();
 }
 
 // {promo} when the code applies to this subtotal, otherwise {error: 'unknown' | 'min', min}.
@@ -402,17 +531,36 @@ function vfPromoCheck(value, sub) {
 // The discount for the bag's applied code; 0 once the subtotal drops below its minimum.
 function vfDiscount(code, sub) {
   const {promo} = code ? vfPromoCheck(code, sub) : {};
-  return promo ? Math.round(sub * promo.percent / 100) : 0;
+  return promo ? Math.round((sub * promo.percent) / 100) : 0;
 }
 
 // Order summary rows; discounts, when there are any, sit under the subtotal. labels.balanceDiscount
 // reads like 'Balance discount · {percent}%'; num formats its percent.
 function vfSummaryRows(totals, code, labels, money, num = String) {
-  return [{label: labels.sub, value: money(totals.sub)},
-    ...(totals.discount ? [{label: labels.discount + ' · ' + vfPromoCode(code), value: '−⁨' + money(totals.discount) + '⁩'}] : []),
-    ...(totals.balanceDiscount ? [{label: (labels.balanceDiscount || 'Balance discount · {percent}%').replace('{percent}', num(totals.balancePercent)), value: '−⁨' + money(totals.balanceDiscount) + '⁩'}] : []),
+  return [
+    {label: labels.sub, value: money(totals.sub)},
+    ...(totals.discount
+      ? [
+          {
+            label: labels.discount + ' · ' + vfPromoCode(code),
+            value: '−⁨' + money(totals.discount) + '⁩'
+          }
+        ]
+      : []),
+    ...(totals.balanceDiscount
+      ? [
+          {
+            label: (labels.balanceDiscount || 'Balance discount · {percent}%').replace(
+              '{percent}',
+              num(totals.balancePercent)
+            ),
+            value: '−⁨' + money(totals.balanceDiscount) + '⁩'
+          }
+        ]
+      : []),
     {label: labels.fee, value: totals.fee ? money(totals.fee) : labels.free},
-    {label: labels.total, value: money(totals.total), strong: true}];
+    {label: labels.total, value: money(totals.total), strong: true}
+  ];
 }
 
 // Source: templates/_shared/catalog.js
@@ -431,32 +579,78 @@ const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 const VF_SAMPLE_GALLERY = [VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER, VF_PRODUCT_PLACEHOLDER];
 const VF_PRODUCTS = [
   {
-    id: 'VF-7K2M4Q', legacy: 'ivory', occasions: ['birthday', 'thanks'], cat: 'boxes', sizes: true, price: 4_100_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-7K2M4Q',
+    legacy: 'ivory',
+    occasions: ['birthday', 'thanks'],
+    cat: 'boxes',
+    sizes: true,
+    price: 4_100_000,
+    same: true,
+    roses: true,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Roses · lisianthus · satin', badge: 'New'},
     fa: {sub: 'رز · لیسیانتوس · ساتن', badge: 'جدید'}
   },
   {
-    id: 'VF-3HX9TP', legacy: 'lavender', occasions: ['birthday', 'sympathy'], cat: 'bouquets', price: 2_800_000, same: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-3HX9TP',
+    legacy: 'lavender',
+    occasions: ['birthday', 'sympathy'],
+    cat: 'bouquets',
+    price: 2_800_000,
+    same: true,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Seasonal · 15 stems'},
     fa: {sub: 'فصلی · ۱۵ شاخه'}
   },
   {
-    id: 'VF-8RD5WN', legacy: 'orchid', occasions: ['thanks', 'sympathy'], cat: 'orchids', noAddons: ['vase'], care: true, price: 3_400_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-8RD5WN',
+    legacy: 'orchid',
+    occasions: ['thanks', 'sympathy'],
+    cat: 'orchids',
+    noAddons: ['vase'],
+    care: true,
+    price: 3_400_000,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Phalaenopsis · ceramic pot'},
     fa: {sub: 'فالانوپسیس · گلدان سرامیکی'}
   },
   {
-    id: 'VF-4CJ6ZB', legacy: 'crimson', occasions: ['anniversary'], cat: 'boxes', price: 5_200_000, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-4CJ6ZB',
+    legacy: 'crimson',
+    occasions: ['anniversary'],
+    cat: 'boxes',
+    price: 5_200_000,
+    roses: true,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Red roses · velvet box', badge: 'Bestseller'},
     fa: {sub: 'رز قرمز · باکس مخمل', badge: 'پرفروش'}
   },
   {
-    id: 'VF-9FA2KE', legacy: 'blush', occasions: ['anniversary', 'birthday'], cat: 'bouquets', price: 2_200_000, same: true, roses: true, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-9FA2KE',
+    legacy: 'blush',
+    occasions: ['anniversary', 'birthday'],
+    cat: 'bouquets',
+    price: 2_200_000,
+    same: true,
+    roses: true,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Garden roses · eucalyptus'},
     fa: {sub: 'رز باغی · اکالیپتوس'}
   },
   {
-    id: 'VF-6MT3VY', legacy: 'bridal', occasions: [], cat: 'bridal', inStock: false, price: 6_500_000, image: VF_PRODUCT_PLACEHOLDER, images: VF_SAMPLE_GALLERY,
+    id: 'VF-6MT3VY',
+    legacy: 'bridal',
+    occasions: [],
+    cat: 'bridal',
+    inStock: false,
+    price: 6_500_000,
+    image: VF_PRODUCT_PLACEHOLDER,
+    images: VF_SAMPLE_GALLERY,
     en: {sub: 'Peonies · ranunculus'},
     fa: {sub: 'گل صد‌تومانی · آلاله'}
   }
@@ -478,14 +672,21 @@ const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 function vfNormalizeToken(text) {
-  return vfLatin(text || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return vfLatin(text || '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.
 function vfFindProduct(text) {
-  const raw = String(text || ''), key = vfNormalizeToken(raw);
+  const raw = String(text || ''),
+    key = vfNormalizeToken(raw);
   const slug = raw === 'ivory-classic' ? 'ivory' : raw;
-  return VF_PRODUCTS.find(product => product.legacy === slug) || (key ? VF_PRODUCTS.find(product => vfNormalizeToken(product.id) === key) : null) || null;
+  return (
+    VF_PRODUCTS.find(product => product.legacy === slug) ||
+    (key ? VF_PRODUCTS.find(product => vfNormalizeToken(product.id) === key) : null) ||
+    null
+  );
 }
 
 function vfProduct(id) {
@@ -506,7 +707,9 @@ function vfProductSub(product, lang = 'en') {
 }
 
 function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
-  const src = /^(https?:|data:|\/)/.test(asset) ? asset : (window.VF_ASSET_BASE || '../../') + asset;
+  const src = /^(https?:|data:|\/)/.test(asset)
+    ? asset
+    : (window.VF_ASSET_BASE || '../../') + asset;
   const name = VF_CATEGORY_ITEM[lang][product.cat] + ' ' + vfTokenText(product.id);
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
@@ -543,28 +746,51 @@ function vfLineDetail(product, size, addons, lang) {
   const fa = lang === 'fa';
   return [VF_CATEGORY_ITEM[lang][product.cat]]
     .concat(product.sizes && size ? [size[fa ? 3 : 2], size[fa ? 5 : 4]] : [])
-    .concat(addons.map(addon => addon[fa ? 3 : 2])).join(' · ');
+    .concat(addons.map(addon => addon[fa ? 3 : 2]))
+    .join(' · ');
 }
 
 // Each demo gets its own bag objects; prices and codes come from the same catalog.
 function vfSampleBag() {
-  const box = vfProduct('VF-7K2M4Q'), orchid = vfProduct('VF-8RD5WN');
-  const classic = VF_SIZES.find(size => size[0] === 'classic'), card = VF_ADDONS.find(addon => addon[0] === 'card');
+  const box = vfProduct('VF-7K2M4Q'),
+    orchid = vfProduct('VF-8RD5WN');
+  const classic = VF_SIZES.find(size => size[0] === 'classic'),
+    card = VF_ADDONS.find(addon => addon[0] === 'card');
   return [
     {
-      id: box.id + '-classic-card', productId: box.id, token: box.id, size: 'classic', addons: ['card'], unit: box.price + classic[1] + card[1], qty: 1, image: box.image,
+      id: box.id + '-classic-card',
+      productId: box.id,
+      token: box.id,
+      size: 'classic',
+      addons: ['card'],
+      unit: box.price + classic[1] + card[1],
+      qty: 1,
+      image: box.image,
       card: 'Happy birthday, Shirin.',
       en: [box.id, vfLineDetail(box, classic, [card], 'en')],
       fa: [box.id, vfLineDetail(box, classic, [card], 'fa')]
     },
-    {id: orchid.id, productId: orchid.id, token: orchid.id, size: null, addons: [], unit: orchid.price, qty: 1, image: orchid.image,
-      en: [orchid.id, vfLineDetail(orchid, null, [], 'en')], fa: [orchid.id, vfLineDetail(orchid, null, [], 'fa')]}
+    {
+      id: orchid.id,
+      productId: orchid.id,
+      token: orchid.id,
+      size: null,
+      addons: [],
+      unit: orchid.price,
+      qty: 1,
+      image: orchid.image,
+      en: [orchid.id, vfLineDetail(orchid, null, [], 'en')],
+      fa: [orchid.id, vfLineDetail(orchid, null, [], 'fa')]
+    }
   ];
 }
 
 // A line's extras: listed on lines added from the product page, read from the id on older lines.
 function vfLineAddons(line) {
-  return line.addons || VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon[0])).map(addon => addon[0]);
+  return (
+    line.addons ||
+    VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon[0])).map(addon => addon[0])
+  );
 }
 
 function vfLineHasCard(line) {
@@ -575,52 +801,85 @@ function vfLineHasCard(line) {
 // order-wide message in delivery.card.
 function vfCardMessages(lines, delivery, lang) {
   // The message keeps its own direction, so English inside Persian quotes (or the reverse) reads correctly.
-  const quote = text => (lang === 'fa' ? '«\u2068' + text + '\u2069»' : '“\u2068' + text + '\u2069”');
+  const quote = text =>
+    lang === 'fa' ? '«\u2068' + text + '\u2069»' : '“\u2068' + text + '\u2069”';
   const cards = (lines || []).filter(line => String(line.card || '').trim());
   if (!cards.length) return delivery && delivery.card ? delivery.card : '';
-  return cards.length === 1 ? quote(cards[0].card) : cards.map(line => vfTokenText(vfLineToken(line)) + ': ' + quote(line.card)).join(' · ');
+  return cards.length === 1
+    ? quote(cards[0].card)
+    : cards.map(line => vfTokenText(vfLineToken(line)) + ': ' + quote(line.card)).join(' · ');
 }
 
 // The same line with a handwritten card added, priced and named as the product page would.
 function vfLineWithCard(line) {
   const productId = vfLineProductId(line);
   const size = vfLineSize(line);
-  const addons = VF_ADDONS.filter(addon => addon[0] === 'card' || vfLineAddons(line).includes(addon[0]));
+  const addons = VF_ADDONS.filter(
+    addon => addon[0] === 'card' || vfLineAddons(line).includes(addon[0])
+  );
   const names = lang => {
     const index = lang === 'en' ? 2 : 3;
-    const detail = line[lang][1].split(' · ').filter(part => !VF_ADDONS.some(addon => addon[index] === part));
+    const detail = line[lang][1]
+      .split(' · ')
+      .filter(part => !VF_ADDONS.some(addon => addon[index] === part));
     return [vfLineToken(line), detail.concat(addons.map(addon => addon[index])).join(' · ')];
   };
   return {
-    ...line, productId, token: vfLineToken(line), size, addons: addons.map(addon => addon[0]),
+    ...line,
+    productId,
+    token: vfLineToken(line),
+    size,
+    addons: addons.map(addon => addon[0]),
     id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon[0]).join('+'),
     unit: line.unit + VF_ADDONS.find(addon => addon[0] === 'card')[1],
-    en: names('en'), fa: names('fa')
+    en: names('en'),
+    fa: names('fa')
   };
 }
 
 // Bilingual detail copy follows the same [English, Persian] convention as the catalog, keyed by product code.
 const VF_PRODUCT_DETAILS = {
-  'VF-7K2M4Q': ['Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.', 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'],
-  'VF-3HX9TP': ['A seasonal bouquet of fifteen stems in soft lavender tones.', 'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'],
-  'VF-8RD5WN': ['A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.', 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'],
-  'VF-4CJ6ZB': ['Red roses arranged in a velvet hatbox for a bold gift.', 'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'],
-  'VF-9FA2KE': ['Garden roses and eucalyptus arranged in a soft pink bouquet.', 'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'],
-  'VF-6MT3VY': ['An ivory bridal posy of peonies and ranunculus.', 'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.']
+  'VF-7K2M4Q': [
+    'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.',
+    'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'
+  ],
+  'VF-3HX9TP': [
+    'A seasonal bouquet of fifteen stems in soft lavender tones.',
+    'دسته‌گلی فصلی با پانزده شاخه در رنگ‌های ملایم اسطوخودوسی.'
+  ],
+  'VF-8RD5WN': [
+    'A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.',
+    'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
+  ],
+  'VF-4CJ6ZB': [
+    'Red roses arranged in a velvet hatbox for a bold gift.',
+    'رزهای قرمز در باکس کلاهی مخمل برای هدیه‌ای چشمگیر.'
+  ],
+  'VF-9FA2KE': [
+    'Garden roses and eucalyptus arranged in a soft pink bouquet.',
+    'رز باغی و اکالیپتوس در دسته‌گلی صورتی و لطیف.'
+  ],
+  'VF-6MT3VY': [
+    'An ivory bridal posy of peonies and ranunculus.',
+    'دسته‌گل عروس عاجی با گل صدتومانی و آلاله.'
+  ]
 };
 
 function vfReorderLines(lines) {
- return lines.flatMap(line => {
-  const product=vfFindProduct(vfLineProductId(line));
-  if(!product||product.inStock===false)return [];
-  const size=VF_SIZES.find(s=>s[0]===vfLineSize(line));
-  const addons=vfLineAddons(line);
-  const extra=VF_ADDONS.filter(a=>addons.includes(a[0])).reduce((sum,a)=>sum+a[1],0);
-  return [{...line,unit:product.price+(product.sizes&&size?size[1]:0)+extra}];
- });
+  return lines.flatMap(line => {
+    const product = vfFindProduct(vfLineProductId(line));
+    if (!product || product.inStock === false) return [];
+    const size = VF_SIZES.find(s => s[0] === vfLineSize(line));
+    const addons = vfLineAddons(line);
+    const extra = VF_ADDONS.filter(a => addons.includes(a[0])).reduce((sum, a) => sum + a[1], 0);
+    return [{...line, unit: product.price + (product.sizes && size ? size[1] : 0) + extra}];
+  });
 }
 
-function vfLineAvailable(line){const p=vfFindProduct(vfLineProductId(line));return !!p&&p.inStock!==false;}
+function vfLineAvailable(line) {
+  const p = vfFindProduct(vfLineProductId(line));
+  return !!p && p.inStock !== false;
+}
 
 // Saved and recently viewed lists hold product codes; older lists held slugs, read here as codes.
 function vfProductIds(ids) {
@@ -640,7 +899,11 @@ function vfRecentlyViewed() {
 function vfRememberViewed(id) {
   try {
     id = vfProductId(id);
-    if (id) localStorage.setItem(VF_RECENT_KEY, JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8)));
+    if (id)
+      localStorage.setItem(
+        VF_RECENT_KEY,
+        JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8))
+      );
   } catch (_) {}
 }
 
@@ -689,7 +952,12 @@ const VF_SHELL = {
       rights: 'All rights reserved.',
       credit: 'Designed and built by'
     },
-    policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
+    policies: {
+      shipping: 'Shipping & delivery',
+      returns: 'Returns & refunds',
+      privacy: 'Privacy',
+      terms: 'Terms of use'
+    },
     newsletter: {
       title: 'Letters from the studio',
       body: 'New seasonal designs and occasion reminders, about twice a month.',
@@ -753,7 +1021,12 @@ const VF_SHELL = {
       rights: 'همه حقوق محفوظ است.',
       credit: 'طراحی و ساخت:'
     },
-    policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
+    policies: {
+      shipping: 'ارسال و تحویل',
+      returns: 'بازگشت و بازپرداخت',
+      privacy: 'حریم خصوصی',
+      terms: 'شرایط استفاده'
+    },
     newsletter: {
       title: 'نامه‌های استودیو',
       body: 'طرح‌های تازه فصل و یادآور مناسبت‌ها، حدود دو بار در ماه.',
@@ -824,14 +1097,18 @@ const VF_SHOP_OCCASION_COPY = {
 // Source: templates/_shared/translations/time.js
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
 function vfSlotLabel(start, end, fa) {
-  return fa ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069' : start + ':00–' + end + ':00';
+  return fa
+    ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069'
+    : start + ':00–' + end + ':00';
 }
 
 // "Today", "Tomorrow" or the weekday, for delivery day choices.
 function vfDayName(day, fa) {
   if (day.offset === 0) return fa ? 'امروز' : 'Today';
   if (day.offset === 1) return fa ? 'فردا' : 'Tomorrow';
-  return new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(day.date);
+  return new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(
+    day.date
+  );
 }
 
 // "5 October" or «۱۴ مهر».
@@ -846,7 +1123,9 @@ function vfDeliveryWhen(delivery, fa) {
   const slot = vfSlotLabel(delivery.slot, end, fa);
   if (!delivery.date) return slot;
   const date = window.AG_DATES.fromIso(delivery.date);
-  const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {weekday: fa ? 'long' : 'short'}).format(date);
+  const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {
+    weekday: fa ? 'long' : 'short'
+  }).format(date);
   return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + ' · ' + slot;
 }
 
@@ -854,13 +1133,15 @@ function vfDeliveryWhen(delivery, fa) {
 // Shared copy for the delivery pin map (bag and account addresses).
 const VF_PIN_COPY = {
   en: {
-    pinHint: 'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
+    pinHint:
+      'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
     pinSet: 'Pin placed at {location}. Move the map to adjust it.',
     locate: 'Use my location',
     locateFailed: 'We couldn’t get your location. Move the map instead.'
   },
   fa: {
-    pinHint: 'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
+    pinHint:
+      'نقشه را بکشید یا روی آن بزنید تا سوزن روی درِ ورودی بنشیند. کلیدهای جهت نقشه را جابه‌جا می‌کنند و + و − بزرگ‌نمایی.',
     pinSet: 'سوزن روی {location} است. برای اصلاح، نقشه را جابه‌جا کنید.',
     locate: 'موقعیت فعلی من',
     locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.'
@@ -902,83 +1183,90 @@ function vfAccountLoad(phone, lang = 'en') {
         {id: 'W-SAMPLE-1', kind: 'topup', amount: 20_000_000, at: '2026-09-02T08:05:00.000Z'}
       ]
     },
-    addresses: [{
-      id: 'home',
-      label: {
-        en: 'Home',
-        fa: 'خانه'
+    addresses: [
+      {
+        id: 'home',
+        label: {
+          en: 'Home',
+          fa: 'خانه'
+        },
+        line: {
+          en: '12 Golha St, Azimiyeh',
+          fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+        },
+        recipient: {
+          en: 'Shirin Ahmadi',
+          fa: 'شیرین احمدی'
+        },
+        phone: '09125649438',
+        zone: 'central',
+        location: {lat: 35.8398, lng: 50.9925},
+        isDefault: true
       },
-      line: {
-        en: '12 Golha St, Azimiyeh',
-        fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+      {
+        id: 'office',
+        label: {
+          en: 'Office',
+          fa: 'محل کار'
+        },
+        line: {
+          en: '40 Moazen Blvd, Gohardasht',
+          fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
+        },
+        recipient: {
+          en: 'Shirin Ahmadi',
+          fa: 'شیرین احمدی'
+        },
+        phone: '09125649438',
+        zone: 'central',
+        location: {lat: 35.8162, lng: 50.9391},
+        isDefault: false
+      }
+    ],
+    reminders: [
+      {
+        id: 'mum',
+        name: {
+          en: 'Mum',
+          fa: 'مامان'
+        },
+        occ: 'birthday',
+        cal: 'j',
+        m: 7,
+        d: 9,
+        before: 3,
+        channel: 'sms',
+        on: true
       },
-      recipient: {
-        en: 'Shirin Ahmadi',
-        fa: 'شیرین احمدی'
+      {
+        id: 'mina',
+        name: {
+          en: 'Our anniversary',
+          fa: 'سالگرد خودمان'
+        },
+        occ: 'anniversary',
+        cal: 'g',
+        m: 11,
+        d: 12,
+        before: 7,
+        channel: 'wa',
+        on: true
       },
-      phone: '09125649438',
-      zone: 'central',
-      location: {lat: 35.8398, lng: 50.9925},
-      isDefault: true
-    }, {
-      id: 'office',
-      label: {
-        en: 'Office',
-        fa: 'محل کار'
-      },
-      line: {
-        en: '40 Moazen Blvd, Gohardasht',
-        fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
-      },
-      recipient: {
-        en: 'Shirin Ahmadi',
-        fa: 'شیرین احمدی'
-      },
-      phone: '09125649438',
-      zone: 'central',
-      location: {lat: 35.8162, lng: 50.9391},
-      isDefault: false
-    }],
-    reminders: [{
-      id: 'mum',
-      name: {
-        en: 'Mum',
-        fa: 'مامان'
-      },
-      occ: 'birthday',
-      cal: 'j',
-      m: 7,
-      d: 9,
-      before: 3,
-      channel: 'sms',
-      on: true
-    }, {
-      id: 'mina',
-      name: {
-        en: 'Our anniversary',
-        fa: 'سالگرد خودمان'
-      },
-      occ: 'anniversary',
-      cal: 'g',
-      m: 11,
-      d: 12,
-      before: 7,
-      channel: 'wa',
-      on: true
-    }, {
-      id: 'sara',
-      name: {
-        en: 'Yalda at Grandma’s',
-        fa: 'یلدا خانه مادربزرگ'
-      },
-      occ: 'yalda',
-      cal: 'j',
-      m: 9,
-      d: 30,
-      before: 7,
-      channel: 'sms',
-      on: false
-    }]
+      {
+        id: 'sara',
+        name: {
+          en: 'Yalda at Grandma’s',
+          fa: 'یلدا خانه مادربزرگ'
+        },
+        occ: 'yalda',
+        cal: 'j',
+        m: 9,
+        d: 30,
+        before: 7,
+        channel: 'sms',
+        on: false
+      }
+    ]
   };
 }
 function vfAccountSave(phone, data) {
@@ -1004,67 +1292,76 @@ function vfAccountLocale() {
   const phone = vfAccountPhone();
   return phone ? vfAccountLoad(phone).profile.locale : null;
 }
-const VF_OCCASIONS = [{
-  id: 'birthday',
-  icon: 'cake',
-  en: 'Birthday',
-  fa: 'تولد'
-}, {
-  id: 'anniversary',
-  icon: 'gem',
-  en: 'Anniversary',
-  fa: 'سالگرد ازدواج'
-}, {
-  id: 'mothers',
-  icon: 'flower-2',
-  en: 'Mother’s Day',
-  fa: 'روز مادر',
-  hijri: [6, 20]
-}, {
-  id: 'valentine',
-  icon: 'heart',
-  en: 'Valentine’s Day',
-  fa: 'ولنتاین',
-  fixed: {
-    cal: 'g',
-    m: 2,
-    d: 14
+const VF_OCCASIONS = [
+  {
+    id: 'birthday',
+    icon: 'cake',
+    en: 'Birthday',
+    fa: 'تولد'
+  },
+  {
+    id: 'anniversary',
+    icon: 'gem',
+    en: 'Anniversary',
+    fa: 'سالگرد ازدواج'
+  },
+  {
+    id: 'mothers',
+    icon: 'flower-2',
+    en: 'Mother’s Day',
+    fa: 'روز مادر',
+    hijri: [6, 20]
+  },
+  {
+    id: 'valentine',
+    icon: 'heart',
+    en: 'Valentine’s Day',
+    fa: 'ولنتاین',
+    fixed: {
+      cal: 'g',
+      m: 2,
+      d: 14
+    }
+  },
+  {
+    id: 'nowruz',
+    icon: 'sprout',
+    en: 'Nowruz',
+    fa: 'نوروز',
+    fixed: {
+      cal: 'j',
+      m: 1,
+      d: 1
+    }
+  },
+  {
+    id: 'yalda',
+    icon: 'moon',
+    en: 'Yalda night',
+    fa: 'شب یلدا',
+    fixed: {
+      cal: 'j',
+      m: 9,
+      d: 30
+    }
+  },
+  {
+    id: 'other',
+    icon: 'calendar-heart',
+    en: 'Other occasion',
+    fa: 'مناسبت دیگر'
   }
-}, {
-  id: 'nowruz',
-  icon: 'sprout',
-  en: 'Nowruz',
-  fa: 'نوروز',
-  fixed: {
-    cal: 'j',
-    m: 1,
-    d: 1
-  }
-}, {
-  id: 'yalda',
-  icon: 'moon',
-  en: 'Yalda night',
-  fa: 'شب یلدا',
-  fixed: {
-    cal: 'j',
-    m: 9,
-    d: 30
-  }
-}, {
-  id: 'other',
-  icon: 'calendar-heart',
-  en: 'Other occasion',
-  fa: 'مناسبت دیگر'
-}];
+];
 function vfNormalizeReminder(r) {
   if (r.date && !r.m) {
     const d = window.AG_DATES.fromIso(r.date);
-    if (d) return {
-      ...r,
-      cal: 'g',
-      m: d.getMonth() + 1,
-      d: d.getDate()
-    };
+    if (d)
+      return {
+        ...r,
+        cal: 'g',
+        m: d.getMonth() + 1,
+        d: d.getDate()
+      };
   }
   return r;
 }
@@ -1075,18 +1372,25 @@ function vfReminderNext(r, today = new Date()) {
   if (occasion && occasion.hijri) {
     const t = new Date(today);
     t.setHours(12, 0, 0, 0);
-    const date = (VF_STORE.occasionDates.mothers || []).map(D.fromIso).filter(d => d && d >= t).sort((a, b) => a - b)[0];
-    if (date) return {
-      date,
-      days: D.daysBetween(t, date),
-      published: true
-    };
+    const date = (VF_STORE.occasionDates.mothers || [])
+      .map(D.fromIso)
+      .filter(d => d && d >= t)
+      .sort((a, b) => a - b)[0];
+    if (date)
+      return {
+        date,
+        days: D.daysBetween(t, date),
+        published: true
+      };
     return D.nextHijri(...occasion.hijri, t);
   }
-  return D.nextYearly({
-    ...r,
-    ...(occasion && occasion.fixed)
-  }, today);
+  return D.nextYearly(
+    {
+      ...r,
+      ...(occasion && occasion.fixed)
+    },
+    today
+  );
 }
 function vfSampleOrders() {
   const delivery = {
@@ -1097,7 +1401,12 @@ function vfSampleOrders() {
     senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
   };
-  return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
+  return [
+    ['VN-10522', 'onTheWay'],
+    ['VN-10431', 'delivered'],
+    ['VN-10302', 'delivered'],
+    ['VB-TEST-1', 'cancelled']
+  ].map(([id, status]) => {
     const lines = vfSampleBag();
     return {
       id,
@@ -1140,7 +1449,9 @@ function vfBalanceDiscountOn(balance) {
 
 // discountPercent of the products' price (after any promo code) when the balance earns it.
 function vfBalanceDiscount(balance, products) {
-  return vfBalanceDiscountOn(balance) ? Math.round(products * VF_STORE.wallet.discountPercent / 100) : 0;
+  return vfBalanceDiscountOn(balance)
+    ? Math.round((products * VF_STORE.wallet.discountPercent) / 100)
+    : 0;
 }
 
 // A top-up amount, typed with any digits and separators; '' when nothing is typed.
@@ -1165,7 +1476,12 @@ function vfWalletChange(phone, amount, entry) {
   const wallet = vfWalletOf(account);
   const balance = wallet.balance + amount;
   if (balance < 0) return null;
-  const record = {id: 'W' + Date.now().toString(36).toUpperCase(), amount, at: new Date().toISOString(), ...entry};
+  const record = {
+    id: 'W' + Date.now().toString(36).toUpperCase(),
+    amount,
+    at: new Date().toISOString(),
+    ...entry
+  };
   const next = {...account, wallet: {balance, history: [record, ...wallet.history]}};
   vfAccountSave(phone, next);
   return next;
@@ -1175,16 +1491,46 @@ function vfWalletChange(phone, amount, entry) {
 // Sample bank prefixes and card configuration; adapt from your payment provider.
 (() => {
   const D = {};
-  D.banks = [['603799', 'Bank Melli', 'بانک ملی'], ['610433', 'Bank Mellat', 'بانک ملت'], ['991975', 'Bank Mellat', 'بانک ملت'], ['603769', 'Bank Saderat', 'بانک صادرات'], ['627353', 'Bank Tejarat', 'بانک تجارت'], ['585983', 'Bank Tejarat', 'بانک تجارت'], ['502229', 'Bank Pasargad', 'بانک پاسارگاد'], ['639347', 'Bank Pasargad', 'بانک پاسارگاد'], ['621986', 'Saman Bank', 'بانک سامان'], ['622106', 'Parsian Bank', 'بانک پارسیان'], ['639194', 'Parsian Bank', 'بانک پارسیان'], ['589210', 'Bank Sepah', 'بانک سپه'], ['603770', 'Bank Keshavarzi', 'بانک کشاورزی'], ['639217', 'Bank Keshavarzi', 'بانک کشاورزی'], ['504172', 'Resalat Bank', 'بانک رسالت'], ['628023', 'Bank Maskan', 'بانک مسکن'], ['627412', 'Eghtesad Novin', 'بانک اقتصاد نوین'], ['627488', 'Karafarin Bank', 'بانک کارآفرین'], ['502908', 'Tosee Taavon', 'بانک توسعه تعاون'], ['627648', 'Tosee Saderat', 'بانک توسعه صادرات'], ['505785', 'Iran Zamin', 'بانک ایران زمین'], ['636214', 'Bank Ayandeh', 'بانک آینده'], ['502806', 'Bank Shahr', 'بانک شهر'], ['502938', 'Bank Day', 'بانک دی'], ['639607', 'Sarmayeh Bank', 'بانک سرمایه'], ['627381', 'Bank Ansar', 'بانک انصار'], ['636795', 'Central Bank', 'بانک مرکزی']];
+  D.banks = [
+    ['603799', 'Bank Melli', 'بانک ملی'],
+    ['610433', 'Bank Mellat', 'بانک ملت'],
+    ['991975', 'Bank Mellat', 'بانک ملت'],
+    ['603769', 'Bank Saderat', 'بانک صادرات'],
+    ['627353', 'Bank Tejarat', 'بانک تجارت'],
+    ['585983', 'Bank Tejarat', 'بانک تجارت'],
+    ['502229', 'Bank Pasargad', 'بانک پاسارگاد'],
+    ['639347', 'Bank Pasargad', 'بانک پاسارگاد'],
+    ['621986', 'Saman Bank', 'بانک سامان'],
+    ['622106', 'Parsian Bank', 'بانک پارسیان'],
+    ['639194', 'Parsian Bank', 'بانک پارسیان'],
+    ['589210', 'Bank Sepah', 'بانک سپه'],
+    ['603770', 'Bank Keshavarzi', 'بانک کشاورزی'],
+    ['639217', 'Bank Keshavarzi', 'بانک کشاورزی'],
+    ['504172', 'Resalat Bank', 'بانک رسالت'],
+    ['628023', 'Bank Maskan', 'بانک مسکن'],
+    ['627412', 'Eghtesad Novin', 'بانک اقتصاد نوین'],
+    ['627488', 'Karafarin Bank', 'بانک کارآفرین'],
+    ['502908', 'Tosee Taavon', 'بانک توسعه تعاون'],
+    ['627648', 'Tosee Saderat', 'بانک توسعه صادرات'],
+    ['505785', 'Iran Zamin', 'بانک ایران زمین'],
+    ['636214', 'Bank Ayandeh', 'بانک آینده'],
+    ['502806', 'Bank Shahr', 'بانک شهر'],
+    ['502938', 'Bank Day', 'بانک دی'],
+    ['639607', 'Sarmayeh Bank', 'بانک سرمایه'],
+    ['627381', 'Bank Ansar', 'بانک انصار'],
+    ['636795', 'Central Bank', 'بانک مرکزی']
+  ];
   D.bankOf = card => {
     const b = D.banks.find(x => vfLatin(card).replace(/\D/g, '').startsWith(x[0]));
-    return b ? {
-      en: b[1],
-      fa: b[2]
-    } : {
-      en: 'Bank card',
-      fa: 'کارت بانکی'
-    };
+    return b
+      ? {
+          en: b[1],
+          fa: b[2]
+        }
+      : {
+          en: 'Bank card',
+          fa: 'کارت بانکی'
+        };
   };
   D.luhn = n => {
     n = vfLatin(n).replace(/\D/g, '');
@@ -1200,13 +1546,10 @@ function vfWalletChange(phone, amount, entry) {
     }
     return s % 10 === 0;
   };
-  D.setPayCard = ({
-    cardNumber,
-    holderEn,
-    holderFa,
-    sheba
-  }) => {
-    const n = vfLatin(cardNumber || '').replace(/\D/g, '').slice(0, 16);
+  D.setPayCard = ({cardNumber, holderEn, holderFa, sheba}) => {
+    const n = vfLatin(cardNumber || '')
+      .replace(/\D/g, '')
+      .slice(0, 16);
     Object.assign(VF_STORE.payment, {
       card: n.replace(/(\d{4})(?=\d)/g, '$1 '),
       holder: {
@@ -1240,16 +1583,20 @@ function vfWalletChange(phone, amount, entry) {
     const r = await fetch(A.base + path, {
       method,
       headers: {
-        'Accept': 'application/ld+json',
-        ...(body ? {
-          'Content-Type': 'application/json'
-        } : {})
+        Accept: 'application/ld+json',
+        ...(body
+          ? {
+              'Content-Type': 'application/json'
+            }
+          : {})
       },
       body: body ? JSON.stringify(body) : undefined,
       credentials: 'include'
     });
     if (!r.ok) {
-      const e = /** @type {Error & {status?: number, body?: any}} */ (new Error('HTTP ' + r.status));
+      const e = /** @type {Error & {status?: number, body?: any}} */ (
+        new Error('HTTP ' + r.status)
+      );
       e.status = r.status;
       try {
         e.body = await r.json();
@@ -1307,7 +1654,7 @@ function vfWalletChange(phone, amount, entry) {
   A.loadSaved = async () => {
     if (!A.live) return null;
     const r = await req('GET', '/api/customers/wishlists');
-    const lists = r && (r['hydra:member'] || r.member || r.data) || [];
+    const lists = (r && (r['hydra:member'] || r.member || r.data)) || [];
     const w = lists.find(l => l.isDefault) || lists[0];
     if (!w) return [];
     const m = map();
@@ -1318,7 +1665,7 @@ function vfWalletChange(phone, amount, entry) {
     const slugs = [];
     // Items saved before products were known by code carry the old slug; read them as codes.
     (w.items || []).forEach(it => {
-      const raw = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const raw = (it.metadata && it.metadata.slug) || byApi[it.sellableId];
       const s = raw && (vfProductId(raw) || raw);
       if (s) {
         slugs.push(s);
@@ -1346,7 +1693,8 @@ function vfWalletChange(phone, amount, entry) {
   };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
   // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
-  A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
+  A.preferredLocale = () =>
+    vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
   window.AG_API = window.VF_API = A;
 })();
 
@@ -1390,20 +1738,25 @@ function vfWalletChange(phone, amount, entry) {
     try {
       localStorage.setItem(KEY, value);
     } catch (_) {}
-    if (typeof window.gtag === 'function') window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
+    if (typeof window.gtag === 'function')
+      window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
   const log = [];
   const ctx = () => ({
     language: document.documentElement?.lang || 'en',
     currency: VF_STORE.currency || 'IRT'
   });
-  const item = (p, qty = 1, unit) => p ? {
-    item_id: p.id,
-    item_name: p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
-    item_category: p.cat,
-    price: unit ?? p.price,
-    quantity: qty
-  } : null;
+  const item = (p, qty = 1, unit) =>
+    p
+      ? {
+          item_id: p.id,
+          item_name:
+            p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
+          item_category: p.cat,
+          price: unit ?? p.price,
+          quantity: qty
+        }
+      : null;
   const event = (name, params = {}) => {
     if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
     const e = {
@@ -1414,7 +1767,8 @@ function vfWalletChange(phone, amount, entry) {
     log.push(e);
     if (log.length > 50) log.shift();
     if (consent() !== 'all') return;
-    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);
+    else if (typeof window.gtag === 'function') window.gtag('event', name, params);
   };
   window.AG_TRACK = window.VF_TRACK = {
     event,
@@ -1435,13 +1789,33 @@ function vfLatin(value) {
     .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
     .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
 }
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
-});
+const VF_MONEY = (n, fa) =>
+  window.AG_FORMAT.money(n, {
+    lang: fa ? 'fa' : 'en',
+    currency: VF_STORE.currency
+  });
 
 // Source: templates/_shared/routing.js
 // Storefront route registration, validation and links. Uses the core AG_SEO router.
-const VF_ROUTES = ['account', 'bag', 'checkout', 'contact', 'faq', 'home', 'journal', 'notfound', 'policy', 'post', 'product', 'saved', 'search', 'shop', 'signin', 'track', 'weddings'];
+const VF_ROUTES = [
+  'account',
+  'bag',
+  'checkout',
+  'contact',
+  'faq',
+  'home',
+  'journal',
+  'notfound',
+  'policy',
+  'post',
+  'product',
+  'saved',
+  'search',
+  'shop',
+  'signin',
+  'track',
+  'weddings'
+];
 // Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
 const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
 // Account tabs, in the order they appear.
@@ -1458,12 +1832,14 @@ const VF_ROUTE_EXTRA = {
 // Keep template-only shopping parameters out of the core design-system router.
 function vfReadRoute(search = location.search) {
   window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search), query = new URLSearchParams(search);
-  route.demo=['loading','error'].includes(query.get('demo'))?query.get('demo'):undefined;
+  const route = window.AG_SEO.readRoute(search),
+    query = new URLSearchParams(search);
+  route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
   // An account tab can be linked to (?view=account&tab=balance).
-  if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab'))) route.tab = query.get('tab');
+  if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab')))
+    route.tab = query.get('tab');
   // Sign-in started from checkout returns there (?view=signin&next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
   // A product is addressed by its category and code (?view=product&id=VF-7K2M4Q&cat=boxes); an old slug
@@ -1475,15 +1851,29 @@ function vfReadRoute(search = location.search) {
       route.cat = product.cat;
     } else route.view = 'notfound';
   }
-  if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id)) route.view = 'notfound';
+  if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id))
+    route.view = 'notfound';
   if (route.view === 'shop') {
-    route.cat = ['bouquets','boxes','orchids','bridal'].includes(route.cat) ? route.cat : 'all';
-    route.sort = ['low','high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    const max=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
-    const number=(key,fallback)=>{const v=query.get(key);return v!==null&&Number.isFinite(+v)?Math.max(0,Math.min(max,+v)):fallback;};
-    route.min=number('min',0);route.max=Math.max(route.min,number('max',max));route.stock=query.get('stock')==='1';
-    route.filters = [...new Set((query.get('filters') || '').split(',').filter(id => ['under3','same','roses'].includes(id)))].sort();
-    route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion')) ? query.get('occasion') : 'all';
+    route.cat = ['bouquets', 'boxes', 'orchids', 'bridal'].includes(route.cat) ? route.cat : 'all';
+    route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
+    const max = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
+    const number = (key, fallback) => {
+      const v = query.get(key);
+      return v !== null && Number.isFinite(+v) ? Math.max(0, Math.min(max, +v)) : fallback;
+    };
+    route.min = number('min', 0);
+    route.max = Math.max(route.min, number('max', max));
+    route.stock = query.get('stock') === '1';
+    route.filters = [
+      ...new Set(
+        (query.get('filters') || '')
+          .split(',')
+          .filter(id => ['under3', 'same', 'roses'].includes(id))
+      )
+    ].sort();
+    route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion'))
+      ? query.get('occasion')
+      : 'all';
     // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
     route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
   }
@@ -1491,18 +1881,18 @@ function vfReadRoute(search = location.search) {
 }
 function vfRouteParams(route) {
   const query = new URLSearchParams(window.AG_SEO.routeParams(route));
-  if(route.demo)query.set('demo',route.demo);
+  if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
   if (route.view === 'shop') {
-    if(route.min>0)query.set('min',route.min);
-    const priceMax=Math.ceil(Math.max(...VF_PRODUCTS.map(p=>p.price))/100000)*100000;
-    if(route.max!=null&&route.max<priceMax)query.set('max',route.max);
-    if(route.stock)query.set('stock','1');
+    if (route.min > 0) query.set('min', route.min);
+    const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
+    if (route.max != null && route.max < priceMax) query.set('max', route.max);
+    if (route.stock) query.set('stock', '1');
     if (route.cat === 'all') query.delete('cat');
-    if (['low','high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3','same','roses'].includes(id));
+    if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
+    const filters = (route.filters || []).filter(id => ['under3', 'same', 'roses'].includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
     if (route.date) query.set('date', route.date);
@@ -1510,9 +1900,13 @@ function vfRouteParams(route) {
   return '?' + query.toString();
 }
 function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) => go(vfReadRoute(new URL(event.currentTarget.href, location.href).search)));
+  return window.AG_SEO.linkHandler((route, event) =>
+    go(vfReadRoute(new URL(event.currentTarget.href, location.href).search))
+  );
 }
-function vfPageRoute(props) { return props.routeInfo || vfReadRoute(); }
+function vfPageRoute(props) {
+  return props.routeInfo || vfReadRoute();
+}
 
 // Source: templates/_shared/page-lifecycle.js
 // Responsive state, heading focus, announcements and SEO for storefront pages.
@@ -1547,14 +1941,23 @@ function vfPageClass(DCLogic) {
   return class VFPage extends DCLogic {
     componentDidMount() {
       this._vfMedia = window.matchMedia('(max-width:767px)');
-      this._vfResize = () => this.setState({
-        vfMobile: this._vfMedia.matches
-      });
+      this._vfResize = () =>
+        this.setState({
+          vfMobile: this._vfMedia.matches
+        });
       this._vfMedia.addEventListener('change', this._vfResize);
       this._vfResize();
-      const route=vfPageRoute(this.props);
-      const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
-      if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfFindProduct(route.id)||VF_PRODUCTS[0])]}:{});
+      const route = vfPageRoute(this.props);
+      const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
+        this._vfPage
+      ];
+      if (event)
+        window.VF_TRACK.event(
+          event,
+          this._vfPage === 'product'
+            ? {items: [window.VF_TRACK.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
+            : {}
+        );
       this._vfAnnounce();
     }
     componentDidUpdate() {
@@ -1582,11 +1985,16 @@ function vfPageClass(DCLogic) {
         // views (in-site navigation, a replaced h1) move focus and announce.
         if (window.VF_VIEWED) {
           // A form field the page has just focused (e.g. "Track another order") keeps focus; the heading is still announced.
-          const field = document.activeElement && document.activeElement.closest('main') && document.activeElement.matches('input, select, textarea');
+          const field =
+            document.activeElement &&
+            document.activeElement.closest('main') &&
+            document.activeElement.matches('input, select, textarea');
           if (!field) window.AG_NAV.focusHeading();
-          if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
-            vfAnnouncement: title
-          });
+          if (this.props.store && this.props.store.announce) this.props.store.announce(title);
+          else
+            this.setState({
+              vfAnnouncement: title
+            });
         }
         window.VF_VIEWED = true;
         const url = location.href;
@@ -1596,8 +2004,18 @@ function vfPageClass(DCLogic) {
           url,
           locale: lang,
           noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
-          alternates: Object.fromEntries(['en','fa'].map(lang => [lang,
-            (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[this._vfPage], ...vfPageRoute(this.props),view:this._vfPage,lang})]))
+          alternates: Object.fromEntries(
+            ['en', 'fa'].map(lang => [
+              lang,
+              (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+                vfRouteParams({
+                  ...VF_ROUTE_EXTRA[this._vfPage],
+                  ...vfPageRoute(this.props),
+                  view: this._vfPage,
+                  lang
+                })
+            ])
+          )
         });
       }, 40);
     }
@@ -1634,18 +2052,32 @@ function vfShell(props, page) {
     L = fa ? 'fa' : 'en',
     T = VF_SHELL[L];
   const mob = !!props.mobile || (st.vfMobile === undefined ? window.innerWidth < 768 : st.vfMobile);
-  const tab = page === 'home' ? 'home' : ['bag', 'checkout'].includes(page) ? 'bag' : ['shop', 'product', 'saved', 'search'].includes(page) ? 'shop' : '';
+  const tab =
+    page === 'home'
+      ? 'home'
+      : ['bag', 'checkout'].includes(page)
+        ? 'bag'
+        : ['shop', 'product', 'saved', 'search'].includes(page)
+          ? 'shop'
+          : '';
   const href = {},
     go = {};
   VF_ROUTES.forEach(r => {
-    href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-      lang: L
-    }, r, VF_ROUTE_EXTRA[r]);
+    href[r] =
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      window.AG_SEO.hrefFor(
+        {
+          lang: L
+        },
+        r,
+        VF_ROUTE_EXTRA[r]
+      );
     go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
-  const close = () => self.setState({
-    vfMenu: false
-  });
+  const close = () =>
+    self.setState({
+      vfMenu: false
+    });
   const cur = {
     home: page === 'home',
     shop: ['shop', 'product'].includes(page),
@@ -1657,32 +2089,55 @@ function vfShell(props, page) {
     track: page === 'track',
     faq: page === 'faq'
   };
-  const menuItems = ['home', 'shop', 'weddings', 'journal', 'saved', 'contact', 'account', 'track', 'faq'].map(r => ({
+  const menuItems = [
+    'home',
+    'shop',
+    'weddings',
+    'journal',
+    'saved',
+    'contact',
+    'account',
+    'track',
+    'faq'
+  ].map(r => ({
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go ? vfLinkHandler(route => {
-      close();
-      props.go(route);
-    }) : undefined
+    go: props.go
+      ? vfLinkHandler(route => {
+          close();
+          props.go(route);
+        })
+      : undefined
   }));
   const policyLink = doc => ({
-    href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'policy', id: doc}),
+    href:
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      vfRouteParams({lang: L, view: 'policy', id: doc}),
     go: props.go ? vfLinkHandler(props.go) : undefined
   });
-  const policyDoc = page === 'policy' ? props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0] : '';
+  const policyDoc = page === 'policy' ? (props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0]) : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
-  const setLang = props.setLang || (lang => {
-    location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
-  });
+  const setLang =
+    props.setLang ||
+    (lang => {
+      location.href =
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
+    });
   // Focuses an element by id, waiting a few frames for one that this update is about to render.
-  const focus = (id, tries = 10) => setTimeout(() => {
-    const el = document.getElementById(id);
-    if (el) el.focus();
-    else if (tries > 1) focus(id, tries - 1);
-  }, tries === 10 ? 0 : 50);
+  const focus = (id, tries = 10) =>
+    setTimeout(
+      () => {
+        const el = document.getElementById(id);
+        if (el) el.focus();
+        else if (tries > 1) focus(id, tries - 1);
+      },
+      tries === 10 ? 0 : 50
+    );
   // Footer newsletter: the draft lives in page state; a finished sign-up is remembered on this device.
-  const N = T.newsletter, news = st.vfNews || {};
+  const N = T.newsletter,
+    news = st.vfNews || {};
   const signedUp = news.done || vfStored('vf-newsletter');
   const accountPhone = vfAccountPhone();
   const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
@@ -1705,15 +2160,20 @@ function vfShell(props, page) {
         return;
       }
       self.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.AG_API.newsletter(email, profile.name).then(() => {
-        try { localStorage.setItem('vf-newsletter', email); } catch (_) {}
-        window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
-        self.setState({vfNews: {done: email}});
-        focus('vf-news-done');
-      }, () => {
-        self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
-        focus('vf-news-email');
-      });
+      window.AG_API.newsletter(email, profile.name).then(
+        () => {
+          try {
+            localStorage.setItem('vf-newsletter', email);
+          } catch (_) {}
+          window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+          self.setState({vfNews: {done: email}});
+          focus('vf-news-done');
+        },
+        () => {
+          self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
+          focus('vf-news-email');
+        }
+      );
     }
   };
   // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
@@ -1722,7 +2182,8 @@ function vfShell(props, page) {
   try {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch (_) {}
-  const consentShown = !(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed || !!st.vfConsentOpen;
+  const consentShown =
+    (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
@@ -1749,25 +2210,69 @@ function vfShell(props, page) {
       focus('vf-consent');
     }
   };
-  const shopLink = cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'shop', cat}), go: props.go ? vfLinkHandler(props.go) : undefined});
+  const shopLink = cat => ({
+    href:
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      vfRouteParams({lang: L, view: 'shop', cat}),
+    go: props.go ? vfLinkHandler(props.go) : undefined
+  });
   // Footer link columns, social links, contact lines and the bottom line.
   const F = T.footer;
-  const footerLink = (r, label) => ({label, href: href[r], go: go[r], current: cur[r] ? 'page' : undefined});
+  const footerLink = (r, label) => ({
+    label,
+    href: href[r],
+    go: go[r],
+    current: cur[r] ? 'page' : undefined
+  });
   const footer = {
     tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
     faqCurrent: cur.faq ? 'page' : undefined,
-    shop: [{...shopLink('all'), label: F.allFlowers}, ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({...shopLink(cat), label: VF_CATEGORY_COPY[L][cat]}))],
-    studio: [footerLink('weddings', T.weddings), footerLink('journal', T.journal), footerLink('contact', T.contact), footerLink('track', T.track), footerLink('account', T.account), footerLink('saved', T.saved)],
+    shop: [
+      {...shopLink('all'), label: F.allFlowers},
+      ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({
+        ...shopLink(cat),
+        label: VF_CATEGORY_COPY[L][cat]
+      }))
+    ],
+    studio: [
+      footerLink('weddings', T.weddings),
+      footerLink('journal', T.journal),
+      footerLink('contact', T.contact),
+      footerLink('track', T.track),
+      footerLink('account', T.account),
+      footerLink('saved', T.saved)
+    ],
     social: [
-      ...(VF_STORE.instagram ? [{icon: 'instagram', label: F.instagram + ' ' + VF_STORE.instagram.label, href: VF_STORE.instagram.url, target: '_blank'}] : []),
-      ...(VF_STORE.whatsapp ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}] : []),
+      ...(VF_STORE.instagram
+        ? [
+            {
+              icon: 'instagram',
+              label: F.instagram + ' ' + VF_STORE.instagram.label,
+              href: VF_STORE.instagram.url,
+              target: '_blank'
+            }
+          ]
+        : []),
+      ...(VF_STORE.whatsapp
+        ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}]
+        : []),
       {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
     ],
     directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
     email: VF_STORE.email || '',
     emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
-    copyright: '© ' + (fa ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date()) : new Date().getFullYear()) + ' ' + T.brand + '. ' + F.rights,
-    credit: VF_STORE.credit ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url} : null
+    copyright:
+      '© ' +
+      (fa
+        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date())
+        : new Date().getFullYear()) +
+      ' ' +
+      T.brand +
+      '. ' +
+      F.rights,
+    credit: VF_STORE.credit
+      ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url}
+      : null
   };
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
@@ -1775,9 +2280,28 @@ function vfShell(props, page) {
     go,
     href,
     policyLink,
-    policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
-    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id:vfProductId(id)||id,cat:(vfFindProduct(id)||{}).cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
-    occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    policyLinks: VF_POLICIES.map(doc => ({
+      ...policyLink(doc),
+      label: T.policies[doc],
+      current: doc === policyDoc ? 'page' : undefined
+    })),
+    productLink: id => ({
+      href:
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({
+          lang: L,
+          view: 'product',
+          id: vfProductId(id) || id,
+          cat: (vfFindProduct(id) || {}).cat
+        }),
+      go: props.go ? vfLinkHandler(props.go) : undefined
+    }),
+    occasionLink: occasion => ({
+      href:
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion}),
+      go: props.go ? vfLinkHandler(props.go) : undefined
+    }),
     shopLink,
     lang: L,
     fa,
@@ -1792,8 +2316,12 @@ function vfShell(props, page) {
       weddings: cur.weddings,
       journal: cur.journal
     },
-    bagCount: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
-    bagLabel: !count ? T.bag : count === 1 ? T.bagOne : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
+    bagCount: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
+    bagLabel: !count
+      ? T.bag
+      : count === 1
+        ? T.bagOne
+        : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
       window.AG_NAV.focusHeading();
@@ -1802,23 +2330,35 @@ function vfShell(props, page) {
     announcement: vfAnnouncementText(L, st),
     closeAnnouncement: () => {
       // Keyed by the message, so a new announcement shows again.
-      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      try {
+        sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en);
+      } catch (_) {}
       self.setState({vfAnnouncementClosed: true});
     },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
-    focusAfterRemoval: (selector, index) => setTimeout(()=>{
-      const targets=[...document.querySelectorAll('main '+selector)];
-      const target=/** @type {HTMLElement} */(targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1'));
-      if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
-    },0),
+    focusAfterRemoval: (selector, index) =>
+      setTimeout(() => {
+        const targets = [...document.querySelectorAll('main ' + selector)];
+        const target = /** @type {HTMLElement} */ (
+          targets[Math.min(index, targets.length - 1)] ||
+            document.querySelector('main a[href]') ||
+            document.querySelector('main h1')
+        );
+        if (target) {
+          if (!target.hasAttribute('tabindex') && target.tagName === 'H1')
+            target.setAttribute('tabindex', '-1');
+          target.focus();
+        }
+      }, 0),
     focus,
     newsletter,
     footer,
     consent,
-    openMenu: () => self.setState({
-      vfMenu: true
-    }),
+    openMenu: () =>
+      self.setState({
+        vfMenu: true
+      }),
     closeMenu: close,
     menuItems,
     hasLang: true,
@@ -1830,20 +2370,28 @@ function vfShell(props, page) {
       lang: fa ? 'en' : 'fa',
       pick: () => setLang(fa ? 'en' : 'fa')
     },
-    langOpts: [{
-      id: 'en',
-      label: 'EN'
-    }, {
-      id: 'fa',
-      label: 'فا'
-    }],
+    langOpts: [
+      {
+        id: 'en',
+        label: 'EN'
+      },
+      {
+        id: 'fa',
+        label: 'فا'
+      }
+    ],
     waHref: VF_STORE.whatsapp,
     // A WhatsApp chat with the message already written; pages use it to quote product codes.
-    waWith: text => VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
-    phoneHref: 'tel:'+VF_STORE.phone,
+    waWith: text =>
+      VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
+    phoneHref: 'tel:' + VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,
-    payment: {...VF_STORE.payment,holder:VF_STORE.payment.holder[L],bank:VF_STORE.payment.bank[L]},
+    payment: {
+      ...VF_STORE.payment,
+      holder: VF_STORE.payment.holder[L],
+      bank: VF_STORE.payment.bank[L]
+    },
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {
@@ -1855,36 +2403,41 @@ function vfShell(props, page) {
         vfFavs: c.includes(id) ? c.filter(x => x !== id) : [...c, id]
       });
     },
-    tabs: [{
-      id: 'home',
-      icon: 'house',
-      label: T.home,
-      href: href.home,
-      onClick: go.home,
-      current: tab === 'home'
-    }, {
-      id: 'shop',
-      icon: 'layout-grid',
-      label: T.shop,
-      href: href.shop,
-      onClick: go.shop,
-      current: tab === 'shop'
-    }, {
-      id: 'wa',
-      icon: 'message-circle',
-      label: T.wa,
-      href: VF_STORE.whatsapp,
-      target: '_blank'
-    }, {
-      id: 'bag',
-      icon: 'shopping-bag',
-      label: T.bag,
-      href: href.bag,
-      onClick: go.bag,
-      count: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
-      current: tab === 'bag'
-    }],
-    n: v => fa ? VF_FA_DIGITS(v) : String(v),
+    tabs: [
+      {
+        id: 'home',
+        icon: 'house',
+        label: T.home,
+        href: href.home,
+        onClick: go.home,
+        current: tab === 'home'
+      },
+      {
+        id: 'shop',
+        icon: 'layout-grid',
+        label: T.shop,
+        href: href.shop,
+        onClick: go.shop,
+        current: tab === 'shop'
+      },
+      {
+        id: 'wa',
+        icon: 'message-circle',
+        label: T.wa,
+        href: VF_STORE.whatsapp,
+        target: '_blank'
+      },
+      {
+        id: 'bag',
+        icon: 'shopping-bag',
+        label: T.bag,
+        href: href.bag,
+        onClick: go.bag,
+        count: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
+        current: tab === 'bag'
+      }
+    ],
+    n: v => (fa ? VF_FA_DIGITS(v) : String(v)),
     m: v => VF_MONEY(v, fa),
     t: T
   };

@@ -1,15 +1,15 @@
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 <button type="button" onClick="{{ otherLang.pick }}" lang="{{ otherLang.lang }}" aria-label="{{ otherLang.name }}" class="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer">{{ otherLang.label }}</button>
 </div>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="vf-shell-mobile-tools tw:flex tw:justify-end">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>

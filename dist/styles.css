@@ -2498,10 +2498,10 @@ a.ag-tabbar__item--current:hover {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max(
-    var(--ss-min),
-    calc((100% - var(--ss-gap) * (var(--ss-per) - 1)) / var(--ss-per))
+    var(--carousel-item-min),
+    calc((100% - var(--carousel-gap) * (var(--carousel-per-view) - 1)) / var(--carousel-per-view))
   );
-  gap: var(--ss-gap);
+  gap: var(--carousel-gap);
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -2526,7 +2526,10 @@ a.ag-tabbar__item--current:hover {
 }
 @media (max-width: 767px) {
   .ag-carousel__track {
-    grid-auto-columns: calc((100% - var(--ss-gap) * (var(--ss-per-m) - 1)) / var(--ss-per-m));
+    grid-auto-columns: calc(
+      (100% - var(--carousel-gap) * (var(--carousel-per-view-mobile) - 1)) /
+        var(--carousel-per-view-mobile)
+    );
   }
   .ag-carousel--bleed .ag-carousel__track {
     margin-inline: calc(-1 * var(--space-4));

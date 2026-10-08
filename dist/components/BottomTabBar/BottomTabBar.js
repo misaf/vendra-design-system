@@ -3,29 +3,31 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// The phone tab bar. Items with `href` are links (aria-current="page" when current); the rest
+// are buttons. `count` shows a badge on the icon.
 export function BottomTabBar({ items = [], label, className = "" }) {
 	return /* @__PURE__ */ React.createElement("nav", {
 		"aria-label": label,
 		className: cx("ag-tabbar", className)
-	}, /* @__PURE__ */ React.createElement("ul", { className: "ag-tabbar__list" }, items.map((it) => {
-		const cls = cx("ag-tabbar__item", it.current && "ag-tabbar__item--current");
-		const cur = it.current ? "page" : undefined;
-		const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__icon" }, /* @__PURE__ */ React.createElement(Icon, {
-			name: it.icon,
+	}, /* @__PURE__ */ React.createElement("ul", { className: "ag-tabbar__list" }, items.map((item) => {
+		const classes = cx("ag-tabbar__item", item.current && "ag-tabbar__item--current");
+		const current = item.current ? "page" : undefined;
+		const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__icon" }, /* @__PURE__ */ React.createElement(Icon, {
+			name: item.icon,
 			size: 22
-		}), it.count ? /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__count" }, it.count) : null), /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__label" }, it.label));
-		return /* @__PURE__ */ React.createElement("li", { key: it.id }, it.href ? /* @__PURE__ */ React.createElement("a", {
-			href: it.href,
-			target: it.target,
-			rel: it.rel ?? (it.target === "_blank" ? "noopener noreferrer" : undefined),
-			className: cls,
-			"aria-current": cur,
-			onClick: it.onClick
-		}, inner) : /* @__PURE__ */ React.createElement("button", {
+		}), item.count ? /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__count" }, item.count) : null), /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__label" }, item.label));
+		return /* @__PURE__ */ React.createElement("li", { key: item.id }, item.href ? /* @__PURE__ */ React.createElement("a", {
+			href: item.href,
+			target: item.target,
+			rel: item.rel ?? (item.target === "_blank" ? "noopener noreferrer" : undefined),
+			className: classes,
+			"aria-current": current,
+			onClick: item.onClick
+		}, content) : /* @__PURE__ */ React.createElement("button", {
 			type: "button",
-			className: cls,
-			"aria-current": cur,
-			onClick: it.onClick
-		}, inner));
+			className: classes,
+			"aria-current": current,
+			onClick: item.onClick
+		}, content));
 	})));
 }

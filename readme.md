@@ -4,7 +4,7 @@
 
 The reference tenant shipped with the system is **Vendra Florist** (below). Its brand (logo, peony/stem palette, arch motif) is the *default theme*; other tenants keep the same components, layout rules and semantic tokens and swap brand assets + accent tokens.
 
-**Source:** GitHub repo **[misaf/vendra-design-system](https://github.com/misaf/vendra-design-system)** (branch `master`) — an existing design-system export: tokens, 47 React components, foundation cards, 18 storefront templates, fonts, logos and an OpenAPI spec in `uploads/`. Imported verbatim; only the window namespace was renamed to `VendraDesignSystem_4ae5a2`, and the vendored Babel (missing upstream) was restored to `templates/_vendor/babel.min.js` (7.29.0, hash-verified). Browser-test screenshot baselines were not imported — run `npm --prefix templates run test:e2e:update` once to create them. Related repos worth exploring for deeper product context: [misaf/vendra](https://github.com/misaf/vendra) (Laravel platform), [misaf/vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (Next.js storefront) and [misaf/vendra-web](https://github.com/misaf/vendra-web) (product site). Browse them to design more faithfully against the real product.
+**Source:** GitHub repo **[misaf/vendra-design-system](https://github.com/misaf/vendra-design-system)** (branch `master`) — tokens, 47 React components, foundation cards, 18 storefront templates, fonts, logos and an OpenAPI spec in `uploads/`. The window namespace for cards and templates is `VendraDesignSystem`; the vendored Babel is `templates/_vendor/babel.min.js` (7.29.0, hash-verified). Related repos worth exploring for deeper product context: [misaf/vendra](https://github.com/misaf/vendra) (Laravel platform), [misaf/vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (Next.js storefront) and [misaf/vendra-web](https://github.com/misaf/vendra-web) (product site). Browse them to design more faithfully against the real product.
 
 ## Using the package in a tenant storefront
 The repo is an npm package, **`@vendra/design-system`** (`package.json` at the root). It publishes only `dist/`, which `npm --prefix templates run build` generates from the sources and `check` keeps current. `dist/` is committed, so an app can install a tagged commit straight from GitHub (`npm install github:misaf/vendra-design-system#v0.1.0`) or from a registry later. React 18.2+ is a peer dependency.
@@ -332,7 +332,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - `components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `templates/_shared/seo.js` → `window.AG_SEO` and `templates/_shared/page-focus.js` → `window.AG_NAV`: storefront-template helpers; see *Routing & URLs* and *Structured data*.
 - `templates/communications/email-templates.js` → `window.AG_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, `'clay'` or the palette from `AG_EMAIL.themeFromCSS(el)`.
-- `format` and `dates` also hang off `window.VendraDesignSystem_4ae5a2`, with `AG_FORMAT` and `AG_DATES` aliases, for the templates.
+- `format` and `dates` also hang off `window.VendraDesignSystem`, with `AG_FORMAT` and `AG_DATES` aliases, for the templates.
 
 ### Intentional additions
 These came from the source system, which authored a standard set plus:

@@ -37,7 +37,10 @@ class Component extends VFPage {
         tips: type === 'tips',
         value,
         caption,
-        src: type === 'img' ? (window.VF_ASSET_BASE || '../../') + (typeof value === 'string' ? value : value.src) : undefined
+        src:
+          type === 'img'
+            ? (window.VF_ASSET_BASE || '../../') + (typeof value === 'string' ? value : value.src)
+            : undefined
       })),
       storyProducts: (post?.products || []).map(id => {
         const p = vfProduct(id);
@@ -60,24 +63,32 @@ class Component extends VFPage {
           copied: true
         });
         clearTimeout(this._t);
-        this._t = setTimeout(() => this.setState({
-          copied: false
-        }), 1600);
+        this._t = setTimeout(
+          () =>
+            this.setState({
+              copied: false
+            }),
+          1600
+        );
       },
-      related: VF_POSTS.filter(p => p.id !== id).slice(0, 3).map(p => {
-        const c = VF_JCATS.find(x => x[0] === p.cat);
-        return {
-          href: S.href.post.split('?')[0] + vfRouteParams({
-            view: 'post',
-            post: p.id,
-            lang: L
-          }),
-          go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
-          title: p[L][0],
-          excerpt: p[L][1],
-          meta: (fa ? c[2] : c[1]) + ' · ' + p[L][2]
-        };
-      })
+      related: VF_POSTS.filter(p => p.id !== id)
+        .slice(0, 3)
+        .map(p => {
+          const c = VF_JCATS.find(x => x[0] === p.cat);
+          return {
+            href:
+              S.href.post.split('?')[0] +
+              vfRouteParams({
+                view: 'post',
+                post: p.id,
+                lang: L
+              }),
+            go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
+            title: p[L][0],
+            excerpt: p[L][1],
+            meta: (fa ? c[2] : c[1]) + ' · ' + p[L][2]
+          };
+        })
     };
   }
   componentWillUnmount() {

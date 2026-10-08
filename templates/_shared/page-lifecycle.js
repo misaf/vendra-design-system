@@ -30,14 +30,23 @@ function vfPageClass(DCLogic) {
   return class VFPage extends DCLogic {
     componentDidMount() {
       this._vfMedia = window.matchMedia('(max-width:767px)');
-      this._vfResize = () => this.setState({
-        vfMobile: this._vfMedia.matches
-      });
+      this._vfResize = () =>
+        this.setState({
+          vfMobile: this._vfMedia.matches
+        });
       this._vfMedia.addEventListener('change', this._vfResize);
       this._vfResize();
-      const route=vfPageRoute(this.props);
-      const event={product:'view_item',bag:'view_cart',checkout:'begin_checkout'}[this._vfPage];
-      if(event)window.VF_TRACK.event(event,this._vfPage==='product'?{items:[window.VF_TRACK.item(vfFindProduct(route.id)||VF_PRODUCTS[0])]}:{});
+      const route = vfPageRoute(this.props);
+      const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
+        this._vfPage
+      ];
+      if (event)
+        window.VF_TRACK.event(
+          event,
+          this._vfPage === 'product'
+            ? {items: [window.VF_TRACK.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
+            : {}
+        );
       this._vfAnnounce();
     }
     componentDidUpdate() {
@@ -65,11 +74,16 @@ function vfPageClass(DCLogic) {
         // views (in-site navigation, a replaced h1) move focus and announce.
         if (window.VF_VIEWED) {
           // A form field the page has just focused (e.g. "Track another order") keeps focus; the heading is still announced.
-          const field = document.activeElement && document.activeElement.closest('main') && document.activeElement.matches('input, select, textarea');
+          const field =
+            document.activeElement &&
+            document.activeElement.closest('main') &&
+            document.activeElement.matches('input, select, textarea');
           if (!field) window.AG_NAV.focusHeading();
-          if (this.props.store && this.props.store.announce) this.props.store.announce(title);else this.setState({
-            vfAnnouncement: title
-          });
+          if (this.props.store && this.props.store.announce) this.props.store.announce(title);
+          else
+            this.setState({
+              vfAnnouncement: title
+            });
         }
         window.VF_VIEWED = true;
         const url = location.href;
@@ -79,8 +93,18 @@ function vfPageClass(DCLogic) {
           url,
           locale: lang,
           noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
-          alternates: Object.fromEntries(['en','fa'].map(lang => [lang,
-            (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[this._vfPage], ...vfPageRoute(this.props),view:this._vfPage,lang})]))
+          alternates: Object.fromEntries(
+            ['en', 'fa'].map(lang => [
+              lang,
+              (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+                vfRouteParams({
+                  ...VF_ROUTE_EXTRA[this._vfPage],
+                  ...vfPageRoute(this.props),
+                  view: this._vfPage,
+                  lang
+                })
+            ])
+          )
         });
       }, 40);
     }

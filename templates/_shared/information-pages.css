@@ -1,27 +1,50 @@
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
 .vf-page .vf-info {
-  max-width:1088px;
-  margin-inline:auto; padding-top:var(--space-7); padding-inline:var(--space-5); padding-bottom:0;
+  max-width: 1088px;
+  margin-inline: auto;
+  padding-top: var(--space-7);
+  padding-inline: var(--space-5);
+  padding-bottom: 0;
 }
 
-.vf-info h1, .vf-info h2 {
-  margin:0;
-  font-family:var(--font-display);
-  font-weight:500;
-  line-height:var(--lh-tight);
-  letter-spacing:var(--tracking-display);
-  text-transform:var(--display-case);
-  text-wrap:balance;
+.vf-info h1,
+.vf-info h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--display-case);
+  text-wrap: balance;
 }
-.vf-info h1 {font-size:clamp(40px,5cqi,64px)}
-.vf-info h2 {font-size:clamp(28px,3.5cqi,36px)}
+.vf-info h1 {
+  font-size: clamp(40px, 5cqi, 64px);
+}
+.vf-info h2 {
+  font-size: clamp(28px, 3.5cqi, 36px);
+}
 
-.vf-info-toc .vf-info-eyebrow {margin-block-end:var(--space-2)}
-@media(max-width:767px) {
-  .vf-page .vf-info {padding-block-start:var(--space-6)}
-  .vf-info-header {margin-block-end:var(--space-6)}
-  .vf-info-columns {grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
-  .vf-info-sections {gap:var(--space-6)}
-  .vf-info-notice {margin-block-end:var(--space-6)}
-  .vf-info-toc {position:static}
+.vf-info-toc .vf-info-eyebrow {
+  margin-block-end: var(--space-2);
+}
+@media (max-width: 767px) {
+  .vf-page .vf-info {
+    padding-block-start: var(--space-6);
+  }
+  .vf-info-header {
+    margin-block-end: var(--space-6);
+  }
+  .vf-info-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .vf-info-sections {
+    gap: var(--space-6);
+  }
+  .vf-info-notice {
+    margin-block-end: var(--space-6);
+  }
+  .vf-info-toc {
+    position: static;
+  }
 }

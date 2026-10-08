@@ -15,7 +15,9 @@ for (const lang of LANGS) {
       await page.clock.setFixedTime(NOW);
       await openSite(page, view, lang);
       await settlePage(page);
-      await expect(page).toHaveScreenshot(`page__${view}__${lang}__${info.project.name}.png`, {fullPage: true});
+      await expect(page).toHaveScreenshot(`page__${view}__${lang}__${info.project.name}.png`, {
+        fullPage: true
+      });
     });
   }
 }

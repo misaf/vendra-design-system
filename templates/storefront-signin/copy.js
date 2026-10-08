@@ -9,7 +9,13 @@ function vfCopy(S) {
       phone: 'Mobile number',
       phoneErr: 'Enter a valid mobile number.',
       send: 'Send code',
-      terms: {before: 'By continuing you agree to our ', terms: 'terms of use', and: ' and ', privacy: 'privacy policy', after: '.'},
+      terms: {
+        before: 'By continuing you agree to our ',
+        terms: 'terms of use',
+        and: ' and ',
+        privacy: 'privacy policy',
+        after: '.'
+      },
       codeA: 'Check your',
       codeB: 'messages.',
       code: 'Five-digit code',
@@ -34,7 +40,13 @@ function vfCopy(S) {
       phone: 'شماره موبایل',
       phoneErr: 'شماره موبایل معتبر وارد کنید.',
       send: 'ارسال کد',
-      terms: {before: 'با ادامه، ', terms: 'شرایط استفاده', and: ' و ', privacy: 'حریم خصوصی', after: ' را می‌پذیرید.'},
+      terms: {
+        before: 'با ادامه، ',
+        terms: 'شرایط استفاده',
+        and: ' و ',
+        privacy: 'حریم خصوصی',
+        after: ' را می‌پذیرید.'
+      },
       codeA: 'پیامک‌ها را',
       codeB: 'ببینید.',
       code: 'کد پنج‌رقمی',

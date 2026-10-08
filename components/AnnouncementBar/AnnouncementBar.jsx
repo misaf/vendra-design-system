@@ -1,6 +1,8 @@
 import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+
+// A dismissible strip above the header (role="region", named by `label`) for store-wide news.
 export function AnnouncementBar({
   children,
   onClose,

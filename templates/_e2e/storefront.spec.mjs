@@ -16,7 +16,9 @@ test.describe('shell', () => {
     test(`direction and language (${lang})`, async ({page}) => {
       await openSite(page, 'home', lang);
       await expect(page.locator('html')).toHaveAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+      );
       expect(overflow, 'no horizontal page scroll').toBeLessThanOrEqual(0);
     });
   }
@@ -33,15 +35,21 @@ test.describe('shell', () => {
     expect(contrast(ring, await backgroundBehind(link))).toBeGreaterThanOrEqual(3);
   });
 
-  test('first load leaves focus at the top; in-site navigation focuses the heading', async ({page}, info) => {
+  test('first load leaves focus at the top; in-site navigation focuses the heading', async ({
+    page
+  }, info) => {
     test.skip(info.project.name !== 'desktop', 'uses the desktop header links');
     await openSite(page, 'home', 'en');
     await page.waitForTimeout(200);
     await page.keyboard.press('Tab');
     await expect(page.locator('.ag-skip')).toBeFocused();
     // Keep tabbing (as a keyboard user would) to the header's Shop link.
-    const shop = page.getByRole('navigation').getByRole('link', {name: 'Shop', exact: true}).first();
-    for (let i = 0; i < 10 && !(await shop.evaluate(el => el === document.activeElement)); i++) await page.keyboard.press('Tab');
+    const shop = page
+      .getByRole('navigation')
+      .getByRole('link', {name: 'Shop', exact: true})
+      .first();
+    for (let i = 0; i < 10 && !(await shop.evaluate(el => el === document.activeElement)); i++)
+      await page.keyboard.press('Tab');
     await expect(shop).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/view=shop/);

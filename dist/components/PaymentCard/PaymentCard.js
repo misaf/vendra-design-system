@@ -4,8 +4,10 @@ import React from "react";
 import { Button } from "../Button/Button.js";
 import { cx } from "../utils/cx.js";
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+// Card-to-card transfer details: the card number in groups of four (always LTR) with a copy
+// button, then holder, bank and amount. Persian digits in `cardNumber` are accepted.
 export function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}, onCopy, className = "" }) {
-	const L = {
+	const text = {
 		card: "Card number",
 		holder: "Card holder",
 		bank: "Bank",
@@ -14,55 +16,56 @@ export function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}
 		copied: "Copied",
 		...labels
 	};
-	const digits = String(cardNumber).replace(/[۰-۹]/g, (d) => FA_DIGITS.indexOf(d)).replace(/\D/g, "");
+	const digits = String(cardNumber).replace(/[۰-۹]/g, (digit) => FA_DIGITS.indexOf(digit)).replace(/\D/g, "");
 	const grouped = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
 	const [copied, setCopied] = React.useState(false);
-	const t = React.useRef();
-	React.useEffect(() => () => clearTimeout(t.current), []);
+	const resetTimer = React.useRef();
+	React.useEffect(() => () => clearTimeout(resetTimer.current), []);
 	const copy = () => {
 		const done = () => {
 			setCopied(true);
-			clearTimeout(t.current);
-			t.current = setTimeout(() => setCopied(false), 2e3);
+			clearTimeout(resetTimer.current);
+			resetTimer.current = setTimeout(() => setCopied(false), 2e3);
 			onCopy && onCopy(digits);
 		};
 		const fallback = () => {
-			const a = document.createElement("textarea");
-			a.value = digits;
-			a.style.position = "fixed";
-			a.style.opacity = "0";
-			document.body.appendChild(a);
-			a.select();
+			const scratch = document.createElement("textarea");
+			scratch.value = digits;
+			scratch.style.position = "fixed";
+			scratch.style.opacity = "0";
+			document.body.appendChild(scratch);
+			scratch.select();
 			try {
 				document.execCommand("copy");
-			} catch (e) {}
-			a.remove();
+			} catch (error) {}
+			scratch.remove();
 			done();
 		};
 		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(digits).then(done, fallback);
 		else fallback();
 	};
+	// [label, value, modifier class]
 	const rows = [
-		[L.holder, holder],
-		[L.bank, bank],
+		[text.holder, holder],
+		[text.bank, bank],
 		[
-			L.amount,
+			text.amount,
 			amount,
 			"amount"
 		]
-	].filter((r) => r[1]);
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-pay", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, L.card), /* @__PURE__ */ React.createElement("div", {
+	].filter(([, value]) => value);
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-pay", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, text.card), /* @__PURE__ */ React.createElement("div", {
 		className: "ag-pay__num",
 		dir: "ltr"
 	}, grouped)), /* @__PURE__ */ React.createElement(Button, {
 		variant: "secondary",
 		iconStart: copied ? "check" : "copy",
 		onClick: copy
-	}, copied ? L.copied : L.copy)), rows.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-pay__meta" }, rows.map(([k, v, m]) => /* @__PURE__ */ React.createElement("div", {
-		key: k,
-		className: m ? "ag-pay__" + m : undefined
-	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-pay__k" }, k), /* @__PURE__ */ React.createElement("dd", null, v)))), /* @__PURE__ */ React.createElement("span", {
+	}, copied ? text.copied : text.copy)), rows.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-pay__meta" }, rows.map(([label, value, modifier]) => /* @__PURE__ */ React.createElement("div", {
+		key: label,
+		className: modifier ? "ag-pay__" + modifier : undefined
+	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-pay__k" }, label), /* @__PURE__ */ React.createElement("dd", null, value)))), /* @__PURE__ */ React.createElement("span", {
 		role: "status",
 		className: "ag-sr-only"
-	}, copied ? L.copied : ""));
+	}, copied ? text.copied : ""));
 }

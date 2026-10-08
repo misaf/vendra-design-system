@@ -7,7 +7,8 @@ function vfCopy(S) {
       eyebrow: S.t.brand,
       heroA: 'Soft flowers,',
       heroB: 'gathered by hand.',
-      heroP: 'Blush roses, lilies and eucalyptus, wrapped in paper and satin. Hand-tied each morning from what the growers bring in.',
+      heroP:
+        'Blush roses, lilies and eucalyptus, wrapped in paper and satin. Hand-tied each morning from what the growers bring in.',
       cta: 'Shop bouquets',
       wa: 'Order on WhatsApp',
       heroPh: 'Hero photo',
@@ -29,7 +30,8 @@ function vfCopy(S) {
       eyebrow: S.t.brand,
       heroA: 'گل‌های لطیف،',
       heroB: 'چیده با دست.',
-      heroP: 'رز صورتی، لیلیوم و اکالیپتوس، پیچیده در کاغذ و ساتن. هر صبح از گل‌هایی که باغدارها می‌آورند، با دست بسته می‌شود.',
+      heroP:
+        'رز صورتی، لیلیوم و اکالیپتوس، پیچیده در کاغذ و ساتن. هر صبح از گل‌هایی که باغدارها می‌آورند، با دست بسته می‌شود.',
       cta: 'خرید دسته‌گل',
       wa: 'سفارش در واتساپ',
       heroPh: 'عکس اصلی',

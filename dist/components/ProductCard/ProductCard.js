@@ -6,39 +6,40 @@ import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
 // The product name is the one interactive target: <a href> (or <button> without href) with a stretched ::after covering the card.
 export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder = "Bouquet photo", favLabel = "Save" }) {
-	const list = (images && images.length ? images : image ? [{
+	const photos = (images && images.length ? images : image ? [{
 		src: image,
 		srcSet
-	}] : []).map((x) => typeof x === "string" ? { src: x } : x);
-	const [a, b] = list;
-	const pic = (x, cls) => /* @__PURE__ */ React.createElement("img", {
-		className: cls,
-		src: x.src,
-		srcSet: x.srcSet,
-		sizes: x.srcSet ? sizes : undefined,
-		alt: cls ? "" : x.alt || name,
+	}] : []).map((photo) => typeof photo === "string" ? { src: photo } : photo);
+	// The second photo crossfades in on hover; it is decorative, so its alt is empty.
+	const [mainPhoto, hoverPhoto] = photos;
+	const renderPhoto = (photo, className) => /* @__PURE__ */ React.createElement("img", {
+		className,
+		src: photo.src,
+		srcSet: photo.srcSet,
+		sizes: photo.srcSet ? sizes : undefined,
+		alt: className ? "" : photo.alt || name,
 		loading: "lazy",
 		decoding: "async",
-		style: x.crop ? {
-			objectPosition: x.crop,
+		style: photo.crop ? {
+			objectPosition: photo.crop,
 			transform: "scale(1.6)",
-			transformOrigin: x.crop
+			transformOrigin: photo.crop
 		} : undefined
 	});
-	const aria = linkLabel ?? (typeof name === "string" && typeof price === "string" ? name + " — " + price : undefined);
+	const accessibleName = linkLabel ?? (typeof name === "string" && typeof price === "string" ? name + " — " + price : undefined);
 	const linked = !!(href || onClick);
 	const title = href ? /* @__PURE__ */ React.createElement("a", {
 		href,
 		className: "ag-product__link",
-		"aria-label": aria,
+		"aria-label": accessibleName,
 		onClick
 	}, name) : onClick ? /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		className: "ag-product__link",
-		"aria-label": aria,
+		"aria-label": accessibleName,
 		onClick
 	}, name) : name;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, a ? pic(a) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, placeholder), b && pic(b, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
 		tone: badgeTone,
 		className: "ag-product__badge"
 	}, badge), onFavorite && /* @__PURE__ */ React.createElement(IconButton, {
@@ -48,8 +49,8 @@ export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, i
 		size: "sm",
 		active: favorite,
 		className: "ag-product__fav",
-		onClick: (e) => {
-			e.stopPropagation();
+		onClick: (event) => {
+			event.stopPropagation();
 			onFavorite();
 		}
 	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("span", { className: "ag-product__price" }, compareAt && /* @__PURE__ */ React.createElement("s", null, compareAt), price))));

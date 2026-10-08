@@ -1,6 +1,8 @@
 import React from 'react';
 import {cx} from '../utils/cx.js';
-// The label names the tile; the description is read after it as its description, not as part of the name.
+
+// One selectable tile (role="radio") inside a ChoiceGroup. The label alone names the tile; the
+// description is read after it, so it never becomes part of the name.
 export function ChoiceTile({
   label,
   description,
@@ -11,12 +13,11 @@ export function ChoiceTile({
   className = '',
   ...rest
 }) {
-  const auto = React.useId();
-  const lid = auto + '-label';
-  const did = auto + '-desc';
-  const named = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
-  const desc =
-    [description ? did : null, rest['aria-describedby']].filter(Boolean).join(' ') || undefined;
+  const baseId = React.useId();
+  const labelId = baseId + '-label';
+  const descriptionId = baseId + '-desc';
+  const namedByLabel = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
+  const describedBy = cx(description && descriptionId, rest['aria-describedby']) || undefined;
   return (
     <button
       type="button"
@@ -32,14 +33,14 @@ export function ChoiceTile({
       )}
       onClick={() => onSelect && onSelect()}
       {...rest}
-      aria-labelledby={named ? lid : rest['aria-labelledby']}
-      aria-describedby={desc}
+      aria-labelledby={namedByLabel ? labelId : rest['aria-labelledby']}
+      aria-describedby={describedBy}
     >
-      <span id={lid} className="ag-choice__label">
+      <span id={labelId} className="ag-choice__label">
         {label}
       </span>
       {description && (
-        <span id={did} className="ag-choice__desc">
+        <span id={descriptionId} className="ag-choice__desc">
           {description}
         </span>
       )}

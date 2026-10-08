@@ -10,20 +10,20 @@ export function OrderTimeline({ steps = [], current = 0, status = "active", labe
 		className: cx("ag-otl", className),
 		style,
 		"aria-label": label
-	}, steps.map((s, i) => {
+	}, steps.map((step, i) => {
 		const done = status === "done" || i < current;
-		const now = status !== "done" && i === current;
-		const st = done ? "done" : now ? "current" : "upcoming";
+		const isCurrent = status !== "done" && i === current;
+		const state = done ? "done" : isCurrent ? "current" : "upcoming";
 		return /* @__PURE__ */ React.createElement("li", {
 			key: i,
-			className: cx("ag-otl__step", "ag-otl__step--" + st),
-			"aria-current": now ? "step" : undefined
+			className: cx("ag-otl__step", "ag-otl__step--" + state),
+			"aria-current": isCurrent ? "step" : undefined
 		}, /* @__PURE__ */ React.createElement("span", {
 			className: "ag-otl__rail",
 			"aria-hidden": "true"
 		}, /* @__PURE__ */ React.createElement("span", { className: "ag-otl__dot" }, done && /* @__PURE__ */ React.createElement(Icon, {
 			name: "check",
 			size: 14
-		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, s.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", doneLabel)), s.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, s.time));
+		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, step.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", doneLabel)), step.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, step.time));
 	}));
 }

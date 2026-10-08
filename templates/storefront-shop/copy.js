@@ -16,22 +16,27 @@ function vfCopy(S) {
       emptyP: 'Try another category or clear the filters.',
       clear: 'Clear filters',
       deliverOn: 'Delivery day',
-      dateHint: 'Same-day designs can go today; the rest from tomorrow. Times follow Karaj delivery cut-offs.',
+      dateHint:
+        'Same-day designs can go today; the rest from tomorrow. Times follow Karaj delivery cut-offs.',
       anyDay: 'Any day',
       soldOut: 'sold out',
       closed: 'closed',
       deliversOn: 'Delivers {day}',
       showResults: 'Show {count}',
-      sortOptions: [{
-        value: 'featured',
-        label: 'Featured'
-      }, {
-        value: 'low',
-        label: 'Price: low to high'
-      }, {
-        value: 'high',
-        label: 'Price: high to low'
-      }],
+      sortOptions: [
+        {
+          value: 'featured',
+          label: 'Featured'
+        },
+        {
+          value: 'low',
+          label: 'Price: low to high'
+        },
+        {
+          value: 'high',
+          label: 'Price: high to low'
+        }
+      ],
       chipLabels: {
         under3: 'Under 3M',
         same: 'Same day',
@@ -52,22 +57,27 @@ function vfCopy(S) {
       emptyP: 'دسته‌بندی دیگری را امتحان کنید یا فیلترها را پاک کنید.',
       clear: 'پاک کردن فیلترها',
       deliverOn: 'روز ارسال',
-      dateHint: 'طرح‌های ارسال همان روز از امروز و بقیه از فردا ارسال می‌شوند. زمان‌ها بر اساس مهلت سفارش در کرج است.',
+      dateHint:
+        'طرح‌های ارسال همان روز از امروز و بقیه از فردا ارسال می‌شوند. زمان‌ها بر اساس مهلت سفارش در کرج است.',
       anyDay: 'هر روز',
       soldOut: 'تکمیل',
       closed: 'بسته',
       deliversOn: 'ارسال {day}',
       showResults: 'نمایش {count}',
-      sortOptions: [{
-        value: 'featured',
-        label: 'پیشنهادی'
-      }, {
-        value: 'low',
-        label: 'قیمت: کم به زیاد'
-      }, {
-        value: 'high',
-        label: 'قیمت: زیاد به کم'
-      }],
+      sortOptions: [
+        {
+          value: 'featured',
+          label: 'پیشنهادی'
+        },
+        {
+          value: 'low',
+          label: 'قیمت: کم به زیاد'
+        },
+        {
+          value: 'high',
+          label: 'قیمت: زیاد به کم'
+        }
+      ],
       chipLabels: {
         under3: 'زیر ۳ میلیون',
         same: 'ارسال همان روز',
@@ -79,21 +89,21 @@ function vfCopy(S) {
   return {
     ...result,
     migration: {
-      "en": {
-        "price": "Price range",
-        "stock": "In stock only",
-        "filters": "Filters",
-        "loading": "Loading products",
-        "failed": "Products could not be loaded",
-        "retry": "Try again"
+      en: {
+        price: 'Price range',
+        stock: 'In stock only',
+        filters: 'Filters',
+        loading: 'Loading products',
+        failed: 'Products could not be loaded',
+        retry: 'Try again'
       },
-      "fa": {
-        "price": "بازه قیمت",
-        "stock": "فقط موجود",
-        "filters": "فیلترها",
-        "loading": "در حال بارگذاری محصولات",
-        "failed": "بارگذاری محصولات ناموفق بود",
-        "retry": "تلاش دوباره"
+      fa: {
+        price: 'بازه قیمت',
+        stock: 'فقط موجود',
+        filters: 'فیلترها',
+        loading: 'در حال بارگذاری محصولات',
+        failed: 'بارگذاری محصولات ناموفق بود',
+        retry: 'تلاش دوباره'
       }
     }[S.lang]
   };

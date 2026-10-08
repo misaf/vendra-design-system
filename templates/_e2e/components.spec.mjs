@@ -17,7 +17,9 @@ test.describe('Tooltip (WCAG 1.4.13)', () => {
     await expect(trigger).toHaveAccessibleDescription('Save to favourites');
   });
 
-  test('shows on hover, stays while hovering the bubble, Esc dismisses until the pointer leaves', async ({page}) => {
+  test('shows on hover, stays while hovering the bubble, Esc dismisses until the pointer leaves', async ({
+    page
+  }) => {
     const trigger = page.getByRole('button', {name: 'Save'});
     const tip = page.getByRole('tooltip');
     await expect(tip).toHaveCSS('opacity', '0');
@@ -73,7 +75,10 @@ test.describe('Tabs (ARIA tabs pattern)', () => {
     await page.getByRole('tab', {name: 'Profile'}).click();
     const panelId = await selected.getAttribute('aria-controls');
     expect(panelId).toBe('fx-panel-profile');
-    await expect(page.locator('#' + panelId)).toHaveAttribute('aria-labelledby', await selected.getAttribute('id'));
+    await expect(page.locator('#' + panelId)).toHaveAttribute(
+      'aria-labelledby',
+      await selected.getAttribute('id')
+    );
     await expect(page.getByRole('tabpanel', {name: 'Profile'})).toBeVisible();
   });
 });
@@ -102,7 +107,8 @@ test.describe('Toast', () => {
 });
 
 test.describe('Reduced motion', () => {
-  const tipDuration = page => page.getByRole('tooltip').evaluate(el => getComputedStyle(el).transitionDuration);
+  const tipDuration = page =>
+    page.getByRole('tooltip').evaluate(el => getComputedStyle(el).transitionDuration);
 
   test('motion tokens keep their durations by default', async ({page}) => {
     await expect.poll(() => tipDuration(page)).toBe('0.14s, 0.14s');
@@ -111,7 +117,9 @@ test.describe('Reduced motion', () => {
   test('every token-based transition becomes instant', async ({page}) => {
     await page.emulateMedia({reducedMotion: 'reduce'});
     await expect.poll(() => tipDuration(page)).toBe('1e-05s, 1e-05s');
-    const slow = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dur-slow').trim());
+    const slow = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--dur-slow').trim()
+    );
     expect(slow).toBe('.01ms');
   });
 });

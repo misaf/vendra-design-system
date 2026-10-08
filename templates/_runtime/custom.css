@@ -2,150 +2,380 @@
 
 /* Source: _shared/shell.css */
 /* Template document defaults and preview sizing. */
-body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}
+body {
+  margin: 0;
+}
+a {
+  color: var(--text-accent);
+}
+a:hover {
+  color: var(--accent-hover);
+}
+[data-vf-preview='true'] {
+  max-width: 390px;
+  contain: layout;
+}
+.vf-page,
+.vf-page * {
+  box-sizing: border-box;
+}
+.vf-page main {
+  width: 100%;
+  min-width: 0;
+}
+.vf-page main > * {
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .vf-page main {
+    padding-inline: 16px !important;
+  }
+  .vf-page aside {
+    width: 100%;
+    min-width: 0;
+  }
+}
 /* The footer sits on the inverse surface: field labels, hints and errors switch to the on-inverse colours. */
-.vf-shell-footer .ag-field__label{color:var(--text-on-inverse)}.vf-shell-footer .ag-field__hint{color:var(--text-inverse-muted)}.vf-shell-footer .ag-field__hint--error{color:var(--danger-on-inverse)}
+.vf-shell-footer .ag-field__label {
+  color: var(--text-on-inverse);
+}
+.vf-shell-footer .ag-field__hint {
+  color: var(--text-inverse-muted);
+}
+.vf-shell-footer .ag-field__hint--error {
+  color: var(--danger-on-inverse);
+}
 /* The newsletter field and its button share one 48px row. */
-.vf-shell-newsletter-form .ag-input{box-sizing:border-box;height:var(--control-h-input);min-height:0}.vf-shell-newsletter-form .ag-input input{padding-block:0;align-self:stretch}
-.vf-shell-newsletter-form .ag-input input:focus-visible{outline:none}.vf-shell-newsletter-form .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+.vf-shell-newsletter-form .ag-input {
+  box-sizing: border-box;
+  height: var(--control-h-input);
+  min-height: 0;
+}
+.vf-shell-newsletter-form .ag-input input {
+  padding-block: 0;
+  align-self: stretch;
+}
+.vf-shell-newsletter-form .ag-input input:focus-visible {
+  outline: none;
+}
+.vf-shell-newsletter-form .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 /* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
    The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
-.vf-shell-consent-bar .vf-shell-consent{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;column-gap:var(--space-5);border-radius:0;box-shadow:none;padding:var(--space-3) var(--space-6)}
-.vf-shell-consent-bar .vf-shell-consent>div:first-child{display:contents}
-.vf-shell-consent-bar .vf-shell-consent>p{order:1}
-.vf-shell-consent-bar .vf-shell-consent>div:last-child{order:2;flex-wrap:nowrap}
-.vf-shell-consent-bar .vf-shell-consent-close{order:3}
+.vf-shell-consent-bar .vf-shell-consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: var(--space-5);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-6);
+}
+.vf-shell-consent-bar .vf-shell-consent > div:first-child {
+  display: contents;
+}
+.vf-shell-consent-bar .vf-shell-consent > p {
+  order: 1;
+}
+.vf-shell-consent-bar .vf-shell-consent > div:last-child {
+  order: 2;
+  flex-wrap: nowrap;
+}
+.vf-shell-consent-bar .vf-shell-consent-close {
+  order: 3;
+}
 
 
 /* Source: _shared/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
 .vf-page .vf-info {
-  max-width:1088px;
-  margin-inline:auto; padding-top:var(--space-7); padding-inline:var(--space-5); padding-bottom:0;
+  max-width: 1088px;
+  margin-inline: auto;
+  padding-top: var(--space-7);
+  padding-inline: var(--space-5);
+  padding-bottom: 0;
 }
 
-.vf-info h1, .vf-info h2 {
-  margin:0;
-  font-family:var(--font-display);
-  font-weight:500;
-  line-height:var(--lh-tight);
-  letter-spacing:var(--tracking-display);
-  text-transform:var(--display-case);
-  text-wrap:balance;
+.vf-info h1,
+.vf-info h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--display-case);
+  text-wrap: balance;
 }
-.vf-info h1 {font-size:clamp(40px,5cqi,64px)}
-.vf-info h2 {font-size:clamp(28px,3.5cqi,36px)}
+.vf-info h1 {
+  font-size: clamp(40px, 5cqi, 64px);
+}
+.vf-info h2 {
+  font-size: clamp(28px, 3.5cqi, 36px);
+}
 
-.vf-info-toc .vf-info-eyebrow {margin-block-end:var(--space-2)}
-@media(max-width:767px) {
-  .vf-page .vf-info {padding-block-start:var(--space-6)}
-  .vf-info-header {margin-block-end:var(--space-6)}
-  .vf-info-columns {grid-template-columns:minmax(0,1fr);gap:var(--space-6)}
-  .vf-info-sections {gap:var(--space-6)}
-  .vf-info-notice {margin-block-end:var(--space-6)}
-  .vf-info-toc {position:static}
+.vf-info-toc .vf-info-eyebrow {
+  margin-block-end: var(--space-2);
+}
+@media (max-width: 767px) {
+  .vf-page .vf-info {
+    padding-block-start: var(--space-6);
+  }
+  .vf-info-header {
+    margin-block-end: var(--space-6);
+  }
+  .vf-info-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .vf-info-sections {
+    gap: var(--space-6);
+  }
+  .vf-info-notice {
+    margin-block-end: var(--space-6);
+  }
+  .vf-info-toc {
+    position: static;
+  }
 }
 
 
 /* Source: _shared/page-layouts.css */
 /* Three storefront page families. Exceptions are named and kept here. */
 
-.vf-page .vf-shopping, .vf-page .vf-form, .vf-page .vf-info {
-  margin-inline:auto;
-  padding:var(--space-7) var(--space-5) 0;
+.vf-page .vf-shopping,
+.vf-page .vf-form,
+.vf-page .vf-info {
+  margin-inline: auto;
+  padding: var(--space-7) var(--space-5) 0;
 }
-.vf-page .vf-shopping {max-width:var(--vf-shopping-width)}
-.vf-page .vf-form {max-width:var(--vf-form-width)}
-.vf-page .vf-info {max-width:var(--vf-info-width)}
-.vf-page main h1, .vf-page main h2 {
-  font-family:var(--font-display);
-  font-weight:500;
-  line-height:var(--lh-tight);
-  letter-spacing:var(--tracking-display);
-  text-transform:var(--display-case);
-  text-wrap:balance;
+.vf-page .vf-shopping {
+  max-width: var(--vf-shopping-width);
 }
-.vf-page main h1 {margin:0;font-size:clamp(40px,5cqi,64px)}
-.vf-page .vf-form h1 {font-size:clamp(36px,4.5cqi,56px)}
-.vf-page main h2 {font-size:clamp(28px,3.5cqi,36px)}
-.vf-page main>h1 {margin-block-end:var(--space-6)}
-.vf-page .vf-shopping--home {max-width:none;padding:0}
-.vf-page .vf-shopping--home .vf-hero-title {font-size:clamp(48px,6cqi,88px)}
+.vf-page .vf-form {
+  max-width: var(--vf-form-width);
+}
+.vf-page .vf-info {
+  max-width: var(--vf-info-width);
+}
+.vf-page main h1,
+.vf-page main h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--display-case);
+  text-wrap: balance;
+}
+.vf-page main h1 {
+  margin: 0;
+  font-size: clamp(40px, 5cqi, 64px);
+}
+.vf-page .vf-form h1 {
+  font-size: clamp(36px, 4.5cqi, 56px);
+}
+.vf-page main h2 {
+  font-size: clamp(28px, 3.5cqi, 36px);
+}
+.vf-page main > h1 {
+  margin-block-end: var(--space-6);
+}
+.vf-page .vf-shopping--home {
+  max-width: none;
+  padding: 0;
+}
+.vf-page .vf-shopping--home .vf-hero-title {
+  font-size: clamp(48px, 6cqi, 88px);
+}
 
-.vf-page main>aside {min-width:0}
+.vf-page main > aside {
+  min-width: 0;
+}
 
 /* Share row heights without truncating names or subtitles. */
 .vf-product-grid .ag-product {
-  display:grid;
-  grid-template-rows:subgrid;
-  grid-row:span 4;
-  min-width:0;
-  row-gap:14px;
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
+  min-width: 0;
+  row-gap: 14px;
 }
-.vf-product-grid .ag-product>div:last-child {
-  display:grid;
-  grid-template-rows:subgrid;
-  grid-row:span 3;
-  row-gap:4px;
+.vf-product-grid .ag-product > div:last-child {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  row-gap: 4px;
 }
 .vf-product-grid .ag-product__meta {
-  display:grid;
-  grid-template-rows:subgrid;
-  grid-row:span 2;
-  row-gap:4px;
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 2;
+  row-gap: 4px;
 }
-.vf-page .ag-product__price, .vf-page .ag-line__price, .vf-price {
-  font-size:var(--text-base);
-  font-weight:var(--weight-medium);
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
+.vf-page .ag-product__price,
+.vf-page .ag-line__price,
+.vf-price {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.vf-page .ag-line__thumb {border-radius:var(--radius-md)}
+.vf-page .ag-line__thumb {
+  border-radius: var(--radius-md);
+}
 
-.vf-mobile-action .vf-action-total {flex:none;min-width:max-content;display:flex;flex-direction:column;gap:4px}
-.vf-mobile-action .ag-btn {height:auto;min-height:var(--control-h-input);white-space:normal;flex:1;min-width:0}
+.vf-mobile-action .vf-action-total {
+  flex: none;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.vf-mobile-action .ag-btn {
+  height: auto;
+  min-height: var(--control-h-input);
+  white-space: normal;
+  flex: 1;
+  min-width: 0;
+}
 
 /* Persian copy gets its own rhythm, including editorial text. */
-.vf-page[data-lang="fa"] main p {line-height:var(--lh-body)}
-.vf-page[data-lang="fa"] main blockquote {line-height:var(--lh-snug)}
-.vf-page[data-lang="fa"] .ag-product__name {font-size:20px;line-height:1.5}
-@media(max-width:767px) {
-  .vf-page .vf-shopping, .vf-page .vf-form, .vf-page .vf-info {padding-block-start:var(--space-6)}
-  .vf-page .vf-shopping--home {padding:0!important}
-  .vf-page main h1 {font-size:40px}
-  .vf-page .vf-form h1 {font-size:36px}
-  .vf-page[data-lang="fa"] main h1 {font-size:36px;line-height:1.5}
-  .vf-page[data-lang="fa"] .vf-form h1 {font-size:34px}
-  .vf-page[data-lang="fa"] .vf-shopping--home .vf-hero-title {font-size:40px;line-height:1.5}
-  .vf-page .vf-shopping--home .vf-hero-title {font-size:48px}
-  .vf-page .vf-form aside, .vf-page .vf-shopping aside {position:static!important}
-  .vf-page .vf-product-grid {column-gap:var(--space-4)!important}
+.vf-page[data-lang='fa'] main p {
+  line-height: var(--lh-body);
 }
-@media(max-width:359px) {
-  .vf-page .vf-product-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .vf-search-row {grid-template-columns:48px minmax(0,1fr);column-gap:var(--space-3)}
-  .vf-search-row .vf-price {grid-column:2}
+.vf-page[data-lang='fa'] main blockquote {
+  line-height: var(--lh-snug);
+}
+.vf-page[data-lang='fa'] .ag-product__name {
+  font-size: 20px;
+  line-height: 1.5;
+}
+@media (max-width: 767px) {
+  .vf-page .vf-shopping,
+  .vf-page .vf-form,
+  .vf-page .vf-info {
+    padding-block-start: var(--space-6);
+  }
+  .vf-page .vf-shopping--home {
+    padding: 0 !important;
+  }
+  .vf-page main h1 {
+    font-size: 40px;
+  }
+  .vf-page .vf-form h1 {
+    font-size: 36px;
+  }
+  .vf-page[data-lang='fa'] main h1 {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+  .vf-page[data-lang='fa'] .vf-form h1 {
+    font-size: 34px;
+  }
+  .vf-page[data-lang='fa'] .vf-shopping--home .vf-hero-title {
+    font-size: 40px;
+    line-height: 1.5;
+  }
+  .vf-page .vf-shopping--home .vf-hero-title {
+    font-size: 48px;
+  }
+  .vf-page .vf-form aside,
+  .vf-page .vf-shopping aside {
+    position: static !important;
+  }
+  .vf-page .vf-product-grid {
+    column-gap: var(--space-4) !important;
+  }
+}
+@media (max-width: 359px) {
+  .vf-page .vf-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .vf-search-row {
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: var(--space-3);
+  }
+  .vf-search-row .vf-price {
+    grid-column: 2;
+  }
 }
 
 /* Keep keyboard targets clear of the sticky header and give form fields a visible ring. */
-.vf-page :is(input,textarea,select,button,a,[tabindex]) {scroll-margin-block:100px}
-.vf-page :is(input,textarea,select):focus-visible {outline:2px solid var(--focus-ring);outline-offset:3px}
+.vf-page :is(input, textarea, select, button, a, [tabindex]) {
+  scroll-margin-block: 100px;
+}
+.vf-page :is(input, textarea, select):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 
 
 /* Source: _shared/location.css */
 /* Maps for delivery locations (bag pin, account addresses). Leaflet's panes stay inside the map: isolation on .vf-map-box. */
-.vf-map-box{position:relative;overflow:hidden;isolation:isolate;border:1px solid var(--border-input);border-radius:var(--radius-md);background:var(--surface-muted)}
-.vf-map-box .leaflet-container{font-family:var(--font-body);background:var(--surface-muted)}
-.vf-map-box .leaflet-container:focus-visible{outline:none}
-.vf-map-box:has(.leaflet-container:focus-visible){outline:2px solid var(--focus-ring);outline-offset:2px}
+.vf-map-box {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.vf-map-box .leaflet-container {
+  font-family: var(--font-body);
+  background: var(--surface-muted);
+}
+.vf-map-box .leaflet-container:focus-visible {
+  outline: none;
+}
+.vf-map-box:has(.leaflet-container:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
 /* The pin stays at the map's centre, its point on the pinned spot. */
-.vf-map-pin{position:absolute;left:50%;top:50%;z-index:1000;transform:translate(-50%,-100%);color:var(--accent);pointer-events:none;filter:drop-shadow(0 2px 2px rgb(0 0 0 / .3))}
+.vf-map-pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+  color: var(--accent);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+}
 /* Saved places: an accent dot with its label above. Leaflet's stylesheet loads later, hence the doubled class. */
-.leaflet-marker-icon.vf-place-marker{display:grid;place-items:center;border-radius:50%}
-.vf-place-marker__dot{display:block;width:16px;height:16px;border-radius:50%;background:var(--accent);border:3px solid var(--surface-card);box-shadow:0 1px 3px rgb(0 0 0 / .35)}
-.vf-place-marker:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
-.leaflet-tooltip.vf-place-label{font-family:var(--font-body);font-size:var(--text-sm);font-weight:500;color:var(--text-body);background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:2px 8px}
-.leaflet-tooltip.vf-place-label::before{display:none}
+.leaflet-marker-icon.vf-place-marker {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.vf-place-marker__dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface-card);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+.vf-place-marker:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.leaflet-tooltip.vf-place-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-body);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 2px 8px;
+}
+.leaflet-tooltip.vf-place-label::before {
+  display: none;
+}
 
 
 /* Source: storefront-account/styles.css */
@@ -158,12 +388,29 @@ body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* The Apply button sits inside the promo field's end. The field and button share one grid
    cell so the button stays centred at any font height; an error message takes the next row. */
-.vf-bag-promo-row .ag-field{display:contents}
-.vf-bag-promo-row .ag-input{grid-area:1/1;padding-inline-end:112px}
-.vf-bag-promo-apply{grid-area:1/1;align-self:center;justify-self:end;margin-inline-end:6px;position:relative;z-index:1}
+.vf-bag-promo-row .ag-field {
+  display: contents;
+}
+.vf-bag-promo-row .ag-input {
+  grid-area: 1/1;
+  padding-inline-end: 112px;
+}
+.vf-bag-promo-apply {
+  grid-area: 1/1;
+  align-self: center;
+  justify-self: end;
+  margin-inline-end: 6px;
+  position: relative;
+  z-index: 1;
+}
 /* One focus ring around the whole field, not just the text box beside the button. */
-.vf-bag-promo-row input:focus-visible{outline:none}
-.vf-bag-promo-row .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+.vf-bag-promo-row input:focus-visible {
+  outline: none;
+}
+.vf-bag-promo-row .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 
 
 /* Source: storefront-checkout/styles.css */
@@ -208,9 +455,15 @@ body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
-.vf-product-add .ag-btn{white-space:normal;height:auto;min-height:52px}
+.vf-product-add .ag-btn {
+  white-space: normal;
+  height: auto;
+  min-height: 52px;
+}
 /* While the desktop consent bar is showing, the save toast sits above it instead of on it. */
-.vf-page:has(.vf-shell-consent-bar) .vf-product-toast{bottom:calc(var(--space-6) + 5rem)}
+.vf-page:has(.vf-shell-consent-bar) .vf-product-toast {
+  bottom: calc(var(--space-6) + 5rem);
+}
 
 
 /* Source: storefront-saved/styles.css */

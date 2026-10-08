@@ -23,13 +23,29 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:5173',
     // Every test starts with the cookie choice made, so the consent banner stays out of
     // screenshots and clicks. Consent tests opt out with test.use({storageState: NO_CONSENT}).
-    storageState: {cookies: [], origins: [{origin: 'http://127.0.0.1:5173', localStorage: [{name: 'vf-consent', value: 'essential'}]}]},
+    storageState: {
+      cookies: [],
+      origins: [
+        {origin: 'http://127.0.0.1:5173', localStorage: [{name: 'vf-consent', value: 'essential'}]}
+      ]
+    },
     channel: 'chrome',
     trace: 'retain-on-failure'
   },
   projects: [
-    {name: 'mobile', use: {...devices['Desktop Chrome'], channel: 'chrome', viewport: {width: 390, height: 844}, hasTouch: false}},
-    {name: 'desktop', use: {...devices['Desktop Chrome'], channel: 'chrome', viewport: {width: 1280, height: 900}}}
+    {
+      name: 'mobile',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        viewport: {width: 390, height: 844},
+        hasTouch: false
+      }
+    },
+    {
+      name: 'desktop',
+      use: {...devices['Desktop Chrome'], channel: 'chrome', viewport: {width: 1280, height: 900}}
+    }
   ],
   webServer: {
     command: 'npm run dev',

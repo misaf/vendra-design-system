@@ -1,26 +1,30 @@
 import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
-  const out = [];
-  const walk = (nodes, prefix) => {
-    React.Children.toArray(nodes).forEach(c => {
-      if (
-        React.isValidElement(c) &&
-        (c.type === React.Fragment || (c.props && c.props['data-snap-group'] != null))
-      ) {
-        walk(c.props.children, prefix + String(c.key) + '/');
-      } else
-        out.push({
-          node: c,
-          key: prefix + (React.isValidElement(c) && c.key != null ? c.key : out.length)
-        });
+  const slots = [];
+  const walk = (nodes, keyPrefix) => {
+    React.Children.toArray(nodes).forEach(child => {
+      const isGroup =
+        React.isValidElement(child) &&
+        (child.type === React.Fragment || (child.props && child.props['data-snap-group'] != null));
+      if (isGroup) {
+        walk(child.props.children, keyPrefix + String(child.key) + '/');
+      } else {
+        const ownKey = React.isValidElement(child) && child.key != null ? child.key : slots.length;
+        slots.push({node: child, key: keyPrefix + ownKey});
+      }
     });
   };
   walk(children, '');
-  return out;
+  return slots;
 }
+
+// A horizontal scroll-snap row. Pass children, or `items` + `renderItem`. With `arrows` it shows
+// its own prev/next buttons; otherwise drive it through `ref` (scrollPrev / scrollNext) and
+// `onScrollStateChange`, e.g. from SectionHeader.
 export const Carousel = React.forwardRef(function Carousel(
   {
     children,
@@ -42,62 +46,71 @@ export const Carousel = React.forwardRef(function Carousel(
   },
   ref
 ) {
-  const el = React.useRef(null);
-  const [st, setSt] = React.useState({canPrev: false, canNext: false});
-  const last = React.useRef(null);
-  const cb = React.useRef(onScrollStateChange);
-  cb.current = onScrollStateChange;
+  const trackRef = React.useRef(null);
+  const [scrollState, setScrollState] = React.useState({canPrev: false, canNext: false});
+  const lastState = React.useRef(null);
+  const onChangeRef = React.useRef(onScrollStateChange);
+  onChangeRef.current = onScrollStateChange;
+
   const measure = React.useCallback(() => {
-    const t = el.current;
-    if (!t) return;
-    const max = t.scrollWidth - t.clientWidth;
-    const pos = Math.abs(t.scrollLeft);
-    const n = {canPrev: pos > 1, canNext: pos < max - 1};
-    const o = last.current;
-    if (o && o.canPrev === n.canPrev && o.canNext === n.canNext) return;
-    last.current = n;
-    setSt(n);
-    cb.current && cb.current(n);
+    const track = trackRef.current;
+    if (!track) return;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const position = Math.abs(track.scrollLeft);
+    const next = {canPrev: position > 1, canNext: position < maxScroll - 1};
+    const previous = lastState.current;
+    if (previous && previous.canPrev === next.canPrev && previous.canNext === next.canNext) return;
+    lastState.current = next;
+    setScrollState(next);
+    onChangeRef.current && onChangeRef.current(next);
   }, []);
-  const by = React.useCallback(d => {
-    const t = el.current;
-    if (!t) return;
-    const rtl = getComputedStyle(t).direction === 'rtl';
-    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    t.scrollBy({
-      left: d * (rtl ? -1 : 1) * t.clientWidth * 0.85,
-      behavior: reduce ? 'auto' : 'smooth'
+
+  // Scrolls most of a view back (-1) or forward (1), in reading direction.
+  const scrollPage = React.useCallback(direction => {
+    const track = trackRef.current;
+    if (!track) return;
+    const rtl = getComputedStyle(track).direction === 'rtl';
+    const reduceMotion =
+      window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    track.scrollBy({
+      left: direction * (rtl ? -1 : 1) * track.clientWidth * 0.85,
+      behavior: reduceMotion ? 'auto' : 'smooth'
     });
   }, []);
+
   React.useImperativeHandle(
     ref,
     () => ({
-      scrollPrev: () => by(-1),
-      scrollNext: () => by(1),
+      scrollPrev: () => scrollPage(-1),
+      scrollNext: () => scrollPage(1),
       get element() {
-        return el.current;
+        return trackRef.current;
       },
       get state() {
-        return st;
+        return scrollState;
       }
     }),
-    [by, st]
+    [scrollPage, scrollState]
   );
+
   React.useEffect(() => {
     measure();
-    const t = el.current;
-    if (!t || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(measure);
-    ro.observe(t);
-    return () => ro.disconnect();
+    const track = trackRef.current;
+    if (!track || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(track);
+    return () => observer.disconnect();
   }, [measure, children, items]);
-  const vars = {
-    '--ss-min': itemMin,
-    '--ss-per': perView,
-    '--ss-per-m': perViewMobile,
-    '--ss-gap': gap,
+
+  const layout = {
+    '--carousel-item-min': itemMin,
+    '--carousel-per-view': perView,
+    '--carousel-per-view-mobile': perViewMobile,
+    '--carousel-gap': gap,
     ...style
   };
+  const itemKey = (item, i) => (item && item.id != null ? item.id : i);
+
   return (
     <div
       className={cx(
@@ -106,7 +119,7 @@ export const Carousel = React.forwardRef(function Carousel(
         itemAs === 'contents' && 'ag-carousel--contents',
         className
       )}
-      style={vars}
+      style={layout}
     >
       {arrows && (
         <div className="ag-carousel__nav">
@@ -115,21 +128,21 @@ export const Carousel = React.forwardRef(function Carousel(
             label={prevLabel}
             variant="outline"
             size="sm"
-            onClick={() => by(-1)}
-            disabled={!st.canPrev}
+            onClick={() => scrollPage(-1)}
+            disabled={!scrollState.canPrev}
           />
           <IconButton
             icon="chevron-right"
             label={nextLabel}
             variant="outline"
             size="sm"
-            onClick={() => by(1)}
-            disabled={!st.canNext}
+            onClick={() => scrollPage(1)}
+            disabled={!scrollState.canNext}
           />
         </div>
       )}
       <div
-        ref={el}
+        ref={trackRef}
         className="ag-carousel__track"
         role="region"
         aria-label={label}
@@ -138,18 +151,13 @@ export const Carousel = React.forwardRef(function Carousel(
       >
         {itemAs === 'contents'
           ? items && renderItem
-            ? items.map((it, i) => (
-                <React.Fragment key={it && it.id != null ? it.id : i}>
-                  {renderItem(it, i)}
-                </React.Fragment>
+            ? items.map((item, i) => (
+                <React.Fragment key={itemKey(item, i)}>{renderItem(item, i)}</React.Fragment>
               ))
             : children
           : [
               ...(items && renderItem
-                ? items.map((it, i) => ({
-                    node: renderItem(it, i),
-                    key: it && it.id != null ? 'i' + it.id : 'i' + i
-                  }))
+                ? items.map((item, i) => ({node: renderItem(item, i), key: 'i' + itemKey(item, i)}))
                 : []),
               ...flattenSnap(children)
             ].map(({node, key}) => (

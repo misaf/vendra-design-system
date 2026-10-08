@@ -19,29 +19,29 @@
 </helmet>
 <div class="tw:bg-muted tw:min-h-screen">
 <div class="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]" data-vf-preview="{{ previewMobile }}" data-tenant="{{ tenant }}" lang="{{ lang }}" dir="{{ dir }}" data-lang="{{ lang }}" data-vf-mobile="{{ mob }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.SkipLink" href="#main" on-click="{{ skipGo }}" hint-size="0px,0px">{{ t.skip }}</x-import>
 <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.LiveRegion" hint-size="0px,0px">{{ vfAnnouncement }}</x-import>
 </sc-if>
 <sc-if value="{{ announcement }}" hint-placeholder-val="{{ true }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.AnnouncementBar" label="{{ t.news }}" close-label="{{ t.dismissNews }}" on-close="{{ closeAnnouncement }}" hint-size="100%,44px">{{ announcement }}</x-import>
 </sc-if>
 <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1 tw:items-center">
-<div class="vf-shell-header-lang tw:me-2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,38px"></x-import></div>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
+<div class="vf-shell-header-lang tw:me-2"><x-import component-from-global-scope="VendraDesignSystem.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,38px"></x-import></div>
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>
@@ -51,68 +51,68 @@
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px]">
 <div class="tw:flex">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="menu" label="{{ t.menu }}" on-click="{{ openMenu }}" hint-size="44px,44px">
 </x-import>
 <button type="button" onClick="{{ otherLang.pick }}" lang="{{ otherLang.lang }}" aria-label="{{ otherLang.name }}" class="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer">{{ otherLang.label }}</button>
 </div>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="vf-shell-mobile-tools tw:flex tw:justify-end">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>
 </header>
 </sc-if>
 <sc-if value="{{ mob }}" hint-placeholder-val="{{ false }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px">
+<x-import component-from-global-scope="VendraDesignSystem.Dialog" placement="start" open="{{ menuOpen }}" on-close="{{ closeMenu }}" title="{{ t.brand }}" close-label="{{ t.closeMenu }}" hint-size="0px,0px">
+<x-import component-from-global-scope="VendraDesignSystem.MenuList" label="{{ t.mainNav }}" hint-size="100%,400px">
 <sc-for list="{{ menuItems }}" as="it" hint-placeholder-count="9">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="menu" href="{{ it.href }}" current="{{ it.current }}" on-click="{{ it.go }}" hint-size="100%,52px">{{ it.label }}</x-import>
 </sc-for>
 </x-import>
 <div class="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
 <sc-if value="{{ hasLang }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
 <span>{{ t.langL }}</span>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,36px">
+<x-import component-from-global-scope="VendraDesignSystem.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,36px">
 </x-import>
 </div>
 </sc-if>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" icon-start="message-circle" href="{{ waHref }}" target="_blank" rel="noopener noreferrer" hint-size="100%,46px">{{ t.waLong }}</x-import>
 </div>
 </x-import>
 </sc-if>
 <div class="vf-shell-content tw:flex-1">
 <!-- END GENERATED SHELL -->
 <!-- BEGIN PAGE CONTENT -->
-<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-3"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
-<div class="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Tabs" variant="pill" items="{{ tabItems }}" value="{{ tab }}" on-change="{{ setTab }}" label="{{ t.accA }}" id-prefix="vf-account" hint-size="420px,44px"></x-import></div>
-<div role="tabpanel" id="{{ tabPanelId }}" aria-labelledby="{{ tabId }}" tabindex="0" class="vf-account-panel"><sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-3"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isBalance }}" hint-placeholder-val="{{ false }}"><div class="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-[760px]"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Card" padding="{{ 24 }}" hint-size="100%,150px"><div class="tw:flex tw:flex-col tw:gap-2"><span id="vf-balance-label" class="tw:text-sm tw:text-quiet">{{ t.balance.title }}</span><span id="vf-balance-amount" aria-labelledby="vf-balance-label vf-balance-amount" class="tw:text-2xl tw:font-medium">{{ balance.amount }}</span><p class="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">{{ balance.status }}</p></div></x-import><section aria-labelledby="vf-topup-title" class="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><h2 id="vf-topup-title" class="tw:m-0 tw:text-xl">{{ t.balance.topUp }}</h2><div role="group" aria-label="{{ t.balance.quick }}" class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ balance.presets }}" as="v" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Chip" selected="{{ v.pressed }}" aria-pressed="{{ v.pressed }}" on-click="{{ v.pick }}" hint-size="130px,36px">{{ v.label }}</x-import></sc-for></div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-topup-amount" label="{{ t.balance.amount }}" value="{{ balance.value }}" on-change="{{ balance.set }}" hint="{{ balance.hint }}" error="{{ balance.error }}" inputmode="numeric" dir="ltr" autocomplete="off" hint-size="100%,96px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" icon-start="banknote" on-click="{{ balance.submit }}" loading="{{ balance.busy }}" disabled="{{ balance.busy }}" hint-size="200px,48px">{{ balance.payLabel }}</x-import></div><sc-if value="{{ balance.busy }}"><p role="status" class="tw:m-0 tw:text-sm">{{ t.balance.processing }}</p></sc-if><sc-if value="{{ balance.done }}"><p id="vf-topup-done" tabindex="-1" role="status" class="tw:m-0 tw:text-sm tw:font-medium">{{ balance.done }}</p></sc-if><p class="tw:m-0 tw:text-sm tw:text-quiet">{{ t.balance.demo }}</p></section><section aria-labelledby="vf-balance-history" class="tw:flex tw:flex-col tw:gap-3"><h2 id="vf-balance-history" class="tw:m-0 tw:text-xl">{{ t.balance.history }}</h2><sc-if value="{{ balance.noHistory }}"><p class="tw:m-0 tw:text-secondary">{{ t.balance.noHistory }}</p></sc-if><sc-if value="{{ balance.hasHistory }}"><ul class="vf-account-balance-history tw:list-none tw:m-0 tw:p-0 tw:flex tw:flex-col"><sc-for list="{{ balance.history }}" as="h" hint-placeholder-count="2"><li class="tw:flex tw:justify-between tw:items-baseline tw:gap-4 tw:py-3 tw:[border-top:1px_solid_var(--border-subtle)]"><div class="tw:flex tw:flex-col tw:gap-1"><span class="tw:font-medium">{{ h.label }}</span><span class="tw:text-sm tw:text-quiet">{{ h.date }}</span></div><span class="vf-account-balance-amount tw:font-medium tw:whitespace-nowrap" data-tone="{{ h.tone }}">{{ h.amount }}</span></li></sc-for></ul></sc-if></section></div></sc-if>
-<sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}"><div class="vf-account-saved-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if><sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}"><div class="vf-account-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.EmptyState" icon="heart" title="{{ t.savedEmptyA }}" title-accent="{{ t.savedEmptyB }}" body="{{ t.savedEmptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></sc-if>
-<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><div class="vf-account-map vf-map-box tw:h-[260px] tw:mb-4"><div id="vf-account-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
-<sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
-<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile.email }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile.locale }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile.sms }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></div><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Dialog" open="{{ formOpen }}" title="{{ formTitle }}" on-close="{{ closeForm }}">
+<main id="main" tabindex="-1" class="vf-form tw:mx-auto"><div class="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h"><div class="vf-account-heading tw:flex tw:flex-col tw:gap-3"><div class="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.hello }}</div><h1>{{ t.accA }} <em class="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.accB }}</em></h1></div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="ghost" icon-start="log-out" on-click="{{ signOut }}" hint-size="130px,48px">{{ t.signOut }}</x-import></div>
+<div class="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"><x-import component-from-global-scope="VendraDesignSystem.Tabs" variant="pill" items="{{ tabItems }}" value="{{ tab }}" on-change="{{ setTab }}" label="{{ t.accA }}" id-prefix="vf-account" hint-size="420px,44px"></x-import></div>
+<div role="tabpanel" id="{{ tabPanelId }}" aria-labelledby="{{ tabId }}" tabindex="0" class="vf-account-panel"><sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-3"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
+<sc-if value="{{ isBalance }}" hint-placeholder-val="{{ false }}"><div class="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-[760px]"><x-import component-from-global-scope="VendraDesignSystem.Card" padding="{{ 24 }}" hint-size="100%,150px"><div class="tw:flex tw:flex-col tw:gap-2"><span id="vf-balance-label" class="tw:text-sm tw:text-quiet">{{ t.balance.title }}</span><span id="vf-balance-amount" aria-labelledby="vf-balance-label vf-balance-amount" class="tw:text-2xl tw:font-medium">{{ balance.amount }}</span><p class="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">{{ balance.status }}</p></div></x-import><section aria-labelledby="vf-topup-title" class="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><h2 id="vf-topup-title" class="tw:m-0 tw:text-xl">{{ t.balance.topUp }}</h2><div role="group" aria-label="{{ t.balance.quick }}" class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ balance.presets }}" as="v" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.Chip" selected="{{ v.pressed }}" aria-pressed="{{ v.pressed }}" on-click="{{ v.pick }}" hint-size="130px,36px">{{ v.label }}</x-import></sc-for></div><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-topup-amount" label="{{ t.balance.amount }}" value="{{ balance.value }}" on-change="{{ balance.set }}" hint="{{ balance.hint }}" error="{{ balance.error }}" inputmode="numeric" dir="ltr" autocomplete="off" hint-size="100%,96px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" icon-start="banknote" on-click="{{ balance.submit }}" loading="{{ balance.busy }}" disabled="{{ balance.busy }}" hint-size="200px,48px">{{ balance.payLabel }}</x-import></div><sc-if value="{{ balance.busy }}"><p role="status" class="tw:m-0 tw:text-sm">{{ t.balance.processing }}</p></sc-if><sc-if value="{{ balance.done }}"><p id="vf-topup-done" tabindex="-1" role="status" class="tw:m-0 tw:text-sm tw:font-medium">{{ balance.done }}</p></sc-if><p class="tw:m-0 tw:text-sm tw:text-quiet">{{ t.balance.demo }}</p></section><section aria-labelledby="vf-balance-history" class="tw:flex tw:flex-col tw:gap-3"><h2 id="vf-balance-history" class="tw:m-0 tw:text-xl">{{ t.balance.history }}</h2><sc-if value="{{ balance.noHistory }}"><p class="tw:m-0 tw:text-secondary">{{ t.balance.noHistory }}</p></sc-if><sc-if value="{{ balance.hasHistory }}"><ul class="vf-account-balance-history tw:list-none tw:m-0 tw:p-0 tw:flex tw:flex-col"><sc-for list="{{ balance.history }}" as="h" hint-placeholder-count="2"><li class="tw:flex tw:justify-between tw:items-baseline tw:gap-4 tw:py-3 tw:[border-top:1px_solid_var(--border-subtle)]"><div class="tw:flex tw:flex-col tw:gap-1"><span class="tw:font-medium">{{ h.label }}</span><span class="tw:text-sm tw:text-quiet">{{ h.date }}</span></div><span class="vf-account-balance-amount tw:font-medium tw:whitespace-nowrap" data-tone="{{ h.tone }}">{{ h.amount }}</span></li></sc-for></ul></sc-if></section></div></sc-if>
+<sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}"><div class="vf-account-saved-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if><sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}"><div class="vf-account-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem.EmptyState" icon="heart" title="{{ t.savedEmptyA }}" title-accent="{{ t.savedEmptyB }}" body="{{ t.savedEmptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></sc-if>
+<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><div class="vf-account-map vf-map-box tw:h-[260px] tw:mb-4"><div id="vf-account-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
+<sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile.email }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile.locale }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile.sms }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></div><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
+<x-import component-from-global-scope="VendraDesignSystem.Dialog" open="{{ formOpen }}" title="{{ formTitle }}" on-close="{{ closeForm }}">
 <div class="tw:flex tw:flex-col tw:gap-4">
 <sc-if value="{{ isAddress }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ set.label }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ set.zone }}"></x-import>
-<div class="vf-account-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-address-pin-label" class="ag-field__label">{{ editor.pin }}</span><sc-if value="{{ mapOk }}"><div class="vf-map-box tw:h-[220px]"><div id="vf-address-map" dir="ltr" role="region" aria-labelledby="vf-address-pin-label" aria-describedby="vf-address-pin-status vf-address-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Icon" name="map-pin" size="{{ 32 }}"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-address-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}">{{ editor.locate }}</x-import></div><sc-if value="{{ pinError }}"><span id="vf-address-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if></sc-if><sc-if value="{{ mapFailed }}"><p class="ag-field__hint tw:m-0">{{ editor.mapFailed }}</p></sc-if></div>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ set.line }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ set.recipient }}" autocomplete="name"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ set.phone }}" error="{{ errors.phone }}" dir="ltr" type="tel" autocomplete="tel"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ set.label }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ set.zone }}"></x-import>
+<div class="vf-account-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-address-pin-label" class="ag-field__label">{{ editor.pin }}</span><sc-if value="{{ mapOk }}"><div class="vf-map-box tw:h-[220px]"><div id="vf-address-map" dir="ltr" role="region" aria-labelledby="vf-address-pin-label" aria-describedby="vf-address-pin-status vf-address-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem.Icon" name="map-pin" size="{{ 32 }}"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-address-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}">{{ editor.locate }}</x-import></div><sc-if value="{{ pinError }}"><span id="vf-address-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if></sc-if><sc-if value="{{ mapFailed }}"><p class="ag-field__hint tw:m-0">{{ editor.mapFailed }}</p></sc-if></div>
+<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ set.line }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ set.recipient }}" autocomplete="name"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ set.phone }}" error="{{ errors.phone }}" dir="ltr" type="tel" autocomplete="tel"></x-import>
 </sc-if>
 <sc-if value="{{ isReminder }}">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-reminder-name" label="{{ editor.reminderName }}" value="{{ form.name }}" on-change="{{ set.name }}" error="{{ errors.name }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Select" label="{{ editor.occasion }}" options="{{ occasionOptions }}" value="{{ form.occ }}" on-change="{{ setOccasion }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.DatePicker" id="vf-reminder-date" yearly="{{ true }}" lang="{{ lang }}" label="{{ editor.date }}" value="{{ dateValue }}" on-change="{{ setDate }}" disabled="{{ dateLocked }}" hint="{{ dateHint }}" labels="{{ dateLabels }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Select" label="{{ editor.before }}" options="{{ beforeOptions }}" value="{{ form.before }}" on-change="{{ setBefore }}"></x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Select" label="{{ editor.via }}" options="{{ channelOptions }}" value="{{ form.channel }}" on-change="{{ set.channel }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-reminder-name" label="{{ editor.reminderName }}" value="{{ form.name }}" on-change="{{ set.name }}" error="{{ errors.name }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Select" label="{{ editor.occasion }}" options="{{ occasionOptions }}" value="{{ form.occ }}" on-change="{{ setOccasion }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.DatePicker" id="vf-reminder-date" yearly="{{ true }}" lang="{{ lang }}" label="{{ editor.date }}" value="{{ dateValue }}" on-change="{{ setDate }}" disabled="{{ dateLocked }}" hint="{{ dateHint }}" labels="{{ dateLabels }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Select" label="{{ editor.before }}" options="{{ beforeOptions }}" value="{{ form.before }}" on-change="{{ setBefore }}"></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.Select" label="{{ editor.via }}" options="{{ channelOptions }}" value="{{ form.channel }}" on-change="{{ set.channel }}"></x-import>
 </sc-if>
-<div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" on-click="{{ saveForm }}">{{ editor.save }}</x-import><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" variant="ghost" on-click="{{ closeForm }}">{{ editor.cancel }}</x-import></div>
+<div class="tw:flex tw:gap-3"><x-import component-from-global-scope="VendraDesignSystem.Button" on-click="{{ saveForm }}">{{ editor.save }}</x-import><x-import component-from-global-scope="VendraDesignSystem.Button" variant="ghost" on-click="{{ closeForm }}">{{ editor.cancel }}</x-import></div>
 </div></x-import></main>
 <!-- END PAGE CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
@@ -123,12 +123,12 @@
 <div class="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-[400px] tw:flex tw:flex-col tw:gap-4">
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.brand }}</a>
 <p class="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">{{ footer.tagline }}</p>
-<ul aria-label="{{ t.footer.social }}" class="vf-shell-footer-social tw:flex tw:gap-2 tw:list-none tw:m-0 tw:p-0"><sc-for list="{{ footer.social }}" as="s" hint-placeholder-count="3"><li><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="{{ s.icon }}" label="{{ s.label }}" href="{{ s.href }}" target="{{ s.target }}" variant="outline" class-name="ag-iconbtn--inverse" hint-size="44px,44px"></x-import></li></sc-for></ul>
+<ul aria-label="{{ t.footer.social }}" class="vf-shell-footer-social tw:flex tw:gap-2 tw:list-none tw:m-0 tw:p-0"><sc-for list="{{ footer.social }}" as="s" hint-placeholder-count="3"><li><x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="{{ s.icon }}" label="{{ s.label }}" href="{{ s.href }}" target="{{ s.target }}" variant="outline" class-name="ag-iconbtn--inverse" hint-size="44px,44px"></x-import></li></sc-for></ul>
 </div>
 <section aria-labelledby="vf-news-title" class="vf-shell-footer-newsletter tw:[flex:1_1_320px] tw:max-w-[560px] tw:flex tw:flex-col tw:gap-3">
 <h2 id="vf-news-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display">{{ t.newsletter.title }}</h2>
 <p class="tw:m-0 tw:text-sm tw:text-inverse-quiet tw:max-w-measure">{{ t.newsletter.body }}</p>
-<sc-if value="{{ newsletter.open }}" hint-placeholder-val="{{ true }}"><form onSubmit="{{ newsletter.submit }}" novalidate="" class="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"><label for="vf-news-email" class="ag-field__label">{{ t.newsletter.label }}</label><div class="tw:flex tw:flex-wrap tw:items-start tw:gap-3"><div class="tw:[flex:1_1_240px]"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Input" id="vf-news-email" value="{{ newsletter.draft }}" on-change="{{ newsletter.setDraft }}" error="{{ newsletter.error }}" type="email" dir="ltr" autocomplete="email" hint-size="100%,48px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.Button" type="submit" loading="{{ newsletter.sending }}" loading-label="{{ t.newsletter.sending }}" class-name="vf-shell-newsletter-submit tw:h-[48px]!" hint-size="120px,48px">{{ t.newsletter.submit }}</x-import></div></form></sc-if>
+<sc-if value="{{ newsletter.open }}" hint-placeholder-val="{{ true }}"><form onSubmit="{{ newsletter.submit }}" novalidate="" class="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"><label for="vf-news-email" class="ag-field__label">{{ t.newsletter.label }}</label><div class="tw:flex tw:flex-wrap tw:items-start tw:gap-3"><div class="tw:[flex:1_1_240px]"><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-news-email" value="{{ newsletter.draft }}" on-change="{{ newsletter.setDraft }}" error="{{ newsletter.error }}" type="email" dir="ltr" autocomplete="email" hint-size="100%,48px"></x-import></div><x-import component-from-global-scope="VendraDesignSystem.Button" type="submit" loading="{{ newsletter.sending }}" loading-label="{{ t.newsletter.sending }}" class-name="vf-shell-newsletter-submit tw:h-[48px]!" hint-size="120px,48px">{{ t.newsletter.submit }}</x-import></div></form></sc-if>
 <sc-if value="{{ newsletter.done }}" hint-placeholder-val="{{ false }}"><p id="vf-news-done" tabindex="-1" role="status" class="tw:m-0 tw:text-sm">{{ newsletter.doneText }}</p></sc-if>
 </section>
 </div>
@@ -166,7 +166,7 @@
 <!-- The bar shares the tab bar's layer: above the page, below dialog overlays and toasts. -->
 <div class="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-tabbar">
 <section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
-<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
+<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
 <p class="tw:m-0">{{ t.consent.body }} <a href="{{ consent.policy.href }}" onClick="{{ consent.policy.go }}" class="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.consent.policy }}</a></p>
 <div class="tw:flex tw:flex-wrap tw:gap-2">
 <button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
@@ -180,7 +180,7 @@
 <sc-if value="{{ consent.mob }}" hint-placeholder-val="{{ false }}">
 <div class="vf-shell-consent-dock tw:px-3 tw:pb-3">
 <section id="vf-consent" tabindex="-1" aria-labelledby="vf-consent-title" class="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body">
-<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
+<div class="tw:flex tw:items-center tw:justify-between tw:gap-3"><h2 id="vf-consent-title" class="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display">{{ t.consent.title }}</h2><x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="x" label="{{ t.consent.close }}" on-click="{{ consent.close }}" class-name="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2" hint-size="44px,44px"></x-import></div>
 <p class="tw:m-0">{{ t.consent.body }} <a href="{{ consent.policy.href }}" onClick="{{ consent.policy.go }}" class="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]">{{ t.consent.policy }}</a></p>
 <div class="tw:flex tw:flex-wrap tw:gap-2">
 <button type="button" onClick="{{ consent.accept }}" class="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken">{{ t.consent.accept }}</button>
@@ -194,7 +194,7 @@
 
 <!-- END PAGE STICKY CONTENT -->
 <!-- BEGIN GENERATED SHELL -->
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
+<x-import component-from-global-scope="VendraDesignSystem.BottomTabBar" items="{{ tabs }}" label="{{ t.mainNav }}" hint-size="100%,64px">
 </x-import>
 </div>
 </sc-if>
@@ -223,8 +223,10 @@ function vfCopy(S) {
       // The account balance tab. {percent}, {from}, {left}, {min}, {max} and {amount} are filled in.
       balance: {
         title: 'Your balance',
-        eligible: 'Your balance is {from} or more, so you get {percent}% off products when you pay from it.',
-        progress: 'Keep a balance of {from} or more and get {percent}% off products when you pay from it. {left} to go.',
+        eligible:
+          'Your balance is {from} or more, so you get {percent}% off products when you pay from it.',
+        progress:
+          'Keep a balance of {from} or more and get {percent}% off products when you pay from it. {left} to go.',
         topUp: 'Top up',
         quick: 'Quick amounts',
         amount: 'Amount (Toman)',
@@ -232,7 +234,11 @@ function vfCopy(S) {
         pay: 'Top up {amount}',
         processing: 'Processing demo payment…',
         done: '{amount} added to your balance.',
-        errors: {empty: 'Enter an amount.', min: 'The smallest top-up is {min}.', max: 'The largest top-up is {max}.'},
+        errors: {
+          empty: 'Enter an amount.',
+          min: 'The smallest top-up is {min}.',
+          max: 'The largest top-up is {max}.'
+        },
         history: 'History',
         noHistory: 'No top-ups or payments yet.',
         kinds: {topup: 'Top-up', order: 'Order {id}'},
@@ -256,13 +262,16 @@ function vfCopy(S) {
       alangHint: 'Texts, emails and receipts use this language.',
       sms: 'Text me about my orders',
       saveP: 'Save changes',
-      langOptions: [{
-        value: 'fa',
-        label: 'فارسی'
-      }, {
-        value: 'en',
-        label: 'English'
-      }],
+      langOptions: [
+        {
+          value: 'fa',
+          label: 'فارسی'
+        },
+        {
+          value: 'en',
+          label: 'English'
+        }
+      ],
       labels: {
         onItsWay: 'On its way',
         delivered: 'Delivered',
@@ -292,8 +301,10 @@ function vfCopy(S) {
       tabs: ['سفارش‌ها', 'کیف پول', 'ذخیره‌ها', 'آدرس‌ها', 'یادآورها', 'پروفایل'],
       balance: {
         title: 'موجودی شما',
-        eligible: 'موجودی شما {from} یا بیشتر است؛ پس وقتی از کیف پول پرداخت کنید، {percent}٪ تخفیف محصولات می‌گیرید.',
-        progress: 'با موجودی {from} یا بیشتر، هنگام پرداخت از کیف پول {percent}٪ تخفیف محصولات بگیرید. {left} مانده است.',
+        eligible:
+          'موجودی شما {from} یا بیشتر است؛ پس وقتی از کیف پول پرداخت کنید، {percent}٪ تخفیف محصولات می‌گیرید.',
+        progress:
+          'با موجودی {from} یا بیشتر، هنگام پرداخت از کیف پول {percent}٪ تخفیف محصولات بگیرید. {left} مانده است.',
         topUp: 'افزایش موجودی',
         quick: 'مبلغ‌های آماده',
         amount: 'مبلغ (تومان)',
@@ -301,7 +312,11 @@ function vfCopy(S) {
         pay: 'افزایش موجودی {amount}',
         processing: 'در حال انجام پرداخت نمونه…',
         done: '{amount} به موجودی شما اضافه شد.',
-        errors: {empty: 'مبلغ را وارد کنید.', min: 'کمترین مبلغ افزایش موجودی {min} است.', max: 'بیشترین مبلغ افزایش موجودی {max} است.'},
+        errors: {
+          empty: 'مبلغ را وارد کنید.',
+          min: 'کمترین مبلغ افزایش موجودی {min} است.',
+          max: 'بیشترین مبلغ افزایش موجودی {max} است.'
+        },
         history: 'تاریخچه',
         noHistory: 'هنوز افزایش موجودی یا پرداختی ثبت نشده است.',
         kinds: {topup: 'افزایش موجودی', order: 'سفارش {id}'},
@@ -325,13 +340,16 @@ function vfCopy(S) {
       alangHint: 'پیامک، ایمیل و رسید به این زبان ارسال می‌شود.',
       sms: 'درباره سفارش‌هایم پیامک بفرست',
       saveP: 'ذخیره تغییرات',
-      langOptions: [{
-        value: 'fa',
-        label: 'فارسی'
-      }, {
-        value: 'en',
-        label: 'English'
-      }],
+      langOptions: [
+        {
+          value: 'fa',
+          label: 'فارسی'
+        },
+        {
+          value: 'en',
+          label: 'English'
+        }
+      ],
       labels: {
         onItsWay: 'در راه',
         delivered: 'تحویل شد',
@@ -359,91 +377,91 @@ function vfCopy(S) {
     editor: {
       ...VF_PIN_COPY[S.lang],
       ...{
-      "en": {
-        "save": "Save",
-        "cancel": "Cancel",
-        "label": "Label",
-        "zone": "Delivery zone",
-        "address": "Address",
-        "pin": "Location on the map",
-        "pinError": "Place the pin on the address.",
-        "mapFailed": "The map didn’t load. The written address is enough for now.",
-        "recipient": "Recipient",
-        "phone": "Phone",
-        "editAddress": "Edit address",
-        "addReminder": "Add a reminder",
-        "editReminder": "Edit reminder",
-        "reminderName": "Who is it for?",
-        "occasion": "Occasion",
-        "date": "Date",
-        "before": "Remind me",
-        "via": "Send by",
-        "sms": "Text message",
-        "wa": "WhatsApp",
-        "required": "Please fill this in",
-        "addressError": "Enter an address with at least 6 characters",
-        "phoneError": "Enter a valid mobile number",
-        "emailError": "Enter a valid email address",
-        "saved": "Changes saved",
-        "deleted": "Removed",
-        "empty": "No reminders yet",
-        "coming": "Coming up",
-        "day": "Day",
-        "month": "Month",
-        "jalali": "Shamsi",
-        "gregorian": "Gregorian",
-        "fixed": "This occasion has a fixed date.",
-        "movable": "Uses the studio’s published date, otherwise an estimated date.",
-        "beforeOptions": {
-          "1": "1 day before",
-          "3": "3 days before",
-          "7": "1 week before"
+        en: {
+          save: 'Save',
+          cancel: 'Cancel',
+          label: 'Label',
+          zone: 'Delivery zone',
+          address: 'Address',
+          pin: 'Location on the map',
+          pinError: 'Place the pin on the address.',
+          mapFailed: 'The map didn’t load. The written address is enough for now.',
+          recipient: 'Recipient',
+          phone: 'Phone',
+          editAddress: 'Edit address',
+          addReminder: 'Add a reminder',
+          editReminder: 'Edit reminder',
+          reminderName: 'Who is it for?',
+          occasion: 'Occasion',
+          date: 'Date',
+          before: 'Remind me',
+          via: 'Send by',
+          sms: 'Text message',
+          wa: 'WhatsApp',
+          required: 'Please fill this in',
+          addressError: 'Enter an address with at least 6 characters',
+          phoneError: 'Enter a valid mobile number',
+          emailError: 'Enter a valid email address',
+          saved: 'Changes saved',
+          deleted: 'Removed',
+          empty: 'No reminders yet',
+          coming: 'Coming up',
+          day: 'Day',
+          month: 'Month',
+          jalali: 'Shamsi',
+          gregorian: 'Gregorian',
+          fixed: 'This occasion has a fixed date.',
+          movable: 'Uses the studio’s published date, otherwise an estimated date.',
+          beforeOptions: {
+            1: '1 day before',
+            3: '3 days before',
+            7: '1 week before'
+          },
+          inDays: 'days away'
         },
-        "inDays": "days away"
-      },
-      "fa": {
-        "save": "ذخیره",
-        "cancel": "انصراف",
-        "label": "عنوان",
-        "zone": "محدوده ارسال",
-        "address": "نشانی",
-        "pin": "موقعیت روی نقشه",
-        "pinError": "سوزن را روی نشانی بگذارید.",
-        "mapFailed": "نقشه بارگذاری نشد؛ فعلاً نشانی نوشته‌شده کافی است.",
-        "recipient": "گیرنده",
-        "phone": "تلفن",
-        "editAddress": "ویرایش نشانی",
-        "addReminder": "افزودن یادآور",
-        "editReminder": "ویرایش یادآور",
-        "reminderName": "برای چه کسی؟",
-        "occasion": "مناسبت",
-        "date": "تاریخ",
-        "before": "یادآوری",
-        "via": "روش ارسال",
-        "sms": "پیامک",
-        "wa": "واتس‌اپ",
-        "required": "این قسمت را کامل کنید",
-        "addressError": "نشانی حداقل ۶ حرف داشته باشد",
-        "phoneError": "شماره موبایل معتبر وارد کنید",
-        "emailError": "ایمیل معتبر وارد کنید",
-        "saved": "تغییرات ذخیره شد",
-        "deleted": "حذف شد",
-        "empty": "هنوز یادآوری ندارید",
-        "coming": "به‌زودی",
-        "day": "روز",
-        "month": "ماه",
-        "jalali": "شمسی",
-        "gregorian": "میلادی",
-        "fixed": "تاریخ این مناسبت ثابت است.",
-        "movable": "از تاریخ منتشرشده استودیو و در غیر این صورت تاریخ تخمینی استفاده می‌شود.",
-        "beforeOptions": {
-          "1": "۱ روز قبل",
-          "3": "۳ روز قبل",
-          "7": "۱ هفته قبل"
-        },
-        "inDays": "روز دیگر"
-      }
-    }[S.lang]
+        fa: {
+          save: 'ذخیره',
+          cancel: 'انصراف',
+          label: 'عنوان',
+          zone: 'محدوده ارسال',
+          address: 'نشانی',
+          pin: 'موقعیت روی نقشه',
+          pinError: 'سوزن را روی نشانی بگذارید.',
+          mapFailed: 'نقشه بارگذاری نشد؛ فعلاً نشانی نوشته‌شده کافی است.',
+          recipient: 'گیرنده',
+          phone: 'تلفن',
+          editAddress: 'ویرایش نشانی',
+          addReminder: 'افزودن یادآور',
+          editReminder: 'ویرایش یادآور',
+          reminderName: 'برای چه کسی؟',
+          occasion: 'مناسبت',
+          date: 'تاریخ',
+          before: 'یادآوری',
+          via: 'روش ارسال',
+          sms: 'پیامک',
+          wa: 'واتس‌اپ',
+          required: 'این قسمت را کامل کنید',
+          addressError: 'نشانی حداقل ۶ حرف داشته باشد',
+          phoneError: 'شماره موبایل معتبر وارد کنید',
+          emailError: 'ایمیل معتبر وارد کنید',
+          saved: 'تغییرات ذخیره شد',
+          deleted: 'حذف شد',
+          empty: 'هنوز یادآوری ندارید',
+          coming: 'به‌زودی',
+          day: 'روز',
+          month: 'ماه',
+          jalali: 'شمسی',
+          gregorian: 'میلادی',
+          fixed: 'تاریخ این مناسبت ثابت است.',
+          movable: 'از تاریخ منتشرشده استودیو و در غیر این صورت تاریخ تخمینی استفاده می‌شود.',
+          beforeOptions: {
+            1: '۱ روز قبل',
+            3: '۳ روز قبل',
+            7: '۱ هفته قبل'
+          },
+          inDays: 'روز دیگر'
+        }
+      }[S.lang]
     },
     status: {
       onTheWay: [C.labels.onItsWay, 'accent'],
@@ -484,9 +502,11 @@ class Component extends VFPage {
       account = s.account || vfAccountLoad(phone, L),
       profile = s.profile || account.profile;
     const latest = this.props.store && (this.props.store.lastOrder || this.props.store.order);
-    const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter((o, i, list) => list.findIndex(x => x.id === o.id) === i);
+    const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter(
+      (o, i, list) => list.findIndex(x => x.id === o.id) === i
+    );
     const tab = s.tab || vfPageRoute(this.props).tab || this.props.tab || 'orders',
-      tx = v => typeof v === 'string' ? v : v[L] || v.en;
+      tx = v => (typeof v === 'string' ? v : v[L] || v.en);
     const commit = data => {
       vfAccountSave(phone, data);
       this.setState({
@@ -498,99 +518,118 @@ class Component extends VFPage {
       });
     };
     const focusError = () => setTimeout(() => window.AG_NAV.focusFirstInvalid(), 0);
-    const openAddress = a => this.setState({
-      errors: {},
-      locateFailed: false,
-      form: {
-        kind: 'address',
-        id: a && a.id,
-        label: a ? tx(a.label) : '',
-        line: a ? tx(a.line) : '',
-        recipient: a ? tx(a.recipient) : profile.name || C.nameV,
-        phone: a ? a.phone : '',
-        zone: a ? a.zone : 'central',
-        location: a && vfValidLocation(a.location) ? a.location : null
-      }
-    });
-    const openReminder = r => this.setState({
-      errors: {},
-      form: {
-        kind: 'reminder',
-        id: null,
-        name: '',
-        occ: 'birthday',
-        cal: L === 'fa' ? 'j' : 'g',
-        m: 1,
-        d: 1,
-        before: 3,
-        channel: 'sms',
-        on: true,
-        ...r,
-        ...(r ? {
-          name: tx(r.name)
-        } : {})
-      }
-    });
+    const openAddress = a =>
+      this.setState({
+        errors: {},
+        locateFailed: false,
+        form: {
+          kind: 'address',
+          id: a && a.id,
+          label: a ? tx(a.label) : '',
+          line: a ? tx(a.line) : '',
+          recipient: a ? tx(a.recipient) : profile.name || C.nameV,
+          phone: a ? a.phone : '',
+          zone: a ? a.zone : 'central',
+          location: a && vfValidLocation(a.location) ? a.location : null
+        }
+      });
+    const openReminder = r =>
+      this.setState({
+        errors: {},
+        form: {
+          kind: 'reminder',
+          id: null,
+          name: '',
+          occ: 'birthday',
+          cal: L === 'fa' ? 'j' : 'g',
+          m: 1,
+          d: 1,
+          before: 3,
+          channel: 'sms',
+          on: true,
+          ...r,
+          ...(r
+            ? {
+                name: tx(r.name)
+              }
+            : {})
+        }
+      });
     const removeAddress = a => {
       let rest = account.addresses.filter(x => x.id !== a.id);
-      if (a.isDefault && rest.length) rest = rest.map((x, i) => ({
-        ...x,
-        isDefault: i === 0
-      }));
+      if (a.isDefault && rest.length)
+        rest = rest.map((x, i) => ({
+          ...x,
+          isDefault: i === 0
+        }));
       commit({
         ...account,
         addresses: rest
       });
       S.focus('vf-add-address');
     };
-    const reminders = account.reminders.slice().sort((a, b) => Number(b.on) - Number(a.on) || vfReminderNext(a).days - vfReminderNext(b).days).map(r => {
-      const next = vfReminderNext(r),
-        o = VF_OCCASIONS.find(o => o.id === r.occ) || VF_OCCASIONS[0],
-        date = window.AG_DATES.parts(r.cal, next.date);
-      return {
-        name: tx(r.name),
-        day: S.n(date[2]),
-        month: window.AG_DATES.monthNames(r.cal, L)[date[1] - 1],
-        occasion: o[L],
-        icon: o.icon,
-        before: E.beforeOptions[r.before],
-        channel: r.channel,
-        on: r.on,
-        soon: r.on && next.days <= 14,
-        when: S.n(next.days) + ' ' + E.inDays,
-        altDate: window.AG_DATES.dayMonth(next.date, window.AG_DATES.locale(L, r.cal === 'j' ? 'g' : 'j')),
-        toggle: v => commit({
-          ...account,
-          reminders: account.reminders.map(x => x.id === r.id ? {
-            ...x,
-            on: v
-          } : x)
-        }),
-        edit: () => openReminder(r),
-        remove: () => {
-          commit({
-            ...account,
-            reminders: account.reminders.filter(x => x.id !== r.id)
-          });
-          S.focus('vf-add-reminder');
-        }
-      };
-    });
+    const reminders = account.reminders
+      .slice()
+      .sort(
+        (a, b) => Number(b.on) - Number(a.on) || vfReminderNext(a).days - vfReminderNext(b).days
+      )
+      .map(r => {
+        const next = vfReminderNext(r),
+          o = VF_OCCASIONS.find(o => o.id === r.occ) || VF_OCCASIONS[0],
+          date = window.AG_DATES.parts(r.cal, next.date);
+        return {
+          name: tx(r.name),
+          day: S.n(date[2]),
+          month: window.AG_DATES.monthNames(r.cal, L)[date[1] - 1],
+          occasion: o[L],
+          icon: o.icon,
+          before: E.beforeOptions[r.before],
+          channel: r.channel,
+          on: r.on,
+          soon: r.on && next.days <= 14,
+          when: S.n(next.days) + ' ' + E.inDays,
+          altDate: window.AG_DATES.dayMonth(
+            next.date,
+            window.AG_DATES.locale(L, r.cal === 'j' ? 'g' : 'j')
+          ),
+          toggle: v =>
+            commit({
+              ...account,
+              reminders: account.reminders.map(x =>
+                x.id === r.id
+                  ? {
+                      ...x,
+                      on: v
+                    }
+                  : x
+              )
+            }),
+          edit: () => openReminder(r),
+          remove: () => {
+            commit({
+              ...account,
+              reminders: account.reminders.filter(x => x.id !== r.id)
+            });
+            S.focus('vf-add-reminder');
+          }
+        };
+      });
     const f = s.form || {},
       isAddress = f.kind === 'address',
       isReminder = f.kind === 'reminder',
       occasion = VF_OCCASIONS.find(o => o.id === f.occ);
     // Templates can't call functions, so each field gets its own handler.
-    const setField = k => e => this.setState({
-      form: {
-        ...f,
-        [k]: e.target.value
-      },
-      errors: {
-        ...s.errors,
-        [k]: undefined
-      }
-    });
+    const setField = k => e =>
+      this.setState({
+        form: {
+          ...f,
+          [k]: e.target.value
+        },
+        errors: {
+          ...s.errors,
+          [k]: undefined
+        }
+      });
     const saveForm = () => {
       const errors = {};
       if (isAddress) {
@@ -599,7 +638,13 @@ class Component extends VFPage {
         if (vfLatin(f.phone).replace(/\D/g, '').length < 10) errors.phone = E.phoneError;
       } else {
         if (!f.name.trim()) errors.name = E.required;
-        if (!(f.m >= 1 && f.m <= 12 && f.d >= 1 && f.d <= window.AG_DATES.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m))) errors.name = E.required;
+        if (!(
+          f.m >= 1 &&
+          f.m <= 12 &&
+          f.d >= 1 &&
+          f.d <= window.AG_DATES.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m)
+        ))
+          errors.name = E.required;
       }
       if (Object.keys(errors).length) {
         this.setState({
@@ -617,22 +662,29 @@ class Component extends VFPage {
       delete row.kind;
       if (isAddress) {
         if (!row.location) delete row.location;
-        row.isDefault = f.id ? account.addresses.find(a => a.id === f.id).isDefault : !account.addresses.length;
+        row.isDefault = f.id
+          ? account.addresses.find(a => a.id === f.id).isDefault
+          : !account.addresses.length;
         row.label = row.label.trim() || C.addAddr;
         commit({
           ...account,
-          addresses: f.id ? account.addresses.map(a => a.id === f.id ? row : a) : [...account.addresses, row]
+          addresses: f.id
+            ? account.addresses.map(a => (a.id === f.id ? row : a))
+            : [...account.addresses, row]
         });
       } else {
-        if (!f.id) window.VF_TRACK.event('reminder_created', {
-          occasion: f.occ,
-          calendar: f.cal,
-          days_before: f.before,
-          channel: f.channel
-        });
+        if (!f.id)
+          window.VF_TRACK.event('reminder_created', {
+            occasion: f.occ,
+            calendar: f.cal,
+            days_before: f.before,
+            channel: f.channel
+          });
         commit({
           ...account,
-          reminders: f.id ? account.reminders.map(r => r.id === f.id ? row : r) : [...account.reminders, row]
+          reminders: f.id
+            ? account.reminders.map(r => (r.id === f.id ? row : r))
+            : [...account.reminders, row]
         });
       }
     };
@@ -644,13 +696,14 @@ class Component extends VFPage {
       zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
       edit: () => openAddress(a),
       remove: () => removeAddress(a),
-      makeDefault: () => commit({
-        ...account,
-        addresses: account.addresses.map(x => ({
-          ...x,
-          isDefault: x.id === a.id
-        }))
-      })
+      makeDefault: () =>
+        commit({
+          ...account,
+          addresses: account.addresses.map(x => ({
+            ...x,
+            isDefault: x.id === a.id
+          }))
+        })
     }));
     // Read by the addresses map after each render.
     this._places = addresses.map(a => ({
@@ -662,11 +715,23 @@ class Component extends VFPage {
     }));
     const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
     // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
-    const W = C.balance, rules = VF_STORE.wallet, wallet = vfWalletOf(account);
+    const W = C.balance,
+      rules = VF_STORE.wallet,
+      wallet = vfWalletOf(account);
     const amount = vfTopUpAmount(s.topUp);
-    const fill = text => text.replace('{percent}', S.n(rules.discountPercent)).replace('{from}', S.m(rules.discountFrom))
-      .replace('{left}', S.m(Math.max(0, rules.discountFrom - wallet.balance))).replace('{min}', S.m(rules.minTopUp)).replace('{max}', S.m(rules.maxTopUp));
-    const when = iso => new Intl.DateTimeFormat(S.fa ? 'fa-IR-u-ca-persian' : 'en-GB', {day: 'numeric', month: 'short', year: 'numeric'}).format(new Date(iso));
+    const fill = text =>
+      text
+        .replace('{percent}', S.n(rules.discountPercent))
+        .replace('{from}', S.m(rules.discountFrom))
+        .replace('{left}', S.m(Math.max(0, rules.discountFrom - wallet.balance)))
+        .replace('{min}', S.m(rules.minTopUp))
+        .replace('{max}', S.m(rules.maxTopUp));
+    const when = iso =>
+      new Intl.DateTimeFormat(S.fa ? 'fa-IR-u-ca-persian' : 'en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      }).format(new Date(iso));
     return {
       ...S,
       t: {
@@ -676,9 +741,10 @@ class Component extends VFPage {
       editor: E,
       notice: s.notice,
       tab,
-      setTab: id => this.setState({
-        tab: id
-      }),
+      setTab: id =>
+        this.setState({
+          tab: id
+        }),
       tabItems: VF_ACCOUNT_TABS.map((id, i) => ({
         id,
         label: C.tabs[i]
@@ -702,7 +768,8 @@ class Component extends VFPage {
         hint: fill(W.amountHint),
         error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
         busy: s.topUpBusy,
-        payLabel: amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
+        payLabel:
+          amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
         done: s.topUpDone,
         submit: () => {
           if (s.topUpBusy) return;
@@ -717,14 +784,22 @@ class Component extends VFPage {
           this._topUpTimer = setTimeout(() => {
             const next = vfWalletChange(phone, amount, {kind: 'topup'});
             window.VF_TRACK.event('top_up', {value: amount});
-            this.setState({account: next, topUp: '', topUpBusy: false, topUpDone: W.done.replace('{amount}', S.m(amount))});
+            this.setState({
+              account: next,
+              topUp: '',
+              topUpBusy: false,
+              topUpDone: W.done.replace('{amount}', S.m(amount))
+            });
             S.focus('vf-topup-done');
           }, 600);
         },
         hasHistory: wallet.history.length > 0,
         noHistory: !wallet.history.length,
         history: wallet.history.map(h => ({
-          label: h.kind === 'order' ? W.kinds.order.replace('{id}', '\u2068' + h.order + '\u2069') : W.kinds.topup,
+          label:
+            h.kind === 'order'
+              ? W.kinds.order.replace('{id}', '\u2068' + h.order + '\u2069')
+              : W.kinds.topup,
           date: when(h.at),
           amount: (h.amount < 0 ? '−' : '+') + '\u2068' + S.m(Math.abs(h.amount)) + '\u2069',
           tone: h.amount < 0 ? 'out' : 'in'
@@ -734,18 +809,32 @@ class Component extends VFPage {
       isReminders: tab === 'reminders',
       isProfile: tab === 'profile',
       orders: orders.map(o => ({
-        href: S.href.track.split('?')[0] + vfRouteParams({
-          view: 'track',
-          id: o.id,
-          lang: L
-        }),
+        href:
+          S.href.track.split('?')[0] +
+          vfRouteParams({
+            view: 'track',
+            id: o.id,
+            lang: L
+          }),
         go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
         id: o.id,
-        status: (C.status[o.status] || [o.status === 'cancelled' ? S.fa ? 'لغو شده' : 'Cancelled' : S.fa ? 'دریافت شد' : 'Received', 'neutral'])[0],
+        status: (C.status[o.status] || [
+          o.status === 'cancelled'
+            ? S.fa
+              ? 'لغو شده'
+              : 'Cancelled'
+            : S.fa
+              ? 'دریافت شد'
+              : 'Received',
+          'neutral'
+        ])[0],
         tone: (C.status[o.status] || ['', 'neutral'])[1],
         meta: C.itemCount(o.lines.reduce((sum, l) => sum + l.qty, 0)),
         total: S.m(o.totals.total),
-        cta: o.status === 'delivered' || o.status === 'cancelled' ? C.labels.viewOrder : C.labels.trackOrder
+        cta:
+          o.status === 'delivered' || o.status === 'cancelled'
+            ? C.labels.viewOrder
+            : C.labels.trackOrder
       })),
       addresses,
       placesMap: !s.placesFailed && addresses.some(a => vfValidLocation(a.location)),
@@ -776,13 +865,19 @@ class Component extends VFPage {
         name: profile.name || C.nameV,
         phone
       },
-      setProfile: Object.fromEntries(['name', 'email', 'locale', 'sms'].map(k => [k, e => this.setState({
-        profile: {
-          ...profile,
-          [k]: k === 'sms' ? e.target.checked : e.target.value
-        },
-        errors: {}
-      })])),
+      setProfile: Object.fromEntries(
+        ['name', 'email', 'locale', 'sms'].map(k => [
+          k,
+          e =>
+            this.setState({
+              profile: {
+                ...profile,
+                [k]: k === 'sms' ? e.target.checked : e.target.value
+              },
+              errors: {}
+            })
+        ])
+      ),
       emailError: s.errors.email,
       saveProfile: () => {
         if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
@@ -802,10 +897,12 @@ class Component extends VFPage {
       },
       signOut: () => {
         vfAccountSignOut();
-        if (this.props.go) this.props.go({
-          view: 'home',
-          lang: L
-        });else location.href = S.href.home;
+        if (this.props.go)
+          this.props.go({
+            view: 'home',
+            lang: L
+          });
+        else location.href = S.href.home;
       },
       langOptions: C.langOptions,
       formOpen: !!s.form,
@@ -813,19 +910,33 @@ class Component extends VFPage {
       isReminder,
       mapOk: !s.mapFailed,
       mapFailed: s.mapFailed,
-      pinStatus: vfValidLocation(f.location) ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa)) : E.pinHint,
+      pinStatus: vfValidLocation(f.location)
+        ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa))
+        : E.pinHint,
       pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
       locating: s.locating,
       locate: () => this._locate(),
-      formTitle: isAddress ? f.id ? E.editAddress : C.addAddr : f.id ? E.editReminder : E.addReminder,
+      formTitle: isAddress
+        ? f.id
+          ? E.editAddress
+          : C.addAddr
+        : f.id
+          ? E.editReminder
+          : E.addReminder,
       form: f,
       errors: s.errors,
-      set: Object.fromEntries(['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [k, setField(k)])),
+      set: Object.fromEntries(
+        ['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [
+          k,
+          setField(k)
+        ])
+      ),
       saveForm,
-      closeForm: () => this.setState({
-        form: null,
-        errors: {}
-      }),
+      closeForm: () =>
+        this.setState({
+          form: null,
+          errors: {}
+        }),
       zoneOptions: VF_ZONES.map(z => ({
         value: z.id,
         label: z[L]
@@ -838,38 +949,44 @@ class Component extends VFPage {
         value: String(n),
         label: E.beforeOptions[n]
       })),
-      channelOptions: [{
-        value: 'sms',
-        label: E.sms
-      }, {
-        value: 'wa',
-        label: E.wa
-      }],
+      channelOptions: [
+        {
+          value: 'sms',
+          label: E.sms
+        },
+        {
+          value: 'wa',
+          label: E.wa
+        }
+      ],
       dateValue: {
         cal: f.cal,
         m: f.m,
         d: f.d
       },
       dateLocked: !!(occasion && (occasion.fixed || occasion.hijri)),
-      dateHint: occasion && occasion.fixed ? E.fixed : occasion && occasion.hijri ? E.movable : undefined,
+      dateHint:
+        occasion && occasion.fixed ? E.fixed : occasion && occasion.hijri ? E.movable : undefined,
       dateLabels: {
         jalali: E.jalali,
         gregorian: E.gregorian,
         month: E.month,
         day: E.day
       },
-      setDate: value => this.setState({
-        form: {
-          ...f,
-          ...value
-        }
-      }),
-      setBefore: e => this.setState({
-        form: {
-          ...f,
-          before: +e.target.value
-        }
-      }),
+      setDate: value =>
+        this.setState({
+          form: {
+            ...f,
+            ...value
+          }
+        }),
+      setBefore: e =>
+        this.setState({
+          form: {
+            ...f,
+            before: +e.target.value
+          }
+        }),
       setOccasion: e => {
         const o = VF_OCCASIONS.find(o => o.id === e.target.value);
         let date = o.fixed || {};
@@ -896,35 +1013,44 @@ class Component extends VFPage {
   }
   // The pin in the address editor. Its element only exists while the editor is open.
   _pin() {
-    if (!this._pinMap) this._pinMap = vfPinMap({
-      id: 'vf-address-map',
-      location: () => this.state.form && this.state.form.location,
-      onMove: location => this._setLocation(location),
-      onFail: () => this.setState({mapFailed: true})
-    });
+    if (!this._pinMap)
+      this._pinMap = vfPinMap({
+        id: 'vf-address-map',
+        location: () => this.state.form && this.state.form.location,
+        onMove: location => this._setLocation(location),
+        onFail: () => this.setState({mapFailed: true})
+      });
     return this._pinMap;
   }
   _setLocation(location) {
-    this.setState(prev => prev.form ? {
-      form: {...prev.form, location},
-      errors: {...prev.errors, location: undefined},
-      locateFailed: false
-    } : null);
+    this.setState(prev =>
+      prev.form
+        ? {
+            form: {...prev.form, location},
+            errors: {...prev.errors, location: undefined},
+            locateFailed: false
+          }
+        : null
+    );
   }
   _placesMap() {
-    if (!this._placesView) this._placesView = vfPlacesMap({
-      id: 'vf-account-map',
-      places: () => this._places || [],
-      onFail: () => this.setState({placesFailed: true})
-    });
+    if (!this._placesView)
+      this._placesView = vfPlacesMap({
+        id: 'vf-account-map',
+        places: () => this._places || [],
+        onFail: () => this.setState({placesFailed: true})
+      });
     return this._placesView;
   }
   _locate() {
     this.setState({locating: true, locateFailed: false});
-    vfLocate(here => {
-      this.setState({locating: false});
-      if (!this._pin().moveTo(here)) this._setLocation(here);
-    }, () => this.setState({locating: false, locateFailed: true}));
+    vfLocate(
+      here => {
+        this.setState({locating: false});
+        if (!this._pin().moveTo(here)) this._setLocation(here);
+      },
+      () => this.setState({locating: false, locateFailed: true})
+    );
   }
   componentDidMount() {
     super.componentDidMount();

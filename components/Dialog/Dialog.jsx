@@ -1,26 +1,30 @@
 import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+
 const FOCUSABLE =
   'a[href],area[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]';
-let locks = 0,
-  saved = null;
+// The page behind stays put while any dialog is open. Nested dialogs share one lock; the
+// scrollbar's width is padded back so the layout doesn't shift.
+let openDialogs = 0;
+let savedBodyStyle = null;
 const lockScroll = () => {
-  if (locks++ === 0) {
-    const b = document.body,
-      sw = window.innerWidth - document.documentElement.clientWidth;
-    saved = {o: b.style.overflow, p: b.style.paddingInlineEnd};
-    b.style.overflow = 'hidden';
-    if (sw > 0) b.style.paddingInlineEnd = sw + 'px';
+  if (openDialogs++ === 0) {
+    const body = document.body;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    savedBodyStyle = {overflow: body.style.overflow, paddingInlineEnd: body.style.paddingInlineEnd};
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) body.style.paddingInlineEnd = scrollbarWidth + 'px';
   }
 };
 const unlockScroll = () => {
-  if (--locks === 0 && saved) {
-    document.body.style.overflow = saved.o;
-    document.body.style.paddingInlineEnd = saved.p;
-    saved = null;
+  if (--openDialogs === 0 && savedBodyStyle) {
+    document.body.style.overflow = savedBodyStyle.overflow;
+    document.body.style.paddingInlineEnd = savedBodyStyle.paddingInlineEnd;
+    savedBodyStyle = null;
   }
 };
+
 // role="dialog" + aria-modal + aria-labelledby → title. Focus moves in on open, Tab/Shift+Tab stay inside, Esc closes,
 // focus returns to the opener on close, and the page behind can't scroll (skipped for inline previews).
 export function Dialog({
@@ -35,62 +39,61 @@ export function Dialog({
   initialFocus,
   placement = 'center'
 }) {
-  const tid = React.useId();
-  const ref = React.useRef(null);
+  const titleId = React.useId();
+  const dialogRef = React.useRef(null);
   const closeRef = React.useRef(onClose);
   closeRef.current = onClose;
   React.useEffect(() => {
     if (!open) return;
-    const d = ref.current;
-    if (!d) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
     const opener = document.activeElement;
-    const list = () => [...d.querySelectorAll(FOCUSABLE)].filter(el => el.getClientRects().length);
-    const f = list();
-    const first =
-      (initialFocus && d.querySelector(initialFocus)) ||
-      f.find(el => !el.closest('.ag-dialog__head')) ||
-      f[0] ||
-      d;
+    const focusables = () =>
+      [...dialog.querySelectorAll(FOCUSABLE)].filter(el => el.getClientRects().length);
+    const candidates = focusables();
+    const firstFocus =
+      (initialFocus && dialog.querySelector(initialFocus)) ||
+      candidates.find(el => !el.closest('.ag-dialog__head')) ||
+      candidates[0] ||
+      dialog;
     // Inline previews don't move or trap focus — several on one page would fight over it.
-    if (!inline) first.focus({preventScroll: true});
-    const onKey = e => {
-      if (e.key === 'Escape') {
+    if (!inline) firstFocus.focus({preventScroll: true});
+    const onKeyDown = event => {
+      if (event.key === 'Escape') {
         if (closeRef.current) {
-          e.stopPropagation();
+          event.stopPropagation();
           closeRef.current();
         }
         return;
       }
-      if (e.key !== 'Tab') return;
-      const all = list();
+      if (event.key !== 'Tab') return;
+      const all = focusables();
       if (!all.length) {
-        e.preventDefault();
-        d.focus();
+        event.preventDefault();
+        dialog.focus();
         return;
       }
-      const a = all[0],
-        z = all[all.length - 1],
-        cur = document.activeElement;
-      if (e.shiftKey && (cur === a || cur === d || !d.contains(cur))) {
-        e.preventDefault();
-        z.focus();
-      } else if (!e.shiftKey && (cur === z || !d.contains(cur))) {
-        e.preventDefault();
-        a.focus();
+      const first = all[0];
+      const last = all[all.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || active === dialog || !dialog.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !dialog.contains(active))) {
+        event.preventDefault();
+        first.focus();
       }
     };
-    const onFocusIn = e => {
-      if (!d.contains(e.target)) {
-        const all = list();
-        (all[0] || d).focus({preventScroll: true});
-      }
+    // Focus that escapes (e.g. a click outside) comes back to the dialog.
+    const onFocusIn = event => {
+      if (!dialog.contains(event.target)) (focusables()[0] || dialog).focus({preventScroll: true});
     };
     if (inline) return;
-    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('keydown', onKeyDown, true);
     document.addEventListener('focusin', onFocusIn);
     lockScroll();
     return () => {
-      document.removeEventListener('keydown', onKey, true);
+      document.removeEventListener('keydown', onKeyDown, true);
       document.removeEventListener('focusin', onFocusIn);
       unlockScroll();
       if (opener && opener.focus && document.contains(opener)) opener.focus({preventScroll: true});
@@ -104,21 +107,21 @@ export function Dialog({
         inline && 'ag-dialog__overlay--inline',
         placement === 'start' && 'ag-dialog__overlay--sheet'
       )}
-      onClick={e => {
-        if (e.target === e.currentTarget && onClose) onClose();
+      onClick={event => {
+        if (event.target === event.currentTarget && onClose) onClose();
       }}
     >
       <div
-        ref={ref}
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={title ? tid : undefined}
+        aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
         className={cx('ag-dialog', placement === 'start' && 'ag-dialog--sheet')}
         style={maxWidth ? {maxWidth} : undefined}
       >
         <div className="ag-dialog__head">
-          <h2 id={tid} className="ag-dialog__title">
+          <h2 id={titleId} className="ag-dialog__title">
             {title}
           </h2>
           {onClose && <IconButton icon="x" label={closeLabel} size="sm" onClick={onClose} />}

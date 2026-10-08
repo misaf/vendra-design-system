@@ -6,8 +6,7 @@ import { Select } from "../Select/Select.js";
 import { Tabs } from "../Tabs/Tabs.js";
 import { FieldMessage } from "../Field/Field.js";
 import { cx } from "../utils/cx.js";
-// Year / month / day selects in Jalali (Shamsi) or Gregorian. Uses the date helpers (components/utils/dates.js → .dates on the namespace).
-const DP_DEF = {
+const DEFAULT_LABELS = {
 	en: {
 		jalali: "Shamsi",
 		gregorian: "Gregorian",
@@ -25,8 +24,8 @@ const DP_DEF = {
 		equivalent: "برابر با {date}"
 	}
 };
-const dpDates = () => dates;
-const G_MAX = [
+// Longest Gregorian months, for a yearly date that has no year to check against.
+const GREGORIAN_MAX_DAYS = [
 	31,
 	29,
 	31,
@@ -40,113 +39,123 @@ const G_MAX = [
 	30,
 	31
 ];
+// Year / month / day selects in Jalali (Shamsi, 'j') or Gregorian ('g'), with a calendar toggle.
+// `value` is an ISO date ("2026-10-08"), or with `yearly` a recurring {cal, m, d} with no year.
+// Under the selects it shows the same date in the other calendar.
 export function DatePicker({ label, value, onChange, calendar, onCalendarChange, calendars = ["j", "g"], yearly = false, years = 3, minDate, hint, error, lang = "en", labels, showEquivalent = true, disabled, id, className = "", style }) {
-	const D = dpDates();
-	const L = {
-		...DP_DEF[lang === "fa" ? "fa" : "en"],
+	const text = {
+		...DEFAULT_LABELS[lang === "fa" ? "fa" : "en"],
 		...labels
 	};
-	const auto = React.useId();
-	const fid = id || "dp" + auto.replace(/:/g, "");
-	const hid = fid + "-hint";
-	const msg = error || hint;
-	const pref = lang === "fa" ? "j" : "g";
-	const [innerCal, setInnerCal] = React.useState(() => yearly && value && value.cal || (calendars.includes(pref) ? pref : calendars[0]));
+	const generatedId = React.useId();
+	const fieldId = id || "dp" + generatedId.replace(/:/g, "");
+	const messageId = fieldId + "-hint";
+	const message = error || hint;
+	const preferredCalendar = lang === "fa" ? "j" : "g";
+	const [uncontrolledCalendar, setUncontrolledCalendar] = React.useState(() => yearly && value && value.cal || (calendars.includes(preferredCalendar) ? preferredCalendar : calendars[0]));
 	React.useEffect(() => {
-		if (yearly && !calendar && value && value.cal && value.cal !== innerCal) setInnerCal(value.cal);
+		if (yearly && !calendar && value && value.cal && value.cal !== uncontrolledCalendar) setUncontrolledCalendar(value.cal);
 	}, [yearly && value && value.cal]);
-	const cal = calendar || innerCal;
+	const activeCalendar = calendar || uncontrolledCalendar;
 	const today = new Date();
-	const fromValue = (c) => {
+	// The current value as {year, month, day} in calendar `cal` (no year when yearly).
+	const partsFromValue = (cal) => {
 		if (!value) return null;
 		if (yearly) {
 			if (!value.m || !value.d) return null;
-			const vc = value.cal || "j";
-			if (vc === c) return {
-				m: value.m,
-				d: value.d
+			const valueCalendar = value.cal || "j";
+			if (valueCalendar === cal) return {
+				month: value.m,
+				day: value.d
 			};
-			const cy = D.yearOf(vc, today);
-			const dt = D.toDate(vc, cy, value.m, Math.min(value.d, D.daysInMonth(vc, cy, value.m)));
-			const p = D.parts(c, dt);
+			const thisYear = dates.yearOf(valueCalendar, today);
+			const lastDay = dates.daysInMonth(valueCalendar, thisYear, value.m);
+			const date = dates.toDate(valueCalendar, thisYear, value.m, Math.min(value.d, lastDay));
+			const [, month, day] = dates.parts(cal, date);
 			return {
-				m: p[1],
-				d: p[2]
+				month,
+				day
 			};
 		}
-		const dt = D.fromIso(value);
-		if (!dt) return null;
-		const p = D.parts(c, dt);
+		const date = dates.fromIso(value);
+		if (!date) return null;
+		const [year, month, day] = dates.parts(cal, date);
 		return {
-			y: p[0],
-			m: p[1],
-			d: p[2]
+			year,
+			month,
+			day
 		};
 	};
-	const vKey = yearly ? value ? (value.cal || "j") + value.m + "-" + value.d : "" : value || "";
-	const [draft, setDraft] = React.useState(() => fromValue(cal) || {});
+	const valueKey = yearly ? value ? (value.cal || "j") + value.m + "-" + value.d : "" : value || "";
+	const [draft, setDraft] = React.useState(() => partsFromValue(activeCalendar) || {});
 	React.useEffect(() => {
-		const p = fromValue(cal);
-		setDraft(p || {});
-	}, [vKey, cal]);
-	const maxFor = ({ y, m }) => !m ? 31 : !yearly && y ? D.daysInMonth(cal, y, m) : cal === "j" ? m <= 6 ? 31 : 30 : G_MAX[m - 1];
-	const emit = (n) => {
+		setDraft(partsFromValue(activeCalendar) || {});
+	}, [valueKey, activeCalendar]);
+	const daysIn = ({ year, month }) => {
+		if (!month) return 31;
+		if (!yearly && year) return dates.daysInMonth(activeCalendar, year, month);
+		if (activeCalendar === "j") return month <= 6 ? 31 : 30;
+		return GREGORIAN_MAX_DAYS[month - 1];
+	};
+	const emit = (next) => {
 		if (!onChange) return;
 		if (yearly) {
-			if (n.m && n.d) onChange({
-				cal,
-				m: n.m,
-				d: n.d
+			if (next.month && next.day) onChange({
+				cal: activeCalendar,
+				m: next.month,
+				d: next.day
 			});
-		} else if (n.y && n.m && n.d) onChange(D.iso(D.toDate(cal, n.y, n.m, n.d)));
+		} else if (next.year && next.month && next.day) {
+			onChange(dates.iso(dates.toDate(activeCalendar, next.year, next.month, next.day)));
+		}
 	};
 	// Changing year or month clamps the day (Mehr 30 → Esfand 1404 = 29). Never rolls over into the next month.
-	const set = (k) => (e) => {
-		const v = e.target.value;
-		const n = {
+	const onPartChange = (part) => (event) => {
+		const selected = event.target.value;
+		const next = {
 			...draft,
-			[k]: v ? +v : undefined
+			[part]: selected ? +selected : undefined
 		};
-		if (n.d && n.m) n.d = Math.min(n.d, maxFor(n));
-		setDraft(n);
-		emit(n);
+		if (next.day && next.month) next.day = Math.min(next.day, daysIn(next));
+		setDraft(next);
+		emit(next);
 	};
-	const switchCal = (c) => {
-		if (c === cal) return;
-		if (!calendar) setInnerCal(c);
-		onCalendarChange && onCalendarChange(c);
-		if (yearly && draft.m && draft.d && onChange) {
-			const cy = D.yearOf(cal, today);
-			const dt = D.toDate(cal, cy, draft.m, Math.min(draft.d, D.daysInMonth(cal, cy, draft.m)));
-			const p = D.parts(c, dt);
+	const switchCalendar = (cal) => {
+		if (cal === activeCalendar) return;
+		if (!calendar) setUncontrolledCalendar(cal);
+		onCalendarChange && onCalendarChange(cal);
+		if (yearly && draft.month && draft.day && onChange) {
+			const thisYear = dates.yearOf(activeCalendar, today);
+			const lastDay = dates.daysInMonth(activeCalendar, thisYear, draft.month);
+			const date = dates.toDate(activeCalendar, thisYear, draft.month, Math.min(draft.day, lastDay));
+			const [, month, day] = dates.parts(cal, date);
 			onChange({
-				cal: c,
-				m: p[1],
-				d: p[2]
+				cal,
+				m: month,
+				d: day
 			});
 		}
 	};
-	const minD = minDate ? D.fromIso(minDate) : null;
-	const startY = D.yearOf(cal, minD && minD > today ? minD : today);
-	let ys = Array.from({ length: years }, (_, i) => startY + i);
-	if (draft.y && !ys.includes(draft.y)) ys = [...ys, draft.y].sort((a, b) => a - b);
-	const names = D.monthNames(cal, lang);
-	const dg = (n) => D.digits(n, lang);
-	const monthOff = (m) => !!(minD && draft.y && D.toDate(cal, draft.y, m, D.daysInMonth(cal, draft.y, m)) < minD);
-	const dayOff = (d) => !!(minD && draft.y && draft.m && D.toDate(cal, draft.y, draft.m, d) < minD);
-	const nDays = maxFor(draft);
-	const complete = yearly ? draft.m && draft.d : draft.y && draft.m && draft.d;
-	const other = calendars.find((c) => c !== cal);
-	let eq = "";
-	if (showEquivalent && other && complete) {
-		const dt = yearly ? D.nextYearly({
-			cal,
-			m: draft.m,
-			d: draft.d
-		}).date : D.toDate(cal, draft.y, draft.m, draft.d);
-		eq = L.equivalent.replace("{date}", D.fullDate(dt, D.locale(lang, other), false));
+	const earliest = minDate ? dates.fromIso(minDate) : null;
+	const firstYear = dates.yearOf(activeCalendar, earliest && earliest > today ? earliest : today);
+	let yearOptions = Array.from({ length: years }, (_, i) => firstYear + i);
+	if (draft.year && !yearOptions.includes(draft.year)) yearOptions = [...yearOptions, draft.year].sort((a, b) => a - b);
+	const monthNames = dates.monthNames(activeCalendar, lang);
+	const localDigits = (n) => dates.digits(n, lang);
+	const monthBeforeMin = (month) => !!(earliest && draft.year && dates.toDate(activeCalendar, draft.year, month, dates.daysInMonth(activeCalendar, draft.year, month)) < earliest);
+	const dayBeforeMin = (day) => !!(earliest && draft.year && draft.month && dates.toDate(activeCalendar, draft.year, draft.month, day) < earliest);
+	const complete = yearly ? draft.month && draft.day : draft.year && draft.month && draft.day;
+	const otherCalendar = calendars.find((cal) => cal !== activeCalendar);
+	let equivalent = "";
+	if (showEquivalent && otherCalendar && complete) {
+		const date = yearly ? dates.nextYearly({
+			cal: activeCalendar,
+			m: draft.month,
+			d: draft.day
+		}).date : dates.toDate(activeCalendar, draft.year, draft.month, draft.day);
+		equivalent = text.equivalent.replace("{date}", dates.fullDate(date, dates.locale(lang, otherCalendar), false));
 	}
-	const desc = msg ? hid : undefined;
+	const describedBy = message ? messageId : undefined;
 	return /* @__PURE__ */ React.createElement("fieldset", {
 		className: cx("ag-fieldset", "ag-date", className),
 		style,
@@ -154,54 +163,54 @@ export function DatePicker({ label, value, onChange, calendar, onCalendarChange,
 	}, /* @__PURE__ */ React.createElement("legend", { className: "ag-date__legend" }, label && /* @__PURE__ */ React.createElement("span", { className: "ag-field__label" }, label), calendars.length > 1 && /* @__PURE__ */ React.createElement(Tabs, {
 		variant: "pill",
 		className: "ag-date__cal",
-		items: calendars.map((c) => ({
-			id: c,
-			label: c === "j" ? L.jalali : L.gregorian
+		items: calendars.map((cal) => ({
+			id: cal,
+			label: cal === "j" ? text.jalali : text.gregorian
 		})),
-		value: cal,
-		onChange: switchCal
+		value: activeCalendar,
+		onChange: switchCalendar
 	})), /* @__PURE__ */ React.createElement("div", { className: cx("ag-date__grid", yearly && "ag-date__grid--yearly") }, !yearly && /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-y",
-		label: L.year,
-		value: draft.y ? String(draft.y) : "",
-		placeholder: draft.y ? undefined : "—",
-		onChange: set("y"),
-		"aria-describedby": desc,
-		options: ys.map((y) => ({
-			value: String(y),
-			label: dg(y)
+		id: fieldId + "-y",
+		label: text.year,
+		value: draft.year ? String(draft.year) : "",
+		placeholder: draft.year ? undefined : "—",
+		onChange: onPartChange("year"),
+		"aria-describedby": describedBy,
+		options: yearOptions.map((year) => ({
+			value: String(year),
+			label: localDigits(year)
 		}))
 	}), /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-m",
-		label: L.month,
-		value: draft.m ? String(draft.m) : "",
-		placeholder: draft.m ? undefined : "—",
-		onChange: set("m"),
-		"aria-describedby": desc,
-		options: names.map((n, i) => ({
+		id: fieldId + "-m",
+		label: text.month,
+		value: draft.month ? String(draft.month) : "",
+		placeholder: draft.month ? undefined : "—",
+		onChange: onPartChange("month"),
+		"aria-describedby": describedBy,
+		options: monthNames.map((name, i) => ({
 			value: String(i + 1),
-			label: n,
-			disabled: monthOff(i + 1)
+			label: name,
+			disabled: monthBeforeMin(i + 1)
 		}))
 	}), /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-d",
-		label: L.day,
-		value: draft.d ? String(draft.d) : "",
-		placeholder: draft.d ? undefined : "—",
-		onChange: set("d"),
-		"aria-describedby": desc,
+		id: fieldId + "-d",
+		label: text.day,
+		value: draft.day ? String(draft.day) : "",
+		placeholder: draft.day ? undefined : "—",
+		onChange: onPartChange("day"),
+		"aria-describedby": describedBy,
 		"aria-invalid": error ? true : undefined,
-		"aria-errormessage": error ? hid : undefined,
-		options: Array.from({ length: nDays }, (_, i) => ({
+		"aria-errormessage": error ? messageId : undefined,
+		options: Array.from({ length: daysIn(draft) }, (_, i) => ({
 			value: String(i + 1),
-			label: dg(i + 1),
-			disabled: dayOff(i + 1)
+			label: localDigits(i + 1),
+			disabled: dayBeforeMin(i + 1)
 		}))
 	})), /* @__PURE__ */ React.createElement(FieldMessage, {
-		id: hid,
+		id: messageId,
 		error: !!error
-	}, msg), showEquivalent && other && /* @__PURE__ */ React.createElement("p", {
+	}, message), showEquivalent && otherCalendar && /* @__PURE__ */ React.createElement("p", {
 		className: "ag-date__eq",
 		"aria-live": "polite"
-	}, eq));
+	}, equivalent));
 }

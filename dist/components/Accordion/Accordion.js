@@ -3,40 +3,43 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+const toList = (value) => value == null ? [] : Array.isArray(value) ? value : [value];
+// Disclosure panels under real headings. Controlled with `openId` (one id or a list),
+// uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
 export function Accordion({ items = [], openId, defaultOpenId, onToggle, allowMultiple, headingLevel = 3, className = "" }) {
-	const uid = React.useId();
-	const arr = (v) => v == null ? [] : Array.isArray(v) ? v : [v];
-	const [inner, setInner] = React.useState(arr(defaultOpenId));
-	const open = openId !== undefined ? arr(openId) : inner;
+	const baseId = React.useId();
+	const [uncontrolledOpen, setUncontrolledOpen] = React.useState(toList(defaultOpenId));
+	const openIds = openId !== undefined ? toList(openId) : uncontrolledOpen;
 	const toggle = (id) => {
-		const was = open.includes(id);
-		const next = was ? open.filter((x) => x !== id) : allowMultiple ? [...open, id] : [id];
-		if (openId === undefined) setInner(next);
-		onToggle && onToggle(id, !was, next);
+		const wasOpen = openIds.includes(id);
+		const next = wasOpen ? openIds.filter((other) => other !== id) : allowMultiple ? [...openIds, id] : [id];
+		if (openId === undefined) setUncontrolledOpen(next);
+		onToggle && onToggle(id, !wasOpen, next);
 	};
-	const H = "h" + headingLevel;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-acc", className) }, items.map((it) => {
-		const o = open.includes(it.id);
-		const b = uid + "b" + it.id, p = uid + "p" + it.id;
+	const Heading = "h" + headingLevel;
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-acc", className) }, items.map((item) => {
+		const isOpen = openIds.includes(item.id);
+		const buttonId = baseId + "b" + item.id;
+		const panelId = baseId + "p" + item.id;
 		return /* @__PURE__ */ React.createElement("div", {
-			key: it.id,
-			className: cx("ag-acc__item", o && "ag-acc__item--open")
-		}, /* @__PURE__ */ React.createElement(H, { className: "ag-acc__h" }, /* @__PURE__ */ React.createElement("button", {
+			key: item.id,
+			className: cx("ag-acc__item", isOpen && "ag-acc__item--open")
+		}, /* @__PURE__ */ React.createElement(Heading, { className: "ag-acc__h" }, /* @__PURE__ */ React.createElement("button", {
 			type: "button",
-			id: b,
+			id: buttonId,
 			className: "ag-acc__btn",
-			"aria-expanded": o,
-			"aria-controls": p,
-			onClick: () => toggle(it.id)
-		}, /* @__PURE__ */ React.createElement("span", null, it.title), /* @__PURE__ */ React.createElement(Icon, {
+			"aria-expanded": isOpen,
+			"aria-controls": panelId,
+			onClick: () => toggle(item.id)
+		}, /* @__PURE__ */ React.createElement("span", null, item.title), /* @__PURE__ */ React.createElement(Icon, {
 			name: "chevron-down",
 			size: 18,
 			className: "ag-acc__chev"
 		}))), /* @__PURE__ */ React.createElement("div", {
-			id: p,
+			id: panelId,
 			role: "region",
-			"aria-labelledby": b,
+			"aria-labelledby": buttonId,
 			className: "ag-acc__panel"
-		}, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__clip" }, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__content" }, it.content))));
+		}, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__clip" }, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__content" }, item.content))));
 	}));
 }

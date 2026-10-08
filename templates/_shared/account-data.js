@@ -32,83 +32,90 @@ function vfAccountLoad(phone, lang = 'en') {
         {id: 'W-SAMPLE-1', kind: 'topup', amount: 20_000_000, at: '2026-09-02T08:05:00.000Z'}
       ]
     },
-    addresses: [{
-      id: 'home',
-      label: {
-        en: 'Home',
-        fa: 'خانه'
+    addresses: [
+      {
+        id: 'home',
+        label: {
+          en: 'Home',
+          fa: 'خانه'
+        },
+        line: {
+          en: '12 Golha St, Azimiyeh',
+          fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+        },
+        recipient: {
+          en: 'Shirin Ahmadi',
+          fa: 'شیرین احمدی'
+        },
+        phone: '09125649438',
+        zone: 'central',
+        location: {lat: 35.8398, lng: 50.9925},
+        isDefault: true
       },
-      line: {
-        en: '12 Golha St, Azimiyeh',
-        fa: 'عظیمیه، خیابان گل‌ها، پلاک ۱۲'
+      {
+        id: 'office',
+        label: {
+          en: 'Office',
+          fa: 'محل کار'
+        },
+        line: {
+          en: '40 Moazen Blvd, Gohardasht',
+          fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
+        },
+        recipient: {
+          en: 'Shirin Ahmadi',
+          fa: 'شیرین احمدی'
+        },
+        phone: '09125649438',
+        zone: 'central',
+        location: {lat: 35.8162, lng: 50.9391},
+        isDefault: false
+      }
+    ],
+    reminders: [
+      {
+        id: 'mum',
+        name: {
+          en: 'Mum',
+          fa: 'مامان'
+        },
+        occ: 'birthday',
+        cal: 'j',
+        m: 7,
+        d: 9,
+        before: 3,
+        channel: 'sms',
+        on: true
       },
-      recipient: {
-        en: 'Shirin Ahmadi',
-        fa: 'شیرین احمدی'
+      {
+        id: 'mina',
+        name: {
+          en: 'Our anniversary',
+          fa: 'سالگرد خودمان'
+        },
+        occ: 'anniversary',
+        cal: 'g',
+        m: 11,
+        d: 12,
+        before: 7,
+        channel: 'wa',
+        on: true
       },
-      phone: '09125649438',
-      zone: 'central',
-      location: {lat: 35.8398, lng: 50.9925},
-      isDefault: true
-    }, {
-      id: 'office',
-      label: {
-        en: 'Office',
-        fa: 'محل کار'
-      },
-      line: {
-        en: '40 Moazen Blvd, Gohardasht',
-        fa: 'گوهردشت، بلوار موذن، پلاک ۴۰'
-      },
-      recipient: {
-        en: 'Shirin Ahmadi',
-        fa: 'شیرین احمدی'
-      },
-      phone: '09125649438',
-      zone: 'central',
-      location: {lat: 35.8162, lng: 50.9391},
-      isDefault: false
-    }],
-    reminders: [{
-      id: 'mum',
-      name: {
-        en: 'Mum',
-        fa: 'مامان'
-      },
-      occ: 'birthday',
-      cal: 'j',
-      m: 7,
-      d: 9,
-      before: 3,
-      channel: 'sms',
-      on: true
-    }, {
-      id: 'mina',
-      name: {
-        en: 'Our anniversary',
-        fa: 'سالگرد خودمان'
-      },
-      occ: 'anniversary',
-      cal: 'g',
-      m: 11,
-      d: 12,
-      before: 7,
-      channel: 'wa',
-      on: true
-    }, {
-      id: 'sara',
-      name: {
-        en: 'Yalda at Grandma’s',
-        fa: 'یلدا خانه مادربزرگ'
-      },
-      occ: 'yalda',
-      cal: 'j',
-      m: 9,
-      d: 30,
-      before: 7,
-      channel: 'sms',
-      on: false
-    }]
+      {
+        id: 'sara',
+        name: {
+          en: 'Yalda at Grandma’s',
+          fa: 'یلدا خانه مادربزرگ'
+        },
+        occ: 'yalda',
+        cal: 'j',
+        m: 9,
+        d: 30,
+        before: 7,
+        channel: 'sms',
+        on: false
+      }
+    ]
   };
 }
 function vfAccountSave(phone, data) {
@@ -134,67 +141,76 @@ function vfAccountLocale() {
   const phone = vfAccountPhone();
   return phone ? vfAccountLoad(phone).profile.locale : null;
 }
-const VF_OCCASIONS = [{
-  id: 'birthday',
-  icon: 'cake',
-  en: 'Birthday',
-  fa: 'تولد'
-}, {
-  id: 'anniversary',
-  icon: 'gem',
-  en: 'Anniversary',
-  fa: 'سالگرد ازدواج'
-}, {
-  id: 'mothers',
-  icon: 'flower-2',
-  en: 'Mother’s Day',
-  fa: 'روز مادر',
-  hijri: [6, 20]
-}, {
-  id: 'valentine',
-  icon: 'heart',
-  en: 'Valentine’s Day',
-  fa: 'ولنتاین',
-  fixed: {
-    cal: 'g',
-    m: 2,
-    d: 14
+const VF_OCCASIONS = [
+  {
+    id: 'birthday',
+    icon: 'cake',
+    en: 'Birthday',
+    fa: 'تولد'
+  },
+  {
+    id: 'anniversary',
+    icon: 'gem',
+    en: 'Anniversary',
+    fa: 'سالگرد ازدواج'
+  },
+  {
+    id: 'mothers',
+    icon: 'flower-2',
+    en: 'Mother’s Day',
+    fa: 'روز مادر',
+    hijri: [6, 20]
+  },
+  {
+    id: 'valentine',
+    icon: 'heart',
+    en: 'Valentine’s Day',
+    fa: 'ولنتاین',
+    fixed: {
+      cal: 'g',
+      m: 2,
+      d: 14
+    }
+  },
+  {
+    id: 'nowruz',
+    icon: 'sprout',
+    en: 'Nowruz',
+    fa: 'نوروز',
+    fixed: {
+      cal: 'j',
+      m: 1,
+      d: 1
+    }
+  },
+  {
+    id: 'yalda',
+    icon: 'moon',
+    en: 'Yalda night',
+    fa: 'شب یلدا',
+    fixed: {
+      cal: 'j',
+      m: 9,
+      d: 30
+    }
+  },
+  {
+    id: 'other',
+    icon: 'calendar-heart',
+    en: 'Other occasion',
+    fa: 'مناسبت دیگر'
   }
-}, {
-  id: 'nowruz',
-  icon: 'sprout',
-  en: 'Nowruz',
-  fa: 'نوروز',
-  fixed: {
-    cal: 'j',
-    m: 1,
-    d: 1
-  }
-}, {
-  id: 'yalda',
-  icon: 'moon',
-  en: 'Yalda night',
-  fa: 'شب یلدا',
-  fixed: {
-    cal: 'j',
-    m: 9,
-    d: 30
-  }
-}, {
-  id: 'other',
-  icon: 'calendar-heart',
-  en: 'Other occasion',
-  fa: 'مناسبت دیگر'
-}];
+];
 function vfNormalizeReminder(r) {
   if (r.date && !r.m) {
     const d = window.AG_DATES.fromIso(r.date);
-    if (d) return {
-      ...r,
-      cal: 'g',
-      m: d.getMonth() + 1,
-      d: d.getDate()
-    };
+    if (d)
+      return {
+        ...r,
+        cal: 'g',
+        m: d.getMonth() + 1,
+        d: d.getDate()
+      };
   }
   return r;
 }
@@ -205,18 +221,25 @@ function vfReminderNext(r, today = new Date()) {
   if (occasion && occasion.hijri) {
     const t = new Date(today);
     t.setHours(12, 0, 0, 0);
-    const date = (VF_STORE.occasionDates.mothers || []).map(D.fromIso).filter(d => d && d >= t).sort((a, b) => a - b)[0];
-    if (date) return {
-      date,
-      days: D.daysBetween(t, date),
-      published: true
-    };
+    const date = (VF_STORE.occasionDates.mothers || [])
+      .map(D.fromIso)
+      .filter(d => d && d >= t)
+      .sort((a, b) => a - b)[0];
+    if (date)
+      return {
+        date,
+        days: D.daysBetween(t, date),
+        published: true
+      };
     return D.nextHijri(...occasion.hijri, t);
   }
-  return D.nextYearly({
-    ...r,
-    ...(occasion && occasion.fixed)
-  }, today);
+  return D.nextYearly(
+    {
+      ...r,
+      ...(occasion && occasion.fixed)
+    },
+    today
+  );
 }
 function vfSampleOrders() {
   const delivery = {
@@ -227,7 +250,12 @@ function vfSampleOrders() {
     senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
   };
-  return [['VN-10522', 'onTheWay'], ['VN-10431', 'delivered'], ['VN-10302', 'delivered'], ['VB-TEST-1', 'cancelled']].map(([id, status]) => {
+  return [
+    ['VN-10522', 'onTheWay'],
+    ['VN-10431', 'delivered'],
+    ['VN-10302', 'delivered'],
+    ['VB-TEST-1', 'cancelled']
+  ].map(([id, status]) => {
     const lines = vfSampleBag();
     return {
       id,

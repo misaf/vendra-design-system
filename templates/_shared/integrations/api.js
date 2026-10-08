@@ -16,16 +16,20 @@
     const r = await fetch(A.base + path, {
       method,
       headers: {
-        'Accept': 'application/ld+json',
-        ...(body ? {
-          'Content-Type': 'application/json'
-        } : {})
+        Accept: 'application/ld+json',
+        ...(body
+          ? {
+              'Content-Type': 'application/json'
+            }
+          : {})
       },
       body: body ? JSON.stringify(body) : undefined,
       credentials: 'include'
     });
     if (!r.ok) {
-      const e = /** @type {Error & {status?: number, body?: any}} */ (new Error('HTTP ' + r.status));
+      const e = /** @type {Error & {status?: number, body?: any}} */ (
+        new Error('HTTP ' + r.status)
+      );
       e.status = r.status;
       try {
         e.body = await r.json();
@@ -83,7 +87,7 @@
   A.loadSaved = async () => {
     if (!A.live) return null;
     const r = await req('GET', '/api/customers/wishlists');
-    const lists = r && (r['hydra:member'] || r.member || r.data) || [];
+    const lists = (r && (r['hydra:member'] || r.member || r.data)) || [];
     const w = lists.find(l => l.isDefault) || lists[0];
     if (!w) return [];
     const m = map();
@@ -94,7 +98,7 @@
     const slugs = [];
     // Items saved before products were known by code carry the old slug; read them as codes.
     (w.items || []).forEach(it => {
-      const raw = it.metadata && it.metadata.slug || byApi[it.sellableId];
+      const raw = (it.metadata && it.metadata.slug) || byApi[it.sellableId];
       const s = raw && (vfProductId(raw) || raw);
       if (s) {
         slugs.push(s);
@@ -122,6 +126,7 @@
   };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
   // PATCH /api/customers/me {preferredLocale} when the customer changes it in Profile. Guests: the page language at checkout.
-  A.preferredLocale = () => vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
+  A.preferredLocale = () =>
+    vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
   window.AG_API = window.VF_API = A;
 })();

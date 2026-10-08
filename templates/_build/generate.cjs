@@ -27,29 +27,43 @@ const sharedLogicFiles = [
 
 // The tenant list the storefront accepts in ?tenant= and offers in each page's Theme setting.
 const tenantSlugs = require('./tenants.cjs').tenantSlugs();
-const tenantList = '// Source: tokens/tenants/*.json (generated)\nconst VF_TENANT_SLUGS = ' + JSON.stringify(tenantSlugs) + ';';
+const tenantList =
+  '// Source: tokens/tenants/*.json (generated)\nconst VF_TENANT_SLUGS = ' +
+  JSON.stringify(tenantSlugs) +
+  ';';
 
 function sourceCode(file) {
-  return '// Source: templates/' + file + '\n' + fs.readFileSync(path.join(root, file), 'utf8').trimEnd();
+  return (
+    '// Source: templates/' + file + '\n' + fs.readFileSync(path.join(root, file), 'utf8').trimEnd()
+  );
 }
 
 function renderSharedLogic() {
-  return [tenantList, ...sharedLogicFiles.map(file => sourceCode('_shared/' + file))].join('\n\n') + '\n';
+  return (
+    [tenantList, ...sharedLogicFiles.map(file => sourceCode('_shared/' + file))].join('\n\n') + '\n'
+  );
 }
 
 const sharedLogic = renderSharedLogic();
 // Pages load the shared logic once from the runtime folder instead of carrying their own copy.
 // Its top-level declarations become globals that each page's logic reads by name.
 const sharedLogicFile = path.join(root, '_runtime', 'shared-logic.js');
-const sharedLogicRuntime = '// GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' + sharedLogic;
+const sharedLogicRuntime =
+  '// GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' +
+  sharedLogic;
 const sharedLogicScript = '<script src="../_runtime/shared-logic.js"></script>';
 const supportScript = '<script src="../_runtime/support.js"></script>';
 // Helpers the shared logic calls on first render: AG_SEO and AG_NAV (templates/_shared/) and
 // AG_FORMAT / AG_DATES (_runtime/helpers.js, the classic build of components/utils/{format,dates}.js).
 // The component bundle loads asynchronously after React, so pages load these synchronously first.
-const coreHelperScripts = ['<script src="../_shared/seo.js"></script>', '<script src="../_runtime/helpers.js"></script>', '<script src="../_shared/page-focus.js"></script>'].join('\n');
+const coreHelperScripts = [
+  '<script src="../_shared/seo.js"></script>',
+  '<script src="../_runtime/helpers.js"></script>',
+  '<script src="../_shared/page-focus.js"></script>'
+].join('\n');
 // DCLogic only exists inside page logic, so the page base class is built there.
-const sharedLogicInline = '// Shared storefront logic loads from ../_runtime/shared-logic.js.\nconst VFPage = vfPageClass(DCLogic);';
+const sharedLogicInline =
+  '// Shared storefront logic loads from ../_runtime/shared-logic.js.\nconst VFPage = vfPageClass(DCLogic);';
 
 // Load the shared logic before support.js evaluates the page logic.
 function renderSharedLogicScript(html, folder) {
@@ -57,18 +71,28 @@ function renderSharedLogicScript(html, folder) {
   if (html.includes(scripts)) return html;
   if (!html.includes(supportScript)) throw new Error('Missing support.js script in ' + folder);
   // Drop any earlier helper / shared-logic tags so the block is written once, in order.
-  html = html.replace(/<script src="(\.\.\/\.\.\/components\/utils\/\w+|\.\.\/_runtime\/helpers|\.\.\/_shared\/(seo|page-focus))\.js"><\/script>\n/g, '').replace(sharedLogicScript + '\n', '');
+  html = html
+    .replace(
+      /<script src="(\.\.\/\.\.\/components\/utils\/\w+|\.\.\/_runtime\/helpers|\.\.\/_shared\/(seo|page-focus))\.js"><\/script>\n/g,
+      ''
+    )
+    .replace(sharedLogicScript + '\n', '');
   return html.replace(supportScript, scripts);
 }
 
 function region(source, name, syntax = 'html') {
   const begin = syntax === 'html' ? '<!-- BEGIN ' + name + ' -->' : '// BEGIN ' + name;
   const end = syntax === 'html' ? '<!-- END ' + name + ' -->' : '// END ' + name;
-  const start = source.indexOf(begin), finish = source.indexOf(end);
+  const start = source.indexOf(begin),
+    finish = source.indexOf(end);
   if (start < 0 || finish < start || source.indexOf(begin, start + begin.length) >= 0) {
     throw new Error('Missing or duplicate region: ' + name);
   }
-  return {start, end: finish + end.length, content: source.slice(start + begin.length, finish).replace(/^\n|\n$/g, '')};
+  return {
+    start,
+    end: finish + end.length,
+    content: source.slice(start + begin.length, finish).replace(/^\n|\n$/g, '')
+  };
 }
 
 function replaceScriptRegion(html, name, code) {
@@ -102,10 +126,21 @@ function renderPageLogic(html, folder) {
 
 // Keep the editor's Theme choices in step with tokens/tenants/.
 function renderTenantProp(html, folder) {
-  const prop = /(tenant&quot;:\{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:)\[[^\]]*\](,&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;)[^&]*(&quot;)/;
+  const prop =
+    /(tenant&quot;:\{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:)\[[^\]]*\](,&quot;default&quot;:&quot;default&quot;,&quot;tsType&quot;:&quot;)[^&]*(&quot;)/;
   if (!prop.test(html)) throw new Error('Missing tenant prop in ' + folder);
   const options = ['default', ...tenantSlugs];
-  return html.replace(prop, (_, start, middle, end) => start + '[' + options.map(o => '&quot;' + o + '&quot;').join(',') + ']' + middle + options.map(o => "'" + o + "'").join(' | ') + end);
+  return html.replace(
+    prop,
+    (_, start, middle, end) =>
+      start +
+      '[' +
+      options.map(o => '&quot;' + o + '&quot;').join(',') +
+      ']' +
+      middle +
+      options.map(o => "'" + o + "'").join(' | ') +
+      end
+  );
 }
 
 function renderShell(source) {
@@ -114,18 +149,36 @@ function renderShell(source) {
   const body = region(source, 'PAGE CONTENT').content;
   const sticky = region(source, 'PAGE STICKY CONTENT').content;
   let layout = shared('layout.html');
-  for (const [token, file] of [['DESKTOP_HEADER', 'header-desktop.html'], ['MOBILE_HEADER', 'header-mobile.html'], ['MOBILE_MENU', 'mobile-menu.html'], ['FOOTER', 'footer.html'], ['CONSENT', 'consent.html']]) {
+  for (const [token, file] of [
+    ['DESKTOP_HEADER', 'header-desktop.html'],
+    ['MOBILE_HEADER', 'header-mobile.html'],
+    ['MOBILE_MENU', 'mobile-menu.html'],
+    ['FOOTER', 'footer.html'],
+    ['CONSENT', 'consent.html']
+  ]) {
     layout = layout.replaceAll('<!-- ' + token + ' -->', shared(file));
   }
-  const editable = (name, content) => '<!-- END GENERATED SHELL -->\n<!-- BEGIN ' + name + ' -->\n' + content + '\n<!-- END ' + name + ' -->\n<!-- BEGIN GENERATED SHELL -->';
+  const editable = (name, content) =>
+    '<!-- END GENERATED SHELL -->\n<!-- BEGIN ' +
+    name +
+    ' -->\n' +
+    content +
+    '\n<!-- END ' +
+    name +
+    ' -->\n<!-- BEGIN GENERATED SHELL -->';
   layout = layout.replace('<!-- PAGE_CONTENT -->', editable('PAGE CONTENT', body));
   layout = layout.replace('<!-- STICKY_CONTENT -->', editable('PAGE STICKY CONTENT', sticky));
-  return metadata[0] + '\n<!-- BEGIN GENERATED SHELL -->\n' + layout + '\n<!-- END GENERATED SHELL -->';
+  return (
+    metadata[0] + '\n<!-- BEGIN GENERATED SHELL -->\n' + layout + '\n<!-- END GENERATED SHELL -->'
+  );
 }
 
 function outputs() {
   const result = new Map([[sharedLogicFile, sharedLogicRuntime]]);
-  const folders = fs.readdirSync(root).filter(name => name.startsWith('storefront-')).sort();
+  const folders = fs
+    .readdirSync(root)
+    .filter(name => name.startsWith('storefront-'))
+    .sort();
   for (const folder of folders) {
     const files = fs.readdirSync(path.join(root, folder)).filter(name => name.endsWith('.dc.html'));
     if (files.length !== 1) throw new Error('Expected one template in ' + folder);
@@ -137,7 +190,10 @@ function outputs() {
     html = renderPageLogic(html, folder);
     html = renderTenantProp(html, folder);
     if (folder !== 'storefront-site') {
-      html = html.replace(/<x-dc>\n[\s\S]*?\n<\/x-dc>/, () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>');
+      html = html.replace(
+        /<x-dc>\n[\s\S]*?\n<\/x-dc>/,
+        () => '<x-dc>\n' + renderShell(html) + '\n</x-dc>'
+      );
     }
     result.set(filename, html);
   }
@@ -146,13 +202,17 @@ function outputs() {
 
 function generate(check = false) {
   // Read and validate all pages before writing any output.
-  const result = outputs(), stale = [];
+  const result = outputs(),
+    stale = [];
   for (const [filename, content] of result) {
     if (fs.existsSync(filename) && fs.readFileSync(filename, 'utf8') === content) continue;
     stale.push(path.relative(root, filename));
     if (!check) fs.writeFileSync(filename, content);
   }
-  if (check && stale.length) throw new Error('Generated files are stale. Run node templates/_build/generate.cjs:\n' + stale.join('\n'));
+  if (check && stale.length)
+    throw new Error(
+      'Generated files are stale. Run node templates/_build/generate.cjs:\n' + stale.join('\n')
+    );
   return stale.length;
 }
 
@@ -161,7 +221,11 @@ if (require.main === module) {
   try {
     const check = process.argv.includes('--check');
     const count = generate(check);
-    console.log(check ? 'All generated sections are current.' : 'Updated ' + count + ' generated files; page content preserved.');
+    console.log(
+      check
+        ? 'All generated sections are current.'
+        : 'Updated ' + count + ' generated files; page content preserved.'
+    );
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

@@ -1,5 +1,7 @@
 import React from 'react';
 import {cx} from '../utils/cx.js';
+
+// An on/off toggle: a native checkbox with role="switch" inside its label.
 export function Switch({label, className = '', style, ...rest}) {
   return (
     <label className={cx('ag-switch', className)} style={style}>

@@ -2,9 +2,26 @@
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* The Apply button sits inside the promo field's end. The field and button share one grid
    cell so the button stays centred at any font height; an error message takes the next row. */
-.vf-bag-promo-row .ag-field{display:contents}
-.vf-bag-promo-row .ag-input{grid-area:1/1;padding-inline-end:112px}
-.vf-bag-promo-apply{grid-area:1/1;align-self:center;justify-self:end;margin-inline-end:6px;position:relative;z-index:1}
+.vf-bag-promo-row .ag-field {
+  display: contents;
+}
+.vf-bag-promo-row .ag-input {
+  grid-area: 1/1;
+  padding-inline-end: 112px;
+}
+.vf-bag-promo-apply {
+  grid-area: 1/1;
+  align-self: center;
+  justify-self: end;
+  margin-inline-end: 6px;
+  position: relative;
+  z-index: 1;
+}
 /* One focus ring around the whole field, not just the text box beside the button. */
-.vf-bag-promo-row input:focus-visible{outline:none}
-.vf-bag-promo-row .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+.vf-bag-promo-row input:focus-visible {
+  outline: none;
+}
+.vf-bag-promo-row .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}

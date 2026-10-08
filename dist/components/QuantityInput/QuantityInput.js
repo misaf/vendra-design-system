@@ -3,33 +3,35 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// A −/+ quantity control, controlled (`value`) or not (`defaultValue`), clamped to min..max.
+// `format` localizes the number (Persian digits); the count is announced politely.
 export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", format = (n) => String(n), labels = {
 	dec: "Decrease",
 	inc: "Increase"
 } }) {
-	const [inner, setInner] = React.useState(defaultValue);
-	const v = value ?? inner;
-	const set = (n) => {
-		n = Math.max(min, Math.min(max, n));
-		if (value === undefined) setInner(n);
-		onChange && onChange(n);
+	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+	const quantity = value ?? uncontrolledValue;
+	const change = (next) => {
+		const clamped = Math.max(min, Math.min(max, next));
+		if (value === undefined) setUncontrolledValue(clamped);
+		onChange && onChange(clamped);
 	};
 	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-qty", size === "sm" && "ag-qty--sm", disabled && "ag-qty--disabled") }, /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		"aria-label": labels.dec,
-		disabled: disabled || v <= min,
-		onClick: () => set(v - 1)
+		disabled: disabled || quantity <= min,
+		onClick: () => change(quantity - 1)
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "minus",
 		size: 16
 	})), /* @__PURE__ */ React.createElement("span", {
 		className: "ag-qty__val",
 		"aria-live": "polite"
-	}, format(v)), /* @__PURE__ */ React.createElement("button", {
+	}, format(quantity)), /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		"aria-label": labels.inc,
-		disabled: disabled || v >= max,
-		onClick: () => set(v + 1)
+		disabled: disabled || quantity >= max,
+		onClick: () => change(quantity + 1)
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "plus",
 		size: 16

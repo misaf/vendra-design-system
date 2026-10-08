@@ -10,14 +10,20 @@ class Component extends VFPage {
     const L = S.lang;
     const s = this.state;
     const C = vfCopy(S);
-    const list = VF_POSTS.filter(p => (s.cat === 'all' || p.cat === s.cat) && (!s.q || p[L].join(' ').toLowerCase().includes(s.q.toLowerCase()))).map(p => {
+    const list = VF_POSTS.filter(
+      p =>
+        (s.cat === 'all' || p.cat === s.cat) &&
+        (!s.q || p[L].join(' ').toLowerCase().includes(s.q.toLowerCase()))
+    ).map(p => {
       const c = VF_JCATS.find(x => x[0] === p.cat);
       return {
-        href: S.href.post.split('?')[0] + vfRouteParams({
-          view: 'post',
-          post: p.id,
-          lang: L
-        }),
+        href:
+          S.href.post.split('?')[0] +
+          vfRouteParams({
+            view: 'post',
+            post: p.id,
+            lang: L
+          }),
         go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
         title: p[L][0],
         excerpt: p[L][1],
@@ -28,13 +34,15 @@ class Component extends VFPage {
       ...S,
       migration: C.migration,
       q: s.q,
-      setQ: e => this.setState({
-        q: e.target.value
-      }),
-      clear: () => this.setState({
-        q: '',
-        cat: 'all'
-      }),
+      setQ: e =>
+        this.setState({
+          q: e.target.value
+        }),
+      clear: () =>
+        this.setState({
+          q: '',
+          cat: 'all'
+        }),
       loading: vfPageRoute(this.props).demo === 'loading',
       noStories: !list.length,
       leadLayout: S.mob ? 'stack' : 'wide',
@@ -45,9 +53,10 @@ class Component extends VFPage {
       cats: [...VF_JCATS, ['updates', 'Updates', 'خبرها']].map(c => ({
         label: fa ? c[2] : c[1],
         on: s.cat === c[0],
-        pick: () => this.setState({
-          cat: c[0]
-        })
+        pick: () =>
+          this.setState({
+            cat: c[0]
+          })
       })),
       hasLead: vfPageRoute(this.props).demo !== 'loading' && list.length > 0,
       lead: list[0] || {},

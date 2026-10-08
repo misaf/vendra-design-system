@@ -1,4 +1,10 @@
 /* Custom styles for the product page. */
-.vf-product-add .ag-btn{white-space:normal;height:auto;min-height:52px}
+.vf-product-add .ag-btn {
+  white-space: normal;
+  height: auto;
+  min-height: 52px;
+}
 /* While the desktop consent bar is showing, the save toast sits above it instead of on it. */
-.vf-page:has(.vf-shell-consent-bar) .vf-product-toast{bottom:calc(var(--space-6) + 5rem)}
+.vf-page:has(.vf-shell-consent-bar) .vf-product-toast {
+  bottom: calc(var(--space-6) + 5rem);
+}

@@ -7,7 +7,7 @@ import { IconButton } from "../IconButton/IconButton.js";
 import { Button } from "../Button/Button.js";
 import { Switch } from "../Switch/Switch.js";
 import { cx } from "../utils/cx.js";
-const RR_DEF = {
+const DEFAULT_LABELS = {
 	paused: "Paused",
 	sendFlowers: "Send flowers",
 	reminderFor: "Reminder for {name}",
@@ -16,18 +16,18 @@ const RR_DEF = {
 };
 // One occasion reminder: arched date tile · name + meta · controls (drop below on narrow widths via container query).
 export function ReminderRow({ name, day, month, occasion, occasionIcon = "calendar-heart", before, channel = "sms", altDate, when, soon, on = true, onToggle, onEdit, onDelete, sendHref, sendOnClick, labels, className = "", style }) {
-	const L = {
-		...RR_DEF,
+	const text = {
+		...DEFAULT_LABELS,
 		...labels
 	};
-	const nm = (s) => s.replace("{name}", typeof name === "string" ? name : "");
+	const named = (template) => template.replace("{name}", typeof name === "string" ? name : "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-remwrap", className),
 		style
 	}, /* @__PURE__ */ React.createElement("div", { className: cx("ag-rem", soon && on && "ag-rem--soon") }, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-rem__tile", !on && "ag-rem__tile--paused"),
 		"aria-hidden": "true"
-	}, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__day" }, day), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__month" }, month)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-rem__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__name" }, name), on ? when && /* @__PURE__ */ React.createElement(Badge, { tone: soon ? "accent" : "neutral" }, when) : /* @__PURE__ */ React.createElement(Badge, { tone: "neutral" }, L.paused)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
+	}, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__day" }, day), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__month" }, month)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-rem__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__name" }, name), on ? when && /* @__PURE__ */ React.createElement(Badge, { tone: soon ? "accent" : "neutral" }, when) : /* @__PURE__ */ React.createElement(Badge, { tone: "neutral" }, text.paused)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
 		name: occasionIcon,
 		size: 14
 	}), occasion), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, day, " ", month, altDate && /* @__PURE__ */ React.createElement("span", null, " (", altDate, ")")), before && /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
@@ -38,19 +38,19 @@ export function ReminderRow({ name, day, month, occasion, occasionIcon = "calend
 		variant: "secondary",
 		href: sendHref,
 		onClick: sendOnClick
-	}, L.sendFlowers), /* @__PURE__ */ React.createElement(Switch, {
+	}, text.sendFlowers), /* @__PURE__ */ React.createElement(Switch, {
 		checked: on,
-		onChange: (e) => onToggle && onToggle(e.target.checked),
-		"aria-label": nm(L.reminderFor)
+		onChange: (event) => onToggle && onToggle(event.target.checked),
+		"aria-label": named(text.reminderFor)
 	}), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "pencil",
 		size: "sm",
-		label: nm(L.edit),
+		label: named(text.edit),
 		onClick: onEdit
 	}), onDelete && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "trash-2",
 		size: "sm",
-		label: nm(L.delete),
+		label: named(text.delete),
 		onClick: onDelete
 	}))));
 }

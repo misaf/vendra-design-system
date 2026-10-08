@@ -3,35 +3,37 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
-const defaultCaption = (n, total, label) => "Step " + n + " of " + total + " · " + label;
-export function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (n) => String(n), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "" }) {
+const defaultCaption = (number, total, label) => "Step " + number + " of " + total + " · " + label;
+// Checkout progress as an ordered list; done steps can be revisited with `onStepClick`.
+// `compact` (phones) shows only the dots plus a "Step 2 of 3 · Label" caption.
+export function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (number) => String(number), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "" }) {
 	const list = /* @__PURE__ */ React.createElement("ol", {
 		"aria-label": label,
 		className: cx("ag-steps", compact && "ag-steps--compact", !compact && className)
-	}, steps.map((s, i) => {
-		const st = i < current ? "done" : i === current ? "current" : "upcoming";
-		const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
+	}, steps.map((step, i) => {
+		const state = i < current ? "done" : i === current ? "current" : "upcoming";
+		const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
 			className: "ag-steps__dot",
 			"aria-hidden": compact || undefined
-		}, st === "done" ? /* @__PURE__ */ React.createElement(Icon, {
+		}, state === "done" ? /* @__PURE__ */ React.createElement(Icon, {
 			name: "check",
 			size: 14
-		}) : s.number ?? formatNumber(i + 1)), /* @__PURE__ */ React.createElement("span", { className: compact ? "ag-sr-only" : "ag-steps__label" }, s.label, st === "done" && doneLabel && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " ", doneLabel)));
+		}) : step.number ?? formatNumber(i + 1)), /* @__PURE__ */ React.createElement("span", { className: compact ? "ag-sr-only" : "ag-steps__label" }, step.label, state === "done" && doneLabel && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " ", doneLabel)));
 		return /* @__PURE__ */ React.createElement("li", {
 			key: i,
-			className: cx("ag-steps__item", "ag-steps__item--" + st),
-			"aria-current": st === "current" ? "step" : undefined
-		}, st === "done" && onStepClick ? /* @__PURE__ */ React.createElement("button", {
+			className: cx("ag-steps__item", "ag-steps__item--" + state),
+			"aria-current": state === "current" ? "step" : undefined
+		}, state === "done" && onStepClick ? /* @__PURE__ */ React.createElement("button", {
 			type: "button",
 			className: "ag-steps__btn",
 			onClick: () => onStepClick(i)
-		}, inner) : /* @__PURE__ */ React.createElement("span", { className: "ag-steps__btn" }, inner));
+		}, content) : /* @__PURE__ */ React.createElement("span", { className: "ag-steps__btn" }, content));
 	}));
 	if (!compact) return list;
-	const ci = Math.min(Math.max(current, 0), steps.length - 1);
-	const cur = steps[ci];
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-steps-wrap", className) }, list, cur && /* @__PURE__ */ React.createElement("p", {
+	const currentIndex = Math.min(Math.max(current, 0), steps.length - 1);
+	const currentStep = steps[currentIndex];
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-steps-wrap", className) }, list, currentStep && /* @__PURE__ */ React.createElement("p", {
 		className: "ag-steps__caption",
 		"aria-hidden": "true"
-	}, captionFormat(cur.number ?? formatNumber(ci + 1), formatNumber(steps.length), cur.label)));
+	}, captionFormat(currentStep.number ?? formatNumber(currentIndex + 1), formatNumber(steps.length), currentStep.label)));
 }

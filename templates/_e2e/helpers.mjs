@@ -7,8 +7,11 @@ import {fileURLToPath} from 'node:url';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 // Every tenant theme in tokens/tenants/ (the _template file is a .txt, so it is skipped).
-export const TENANTS = fs.readdirSync(path.join(ROOT, 'tokens/tenants'))
-  .filter(f => f.endsWith('.css')).map(f => f.slice(0, -4)).sort();
+export const TENANTS = fs
+  .readdirSync(path.join(ROOT, 'tokens/tenants'))
+  .filter(f => f.endsWith('.css'))
+  .map(f => f.slice(0, -4))
+  .sort();
 
 // A fresh visitor who has not made a cookie choice yet (the config pre-sets one for every other test).
 export const NO_CONSENT = {cookies: [], origins: []};
@@ -18,13 +21,32 @@ export const LANGS = ['en', 'fa'];
 
 // Every routed view, with the parameters a view needs to render instead of falling back to notfound.
 export const VIEWS = {
-  home: {}, shop: {}, product: {id: 'VF-7K2M4Q', cat: 'boxes'}, bag: {}, checkout: {}, saved: {}, search: {},
-  account: {}, signin: {}, track: {}, contact: {}, faq: {}, journal: {},
-  post: {post: 'morning-at-the-studio'}, policy: {}, weddings: {}, notfound: {}
+  home: {},
+  shop: {},
+  product: {id: 'VF-7K2M4Q', cat: 'boxes'},
+  bag: {},
+  checkout: {},
+  saved: {},
+  search: {},
+  account: {},
+  signin: {},
+  track: {},
+  contact: {},
+  faq: {},
+  journal: {},
+  post: {post: 'morning-at-the-studio'},
+  policy: {},
+  weddings: {},
+  notfound: {}
 };
 
 export function siteUrl(view, lang, extra = {}) {
-  const q = new URLSearchParams({lang, ...(view === 'home' ? {} : {view}), ...VIEWS[view], ...extra});
+  const q = new URLSearchParams({
+    lang,
+    ...(view === 'home' ? {} : {view}),
+    ...VIEWS[view],
+    ...extra
+  });
   return SITE + '?' + q;
 }
 
@@ -32,11 +54,12 @@ export function siteUrl(view, lang, extra = {}) {
 export async function openSite(page, view, lang, extra) {
   await stubMapTiles(page);
   // The account is only for signed-in customers: sign the sample customer in once per tab.
-  if (view === 'account') await page.addInitScript(() => {
-    if (sessionStorage.getItem('vf-e2e-signed-in')) return;
-    sessionStorage.setItem('vf-e2e-signed-in', '1');
-    localStorage.setItem('vf-account-phone', '09125649438');
-  });
+  if (view === 'account')
+    await page.addInitScript(() => {
+      if (sessionStorage.getItem('vf-e2e-signed-in')) return;
+      sessionStorage.setItem('vf-e2e-signed-in', '1');
+      localStorage.setItem('vf-account-phone', '09125649438');
+    });
   await page.goto(siteUrl(view, lang, extra));
   await expect(page.locator('#main')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
@@ -52,20 +75,36 @@ export async function settlePage(page) {
   await page.evaluate(async () => {
     await Promise.all([...document.fonts].map(face => face.load().catch(() => null)));
     const imgs = [...document.images];
-    imgs.forEach(img => { img.loading = 'eager'; });
-    await Promise.all(imgs.map(img => img.complete ? null : new Promise(r => { img.onload = img.onerror = r; })));
+    imgs.forEach(img => {
+      img.loading = 'eager';
+    });
+    await Promise.all(
+      imgs.map(img =>
+        img.complete
+          ? null
+          : new Promise(r => {
+              img.onload = img.onerror = r;
+            })
+      )
+    );
     await document.fonts.ready;
   });
   await page.waitForLoadState('networkidle');
-  await page.waitForFunction(() => new Promise(resolve => {
-    let last = document.documentElement.scrollHeight, still = 0;
-    const tick = () => {
-      const now = document.documentElement.scrollHeight;
-      still = now === last ? still + 1 : 0; last = now;
-      if (still >= 5) resolve(true); else requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }));
+  await page.waitForFunction(
+    () =>
+      new Promise(resolve => {
+        let last = document.documentElement.scrollHeight,
+          still = 0;
+        const tick = () => {
+          const now = document.documentElement.scrollHeight;
+          still = now === last ? still + 1 : 0;
+          last = now;
+          if (still >= 5) resolve(true);
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      })
+  );
 }
 
 // Vite reports transform errors as an overlay element (pushed to every open page).
@@ -73,11 +112,20 @@ export async function expectNoViteError(page) {
   await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
 }
 
-const lum = rgb => rgb.map(x => x / 255).map(x => x <= .03928 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4).reduce((s, x, i) => s + x * [.2126, .7152, .0722][i], 0);
-export const parseRgb = s => s.match(/[\d.]+/g).slice(0, 3).map(Number);
+const lum = rgb =>
+  rgb
+    .map(x => x / 255)
+    .map(x => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4))
+    .reduce((s, x, i) => s + x * [0.2126, 0.7152, 0.0722][i], 0);
+export const parseRgb = s =>
+  s
+    .match(/[\d.]+/g)
+    .slice(0, 3)
+    .map(Number);
 export function contrast(a, b) {
-  const x = lum(parseRgb(a)), y = lum(parseRgb(b));
-  return (Math.max(x, y) + .05) / (Math.min(x, y) + .05);
+  const x = lum(parseRgb(a)),
+    y = lum(parseRgb(b));
+  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
 
 // The first opaque background behind an element.
@@ -99,21 +147,37 @@ export async function scanAxe(page) {
   await page.addStyleTag({content: '.vf-shell-bottom-bar{position:static!important}'});
   // Let dialog and accordion transitions finish so axe sees final colours.
   // Infinite ones (skeleton shimmer) are skipped.
-  await page.evaluate(() => Promise.all(document.getAnimations()
-    .filter(a => a.effect?.getComputedTiming().endTime !== Infinity)
-    .map(a => a.finished.catch(() => {}))));
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(a => a.effect?.getComputedTiming().endTime !== Infinity)
+        .map(a => a.finished.catch(() => {}))
+    )
+  );
   const {violations} = await new AxeBuilder({page})
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
-  return violations.map(v => `${v.id} (${v.impact}): ${v.nodes.length}× ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`);
+  return violations.map(
+    v =>
+      `${v.id} (${v.impact}): ${v.nodes.length}× ${v.nodes
+        .slice(0, 3)
+        .map(n => n.target.join(' '))
+        .join(' | ')}`
+  );
 }
 
 // Map tiles come from the network; serve one blank tile instead so runs are offline and screenshots stable.
-const BLANK_TILE = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/6XqTHQAAAAASUVORK5CYII=', 'base64');
+const BLANK_TILE = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/6XqTHQAAAAASUVORK5CYII=',
+  'base64'
+);
 export async function stubMapTiles(page) {
   if (page.vfTilesStubbed) return;
   page.vfTilesStubbed = true;
-  await page.route(/tile\.openstreetmap\.org/, route => route.fulfill({contentType: 'image/png', body: BLANK_TILE}));
+  await page.route(/tile\.openstreetmap\.org/, route =>
+    route.fulfill({contentType: 'image/png', body: BLANK_TILE})
+  );
 }
 
 // Drops the delivery pin the way a keyboard user would: focus the map and nudge it.

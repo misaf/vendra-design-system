@@ -1,6 +1,7 @@
 import React from 'react';
 import {ArchFrame} from '../ArchFrame/ArchFrame.jsx';
 import {cx} from '../utils/cx.js';
+
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
 export function OrderSummary({
   lines = [],
@@ -10,37 +11,37 @@ export function OrderSummary({
   className = '',
   style
 }) {
-  const H = titleAs;
+  const Title = titleAs;
   return (
     <section className={cx('ag-osum', className)} style={style}>
-      {title && <H className="ag-osum__title">{title}</H>}
+      {title && <Title className="ag-osum__title">{title}</Title>}
       <ul className="ag-osum__lines">
-        {lines.map((l, i) => (
+        {lines.map((line, i) => (
           <li key={i} className="ag-osum__line">
-            <ArchFrame size="thumb" tone="product" src={l.image} alt="" />
+            <ArchFrame size="thumb" tone="product" src={line.image} alt="" />
             <div className="ag-osum__main">
               <div className="ag-osum__name">
-                {l.href ? (
-                  <a href={l.href} onClick={l.onClick}>
-                    {l.name}
+                {line.href ? (
+                  <a href={line.href} onClick={line.onClick}>
+                    {line.name}
                   </a>
                 ) : (
-                  l.name
+                  line.name
                 )}
               </div>
-              {l.meta && <div className="ag-osum__meta">{l.meta}</div>}
-              {l.note && <div className="ag-osum__note">{l.note}</div>}
+              {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
+              {line.note && <div className="ag-osum__note">{line.note}</div>}
             </div>
-            <div className="ag-osum__total">{l.total}</div>
+            <div className="ag-osum__total">{line.total}</div>
           </li>
         ))}
       </ul>
       {sums.length > 0 && (
         <dl className="ag-osum__sums">
-          {sums.map((s, i) => (
-            <div key={i} className={cx('ag-osum__sum', s.strong && 'ag-osum__sum--strong')}>
-              <dt>{s.label}</dt>
-              <dd>{s.value}</dd>
+          {sums.map((sum, i) => (
+            <div key={i} className={cx('ag-osum__sum', sum.strong && 'ag-osum__sum--strong')}>
+              <dt>{sum.label}</dt>
+              <dd>{sum.value}</dd>
             </div>
           ))}
         </dl>

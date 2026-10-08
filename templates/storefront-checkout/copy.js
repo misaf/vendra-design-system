@@ -31,11 +31,13 @@ function vfCopy(S) {
       orderNo: 'Order VN-10522',
       doneA: 'Thank you.',
       doneB: 'It’s in.',
-      doneP: 'We’ll arrange your flowers on the morning of delivery and text you a photo before they leave the studio.',
+      doneP:
+        'We’ll arrange your flowers on the morning of delivery and text you a photo before they leave the studio.',
       track: 'Track order',
       keep: 'Keep browsing',
       accountTitle: 'Save your details for next time',
-      accountBody: 'Sign in with {phone} to keep this order with your addresses and occasion reminders.',
+      accountBody:
+        'Sign in with {phone} to keep this order with your addresses and occasion reminders.',
       accountCta: 'Sign in',
       when: 'Delivery',
       to: 'Deliver to',
@@ -88,7 +90,8 @@ function vfCopy(S) {
       track: 'پیگیری سفارش',
       keep: 'ادامه خرید',
       accountTitle: 'مشخصاتتان را برای دفعه بعد نگه دارید',
-      accountBody: 'با {phone} وارد شوید تا این سفارش کنار آدرس‌ها و یادآورهای مناسبت‌هایتان بماند.',
+      accountBody:
+        'با {phone} وارد شوید تا این سفارش کنار آدرس‌ها و یادآورهای مناسبت‌هایتان بماند.',
       accountCta: 'ورود',
       when: 'زمان ارسال',
       to: 'تحویل به',
@@ -112,98 +115,98 @@ function vfCopy(S) {
   return {
     ...result,
     migration: {
-      "en": {
-        "actions": {
-          "wallet": "Pay from balance",
-          "online": "Simulate online payment",
-          "cod": "Confirm demo order",
-          "wa": "Confirm demo order"
+      en: {
+        actions: {
+          wallet: 'Pay from balance',
+          online: 'Simulate online payment',
+          cod: 'Confirm demo order',
+          wa: 'Confirm demo order'
         },
-        "descriptions": {
-          "wallet": "The total comes out of your account balance. There’s nothing else to pay.",
-          "online": "Try the online payment flow using a simulated result.",
-          "cod": "Payment would be collected on delivery. Confirm this sample order.",
-          "wa": "Open WhatsApp to review the prepared message, or confirm the sample order here."
+        descriptions: {
+          wallet: 'The total comes out of your account balance. There’s nothing else to pay.',
+          online: 'Try the online payment flow using a simulated result.',
+          cod: 'Payment would be collected on delivery. Confirm this sample order.',
+          wa: 'Open WhatsApp to review the prepared message, or confirm the sample order here.'
         },
-        "choose": "Choose a payment method",
-        "methods": {
-          "wallet": "Account balance",
-          "card": "Card-to-card transfer",
-          "online": "Online card demo",
-          "cod": "Pay on delivery",
-          "wa": "Confirm on WhatsApp"
+        choose: 'Choose a payment method',
+        methods: {
+          wallet: 'Account balance',
+          card: 'Card-to-card transfer',
+          online: 'Online card demo',
+          cod: 'Pay on delivery',
+          wa: 'Confirm on WhatsApp'
         },
-        "codOff": "Available for Karaj delivery only.",
-        "wallet": {
-          "signIn": "Sign in to pay from your account balance.",
-          "balance": "Balance {balance}.",
-          "discount": "Balance {balance}: {percent}% off products.",
-          "short": "Balance {balance}. Top up {left} more to pay from it.",
-          "topUp": "Top up your balance",
-          "after": "Balance after this order: {balance}.",
-          "hint": "Top up {gap} and pay from your balance to get {percent}% off the products: {saving} off this order.",
-          "left": "Balance left"
+        codOff: 'Available for Karaj delivery only.',
+        wallet: {
+          signIn: 'Sign in to pay from your account balance.',
+          balance: 'Balance {balance}.',
+          discount: 'Balance {balance}: {percent}% off products.',
+          short: 'Balance {balance}. Top up {left} more to pay from it.',
+          topUp: 'Top up your balance',
+          after: 'Balance after this order: {balance}.',
+          hint: 'Top up {gap} and pay from your balance to get {percent}% off the products: {saving} off this order.',
+          left: 'Balance left'
         },
-        "demo": "Template preview: no money is transferred and no messages are sent.",
-        "processing": "Processing demo payment…",
-        "failed": "Demo payment failed",
-        "failureBody": "Your bag is preserved. Retry or choose another payment method.",
-        "retry": "Try again",
-        "other": "Choose another method",
-        "openWa": "Open order in WhatsApp",
-        "statuses": {
-          "wallet": "Paid from balance",
-          "card": "Awaiting transfer check",
-          "online": "Demo paid",
-          "cod": "Pay on delivery",
-          "wa": "Awaiting WhatsApp confirmation"
+        demo: 'Template preview: no money is transferred and no messages are sent.',
+        processing: 'Processing demo payment…',
+        failed: 'Demo payment failed',
+        failureBody: 'Your bag is preserved. Retry or choose another payment method.',
+        retry: 'Try again',
+        other: 'Choose another method',
+        openWa: 'Open order in WhatsApp',
+        statuses: {
+          wallet: 'Paid from balance',
+          card: 'Awaiting transfer check',
+          online: 'Demo paid',
+          cod: 'Pay on delivery',
+          wa: 'Awaiting WhatsApp confirmation'
         }
       },
-      "fa": {
-        "actions": {
-          "wallet": "پرداخت از کیف پول",
-          "online": "شبیه‌سازی پرداخت آنلاین",
-          "cod": "تأیید سفارش نمونه",
-          "wa": "تأیید سفارش نمونه"
+      fa: {
+        actions: {
+          wallet: 'پرداخت از کیف پول',
+          online: 'شبیه‌سازی پرداخت آنلاین',
+          cod: 'تأیید سفارش نمونه',
+          wa: 'تأیید سفارش نمونه'
         },
-        "descriptions": {
-          "wallet": "مبلغ کل از موجودی کیف پول شما کم می‌شود و پرداخت دیگری لازم نیست.",
-          "online": "روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.",
-          "cod": "مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.",
-          "wa": "واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید."
+        descriptions: {
+          wallet: 'مبلغ کل از موجودی کیف پول شما کم می‌شود و پرداخت دیگری لازم نیست.',
+          online: 'روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.',
+          cod: 'مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.',
+          wa: 'واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید.'
         },
-        "choose": "انتخاب روش پرداخت",
-        "methods": {
-          "wallet": "کیف پول",
-          "card": "کارت به کارت",
-          "online": "نمونه پرداخت آنلاین",
-          "cod": "پرداخت در محل",
-          "wa": "تأیید در واتس‌اپ"
+        choose: 'انتخاب روش پرداخت',
+        methods: {
+          wallet: 'کیف پول',
+          card: 'کارت به کارت',
+          online: 'نمونه پرداخت آنلاین',
+          cod: 'پرداخت در محل',
+          wa: 'تأیید در واتس‌اپ'
         },
-        "codOff": "فقط برای ارسال در کرج در دسترس است.",
-        "wallet": {
-          "signIn": "برای پرداخت از کیف پول وارد حساب شوید.",
-          "balance": "موجودی {balance}.",
-          "discount": "موجودی {balance}: {percent}٪ تخفیف محصولات.",
-          "short": "موجودی {balance}. برای پرداخت از کیف پول {left} دیگر افزایش موجودی دهید.",
-          "topUp": "افزایش موجودی",
-          "after": "موجودی پس از این سفارش: {balance}.",
-          "hint": "با افزایش موجودی به اندازه {gap} و پرداخت از کیف پول، {percent}٪ تخفیف محصولات می‌گیرید: {saving} کمتر برای این سفارش.",
-          "left": "موجودی باقی‌مانده"
+        codOff: 'فقط برای ارسال در کرج در دسترس است.',
+        wallet: {
+          signIn: 'برای پرداخت از کیف پول وارد حساب شوید.',
+          balance: 'موجودی {balance}.',
+          discount: 'موجودی {balance}: {percent}٪ تخفیف محصولات.',
+          short: 'موجودی {balance}. برای پرداخت از کیف پول {left} دیگر افزایش موجودی دهید.',
+          topUp: 'افزایش موجودی',
+          after: 'موجودی پس از این سفارش: {balance}.',
+          hint: 'با افزایش موجودی به اندازه {gap} و پرداخت از کیف پول، {percent}٪ تخفیف محصولات می‌گیرید: {saving} کمتر برای این سفارش.',
+          left: 'موجودی باقی‌مانده'
         },
-        "demo": "پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.",
-        "processing": "در حال انجام پرداخت نمونه…",
-        "failed": "پرداخت نمونه ناموفق بود",
-        "failureBody": "سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.",
-        "retry": "تلاش دوباره",
-        "other": "انتخاب روش دیگر",
-        "openWa": "باز کردن سفارش در واتس‌اپ",
-        "statuses": {
-          "wallet": "پرداخت از کیف پول",
-          "card": "در انتظار بررسی واریز",
-          "online": "پرداخت نمونه انجام شد",
-          "cod": "پرداخت در محل",
-          "wa": "در انتظار تأیید واتس‌اپ"
+        demo: 'پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.',
+        processing: 'در حال انجام پرداخت نمونه…',
+        failed: 'پرداخت نمونه ناموفق بود',
+        failureBody: 'سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.',
+        retry: 'تلاش دوباره',
+        other: 'انتخاب روش دیگر',
+        openWa: 'باز کردن سفارش در واتس‌اپ',
+        statuses: {
+          wallet: 'پرداخت از کیف پول',
+          card: 'در انتظار بررسی واریز',
+          online: 'پرداخت نمونه انجام شد',
+          cod: 'پرداخت در محل',
+          wa: 'در انتظار تأیید واتس‌اپ'
         }
       }
     }[S.lang]

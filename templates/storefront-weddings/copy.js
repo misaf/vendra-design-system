@@ -29,7 +29,32 @@ function vfCopy(S) {
       send: 'Send inquiry',
       okT: 'Thank you — we’ve got it.',
       okP: 'We’ll call you within one working day. For anything urgent, message us on WhatsApp.',
-      sv: [['gem', 'Bridal bouquet', 'Hand-tied to your dress and season, with a matching buttonhole.', 'From 6,500,000 Toman'], ['car', 'Wedding car', 'Bonnet and door arrangements that hold at speed.', 'From 9,000,000 Toman'], ['flower-2', 'Ceremony stands', 'Floor-standing arrangements for the aisle and backdrop.', 'From 12,000,000 Toman'], ['sprout', 'Table flowers', 'Low centrepieces so guests can see each other.', 'From 1,800,000 Toman a table']],
+      sv: [
+        [
+          'gem',
+          'Bridal bouquet',
+          'Hand-tied to your dress and season, with a matching buttonhole.',
+          'From 6,500,000 Toman'
+        ],
+        [
+          'car',
+          'Wedding car',
+          'Bonnet and door arrangements that hold at speed.',
+          'From 9,000,000 Toman'
+        ],
+        [
+          'flower-2',
+          'Ceremony stands',
+          'Floor-standing arrangements for the aisle and backdrop.',
+          'From 12,000,000 Toman'
+        ],
+        [
+          'sprout',
+          'Table flowers',
+          'Low centrepieces so guests can see each other.',
+          'From 1,800,000 Toman a table'
+        ]
+      ],
       labels: {
         returnToForm: 'Return to form'
       },
@@ -63,7 +88,32 @@ function vfCopy(S) {
       send: 'ارسال درخواست',
       okT: 'ممنون — درخواست رسید.',
       okP: 'ظرف یک روز کاری تماس می‌گیریم. برای کارهای فوری در واتساپ پیام دهید.',
-      sv: [['gem', 'دسته‌گل عروس', 'هماهنگ با لباس و فصل، همراه با گل کت داماد.', 'از ۶٬۵۰۰٬۰۰۰ تومان'], ['car', 'گل‌آرایی ماشین', 'گل‌آرایی کاپوت و درها که در حرکت محکم می‌ماند.', 'از ۹٬۰۰۰٬۰۰۰ تومان'], ['flower-2', 'استند مراسم', 'گل‌آرایی ایستاده برای مسیر و پس‌زمینه.', 'از ۱۲٬۰۰۰٬۰۰۰ تومان'], ['sprout', 'گل میز', 'گل‌آرایی کوتاه تا مهمان‌ها همدیگر را ببینند.', 'از ۱٬۸۰۰٬۰۰۰ تومان هر میز']],
+      sv: [
+        [
+          'gem',
+          'دسته‌گل عروس',
+          'هماهنگ با لباس و فصل، همراه با گل کت داماد.',
+          'از ۶٬۵۰۰٬۰۰۰ تومان'
+        ],
+        [
+          'car',
+          'گل‌آرایی ماشین',
+          'گل‌آرایی کاپوت و درها که در حرکت محکم می‌ماند.',
+          'از ۹٬۰۰۰٬۰۰۰ تومان'
+        ],
+        [
+          'flower-2',
+          'استند مراسم',
+          'گل‌آرایی ایستاده برای مسیر و پس‌زمینه.',
+          'از ۱۲٬۰۰۰٬۰۰۰ تومان'
+        ],
+        [
+          'sprout',
+          'گل میز',
+          'گل‌آرایی کوتاه تا مهمان‌ها همدیگر را ببینند.',
+          'از ۱٬۸۰۰٬۰۰۰ تومان هر میز'
+        ]
+      ],
       labels: {
         returnToForm: 'بازگشت به فرم'
       },

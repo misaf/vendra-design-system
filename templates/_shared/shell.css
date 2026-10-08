@@ -1,14 +1,85 @@
 /* Template document defaults and preview sizing. */
-body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data-vf-preview="true"]{max-width:390px;contain:layout}.vf-page,.vf-page *{box-sizing:border-box}.vf-page main{width:100%;min-width:0}.vf-page main>*{min-width:0}@media(max-width:767px){.vf-page main{padding-inline:16px!important}.vf-page aside{width:100%;min-width:0}}
+body {
+  margin: 0;
+}
+a {
+  color: var(--text-accent);
+}
+a:hover {
+  color: var(--accent-hover);
+}
+[data-vf-preview='true'] {
+  max-width: 390px;
+  contain: layout;
+}
+.vf-page,
+.vf-page * {
+  box-sizing: border-box;
+}
+.vf-page main {
+  width: 100%;
+  min-width: 0;
+}
+.vf-page main > * {
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .vf-page main {
+    padding-inline: 16px !important;
+  }
+  .vf-page aside {
+    width: 100%;
+    min-width: 0;
+  }
+}
 /* The footer sits on the inverse surface: field labels, hints and errors switch to the on-inverse colours. */
-.vf-shell-footer .ag-field__label{color:var(--text-on-inverse)}.vf-shell-footer .ag-field__hint{color:var(--text-inverse-muted)}.vf-shell-footer .ag-field__hint--error{color:var(--danger-on-inverse)}
+.vf-shell-footer .ag-field__label {
+  color: var(--text-on-inverse);
+}
+.vf-shell-footer .ag-field__hint {
+  color: var(--text-inverse-muted);
+}
+.vf-shell-footer .ag-field__hint--error {
+  color: var(--danger-on-inverse);
+}
 /* The newsletter field and its button share one 48px row. */
-.vf-shell-newsletter-form .ag-input{box-sizing:border-box;height:var(--control-h-input);min-height:0}.vf-shell-newsletter-form .ag-input input{padding-block:0;align-self:stretch}
-.vf-shell-newsletter-form .ag-input input:focus-visible{outline:none}.vf-shell-newsletter-form .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
+.vf-shell-newsletter-form .ag-input {
+  box-sizing: border-box;
+  height: var(--control-h-input);
+  min-height: 0;
+}
+.vf-shell-newsletter-form .ag-input input {
+  padding-block: 0;
+  align-self: stretch;
+}
+.vf-shell-newsletter-form .ag-input input:focus-visible {
+  outline: none;
+}
+.vf-shell-newsletter-form .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 /* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
    The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
-.vf-shell-consent-bar .vf-shell-consent{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;column-gap:var(--space-5);border-radius:0;box-shadow:none;padding:var(--space-3) var(--space-6)}
-.vf-shell-consent-bar .vf-shell-consent>div:first-child{display:contents}
-.vf-shell-consent-bar .vf-shell-consent>p{order:1}
-.vf-shell-consent-bar .vf-shell-consent>div:last-child{order:2;flex-wrap:nowrap}
-.vf-shell-consent-bar .vf-shell-consent-close{order:3}
+.vf-shell-consent-bar .vf-shell-consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: var(--space-5);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-6);
+}
+.vf-shell-consent-bar .vf-shell-consent > div:first-child {
+  display: contents;
+}
+.vf-shell-consent-bar .vf-shell-consent > p {
+  order: 1;
+}
+.vf-shell-consent-bar .vf-shell-consent > div:last-child {
+  order: 2;
+  flex-wrap: nowrap;
+}
+.vf-shell-consent-bar .vf-shell-consent-close {
+  order: 3;
+}

@@ -30,7 +30,12 @@ export declare function validate(spec: unknown, label?: string): TenantSpec;
 /** The seven contrast checks every tenant must pass. */
 export declare function checks(spec: TenantSpec): ContrastCheck[];
 /** Every custom property the theme sets, grouped like the CSS. */
-export declare function tokens(spec: TenantSpec): {ramps: Record<string, string>; semantic: Record<string, string>; character: Record<string, string>; all: Record<string, string>};
+export declare function tokens(spec: TenantSpec): {
+  ramps: Record<string, string>;
+  semantic: Record<string, string>;
+  character: Record<string, string>;
+  all: Record<string, string>;
+};
 export declare function contrast(a: Hex | string, b: Hex | string): number;
 export declare function oklch(hex: string): [number, number, number];
 export declare function fromOklch(lch: [number, number, number]): string;
@@ -40,6 +45,10 @@ export declare function css(slug: string, spec: TenantSpec): string;
  * The [data-tenant="<slug>"] CSS block for a spec loaded at runtime (e.g. from the database).
  * Throws on an unsafe slug, an invalid spec or failing contrast unless allowFailing is set.
  */
-export declare function tenantCss(slug: string, spec: TenantSpec, options?: {allowFailing?: boolean}): string;
+export declare function tenantCss(
+  slug: string,
+  spec: TenantSpec,
+  options?: {allowFailing?: boolean}
+): string;
 /** Flat hex palette for HTML email. */
 export declare function email(spec: TenantSpec): Record<string, string | null>;

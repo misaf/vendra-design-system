@@ -5,7 +5,8 @@ import {IconButton} from '../IconButton/IconButton.jsx';
 import {Button} from '../Button/Button.jsx';
 import {Switch} from '../Switch/Switch.jsx';
 import {cx} from '../utils/cx.js';
-const RR_DEF = {
+
+const DEFAULT_LABELS = {
   paused: 'Paused',
   sendFlowers: 'Send flowers',
   reminderFor: 'Reminder for {name}',
@@ -34,8 +35,8 @@ export function ReminderRow({
   className = '',
   style
 }) {
-  const L = {...RR_DEF, ...labels};
-  const nm = s => s.replace('{name}', typeof name === 'string' ? name : '');
+  const text = {...DEFAULT_LABELS, ...labels};
+  const named = template => template.replace('{name}', typeof name === 'string' ? name : '');
   return (
     <div className={cx('ag-remwrap', className)} style={style}>
       <div className={cx('ag-rem', soon && on && 'ag-rem--soon')}>
@@ -49,7 +50,7 @@ export function ReminderRow({
             {on ? (
               when && <Badge tone={soon ? 'accent' : 'neutral'}>{when}</Badge>
             ) : (
-              <Badge tone="neutral">{L.paused}</Badge>
+              <Badge tone="neutral">{text.paused}</Badge>
             )}
           </div>
           <div className="ag-rem__meta">
@@ -72,17 +73,19 @@ export function ReminderRow({
         <div className="ag-rem__controls">
           {soon && on && (sendHref || sendOnClick) && (
             <Button size="sm" variant="secondary" href={sendHref} onClick={sendOnClick}>
-              {L.sendFlowers}
+              {text.sendFlowers}
             </Button>
           )}
           <Switch
             checked={on}
-            onChange={e => onToggle && onToggle(e.target.checked)}
-            aria-label={nm(L.reminderFor)}
+            onChange={event => onToggle && onToggle(event.target.checked)}
+            aria-label={named(text.reminderFor)}
           />
-          {onEdit && <IconButton icon="pencil" size="sm" label={nm(L.edit)} onClick={onEdit} />}
+          {onEdit && (
+            <IconButton icon="pencil" size="sm" label={named(text.edit)} onClick={onEdit} />
+          )}
           {onDelete && (
-            <IconButton icon="trash-2" size="sm" label={nm(L.delete)} onClick={onDelete} />
+            <IconButton icon="trash-2" size="sm" label={named(text.delete)} onClick={onDelete} />
           )}
         </div>
       </div>

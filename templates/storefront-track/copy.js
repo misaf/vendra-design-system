@@ -26,11 +26,25 @@ function vfCopy(S) {
       h: {
         received: ['Order', 'received.', 'We’ve got it. We’ll confirm your payment shortly.'],
         preparing: ['Being', 'arranged.', 'Your flowers are being hand-tied in the studio now.'],
-        onTheWay: ['On its', 'way.', 'The courier left the studio at 15:30. Delivery between 12:00 and 16:00.'],
+        onTheWay: [
+          'On its',
+          'way.',
+          'The courier left the studio at 15:30. Delivery between 12:00 and 16:00.'
+        ],
         delivered: ['Delivered,', 'with love.', 'Mina received the flowers at 15:52.'],
-        cancelled: ['Order', 'cancelled.', 'Your refund was sent to the card you paid from. It can take up to three working days.']
+        cancelled: [
+          'Order',
+          'cancelled.',
+          'Your refund was sent to the card you paid from. It can take up to three working days.'
+        ]
       },
-      rows: [['map-pin', 'Deliver to', 'Mina · 12 Golha St, Azimiyeh · Karaj central'], ['calendar', 'Delivery', 'Fri 9 Oct, 12:00–16:00'], ['user', 'Recipient', 'Mina · 0912 000 0000'], ['quote', 'Card message', '“Happy birthday, Shirin.”'], ['banknote', 'Payment', 'Card to card · •••• 5437']],
+      rows: [
+        ['map-pin', 'Deliver to', 'Mina · 12 Golha St, Azimiyeh · Karaj central'],
+        ['calendar', 'Delivery', 'Fri 9 Oct, 12:00–16:00'],
+        ['user', 'Recipient', 'Mina · 0912 000 0000'],
+        ['quote', 'Card message', '“Happy birthday, Shirin.”'],
+        ['banknote', 'Payment', 'Card to card · •••• 5437']
+      ],
       labels: {
         order: 'Order ',
         deliverTo: 'Deliver to',
@@ -51,14 +65,16 @@ function vfCopy(S) {
       lookup: {
         titleA: 'Track an',
         titleB: 'order.',
-        intro: 'Enter your order number and the mobile used for the order — yours or the recipient’s.',
+        intro:
+          'Enter your order number and the mobile used for the order — yours or the recipient’s.',
         id: 'Order number',
         idHint: 'From your confirmation text, e.g. VN-10522.',
         phone: 'Mobile number',
         submit: 'Find my order',
         idErr: 'Enter the order number.',
         phoneErr: 'Enter an 11-digit mobile number starting with 09.',
-        failed: 'We couldn’t find an order with that number and mobile. Check both, or ask us on WhatsApp.',
+        failed:
+          'We couldn’t find an order with that number and mobile. Check both, or ask us on WhatsApp.',
         another: 'Track another order'
       }
     },
@@ -86,11 +102,25 @@ function vfCopy(S) {
       h: {
         received: ['سفارش', 'ثبت شد.', 'سفارش شما رسید. به‌زودی پرداخت را تأیید می‌کنیم.'],
         preparing: ['در حال', 'چیدن.', 'گل‌های شما همین حالا در استودیو با دست بسته می‌شوند.'],
-        onTheWay: ['سفارش', 'در راه است.', 'پیک ساعت \u2068۱۵:۳۰\u2069 از استودیو راه افتاد. تحویل بین \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069.'],
+        onTheWay: [
+          'سفارش',
+          'در راه است.',
+          'پیک ساعت \u2068۱۵:۳۰\u2069 از استودیو راه افتاد. تحویل بین \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069.'
+        ],
         delivered: ['تحویل شد،', 'با عشق.', 'مینا گل‌ها را ساعت \u2068۱۵:۵۲\u2069 تحویل گرفت.'],
-        cancelled: ['سفارش', 'لغو شد.', 'مبلغ به کارتی که از آن پرداخت کردید برگشت داده شد. ممکن است تا سه روز کاری طول بکشد.']
+        cancelled: [
+          'سفارش',
+          'لغو شد.',
+          'مبلغ به کارتی که از آن پرداخت کردید برگشت داده شد. ممکن است تا سه روز کاری طول بکشد.'
+        ]
       },
-      rows: [['map-pin', 'تحویل به', 'مینا · عظیمیه، خیابان گل‌ها، پلاک ۱۲ · مرکز کرج'], ['calendar', 'زمان ارسال', 'جمعه ۱۷ مهر، \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069'], ['user', 'گیرنده', 'مینا · ۰۹۱۲ ۰۰۰ ۰۰۰۰'], ['quote', 'متن کارت', '«تولدت مبارک، شیرین.»'], ['banknote', 'پرداخت', 'کارت به کارت · •••• ۵۴۳۷']],
+      rows: [
+        ['map-pin', 'تحویل به', 'مینا · عظیمیه، خیابان گل‌ها، پلاک ۱۲ · مرکز کرج'],
+        ['calendar', 'زمان ارسال', 'جمعه ۱۷ مهر، \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069'],
+        ['user', 'گیرنده', 'مینا · ۰۹۱۲ ۰۰۰ ۰۰۰۰'],
+        ['quote', 'متن کارت', '«تولدت مبارک، شیرین.»'],
+        ['banknote', 'پرداخت', 'کارت به کارت · •••• ۵۴۳۷']
+      ],
       labels: {
         order: 'سفارش ',
         deliverTo: 'تحویل به',
@@ -118,7 +148,8 @@ function vfCopy(S) {
         submit: 'پیدا کردن سفارش',
         idErr: 'شماره سفارش را وارد کنید.',
         phoneErr: 'شماره موبایل ۱۱ رقمی با ۰۹ وارد کنید.',
-        failed: 'سفارشی با این شماره و موبایل پیدا نشد. هر دو را بررسی کنید یا در واتساپ از ما بپرسید.',
+        failed:
+          'سفارشی با این شماره و موبایل پیدا نشد. هر دو را بررسی کنید یا در واتساپ از ما بپرسید.',
         another: 'پیگیری سفارش دیگر'
       }
     }

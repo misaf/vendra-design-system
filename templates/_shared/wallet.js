@@ -25,7 +25,9 @@ function vfBalanceDiscountOn(balance) {
 
 // discountPercent of the products' price (after any promo code) when the balance earns it.
 function vfBalanceDiscount(balance, products) {
-  return vfBalanceDiscountOn(balance) ? Math.round(products * VF_STORE.wallet.discountPercent / 100) : 0;
+  return vfBalanceDiscountOn(balance)
+    ? Math.round((products * VF_STORE.wallet.discountPercent) / 100)
+    : 0;
 }
 
 // A top-up amount, typed with any digits and separators; '' when nothing is typed.
@@ -50,7 +52,12 @@ function vfWalletChange(phone, amount, entry) {
   const wallet = vfWalletOf(account);
   const balance = wallet.balance + amount;
   if (balance < 0) return null;
-  const record = {id: 'W' + Date.now().toString(36).toUpperCase(), amount, at: new Date().toISOString(), ...entry};
+  const record = {
+    id: 'W' + Date.now().toString(36).toUpperCase(),
+    amount,
+    at: new Date().toISOString(),
+    ...entry
+  };
   const next = {...account, wallet: {balance, history: [record, ...wallet.history]}};
   vfAccountSave(phone, next);
   return next;

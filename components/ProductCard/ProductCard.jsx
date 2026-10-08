@@ -2,6 +2,7 @@ import React from 'react';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+
 // The product name is the one interactive target: <a href> (or <button> without href) with a stretched ::after covering the card.
 export function ProductCard({
   name,
@@ -24,36 +25,42 @@ export function ProductCard({
   placeholder = 'Bouquet photo',
   favLabel = 'Save'
 }) {
-  const list = (images && images.length ? images : image ? [{src: image, srcSet}] : []).map(x =>
-    typeof x === 'string' ? {src: x} : x
+  const photos = (images && images.length ? images : image ? [{src: image, srcSet}] : []).map(
+    photo => (typeof photo === 'string' ? {src: photo} : photo)
   );
-  const [a, b] = list;
-  const pic = (x, cls) => (
+  // The second photo crossfades in on hover; it is decorative, so its alt is empty.
+  const [mainPhoto, hoverPhoto] = photos;
+  const renderPhoto = (photo, className) => (
     <img
-      className={cls}
-      src={x.src}
-      srcSet={x.srcSet}
-      sizes={x.srcSet ? sizes : undefined}
-      alt={cls ? '' : x.alt || name}
+      className={className}
+      src={photo.src}
+      srcSet={photo.srcSet}
+      sizes={photo.srcSet ? sizes : undefined}
+      alt={className ? '' : photo.alt || name}
       loading="lazy"
       decoding="async"
       style={
-        x.crop
-          ? {objectPosition: x.crop, transform: 'scale(1.6)', transformOrigin: x.crop}
+        photo.crop
+          ? {objectPosition: photo.crop, transform: 'scale(1.6)', transformOrigin: photo.crop}
           : undefined
       }
     />
   );
-  const aria =
+  const accessibleName =
     linkLabel ??
     (typeof name === 'string' && typeof price === 'string' ? name + ' — ' + price : undefined);
   const linked = !!(href || onClick);
   const title = href ? (
-    <a href={href} className="ag-product__link" aria-label={aria} onClick={onClick}>
+    <a href={href} className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
       {name}
     </a>
   ) : onClick ? (
-    <button type="button" className="ag-product__link" aria-label={aria} onClick={onClick}>
+    <button
+      type="button"
+      className="ag-product__link"
+      aria-label={accessibleName}
+      onClick={onClick}
+    >
       {name}
     </button>
   ) : (
@@ -68,8 +75,8 @@ export function ProductCard({
           tone === 'product' && 'ag-arch--product'
         )}
       >
-        {a ? pic(a) : <div className="ag-product__ph">{placeholder}</div>}
-        {b && pic(b, 'ag-product__alt')}
+        {mainPhoto ? renderPhoto(mainPhoto) : <div className="ag-product__ph">{placeholder}</div>}
+        {hoverPhoto && renderPhoto(hoverPhoto, 'ag-product__alt')}
         {badge && (
           <Badge tone={badgeTone} className="ag-product__badge">
             {badge}
@@ -83,8 +90,8 @@ export function ProductCard({
             size="sm"
             active={favorite}
             className="ag-product__fav"
-            onClick={e => {
-              e.stopPropagation();
+            onClick={event => {
+              event.stopPropagation();
               onFavorite();
             }}
           />

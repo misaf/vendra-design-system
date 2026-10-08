@@ -8,12 +8,12 @@ export function DetailList({ rows = [], className = "", style }) {
 	return /* @__PURE__ */ React.createElement("dl", {
 		className: cx("ag-dl", className),
 		style
-	}, rows.filter(Boolean).map((r, i) => /* @__PURE__ */ React.createElement("div", {
+	}, rows.filter(Boolean).map((row, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
-		className: cx("ag-dl__row", r.icon && "ag-dl__row--icon")
-	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-dl__label" }, r.icon && /* @__PURE__ */ React.createElement(Icon, {
-		name: r.icon,
+		className: cx("ag-dl__row", row.icon && "ag-dl__row--icon")
+	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-dl__label" }, row.icon && /* @__PURE__ */ React.createElement(Icon, {
+		name: row.icon,
 		size: 18,
 		className: "ag-dl__icon"
-	}), r.label), /* @__PURE__ */ React.createElement("dd", { className: "ag-dl__value" }, r.value))));
+	}), row.label), /* @__PURE__ */ React.createElement("dd", { className: "ag-dl__value" }, row.value))));
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
+
+// A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
 export function CategoryCard({
   label,
   count,

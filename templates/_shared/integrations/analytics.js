@@ -37,20 +37,25 @@
     try {
       localStorage.setItem(KEY, value);
     } catch (_) {}
-    if (typeof window.gtag === 'function') window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
+    if (typeof window.gtag === 'function')
+      window.gtag('consent', 'update', {analytics_storage: value === 'all' ? 'granted' : 'denied'});
   };
   const log = [];
   const ctx = () => ({
     language: document.documentElement?.lang || 'en',
     currency: VF_STORE.currency || 'IRT'
   });
-  const item = (p, qty = 1, unit) => p ? {
-    item_id: p.id,
-    item_name: p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
-    item_category: p.cat,
-    price: unit ?? p.price,
-    quantity: qty
-  } : null;
+  const item = (p, qty = 1, unit) =>
+    p
+      ? {
+          item_id: p.id,
+          item_name:
+            p.cat && VF_CATEGORY_ITEM.en[p.cat] ? VF_CATEGORY_ITEM.en[p.cat] + ' ' + p.id : p.id,
+          item_category: p.cat,
+          price: unit ?? p.price,
+          quantity: qty
+        }
+      : null;
   const event = (name, params = {}) => {
     if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
     const e = {
@@ -61,7 +66,8 @@
     log.push(e);
     if (log.length > 50) log.shift();
     if (consent() !== 'all') return;
-    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);else if (typeof window.gtag === 'function') window.gtag('event', name, params);
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(e);
+    else if (typeof window.gtag === 'function') window.gtag('event', name, params);
   };
   window.AG_TRACK = window.VF_TRACK = {
     event,

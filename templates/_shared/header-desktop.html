@@ -1,18 +1,18 @@
 <header class="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
 <div class="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
 <nav class="tw:flex tw:gap-1 tw:flex-wrap">
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.shop }}" on-click="{{ go.shop }}" current="{{ nav.shop }}" hint-size="64px,44px">{{ t.shop }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.weddings }}" on-click="{{ go.weddings }}" current="{{ nav.weddings }}" hint-size="90px,44px">{{ t.weddings }}</x-import>
+<x-import component-from-global-scope="VendraDesignSystem.NavLink" variant="header" href="{{ href.journal }}" on-click="{{ go.journal }}" current="{{ nav.journal }}" hint-size="70px,44px">{{ t.journal }}</x-import>
 </nav>
 <a href="{{ href.home }}" onClick="{{ go.home }}" class="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap">{{ t.brand }}</a>
 <div class="tw:flex tw:gap-1 tw:items-center">
-<div class="vf-shell-header-lang tw:me-2"><x-import component-from-global-scope="VendraDesignSystem_4ae5a2.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,38px"></x-import></div>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
+<div class="vf-shell-header-lang tw:me-2"><x-import component-from-global-scope="VendraDesignSystem.LanguageSwitch" value="{{ lang }}" on-change="{{ setLang }}" options="{{ langOpts }}" label="{{ t.langL }}" hint-size="96px,38px"></x-import></div>
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="search" label="{{ t.search }}" href="{{ href.search }}" on-click="{{ go.search }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="user" label="{{ t.account }}" href="{{ href.account }}" on-click="{{ go.account }}" hint-size="44px,44px">
 </x-import>
-<x-import component-from-global-scope="VendraDesignSystem_4ae5a2.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
+<x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="shopping-bag" label="{{ bagLabel }}" href="{{ href.bag }}" on-click="{{ go.bag }}" count="{{ bagCount }}" hint-size="44px,44px">
 </x-import>
 </div>
 </div>

@@ -1,6 +1,9 @@
 import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+
+// A section title with an optional italic `accent`, eyebrow and action, plus prev/next arrows
+// when `onPrev`/`onNext` are given (pair them with a Carousel's ref).
 export function SectionHeader({
   title,
   accent,
@@ -17,13 +20,13 @@ export function SectionHeader({
   className = '',
   style
 }) {
-  const H = ['h1', 'h2', 'h3'].includes(level) ? level : 'h2';
-  const arrows = onPrev || onNext;
+  const Heading = ['h1', 'h2', 'h3'].includes(level) ? level : 'h2';
+  const hasArrows = onPrev || onNext;
   return (
-    <div className={cx('ag-sechead', 'ag-sechead--' + H, className)} style={style}>
+    <div className={cx('ag-sechead', 'ag-sechead--' + Heading, className)} style={style}>
       <div className="ag-sechead__text">
         {eyebrow && <div className="ag-eyebrow ag-sechead__eyebrow">{eyebrow}</div>}
-        <H id={id} className="ag-sechead__title">
+        <Heading id={id} className="ag-sechead__title">
           {title}
           {accent && (
             <>
@@ -31,12 +34,12 @@ export function SectionHeader({
               <em>{accent}</em>
             </>
           )}
-        </H>
+        </Heading>
       </div>
-      {(action || arrows) && (
+      {(action || hasArrows) && (
         <div className="ag-sechead__actions">
           {action}
-          {arrows && (
+          {hasArrows && (
             <div className="ag-sechead__arrows">
               <IconButton
                 icon="chevron-left"

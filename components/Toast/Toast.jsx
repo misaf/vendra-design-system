@@ -1,6 +1,7 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {Button} from '../Button/Button.jsx';
+
 const ICONS = {
   success: 'circle-check',
   info: 'flower-2',

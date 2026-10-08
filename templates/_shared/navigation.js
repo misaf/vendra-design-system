@@ -27,18 +27,32 @@ function vfShell(props, page) {
     L = fa ? 'fa' : 'en',
     T = VF_SHELL[L];
   const mob = !!props.mobile || (st.vfMobile === undefined ? window.innerWidth < 768 : st.vfMobile);
-  const tab = page === 'home' ? 'home' : ['bag', 'checkout'].includes(page) ? 'bag' : ['shop', 'product', 'saved', 'search'].includes(page) ? 'shop' : '';
+  const tab =
+    page === 'home'
+      ? 'home'
+      : ['bag', 'checkout'].includes(page)
+        ? 'bag'
+        : ['shop', 'product', 'saved', 'search'].includes(page)
+          ? 'shop'
+          : '';
   const href = {},
     go = {};
   VF_ROUTES.forEach(r => {
-    href[r] = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + window.AG_SEO.hrefFor({
-      lang: L
-    }, r, VF_ROUTE_EXTRA[r]);
+    href[r] =
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      window.AG_SEO.hrefFor(
+        {
+          lang: L
+        },
+        r,
+        VF_ROUTE_EXTRA[r]
+      );
     go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
-  const close = () => self.setState({
-    vfMenu: false
-  });
+  const close = () =>
+    self.setState({
+      vfMenu: false
+    });
   const cur = {
     home: page === 'home',
     shop: ['shop', 'product'].includes(page),
@@ -50,32 +64,55 @@ function vfShell(props, page) {
     track: page === 'track',
     faq: page === 'faq'
   };
-  const menuItems = ['home', 'shop', 'weddings', 'journal', 'saved', 'contact', 'account', 'track', 'faq'].map(r => ({
+  const menuItems = [
+    'home',
+    'shop',
+    'weddings',
+    'journal',
+    'saved',
+    'contact',
+    'account',
+    'track',
+    'faq'
+  ].map(r => ({
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go ? vfLinkHandler(route => {
-      close();
-      props.go(route);
-    }) : undefined
+    go: props.go
+      ? vfLinkHandler(route => {
+          close();
+          props.go(route);
+        })
+      : undefined
   }));
   const policyLink = doc => ({
-    href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'policy', id: doc}),
+    href:
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      vfRouteParams({lang: L, view: 'policy', id: doc}),
     go: props.go ? vfLinkHandler(props.go) : undefined
   });
-  const policyDoc = page === 'policy' ? props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0] : '';
+  const policyDoc = page === 'policy' ? (props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0]) : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
-  const setLang = props.setLang || (lang => {
-    location.href = (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
-  });
+  const setLang =
+    props.setLang ||
+    (lang => {
+      location.href =
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
+    });
   // Focuses an element by id, waiting a few frames for one that this update is about to render.
-  const focus = (id, tries = 10) => setTimeout(() => {
-    const el = document.getElementById(id);
-    if (el) el.focus();
-    else if (tries > 1) focus(id, tries - 1);
-  }, tries === 10 ? 0 : 50);
+  const focus = (id, tries = 10) =>
+    setTimeout(
+      () => {
+        const el = document.getElementById(id);
+        if (el) el.focus();
+        else if (tries > 1) focus(id, tries - 1);
+      },
+      tries === 10 ? 0 : 50
+    );
   // Footer newsletter: the draft lives in page state; a finished sign-up is remembered on this device.
-  const N = T.newsletter, news = st.vfNews || {};
+  const N = T.newsletter,
+    news = st.vfNews || {};
   const signedUp = news.done || vfStored('vf-newsletter');
   const accountPhone = vfAccountPhone();
   const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
@@ -98,15 +135,20 @@ function vfShell(props, page) {
         return;
       }
       self.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.AG_API.newsletter(email, profile.name).then(() => {
-        try { localStorage.setItem('vf-newsletter', email); } catch (_) {}
-        window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
-        self.setState({vfNews: {done: email}});
-        focus('vf-news-done');
-      }, () => {
-        self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
-        focus('vf-news-email');
-      });
+      window.AG_API.newsletter(email, profile.name).then(
+        () => {
+          try {
+            localStorage.setItem('vf-newsletter', email);
+          } catch (_) {}
+          window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+          self.setState({vfNews: {done: email}});
+          focus('vf-news-done');
+        },
+        () => {
+          self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
+          focus('vf-news-email');
+        }
+      );
     }
   };
   // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
@@ -115,7 +157,8 @@ function vfShell(props, page) {
   try {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch (_) {}
-  const consentShown = !(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed || !!st.vfConsentOpen;
+  const consentShown =
+    (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
@@ -142,25 +185,69 @@ function vfShell(props, page) {
       focus('vf-consent');
     }
   };
-  const shopLink = cat => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang: L, view: 'shop', cat}), go: props.go ? vfLinkHandler(props.go) : undefined});
+  const shopLink = cat => ({
+    href:
+      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      vfRouteParams({lang: L, view: 'shop', cat}),
+    go: props.go ? vfLinkHandler(props.go) : undefined
+  });
   // Footer link columns, social links, contact lines and the bottom line.
   const F = T.footer;
-  const footerLink = (r, label) => ({label, href: href[r], go: go[r], current: cur[r] ? 'page' : undefined});
+  const footerLink = (r, label) => ({
+    label,
+    href: href[r],
+    go: go[r],
+    current: cur[r] ? 'page' : undefined
+  });
   const footer = {
     tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
     faqCurrent: cur.faq ? 'page' : undefined,
-    shop: [{...shopLink('all'), label: F.allFlowers}, ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({...shopLink(cat), label: VF_CATEGORY_COPY[L][cat]}))],
-    studio: [footerLink('weddings', T.weddings), footerLink('journal', T.journal), footerLink('contact', T.contact), footerLink('track', T.track), footerLink('account', T.account), footerLink('saved', T.saved)],
+    shop: [
+      {...shopLink('all'), label: F.allFlowers},
+      ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({
+        ...shopLink(cat),
+        label: VF_CATEGORY_COPY[L][cat]
+      }))
+    ],
+    studio: [
+      footerLink('weddings', T.weddings),
+      footerLink('journal', T.journal),
+      footerLink('contact', T.contact),
+      footerLink('track', T.track),
+      footerLink('account', T.account),
+      footerLink('saved', T.saved)
+    ],
     social: [
-      ...(VF_STORE.instagram ? [{icon: 'instagram', label: F.instagram + ' ' + VF_STORE.instagram.label, href: VF_STORE.instagram.url, target: '_blank'}] : []),
-      ...(VF_STORE.whatsapp ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}] : []),
+      ...(VF_STORE.instagram
+        ? [
+            {
+              icon: 'instagram',
+              label: F.instagram + ' ' + VF_STORE.instagram.label,
+              href: VF_STORE.instagram.url,
+              target: '_blank'
+            }
+          ]
+        : []),
+      ...(VF_STORE.whatsapp
+        ? [{icon: 'message-circle', label: T.wa, href: VF_STORE.whatsapp, target: '_blank'}]
+        : []),
       {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
     ],
     directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
     email: VF_STORE.email || '',
     emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
-    copyright: '© ' + (fa ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date()) : new Date().getFullYear()) + ' ' + T.brand + '. ' + F.rights,
-    credit: VF_STORE.credit ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url} : null
+    copyright:
+      '© ' +
+      (fa
+        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date())
+        : new Date().getFullYear()) +
+      ' ' +
+      T.brand +
+      '. ' +
+      F.rights,
+    credit: VF_STORE.credit
+      ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url}
+      : null
   };
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
@@ -168,9 +255,28 @@ function vfShell(props, page) {
     go,
     href,
     policyLink,
-    policyLinks: VF_POLICIES.map(doc => ({...policyLink(doc), label: T.policies[doc], current: doc === policyDoc ? 'page' : undefined})),
-    productLink: id => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'product',id:vfProductId(id)||id,cat:(vfFindProduct(id)||{}).cat}), go: props.go ? vfLinkHandler(props.go) : undefined}),
-    occasionLink: occasion => ({href: (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') + vfRouteParams({lang:L,view:'shop',cat:'all',occasion}), go: props.go ? vfLinkHandler(props.go) : undefined}),
+    policyLinks: VF_POLICIES.map(doc => ({
+      ...policyLink(doc),
+      label: T.policies[doc],
+      current: doc === policyDoc ? 'page' : undefined
+    })),
+    productLink: id => ({
+      href:
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({
+          lang: L,
+          view: 'product',
+          id: vfProductId(id) || id,
+          cat: (vfFindProduct(id) || {}).cat
+        }),
+      go: props.go ? vfLinkHandler(props.go) : undefined
+    }),
+    occasionLink: occasion => ({
+      href:
+        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion}),
+      go: props.go ? vfLinkHandler(props.go) : undefined
+    }),
     shopLink,
     lang: L,
     fa,
@@ -185,8 +291,12 @@ function vfShell(props, page) {
       weddings: cur.weddings,
       journal: cur.journal
     },
-    bagCount: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
-    bagLabel: !count ? T.bag : count === 1 ? T.bagOne : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
+    bagCount: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
+    bagLabel: !count
+      ? T.bag
+      : count === 1
+        ? T.bagOne
+        : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
       window.AG_NAV.focusHeading();
@@ -195,23 +305,35 @@ function vfShell(props, page) {
     announcement: vfAnnouncementText(L, st),
     closeAnnouncement: () => {
       // Keyed by the message, so a new announcement shows again.
-      try { sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en); } catch (_) {}
+      try {
+        sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en);
+      } catch (_) {}
       self.setState({vfAnnouncementClosed: true});
     },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
-    focusAfterRemoval: (selector, index) => setTimeout(()=>{
-      const targets=[...document.querySelectorAll('main '+selector)];
-      const target=/** @type {HTMLElement} */(targets[Math.min(index,targets.length-1)]||document.querySelector('main a[href]')||document.querySelector('main h1'));
-      if(target){if(!target.hasAttribute('tabindex')&&target.tagName==='H1')target.setAttribute('tabindex','-1');target.focus();}
-    },0),
+    focusAfterRemoval: (selector, index) =>
+      setTimeout(() => {
+        const targets = [...document.querySelectorAll('main ' + selector)];
+        const target = /** @type {HTMLElement} */ (
+          targets[Math.min(index, targets.length - 1)] ||
+            document.querySelector('main a[href]') ||
+            document.querySelector('main h1')
+        );
+        if (target) {
+          if (!target.hasAttribute('tabindex') && target.tagName === 'H1')
+            target.setAttribute('tabindex', '-1');
+          target.focus();
+        }
+      }, 0),
     focus,
     newsletter,
     footer,
     consent,
-    openMenu: () => self.setState({
-      vfMenu: true
-    }),
+    openMenu: () =>
+      self.setState({
+        vfMenu: true
+      }),
     closeMenu: close,
     menuItems,
     hasLang: true,
@@ -223,20 +345,28 @@ function vfShell(props, page) {
       lang: fa ? 'en' : 'fa',
       pick: () => setLang(fa ? 'en' : 'fa')
     },
-    langOpts: [{
-      id: 'en',
-      label: 'EN'
-    }, {
-      id: 'fa',
-      label: 'فا'
-    }],
+    langOpts: [
+      {
+        id: 'en',
+        label: 'EN'
+      },
+      {
+        id: 'fa',
+        label: 'فا'
+      }
+    ],
     waHref: VF_STORE.whatsapp,
     // A WhatsApp chat with the message already written; pages use it to quote product codes.
-    waWith: text => VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
-    phoneHref: 'tel:'+VF_STORE.phone,
+    waWith: text =>
+      VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
+    phoneHref: 'tel:' + VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,
-    payment: {...VF_STORE.payment,holder:VF_STORE.payment.holder[L],bank:VF_STORE.payment.bank[L]},
+    payment: {
+      ...VF_STORE.payment,
+      holder: VF_STORE.payment.holder[L],
+      bank: VF_STORE.payment.bank[L]
+    },
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {
@@ -248,36 +378,41 @@ function vfShell(props, page) {
         vfFavs: c.includes(id) ? c.filter(x => x !== id) : [...c, id]
       });
     },
-    tabs: [{
-      id: 'home',
-      icon: 'house',
-      label: T.home,
-      href: href.home,
-      onClick: go.home,
-      current: tab === 'home'
-    }, {
-      id: 'shop',
-      icon: 'layout-grid',
-      label: T.shop,
-      href: href.shop,
-      onClick: go.shop,
-      current: tab === 'shop'
-    }, {
-      id: 'wa',
-      icon: 'message-circle',
-      label: T.wa,
-      href: VF_STORE.whatsapp,
-      target: '_blank'
-    }, {
-      id: 'bag',
-      icon: 'shopping-bag',
-      label: T.bag,
-      href: href.bag,
-      onClick: go.bag,
-      count: count ? fa ? VF_FA_DIGITS(count) : count : undefined,
-      current: tab === 'bag'
-    }],
-    n: v => fa ? VF_FA_DIGITS(v) : String(v),
+    tabs: [
+      {
+        id: 'home',
+        icon: 'house',
+        label: T.home,
+        href: href.home,
+        onClick: go.home,
+        current: tab === 'home'
+      },
+      {
+        id: 'shop',
+        icon: 'layout-grid',
+        label: T.shop,
+        href: href.shop,
+        onClick: go.shop,
+        current: tab === 'shop'
+      },
+      {
+        id: 'wa',
+        icon: 'message-circle',
+        label: T.wa,
+        href: VF_STORE.whatsapp,
+        target: '_blank'
+      },
+      {
+        id: 'bag',
+        icon: 'shopping-bag',
+        label: T.bag,
+        href: href.bag,
+        onClick: go.bag,
+        count: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
+        current: tab === 'bag'
+      }
+    ],
+    n: v => (fa ? VF_FA_DIGITS(v) : String(v)),
     m: v => VF_MONEY(v, fa),
     t: T
   };

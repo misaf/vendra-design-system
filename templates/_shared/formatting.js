@@ -6,6 +6,8 @@ function vfLatin(value) {
     .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
     .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
 }
-const VF_MONEY = (n, fa) => window.AG_FORMAT.money(n, {
-  lang: fa ? 'fa' : 'en', currency: VF_STORE.currency
-});
+const VF_MONEY = (n, fa) =>
+  window.AG_FORMAT.money(n, {
+    lang: fa ? 'fa' : 'en',
+    currency: VF_STORE.currency
+  });

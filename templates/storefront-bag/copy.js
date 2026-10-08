@@ -22,7 +22,8 @@ function vfCopy(S) {
       recipient: 'Recipient',
       when: 'When',
       you: 'Your details',
-      youHint: 'We’ll text you order updates and a photo of the flowers before they leave the studio.',
+      youHint:
+        'We’ll text you order updates and a photo of the flowers before they leave the studio.',
       sender: 'Your name',
       senderPhone: 'Your mobile',
       zonePending: 'Place the pin to see the zone and delivery fee.',

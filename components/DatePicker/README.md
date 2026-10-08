@@ -1,6 +1,6 @@
 # DatePicker
 
-Jalali/Gregorian date picker: `<fieldset><legend>` with a pill calendar toggle, then year · month · day Selects. Needs the date helpers (`window.VendraDesignSystem_4ae5a2.dates`, bundled from `components/utils/dates.js`).
+Jalali/Gregorian date picker: `<fieldset><legend>` with a pill calendar toggle, then year · month · day Selects. Needs the date helpers (`window.VendraDesignSystem.dates`, bundled from `components/utils/dates.js`).
 
 ```jsx
 <DatePicker lang="fa" label="تاریخ مراسم" value={iso} onChange={setIso} minDate={DATES.iso(new Date())}/>

@@ -1,6 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
-const VF_CHIPS = [['under3', p => p.price < 3000000], ['same', p => p.same], ['roses', p => p.roses]];
+const VF_CHIPS = [
+  ['under3', p => p.price < 3000000],
+  ['same', p => p.same],
+  ['roses', p => p.roses]
+];
 class Component extends VFPage {
   state = {
     cat: 'all',
@@ -12,7 +16,7 @@ class Component extends VFPage {
     const fa = this.props.lang === 'fa';
     const L = fa ? 'fa' : 'en';
     const S = vfShell.call(this, this.props, 'shop');
-    const n = v => fa ? VF_FA_DIGITS(v) : String(v);
+    const n = v => (fa ? VF_FA_DIGITS(v) : String(v));
     const C = vfCopy(S);
     const route = vfPageRoute(this.props);
     const s = {
@@ -39,59 +43,95 @@ class Component extends VFPage {
         ...patch
       };
       // Filters refine this page, so they replace the history entry instead of adding one per tap.
-      if (this.props.go) this.props.go(next, true);else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
+      if (this.props.go) this.props.go(next, true);
+      else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
     };
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const price = [route.min || 0, route.max ?? priceMax],
       inStock = !!route.stock,
-      extra = p => p.price >= price[0] && p.price <= price[1] && (!inStock || p.inStock !== false) && (s.occasion === 'all' || p.occasions.includes(s.occasion)) && (!date || vfDeliverableOn(p, date));
+      extra = p =>
+        p.price >= price[0] &&
+        p.price <= price[1] &&
+        (!inStock || p.inStock !== false) &&
+        (s.occasion === 'all' || p.occasions.includes(s.occasion)) &&
+        (!date || vfDeliverableOn(p, date));
     const demo = route.demo;
     const inCat = p => s.cat === 'all' || p.cat === s.cat;
-    let list = VF_PRODUCTS.filter(inCat).filter(extra).filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
+    let list = VF_PRODUCTS.filter(inCat)
+      .filter(extra)
+      .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
     if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
-    const activeFilters = [...(s.occasion !== 'all' ? [{
-      label: VF_SHOP_OCCASION_COPY[L][s.occasion],
-      remove: () => change({
-        occasion: 'all'
-      })
-    }] : []), ...(price[0] > 0 || price[1] < priceMax ? [{
-      label: S.m(price[0]) + ' – ' + S.m(price[1]),
-      remove: () => change({
+    const activeFilters = [
+      ...(s.occasion !== 'all'
+        ? [
+            {
+              label: VF_SHOP_OCCASION_COPY[L][s.occasion],
+              remove: () =>
+                change({
+                  occasion: 'all'
+                })
+            }
+          ]
+        : []),
+      ...(price[0] > 0 || price[1] < priceMax
+        ? [
+            {
+              label: S.m(price[0]) + ' – ' + S.m(price[1]),
+              remove: () =>
+                change({
+                  min: 0,
+                  max: priceMax
+                })
+            }
+          ]
+        : []),
+      ...(date
+        ? [
+            {
+              label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
+              remove: () =>
+                change({
+                  date: ''
+                })
+            }
+          ]
+        : []),
+      ...(inStock
+        ? [
+            {
+              label: C.migration.stock,
+              remove: () =>
+                change({
+                  stock: false
+                })
+            }
+          ]
+        : [])
+    ];
+    const clear = () =>
+      change({
+        filters: [],
+        cat: 'all',
+        sort: 'featured',
         min: 0,
-        max: priceMax
-      })
-    }] : []), ...(date ? [{
-      label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
-      remove: () => change({
+        max: priceMax,
+        stock: false,
+        occasion: 'all',
         date: ''
-      })
-    }] : []), ...(inStock ? [{
-      label: C.migration.stock,
-      remove: () => change({
-        stock: false
-      })
-    }] : [])];
-    const clear = () => change({
-      filters: [],
-      cat: 'all',
-      sort: 'featured',
-      min: 0,
-      max: priceMax,
-      stock: false,
-      occasion: 'all',
-      date: ''
-    });
+      });
     return {
       ...S,
       migration: C.migration,
       filterOpen: !!this.state.filterOpen,
-      openFilters: () => this.setState({
-        filterOpen: true
-      }),
-      closeFilters: () => this.setState({
-        filterOpen: false
-      }),
+      openFilters: () =>
+        this.setState({
+          filterOpen: true
+        }),
+      closeFilters: () =>
+        this.setState({
+          filterOpen: false
+        }),
       activeFilters,
       // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
       hasActive: activeFilters.length > 0,
@@ -107,7 +147,9 @@ class Component extends VFPage {
         // (the filters dialog keeps focus while it is open).
         if (!this.state.filterOpen) S.focus('vf-shop-count');
       },
-      filtersLabel: activeFilters.length ? C.migration.filters + ' (' + n(activeFilters.length) + ')' : C.migration.filters,
+      filtersLabel: activeFilters.length
+        ? C.migration.filters + ' (' + n(activeFilters.length) + ')'
+        : C.migration.filters,
       price,
       priceMax,
       priceLabels: {
@@ -115,39 +157,48 @@ class Component extends VFPage {
         max: C.migration.price + ' — ' + (S.fa ? 'حداکثر' : 'maximum')
       },
       formatPrice: S.m,
-      setPrice: ([min, max]) => change({
-        min,
-        max
-      }),
+      setPrice: ([min, max]) =>
+        change({
+          min,
+          max
+        }),
       occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
         label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
         on: s.occasion === id,
-        pick: () => change({
-          occasion: id
-        })
+        pick: () =>
+          change({
+            occasion: id
+          })
       })),
       date,
-      dateOptions: [{
-        value: '',
-        label: C.anyDay
-      }, ...days.map(d => ({
-        value: d.iso,
-        label: dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
-        disabled: d.soldOut || d.pastCutoff
-      }))],
-      setDate: e => change({
-        date: e.target.value
-      }),
+      dateOptions: [
+        {
+          value: '',
+          label: C.anyDay
+        },
+        ...days.map(d => ({
+          value: d.iso,
+          label:
+            dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
+          disabled: d.soldOut || d.pastCutoff
+        }))
+      ],
+      setDate: e =>
+        change({
+          date: e.target.value
+        }),
       showResults: C.showResults.replace('{count}', C.designCount(list.length)),
       inStock,
-      setStock: e => change({
-        stock: e.target.checked
-      }),
+      setStock: e =>
+        change({
+          stock: e.target.checked
+        }),
       loading: demo === 'loading',
       failed: demo === 'error',
-      retry: () => change({
-        demo: undefined
-      }),
+      retry: () =>
+        change({
+          demo: undefined
+        }),
       frame: this.props.frame ?? 'soft',
       t: {
         ...S.t,
@@ -160,9 +211,10 @@ class Component extends VFPage {
           count: n(VF_PRODUCTS.filter(p => (id === 'all' || p.cat === id) && extra(p)).length),
           on,
           off: !on,
-          pick: () => change({
-            cat: id
-          })
+          pick: () =>
+            change({
+              cat: id
+            })
         };
       }),
       chips: VF_CHIPS.map(([id]) => {
@@ -170,15 +222,17 @@ class Component extends VFPage {
         return {
           label: C.chipLabels[id],
           on,
-          toggle: () => change({
-            filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
-          })
+          toggle: () =>
+            change({
+              filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
+            })
         };
       }),
       sort: s.sort,
-      setSort: e => change({
-        sort: e.target.value
-      }),
+      setSort: e =>
+        change({
+          sort: e.target.value
+        }),
       sortOptions: C.sortOptions,
       countLabel: C.designCount(list.length),
       hasItems: !demo && list.length > 0,

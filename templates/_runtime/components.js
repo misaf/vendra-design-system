@@ -1,6 +1,6 @@
 // GENERATED from components/**/*.{js,jsx} by npm --prefix templates run build. Edit the sources, not this file.
 (() => {
-const __ds_ns = (window.VendraDesignSystem_4ae5a2 = window.VendraDesignSystem_4ae5a2 || {});
+const __ds_ns = (window.VendraDesignSystem = window.VendraDesignSystem || {});
 const __ds_scope = {};
 __ds_ns.__errors = __ds_ns.__errors || [];
 
@@ -119,9 +119,19 @@ const ICON_SVGS = {
 Object.assign(__ds_scope, { ICON_SVGS });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Icon/icon-svgs.js", error: String((e && e.message) || e) }); }
 
+// components/utils/cx.js
+try { (() => {
+// Joins class names, skipping empty values: cx('ag-btn', primary && 'ag-btn--primary', className).
+function cx(...names) {
+	return names.filter(Boolean).join(" ");
+}
+Object.assign(__ds_scope, { cx });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/utils/cx.js", error: String((e && e.message) || e) }); }
+
 // components/Icon/Icon.jsx
 try { (() => {
 const { ICON_SVGS } = __ds_scope;
+const { cx } = __ds_scope;
 // Icons come only from the bundled Lucide set (icon-svgs.js) — no network. Unknown names render empty and warn once.
 const DIRECTIONAL = [
 	"arrow-right",
@@ -133,29 +143,32 @@ const DIRECTIONAL = [
 	"undo-2",
 	"redo-2"
 ];
-const cache = {};
-const src = (name) => {
-	if (name in cache) return cache[name];
+// name → CSS mask url (or null), built once per icon.
+const maskCache = {};
+const maskUrl = (name) => {
+	if (name in maskCache) return maskCache[name];
 	const svg = ICON_SVGS[name];
 	if (!svg) console.warn("Icon: \"" + name + "\" is not in icon-svgs.js — add its SVG from lucide.dev");
-	return cache[name] = svg ? "url(\"data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, "%27") + "\")" : null;
+	return maskCache[name] = svg ? "url(\"data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, "%27") + "\")" : null;
 };
+// A Lucide icon drawn with a CSS mask, so it takes `color` (currentColor by default). Decorative
+// unless `label` is set; arrows and chevrons mirror in RTL unless `flipRtl={false}`.
 function Icon({ name, size = 20, color = "currentColor", label, flipRtl, className = "", style, ...rest }) {
-	const url = src(name);
+	const mask = maskUrl(name);
 	const flip = flipRtl ?? DIRECTIONAL.includes(name);
 	return /* @__PURE__ */ React.createElement("span", {
 		role: label ? "img" : undefined,
 		"aria-label": label,
 		"aria-hidden": label ? undefined : true,
-		className: (flip ? "ag-flip-rtl " : "") + className,
+		className: cx(flip && "ag-flip-rtl", className),
 		style: {
 			display: "inline-block",
 			flex: "none",
 			width: size,
 			height: size,
-			background: url ? color : "transparent",
-			WebkitMask: url ? url + " center/contain no-repeat" : undefined,
-			mask: url ? url + " center/contain no-repeat" : undefined,
+			background: mask ? color : "transparent",
+			WebkitMask: mask ? mask + " center/contain no-repeat" : undefined,
+			mask: mask ? mask + " center/contain no-repeat" : undefined,
 			...style
 		},
 		...rest
@@ -164,54 +177,48 @@ function Icon({ name, size = 20, color = "currentColor", label, flipRtl, classNa
 Object.assign(__ds_scope, { Icon });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Icon/Icon.jsx", error: String((e && e.message) || e) }); }
 
-// components/utils/cx.js
-try { (() => {
-// Joins class names, skipping empty values: cx('ag-btn', primary && 'ag-btn--primary', className).
-function cx(...names) {
-	return names.filter(Boolean).join(" ");
-}
-Object.assign(__ds_scope, { cx });
-})(); } catch (e) { __ds_ns.__errors.push({ path: "components/utils/cx.js", error: String((e && e.message) || e) }); }
-
 // components/Accordion/Accordion.jsx
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+const toList = (value) => value == null ? [] : Array.isArray(value) ? value : [value];
+// Disclosure panels under real headings. Controlled with `openId` (one id or a list),
+// uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
 function Accordion({ items = [], openId, defaultOpenId, onToggle, allowMultiple, headingLevel = 3, className = "" }) {
-	const uid = React.useId();
-	const arr = (v) => v == null ? [] : Array.isArray(v) ? v : [v];
-	const [inner, setInner] = React.useState(arr(defaultOpenId));
-	const open = openId !== undefined ? arr(openId) : inner;
+	const baseId = React.useId();
+	const [uncontrolledOpen, setUncontrolledOpen] = React.useState(toList(defaultOpenId));
+	const openIds = openId !== undefined ? toList(openId) : uncontrolledOpen;
 	const toggle = (id) => {
-		const was = open.includes(id);
-		const next = was ? open.filter((x) => x !== id) : allowMultiple ? [...open, id] : [id];
-		if (openId === undefined) setInner(next);
-		onToggle && onToggle(id, !was, next);
+		const wasOpen = openIds.includes(id);
+		const next = wasOpen ? openIds.filter((other) => other !== id) : allowMultiple ? [...openIds, id] : [id];
+		if (openId === undefined) setUncontrolledOpen(next);
+		onToggle && onToggle(id, !wasOpen, next);
 	};
-	const H = "h" + headingLevel;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-acc", className) }, items.map((it) => {
-		const o = open.includes(it.id);
-		const b = uid + "b" + it.id, p = uid + "p" + it.id;
+	const Heading = "h" + headingLevel;
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-acc", className) }, items.map((item) => {
+		const isOpen = openIds.includes(item.id);
+		const buttonId = baseId + "b" + item.id;
+		const panelId = baseId + "p" + item.id;
 		return /* @__PURE__ */ React.createElement("div", {
-			key: it.id,
-			className: cx("ag-acc__item", o && "ag-acc__item--open")
-		}, /* @__PURE__ */ React.createElement(H, { className: "ag-acc__h" }, /* @__PURE__ */ React.createElement("button", {
+			key: item.id,
+			className: cx("ag-acc__item", isOpen && "ag-acc__item--open")
+		}, /* @__PURE__ */ React.createElement(Heading, { className: "ag-acc__h" }, /* @__PURE__ */ React.createElement("button", {
 			type: "button",
-			id: b,
+			id: buttonId,
 			className: "ag-acc__btn",
-			"aria-expanded": o,
-			"aria-controls": p,
-			onClick: () => toggle(it.id)
-		}, /* @__PURE__ */ React.createElement("span", null, it.title), /* @__PURE__ */ React.createElement(Icon, {
+			"aria-expanded": isOpen,
+			"aria-controls": panelId,
+			onClick: () => toggle(item.id)
+		}, /* @__PURE__ */ React.createElement("span", null, item.title), /* @__PURE__ */ React.createElement(Icon, {
 			name: "chevron-down",
 			size: 18,
 			className: "ag-acc__chev"
 		}))), /* @__PURE__ */ React.createElement("div", {
-			id: p,
+			id: panelId,
 			role: "region",
-			"aria-labelledby": b,
+			"aria-labelledby": buttonId,
 			className: "ag-acc__panel"
-		}, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__clip" }, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__content" }, it.content))));
+		}, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__clip" }, /* @__PURE__ */ React.createElement("div", { className: "ag-acc__content" }, item.content))));
 	}));
 }
 Object.assign(__ds_scope, { Accordion });
@@ -220,6 +227,7 @@ Object.assign(__ds_scope, { Accordion });
 // components/Badge/Badge.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// A short status label. Tones are shared with Alert and Toast; uppercase in English, never in Persian.
 function Badge({ tone = "neutral", className = "", children, ...rest }) {
 	return /* @__PURE__ */ React.createElement("span", {
 		className: cx("ag-badge", "ag-badge--" + tone, className),
@@ -233,13 +241,15 @@ Object.assign(__ds_scope, { Badge });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// An icon-only button, or link with `href`. `label` is its accessible name and tooltip; `active`
+// sets aria-pressed and `count` shows a badge.
 function IconButton({ icon, label, variant = "ghost", size = "md", active, count, className = "", type = "button", href, target, rel, ...rest }) {
-	const is = size === "sm" ? 16 : size === "lg" ? 22 : 20;
-	const cls = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, active && "ag-iconbtn--active", className);
+	const iconSize = size === "sm" ? 16 : size === "lg" ? 22 : 20;
+	const classes = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, active && "ag-iconbtn--active", className);
 	// count may be a pre-localized string (Persian digits), so test for a value rather than count>0.
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Icon, {
+	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Icon, {
 		name: icon,
-		size: is
+		size: iconSize
 	}), count ? /* @__PURE__ */ React.createElement("span", { className: "ag-iconbtn__count" }, count) : null);
 	if (href) return /* @__PURE__ */ React.createElement("a", {
 		href,
@@ -247,17 +257,17 @@ function IconButton({ icon, label, variant = "ghost", size = "md", active, count
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		"aria-label": label,
 		title: label,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 	return /* @__PURE__ */ React.createElement("button", {
 		type,
 		"aria-label": label,
 		title: label,
 		"aria-pressed": active,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 }
 Object.assign(__ds_scope, { IconButton });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/IconButton/IconButton.jsx", error: String((e && e.message) || e) }); }
@@ -270,21 +280,21 @@ const { cx } = __ds_scope;
 // loading: spinner replaces iconStart, label stays (width doesn't jump), button is disabled + aria-busy; loadingLabel is announced to screen readers.
 function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, ...rest }) {
 	if (loading) disabled = true;
-	const is = size === "sm" ? 16 : size === "lg" ? 20 : 18;
-	const cls = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
+	const iconSize = size === "sm" ? 16 : size === "lg" ? 20 : 18;
+	const classes = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
+	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
 		className: "ag-spin",
 		style: {
-			width: is,
-			height: is
+			width: iconSize,
+			height: iconSize
 		},
 		"aria-hidden": "true"
 	}) : iconStart && /* @__PURE__ */ React.createElement(Icon, {
 		name: iconStart,
-		size: is
+		size: iconSize
 	}), children, !loading && iconEnd && /* @__PURE__ */ React.createElement(Icon, {
 		name: iconEnd,
-		size: is
+		size: iconSize
 	}), loading && loadingLabel && /* @__PURE__ */ React.createElement("span", {
 		className: "ag-sr-only",
 		role: "status"
@@ -294,16 +304,16 @@ function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, c
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		"aria-disabled": disabled || undefined,
-		className: cls + (disabled ? " ag-btn--disabled" : ""),
+		className: classes + (disabled ? " ag-btn--disabled" : ""),
 		...rest
-	}, inner);
+	}, content);
 	return /* @__PURE__ */ React.createElement("button", {
 		type,
 		disabled,
 		"aria-busy": loading || undefined,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 }
 Object.assign(__ds_scope, { Button });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Button/Button.jsx", error: String((e && e.message) || e) }); }
@@ -314,7 +324,7 @@ const { Badge } = __ds_scope;
 const { IconButton } = __ds_scope;
 const { Button } = __ds_scope;
 const { cx } = __ds_scope;
-const AC_DEF = {
+const DEFAULT_LABELS = {
 	edit: "Edit {name}",
 	delete: "Delete {name}",
 	default: "Default",
@@ -322,23 +332,23 @@ const AC_DEF = {
 };
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
 function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, onDelete, onMakeDefault, labels, className = "", style }) {
-	const L = {
-		...AC_DEF,
+	const text = {
+		...DEFAULT_LABELS,
 		...labels
 	};
-	const nm = (s) => s.replace("{name}", label || "");
+	const named = (template) => template.replace("{name}", label || "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-card", "ag-addr", className),
 		style
-	}, /* @__PURE__ */ React.createElement("div", { className: "ag-addr__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-addr__label" }, label), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__tools" }, isDefault && /* @__PURE__ */ React.createElement(Badge, { tone: "accent" }, L.default), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
+	}, /* @__PURE__ */ React.createElement("div", { className: "ag-addr__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-addr__label" }, label), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__tools" }, isDefault && /* @__PURE__ */ React.createElement(Badge, { tone: "accent" }, text.default), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "pencil",
 		size: "sm",
-		label: nm(L.edit),
+		label: named(text.edit),
 		onClick: onEdit
 	}), onDelete && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "trash-2",
 		size: "sm",
-		label: nm(L.delete),
+		label: named(text.delete),
 		onClick: onDelete
 	}))), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__line" }, line), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__meta" }, [
 		recipient,
@@ -347,12 +357,12 @@ function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, o
 			dir: "ltr"
 		}, phone),
 		zone
-	].filter(Boolean).map((x, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, i > 0 && /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, " · "), x))), !isDefault && onMakeDefault && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(Button, {
+	].filter(Boolean).map((part, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, i > 0 && /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, " · "), part))), !isDefault && onMakeDefault && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(Button, {
 		variant: "ghost",
 		size: "sm",
 		onClick: onMakeDefault,
 		className: "ag-addr__default"
-	}, L.makeDefault)));
+	}, text.makeDefault)));
 }
 Object.assign(__ds_scope, { AddressCard });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/AddressCard/AddressCard.jsx", error: String((e && e.message) || e) }); }
@@ -368,15 +378,16 @@ const ALERT_ICONS = {
 	danger: "circle-alert",
 	success: "circle-check"
 };
+// An inline message. danger and warning interrupt screen readers (role="alert"); the others are
+// announced politely (role="status"). `icon={false}` hides the icon.
 function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel = "Dismiss", className = "", style }) {
-	const t = tone;
-	const role = t === "danger" || t === "warning" ? "alert" : "status";
+	const role = tone === "danger" || tone === "warning" ? "alert" : "status";
 	return /* @__PURE__ */ React.createElement("div", {
 		role,
-		className: cx("ag-alert", "ag-alert--" + t, className),
+		className: cx("ag-alert", "ag-alert--" + tone, className),
 		style
 	}, icon !== false && /* @__PURE__ */ React.createElement(Icon, {
-		name: icon || ALERT_ICONS[t] || ALERT_ICONS.neutral,
+		name: icon || ALERT_ICONS[tone] || ALERT_ICONS.neutral,
 		size: 20,
 		className: "ag-alert__icon"
 	}), /* @__PURE__ */ React.createElement("div", { className: "ag-alert__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-alert__msg" }, title && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__title" }, title), children && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__text" }, children)), action && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__action" }, action)), onClose && /* @__PURE__ */ React.createElement(IconButton, {
@@ -393,6 +404,7 @@ Object.assign(__ds_scope, { Alert });
 try { (() => {
 const { IconButton } = __ds_scope;
 const { cx } = __ds_scope;
+// A dismissible strip above the header (role="region", named by `label`) for store-wide news.
 function AnnouncementBar({ children, onClose, closeLabel = "Dismiss", label, className = "" }) {
 	return /* @__PURE__ */ React.createElement("div", {
 		role: "region",
@@ -417,15 +429,17 @@ const ARCH_RATIOS = {
 	"4/3": "4 / 3",
 	"1/1": "1 / 1"
 };
+// The brand's image window: an arch (or circle, soft or square) on --radius-arch, with a
+// striped placeholder until `src` is set. `ratio="fill"` stretches to the parent's height.
 function ArchFrame({ src, srcSet, sizes, alt = "", ratio = "4/5", shape = "arch", placeholder = true, placeholderLabel, ring, minHeight, tone = "petal", size, zoomOnHover, objectPosition, children, className = "", style, ...rest }) {
 	const fill = ratio === "fill" && shape !== "circle";
-	const ar = shape === "circle" ? "1 / 1" : fill ? undefined : ARCH_RATIOS[ratio] || ratio.replace("/", " / ");
+	const aspectRatio = shape === "circle" ? "1 / 1" : fill ? undefined : ARCH_RATIOS[ratio] || ratio.replace("/", " / ");
 	const thumb = size === "thumb";
-	const cls = cx("ag-arch", "ag-arch--" + shape, ring && "ag-arch--ring", fill && "ag-arch--fill", tone === "product" && "ag-arch--product", thumb && "ag-arch--thumb", zoomOnHover && "ag-arch--zoom", className);
+	const classes = cx("ag-arch", "ag-arch--" + shape, ring && "ag-arch--ring", fill && "ag-arch--fill", tone === "product" && "ag-arch--product", thumb && "ag-arch--thumb", zoomOnHover && "ag-arch--zoom", className);
 	return /* @__PURE__ */ React.createElement("div", {
-		className: cls,
+		className: classes,
 		style: {
-			aspectRatio: ar,
+			aspectRatio,
 			minHeight: fill ? minHeight : undefined,
 			...style
 		},
@@ -451,23 +465,25 @@ Object.assign(__ds_scope, { ArchFrame });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
+// the text; the title is the only link (or a button without `href`).
 function BlogCard({ image, srcSet, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "" }) {
-	const H = "h" + headingLevel;
-	const L = href ? "a" : "button";
+	const Heading = "h" + headingLevel;
+	const Link = href ? "a" : "button";
 	const wide = layout === "wide";
-	const sz = sizes || (wide ? "(max-width: 767px) 100vw, 55vw" : "(max-width: 767px) 100vw, 400px");
+	const imageSizes = sizes || (wide ? "(max-width: 767px) 100vw, 55vw" : "(max-width: 767px) 100vw, 400px");
 	return /* @__PURE__ */ React.createElement("article", { className: cx("ag-blog", wide && "ag-blog--wide", className) }, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-blog__media", "ag-product__media--" + frame),
 		style: aspect ? { aspectRatio: aspect } : undefined
 	}, image ? /* @__PURE__ */ React.createElement("img", {
 		src: image,
 		srcSet,
-		sizes: srcSet ? sz : undefined,
+		sizes: srcSet ? imageSizes : undefined,
 		alt: "",
 		loading: priority ? undefined : "lazy",
 		fetchpriority: priority ? "high" : undefined,
 		decoding: "async"
-	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-blog__body" }, date && /* @__PURE__ */ React.createElement("span", { className: "ag-eyebrow ag-blog__date" }, date), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-blog__meta" }, meta), /* @__PURE__ */ React.createElement(H, { className: "ag-blog__title" }, /* @__PURE__ */ React.createElement(L, {
+	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-blog__body" }, date && /* @__PURE__ */ React.createElement("span", { className: "ag-eyebrow ag-blog__date" }, date), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-blog__meta" }, meta), /* @__PURE__ */ React.createElement(Heading, { className: "ag-blog__title" }, /* @__PURE__ */ React.createElement(Link, {
 		href,
 		type: href ? undefined : "button",
 		className: "ag-blog__link",
@@ -487,30 +503,32 @@ Object.assign(__ds_scope, { BlogCard });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// The phone tab bar. Items with `href` are links (aria-current="page" when current); the rest
+// are buttons. `count` shows a badge on the icon.
 function BottomTabBar({ items = [], label, className = "" }) {
 	return /* @__PURE__ */ React.createElement("nav", {
 		"aria-label": label,
 		className: cx("ag-tabbar", className)
-	}, /* @__PURE__ */ React.createElement("ul", { className: "ag-tabbar__list" }, items.map((it) => {
-		const cls = cx("ag-tabbar__item", it.current && "ag-tabbar__item--current");
-		const cur = it.current ? "page" : undefined;
-		const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__icon" }, /* @__PURE__ */ React.createElement(Icon, {
-			name: it.icon,
+	}, /* @__PURE__ */ React.createElement("ul", { className: "ag-tabbar__list" }, items.map((item) => {
+		const classes = cx("ag-tabbar__item", item.current && "ag-tabbar__item--current");
+		const current = item.current ? "page" : undefined;
+		const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__icon" }, /* @__PURE__ */ React.createElement(Icon, {
+			name: item.icon,
 			size: 22
-		}), it.count ? /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__count" }, it.count) : null), /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__label" }, it.label));
-		return /* @__PURE__ */ React.createElement("li", { key: it.id }, it.href ? /* @__PURE__ */ React.createElement("a", {
-			href: it.href,
-			target: it.target,
-			rel: it.rel ?? (it.target === "_blank" ? "noopener noreferrer" : undefined),
-			className: cls,
-			"aria-current": cur,
-			onClick: it.onClick
-		}, inner) : /* @__PURE__ */ React.createElement("button", {
+		}), item.count ? /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__count" }, item.count) : null), /* @__PURE__ */ React.createElement("span", { className: "ag-tabbar__label" }, item.label));
+		return /* @__PURE__ */ React.createElement("li", { key: item.id }, item.href ? /* @__PURE__ */ React.createElement("a", {
+			href: item.href,
+			target: item.target,
+			rel: item.rel ?? (item.target === "_blank" ? "noopener noreferrer" : undefined),
+			className: classes,
+			"aria-current": current,
+			onClick: item.onClick
+		}, content) : /* @__PURE__ */ React.createElement("button", {
 			type: "button",
-			className: cls,
-			"aria-current": cur,
-			onClick: it.onClick
-		}, inner));
+			className: classes,
+			"aria-current": current,
+			onClick: item.onClick
+		}, content));
 	})));
 }
 Object.assign(__ds_scope, { BottomTabBar });
@@ -519,6 +537,7 @@ Object.assign(__ds_scope, { BottomTabBar });
 // components/Card/Card.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// A plain surface: default (white with a hairline), `sunken` or `raised`. `padding` takes px (number) or any CSS length.
 function Card({ variant = "default", padding = 24, className = "", style, children, ...rest }) {
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-card", variant !== "default" && "ag-card--" + variant, className),
@@ -538,110 +557,119 @@ const { IconButton } = __ds_scope;
 const { cx } = __ds_scope;
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
-	const out = [];
-	const walk = (nodes, prefix) => {
-		React.Children.toArray(nodes).forEach((c) => {
-			if (React.isValidElement(c) && (c.type === React.Fragment || c.props && c.props["data-snap-group"] != null)) {
-				walk(c.props.children, prefix + String(c.key) + "/");
-			} else out.push({
-				node: c,
-				key: prefix + (React.isValidElement(c) && c.key != null ? c.key : out.length)
-			});
+	const slots = [];
+	const walk = (nodes, keyPrefix) => {
+		React.Children.toArray(nodes).forEach((child) => {
+			const isGroup = React.isValidElement(child) && (child.type === React.Fragment || child.props && child.props["data-snap-group"] != null);
+			if (isGroup) {
+				walk(child.props.children, keyPrefix + String(child.key) + "/");
+			} else {
+				const ownKey = React.isValidElement(child) && child.key != null ? child.key : slots.length;
+				slots.push({
+					node: child,
+					key: keyPrefix + ownKey
+				});
+			}
 		});
 	};
 	walk(children, "");
-	return out;
+	return slots;
 }
+// A horizontal scroll-snap row. Pass children, or `items` + `renderItem`. With `arrows` it shows
+// its own prev/next buttons; otherwise drive it through `ref` (scrollPrev / scrollNext) and
+// `onScrollStateChange`, e.g. from SectionHeader.
 const Carousel = React.forwardRef(function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel = "Previous", nextLabel = "Next", onScrollStateChange, bleed = true, className = "", style }, ref) {
-	const el = React.useRef(null);
-	const [st, setSt] = React.useState({
+	const trackRef = React.useRef(null);
+	const [scrollState, setScrollState] = React.useState({
 		canPrev: false,
 		canNext: false
 	});
-	const last = React.useRef(null);
-	const cb = React.useRef(onScrollStateChange);
-	cb.current = onScrollStateChange;
+	const lastState = React.useRef(null);
+	const onChangeRef = React.useRef(onScrollStateChange);
+	onChangeRef.current = onScrollStateChange;
 	const measure = React.useCallback(() => {
-		const t = el.current;
-		if (!t) return;
-		const max = t.scrollWidth - t.clientWidth;
-		const pos = Math.abs(t.scrollLeft);
-		const n = {
-			canPrev: pos > 1,
-			canNext: pos < max - 1
+		const track = trackRef.current;
+		if (!track) return;
+		const maxScroll = track.scrollWidth - track.clientWidth;
+		const position = Math.abs(track.scrollLeft);
+		const next = {
+			canPrev: position > 1,
+			canNext: position < maxScroll - 1
 		};
-		const o = last.current;
-		if (o && o.canPrev === n.canPrev && o.canNext === n.canNext) return;
-		last.current = n;
-		setSt(n);
-		cb.current && cb.current(n);
+		const previous = lastState.current;
+		if (previous && previous.canPrev === next.canPrev && previous.canNext === next.canNext) return;
+		lastState.current = next;
+		setScrollState(next);
+		onChangeRef.current && onChangeRef.current(next);
 	}, []);
-	const by = React.useCallback((d) => {
-		const t = el.current;
-		if (!t) return;
-		const rtl = getComputedStyle(t).direction === "rtl";
-		const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-		t.scrollBy({
-			left: d * (rtl ? -1 : 1) * t.clientWidth * .85,
-			behavior: reduce ? "auto" : "smooth"
+	// Scrolls most of a view back (-1) or forward (1), in reading direction.
+	const scrollPage = React.useCallback((direction) => {
+		const track = trackRef.current;
+		if (!track) return;
+		const rtl = getComputedStyle(track).direction === "rtl";
+		const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+		track.scrollBy({
+			left: direction * (rtl ? -1 : 1) * track.clientWidth * .85,
+			behavior: reduceMotion ? "auto" : "smooth"
 		});
 	}, []);
 	React.useImperativeHandle(ref, () => ({
-		scrollPrev: () => by(-1),
-		scrollNext: () => by(1),
+		scrollPrev: () => scrollPage(-1),
+		scrollNext: () => scrollPage(1),
 		get element() {
-			return el.current;
+			return trackRef.current;
 		},
 		get state() {
-			return st;
+			return scrollState;
 		}
-	}), [by, st]);
+	}), [scrollPage, scrollState]);
 	React.useEffect(() => {
 		measure();
-		const t = el.current;
-		if (!t || typeof ResizeObserver === "undefined") return;
-		const ro = new ResizeObserver(measure);
-		ro.observe(t);
-		return () => ro.disconnect();
+		const track = trackRef.current;
+		if (!track || typeof ResizeObserver === "undefined") return;
+		const observer = new ResizeObserver(measure);
+		observer.observe(track);
+		return () => observer.disconnect();
 	}, [
 		measure,
 		children,
 		items
 	]);
-	const vars = {
-		"--ss-min": itemMin,
-		"--ss-per": perView,
-		"--ss-per-m": perViewMobile,
-		"--ss-gap": gap,
+	const layout = {
+		"--carousel-item-min": itemMin,
+		"--carousel-per-view": perView,
+		"--carousel-per-view-mobile": perViewMobile,
+		"--carousel-gap": gap,
 		...style
 	};
+	const itemKey = (item, i) => item && item.id != null ? item.id : i;
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-carousel", bleed && "ag-carousel--bleed", itemAs === "contents" && "ag-carousel--contents", className),
-		style: vars
+		style: layout
 	}, arrows && /* @__PURE__ */ React.createElement("div", { className: "ag-carousel__nav" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
 		label: prevLabel,
 		variant: "outline",
 		size: "sm",
-		onClick: () => by(-1),
-		disabled: !st.canPrev
+		onClick: () => scrollPage(-1),
+		disabled: !scrollState.canPrev
 	}), /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-right",
 		label: nextLabel,
 		variant: "outline",
 		size: "sm",
-		onClick: () => by(1),
-		disabled: !st.canNext
+		onClick: () => scrollPage(1),
+		disabled: !scrollState.canNext
 	})), /* @__PURE__ */ React.createElement("div", {
-		ref: el,
+		ref: trackRef,
 		className: "ag-carousel__track",
 		role: "region",
 		"aria-label": label,
 		tabIndex: 0,
 		onScroll: measure
-	}, itemAs === "contents" ? items && renderItem ? items.map((it, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: it && it.id != null ? it.id : i }, renderItem(it, i))) : children : [...items && renderItem ? items.map((it, i) => ({
-		node: renderItem(it, i),
-		key: it && it.id != null ? "i" + it.id : "i" + i
+	}, itemAs === "contents" ? items && renderItem ? items.map((item, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: itemKey(item, i) }, renderItem(item, i))) : children : [...items && renderItem ? items.map((item, i) => ({
+		node: renderItem(item, i),
+		key: "i" + itemKey(item, i)
 	})) : [], ...flattenSnap(children)].map(({ node, key }) => /* @__PURE__ */ React.createElement("div", {
 		className: "ag-carousel__item",
 		key
@@ -654,6 +682,7 @@ Object.assign(__ds_scope, { Carousel });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
 function CategoryCard({ label, count, image, srcSet, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", onClick, href, className = "" }) {
 	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: cx("ag-cat__media", "ag-product__media--" + frame) }, image ? /* @__PURE__ */ React.createElement("img", {
 		src: image,
@@ -757,6 +786,8 @@ Object.assign(__ds_scope, { Checkbox });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// A filter chip: a toggle button (aria-pressed) that fills with ink when `selected`, with an
+// optional remove icon (`onRemove`).
 function Chip({ selected, onRemove, className = "", children, ...rest }) {
 	return /* @__PURE__ */ React.createElement("button", {
 		type: "button",
@@ -784,48 +815,50 @@ const { cx } = __ds_scope;
 // A radiogroup of ChoiceTiles with arrow-key navigation (mirrored in RTL), Home and End.
 // `legend` renders <fieldset><legend>; the hint or error sits under the tiles (see Field).
 function ChoiceGroup({ label, labelledBy, legend, hint, error, id, columns, minTileWidth = 140, children, className, style }) {
-	const ref = React.useRef(null);
+	const groupRef = React.useRef(null);
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
 		error
 	});
 	const legendId = fieldId + "-legend";
+	const enabledTiles = () => [...groupRef.current.querySelectorAll("[role=\"radio\"]:not(:disabled)")];
+	// Roving tabindex: with nothing selected, the first enabled tile takes the Tab stop.
 	React.useEffect(() => {
-		const r = ref.current;
-		if (!r) return;
-		const t = [...r.querySelectorAll("[role=\"radio\"]:not(:disabled)")];
-		if (t.length && !t.some((x) => x.tabIndex === 0)) t[0].tabIndex = 0;
+		if (!groupRef.current) return;
+		const tiles = enabledTiles();
+		if (tiles.length && !tiles.some((tile) => tile.tabIndex === 0)) tiles[0].tabIndex = 0;
 	});
-	const onKey = (e) => {
-		const t = [...ref.current.querySelectorAll("[role=\"radio\"]:not(:disabled)")];
-		const i = t.indexOf(document.activeElement);
-		if (i < 0) return;
-		const rtl = getComputedStyle(ref.current).direction === "rtl";
-		const map = {
+	// Arrow keys move and select (left/right mirror in RTL); Home and End jump to the ends.
+	const onKeyDown = (event) => {
+		const tiles = enabledTiles();
+		const current = tiles.indexOf(document.activeElement);
+		if (current < 0) return;
+		const rtl = getComputedStyle(groupRef.current).direction === "rtl";
+		const steps = {
 			ArrowDown: 1,
 			ArrowUp: -1,
 			ArrowRight: rtl ? -1 : 1,
 			ArrowLeft: rtl ? 1 : -1
 		};
-		let n;
-		if (e.key in map) n = (i + map[e.key] + t.length) % t.length;
-		else if (e.key === "Home") n = 0;
-		else if (e.key === "End") n = t.length - 1;
+		let target;
+		if (event.key in steps) target = (current + steps[event.key] + tiles.length) % tiles.length;
+		else if (event.key === "Home") target = 0;
+		else if (event.key === "End") target = tiles.length - 1;
 		else return;
-		e.preventDefault();
-		t[n].focus();
-		t[n].click();
+		event.preventDefault();
+		tiles[target].focus();
+		tiles[target].click();
 	};
 	const wrapped = !!(legend || message);
 	const group = /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: groupRef,
 		id: fieldId,
 		role: "radiogroup",
 		"aria-label": legend ? undefined : label,
 		"aria-labelledby": legend ? legendId : labelledBy,
 		...controlProps,
-		onKeyDown: onKey,
+		onKeyDown,
 		className: cx("ag-choices", error && "ag-choices--error", !wrapped && className),
 		style: {
 			gridTemplateColumns: columns ? "repeat(" + columns + ",minmax(0,1fr))" : "repeat(auto-fill,minmax(" + minTileWidth + "px,1fr))",
@@ -855,13 +888,14 @@ Object.assign(__ds_scope, { ChoiceGroup });
 // components/ChoiceGroup/ChoiceTile.jsx
 try { (() => {
 const { cx } = __ds_scope;
-// The label names the tile; the description is read after it as its description, not as part of the name.
+// One selectable tile (role="radio") inside a ChoiceGroup. The label alone names the tile; the
+// description is read after it, so it never becomes part of the name.
 function ChoiceTile({ label, description, selected, disabled, onSelect, size = "md", className = "", ...rest }) {
-	const auto = React.useId();
-	const lid = auto + "-label";
-	const did = auto + "-desc";
-	const named = description && label && !rest["aria-label"] && !rest["aria-labelledby"];
-	const desc = [description ? did : null, rest["aria-describedby"]].filter(Boolean).join(" ") || undefined;
+	const baseId = React.useId();
+	const labelId = baseId + "-label";
+	const descriptionId = baseId + "-desc";
+	const namedByLabel = description && label && !rest["aria-label"] && !rest["aria-labelledby"];
+	const describedBy = cx(description && descriptionId, rest["aria-describedby"]) || undefined;
 	return /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		role: "radio",
@@ -871,13 +905,13 @@ function ChoiceTile({ label, description, selected, disabled, onSelect, size = "
 		className: cx("ag-choice", "ag-choice--" + size, selected && "ag-choice--selected", className),
 		onClick: () => onSelect && onSelect(),
 		...rest,
-		"aria-labelledby": named ? lid : rest["aria-labelledby"],
-		"aria-describedby": desc
+		"aria-labelledby": namedByLabel ? labelId : rest["aria-labelledby"],
+		"aria-describedby": describedBy
 	}, /* @__PURE__ */ React.createElement("span", {
-		id: lid,
+		id: labelId,
 		className: "ag-choice__label"
 	}, label), description && /* @__PURE__ */ React.createElement("span", {
-		id: did,
+		id: descriptionId,
 		className: "ag-choice__desc"
 	}, description));
 }
@@ -1153,46 +1187,47 @@ const { cx } = __ds_scope;
 // role="tablist" with a roving tabindex: only the selected tab is in the Tab order; ←/→ (mirrored in RTL), Home and End move and select.
 // With idPrefix, tabs get ids `${idPrefix}-tab-${id}` and the selected tab points at its panel `${idPrefix}-panel-${id}` (render that panel with role="tabpanel").
 function Tabs({ items = [], value, defaultValue, onChange, variant = "underline", label, idPrefix, className = "" }) {
-	const [inner, setInner] = React.useState(defaultValue ?? items[0]?.id);
-	const v = value ?? inner;
-	const refs = React.useRef([]);
-	const pick = (id) => {
-		if (value === undefined) setInner(id);
+	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? items[0]?.id);
+	const selectedId = value ?? uncontrolledValue;
+	const tabRefs = React.useRef([]);
+	const select = (id) => {
+		if (value === undefined) setUncontrolledValue(id);
 		onChange && onChange(id);
 	};
-	const onKey = (e, i) => {
-		const n = items.length;
-		if (!n) return;
-		const rtl = getComputedStyle(e.currentTarget).direction === "rtl";
-		let j = null;
-		if (e.key === "ArrowRight") j = rtl ? i - 1 : i + 1;
-		else if (e.key === "ArrowLeft") j = rtl ? i + 1 : i - 1;
-		else if (e.key === "Home") j = 0;
-		else if (e.key === "End") j = n - 1;
-		if (j === null) return;
-		e.preventDefault();
-		j = (j + n) % n;
-		refs.current[j] && refs.current[j].focus();
-		pick(items[j].id);
+	const onKeyDown = (event, index) => {
+		const count = items.length;
+		if (!count) return;
+		const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+		let target = null;
+		if (event.key === "ArrowRight") target = rtl ? index - 1 : index + 1;
+		else if (event.key === "ArrowLeft") target = rtl ? index + 1 : index - 1;
+		else if (event.key === "Home") target = 0;
+		else if (event.key === "End") target = count - 1;
+		if (target === null) return;
+		event.preventDefault();
+		target = (target + count) % count;
+		tabRefs.current[target] && tabRefs.current[target].focus();
+		select(items[target].id);
 	};
-	const sel = items.some((it) => it.id === v) ? v : items[0]?.id;
+	// The Tab stop: the selected tab, or the first when the value matches none.
+	const focusableId = items.some((item) => item.id === selectedId) ? selectedId : items[0]?.id;
 	return /* @__PURE__ */ React.createElement("div", {
 		role: "tablist",
 		"aria-label": label,
 		className: cx("ag-tabs", variant === "pill" && "ag-tabs--pill", className)
-	}, items.map((it, i) => /* @__PURE__ */ React.createElement("button", {
-		key: it.id,
-		ref: (el) => refs.current[i] = el,
+	}, items.map((item, i) => /* @__PURE__ */ React.createElement("button", {
+		key: item.id,
+		ref: (element) => tabRefs.current[i] = element,
 		role: "tab",
 		type: "button",
-		id: idPrefix ? idPrefix + "-tab-" + it.id : undefined,
-		"aria-controls": idPrefix && sel === it.id ? idPrefix + "-panel-" + it.id : undefined,
-		"aria-selected": v === it.id,
-		tabIndex: sel === it.id ? 0 : -1,
-		className: cx("ag-tab", v === it.id && "ag-tab--active"),
-		onClick: () => pick(it.id),
-		onKeyDown: (e) => onKey(e, i)
-	}, it.label)));
+		id: idPrefix ? idPrefix + "-tab-" + item.id : undefined,
+		"aria-controls": idPrefix && focusableId === item.id ? idPrefix + "-panel-" + item.id : undefined,
+		"aria-selected": selectedId === item.id,
+		tabIndex: focusableId === item.id ? 0 : -1,
+		className: cx("ag-tab", selectedId === item.id && "ag-tab--active"),
+		onClick: () => select(item.id),
+		onKeyDown: (event) => onKeyDown(event, i)
+	}, item.label)));
 }
 Object.assign(__ds_scope, { Tabs });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Tabs/Tabs.jsx", error: String((e && e.message) || e) }); }
@@ -1204,8 +1239,7 @@ const { Select } = __ds_scope;
 const { Tabs } = __ds_scope;
 const { FieldMessage } = __ds_scope;
 const { cx } = __ds_scope;
-// Year / month / day selects in Jalali (Shamsi) or Gregorian. Uses the date helpers (components/utils/dates.js → .dates on the namespace).
-const DP_DEF = {
+const DEFAULT_LABELS = {
 	en: {
 		jalali: "Shamsi",
 		gregorian: "Gregorian",
@@ -1223,8 +1257,8 @@ const DP_DEF = {
 		equivalent: "برابر با {date}"
 	}
 };
-const dpDates = () => dates;
-const G_MAX = [
+// Longest Gregorian months, for a yearly date that has no year to check against.
+const GREGORIAN_MAX_DAYS = [
 	31,
 	29,
 	31,
@@ -1238,113 +1272,123 @@ const G_MAX = [
 	30,
 	31
 ];
+// Year / month / day selects in Jalali (Shamsi, 'j') or Gregorian ('g'), with a calendar toggle.
+// `value` is an ISO date ("2026-10-08"), or with `yearly` a recurring {cal, m, d} with no year.
+// Under the selects it shows the same date in the other calendar.
 function DatePicker({ label, value, onChange, calendar, onCalendarChange, calendars = ["j", "g"], yearly = false, years = 3, minDate, hint, error, lang = "en", labels, showEquivalent = true, disabled, id, className = "", style }) {
-	const D = dpDates();
-	const L = {
-		...DP_DEF[lang === "fa" ? "fa" : "en"],
+	const text = {
+		...DEFAULT_LABELS[lang === "fa" ? "fa" : "en"],
 		...labels
 	};
-	const auto = React.useId();
-	const fid = id || "dp" + auto.replace(/:/g, "");
-	const hid = fid + "-hint";
-	const msg = error || hint;
-	const pref = lang === "fa" ? "j" : "g";
-	const [innerCal, setInnerCal] = React.useState(() => yearly && value && value.cal || (calendars.includes(pref) ? pref : calendars[0]));
+	const generatedId = React.useId();
+	const fieldId = id || "dp" + generatedId.replace(/:/g, "");
+	const messageId = fieldId + "-hint";
+	const message = error || hint;
+	const preferredCalendar = lang === "fa" ? "j" : "g";
+	const [uncontrolledCalendar, setUncontrolledCalendar] = React.useState(() => yearly && value && value.cal || (calendars.includes(preferredCalendar) ? preferredCalendar : calendars[0]));
 	React.useEffect(() => {
-		if (yearly && !calendar && value && value.cal && value.cal !== innerCal) setInnerCal(value.cal);
+		if (yearly && !calendar && value && value.cal && value.cal !== uncontrolledCalendar) setUncontrolledCalendar(value.cal);
 	}, [yearly && value && value.cal]);
-	const cal = calendar || innerCal;
+	const activeCalendar = calendar || uncontrolledCalendar;
 	const today = new Date();
-	const fromValue = (c) => {
+	// The current value as {year, month, day} in calendar `cal` (no year when yearly).
+	const partsFromValue = (cal) => {
 		if (!value) return null;
 		if (yearly) {
 			if (!value.m || !value.d) return null;
-			const vc = value.cal || "j";
-			if (vc === c) return {
-				m: value.m,
-				d: value.d
+			const valueCalendar = value.cal || "j";
+			if (valueCalendar === cal) return {
+				month: value.m,
+				day: value.d
 			};
-			const cy = D.yearOf(vc, today);
-			const dt = D.toDate(vc, cy, value.m, Math.min(value.d, D.daysInMonth(vc, cy, value.m)));
-			const p = D.parts(c, dt);
+			const thisYear = dates.yearOf(valueCalendar, today);
+			const lastDay = dates.daysInMonth(valueCalendar, thisYear, value.m);
+			const date = dates.toDate(valueCalendar, thisYear, value.m, Math.min(value.d, lastDay));
+			const [, month, day] = dates.parts(cal, date);
 			return {
-				m: p[1],
-				d: p[2]
+				month,
+				day
 			};
 		}
-		const dt = D.fromIso(value);
-		if (!dt) return null;
-		const p = D.parts(c, dt);
+		const date = dates.fromIso(value);
+		if (!date) return null;
+		const [year, month, day] = dates.parts(cal, date);
 		return {
-			y: p[0],
-			m: p[1],
-			d: p[2]
+			year,
+			month,
+			day
 		};
 	};
-	const vKey = yearly ? value ? (value.cal || "j") + value.m + "-" + value.d : "" : value || "";
-	const [draft, setDraft] = React.useState(() => fromValue(cal) || {});
+	const valueKey = yearly ? value ? (value.cal || "j") + value.m + "-" + value.d : "" : value || "";
+	const [draft, setDraft] = React.useState(() => partsFromValue(activeCalendar) || {});
 	React.useEffect(() => {
-		const p = fromValue(cal);
-		setDraft(p || {});
-	}, [vKey, cal]);
-	const maxFor = ({ y, m }) => !m ? 31 : !yearly && y ? D.daysInMonth(cal, y, m) : cal === "j" ? m <= 6 ? 31 : 30 : G_MAX[m - 1];
-	const emit = (n) => {
+		setDraft(partsFromValue(activeCalendar) || {});
+	}, [valueKey, activeCalendar]);
+	const daysIn = ({ year, month }) => {
+		if (!month) return 31;
+		if (!yearly && year) return dates.daysInMonth(activeCalendar, year, month);
+		if (activeCalendar === "j") return month <= 6 ? 31 : 30;
+		return GREGORIAN_MAX_DAYS[month - 1];
+	};
+	const emit = (next) => {
 		if (!onChange) return;
 		if (yearly) {
-			if (n.m && n.d) onChange({
-				cal,
-				m: n.m,
-				d: n.d
+			if (next.month && next.day) onChange({
+				cal: activeCalendar,
+				m: next.month,
+				d: next.day
 			});
-		} else if (n.y && n.m && n.d) onChange(D.iso(D.toDate(cal, n.y, n.m, n.d)));
+		} else if (next.year && next.month && next.day) {
+			onChange(dates.iso(dates.toDate(activeCalendar, next.year, next.month, next.day)));
+		}
 	};
 	// Changing year or month clamps the day (Mehr 30 → Esfand 1404 = 29). Never rolls over into the next month.
-	const set = (k) => (e) => {
-		const v = e.target.value;
-		const n = {
+	const onPartChange = (part) => (event) => {
+		const selected = event.target.value;
+		const next = {
 			...draft,
-			[k]: v ? +v : undefined
+			[part]: selected ? +selected : undefined
 		};
-		if (n.d && n.m) n.d = Math.min(n.d, maxFor(n));
-		setDraft(n);
-		emit(n);
+		if (next.day && next.month) next.day = Math.min(next.day, daysIn(next));
+		setDraft(next);
+		emit(next);
 	};
-	const switchCal = (c) => {
-		if (c === cal) return;
-		if (!calendar) setInnerCal(c);
-		onCalendarChange && onCalendarChange(c);
-		if (yearly && draft.m && draft.d && onChange) {
-			const cy = D.yearOf(cal, today);
-			const dt = D.toDate(cal, cy, draft.m, Math.min(draft.d, D.daysInMonth(cal, cy, draft.m)));
-			const p = D.parts(c, dt);
+	const switchCalendar = (cal) => {
+		if (cal === activeCalendar) return;
+		if (!calendar) setUncontrolledCalendar(cal);
+		onCalendarChange && onCalendarChange(cal);
+		if (yearly && draft.month && draft.day && onChange) {
+			const thisYear = dates.yearOf(activeCalendar, today);
+			const lastDay = dates.daysInMonth(activeCalendar, thisYear, draft.month);
+			const date = dates.toDate(activeCalendar, thisYear, draft.month, Math.min(draft.day, lastDay));
+			const [, month, day] = dates.parts(cal, date);
 			onChange({
-				cal: c,
-				m: p[1],
-				d: p[2]
+				cal,
+				m: month,
+				d: day
 			});
 		}
 	};
-	const minD = minDate ? D.fromIso(minDate) : null;
-	const startY = D.yearOf(cal, minD && minD > today ? minD : today);
-	let ys = Array.from({ length: years }, (_, i) => startY + i);
-	if (draft.y && !ys.includes(draft.y)) ys = [...ys, draft.y].sort((a, b) => a - b);
-	const names = D.monthNames(cal, lang);
-	const dg = (n) => D.digits(n, lang);
-	const monthOff = (m) => !!(minD && draft.y && D.toDate(cal, draft.y, m, D.daysInMonth(cal, draft.y, m)) < minD);
-	const dayOff = (d) => !!(minD && draft.y && draft.m && D.toDate(cal, draft.y, draft.m, d) < minD);
-	const nDays = maxFor(draft);
-	const complete = yearly ? draft.m && draft.d : draft.y && draft.m && draft.d;
-	const other = calendars.find((c) => c !== cal);
-	let eq = "";
-	if (showEquivalent && other && complete) {
-		const dt = yearly ? D.nextYearly({
-			cal,
-			m: draft.m,
-			d: draft.d
-		}).date : D.toDate(cal, draft.y, draft.m, draft.d);
-		eq = L.equivalent.replace("{date}", D.fullDate(dt, D.locale(lang, other), false));
+	const earliest = minDate ? dates.fromIso(minDate) : null;
+	const firstYear = dates.yearOf(activeCalendar, earliest && earliest > today ? earliest : today);
+	let yearOptions = Array.from({ length: years }, (_, i) => firstYear + i);
+	if (draft.year && !yearOptions.includes(draft.year)) yearOptions = [...yearOptions, draft.year].sort((a, b) => a - b);
+	const monthNames = dates.monthNames(activeCalendar, lang);
+	const localDigits = (n) => dates.digits(n, lang);
+	const monthBeforeMin = (month) => !!(earliest && draft.year && dates.toDate(activeCalendar, draft.year, month, dates.daysInMonth(activeCalendar, draft.year, month)) < earliest);
+	const dayBeforeMin = (day) => !!(earliest && draft.year && draft.month && dates.toDate(activeCalendar, draft.year, draft.month, day) < earliest);
+	const complete = yearly ? draft.month && draft.day : draft.year && draft.month && draft.day;
+	const otherCalendar = calendars.find((cal) => cal !== activeCalendar);
+	let equivalent = "";
+	if (showEquivalent && otherCalendar && complete) {
+		const date = yearly ? dates.nextYearly({
+			cal: activeCalendar,
+			m: draft.month,
+			d: draft.day
+		}).date : dates.toDate(activeCalendar, draft.year, draft.month, draft.day);
+		equivalent = text.equivalent.replace("{date}", dates.fullDate(date, dates.locale(lang, otherCalendar), false));
 	}
-	const desc = msg ? hid : undefined;
+	const describedBy = message ? messageId : undefined;
 	return /* @__PURE__ */ React.createElement("fieldset", {
 		className: cx("ag-fieldset", "ag-date", className),
 		style,
@@ -1352,56 +1396,56 @@ function DatePicker({ label, value, onChange, calendar, onCalendarChange, calend
 	}, /* @__PURE__ */ React.createElement("legend", { className: "ag-date__legend" }, label && /* @__PURE__ */ React.createElement("span", { className: "ag-field__label" }, label), calendars.length > 1 && /* @__PURE__ */ React.createElement(Tabs, {
 		variant: "pill",
 		className: "ag-date__cal",
-		items: calendars.map((c) => ({
-			id: c,
-			label: c === "j" ? L.jalali : L.gregorian
+		items: calendars.map((cal) => ({
+			id: cal,
+			label: cal === "j" ? text.jalali : text.gregorian
 		})),
-		value: cal,
-		onChange: switchCal
+		value: activeCalendar,
+		onChange: switchCalendar
 	})), /* @__PURE__ */ React.createElement("div", { className: cx("ag-date__grid", yearly && "ag-date__grid--yearly") }, !yearly && /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-y",
-		label: L.year,
-		value: draft.y ? String(draft.y) : "",
-		placeholder: draft.y ? undefined : "—",
-		onChange: set("y"),
-		"aria-describedby": desc,
-		options: ys.map((y) => ({
-			value: String(y),
-			label: dg(y)
+		id: fieldId + "-y",
+		label: text.year,
+		value: draft.year ? String(draft.year) : "",
+		placeholder: draft.year ? undefined : "—",
+		onChange: onPartChange("year"),
+		"aria-describedby": describedBy,
+		options: yearOptions.map((year) => ({
+			value: String(year),
+			label: localDigits(year)
 		}))
 	}), /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-m",
-		label: L.month,
-		value: draft.m ? String(draft.m) : "",
-		placeholder: draft.m ? undefined : "—",
-		onChange: set("m"),
-		"aria-describedby": desc,
-		options: names.map((n, i) => ({
+		id: fieldId + "-m",
+		label: text.month,
+		value: draft.month ? String(draft.month) : "",
+		placeholder: draft.month ? undefined : "—",
+		onChange: onPartChange("month"),
+		"aria-describedby": describedBy,
+		options: monthNames.map((name, i) => ({
 			value: String(i + 1),
-			label: n,
-			disabled: monthOff(i + 1)
+			label: name,
+			disabled: monthBeforeMin(i + 1)
 		}))
 	}), /* @__PURE__ */ React.createElement(Select, {
-		id: fid + "-d",
-		label: L.day,
-		value: draft.d ? String(draft.d) : "",
-		placeholder: draft.d ? undefined : "—",
-		onChange: set("d"),
-		"aria-describedby": desc,
+		id: fieldId + "-d",
+		label: text.day,
+		value: draft.day ? String(draft.day) : "",
+		placeholder: draft.day ? undefined : "—",
+		onChange: onPartChange("day"),
+		"aria-describedby": describedBy,
 		"aria-invalid": error ? true : undefined,
-		"aria-errormessage": error ? hid : undefined,
-		options: Array.from({ length: nDays }, (_, i) => ({
+		"aria-errormessage": error ? messageId : undefined,
+		options: Array.from({ length: daysIn(draft) }, (_, i) => ({
 			value: String(i + 1),
-			label: dg(i + 1),
-			disabled: dayOff(i + 1)
+			label: localDigits(i + 1),
+			disabled: dayBeforeMin(i + 1)
 		}))
 	})), /* @__PURE__ */ React.createElement(FieldMessage, {
-		id: hid,
+		id: messageId,
 		error: !!error
-	}, msg), showEquivalent && other && /* @__PURE__ */ React.createElement("p", {
+	}, message), showEquivalent && otherCalendar && /* @__PURE__ */ React.createElement("p", {
 		className: "ag-date__eq",
 		"aria-live": "polite"
-	}, eq));
+	}, equivalent));
 }
 Object.assign(__ds_scope, { DatePicker });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/DatePicker/DatePicker.jsx", error: String((e && e.message) || e) }); }
@@ -1415,14 +1459,14 @@ function DetailList({ rows = [], className = "", style }) {
 	return /* @__PURE__ */ React.createElement("dl", {
 		className: cx("ag-dl", className),
 		style
-	}, rows.filter(Boolean).map((r, i) => /* @__PURE__ */ React.createElement("div", {
+	}, rows.filter(Boolean).map((row, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
-		className: cx("ag-dl__row", r.icon && "ag-dl__row--icon")
-	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-dl__label" }, r.icon && /* @__PURE__ */ React.createElement(Icon, {
-		name: r.icon,
+		className: cx("ag-dl__row", row.icon && "ag-dl__row--icon")
+	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-dl__label" }, row.icon && /* @__PURE__ */ React.createElement(Icon, {
+		name: row.icon,
 		size: 18,
 		className: "ag-dl__icon"
-	}), r.label), /* @__PURE__ */ React.createElement("dd", { className: "ag-dl__value" }, r.value))));
+	}), row.label), /* @__PURE__ */ React.createElement("dd", { className: "ag-dl__value" }, row.value))));
 }
 Object.assign(__ds_scope, { DetailList });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/DetailList/DetailList.jsx", error: String((e && e.message) || e) }); }
@@ -1432,78 +1476,82 @@ try { (() => {
 const { IconButton } = __ds_scope;
 const { cx } = __ds_scope;
 const FOCUSABLE = "a[href],area[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex=\"-1\"]),[contenteditable=\"true\"]";
-let locks = 0, saved = null;
+// The page behind stays put while any dialog is open. Nested dialogs share one lock; the
+// scrollbar's width is padded back so the layout doesn't shift.
+let openDialogs = 0;
+let savedBodyStyle = null;
 const lockScroll = () => {
-	if (locks++ === 0) {
-		const b = document.body, sw = window.innerWidth - document.documentElement.clientWidth;
-		saved = {
-			o: b.style.overflow,
-			p: b.style.paddingInlineEnd
+	if (openDialogs++ === 0) {
+		const body = document.body;
+		const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+		savedBodyStyle = {
+			overflow: body.style.overflow,
+			paddingInlineEnd: body.style.paddingInlineEnd
 		};
-		b.style.overflow = "hidden";
-		if (sw > 0) b.style.paddingInlineEnd = sw + "px";
+		body.style.overflow = "hidden";
+		if (scrollbarWidth > 0) body.style.paddingInlineEnd = scrollbarWidth + "px";
 	}
 };
 const unlockScroll = () => {
-	if (--locks === 0 && saved) {
-		document.body.style.overflow = saved.o;
-		document.body.style.paddingInlineEnd = saved.p;
-		saved = null;
+	if (--openDialogs === 0 && savedBodyStyle) {
+		document.body.style.overflow = savedBodyStyle.overflow;
+		document.body.style.paddingInlineEnd = savedBodyStyle.paddingInlineEnd;
+		savedBodyStyle = null;
 	}
 };
 // role="dialog" + aria-modal + aria-labelledby → title. Focus moves in on open, Tab/Shift+Tab stay inside, Esc closes,
 // focus returns to the opener on close, and the page behind can't scroll (skipped for inline previews).
 function Dialog({ open, onClose, title, children, footer, inline, closeLabel = "Close", maxWidth, initialFocus, placement = "center" }) {
-	const tid = React.useId();
-	const ref = React.useRef(null);
+	const titleId = React.useId();
+	const dialogRef = React.useRef(null);
 	const closeRef = React.useRef(onClose);
 	closeRef.current = onClose;
 	React.useEffect(() => {
 		if (!open) return;
-		const d = ref.current;
-		if (!d) return;
+		const dialog = dialogRef.current;
+		if (!dialog) return;
 		const opener = document.activeElement;
-		const list = () => [...d.querySelectorAll(FOCUSABLE)].filter((el) => el.getClientRects().length);
-		const f = list();
-		const first = initialFocus && d.querySelector(initialFocus) || f.find((el) => !el.closest(".ag-dialog__head")) || f[0] || d;
+		const focusables = () => [...dialog.querySelectorAll(FOCUSABLE)].filter((el) => el.getClientRects().length);
+		const candidates = focusables();
+		const firstFocus = initialFocus && dialog.querySelector(initialFocus) || candidates.find((el) => !el.closest(".ag-dialog__head")) || candidates[0] || dialog;
 		// Inline previews don't move or trap focus — several on one page would fight over it.
-		if (!inline) first.focus({ preventScroll: true });
-		const onKey = (e) => {
-			if (e.key === "Escape") {
+		if (!inline) firstFocus.focus({ preventScroll: true });
+		const onKeyDown = (event) => {
+			if (event.key === "Escape") {
 				if (closeRef.current) {
-					e.stopPropagation();
+					event.stopPropagation();
 					closeRef.current();
 				}
 				return;
 			}
-			if (e.key !== "Tab") return;
-			const all = list();
+			if (event.key !== "Tab") return;
+			const all = focusables();
 			if (!all.length) {
-				e.preventDefault();
-				d.focus();
+				event.preventDefault();
+				dialog.focus();
 				return;
 			}
-			const a = all[0], z = all[all.length - 1], cur = document.activeElement;
-			if (e.shiftKey && (cur === a || cur === d || !d.contains(cur))) {
-				e.preventDefault();
-				z.focus();
-			} else if (!e.shiftKey && (cur === z || !d.contains(cur))) {
-				e.preventDefault();
-				a.focus();
+			const first = all[0];
+			const last = all[all.length - 1];
+			const active = document.activeElement;
+			if (event.shiftKey && (active === first || active === dialog || !dialog.contains(active))) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && (active === last || !dialog.contains(active))) {
+				event.preventDefault();
+				first.focus();
 			}
 		};
-		const onFocusIn = (e) => {
-			if (!d.contains(e.target)) {
-				const all = list();
-				(all[0] || d).focus({ preventScroll: true });
-			}
+		// Focus that escapes (e.g. a click outside) comes back to the dialog.
+		const onFocusIn = (event) => {
+			if (!dialog.contains(event.target)) (focusables()[0] || dialog).focus({ preventScroll: true });
 		};
 		if (inline) return;
-		document.addEventListener("keydown", onKey, true);
+		document.addEventListener("keydown", onKeyDown, true);
 		document.addEventListener("focusin", onFocusIn);
 		lockScroll();
 		return () => {
-			document.removeEventListener("keydown", onKey, true);
+			document.removeEventListener("keydown", onKeyDown, true);
 			document.removeEventListener("focusin", onFocusIn);
 			unlockScroll();
 			if (opener && opener.focus && document.contains(opener)) opener.focus({ preventScroll: true });
@@ -1512,19 +1560,19 @@ function Dialog({ open, onClose, title, children, footer, inline, closeLabel = "
 	if (!open) return null;
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-dialog__overlay", inline && "ag-dialog__overlay--inline", placement === "start" && "ag-dialog__overlay--sheet"),
-		onClick: (e) => {
-			if (e.target === e.currentTarget && onClose) onClose();
+		onClick: (event) => {
+			if (event.target === event.currentTarget && onClose) onClose();
 		}
 	}, /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: dialogRef,
 		role: "dialog",
 		"aria-modal": "true",
-		"aria-labelledby": title ? tid : undefined,
+		"aria-labelledby": title ? titleId : undefined,
 		tabIndex: -1,
 		className: cx("ag-dialog", placement === "start" && "ag-dialog--sheet"),
 		style: maxWidth ? { maxWidth } : undefined
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, /* @__PURE__ */ React.createElement("h2", {
-		id: tid,
+		id: titleId,
 		className: "ag-dialog__title"
 	}, title), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",
@@ -1540,16 +1588,17 @@ Object.assign(__ds_scope, { Dialog });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// An empty or finished state: icon disc, eyebrow, title (with an italic `titleAccent` line), body
+// and actions. `icon` is a Lucide name or any node.
 function EmptyState({ icon, tone = "neutral", eyebrow, title, titleAccent, body, actions, headingLevel = 2, className = "", style }) {
-	const H = "h" + headingLevel;
-	const t = tone;
+	const Heading = "h" + headingLevel;
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-empty", className),
 		style
-	}, icon && /* @__PURE__ */ React.createElement("span", { className: cx("ag-empty__icon", "ag-empty__icon--" + t) }, typeof icon === "string" ? /* @__PURE__ */ React.createElement(Icon, {
+	}, icon && /* @__PURE__ */ React.createElement("span", { className: cx("ag-empty__icon", "ag-empty__icon--" + tone) }, typeof icon === "string" ? /* @__PURE__ */ React.createElement(Icon, {
 		name: icon,
 		size: 28
-	}) : icon), eyebrow && /* @__PURE__ */ React.createElement("div", { className: "ag-eyebrow ag-empty__eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement(H, { className: "ag-empty__title" }, title, titleAccent && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("em", null, titleAccent))), body && /* @__PURE__ */ React.createElement("div", { className: "ag-empty__body" }, body), actions && /* @__PURE__ */ React.createElement("div", { className: "ag-empty__actions" }, actions));
+	}) : icon), eyebrow && /* @__PURE__ */ React.createElement("div", { className: "ag-eyebrow ag-empty__eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement(Heading, { className: "ag-empty__title" }, title, titleAccent && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("br", null), /* @__PURE__ */ React.createElement("em", null, titleAccent))), body && /* @__PURE__ */ React.createElement("div", { className: "ag-empty__body" }, body), actions && /* @__PURE__ */ React.createElement("div", { className: "ag-empty__actions" }, actions));
 }
 Object.assign(__ds_scope, { EmptyState });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/EmptyState/EmptyState.jsx", error: String((e && e.message) || e) }); }
@@ -1557,21 +1606,22 @@ Object.assign(__ds_scope, { EmptyState });
 // components/Gallery/Gallery.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// Product photos in a swipeable scroll-snap track with dot buttons; RTL scrolls the other way.
 // The track is focusable so keyboard users can scroll it with the arrow keys (axe: scrollable-region-focusable).
 function Gallery({ images = [], sizes = "(max-width: 767px) 100vw, 540px", frame = "arch", aspect = "3/4", label, slideLabel = (i, n) => i + " / " + n, className = "" }) {
-	const ref = React.useRef(null);
-	const [idx, setIdx] = React.useState(0);
-	const n = images.length;
+	const trackRef = React.useRef(null);
+	const [currentSlide, setCurrentSlide] = React.useState(0);
+	const count = images.length;
 	const onScroll = () => {
-		const el = ref.current;
-		if (!el) return;
-		const i = Math.round(Math.abs(el.scrollLeft) / el.clientWidth);
-		if (i !== idx) setIdx(i);
+		const track = trackRef.current;
+		if (!track) return;
+		const slide = Math.round(Math.abs(track.scrollLeft) / track.clientWidth);
+		if (slide !== currentSlide) setCurrentSlide(slide);
 	};
-	const go = (i) => {
-		const el = ref.current;
-		const rtl = getComputedStyle(el).direction === "rtl";
-		el.scrollTo({ left: (rtl ? -1 : 1) * i * el.clientWidth });
+	const goTo = (slide) => {
+		const track = trackRef.current;
+		const rtl = getComputedStyle(track).direction === "rtl";
+		track.scrollTo({ left: (rtl ? -1 : 1) * slide * track.clientWidth });
 	};
 	return /* @__PURE__ */ React.createElement("div", {
 		role: "region",
@@ -1579,31 +1629,31 @@ function Gallery({ images = [], sizes = "(max-width: 767px) 100vw, 540px", frame
 		"aria-label": label,
 		className: cx("ag-gallery", className)
 	}, /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: trackRef,
 		onScroll,
 		tabIndex: 0,
 		className: cx("ag-gallery__track", "ag-product__media--" + frame),
 		style: { aspectRatio: aspect }
-	}, images.map((im, i) => /* @__PURE__ */ React.createElement("div", {
+	}, images.map((image, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
 		className: "ag-gallery__slide",
 		role: "group",
 		"aria-roledescription": "slide",
-		"aria-label": slideLabel(i + 1, n)
+		"aria-label": slideLabel(i + 1, count)
 	}, /* @__PURE__ */ React.createElement("img", {
-		src: im.src,
-		srcSet: im.srcSet,
-		sizes: im.srcSet ? sizes : undefined,
-		alt: im.alt || "",
+		src: image.src,
+		srcSet: image.srcSet,
+		sizes: image.srcSet ? sizes : undefined,
+		alt: image.alt || "",
 		loading: i ? "lazy" : undefined,
 		decoding: "async"
-	})))), n > 1 && /* @__PURE__ */ React.createElement("div", { className: "ag-gallery__dots" }, images.map((_, i) => /* @__PURE__ */ React.createElement("button", {
+	})))), count > 1 && /* @__PURE__ */ React.createElement("div", { className: "ag-gallery__dots" }, images.map((_, i) => /* @__PURE__ */ React.createElement("button", {
 		key: i,
 		type: "button",
 		className: "ag-gallery__dot",
-		"aria-label": slideLabel(i + 1, n),
-		"aria-current": i === idx ? "true" : undefined,
-		onClick: () => go(i)
+		"aria-label": slideLabel(i + 1, count),
+		"aria-current": i === currentSlide ? "true" : undefined,
+		onClick: () => goTo(i)
 	}, /* @__PURE__ */ React.createElement("span", null)))));
 }
 Object.assign(__ds_scope, { Gallery });
@@ -1655,6 +1705,7 @@ Object.assign(__ds_scope, { Input });
 
 // components/LanguageSwitch/LanguageSwitch.jsx
 try { (() => {
+// The EN / فا toggle: one pressed button per language, each marked with its own `lang`.
 function LanguageSwitch({ value = "en", onChange, label = "Language", options = [{
 	id: "en",
 	label: "EN"
@@ -1681,33 +1732,35 @@ Object.assign(__ds_scope, { LanguageSwitch });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// A −/+ quantity control, controlled (`value`) or not (`defaultValue`), clamped to min..max.
+// `format` localizes the number (Persian digits); the count is announced politely.
 function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", format = (n) => String(n), labels = {
 	dec: "Decrease",
 	inc: "Increase"
 } }) {
-	const [inner, setInner] = React.useState(defaultValue);
-	const v = value ?? inner;
-	const set = (n) => {
-		n = Math.max(min, Math.min(max, n));
-		if (value === undefined) setInner(n);
-		onChange && onChange(n);
+	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+	const quantity = value ?? uncontrolledValue;
+	const change = (next) => {
+		const clamped = Math.max(min, Math.min(max, next));
+		if (value === undefined) setUncontrolledValue(clamped);
+		onChange && onChange(clamped);
 	};
 	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-qty", size === "sm" && "ag-qty--sm", disabled && "ag-qty--disabled") }, /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		"aria-label": labels.dec,
-		disabled: disabled || v <= min,
-		onClick: () => set(v - 1)
+		disabled: disabled || quantity <= min,
+		onClick: () => change(quantity - 1)
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "minus",
 		size: 16
 	})), /* @__PURE__ */ React.createElement("span", {
 		className: "ag-qty__val",
 		"aria-live": "polite"
-	}, format(v)), /* @__PURE__ */ React.createElement("button", {
+	}, format(quantity)), /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		"aria-label": labels.inc,
-		disabled: disabled || v >= max,
-		onClick: () => set(v + 1)
+		disabled: disabled || quantity >= max,
+		onClick: () => change(quantity + 1)
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "plus",
 		size: 16
@@ -1720,23 +1773,25 @@ Object.assign(__ds_scope, { QuantityInput });
 try { (() => {
 const { QuantityInput } = __ds_scope;
 const { cx } = __ds_scope;
+// A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
+// shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
 function LineItem({ image, srcSet, name, meta, note, price, quantity, onQuantityChange, onRemove, removeLabel = "Remove", quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel = "No longer available", busy, className = "" }) {
-	const lg = size !== "sm";
-	const tw = lg ? 88 : 44;
+	const large = size !== "sm";
+	const thumbWidth = large ? 88 : 44;
 	return /* @__PURE__ */ React.createElement("div", { className: "ag-linewrap" }, /* @__PURE__ */ React.createElement("div", {
-		className: cx("ag-line", "ag-line--" + (lg ? "lg" : "sm"), unavailable && "ag-line--unavailable", className),
+		className: cx("ag-line", "ag-line--" + (large ? "lg" : "sm"), unavailable && "ag-line--unavailable", className),
 		"aria-busy": busy || undefined
 	}, /* @__PURE__ */ React.createElement("span", {
 		className: "ag-line__thumb",
-		style: { width: tw }
+		style: { width: thumbWidth }
 	}, image ? /* @__PURE__ */ React.createElement("img", {
 		src: image,
 		srcSet,
-		sizes: srcSet ? tw + "px" : undefined,
+		sizes: srcSet ? thumbWidth + "px" : undefined,
 		alt: "",
 		loading: "lazy",
 		decoding: "async"
-	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-line__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-line__name" }, name), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-line__meta" }, meta), note && /* @__PURE__ */ React.createElement("div", { className: "ag-line__note" }, note), unavailable && /* @__PURE__ */ React.createElement("div", { className: "ag-line__flag" }, unavailableLabel), lg && (onQuantityChange || onRemove) && /* @__PURE__ */ React.createElement("div", { className: "ag-line__actions" }, onQuantityChange && !unavailable && /* @__PURE__ */ React.createElement(QuantityInput, {
+	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-line__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-line__name" }, name), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-line__meta" }, meta), note && /* @__PURE__ */ React.createElement("div", { className: "ag-line__note" }, note), unavailable && /* @__PURE__ */ React.createElement("div", { className: "ag-line__flag" }, unavailableLabel), large && (onQuantityChange || onRemove) && /* @__PURE__ */ React.createElement("div", { className: "ag-line__actions" }, onQuantityChange && !unavailable && /* @__PURE__ */ React.createElement(QuantityInput, {
 		value: quantity,
 		disabled: busy,
 		onChange: onQuantityChange,
@@ -1746,7 +1801,7 @@ function LineItem({ image, srcSet, name, meta, note, price, quantity, onQuantity
 		type: "button",
 		className: "ag-line__remove",
 		onClick: onRemove
-	}, removeLabel))), /* @__PURE__ */ React.createElement("div", { className: "ag-line__end" }, !lg && quantity != null && /* @__PURE__ */ React.createElement("span", { className: "ag-line__qty" }, "×", formatQuantity(quantity)), !unavailable && /* @__PURE__ */ React.createElement("span", { className: "ag-line__price" }, price))));
+	}, removeLabel))), /* @__PURE__ */ React.createElement("div", { className: "ag-line__end" }, !large && quantity != null && /* @__PURE__ */ React.createElement("span", { className: "ag-line__qty" }, "×", formatQuantity(quantity)), !unavailable && /* @__PURE__ */ React.createElement("span", { className: "ag-line__price" }, price))));
 }
 Object.assign(__ds_scope, { LineItem });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/LineItem/LineItem.jsx", error: String((e && e.message) || e) }); }
@@ -1770,6 +1825,7 @@ Object.assign(__ds_scope, { LiveRegion });
 // components/MenuList/MenuList.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// A titled navigation list; each child (usually a NavLink) becomes a list item.
 function MenuList({ title, label, children, className = "" }) {
 	return /* @__PURE__ */ React.createElement("nav", {
 		"aria-label": label || (typeof title === "string" ? title : undefined),
@@ -1783,9 +1839,11 @@ Object.assign(__ds_scope, { MenuList });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
+// A navigation link (or a button without `href`) in header, footer or menu style;
+// `current` marks it aria-current="page". The menu style adds a chevron.
 function NavLink({ href, current, variant = "header", onClick, children, className = "", ...rest }) {
-	const T = href ? "a" : "button";
-	return /* @__PURE__ */ React.createElement(T, {
+	const Element = href ? "a" : "button";
+	return /* @__PURE__ */ React.createElement(Element, {
 		href,
 		type: href ? undefined : "button",
 		onClick,
@@ -1807,25 +1865,25 @@ const { ArchFrame } = __ds_scope;
 const { cx } = __ds_scope;
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
 function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", className = "", style }) {
-	const H = titleAs;
+	const Title = titleAs;
 	return /* @__PURE__ */ React.createElement("section", {
 		className: cx("ag-osum", className),
 		style
-	}, title && /* @__PURE__ */ React.createElement(H, { className: "ag-osum__title" }, title), /* @__PURE__ */ React.createElement("ul", { className: "ag-osum__lines" }, lines.map((l, i) => /* @__PURE__ */ React.createElement("li", {
+	}, title && /* @__PURE__ */ React.createElement(Title, { className: "ag-osum__title" }, title), /* @__PURE__ */ React.createElement("ul", { className: "ag-osum__lines" }, lines.map((line, i) => /* @__PURE__ */ React.createElement("li", {
 		key: i,
 		className: "ag-osum__line"
 	}, /* @__PURE__ */ React.createElement(ArchFrame, {
 		size: "thumb",
 		tone: "product",
-		src: l.image,
+		src: line.image,
 		alt: ""
-	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, l.href ? /* @__PURE__ */ React.createElement("a", {
-		href: l.href,
-		onClick: l.onClick
-	}, l.name) : l.name), l.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, l.meta), l.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, l.note)), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__total" }, l.total)))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((s, i) => /* @__PURE__ */ React.createElement("div", {
+	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement("a", {
+		href: line.href,
+		onClick: line.onClick
+	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__total" }, line.total)))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
-		className: cx("ag-osum__sum", s.strong && "ag-osum__sum--strong")
-	}, /* @__PURE__ */ React.createElement("dt", null, s.label), /* @__PURE__ */ React.createElement("dd", null, s.value)))));
+		className: cx("ag-osum__sum", sum.strong && "ag-osum__sum--strong")
+	}, /* @__PURE__ */ React.createElement("dt", null, sum.label), /* @__PURE__ */ React.createElement("dd", null, sum.value)))));
 }
 Object.assign(__ds_scope, { OrderSummary });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/OrderSummary/OrderSummary.jsx", error: String((e && e.message) || e) }); }
@@ -1841,21 +1899,21 @@ function OrderTimeline({ steps = [], current = 0, status = "active", label, done
 		className: cx("ag-otl", className),
 		style,
 		"aria-label": label
-	}, steps.map((s, i) => {
+	}, steps.map((step, i) => {
 		const done = status === "done" || i < current;
-		const now = status !== "done" && i === current;
-		const st = done ? "done" : now ? "current" : "upcoming";
+		const isCurrent = status !== "done" && i === current;
+		const state = done ? "done" : isCurrent ? "current" : "upcoming";
 		return /* @__PURE__ */ React.createElement("li", {
 			key: i,
-			className: cx("ag-otl__step", "ag-otl__step--" + st),
-			"aria-current": now ? "step" : undefined
+			className: cx("ag-otl__step", "ag-otl__step--" + state),
+			"aria-current": isCurrent ? "step" : undefined
 		}, /* @__PURE__ */ React.createElement("span", {
 			className: "ag-otl__rail",
 			"aria-hidden": "true"
 		}, /* @__PURE__ */ React.createElement("span", { className: "ag-otl__dot" }, done && /* @__PURE__ */ React.createElement(Icon, {
 			name: "check",
 			size: 14
-		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, s.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", doneLabel)), s.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, s.time));
+		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, step.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", doneLabel)), step.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, step.time));
 	}));
 }
 Object.assign(__ds_scope, { OrderTimeline });
@@ -1866,8 +1924,10 @@ try { (() => {
 const { Button } = __ds_scope;
 const { cx } = __ds_scope;
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+// Card-to-card transfer details: the card number in groups of four (always LTR) with a copy
+// button, then holder, bank and amount. Persian digits in `cardNumber` are accepted.
 function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}, onCopy, className = "" }) {
-	const L = {
+	const text = {
 		card: "Card number",
 		holder: "Card holder",
 		bank: "Bank",
@@ -1876,57 +1936,58 @@ function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}, onCop
 		copied: "Copied",
 		...labels
 	};
-	const digits = String(cardNumber).replace(/[۰-۹]/g, (d) => FA_DIGITS.indexOf(d)).replace(/\D/g, "");
+	const digits = String(cardNumber).replace(/[۰-۹]/g, (digit) => FA_DIGITS.indexOf(digit)).replace(/\D/g, "");
 	const grouped = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
 	const [copied, setCopied] = React.useState(false);
-	const t = React.useRef();
-	React.useEffect(() => () => clearTimeout(t.current), []);
+	const resetTimer = React.useRef();
+	React.useEffect(() => () => clearTimeout(resetTimer.current), []);
 	const copy = () => {
 		const done = () => {
 			setCopied(true);
-			clearTimeout(t.current);
-			t.current = setTimeout(() => setCopied(false), 2e3);
+			clearTimeout(resetTimer.current);
+			resetTimer.current = setTimeout(() => setCopied(false), 2e3);
 			onCopy && onCopy(digits);
 		};
 		const fallback = () => {
-			const a = document.createElement("textarea");
-			a.value = digits;
-			a.style.position = "fixed";
-			a.style.opacity = "0";
-			document.body.appendChild(a);
-			a.select();
+			const scratch = document.createElement("textarea");
+			scratch.value = digits;
+			scratch.style.position = "fixed";
+			scratch.style.opacity = "0";
+			document.body.appendChild(scratch);
+			scratch.select();
 			try {
 				document.execCommand("copy");
-			} catch (e) {}
-			a.remove();
+			} catch (error) {}
+			scratch.remove();
 			done();
 		};
 		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(digits).then(done, fallback);
 		else fallback();
 	};
+	// [label, value, modifier class]
 	const rows = [
-		[L.holder, holder],
-		[L.bank, bank],
+		[text.holder, holder],
+		[text.bank, bank],
 		[
-			L.amount,
+			text.amount,
 			amount,
 			"amount"
 		]
-	].filter((r) => r[1]);
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-pay", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, L.card), /* @__PURE__ */ React.createElement("div", {
+	].filter(([, value]) => value);
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-pay", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, text.card), /* @__PURE__ */ React.createElement("div", {
 		className: "ag-pay__num",
 		dir: "ltr"
 	}, grouped)), /* @__PURE__ */ React.createElement(Button, {
 		variant: "secondary",
 		iconStart: copied ? "check" : "copy",
 		onClick: copy
-	}, copied ? L.copied : L.copy)), rows.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-pay__meta" }, rows.map(([k, v, m]) => /* @__PURE__ */ React.createElement("div", {
-		key: k,
-		className: m ? "ag-pay__" + m : undefined
-	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-pay__k" }, k), /* @__PURE__ */ React.createElement("dd", null, v)))), /* @__PURE__ */ React.createElement("span", {
+	}, copied ? text.copied : text.copy)), rows.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-pay__meta" }, rows.map(([label, value, modifier]) => /* @__PURE__ */ React.createElement("div", {
+		key: label,
+		className: modifier ? "ag-pay__" + modifier : undefined
+	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-pay__k" }, label), /* @__PURE__ */ React.createElement("dd", null, value)))), /* @__PURE__ */ React.createElement("span", {
 		role: "status",
 		className: "ag-sr-only"
-	}, copied ? L.copied : ""));
+	}, copied ? text.copied : ""));
 }
 Object.assign(__ds_scope, { PaymentCard });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/PaymentCard/PaymentCard.jsx", error: String((e && e.message) || e) }); }
@@ -1938,39 +1999,40 @@ const { IconButton } = __ds_scope;
 const { cx } = __ds_scope;
 // The product name is the one interactive target: <a href> (or <button> without href) with a stretched ::after covering the card.
 function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder = "Bouquet photo", favLabel = "Save" }) {
-	const list = (images && images.length ? images : image ? [{
+	const photos = (images && images.length ? images : image ? [{
 		src: image,
 		srcSet
-	}] : []).map((x) => typeof x === "string" ? { src: x } : x);
-	const [a, b] = list;
-	const pic = (x, cls) => /* @__PURE__ */ React.createElement("img", {
-		className: cls,
-		src: x.src,
-		srcSet: x.srcSet,
-		sizes: x.srcSet ? sizes : undefined,
-		alt: cls ? "" : x.alt || name,
+	}] : []).map((photo) => typeof photo === "string" ? { src: photo } : photo);
+	// The second photo crossfades in on hover; it is decorative, so its alt is empty.
+	const [mainPhoto, hoverPhoto] = photos;
+	const renderPhoto = (photo, className) => /* @__PURE__ */ React.createElement("img", {
+		className,
+		src: photo.src,
+		srcSet: photo.srcSet,
+		sizes: photo.srcSet ? sizes : undefined,
+		alt: className ? "" : photo.alt || name,
 		loading: "lazy",
 		decoding: "async",
-		style: x.crop ? {
-			objectPosition: x.crop,
+		style: photo.crop ? {
+			objectPosition: photo.crop,
 			transform: "scale(1.6)",
-			transformOrigin: x.crop
+			transformOrigin: photo.crop
 		} : undefined
 	});
-	const aria = linkLabel ?? (typeof name === "string" && typeof price === "string" ? name + " — " + price : undefined);
+	const accessibleName = linkLabel ?? (typeof name === "string" && typeof price === "string" ? name + " — " + price : undefined);
 	const linked = !!(href || onClick);
 	const title = href ? /* @__PURE__ */ React.createElement("a", {
 		href,
 		className: "ag-product__link",
-		"aria-label": aria,
+		"aria-label": accessibleName,
 		onClick
 	}, name) : onClick ? /* @__PURE__ */ React.createElement("button", {
 		type: "button",
 		className: "ag-product__link",
-		"aria-label": aria,
+		"aria-label": accessibleName,
 		onClick
 	}, name) : name;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, a ? pic(a) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, placeholder), b && pic(b, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
 		tone: badgeTone,
 		className: "ag-product__badge"
 	}, badge), onFavorite && /* @__PURE__ */ React.createElement(IconButton, {
@@ -1980,8 +2042,8 @@ function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, 
 		size: "sm",
 		active: favorite,
 		className: "ag-product__fav",
-		onClick: (e) => {
-			e.stopPropagation();
+		onClick: (event) => {
+			event.stopPropagation();
 			onFavorite();
 		}
 	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("span", { className: "ag-product__price" }, compareAt && /* @__PURE__ */ React.createElement("s", null, compareAt), price))));
@@ -2034,19 +2096,21 @@ Object.assign(__ds_scope, { Radio });
 // components/RangeSlider/RangeSlider.jsx
 try { (() => {
 const { cx } = __ds_scope;
-function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (v) => String(v), label = "Value", labels = {
+// Two native range inputs over one track (or one with `range={false}`), so keyboard and screen
+// readers work as usual. The handles can't cross; RTL mirrors the fill.
+function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (number) => String(number), label = "Value", labels = {
 	min: "Minimum",
 	max: "Maximum"
 }, showValues = true, className = "" }) {
-	const init = defaultValue ?? (range ? [min, max] : min);
-	const [inner, setInner] = React.useState(init);
-	const cur = value ?? inner;
-	const commit = (n) => {
-		if (value === undefined) setInner(n);
-		onChange && onChange(n);
+	const initial = defaultValue ?? (range ? [min, max] : min);
+	const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
+	const current = value ?? uncontrolledValue;
+	const commit = (next) => {
+		if (value === undefined) setUncontrolledValue(next);
+		onChange && onChange(next);
 	};
-	const pct = (v) => (v - min) / (max - min || 1) * 100;
-	const common = {
+	const percent = (number) => (number - min) / (max - min || 1) * 100;
+	const inputProps = {
 		type: "range",
 		min,
 		max,
@@ -2054,47 +2118,48 @@ function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaul
 		className: "ag-range__input"
 	};
 	if (!range) {
-		const v = Number(cur);
+		const single = Number(current);
 		return /* @__PURE__ */ React.createElement("div", { className: cx("ag-range", "ag-range--single", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-range__track" }, /* @__PURE__ */ React.createElement("span", {
 			className: "ag-range__fill",
 			style: {
 				insetInlineStart: 0,
-				width: pct(v) + "%"
+				width: percent(single) + "%"
 			}
 		}), /* @__PURE__ */ React.createElement("input", {
-			...common,
-			value: v,
+			...inputProps,
+			value: single,
 			"aria-label": label,
-			"aria-valuetext": formatValue(v),
-			onChange: (e) => commit(Number(e.target.value))
+			"aria-valuetext": formatValue(single),
+			onChange: (event) => commit(Number(event.target.value))
 		})), showValues && /* @__PURE__ */ React.createElement("div", { className: "ag-range__vals" }, /* @__PURE__ */ React.createElement("span", null, formatValue(min)), /* @__PURE__ */ React.createElement("span", null, formatValue(max))));
 	}
-	const [lo, hi] = cur;
-	const set = (i, raw) => {
-		const v = Number(raw);
-		const n = i ? [lo, Math.min(max, Math.max(v, lo + step))] : [Math.max(min, Math.min(v, hi - step)), hi];
-		if (n[0] !== lo || n[1] !== hi) commit(n);
+	const [low, high] = current;
+	// Moves one handle (0 = low, 1 = high), keeping at least one step between them.
+	const moveHandle = (handle, raw) => {
+		const number = Number(raw);
+		const next = handle ? [low, Math.min(max, Math.max(number, low + step))] : [Math.max(min, Math.min(number, high - step)), high];
+		if (next[0] !== low || next[1] !== high) commit(next);
 	};
 	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-range", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-range__track" }, /* @__PURE__ */ React.createElement("span", {
 		className: "ag-range__fill",
 		style: {
-			insetInlineStart: pct(lo) + "%",
-			width: pct(hi) - pct(lo) + "%"
+			insetInlineStart: percent(low) + "%",
+			width: percent(high) - percent(low) + "%"
 		}
 	}), /* @__PURE__ */ React.createElement("input", {
-		...common,
-		value: lo,
+		...inputProps,
+		value: low,
 		"aria-label": labels.min,
-		"aria-valuetext": formatValue(lo),
-		onChange: (e) => set(0, e.target.value),
-		style: { zIndex: pct(lo) > 90 ? 3 : 2 }
+		"aria-valuetext": formatValue(low),
+		onChange: (event) => moveHandle(0, event.target.value),
+		style: { zIndex: percent(low) > 90 ? 3 : 2 }
 	}), /* @__PURE__ */ React.createElement("input", {
-		...common,
-		value: hi,
+		...inputProps,
+		value: high,
 		"aria-label": labels.max,
-		"aria-valuetext": formatValue(hi),
-		onChange: (e) => set(1, e.target.value)
-	})), showValues && /* @__PURE__ */ React.createElement("div", { className: "ag-range__vals" }, /* @__PURE__ */ React.createElement("span", null, formatValue(lo)), /* @__PURE__ */ React.createElement("span", null, formatValue(hi))));
+		"aria-valuetext": formatValue(high),
+		onChange: (event) => moveHandle(1, event.target.value)
+	})), showValues && /* @__PURE__ */ React.createElement("div", { className: "ag-range__vals" }, /* @__PURE__ */ React.createElement("span", null, formatValue(low)), /* @__PURE__ */ React.createElement("span", null, formatValue(high))));
 }
 Object.assign(__ds_scope, { RangeSlider });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/RangeSlider/RangeSlider.jsx", error: String((e && e.message) || e) }); }
@@ -2102,6 +2167,7 @@ Object.assign(__ds_scope, { RangeSlider });
 // components/Switch/Switch.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// An on/off toggle: a native checkbox with role="switch" inside its label.
 function Switch({ label, className = "", style, ...rest }) {
 	return /* @__PURE__ */ React.createElement("label", {
 		className: cx("ag-switch", className),
@@ -2123,7 +2189,7 @@ const { IconButton } = __ds_scope;
 const { Button } = __ds_scope;
 const { Switch } = __ds_scope;
 const { cx } = __ds_scope;
-const RR_DEF = {
+const DEFAULT_LABELS = {
 	paused: "Paused",
 	sendFlowers: "Send flowers",
 	reminderFor: "Reminder for {name}",
@@ -2132,18 +2198,18 @@ const RR_DEF = {
 };
 // One occasion reminder: arched date tile · name + meta · controls (drop below on narrow widths via container query).
 function ReminderRow({ name, day, month, occasion, occasionIcon = "calendar-heart", before, channel = "sms", altDate, when, soon, on = true, onToggle, onEdit, onDelete, sendHref, sendOnClick, labels, className = "", style }) {
-	const L = {
-		...RR_DEF,
+	const text = {
+		...DEFAULT_LABELS,
 		...labels
 	};
-	const nm = (s) => s.replace("{name}", typeof name === "string" ? name : "");
+	const named = (template) => template.replace("{name}", typeof name === "string" ? name : "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-remwrap", className),
 		style
 	}, /* @__PURE__ */ React.createElement("div", { className: cx("ag-rem", soon && on && "ag-rem--soon") }, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-rem__tile", !on && "ag-rem__tile--paused"),
 		"aria-hidden": "true"
-	}, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__day" }, day), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__month" }, month)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-rem__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__name" }, name), on ? when && /* @__PURE__ */ React.createElement(Badge, { tone: soon ? "accent" : "neutral" }, when) : /* @__PURE__ */ React.createElement(Badge, { tone: "neutral" }, L.paused)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
+	}, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__day" }, day), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__month" }, month)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-rem__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__name" }, name), on ? when && /* @__PURE__ */ React.createElement(Badge, { tone: soon ? "accent" : "neutral" }, when) : /* @__PURE__ */ React.createElement(Badge, { tone: "neutral" }, text.paused)), /* @__PURE__ */ React.createElement("div", { className: "ag-rem__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
 		name: occasionIcon,
 		size: 14
 	}), occasion), /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, day, " ", month, altDate && /* @__PURE__ */ React.createElement("span", null, " (", altDate, ")")), before && /* @__PURE__ */ React.createElement("span", { className: "ag-rem__bit" }, /* @__PURE__ */ React.createElement(Icon, {
@@ -2154,19 +2220,19 @@ function ReminderRow({ name, day, month, occasion, occasionIcon = "calendar-hear
 		variant: "secondary",
 		href: sendHref,
 		onClick: sendOnClick
-	}, L.sendFlowers), /* @__PURE__ */ React.createElement(Switch, {
+	}, text.sendFlowers), /* @__PURE__ */ React.createElement(Switch, {
 		checked: on,
-		onChange: (e) => onToggle && onToggle(e.target.checked),
-		"aria-label": nm(L.reminderFor)
+		onChange: (event) => onToggle && onToggle(event.target.checked),
+		"aria-label": named(text.reminderFor)
 	}), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "pencil",
 		size: "sm",
-		label: nm(L.edit),
+		label: named(text.edit),
 		onClick: onEdit
 	}), onDelete && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "trash-2",
 		size: "sm",
-		label: nm(L.delete),
+		label: named(text.delete),
 		onClick: onDelete
 	}))));
 }
@@ -2177,20 +2243,22 @@ Object.assign(__ds_scope, { ReminderRow });
 try { (() => {
 const { IconButton } = __ds_scope;
 const { cx } = __ds_scope;
+// A section title with an optional italic `accent`, eyebrow and action, plus prev/next arrows
+// when `onPrev`/`onNext` are given (pair them with a Carousel's ref).
 function SectionHeader({ title, accent, eyebrow, level = "h2", action, onPrev, onNext, canPrev = true, canNext = true, prevLabel = "Previous", nextLabel = "Next", id, className = "", style }) {
-	const H = [
+	const Heading = [
 		"h1",
 		"h2",
 		"h3"
 	].includes(level) ? level : "h2";
-	const arrows = onPrev || onNext;
+	const hasArrows = onPrev || onNext;
 	return /* @__PURE__ */ React.createElement("div", {
-		className: cx("ag-sechead", "ag-sechead--" + H, className),
+		className: cx("ag-sechead", "ag-sechead--" + Heading, className),
 		style
-	}, /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__text" }, eyebrow && /* @__PURE__ */ React.createElement("div", { className: "ag-eyebrow ag-sechead__eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement(H, {
+	}, /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__text" }, eyebrow && /* @__PURE__ */ React.createElement("div", { className: "ag-eyebrow ag-sechead__eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement(Heading, {
 		id,
 		className: "ag-sechead__title"
-	}, title, accent && /* @__PURE__ */ React.createElement(React.Fragment, null, " ", /* @__PURE__ */ React.createElement("em", null, accent)))), (action || arrows) && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__actions" }, action, arrows && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__arrows" }, /* @__PURE__ */ React.createElement(IconButton, {
+	}, title, accent && /* @__PURE__ */ React.createElement(React.Fragment, null, " ", /* @__PURE__ */ React.createElement("em", null, accent)))), (action || hasArrows) && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__actions" }, action, hasArrows && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__arrows" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
 		label: prevLabel,
 		variant: "outline",
@@ -2210,6 +2278,8 @@ Object.assign(__ds_scope, { SectionHeader });
 // components/Skeleton/Skeleton.jsx
 try { (() => {
 const { cx } = __ds_scope;
+// Loading placeholders: text lines, a shape (`block`, `circle`, `arch`) or a whole product `card`.
+// Hidden from screen readers; the shimmer stops with reduced motion.
 function Skeleton({ shape = "text", width, height, lines = 1, radius, className = "", style }) {
 	if (shape === "card") return /* @__PURE__ */ React.createElement("div", {
 		"aria-hidden": "true",
@@ -2266,19 +2336,19 @@ try { (() => {
 const { cx } = __ds_scope;
 // First element in <body>. Hidden until focused; moves focus to the target (adds tabindex="-1" if needed) without touching the URL.
 function SkipLink({ href = "#main", children, className = "", onClick, ...rest }) {
-	const go = (e) => {
-		onClick && onClick(e);
-		if (e.defaultPrevented || !href.startsWith("#")) return;
-		const t = document.getElementById(href.slice(1));
-		if (!t) return;
-		e.preventDefault();
-		if (!t.hasAttribute("tabindex")) t.setAttribute("tabindex", "-1");
-		t.focus();
+	const focusTarget = (event) => {
+		onClick && onClick(event);
+		if (event.defaultPrevented || !href.startsWith("#")) return;
+		const target = document.getElementById(href.slice(1));
+		if (!target) return;
+		event.preventDefault();
+		if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+		target.focus();
 	};
 	return /* @__PURE__ */ React.createElement("a", {
 		href,
 		className: cx("ag-skip", className),
-		onClick: go,
+		onClick: focusTarget,
 		...rest
 	}, children);
 }
@@ -2289,37 +2359,39 @@ Object.assign(__ds_scope, { SkipLink });
 try { (() => {
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
-const defaultCaption = (n, total, label) => "Step " + n + " of " + total + " · " + label;
-function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (n) => String(n), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "" }) {
+const defaultCaption = (number, total, label) => "Step " + number + " of " + total + " · " + label;
+// Checkout progress as an ordered list; done steps can be revisited with `onStepClick`.
+// `compact` (phones) shows only the dots plus a "Step 2 of 3 · Label" caption.
+function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (number) => String(number), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "" }) {
 	const list = /* @__PURE__ */ React.createElement("ol", {
 		"aria-label": label,
 		className: cx("ag-steps", compact && "ag-steps--compact", !compact && className)
-	}, steps.map((s, i) => {
-		const st = i < current ? "done" : i === current ? "current" : "upcoming";
-		const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
+	}, steps.map((step, i) => {
+		const state = i < current ? "done" : i === current ? "current" : "upcoming";
+		const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
 			className: "ag-steps__dot",
 			"aria-hidden": compact || undefined
-		}, st === "done" ? /* @__PURE__ */ React.createElement(Icon, {
+		}, state === "done" ? /* @__PURE__ */ React.createElement(Icon, {
 			name: "check",
 			size: 14
-		}) : s.number ?? formatNumber(i + 1)), /* @__PURE__ */ React.createElement("span", { className: compact ? "ag-sr-only" : "ag-steps__label" }, s.label, st === "done" && doneLabel && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " ", doneLabel)));
+		}) : step.number ?? formatNumber(i + 1)), /* @__PURE__ */ React.createElement("span", { className: compact ? "ag-sr-only" : "ag-steps__label" }, step.label, state === "done" && doneLabel && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " ", doneLabel)));
 		return /* @__PURE__ */ React.createElement("li", {
 			key: i,
-			className: cx("ag-steps__item", "ag-steps__item--" + st),
-			"aria-current": st === "current" ? "step" : undefined
-		}, st === "done" && onStepClick ? /* @__PURE__ */ React.createElement("button", {
+			className: cx("ag-steps__item", "ag-steps__item--" + state),
+			"aria-current": state === "current" ? "step" : undefined
+		}, state === "done" && onStepClick ? /* @__PURE__ */ React.createElement("button", {
 			type: "button",
 			className: "ag-steps__btn",
 			onClick: () => onStepClick(i)
-		}, inner) : /* @__PURE__ */ React.createElement("span", { className: "ag-steps__btn" }, inner));
+		}, content) : /* @__PURE__ */ React.createElement("span", { className: "ag-steps__btn" }, content));
 	}));
 	if (!compact) return list;
-	const ci = Math.min(Math.max(current, 0), steps.length - 1);
-	const cur = steps[ci];
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-steps-wrap", className) }, list, cur && /* @__PURE__ */ React.createElement("p", {
+	const currentIndex = Math.min(Math.max(current, 0), steps.length - 1);
+	const currentStep = steps[currentIndex];
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-steps-wrap", className) }, list, currentStep && /* @__PURE__ */ React.createElement("p", {
 		className: "ag-steps__caption",
 		"aria-hidden": "true"
-	}, captionFormat(cur.number ?? formatNumber(ci + 1), formatNumber(steps.length), cur.label)));
+	}, captionFormat(currentStep.number ?? formatNumber(currentIndex + 1), formatNumber(steps.length), currentStep.label)));
 }
 Object.assign(__ds_scope, { Stepper });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Stepper/Stepper.jsx", error: String((e && e.message) || e) }); }
@@ -2368,36 +2440,36 @@ try { (() => {
 const { cx } = __ds_scope;
 // WCAG 1.4.13: the bubble describes its trigger (aria-describedby), stays open while the pointer is over it, and Esc dismisses it until the pointer or focus leaves.
 function Tooltip({ content, placement = "top", open, children }) {
-	const id = React.useId();
+	const bubbleId = React.useId();
 	const [hover, setHover] = React.useState(false);
 	const [focus, setFocus] = React.useState(false);
 	const [dismissed, setDismissed] = React.useState(false);
 	const active = hover || focus;
 	React.useEffect(() => {
 		if (!active) return;
-		const onKey = (e) => {
-			if (e.key === "Escape") setDismissed(true);
+		const onKeyDown = (event) => {
+			if (event.key === "Escape") setDismissed(true);
 		};
-		document.addEventListener("keydown", onKey);
-		return () => document.removeEventListener("keydown", onKey);
+		document.addEventListener("keydown", onKeyDown);
+		return () => document.removeEventListener("keydown", onKeyDown);
 	}, [active]);
 	React.useEffect(() => {
 		if (!active) setDismissed(false);
 	}, [active]);
 	// Template runtimes pass even a single child as an array, so unwrap a lone element before linking it.
-	const kids = React.Children.toArray(children);
-	const only = kids.length === 1 && React.isValidElement(kids[0]) ? kids[0] : null;
-	const trigger = only ? React.cloneElement(only, { "aria-describedby": [only.props["aria-describedby"], id].filter(Boolean).join(" ") }) : children;
+	const childList = React.Children.toArray(children);
+	const onlyChild = childList.length === 1 && React.isValidElement(childList[0]) ? childList[0] : null;
+	const trigger = onlyChild ? React.cloneElement(onlyChild, { "aria-describedby": cx(onlyChild.props["aria-describedby"], bubbleId) }) : children;
 	return /* @__PURE__ */ React.createElement("span", {
 		className: cx("ag-tip", open && "ag-tip--open", dismissed && "ag-tip--dismissed"),
 		onMouseEnter: () => setHover(true),
 		onMouseLeave: () => setHover(false),
 		onFocus: () => setFocus(true),
-		onBlur: (e) => {
-			if (!e.currentTarget.contains(e.relatedTarget)) setFocus(false);
+		onBlur: (event) => {
+			if (!event.currentTarget.contains(event.relatedTarget)) setFocus(false);
 		}
 	}, trigger, /* @__PURE__ */ React.createElement("span", {
-		id,
+		id: bubbleId,
 		role: "tooltip",
 		className: cx("ag-tip__bubble", placement === "bottom" && "ag-tip__bubble--bottom")
 	}, content));
@@ -2476,8 +2548,8 @@ Object.assign(__ds_scope, { format });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/utils/format.js", error: String((e && e.message) || e) }); }
 
 __ds_ns.ICON_SVGS = __ds_scope.ICON_SVGS;
-__ds_ns.Icon = __ds_scope.Icon;
 __ds_ns.cx = __ds_scope.cx;
+__ds_ns.Icon = __ds_scope.Icon;
 __ds_ns.Accordion = __ds_scope.Accordion;
 __ds_ns.Badge = __ds_scope.Badge;
 __ds_ns.IconButton = __ds_scope.IconButton;

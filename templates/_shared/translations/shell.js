@@ -42,7 +42,12 @@ const VF_SHELL = {
       rights: 'All rights reserved.',
       credit: 'Designed and built by'
     },
-    policies: {shipping: 'Shipping & delivery', returns: 'Returns & refunds', privacy: 'Privacy', terms: 'Terms of use'},
+    policies: {
+      shipping: 'Shipping & delivery',
+      returns: 'Returns & refunds',
+      privacy: 'Privacy',
+      terms: 'Terms of use'
+    },
     newsletter: {
       title: 'Letters from the studio',
       body: 'New seasonal designs and occasion reminders, about twice a month.',
@@ -106,7 +111,12 @@ const VF_SHELL = {
       rights: 'همه حقوق محفوظ است.',
       credit: 'طراحی و ساخت:'
     },
-    policies: {shipping: 'ارسال و تحویل', returns: 'بازگشت و بازپرداخت', privacy: 'حریم خصوصی', terms: 'شرایط استفاده'},
+    policies: {
+      shipping: 'ارسال و تحویل',
+      returns: 'بازگشت و بازپرداخت',
+      privacy: 'حریم خصوصی',
+      terms: 'شرایط استفاده'
+    },
     newsletter: {
       title: 'نامه‌های استودیو',
       body: 'طرح‌های تازه فصل و یادآور مناسبت‌ها، حدود دو بار در ماه.',

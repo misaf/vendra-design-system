@@ -32,7 +32,10 @@ test('after the cut-off, today is closed', async ({page}) => {
   const today = days.getByRole('radio', {name: 'Today', exact: true});
   await expect(today).toBeDisabled();
   await expect(today).toHaveAccessibleDescription(/Order by 18:00/);
-  await expect(days.getByRole('radio', {name: /^Tomorrow/})).toHaveAttribute('aria-checked', 'true');
+  await expect(days.getByRole('radio', {name: /^Tomorrow/})).toHaveAttribute(
+    'aria-checked',
+    'true'
+  );
 });
 
 test('today’s slots close two hours before they end', async ({page}) => {
@@ -44,15 +47,25 @@ test('today’s slots close two hours before they end', async ({page}) => {
     await expect(slot).toBeDisabled();
     await expect(slot).toHaveAccessibleDescription(/Closed/);
   }
-  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toHaveAttribute('aria-checked', 'true');
-  await page.getByRole('radiogroup', {name: 'Delivery day'}).getByRole('radio', {name: /^Tomorrow/}).click();
+  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toHaveAttribute(
+    'aria-checked',
+    'true'
+  );
+  await page
+    .getByRole('radiogroup', {name: 'Delivery day'})
+    .getByRole('radio', {name: /^Tomorrow/})
+    .click();
   await expect(slots.getByRole('radio', {disabled: true})).toHaveCount(0);
 });
 
 test('the bag and delivery details are separate steps', async ({page}) => {
   await openSite(page, 'bag', 'en');
   await expect(page.locator('#vf-name')).toHaveCount(0);
-  await page.getByRole('button', {name: 'Continue to delivery'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to delivery'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(page).toHaveURL(/step=delivery/);
   await expect(page.locator('main h1')).toHaveText('Delivery details.');
   await page.goBack();
@@ -63,7 +76,9 @@ test('a bought card needs its message, and any item can add one', async ({page})
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   const ivory = page.getByRole('textbox', {name: /^Card for \u2066?VF-7K2M4Q/});
   await expect(ivory).toHaveValue('Happy birthday, Shirin.');
-  await page.getByRole('button', {name: /^Add a card · \+150,000 Toman, for \u2066?VF-8RD5WN/}).click();
+  await page
+    .getByRole('button', {name: /^Add a card · \+150,000 Toman, for \u2066?VF-8RD5WN/})
+    .click();
   const orchid = page.getByRole('textbox', {name: /^Card for \u2066?VF-8RD5WN/});
   await expect(orchid).toBeFocused();
   await expect(page.locator('main aside')).toContainText('8,600,000 Toman');
@@ -72,18 +87,30 @@ test('a bought card needs its message, and any item can add one', async ({page})
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(orchid).toBeFocused();
   await expect(orchid).toHaveAccessibleDescription(/Write what the card should say\./);
   expect(await scanAxe(page)).toEqual([]);
   await orchid.fill('Get well soon');
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(page.locator('#vf-last4')).toBeVisible();
 });
 
 test('several problems are listed together, each linking to its field', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   const summary = page.locator('#vf-errors');
   await expect(summary).toBeFocused();
   await expect(summary).toContainText('Check 6 details to continue.');
@@ -118,14 +145,22 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   await expect(summary).toContainText(/−\u20681,267,500 Toman/);
   await expect(summary).toContainText('7,182,500 Toman');
   expect(await scanAxe(page)).toEqual([]);
-  await page.getByRole('button', {name: 'Continue to delivery'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to delivery'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(summary).toContainText('Discount · ROSES15');
   await fillSender(page);
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(page.locator('#vf-last4')).toBeVisible();
   await expect(page.locator('main')).toContainText('Discount · ROSES15');
 });
@@ -153,10 +188,16 @@ test('the shop filters by occasion', async ({page}, info) => {
   await openSite(page, 'shop', 'en');
   if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Filters'}).click();
   const occasions = page.getByRole('group', {name: 'Occasion'}).locator('visible=true');
-  await expect(occasions.getByRole('button', {name: 'All', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  await expect(occasions.getByRole('button', {name: 'All', exact: true})).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
   await occasions.getByRole('button', {name: 'Anniversary'}).click();
   await expect(page).toHaveURL(/occasion=anniversary/);
-  await expect(occasions.getByRole('button', {name: 'Anniversary'})).toHaveAttribute('aria-pressed', 'true');
+  await expect(occasions.getByRole('button', {name: 'Anniversary'})).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
   expect(await scanAxe(page)).toEqual([]);
   if (info.project.name === 'mobile') await page.keyboard.press('Escape');
   await expect(page.locator('main .ag-product')).toHaveCount(2);
@@ -186,17 +227,26 @@ test('the delivery pin is required and travels with the order', async ({page}) =
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await page.fill('#vf-address', 'Plaque 12, unit 3');
-  const next = page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first();
+  const next = page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first();
   await next.click();
   // The pin is the only problem, so the map takes focus and is described by the error.
   await expect(page.locator('#vf-map')).toBeFocused();
-  await expect(page.locator('#vf-map')).toHaveAccessibleDescription(/Place the pin on the delivery address\./);
+  await expect(page.locator('#vf-map')).toHaveAccessibleDescription(
+    /Place the pin on the delivery address\./
+  );
   expect(await scanAxe(page)).toEqual([]);
   await pinDelivery(page);
   await expect(page.locator('#vf-pin-error')).toHaveCount(0);
   await next.click();
   await expect(page.locator('#vf-last4')).toBeVisible();
-  const location = await page.evaluate(() => JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname) || '{}').delivery?.location);
+  const location = await page.evaluate(
+    () =>
+      JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname) || '{}').delivery
+        ?.location
+  );
   expect(location).toEqual({lat: expect.any(Number), lng: expect.any(Number)});
 });
 
@@ -262,14 +312,21 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
   await expect(page.locator('#vf-sender-phone')).toHaveValue('09125649438');
   await page.fill('#vf-sender', 'Shirin Ahmadi');
   const saved = page.getByRole('group', {name: 'Send to a saved address'});
-  await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'false');
+  await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute(
+    'aria-pressed',
+    'false'
+  );
   await saved.getByRole('button', {name: 'Office'}).click();
   await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
   await expect(page.locator('#vf-address')).toHaveValue('40 Moazen Blvd, Gohardasht');
   await expect(page.locator('#vf-pin-status')).toContainText('35.81620, 50.93910');
   expect(await scanAxe(page)).toEqual([]);
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   // The sample account's balance covers the order, so it pays from the balance by default.
   await expect(page.getByRole('radio', {name: 'Account balance'})).toBeChecked();
   await page.getByRole('radio', {name: 'Card-to-card transfer'}).check();
@@ -330,17 +387,29 @@ test('a guest finds an order with its number and mobile', async ({page}) => {
   await expect(page.locator('#vf-lookup-id')).toBeFocused();
 });
 
-test('a card-to-card order says its payment is being confirmed, and offers an account', async ({page}) => {
+test('a card-to-card order says its payment is being confirmed, and offers an account', async ({
+  page
+}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   await page.fill('#vf-last4', '6037');
-  await page.getByRole('button', {name: 'I’ve paid — place order'}).locator('visible=true').first().click();
-  await expect(page.locator('.vf-checkout-account')).toContainText('Sign in with \u206809121112233\u2069');
+  await page
+    .getByRole('button', {name: 'I’ve paid — place order'})
+    .locator('visible=true')
+    .first()
+    .click();
+  await expect(page.locator('.vf-checkout-account')).toContainText(
+    'Sign in with \u206809121112233\u2069'
+  );
   await page.getByRole('link', {name: 'Track order'}).click();
   const pending = page.getByRole('status').filter({hasText: 'Payment being confirmed'});
   await expect(pending).toContainText('card ending 6037');
@@ -365,7 +434,10 @@ test('the shop filters by delivery day', async ({page}, info) => {
   }
   // Only same-day designs go today.
   await expect(page.locator('main .ag-product')).toHaveCount(3);
-  await page.getByRole('button', {name: /Delivers Today/}).first().click();
+  await page
+    .getByRole('button', {name: /Delivers Today/})
+    .first()
+    .click();
   await expect(page.locator('main .ag-product')).toHaveCount(6);
   // Filters replace the history entry, so Back leaves the shop instead of undoing each one.
   expect(await page.evaluate(() => history.length)).toBeLessThanOrEqual(2);
@@ -375,7 +447,10 @@ test('products are known by their code, and the code finds them', async ({page})
   await openSite(page, 'product', 'en', {id: 'VF-8RD5WN'});
   await expect(page.locator('main h1')).toHaveText('VF-8RD5WN');
   await expect(page.locator('.vf-product-subtitle')).toHaveText('Orchid');
-  await expect(page.getByRole('link', {name: 'Ask about this design on WhatsApp'})).toHaveAttribute('href', /text=.*code%20VF-8RD5WN/);
+  await expect(page.getByRole('link', {name: 'Ask about this design on WhatsApp'})).toHaveAttribute(
+    'href',
+    /text=.*code%20VF-8RD5WN/
+  );
   // An old link by name opens the product, and the address is rewritten with its category and code.
   await openSite(page, 'product', 'en', {id: 'orchid'});
   await expect(page).toHaveURL(/view=product&id=VF-8RD5WN&cat=orchids/);
@@ -386,10 +461,15 @@ test('products are known by their code, and the code finds them', async ({page})
   await openSite(page, 'search', 'fa');
   await page.fill('#vf-q', 'vf ۸rd');
   await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveCount(1);
-  await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveAttribute('href', /id=VF-8RD5WN&cat=orchids/);
+  await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveAttribute(
+    'href',
+    /id=VF-8RD5WN&cat=orchids/
+  );
 });
 
-test('a customer tops up their balance, then pays from it with the balance discount', async ({page}) => {
+test('a customer tops up their balance, then pays from it with the balance discount', async ({
+  page
+}) => {
   await openSite(page, 'account', 'en', {tab: 'balance'});
   await expect(page.getByRole('tab', {name: 'Balance'})).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#vf-balance-amount')).toHaveText('120,000,000 Toman');
@@ -398,10 +478,15 @@ test('a customer tops up their balance, then pays from it with the balance disco
   await page.getByRole('button', {name: 'Top up', exact: true}).click();
   await expect(page.locator('#vf-topup-amount')).toBeFocused();
   await expect(page.locator('#vf-topup-amount')).toHaveAccessibleDescription(/Enter an amount\./);
-  await page.getByRole('group', {name: 'Quick amounts'}).getByRole('button', {name: '10,000,000 Toman'}).click();
+  await page
+    .getByRole('group', {name: 'Quick amounts'})
+    .getByRole('button', {name: '10,000,000 Toman'})
+    .click();
   await page.getByRole('button', {name: 'Top up 10,000,000 Toman'}).click();
   await expect(page.locator('#vf-topup-done')).toBeFocused();
-  await expect(page.locator('#vf-topup-done')).toHaveText('10,000,000 Toman added to your balance.');
+  await expect(page.locator('#vf-topup-done')).toHaveText(
+    '10,000,000 Toman added to your balance.'
+  );
   await expect(page.locator('#vf-balance-amount')).toHaveText('130,000,000 Toman');
   expect(await scanAxe(page)).toEqual([]);
   // Checkout picks the balance, takes 5% off the products, and says what's left.
@@ -411,16 +496,26 @@ test('a customer tops up their balance, then pays from it with the balance disco
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.fill('#vf-sender', 'Shirin Ahmadi');
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(page.getByRole('radio', {name: 'Account balance'})).toBeChecked();
   const summary = page.locator('.ag-osum__sums');
   await expect(summary).toContainText('Balance discount · 5%');
   expect(await scanAxe(page)).toEqual([]);
-  await page.getByRole('button', {name: 'Pay from balance'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Pay from balance'})
+    .locator('visible=true')
+    .first()
+    .click();
   await expect(page.locator('main')).toContainText('Paid from balance');
   await expect(page.locator('main')).toContainText('Balance left');
   await openSite(page, 'account', 'en', {tab: 'balance'});
-  await expect(page.locator('.vf-account-balance-history li').first()).toContainText(/Order \u2068?VN-/);
+  await expect(page.locator('.vf-account-balance-history li').first()).toContainText(
+    /Order \u2068?VN-/
+  );
 });
 
 test('a guest is asked to sign in before paying from a balance', async ({page}) => {
@@ -430,7 +525,11 @@ test('a guest is asked to sign in before paying from a balance', async ({page}) 
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
   const balance = page.getByRole('radio', {name: 'Account balance', exact: true});
   await expect(balance).toBeDisabled();
   // The option is named by its label alone; the reason is its description.
@@ -443,7 +542,15 @@ test('a guest is asked to sign in before paying from a balance', async ({page}) 
 test('a balance below the discount line says what a top-up would save', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');
-    localStorage.setItem('vf-account:09125649438', JSON.stringify({profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true}, addresses: [], reminders: [], wallet: {balance: 20_000_000, history: []}}));
+    localStorage.setItem(
+      'vf-account:09125649438',
+      JSON.stringify({
+        profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true},
+        addresses: [],
+        reminders: [],
+        wallet: {balance: 20_000_000, history: []}
+      })
+    );
   });
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await page.fill('#vf-name', 'Mina Rahimi');
@@ -451,9 +558,17 @@ test('a balance below the discount line says what a top-up would save', async ({
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
-  await page.getByRole('button', {name: 'Continue to payment'}).locator('visible=true').first().click();
-  await expect(page.locator('.vf-checkout-wallet-hint')).toHaveText(/^Top up 80,000,000 Toman and pay from your balance to get 5% off the products: [\d,]+ Toman off this order\.$/);
-  await expect(page.getByRole('link', {name: 'Top up your balance'}).locator('visible=true').first()).toHaveAttribute('href', /tab=balance/);
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
+  await expect(page.locator('.vf-checkout-wallet-hint')).toHaveText(
+    /^Top up 80,000,000 Toman and pay from your balance to get 5% off the products: [\d,]+ Toman off this order\.$/
+  );
+  await expect(
+    page.getByRole('link', {name: 'Top up your balance'}).locator('visible=true').first()
+  ).toHaveAttribute('href', /tab=balance/);
   // The discount isn't taken until the balance reaches the line.
   await expect(page.locator('.ag-osum__sums')).not.toContainText('Balance discount');
   expect(await scanAxe(page)).toEqual([]);
@@ -494,7 +609,10 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   await openSite(page, 'contact', 'en');
   const map = page.getByRole('region', {name: 'The studio on the map'});
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
-  await expect(page.getByRole('main').getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
+  await expect(page.getByRole('main').getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+    'href',
+    /destination=35\.8352,50\.975/
+  );
   await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
   await expect(page.locator('#vf-cphone')).toBeFocused();
@@ -509,7 +627,15 @@ test('contact fills in a signed-in customer', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');
     const key = 'vf-account:09125649438';
-    if (!localStorage.getItem(key)) localStorage.setItem(key, JSON.stringify({profile: {name: 'شیرین احمدی', email: 'shirin@example.com', locale: 'fa', sms: true}, addresses: [], reminders: []}));
+    if (!localStorage.getItem(key))
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          profile: {name: 'شیرین احمدی', email: 'shirin@example.com', locale: 'fa', sms: true},
+          addresses: [],
+          reminders: []
+        })
+      );
   });
   await openSite(page, 'contact', 'fa');
   await expect(page.locator('#vf-cname')).toHaveValue('شیرین احمدی');
@@ -548,12 +674,16 @@ test('home occasions scroll as a carousel', async ({page}, info) => {
 test('the footer opens each policy and the policy page switches between them', async ({page}) => {
   await openSite(page, 'home', 'fa');
   const help = page.getByRole('navigation', {name: 'راهنما'});
-  for (const name of ['ارسال و تحویل', 'بازگشت و بازپرداخت', 'حریم خصوصی', 'شرایط استفاده']) await expect(help.getByRole('link', {name})).toBeVisible();
+  for (const name of ['ارسال و تحویل', 'بازگشت و بازپرداخت', 'حریم خصوصی', 'شرایط استفاده'])
+    await expect(help.getByRole('link', {name})).toBeVisible();
   await help.getByRole('link', {name: 'شرایط استفاده'}).click();
   await expect(page).toHaveURL(/view=policy&id=terms/);
   await expect(page.getByRole('heading', {level: 1})).toHaveText('شرایط استفاده');
   const switcher = page.getByRole('navigation', {name: 'قوانین'});
-  await expect(switcher.getByRole('link', {name: 'شرایط استفاده'})).toHaveAttribute('aria-current', 'page');
+  await expect(switcher.getByRole('link', {name: 'شرایط استفاده'})).toHaveAttribute(
+    'aria-current',
+    'page'
+  );
   expect(await scanAxe(page)).toEqual([]);
   await switcher.getByRole('link', {name: 'بازگشت و بازپرداخت'}).click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('بازگشت و بازپرداخت');
@@ -562,7 +692,9 @@ test('the footer opens each policy and the policy page switches between them', a
 
 test('policies quote the live delivery rules', async ({page}) => {
   await openSite(page, 'policy', 'en', {id: 'shipping'});
-  await expect(page.locator('main li')).toContainText(['Karaj central: 80,000 Toman, same day when you order by 18:00']);
+  await expect(page.locator('main li')).toContainText([
+    'Karaj central: 80,000 Toman, same day when you order by 18:00'
+  ]);
   await expect(page.locator('main')).toContainText('on orders over 5,000,000 Toman');
 });
 
@@ -585,7 +717,10 @@ test('the shop clears every filter at once', async ({page}, info) => {
   const occasions = page.getByRole('group', {name: 'Occasion'}).locator('visible=true');
   await occasions.getByRole('button', {name: 'Anniversary', exact: true}).click();
   await expect(page).toHaveURL(/occasion=anniversary/);
-  await expect(occasions.getByRole('button', {name: 'Anniversary', exact: true})).toHaveAttribute('aria-pressed', 'true');
+  await expect(occasions.getByRole('button', {name: 'Anniversary', exact: true})).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
   expect(await scanAxe(page)).toEqual([]);
   if (mobile) {
     await page.keyboard.press('Escape');
@@ -620,7 +755,14 @@ test('the footer newsletter checks the address and confirms the sign-up', async 
 test('the newsletter fills in a signed-in customer’s email', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');
-    localStorage.setItem('vf-account:09125649438', JSON.stringify({profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true}, addresses: [], reminders: []}));
+    localStorage.setItem(
+      'vf-account:09125649438',
+      JSON.stringify({
+        profile: {name: 'Shirin', email: 'shirin@example.com', locale: 'en', sms: true},
+        addresses: [],
+        reminders: []
+      })
+    );
   });
   await openSite(page, 'home', 'fa');
   await expect(page.locator('#vf-news-email')).toHaveValue('shirin@example.com');
@@ -634,7 +776,10 @@ test.describe('a first visit', () => {
     await openSite(page, 'home', 'en');
     const banner = page.getByRole('region', {name: 'Your privacy'});
     await expect(banner).toBeVisible();
-    await expect(banner.getByRole('link', {name: 'Privacy policy'})).toHaveAttribute('href', /view=policy&id=privacy/);
+    await expect(banner.getByRole('link', {name: 'Privacy policy'})).toHaveAttribute(
+      'href',
+      /view=policy&id=privacy/
+    );
     expect(await scanAxe(page)).toEqual([]);
     await banner.getByRole('button', {name: 'Essential only'}).click();
     await expect(banner).toHaveCount(0);
@@ -648,7 +793,12 @@ test.describe('a first visit', () => {
     await expect(banner).toBeFocused();
     await banner.getByRole('button', {name: 'Allow visit counts'}).click();
     await expect(settings).toBeFocused();
-    expect(await page.evaluate(() => [localStorage.getItem('vf-consent'), (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length)])).toEqual(['all', 1]);
+    expect(
+      await page.evaluate(() => [
+        localStorage.getItem('vf-consent'),
+        ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+      ])
+    ).toEqual(['all', 1]);
   });
 
   test('can be closed without choosing, for this session only', async ({page}) => {
@@ -656,7 +806,12 @@ test.describe('a first visit', () => {
     const banner = page.getByRole('region', {name: 'Your privacy'});
     await banner.getByRole('button', {name: 'Close without choosing'}).click();
     await expect(banner).toHaveCount(0);
-    expect(await page.evaluate(() => [localStorage.getItem('vf-consent'), (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length)])).toEqual([null, 0]);
+    expect(
+      await page.evaluate(() => [
+        localStorage.getItem('vf-consent'),
+        ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+      ])
+    ).toEqual([null, 0]);
     await page.reload();
     await expect(page.locator('#main')).toBeVisible();
     await expect(banner).toHaveCount(0);
@@ -665,12 +820,15 @@ test.describe('a first visit', () => {
     await expect(banner).toBeVisible();
   });
 
-  test('on desktop the banner is a bar along the bottom that leaves the shop uncovered', async ({page}, info) => {
+  test('on desktop the banner is a bar along the bottom that leaves the shop uncovered', async ({
+    page
+  }, info) => {
     test.skip(info.project.name !== 'desktop', 'desktop layout');
     await openSite(page, 'shop', 'en');
     const banner = page.getByRole('region', {name: 'Your privacy'});
     await expect(banner).toBeVisible();
-    const bar = await banner.boundingBox(), view = page.viewportSize();
+    const bar = await banner.boundingBox(),
+      view = page.viewportSize();
     expect(bar.height).toBeLessThan(120);
     expect(bar.y + bar.height).toBeGreaterThanOrEqual(view.height - 1);
     // The filters sit above it: the sidebar's first controls are not underneath the bar.
@@ -682,7 +840,11 @@ test.describe('a first visit', () => {
   test('a dialog dims the consent bar and keeps clicks off it', async ({page}, info) => {
     test.skip(info.project.name !== 'desktop', 'desktop layout');
     await openSite(page, 'product', 'en');
-    await page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first().click();
+    await page
+      .getByRole('button', {name: /^Add to bag/})
+      .locator('visible=true')
+      .first()
+      .click();
     await expect(page.getByRole('dialog', {name: 'Added to your bag'})).toBeVisible();
     const hit = await page.evaluate(() => {
       const r = document.querySelector('.vf-shell-consent-bar').getBoundingClientRect();
@@ -694,28 +856,46 @@ test.describe('a first visit', () => {
   test('sends nothing to analytics before a choice', async ({page}) => {
     await openSite(page, 'home', 'fa');
     await expect(page.getByRole('region', {name: 'حریم خصوصی شما'})).toBeVisible();
-    expect(await page.evaluate(() => (window.dataLayer = [], AG_TRACK.event('search', {}), window.dataLayer.length))).toBe(0);
+    expect(
+      await page.evaluate(
+        () => ((window.dataLayer = []), AG_TRACK.event('search', {}), window.dataLayer.length)
+      )
+    ).toBe(0);
   });
 });
 
-test('the footer lists shop and studio links, social links, contact details and the credit', async ({page}) => {
+test('the footer lists shop and studio links, social links, contact details and the credit', async ({
+  page
+}) => {
   await openSite(page, 'home', 'en');
   const footer = page.getByRole('contentinfo');
   await footer.getByRole('navigation', {name: 'Shop'}).getByRole('link', {name: 'Orchids'}).click();
   await expect(page).toHaveURL(/view=shop&cat=orchids/);
-  await expect(footer.getByRole('navigation', {name: 'The studio'}).getByRole('link', {name: 'Journal'})).toBeVisible();
+  await expect(
+    footer.getByRole('navigation', {name: 'The studio'}).getByRole('link', {name: 'Journal'})
+  ).toBeVisible();
   const social = footer.getByRole('list', {name: 'Follow and message us'});
   await expect(social.getByRole('link')).toHaveCount(3);
   await expect(social.getByRole('link', {name: /^Instagram/})).toHaveAttribute('target', '_blank');
-  await expect(footer.getByRole('link', {name: 'Get directions'})).toHaveAttribute('href', /destination=35\.8352,50\.975/);
-  await expect(footer).toContainText('© ' + new Date().getFullYear() + ' Vendra Florist. All rights reserved.');
-  await expect(footer.getByRole('link', {name: 'Misaf', exact: true})).toHaveAttribute('href', 'https://github.com/misaf');
+  await expect(footer.getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+    'href',
+    /destination=35\.8352,50\.975/
+  );
+  await expect(footer).toContainText(
+    '© ' + new Date().getFullYear() + ' Vendra Florist. All rights reserved.'
+  );
+  await expect(footer.getByRole('link', {name: 'Misaf', exact: true})).toHaveAttribute(
+    'href',
+    'https://github.com/misaf'
+  );
   expect(await scanAxe(page)).toEqual([]);
 });
 
 test('the Persian footer dates the copyright in the Persian calendar', async ({page}) => {
   await openSite(page, 'home', 'fa');
   const year = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date());
-  await expect(page.getByRole('contentinfo')).toContainText('© ' + year + ' گل‌فروشی وندرا. همه حقوق محفوظ است.');
+  await expect(page.getByRole('contentinfo')).toContainText(
+    '© ' + year + ' گل‌فروشی وندرا. همه حقوق محفوظ است.'
+  );
   expect(await scanAxe(page)).toEqual([]);
 });

@@ -50,7 +50,7 @@
   // Imported pages reuse the same design-system bundle and styles.
   // seo.js loads synchronously before page logic and creates the namespace with only .seo on it,
   // so check for a bundled component rather than the namespace itself.
-  if ((window.VendraDesignSystem_4ae5a2 && window.VendraDesignSystem_4ae5a2.LiveRegion) || window.VF_BUNDLE_LOADING || document.querySelector('script[data-vf-bundle]')) return;
+  if ((window.VendraDesignSystem && window.VendraDesignSystem.LiveRegion) || window.VF_BUNDLE_LOADING || document.querySelector('script[data-vf-bundle]')) return;
   window.VF_BUNDLE_LOADING = true;
   const s = document.createElement('script');
   s.src = new URL('components.js', runtimeRoot).href;

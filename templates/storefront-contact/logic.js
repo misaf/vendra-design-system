@@ -26,13 +26,17 @@ class Component extends VFPage {
     const invalid = this._invalid();
     const studio = VF_STORE.studio;
     const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
-    this._places = directions ? [{
-      id: 'studio',
-      label: VF_STORE.brand[S.lang],
-      title: C.directionsTo,
-      location: studio,
-      pick: () => window.open(directions, '_blank', 'noopener')
-    }] : [];
+    this._places = directions
+      ? [
+          {
+            id: 'studio',
+            label: VF_STORE.brand[S.lang],
+            title: C.directionsTo,
+            location: studio,
+            pick: () => window.open(directions, '_blank', 'noopener')
+          }
+        ]
+      : [];
     const field = key => e => this.setState({[key]: e.target.value, apiError: ''});
     return {
       ...S,
@@ -45,7 +49,12 @@ class Component extends VFPage {
       rows: ['map-pin', 'clock', 'phone', 'message-circle', 'instagram'].map((icon, i) => ({
         icon,
         label: C.rowLabels[i],
-        value: i === 0 ? S.t.address : i === 1 ? S.t.hours : '⁨' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '⁩'
+        value:
+          i === 0
+            ? S.t.address
+            : i === 1
+              ? S.t.hours
+              : '⁨' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '⁩'
       })),
       studioMap: !!directions && !s.mapFailed,
       hasDirections: !!directions,
@@ -105,10 +114,14 @@ class Component extends VFPage {
           message: s.msg.trim(),
           occasion: 'contact',
           preferredLocale: window.VF_API.preferredLocale()
-        }).then(success).catch(() => this.setState({
-          busy: false,
-          apiError: C.integrationError
-        }));
+        })
+          .then(success)
+          .catch(() =>
+            this.setState({
+              busy: false,
+              apiError: C.integrationError
+            })
+          );
       }
     };
   }
@@ -123,11 +136,12 @@ class Component extends VFPage {
     };
   }
   _studioMap() {
-    if (!this._studioView) this._studioView = vfPlacesMap({
-      id: 'vf-contact-map',
-      places: () => this._places || [],
-      onFail: () => this.setState({mapFailed: true})
-    });
+    if (!this._studioView)
+      this._studioView = vfPlacesMap({
+        id: 'vf-contact-map',
+        places: () => this._places || [],
+        onFail: () => this.setState({mapFailed: true})
+      });
     return this._studioView;
   }
   componentDidMount() {

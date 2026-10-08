@@ -17,24 +17,29 @@ const CHECKS = [
   ['Focus ring on inverse', '--focus-ring-on-inverse', '--surface-inverse', 3]
 ];
 
-test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'token checks do not depend on the viewport'));
+test.beforeEach(({}, info) =>
+  test.skip(info.project.name !== 'desktop', 'token checks do not depend on the viewport')
+);
 
 // Resolves each token to an rgb() colour inside a [data-tenant] wrapper.
 function resolve(page, tenant, names) {
-  return page.evaluate(([tenant, names]) => {
-    const wrap = document.createElement('div');
-    if (tenant) wrap.setAttribute('data-tenant', tenant);
-    document.body.append(wrap);
-    const out = {};
-    for (const name of names) {
-      const probe = document.createElement('span');
-      probe.style.color = `var(${name}, transparent)`;
-      wrap.append(probe);
-      out[name] = getComputedStyle(probe).color;
-    }
-    wrap.remove();
-    return out;
-  }, [tenant, names]);
+  return page.evaluate(
+    ([tenant, names]) => {
+      const wrap = document.createElement('div');
+      if (tenant) wrap.setAttribute('data-tenant', tenant);
+      document.body.append(wrap);
+      const out = {};
+      for (const name of names) {
+        const probe = document.createElement('span');
+        probe.style.color = `var(${name}, transparent)`;
+        wrap.append(probe);
+        out[name] = getComputedStyle(probe).color;
+      }
+      wrap.remove();
+      return out;
+    },
+    [tenant, names]
+  );
 }
 
 for (const tenant of [null, ...TENANTS]) {
@@ -43,12 +48,16 @@ for (const tenant of [null, ...TENANTS]) {
     await expectNoViteError(page);
     const names = [...new Set(CHECKS.flatMap(([, fg, bg]) => [fg, bg]))];
     const c = await resolve(page, tenant, names);
-    for (const name of names) expect(c[name], `${name} resolves to an opaque colour`).toMatch(/^rgb\(/);
+    for (const name of names)
+      expect(c[name], `${name} resolves to an opaque colour`).toMatch(/^rgb\(/);
     const results = CHECKS.map(([label, fg, bg, min]) => {
       const ratio = contrast(c[fg], c[bg]);
       return {label, ratio: +ratio.toFixed(2), pass: ratio >= min};
     });
-    expect(results.filter(r => !r.pass), JSON.stringify(results)).toEqual([]);
+    expect(
+      results.filter(r => !r.pass),
+      JSON.stringify(results)
+    ).toEqual([]);
   });
 }
 
@@ -64,7 +73,12 @@ async function recordFrames(page) {
     window.__vfFrames = [];
     const tick = () => {
       const el = document.querySelector('.vf-shell-container');
-      if (el) window.__vfFrames.push(getComputedStyle(document.body).visibility === 'hidden' ? 'hidden' : getComputedStyle(el).backgroundColor);
+      if (el)
+        window.__vfFrames.push(
+          getComputedStyle(document.body).visibility === 'hidden'
+            ? 'hidden'
+            : getComputedStyle(el).backgroundColor
+        );
       if (window.__vfFrames.length < 120) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -73,8 +87,12 @@ async function recordFrames(page) {
 
 // Every visible frame had the final page colour: no flash of the default theme.
 async function expectNoThemeFlash(page) {
-  const final = await page.locator('.vf-shell-container').evaluate(el => getComputedStyle(el).backgroundColor);
-  const seen = [...new Set(await page.evaluate(() => window.__vfFrames))].filter(f => f !== 'hidden');
+  const final = await page
+    .locator('.vf-shell-container')
+    .evaluate(el => getComputedStyle(el).backgroundColor);
+  const seen = [...new Set(await page.evaluate(() => window.__vfFrames))].filter(
+    f => f !== 'hidden'
+  );
   expect(seen).toEqual([final]);
 }
 
@@ -82,14 +100,19 @@ async function expectNoThemeFlash(page) {
 for (const tenant of ['default', ...TENANTS, 'not-a-tenant']) {
   test(`storefront loads only its own theme (?tenant=${tenant})`, async ({page}) => {
     const requested = [];
-    page.on('request', r => { if (r.url().includes('/tokens/tenants')) requested.push(r.url().split('/tokens/')[1]); });
+    page.on('request', r => {
+      if (r.url().includes('/tokens/tenants')) requested.push(r.url().split('/tokens/')[1]);
+    });
     await recordFrames(page);
     await openSite(page, 'home', 'en', {tenant});
     const expected = TENANTS.includes(tenant) ? tenant : 'default';
     expect(requested).toEqual(expected === 'default' ? [] : [`tenants/${expected}.css`]);
     await expect(page.locator('.vf-shell-container')).toHaveAttribute('data-tenant', expected);
-    const sheets = await page.evaluate(() => [...document.head.querySelectorAll('link[rel=stylesheet]')].map(l => l.href.split('/').pop()));
-    if (expected !== 'default') expect(sheets.indexOf(`${expected}.css`)).toBeGreaterThan(sheets.indexOf('styles.css'));
+    const sheets = await page.evaluate(() =>
+      [...document.head.querySelectorAll('link[rel=stylesheet]')].map(l => l.href.split('/').pop())
+    );
+    if (expected !== 'default')
+      expect(sheets.indexOf(`${expected}.css`)).toBeGreaterThan(sheets.indexOf('styles.css'));
     await expectNoThemeFlash(page);
   });
 }
@@ -97,7 +120,10 @@ for (const tenant of ['default', ...TENANTS, 'not-a-tenant']) {
 // On a slow connection the page stays hidden until the theme arrives.
 for (const tenant of TENANTS) {
   test(`slow theme file never shows the default colours (${tenant})`, async ({page}) => {
-    await page.route('**/tokens/tenants/*.css', async route => { await new Promise(r => setTimeout(r, 800)); await route.continue(); });
+    await page.route('**/tokens/tenants/*.css', async route => {
+      await new Promise(r => setTimeout(r, 800));
+      await route.continue();
+    });
     await recordFrames(page);
     await openSite(page, 'home', 'en', {tenant});
     await expect(page.locator('body')).toBeVisible();
@@ -140,10 +166,24 @@ for (const start of ['vendra', ...TENANTS]) {
 
 // Hand-set shades survive opening a tenant, and a new base colour drops only its own.
 test('theme builder keeps overrides until their base colour changes', async ({page}) => {
-  const spec = {description: '', colours: {accent: '#A9532E', neutral: '#E6DCCB', ink: '#1F1D18', footer: '#262E17'},
-    character: {headings: 'sans', case: 'uppercase', accentWord: 'upright', controls: 'square', frame: 'square'},
-    overrides: {'--peony-600': '#8C4224', '--border-input': '#847E70'}};
-  await page.route('**/_runtime/tenants.js', route => route.fulfill({contentType: 'text/javascript', body: 'window.VF_TENANTS = ' + JSON.stringify({tuned: spec})}));
+  const spec = {
+    description: '',
+    colours: {accent: '#A9532E', neutral: '#E6DCCB', ink: '#1F1D18', footer: '#262E17'},
+    character: {
+      headings: 'sans',
+      case: 'uppercase',
+      accentWord: 'upright',
+      controls: 'square',
+      frame: 'square'
+    },
+    overrides: {'--peony-600': '#8C4224', '--border-input': '#847E70'}
+  };
+  await page.route('**/_runtime/tenants.js', route =>
+    route.fulfill({
+      contentType: 'text/javascript',
+      body: 'window.VF_TENANTS = ' + JSON.stringify({tuned: spec})
+    })
+  );
   await page.goto('/guidelines/theme-builder.html');
   await page.locator('.tb-row select').first().selectOption('tuned');
   await expect(page.locator('.tb-note')).toContainText('2 hand-tuned shades kept');

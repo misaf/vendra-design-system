@@ -3,6 +3,8 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// A filter chip: a toggle button (aria-pressed) that fills with ink when `selected`, with an
+// optional remove icon (`onRemove`).
 export function Chip({ selected, onRemove, className = "", children, ...rest }) {
 	return /* @__PURE__ */ React.createElement("button", {
 		type: "button",

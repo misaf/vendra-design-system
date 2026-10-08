@@ -19,7 +19,9 @@ function storefrontPreview() {
   const snapshots = new Map();
   const rememberPages = () => {
     for (const folder of fs.readdirSync(templates).filter(name => name.startsWith('storefront-'))) {
-      for (const name of fs.readdirSync(path.join(templates, folder)).filter(name => name.endsWith('.dc.html'))) {
+      for (const name of fs
+        .readdirSync(path.join(templates, folder))
+        .filter(name => name.endsWith('.dc.html'))) {
         const file = path.join(templates, folder, name);
         snapshots.set(file, fs.readFileSync(file, 'utf8'));
       }
@@ -38,7 +40,10 @@ function storefrontPreview() {
         res.end();
       });
       const refresh = async () => {
-        if (running) { pending = true; return; }
+        if (running) {
+          pending = true;
+          return;
+        }
         running = true;
         try {
           await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
@@ -48,21 +53,40 @@ function storefrontPreview() {
         } catch (error) {
           const message = error.stderr || error.message;
           server.config.logger.error(message);
-          server.ws.send({type: 'error', err: {message, stack: '', plugin: 'vendra-storefront-preview'}});
+          server.ws.send({
+            type: 'error',
+            err: {message, stack: '', plugin: 'vendra-storefront-preview'}
+          });
         } finally {
           running = false;
-          if (pending) { pending = false; await refresh(); }
+          if (pending) {
+            pending = false;
+            await refresh();
+          }
         }
       };
-      const changed = (file) => {
+      const changed = file => {
         const relative = path.relative(root, file).replaceAll(path.sep, '/');
         const isPage = /^templates\/storefront-[^/]+\/[^/]+\.dc\.html$/.test(relative);
-        if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8')) return;
-        const isSource = relative.startsWith('templates/_shared/') || /^components\/.+\.jsx?$/.test(relative) || /^tokens\/tenants\/[^/]+\.json$/.test(relative) || /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) || isPage;
-        const isAsset = /^(tokens|assets)\//.test(relative) || relative === 'styles.css' || /^components\/.+\.css$/.test(relative) || relative.startsWith('templates/_runtime/');
+        if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8'))
+          return;
+        const isSource =
+          relative.startsWith('templates/_shared/') ||
+          /^components\/.+\.jsx?$/.test(relative) ||
+          /^tokens\/tenants\/[^/]+\.json$/.test(relative) ||
+          /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) ||
+          isPage;
+        const isAsset =
+          /^(tokens|assets)\//.test(relative) ||
+          relative === 'styles.css' ||
+          /^components\/.+\.css$/.test(relative) ||
+          relative.startsWith('templates/_runtime/');
         if (!isSource && !isAsset) return;
         // Generated CSS writes follow a source rebuild; they need no extra rebuild.
-        if (!isSource) { if (!running) server.ws.send({type: 'full-reload', path: '*'}); return; }
+        if (!isSource) {
+          if (!running) server.ws.send({type: 'full-reload', path: '*'});
+          return;
+        }
         clearTimeout(timer);
         timer = setTimeout(refresh, 100);
       };
@@ -81,8 +105,11 @@ function storefrontPreview() {
       // Load the namespace before support.js boots the page on a cold start. The bundle
       // needs React while it evaluates (Carousel calls React.forwardRef), so the local
       // React copies go first; support.js reuses them instead of fetching unpkg.
-      return ['/templates/_vendor/react.production.min.js', '/templates/_vendor/react-dom.production.min.js', '/templates/_runtime/components.js']
-        .map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));
+      return [
+        '/templates/_vendor/react.production.min.js',
+        '/templates/_vendor/react-dom.production.min.js',
+        '/templates/_runtime/components.js'
+      ].map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));
     }
   };
 }

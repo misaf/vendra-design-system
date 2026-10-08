@@ -32,16 +32,24 @@ class Component extends VFPage {
       })),
       process: C.steps,
       guests: s.guests,
-      setGuests: e => this.setState({
-        guests: e.target.value
-      }),
+      setGuests: e =>
+        this.setState({
+          guests: e.target.value
+        }),
       wDate: s.wDate,
-      setWDate: v => this.setState({
-        wDate: v
-      }),
+      setWDate: v =>
+        this.setState({
+          wDate: v
+        }),
       today: (() => {
         const d = new Date();
-        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        return (
+          d.getFullYear() +
+          '-' +
+          String(d.getMonth() + 1).padStart(2, '0') +
+          '-' +
+          String(d.getDate()).padStart(2, '0')
+        );
       })(),
       services: C.sv.map(x => ({
         icon: x[0],
@@ -52,10 +60,11 @@ class Component extends VFPage {
       apiError: s.apiError,
       busy: s.busy,
       email: s.email,
-      setEmail: e => this.setState({
-        email: e.target.value,
-        apiError: ''
-      }),
+      setEmail: e =>
+        this.setState({
+          email: e.target.value,
+          apiError: ''
+        }),
       sent: s.sent,
       notSent: !s.sent,
       editMessage: () => {
@@ -65,29 +74,34 @@ class Component extends VFPage {
         S.focus('vf-wname');
       },
       name: s.name,
-      setName: e => this.setState({
-        name: e.target.value,
-        e1: false
-      }),
+      setName: e =>
+        this.setState({
+          name: e.target.value,
+          e1: false
+        }),
       nameErr: s.e1 ? C.nameErr : undefined,
       phone: s.phone,
-      setPhone: e => this.setState({
-        phone: e.target.value,
-        e2: false
-      }),
+      setPhone: e =>
+        this.setState({
+          phone: e.target.value,
+          e2: false
+        }),
       phoneErr: s.e2 ? C.phoneErr : undefined,
       type: s.type,
       budget: s.budget,
-      setType: e => this.setState({
-        type: e.target.value
-      }),
-      setBudget: e => this.setState({
-        budget: e.target.value
-      }),
+      setType: e =>
+        this.setState({
+          type: e.target.value
+        }),
+      setBudget: e =>
+        this.setState({
+          budget: e.target.value
+        }),
       notes: s.notes,
-      setNotes: e => this.setState({
-        notes: e.target.value
-      }),
+      setNotes: e =>
+        this.setState({
+          notes: e.target.value
+        }),
       types: C.types,
       budgets: C.budgets,
       send: () => {
@@ -124,13 +138,19 @@ class Component extends VFPage {
           name: s.name || '',
           phone: s.phone || '',
           email: s.email || '',
-          message: [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') || 'Wedding inquiry',
+          message:
+            [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') ||
+            'Wedding inquiry',
           occasion: 'weddings',
           preferredLocale: window.VF_API.preferredLocale()
-        }).then(success).catch(() => this.setState({
-          busy: false,
-          apiError: C.integrationError
-        }));
+        })
+          .then(success)
+          .catch(() =>
+            this.setState({
+              busy: false,
+              apiError: C.integrationError
+            })
+          );
       }
     };
   }

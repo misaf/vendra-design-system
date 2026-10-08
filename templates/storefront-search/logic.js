@@ -11,7 +11,11 @@ class Component extends VFPage {
     // A product code, typed whole or in part (3 or more characters), finds its product; so do its kind and description.
     const code = vfNormalizeToken(q);
     const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
-    const words = p => ['en', 'fa'].map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat]).join(' ').toLowerCase();
+    const words = p =>
+      ['en', 'fa']
+        .map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat])
+        .join(' ')
+        .toLowerCase();
     const res = q ? VF_PRODUCTS.filter(p => byCode(p) || words(p).includes(q)) : [];
     const pop = C.popularTerms;
     return {
@@ -29,18 +33,20 @@ class Component extends VFPage {
         S.focus('vf-q');
       },
       q: this.state.q,
-      setQ: e => this.setState({
-        q: e.target.value
-      }),
+      setQ: e =>
+        this.setState({
+          q: e.target.value
+        }),
       empty: !q,
       hasResults: res.length > 0,
       noResults: !!q && !res.length,
       countLabel: C.resultCount(res.length),
       popular: pop.map(l => ({
         label: l,
-        pick: () => this.setState({
-          q: l
-        })
+        pick: () =>
+          this.setState({
+            q: l
+          })
       })),
       results: res.map(p => ({
         ...S.productLink(p.id),

@@ -1,6 +1,11 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
+
+const toList = value => (value == null ? [] : Array.isArray(value) ? value : [value]);
+
+// Disclosure panels under real headings. Controlled with `openId` (one id or a list),
+// uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
 export function Accordion({
   items = [],
   openId,
@@ -10,41 +15,44 @@ export function Accordion({
   headingLevel = 3,
   className = ''
 }) {
-  const uid = React.useId();
-  const arr = v => (v == null ? [] : Array.isArray(v) ? v : [v]);
-  const [inner, setInner] = React.useState(arr(defaultOpenId));
-  const open = openId !== undefined ? arr(openId) : inner;
+  const baseId = React.useId();
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(toList(defaultOpenId));
+  const openIds = openId !== undefined ? toList(openId) : uncontrolledOpen;
   const toggle = id => {
-    const was = open.includes(id);
-    const next = was ? open.filter(x => x !== id) : allowMultiple ? [...open, id] : [id];
-    if (openId === undefined) setInner(next);
-    onToggle && onToggle(id, !was, next);
+    const wasOpen = openIds.includes(id);
+    const next = wasOpen
+      ? openIds.filter(other => other !== id)
+      : allowMultiple
+        ? [...openIds, id]
+        : [id];
+    if (openId === undefined) setUncontrolledOpen(next);
+    onToggle && onToggle(id, !wasOpen, next);
   };
-  const H = 'h' + headingLevel;
+  const Heading = 'h' + headingLevel;
   return (
     <div className={cx('ag-acc', className)}>
-      {items.map(it => {
-        const o = open.includes(it.id);
-        const b = uid + 'b' + it.id,
-          p = uid + 'p' + it.id;
+      {items.map(item => {
+        const isOpen = openIds.includes(item.id);
+        const buttonId = baseId + 'b' + item.id;
+        const panelId = baseId + 'p' + item.id;
         return (
-          <div key={it.id} className={cx('ag-acc__item', o && 'ag-acc__item--open')}>
-            <H className="ag-acc__h">
+          <div key={item.id} className={cx('ag-acc__item', isOpen && 'ag-acc__item--open')}>
+            <Heading className="ag-acc__h">
               <button
                 type="button"
-                id={b}
+                id={buttonId}
                 className="ag-acc__btn"
-                aria-expanded={o}
-                aria-controls={p}
-                onClick={() => toggle(it.id)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                onClick={() => toggle(item.id)}
               >
-                <span>{it.title}</span>
+                <span>{item.title}</span>
                 <Icon name="chevron-down" size={18} className="ag-acc__chev" />
               </button>
-            </H>
-            <div id={p} role="region" aria-labelledby={b} className="ag-acc__panel">
+            </Heading>
+            <div id={panelId} role="region" aria-labelledby={buttonId} className="ag-acc__panel">
               <div className="ag-acc__clip">
-                <div className="ag-acc__content">{it.content}</div>
+                <div className="ag-acc__content">{item.content}</div>
               </div>
             </div>
           </div>

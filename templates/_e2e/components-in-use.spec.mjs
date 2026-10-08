@@ -25,7 +25,10 @@ test('product gallery moves between photos', async ({page}) => {
 
 test('adding to the bag opens a bag panel that leads to checkout', async ({page}) => {
   await openSite(page, 'product', 'en');
-  const add = page.getByRole('button', {name: /^Add to bag/}).locator('visible=true').first();
+  const add = page
+    .getByRole('button', {name: /^Add to bag/})
+    .locator('visible=true')
+    .first();
   await add.click();
   const panel = page.getByRole('dialog', {name: 'Added to your bag'});
   await expect(panel).toContainText('VF-7K2M4Q');
@@ -42,7 +45,9 @@ test('adding to the bag opens a bag panel that leads to checkout', async ({page}
   await expect(page.locator('main h1')).toContainText('Your bag');
 });
 
-test('saving a design shows a toast that waits while the pointer is on it', async ({page}, info) => {
+test('saving a design shows a toast that waits while the pointer is on it', async ({
+  page
+}, info) => {
   await page.clock.install();
   await openSite(page, 'product', 'en');
   await page.getByRole('button', {name: 'Save this design'}).click();
@@ -91,7 +96,13 @@ test('the Sheba hint describes its button', async ({page}) => {
   await page.goto('/templates/storefront-checkout/StorefrontCheckout.dc.html');
   await expect(page.locator('#main')).toBeVisible();
   // Demo stores have no Sheba number; set one, then re-render by switching method.
-  await page.evaluate(() => window.VF_PAYMENT.setPayCard({cardNumber: '6221061072645437', holderEn: 'Demo', sheba: 'IR000000000000000000000000'}));
+  await page.evaluate(() =>
+    window.VF_PAYMENT.setPayCard({
+      cardNumber: '6221061072645437',
+      holderEn: 'Demo',
+      sheba: 'IR000000000000000000000000'
+    })
+  );
   const group = page.getByRole('group', {name: 'Choose a payment method'});
   await group.getByRole('radio', {name: 'Online card demo'}).check();
   await group.getByRole('radio', {name: 'Card-to-card transfer'}).check();
@@ -104,11 +115,17 @@ test('the Sheba hint describes its button', async ({page}) => {
 
 test('the bag icon shows and announces how many items are in the bag', async ({page}) => {
   await openSite(page, 'home', 'en');
-  const bag = page.locator('header').getByRole('link', {name: 'Bag, 2 items'}).locator('visible=true');
+  const bag = page
+    .locator('header')
+    .getByRole('link', {name: 'Bag, 2 items'})
+    .locator('visible=true');
   await expect(bag).toHaveCount(1);
   await expect(bag.locator('.ag-iconbtn__count')).toHaveText('2');
   await openSite(page, 'home', 'fa');
-  const sabad = page.locator('header').getByRole('link', {name: 'سبد، ۲ کالا'}).locator('visible=true');
+  const sabad = page
+    .locator('header')
+    .getByRole('link', {name: 'سبد، ۲ کالا'})
+    .locator('visible=true');
   await expect(sabad).toHaveCount(1);
   await expect(sabad.locator('.ag-iconbtn__count')).toHaveText('۲');
 });
@@ -132,7 +149,11 @@ test('a standalone page opens itself in the other language', async ({page}, info
   test.skip(info.project.name === 'mobile', 'Same link on both; desktop covers it');
   await page.goto('/templates/storefront-faq/StorefrontFaq.dc.html');
   await expect(page.locator('#main')).toBeVisible();
-  await page.locator('header').getByRole('group', {name: 'Language'}).getByRole('button', {name: 'فا'}).click();
+  await page
+    .locator('header')
+    .getByRole('group', {name: 'Language'})
+    .getByRole('button', {name: 'فا'})
+    .click();
   await expect(page).toHaveURL(/StorefrontSite\.dc\.html\?.*lang=fa/);
   await expect(page).toHaveURL(/view=faq/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');

@@ -1,4 +1,6 @@
 import React from 'react';
+
+// The EN / فا toggle: one pressed button per language, each marked with its own `lang`.
 export function LanguageSwitch({
   value = 'en',
   onChange,

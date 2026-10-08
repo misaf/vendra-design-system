@@ -3,13 +3,15 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+// An icon-only button, or link with `href`. `label` is its accessible name and tooltip; `active`
+// sets aria-pressed and `count` shows a badge.
 export function IconButton({ icon, label, variant = "ghost", size = "md", active, count, className = "", type = "button", href, target, rel, ...rest }) {
-	const is = size === "sm" ? 16 : size === "lg" ? 22 : 20;
-	const cls = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, active && "ag-iconbtn--active", className);
+	const iconSize = size === "sm" ? 16 : size === "lg" ? 22 : 20;
+	const classes = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, active && "ag-iconbtn--active", className);
 	// count may be a pre-localized string (Persian digits), so test for a value rather than count>0.
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Icon, {
+	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Icon, {
 		name: icon,
-		size: is
+		size: iconSize
 	}), count ? /* @__PURE__ */ React.createElement("span", { className: "ag-iconbtn__count" }, count) : null);
 	if (href) return /* @__PURE__ */ React.createElement("a", {
 		href,
@@ -17,15 +19,15 @@ export function IconButton({ icon, label, variant = "ghost", size = "md", active
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		"aria-label": label,
 		title: label,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 	return /* @__PURE__ */ React.createElement("button", {
 		type,
 		"aria-label": label,
 		title: label,
 		"aria-pressed": active,
-		className: cls,
+		className: classes,
 		...rest
-	}, inner);
+	}, content);
 }

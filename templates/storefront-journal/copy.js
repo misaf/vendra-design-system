@@ -18,19 +18,19 @@ function vfCopy(S) {
   return {
     ...result,
     migration: {
-      "en": {
-        "search": "Search stories",
-        "empty": "No stories match",
-        "clear": "Clear search",
-        "loading": "Loading stories",
-        "studio": "Studio life"
+      en: {
+        search: 'Search stories',
+        empty: 'No stories match',
+        clear: 'Clear search',
+        loading: 'Loading stories',
+        studio: 'Studio life'
       },
-      "fa": {
-        "search": "جست‌وجوی مطالب",
-        "empty": "مطلبی پیدا نشد",
-        "clear": "پاک کردن جست‌وجو",
-        "loading": "در حال بارگذاری مطالب",
-        "studio": "پشت صحنه"
+      fa: {
+        search: 'جست‌وجوی مطالب',
+        empty: 'مطلبی پیدا نشد',
+        clear: 'پاک کردن جست‌وجو',
+        loading: 'در حال بارگذاری مطالب',
+        studio: 'پشت صحنه'
       }
     }[S.lang]
   };

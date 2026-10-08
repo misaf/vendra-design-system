@@ -4,19 +4,19 @@ import React from "react";
 import { cx } from "../utils/cx.js";
 // First element in <body>. Hidden until focused; moves focus to the target (adds tabindex="-1" if needed) without touching the URL.
 export function SkipLink({ href = "#main", children, className = "", onClick, ...rest }) {
-	const go = (e) => {
-		onClick && onClick(e);
-		if (e.defaultPrevented || !href.startsWith("#")) return;
-		const t = document.getElementById(href.slice(1));
-		if (!t) return;
-		e.preventDefault();
-		if (!t.hasAttribute("tabindex")) t.setAttribute("tabindex", "-1");
-		t.focus();
+	const focusTarget = (event) => {
+		onClick && onClick(event);
+		if (event.defaultPrevented || !href.startsWith("#")) return;
+		const target = document.getElementById(href.slice(1));
+		if (!target) return;
+		event.preventDefault();
+		if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+		target.focus();
 	};
 	return /* @__PURE__ */ React.createElement("a", {
 		href,
 		className: cx("ag-skip", className),
-		onClick: go,
+		onClick: focusTarget,
 		...rest
 	}, children);
 }
