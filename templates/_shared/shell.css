@@ -3,7 +3,7 @@ body{margin:0}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}[data
 /* The footer sits on the inverse surface: field labels, hints and errors switch to the on-inverse colours. */
 .vf-shell-footer .ag-field__label{color:var(--text-on-inverse)}.vf-shell-footer .ag-field__hint{color:var(--text-inverse-muted)}.vf-shell-footer .ag-field__hint--error{color:var(--danger-on-inverse)}
 /* The newsletter field and its button share one 48px row. */
-.vf-shell-newsletter-form .ag-input{box-sizing:border-box;height:48px;min-height:0}.vf-shell-newsletter-form .ag-input input{padding-block:0;align-self:stretch}
+.vf-shell-newsletter-form .ag-input{box-sizing:border-box;height:var(--control-h-input);min-height:0}.vf-shell-newsletter-form .ag-input input{padding-block:0;align-self:stretch}
 .vf-shell-newsletter-form .ag-input input:focus-visible{outline:none}.vf-shell-newsletter-form .ag-input:has(input:focus-visible){outline:2px solid var(--focus-ring);outline-offset:3px}
 /* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
    The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */

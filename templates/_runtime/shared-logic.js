@@ -1,6 +1,6 @@
 // GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.
 // Source: tokens/tenants/*.json (generated)
-const VF_TENANT_SLUGS = ["clay"];
+const VF_TENANT_SLUGS = ["clay","fern"];
 
 // Source: templates/_shared/store-config.js
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.

@@ -1,4 +1,4 @@
-<!-- @dsCard group="Brand" viewport="1200x960" name="Tenant themes" subtitle="Same components — default (Vendra Florist) vs data-tenant=&quot;clay&quot; · English left, Persian right" -->
+<!-- @dsCard group="Brand" viewport="1200x1440" name="Tenant themes" subtitle="Same components — default (Vendra Florist) vs data-tenant=&quot;clay&quot; and &quot;fern&quot; · English left, Persian right" -->
 <!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../tokens/tenants.css">
 <script src="../templates/_vendor/react.production.min.js"></script>
 <script src="../templates/_vendor/react-dom.production.min.js"></script>
@@ -18,5 +18,5 @@ function Panel({tenant,label,l}){const t=T[l];const fa=l==='fa';
     <div className="g"><ProductCard name={t.pn} price={t.pr} placeholder={t.ph} frame="arch"/><div style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6}}>{t.note}</div></div>
   </div>;
 }
-ReactDOM.createRoot(document.getElementById('root')).render(<>{[[undefined,'Default · Vendra Florist'],['clay','data-tenant="clay"']].map(([tn,lb])=>['en','fa'].map(l=><Panel key={lb+l} tenant={tn} label={lb} l={l}/>))}</>);
+ReactDOM.createRoot(document.getElementById('root')).render(<>{[[undefined,'Default · Vendra Florist'],['clay','data-tenant="clay"'],['fern','data-tenant="fern"']].map(([tn,lb])=>['en','fa'].map(l=><Panel key={lb+l} tenant={tn} label={lb} l={l}/>))}</>);
 </script></body></html>

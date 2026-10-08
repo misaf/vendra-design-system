@@ -53,7 +53,7 @@
 .vf-page .ag-line__thumb {border-radius:var(--radius-md)}
 
 .vf-mobile-action .vf-action-total {flex:none;min-width:max-content;display:flex;flex-direction:column;gap:4px}
-.vf-mobile-action .ag-btn {height:auto;min-height:48px;white-space:normal;flex:1;min-width:0}
+.vf-mobile-action .ag-btn {height:auto;min-height:var(--control-h-input);white-space:normal;flex:1;min-width:0}
 
 /* Persian copy gets its own rhythm, including editorial text. */
 .vf-page[data-lang="fa"] main p {line-height:var(--lh-body)}

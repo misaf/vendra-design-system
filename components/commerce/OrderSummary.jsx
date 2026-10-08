@@ -7,7 +7,7 @@ export function OrderSummary({lines=[],sums=[],title,titleAs='h2',className='',s
     {title&&<H className="ag-osum__title">{title}</H>}
     <ul className="ag-osum__lines">
       {lines.map((l,i)=><li key={i} className="ag-osum__line">
-        <ArchFrame size="thumb" tone="product" src={l.image} alt="" style={{width:48}}/>
+        <ArchFrame size="thumb" tone="product" src={l.image} alt=""/>
         <div className="ag-osum__main">
           <div className="ag-osum__name">{l.href?<a href={l.href} onClick={l.onClick}>{l.name}</a>:l.name}</div>
           {l.meta&&<div className="ag-osum__meta">{l.meta}</div>}

@@ -3,5 +3,6 @@
 --radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
 --border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
 --container-max:1240px;/* @kind spacing */--gutter:24px;/* @kind spacing */--header-h:72px;/* @kind spacing */--header-h-mobile:60px;/* @kind spacing */
---tap-min:44px;/* @kind spacing */--measure:56ch;/* @kind spacing */
+--tap-min:44px;/* @kind spacing */
+--control-h-sm:36px;/* @kind spacing */--control-h-md:46px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:48px;/* @kind spacing */--measure:56ch;/* @kind spacing */
 }

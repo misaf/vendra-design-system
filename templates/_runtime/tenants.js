@@ -16,5 +16,22 @@ window.VF_TENANTS = {
       "frame": "square"
     },
     "overrides": {}
+  },
+  "fern": {
+    "description": "Sample tenant theme \"Fern\": deep teal accent, cool grey-green neutrals, navy ink and a plum footer; Vazirmatn headings, upright accent words, pill controls and soft-topped image frames. Sits near the muted-text and input-edge contrast limits on purpose.",
+    "colours": {
+      "accent": "#1F6F6B",
+      "neutral": "#DCE3E1",
+      "ink": "#14202A",
+      "footer": "#3A2B4A"
+    },
+    "character": {
+      "headings": "vazir",
+      "case": "none",
+      "accentWord": "upright",
+      "controls": "pill",
+      "frame": "soft"
+    },
+    "overrides": {}
   }
 };
