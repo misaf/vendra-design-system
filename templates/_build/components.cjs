@@ -5,6 +5,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const {transformSync, parseSync} = require('rolldown/experimental');
+const {VENDOR, vendorBundle} = require('./vendor.cjs');
 
 const NAMESPACE = 'VendraDesignSystem';
 // Older globals the storefront templates still read: window name → export.
@@ -32,7 +33,8 @@ function compile(repo, file) {
   const {program} = parseSync(file, code);
   const edits = [],
     exports = [],
-    deps = [];
+    deps = [],
+    vendor = {};
   for (const node of program.body) {
     if (node.type === 'ImportDeclaration') {
       const from = node.source.value;
@@ -42,8 +44,32 @@ function compile(repo, file) {
         edits.push([node.start, node.end, '']);
         continue;
       }
+      // Bundled packages (vendor.cjs): named imports read from the bundle's __vendor table.
+      if (VENDOR.includes(from)) {
+        const names = node.specifiers.map(s => {
+          if (s.type !== 'ImportSpecifier')
+            throw new Error(file + ': import ' + from + ' by name (' + s.local.name + ')');
+          (vendor[from] = vendor[from] || new Set()).add(s.imported.name);
+          return s.imported.name === s.local.name
+            ? s.local.name
+            : s.imported.name + ': ' + s.local.name;
+        });
+        edits.push([
+          node.start,
+          node.end,
+          'const { ' + names.join(', ') + ' } = __ds_ns.__vendor[' + JSON.stringify(from) + '];'
+        ]);
+        continue;
+      }
       if (!from.startsWith('.'))
-        throw new Error(file + ': only relative imports and react are supported (' + from + ')');
+        throw new Error(
+          file +
+            ': only relative imports, react and ' +
+            VENDOR.join(', ') +
+            ' are supported (' +
+            from +
+            ')'
+        );
       deps.push(path.posix.normalize(path.posix.join(path.posix.dirname(file), from)));
       const names = node.specifiers.map(s => {
         if (s.type !== 'ImportSpecifier')
@@ -75,7 +101,7 @@ function compile(repo, file) {
     out = out.slice(0, start) + text + out.slice(end);
   out = out.replace(/^\s*\n/, '').replace(/\s+$/, '');
   if (exports.length) out += '\nObject.assign(__ds_scope, { ' + exports.join(', ') + ' });';
-  return {code: out, exports, deps};
+  return {code: out, exports, deps, vendor};
 }
 
 // Dependencies first; otherwise alphabetical, so output is stable.
@@ -113,6 +139,11 @@ const aliasLines = names =>
 
 function componentsBundle(root = repo) {
   const compiled = compileAll(root);
+  // Every name components import from bundled packages, so the vendor bundle holds only those.
+  const imports = {};
+  for (const c of compiled.values())
+    for (const [from, names] of Object.entries(c.vendor))
+      imports[from] = [...new Set([...(imports[from] || []), ...names])].sort();
   const order = ordered(compiled);
   const seen = new Map();
   for (const file of order)
@@ -133,6 +164,7 @@ function componentsBundle(root = repo) {
   );
   return (
     '// GENERATED from components/**/*.{js,jsx} by npm --prefix templates run build. Edit the sources, not this file.\n' +
+    vendorBundle(imports) +
     prelude +
     '__ds_ns.__errors = __ds_ns.__errors || [];\n\n' +
     sections.join('\n\n') +
@@ -153,7 +185,7 @@ function helpersScript(root = repo) {
     c.exports.some(name => Object.values(ALIASES).includes(name))
   );
   for (const [file, c] of helpers)
-    if (c.deps.length)
+    if (c.deps.length || Object.keys(c.vendor).length)
       throw new Error(file + ': helpers load before the bundle, so they cannot import other files');
   return (
     '// GENERATED from ' +

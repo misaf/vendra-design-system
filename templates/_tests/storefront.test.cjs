@@ -39,7 +39,8 @@ function context() {
   };
   ctx.window = {React: {}, innerWidth: 390, scrollTo: () => {}};
   vm.createContext(ctx);
-  vm.runInContext(read('templates/_runtime/components.js'), ctx);
+  // The helpers (format, dates, commerce); the component bundle needs a real browser.
+  vm.runInContext(read('templates/_runtime/helpers.js'), ctx);
   for (const f of ['seo', 'page-focus'])
     vm.runInContext(read('templates/_shared/' + f + '.js'), ctx);
   return {ctx, history};

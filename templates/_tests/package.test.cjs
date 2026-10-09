@@ -25,6 +25,14 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
 
     // Every export target exists; only dist/ is published.
     assert.deepEqual(manifest.files, ['dist']);
+    // The package depends on exactly the versions the build bundles and tests with.
+    const built = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+    for (const [name, version] of Object.entries(manifest.dependencies || {}))
+      assert.equal(
+        version,
+        (built.dependencies || {})[name],
+        name + ' differs from templates/package.json'
+      );
     const targets = JSON.stringify(manifest.exports).match(/\.\/dist\/[^"]+/g);
     for (const target of targets.filter(t => !t.includes('*')))
       assert.ok(files.has(target.slice(2)), target + ' is missing');

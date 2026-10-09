@@ -28,5 +28,9 @@
   },
   "overrides": {
     "@parcel/watcher": "2.6.0"
+  },
+  "dependencies": {
+    "@internationalized/date": "3.12.4",
+    "react-aria-components": "1.21.1"
   }
 }

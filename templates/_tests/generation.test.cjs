@@ -36,7 +36,7 @@ function pageValues(page) {
   context.window = {React: {}, innerWidth: 390};
   vm.createContext(context);
   vm.runInContext(
-    fs.readFileSync(path.join(root, 'templates/_runtime/components.js'), 'utf8'),
+    fs.readFileSync(path.join(root, 'templates/_runtime/helpers.js'), 'utf8'),
     context
   );
   for (const file of ['seo', 'page-focus'])

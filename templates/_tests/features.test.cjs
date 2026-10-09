@@ -29,7 +29,8 @@ const ctx = {
 };
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(path.join(root, 'templates/_runtime/components.js'), 'utf8'), ctx);
+// The helpers (format, dates, commerce); the component bundle needs a real browser.
+vm.runInContext(fs.readFileSync(path.join(root, 'templates/_runtime/helpers.js'), 'utf8'), ctx);
 for (const file of ['seo', 'page-focus'])
   vm.runInContext(fs.readFileSync(path.join(root, 'templates/_shared', file + '.js'), 'utf8'), ctx);
 vm.runInContext(

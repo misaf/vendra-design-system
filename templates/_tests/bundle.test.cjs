@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
-const {componentsBundle} = require('../_build/components.cjs');
+const {componentsBundle, helpersScript} = require('../_build/components.cjs');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-bundle-'));
 const write = (file, text) => {
   fs.mkdirSync(path.dirname(path.join(temp, file)), {recursive: true});
@@ -85,8 +85,41 @@ try {
     "import { Nope } from './Nope.jsx';\nexport const Gone = Nope;\n",
     /imports missing components\/core\/Nope\.jsx/
   );
+  refused(
+    'components/core/AriaDefault.jsx',
+    "import Aria from 'react-aria-components';\nexport const AriaDefault = Aria;\n",
+    /import react-aria-components by name/
+  );
+  // Helpers (format, dates, commerce) load before the bundle, so they can't use bundled packages either.
+  write(
+    'components/utils/format.js',
+    "import { Heading } from 'react-aria-components';\nexport const format = Heading;\n"
+  );
+  assert.throws(() => helpersScript(temp), /helpers load before the bundle/);
+  write('components/utils/format.js', 'window.AG_FMT = {ok: true};\n');
+
+  // Bundled packages: named imports read from the vendor table the bundle starts with.
+  write(
+    'components/core/Titled.jsx',
+    "import React from 'react';\nimport { Heading as Title } from 'react-aria-components';\nexport function Titled(){return <Title level={2}>Hi</Title>;}\n"
+  );
+  const withVendor = componentsBundle(temp);
+  assert.ok(
+    withVendor.includes('Bundled from react-aria-components'),
+    'the vendor bundle is included'
+  );
+  assert.ok(
+    withVendor.includes('const { Heading: Title } = __ds_ns.__vendor["react-aria-components"];'),
+    'vendor imports read from the vendor table'
+  );
+  assert.ok(
+    withVendor.indexOf('Bundled from') < withVendor.indexOf('// components/core/Titled.jsx'),
+    'the vendor bundle comes first'
+  );
+  assert.equal(componentsBundle(temp), withVendor, 'output with a vendor bundle is repeatable');
+  fs.rmSync(path.join(temp, 'components/core/Titled.jsx'));
   console.log(
-    'Passed component bundle: dependency order, renamed imports, error isolation, repeatable output and refused module forms.'
+    'Passed component bundle: dependency order, renamed imports, error isolation, repeatable output, bundled react-aria-components imports and refused module forms.'
   );
 } finally {
   fs.rmSync(temp, {recursive: true, force: true});

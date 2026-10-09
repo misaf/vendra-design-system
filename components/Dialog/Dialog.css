@@ -24,8 +24,16 @@
   animation: ag-rise var(--dur-slow) var(--ease-out);
   font-family: var(--font-body);
 }
-.ag-dialog:focus {
+.ag-dialog:focus,
+.ag-dialog__frame:focus {
   outline: none;
+}
+/* React Aria's dialog element sits inside the box; in the sheet it passes the column layout on. */
+.ag-dialog--sheet .ag-dialog__frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 .ag-dialog__overlay--sheet {
   padding: 0;

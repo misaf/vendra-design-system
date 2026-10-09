@@ -110,6 +110,16 @@ export async function settlePage(page) {
 // Vite reports transform errors as an overlay element (pushed to every open page).
 export async function expectNoViteError(page) {
   await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
+  // Every design-system source (and the bundled react-aria-components) loaded without an error.
+  const problems = await page.evaluate(() => {
+    const ds = window.VendraDesignSystem;
+    if (!ds) return [];
+    return [
+      ...(ds.__errors || []).map(problem => problem.path + ': ' + problem.error),
+      ...(ds.__vendorError ? ['vendor bundle: ' + ds.__vendorError] : [])
+    ];
+  });
+  expect(problems, 'design-system components load').toEqual([]);
 }
 
 const lum = rgb =>
