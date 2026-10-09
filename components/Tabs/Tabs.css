@@ -1,4 +1,4 @@
-.ag-tab:focus-visible {
+.ag-tab[data-focus-visible] {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -15,10 +15,17 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--text-muted);
+  /* React Aria renders a div: keep the box sizing, line height and centred content a button had. */
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+  text-align: center;
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-out);
 }
-.ag-tab:hover {
+.ag-tab[data-hovered] {
   color: var(--text-body);
 }
 .ag-tab--active {
@@ -52,4 +59,9 @@
 }
 .ag-tabs--pill .ag-tab--active::after {
   display: none;
+}
+/* React Aria's wrapper around the list and panel takes no part in layout: the list and panel sit in
+   the page's own flow, as they did before. */
+.ag-tabs-root {
+  display: contents;
 }

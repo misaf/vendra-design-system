@@ -19,8 +19,7 @@ function App() {
   const [closed, setClosed] = React.useState(0);
   return <>
     <section data-test="tooltip"><Tooltip content="Save to favourites"><IconButton icon="heart" label="Save" variant="outline"/></Tooltip> <button type="button">After</button></section>
-    <section data-test="tabs"><Tabs items={items} value={tab} onChange={setTab} label="Account" idPrefix="fx"/>
-      <div role="tabpanel" id={'fx-panel-' + tab} aria-labelledby={'fx-tab-' + tab} tabIndex={0}>{tab} panel</div></section>
+    <section data-test="tabs"><Tabs items={items} value={tab} onChange={setTab} label="Account">{tab} panel</Tabs></section>
     <section data-test="toast"><Toast title="Added to your bag" message="Wild Meadow · Generous" onClose={() => setClosed(c => c + 1)}/><output data-test="closed">{closed}</output></section>
   </>;
 }

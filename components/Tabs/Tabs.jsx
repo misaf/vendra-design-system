@@ -1,8 +1,11 @@
 import React from 'react';
+import {I18nProvider, Tab, TabList, TabPanel, Tabs as AriaTabs} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
+import {usePageLocale} from '../utils/locale.js';
 
-// role="tablist" with a roving tabindex: only the selected tab is in the Tab order; ←/→ (mirrored in RTL), Home and End move and select.
-// With idPrefix, tabs get ids `${idPrefix}-tab-${id}` and the selected tab points at its panel `${idPrefix}-panel-${id}` (render that panel with role="tabpanel").
+// Tabs on React Aria: one Tab stop on the selected tab; arrow keys (mirrored in RTL, following the
+// page's language), Home and End move and select. `children` is the selected tab's content: it
+// renders in a tabpanel linked to its tab. Without children the component is just the tab list.
 export function Tabs({
   items = [],
   value,
@@ -10,58 +13,59 @@ export function Tabs({
   onChange,
   variant = 'underline',
   label,
-  idPrefix,
-  className = ''
+  className = '',
+  listClassName,
+  panelClassName,
+  children
 }) {
+  const {locale, ref} = usePageLocale();
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? items[0]?.id);
-  const selectedId = value ?? uncontrolledValue;
-  const tabRefs = React.useRef([]);
-  const select = id => {
-    if (value === undefined) setUncontrolledValue(id);
-    onChange && onChange(id);
-  };
-  const onKeyDown = (event, index) => {
-    const count = items.length;
-    if (!count) return;
-    const rtl = getComputedStyle(event.currentTarget).direction === 'rtl';
-    let target = null;
-    if (event.key === 'ArrowRight') target = rtl ? index - 1 : index + 1;
-    else if (event.key === 'ArrowLeft') target = rtl ? index + 1 : index - 1;
-    else if (event.key === 'Home') target = 0;
-    else if (event.key === 'End') target = count - 1;
-    if (target === null) return;
-    event.preventDefault();
-    target = (target + count) % count;
-    tabRefs.current[target] && tabRefs.current[target].focus();
-    select(items[target].id);
-  };
-  // The Tab stop: the selected tab, or the first when the value matches none.
-  const focusableId = items.some(item => item.id === selectedId) ? selectedId : items[0]?.id;
-  return (
-    <div
-      role="tablist"
+  const selected = value ?? uncontrolledValue;
+  // A value that matches no tab selects the first, so there is always one Tab stop.
+  const selectedKey = items.some(item => item.id === selected) ? selected : items[0]?.id;
+  const list = (
+    <TabList
       aria-label={label}
       className={cx('ag-tabs', variant === 'pill' && 'ag-tabs--pill', className)}
     >
-      {items.map((item, i) => (
-        <button
+      {items.map(item => (
+        <Tab
           key={item.id}
-          ref={element => (tabRefs.current[i] = element)}
-          role="tab"
-          type="button"
-          id={idPrefix ? idPrefix + '-tab-' + item.id : undefined}
-          aria-controls={
-            idPrefix && focusableId === item.id ? idPrefix + '-panel-' + item.id : undefined
-          }
-          aria-selected={selectedId === item.id}
-          tabIndex={focusableId === item.id ? 0 : -1}
-          className={cx('ag-tab', selectedId === item.id && 'ag-tab--active')}
-          onClick={() => select(item.id)}
-          onKeyDown={event => onKeyDown(event, i)}
+          id={item.id}
+          className={({isSelected}) => cx('ag-tab', isSelected && 'ag-tab--active')}
         >
           {item.label}
-        </button>
+        </Tab>
       ))}
-    </div>
+    </TabList>
+  );
+  return (
+    <I18nProvider locale={locale}>
+      <AriaTabs
+        ref={ref}
+        selectedKey={selectedKey ?? null}
+        onSelectionChange={key => {
+          const id = String(key);
+          if (value === undefined) setUncontrolledValue(id);
+          onChange && onChange(id);
+        }}
+        className="ag-tabs-root"
+      >
+        {listClassName ? <div className={listClassName}>{list}</div> : list}
+        {/* A new panel per tab: React Aria links a panel to its tab when the panel mounts. Without
+            children the panel is empty and not displayed (React Aria sets the selected panel's own
+            hidden attribute), so the tab's aria-controls still points at a real element. */}
+        {selectedKey != null && (
+          <TabPanel
+            key={selectedKey}
+            id={selectedKey}
+            className={panelClassName}
+            style={children == null ? {display: 'none'} : undefined}
+          >
+            {children}
+          </TabPanel>
+        )}
+      </AriaTabs>
+    </I18nProvider>
   );
 }

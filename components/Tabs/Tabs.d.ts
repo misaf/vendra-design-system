@@ -11,10 +11,15 @@ export interface TabsProps {
   variant?: 'underline' | 'pill';
   /** aria-label for the tablist */
   label?: string;
-  /** Links tabs to panels: tab ids become `${idPrefix}-tab-${id}`, and the selected tab gets aria-controls=`${idPrefix}-panel-${id}`.
-   *  Render the visible panel as <div role="tabpanel" id={`${idPrefix}-panel-${id}`} aria-labelledby={`${idPrefix}-tab-${id}`} tabIndex={0}>. */
-  idPrefix?: string;
+  /** Classes on the tab list itself */
   className?: string;
+  /** Wraps the tab list in a div with these classes, e.g. a horizontal scroller on phones */
+  listClassName?: string;
+  /** Classes on the tabpanel */
+  panelClassName?: string;
+  /** The selected tab's content, rendered in a tabpanel linked to its tab (aria-controls,
+   * aria-labelledby). Without children, Tabs is only the tab list. */
+  children?: React.ReactNode;
 }
-/** Roving tabindex: only the selected tab is tabbable; ←/→ (mirrored in RTL), Home, End move focus and select. */
+/** React Aria tabs: one Tab stop; ←/→ (mirrored in RTL), Home and End move and select; children is the selected tab's panel. */
 export declare function Tabs(props: TabsProps): JSX.Element;

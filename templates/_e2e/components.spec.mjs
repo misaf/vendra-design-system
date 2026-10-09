@@ -73,13 +73,12 @@ test.describe('Tabs (ARIA tabs pattern)', () => {
     await expect(page.getByRole('tab')).toHaveCount(3);
     await expect(page.locator('[role=tab][tabindex="0"]')).toHaveCount(1);
     await page.getByRole('tab', {name: 'Profile'}).click();
+    // The selected tab controls the visible panel, and the panel is named by that tab.
     const panelId = await selected.getAttribute('aria-controls');
-    expect(panelId).toBe('fx-panel-profile');
-    await expect(page.locator('#' + panelId)).toHaveAttribute(
-      'aria-labelledby',
-      await selected.getAttribute('id')
-    );
-    await expect(page.getByRole('tabpanel', {name: 'Profile'})).toBeVisible();
+    const panel = page.locator('[id="' + panelId + '"]');
+    await expect(panel).toHaveAttribute('role', 'tabpanel');
+    await expect(panel).toHaveAttribute('aria-labelledby', await selected.getAttribute('id'));
+    await expect(page.getByRole('tabpanel', {name: 'Profile'})).toHaveText('profile panel');
   });
 });
 

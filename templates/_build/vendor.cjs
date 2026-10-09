@@ -56,22 +56,32 @@ function vendorBundle(imports) {
 async function bundleToStdout(imports) {
   const {rolldown} = require('rolldown');
   const entry = '\0vendor-entry';
+  // React and ReactDOM are the page's globals. They are modules here rather than externals so that
+  // CommonJS dependencies (use-sync-external-store) can require them too.
+  const globals = {
+    react: 'window.React',
+    'react-dom': 'window.ReactDOM',
+    'react-dom/client': 'window.ReactDOM'
+  };
   const bundle = await rolldown({
     input: entry,
     cwd: templates,
-    external: ['react', 'react-dom'],
     transform: {define: {'process.env.NODE_ENV': '"production"'}},
     plugins: [
       {
         name: 'vendor-entry',
-        resolveId: id => (id === entry ? id : null),
-        load: id => (id === entry ? entrySource(imports) : null)
+        resolveId: id => (id === entry ? id : id in globals ? '\0global:' + id : null),
+        load: id =>
+          id === entry
+            ? entrySource(imports)
+            : id.startsWith('\0global:')
+              ? 'module.exports = ' + globals[id.slice('\0global:'.length)] + ';'
+              : null
       }
     ]
   });
   const {output} = await bundle.generate({
     format: 'iife',
-    globals: {react: 'window.React', 'react-dom': 'window.ReactDOM'},
     minify: true,
     comments: false
   });
