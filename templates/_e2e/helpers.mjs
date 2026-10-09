@@ -187,5 +187,5 @@ export async function pinDelivery(page) {
   await map.focus();
   await page.keyboard.press('ArrowUp');
   // Only a placed pin shows coordinates (Latin or Persian digits); the instructions have none.
-  await expect(page.locator('#vf-pin-status')).toHaveText(/[0-9۰-۹]{2}[.٫][0-9۰-۹]/);
+  await expect(page.locator('#vf-map-status')).toHaveText(/[0-9۰-۹]{2}[.٫][0-9۰-۹]/);
 }

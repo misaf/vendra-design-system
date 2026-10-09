@@ -10,7 +10,6 @@ class Component extends VFPage {
     profile: null,
     mapFailed: false,
     placesFailed: false,
-    locating: false,
     locateFailed: false,
     topUp: '',
     topUpError: '',
@@ -439,8 +438,16 @@ class Component extends VFPage {
         ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa))
         : E.pinHint,
       pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
-      locating: s.locating,
-      locate: () => this._locate(),
+      // The address pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+      map: {
+        change: location => this._setLocation(location),
+        load: vfLoadLeaflet,
+        tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+        center: VF_STORE.map.center,
+        zoom: VF_STORE.map.zoom,
+        locateError: () => this.setState({locateFailed: true}),
+        fail: () => this.setState({mapFailed: true})
+      },
       formTitle: isAddress
         ? f.id
           ? E.editAddress
@@ -536,17 +543,6 @@ class Component extends VFPage {
       }
     };
   }
-  // The pin in the address editor. Its element only exists while the editor is open.
-  _pin() {
-    if (!this._pinMap)
-      this._pinMap = vfPinMap({
-        id: 'vf-address-map',
-        location: () => this.state.form && this.state.form.location,
-        onMove: location => this._setLocation(location),
-        onFail: () => this.setState({mapFailed: true})
-      });
-    return this._pinMap;
-  }
   _setLocation(location) {
     this.setState(prev =>
       prev.form
@@ -567,30 +563,17 @@ class Component extends VFPage {
       });
     return this._placesView;
   }
-  _locate() {
-    this.setState({locating: true, locateFailed: false});
-    vfLocate(
-      here => {
-        this.setState({locating: false});
-        if (!this._pin().moveTo(here)) this._setLocation(here);
-      },
-      () => this.setState({locating: false, locateFailed: true})
-    );
-  }
   componentDidMount() {
     super.componentDidMount();
-    this._pin().sync();
     this._placesMap().sync();
   }
   componentDidUpdate() {
     super.componentDidUpdate();
-    this._pin().sync();
     this._placesMap().sync();
   }
   componentWillUnmount() {
     super.componentWillUnmount();
     clearTimeout(this._topUpTimer);
-    this._pin().remove();
     this._placesMap().remove();
   }
 }

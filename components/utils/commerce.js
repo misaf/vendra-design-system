@@ -31,6 +31,12 @@ const validLocation = location =>
   Math.abs(location.lat) <= 90 &&
   Math.abs(location.lng) <= 180;
 
+// A map point rounded to six decimals (about 10 cm): enough for a front door, and tidy in stored orders.
+const pinLocation = point => {
+  const round = value => Math.round(value * 1e6) / 1e6;
+  return {lat: round(point.lat), lng: round(point.lng)};
+};
+
 const distanceKm = (a, b) => {
   const rad = Math.PI / 180,
     dLat = (b.lat - a.lat) * rad,
@@ -339,6 +345,7 @@ export const commerce = {
   phone,
   isMobile,
   validLocation,
+  pinLocation,
   distanceKm,
   zoneAt,
   isoDate,

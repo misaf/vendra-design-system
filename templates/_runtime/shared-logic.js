@@ -322,7 +322,8 @@ function vfTotals(lines, delivery, balance = null) {
 }
 
 // Source: templates/_shared/location.js
-// Delivery locations: loads the vendored Leaflet map on demand, runs the pin and saved-places maps, and formats a location.
+// Delivery locations: loads the vendored Leaflet map on demand (the pin itself is the LocationPicker
+// component), runs the saved-places maps, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 
 function vfValidLocation(location) {
@@ -331,8 +332,7 @@ function vfValidLocation(location) {
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
 function vfPinLocation(latlng) {
-  const round = v => Math.round(v * 1e6) / 1e6;
-  return {lat: round(latlng.lat), lng: round(latlng.lng)};
+  return window.AG_COMMERCE.pinLocation(latlng);
 }
 
 function vfLocationText(location, fa) {
@@ -372,17 +372,6 @@ function vfLoadLeaflet() {
   return window.vfLeafletLoading;
 }
 
-// Asks the browser where the visitor is; calls found(location) or failed().
-function vfLocate(found, failed) {
-  if (!navigator.geolocation) return failed();
-  navigator.geolocation.getCurrentPosition(
-    position =>
-      found(vfPinLocation({lat: position.coords.latitude, lng: position.coords.longitude})),
-    () => failed(),
-    {enableHighAccuracy: true, timeout: 10000}
-  );
-}
-
 function vfTileLayer(Leaflet) {
   return Leaflet.tileLayer(VF_STORE.map.tiles, {
     maxZoom: 19,
@@ -408,62 +397,6 @@ function vfWatchSize(map) {
   });
   watcher.observe(map.getContainer());
   map.on('unload', () => watcher.disconnect());
-}
-
-// Keeps a centre-pin map on the element #id: wherever the map stops is the pinned point.
-// Call sync() after every render (the element can appear, disappear or be replaced) and remove() on unmount.
-function vfPinMap({id, location, onMove, onReady, onFail, zoom = 17}) {
-  let map = null,
-    pending = false,
-    failed = false,
-    dead = false;
-  return {
-    sync() {
-      const box = document.getElementById(id);
-      if (map && (!box || map.getContainer() !== box)) {
-        map.remove();
-        map = null;
-      }
-      if (!box || map || pending || failed || dead) return;
-      pending = true;
-      vfLoadLeaflet()
-        .then(Leaflet => {
-          pending = false;
-          const el = document.getElementById(id);
-          if (!el || map || dead) return;
-          const at = location(),
-            ok = vfValidLocation(at);
-          map = Leaflet.map(el, {
-            center: ok ? [at.lat, at.lng] : VF_STORE.map.center,
-            zoom: ok ? zoom : VF_STORE.map.zoom,
-            scrollWheelZoom: false
-          });
-          vfTileLayer(Leaflet).addTo(map);
-          vfWatchSize(map);
-          map.on('moveend', () => {
-            if (!map.resizing) onMove(vfPinLocation(map.getCenter()));
-          });
-          map.on('click', e => map.panTo(e.latlng));
-          if (onReady) onReady();
-        })
-        .catch(() => {
-          pending = false;
-          failed = true;
-          if (!dead && onFail) onFail();
-        });
-    },
-    // Moves the map (and so the pin); false when there is no map to move.
-    moveTo(at) {
-      if (!map) return false;
-      map.setView([at.lat, at.lng], zoom);
-      return true;
-    },
-    remove() {
-      dead = true;
-      if (map) map.remove();
-      map = null;
-    }
-  };
 }
 
 // A read-only map of saved places on the element #id. places() returns [{id, label, title, location, pick}];

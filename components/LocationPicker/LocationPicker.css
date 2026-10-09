@@ -1,0 +1,54 @@
+.ag-location {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+}
+/* Leaflet's panes stay inside the map: isolation keeps their z-indexes from escaping. */
+.ag-location__map {
+  position: relative;
+  block-size: 280px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.ag-location--compact .ag-location__map {
+  block-size: 220px;
+}
+.ag-location__canvas {
+  position: absolute;
+  inset: 0;
+}
+.ag-location__canvas.leaflet-container {
+  font-family: var(--font-body);
+  background: var(--surface-muted);
+}
+.ag-location__canvas.leaflet-container:focus-visible {
+  outline: none;
+}
+.ag-location__map:has(.leaflet-container:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+/* The pin stays at the map's centre, its point on the chosen spot. */
+.ag-location__pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+  color: var(--accent);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+}
+.ag-location__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.ag-location__row > .ag-field__hint {
+  padding-block-start: var(--space-2);
+}

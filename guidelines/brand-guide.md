@@ -156,6 +156,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Input:** label, hint, error (wired with `aria-describedby`), `iconStart`, `multiline`.
 - **PhoneInput:** Input for phone numbers: tel keypad, autofill (`autoComplete="off"` for a recipient), left to right in Persian; `onValueChange(number, isMobile)` gives Latin digits.
 - **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill; `onComplete` never submits by itself.
+- **LocationPicker:** centre-pin map for the delivery point (drag, tap, arrow keys, "use my location"); the app passes `loadLeaflet()` and tiles, and `onFail` switches to a typed address.
 - **Select:** same field pattern, with `options`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.

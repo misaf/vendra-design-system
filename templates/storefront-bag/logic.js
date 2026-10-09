@@ -11,7 +11,6 @@ class Component extends VFPage {
     promoDraft: '',
     promoError: null,
     mapFailed: false,
-    locating: false,
     locateFailed: false
   };
   renderVals() {
@@ -150,7 +149,6 @@ class Component extends VFPage {
           : s.locateFailed
             ? C.locateFailed
             : '',
-      locating: s.locating,
       // With a map, the pin decides the zone; the select is only the fallback when the map fails.
       zoneText: pinned && !invalid.outside ? zoneLabel(z) : '',
       zoneStatus: pinned && !invalid.outside ? C.zoneSet + vfDeliveryHint(z, fa) : C.zonePending,
@@ -179,10 +177,26 @@ class Component extends VFPage {
             address: tx(a.line),
             ...(vfValidLocation(a.location) ? {location: a.location} : {})
           });
-          if (vfValidLocation(a.location)) this._pin().moveTo(a.location);
         }
       })),
-      locate: () => this._locate(),
+      // The delivery pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+      map: {
+        change: location => {
+          this.setState({locateFailed: false});
+          this._update({location});
+        },
+        load: vfLoadLeaflet,
+        tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+        center: VF_STORE.map.center,
+        zoom: VF_STORE.map.zoom,
+        locateError: () => this.setState({locateFailed: true}),
+        // A fallback left over from an earlier failed load no longer applies once the map is here.
+        ready: () => this._delivery().noMap && this._update({noMap: false}),
+        fail: () => {
+          this.setState({mapFailed: true});
+          this._update({noMap: true});
+        }
+      },
       hasProblems: s.submitted && problems.length > 0,
       problems,
       problemTitle: C.errorTitle.replace('{count}', n(problems.length)),
@@ -413,32 +427,6 @@ class Component extends VFPage {
   _delivery() {
     return this.props.store ? this.props.store.delivery : this.state.delivery;
   }
-  // Leaflet owns #vf-map's contents; the shared pin map recreates it whenever the page replaces the element.
-  _pin() {
-    if (!this._pinMap)
-      this._pinMap = vfPinMap({
-        id: 'vf-map',
-        location: () => this._delivery().location,
-        onMove: location => this._update({location}),
-        // A fallback left over from an earlier failed load no longer applies once the map is here.
-        onReady: () => this._delivery().noMap && this._update({noMap: false}),
-        onFail: () => {
-          this.setState({mapFailed: true});
-          this._update({noMap: true});
-        }
-      });
-    return this._pinMap;
-  }
-  _locate() {
-    this.setState({locating: true, locateFailed: false});
-    vfLocate(
-      here => {
-        this.setState({locating: false});
-        if (!this._pin().moveTo(here)) this._update({location: here});
-      },
-      () => this.setState({locating: false, locateFailed: true})
-    );
-  }
   // A signed-in customer's own name and mobile fill "Your details" when they are empty.
   _prefillSender() {
     const phone = vfAccountPhone(),
@@ -450,14 +438,5 @@ class Component extends VFPage {
   componentDidMount() {
     super.componentDidMount();
     this._prefillSender();
-    this._pin().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._pin().sync();
-  }
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this._pin().remove();
   }
 }

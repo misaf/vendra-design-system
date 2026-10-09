@@ -100,7 +100,7 @@
 <sc-if value="{{ isAddress }}">
 <x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address-label" label="{{ editor.label }}" value="{{ form.label }}" on-change="{{ set.label }}"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.Select" label="{{ editor.zone }}" value="{{ form.zone }}" options="{{ zoneOptions }}" on-change="{{ set.zone }}"></x-import>
-<div class="vf-account-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-address-pin-label" class="ag-field__label">{{ editor.pin }}</span><sc-if value="{{ mapOk }}"><div class="vf-map-box tw:h-[220px]"><div id="vf-address-map" dir="ltr" role="region" aria-labelledby="vf-address-pin-label" aria-describedby="vf-address-pin-status vf-address-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem.Icon" name="map-pin" size="{{ 32 }}"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-address-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}">{{ editor.locate }}</x-import></div><sc-if value="{{ pinError }}"><span id="vf-address-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if></sc-if><sc-if value="{{ mapFailed }}"><p class="ag-field__hint tw:m-0">{{ editor.mapFailed }}</p></sc-if></div>
+<div class="vf-account-pin tw:flex tw:flex-col tw:gap-2"><sc-if value="{{ mapOk }}"><x-import component-from-global-scope="VendraDesignSystem.LocationPicker" id="vf-address-map" compact="{{ true }}" label="{{ editor.pin }}" status="{{ pinStatus }}" error="{{ pinError }}" value="{{ form.location }}" on-change="{{ map.change }}" load-leaflet="{{ map.load }}" tiles="{{ map.tiles }}" center="{{ map.center }}" zoom="{{ map.zoom }}" locate-label="{{ editor.locate }}" on-locate-error="{{ map.locateError }}" on-fail="{{ map.fail }}"></x-import></sc-if><sc-if value="{{ mapFailed }}"><span class="ag-field__label">{{ editor.pin }}</span><p class="ag-field__hint tw:m-0">{{ editor.mapFailed }}</p></sc-if></div>
 <x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address-line" label="{{ editor.address }}" multiline="{{ true }}" value="{{ form.line }}" on-change="{{ set.line }}" error="{{ errors.line }}" autocomplete="street-address"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.Input" label="{{ editor.recipient }}" value="{{ form.recipient }}" on-change="{{ set.recipient }}" autocomplete="name"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.PhoneInput" id="vf-address-phone" label="{{ editor.phone }}" value="{{ form.phone }}" on-change="{{ set.phone }}" error="{{ errors.phone }}"></x-import>
@@ -485,7 +485,6 @@ class Component extends VFPage {
     profile: null,
     mapFailed: false,
     placesFailed: false,
-    locating: false,
     locateFailed: false,
     topUp: '',
     topUpError: '',
@@ -914,8 +913,16 @@ class Component extends VFPage {
         ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa))
         : E.pinHint,
       pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
-      locating: s.locating,
-      locate: () => this._locate(),
+      // The address pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+      map: {
+        change: location => this._setLocation(location),
+        load: vfLoadLeaflet,
+        tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+        center: VF_STORE.map.center,
+        zoom: VF_STORE.map.zoom,
+        locateError: () => this.setState({locateFailed: true}),
+        fail: () => this.setState({mapFailed: true})
+      },
       formTitle: isAddress
         ? f.id
           ? E.editAddress
@@ -1011,17 +1018,6 @@ class Component extends VFPage {
       }
     };
   }
-  // The pin in the address editor. Its element only exists while the editor is open.
-  _pin() {
-    if (!this._pinMap)
-      this._pinMap = vfPinMap({
-        id: 'vf-address-map',
-        location: () => this.state.form && this.state.form.location,
-        onMove: location => this._setLocation(location),
-        onFail: () => this.setState({mapFailed: true})
-      });
-    return this._pinMap;
-  }
   _setLocation(location) {
     this.setState(prev =>
       prev.form
@@ -1042,30 +1038,17 @@ class Component extends VFPage {
       });
     return this._placesView;
   }
-  _locate() {
-    this.setState({locating: true, locateFailed: false});
-    vfLocate(
-      here => {
-        this.setState({locating: false});
-        if (!this._pin().moveTo(here)) this._setLocation(here);
-      },
-      () => this.setState({locating: false, locateFailed: true})
-    );
-  }
   componentDidMount() {
     super.componentDidMount();
-    this._pin().sync();
     this._placesMap().sync();
   }
   componentDidUpdate() {
     super.componentDidUpdate();
-    this._pin().sync();
     this._placesMap().sync();
   }
   componentWillUnmount() {
     super.componentWillUnmount();
     clearTimeout(this._topUpTimer);
-    this._pin().remove();
     this._placesMap().remove();
   }
 }

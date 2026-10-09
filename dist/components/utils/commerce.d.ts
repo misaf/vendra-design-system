@@ -128,6 +128,8 @@ export interface Commerce {
   /** An Iranian mobile number (09xxxxxxxxx). */
   isMobile(value: string): boolean;
   validLocation(location: unknown): location is LatLng;
+  /** A point rounded to six decimals (about 10 cm). */
+  pinLocation(point: LatLng): LatLng;
   distanceKm(a: LatLng, b: LatLng): number;
   /** The smallest zone reaching the pin, from its center or `origin`; null outside every zone. */
   zoneAt(

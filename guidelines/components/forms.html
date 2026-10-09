@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="1440x1320" name="Forms" subtitle="Input, PhoneInput, CodeInput, Select, Checkbox, Radio, Switch, QuantityInput, ChoiceTile, RangeSlider, DatePicker — English left, Persian right" -->
+<!-- @dsCard group="Components" viewport="1440x1320" name="Forms" subtitle="Input, PhoneInput, CodeInput, LocationPicker, Select, Checkbox, Radio, Switch, QuantityInput, ChoiceTile, RangeSlider, DatePicker — English left, Persian right" -->
 <!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
 <script src="../../templates/_vendor/react.production.min.js"></script>
 <script src="../../templates/_vendor/react-dom.production.min.js"></script>
@@ -6,16 +6,16 @@
 <script src="../../templates/_runtime/components.js"></script>
 <style>body{margin:0;padding:20px 24px}a{color:var(--text-accent)}a:hover{color:var(--accent-hover)}.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.split>div{min-width:0;display:flex;flex-direction:column;gap:18px}.lh{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:500;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)}.k{font-size:11px;color:var(--ink-500);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}[lang="fa"] .k{letter-spacing:0;font-size:12px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}.col{display:flex;flex-direction:column;gap:10px}</style></head><body><div id="root"></div>
 <script type="text/babel">
-const { DatePicker, Input, PhoneInput, CodeInput, Select, Checkbox, Radio, Switch, QuantityInput, ChoiceTile, ChoiceGroup, RangeSlider } = window.VendraDesignSystem;
+const { DatePicker, Input, PhoneInput, CodeInput, LocationPicker, Select, Checkbox, Radio, Switch, QuantityInput, ChoiceTile, ChoiceGroup, RangeSlider } = window.VendraDesignSystem;
 const fa=n=>window.AG_FORMAT.num(n,'fa');
 const T={
 en:{h:'English',d:n=>n.toLocaleString('en-US'),name:'Recipient name',ph:'e.g. Shirin',win:'Delivery window',wins:['Morning · 8–12','Afternoon · 12–16','Evening · 16–20'],card:'Add a handwritten card',un:'Unavailable',sz:[['Petite','8–10 stems'],['Generous','15–18 stems']],sub:'Weekly subscription',
- ke:'Errors · label → control → hint',phone:'Recipient phone',phErr:'Enter an 11-digit mobile number.',code:'Sign-in code',codeH:'We sent a 5-digit code to 0912 345 6789.',nameH:'As written on the card.',terms:'I agree to the delivery terms',termsErr:'Please accept the terms to continue.',zone:'Delivery area',zph:'Choose an area',zones:['Karaj — central','Tehran'],zErr:'Choose where we deliver.',
+ ke:'Errors · label → control → hint',phone:'Recipient phone',phErr:'Enter an 11-digit mobile number.',code:'Sign-in code',codeH:'We sent a 5-digit code to 0912 345 6789.',kl:'LocationPicker · map loads in the app (frame shown here)',pin:'Delivery pin',pinH:'Move the map so the pin sits on the front door.',locate:'Use my location',nameH:'As written on the card.',terms:'I agree to the delivery terms',termsErr:'Please accept the terms to continue.',zone:'Delivery area',zph:'Choose an area',zones:['Karaj — central','Tehran'],zErr:'Choose where we deliver.',
  kd:'DatePicker · Shamsi / Gregorian',date:'Delivery date',kg:'ChoiceGroup · fieldset + legend + error',bs:'Bouquet size',bsErr:'Choose a size.',bsz:['Petite','Generous','Luxe'],
  kt:'ChoiceTile · ChoiceGroup',dt:'Delivery time',slots:[['08','08–12','Free'],['12','12–16','Free'],['16','16–20','+80,000'],['20','20–22','Full']],area:'Area',areas:['Central Karaj','Azimiyeh','Fardis'],
  kr:'RangeSlider',money:v=>(v/1000000).toLocaleString('en-US',{maximumFractionDigits:1})+'M Toman',rl:{min:'Min price',max:'Max price'},kr1:'RangeSlider · range=false',stems:'Stem count',st:v=>v+' stems'},
 fa:{h:'فارسی',d:fa,name:'نام گیرنده',ph:'مثلاً شیرین',win:'بازهٔ ارسال',wins:['صبح · ۸ تا ۱۲','ظهر · ۱۲ تا ۱۶','عصر · ۱۶ تا ۲۰'],card:'افزودن کارت دست‌نویس',un:'غیرفعال',sz:[['کوچک','۸ تا ۱۰ شاخه'],['پرپشت','۱۵ تا ۱۸ شاخه']],sub:'اشتراک هفتگی',
- ke:'خطاها · برچسب ← فیلد ← راهنما',phone:'تلفن گیرنده',phErr:'شمارهٔ موبایل ۱۱ رقمی وارد کنید.',code:'کد ورود',codeH:'کد ۵ رقمی به ۰۹۱۲ ۳۴۵ ۶۷۸۹ فرستاده شد.',nameH:'همان‌طور که روی کارت نوشته می‌شود.',terms:'شرایط ارسال را می‌پذیرم',termsErr:'برای ادامه، شرایط را بپذیرید.',zone:'منطقهٔ ارسال',zph:'یک منطقه انتخاب کنید',zones:['کرج — مرکز','تهران'],zErr:'محل ارسال را انتخاب کنید.',
+ ke:'خطاها · برچسب ← فیلد ← راهنما',phone:'تلفن گیرنده',phErr:'شمارهٔ موبایل ۱۱ رقمی وارد کنید.',code:'کد ورود',codeH:'کد ۵ رقمی به ۰۹۱۲ ۳۴۵ ۶۷۸۹ فرستاده شد.',kl:'انتخاب مکان · نقشه در برنامه بارگذاری می‌شود (اینجا فقط قاب)',pin:'پین محل تحویل',pinH:'نقشه را جابه‌جا کنید تا پین روی درِ ورودی بنشیند.',locate:'مکان من',nameH:'همان‌طور که روی کارت نوشته می‌شود.',terms:'شرایط ارسال را می‌پذیرم',termsErr:'برای ادامه، شرایط را بپذیرید.',zone:'منطقهٔ ارسال',zph:'یک منطقه انتخاب کنید',zones:['کرج — مرکز','تهران'],zErr:'محل ارسال را انتخاب کنید.',
  kd:'انتخاب تاریخ · شمسی / میلادی',date:'تاریخ ارسال',kg:'گروه انتخاب · خطا',bs:'اندازهٔ دسته‌گل',bsErr:'یک اندازه انتخاب کنید.',bsz:['کوچک','پرپشت','لوکس'],
  kt:'کاشی انتخاب',dt:'زمان ارسال',slots:[['08','۸ تا ۱۲','رایگان'],['12','۱۲ تا ۱۶','رایگان'],['16','۱۶ تا ۲۰','+۸۰٬۰۰۰'],['20','۲۰ تا ۲۲','پر']],area:'منطقه',areas:['کرج مرکزی','عظیمیه','فردیس'],
  kr:'بازهٔ قیمت',money:v=>fa(v)+' تومان',rl:{min:'حداقل قیمت',max:'حداکثر قیمت'},kr1:'لغزنده · تک‌مقدار',stems:'تعداد شاخه',st:v=>fa(v)+' شاخه'}};
@@ -36,6 +36,7 @@ return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div
 <Select id={'zn-'+l} label={t.zone} placeholder={t.zph} options={t.zones} error={t.zErr}/>
 <Checkbox id={'tr-'+l} label={t.terms} error={t.termsErr}/>
 </div></div>
+<div><div className="k">{t.kl}</div><div style={{maxWidth:520}}><LocationPicker id={'lp-'+l} compact label={t.pin} status={t.pinH} value={null} onChange={()=>{}} loadLeaflet={()=>new Promise(()=>{})} tiles={{url:'',attribution:''}} center={[35.83,50.96]} locateLabel={t.locate}/></div></div>
 <div><div className="k">{t.kd}</div>{DatePicker&&<DatePicker id={'dp-'+l} lang={l} label={t.date} value="2026-09-29" onChange={()=>{}}/>}</div>
 <div><div className="k">{t.kg}</div><ChoiceGroup id={'bs-'+l} legend={t.bs} error={t.bsErr} columns={3}>{t.bsz.map(x=><ChoiceTile key={x} size="sm" label={x} selected={false} onSelect={()=>{}}/>)}</ChoiceGroup></div>
 <div><div className="k">{t.kt}</div><ChoiceGroup label={t.dt} columns={4}>{t.slots.map(([id,a,b])=><ChoiceTile key={id} label={a} description={b} selected={slot===id} disabled={id==='20'} onSelect={()=>setSlot(id)}/>)}</ChoiceGroup>

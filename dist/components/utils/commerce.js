@@ -14,6 +14,14 @@ const phone = (value) => latin(value || "").replace(/[\s()-]/g, "");
 // An Iranian mobile number (09xxxxxxxxx), typed with any digits or separators.
 const isMobile = (value) => /^09\d{9}$/.test(phone(value));
 const validLocation = (location) => !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
+// A map point rounded to six decimals (about 10 cm): enough for a front door, and tidy in stored orders.
+const pinLocation = (point) => {
+	const round = (value) => Math.round(value * 1e6) / 1e6;
+	return {
+		lat: round(point.lat),
+		lng: round(point.lng)
+	};
+};
 const distanceKm = (a, b) => {
 	const rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
 	const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
@@ -267,6 +275,7 @@ export const commerce = {
 	phone,
 	isMobile,
 	validLocation,
+	pinLocation,
 	distanceKm,
 	zoneAt,
 	isoDate,

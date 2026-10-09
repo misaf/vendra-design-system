@@ -107,8 +107,8 @@
 <x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-name" value="{{ delivery.name }}" on-change="{{ setName }}" error="{{ nameError }}" required="{{ true }}" label="{{ t.name }}" autocomplete="off" hint-size="100%,76px"></x-import>
 <x-import component-from-global-scope="VendraDesignSystem.PhoneInput" id="vf-phone" value="{{ delivery.phone }}" on-change="{{ setPhone }}" error="{{ phoneError }}" required="{{ true }}" label="{{ t.phone }}" autocomplete="off" placeholder="0912 000 0000" hint-size="100%,76px"></x-import>
 </div>
-<div class="vf-bag-pin tw:flex tw:flex-col tw:gap-2"><span id="vf-pin-label" class="ag-field__label">{{ t.pin }}</span><sc-if value="{{ mapOk }}" hint-placeholder-val="{{ true }}"><div class="vf-bag-map vf-map-box tw:h-[280px]"><div id="vf-map" dir="ltr" role="region" aria-labelledby="vf-pin-label" aria-describedby="vf-pin-status vf-pin-error" class="tw:absolute tw:inset-0"></div><div class="vf-map-pin" aria-hidden="true"><x-import component-from-global-scope="VendraDesignSystem.Icon" name="map-pin" size="{{ 36 }}" hint-size="36px,36px"></x-import></div></div><div class="tw:flex tw:items-start tw:justify-between tw:gap-3"><span id="vf-pin-status" class="ag-field__hint tw:pt-2">{{ pinStatus }}</span><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" size="sm" on-click="{{ locate }}" loading="{{ locating }}" hint-size="140px,36px">{{ t.locate }}</x-import></div><sc-if value="{{ pinError }}" hint-placeholder-val="{{ false }}"><span id="vf-pin-error" class="ag-field__hint ag-field__hint--error">{{ pinError }}</span></sc-if>
-<div class="vf-bag-zone tw:flex tw:flex-col tw:gap-1 tw:pt-2" role="status"><span class="ag-field__label">{{ t.zone }}</span><sc-if value="{{ zoneText }}" hint-placeholder-val="{{ true }}"><span class="tw:text-md tw:font-medium">{{ zoneText }}</span></sc-if><span class="ag-field__hint">{{ zoneStatus }}</span></div></sc-if><sc-if value="{{ mapFailed }}" hint-placeholder-val="{{ false }}"><p class="ag-field__hint tw:m-0">{{ t.mapFailed }}</p><x-import component-from-global-scope="VendraDesignSystem.Select" id="vf-zone" label="{{ t.zone }}" hint="{{ zoneHint }}" value="{{ zone }}" options="{{ zones }}" on-change="{{ setZone }}" hint-size="100%,96px"></x-import></sc-if></div>
+<div class="vf-bag-pin tw:flex tw:flex-col tw:gap-2"><sc-if value="{{ mapOk }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem.LocationPicker" id="vf-map" label="{{ t.pin }}" status="{{ pinStatus }}" error="{{ pinError }}" value="{{ delivery.location }}" on-change="{{ map.change }}" load-leaflet="{{ map.load }}" tiles="{{ map.tiles }}" center="{{ map.center }}" zoom="{{ map.zoom }}" locate-label="{{ t.locate }}" on-locate-error="{{ map.locateError }}" on-ready="{{ map.ready }}" on-fail="{{ map.fail }}" hint-size="100%,340px"></x-import>
+<div class="vf-bag-zone tw:flex tw:flex-col tw:gap-1 tw:pt-2" role="status"><span class="ag-field__label">{{ t.zone }}</span><sc-if value="{{ zoneText }}" hint-placeholder-val="{{ true }}"><span class="tw:text-md tw:font-medium">{{ zoneText }}</span></sc-if><span class="ag-field__hint">{{ zoneStatus }}</span></div></sc-if><sc-if value="{{ mapFailed }}" hint-placeholder-val="{{ false }}"><span class="ag-field__label">{{ t.pin }}</span><p class="ag-field__hint tw:m-0">{{ t.mapFailed }}</p><x-import component-from-global-scope="VendraDesignSystem.Select" id="vf-zone" label="{{ t.zone }}" hint="{{ zoneHint }}" value="{{ zone }}" options="{{ zones }}" on-change="{{ setZone }}" hint-size="100%,96px"></x-import></sc-if></div>
 <x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-address" value="{{ delivery.address }}" on-change="{{ setAddress }}" error="{{ addressError }}" required="{{ true }}" label="{{ addressLabel }}" hint="{{ addressHint }}" autocomplete="off" hint-size="100%,96px"></x-import>
 </section>
 <section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h" aria-labelledby="vf-when-title">
@@ -442,7 +442,6 @@ class Component extends VFPage {
     promoDraft: '',
     promoError: null,
     mapFailed: false,
-    locating: false,
     locateFailed: false
   };
   renderVals() {
@@ -581,7 +580,6 @@ class Component extends VFPage {
           : s.locateFailed
             ? C.locateFailed
             : '',
-      locating: s.locating,
       // With a map, the pin decides the zone; the select is only the fallback when the map fails.
       zoneText: pinned && !invalid.outside ? zoneLabel(z) : '',
       zoneStatus: pinned && !invalid.outside ? C.zoneSet + vfDeliveryHint(z, fa) : C.zonePending,
@@ -610,10 +608,26 @@ class Component extends VFPage {
             address: tx(a.line),
             ...(vfValidLocation(a.location) ? {location: a.location} : {})
           });
-          if (vfValidLocation(a.location)) this._pin().moveTo(a.location);
         }
       })),
-      locate: () => this._locate(),
+      // The delivery pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+      map: {
+        change: location => {
+          this.setState({locateFailed: false});
+          this._update({location});
+        },
+        load: vfLoadLeaflet,
+        tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+        center: VF_STORE.map.center,
+        zoom: VF_STORE.map.zoom,
+        locateError: () => this.setState({locateFailed: true}),
+        // A fallback left over from an earlier failed load no longer applies once the map is here.
+        ready: () => this._delivery().noMap && this._update({noMap: false}),
+        fail: () => {
+          this.setState({mapFailed: true});
+          this._update({noMap: true});
+        }
+      },
       hasProblems: s.submitted && problems.length > 0,
       problems,
       problemTitle: C.errorTitle.replace('{count}', n(problems.length)),
@@ -844,32 +858,6 @@ class Component extends VFPage {
   _delivery() {
     return this.props.store ? this.props.store.delivery : this.state.delivery;
   }
-  // Leaflet owns #vf-map's contents; the shared pin map recreates it whenever the page replaces the element.
-  _pin() {
-    if (!this._pinMap)
-      this._pinMap = vfPinMap({
-        id: 'vf-map',
-        location: () => this._delivery().location,
-        onMove: location => this._update({location}),
-        // A fallback left over from an earlier failed load no longer applies once the map is here.
-        onReady: () => this._delivery().noMap && this._update({noMap: false}),
-        onFail: () => {
-          this.setState({mapFailed: true});
-          this._update({noMap: true});
-        }
-      });
-    return this._pinMap;
-  }
-  _locate() {
-    this.setState({locating: true, locateFailed: false});
-    vfLocate(
-      here => {
-        this.setState({locating: false});
-        if (!this._pin().moveTo(here)) this._update({location: here});
-      },
-      () => this.setState({locating: false, locateFailed: true})
-    );
-  }
   // A signed-in customer's own name and mobile fill "Your details" when they are empty.
   _prefillSender() {
     const phone = vfAccountPhone(),
@@ -881,15 +869,6 @@ class Component extends VFPage {
   componentDidMount() {
     super.componentDidMount();
     this._prefillSender();
-    this._pin().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._pin().sync();
-  }
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this._pin().remove();
   }
 }
 // END GENERATED PAGE LOGIC

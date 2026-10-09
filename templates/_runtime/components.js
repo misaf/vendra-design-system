@@ -979,6 +979,14 @@ const phone = (value) => latin(value || "").replace(/[\s()-]/g, "");
 // An Iranian mobile number (09xxxxxxxxx), typed with any digits or separators.
 const isMobile = (value) => /^09\d{9}$/.test(phone(value));
 const validLocation = (location) => !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
+// A map point rounded to six decimals (about 10 cm): enough for a front door, and tidy in stored orders.
+const pinLocation = (point) => {
+	const round = (value) => Math.round(value * 1e6) / 1e6;
+	return {
+		lat: round(point.lat),
+		lng: round(point.lng)
+	};
+};
 const distanceKm = (a, b) => {
 	const rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
 	const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
@@ -1232,6 +1240,7 @@ const commerce = {
 	phone,
 	isMobile,
 	validLocation,
+	pinLocation,
 	distanceKm,
 	zoneAt,
 	isoDate,
@@ -2182,6 +2191,137 @@ function LoadMore({ shown, total, status, label, href, onClick, busy = false, cl
 Object.assign(__ds_scope, { LoadMore });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/LoadMore/LoadMore.jsx", error: String((e && e.message) || e) }); }
 
+// components/LocationPicker/LocationPicker.jsx
+try { (() => {
+const { Button } = __ds_scope;
+const { Icon } = __ds_scope;
+const { commerce } = __ds_scope;
+const { cx } = __ds_scope;
+// A delivery pin: the pin stays at the map's centre, and wherever the map stops is the chosen point.
+// Customers drag or tap the map, or press the arrow keys once it has focus, or use their own location.
+// Leaflet comes from `loadLeaflet()` (the app decides how to load it) and is only created in the
+// browser, so the component renders on the server. When it can't load, `onFail` lets the page offer
+// a typed address instead.
+function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet, tiles, center, zoom = 13, pinZoom = 17, locateLabel, onLocateError, onReady, onFail, compact = false, className, style }) {
+	const box = React.useRef(null);
+	const map = React.useRef(null);
+	const [locating, setLocating] = React.useState(false);
+	// The latest callbacks and value, for listeners Leaflet keeps from the first render.
+	const latest = React.useRef({});
+	latest.current = {
+		value,
+		onChange,
+		onReady,
+		onFail
+	};
+	React.useEffect(() => {
+		let alive = true, watcher = null;
+		Promise.resolve().then(() => loadLeaflet()).then((Leaflet) => {
+			if (!alive || !box.current) return;
+			const at = latest.current.value;
+			const pinned = commerce.validLocation(at);
+			const created = Leaflet.map(box.current, {
+				center: pinned ? [at.lat, at.lng] : center,
+				zoom: pinned ? pinZoom : zoom,
+				scrollWheelZoom: false
+			});
+			Leaflet.tileLayer(tiles.url, {
+				maxZoom: tiles.maxZoom || 19,
+				attribution: tiles.attribution
+			}).addTo(created);
+			created.on("moveend", () => {
+				if (!created.resizing) latest.current.onChange(commerce.pinLocation(created.getCenter()));
+			});
+			created.on("click", (event) => created.panTo(event.latlng));
+			// Leaflet sizes itself once; inside an opening dialog or a resized column it needs telling.
+			// The centre is restored without animation, and `resizing` keeps it from counting as a move.
+			if (window.ResizeObserver) {
+				watcher = new ResizeObserver(() => {
+					const middle = created.getCenter(), level = created.getZoom();
+					created.resizing = true;
+					try {
+						created.invalidateSize({ pan: false });
+						created.setView(middle, level, { animate: false });
+					} finally {
+						created.resizing = false;
+					}
+				});
+				watcher.observe(box.current);
+			}
+			map.current = created;
+			latest.current.onReady && latest.current.onReady();
+		}).catch(() => {
+			if (alive && latest.current.onFail) latest.current.onFail();
+		});
+		return () => {
+			alive = false;
+			if (watcher) watcher.disconnect();
+			if (map.current) map.current.remove();
+			map.current = null;
+		};
+	}, []);
+	// A point chosen elsewhere (a saved address, the customer's location) moves the map to it.
+	React.useEffect(() => {
+		const current = map.current;
+		if (!current || !commerce.validLocation(value)) return;
+		const here = commerce.pinLocation(current.getCenter());
+		if (here.lat !== value.lat || here.lng !== value.lng) current.setView([value.lat, value.lng], pinZoom);
+	}, [value && value.lat, value && value.lng]);
+	const locate = () => {
+		if (!navigator.geolocation) return onLocateError && onLocateError();
+		setLocating(true);
+		navigator.geolocation.getCurrentPosition((position) => {
+			setLocating(false);
+			const here = commerce.pinLocation({
+				lat: position.coords.latitude,
+				lng: position.coords.longitude
+			});
+			if (map.current) map.current.setView([here.lat, here.lng], pinZoom);
+			else onChange(here);
+		}, () => {
+			setLocating(false);
+			onLocateError && onLocateError();
+		}, {
+			enableHighAccuracy: true,
+			timeout: 1e4
+		});
+	};
+	return /* @__PURE__ */ React.createElement("div", {
+		className: cx("ag-location", compact && "ag-location--compact", className),
+		style
+	}, /* @__PURE__ */ React.createElement("span", {
+		id: id + "-label",
+		className: "ag-field__label"
+	}, label), /* @__PURE__ */ React.createElement("div", { className: "ag-location__map" }, /* @__PURE__ */ React.createElement("div", {
+		id,
+		ref: box,
+		dir: "ltr",
+		role: "region",
+		"aria-labelledby": id + "-label",
+		"aria-describedby": cx(id + "-status", error && id + "-error"),
+		className: "ag-location__canvas"
+	}), /* @__PURE__ */ React.createElement("span", {
+		className: "ag-location__pin",
+		"aria-hidden": "true"
+	}, /* @__PURE__ */ React.createElement(Icon, {
+		name: "map-pin",
+		size: compact ? 32 : 36
+	}))), /* @__PURE__ */ React.createElement("div", { className: "ag-location__row" }, /* @__PURE__ */ React.createElement("span", {
+		id: id + "-status",
+		className: "ag-field__hint"
+	}, status), locateLabel && /* @__PURE__ */ React.createElement(Button, {
+		variant: "secondary",
+		size: "sm",
+		onClick: locate,
+		loading: locating
+	}, locateLabel)), error && /* @__PURE__ */ React.createElement("span", {
+		id: id + "-error",
+		className: "ag-field__hint ag-field__hint--error"
+	}, error));
+}
+Object.assign(__ds_scope, { LocationPicker });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/LocationPicker/LocationPicker.jsx", error: String((e && e.message) || e) }); }
+
 // components/MenuList/MenuList.jsx
 try { (() => {
 const { cx } = __ds_scope;
@@ -2972,6 +3112,7 @@ __ds_ns.QuantityInput = __ds_scope.QuantityInput;
 __ds_ns.LineItem = __ds_scope.LineItem;
 __ds_ns.LiveRegion = __ds_scope.LiveRegion;
 __ds_ns.LoadMore = __ds_scope.LoadMore;
+__ds_ns.LocationPicker = __ds_scope.LocationPicker;
 __ds_ns.MenuList = __ds_scope.MenuList;
 __ds_ns.NavLink = __ds_scope.NavLink;
 __ds_ns.OrderSummary = __ds_scope.OrderSummary;

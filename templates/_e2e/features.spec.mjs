@@ -262,7 +262,7 @@ test('the delivery pin is required and travels with the order', async ({page}) =
   );
   expect(await scanAxe(page)).toEqual([]);
   await pinDelivery(page);
-  await expect(page.locator('#vf-pin-error')).toHaveCount(0);
+  await expect(page.locator('#vf-map-error')).toHaveCount(0);
   await next.click();
   await expect(page.locator('#vf-last4')).toBeVisible();
   const location = await page.evaluate(
@@ -297,7 +297,7 @@ test('the account maps saved addresses and the editor pins new ones', async ({pa
   // A marker is a keyboard-reachable way into that address.
   await map.getByRole('button', {name: 'Edit Office'}).press('Enter');
   const dialog = page.getByRole('dialog', {name: 'Edit address'});
-  await expect(dialog.locator('#vf-address-pin-status')).toContainText('35.81620, 50.93910');
+  await expect(dialog.locator('#vf-address-map-status')).toContainText('35.81620, 50.93910');
   await dialog.getByRole('button', {name: 'Cancel'}).click();
   // A new address needs a pin before it saves.
   await page.getByRole('button', {name: 'Add an address'}).click();
@@ -310,7 +310,7 @@ test('the account maps saved addresses and the editor pins new ones', async ({pa
   await expect(pin).toHaveAccessibleDescription(/Place the pin on the address\./);
   expect(await scanAxe(page)).toEqual([]);
   await page.keyboard.press('ArrowUp');
-  await expect(page.locator('#vf-address-pin-status')).toHaveText(/Pin placed at/);
+  await expect(page.locator('#vf-address-map-status')).toHaveText(/Pin placed at/);
   await page.getByRole('dialog').getByRole('button', {name: 'Save'}).click();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Home', 'Office', 'Studio']);
@@ -343,7 +343,7 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
   await expect(saved.getByRole('button', {name: 'Office'})).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
   await expect(page.locator('#vf-address')).toHaveValue('40 Moazen Blvd, Gohardasht');
-  await expect(page.locator('#vf-pin-status')).toContainText('35.81620, 50.93910');
+  await expect(page.locator('#vf-map-status')).toContainText('35.81620, 50.93910');
   expect(await scanAxe(page)).toEqual([]);
   await page
     .getByRole('button', {name: 'Continue to payment'})
