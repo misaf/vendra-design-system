@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {NO_CONSENT, openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {NO_CONSENT, openSite, pinDelivery, scanAxe, choiceTile} from './helpers.mjs';
 
 // Delivery days, promo codes, shop occasions, recently viewed products, the delivery photo,
 // delivery pins, saved addresses and products in the account, and the contact page, in the click-through site.
@@ -16,13 +16,13 @@ test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   await expect(days.getByRole('radio')).toHaveCount(7);
-  await expect(days.getByRole('radio', {name: /^Today/})).toHaveAttribute('aria-checked', 'true');
+  await expect(days.getByRole('radio', {name: /^Today/})).toBeChecked();
   // A tile is named by its day; why it can't be picked is its description.
-  const soldOut = days.getByRole('radio').filter({hasText: 'Sold out'});
+  const soldOut = days.locator('label.ag-choice', {hasText: 'Sold out'}).getByRole('radio');
   await expect(soldOut).toBeDisabled();
   await expect(soldOut).toHaveAccessibleDescription(/Sold out/);
-  await days.getByRole('radio', {name: /^Thu/}).click();
-  await expect(days.getByRole('radio', {name: /^Thu/})).toHaveAttribute('aria-checked', 'true');
+  await choiceTile(days, /^Thu/).click();
+  await expect(days.getByRole('radio', {name: /^Thu/})).toBeChecked();
 });
 
 test('after the cut-off, today is closed', async ({page}) => {
@@ -32,10 +32,7 @@ test('after the cut-off, today is closed', async ({page}) => {
   const today = days.getByRole('radio', {name: 'Today', exact: true});
   await expect(today).toBeDisabled();
   await expect(today).toHaveAccessibleDescription(/Order by 18:00/);
-  await expect(days.getByRole('radio', {name: /^Tomorrow/})).toHaveAttribute(
-    'aria-checked',
-    'true'
-  );
+  await expect(days.getByRole('radio', {name: /^Tomorrow/})).toBeChecked();
 });
 
 test('today’s slots close two hours before they end', async ({page}) => {
@@ -47,14 +44,8 @@ test('today’s slots close two hours before they end', async ({page}) => {
     await expect(slot).toBeDisabled();
     await expect(slot).toHaveAccessibleDescription(/Closed/);
   }
-  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toHaveAttribute(
-    'aria-checked',
-    'true'
-  );
-  await page
-    .getByRole('radiogroup', {name: 'Delivery day'})
-    .getByRole('radio', {name: /^Tomorrow/})
-    .click();
+  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toBeChecked();
+  await choiceTile(page.getByRole('radiogroup', {name: 'Delivery day'}), /^Tomorrow/).click();
   await expect(slots.getByRole('radio', {disabled: true})).toHaveCount(0);
 });
 

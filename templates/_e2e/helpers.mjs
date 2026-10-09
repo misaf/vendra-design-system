@@ -108,6 +108,12 @@ export async function settlePage(page) {
 }
 
 // Vite reports transform errors as an overlay element (pushed to every open page).
+// The tile a customer clicks in a ChoiceGroup: the label around the radio named `name`. The radio
+// itself is a visually hidden native input (React Aria), so tests click the tile, as people do.
+export function choiceTile(group, name) {
+  return group.locator('label.ag-choice').filter({has: group.page().getByRole('radio', {name})});
+}
+
 export async function expectNoViteError(page) {
   await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
   // Every design-system source (and the bundled react-aria-components) loaded without an error.

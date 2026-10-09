@@ -1,4 +1,5 @@
-/* .ag-check styles both Checkbox and Radio. */
+/* .ag-check styles both Checkbox (React Aria: state as data-* on the label) and Radio (a native
+   input followed by the box). */
 .ag-check--error .ag-check__box {
   border-color: var(--danger);
 }
@@ -37,7 +38,8 @@
 .ag-check--radio .ag-check__box {
   border-radius: 50%;
 }
-.ag-check input:checked + .ag-check__box {
+.ag-check input:checked + .ag-check__box,
+.ag-check[data-selected] .ag-check__box {
   background: var(--surface-strong);
   border-color: var(--surface-strong);
   color: var(--text-on-strong);
@@ -46,7 +48,8 @@
   background: var(--white);
   box-shadow: inset 0 0 0 4px var(--surface-strong);
 }
-.ag-check input:focus-visible + .ag-check__box {
+.ag-check input:focus-visible + .ag-check__box,
+.ag-check[data-focus-visible] .ag-check__box {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }

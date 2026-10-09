@@ -1,11 +1,13 @@
 import React from 'react';
+import {Button, Disclosure, DisclosureGroup, DisclosurePanel, Heading} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 const toList = value => (value == null ? [] : Array.isArray(value) ? value : [value]);
 
-// Disclosure panels under real headings. Controlled with `openId` (one id or a list),
-// uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
+// Disclosure panels under real headings, on React Aria's DisclosureGroup. Controlled with `openId`
+// (one id or a list), uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
+// Each button has aria-expanded and controls its panel, a region named by the button.
 export function Accordion({
   items = [],
   openId,
@@ -15,49 +17,41 @@ export function Accordion({
   headingLevel = 3,
   className = ''
 }) {
-  const baseId = React.useId();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(toList(defaultOpenId));
   const openIds = openId !== undefined ? toList(openId) : uncontrolledOpen;
-  const toggle = id => {
-    const wasOpen = openIds.includes(id);
-    const next = wasOpen
-      ? openIds.filter(other => other !== id)
-      : allowMultiple
-        ? [...openIds, id]
-        : [id];
+  const change = keys => {
+    const next = [...keys].map(String);
+    const toggled =
+      next.find(id => !openIds.includes(id)) || openIds.find(id => !next.includes(id));
     if (openId === undefined) setUncontrolledOpen(next);
-    onToggle && onToggle(id, !wasOpen, next);
+    if (toggled !== undefined && onToggle) onToggle(toggled, next.includes(toggled), next);
   };
-  const Heading = 'h' + headingLevel;
   return (
-    <div className={cx('ag-acc', className)}>
-      {items.map(item => {
-        const isOpen = openIds.includes(item.id);
-        const buttonId = baseId + 'b' + item.id;
-        const panelId = baseId + 'p' + item.id;
-        return (
-          <div key={item.id} className={cx('ag-acc__item', isOpen && 'ag-acc__item--open')}>
-            <Heading className="ag-acc__h">
-              <button
-                type="button"
-                id={buttonId}
-                className="ag-acc__btn"
-                aria-expanded={isOpen}
-                aria-controls={panelId}
-                onClick={() => toggle(item.id)}
-              >
-                <span>{item.title}</span>
-                <Icon name="chevron-down" size={18} className="ag-acc__chev" />
-              </button>
-            </Heading>
-            <div id={panelId} role="region" aria-labelledby={buttonId} className="ag-acc__panel">
-              <div className="ag-acc__clip">
-                <div className="ag-acc__content">{item.content}</div>
-              </div>
+    <DisclosureGroup
+      expandedKeys={openIds}
+      onExpandedChange={change}
+      allowsMultipleExpanded={!!allowMultiple}
+      className={cx('ag-acc', className)}
+    >
+      {items.map(item => (
+        <Disclosure
+          key={item.id}
+          id={item.id}
+          className={({isExpanded}) => cx('ag-acc__item', isExpanded && 'ag-acc__item--open')}
+        >
+          <Heading level={headingLevel} className="ag-acc__h">
+            <Button slot="trigger" className="ag-acc__btn">
+              <span>{item.title}</span>
+              <Icon name="chevron-down" size={18} className="ag-acc__chev" />
+            </Button>
+          </Heading>
+          <DisclosurePanel role="region" className="ag-acc__panel">
+            <div className="ag-acc__clip">
+              <div className="ag-acc__content">{item.content}</div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          </DisclosurePanel>
+        </Disclosure>
+      ))}
+    </DisclosureGroup>
   );
 }

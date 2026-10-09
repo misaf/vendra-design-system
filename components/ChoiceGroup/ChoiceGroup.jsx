@@ -1,9 +1,16 @@
 import React from 'react';
+import {I18nProvider, RadioGroup} from 'react-aria-components';
 import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
+import {usePageLocale} from '../utils/locale.js';
 
-// A radiogroup of ChoiceTiles with arrow-key navigation (mirrored in RTL), Home and End.
-// `legend` renders <fieldset><legend>; the hint or error sits under the tiles (see Field).
+// The tiles report themselves here: React Aria's RadioGroup holds one value, while each ChoiceTile
+// says whether it is selected and what selecting it does.
+export const choiceGroupContext = React.createContext(null);
+
+// A radiogroup of ChoiceTiles on React Aria: arrow keys move and select (mirrored in RTL, following
+// the page's language), with one Tab stop. `legend` renders <fieldset><legend>; the hint or error
+// sits under the tiles (see Field).
 export function ChoiceGroup({
   label,
   labelledBy,
@@ -17,75 +24,72 @@ export function ChoiceGroup({
   className,
   style
 }) {
-  const groupRef = React.useRef(null);
   const {fieldId, messageId, message, controlProps} = useField({id, hint, error});
   const legendId = fieldId + '-legend';
-  const enabledTiles = () => [
-    ...groupRef.current.querySelectorAll('[role="radio"]:not(:disabled)')
-  ];
-  // Roving tabindex: with nothing selected, the first enabled tile takes the Tab stop.
-  React.useEffect(() => {
-    if (!groupRef.current) return;
-    const tiles = enabledTiles();
-    if (tiles.length && !tiles.some(tile => tile.tabIndex === 0)) tiles[0].tabIndex = 0;
-  });
-  // Arrow keys move and select (left/right mirror in RTL); Home and End jump to the ends.
-  const onKeyDown = event => {
-    const tiles = enabledTiles();
-    const current = tiles.indexOf(document.activeElement);
-    if (current < 0) return;
-    const rtl = getComputedStyle(groupRef.current).direction === 'rtl';
-    const steps = {ArrowDown: 1, ArrowUp: -1, ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1};
-    let target;
-    if (event.key in steps) target = (current + steps[event.key] + tiles.length) % tiles.length;
-    else if (event.key === 'Home') target = 0;
-    else if (event.key === 'End') target = tiles.length - 1;
-    else return;
-    event.preventDefault();
-    tiles[target].focus();
-    tiles[target].click();
-  };
+  const {locale, ref} = usePageLocale();
+  const tiles = React.useRef(new Map());
+  const [selected, setSelected] = React.useState(null);
+  const registry = React.useMemo(
+    () => ({
+      report(value, tile) {
+        if (tile) tiles.current.set(value, tile);
+        else tiles.current.delete(value);
+        const chosen = [...tiles.current].find(([, item]) => item.selected);
+        setSelected(chosen ? chosen[0] : null);
+      }
+    }),
+    []
+  );
   const wrapped = !!(legend || message);
   const group = (
-    <div
-      ref={groupRef}
-      id={fieldId}
-      role="radiogroup"
-      aria-label={legend ? undefined : label}
-      aria-labelledby={legend ? legendId : labelledBy}
-      {...controlProps}
-      onKeyDown={onKeyDown}
-      className={cx('ag-choices', error && 'ag-choices--error', !wrapped && className)}
-      style={{
-        gridTemplateColumns: columns
-          ? 'repeat(' + columns + ',minmax(0,1fr))'
-          : 'repeat(auto-fill,minmax(' + minTileWidth + 'px,1fr))',
-        ...(wrapped ? null : style)
-      }}
-    >
-      {children}
-    </div>
+    <choiceGroupContext.Provider value={registry}>
+      <I18nProvider locale={locale}>
+        <RadioGroup
+          ref={wrapped ? undefined : ref}
+          id={fieldId}
+          value={selected}
+          onChange={value => {
+            const tile = tiles.current.get(value);
+            tile && tile.onSelect && tile.onSelect();
+          }}
+          aria-label={legend ? undefined : label}
+          aria-labelledby={legend ? legendId : labelledBy}
+          aria-describedby={controlProps['aria-describedby']}
+          aria-errormessage={controlProps['aria-errormessage']}
+          isInvalid={!!error}
+          className={cx('ag-choices', error && 'ag-choices--error', !wrapped && className)}
+          style={{
+            gridTemplateColumns: columns
+              ? 'repeat(' + columns + ',minmax(0,1fr))'
+              : 'repeat(auto-fill,minmax(' + minTileWidth + 'px,1fr))',
+            ...(wrapped ? null : style)
+          }}
+        >
+          {children}
+        </RadioGroup>
+      </I18nProvider>
+    </choiceGroupContext.Provider>
   );
   if (!wrapped) return group;
-  const hintEl = (
+  const hintElement = (
     <FieldMessage id={messageId} error={!!error}>
       {message}
     </FieldMessage>
   );
   if (legend)
     return (
-      <fieldset className={cx('ag-field ag-fieldset', className)} style={style}>
+      <fieldset ref={ref} className={cx('ag-field ag-fieldset', className)} style={style}>
         <legend id={legendId} className="ag-field__label">
           {legend}
         </legend>
         {group}
-        {hintEl}
+        {hintElement}
       </fieldset>
     );
   return (
-    <div className={cx('ag-field', className)} style={style}>
+    <div ref={ref} className={cx('ag-field', className)} style={style}>
       {group}
-      {hintEl}
+      {hintElement}
     </div>
   );
 }

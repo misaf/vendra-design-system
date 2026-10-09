@@ -1,4 +1,4 @@
-.ag-choices--error .ag-choice:not([aria-checked='true']) {
+.ag-choices--error .ag-choice:not([data-selected]) {
   border-color: var(--danger);
 }
 .ag-choices {
@@ -20,6 +20,8 @@
   color: var(--text-body);
   font-family: var(--font-body);
   text-align: start;
+  /* React Aria renders a label, which would inherit the page's line height (1.9 in Persian). */
+  line-height: normal;
   cursor: pointer;
   transition:
     background var(--dur-fast) var(--ease-out),
@@ -30,10 +32,10 @@
   min-height: var(--tap-min);
   padding: var(--space-2) var(--space-3);
 }
-.ag-choice:hover:not(:disabled) {
+.ag-choice[data-hovered]:not([data-disabled]) {
   border-color: var(--border-strong);
 }
-.ag-choice:focus-visible {
+.ag-choice[data-focus-visible] {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -42,7 +44,7 @@
   border-color: var(--text-body);
   color: var(--surface-page);
 }
-.ag-choice:disabled {
+.ag-choice[data-disabled] {
   opacity: 0.45;
   cursor: not-allowed;
 }

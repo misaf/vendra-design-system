@@ -17,5 +17,7 @@ export interface ChoiceGroupProps {
   className?: string;
   style?: React.CSSProperties;
 }
-/** role="radiogroup" with roving focus; arrows move + select (mirrored in RTL), Home/End jump. */
+/** React Aria radiogroup: one Tab stop, arrow keys move and select (mirrored in RTL, following the page's language). */
 export declare function ChoiceGroup(props: ChoiceGroupProps): JSX.Element;
+/** Internal: how ChoiceTiles report to their ChoiceGroup. */
+export declare const choiceGroupContext: React.Context<unknown>;

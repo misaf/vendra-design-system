@@ -794,7 +794,8 @@ a.ag-iconbtn {
 }
 
 /* components/Checkbox/Checkbox.css */
-/* .ag-check styles both Checkbox and Radio. */
+/* .ag-check styles both Checkbox (React Aria: state as data-* on the label) and Radio (a native
+   input followed by the box). */
 .ag-check--error .ag-check__box {
   border-color: var(--danger);
 }
@@ -833,7 +834,8 @@ a.ag-iconbtn {
 .ag-check--radio .ag-check__box {
   border-radius: 50%;
 }
-.ag-check input:checked + .ag-check__box {
+.ag-check input:checked + .ag-check__box,
+.ag-check[data-selected] .ag-check__box {
   background: var(--surface-strong);
   border-color: var(--surface-strong);
   color: var(--text-on-strong);
@@ -842,7 +844,8 @@ a.ag-iconbtn {
   background: var(--white);
   box-shadow: inset 0 0 0 4px var(--surface-strong);
 }
-.ag-check input:focus-visible + .ag-check__box {
+.ag-check input:focus-visible + .ag-check__box,
+.ag-check[data-focus-visible] .ag-check__box {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -860,7 +863,7 @@ a.ag-iconbtn {
 }
 
 /* components/ChoiceGroup/ChoiceGroup.css */
-.ag-choices--error .ag-choice:not([aria-checked='true']) {
+.ag-choices--error .ag-choice:not([data-selected]) {
   border-color: var(--danger);
 }
 .ag-choices {
@@ -882,6 +885,8 @@ a.ag-iconbtn {
   color: var(--text-body);
   font-family: var(--font-body);
   text-align: start;
+  /* React Aria renders a label, which would inherit the page's line height (1.9 in Persian). */
+  line-height: normal;
   cursor: pointer;
   transition:
     background var(--dur-fast) var(--ease-out),
@@ -892,10 +897,10 @@ a.ag-iconbtn {
   min-height: var(--tap-min);
   padding: var(--space-2) var(--space-3);
 }
-.ag-choice:hover:not(:disabled) {
+.ag-choice[data-hovered]:not([data-disabled]) {
   border-color: var(--border-strong);
 }
-.ag-choice:focus-visible {
+.ag-choice[data-focus-visible] {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -904,7 +909,7 @@ a.ag-iconbtn {
   border-color: var(--text-body);
   color: var(--surface-page);
 }
-.ag-choice:disabled {
+.ag-choice[data-disabled] {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -931,7 +936,7 @@ a.ag-iconbtn {
 }
 
 /* components/Switch/Switch.css */
-.ag-switch:has(input:disabled) {
+.ag-switch[data-disabled] {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -969,16 +974,16 @@ a.ag-iconbtn {
   box-shadow: var(--shadow-sm);
   transition: transform var(--dur-base) var(--ease-out);
 }
-.ag-switch input:checked + .ag-switch__track {
+.ag-switch[data-selected] .ag-switch__track {
   background: var(--control-on);
 }
-.ag-switch input:checked + .ag-switch__track .ag-switch__thumb {
+.ag-switch[data-selected] .ag-switch__thumb {
   transform: translateX(18px);
 }
-[dir='rtl'] .ag-switch input:checked + .ag-switch__track .ag-switch__thumb {
+[dir='rtl'] .ag-switch[data-selected] .ag-switch__thumb {
   transform: translateX(-18px);
 }
-.ag-switch input:focus-visible + .ag-switch__track {
+.ag-switch[data-focus-visible] .ag-switch__track {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -1644,18 +1649,12 @@ a.ag-cat:hover {
 .ag-acc__item--open .ag-acc__chev {
   transform: rotate(180deg);
 }
+/* React Aria measures the open panel into --disclosure-panel-height and keeps a closing panel in
+   place until the transition ends. */
 .ag-acc__panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  visibility: hidden;
-  transition:
-    grid-template-rows var(--dur-base) var(--ease-out),
-    visibility 0s linear var(--dur-base);
-}
-.ag-acc__item--open .ag-acc__panel {
-  grid-template-rows: 1fr;
-  visibility: visible;
-  transition: grid-template-rows var(--dur-base) var(--ease-out);
+  height: var(--disclosure-panel-height);
+  overflow: clip;
+  transition: height var(--dur-base) var(--ease-out);
 }
 .ag-acc__clip {
   overflow: hidden;

@@ -1,6 +1,6 @@
 # ChoiceGroup
 
-Grid wrapper for ChoiceTile — handles radiogroup semantics and arrow-key navigation (RTL-aware). See ChoiceTile.
+Grid wrapper for ChoiceTile on React Aria's RadioGroup: one Tab stop, arrow keys move and select, mirrored in RTL (it follows the page's `lang`). Each tile is a real radio input inside its label, so click the tile in tests, as people do. See ChoiceTile.
 
 `legend="Delivery time"` renders `<fieldset><legend>` (legend labels the radiogroup). `hint` / `error` sit under the tiles and are linked to the radiogroup (`aria-describedby`, `aria-invalid`, `aria-errormessage`).
 

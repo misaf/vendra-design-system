@@ -39,18 +39,12 @@
 .ag-acc__item--open .ag-acc__chev {
   transform: rotate(180deg);
 }
+/* React Aria measures the open panel into --disclosure-panel-height and keeps a closing panel in
+   place until the transition ends. */
 .ag-acc__panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  visibility: hidden;
-  transition:
-    grid-template-rows var(--dur-base) var(--ease-out),
-    visibility 0s linear var(--dur-base);
-}
-.ag-acc__item--open .ag-acc__panel {
-  grid-template-rows: 1fr;
-  visibility: visible;
-  transition: grid-template-rows var(--dur-base) var(--ease-out);
+  height: var(--disclosure-panel-height);
+  overflow: clip;
+  transition: height var(--dur-base) var(--ease-out);
 }
 .ag-acc__clip {
   overflow: hidden;
