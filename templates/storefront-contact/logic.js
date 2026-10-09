@@ -26,20 +26,30 @@ class Component extends VFPage {
     const invalid = this._invalid();
     const studio = VF_STORE.studio;
     const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
-    this._places = directions
+    const places = directions
       ? [
           {
             id: 'studio',
             label: VF_STORE.brand[S.lang],
             title: C.directionsTo,
             location: studio,
-            pick: () => window.open(directions, '_blank', 'noopener')
+            onSelect: () => window.open(directions, '_blank', 'noopener')
           }
         ]
       : [];
     const field = key => e => this.setState({[key]: e.target.value, apiError: ''});
+    // The studio on a read-only map (PlacesMap), with the store's tiles and the vendored Leaflet.
+    const placesView = {
+      places,
+      load: vfLoadLeaflet,
+      tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+      center: VF_STORE.map.center,
+      zoom: VF_STORE.map.zoom,
+      fail: () => this.setState({mapFailed: true})
+    };
     return {
       ...S,
+      placesView,
       t: {
         ...S.t,
         ...C,
@@ -134,26 +144,5 @@ class Component extends VFPage {
       email: !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
       msg: !s.msg.trim()
     };
-  }
-  _studioMap() {
-    if (!this._studioView)
-      this._studioView = vfPlacesMap({
-        id: 'vf-contact-map',
-        places: () => this._places || [],
-        onFail: () => this.setState({mapFailed: true})
-      });
-    return this._studioView;
-  }
-  componentDidMount() {
-    super.componentDidMount();
-    this._studioMap().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._studioMap().sync();
-  }
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this._studioMap().remove();
   }
 }

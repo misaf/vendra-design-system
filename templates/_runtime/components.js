@@ -2191,12 +2191,53 @@ function LoadMore({ shown, total, status, label, href, onClick, busy = false, cl
 Object.assign(__ds_scope, { LoadMore });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/LoadMore/LoadMore.jsx", error: String((e && e.message) || e) }); }
 
+// components/utils/maps.js
+try { (() => {
+// Leaflet set-up shared by LocationPicker and PlacesMap: import { maps }. Apps rarely need it directly.
+// A Leaflet map on `element` with the store's tiles. The wheel doesn't zoom it (the page scrolls past),
+// and it keeps its centre when its box changes size: Leaflet sizes itself once, so a map inside an
+// opening dialog or a resized column needs telling. `map.resizing` is true during that adjustment,
+// so moveend listeners can tell it from the customer moving the map. Call stop() before map.remove().
+const create = (Leaflet, element, { center, zoom, tiles }) => {
+	const map = Leaflet.map(element, {
+		center,
+		zoom,
+		scrollWheelZoom: false
+	});
+	Leaflet.tileLayer(tiles.url, {
+		maxZoom: tiles.maxZoom || 19,
+		attribution: tiles.attribution
+	}).addTo(map);
+	let watcher = null;
+	if (typeof ResizeObserver !== "undefined") {
+		watcher = new ResizeObserver(() => {
+			const middle = map.getCenter(), level = map.getZoom();
+			map.resizing = true;
+			try {
+				map.invalidateSize({ pan: false });
+				map.setView(middle, level, { animate: false });
+			} finally {
+				map.resizing = false;
+			}
+		});
+		watcher.observe(element);
+	}
+	return {
+		map,
+		stop: () => watcher && watcher.disconnect()
+	};
+};
+const maps = { create };
+Object.assign(__ds_scope, { maps });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/utils/maps.js", error: String((e && e.message) || e) }); }
+
 // components/LocationPicker/LocationPicker.jsx
 try { (() => {
 const { Button } = __ds_scope;
 const { Icon } = __ds_scope;
 const { commerce } = __ds_scope;
 const { cx } = __ds_scope;
+const { maps } = __ds_scope;
 // A delivery pin: the pin stays at the map's centre, and wherever the map stops is the chosen point.
 // Customers drag or tap the map, or press the arrow keys once it has focus, or use their own location.
 // Leaflet comes from `loadLeaflet()` (the app decides how to load it) and is only created in the
@@ -2215,39 +2256,21 @@ function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet
 		onFail
 	};
 	React.useEffect(() => {
-		let alive = true, watcher = null;
+		let alive = true, stopWatching = null;
 		Promise.resolve().then(() => loadLeaflet()).then((Leaflet) => {
 			if (!alive || !box.current) return;
 			const at = latest.current.value;
 			const pinned = commerce.validLocation(at);
-			const created = Leaflet.map(box.current, {
+			const { map: created, stop } = maps.create(Leaflet, box.current, {
 				center: pinned ? [at.lat, at.lng] : center,
 				zoom: pinned ? pinZoom : zoom,
-				scrollWheelZoom: false
+				tiles
 			});
-			Leaflet.tileLayer(tiles.url, {
-				maxZoom: tiles.maxZoom || 19,
-				attribution: tiles.attribution
-			}).addTo(created);
 			created.on("moveend", () => {
 				if (!created.resizing) latest.current.onChange(commerce.pinLocation(created.getCenter()));
 			});
 			created.on("click", (event) => created.panTo(event.latlng));
-			// Leaflet sizes itself once; inside an opening dialog or a resized column it needs telling.
-			// The centre is restored without animation, and `resizing` keeps it from counting as a move.
-			if (window.ResizeObserver) {
-				watcher = new ResizeObserver(() => {
-					const middle = created.getCenter(), level = created.getZoom();
-					created.resizing = true;
-					try {
-						created.invalidateSize({ pan: false });
-						created.setView(middle, level, { animate: false });
-					} finally {
-						created.resizing = false;
-					}
-				});
-				watcher.observe(box.current);
-			}
+			stopWatching = stop;
 			map.current = created;
 			latest.current.onReady && latest.current.onReady();
 		}).catch(() => {
@@ -2255,7 +2278,7 @@ function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet
 		});
 		return () => {
 			alive = false;
-			if (watcher) watcher.disconnect();
+			if (stopWatching) stopWatching();
 			if (map.current) map.current.remove();
 			map.current = null;
 		};
@@ -2292,14 +2315,14 @@ function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet
 	}, /* @__PURE__ */ React.createElement("span", {
 		id: id + "-label",
 		className: "ag-field__label"
-	}, label), /* @__PURE__ */ React.createElement("div", { className: "ag-location__map" }, /* @__PURE__ */ React.createElement("div", {
+	}, label), /* @__PURE__ */ React.createElement("div", { className: "ag-map ag-location__map" }, /* @__PURE__ */ React.createElement("div", {
 		id,
 		ref: box,
 		dir: "ltr",
 		role: "region",
 		"aria-labelledby": id + "-label",
 		"aria-describedby": cx(id + "-status", error && id + "-error"),
-		className: "ag-location__canvas"
+		className: "ag-map__canvas"
 	}), /* @__PURE__ */ React.createElement("span", {
 		className: "ag-location__pin",
 		"aria-hidden": "true"
@@ -2520,6 +2543,114 @@ function PhoneInput({ autoComplete = "tel", onChange, onValueChange, ...rest }) 
 }
 Object.assign(__ds_scope, { PhoneInput });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/PhoneInput/PhoneInput.jsx", error: String((e && e.message) || e) }); }
+
+// components/PlacesMap/PlacesMap.jsx
+try { (() => {
+const { commerce } = __ds_scope;
+const { cx } = __ds_scope;
+const { maps } = __ds_scope;
+// A map of places to look at, not to choose: the studio on the contact page, saved addresses in the
+// account. Each place has a labelled marker that opens it (onSelect) with a pointer or with Enter and
+// Space; the view fits every place. Leaflet comes from `loadLeaflet()` and is only created in the
+// browser, so the component renders on the server.
+function PlacesMap({ id, label, places = [], loadLeaflet, tiles, center, zoom = 13, height = 280, onFail, className, style }) {
+	const box = React.useRef(null);
+	const view = React.useRef(null);
+	// The latest places, for marker listeners Leaflet keeps from an earlier render.
+	const latest = React.useRef(places);
+	latest.current = places;
+	const pinned = places.filter((place) => commerce.validLocation(place.location));
+	const key = JSON.stringify(pinned.map((place) => [
+		place.id,
+		place.label,
+		place.title,
+		place.location
+	]));
+	const draw = () => {
+		const current = view.current;
+		if (!current) return;
+		const { Leaflet, map, layer } = current;
+		layer.clearLayers();
+		const shown = latest.current.filter((place) => commerce.validLocation(place.location));
+		shown.forEach((place) => {
+			const select = () => {
+				const now = latest.current.find((item) => item.id === place.id);
+				now && now.onSelect && now.onSelect();
+			};
+			const icon = Leaflet.divIcon({
+				className: "ag-place-marker",
+				html: "<span class=\"ag-place-marker__dot\"></span>",
+				iconSize: [24, 24],
+				iconAnchor: [12, 12]
+			});
+			Leaflet.marker([place.location.lat, place.location.lng], {
+				icon,
+				title: place.title,
+				keyboard: true
+			}).bindTooltip(place.label, {
+				permanent: true,
+				direction: "top",
+				offset: [0, -12],
+				className: "ag-place-label"
+			}).on("click", select).on("keydown", (event) => {
+				if (event.originalEvent.key !== "Enter" && event.originalEvent.key !== " ") return;
+				event.originalEvent.preventDefault();
+				select();
+			}).addTo(layer);
+		});
+		if (shown.length > 1) map.fitBounds(shown.map((place) => [place.location.lat, place.location.lng]), {
+			padding: [48, 48],
+			maxZoom: 15
+		});
+		else if (shown.length) map.setView([shown[0].location.lat, shown[0].location.lng], 15);
+	};
+	React.useEffect(() => {
+		let alive = true;
+		Promise.resolve().then(() => loadLeaflet()).then((Leaflet) => {
+			if (!alive || !box.current) return;
+			const { map, stop } = maps.create(Leaflet, box.current, {
+				center,
+				zoom,
+				tiles
+			});
+			view.current = {
+				Leaflet,
+				map,
+				stop,
+				layer: Leaflet.layerGroup().addTo(map)
+			};
+			draw();
+		}).catch(() => {
+			if (alive && onFail) onFail();
+		});
+		return () => {
+			alive = false;
+			if (view.current) {
+				view.current.stop();
+				view.current.map.remove();
+			}
+			view.current = null;
+		};
+	}, []);
+	// New, moved or renamed places redraw the markers.
+	React.useEffect(draw, [key]);
+	return /* @__PURE__ */ React.createElement("div", {
+		className: cx("ag-map", className),
+		style: {
+			blockSize: typeof height === "number" ? height + "px" : height,
+			...style
+		}
+	}, /* @__PURE__ */ React.createElement("div", {
+		id,
+		ref: box,
+		dir: "ltr",
+		role: "region",
+		"aria-label": label,
+		className: "ag-map__canvas"
+	}));
+}
+Object.assign(__ds_scope, { PlacesMap });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/PlacesMap/PlacesMap.jsx", error: String((e && e.message) || e) }); }
 
 // components/ProductCard/ProductCard.jsx
 try { (() => {
@@ -3112,6 +3243,7 @@ __ds_ns.QuantityInput = __ds_scope.QuantityInput;
 __ds_ns.LineItem = __ds_scope.LineItem;
 __ds_ns.LiveRegion = __ds_scope.LiveRegion;
 __ds_ns.LoadMore = __ds_scope.LoadMore;
+__ds_ns.maps = __ds_scope.maps;
 __ds_ns.LocationPicker = __ds_scope.LocationPicker;
 __ds_ns.MenuList = __ds_scope.MenuList;
 __ds_ns.NavLink = __ds_scope.NavLink;
@@ -3119,6 +3251,7 @@ __ds_ns.OrderSummary = __ds_scope.OrderSummary;
 __ds_ns.OrderTimeline = __ds_scope.OrderTimeline;
 __ds_ns.PaymentCard = __ds_scope.PaymentCard;
 __ds_ns.PhoneInput = __ds_scope.PhoneInput;
+__ds_ns.PlacesMap = __ds_scope.PlacesMap;
 __ds_ns.ProductCard = __ds_scope.ProductCard;
 __ds_ns.Radio = __ds_scope.Radio;
 __ds_ns.RangeSlider = __ds_scope.RangeSlider;

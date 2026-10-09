@@ -90,7 +90,7 @@
 <main id="main" tabindex="-1" class="vf-info"><header class="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7"><div class="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">{{ t.eb }}</div><h1>{{ t.hA }} <em class="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">{{ t.hB }}</em></h1><p class="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">{{ t.hP }}</p></header>
 <div class="vf-info-columns vf-info-columns--contact tw:grid tw:[grid-template-columns:repeat(2,minmax(0,1fr))] tw:gap-7 tw:items-start">
 <div class="vf-contact-details tw:flex tw:flex-col tw:gap-4h"><x-import component-from-global-scope="VendraDesignSystem.Card" variant="sunken" padding="{{ 20 }}" hint-size="100%,300px"><x-import component-from-global-scope="VendraDesignSystem.DetailList" rows="{{ rows }}" hint-size="100%,260px"></x-import></x-import><div class="tw:flex tw:gap-3 tw:flex-wrap"><x-import component-from-global-scope="VendraDesignSystem.Button" variant="ghost" icon-start="message-circle" href="{{ waHref }}" rel="noopener noreferrer" target="_blank" hint-size="150px,48px">{{ t.wa }}</x-import><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" icon-start="phone" href="{{ phoneHref }}" hint-size="120px,48px">{{ t.call }}</x-import><x-import component-from-global-scope="VendraDesignSystem.IconButton" icon="instagram" label="{{ t.instagram }}" variant="outline" href="{{ instagram.url }}" rel="noopener noreferrer" target="_blank" hint-size="44px,44px"></x-import></div>
-<sc-if value="{{ studioMap }}" hint-placeholder-val="{{ true }}"><div class="vf-contact-map vf-map-box tw:h-[300px]"><div id="vf-contact-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><sc-if value="{{ hasDirections }}" hint-placeholder-val="{{ true }}"><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" icon-start="map-pin" href="{{ directions }}" rel="noopener noreferrer" target="_blank" hint-size="190px,48px">{{ t.directions }}</x-import></div></sc-if></div>
+<sc-if value="{{ studioMap }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem.PlacesMap" id="vf-contact-map" label="{{ t.mapL }}" places="{{ placesView.places }}" height="{{ 300 }}" load-leaflet="{{ placesView.load }}" tiles="{{ placesView.tiles }}" center="{{ placesView.center }}" zoom="{{ placesView.zoom }}" on-fail="{{ placesView.fail }}" hint-size="100%,300px"></x-import></sc-if><sc-if value="{{ hasDirections }}" hint-placeholder-val="{{ true }}"><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" icon-start="map-pin" href="{{ directions }}" rel="noopener noreferrer" target="_blank" hint-size="190px,48px">{{ t.directions }}</x-import></div></sc-if></div>
 <div class="tw:flex tw:flex-col tw:gap-4"><h2>{{ t.fA }}</h2>
 <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}"><div class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-cname" value="{{ name }}" on-change="{{ setName }}" label="{{ t.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem.PhoneInput" id="vf-cphone" value="{{ phone }}" on-change="{{ setPhone }}" label="{{ t.phone }}" hint="{{ phoneHint }}" error="{{ phoneErr }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-cemail" label="{{ t.emailLabel }}" value="{{ email }}" on-change="{{ setEmail }}" error="{{ emailErr }}" type="email" dir="ltr" autocomplete="email" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-cmsg" required="{{ true }}" label="{{ t.msg }}" multiline="{{ true }}" rows="{{ 5 }}" value="{{ msg }}" on-change="{{ setMsg }}" error="{{ msgErr }}" hint-size="100%,170px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" size="lg" icon-end="send" on-click="{{ send }}" loading="{{ busy }}" disabled="{{ busy }}" hint-size="160px,52px">{{ t.send }}</x-import></div></div></sc-if>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}"><div id="vf-contact-success" tabindex="-1" role="region" aria-label="{{ t.okT }}" class="tw:flex tw:flex-col tw:gap-4"><x-import component-from-global-scope="VendraDesignSystem.Alert" tone="success" title="{{ t.okT }}" hint-size="100%,96px">{{ t.okP }}</x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" on-click="{{ editMessage }}">{{ t.editMessage }}</x-import></div></div></sc-if>
@@ -287,20 +287,30 @@ class Component extends VFPage {
     const invalid = this._invalid();
     const studio = VF_STORE.studio;
     const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
-    this._places = directions
+    const places = directions
       ? [
           {
             id: 'studio',
             label: VF_STORE.brand[S.lang],
             title: C.directionsTo,
             location: studio,
-            pick: () => window.open(directions, '_blank', 'noopener')
+            onSelect: () => window.open(directions, '_blank', 'noopener')
           }
         ]
       : [];
     const field = key => e => this.setState({[key]: e.target.value, apiError: ''});
+    // The studio on a read-only map (PlacesMap), with the store's tiles and the vendored Leaflet.
+    const placesView = {
+      places,
+      load: vfLoadLeaflet,
+      tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+      center: VF_STORE.map.center,
+      zoom: VF_STORE.map.zoom,
+      fail: () => this.setState({mapFailed: true})
+    };
     return {
       ...S,
+      placesView,
       t: {
         ...S.t,
         ...C,
@@ -395,27 +405,6 @@ class Component extends VFPage {
       email: !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
       msg: !s.msg.trim()
     };
-  }
-  _studioMap() {
-    if (!this._studioView)
-      this._studioView = vfPlacesMap({
-        id: 'vf-contact-map',
-        places: () => this._places || [],
-        onFail: () => this.setState({mapFailed: true})
-      });
-    return this._studioView;
-  }
-  componentDidMount() {
-    super.componentDidMount();
-    this._studioMap().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._studioMap().sync();
-  }
-  componentWillUnmount() {
-    super.componentWillUnmount();
-    this._studioMap().remove();
   }
 }
 // END GENERATED PAGE LOGIC

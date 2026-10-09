@@ -3,6 +3,7 @@ import {Button} from '../Button/Button.jsx';
 import {Icon} from '../Icon/Icon.jsx';
 import {commerce} from '../utils/commerce.js';
 import {cx} from '../utils/cx.js';
+import {maps} from '../utils/maps.js';
 
 // A delivery pin: the pin stays at the map's centre, and wherever the map stops is the chosen point.
 // Customers drag or tap the map, or press the arrow keys once it has focus, or use their own location.
@@ -38,42 +39,23 @@ export function LocationPicker({
 
   React.useEffect(() => {
     let alive = true,
-      watcher = null;
+      stopWatching = null;
     Promise.resolve()
       .then(() => loadLeaflet())
       .then(Leaflet => {
         if (!alive || !box.current) return;
         const at = latest.current.value;
         const pinned = commerce.validLocation(at);
-        const created = Leaflet.map(box.current, {
+        const {map: created, stop} = maps.create(Leaflet, box.current, {
           center: pinned ? [at.lat, at.lng] : center,
           zoom: pinned ? pinZoom : zoom,
-          scrollWheelZoom: false
+          tiles
         });
-        Leaflet.tileLayer(tiles.url, {
-          maxZoom: tiles.maxZoom || 19,
-          attribution: tiles.attribution
-        }).addTo(created);
         created.on('moveend', () => {
           if (!created.resizing) latest.current.onChange(commerce.pinLocation(created.getCenter()));
         });
         created.on('click', event => created.panTo(event.latlng));
-        // Leaflet sizes itself once; inside an opening dialog or a resized column it needs telling.
-        // The centre is restored without animation, and `resizing` keeps it from counting as a move.
-        if (window.ResizeObserver) {
-          watcher = new ResizeObserver(() => {
-            const middle = created.getCenter(),
-              level = created.getZoom();
-            created.resizing = true;
-            try {
-              created.invalidateSize({pan: false});
-              created.setView(middle, level, {animate: false});
-            } finally {
-              created.resizing = false;
-            }
-          });
-          watcher.observe(box.current);
-        }
+        stopWatching = stop;
         map.current = created;
         latest.current.onReady && latest.current.onReady();
       })
@@ -82,7 +64,7 @@ export function LocationPicker({
       });
     return () => {
       alive = false;
-      if (watcher) watcher.disconnect();
+      if (stopWatching) stopWatching();
       if (map.current) map.current.remove();
       map.current = null;
     };
@@ -123,7 +105,7 @@ export function LocationPicker({
       <span id={id + '-label'} className="ag-field__label">
         {label}
       </span>
-      <div className="ag-location__map">
+      <div className="ag-map ag-location__map">
         <div
           id={id}
           ref={box}
@@ -131,7 +113,7 @@ export function LocationPicker({
           role="region"
           aria-labelledby={id + '-label'}
           aria-describedby={cx(id + '-status', error && id + '-error')}
-          className="ag-location__canvas"
+          className="ag-map__canvas"
         />
         <span className="ag-location__pin" aria-hidden="true">
           <Icon name="map-pin" size={compact ? 32 : 36} />

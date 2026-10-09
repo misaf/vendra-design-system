@@ -229,14 +229,21 @@ class Component extends VFPage {
           }))
         })
     }));
-    // Read by the addresses map after each render.
-    this._places = addresses.map(a => ({
-      id: a.id,
-      label: a.label,
-      title: C.addrLabels.edit.replace('{name}', a.label),
-      location: a.location,
-      pick: a.edit
-    }));
+    // The saved addresses on a read-only map (PlacesMap); each marker opens its address.
+    const placesView = {
+      places: addresses.map(a => ({
+        id: a.id,
+        label: a.label,
+        title: C.addrLabels.edit.replace('{name}', a.label),
+        location: a.location,
+        onSelect: a.edit
+      })),
+      load: vfLoadLeaflet,
+      tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+      center: VF_STORE.map.center,
+      zoom: VF_STORE.map.zoom,
+      fail: () => this.setState({placesFailed: true})
+    };
     const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
     // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
     const W = C.balance,
@@ -362,6 +369,7 @@ class Component extends VFPage {
       })),
       addresses,
       placesMap: !s.placesFailed && addresses.some(a => vfValidLocation(a.location)),
+      placesView,
       addrLabels: C.addrLabels,
       hasSaved: saved.length > 0,
       noSaved: !saved.length,
@@ -554,26 +562,8 @@ class Component extends VFPage {
         : null
     );
   }
-  _placesMap() {
-    if (!this._placesView)
-      this._placesView = vfPlacesMap({
-        id: 'vf-account-map',
-        places: () => this._places || [],
-        onFail: () => this.setState({placesFailed: true})
-      });
-    return this._placesView;
-  }
-  componentDidMount() {
-    super.componentDidMount();
-    this._placesMap().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._placesMap().sync();
-  }
   componentWillUnmount() {
     super.componentWillUnmount();
     clearTimeout(this._topUpTimer);
-    this._placesMap().remove();
   }
 }

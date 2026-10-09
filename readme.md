@@ -12,7 +12,7 @@
 
 | Import | What it is |
 |---|---|
-| `@vendra/design-system` | 51 components plus `format`, `dates`, `commerce` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
+| `@vendra/design-system` | 52 components plus `format`, `dates`, `commerce`, `maps` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. Load once in the root layout. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |

@@ -16,7 +16,7 @@ The maintained bilingual storefront: 17 pages in `storefront-*`, wired together 
 | Routes and URL helpers | [_shared/routing.js](_shared/routing.js) |
 | Responsive state, focus, `<head>` | `_shared/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |
-| Maps: delivery pin (`LocationPicker` component), saved places | `../components/LocationPicker/`; `_shared/location.js`, `location.css` |
+| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../components/`; Leaflet loading and location text in `_shared/location.js` |
 | Shared CSS: shell, page families, information pages | `_shared/shell.css`, `page-layouts.css`, `information-pages.css` |
 | Tailwind entry and token aliases | [_shared/tailwind.css](_shared/tailwind.css) |
 | Tokens and tenant themes | `../tokens/`, `../tokens/tenants/<slug>.json` |

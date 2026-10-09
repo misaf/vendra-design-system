@@ -1,0 +1,33 @@
+/* A place: an accent dot with its label above. Leaflet's stylesheet loads later, hence the doubled class. */
+.leaflet-marker-icon.ag-place-marker {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.ag-place-marker__dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface-card);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+.ag-place-marker:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.leaflet-tooltip.ag-place-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-body);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 2px 8px;
+}
+.leaflet-tooltip.ag-place-label::before {
+  display: none;
+}

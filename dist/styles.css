@@ -450,6 +450,32 @@ a.ag-iconbtn {
   }
 }
 
+/* Map frames (LocationPicker, PlacesMap). Leaflet's panes stay inside: isolation keeps their z-indexes
+   from escaping. The canvas fills the frame; focus shows on the frame. */
+.ag-map {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-md);
+  background: var(--surface-muted);
+}
+.ag-map__canvas {
+  position: absolute;
+  inset: 0;
+}
+.ag-map__canvas.leaflet-container {
+  font-family: var(--font-body);
+  background: var(--surface-muted);
+}
+.ag-map__canvas.leaflet-container:focus-visible {
+  outline: none;
+}
+.ag-map:has(.leaflet-container:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 /* components/ProductCard/ProductCard.css */
 /* .ag-product__media and .ag-product__ph are also used by BlogCard, CategoryCard, Gallery and LineItem. */
 .ag-product__fav.ag-iconbtn--active svg {
@@ -2671,33 +2697,12 @@ a.ag-tabbar__item--current:hover {
   gap: var(--space-2);
   font-family: var(--font-body);
 }
-/* Leaflet's panes stay inside the map: isolation keeps their z-indexes from escaping. */
+/* The frame and canvas come from .ag-map (shared.css). */
 .ag-location__map {
-  position: relative;
   block-size: 280px;
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-md);
-  background: var(--surface-muted);
 }
 .ag-location--compact .ag-location__map {
   block-size: 220px;
-}
-.ag-location__canvas {
-  position: absolute;
-  inset: 0;
-}
-.ag-location__canvas.leaflet-container {
-  font-family: var(--font-body);
-  background: var(--surface-muted);
-}
-.ag-location__canvas.leaflet-container:focus-visible {
-  outline: none;
-}
-.ag-location__map:has(.leaflet-container:focus-visible) {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
 }
 /* The pin stays at the map's centre, its point on the chosen spot. */
 .ag-location__pin {
@@ -2718,6 +2723,41 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-location__row > .ag-field__hint {
   padding-block-start: var(--space-2);
+}
+
+/* components/PlacesMap/PlacesMap.css */
+/* A place: an accent dot with its label above. Leaflet's stylesheet loads later, hence the doubled class. */
+.leaflet-marker-icon.ag-place-marker {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.ag-place-marker__dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface-card);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+}
+.ag-place-marker:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.leaflet-tooltip.ag-place-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-body);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 2px 8px;
+}
+.leaflet-tooltip.ag-place-label::before {
+  display: none;
 }
 
 /* components/OrderTimeline/OrderTimeline.css */

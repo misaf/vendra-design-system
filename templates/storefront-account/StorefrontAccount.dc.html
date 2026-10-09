@@ -92,7 +92,7 @@
 <div role="tabpanel" id="{{ tabPanelId }}" aria-labelledby="{{ tabId }}" tabindex="0" class="vf-account-panel"><sc-if value="{{ isOrders }}" hint-placeholder-val="{{ true }}"><div class="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]"><sc-for list="{{ orders }}" as="o" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.Card" padding="{{ 20 }}" hint-size="100%,200px"><div class="vf-account-order-body tw:flex tw:flex-col tw:gap-3"><div class="tw:flex tw:justify-between tw:items-center tw:gap-3"><span dir="ltr" class="vf-account-order-number tw:font-medium">{{ o.id }}</span><x-import component-from-global-scope="VendraDesignSystem.Badge" tone="{{ o.tone }}" hint-size="80px,24px">{{ o.status }}</x-import></div><div class="vf-account-order-meta tw:text-sm tw:text-quiet">{{ o.meta }}</div><div class="vf-account-order-total tw:font-medium">{{ o.total }}</div><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="secondary" size="sm" href="{{ o.href }}" on-click="{{ o.go }}" hint-size="120px,36px">{{ o.cta }}</x-import></div></div></x-import></sc-for></div></sc-if>
 <sc-if value="{{ isBalance }}" hint-placeholder-val="{{ false }}"><div class="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-[760px]"><x-import component-from-global-scope="VendraDesignSystem.Card" padding="{{ 24 }}" hint-size="100%,150px"><div class="tw:flex tw:flex-col tw:gap-2"><span id="vf-balance-label" class="tw:text-sm tw:text-quiet">{{ t.balance.title }}</span><span id="vf-balance-amount" aria-labelledby="vf-balance-label vf-balance-amount" class="tw:text-2xl tw:font-medium">{{ balance.amount }}</span><p class="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">{{ balance.status }}</p></div></x-import><section aria-labelledby="vf-topup-title" class="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><h2 id="vf-topup-title" class="tw:m-0 tw:text-xl">{{ t.balance.topUp }}</h2><div role="group" aria-label="{{ t.balance.quick }}" class="tw:flex tw:gap-2 tw:flex-wrap"><sc-for list="{{ balance.presets }}" as="v" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.Chip" selected="{{ v.pressed }}" aria-pressed="{{ v.pressed }}" on-click="{{ v.pick }}" hint-size="130px,36px">{{ v.label }}</x-import></sc-for></div><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-topup-amount" label="{{ t.balance.amount }}" value="{{ balance.value }}" on-change="{{ balance.set }}" hint="{{ balance.hint }}" error="{{ balance.error }}" inputmode="numeric" dir="ltr" autocomplete="off" hint-size="100%,96px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" icon-start="banknote" on-click="{{ balance.submit }}" loading="{{ balance.busy }}" disabled="{{ balance.busy }}" hint-size="200px,48px">{{ balance.payLabel }}</x-import></div><sc-if value="{{ balance.busy }}"><p role="status" class="tw:m-0 tw:text-sm">{{ t.balance.processing }}</p></sc-if><sc-if value="{{ balance.done }}"><p id="vf-topup-done" tabindex="-1" role="status" class="tw:m-0 tw:text-sm tw:font-medium">{{ balance.done }}</p></sc-if><p class="tw:m-0 tw:text-sm tw:text-quiet">{{ t.balance.demo }}</p></section><section aria-labelledby="vf-balance-history" class="tw:flex tw:flex-col tw:gap-3"><h2 id="vf-balance-history" class="tw:m-0 tw:text-xl">{{ t.balance.history }}</h2><sc-if value="{{ balance.noHistory }}"><p class="tw:m-0 tw:text-secondary">{{ t.balance.noHistory }}</p></sc-if><sc-if value="{{ balance.hasHistory }}"><ul class="vf-account-balance-history tw:list-none tw:m-0 tw:p-0 tw:flex tw:flex-col"><sc-for list="{{ balance.history }}" as="h" hint-placeholder-count="2"><li class="tw:flex tw:justify-between tw:items-baseline tw:gap-4 tw:py-3 tw:[border-top:1px_solid_var(--border-subtle)]"><div class="tw:flex tw:flex-col tw:gap-1"><span class="tw:font-medium">{{ h.label }}</span><span class="tw:text-sm tw:text-quiet">{{ h.date }}</span></div><span class="vf-account-balance-amount tw:font-medium tw:whitespace-nowrap" data-tone="{{ h.tone }}">{{ h.amount }}</span></li></sc-for></ul></sc-if></section></div></sc-if>
 <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}"><div class="vf-account-saved-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"><sc-for list="{{ savedItems }}" as="p" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.ProductCard" images="{{ p.images }}" name="{{ p.name }}" subtitle="{{ p.sub }}" price="{{ p.price }}" badge="{{ p.badge }}" badge-tone="accent" frame="soft" placeholder="{{ t.photo }}" fav-label="{{ t.unsave }}" favorite="{{ true }}" on-favorite="{{ p.remove }}" href="{{ p.href }}" on-click="{{ p.go }}" hint-size="100%,400px"></x-import></sc-for></div></sc-if><sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}"><div class="vf-account-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0"><x-import component-from-global-scope="VendraDesignSystem.EmptyState" icon="heart" title="{{ t.savedEmptyA }}" title-accent="{{ t.savedEmptyB }}" body="{{ t.savedEmptyP }}" hint-size="100%,260px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" href="{{ href.shop }}" on-click="{{ go.shop }}" hint-size="150px,48px">{{ t.browse }}</x-import></div></sc-if></sc-if>
-<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><div class="vf-account-map vf-map-box tw:h-[260px] tw:mb-4"><div id="vf-account-map" dir="ltr" role="region" aria-label="{{ t.mapL }}" class="tw:absolute tw:inset-0"></div></div></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
+<sc-if value="{{ isAddresses }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ placesMap }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VendraDesignSystem.PlacesMap" id="vf-account-map" class-name="tw:mb-4" label="{{ t.mapL }}" places="{{ placesView.places }}" height="{{ 260 }}" load-leaflet="{{ placesView.load }}" tiles="{{ placesView.tiles }}" center="{{ placesView.center }}" zoom="{{ placesView.zoom }}" on-fail="{{ placesView.fail }}" hint-size="100%,260px"></x-import></sc-if><div class="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"><sc-for list="{{ addresses }}" as="a" hint-placeholder-count="2"><x-import component-from-global-scope="VendraDesignSystem.AddressCard" label="{{ a.label }}" line="{{ a.line }}" recipient="{{ a.recipient }}" phone="{{ a.phone }}" zone="{{ a.zone }}" is-default="{{ a.isDefault }}" on-make-default="{{ a.makeDefault }}" on-edit="{{ a.edit }}" on-delete="{{ a.remove }}" labels="{{ addrLabels }}" hint-size="100%,200px"></x-import></sc-for><button id="vf-add-address" type="button" onClick="{{ addAddress }}" class="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken">+ {{ t.addAddr }}</button></div></sc-if>
 <sc-if value="{{ isReminders }}" hint-placeholder-val="{{ false }}"><div class="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]"><div><x-import component-from-global-scope="VendraDesignSystem.Button" id="vf-add-reminder" icon-start="plus" on-click="{{ addReminder }}">{{ editor.addReminder }}</x-import></div><sc-if value="{{ noReminders }}"><p>{{ editor.empty }}</p></sc-if><sc-if value="{{ coming }}"><x-import component-from-global-scope="VendraDesignSystem.Alert" tone="neutral" title="{{ editor.coming }}">{{ coming.name }} · {{ coming.when }}</x-import></sc-if><p class="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">{{ t.remP }}</p><sc-for list="{{ reminders }}" as="r" hint-placeholder-count="3"><x-import component-from-global-scope="VendraDesignSystem.ReminderRow" name="{{ r.name }}" day="{{ r.day }}" month="{{ r.month }}" occasion="{{ r.occasion }}" occasion-icon="{{ r.icon }}" before="{{ r.before }}" channel="{{ r.channel }}" soon="{{ r.soon }}" on="{{ r.on }}" on-toggle="{{ r.toggle }}" on-edit="{{ r.edit }}" on-delete="{{ r.remove }}" alt-date="{{ r.altDate }}" when="{{ r.when }}" send-href="{{ href.shop }}" send-on-click="{{ go.shop }}" labels="{{ remLabels }}" hint-size="100%,88px"></x-import></sc-for></div></sc-if>
 <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}"><div class="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pname" label="{{ t.name }}" value="{{ profile.name }}" on-change="{{ setProfile.name }}" autocomplete="name" hint-size="100%,76px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pphone" label="{{ t.phone }}" value="{{ profile.phone }}" dir="ltr" disabled="{{ true }}" hint="{{ t.phoneHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Input" id="vf-pemail" value="{{ profile.email }}" on-change="{{ setProfile.email }}" error="{{ emailError }}" label="{{ t.email }}" type="email" dir="ltr" hint="{{ t.emailHint }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Select" id="vf-plang" label="{{ t.alang }}" hint="{{ t.alangHint }}" value="{{ profile.locale }}" on-change="{{ setProfile.locale }}" options="{{ langOptions }}" hint-size="100%,96px"></x-import><x-import component-from-global-scope="VendraDesignSystem.Switch" label="{{ t.sms }}" checked="{{ profile.sms }}" on-change="{{ setProfile.sms }}" hint-size="100%,28px"></x-import><div><x-import component-from-global-scope="VendraDesignSystem.Button" variant="primary" on-click="{{ saveProfile }}" hint-size="140px,48px">{{ t.saveP }}</x-import></div></div></sc-if></div><p role="status" class="tw:text-sm tw:text-secondary">{{ notice }}</p>
 <x-import component-from-global-scope="VendraDesignSystem.Dialog" open="{{ formOpen }}" title="{{ formTitle }}" on-close="{{ closeForm }}">
@@ -704,14 +704,21 @@ class Component extends VFPage {
           }))
         })
     }));
-    // Read by the addresses map after each render.
-    this._places = addresses.map(a => ({
-      id: a.id,
-      label: a.label,
-      title: C.addrLabels.edit.replace('{name}', a.label),
-      location: a.location,
-      pick: a.edit
-    }));
+    // The saved addresses on a read-only map (PlacesMap); each marker opens its address.
+    const placesView = {
+      places: addresses.map(a => ({
+        id: a.id,
+        label: a.label,
+        title: C.addrLabels.edit.replace('{name}', a.label),
+        location: a.location,
+        onSelect: a.edit
+      })),
+      load: vfLoadLeaflet,
+      tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
+      center: VF_STORE.map.center,
+      zoom: VF_STORE.map.zoom,
+      fail: () => this.setState({placesFailed: true})
+    };
     const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
     // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
     const W = C.balance,
@@ -837,6 +844,7 @@ class Component extends VFPage {
       })),
       addresses,
       placesMap: !s.placesFailed && addresses.some(a => vfValidLocation(a.location)),
+      placesView,
       addrLabels: C.addrLabels,
       hasSaved: saved.length > 0,
       noSaved: !saved.length,
@@ -1029,27 +1037,9 @@ class Component extends VFPage {
         : null
     );
   }
-  _placesMap() {
-    if (!this._placesView)
-      this._placesView = vfPlacesMap({
-        id: 'vf-account-map',
-        places: () => this._places || [],
-        onFail: () => this.setState({placesFailed: true})
-      });
-    return this._placesView;
-  }
-  componentDidMount() {
-    super.componentDidMount();
-    this._placesMap().sync();
-  }
-  componentDidUpdate() {
-    super.componentDidUpdate();
-    this._placesMap().sync();
-  }
   componentWillUnmount() {
     super.componentWillUnmount();
     clearTimeout(this._topUpTimer);
-    this._placesMap().remove();
   }
 }
 // END GENERATED PAGE LOGIC
