@@ -239,8 +239,8 @@ function page(name, c, props = {}) {
         assetBase: 'https://example.test/assets',
         unsubLink: 'https://example.test/unsubscribe'
       };
-    for (const event of comm.AG_NOTIFY.events) {
-      const rendered = comm.AG_NOTIFY.render(
+    for (const event of comm.VF_NOTIFY.events) {
+      const rendered = comm.VF_NOTIFY.render(
         typeof event === 'string' ? event : event.id,
         customer,
         vars
@@ -251,24 +251,24 @@ function page(name, c, props = {}) {
     }
     for (const event of ['received', 'ready', 'onway'])
       for (const channel of ['sms', 'wa']) {
-        const rendered = comm.AG_NOTIFY.render(event, customer, vars, channel);
+        const rendered = comm.VF_NOTIFY.render(event, customer, vars, channel);
         assert.ok(rendered.text.includes('VF-7K2M4Q'), event + ' names the product codes');
         if (channel === 'sms') assert.ok(rendered.sms.parts <= 2, event + ' fits 2 SMS parts');
       }
     assert.equal(
-      comm.AG_NOTIFY.itemsText([{code: 'VF-7K2M4Q', qty: 2}, 'VF-3HX9TP'], lang),
+      comm.VF_NOTIFY.itemsText([{code: 'VF-7K2M4Q', qty: 2}, 'VF-3HX9TP'], lang),
       lang === 'fa' ? 'VF-7K2M4Q ×۲، VF-3HX9TP' : 'VF-7K2M4Q x2, VF-3HX9TP'
     );
     assert.equal(
-      comm.AG_NOTIFY.itemsText(['A', 'B', 'C', 'D'], lang),
+      comm.VF_NOTIFY.itemsText(['A', 'B', 'C', 'D'], lang),
       lang === 'fa' ? 'A، B و ۲ مورد دیگر' : 'A, B +2 more'
     );
-    for (const event of comm.AG_EMAIL.events)
+    for (const event of comm.VF_EMAIL.events)
       for (const theme of ['default', 'clay']) {
-        const rendered = comm.AG_EMAIL.render(event, customer, {...vars, theme});
+        const rendered = comm.VF_EMAIL.render(event, customer, {...vars, theme});
         assert.equal(rendered.lang, lang);
         assert.ok(rendered.html.includes('<table'));
-        assert.ok(rendered.html.includes(comm.AG_EMAIL.themes[theme].gold));
+        assert.ok(rendered.html.includes(comm.VF_EMAIL.themes[theme].gold));
       }
   }
   assert.equal(fs.existsSync(path.join(root, 'ui_kits')), false);

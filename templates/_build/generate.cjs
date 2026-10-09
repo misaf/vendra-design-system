@@ -53,7 +53,7 @@ const sharedLogicRuntime =
   sharedLogic;
 const sharedLogicScript = '<script src="../_runtime/shared-logic.js"></script>';
 const supportScript = '<script src="../_runtime/support.js"></script>';
-// Helpers the shared logic calls on first render: AG_SEO and AG_NAV (templates/_shared/) and
+// Helpers the shared logic calls on first render: VF_SEO and VF_NAV (templates/_shared/) and
 // AG_FORMAT / AG_DATES / AG_COMMERCE (_runtime/helpers.js, the classic build of components/utils/{format,dates,commerce}.js).
 // The component bundle loads asynchronously after React, so pages load these synchronously first.
 const coreHelperScripts = [

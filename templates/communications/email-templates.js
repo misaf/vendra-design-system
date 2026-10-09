@@ -1,6 +1,6 @@
-// Transactional + reminder emails, EN and FA. window.AG_EMAIL.render(event, customer, vars, order) → {lang, dir, subject, preheader, html, text}
-// Language: same rule as SMS — customer's account language (AG_NOTIFY.localeFor). Send-ready HTML: tables, inline styles, 600px, hex colours, web-safe fonts.
-// Theme: vars.theme = 'default' or a tenant slug from tokens/tenants/, a palette object (keys below), or omit for default. Tenant palettes are generated from tokens/tenants/<slug>.json by npm --prefix templates run build. AG_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
+// Transactional + reminder emails, EN and FA. window.VF_EMAIL.render(event, customer, vars, order) → {lang, dir, subject, preheader, html, text}
+// Language: same rule as SMS — customer's account language (VF_NOTIFY.localeFor). Send-ready HTML: tables, inline styles, 600px, hex colours, web-safe fonts.
+// Theme: vars.theme = 'default' or a tenant slug from tokens/tenants/, a palette object (keys below), or omit for default. Tenant palettes are generated from tokens/tenants/<slug>.json by npm --prefix templates run build. VF_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
 // vars.assetBase must be an absolute URL to where logo-horizontal.png / logo-horizontal-fa.png are hosted (emails can't load relative files).
 // vars.items: [{code, name, qty, price}]; code is the product's unique code and its title, shown as given (Latin, left to right);
 // name describes it (kind, size, extras). Items without a code show the name alone.
@@ -187,8 +187,8 @@
     return o;
   };
   const render = (event, customer, vars = {}, order) => {
-    const lang = window.AG_NOTIFY
-      ? AG_NOTIFY.localeFor(customer, order)
+    const lang = window.VF_NOTIFY
+      ? VF_NOTIFY.localeFor(customer, order)
       : (customer && customer.preferredLocale) || 'fa';
     const L = T[lang],
       E = L[event];
@@ -256,7 +256,7 @@ ${E.second ? `<p style="margin:24px 0 0;padding:16px 18px;background:${C.sunk};b
     ].join('\n');
     return {lang, dir, event, subject: E.subject(v), preheader: E.pre(v), html, text};
   };
-  window.AG_EMAIL = {
+  window.VF_EMAIL = {
     render,
     events: ['received', 'delivered', 'reminder'],
     templates: T,

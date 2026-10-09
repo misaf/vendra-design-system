@@ -222,7 +222,7 @@ class Component extends VFPage {
           // The map can't carry aria-invalid, so it is focused directly.
           if (problems.length > 1) S.focus('vf-errors');
           else if (problems[0].href === '#vf-map') S.focus('vf-map');
-          else window.AG_NAV.focusFirstInvalid();
+          else window.VF_NAV.focusFirstInvalid();
           return;
         }
         if (st)

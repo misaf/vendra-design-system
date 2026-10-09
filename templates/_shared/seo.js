@@ -1,4 +1,4 @@
-// Routing and <head> helpers for the storefront (window.AG_SEO). Pages load this
+// Routing and <head> helpers for the storefront (window.VF_SEO). Pages load this
 // before shared-logic.js.
 // URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
 (() => {
@@ -160,6 +160,6 @@
     isNoindex,
     syncHead
   };
-  window.AG_SEO = S;
+  window.VF_SEO = S;
   if (typeof module !== 'undefined' && module.exports) module.exports = S;
 })();

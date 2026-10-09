@@ -87,7 +87,7 @@ vm.runInNewContext(
   fs.readFileSync(path.join(__dirname, '../communications/email-templates.js'), 'utf8'),
   context
 );
-const emailThemes = context.window.AG_EMAIL.themes;
+const emailThemes = context.window.VF_EMAIL.themes;
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
   assert.deepEqual(
     {...emailThemes[slug]},

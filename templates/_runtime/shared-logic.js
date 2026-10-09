@@ -1895,14 +1895,14 @@ function vfWalletChange(phone, amount, entry) {
   // Guests: the page language at checkout.
   A.preferredLocale = () =>
     vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
-  window.AG_API = window.VF_API = A;
+  window.VF_API = A;
 })();
 
 // Source: templates/_shared/integrations/analytics.js
 // Analytics — one wrapper for every tracked event, using common ecommerce event names.
-// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and hands each event to the
-// AG_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
-// (AG_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
+// VF_TRACK.event(name, params). Keeps the last 50 in VF_TRACK.log for QA, and hands each event to the
+// VF_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
+// (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
 (() => {
   if (window.VF_TRACK) return;
@@ -1962,7 +1962,7 @@ function vfWalletChange(phone, amount, entry) {
         }
       : null;
   const event = (name, params = {}) => {
-    if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
+    if (!EVENTS[name]) console.warn('VF_TRACK: unknown event', name);
     const e = {
       event: name,
       ...ctx(),
@@ -1973,7 +1973,7 @@ function vfWalletChange(phone, amount, entry) {
     if (consent() !== 'all') return;
     listeners.forEach(listener => listener(e));
   };
-  window.AG_TRACK = window.VF_TRACK = {
+  window.VF_TRACK = {
     event,
     item,
     EVENTS,
@@ -1998,7 +1998,7 @@ const VF_MONEY = (n, fa) =>
   });
 
 // Source: templates/_shared/routing.js
-// Storefront route registration, validation and links. Uses the core AG_SEO router.
+// Storefront route registration, validation and links. Uses the core VF_SEO router.
 const VF_ROUTES = [
   'account',
   'bag',
@@ -2033,8 +2033,8 @@ const VF_ROUTE_EXTRA = {
 };
 // Keep template-only shopping parameters out of the core design-system router.
 function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search),
+  window.VF_SEO.register(...VF_ROUTES);
+  const route = window.VF_SEO.readRoute(search),
     query = new URLSearchParams(search);
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
@@ -2084,7 +2084,7 @@ function vfReadRoute(search = location.search) {
   return route;
 }
 function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  const query = new URLSearchParams(window.VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
@@ -2105,7 +2105,7 @@ function vfRouteParams(route) {
   return '?' + query.toString();
 }
 function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) =>
+  return window.VF_SEO.linkHandler((route, event) =>
     go(vfReadRoute(new URL(event.currentTarget.href, location.href).search))
   );
 }
@@ -2194,7 +2194,7 @@ function vfPageClass(DCLogic) {
             document.activeElement &&
             document.activeElement.closest('main') &&
             document.activeElement.matches('input, select, textarea');
-          if (!field) window.AG_NAV.focusHeading();
+          if (!field) window.VF_NAV.focusHeading();
           if (this.props.store && this.props.store.announce) this.props.store.announce(title);
           else
             this.setState({
@@ -2203,12 +2203,12 @@ function vfPageClass(DCLogic) {
         }
         window.VF_VIEWED = true;
         const url = location.href;
-        window.AG_SEO.syncHead({
+        window.VF_SEO.syncHead({
           title: title + ' · ' + VF_SHELL[lang].brand,
           description: title,
           url,
           locale: lang,
-          noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
+          noindex: window.VF_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
           alternates: Object.fromEntries(
             ['en', 'fa'].map(lang => [
               lang,
@@ -2252,7 +2252,7 @@ function vfShell(props, page) {
     st = self.state || {},
     store = props.store;
   self._vfPage = page;
-  window.AG_SEO.register(...VF_ROUTES);
+  window.VF_SEO.register(...VF_ROUTES);
   const fa = props.lang === 'fa',
     L = fa ? 'fa' : 'en',
     T = VF_SHELL[L];
@@ -2270,7 +2270,7 @@ function vfShell(props, page) {
   VF_ROUTES.forEach(r => {
     href[r] =
       (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-      window.AG_SEO.hrefFor(
+      window.VF_SEO.hrefFor(
         {
           lang: L
         },
@@ -2365,12 +2365,12 @@ function vfShell(props, page) {
         return;
       }
       self.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.AG_API.newsletter(email, profile.name).then(
+      window.VF_API.newsletter(email, profile.name).then(
         () => {
           try {
             localStorage.setItem('vf-newsletter', email);
           } catch {}
-          window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+          window.VF_TRACK.event('generate_lead', {lead_source: 'newsletter'});
           self.setState({vfNews: {done: email}});
           focus('vf-news-done');
         },
@@ -2388,14 +2388,14 @@ function vfShell(props, page) {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch {}
   const consentShown =
-    (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
+    (!(st.vfConsent ?? window.VF_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
     if (reopened) focus('vf-consent-settings');
   };
   const choose = value => {
-    window.AG_TRACK.setConsent(value);
+    window.VF_TRACK.setConsent(value);
     hideConsent({vfConsent: value});
   };
   const consent = {
@@ -2529,7 +2529,7 @@ function vfShell(props, page) {
         : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
-      window.AG_NAV.focusHeading();
+      window.VF_NAV.focusHeading();
     },
     standalone: !props.store,
     announcement: vfAnnouncementText(L, st),

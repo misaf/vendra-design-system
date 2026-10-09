@@ -300,7 +300,7 @@
   }
 
   // Email clients need hex colours and web-safe fallbacks, so emails get a flat palette
-  // (keys match AG_EMAIL in templates/communications/email-templates.js).
+  // (keys match VF_EMAIL in templates/communications/email-templates.js).
   const EMAIL_FONTS = {
     sans: "'Jost','Helvetica Neue',Helvetica,Arial,sans-serif",
     vazir: "Vazirmatn,Tahoma,'Segoe UI',Arial,sans-serif"

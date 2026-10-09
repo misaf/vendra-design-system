@@ -14,17 +14,15 @@ declare class DCLogic {
 }
 
 interface Window {
-  // Design-system helpers from the component bundle (components/utils/).
-  AG_DATA?: any;
+  // AG_*: from the design-system package (components/utils/, via _runtime/helpers.js).
   AG_COMMERCE: any;
   AG_DATES: any;
   AG_FORMAT: any;
-  AG_NAV: any;
-  AG_SEO: any;
+  // VF_*: from the Vendra Florist templates. Routing and <head> (_shared/seo.js), focus (_shared/page-focus.js).
+  VF_NAV: any;
+  VF_SEO: any;
   // Integrations defined in _shared/integrations/ and _shared/payments.js.
-  AG_API: any;
   VF_API: any;
-  AG_TRACK: any;
   VF_TRACK: any;
   VF_PAYMENT: any;
   // Set by _runtime/ds-base.js.

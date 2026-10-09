@@ -465,7 +465,7 @@ class Component extends VFPage {
           phone = vfPhone(ls.lookupPhone);
         this.setState({lookupTried: true});
         if (!id || !/^09\d{9}$/.test(phone)) {
-          window.AG_NAV.focusFirstInvalid();
+          window.VF_NAV.focusFirstInvalid();
           return;
         }
         const match = vfKnownOrders(this.props.store).find(

@@ -159,7 +159,7 @@ assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 3}),
 assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
 
 // Analytics: events stay in the local log until the visitor allows visit counts.
-const track = ctx.window.AG_TRACK;
+const track = ctx.window.VF_TRACK;
 const sent = [];
 const unsubscribe = track.subscribe(event => sent.push(event));
 assert.equal(track.consent(), '');

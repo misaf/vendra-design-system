@@ -78,7 +78,7 @@ function vfPageClass(DCLogic) {
             document.activeElement &&
             document.activeElement.closest('main') &&
             document.activeElement.matches('input, select, textarea');
-          if (!field) window.AG_NAV.focusHeading();
+          if (!field) window.VF_NAV.focusHeading();
           if (this.props.store && this.props.store.announce) this.props.store.announce(title);
           else
             this.setState({
@@ -87,12 +87,12 @@ function vfPageClass(DCLogic) {
         }
         window.VF_VIEWED = true;
         const url = location.href;
-        window.AG_SEO.syncHead({
+        window.VF_SEO.syncHead({
           title: title + ' · ' + VF_SHELL[lang].brand,
           description: title,
           url,
           locale: lang,
-          noindex: window.AG_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
+          noindex: window.VF_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
           alternates: Object.fromEntries(
             ['en', 'fa'].map(lang => [
               lang,

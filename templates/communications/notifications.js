@@ -165,7 +165,7 @@
       sms: channel === 'sms' ? smsInfo(text) : null
     };
   };
-  window.AG_NOTIFY = {
+  window.VF_NOTIFY = {
     templates: T,
     events: EVENTS,
     render,

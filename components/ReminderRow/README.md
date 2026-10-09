@@ -19,7 +19,7 @@ Occasion reminder in the account's Reminders tab. Compute the date with `dates.n
   onEdit={edit}
   onDelete={del}
   sendHref="?view=gifts&m=1"
-  sendOnClick={AG_NAV.link}
+  sendOnClick={navigate}
   labels={{
     paused: 'Paused',
     sendFlowers: 'Send flowers',

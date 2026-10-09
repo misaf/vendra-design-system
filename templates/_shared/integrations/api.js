@@ -134,5 +134,5 @@
   // Guests: the page language at checkout.
   A.preferredLocale = () =>
     vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
-  window.AG_API = window.VF_API = A;
+  window.VF_API = A;
 })();

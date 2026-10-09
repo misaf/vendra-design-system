@@ -1397,7 +1397,7 @@ const nextYearly = ({ cal = "j", m, d }, today = new Date()) => {
 		days: daysBetween(t, date)
 	};
 };
-// Next Hijri (lunar) month/day — Umm al-Qura arithmetic. Iran's official date can differ by a day: let the store publish the real one (AG_DATA.occasionDates).
+// Next Hijri (lunar) month/day — Umm al-Qura arithmetic. Iran's official date can differ by a day: let the store pass the real one (the templates' VF_STORE.occasionDates).
 const HF = new Intl.DateTimeFormat("en-US-u-ca-islamic-umalqura-nu-latn", {
 	month: "numeric",
 	day: "numeric"

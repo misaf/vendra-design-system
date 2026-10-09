@@ -22,7 +22,7 @@ function vfShell(props, page) {
     st = self.state || {},
     store = props.store;
   self._vfPage = page;
-  window.AG_SEO.register(...VF_ROUTES);
+  window.VF_SEO.register(...VF_ROUTES);
   const fa = props.lang === 'fa',
     L = fa ? 'fa' : 'en',
     T = VF_SHELL[L];
@@ -40,7 +40,7 @@ function vfShell(props, page) {
   VF_ROUTES.forEach(r => {
     href[r] =
       (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-      window.AG_SEO.hrefFor(
+      window.VF_SEO.hrefFor(
         {
           lang: L
         },
@@ -135,12 +135,12 @@ function vfShell(props, page) {
         return;
       }
       self.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.AG_API.newsletter(email, profile.name).then(
+      window.VF_API.newsletter(email, profile.name).then(
         () => {
           try {
             localStorage.setItem('vf-newsletter', email);
           } catch {}
-          window.AG_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+          window.VF_TRACK.event('generate_lead', {lead_source: 'newsletter'});
           self.setState({vfNews: {done: email}});
           focus('vf-news-done');
         },
@@ -158,14 +158,14 @@ function vfShell(props, page) {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch {}
   const consentShown =
-    (!(st.vfConsent ?? window.AG_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
+    (!(st.vfConsent ?? window.VF_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
     if (reopened) focus('vf-consent-settings');
   };
   const choose = value => {
-    window.AG_TRACK.setConsent(value);
+    window.VF_TRACK.setConsent(value);
     hideConsent({vfConsent: value});
   };
   const consent = {
@@ -299,7 +299,7 @@ function vfShell(props, page) {
         : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
-      window.AG_NAV.focusHeading();
+      window.VF_NAV.focusHeading();
     },
     standalone: !props.store,
     announcement: vfAnnouncementText(L, st),

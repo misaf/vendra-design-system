@@ -1,7 +1,7 @@
 // Analytics — one wrapper for every tracked event, using common ecommerce event names.
-// AG_TRACK.event(name, params). Keeps the last 50 in AG_TRACK.log for QA, and hands each event to the
-// AG_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
-// (AG_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
+// VF_TRACK.event(name, params). Keeps the last 50 in VF_TRACK.log for QA, and hands each event to the
+// VF_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
+// (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
 (() => {
   if (window.VF_TRACK) return;
@@ -61,7 +61,7 @@
         }
       : null;
   const event = (name, params = {}) => {
-    if (!EVENTS[name]) console.warn('AG_TRACK: unknown event', name);
+    if (!EVENTS[name]) console.warn('VF_TRACK: unknown event', name);
     const e = {
       event: name,
       ...ctx(),
@@ -72,7 +72,7 @@
     if (consent() !== 'all') return;
     listeners.forEach(listener => listener(e));
   };
-  window.AG_TRACK = window.VF_TRACK = {
+  window.VF_TRACK = {
     event,
     item,
     EVENTS,

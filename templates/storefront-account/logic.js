@@ -41,7 +41,7 @@ class Component extends VFPage {
         notice: E.saved
       });
     };
-    const focusError = () => setTimeout(() => window.AG_NAV.focusFirstInvalid(), 0);
+    const focusError = () => setTimeout(() => window.VF_NAV.focusFirstInvalid(), 0);
     const openAddress = a =>
       this.setState({
         errors: {},

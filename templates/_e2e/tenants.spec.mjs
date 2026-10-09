@@ -143,8 +143,8 @@ for (const tenant of ['default', ...TENANTS]) {
       const wrap = document.createElement('div');
       if (tenant !== 'default') wrap.setAttribute('data-tenant', tenant);
       document.body.append(wrap);
-      const {disp: a, ...live} = window.AG_EMAIL.themeFromCSS(wrap);
-      const {disp: b, ...shipped} = window.AG_EMAIL.themes[tenant];
+      const {disp: a, ...live} = window.VF_EMAIL.themeFromCSS(wrap);
+      const {disp: b, ...shipped} = window.VF_EMAIL.themes[tenant];
       return {live, shipped};
     }, tenant);
     expect(shipped).toEqual(live);

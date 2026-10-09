@@ -1,4 +1,4 @@
-// Storefront route registration, validation and links. Uses the core AG_SEO router.
+// Storefront route registration, validation and links. Uses the core VF_SEO router.
 const VF_ROUTES = [
   'account',
   'bag',
@@ -33,8 +33,8 @@ const VF_ROUTE_EXTRA = {
 };
 // Keep template-only shopping parameters out of the core design-system router.
 function vfReadRoute(search = location.search) {
-  window.AG_SEO.register(...VF_ROUTES);
-  const route = window.AG_SEO.readRoute(search),
+  window.VF_SEO.register(...VF_ROUTES);
+  const route = window.VF_SEO.readRoute(search),
     query = new URLSearchParams(search);
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
@@ -84,7 +84,7 @@ function vfReadRoute(search = location.search) {
   return route;
 }
 function vfRouteParams(route) {
-  const query = new URLSearchParams(window.AG_SEO.routeParams(route));
+  const query = new URLSearchParams(window.VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
@@ -105,7 +105,7 @@ function vfRouteParams(route) {
   return '?' + query.toString();
 }
 function vfLinkHandler(go) {
-  return window.AG_SEO.linkHandler((route, event) =>
+  return window.VF_SEO.linkHandler((route, event) =>
     go(vfReadRoute(new URL(event.currentTarget.href, location.href).search))
   );
 }

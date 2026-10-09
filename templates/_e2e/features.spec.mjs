@@ -825,8 +825,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = AG_TRACK.subscribe(event => sent.push(event));
-          AG_TRACK.event('search', {});
+          const stop = VF_TRACK.subscribe(event => sent.push(event));
+          VF_TRACK.event('search', {});
           stop();
           return sent.length;
         })()
@@ -844,8 +844,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = AG_TRACK.subscribe(event => sent.push(event));
-          AG_TRACK.event('search', {});
+          const stop = VF_TRACK.subscribe(event => sent.push(event));
+          VF_TRACK.event('search', {});
           stop();
           return sent.length;
         })()
@@ -899,8 +899,8 @@ test.describe('a first visit', () => {
       await page.evaluate(() =>
         (() => {
           const sent = [];
-          const stop = AG_TRACK.subscribe(event => sent.push(event));
-          AG_TRACK.event('search', {});
+          const stop = VF_TRACK.subscribe(event => sent.push(event));
+          VF_TRACK.event('search', {});
           stop();
           return sent.length;
         })()
