@@ -261,6 +261,12 @@ function vfPhone(value) {
   return window.AG_COMMERCE.phone(value);
 }
 
+// An Iranian mobile as 09xxxxxxxxx however it was typed (+98…, 9…), or '' when it isn't one.
+// Forms validate with it, and store and compare numbers in this form.
+function vfMobile(value) {
+  return window.AG_COMMERCE.mobile(value);
+}
+
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
 function vfErrors(delivery, lines = []) {
   const mobile = value => !window.AG_COMMERCE.isMobile(value);
@@ -1182,8 +1188,9 @@ function vfAccountPhone() {
     return '';
   }
 }
+// Accounts are keyed by the mobile in its stored form, so 0912…, +98 912… and ۰۹۱۲… are one account.
 function vfAccountKey(phone) {
-  return 'vf-account:' + vfLatin(phone).replace(/\D/g, '');
+  return 'vf-account:' + (vfMobile(phone) || vfLatin(phone).replace(/\D/g, ''));
 }
 function vfAccountLoad(phone, lang = 'en') {
   try {
@@ -1300,7 +1307,7 @@ function vfAccountSave(phone, data) {
   } catch {}
 }
 function vfAccountLogin(phone, lang) {
-  phone = vfLatin(phone).replace(/\D/g, '');
+  phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
   try {
     localStorage.setItem('vf-account-phone', phone);
   } catch {}

@@ -397,7 +397,8 @@ test('a guest finds an order with its number and mobile', async ({page}) => {
   await page.getByRole('button', {name: 'Find my order'}).click();
   await expect(page.locator('#vf-lookup-failed')).toBeFocused();
   await expect(page.locator('#vf-lookup-failed')).toContainText('We couldn’t find an order');
-  await page.fill('#vf-lookup-phone', '0912 564 9438');
+  // The phone on the order can be typed another way, such as with +98.
+  await page.fill('#vf-lookup-phone', '+98 912 564 9438');
   await page.getByRole('button', {name: 'Find my order'}).click();
   await expect(page).toHaveURL(/view=track&id=VN-10522/);
   await expect(page.locator('main h1')).toHaveText('On its way.');

@@ -13,7 +13,7 @@ A phone number field built on Input: the phone keypad on touch screens, autofill
 />
 ```
 
-- `onValueChange(number, isMobile)` gives Latin digits without spaces or dashes (`۰۹۱۲ ۳۴۵ ۶۷۸۹` → `09123456789`) and whether it is an Iranian mobile number, the same check as `commerce.isMobile`.
+- `onValueChange(number, isMobile)` gives an Iranian mobile in its one stored form however it was typed (`۰۹۱۲ ۳۴۵ ۶۷۸۹`, `+98 912 345 6789` and `912-345-6789` all → `09123456789`), and whether it is a mobile, the same check as `commerce.mobile`/`isMobile`. Store and compare numbers in that form.
 - `autoComplete` defaults to `tel`, the customer's own number. Use `off` for someone else's, such as a gift recipient, so the browser doesn't fill in the customer's.
 - It styles nothing of its own: label, hint and error come from Input and Field.
 

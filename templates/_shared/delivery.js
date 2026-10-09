@@ -199,6 +199,12 @@ function vfPhone(value) {
   return window.AG_COMMERCE.phone(value);
 }
 
+// An Iranian mobile as 09xxxxxxxxx however it was typed (+98…, 9…), or '' when it isn't one.
+// Forms validate with it, and store and compare numbers in this form.
+function vfMobile(value) {
+  return window.AG_COMMERCE.mobile(value);
+}
+
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
 function vfErrors(delivery, lines = []) {
   const mobile = value => !window.AG_COMMERCE.isMobile(value);

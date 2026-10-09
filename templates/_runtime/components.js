@@ -976,8 +976,19 @@ const normalizeCode = (text) => latin(text || "").toUpperCase().replace(/[^A-Z0-
 // A promo code as entered: case, spaces and digit scripts don't matter.
 const promoCode = (value) => latin(value || "").replace(/\s/g, "").toUpperCase();
 const phone = (value) => latin(value || "").replace(/[\s()-]/g, "");
-// An Iranian mobile number (09xxxxxxxxx), typed with any digits or separators.
-const isMobile = (value) => /^09\d{9}$/.test(phone(value));
+// An Iranian mobile number in its one stored form, 09xxxxxxxxx, however it was typed: 0912…, 912…,
+// +98 912…, 98912… or 0098 912…, with Persian or Arabic digits, spaces, dashes, dots or brackets.
+// '' when it isn't a mobile number (letters or other characters never pass).
+const mobile = (value) => {
+	const text = latin(value || "").trim();
+	if (!text || /[^\d\s+().-]/.test(text)) return "";
+	let digits = text.replace(/\D/g, "");
+	if (digits.startsWith("0098")) digits = digits.slice(4);
+	else if (digits.startsWith("98") && digits.length === 12) digits = digits.slice(2);
+	if (/^9\d{9}$/.test(digits)) digits = "0" + digits;
+	return /^09\d{9}$/.test(digits) ? digits : "";
+};
+const isMobile = (value) => mobile(value) !== "";
 const validLocation = (location) => !!location && Number.isFinite(location.lat) && Number.isFinite(location.lng) && Math.abs(location.lat) <= 90 && Math.abs(location.lng) <= 180;
 // A map point rounded to six decimals (about 10 cm): enough for a front door, and tidy in stored orders.
 const pinLocation = (point) => {
@@ -1238,6 +1249,7 @@ const commerce = {
 	normalizeCode,
 	promoCode,
 	phone,
+	mobile,
 	isMobile,
 	validLocation,
 	pinLocation,
@@ -2522,14 +2534,15 @@ try { (() => {
 const { Input } = __ds_scope;
 const { commerce } = __ds_scope;
 // A phone number field: the phone keypad on touch screens, autofill, and digits kept left to right
-// inside Persian text. It shows what the customer types; `onValueChange` also gets the number in
-// Latin digits without spaces or dashes, and whether it is an Iranian mobile number.
+// inside Persian text. It shows what the customer types; `onValueChange` also gets the number, as
+// 09xxxxxxxxx when it is an Iranian mobile (commerce.mobile), otherwise in Latin digits without
+// spaces or dashes, and whether it is a mobile.
 function PhoneInput({ autoComplete = "tel", onChange, onValueChange, ...rest }) {
 	const change = (event) => {
 		onChange && onChange(event);
 		if (onValueChange) {
-			const number = commerce.phone(event.target.value);
-			onValueChange(number, commerce.isMobile(number));
+			const typed = event.target.value, mobile = commerce.mobile(typed);
+			onValueChange(mobile || commerce.phone(typed), mobile !== "");
 		}
 	};
 	return /* @__PURE__ */ React.createElement(Input, {

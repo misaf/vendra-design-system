@@ -201,6 +201,27 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
       ['VF-1-large-card', 2, 'Large · Card', 'بزرگ · کارت']
     );
     assert.equal(commerce.isMobile('۰۹۱۲ ۳۴۵ ۶۷۸۹'), true);
+    // One stored form for every way a mobile is typed; anything else is ''.
+    for (const typed of [
+      '09123456789',
+      '9123456789',
+      '+98 912 345 6789',
+      '98-912-345-6789',
+      '0098 (912) 345 6789',
+      '۰۹۱۲.۳۴۵.۶۷۸۹',
+      '٠٩١٢٣٤٥٦٧٨٩'
+    ])
+      assert.equal(commerce.mobile(typed), '09123456789', typed);
+    for (const typed of [
+      '',
+      '0912345678',
+      '021 1234 5678',
+      '+1 912 345 6789',
+      '0912abc3456789',
+      '091234567890',
+      '98912345678'
+    ])
+      assert.equal(commerce.mobile(typed), '', typed);
 
     // Theme API, ESM and CommonJS.
     assert.equal(

@@ -106,7 +106,7 @@ class Component extends VFPage {
       budgets: C.budgets,
       send: () => {
         const e1 = !s.name.trim(),
-          e2 = !/^09\d{9}$/.test(vfPhone(s.phone));
+          e2 = !vfMobile(s.phone);
         if (e1 || e2) {
           this.setState({
             e1,
@@ -136,7 +136,7 @@ class Component extends VFPage {
         });
         return window.VF_API.inquiry({
           name: s.name || '',
-          phone: s.phone ? vfPhone(s.phone) : null,
+          phone: s.phone ? vfMobile(s.phone) : null,
           email: s.email || '',
           message:
             [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') ||

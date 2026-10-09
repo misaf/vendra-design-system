@@ -4,14 +4,15 @@ import React from "react";
 import { Input } from "../Input/Input.js";
 import { commerce } from "../utils/commerce.js";
 // A phone number field: the phone keypad on touch screens, autofill, and digits kept left to right
-// inside Persian text. It shows what the customer types; `onValueChange` also gets the number in
-// Latin digits without spaces or dashes, and whether it is an Iranian mobile number.
+// inside Persian text. It shows what the customer types; `onValueChange` also gets the number, as
+// 09xxxxxxxxx when it is an Iranian mobile (commerce.mobile), otherwise in Latin digits without
+// spaces or dashes, and whether it is a mobile.
 export function PhoneInput({ autoComplete = "tel", onChange, onValueChange, ...rest }) {
 	const change = (event) => {
 		onChange && onChange(event);
 		if (onValueChange) {
-			const number = commerce.phone(event.target.value);
-			onValueChange(number, commerce.isMobile(number));
+			const typed = event.target.value, mobile = commerce.mobile(typed);
+			onValueChange(mobile || commerce.phone(typed), mobile !== "");
 		}
 	};
 	return /* @__PURE__ */ React.createElement(Input, {

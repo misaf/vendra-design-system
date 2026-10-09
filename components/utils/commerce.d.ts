@@ -125,7 +125,10 @@ export interface Commerce {
   promoCode(value: string): string;
   /** A phone number without spaces, brackets or dashes, in Latin digits. */
   phone(value: string): string;
-  /** An Iranian mobile number (09xxxxxxxxx). */
+  /** An Iranian mobile number as 09xxxxxxxxx, however it was typed (09…, 9…, +98…, 98…, 0098…,
+   * any digits and separators); '' when it isn't one. Store and compare numbers in this form. */
+  mobile(value: string): string;
+  /** mobile(value) !== ''. */
   isMobile(value: string): boolean;
   validLocation(location: unknown): location is LatLng;
   /** A point rounded to six decimals (about 10 cm). */

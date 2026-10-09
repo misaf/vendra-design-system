@@ -6,8 +6,9 @@ function vfAccountPhone() {
     return '';
   }
 }
+// Accounts are keyed by the mobile in its stored form, so 0912…, +98 912… and ۰۹۱۲… are one account.
 function vfAccountKey(phone) {
-  return 'vf-account:' + vfLatin(phone).replace(/\D/g, '');
+  return 'vf-account:' + (vfMobile(phone) || vfLatin(phone).replace(/\D/g, ''));
 }
 function vfAccountLoad(phone, lang = 'en') {
   try {
@@ -124,7 +125,7 @@ function vfAccountSave(phone, data) {
   } catch {}
 }
 function vfAccountLogin(phone, lang) {
-  phone = vfLatin(phone).replace(/\D/g, '');
+  phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
   try {
     localStorage.setItem('vf-account-phone', phone);
   } catch {}

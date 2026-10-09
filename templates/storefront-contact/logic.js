@@ -119,7 +119,7 @@ class Component extends VFPage {
         });
         return window.VF_API.inquiry({
           name: s.name.trim(),
-          phone: s.phone ? vfPhone(s.phone) : null,
+          phone: s.phone ? vfMobile(s.phone) : null,
           email: s.email.trim(),
           message: s.msg.trim(),
           occasion: 'contact',
@@ -140,7 +140,7 @@ class Component extends VFPage {
     const s = this.state;
     const email = s.email.trim();
     return {
-      phone: s.phone.trim() || !email ? !/^09\d{9}$/.test(vfPhone(s.phone)) : false,
+      phone: s.phone.trim() || !email ? !vfMobile(s.phone) : false,
       email: !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
       msg: !s.msg.trim()
     };

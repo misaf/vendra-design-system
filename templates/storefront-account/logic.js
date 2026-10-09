@@ -159,7 +159,7 @@ class Component extends VFPage {
       if (isAddress) {
         if (!s.mapFailed && !vfValidLocation(f.location)) errors.location = E.pinError;
         if (f.line.trim().length < 6) errors.line = E.addressError;
-        if (vfLatin(f.phone).replace(/\D/g, '').length < 10) errors.phone = E.phoneError;
+        if (!vfMobile(f.phone)) errors.phone = E.phoneError;
       } else {
         if (!f.name.trim()) errors.name = E.required;
         if (!(

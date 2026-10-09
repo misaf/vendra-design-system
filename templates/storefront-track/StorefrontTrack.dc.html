@@ -423,8 +423,7 @@ class Component extends VFPage {
     const contact = order ? order.delivery.senderPhone || order.delivery.phone : '';
     const lookupErrors = {
       id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
-      phone:
-        ls.lookupTried && !/^09\d{9}$/.test(vfPhone(ls.lookupPhone)) ? C.lookup.phoneErr : undefined
+      phone: ls.lookupTried && !vfMobile(ls.lookupPhone) ? C.lookup.phoneErr : undefined
     };
     const idx = {
       received: 0,
@@ -462,16 +461,16 @@ class Component extends VFPage {
       findOrder: e => {
         e && e.preventDefault && e.preventDefault();
         const id = vfLatin(ls.lookupId).trim().toUpperCase(),
-          phone = vfPhone(ls.lookupPhone);
+          phone = vfMobile(ls.lookupPhone);
         this.setState({lookupTried: true});
-        if (!id || !/^09\d{9}$/.test(phone)) {
+        if (!id || !phone) {
           window.VF_NAV.focusFirstInvalid();
           return;
         }
         const match = vfKnownOrders(this.props.store).find(
           o =>
             o.id.toUpperCase() === id &&
-            [o.delivery.phone, o.delivery.senderPhone].some(p => p && vfPhone(p) === phone)
+            [o.delivery.phone, o.delivery.senderPhone].some(p => p && vfMobile(p) === phone)
         );
         if (!match) {
           this.setState({lookupFailed: true});

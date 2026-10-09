@@ -661,8 +661,8 @@ class Component extends VFPage {
             ...delivery,
             date,
             slot,
-            phone: vfPhone(delivery.phone),
-            senderPhone: vfPhone(delivery.senderPhone)
+            phone: vfMobile(delivery.phone),
+            senderPhone: vfMobile(delivery.senderPhone)
           });
         if (this.props.go) this.props.go('checkout');
       },

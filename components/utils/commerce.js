@@ -21,8 +21,19 @@ const promoCode = value =>
     .replace(/\s/g, '')
     .toUpperCase();
 const phone = value => latin(value || '').replace(/[\s()-]/g, '');
-// An Iranian mobile number (09xxxxxxxxx), typed with any digits or separators.
-const isMobile = value => /^09\d{9}$/.test(phone(value));
+// An Iranian mobile number in its one stored form, 09xxxxxxxxx, however it was typed: 0912…, 912…,
+// +98 912…, 98912… or 0098 912…, with Persian or Arabic digits, spaces, dashes, dots or brackets.
+// '' when it isn't a mobile number (letters or other characters never pass).
+const mobile = value => {
+  const text = latin(value || '').trim();
+  if (!text || /[^\d\s+().-]/.test(text)) return '';
+  let digits = text.replace(/\D/g, '');
+  if (digits.startsWith('0098')) digits = digits.slice(4);
+  else if (digits.startsWith('98') && digits.length === 12) digits = digits.slice(2);
+  if (/^9\d{9}$/.test(digits)) digits = '0' + digits;
+  return /^09\d{9}$/.test(digits) ? digits : '';
+};
+const isMobile = value => mobile(value) !== '';
 
 const validLocation = location =>
   !!location &&
@@ -343,6 +354,7 @@ export const commerce = {
   normalizeCode,
   promoCode,
   phone,
+  mobile,
   isMobile,
   validLocation,
   pinLocation,

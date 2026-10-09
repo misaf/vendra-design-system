@@ -14,7 +14,6 @@ class Component extends VFPage {
   renderVals() {
     const S = vfShell.call(this, this.props, 'account');
     const s = this.state;
-    const lat = v => v.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
     const C = vfCopy(S);
     const focus = id =>
       setTimeout(() => {
@@ -81,7 +80,7 @@ class Component extends VFPage {
         }),
       codeErr: s.cErr ? C.codeErr : undefined,
       send: () => {
-        if (lat(phone).replace(/\D/g, '').length < 10) {
+        if (!vfMobile(phone)) {
           this.setState({
             pErr: true
           });
@@ -110,10 +109,10 @@ class Component extends VFPage {
           last &&
           last.delivery.sender &&
           !account.profile.name &&
-          vfPhone(last.delivery.senderPhone) === vfPhone(lat(s.phone))
+          vfMobile(last.delivery.senderPhone) === vfMobile(s.phone)
         ) {
           account.profile.name = last.delivery.sender;
-          vfAccountSave(vfLatin(s.phone).replace(/\D/g, ''), account);
+          vfAccountSave(s.phone, account);
         }
         this._stopCountdown();
         window.VF_TRACK.event('login');
