@@ -69,7 +69,7 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 - **`app/index.html`:** only the root element and the app module, `app/main.jsx`.
 - **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
 - **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
-- **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js`, `helpers.js` and `ds-base.js` are only for the guideline cards.
+- **Components:** the app imports them from `../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `templates` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 
 ## Styling rules

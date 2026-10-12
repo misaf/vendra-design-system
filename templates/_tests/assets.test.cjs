@@ -1,66 +1,11 @@
-// Shared URLs must resolve from the loader, regardless of the page depth.
+// Each storefront page folder owns its sources and shares the runtime.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
-const elements = [];
-const document = {
-  currentScript: {src: 'https://example.test/design/templates/_runtime/ds-base.js'},
-  createElement: tag => ({
-    tag,
-    setAttribute(name) {
-      this[name] = true;
-    }
-  }),
-  head: {appendChild: element => elements.push(element)},
-  querySelectorAll: () => elements.filter(element => element.tag === 'link'),
-  querySelector: () => elements.find(element => element['data-vf-bundle'])
-};
-const context = vm.createContext({window: {React: {}}, document, URL, console, setTimeout});
-const loader = fs.readFileSync(path.join(root, '_runtime/ds-base.js'), 'utf8');
-vm.runInContext(loader, context);
-vm.runInContext(loader, context);
-assert.equal(context.window.VF_ASSET_BASE, 'https://example.test/design/');
-assert.deepEqual(
-  elements.filter(e => e.tag === 'link').map(e => e.href),
-  [
-    'https://example.test/design/styles.css',
-    'https://example.test/design/templates/_runtime/tailwind.css',
-    'https://example.test/design/templates/_runtime/custom.css'
-  ]
-);
-assert.equal(elements.filter(e => e.tag === 'script').length, 1);
-assert.equal(
-  elements.find(e => e.tag === 'script').src,
-  'https://example.test/design/templates/_runtime/components.js'
-);
-// Without React the bundle waits: Carousel calls React.forwardRef as it loads.
-{
-  const added = [],
-    timers = [];
-  const doc = {
-    ...document,
-    head: {appendChild: element => added.push(element)},
-    querySelectorAll: () => [],
-    querySelector: () => null
-  };
-  const waiting = vm.createContext({
-    window: {},
-    document: doc,
-    URL,
-    console,
-    setTimeout: fn => timers.push(fn)
-  });
-  vm.runInContext(loader, waiting);
-  assert.equal(added.filter(e => e.tag === 'script').length, 0);
-  waiting.window.React = {};
-  timers.shift()();
-  assert.equal(added.filter(e => e.tag === 'script').length, 1);
-}
 for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
   const files = fs.readdirSync(path.join(root, folder));
-  for (const name of ['support.js', 'ds-base.js', 'tailwind.css', 'custom.css'])
+  for (const name of ['tailwind.css', 'custom.css'])
     assert.ok(!files.includes(name), folder + ' duplicates ' + name);
   if (folder !== 'storefront-site') {
     assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
@@ -72,9 +17,7 @@ for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storef
   const view = fs.readFileSync(path.join(root, folder, 'View.jsx'), 'utf8');
   assert.ok(!/\bstyle=\{/.test(view), folder + ' must keep custom styles in CSS classes');
 }
-console.log(
-  'Passed shared asset references, relocated-root URLs and repeated-loader deduplication.'
-);
+console.log('Passed page folders: sources, views and no duplicated runtime CSS.');
 
 const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
 assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');

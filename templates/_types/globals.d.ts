@@ -2,7 +2,7 @@
 // Type-checked with `npm --prefix templates run typecheck`; nothing here ships to the browser.
 
 interface Window {
-  // AG_*: from the design-system package (components/utils/, via _runtime/helpers.js).
+  // AG_*: the package helpers (components/utils/), set by guidelines/card-runtime.js for the cards.
   AG_COMMERCE: any;
   AG_DATES: any;
   AG_FORMAT: any;
@@ -13,7 +13,7 @@ interface Window {
   VF_API: any;
   VF_TRACK: any;
   VF_PAYMENT: any;
-  // Set by _runtime/ds-base.js.
+  // Set by app/theme.js.
   VF_ASSET_BASE: string;
   VF_USE_TENANT?: (tenant: string) => void;
   // Page state shared between templates in one document.

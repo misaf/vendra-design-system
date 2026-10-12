@@ -293,7 +293,6 @@ function page(name, c, props = {}) {
       /<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g
     ))
       assert.ok(fs.existsSync(path.join(root, path.dirname(card), url)), card + ' → ' + url);
-  assert.ok(!read('templates/_runtime/components.js').includes('ui_kits/'));
   console.log(
     'Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, optional API mode, article blocks, bilingual communications and relocated card paths.'
   );

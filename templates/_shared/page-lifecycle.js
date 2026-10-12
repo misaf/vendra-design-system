@@ -23,7 +23,7 @@ export function vfPageTenant(props) {
   return tenant;
 }
 
-// Asks ds-base.js to load this tenant's stylesheet, and only that one. The loader
+// Asks app/theme.js to load this tenant's stylesheet, and only that one. The loader
 // arrives asynchronously, so whichever of the two runs second does the loading.
 export function vfApplyTenant(tenant) {
   if (window.VF_TENANT === tenant) return;

@@ -1,0 +1,42 @@
+import '../card-runtime.js';
+const { Tabs, LanguageSwitch, Accordion, Stepper, BottomTabBar, NavLink, MenuList, SectionHeader, Carousel, LoadMore, Button, ArchFrame } = window.VendraDesignSystem;
+const fa=n=>window.AG_FORMAT.num(n,'fa');
+const chip={height:52,display:'grid',placeItems:'center',background:'var(--surface-sunken)',borderRadius:8,fontSize:14};
+const T={
+en:{h:'English',tabs:['Description','Care','Delivery'],pills:['All','Fresh','Dried'],kst:'Stepper',chk:'Checkout',steps:['Bag','Delivery','Payment','Done'],done:'(completed)',kc:'Stepper · compact (phones)',csteps:['Bag','Time & card','Confirmed'],cap:undefined,
+ knl:'NavLink · header',nav:['Shop','Weddings','About','Contact'],km:'MenuList · menu',menu:'Menu',mi:['Shop','Weddings','Journal'],kf:'MenuList · footer',ft:'Shop',fi:['Bouquets','Flower boxes','Orchids'],
+ ka:'Accordion',acc:[['care','Flower care','Trim the stems every two days.\nKeep away from fruit and radiators.'],['del','Delivery','Same-day in Karaj when ordered by 18:00.']],
+ ks:'SectionHeader · Carousel (arrows follow scroll)',eb:'Shop by',tt:'Every',ac:'occasion',all:'See all',prev:'Previous',next:'Next',occL:'Occasions',photo:'Photo',occ:['Birthday','Anniversary','Thank you','New baby','Sympathy','Nowruz','Yalda','Get well'],
+ kmd:'Carousel · three ways to pass items',m1:'Plain children + a mapped array',m3:'Fragment + itemAs="contents"',fl:'Flowers',allc:'All',feat:'Featured',tags:['Roses','Tulips','Peonies','Ranunculus','Orchids','Lilies','Dried'],
+ kj:'SectionHeader · h3 · built-in arrows',jt:'From the',ja:'journal',catL:'Categories',cats:['Bouquets','Flower boxes','Orchids','Houseplants','Dried'],kb:'BottomTabBar',main:'Main',tb:['Home','Shop','Saved','Bag'],klm:'LoadMore · part-way and complete',lmPart:'Showing 4 of 6 designs',lmAll:'Showing all 6 designs',lmLabel:'Show more'},
+fa:{h:'فارسی',tabs:['توضیحات','نگهداری','ارسال'],pills:['همه','تازه','خشک'],kst:'مراحل',chk:'پرداخت',steps:['سبد','ارسال','پرداخت','پایان'],done:'(انجام شد)',kc:'مراحل · فشرده (موبایل)',csteps:['سبد','زمان و کارت','تأیید'],cap:(n,t,l)=>'مرحله '+n+' از '+t+' · '+l,
+ knl:'پیوند سربرگ',nav:['فروشگاه','عروسی','دربارهٔ ما','تماس'],km:'فهرست · منو',menu:'منو',mi:['فروشگاه','عروسی','مجله'],kf:'فهرست · پانویس',ft:'فروشگاه',fi:['دسته‌گل','باکس گل','ارکیده'],
+ ka:'آکاردئون',acc:[['care','نگهداری گل','هر دو روز ساقه‌ها را کوتاه کنید.\nدور از میوه و شوفاژ نگه دارید.'],['del','ارسال','سفارش تا ساعت ۱۸، همان روز در کرج می‌رسد.']],
+ ks:'سرتیتر بخش · اسکرولر (پیکان‌ها با اسکرول)',eb:'خرید بر اساس',tt:'هر',ac:'مناسبت',all:'همه',prev:'قبلی',next:'بعدی',occL:'مناسبت‌ها',photo:'عکس',occ:['تولد','سالگرد','سپاس','نوزاد','ترحیم','نوروز','یلدا','بهبودی'],
+ kmd:'اسکرولر · سه روش ارسال آیتم‌ها',m1:'فرزندان ساده + آرایهٔ نگاشت‌شده',m3:'فرگمنت + itemAs="contents"',fl:'گل‌ها',allc:'همه',feat:'ویژه',tags:['رز','لاله','گل صدتومانی','آلاله','ارکیده','لیلیوم','خشک'],
+ kj:'سرتیتر h3 · پیکان داخلی',jt:'از',ja:'مجله',catL:'دسته‌ها',cats:['دسته‌گل','باکس گل','ارکیده','گیاه آپارتمانی','خشک'],kb:'نوار پایین',main:'اصلی',tb:['خانه','فروشگاه','ذخیره‌ها','سبد'],klm:'نمایش بیشتر · نیمه‌راه و کامل',lmPart:'نمایش ۴ از ۶ طرح',lmAll:'نمایش همه ۶ طرح',lmLabel:'نمایش بیشتر'}};
+function Side({l}){const t=T[l];const isFa=l==='fa';const f=isFa?fa:undefined;const ref=React.useRef();const [s,setS]=React.useState({canPrev:false,canNext:true});
+const [lang,setLang]=React.useState(l);const [st,setSt]=React.useState(2);const [tab,setTab]=React.useState('home');
+const tabs=[['home','house'],['shop','flower-2'],['saved','heart'],['bag','shopping-bag',2]].map(([id,icon,count],i)=>({id,icon,label:t.tb[i],count,current:tab===id,href:'?view='+id,onClick:e=>{e.preventDefault();setTab(id);}}));
+return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div className="lh">{t.h}</div>
+<Tabs items={t.tabs.map((x,i)=>({id:'t'+i,label:x}))}/>
+<div style={{display:'flex',gap:24,alignItems:'center'}}><Tabs variant="pill" items={t.pills.map((x,i)=>({id:'p'+i,label:x}))}/><LanguageSwitch value={lang} onChange={setLang}/></div>
+<div><div className="k">{t.kst}</div><Stepper label={t.chk} steps={t.steps.map(x=>({label:x}))} current={st} onStepClick={setSt} doneLabel={t.done} formatNumber={f}/></div>
+<div><div className="k">{t.kc}</div><div style={{maxWidth:340,padding:'12px 16px',background:'var(--surface-sunken)',borderRadius:12}}><Stepper compact label={t.chk} steps={t.csteps.map(x=>({label:x}))} current={1} onStepClick={()=>{}} doneLabel={t.done} formatNumber={f} captionFormat={t.cap}/></div></div>
+<div><div className="k">{t.knl}</div><div style={{display:'flex',gap:4,flexWrap:'wrap'}}>{t.nav.map((x,i)=><NavLink key={x} current={i===0}>{x}</NavLink>)}</div></div>
+<div className="g2">
+<div><div className="k">{t.km}</div><MenuList label={t.menu}>{t.mi.map((x,i)=><NavLink key={x} variant="menu" current={i===0}>{x}</NavLink>)}</MenuList></div>
+<div><div className="k">{t.kf}</div><MenuList title={t.ft}>{t.fi.map((x,i)=><NavLink key={x} variant="footer" current={i===2}>{x}</NavLink>)}</MenuList></div></div>
+<div><div className="k">{t.ka}</div><Accordion defaultValue="care" items={t.acc.map(([id,title,content])=>({id,title,content}))}/></div>
+<div><div className="k">{t.ks}</div><div style={{display:'flex',flexDirection:'column',gap:16}}>
+<SectionHeader eyebrow={t.eb} title={t.tt} accent={t.ac} action={<Button variant="ghost" size="sm" iconEnd="arrow-right">{t.all}</Button>} onPrev={()=>ref.current.scrollPrev()} onNext={()=>ref.current.scrollNext()} canPrev={s.canPrev} canNext={s.canNext} prevLabel={t.prev} nextLabel={t.next}/>
+<Carousel ref={ref} onScrollStateChange={setS} label={t.occL} perView={4.5} itemMin="110px" bleed={false}>{t.occ.map(o=><div key={o}><ArchFrame placeholderLabel={t.photo}/><div style={{fontFamily:'var(--font-display)',fontSize:18,marginTop:8}}>{o}</div></div>)}</Carousel></div></div>
+<div><div className="k">{t.kmd}</div><div style={{display:'flex',flexDirection:'column',gap:12}}>
+<div className="k" style={{margin:0}}>{t.m1}</div><Carousel label={t.fl} perView={4} itemMin="100px" bleed={false}><div style={chip}>{t.allc}</div>{t.tags.map(x=><div key={x} style={chip}>{x}</div>)}</Carousel>
+<div className="k" style={{margin:0}}>items + renderItem</div><Carousel label={t.fl} perView={4} itemMin="100px" bleed={false} items={t.tags} renderItem={x=><div style={chip}>{x}</div>}/>
+<div className="k" style={{margin:0}}>{t.m3}</div><Carousel label={t.fl} perView={4} itemMin="100px" bleed={false} itemAs="contents"><><div style={{...chip,background:'var(--accent-soft)'}}>{t.feat}</div>{t.tags.map(x=><div key={x} style={chip}>{x}</div>)}</></Carousel></div></div>
+<div><div className="k">{t.kj}</div><SectionHeader level="h3" title={t.jt} accent={t.ja}/><div style={{marginTop:12}}><Carousel arrows label={t.catL} perView={3} bleed={false} prevLabel={t.prev} nextLabel={t.next}>{t.cats.map(c=><div key={c} style={{height:64,display:'grid',placeItems:'center',background:'var(--surface-sunken)',borderRadius:8}}>{c}</div>)}</Carousel></div></div>
+<div><div className="k">{t.klm}</div><div className="g2"><LoadMore shown={4} total={6} status={t.lmPart} label={t.lmLabel} href="?page=2" onClick={e=>e.preventDefault()}/><LoadMore shown={6} total={6} status={t.lmAll} label={t.lmLabel}/></div></div>
+<div><div className="k">{t.kb}</div><div style={{maxWidth:390,border:'1px solid var(--border-subtle)',borderRadius:12,overflow:'hidden'}}><BottomTabBar label={t.main} items={tabs}/></div></div>
+</div>;}
+ReactDOM.createRoot(document.getElementById('root')).render(<div className="split"><Side l="en"/><Side l="fa"/></div>);
