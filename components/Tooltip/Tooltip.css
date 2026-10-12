@@ -25,3 +25,10 @@
 .ag-tip__bubble--bottom[data-exiting] {
   transform: translateY(-4px);
 }
+
+/* Print: hover help is not part of the page. */
+@media print {
+  .ag-tip__bubble {
+    display: none !important;
+  }
+}

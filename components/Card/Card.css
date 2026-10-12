@@ -11,3 +11,10 @@
   box-shadow: var(--shadow-md);
   border-color: transparent;
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-card {
+    break-inside: avoid;
+  }
+}

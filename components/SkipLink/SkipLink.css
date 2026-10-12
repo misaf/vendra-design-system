@@ -33,3 +33,10 @@
     transition: none;
   }
 }
+
+/* Print: keyboard shortcut only. */
+@media print {
+  .ag-skip {
+    display: none !important;
+  }
+}

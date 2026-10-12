@@ -55,3 +55,15 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Print: every item on paper (a scroller would cut them off), without the arrows. */
+@media print {
+  .ag-carousel__nav {
+    display: none;
+  }
+  .ag-carousel__track {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(var(--carousel-item-min, 160px), 1fr));
+    overflow: visible;
+  }
+}

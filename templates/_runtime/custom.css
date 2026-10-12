@@ -87,6 +87,21 @@ a:hover {
   order: 3;
 }
 
+/* Print: the page's content only (an order, a quote, a policy), without the site's navigation,
+   footer, sticky bars or the cookie notice. */
+@media print {
+  .vf-shell-header,
+  .vf-shell-footer,
+  .vf-shell-bottom-bar,
+  .vf-shell-consent-bar,
+  .vf-shell-consent-dock {
+    display: none !important;
+  }
+  .vf-shell-container {
+    min-height: 0 !important;
+  }
+}
+
 
 /* Source: _shared/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */

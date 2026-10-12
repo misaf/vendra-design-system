@@ -118,3 +118,10 @@
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-line {
+    break-inside: avoid;
+  }
+}

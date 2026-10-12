@@ -86,3 +86,10 @@
   padding-top: var(--space-3);
   border-top: var(--border-hair) solid var(--border-default);
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-osum {
+    break-inside: avoid;
+  }
+}

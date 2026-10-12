@@ -98,6 +98,8 @@ a:hover{color:var(--accent-press)}
 .ag-display{font-family:var(--font-display);font-weight:500;text-transform:var(--display-case);line-height:var(--lh-tight);letter-spacing:var(--tracking-display)}
 .ag-eyebrow{font-family:var(--font-body);font-size:var(--text-xs);font-weight:500;text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);color:var(--text-muted)}
 .ag-accent-italic{font-family:var(--font-display);font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)}
+@media print{body{background:none;transition:none}h1,h2,h3,h4{break-after:avoid}img,svg,figure{break-inside:avoid}}/* paper: no page colour behind the text; headings stay with what follows */
+
 /* components/index.css */
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
@@ -695,6 +697,13 @@ a.ag-iconbtn {
 .ag-card--raised {
   box-shadow: var(--shadow-md);
   border-color: transparent;
+}
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-card {
+    break-inside: avoid;
+  }
 }
 
 /* components/Field/Field.css */
@@ -1342,6 +1351,13 @@ a.ag-iconbtn {
   border-radius: var(--radius-md);
 }
 
+/* Print: passing messages are not part of the page. */
+@media print {
+  .ag-toast-region {
+    display: none !important;
+  }
+}
+
 /* components/Tooltip/Tooltip.css */
 /* Tooltip: React Aria places the bubble (in a portal) above or below the trigger. */
 .ag-tip {
@@ -1369,6 +1385,13 @@ a.ag-iconbtn {
 .ag-tip__bubble--bottom[data-entering],
 .ag-tip__bubble--bottom[data-exiting] {
   transform: translateY(-4px);
+}
+
+/* Print: hover help is not part of the page. */
+@media print {
+  .ag-tip__bubble {
+    display: none !important;
+  }
 }
 
 /* components/CategoryCard/CategoryCard.css */
@@ -1710,6 +1733,13 @@ a.ag-cat:hover {
   background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
 }
 
+/* Print: store-wide news is not part of the page. */
+@media print {
+  .ag-announce {
+    display: none !important;
+  }
+}
+
 /* components/Accordion/Accordion.css */
 .ag-acc {
   border-top: var(--border-hair) solid var(--border-subtle);
@@ -1950,6 +1980,13 @@ a.ag-tabbar__item--current:hover {
   line-height: 17px;
   font-weight: 500;
   text-align: center;
+}
+
+/* Print: navigation has no use on paper. */
+@media print {
+  .ag-tabbar {
+    display: none !important;
+  }
 }
 
 /* components/NavLink/NavLink.css */
@@ -2269,6 +2306,13 @@ a.ag-tabbar__item--current:hover {
   font-variant-numeric: tabular-nums;
 }
 
+/* Print: keep each one on one page. */
+@media print {
+  .ag-pay {
+    break-inside: avoid;
+  }
+}
+
 /* components/LineItem/LineItem.css */
 .ag-line {
   display: grid;
@@ -2389,6 +2433,13 @@ a.ag-tabbar__item--current:hover {
   font-size: var(--text-sm);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-line {
+    break-inside: avoid;
+  }
 }
 
 /* components/Gallery/Gallery.css */
@@ -2676,6 +2727,18 @@ a.ag-tabbar__item--current:hover {
   }
 }
 
+/* Print: every item on paper (a scroller would cut them off), without the arrows. */
+@media print {
+  .ag-carousel__nav {
+    display: none;
+  }
+  .ag-carousel__track {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(var(--carousel-item-min, 160px), 1fr));
+    overflow: visible;
+  }
+}
+
 /* components/SkipLink/SkipLink.css */
 .ag-skip {
   position: fixed;
@@ -2710,6 +2773,13 @@ a.ag-tabbar__item--current:hover {
 @media (prefers-reduced-motion: reduce) {
   .ag-skip {
     transition: none;
+  }
+}
+
+/* Print: keyboard shortcut only. */
+@media print {
+  .ag-skip {
+    display: none !important;
   }
 }
 
@@ -3071,6 +3141,13 @@ a.ag-tabbar__item--current:hover {
   font-variant-numeric: tabular-nums;
 }
 
+/* Print: keep each one on one page. */
+@media print {
+  .ag-otl {
+    break-inside: avoid;
+  }
+}
+
 /* components/OrderSummary/OrderSummary.css */
 .ag-osum {
   font-family: var(--font-body);
@@ -3161,6 +3238,13 @@ a.ag-tabbar__item--current:hover {
   border-top: var(--border-hair) solid var(--border-default);
 }
 
+/* Print: keep each one on one page. */
+@media print {
+  .ag-osum {
+    break-inside: avoid;
+  }
+}
+
 /* components/DetailList/DetailList.css */
 .ag-dl {
   margin: 0;
@@ -3191,6 +3275,13 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-dl__row--icon .ag-dl__value {
   margin-inline-start: calc(18px + var(--space-2));
+}
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-dl {
+    break-inside: avoid;
+  }
 }
 
 /* components/AddressCard/AddressCard.css */
@@ -3234,6 +3325,13 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-addr__default {
   margin-inline-start: calc(-1 * var(--space-3));
+}
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-addr {
+    break-inside: avoid;
+  }
 }
 
 /* components/ReminderRow/ReminderRow.css */

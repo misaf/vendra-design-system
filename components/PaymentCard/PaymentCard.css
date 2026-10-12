@@ -48,3 +48,10 @@
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-pay {
+    break-inside: avoid;
+  }
+}

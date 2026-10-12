@@ -1003,3 +1003,23 @@ test('while a page’s code loads, the current page stays on screen', async ({pa
   await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
   expect(page.url()).toMatch(/view=shop/);
 });
+
+// Printed, a page is its content: no header, footer, tab bar or cookie notice.
+test.describe('print', () => {
+  test.use({storageState: NO_CONSENT});
+  test('prints the page content without the site chrome', async ({page}) => {
+    await openSite(page, 'faq', 'en');
+    // The cookie notice: its own bar on desktop, docked in the bottom bar on mobile.
+    await expect(page.locator('.vf-shell-consent-dock').first()).toBeVisible();
+    await page.emulateMedia({media: 'print'});
+    for (const chrome of [
+      '.vf-shell-header',
+      '.vf-shell-footer',
+      '.vf-shell-bottom-bar',
+      '.vf-shell-consent-dock'
+    ])
+      await expect(page.locator(chrome).first()).toBeHidden();
+    await expect(page.locator('main h1')).toBeVisible();
+    await expect(page.locator('main').getByRole('button').first()).toBeVisible();
+  });
+});

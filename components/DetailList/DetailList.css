@@ -28,3 +28,10 @@
 .ag-dl__row--icon .ag-dl__value {
   margin-inline-start: calc(18px + var(--space-2));
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-dl {
+    break-inside: avoid;
+  }
+}

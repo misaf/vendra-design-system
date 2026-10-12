@@ -27,3 +27,10 @@
 .ag-announce .ag-announce__close:hover:not(:disabled) {
   background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
 }
+
+/* Print: store-wide news is not part of the page. */
+@media print {
+  .ag-announce {
+    display: none !important;
+  }
+}

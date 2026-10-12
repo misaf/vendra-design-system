@@ -39,3 +39,10 @@
 .ag-addr__default {
   margin-inline-start: calc(-1 * var(--space-3));
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-addr {
+    break-inside: avoid;
+  }
+}

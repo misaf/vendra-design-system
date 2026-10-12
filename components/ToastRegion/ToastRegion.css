@@ -15,3 +15,10 @@
   outline-offset: 4px;
   border-radius: var(--radius-md);
 }
+
+/* Print: passing messages are not part of the page. */
+@media print {
+  .ag-toast-region {
+    display: none !important;
+  }
+}

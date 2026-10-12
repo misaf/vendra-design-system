@@ -83,3 +83,18 @@ a:hover {
 .vf-shell-consent-bar .vf-shell-consent-close {
   order: 3;
 }
+
+/* Print: the page's content only (an order, a quote, a policy), without the site's navigation,
+   footer, sticky bars or the cookie notice. */
+@media print {
+  .vf-shell-header,
+  .vf-shell-footer,
+  .vf-shell-bottom-bar,
+  .vf-shell-consent-bar,
+  .vf-shell-consent-dock {
+    display: none !important;
+  }
+  .vf-shell-container {
+    min-height: 0 !important;
+  }
+}

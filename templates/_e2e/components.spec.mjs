@@ -405,3 +405,20 @@ test.describe('PhoneInput', () => {
     await expect(page.locator('output[data-test=phone]')).toHaveText('02188881234');
   });
 });
+
+test.describe('Print', () => {
+  test('a carousel prints every item, without its arrows', async ({page}) => {
+    await page.emulateMedia({media: 'print'});
+    const carousel = page.locator('[data-test=carousel]');
+    await expect(carousel.getByRole('button', {name: 'Next'})).toBeHidden();
+    const track = carousel.getByRole('region', {name: 'New arrivals'});
+    expect(await track.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+    // Every item lies within the track's width (wrapped onto rows, not scrolled out of sight).
+    const box = await track.boundingBox();
+    for (const name of ['One', 'Six']) {
+      const item = await track.getByText(name).boundingBox();
+      expect(item.x).toBeGreaterThanOrEqual(box.x - 1);
+      expect(item.x + item.width).toBeLessThanOrEqual(box.x + box.width + 1);
+    }
+  });
+});

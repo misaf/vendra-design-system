@@ -81,3 +81,10 @@
   unicode-bidi: isolate;
   font-variant-numeric: tabular-nums;
 }
+
+/* Print: keep each one on one page. */
+@media print {
+  .ag-otl {
+    break-inside: avoid;
+  }
+}
