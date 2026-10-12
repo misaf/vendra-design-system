@@ -1,12 +1,12 @@
 # Toast
 
-Dark ink notification for transient confirmations ("Added to your bag"). Position it yourself (bottom inline-end, z-index var(--z-toast)).
+Dark ink notification for transient confirmations ("Added to your bag"), on React Aria's Toast: `role="alertdialog"` labelled by the title and described by the message, with its text in an atomic alert, so it is announced as it appears. It renders in place: position it yourself (bottom inline-end, z-index var(--z-toast)) and decide how long it stays (keep it while the pointer or focus is on it, WCAG 2.2.1).
 
 ```jsx
 <Toast title="Added to your bag" message="Wild Meadow · Medium" onClose={hide} />
 ```
 
-`action={{label:'View bag', href}}` adds a small ghost button. The toast itself is never the click target. Pair with a LiveRegion so the message is announced.
+`action={{label:'View bag', href}}` adds a small ghost button. The toast itself is never the click target. It announces itself, so don't also send the message to a LiveRegion.
 
 ## Usage
 

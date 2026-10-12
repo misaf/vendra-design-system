@@ -51,7 +51,7 @@ test('saving a design shows a toast that waits while the pointer is on it', asyn
   await page.clock.install();
   await openSite(page, 'product', 'en');
   await page.getByRole('button', {name: 'Save this design'}).click();
-  const toast = page.getByRole('status').filter({hasText: 'Saved to your list'});
+  const toast = page.getByRole('alertdialog', {name: 'Saved to your list'});
   await expect(toast).toBeVisible();
   await expect(toast.getByRole('link', {name: 'View saved'})).toHaveAttribute('href', /view=saved/);
   // The toast stays clear of the mobile action bar.

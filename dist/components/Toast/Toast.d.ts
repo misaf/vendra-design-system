@@ -9,4 +9,5 @@ export interface ToastProps {
   closeLabel?: string;
   style?: React.CSSProperties;
 }
+/** React Aria toast (alertdialog + atomic alert), rendered in place; the page positions it and decides how long it stays. */
 export declare function Toast(props: ToastProps): React.JSX.Element;
