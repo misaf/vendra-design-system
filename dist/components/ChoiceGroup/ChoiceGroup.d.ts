@@ -10,6 +10,8 @@ export interface ChoiceGroupProps {
   /** Error text: aria-invalid + aria-errormessage on the radiogroup */
   error?: React.ReactNode;
   id?: string;
+  /** Form field name; the selected tile's `value` is posted under it */
+  name?: string;
   /** Fixed column count; otherwise auto-fills tiles of minTileWidth */
   columns?: number;
   minTileWidth?: number;

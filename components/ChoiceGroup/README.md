@@ -4,6 +4,8 @@ Grid wrapper for ChoiceTile on React Aria's RadioGroup: one Tab stop, arrow keys
 
 `legend="Delivery time"` renders `<fieldset><legend>` (legend labels the radiogroup). `hint` / `error` sit under the tiles and are linked to the radiogroup (`aria-describedby`, `aria-invalid`, `aria-errormessage`).
 
+Inside a form, give the group a `name` and each tile a `value`: the selected tile's value is posted under that name.
+
 ## Usage
 
 **Use when:** One-of-few choices shown as tiles: delivery slot, size, card type.

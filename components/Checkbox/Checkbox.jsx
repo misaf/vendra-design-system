@@ -41,6 +41,7 @@ export function Checkbox({
       isRequired={required}
       isInvalid={!!error}
       aria-describedby={controlProps['aria-describedby']}
+      aria-errormessage={controlProps['aria-errormessage']}
       onChange={() =>
         onChange &&
         onChange({target: inputRef.current, currentTarget: inputRef.current, type: 'change'})

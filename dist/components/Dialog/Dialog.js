@@ -7,10 +7,10 @@ import { cx } from "../utils/cx.js";
 const FOCUSABLE = "a[href],area[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex=\"-1\"]),[contenteditable=\"true\"]";
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({ title, titleId, onClose, closeLabel, footer, children, heading }) {
-	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading ? heading : /* @__PURE__ */ React.createElement("h2", {
+	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading || (title ? /* @__PURE__ */ React.createElement("h2", {
 		id: titleId,
 		className: "ag-dialog__title"
-	}, title), onClose && /* @__PURE__ */ React.createElement(IconButton, {
+	}, title) : /* @__PURE__ */ React.createElement("span", null)), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",
 		label: closeLabel,
 		size: "sm",
@@ -72,6 +72,6 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 			slot: "title",
 			level: 2,
 			className: "ag-dialog__title"
-		}, title) : /* @__PURE__ */ React.createElement("span", null)
+		}, title) : null
 	}, children))));
 }

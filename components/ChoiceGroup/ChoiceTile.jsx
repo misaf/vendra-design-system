@@ -2,31 +2,35 @@ import React from 'react';
 import {Radio, RadioGroup} from 'react-aria-components';
 import {choiceGroupContext} from './ChoiceGroup.jsx';
 import {cx} from '../utils/cx.js';
+import {useClientLayoutEffect} from '../utils/effects.js';
 
 // One selectable tile (a React Aria radio) inside a ChoiceGroup. The label alone names the tile; the
-// description is read after it, so it never becomes part of the name.
+// description is read after it, so it never becomes part of the name. `value` is what a form posts
+// under the group's `name`; without it the tile has a generated one.
 export function ChoiceTile({
   label,
   description,
   selected,
   disabled,
   onSelect,
+  value: formValue,
   size = 'md',
   className = '',
   ...rest
 }) {
-  const value = React.useId();
-  const labelId = value + '-label';
-  const descriptionId = value + '-desc';
+  const tileId = React.useId();
+  const value = formValue != null ? String(formValue) : tileId;
+  const labelId = tileId + '-label';
+  const descriptionId = tileId + '-desc';
   const group = React.useContext(choiceGroupContext);
   // Tell the group whether this tile is the selected one and what selecting it does.
   const latest = React.useRef(onSelect);
   latest.current = onSelect;
-  React.useLayoutEffect(() => {
+  useClientLayoutEffect(() => {
     if (!group) return;
     group.report(value, {selected: !!selected, onSelect: () => latest.current && latest.current()});
-  }, [group, selected]);
-  React.useLayoutEffect(() => () => group && group.report(value, null), [group]);
+    return () => group.report(value, null);
+  }, [group, value, selected]);
   const namedByLabel = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
   const tile = (
     <Radio

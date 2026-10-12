@@ -4,6 +4,8 @@ export interface ChoiceTileProps {
   selected?: boolean;
   disabled?: boolean;
   onSelect?: () => void;
+  /** Posted under the ChoiceGroup's `name` when selected */
+  value?: string;
   /** sm = 44px, md = 56px */
   size?: 'sm' | 'md';
   className?: string;

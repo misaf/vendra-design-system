@@ -30,6 +30,7 @@ export function Checkbox({ label, hint, error, disabled, required, checked, defa
 		isRequired: required,
 		isInvalid: !!error,
 		"aria-describedby": controlProps["aria-describedby"],
+		"aria-errormessage": controlProps["aria-errormessage"],
 		onChange: () => onChange && onChange({
 			target: inputRef.current,
 			currentTarget: inputRef.current,

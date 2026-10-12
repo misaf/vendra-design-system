@@ -9,9 +9,10 @@ import { usePageLocale } from "../utils/locale.js";
 // says whether it is selected and what selecting it does.
 export const choiceGroupContext = React.createContext(null);
 // A radiogroup of ChoiceTiles on React Aria: arrow keys move and select (mirrored in RTL, following
-// the page's language), with one Tab stop. `legend` renders <fieldset><legend>; the hint or error
+// the page's language), with one Tab stop. `name` is the form field the selected tile's value posts
+// under. `legend` renders <fieldset><legend>; the hint or error
 // sits under the tiles (see Field).
-export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, columns, minTileWidth = 140, children, className, style }) {
+export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, columns, minTileWidth = 140, children, className, style }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
@@ -31,6 +32,7 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, column
 	const group = /* @__PURE__ */ React.createElement(choiceGroupContext.Provider, { value: registry }, /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(RadioGroup, {
 		ref: wrapped ? undefined : ref,
 		id: fieldId,
+		name,
 		value: selected,
 		onChange: (value) => {
 			const tile = tiles.current.get(value);

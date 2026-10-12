@@ -11,13 +11,14 @@ function Content({title, titleId, onClose, closeLabel, footer, children, heading
   return (
     <>
       <div className="ag-dialog__head">
-        {heading ? (
-          heading
-        ) : (
-          <h2 id={titleId} className="ag-dialog__title">
-            {title}
-          </h2>
-        )}
+        {heading ||
+          (title ? (
+            <h2 id={titleId} className="ag-dialog__title">
+              {title}
+            </h2>
+          ) : (
+            <span />
+          ))}
         {onClose && <IconButton icon="x" label={closeLabel} size="sm" onClick={onClose} />}
       </div>
       <div className="ag-dialog__body">{children}</div>
@@ -110,9 +111,7 @@ export function Dialog({
                 <Heading slot="title" level={2} className="ag-dialog__title">
                   {title}
                 </Heading>
-              ) : (
-                <span />
-              )
+              ) : null
             }
           >
             {children}

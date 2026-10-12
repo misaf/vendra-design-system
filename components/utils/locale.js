@@ -1,22 +1,18 @@
 import React from 'react';
 import {useLocale} from 'react-aria-components';
+import {useClientLayoutEffect} from './effects.js';
 
 // React Aria takes keyboard direction, number formatting and calendars from its locale, not from
 // the page's dir. usePageLocale follows the page instead: attach `ref` to the component's outer
 // element and wrap its React Aria parts in <I18nProvider locale={locale}>. The locale is the nearest
-// `lang` (cards show English and Persian side by side), read once the element is in the page;
-// before that, and without any `lang`, it is the app's own React Aria locale (an I18nProvider
-// higher up, or the browser's language).
+// `lang` (cards show English and Persian side by side), read before the first paint once the
+// element is in the page; until then (and on the server, so hydration matches), and without any
+// `lang`, it is the app's own React Aria locale (an I18nProvider higher up, or the browser's).
 export function usePageLocale() {
   const inherited = useLocale().locale;
-  const [lang, setLang] = React.useState(() =>
-    typeof document !== 'undefined' && document.documentElement.lang
-      ? document.documentElement.lang
-      : ''
-  );
+  const [lang, setLang] = React.useState('');
   const ref = React.useRef(null);
-  const useClientEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
-  useClientEffect(() => {
+  useClientLayoutEffect(() => {
     const owner = ref.current && ref.current.closest('[lang]');
     const found = (owner && owner.getAttribute('lang')) || '';
     if (found !== lang) setLang(found);

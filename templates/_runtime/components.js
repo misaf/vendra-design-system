@@ -785,6 +785,7 @@ function Checkbox({ label, hint, error, disabled, required, checked, defaultChec
 		isRequired: required,
 		isInvalid: !!error,
 		"aria-describedby": controlProps["aria-describedby"],
+		"aria-errormessage": controlProps["aria-errormessage"],
 		onChange: () => onChange && onChange({
 			target: inputRef.current,
 			currentTarget: inputRef.current,
@@ -834,21 +835,29 @@ function Chip({ selected, onRemove, className = "", children, ...rest }) {
 Object.assign(__ds_scope, { Chip });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/Chip/Chip.jsx", error: String((e && e.message) || e) }); }
 
+// components/utils/effects.js
+try { (() => {
+// useLayoutEffect in the browser and useEffect on the server, where layout effects never run and
+// React warns about them. Use it for work that must land before the first paint.
+const useClientLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
+Object.assign(__ds_scope, { useClientLayoutEffect });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/utils/effects.js", error: String((e && e.message) || e) }); }
+
 // components/utils/locale.js
 try { (() => {
 const { useLocale } = __ds_ns.__vendor["react-aria-components"];
+const { useClientLayoutEffect } = __ds_scope;
 // React Aria takes keyboard direction, number formatting and calendars from its locale, not from
 // the page's dir. usePageLocale follows the page instead: attach `ref` to the component's outer
 // element and wrap its React Aria parts in <I18nProvider locale={locale}>. The locale is the nearest
-// `lang` (cards show English and Persian side by side), read once the element is in the page;
-// before that, and without any `lang`, it is the app's own React Aria locale (an I18nProvider
-// higher up, or the browser's language).
+// `lang` (cards show English and Persian side by side), read before the first paint once the
+// element is in the page; until then (and on the server, so hydration matches), and without any
+// `lang`, it is the app's own React Aria locale (an I18nProvider higher up, or the browser's).
 function usePageLocale() {
 	const inherited = useLocale().locale;
-	const [lang, setLang] = React.useState(() => typeof document !== "undefined" && document.documentElement.lang ? document.documentElement.lang : "");
+	const [lang, setLang] = React.useState("");
 	const ref = React.useRef(null);
-	const useClientEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-	useClientEffect(() => {
+	useClientLayoutEffect(() => {
 		const owner = ref.current && ref.current.closest("[lang]");
 		const found = owner && owner.getAttribute("lang") || "";
 		if (found !== lang) setLang(found);
@@ -871,9 +880,10 @@ const { usePageLocale } = __ds_scope;
 // says whether it is selected and what selecting it does.
 const choiceGroupContext = React.createContext(null);
 // A radiogroup of ChoiceTiles on React Aria: arrow keys move and select (mirrored in RTL, following
-// the page's language), with one Tab stop. `legend` renders <fieldset><legend>; the hint or error
+// the page's language), with one Tab stop. `name` is the form field the selected tile's value posts
+// under. `legend` renders <fieldset><legend>; the hint or error
 // sits under the tiles (see Field).
-function ChoiceGroup({ label, labelledBy, legend, hint, error, id, columns, minTileWidth = 140, children, className, style }) {
+function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, columns, minTileWidth = 140, children, className, style }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
@@ -893,6 +903,7 @@ function ChoiceGroup({ label, labelledBy, legend, hint, error, id, columns, minT
 	const group = /* @__PURE__ */ React.createElement(choiceGroupContext.Provider, { value: registry }, /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(RadioGroup, {
 		ref: wrapped ? undefined : ref,
 		id: fieldId,
+		name,
 		value: selected,
 		onChange: (value) => {
 			const tile = tiles.current.get(value);
@@ -936,24 +947,31 @@ try { (() => {
 const { Radio, RadioGroup } = __ds_ns.__vendor["react-aria-components"];
 const { choiceGroupContext } = __ds_scope;
 const { cx } = __ds_scope;
+const { useClientLayoutEffect } = __ds_scope;
 // One selectable tile (a React Aria radio) inside a ChoiceGroup. The label alone names the tile; the
-// description is read after it, so it never becomes part of the name.
-function ChoiceTile({ label, description, selected, disabled, onSelect, size = "md", className = "", ...rest }) {
-	const value = React.useId();
-	const labelId = value + "-label";
-	const descriptionId = value + "-desc";
+// description is read after it, so it never becomes part of the name. `value` is what a form posts
+// under the group's `name`; without it the tile has a generated one.
+function ChoiceTile({ label, description, selected, disabled, onSelect, value: formValue, size = "md", className = "", ...rest }) {
+	const tileId = React.useId();
+	const value = formValue != null ? String(formValue) : tileId;
+	const labelId = tileId + "-label";
+	const descriptionId = tileId + "-desc";
 	const group = React.useContext(choiceGroupContext);
 	// Tell the group whether this tile is the selected one and what selecting it does.
 	const latest = React.useRef(onSelect);
 	latest.current = onSelect;
-	React.useLayoutEffect(() => {
+	useClientLayoutEffect(() => {
 		if (!group) return;
 		group.report(value, {
 			selected: !!selected,
 			onSelect: () => latest.current && latest.current()
 		});
-	}, [group, selected]);
-	React.useLayoutEffect(() => () => group && group.report(value, null), [group]);
+		return () => group.report(value, null);
+	}, [
+		group,
+		value,
+		selected
+	]);
 	const namedByLabel = description && label && !rest["aria-label"] && !rest["aria-labelledby"];
 	const tile = /* @__PURE__ */ React.createElement(Radio, {
 		...rest,
@@ -1924,10 +1942,10 @@ const { cx } = __ds_scope;
 const FOCUSABLE = "a[href],area[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex=\"-1\"]),[contenteditable=\"true\"]";
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({ title, titleId, onClose, closeLabel, footer, children, heading }) {
-	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading ? heading : /* @__PURE__ */ React.createElement("h2", {
+	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading || (title ? /* @__PURE__ */ React.createElement("h2", {
 		id: titleId,
 		className: "ag-dialog__title"
-	}, title), onClose && /* @__PURE__ */ React.createElement(IconButton, {
+	}, title) : /* @__PURE__ */ React.createElement("span", null)), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",
 		label: closeLabel,
 		size: "sm",
@@ -1989,7 +2007,7 @@ function Dialog({ open, onClose, title, children, footer, inline, closeLabel = "
 			slot: "title",
 			level: 2,
 			className: "ag-dialog__title"
-		}, title) : /* @__PURE__ */ React.createElement("span", null)
+		}, title) : null
 	}, children))));
 }
 Object.assign(__ds_scope, { Dialog });
@@ -3271,6 +3289,7 @@ __ds_ns.useField = __ds_scope.useField;
 __ds_ns.FieldMessage = __ds_scope.FieldMessage;
 __ds_ns.Checkbox = __ds_scope.Checkbox;
 __ds_ns.Chip = __ds_scope.Chip;
+__ds_ns.useClientLayoutEffect = __ds_scope.useClientLayoutEffect;
 __ds_ns.usePageLocale = __ds_scope.usePageLocale;
 __ds_ns.choiceGroupContext = __ds_scope.choiceGroupContext;
 __ds_ns.ChoiceGroup = __ds_scope.ChoiceGroup;
