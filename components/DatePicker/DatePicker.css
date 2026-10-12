@@ -28,11 +28,6 @@
 .ag-date .ag-input {
   padding-inline: var(--space-3);
 }
-.ag-date .ag-input select {
-  min-width: 0;
-  width: 100%;
-  text-overflow: ellipsis;
-}
 .ag-date__eq {
   margin: 0;
   font-size: var(--text-sm);
@@ -42,4 +37,8 @@
 }
 .ag-date__eq:empty {
   min-height: 0;
+}
+/* Narrow columns: the value may run up to the chevron, so a four-digit year still fits. */
+.ag-date .ag-select__value {
+  padding-inline-end: var(--space-4);
 }

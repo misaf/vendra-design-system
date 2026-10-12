@@ -439,9 +439,16 @@ test('the shop filters by delivery day', async ({page}, info) => {
   await page.clock.setFixedTime(MORNING);
   await openSite(page, 'shop', 'en');
   if (info.project.name === 'mobile') await page.getByRole('button', {name: 'Filters'}).click();
-  const day = page.getByRole('combobox', {name: 'Delivery day'}).locator('visible=true');
-  await expect(day.locator('option', {hasText: 'sold out'})).toBeDisabled();
-  await day.selectOption({label: 'Today · 5 October'});
+  // A React Aria Select: a button that opens a listbox.
+  await page
+    .getByRole('button', {name: /Delivery day/})
+    .locator('visible=true')
+    .click();
+  await expect(page.getByRole('option', {name: /sold out/}).first()).toHaveAttribute(
+    'aria-disabled',
+    'true'
+  );
+  await page.getByRole('option', {name: 'Today · 5 October'}).click();
   await expect(page).toHaveURL(/date=2026-10-05/);
   if (info.project.name === 'mobile') {
     await expect(page.getByRole('button', {name: 'Show 3 designs'})).toBeVisible();
@@ -658,7 +665,7 @@ test('contact fills in a signed-in customer', async ({page}) => {
   await expect(page.locator('#vf-cname')).toHaveValue('شیرین احمدی');
   await expect(page.locator('#vf-cphone')).toHaveValue('09125649438');
   await expect(page.locator('#vf-cemail')).toHaveValue('shirin@example.com');
-  await expect(page.getByRole('combobox')).toHaveCount(0);
+  await expect(page.locator('.ag-select')).toHaveCount(0);
 });
 
 test('a guest gets an empty contact form', async ({page}) => {

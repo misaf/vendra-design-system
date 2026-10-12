@@ -763,8 +763,7 @@ a.ag-iconbtn {
   opacity: 0.6;
 }
 .ag-input input,
-.ag-input textarea,
-.ag-input select {
+.ag-input textarea {
   flex: 1;
   min-width: 0;
   border: 0;
@@ -784,16 +783,86 @@ a.ag-iconbtn {
 .ag-input textarea::placeholder {
   color: var(--text-muted);
 }
-.ag-input select {
-  appearance: none;
-  cursor: pointer;
-  padding-inline-end: var(--space-5h);
-}
 .ag-input__chev {
   position: absolute;
   inset-inline-end: 14px;
   pointer-events: none;
   color: var(--text-muted);
+}
+
+/* components/Select/Select.css */
+/* Select: the trigger keeps the .ag-input field look; the list pops up under it. */
+.ag-select__trigger {
+  width: 100%;
+  margin: 0;
+  padding-block: 0;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+/* The field shows focus with its own ring (.ag-input:focus-within). */
+.ag-select__trigger:focus-visible {
+  outline: 0;
+}
+.ag-select__trigger[data-disabled] {
+  cursor: not-allowed;
+}
+.ag-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-base);
+  color: var(--text-body);
+  padding-block: var(--space-3);
+  padding-inline-end: var(--space-5h);
+}
+/* Keeps a line's height when nothing is chosen and there is no placeholder. */
+.ag-select__value::before {
+  content: '\200b';
+}
+.ag-select__value[data-placeholder] {
+  color: var(--text-muted);
+}
+.ag-select__popover {
+  min-width: var(--trigger-width);
+  max-height: min(320px, var(--visual-viewport-height, 100vh));
+  overflow: auto;
+  background: var(--surface-card);
+  border: var(--border-hair) solid var(--border-input);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+}
+.ag-select__list {
+  padding: var(--space-1);
+  outline: 0;
+}
+.ag-select__option {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-base);
+  color: var(--text-body);
+  cursor: pointer;
+  outline: 0;
+}
+.ag-select__option[data-focused] {
+  background: var(--surface-hover);
+}
+.ag-select__option[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+.ag-select__option[data-selected] {
+  font-weight: var(--weight-medium);
+}
+.ag-select__option[data-disabled] {
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 /* components/CodeInput/CodeInput.css */
@@ -2674,11 +2743,6 @@ a.ag-tabbar__item--current:hover {
 .ag-date .ag-input {
   padding-inline: var(--space-3);
 }
-.ag-date .ag-input select {
-  min-width: 0;
-  width: 100%;
-  text-overflow: ellipsis;
-}
 .ag-date__eq {
   margin: 0;
   font-size: var(--text-sm);
@@ -2688,6 +2752,10 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-date__eq:empty {
   min-height: 0;
+}
+/* Narrow columns: the value may run up to the chevron, so a four-digit year still fits. */
+.ag-date .ag-select__value {
+  padding-inline-end: var(--space-4);
 }
 
 /* components/LocationPicker/LocationPicker.css */

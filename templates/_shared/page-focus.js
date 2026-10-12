@@ -22,7 +22,7 @@
       after(() => {
         const r = root || document.querySelector('main') || document;
         const el = r.querySelector(
-          '[aria-invalid="true"],input:invalid,select:invalid,textarea:invalid'
+          '[aria-invalid="true"],[data-invalid] > [aria-haspopup="listbox"],input:invalid,select:invalid,textarea:invalid'
         );
         if (el) el.focus();
       });
