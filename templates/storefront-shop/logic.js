@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
@@ -14,9 +13,10 @@ import {
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 import {commerce} from '../../components/utils/commerce.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
+/** @type {[string, (product: any) => boolean][]} */
 const VF_CHIPS = [
   ['under3', p => p.price < 3000000],
   ['same', p => p.same],
@@ -278,7 +278,7 @@ function vals(page) {
         change({page: paged.page + 1});
         setTimeout(() => {
           const links = document.querySelectorAll('.vf-shop-product-grid .ag-product__link');
-          links[first] && links[first].focus();
+          links[first] && /** @type {HTMLElement} */ (links[first]).focus();
         }, 0);
       }
     },

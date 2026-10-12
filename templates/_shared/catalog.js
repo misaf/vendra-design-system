@@ -365,7 +365,6 @@ export function vfTokenText(token) {
 
 // A bag line's details: category, size and extras, e.g. "Flower box · Classic · 20 stems · Handwritten card".
 export function vfLineDetail(product, size, addons, lang) {
-  const fa = lang === 'fa';
   return [VF_CATEGORY_ITEM[lang][product.cat]]
     .concat(product.sizes && size ? [size.name[lang], size.detail[lang]] : [])
     .concat(addons.map(addon => addon.name[lang]))

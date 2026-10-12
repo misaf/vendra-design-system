@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-shopping tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
             <div className="vf-notfound-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[600px] tw:gap-4h">
               <DS.EmptyState
                 icon="flower-2"

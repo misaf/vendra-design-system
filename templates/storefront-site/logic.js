@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
   vfLineHasCard,
@@ -13,7 +12,7 @@ import {
 import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
-import {pageReady} from '../app/pages.js';
+import {loadPage, pageReady} from '../app/pages.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 const VF_BAG0 = vfSampleBag();
 const VF_SESSION = 'vendra-template:' + location.pathname;
@@ -34,10 +33,13 @@ function vfGuardRoute(state, r) {
   return null;
 }
 // Shows a route at once when its page has loaded (page code may focus what it just rendered);
-// otherwise as a transition, so the current page stays on screen while the next one loads.
-function vfShowRoute(view, show) {
-  if (pageReady(view)) show();
-  else React.startTransition(show);
+// otherwise once its code arrives, so the current page stays as it is (URL, scroll and all) in the
+// meantime. Only the latest navigation is shown; a failed load shows the page's error.
+function vfShowRoute(page, view, show) {
+  const navigation = (page._navigation = (page._navigation || 0) + 1);
+  if (pageReady(view)) return show();
+  const latest = () => navigation === page._navigation && show();
+  (loadPage(view) || Promise.resolve()).then(latest, latest);
 }
 function vfSiteInitial(props) {
   let saved = {};
@@ -97,15 +99,15 @@ export function usePage(props) {
       const guarded = vfGuardRoute(page.state, r);
       if (guarded) r = vfReadRoute(vfRouteParams(guarded));
       const url = vfRouteParams(r);
-      if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
-      vfShowRoute(r.view, () =>
+      vfShowRoute(page, r.view, () => {
+        if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
         page.setState({
           route: r.view,
           routeInfo: r,
           lang: r.lang || page.state.lang
-        })
-      );
-      window.scrollTo(0, 0);
+        });
+        window.scrollTo(0, 0);
+      });
     };
   });
   useLifecycle(page, {
@@ -131,7 +133,7 @@ export function usePage(props) {
           page.navigate(guarded, true);
           return;
         }
-        vfShowRoute(r.view, () =>
+        vfShowRoute(page, r.view, () =>
           page.setState({
             route: r.view,
             routeInfo: r,

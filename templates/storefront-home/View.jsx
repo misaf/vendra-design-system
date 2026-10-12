@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-shopping vf-shopping--home">
+          <main id="main" tabIndex={-1} className="vf-shopping vf-shopping--home">
             <section className="vf-home-hero tw:mx-auto tw:grid tw:items-center tw:max-w-page tw:py-8 tw:px-gutter tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
               <div className="tw:flex tw:flex-col tw:gap-5">
                 <div className="vf-home-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">

@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-info tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-info tw:mx-auto">
             {v.loading ? (
               <>
                 <h1>

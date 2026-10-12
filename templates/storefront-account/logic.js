@@ -1,5 +1,4 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {
   VF_OCCASIONS,

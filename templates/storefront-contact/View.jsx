@@ -1,7 +1,6 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,7 +9,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-info">
+          <main id="main" tabIndex={-1} className="vf-info">
             <header className="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7">
               <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
                 <>{v.t?.eb}</>
@@ -144,7 +143,7 @@ export function View({v}) {
                   <>
                     <div
                       id="vf-contact-success"
-                      tabIndex="-1"
+                      tabIndex={-1}
                       role="region"
                       aria-label={v.t?.okT}
                       className="tw:flex tw:flex-col tw:gap-4"

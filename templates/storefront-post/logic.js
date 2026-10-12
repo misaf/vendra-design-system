@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {vfCopy} from './copy.js';
 import {vfProduct, vfProductImage} from '../_shared/catalog.js';

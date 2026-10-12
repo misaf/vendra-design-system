@@ -4,10 +4,9 @@ import {RouterProvider} from 'react-aria-components';
 import * as DS from '../app/ds.js';
 import {PageBoundary} from '../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../app/pages.js';
-import {list} from '../app/runtime.js';
 
-// Each page loads on first view; the rest follow once the browser is idle. Navigating to a page
-// that is still loading is a transition (logic.js), so the current page stays until it is ready.
+// Each page loads on first view; the rest follow once the browser is idle. The site switches to a
+// page once its code has loaded (vfShowRoute in logic.js), so the current page stays until then.
 const StorefrontAccount = lazyPage('account');
 const StorefrontBag = lazyPage('bag');
 const StorefrontCheckout = lazyPage('checkout');

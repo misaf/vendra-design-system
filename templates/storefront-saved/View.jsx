@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-shopping tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
             <div className="vf-saved-header tw:mb-6">
               <DS.SectionHeader
                 level="h1"

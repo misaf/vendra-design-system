@@ -19,6 +19,8 @@ interface Window {
   // Page state shared between templates in one document.
   VF_TENANT?: string;
   VF_VIEWED?: boolean;
+  // The click-through site's page object (storefront-site/logic.js), for tests.
+  __vfSite?: any;
   // Leaflet, loaded on demand by _shared/location.js.
   L: any;
   vfLeafletLoading?: Promise<any>;

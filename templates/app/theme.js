@@ -12,7 +12,9 @@ window.VF_ASSET_BASE = new URL(import.meta.env.BASE_URL, location.href).href;
 // Loads only this tenant's stylesheet (page code calls it with ?tenant= or store-config.js). The page
 // stays hidden until the theme arrives so another brand's colours never flash, for at most 2s.
 window.VF_USE_TENANT = tenant => {
-  let link = document.getElementById('vf-tenant-css');
+  let link = /** @type {HTMLLinkElement & {vfTimer?: number}} */ (
+    document.getElementById('vf-tenant-css')
+  );
   if (!tenant || tenant === 'default' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(tenant)) {
     if (link) link.remove();
     return;

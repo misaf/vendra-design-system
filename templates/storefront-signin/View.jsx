@@ -1,7 +1,6 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,7 +9,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
             <div className="vf-form-narrow tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto">
               {v.isPhone ? (
                 <>

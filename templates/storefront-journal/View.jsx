@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-info tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-info tw:mx-auto">
             <div className="vf-journal-header tw:flex tw:flex-col tw:gap-4h tw:mb-7">
               <DS.SectionHeader level="h1" eyebrow={v.t?.eb} title={v.t?.hA} accent={v.t?.hB} />
               <div className="tw:flex tw:gap-2 tw:flex-wrap">

@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {
@@ -427,7 +426,7 @@ function vals(page) {
     applyPromo: e => {
       e && e.preventDefault && e.preventDefault();
       const check = vfPromoCheck(s.promoDraft, sub);
-      if (check.error) {
+      if ('error' in check) {
         page.setState({
           promoError: check
         });

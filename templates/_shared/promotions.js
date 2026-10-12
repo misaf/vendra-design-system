@@ -20,6 +20,7 @@ export function vfDiscount(code, sub) {
 
 // Order summary rows; discounts, when there are any, sit under the subtotal. labels.balanceDiscount
 // reads like 'Balance discount · {percent}%'; num formats its percent.
+/** @param {(value: number) => string} [num] */
 export function vfSummaryRows(totals, code, labels, money, num = String) {
   return commerce.summaryRows(totals, code, labels, money, num);
 }

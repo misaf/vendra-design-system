@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
@@ -152,7 +151,6 @@ function vals(page) {
       description: id === 'cod' && !codOk ? P.codOff : id === 'wallet' ? walletNote : undefined,
       disabled: s.busy || (id === 'cod' && !codOk) || (id === 'wallet' && !canUseBalance)
     })),
-    method,
     setMethod: value =>
       !s.busy &&
       page.setState({

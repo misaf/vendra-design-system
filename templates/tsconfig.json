@@ -1,6 +1,6 @@
 {
-  // Type-checks the shared storefront logic as plain JavaScript; nothing is emitted.
-  // The _shared/ files are ES modules that import one another.
+  // Type-checks the storefront app, pages and shared logic as plain JavaScript and JSX; nothing is
+  // emitted. Unused imports and variables are errors.
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
@@ -8,8 +8,12 @@
     "strict": false,
     "target": "es2023",
     "lib": ["es2023", "dom", "dom.iterable"],
-    "types": [],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react",
+    "types": ["vite/client"],
+    "noUnusedLocals": true,
     "skipLibCheck": true
   },
-  "include": ["_shared/**/*.js", "_types/*.d.ts"]
+  "include": ["_shared/**/*.js", "_types/*.d.ts", "app/**/*", "storefront-*/**/*"]
 }

@@ -12,7 +12,7 @@ export function View({v}) {
         <>
           <main
             id="main"
-            tabIndex="-1"
+            tabIndex={-1}
             className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-6"
           >
             <DS.SectionHeader
@@ -198,7 +198,7 @@ export function View({v}) {
                   <div className="tw:flex tw:items-center tw:gap-4">
                     <span
                       id="vf-shop-count"
-                      tabIndex="-1"
+                      tabIndex={-1}
                       role="status"
                       className="vf-shop-result-count tw:text-sm tw:text-quiet"
                     >

@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
             {v.hasItems ? (
               <>
                 <div className="vf-bag-steps tw:mb-5h">
@@ -81,7 +81,7 @@ export function View({v}) {
                           <>
                             <div
                               id="vf-errors"
-                              tabIndex="-1"
+                              tabIndex={-1}
                               className="vf-bag-errors tw:rounded-lg"
                             >
                               <DS.Alert tone="danger" title={v.problemTitle}>
@@ -392,7 +392,7 @@ export function View({v}) {
                         <form
                           className="vf-bag-promo tw:flex tw:flex-col tw:gap-2"
                           onSubmit={v.applyPromo}
-                          noValidate=""
+                          noValidate
                         >
                           <label className="ag-field__label" htmlFor="vf-promo">
                             <>{v.t?.promo}</>

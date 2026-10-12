@@ -33,6 +33,10 @@ export function usePageLogic(props, init) {
 // Class-style lifecycle for page logic: didMount after the first render, didUpdate(previousProps)
 // after every later one, willUnmount when the page goes away. The page's own handlers (the last
 // useLifecycle call) are also on page.lifecycle, for tests.
+/**
+ * @param {any} page
+ * @param {{didMount?: () => void, didUpdate?: (previousProps: any) => void, willUnmount?: () => void}} handlers
+ */
 export function useLifecycle(page, {didMount, didUpdate, willUnmount}) {
   const latest = React.useRef(null);
   latest.current = page.lifecycle = {didMount, didUpdate, willUnmount};

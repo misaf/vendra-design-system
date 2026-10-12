@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
             <div className="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h">
               <div className="vf-account-heading tw:flex tw:flex-col tw:gap-3">
                 <div className="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
@@ -146,7 +146,7 @@ export function View({v}) {
                         <>
                           <p
                             id="vf-topup-done"
-                            tabIndex="-1"
+                            tabIndex={-1}
                             role="status"
                             className="tw:m-0 tw:text-sm tw:font-medium"
                           >

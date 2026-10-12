@@ -964,6 +964,24 @@ test('a standalone page that fails to load offers a reload', async ({page}) => {
   await page.route(SHOP_CODE, route => route.abort());
   await page.goto('/templates/app/?page=shop&lang=fa');
   await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
+  await expect(page).toHaveTitle('این صفحه بارگذاری نشد. · گل‌فروشی وندرا');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+});
+
+test('a page that fails to preload in the background never reloads the tab', async ({page}) => {
+  let loads = 0;
+  page.on('load', () => loads++);
+  await page.route(SHOP_CODE, route => route.abort());
+  await openSite(page, 'checkout', 'en');
+  await page.waitForTimeout(1500);
+  expect(loads).toBe(1);
+});
+
+// The storefront shows its own field errors, so its forms turn the browser's popups off.
+test('forms leave validation to the storefront', async ({page}) => {
+  await openSite(page, 'track', 'en');
+  await expect(page.locator('form')).not.toHaveCount(0);
+  await expect(page.locator('form:not([novalidate])')).toHaveCount(0);
 });
 
 test('while a page’s code loads, the current page stays on screen', async ({page}) => {
@@ -975,10 +993,13 @@ test('while a page’s code loads, the current page stays on screen', async ({pa
   });
   await openSite(page, 'home', 'en');
   const home = await page.locator('h1').textContent();
+  const url = page.url();
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
   await page.waitForTimeout(300);
   await expect(page.locator('h1')).toHaveText(home);
   await expect(page.locator('#main')).toBeVisible();
+  expect(page.url()).toBe(url);
   release();
   await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
+  expect(page.url()).toMatch(/view=shop/);
 });

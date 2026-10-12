@@ -1,6 +1,5 @@
 // Bilingual contact copy. Edit here, then run npm --prefix templates run build.
 export function vfCopy(S) {
-  const fa = S.fa;
   return {
     en: {
       integrationError: 'Could not send your message. Your draft is saved; please try again.',

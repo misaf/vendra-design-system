@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-info tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-info tw:mx-auto">
             <section className="vf-weddings-hero tw:grid tw:gap-7 tw:items-center tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))]">
               <div className="vf-weddings-heading tw:flex tw:flex-col tw:gap-5">
                 <div className="vf-weddings-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
@@ -195,7 +195,7 @@ export function View({v}) {
                 <>
                   <div
                     id="vf-weddings-success"
-                    tabIndex="-1"
+                    tabIndex={-1}
                     role="region"
                     aria-label={v.t?.okT}
                     className="tw:flex tw:flex-col tw:gap-4"

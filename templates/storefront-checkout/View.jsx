@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
             {v.paying ? (
               <>
                 <div className="vf-checkout-steps tw:mb-5h">
@@ -128,7 +128,7 @@ export function View({v}) {
                             hint={v.t?.last4Hint}
                             error={v.last4Err}
                             inputMode="numeric"
-                            maxLength="4"
+                            maxLength={4}
                             dir="ltr"
                             value={v.last4}
                             onChange={v.setLast4}

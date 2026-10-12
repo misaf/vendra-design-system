@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfAccountLogin, vfAccountSave} from '../_shared/account-data.js';
 import {vfMobile} from '../_shared/delivery.js';

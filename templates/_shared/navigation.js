@@ -37,9 +37,10 @@ export function vfShell(self, page) {
     store = props.store;
   self._vfPage = page;
   VF_SEO.register(...VF_ROUTES);
-  const fa = props.lang === 'fa',
-    L = fa ? 'fa' : 'en',
-    T = VF_SHELL[L];
+  const fa = props.lang === 'fa';
+  /** @type {'en' | 'fa'} */
+  const L = fa ? 'fa' : 'en';
+  const T = VF_SHELL[L];
   const mob = !!props.mobile || (st.vfMobile === undefined ? window.innerWidth < 768 : st.vfMobile);
   const tab =
     page === 'home'

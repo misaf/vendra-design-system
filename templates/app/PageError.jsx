@@ -3,6 +3,7 @@
 import React from 'react';
 import {Alert} from '../../components/Alert/Alert.jsx';
 import {Button} from '../../components/Button/Button.jsx';
+import {VF_STORE} from '../_shared/store-config.js';
 
 const COPY = {
   en: {
@@ -20,6 +21,11 @@ const COPY = {
 export function PageError() {
   const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
   const copy = COPY[lang];
+  React.useEffect(() => {
+    document.title = copy.title + ' · ' + VF_STORE.brand[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+  }, [lang]);
   return (
     <main
       id="main"

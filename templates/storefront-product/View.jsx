@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-shopping tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
             <nav
               aria-label={v.t?.crumbs}
               className="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"

@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfSampleOrders} from '../_shared/account-data.js';
 import {vfCardMessages, vfLineToken, vfProductImage, vfSampleBag} from '../_shared/catalog.js';
@@ -11,7 +10,7 @@ import {vfPageRoute} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // Orders this browser can look up: the latest order from this session, then the sample orders.
 function vfKnownOrders(store) {

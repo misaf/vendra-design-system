@@ -2,7 +2,6 @@
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
-import {vfMobile} from './delivery.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
 import {VF_STORE} from './store-config.js';
 import {VF_SHELL} from './translations/shell.js';

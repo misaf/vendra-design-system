@@ -118,7 +118,7 @@ const VF_API_FAQS = [
   id,
   name: {en: questionEn, fa: questionFa},
   description: {en: answerEn, fa: answerFa},
-  slug: {en: slug, fa: questionFa.replace(/[؟?]/g, '').trim().replace(/\s+/g, '-')},
+  slug: {en: slug, fa: String(questionFa).replace(/[؟?]/g, '').trim().replace(/\s+/g, '-')},
   position: index + 1,
   active: true,
   faqCategory: {id: categoryId, type: 'FaqCategory', label: null},

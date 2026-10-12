@@ -1,5 +1,4 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {ToastQueue} from '../app/ds.js';
 import {vfCopy} from './copy.js';
 import {

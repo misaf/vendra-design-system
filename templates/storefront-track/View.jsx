@@ -1,7 +1,6 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,13 +9,13 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex="-1" className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
             {v.noOrder ? (
               <>
                 <form
                   className="vf-track-lookup tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto"
                   onSubmit={v.findOrder}
-                  noValidate=""
+                  noValidate
                 >
                   <h1>
                     <>{v.t?.lookup?.titleA} </>
@@ -29,7 +28,7 @@ export function View({v}) {
                   </p>
                   {v.lookupFailed ? (
                     <>
-                      <div id="vf-lookup-failed" tabIndex="-1">
+                      <div id="vf-lookup-failed" tabIndex={-1}>
                         <DS.Alert tone="warning">
                           <>{v.t?.lookup?.failed}</>
                         </DS.Alert>

@@ -11,7 +11,8 @@ export function Shell({v, content, sticky}) {
     const update = () =>
       document.documentElement.style.setProperty(
         '--vf-bottom-bar',
-        bars.reduce((height, bar) => height + bar.offsetHeight, 0) + 'px'
+        bars.reduce((height, bar) => height + /** @type {HTMLElement} */ (bar).offsetHeight, 0) +
+          'px'
       );
     const observer = new ResizeObserver(update);
     bars.forEach(bar => observer.observe(bar));
@@ -227,7 +228,7 @@ export function Shell({v, content, sticky}) {
                     <>
                       <form
                         onSubmit={v.newsletter?.submit}
-                        noValidate=""
+                        noValidate
                         className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
                       >
                         <label htmlFor="vf-news-email" className="ag-field__label">
@@ -261,7 +262,7 @@ export function Shell({v, content, sticky}) {
                     <>
                       <p
                         id="vf-news-done"
-                        tabIndex="-1"
+                        tabIndex={-1}
                         role="status"
                         className="tw:m-0 tw:text-sm"
                       >
@@ -421,7 +422,7 @@ export function Shell({v, content, sticky}) {
               <div className="vf-shell-consent-dock vf-shell-consent-bar tw:sticky tw:bottom-0 tw:z-tabbar">
                 <section
                   id="vf-consent"
-                  tabIndex="-1"
+                  tabIndex={-1}
                   aria-labelledby="vf-consent-title"
                   className="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body"
                 >
@@ -476,7 +477,7 @@ export function Shell({v, content, sticky}) {
                     <div className="vf-shell-consent-dock tw:px-3 tw:pb-3">
                       <section
                         id="vf-consent"
-                        tabIndex="-1"
+                        tabIndex={-1}
                         aria-labelledby="vf-consent-title"
                         className="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body"
                       >

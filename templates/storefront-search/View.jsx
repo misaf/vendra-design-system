@@ -12,7 +12,7 @@ export function View({v}) {
         <>
           <main
             id="main"
-            tabIndex="-1"
+            tabIndex={-1}
             className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-5"
           >
             <div className="vf-reading tw:max-w-[760px] tw:mx-auto">

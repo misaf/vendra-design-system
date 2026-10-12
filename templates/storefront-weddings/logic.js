@@ -1,10 +1,9 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import React from 'react';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCT_PLACEHOLDER} from '../_shared/catalog.js';
 import {vfMobile} from '../_shared/delivery.js';
 import {vfShell} from '../_shared/navigation.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
