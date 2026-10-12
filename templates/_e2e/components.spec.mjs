@@ -269,3 +269,139 @@ test.describe('Reduced motion', () => {
     expect(slow).toBe('.01ms');
   });
 });
+
+test.describe('Dialog (React Aria modal)', () => {
+  test('focus moves in and stays, Esc closes, focus returns to the opener', async ({page}) => {
+    const opener = page.getByRole('button', {name: 'Delivery details'});
+    await opener.click();
+    const dialog = page.getByRole('dialog', {name: 'Delivery details'});
+    await expect(dialog).toBeVisible();
+    // Focus is on the dialog (React Aria focuses the dialog itself) or something in it.
+    const focusInside = () => dialog.evaluate(el => el.contains(document.activeElement));
+    await expect.poll(focusInside).toBe(true);
+    // Tab cycles inside: the close button, the field and Save, never the page behind.
+    for (let i = 0; i < 5; i++) {
+      await page.keyboard.press('Tab');
+      expect(await focusInside()).toBe(true);
+    }
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(opener).toBeFocused();
+  });
+
+  test('the close button closes it and is named in the page language', async ({page}) => {
+    await page.getByRole('button', {name: 'Delivery details'}).click();
+    await page.getByRole('button', {name: 'Close', exact: true}).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await page.goto(FIXTURE + '?lang=fa');
+    await page.getByRole('button', {name: 'Delivery details'}).click();
+    // VendraProvider's language gives the built-in wording without a closeLabel prop.
+    await expect(page.getByRole('dialog').getByRole('button', {name: 'بستن'})).toBeVisible();
+  });
+});
+
+test.describe('Accordion (disclosure pattern)', () => {
+  test('buttons expose state, control their region and toggle from the keyboard', async ({
+    page
+  }) => {
+    const care = page.getByRole('button', {name: 'Flower care'});
+    const returns = page.getByRole('button', {name: 'Returns'});
+    await expect(care).toHaveAttribute('aria-expanded', 'true');
+    await expect(returns).toHaveAttribute('aria-expanded', 'false');
+    const panel = page.locator(`[id="${await care.getAttribute('aria-controls')}"]`);
+    await expect(panel).toHaveText('Trim the stems.');
+    await expect(panel).toHaveAccessibleName('Flower care');
+    // Real headings, so the page outline lists each question.
+    await expect(page.getByRole('heading', {name: 'Returns', level: 3})).toBeVisible();
+    await returns.focus();
+    await page.keyboard.press('Enter');
+    await expect(returns).toHaveAttribute('aria-expanded', 'true');
+    // One panel at a time unless allowMultiple.
+    await expect(care).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('output[data-test=panels]')).toHaveText('returns');
+    await page.keyboard.press('Space');
+    await expect(returns).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('output[data-test=panels]')).toHaveText('');
+  });
+});
+
+test.describe('Carousel', () => {
+  for (const lang of ['en', 'fa']) {
+    test(`arrows page in reading direction and disable at the ends (${lang})`, async ({page}) => {
+      await page.emulateMedia({reducedMotion: 'reduce'});
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const names = lang === 'fa' ? ['قبلی', 'بعدی'] : ['Previous', 'Next'];
+      const previous = page.getByRole('button', {name: names[0], exact: true});
+      const next = page.getByRole('button', {name: names[1], exact: true});
+      const track = page.getByRole('region', {name: 'New arrivals'});
+      await expect(previous).toBeDisabled();
+      await expect(next).toBeEnabled();
+      await next.click();
+      await expect(previous).toBeEnabled();
+      const moved = await track.evaluate(el => Math.abs(el.scrollLeft));
+      expect(moved).toBeGreaterThan(100);
+      for (let i = 0; i < 6 && (await next.isEnabled()); i++) await next.click();
+      await expect(next).toBeDisabled();
+      await previous.click();
+      await expect(next).toBeEnabled();
+    });
+  }
+
+  test('the track is a named, focusable region that scrolls with the keyboard', async ({page}) => {
+    const track = page.getByRole('region', {name: 'New arrivals'});
+    await track.focus();
+    await expect(track).toBeFocused();
+    await page.keyboard.press('ArrowRight');
+    await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
+  });
+});
+
+test.describe('ChoiceGroup (React Aria radiogroup)', () => {
+  test('one Tab stop; arrows move and select, skipping disabled tiles', async ({page}) => {
+    const group = page.getByRole('radiogroup', {name: 'Delivery time'});
+    const morning = group.getByRole('radio', {name: 'Morning'});
+    const evening = group.getByRole('radio', {name: 'Evening'});
+    await expect(morning).toBeChecked();
+    await expect(group.getByRole('radio', {name: 'Noon'})).toBeDisabled();
+    await morning.focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(evening).toBeFocused();
+    await expect(evening).toBeChecked();
+    await expect(page.locator('output[data-test=slot]')).toHaveText('evening');
+    // The description is read after the name, not as part of it.
+    await expect(evening).toHaveAccessibleDescription('17:00–20:00');
+    // Tab leaves the group: one Tab stop for the whole set.
+    await page.keyboard.press('Tab');
+    expect(await group.evaluate(el => el.contains(document.activeElement))).toBe(false);
+  });
+});
+
+test.describe('CodeInput', () => {
+  test('keeps digits only, accepts Persian digits and completes once', async ({page}) => {
+    const field = page.getByRole('textbox', {name: 'Code'});
+    await expect(field).toHaveAttribute('inputmode', 'numeric');
+    await expect(field).toHaveAttribute('autocomplete', 'one-time-code');
+    await field.pressSequentially('1a2-۳');
+    await expect(page.locator('output[data-test=code]')).toHaveText('123');
+    await expect(page.locator('output[data-test=completed]')).toHaveText('');
+    await field.pressSequentially('۴5');
+    await expect(page.locator('output[data-test=code]')).toHaveText('12345');
+    await expect(page.locator('output[data-test=completed]')).toHaveText('12345');
+    await field.press('End');
+    await field.pressSequentially('9');
+    await expect(page.locator('output[data-test=code]')).toHaveText('12345');
+  });
+});
+
+test.describe('PhoneInput', () => {
+  test('phone keypad, left-to-right digits and a normalised mobile number', async ({page}) => {
+    const field = page.getByRole('textbox', {name: 'Phone'});
+    await expect(field).toHaveAttribute('type', 'tel');
+    await expect(field).toHaveAttribute('inputmode', 'tel');
+    await expect(field).toHaveAttribute('dir', 'ltr');
+    await field.fill('۰۹۱۲ ۱۱۱ ۲۲۳۳');
+    await expect(page.locator('output[data-test=phone]')).toHaveText('09121112233 mobile');
+    await field.fill('021-8888 1234');
+    await expect(page.locator('output[data-test=phone]')).toHaveText('02188881234');
+  });
+});

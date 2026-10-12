@@ -10,7 +10,16 @@ const {
   Select,
   DatePicker,
   RadioGroup,
-  Radio
+  Radio,
+  Dialog,
+  Button,
+  Accordion,
+  Carousel,
+  ChoiceGroup,
+  ChoiceTile,
+  CodeInput,
+  PhoneInput,
+  VendraProvider
 } = window.VendraDesignSystem;
 const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
 document.documentElement.lang = lang;
@@ -29,8 +38,15 @@ function App() {
   const [city, setCity] = React.useState('');
   const [day, setDay] = React.useState('2026-10-08');
   const [pay, setPay] = React.useState('card');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [openPanels, setOpenPanels] = React.useState(['care']);
+  const [slot, setSlot] = React.useState('morning');
+  const [code, setCode] = React.useState('');
+  const [completed, setCompleted] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [phoneNumber, setPhoneNumber] = React.useState({number: '', mobile: false});
   return (
-    <>
+    <VendraProvider locale={lang === 'fa' ? 'fa-IR' : 'en-US'}>
       <section data-test="tooltip">
         <Tooltip content="Save to favourites">
           <IconButton icon="heart" label="Save" variant="outline" />
@@ -108,7 +124,73 @@ function App() {
         />
         <output data-test="closed">{closed}</output>
       </section>
-    </>
+      <section data-test="dialog">
+        <Button variant="secondary" onClick={() => setDialogOpen(true)}>
+          Delivery details
+        </Button>
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          title="Delivery details"
+          footer={<Button onClick={() => setDialogOpen(false)}>Save</Button>}
+        >
+          <Input id="recipient" label="Recipient" />
+        </Dialog>
+      </section>
+      <section data-test="accordion">
+        <Accordion
+          value={openPanels}
+          onChange={setOpenPanels}
+          items={[
+            {id: 'care', title: 'Flower care', content: 'Trim the stems.'},
+            {id: 'returns', title: 'Returns', content: 'Within a day.'}
+          ]}
+        />
+        <output data-test="panels">{openPanels.join(',')}</output>
+      </section>
+      <section data-test="carousel" style={{maxWidth: 480}}>
+        <Carousel label="New arrivals" arrows itemMin="180px" perView={2} bleed={false}>
+          {['One', 'Two', 'Three', 'Four', 'Five', 'Six'].map(name => (
+            <div key={name} style={{height: 60, background: 'var(--surface-muted)'}}>
+              {name}
+            </div>
+          ))}
+        </Carousel>
+      </section>
+      <section data-test="choices">
+        <ChoiceGroup label="Delivery time" columns={3} value={slot} onChange={setSlot}>
+          <ChoiceTile value="morning" label="Morning" description="09:00–12:00" />
+          <ChoiceTile value="noon" label="Noon" disabled description="Closed" />
+          <ChoiceTile value="evening" label="Evening" description="17:00–20:00" />
+        </ChoiceGroup>
+        <output data-test="slot">{slot}</output>
+      </section>
+      <section data-test="code">
+        <CodeInput
+          id="code"
+          label="Code"
+          value={code}
+          onChange={setCode}
+          onComplete={setCompleted}
+        />
+        <output data-test="code">{code}</output>
+        <output data-test="completed">{completed}</output>
+      </section>
+      <section data-test="phone">
+        <PhoneInput
+          id="phone"
+          label="Phone"
+          value={phone}
+          onChange={(typed, parsed) => {
+            setPhone(typed);
+            setPhoneNumber(parsed);
+          }}
+        />
+        <output data-test="phone">
+          {phoneNumber.number + (phoneNumber.mobile ? ' mobile' : '')}
+        </output>
+      </section>
+    </VendraProvider>
   );
 }
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
