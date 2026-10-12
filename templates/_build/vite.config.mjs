@@ -8,31 +8,18 @@ import {promisify} from 'node:util';
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '..');
 const run = promisify(execFile);
-const storefront = '/templates/storefront-site/StorefrontSite.dc.html';
+const storefront = '/templates/app/';
 
-// The DC runtime reads HTML dynamically, so reload it after generation rather
-// than relying on a framework-specific module replacement plugin.
+// Rebuild generated CSS, shared logic and the component bundle when their sources change.
 function storefrontPreview() {
   let timer;
   let running = false;
   let pending = false;
-  const snapshots = new Map();
-  const rememberPages = () => {
-    for (const folder of fs.readdirSync(templates).filter(name => name.startsWith('storefront-'))) {
-      for (const name of fs
-        .readdirSync(path.join(templates, folder))
-        .filter(name => name.endsWith('.dc.html'))) {
-        const file = path.join(templates, folder, name);
-        snapshots.set(file, fs.readFileSync(file, 'utf8'));
-      }
-    }
-  };
   return {
     name: 'vendra-storefront-preview',
     apply: 'serve',
     async configureServer(server) {
       await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
-      rememberPages();
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url, 'http://localhost');
         if (url.pathname !== '/') return next();
@@ -47,7 +34,6 @@ function storefrontPreview() {
         running = true;
         try {
           await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
-          rememberPages();
           server.ws.send({type: 'full-reload', path: '*'});
           server.config.logger.info('Rebuilt components, storefront templates and Tailwind.');
         } catch (error) {
@@ -67,15 +53,11 @@ function storefrontPreview() {
       };
       const changed = file => {
         const relative = path.relative(root, file).replaceAll(path.sep, '/');
-        const isPage = /^templates\/storefront-[^/]+\/[^/]+\.dc\.html$/.test(relative);
-        if (isPage && fs.existsSync(file) && snapshots.get(file) === fs.readFileSync(file, 'utf8'))
-          return;
         const isSource =
           relative.startsWith('templates/_shared/') ||
           /^components\/.+\.jsx?$/.test(relative) ||
           /^tokens\/tenants\/[^/]+\.json$/.test(relative) ||
-          /^templates\/storefront-[^/]+\/(copy\.js|logic\.js|styles\.css)$/.test(relative) ||
-          isPage;
+          /^templates\/storefront-[^/]+\/styles\.css$/.test(relative);
         const isAsset =
           /^(tokens|assets)\//.test(relative) ||
           relative === 'styles.css' ||
@@ -99,17 +81,6 @@ function storefrontPreview() {
         server.watcher.off('add', changed);
         server.watcher.off('unlink', changed);
       });
-    },
-    transformIndexHtml(html) {
-      if (!html.includes('<x-dc>')) return;
-      // Load the namespace before support.js boots the page on a cold start. The bundle
-      // needs React while it evaluates (Carousel calls React.forwardRef), so the local
-      // React copies go first; support.js reuses them instead of fetching unpkg.
-      return [
-        '/templates/_vendor/react.production.min.js',
-        '/templates/_vendor/react-dom.production.min.js',
-        '/templates/_runtime/components.js'
-      ].map(src => ({tag: 'script', attrs: {src}, injectTo: 'head-prepend'}));
     }
   };
 }
@@ -127,5 +98,18 @@ export default defineConfig({
     fs: {allow: [root]},
     watch: {ignored: ['**/.git/**', '**/node_modules/**']}
   },
-  optimizeDeps: {noDiscovery: true}
+  // The storefront app (templates/app) and the components import these; they are pre-bundled
+  // because React ships CommonJS.
+  optimizeDeps: {
+    noDiscovery: true,
+    include: [
+      'react',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      'react-dom',
+      'react-dom/client',
+      'react-aria-components',
+      '@internationalized/date'
+    ]
+  }
 });

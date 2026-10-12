@@ -23,15 +23,14 @@ for (const file of sources) {
   for (const match of code.matchAll(/from '\.\.\/[A-Za-z]+\/([A-Za-z]+)\.jsx'/g))
     buildingBlocks.add(match[1]);
 }
-for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storefront-'))) {
+for (const folder of fs
+  .readdirSync(root)
+  .filter(name => name.startsWith('storefront-') || name === 'app')) {
   for (const name of fs
     .readdirSync(path.join(root, folder))
-    .filter(name => name.endsWith('.dc.html'))) {
-    const html = fs.readFileSync(path.join(root, folder, name), 'utf8');
-    for (const match of html.matchAll(
-      /component-from-global-scope="VendraDesignSystem\.([A-Za-z]+)"/g
-    ))
-      used.add(match[1]);
+    .filter(name => name.endsWith('.jsx'))) {
+    const code = fs.readFileSync(path.join(root, folder, name), 'utf8');
+    for (const match of code.matchAll(/<DS\.([A-Za-z]+)/g)) used.add(match[1]);
   }
 }
 assert.ok(components.length > 40, 'found the component sources');

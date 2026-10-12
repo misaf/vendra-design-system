@@ -7,3 +7,4 @@ templates/_e2e/playwright-report/
 scraps/
 scratch/
 screenshots/
+node_modules

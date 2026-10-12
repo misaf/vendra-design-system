@@ -1,5 +1,8 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-class Component extends VFPage {
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
+export class Component extends VFPage {
   state = {
     placed: false,
     last4: '',
@@ -102,7 +105,7 @@ class Component extends VFPage {
       discountHint,
       topUpLabel: PW.topUp,
       topUpHref:
-        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        (this.props.go ? '' : '../app/') +
         vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
       topUpGo: this.props.go ? vfLinkHandler(this.props.go) : undefined,
       busy: s.busy,
@@ -155,8 +158,7 @@ class Component extends VFPage {
         i < 2 &&
         this.props.go(i === 0 ? 'bag' : {view: 'bag', step: 'delivery'}),
       backHref:
-        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-        vfRouteParams({lang: L, view: 'bag', step: 'delivery'}),
+        (this.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag', step: 'delivery'}),
       goBack: e => {
         if (!this.props.go) return;
         e && e.preventDefault && e.preventDefault();

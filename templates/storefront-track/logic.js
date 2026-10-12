@@ -1,10 +1,13 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 // Orders this browser can look up: the latest order from this session, then the sample orders.
 function vfKnownOrders(store) {
   const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];
   return [...own, ...vfSampleOrders()];
 }
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     lookup: false,
     lookupId: '',

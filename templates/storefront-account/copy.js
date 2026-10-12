@@ -1,5 +1,5 @@
 // Bilingual account copy.
-function vfCopy(S) {
+export function vfCopy(S) {
   const n = S.n;
   const C = {
     en: {

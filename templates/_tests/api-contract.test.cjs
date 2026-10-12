@@ -17,7 +17,7 @@ const ctx = {
   console,
   setTimeout,
   clearTimeout,
-  location: {pathname: '/templates/storefront-site/StorefrontSite.dc.html', search: '', href: ''},
+  location: {pathname: '/templates/app/', search: '', href: ''},
   localStorage: {getItem: () => null, setItem: () => {}},
   sessionStorage: {getItem: () => null, setItem: () => {}},
   document: {getElementById: () => null},
@@ -92,8 +92,9 @@ expectSchema(ctx.VF_API_ORDERS, 'Order');
 
 // The FAQ page's questions (storefront-faq/copy.js).
 vm.runInContext(
-  fs.readFileSync(path.join(root, 'templates/storefront-faq/copy.js'), 'utf8') +
-    '\nObject.assign(this, {VF_API_FAQ_CATEGORIES, VF_API_FAQS});',
+  require('./page-script.cjs').strip(
+    fs.readFileSync(path.join(root, 'templates/storefront-faq/copy.js'), 'utf8')
+  ) + '\nObject.assign(this, {VF_API_FAQ_CATEGORIES, VF_API_FAQS});',
   ctx
 );
 expectSchema(ctx.VF_API_FAQ_CATEGORIES, 'FaqCategory');

@@ -16,7 +16,7 @@ export const TENANTS = fs
 // A fresh visitor who has not made a cookie choice yet (the config pre-sets one for every other test).
 export const NO_CONSENT = {cookies: [], origins: []};
 
-export const SITE = '/templates/storefront-site/StorefrontSite.dc.html';
+export const SITE = '/templates/app/';
 export const LANGS = ['en', 'fa'];
 
 // Every routed view, with the parameters a view needs to render instead of falling back to notfound.
@@ -51,6 +51,27 @@ export function siteUrl(view, lang, extra = {}) {
 }
 
 // Waits for the DC runtime to render the page shell and settle the language.
+// Waits until the page has requested nothing new for half a second (the browser's resource list
+// stops growing). Chrome's own network-idle signal sometimes never arrives for the app.
+export async function waitForQuiet(page) {
+  await page.waitForLoadState('load');
+  await page.waitForFunction(
+    () =>
+      new Promise(resolve => {
+        let count = performance.getEntriesByType('resource').length;
+        const check = () => {
+          const now = performance.getEntriesByType('resource').length;
+          if (now === count) resolve(true);
+          else {
+            count = now;
+            setTimeout(check, 500);
+          }
+        };
+        setTimeout(check, 500);
+      })
+  );
+}
+
 export async function openSite(page, view, lang, extra) {
   await stubMapTiles(page);
   // The account is only for signed-in customers: sign the sample customer in once per tab.
@@ -63,7 +84,7 @@ export async function openSite(page, view, lang, extra) {
   await page.goto(siteUrl(view, lang, extra));
   await expect(page.locator('#main')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
-  await page.waitForLoadState('networkidle');
+  await waitForQuiet(page);
   await expectNoViteError(page);
   await page.evaluate(() => document.fonts.ready);
 }
@@ -89,7 +110,7 @@ export async function settlePage(page) {
     );
     await document.fonts.ready;
   });
-  await page.waitForLoadState('networkidle');
+  await waitForQuiet(page);
   await page.waitForFunction(
     () =>
       new Promise(resolve => {

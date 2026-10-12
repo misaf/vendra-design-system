@@ -1,5 +1,9 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-class Component extends VFPage {
+import React from 'react';
+import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
+export class Component extends VFPage {
   state = {
     copied: false
   };

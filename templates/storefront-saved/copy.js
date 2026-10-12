@@ -1,6 +1,6 @@
 // Bilingual saved copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-function vfCopy(S) {
+export function vfCopy(S) {
   const n = S.n;
   return {
     en: {

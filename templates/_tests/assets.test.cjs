@@ -66,30 +66,11 @@ for (const folder of fs.readdirSync(root).filter(name => name.startsWith('storef
     assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
     assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
   }
-  const html = fs.readFileSync(
-    path.join(
-      root,
-      folder,
-      files.find(name => name.endsWith('.dc.html'))
-    ),
-    'utf8'
-  );
   assert.ok(files.includes('logic.js'), folder + ' must own its behavior source');
-  assert.ok(
-    html.includes('// Source: templates/' + folder + '/logic.js'),
-    folder + ' must generate its adjacent logic source'
-  );
-  if (folder !== 'storefront-site')
-    assert.ok(
-      html.includes('// Source: templates/' + folder + '/copy.js'),
-      folder + ' must generate its adjacent copy source'
-    );
-  assert.ok(
-    !/\bstyle(?:-hover)?=|<style[\s>]/.test(html.split('<x-dc>')[1].split('</x-dc>')[0]),
-    folder + ' must keep custom styles in CSS classes'
-  );
-  assert.ok(html.includes('src="../_runtime/support.js"'), folder + ' must use the shared runtime');
-  assert.ok(html.includes('src="../_runtime/ds-base.js"'), folder + ' must use the shared loader');
+  for (const name of ['Page.jsx', 'View.jsx'])
+    assert.ok(files.includes(name), folder + ' must have its ' + name);
+  const view = fs.readFileSync(path.join(root, folder, 'View.jsx'), 'utf8');
+  assert.ok(!/\bstyle=\{/.test(view), folder + ' must keep custom styles in CSS classes');
 }
 console.log(
   'Passed shared asset references, relocated-root URLs and repeated-loader deduplication.'

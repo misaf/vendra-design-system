@@ -1,6 +1,9 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     tab: null,
     account: null,

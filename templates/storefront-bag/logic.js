@@ -1,6 +1,9 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 // Two checkout steps share this page: the bag (?view=bag) and delivery details (&step=delivery).
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     lines: vfSampleBag(),
     step: null,
@@ -156,7 +159,7 @@ class Component extends VFPage {
       // Guests can sign in to use saved addresses, then come back to this step.
       guest: !phone,
       signinHref:
-        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        (this.props.go ? '' : '../app/') +
         vfRouteParams({lang: L, view: 'signin', next: 'delivery'}),
       goSignin: e => {
         if (!this.props.go) return;
@@ -208,9 +211,7 @@ class Component extends VFPage {
         e && e.preventDefault && e.preventDefault();
         stepTo('bag');
       },
-      bagHref:
-        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-        vfRouteParams({lang: L, view: 'bag'}),
+      bagHref: (this.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag'}),
       stepClick: i => i === 0 && stepTo('bag'),
       next: () => {
         if (live.some(l => !vfLineAvailable(l))) return;

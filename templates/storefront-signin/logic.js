@@ -1,7 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 // Seconds before another code can be requested.
 const VF_SIGNIN_RESEND_SECONDS = 60;
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     step: 'phone',
     phone: '',
@@ -69,7 +72,7 @@ class Component extends VFPage {
         this.props.go({view: 'bag', step: 'delivery'});
       },
       checkoutHref:
-        (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        (this.props.go ? '' : '../app/') +
         vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
       code: s.code,
       // CodeInput hands over the cleaned code: Latin digits, at most five.

@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import {ROOT as root, TENANTS, expectNoViteError} from './helpers.mjs';
+import {ROOT as root, TENANTS, expectNoViteError, waitForQuiet} from './helpers.mjs';
 
 // Every @dsCard in guidelines/ and components/, at the viewport its header declares.
 function cards() {
@@ -30,7 +30,7 @@ async function openCard(page, card, tenant) {
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('/' + card.file);
-  await page.waitForLoadState('networkidle');
+  await waitForQuiet(page);
   await expectNoViteError(page);
   await page.evaluate(() => document.fonts.ready);
   return errors;

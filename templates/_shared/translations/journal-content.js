@@ -1,5 +1,5 @@
 // Shared sample article content for journal and post pages.
-const VF_POSTS = [
+export const VF_POSTS = [
   {
     id: 'autumn',
     cat: 'seasonal',
@@ -564,7 +564,7 @@ VF_POSTS.push(
     }
   ]
 );
-const VF_JCATS = [
+export const VF_JCATS = [
   ['all', 'All', 'همه'],
   ['seasonal', 'Seasonal', 'فصلی'],
   ['care', 'Flower care', 'نگهداری'],

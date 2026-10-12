@@ -1,18 +1,18 @@
 # Storefront templates
 
-The maintained bilingual storefront: 17 pages in `storefront-*`, wired together by `storefront-site` (the click-through router). Pages run on sample data in `_shared/`; its target shape is the Vendra API (see [API.md](API.md)). Feature map and integration boundaries: [MIGRATION.md](MIGRATION.md).
+The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `storefront-*`, wired together by `storefront-site` (the click-through router). Pages run on sample data in `_shared/`; its target shape is the Vendra API (see [API.md](API.md)). Feature map and integration boundaries: [MIGRATION.md](MIGRATION.md).
 
 ## Where to edit
 
 | Change | File |
 | --- | --- |
-| Page markup | `storefront-<page>/Storefront*.dc.html`, inside the editable regions |
+| Page markup | `storefront-<page>/View.jsx` (JSX inside the shared `Shell`) |
 | Page behavior / copy / styles | `storefront-<page>/logic.js` / `copy.js` / `styles.css` |
 | Store name, contact, hours, currency, map, payment, balance, announcement | [_shared/store-config.js](_shared/store-config.js) |
 | Products, sizes, add-ons | [_shared/catalog.js](_shared/catalog.js) |
 | Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
-| Header, mobile menu, footer, consent banner, page shell | `_shared/*.html` (values in `navigation.js`) |
+| Header, mobile menu, footer, consent banner, page shell | `app/Shell.jsx` (values in `_shared/navigation.js`) |
 | Routes and URL helpers | [_shared/routing.js](_shared/routing.js) |
 | Responsive state, focus, `<head>` | `_shared/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |
@@ -25,11 +25,11 @@ The maintained bilingual storefront: 17 pages in `storefront-*`, wired together 
 
 ## Editing a page
 
-Edit only the marked regions of a `.dc.html` file: `PAGE CONTENT` (inside the shared shell) and `PAGE STICKY CONTENT` (above the mobile tab bar), plus the page's `@template` metadata and `data-props`. Behavior, copy and styles live in the adjacent source files. The build regenerates the `GENERATED SHELL`, `SHARED LOGIC`, `PAGE LOGIC` and `PAGE COPY` sections; never edit those.
+Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (a class with state, lifecycle and `renderVals()`), `copy.js` and `styles.css`; `Page.jsx` joins logic and view with `definePage` from `app/runtime.jsx`. A view reads everything from `v`, the page's props merged with `renderVals()`; `interp()` renders a value as text. `logic.js` and `copy.js` are ES modules; the shared logic in `_shared/` still loads once as a classic script (`_runtime/shared-logic.js`), so its declarations are globals the pages read by name.
 
-`copy.js` exposes `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively). Shared logic loads once from `_runtime/shared-logic.js`.
+`copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Adding a page:** copy a similar folder and rename its `.dc.html`. Register the route in `_shared/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/custom.css`, and the import and `start` option in `storefront-site/StorefrontSite.dc.html`.
+**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/main.jsx` finds it by folder name. Register the route in `_shared/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/custom.css`, and the import and route in `storefront-site/View.jsx`.
 
 ## Commands
 
@@ -37,15 +37,15 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm --prefix templates ci                # first setup
-npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ (?lang=fa), rebuilds and reloads on save
-npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, generated sections, components, dist/
+npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/ (?lang=fa, ?page=<name> for one page)
+npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
 npm --prefix templates run check         # fails on stale generated output or unformatted code
 npm --prefix templates test              # typecheck, storefront logic, generation, copy parity, package
 npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, tenants
 ```
 
-- **Static preview without Vite:** run the build, then `python3 -m http.server 8765 --bind 127.0.0.1` and open `/templates/storefront-site/StorefrontSite.dc.html?lang=en`.
-- **Generation only:** `node _build/generate.cjs` propagates shared HTML and logic without compiling CSS.
+- **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
+- **Shared logic only:** `node _build/generate.cjs` rewrites `_runtime/shared-logic.js` from `_shared/`.
 - **Port:** 5173 is fixed.
 
 ## Browser tests
@@ -61,12 +61,12 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 
 ## Runtime and export
 
-Pages share `_runtime/`; never edit it.
+`_runtime/` is generated; never edit it.
 
-- **Page head:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`) and `_shared/page-focus.js` before `shared-logic.js`.
+- **`app/index.html`:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`), `_shared/page-focus.js` and `_runtime/shared-logic.js`, then `_runtime/ds-base.js`, then the app module `app/main.jsx`.
 - **`_runtime/ds-base.js`:** loads `../styles.css`, then the active tenant's CSS, then `tailwind.css` and `custom.css`, each once. The tenant comes from `store-config.js` or `?tenant=`.
-- **`_runtime/components.js`:** the component bundle, which loads after React.
-- **Exporting:** copy `_runtime/`, the chosen `storefront-*` folders and the design-system root assets, keeping their relative paths, or change `base` in `ds-base.js`.
+- **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js` (the classic bundle) is only for the guideline cards.
+- **Dependencies:** the repo root's `node_modules` links to `templates/node_modules` (created on install), so component sources resolve React and React Aria.
 
 ## Styling rules
 

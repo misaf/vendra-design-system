@@ -5,7 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const {sharedLogic, sharedLogicInline, generate} = require('../_build/generate.cjs');
+const {sharedLogic, generate} = require('../_build/generate.cjs');
+const {pageScript} = require('./page-script.cjs');
 generate(true);
 function context() {
   const history = [];
@@ -17,9 +18,9 @@ function context() {
     setTimeout,
     clearTimeout,
     location: {
-      pathname: '/templates/storefront-site/StorefrontSite.dc.html',
+      pathname: '/templates/app/',
       search: '',
-      href: 'http://localhost/templates/storefront-site/StorefrontSite.dc.html'
+      href: 'http://localhost/templates/app/'
     },
     history: {
       pushState: (_, __, url) => history.push(['push', url]),
@@ -242,36 +243,17 @@ let parsed = 0;
 for (const folder of fs
   .readdirSync(path.join(root, 'templates'))
   .filter(x => x.startsWith('storefront-'))) {
-  const filename = fs
-    .readdirSync(path.join(root, 'templates', folder))
-    .find(x => x.endsWith('.dc.html'));
-  const html = read('templates/' + folder + '/' + filename),
-    script = html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
-  assert.ok(
-    html.includes(
-      '<script src="../_runtime/shared-logic.js"></script>\n<script src="../_runtime/support.js"></script>'
-    ),
-    folder + ' must load the shared logic before the runtime'
-  );
-  assert.ok(
-    html.includes(
-      '<script src="../_shared/seo.js"></script>\n<script src="../_runtime/helpers.js"></script>\n<script src="../_shared/page-focus.js"></script>' +
-        '\n<script src="../_runtime/shared-logic.js"></script>'
-    ),
-    folder + ' must load the core helpers before the shared logic'
-  );
-  assert.ok(
-    html.includes(sharedLogicInline) &&
-      !html.includes('// Source: templates/_shared/page-lifecycle.js'),
-    folder + ' must not carry its own copy of the shared logic'
-  );
+  const script = pageScript(folder);
   assert.equal(
     read('templates/_runtime/shared-logic.js').endsWith(sharedLogic),
     true,
     '_runtime/shared-logic.js must match _shared/'
   );
   if (folder !== 'storefront-site')
-    assert.ok(html.includes('<main id="main"'), folder + ' must expose the skip-link destination');
+    assert.ok(
+      /<main\s+id="main"/.test(read('templates/' + folder + '/View.jsx')),
+      folder + ' must expose the skip-link destination'
+    );
   const {ctx: c, history} = context();
   vm.runInContext(sharedLogic, c);
   vm.runInContext(script + '\nthis.Logic=Component;', c);
@@ -387,20 +369,8 @@ console.log(
 function loadPage(name, props = {}, search = '') {
   const {ctx: c, history} = context();
   c.location.search = search;
-  const html = read(
-    'templates/storefront-' +
-      name +
-      '/Storefront' +
-      name[0].toUpperCase() +
-      name.slice(1) +
-      '.dc.html'
-  );
   vm.runInContext(sharedLogic, c);
-  vm.runInContext(
-    html.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1] +
-      '\nthis.Logic=Component;',
-    c
-  );
+  vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
 for (const lang of ['en', 'fa']) {
@@ -649,35 +619,3 @@ for (const name of [
 }
 console.log('Passed recursive English/Persian copy parity, including nested labels and lists.');
 // The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
-for (const name of [
-  'account',
-  'bag',
-  'checkout',
-  'contact',
-  'faq',
-  'home',
-  'journal',
-  'notfound',
-  'policy',
-  'post',
-  'product',
-  'saved',
-  'search',
-  'shop',
-  'signin',
-  'site',
-  'track',
-  'weddings'
-]) {
-  const folder = path.join(__dirname, '..', 'storefront-' + name);
-  const html = fs.readFileSync(
-    path.join(
-      folder,
-      fs.readdirSync(folder).find(f => f.endsWith('.dc.html'))
-    ),
-    'utf8'
-  );
-  const calls = html.match(/\{\{\s*[\w.]+\(/g);
-  assert.equal(calls, null, name + ' template calls a function in a binding: ' + calls);
-}
-console.log('Passed: no template binding calls a function.');

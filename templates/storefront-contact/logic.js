@@ -1,4 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();
@@ -6,7 +9,7 @@ function vfContactPrefill() {
   const {profile} = vfAccountLoad(phone);
   return {name: profile.name || '', phone, email: profile.email || ''};
 }
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     sent: false,
     email: '',

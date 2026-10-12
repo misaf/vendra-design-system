@@ -39,7 +39,7 @@ function vfShell(props, page) {
     go = {};
   VF_ROUTES.forEach(r => {
     href[r] =
-      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+      (props.go ? '' : '../app/') +
       window.VF_SEO.hrefFor(
         {
           lang: L
@@ -86,9 +86,7 @@ function vfShell(props, page) {
       : undefined
   }));
   const policyLink = doc => ({
-    href:
-      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-      vfRouteParams({lang: L, view: 'policy', id: doc}),
+    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'policy', id: doc}),
     go: props.go ? vfLinkHandler(props.go) : undefined
   });
   const policyDoc = page === 'policy' ? (props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0]) : '';
@@ -97,7 +95,7 @@ function vfShell(props, page) {
     props.setLang ||
     (lang => {
       location.href =
-        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        (props.go ? '' : '../app/') +
         vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
     });
   // Focuses an element by id, waiting a few frames for one that this update is about to render.
@@ -186,9 +184,7 @@ function vfShell(props, page) {
     }
   };
   const shopLink = cat => ({
-    href:
-      (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-      vfRouteParams({lang: L, view: 'shop', cat}),
+    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat}),
     go: props.go ? vfLinkHandler(props.go) : undefined
   });
   // Footer link columns, social links, contact lines and the bottom line.
@@ -262,7 +258,7 @@ function vfShell(props, page) {
     })),
     productLink: id => ({
       href:
-        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+        (props.go ? '' : '../app/') +
         vfRouteParams({
           lang: L,
           view: 'product',
@@ -273,8 +269,7 @@ function vfShell(props, page) {
     }),
     occasionLink: occasion => ({
       href:
-        (props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
-        vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion}),
+        (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion}),
       go: props.go ? vfLinkHandler(props.go) : undefined
     }),
     shopLink,

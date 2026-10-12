@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {LANGS, openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {LANGS, openSite, pinDelivery, scanAxe, waitForQuiet} from './helpers.mjs';
 
 // Interactive states the first-load scan in storefront.spec.mjs never reaches:
 // open menus and dialogs, expanded accordions, other tabs, validation errors,
@@ -198,7 +198,7 @@ const STATES = [
     view: 'search',
     act: async page => {
       await main(page).getByRole('button').first().click();
-      await page.waitForLoadState('networkidle');
+      await waitForQuiet(page);
     }
   },
   {
@@ -287,7 +287,7 @@ for (const lang of LANGS) {
       test.skip(state.only && info.project.name !== state.only, `${state.only} only`);
       await openSite(page, state.view, lang, state.extra);
       if (state.act) await state.act(page, L[lang]);
-      await page.waitForLoadState('networkidle');
+      await waitForQuiet(page);
       expect(await scanAxe(page)).toEqual([]);
     });
   }

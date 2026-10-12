@@ -49,16 +49,10 @@ function environment() {
   vm.runInContext(read('templates/_runtime/helpers.js'), c);
   for (const f of ['seo', 'page-focus']) vm.runInContext(read('templates/_shared/' + f + '.js'), c);
   vm.runInContext(require('../_build/generate.cjs').sharedLogic, c);
-  vm.runInContext(require('../_build/generate.cjs').sharedLogicInline, c);
   return {c, storage, timers};
 }
 function page(name, c, props = {}) {
-  const s = read(
-    `templates/storefront-${name}/Storefront${name[0].toUpperCase() + name.slice(1)}.dc.html`
-  );
-  const script = s.match(/<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/)[1];
-  const a = script.indexOf('// BEGIN GENERATED PAGE COPY');
-  const logic = script.slice(a >= 0 ? a : script.indexOf('// BEGIN GENERATED PAGE LOGIC'));
+  const logic = require('./page-script.cjs').pageScript('storefront-' + name);
   return vm.runInContext(
     `(()=>{${logic}\nreturn new Component(${JSON.stringify({lang: 'en', ...props})});})()`,
     c
@@ -209,7 +203,9 @@ function page(name, c, props = {}) {
   );
   for (const id of vm.runInContext(
     '(()=>{' +
-      read('templates/_shared/translations/journal-content.js') +
+      require('./page-script.cjs').strip(
+        read('templates/_shared/translations/journal-content.js')
+      ) +
       ';return VF_POSTS.map(p=>p.id);})()',
     c
   ))

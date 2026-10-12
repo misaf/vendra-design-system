@@ -1,5 +1,5 @@
 // Bilingual contact copy. Edit here, then run npm --prefix templates run build.
-function vfCopy(S) {
+export function vfCopy(S) {
   const fa = S.fa;
   return {
     en: {

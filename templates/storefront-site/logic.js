@@ -1,4 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {DCLogic} from '../app/runtime.jsx';
 const VF_BAG0 = vfSampleBag();
 const VF_SESSION = 'vendra-template:' + location.pathname;
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.
@@ -54,7 +56,7 @@ function vfSiteInitial(props) {
     announcement: ''
   };
 }
-class Component extends DCLogic {
+export class Component extends DCLogic {
   state = vfSiteInitial(this.props);
   componentDidMount() {
     window.__vfSite = this;

@@ -1,7 +1,7 @@
 // Bilingual policy copy. Edit here, then run npm --prefix templates run build.
 // Fees, cut-offs, time slots and store details come from the shared config, so the policies stay current.
 // Each document is {title, intro, sections: [{title, paras: [...], items?: [...]}]}.
-function vfCopy(S) {
+export function vfCopy(S) {
   const fa = S.fa;
   const L = fa ? 'fa' : 'en';
   const m = v => VF_MONEY(v, fa);

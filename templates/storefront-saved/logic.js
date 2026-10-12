@@ -1,5 +1,8 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-class Component extends VFPage {
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
+export class Component extends VFPage {
   state = {
     ids: ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE']
   };

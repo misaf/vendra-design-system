@@ -96,7 +96,7 @@ function vfPageClass(DCLogic) {
           alternates: Object.fromEntries(
             ['en', 'fa'].map(lang => [
               lang,
-              (this.props.go ? '' : '../storefront-site/StorefrontSite.dc.html') +
+              (this.props.go ? '' : '../app/') +
                 vfRouteParams({
                   ...VF_ROUTE_EXTRA[this._vfPage],
                   ...vfPageRoute(this.props),

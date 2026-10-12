@@ -83,7 +83,7 @@ test('home arrivals scroll with the snap scroller', async ({page}, info) => {
 });
 
 test('payment methods are radio buttons', async ({page}) => {
-  await page.goto('/templates/storefront-checkout/StorefrontCheckout.dc.html');
+  await page.goto('/templates/app/?page=checkout');
   await expect(page.locator('#main')).toBeVisible();
   const group = page.getByRole('radiogroup', {name: 'Choose a payment method'});
   await expect(group.getByRole('radio')).toHaveCount(5);
@@ -93,7 +93,7 @@ test('payment methods are radio buttons', async ({page}) => {
 });
 
 test('the Sheba hint describes its button', async ({page}) => {
-  await page.goto('/templates/storefront-checkout/StorefrontCheckout.dc.html');
+  await page.goto('/templates/app/?page=checkout');
   await expect(page.locator('#main')).toBeVisible();
   // Demo stores have no Sheba number; set one, then re-render by switching method.
   await page.evaluate(() =>
@@ -147,14 +147,14 @@ test('the header switches language and keeps the page', async ({page}, info) => 
 
 test('a standalone page opens itself in the other language', async ({page}, info) => {
   test.skip(info.project.name === 'mobile', 'Same link on both; desktop covers it');
-  await page.goto('/templates/storefront-faq/StorefrontFaq.dc.html');
+  await page.goto('/templates/app/?page=faq');
   await expect(page.locator('#main')).toBeVisible();
   await page
     .locator('header')
     .getByRole('group', {name: 'Language'})
     .getByRole('button', {name: 'فا'})
     .click();
-  await expect(page).toHaveURL(/StorefrontSite\.dc\.html\?.*lang=fa/);
+  await expect(page).toHaveURL(/templates\/app\/\?.*lang=fa/);
   await expect(page).toHaveURL(/view=faq/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
 });

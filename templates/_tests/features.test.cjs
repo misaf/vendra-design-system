@@ -13,7 +13,7 @@ const ctx = {
   setTimeout,
   clearTimeout,
   location: {
-    pathname: '/templates/storefront-site/StorefrontSite.dc.html',
+    pathname: '/templates/app/',
     search: '',
     href: 'http://localhost/'
   },

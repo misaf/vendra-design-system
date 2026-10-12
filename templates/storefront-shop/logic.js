@@ -1,11 +1,14 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
+import React from 'react';
+import {VFPage} from '../app/runtime.jsx';
+import {vfCopy} from './copy.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
 const VF_CHIPS = [
   ['under3', p => p.price < 3000000],
   ['same', p => p.same],
   ['roses', p => p.roses]
 ];
-class Component extends VFPage {
+export class Component extends VFPage {
   state = {
     cat: 'all',
     chips: [],

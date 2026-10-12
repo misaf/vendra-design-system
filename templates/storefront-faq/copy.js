@@ -144,7 +144,7 @@ function vfFaqGroups(lang, money) {
     .filter(group => group[2].length);
 }
 
-function vfCopy(S) {
+export function vfCopy(S) {
   const copy = {
     en: {
       eyebrow: 'Here to help',
