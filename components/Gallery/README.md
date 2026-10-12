@@ -1,6 +1,6 @@
 # Gallery
 
-Swipeable product photos with scroll-snap and pill dots (active widens). RTL-aware.
+Swipeable product photos with scroll-snap and pill dots (active widens). RTL-aware. The dots are React Aria buttons; the track scrolls natively.
 
 ```jsx
 <Gallery

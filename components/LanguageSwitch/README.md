@@ -1,6 +1,6 @@
 # LanguageSwitch
 
-EN / فا segmented toggle for the header. Consumers set `lang` + `dir` on the root when it changes.
+EN / فا segmented toggle for the header. Consumers set `lang` + `dir` on the root when it changes. Each language is a React Aria ToggleButton (`aria-pressed`) marked with its own `lang`.
 
 ```jsx
 <LanguageSwitch

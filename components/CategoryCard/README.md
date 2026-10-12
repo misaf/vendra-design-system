@@ -1,6 +1,6 @@
 # CategoryCard
 
-Photo tile linking to a product category (Bouquets, Flower boxes, Wedding car…); use in "Shop by category" grids of 4–6 across.
+Photo tile linking to a product category (Bouquets, Flower boxes, Wedding car…); use in "Shop by category" grids of 4–6 across. With `href` it is a link; otherwise a React Aria button.
 
 ```jsx
 <CategoryCard

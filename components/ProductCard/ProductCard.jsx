@@ -1,9 +1,10 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 
-// The product name is the one interactive target: <a href> (or <button> without href) with a stretched ::after covering the card.
+// The product name is the one interactive target: <a href> (or a React Aria button without href) with a stretched ::after covering the card.
 export function ProductCard({
   name,
   subtitle,
@@ -55,14 +56,9 @@ export function ProductCard({
       {name}
     </a>
   ) : onClick ? (
-    <button
-      type="button"
-      className="ag-product__link"
-      aria-label={accessibleName}
-      onClick={onClick}
-    >
+    <Button className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
       {name}
-    </button>
+    </Button>
   ) : (
     name
   );

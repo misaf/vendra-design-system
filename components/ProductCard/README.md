@@ -1,6 +1,6 @@
 # ProductCard
 
-Catalogue tile: 4:5 arch-framed image, serif name, muted subtitle, price. Use in grids of 3–4.
+Catalogue tile: 4:5 arch-framed image, serif name, muted subtitle, price. Use in grids of 3–4. The name is the link (`href`) or, with only `onClick`, a React Aria button.
 
 ```jsx
 <ProductCard

@@ -1,9 +1,10 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 // The phone tab bar. Items with `href` are links (aria-current="page" when current); the rest
-// are buttons. `count` shows a badge on the icon.
+// are React Aria buttons. `count` shows a badge on the icon.
 export function BottomTabBar({items = [], label, className = ''}) {
   return (
     <nav aria-label={label} className={cx('ag-tabbar', className)}>
@@ -34,14 +35,9 @@ export function BottomTabBar({items = [], label, className = ''}) {
                   {content}
                 </a>
               ) : (
-                <button
-                  type="button"
-                  className={classes}
-                  aria-current={current}
-                  onClick={item.onClick}
-                >
+                <Button className={classes} aria-current={current} onClick={item.onClick}>
                   {content}
-                </button>
+                </Button>
               )}
             </li>
           );

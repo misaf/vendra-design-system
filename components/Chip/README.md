@@ -1,6 +1,6 @@
 # Chip
 
-Outlined pill chip for filters (occasion, colour, flower type); toggles to ink fill when selected.
+Outlined pill chip for filters (occasion, colour, flower type); toggles to ink fill when selected. It is React Aria's ToggleButton (`aria-pressed` from `selected`) and takes `onClick` and the usual button props.
 
 ```jsx
 <Chip selected onClick={toggle}>Dried</Chip>

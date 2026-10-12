@@ -1,6 +1,6 @@
 # LineItem
 
-Bag / order-summary row with an arch thumbnail. sizes is set to the thumb width automatically.
+Bag / order-summary row with an arch thumbnail. sizes is set to the thumb width automatically. The remove action is a React Aria button.
 
 ```jsx
 <LineItem image={p.image} name="Lavender Whisper" meta="Classic" price="2,400,000 Toman" quantity={1} onQuantityChange={setQty} onRemove={remove} />

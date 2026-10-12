@@ -1,6 +1,6 @@
 # Stepper
 
-Checkout progress: numbered 26px dots — done = ink + check, current = ink + number, upcoming = outline. Wraps on mobile.
+Checkout progress: numbered 26px dots — done = ink + check, current = ink + number, upcoming = outline. Wraps on mobile. Done steps with `onStepClick` are React Aria buttons.
 
 ```jsx
 <Stepper

@@ -1,7 +1,9 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
 
-// Product photos in a swipeable scroll-snap track with dot buttons; RTL scrolls the other way.
+// Product photos in a swipeable scroll-snap track with dot buttons (React Aria); RTL scrolls the
+// other way.
 // The track is focusable so keyboard users can scroll it with the arrow keys (axe: scrollable-region-focusable).
 export function Gallery({
   images = [],
@@ -62,16 +64,15 @@ export function Gallery({
       {count > 1 && (
         <div className="ag-gallery__dots">
           {images.map((_, i) => (
-            <button
+            <Button
               key={i}
-              type="button"
               className="ag-gallery__dot"
               aria-label={slideLabel(i + 1, count)}
               aria-current={i === currentSlide ? 'true' : undefined}
-              onClick={() => goTo(i)}
+              onPress={() => goTo(i)}
             >
               <span></span>
-            </button>
+            </Button>
           ))}
         </div>
       )}

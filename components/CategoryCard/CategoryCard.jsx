@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
@@ -44,8 +45,8 @@ export function CategoryCard({
       </a>
     );
   return (
-    <button type="button" className={cx('ag-cat', className)} onClick={onClick}>
+    <Button className={cx('ag-cat', className)} onClick={onClick}>
       {inner}
-    </button>
+    </Button>
   );
 }

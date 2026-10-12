@@ -1,6 +1,6 @@
 # BottomTabBar
 
-Mobile tab bar (4 items). Fix it to the bottom yourself; it adds safe-area padding.
+Mobile tab bar (4 items). Fix it to the bottom yourself; it adds safe-area padding. Items with `href` are links; the rest are React Aria buttons.
 
 ```jsx
 <BottomTabBar

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
 
@@ -67,9 +68,9 @@ export function LineItem({
                 />
               )}
               {onRemove && (
-                <button type="button" className="ag-line__remove" onClick={onRemove}>
+                <Button className="ag-line__remove" onClick={onRemove}>
                   {removeLabel}
-                </button>
+                </Button>
               )}
             </div>
           )}

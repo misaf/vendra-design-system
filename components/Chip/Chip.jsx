@@ -1,16 +1,16 @@
 import React from 'react';
+import {ToggleButton} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// A filter chip: a toggle button (aria-pressed) that fills with ink when `selected`, with an
-// optional remove icon (`onRemove`).
+// A filter chip: React Aria's ToggleButton (aria-pressed) that fills with ink when `selected`, with
+// an optional remove icon (`onRemove`). It takes onClick and the usual button props.
 export function Chip({selected, onRemove, className = '', children, ...rest}) {
   return (
-    <button
-      type="button"
-      aria-pressed={!!selected}
-      className={cx('ag-chip', selected && 'ag-chip--selected', className)}
+    <ToggleButton
       {...rest}
+      isSelected={!!selected}
+      className={cx('ag-chip', selected && 'ag-chip--selected', className)}
     >
       {children}
       {onRemove && (
@@ -24,6 +24,6 @@ export function Chip({selected, onRemove, className = '', children, ...rest}) {
           <Icon name="x" size={14} />
         </span>
       )}
-    </button>
+    </ToggleButton>
   );
 }

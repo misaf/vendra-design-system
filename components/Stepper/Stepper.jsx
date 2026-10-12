@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
@@ -46,9 +47,9 @@ export function Stepper({
             aria-current={state === 'current' ? 'step' : undefined}
           >
             {state === 'done' && onStepClick ? (
-              <button type="button" className="ag-steps__btn" onClick={() => onStepClick(i)}>
+              <Button className="ag-steps__btn" onPress={() => onStepClick(i)}>
                 {content}
-              </button>
+              </Button>
             ) : (
               <span className="ag-steps__btn">{content}</span>
             )}

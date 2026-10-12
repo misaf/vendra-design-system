@@ -1,6 +1,8 @@
 import React from 'react';
+import {ToggleButton} from 'react-aria-components';
 
-// The EN / فا toggle: one pressed button per language, each marked with its own `lang`.
+// The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
+// own `lang`.
 export function LanguageSwitch({
   value = 'en',
   onChange,
@@ -13,15 +15,14 @@ export function LanguageSwitch({
   return (
     <div className="ag-lang" role="group" aria-label={label}>
       {options.map(o => (
-        <button
+        <ToggleButton
           key={o.id}
-          type="button"
           lang={o.id}
-          aria-pressed={value === o.id}
-          onClick={() => onChange && onChange(o.id)}
+          isSelected={value === o.id}
+          onChange={() => onChange && onChange(o.id)}
         >
           {o.label}
-        </button>
+        </ToggleButton>
       ))}
     </div>
   );
