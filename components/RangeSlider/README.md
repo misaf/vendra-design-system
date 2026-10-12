@@ -1,6 +1,6 @@
 # RangeSlider
 
-Dual-thumb price range. Accent fill between thumbs; mirrors in RTL. 44px thumb hit area.
+Dual-thumb price range on React Aria's Slider. Accent fill between thumbs; mirrors in RTL (it follows the page's `lang`). 44px thumb hit area; pressing the track moves the nearest thumb. Screen readers read each thumb as `formatValue`.
 
 ```jsx
 <RangeSlider

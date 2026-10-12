@@ -1001,6 +1001,9 @@ a.ag-iconbtn {
 }
 
 /* components/QuantityInput/QuantityInput.css */
+.ag-qty-root {
+  display: contents;
+}
 .ag-qty {
   display: inline-flex;
   align-items: center;
@@ -1034,10 +1037,28 @@ a.ag-iconbtn {
   border-color: var(--border-subtle);
 }
 .ag-qty__val {
+  width: 28px;
   min-width: 28px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   text-align: center;
   font-size: var(--text-base);
   font-variant-numeric: tabular-nums;
+}
+@supports (field-sizing: content) {
+  .ag-qty__val {
+    width: auto;
+    field-sizing: content;
+  }
+}
+/* The count is the one Tab stop, so the ring goes round the whole control. */
+.ag-qty[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 /* components/Dialog/Dialog.css */
@@ -1971,35 +1992,16 @@ a.ag-tabbar__item--current:hover {
 .ag-range__fill {
   background: var(--text-accent);
 }
-.ag-range__input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 44px;
-  margin: 0;
-  background: none;
-  -webkit-appearance: none;
-  appearance: none;
-  pointer-events: none;
-  outline: none;
+.ag-range__rail {
+  /* Pressable area (React Aria makes it position: relative): the handle centres run from 22px in
+     from each end, as on a native range. */
+  height: 100%;
+  margin-inline: 22px;
 }
-.ag-range__input::-webkit-slider-runnable-track {
-  height: 44px;
-  background: none;
-  border: 0;
-}
-.ag-range__input::-moz-range-track {
-  height: 44px;
-  background: none;
-  border: 0;
-}
-.ag-range__input::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  pointer-events: auto;
+.ag-range__thumb {
+  top: 50%;
   width: 44px;
   height: 44px;
-  border: 0;
   border-radius: 50%;
   cursor: grab;
   background: radial-gradient(
@@ -2009,31 +2011,10 @@ a.ag-tabbar__item--current:hover {
     transparent 11.5px
   );
 }
-.ag-range__input::-moz-range-thumb {
-  pointer-events: auto;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 50%;
-  cursor: grab;
-  background: radial-gradient(
-    circle,
-    var(--surface-card) 0 9px,
-    var(--text-accent) 9.5px 11px,
-    transparent 11.5px
-  );
+.ag-range__thumb[data-dragging] {
+  cursor: grabbing;
 }
-.ag-range__input:focus-visible::-webkit-slider-thumb {
-  background: radial-gradient(
-    circle,
-    var(--surface-card) 0 9px,
-    var(--text-accent) 9.5px 11px,
-    transparent 11.5px 13px,
-    var(--focus-ring) 13.5px 15px,
-    transparent 15.5px
-  );
-}
-.ag-range__input:focus-visible::-moz-range-thumb {
+.ag-range__thumb[data-focus-visible] {
   background: radial-gradient(
     circle,
     var(--surface-card) 0 9px,

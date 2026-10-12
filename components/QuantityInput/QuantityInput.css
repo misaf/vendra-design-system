@@ -1,3 +1,6 @@
+.ag-qty-root {
+  display: contents;
+}
 .ag-qty {
   display: inline-flex;
   align-items: center;
@@ -31,8 +34,26 @@
   border-color: var(--border-subtle);
 }
 .ag-qty__val {
+  width: 28px;
   min-width: 28px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   text-align: center;
   font-size: var(--text-base);
   font-variant-numeric: tabular-nums;
+}
+@supports (field-sizing: content) {
+  .ag-qty__val {
+    width: auto;
+    field-sizing: content;
+  }
+}
+/* The count is the one Tab stop, so the ring goes round the whole control. */
+.ag-qty[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }

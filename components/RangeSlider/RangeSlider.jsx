@@ -1,8 +1,13 @@
 import React from 'react';
+import {I18nProvider, Slider, SliderThumb, SliderTrack} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
+import {useClientLayoutEffect} from '../utils/effects.js';
+import {usePageLocale} from '../utils/locale.js';
 
-// Two native range inputs over one track (or one with `range={false}`), so keyboard and screen
-// readers work as usual. The handles can't cross; RTL mirrors the fill.
+// A slider on React Aria: two handles over one track (or one with `range={false}`). Each handle is
+// a real range input for keyboards and screen readers (read as formatValue); dragging a handle or
+// pressing the track moves the nearest one. The handles stay a step apart; RTL mirrors it, following
+// the page's language.
 export function RangeSlider({
   range = true,
   min = 0,
@@ -13,83 +18,81 @@ export function RangeSlider({
   onChange,
   formatValue = number => String(number),
   label = 'Value',
+  labelledBy,
   labels = {min: 'Minimum', max: 'Maximum'},
   showValues = true,
   className = ''
 }) {
+  const {locale, ref} = usePageLocale();
   const initial = defaultValue ?? (range ? [min, max] : min);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
   const current = value ?? uncontrolledValue;
+  const values = range ? current : [Number(current)];
   const commit = next => {
     if (value === undefined) setUncontrolledValue(next);
     onChange && onChange(next);
   };
+  // React Aria reads values with its number formatter; screen readers get formatValue instead.
+  const inputs = [React.useRef(null), React.useRef(null)];
+  useClientLayoutEffect(() => {
+    values.forEach((number, index) => {
+      const input = inputs[index].current;
+      if (input) input.setAttribute('aria-valuetext', formatValue(number));
+    });
+  });
+  const change = next => {
+    if (!range) return commit(next);
+    const [low, high] = values;
+    // Only one handle moves at a time; keep it at least one step from the other.
+    const moved =
+      next[0] !== low
+        ? [Math.max(min, Math.min(next[0], high - step)), high]
+        : [low, Math.min(max, Math.max(next[1], low + step))];
+    if (moved[0] !== low || moved[1] !== high) commit(moved);
+  };
   const percent = number => ((number - min) / (max - min || 1)) * 100;
-  const inputProps = {type: 'range', min, max, step, className: 'ag-range__input'};
-  if (!range) {
-    const single = Number(current);
-    return (
-      <div className={cx('ag-range', 'ag-range--single', className)}>
+  const fill = range
+    ? {
+        insetInlineStart: percent(values[0]) + '%',
+        width: percent(values[1]) - percent(values[0]) + '%'
+      }
+    : {insetInlineStart: 0, width: percent(values[0]) + '%'};
+  // React Aria names each handle by its own label followed by the slider's (label or labelledBy).
+  const thumbLabels = range ? [labels.min, labels.max] : [undefined];
+  return (
+    <I18nProvider locale={locale}>
+      <Slider
+        ref={ref}
+        value={range ? values : values[0]}
+        minValue={min}
+        maxValue={max}
+        step={step}
+        onChange={change}
+        aria-label={labelledBy ? undefined : label}
+        aria-labelledby={labelledBy}
+        className={cx('ag-range', !range && 'ag-range--single', className)}
+      >
         <div className="ag-range__track">
-          <span
-            className="ag-range__fill"
-            style={{insetInlineStart: 0, width: percent(single) + '%'}}
-          ></span>
-          <input
-            {...inputProps}
-            value={single}
-            aria-label={label}
-            aria-valuetext={formatValue(single)}
-            onChange={event => commit(Number(event.target.value))}
-          />
+          <span className="ag-range__fill" style={fill}></span>
+          <SliderTrack className="ag-range__rail">
+            {values.map((number, index) => (
+              <SliderThumb
+                key={index}
+                index={index}
+                inputRef={inputs[index]}
+                aria-label={thumbLabels[index]}
+                className="ag-range__thumb"
+              />
+            ))}
+          </SliderTrack>
         </div>
         {showValues && (
           <div className="ag-range__vals">
-            <span>{formatValue(min)}</span>
-            <span>{formatValue(max)}</span>
+            <span>{formatValue(range ? values[0] : min)}</span>
+            <span>{formatValue(range ? values[1] : max)}</span>
           </div>
         )}
-      </div>
-    );
-  }
-  const [low, high] = current;
-  // Moves one handle (0 = low, 1 = high), keeping at least one step between them.
-  const moveHandle = (handle, raw) => {
-    const number = Number(raw);
-    const next = handle
-      ? [low, Math.min(max, Math.max(number, low + step))]
-      : [Math.max(min, Math.min(number, high - step)), high];
-    if (next[0] !== low || next[1] !== high) commit(next);
-  };
-  return (
-    <div className={cx('ag-range', className)}>
-      <div className="ag-range__track">
-        <span
-          className="ag-range__fill"
-          style={{insetInlineStart: percent(low) + '%', width: percent(high) - percent(low) + '%'}}
-        ></span>
-        <input
-          {...inputProps}
-          value={low}
-          aria-label={labels.min}
-          aria-valuetext={formatValue(low)}
-          onChange={event => moveHandle(0, event.target.value)}
-          style={{zIndex: percent(low) > 90 ? 3 : 2}}
-        />
-        <input
-          {...inputProps}
-          value={high}
-          aria-label={labels.max}
-          aria-valuetext={formatValue(high)}
-          onChange={event => moveHandle(1, event.target.value)}
-        />
-      </div>
-      {showValues && (
-        <div className="ag-range__vals">
-          <span>{formatValue(low)}</span>
-          <span>{formatValue(high)}</span>
-        </div>
-      )}
-    </div>
+      </Slider>
+    </I18nProvider>
   );
 }

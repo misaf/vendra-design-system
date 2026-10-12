@@ -7,8 +7,9 @@ export interface QuantityStepperProps {
   /** Both buttons off (e.g. while the bag is updating). At min/max only that side turns off. */
   disabled?: boolean;
   size?: 'sm' | 'md';
-  /** Number formatter — pass a Persian-digit formatter for fa */
+  /** @deprecated Ignored: digits follow the page's language (Persian digits under lang="fa") */
   format?: (n: number) => string;
-  labels?: {dec: string; inc: string};
+  /** dec/inc name the buttons, value names the count field. Default "Quantity" */
+  labels?: {dec: string; inc: string; value?: string};
 }
 export declare function QuantityInput(props: QuantityStepperProps): JSX.Element;

@@ -10,16 +10,22 @@
 </head><body>
 <div id="root"></div>
 <script type="text/babel">
-const {Tooltip, IconButton, Tabs, Toast} = window.VendraDesignSystem;
+const {Tooltip, IconButton, Tabs, Toast, QuantityInput, RangeSlider, Input} = window.VendraDesignSystem;
 const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
 document.documentElement.lang = lang; document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
 const items = [{id: 'orders', label: 'Orders'}, {id: 'addresses', label: 'Addresses'}, {id: 'profile', label: 'Profile'}];
 function App() {
   const [tab, setTab] = React.useState('orders');
   const [closed, setClosed] = React.useState(0);
+  const [quantity, setQuantity] = React.useState(2);
+  const [price, setPrice] = React.useState([20, 80]);
+  const [note, setNote] = React.useState('');
   return <>
     <section data-test="tooltip"><Tooltip content="Save to favourites"><IconButton icon="heart" label="Save" variant="outline"/></Tooltip> <button type="button">After</button></section>
     <section data-test="tabs"><Tabs items={items} value={tab} onChange={setTab} label="Account">{tab} panel</Tabs></section>
+    <section data-test="quantity"><QuantityInput value={quantity} min={1} max={3} onChange={setQuantity} labels={{dec: 'Fewer', inc: 'More', value: 'Quantity'}}/><output data-test="quantity">{quantity}</output></section>
+    <section data-test="range"><RangeSlider min={0} max={100} step={10} value={price} onChange={setPrice} formatValue={v => v + ' Toman'} labels={{min: 'Min price', max: 'Max price'}} label="Price"/><output data-test="range">{price.join('-')}</output></section>
+    <section data-test="input"><Input id="note" label="Note" hint="Optional" value={note} onChange={event => setNote(event.target.value)}/><output data-test="note">{note}</output></section>
     <section data-test="toast"><Toast title="Added to your bag" message="Wild Meadow · Generous" onClose={() => setClosed(c => c + 1)}/><output data-test="closed">{closed}</output></section>
   </>;
 }

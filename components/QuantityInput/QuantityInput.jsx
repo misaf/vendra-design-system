@@ -1,9 +1,13 @@
 import React from 'react';
+import {Button, Group, I18nProvider, Input, NumberField} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
+import {usePageLocale} from '../utils/locale.js';
 
-// A −/+ quantity control, controlled (`value`) or not (`defaultValue`), clamped to min..max.
-// `format` localizes the number (Persian digits); the count is announced politely.
+// A −/+ quantity control on React Aria's NumberField, controlled (`value`) or not (`defaultValue`),
+// clamped to min..max. The count is a text field (React Aria drops the spinbutton role, which
+// VoiceOver can't focus): type a number, or use ↑/↓, Home/End or the buttons (which, as in React Aria, are left out of the Tab order). Digits follow the page's
+// language; `format` is kept for older callers and no longer used.
 export function QuantityInput({
   value,
   defaultValue = 1,
@@ -12,37 +16,43 @@ export function QuantityInput({
   onChange,
   disabled,
   size = 'md',
-  format = n => String(n),
-  labels = {dec: 'Decrease', inc: 'Increase'}
+  labels = {}
 }) {
+  const {locale, ref} = usePageLocale();
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const quantity = value ?? uncontrolledValue;
-  const change = next => {
-    const clamped = Math.max(min, Math.min(max, next));
-    if (value === undefined) setUncontrolledValue(clamped);
-    onChange && onChange(clamped);
-  };
   return (
-    <div className={cx('ag-qty', size === 'sm' && 'ag-qty--sm', disabled && 'ag-qty--disabled')}>
-      <button
-        type="button"
-        aria-label={labels.dec}
-        disabled={disabled || quantity <= min}
-        onClick={() => change(quantity - 1)}
+    <I18nProvider locale={locale}>
+      {/* NumberField keeps the text it first formatted, so a new locale (the page's lang, read
+          before the first paint) gets a fresh field. */}
+      <NumberField
+        key={locale}
+        ref={ref}
+        value={quantity}
+        minValue={min}
+        maxValue={max}
+        step={1}
+        isDisabled={disabled}
+        aria-label={labels.value || 'Quantity'}
+        onChange={next => {
+          if (Number.isNaN(next)) return;
+          if (value === undefined) setUncontrolledValue(next);
+          onChange && onChange(next);
+        }}
+        className="ag-qty-root"
       >
-        <Icon name="minus" size={16} />
-      </button>
-      <span className="ag-qty__val" aria-live="polite">
-        {format(quantity)}
-      </span>
-      <button
-        type="button"
-        aria-label={labels.inc}
-        disabled={disabled || quantity >= max}
-        onClick={() => change(quantity + 1)}
-      >
-        <Icon name="plus" size={16} />
-      </button>
-    </div>
+        <Group
+          className={cx('ag-qty', size === 'sm' && 'ag-qty--sm', disabled && 'ag-qty--disabled')}
+        >
+          <Button slot="decrement" aria-label={labels.dec || 'Decrease'}>
+            <Icon name="minus" size={16} />
+          </Button>
+          <Input className="ag-qty__val" />
+          <Button slot="increment" aria-label={labels.inc || 'Increase'}>
+            <Icon name="plus" size={16} />
+          </Button>
+        </Group>
+      </NumberField>
+    </I18nProvider>
   );
 }

@@ -11,10 +11,12 @@ export interface RangeSliderProps {
   onChange?: (value: [number, number] | number) => void;
   /** Formats the labels under the track and aria-valuetext, e.g. v => money(v, { lang }) */
   formatValue?: (v: number) => string;
-  /** aria-labels for the two handles (range mode) */
+  /** aria-labels for the two handles (range mode), read before the slider's name: "Minimum, Price" */
   labels?: {min: string; max: string};
-  /** aria-label for the single handle */
+  /** Names the slider (and so its handle in single mode). Default "Value" */
   label?: string;
+  /** id of a visible label naming the slider, instead of `label` */
+  labelledBy?: string;
   showValues?: boolean;
   className?: string;
 }

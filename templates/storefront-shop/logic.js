@@ -156,8 +156,8 @@ class Component extends VFPage {
       price,
       priceMax,
       priceLabels: {
-        min: C.migration.price + ' — ' + (S.fa ? 'حداقل' : 'minimum'),
-        max: C.migration.price + ' — ' + (S.fa ? 'حداکثر' : 'maximum')
+        min: S.fa ? 'حداقل' : 'Minimum',
+        max: S.fa ? 'حداکثر' : 'Maximum'
       },
       formatPrice: S.m,
       setPrice: ([min, max]) =>

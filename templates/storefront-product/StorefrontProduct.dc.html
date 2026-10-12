@@ -235,6 +235,7 @@ function vfCopy(S) {
         'Same-day delivery in Karaj if you order by ' + vfDeliveryCutoff(VF_ZONES[0], false) + '.',
       dec: 'Fewer',
       inc: 'More',
+      quantity: 'Quantity',
       add: 'Add to bag',
       added: 'Added to your bag',
       viewBag: 'View bag',
@@ -288,6 +289,7 @@ function vfCopy(S) {
       ship: 'ارسال همان روز در کرج برای سفارش تا ساعت ' + vfDeliveryCutoff(VF_ZONES[0], true) + '.',
       dec: 'کمتر',
       inc: 'بیشتر',
+      quantity: 'تعداد',
       add: 'افزودن به سبد',
       added: 'به سبد شما اضافه شد',
       viewBag: 'مشاهده سبد',
@@ -460,7 +462,8 @@ class Component extends VFPage {
       fmt: fa ? n => VF_FA_DIGITS(n) : n => String(n),
       qtyLabels: {
         dec: C.dec,
-        inc: C.inc
+        inc: C.inc,
+        value: C.quantity
       },
       addLabel:
         (product.inStock === false ? (fa ? 'ناموجود' : 'Sold out') : C.add) + ' · ' + m(total),

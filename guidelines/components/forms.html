@@ -42,7 +42,7 @@ return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div
 <div><div className="k">{t.kt}</div><ChoiceGroup label={t.dt} columns={4}>{t.slots.map(([id,a,b])=><ChoiceTile key={id} label={a} description={b} selected={slot===id} disabled={id==='20'} onSelect={()=>setSlot(id)}/>)}</ChoiceGroup>
 <div style={{marginTop:12}}><ChoiceGroup label={t.area} columns={3}>{t.areas.map((x,i)=><ChoiceTile key={x} size="sm" label={x} selected={z===i} onSelect={()=>setZ(i)}/>)}</ChoiceGroup></div></div>
 <div className="g2">
-<div><div className="k">{t.kr}</div><RangeSlider min={0} max={10000000} step={100000} value={r} onChange={setR} formatValue={t.money} labels={t.rl}/></div>
+<div><div className="k">{t.kr}</div><RangeSlider min={0} max={10000000} step={100000} value={r} onChange={setR} formatValue={t.money} labels={t.rl} label={t.kr}/></div>
 <div><div className="k">{t.kr1}</div><RangeSlider range={false} min={0} max={100} step={5} value={one} onChange={setOne} label={t.stems} formatValue={t.st}/></div>
 </div></div>;}
 ReactDOM.createRoot(document.getElementById('root')).render(<div className="split"><Side l="en"/><Side l="fa"/></div>);

@@ -127,7 +127,8 @@ class Component extends VFPage {
       fmt: fa ? n => VF_FA_DIGITS(n) : n => String(n),
       qtyLabels: {
         dec: C.dec,
-        inc: C.inc
+        inc: C.inc,
+        value: C.quantity
       },
       addLabel:
         (product.inStock === false ? (fa ? 'ناموجود' : 'Sold out') : C.add) + ' · ' + m(total),

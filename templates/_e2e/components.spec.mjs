@@ -82,6 +82,55 @@ test.describe('Tabs (ARIA tabs pattern)', () => {
   });
 });
 
+test.describe('QuantityInput (NumberField)', () => {
+  for (const lang of ['en', 'fa']) {
+    test(`arrows, buttons and bounds (${lang})`, async ({page}) => {
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const count = page.getByRole('textbox', {name: 'Quantity'});
+      const result = page.locator('output[data-test=quantity]');
+      await expect(count).toHaveValue(lang === 'fa' ? '۲' : '2');
+      await count.focus();
+      await page.keyboard.press('ArrowUp');
+      await expect(result).toHaveText('3');
+      await expect(page.getByRole('button', {name: 'More'})).toBeDisabled();
+      await page.keyboard.press('Home');
+      await expect(result).toHaveText('1');
+      await expect(page.getByRole('button', {name: 'Fewer'})).toBeDisabled();
+      await page.getByRole('button', {name: 'More'}).click();
+      await expect(result).toHaveText('2');
+    });
+  }
+});
+
+test.describe('RangeSlider', () => {
+  for (const lang of ['en', 'fa']) {
+    test(`thumbs move by step, stay a step apart and read formatValue (${lang})`, async ({
+      page
+    }) => {
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const low = page.getByRole('slider', {name: 'Min price'});
+      const result = page.locator('output[data-test=range]');
+      await expect(low).toHaveAttribute('aria-valuetext', '20 Toman');
+      await low.focus();
+      await page.keyboard.press(lang === 'fa' ? 'ArrowLeft' : 'ArrowRight');
+      await expect(result).toHaveText('30-80');
+      await expect(low).toHaveAttribute('aria-valuetext', '30 Toman');
+      await page.keyboard.press('End');
+      await expect(result).toHaveText('70-80');
+    });
+  }
+});
+
+test.describe('Input', () => {
+  test('label, hint and onChange events', async ({page}) => {
+    const field = page.getByRole('textbox', {name: 'Note'});
+    await expect(field).toHaveAttribute('id', 'note');
+    await expect(field).toHaveAttribute('aria-describedby', 'note-hint');
+    await field.fill('Roses');
+    await expect(page.locator('output[data-test=note]')).toHaveText('Roses');
+  });
+});
+
 test.describe('Toast', () => {
   test('close button is a 44px target and works', async ({page}) => {
     const close = page.getByRole('button', {name: 'Dismiss'});

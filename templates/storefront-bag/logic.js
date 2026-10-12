@@ -246,7 +246,8 @@ class Component extends VFPage {
       fmt: fa ? v => VF_FA_DIGITS(v) : v => String(v),
       qtyLabels: {
         dec: C.dec,
-        inc: C.inc
+        inc: C.inc,
+        value: C.quantity
       },
       lines: live.map((l, i) => ({
         unavailable: !vfLineAvailable(l),
