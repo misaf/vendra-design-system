@@ -8,8 +8,8 @@ const {createRequire} = require('node:module');
 
 const repo = path.resolve(__dirname, '../..');
 const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
-// Inside templates/node_modules, so the package resolves react from there like a peer.
-const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package-test-'));
+// Inside the workspace's node_modules, so the package resolves react from there like a peer.
+const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-'));
 
 (async () => {
   try {

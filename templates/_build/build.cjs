@@ -20,7 +20,7 @@ try {
     if (!check && content !== current) fs.writeFileSync(target, content);
   }
   const output = path.join(temporary, 'tailwind.css');
-  const cliFolder = path.join(root, 'node_modules/@tailwindcss/cli');
+  const cliFolder = path.dirname(require.resolve('@tailwindcss/cli/package.json'));
   const cliPackage = JSON.parse(fs.readFileSync(path.join(cliFolder, 'package.json'), 'utf8'));
   const cli = path.join(cliFolder, cliPackage.bin.tailwindcss);
   const result = spawnSync(

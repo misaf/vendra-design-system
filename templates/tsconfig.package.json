@@ -9,8 +9,8 @@
     "jsx": "react-jsx",
     "lib": ["es2023", "dom", "dom.iterable"],
     "types": [],
-    // dist/ sits outside templates/, so point it at the React types installed here.
-    "paths": {"react": ["./node_modules/@types/react/index.d.ts"]}
+    // The React types the workspace installs at the repo root.
+    "paths": {"react": ["../node_modules/@types/react/index.d.ts"]}
   },
   "include": ["../dist/**/*.d.ts", "../dist/**/*.d.cts"]
 }

@@ -2,7 +2,6 @@
   "name": "vendra-storefront-templates",
   "private": true,
   "scripts": {
-    "postinstall": "node -e \"const fs=require('fs');try{fs.lstatSync('../node_modules')}catch{fs.symlinkSync('templates/node_modules','../node_modules','dir')}\"",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.package.json",
     "build": "node _build/build.cjs",
     "check": "node _build/build.cjs --check && prettier --ignore-path ../.prettierignore --check ../components .",
@@ -29,9 +28,6 @@
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
-  },
-  "overrides": {
-    "@parcel/watcher": "2.6.0"
   },
   "dependencies": {
     "@internationalized/date": "3.12.4",

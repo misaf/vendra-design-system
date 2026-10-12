@@ -72,7 +72,7 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 ## Commands
 
 ```sh
-npm --prefix templates ci                # first setup
+npm ci                                   # first setup, at the repo root (templates is a workspace)
 npm --prefix templates run dev           # Vite preview at http://127.0.0.1:5173/ with rebuilds
 npm --prefix templates run build         # components, dist/, Tailwind, tenant CSS, generated template sections
 npm --prefix templates run format        # Prettier

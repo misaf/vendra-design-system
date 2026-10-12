@@ -110,7 +110,7 @@ export default defineConfig({
   root,
   publicDir: false,
   appType: 'mpa',
-  cacheDir: path.join(templates, 'node_modules/.vite'),
+  cacheDir: path.join(root, 'node_modules/.vite'),
   plugins: [storefrontPreview(), storefrontAssets()],
   // npm run build:app → templates/_app-build/templates/app/index.html, served by npm run preview at
   // the same path as in development.

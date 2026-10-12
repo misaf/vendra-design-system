@@ -36,7 +36,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
-npm --prefix templates ci                # first setup
+npm ci                                   # first setup, at the repo root (templates is a workspace)
 npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/ (?lang=fa, ?page=<name> for one page)
 npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
 npm --prefix templates run check         # fails on stale generated output or unformatted code
@@ -70,7 +70,7 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 - **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
 - **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js`, `helpers.js` and `ds-base.js` are only for the guideline cards.
-- **Dependencies:** the repo root's `node_modules` links to `templates/node_modules` (created on install), so component sources resolve React and React Aria.
+- **Dependencies:** `templates` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 
 ## Styling rules
 
