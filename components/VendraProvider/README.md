@@ -1,6 +1,6 @@
 # VendraProvider
 
-Sets the language for every component below it, once, around the app.
+Sets the language and the router for every component below it, once, around the app.
 
 ```jsx
 <VendraProvider locale={lang === 'fa' ? 'fa-IR' : 'en-US'}>
@@ -19,4 +19,22 @@ Sets the language for every component below it, once, around the app.
 >
 ```
 
-Without a provider, components use React Aria's locale (an `I18nProvider` higher up, or the browser's).
+**Router:** pass the app router's `navigate` so the components' links (`Button href`, `NavLink`, `ProductCard`, `BottomTabBar`, `CategoryCard`, …) navigate client-side instead of reloading the page, and `useHref` when routes need a base path:
+
+```jsx
+'use client';
+import {useRouter} from 'next/navigation';
+
+export function Providers({locale, children}) {
+  const router = useRouter();
+  return (
+    <VendraProvider locale={locale} navigate={router.push}>
+      {children}
+    </VendraProvider>
+  );
+}
+```
+
+Use this rather than importing React Aria's `RouterProvider` yourself. `react-aria-components` and `@internationalized/date` are peer dependencies, so your app and the components share one copy and its contexts. A nested `VendraProvider` without `navigate` keeps the outer router.
+
+Without a provider, components use React Aria's locale (an `I18nProvider` higher up, or the browser's) and plain links.

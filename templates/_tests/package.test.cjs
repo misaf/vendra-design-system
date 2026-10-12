@@ -25,13 +25,15 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
 
     // Every export target exists; only dist/ is published.
     assert.deepEqual(manifest.files, ['dist']);
-    // The package depends on exactly the versions the build bundles and tests with.
+    // React Aria is a peer dependency, so the app and the components share one copy (one
+    // RouterProvider / I18nProvider context); its range starts at the version the build tests with.
     const built = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
-    for (const [name, version] of Object.entries(manifest.dependencies || {}))
+    assert.deepEqual(manifest.dependencies || {}, {}, 'the package has no bundled dependencies');
+    for (const [name, version] of Object.entries(built.dependencies || {}))
       assert.equal(
-        version,
-        (built.dependencies || {})[name],
-        name + ' differs from templates/package.json'
+        manifest.peerDependencies[name],
+        '^' + version,
+        name + ' peer range should start at the tested ' + version
       );
     const targets = JSON.stringify(manifest.exports).match(/\.\/dist\/[^"]+/g);
     for (const target of targets.filter(t => !t.includes('*')))
@@ -114,6 +116,15 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
         Object.keys(ds.MESSAGES.en[component]).sort(),
         'MESSAGES.fa.' + component + ' has the same keys as English'
       );
+    // The app's router reaches the components' links through VendraProvider (one React Aria copy).
+    const routed = renderToString(
+      React.createElement(
+        ds.VendraProvider,
+        {navigate: () => {}, useHref: href => '/store' + href},
+        React.createElement(ds.Button, {href: '/shop'}, 'Shop')
+      )
+    );
+    assert.match(routed, /href="\/store\/shop"/, 'VendraProvider useHref reaches Button links');
     const link = renderToString(React.createElement(ds.Button, {href: '/shop'}, 'Shop'));
     assert.match(link, /^<a class="ag-btn ag-btn--primary ag-btn--md"[^>]* href="\/shop"/);
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));

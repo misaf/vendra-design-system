@@ -8,7 +8,7 @@
 
 ## Using the package
 
-`@vendra/design-system` publishes only `dist/`, which the build generates and commits. Install a tagged commit from GitHub (`npm install github:misaf/vendra-design-system#v0.1.0`). React 18.2+ is a peer dependency.
+`@vendra/design-system` publishes only `dist/`, which the build generates and commits. Install a tagged commit from GitHub (`npm install github:misaf/vendra-design-system#v0.1.0`). React 18.2+, `react-aria-components` 1.21+ and `@internationalized/date` 3.12+ are peer dependencies, so your app and the components share one React Aria copy.
 
 | Import | What it is |
 |---|---|
@@ -42,12 +42,16 @@ A server-rendered app does the same in its document template: put the CSS in a `
 
 `commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions.
 
-Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use English or Persian built-in wording (`MESSAGES`), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording:
+Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use English or Persian built-in wording (`MESSAGES`), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
 ```jsx
 import {VendraProvider} from '@vendra/design-system';
 
-<VendraProvider locale={tenant.locale === 'fa' ? 'fa-IR' : 'en-US'} messages={{fa: {Dialog: {close: 'بستن پنجره'}}}}>
+<VendraProvider
+  locale={tenant.locale === 'fa' ? 'fa-IR' : 'en-US'}
+  navigate={router.push}
+  messages={{fa: {Dialog: {close: 'بستن پنجره'}}}}
+>
   <App />
 </VendraProvider>
 ```

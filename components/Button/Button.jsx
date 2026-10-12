@@ -3,7 +3,7 @@ import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// href → React Aria's Link (navigation; in-site links go through the app's RouterProvider); no href
+// href → React Aria's Link (navigation; in-site links go through VendraProvider's navigate); no href
 // → React Aria's Button (action), with onClick, type, disabled and the ARIA button attributes. A
 // disabled link renders without its href, aria-disabled.
 // loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it

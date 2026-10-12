@@ -7,7 +7,11 @@ export interface VendraProviderProps {
   locale?: string;
   /** Extra or changed wording, by language then component, e.g. {fa: {Dialog: {close: 'بستن پنجره'}}}. Missing entries fall back to the built-in catalog, then English. */
   messages?: Messages;
+  /** The app router's navigation (e.g. Next.js `router.push`): links in the components (Button href, NavLink, ProductCard, BottomTabBar, …) then navigate client-side instead of reloading. */
+  navigate?: (path: string, routerOptions?: unknown) => void;
+  /** Turns a route into the href written on the link, e.g. adding a base path. */
+  useHref?: (href: string) => string;
   children?: React.ReactNode;
 }
-/** Language for every component below: React Aria's I18nProvider plus the components' built-in wording. Props on a component still win. */
+/** Language and router for every component below: React Aria's I18nProvider (and RouterProvider when `navigate` is set) plus the components' built-in wording. Props on a component still win. */
 export declare function VendraProvider(props: VendraProviderProps): React.JSX.Element;

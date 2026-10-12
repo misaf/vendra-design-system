@@ -5,7 +5,7 @@ import {cx} from '../utils/cx.js';
 
 // A navigation link (React Aria Link; a React Aria Button without `href`) in header, footer or menu
 // style; `current` marks it aria-current="page". The menu style adds a chevron. In-site links go
-// through the app's RouterProvider.
+// through VendraProvider's navigate.
 export function NavLink({
   href,
   current,

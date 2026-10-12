@@ -1,6 +1,5 @@
 // The click-through site: the routed page, the shared bag and saved items.
 import React, {Suspense, useEffect} from 'react';
-import {RouterProvider} from 'react-aria-components';
 import * as DS from '../app/ds.js';
 import {PageBoundary} from '../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../app/pages.js';
@@ -28,7 +27,8 @@ const StorefrontWeddings = lazyPage('weddings');
 export function View({v}) {
   useEffect(preloadPages, []);
   return (
-    <RouterProvider navigate={v.routerNavigate}>
+    // In-site links (Button href, NavLink, ProductCard, ...) navigate through the site's router.
+    <DS.VendraProvider locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'} navigate={v.routerNavigate}>
       <DS.LiveRegion>
         <>{v.announcement}</>
       </DS.LiveRegion>
@@ -262,6 +262,6 @@ export function View({v}) {
           ) : null}
         </Suspense>
       </PageBoundary>
-    </RouterProvider>
+    </DS.VendraProvider>
   );
 }
