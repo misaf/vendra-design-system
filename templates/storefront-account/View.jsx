@@ -1,7 +1,7 @@
 // StorefrontAccount: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,17 +14,17 @@ export function View({v}) {
             <div className="vf-account-header tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end tw:mb-5h">
               <div className="vf-account-heading tw:flex tw:flex-col tw:gap-3">
                 <div className="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{interp(v.t?.hello)}</>
+                  <>{v.t?.hello}</>
                 </div>
                 <h1>
-                  <>{interp(v.t?.accA)} </>
+                  <>{v.t?.accA} </>
                   <em className="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{interp(v.t?.accB)}</>
+                    <>{v.t?.accB}</>
                   </em>
                 </h1>
               </div>
               <DS.Button variant="ghost" iconStart="log-out" onClick={v.signOut}>
-                <>{interp(v.t?.signOut)}</>
+                <>{v.t?.signOut}</>
               </DS.Button>
             </div>
             <DS.Tabs
@@ -45,17 +45,17 @@ export function View({v}) {
                           <div className="vf-account-order-body tw:flex tw:flex-col tw:gap-3">
                             <div className="tw:flex tw:justify-between tw:items-center tw:gap-3">
                               <span dir="ltr" className="vf-account-order-number tw:font-medium">
-                                <>{interp(o?.id)}</>
+                                <>{o?.id}</>
                               </span>
                               <DS.Badge tone={o?.tone}>
-                                <>{interp(o?.status)}</>
+                                <>{o?.status}</>
                               </DS.Badge>
                             </div>
                             <div className="vf-account-order-meta tw:text-sm tw:text-quiet">
-                              <>{interp(o?.meta)}</>
+                              <>{o?.meta}</>
                             </div>
                             <div className="vf-account-order-total tw:font-medium">
-                              <>{interp(o?.total)}</>
+                              <>{o?.total}</>
                             </div>
                             <div>
                               <DS.Button
@@ -64,7 +64,7 @@ export function View({v}) {
                                 href={o?.href}
                                 onClick={o?.go}
                               >
-                                <>{interp(o?.cta)}</>
+                                <>{o?.cta}</>
                               </DS.Button>
                             </div>
                           </div>
@@ -80,17 +80,17 @@ export function View({v}) {
                     <DS.Card padding={24}>
                       <div className="tw:flex tw:flex-col tw:gap-2">
                         <span id="vf-balance-label" className="tw:text-sm tw:text-quiet">
-                          <>{interp(v.t?.balance?.title)}</>
+                          <>{v.t?.balance?.title}</>
                         </span>
                         <span
                           id="vf-balance-amount"
                           aria-labelledby="vf-balance-label vf-balance-amount"
                           className="tw:text-2xl tw:font-medium"
                         >
-                          <>{interp(v.balance?.amount)}</>
+                          <>{v.balance?.amount}</>
                         </span>
                         <p className="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">
-                          <>{interp(v.balance?.status)}</>
+                          <>{v.balance?.status}</>
                         </p>
                       </div>
                     </DS.Card>
@@ -99,7 +99,7 @@ export function View({v}) {
                       className="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"
                     >
                       <h2 id="vf-topup-title" className="tw:m-0 tw:text-xl">
-                        <>{interp(v.t?.balance?.topUp)}</>
+                        <>{v.t?.balance?.topUp}</>
                       </h2>
                       <div
                         role="group"
@@ -113,7 +113,7 @@ export function View({v}) {
                               aria-pressed={v?.pressed}
                               onClick={v?.pick}
                             >
-                              <>{interp(v?.label)}</>
+                              <>{v?.label}</>
                             </DS.Chip>
                           </React.Fragment>
                         ))}
@@ -137,13 +137,13 @@ export function View({v}) {
                           loading={v.balance?.busy}
                           disabled={v.balance?.busy}
                         >
-                          <>{interp(v.balance?.payLabel)}</>
+                          <>{v.balance?.payLabel}</>
                         </DS.Button>
                       </div>
                       {v.balance?.busy ? (
                         <>
                           <p role="status" className="tw:m-0 tw:text-sm">
-                            <>{interp(v.t?.balance?.processing)}</>
+                            <>{v.t?.balance?.processing}</>
                           </p>
                         </>
                       ) : null}
@@ -155,12 +155,12 @@ export function View({v}) {
                             role="status"
                             className="tw:m-0 tw:text-sm tw:font-medium"
                           >
-                            <>{interp(v.balance?.done)}</>
+                            <>{v.balance?.done}</>
                           </p>
                         </>
                       ) : null}
                       <p className="tw:m-0 tw:text-sm tw:text-quiet">
-                        <>{interp(v.t?.balance?.demo)}</>
+                        <>{v.t?.balance?.demo}</>
                       </p>
                     </section>
                     <section
@@ -168,12 +168,12 @@ export function View({v}) {
                       className="tw:flex tw:flex-col tw:gap-3"
                     >
                       <h2 id="vf-balance-history" className="tw:m-0 tw:text-xl">
-                        <>{interp(v.t?.balance?.history)}</>
+                        <>{v.t?.balance?.history}</>
                       </h2>
                       {v.balance?.noHistory ? (
                         <>
                           <p className="tw:m-0 tw:text-secondary">
-                            <>{interp(v.t?.balance?.noHistory)}</>
+                            <>{v.t?.balance?.noHistory}</>
                           </p>
                         </>
                       ) : null}
@@ -185,17 +185,17 @@ export function View({v}) {
                                 <li className="tw:flex tw:justify-between tw:items-baseline tw:gap-4 tw:py-3 tw:[border-top:1px_solid_var(--border-subtle)]">
                                   <div className="tw:flex tw:flex-col tw:gap-1">
                                     <span className="tw:font-medium">
-                                      <>{interp(h?.label)}</>
+                                      <>{h?.label}</>
                                     </span>
                                     <span className="tw:text-sm tw:text-quiet">
-                                      <>{interp(h?.date)}</>
+                                      <>{h?.date}</>
                                     </span>
                                   </div>
                                   <span
                                     className="vf-account-balance-amount tw:font-medium tw:whitespace-nowrap"
                                     data-tone={h?.tone}
                                   >
-                                    <>{interp(h?.amount)}</>
+                                    <>{h?.amount}</>
                                   </span>
                                 </li>
                               </React.Fragment>
@@ -244,7 +244,7 @@ export function View({v}) {
                           body={v.t?.savedEmptyP}
                         />
                         <DS.Button variant="primary" href={v.href?.shop} onClick={v.go?.shop}>
-                          <>{interp(v.t?.browse)}</>
+                          <>{v.t?.browse}</>
                         </DS.Button>
                       </div>
                     </>
@@ -294,7 +294,7 @@ export function View({v}) {
                     >
                       <>
                         {'+ '}
-                        {interp(v.t?.addAddr)}
+                        {v.t?.addAddr}
                       </>
                     </button>
                   </div>
@@ -305,13 +305,13 @@ export function View({v}) {
                   <div className="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]">
                     <div>
                       <DS.Button id="vf-add-reminder" iconStart="plus" onClick={v.addReminder}>
-                        <>{interp(v.editor?.addReminder)}</>
+                        <>{v.editor?.addReminder}</>
                       </DS.Button>
                     </div>
                     {v.noReminders ? (
                       <>
                         <p>
-                          <>{interp(v.editor?.empty)}</>
+                          <>{v.editor?.empty}</>
                         </p>
                       </>
                     ) : null}
@@ -319,15 +319,15 @@ export function View({v}) {
                       <>
                         <DS.Alert tone="neutral" title={v.editor?.coming}>
                           <>
-                            {interp(v.coming?.name)}
+                            {v.coming?.name}
                             {' \u00b7 '}
-                            {interp(v.coming?.when)}
+                            {v.coming?.when}
                           </>
                         </DS.Alert>
                       </>
                     ) : null}
                     <p className="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                      <>{interp(v.t?.remP)}</>
+                      <>{v.t?.remP}</>
                     </p>
                     {list(v.reminders).map((r, $index) => (
                       <React.Fragment key={$index}>
@@ -398,7 +398,7 @@ export function View({v}) {
                     />
                     <div>
                       <DS.Button variant="primary" onClick={v.saveProfile}>
-                        <>{interp(v.t?.saveP)}</>
+                        <>{v.t?.saveP}</>
                       </DS.Button>
                     </div>
                   </div>
@@ -406,7 +406,7 @@ export function View({v}) {
               ) : null}
             </DS.Tabs>
             <p role="status" className="tw:text-sm tw:text-secondary">
-              <>{interp(v.notice)}</>
+              <>{v.notice}</>
             </p>
             <DS.Dialog open={v.formOpen} title={v.formTitle} onClose={v.closeForm}>
               <div className="tw:flex tw:flex-col tw:gap-4">
@@ -448,10 +448,10 @@ export function View({v}) {
                       {v.mapFailed ? (
                         <>
                           <span className="ag-field__label">
-                            <>{interp(v.editor?.pin)}</>
+                            <>{v.editor?.pin}</>
                           </span>
                           <p className="ag-field__hint tw:m-0">
-                            <>{interp(v.editor?.mapFailed)}</>
+                            <>{v.editor?.mapFailed}</>
                           </p>
                         </>
                       ) : null}
@@ -522,10 +522,10 @@ export function View({v}) {
                 ) : null}
                 <div className="tw:flex tw:gap-3">
                   <DS.Button onClick={v.saveForm}>
-                    <>{interp(v.editor?.save)}</>
+                    <>{v.editor?.save}</>
                   </DS.Button>
                   <DS.Button variant="ghost" onClick={v.closeForm}>
-                    <>{interp(v.editor?.cancel)}</>
+                    <>{v.editor?.cancel}</>
                   </DS.Button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 // StorefrontJournal: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -17,7 +17,7 @@ export function View({v}) {
                 {list(v.cats).map((c, $index) => (
                   <React.Fragment key={$index}>
                     <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
-                      <>{interp(c?.label)}</>
+                      <>{c?.label}</>
                     </DS.Chip>
                   </React.Fragment>
                 ))}
@@ -30,7 +30,7 @@ export function View({v}) {
               <>
                 <DS.EmptyState title={v.migration?.empty} headingLevel={2} />
                 <DS.Button onClick={v.clear}>
-                  <>{interp(v.migration?.clear)}</>
+                  <>{v.migration?.clear}</>
                 </DS.Button>
               </>
             ) : null}
@@ -38,7 +38,7 @@ export function View({v}) {
               <>
                 <DS.Skeleton shape="card" />
                 <p role="status">
-                  <>{interp(v.migration?.loading)}</>
+                  <>{v.migration?.loading}</>
                 </p>
               </>
             ) : null}

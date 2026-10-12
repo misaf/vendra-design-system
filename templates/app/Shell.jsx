@@ -1,7 +1,7 @@
 // The storefront shell around every page: header, mobile menu, footer, consent and tab bar.
 import React from 'react';
 import * as DS from './ds.js';
-import {interp, list, cssToObj} from './runtime.jsx';
+import {list} from './runtime.jsx';
 
 export function Shell({v, content, sticky}) {
   return (
@@ -17,12 +17,12 @@ export function Shell({v, content, sticky}) {
           data-vf-mobile={v.mob}
         >
           <DS.SkipLink href="#main" onClick={v.skipGo}>
-            <>{interp(v.t?.skip)}</>
+            <>{v.t?.skip}</>
           </DS.SkipLink>
           {v.standalone ? (
             <>
               <DS.LiveRegion>
-                <>{interp(v.vfAnnouncement)}</>
+                <>{v.vfAnnouncement}</>
               </DS.LiveRegion>
             </>
           ) : null}
@@ -33,7 +33,7 @@ export function Shell({v, content, sticky}) {
                 closeLabel={v.t?.dismissNews}
                 onClose={v.closeAnnouncement}
               >
-                <>{interp(v.announcement)}</>
+                <>{v.announcement}</>
               </DS.AnnouncementBar>
             </>
           ) : null}
@@ -48,7 +48,7 @@ export function Shell({v, content, sticky}) {
                       onClick={v.go?.shop}
                       current={v.nav?.shop}
                     >
-                      <>{interp(v.t?.shop)}</>
+                      <>{v.t?.shop}</>
                     </DS.NavLink>
                     <DS.NavLink
                       variant="header"
@@ -56,7 +56,7 @@ export function Shell({v, content, sticky}) {
                       onClick={v.go?.weddings}
                       current={v.nav?.weddings}
                     >
-                      <>{interp(v.t?.weddings)}</>
+                      <>{v.t?.weddings}</>
                     </DS.NavLink>
                     <DS.NavLink
                       variant="header"
@@ -64,7 +64,7 @@ export function Shell({v, content, sticky}) {
                       onClick={v.go?.journal}
                       current={v.nav?.journal}
                     >
-                      <>{interp(v.t?.journal)}</>
+                      <>{v.t?.journal}</>
                     </DS.NavLink>
                   </nav>
                   <a
@@ -72,7 +72,7 @@ export function Shell({v, content, sticky}) {
                     onClick={v.go?.home}
                     className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
                   >
-                    <>{interp(v.t?.brand)}</>
+                    <>{v.t?.brand}</>
                   </a>
                   <div className="tw:flex tw:gap-1 tw:items-center">
                     <div className="vf-shell-header-lang tw:me-2">
@@ -120,7 +120,7 @@ export function Shell({v, content, sticky}) {
                       aria-label={v.otherLang?.name}
                       className="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer"
                     >
-                      <>{interp(v.otherLang?.label)}</>
+                      <>{v.otherLang?.label}</>
                     </button>
                   </div>
                   <a
@@ -128,7 +128,7 @@ export function Shell({v, content, sticky}) {
                     onClick={v.go?.home}
                     className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
                   >
-                    <>{interp(v.t?.brand)}</>
+                    <>{v.t?.brand}</>
                   </a>
                   <div className="vf-shell-mobile-tools tw:flex tw:justify-end">
                     <DS.IconButton
@@ -167,7 +167,7 @@ export function Shell({v, content, sticky}) {
                         current={it?.current}
                         onClick={it?.go}
                       >
-                        <>{interp(it?.label)}</>
+                        <>{it?.label}</>
                       </DS.NavLink>
                     </React.Fragment>
                   ))}
@@ -177,7 +177,7 @@ export function Shell({v, content, sticky}) {
                     <>
                       <div className="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
                         <span>
-                          <>{interp(v.t?.langL)}</>
+                          <>{v.t?.langL}</>
                         </span>
                         <DS.LanguageSwitch
                           value={v.lang}
@@ -195,7 +195,7 @@ export function Shell({v, content, sticky}) {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <>{interp(v.t?.waLong)}</>
+                    <>{v.t?.waLong}</>
                   </DS.Button>
                 </div>
               </DS.Dialog>
@@ -211,10 +211,10 @@ export function Shell({v, content, sticky}) {
                     onClick={v.go?.home}
                     className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
                   >
-                    <>{interp(v.t?.brand)}</>
+                    <>{v.t?.brand}</>
                   </a>
                   <p className="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">
-                    <>{interp(v.footer?.tagline)}</>
+                    <>{v.footer?.tagline}</>
                   </p>
                   <ul
                     aria-label={v.t?.footer?.social}
@@ -244,10 +244,10 @@ export function Shell({v, content, sticky}) {
                     id="vf-news-title"
                     className="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display"
                   >
-                    <>{interp(v.t?.newsletter?.title)}</>
+                    <>{v.t?.newsletter?.title}</>
                   </h2>
                   <p className="tw:m-0 tw:text-sm tw:text-inverse-quiet tw:max-w-measure">
-                    <>{interp(v.t?.newsletter?.body)}</>
+                    <>{v.t?.newsletter?.body}</>
                   </p>
                   {v.newsletter?.open ? (
                     <>
@@ -257,7 +257,7 @@ export function Shell({v, content, sticky}) {
                         className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
                       >
                         <label htmlFor="vf-news-email" className="ag-field__label">
-                          <>{interp(v.t?.newsletter?.label)}</>
+                          <>{v.t?.newsletter?.label}</>
                         </label>
                         <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
                           <div className="tw:[flex:1_1_240px]">
@@ -277,7 +277,7 @@ export function Shell({v, content, sticky}) {
                             loadingLabel={v.t?.newsletter?.sending}
                             className="vf-shell-newsletter-submit tw:h-[48px]!"
                           >
-                            <>{interp(v.t?.newsletter?.submit)}</>
+                            <>{v.t?.newsletter?.submit}</>
                           </DS.Button>
                         </div>
                       </form>
@@ -291,7 +291,7 @@ export function Shell({v, content, sticky}) {
                         role="status"
                         className="tw:m-0 tw:text-sm"
                       >
-                        <>{interp(v.newsletter?.doneText)}</>
+                        <>{v.newsletter?.doneText}</>
                       </p>
                     </>
                   ) : null}
@@ -306,7 +306,7 @@ export function Shell({v, content, sticky}) {
                     id="vf-footer-shop"
                     className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
                   >
-                    <>{interp(v.t?.footer?.shop)}</>
+                    <>{v.t?.footer?.shop}</>
                   </div>
                   {list(v.footer?.shop).map((l, $index) => (
                     <React.Fragment key={$index}>
@@ -315,7 +315,7 @@ export function Shell({v, content, sticky}) {
                         onClick={l?.go}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(l?.label)}</>
+                        <>{l?.label}</>
                       </a>
                     </React.Fragment>
                   ))}
@@ -328,7 +328,7 @@ export function Shell({v, content, sticky}) {
                     id="vf-footer-studio"
                     className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
                   >
-                    <>{interp(v.t?.footer?.studio)}</>
+                    <>{v.t?.footer?.studio}</>
                   </div>
                   {list(v.footer?.studio).map((l, $index) => (
                     <React.Fragment key={$index}>
@@ -338,7 +338,7 @@ export function Shell({v, content, sticky}) {
                         aria-current={l?.current}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(l?.label)}</>
+                        <>{l?.label}</>
                       </a>
                     </React.Fragment>
                   ))}
@@ -351,7 +351,7 @@ export function Shell({v, content, sticky}) {
                     id="vf-footer-help"
                     className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
                   >
-                    <>{interp(v.t?.help)}</>
+                    <>{v.t?.help}</>
                   </div>
                   <a
                     href={v.href?.faq}
@@ -359,7 +359,7 @@ export function Shell({v, content, sticky}) {
                     aria-current={v.footer?.faqCurrent}
                     className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                   >
-                    <>{interp(v.t?.faq)}</>
+                    <>{v.t?.faq}</>
                   </a>
                   {list(v.policyLinks).map((p, $index) => (
                     <React.Fragment key={$index}>
@@ -369,7 +369,7 @@ export function Shell({v, content, sticky}) {
                         aria-current={p?.current}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(p?.label)}</>
+                        <>{p?.label}</>
                       </a>
                     </React.Fragment>
                   ))}
@@ -379,15 +379,15 @@ export function Shell({v, content, sticky}) {
                     onClick={v.consent?.open}
                     className="vf-shell-footer-link tw:p-0 tw:[border:0] tw:bg-transparent tw:text-on-inverse tw:[font:inherit] tw:text-start tw:cursor-pointer tw:hover:underline! tw:[text-underline-offset:4px]"
                   >
-                    <>{interp(v.t?.consent?.settings)}</>
+                    <>{v.t?.consent?.settings}</>
                   </button>
                 </nav>
                 <div className="vf-shell-footer-details tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm">
                   <div className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1">
-                    <>{interp(v.t?.visit)}</>
+                    <>{v.t?.visit}</>
                   </div>
                   <address className="tw:not-italic tw:leading-body">
-                    <>{interp(v.t?.address)}</>
+                    <>{v.t?.address}</>
                   </address>
                   {v.footer?.directions ? (
                     <>
@@ -397,19 +397,19 @@ export function Shell({v, content, sticky}) {
                         rel="noopener noreferrer"
                         className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(v.t?.footer?.directions)}</>
+                        <>{v.t?.footer?.directions}</>
                       </a>
                     </>
                   ) : null}
                   <div className="tw:text-inverse-quiet">
-                    <>{interp(v.t?.hours)}</>
+                    <>{v.t?.hours}</>
                   </div>
                   <a
                     href={v.phoneHref}
                     dir="ltr"
                     className="vf-shell-footer-contact-link vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                   >
-                    <>{interp(v.phoneLabel)}</>
+                    <>{v.phoneLabel}</>
                   </a>
                   {v.footer?.email ? (
                     <>
@@ -418,7 +418,7 @@ export function Shell({v, content, sticky}) {
                         dir="ltr"
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(v.footer?.email)}</>
+                        <>{v.footer?.email}</>
                       </a>
                     </>
                   ) : null}
@@ -426,19 +426,19 @@ export function Shell({v, content, sticky}) {
               </div>
               <div className="vf-shell-footer-bottom tw:flex tw:flex-wrap tw:justify-between tw:items-center tw:gap-x-6 tw:gap-y-2 tw:pt-5 tw:[border-top:1px_solid_var(--border-inverse)] tw:text-xs tw:text-inverse-quiet">
                 <p className="tw:m-0">
-                  <>{interp(v.footer?.copyright)}</>
+                  <>{v.footer?.copyright}</>
                 </p>
                 {v.footer?.credit ? (
                   <>
                     <p className="vf-shell-footer-credit tw:m-0">
-                      <>{interp(v.footer?.credit?.before)} </>
+                      <>{v.footer?.credit?.before} </>
                       <a
                         href={v.footer?.credit?.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="tw:text-on-inverse! tw:[text-underline-offset:4px]"
                       >
-                        <>{interp(v.footer?.credit?.name)}</>
+                        <>{v.footer?.credit?.name}</>
                       </a>
                     </p>
                   </>
@@ -460,7 +460,7 @@ export function Shell({v, content, sticky}) {
                       id="vf-consent-title"
                       className="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display"
                     >
-                      <>{interp(v.t?.consent?.title)}</>
+                      <>{v.t?.consent?.title}</>
                     </h2>
                     <DS.IconButton
                       icon="x"
@@ -470,13 +470,13 @@ export function Shell({v, content, sticky}) {
                     />
                   </div>
                   <p className="tw:m-0">
-                    <>{interp(v.t?.consent?.body)} </>
+                    <>{v.t?.consent?.body} </>
                     <a
                       href={v.consent?.policy?.href}
                       onClick={v.consent?.policy?.go}
                       className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                     >
-                      <>{interp(v.t?.consent?.policy)}</>
+                      <>{v.t?.consent?.policy}</>
                     </a>
                   </p>
                   <div className="tw:flex tw:flex-wrap tw:gap-2">
@@ -485,14 +485,14 @@ export function Shell({v, content, sticky}) {
                       onClick={v.consent?.accept}
                       className="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken"
                     >
-                      <>{interp(v.t?.consent?.accept)}</>
+                      <>{v.t?.consent?.accept}</>
                     </button>
                     <button
                       type="button"
                       onClick={v.consent?.essential}
                       className="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]"
                     >
-                      <>{interp(v.t?.consent?.essential)}</>
+                      <>{v.t?.consent?.essential}</>
                     </button>
                   </div>
                 </section>
@@ -516,7 +516,7 @@ export function Shell({v, content, sticky}) {
                             id="vf-consent-title"
                             className="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display"
                           >
-                            <>{interp(v.t?.consent?.title)}</>
+                            <>{v.t?.consent?.title}</>
                           </h2>
                           <DS.IconButton
                             icon="x"
@@ -526,13 +526,13 @@ export function Shell({v, content, sticky}) {
                           />
                         </div>
                         <p className="tw:m-0">
-                          <>{interp(v.t?.consent?.body)} </>
+                          <>{v.t?.consent?.body} </>
                           <a
                             href={v.consent?.policy?.href}
                             onClick={v.consent?.policy?.go}
                             className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                           >
-                            <>{interp(v.t?.consent?.policy)}</>
+                            <>{v.t?.consent?.policy}</>
                           </a>
                         </p>
                         <div className="tw:flex tw:flex-wrap tw:gap-2">
@@ -541,14 +541,14 @@ export function Shell({v, content, sticky}) {
                             onClick={v.consent?.accept}
                             className="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken"
                           >
-                            <>{interp(v.t?.consent?.accept)}</>
+                            <>{v.t?.consent?.accept}</>
                           </button>
                           <button
                             type="button"
                             onClick={v.consent?.essential}
                             className="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]"
                           >
-                            <>{interp(v.t?.consent?.essential)}</>
+                            <>{v.t?.consent?.essential}</>
                           </button>
                         </div>
                       </section>

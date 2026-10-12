@@ -1,7 +1,7 @@
 // StorefrontProduct: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -20,7 +20,7 @@ export function View({v}) {
                 onClick={v.go?.shop}
                 className="vf-product-breadcrumb-link tw:text-quiet!"
               >
-                <>{interp(v.t?.shop)}</>
+                <>{v.t?.shop}</>
               </a>
               <span>{'\u00b7'}</span>
               <a
@@ -28,7 +28,7 @@ export function View({v}) {
                 onClick={v.category?.go}
                 className="vf-product-breadcrumb-link tw:text-quiet!"
               >
-                <>{interp(v.t?.cat)}</>
+                <>{v.t?.cat}</>
               </a>
             </nav>
             <div className="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
@@ -45,15 +45,15 @@ export function View({v}) {
                 <div className="vf-product-heading tw:flex tw:flex-col tw:gap-3">
                   <div className="tw:flex tw:gap-2 tw:items-center">
                     <DS.Badge tone="accent">
-                      <>{interp(v.t?.badge)}</>
+                      <>{v.t?.badge}</>
                     </DS.Badge>
                     <span className="vf-product-subtitle tw:text-sm tw:text-quiet">
-                      <>{interp(v.t?.sub)}</>
+                      <>{v.t?.sub}</>
                     </span>
                   </div>
                   <div className="vf-product-title tw:flex tw:items-center tw:gap-2">
                     <h1 id="vf-product-code">
-                      <>{interp(v.t?.name)}</>
+                      <>{v.t?.name}</>
                     </h1>
                     <DS.IconButton
                       icon="copy"
@@ -64,10 +64,10 @@ export function View({v}) {
                     />
                   </div>
                   <div className="vf-product-price tw:text-lg tw:font-medium">
-                    <>{interp(v.unitPrice)}</>
+                    <>{v.unitPrice}</>
                   </div>
                   <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
-                    <>{interp(v.t?.desc)}</>
+                    <>{v.t?.desc}</>
                   </p>
                 </div>
                 {v.hasSizes ? (
@@ -88,7 +88,7 @@ export function View({v}) {
                 ) : null}
                 <fieldset className="vf-product-extras tw:[border:0] tw:p-0 tw:m-0 tw:flex tw:flex-col tw:gap-3">
                   <legend className="vf-product-extras-legend tw:text-sm tw:font-medium tw:mb-3 tw:p-0">
-                    <>{interp(v.t?.extras)}</>
+                    <>{v.t?.extras}</>
                   </legend>
                   {list(v.addons).map((a, $index) => (
                     <React.Fragment key={$index}>
@@ -146,7 +146,7 @@ export function View({v}) {
                           onClick={v.add}
                           disabled={v.unavailable}
                         >
-                          <>{interp(v.addLabel)}</>
+                          <>{v.addLabel}</>
                         </DS.Button>
                       </div>
                     </>
@@ -155,7 +155,7 @@ export function View({v}) {
                 <div className="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet">
                   <DS.Icon name="truck" size={18} />
                   <span>
-                    <>{interp(v.t?.ship)}</>
+                    <>{v.t?.ship}</>
                   </span>
                 </div>
                 {v.waHref ? (
@@ -168,7 +168,7 @@ export function View({v}) {
                     >
                       <DS.Icon name="message-circle" size={18} />
                       <span>
-                        <>{interp(v.t?.askWa)}</>
+                        <>{v.t?.askWa}</>
                       </span>
                     </a>
                   </>
@@ -232,10 +232,10 @@ export function View({v}) {
                     autoFocus={true}
                     className="vf-product-added-checkout"
                   >
-                    <>{interp(v.t?.checkout)}</>
+                    <>{v.t?.checkout}</>
                   </DS.Button>
                   <DS.Button variant="ghost" size="lg" block={true} onClick={v.closeAdded}>
-                    <>{interp(v.t?.keepShopping)}</>
+                    <>{v.t?.keepShopping}</>
                   </DS.Button>
                 </div>
               </div>
@@ -247,7 +247,7 @@ export function View({v}) {
         <>
           <div className="vf-product-mobile-action tw:relative tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
             <div className="vf-product-mobile-total tw:flex-1 tw:font-medium tw:text-sm">
-              <>{interp(v.totalLabel)}</>
+              <>{v.totalLabel}</>
             </div>
             <DS.Button
               variant="primary"
@@ -255,7 +255,7 @@ export function View({v}) {
               onClick={v.add}
               disabled={v.unavailable}
             >
-              <>{interp(v.t?.add)}</>
+              <>{v.t?.add}</>
             </DS.Button>
             {v.toast ? (
               <>

@@ -1,7 +1,7 @@
 // StorefrontPost: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,11 +14,11 @@ export function View({v}) {
             {v.loading ? (
               <>
                 <h1>
-                  <>{interp(v.t?.title)}</>
+                  <>{v.t?.title}</>
                 </h1>
                 <DS.Skeleton shape="card" />
                 <p role="status">
-                  <>{interp(v.migration?.loading)}</>
+                  <>{v.migration?.loading}</>
                 </p>
               </>
             ) : null}
@@ -26,7 +26,7 @@ export function View({v}) {
               <>
                 <DS.EmptyState title={v.migration?.missing} headingLevel={1} />
                 <DS.Button href={v.href?.journal} onClick={v.go?.journal}>
-                  <>{interp(v.migration?.back)}</>
+                  <>{v.migration?.back}</>
                 </DS.Button>
               </>
             ) : null}
@@ -40,16 +40,16 @@ export function View({v}) {
                       className="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"
                     >
                       <DS.Icon name="arrow-left" size={16} />
-                      <>{interp(v.t?.back)}</>
+                      <>{v.t?.back}</>
                     </a>
                     <div className="vf-post-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                      <>{interp(v.t?.meta)}</>
+                      <>{v.t?.meta}</>
                     </div>
                     <h1>
-                      <>{interp(v.t?.title)}</>
+                      <>{v.t?.title}</>
                     </h1>
                     <p className="vf-post-intro tw:text-secondary tw:m-0 tw:text-lg tw:leading-body tw:text-pretty">
-                      <>{interp(v.t?.lede)}</>
+                      <>{v.t?.lede}</>
                     </p>
                     {v.hasBlocks ? (
                       <>
@@ -58,21 +58,21 @@ export function View({v}) {
                             {b?.paragraph ? (
                               <>
                                 <p>
-                                  <>{interp(b?.value)}</>
+                                  <>{b?.value}</>
                                 </p>
                               </>
                             ) : null}
                             {b?.heading ? (
                               <>
                                 <h2>
-                                  <>{interp(b?.value)}</>
+                                  <>{b?.value}</>
                                 </h2>
                               </>
                             ) : null}
                             {b?.quote ? (
                               <>
                                 <blockquote>
-                                  <>{interp(b?.value)}</>
+                                  <>{b?.value}</>
                                 </blockquote>
                               </>
                             ) : null}
@@ -86,7 +86,7 @@ export function View({v}) {
                                     loading="lazy"
                                   />
                                   <figcaption className="tw:text-sm tw:text-quiet">
-                                    <>{interp(b?.caption)}</>
+                                    <>{b?.caption}</>
                                   </figcaption>
                                 </figure>
                               </>
@@ -98,7 +98,7 @@ export function View({v}) {
                                     {list(b?.value).map((tip, $index) => (
                                       <React.Fragment key={$index}>
                                         <li>
-                                          <>{interp(tip)}</>
+                                          <>{tip}</>
                                         </li>
                                       </React.Fragment>
                                     ))}
@@ -117,20 +117,20 @@ export function View({v}) {
                           {list(v.paras1).map((p, $index) => (
                             <React.Fragment key={$index}>
                               <p className="vf-post-paragraph tw:m-0 tw:text-pretty">
-                                <>{interp(p)}</>
+                                <>{p}</>
                               </p>
                             </React.Fragment>
                           ))}
                           <blockquote className="vf-post-quote tw:my-3 tw:mx-0 tw:ps-4h tw:[border-inline-start:2px_solid_var(--text-accent)] tw:font-display tw:text-xl tw:leading-snug tw:text-body">
-                            <>{interp(v.t?.quote)}</>
+                            <>{v.t?.quote}</>
                           </blockquote>
                           <h2 className="vf-post-heading tw:m-0 tw:font-display tw:font-medium tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">
-                            <>{interp(v.t?.h2)}</>
+                            <>{v.t?.h2}</>
                           </h2>
                           {list(v.paras2).map((p, $index) => (
                             <React.Fragment key={$index}>
                               <p className="vf-post-paragraph tw:m-0 tw:text-pretty">
-                                <>{interp(p)}</>
+                                <>{p}</>
                               </p>
                             </React.Fragment>
                           ))}
@@ -139,7 +139,7 @@ export function View({v}) {
                     ) : null}
                     <div className="vf-post-actions tw:flex tw:gap-3 tw:flex-wrap tw:pt-2 tw:[border-top:1px_solid_var(--border-subtle)]">
                       <DS.Button variant="secondary" size="sm" iconStart="link" onClick={v.copy}>
-                        <>{interp(v.copyLabel)}</>
+                        <>{v.copyLabel}</>
                       </DS.Button>
                       <DS.Button
                         variant="primary"
@@ -148,7 +148,7 @@ export function View({v}) {
                         href={v.href?.shop}
                         onClick={v.go?.shop}
                       >
-                        <>{interp(v.t?.shopIt)}</>
+                        <>{v.t?.shopIt}</>
                       </DS.Button>
                     </div>
                   </article>

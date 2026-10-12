@@ -1,7 +1,7 @@
 // StorefrontNotfound: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -27,7 +27,7 @@ export function View({v}) {
                   href={v.href?.home}
                   onClick={v.go?.home}
                 >
-                  <>{interp(v.t?.home)}</>
+                  <>{v.t?.home}</>
                 </DS.Button>
                 <DS.Button
                   variant="secondary"
@@ -35,7 +35,7 @@ export function View({v}) {
                   href={v.href?.search}
                   onClick={v.go?.search}
                 >
-                  <>{interp(v.t?.search)}</>
+                  <>{v.t?.search}</>
                 </DS.Button>
               </div>
             </div>

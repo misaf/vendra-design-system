@@ -1,7 +1,7 @@
 // StorefrontSaved: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -54,7 +54,7 @@ export function View({v}) {
                     body={v.t?.emptyP}
                   />
                   <DS.Button variant="primary" href={v.href?.shop} onClick={v.go?.shop}>
-                    <>{interp(v.t?.browse)}</>
+                    <>{v.t?.browse}</>
                   </DS.Button>
                 </div>
               </>

@@ -1,7 +1,7 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,16 +13,16 @@ export function View({v}) {
           <main id="main" tabIndex="-1" className="vf-info">
             <header className="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7">
               <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                <>{interp(v.t?.eb)}</>
+                <>{v.t?.eb}</>
               </div>
               <h1>
-                <>{interp(v.t?.hA)} </>
+                <>{v.t?.hA} </>
                 <em className="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                  <>{interp(v.t?.hB)}</>
+                  <>{v.t?.hB}</>
                 </em>
               </h1>
               <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                <>{interp(v.t?.hP)}</>
+                <>{v.t?.hP}</>
               </p>
             </header>
             <div className="vf-info-columns vf-info-columns--contact tw:grid tw:[grid-template-columns:repeat(2,minmax(0,1fr))] tw:gap-7 tw:items-start">
@@ -38,10 +38,10 @@ export function View({v}) {
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    <>{interp(v.t?.wa)}</>
+                    <>{v.t?.wa}</>
                   </DS.Button>
                   <DS.Button variant="secondary" iconStart="phone" href={v.phoneHref}>
-                    <>{interp(v.t?.call)}</>
+                    <>{v.t?.call}</>
                   </DS.Button>
                   <DS.IconButton
                     icon="instagram"
@@ -77,7 +77,7 @@ export function View({v}) {
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        <>{interp(v.t?.directions)}</>
+                        <>{v.t?.directions}</>
                       </DS.Button>
                     </div>
                   </>
@@ -85,7 +85,7 @@ export function View({v}) {
               </div>
               <div className="tw:flex tw:flex-col tw:gap-4">
                 <h2>
-                  <>{interp(v.t?.fA)}</>
+                  <>{v.t?.fA}</>
                 </h2>
                 {v.notSent ? (
                   <>
@@ -134,7 +134,7 @@ export function View({v}) {
                           loading={v.busy}
                           disabled={v.busy}
                         >
-                          <>{interp(v.t?.send)}</>
+                          <>{v.t?.send}</>
                         </DS.Button>
                       </div>
                     </div>
@@ -150,11 +150,11 @@ export function View({v}) {
                       className="tw:flex tw:flex-col tw:gap-4"
                     >
                       <DS.Alert tone="success" title={v.t?.okT}>
-                        <>{interp(v.t?.okP)}</>
+                        <>{v.t?.okP}</>
                       </DS.Alert>
                       <div>
                         <DS.Button variant="secondary" onClick={v.editMessage}>
-                          <>{interp(v.t?.editMessage)}</>
+                          <>{v.t?.editMessage}</>
                         </DS.Button>
                       </div>
                     </div>

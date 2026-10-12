@@ -1,7 +1,7 @@
 // StorefrontFaq: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,16 +13,16 @@ export function View({v}) {
           <main id="main" tabIndex="-1" className="vf-info">
             <header className="vf-info-header tw:max-w-[680px] tw:flex tw:flex-col tw:gap-4 tw:mb-7">
               <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                <>{interp(v.t?.eyebrow)}</>
+                <>{v.t?.eyebrow}</>
               </div>
               <h1>
-                <>{interp(v.t?.titleA)} </>
+                <>{v.t?.titleA} </>
                 <em className="vf-faq-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                  <>{interp(v.t?.titleB)}</>
+                  <>{v.t?.titleB}</>
                 </em>
               </h1>
               <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                <>{interp(v.t?.intro)}</>
+                <>{v.t?.intro}</>
               </p>
             </header>
             <div className="vf-info-columns tw:grid tw:[grid-template-columns:minmax(0,1fr)_320px] tw:gap-7 tw:items-start">
@@ -34,7 +34,7 @@ export function View({v}) {
                       aria-labelledby={group?.id}
                     >
                       <h2 id={group?.id}>
-                        <>{interp(group?.title)}</>
+                        <>{group?.title}</>
                       </h2>
                       <DS.Accordion
                         items={group?.items}
@@ -50,10 +50,10 @@ export function View({v}) {
                   <div className="tw:flex tw:flex-col tw:gap-4">
                     <DS.Icon name="message-circle" size={28} />
                     <h2>
-                      <>{interp(v.t?.helpTitle)}</>
+                      <>{v.t?.helpTitle}</>
                     </h2>
                     <p className="vf-faq-answer tw:m-0 tw:text-quiet tw:leading-body">
-                      <>{interp(v.t?.helpBody)}</>
+                      <>{v.t?.helpBody}</>
                     </p>
                     <div className="tw:flex tw:gap-3 tw:flex-wrap">
                       <DS.Button
@@ -63,16 +63,16 @@ export function View({v}) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <>{interp(v.t?.whatsapp)}</>
+                        <>{v.t?.whatsapp}</>
                       </DS.Button>
                       <DS.Button variant="ghost" href={v.href?.contact} onClick={v.go?.contact}>
-                        <>{interp(v.t?.contactUs)}</>
+                        <>{v.t?.contactUs}</>
                       </DS.Button>
                     </div>
                   </div>
                 </DS.Card>
                 <p className="vf-faq-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">
-                  <>{interp(v.t?.sample)}</>
+                  <>{v.t?.sample}</>
                 </p>
               </aside>
             </div>

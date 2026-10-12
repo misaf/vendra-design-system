@@ -1,7 +1,7 @@
 // StorefrontWeddings: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,20 +14,20 @@ export function View({v}) {
             <section className="vf-weddings-hero tw:grid tw:gap-7 tw:items-center tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))]">
               <div className="vf-weddings-heading tw:flex tw:flex-col tw:gap-5">
                 <div className="vf-weddings-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{interp(v.t?.eb)}</>
+                  <>{v.t?.eb}</>
                 </div>
                 <h1>
-                  <>{interp(v.t?.hA)} </>
+                  <>{v.t?.hA} </>
                   <em className="vf-weddings-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{interp(v.t?.hB)}</>
+                    <>{v.t?.hB}</>
                   </em>
                 </h1>
                 <p className="vf-weddings-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                  <>{interp(v.t?.hP)}</>
+                  <>{v.t?.hP}</>
                 </p>
                 <div className="tw:flex tw:gap-3 tw:flex-wrap">
                   <DS.Button variant="primary" size="lg" href="#inquiry" iconEnd="arrow-down">
-                    <>{interp(v.t?.plan)}</>
+                    <>{v.t?.plan}</>
                   </DS.Button>
                   <DS.Button
                     variant="ghost"
@@ -37,7 +37,7 @@ export function View({v}) {
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                    <>{interp(v.t?.wa)}</>
+                    <>{v.t?.wa}</>
                   </DS.Button>
                 </div>
               </div>
@@ -52,13 +52,13 @@ export function View({v}) {
                         <DS.Icon name={s?.icon} size={20} />
                       </div>
                       <div className="vf-weddings-service-title tw:text-md tw:font-medium">
-                        <>{interp(s?.title)}</>
+                        <>{s?.title}</>
                       </div>
                       <div className="vf-weddings-service-description tw:text-base tw:leading-body tw:text-quiet">
-                        <>{interp(s?.body)}</>
+                        <>{s?.body}</>
                       </div>
                       <div className="vf-weddings-service-price tw:text-sm tw:font-medium tw:text-accent">
-                        <>{interp(s?.price)}</>
+                        <>{s?.price}</>
                       </div>
                     </div>
                   </DS.Card>
@@ -67,7 +67,7 @@ export function View({v}) {
             </section>
             <section className="tw:mt-9">
               <h2>
-                <>{interp(v.t?.galleryTitle)}</>
+                <>{v.t?.galleryTitle}</>
               </h2>
               <div className="tw:grid tw:grid-cols-3 tw:gap-4">
                 {list(v.gallery).map((photo, $index) => (
@@ -82,13 +82,13 @@ export function View({v}) {
                 ))}
               </div>
               <h2 className="tw:mt-7">
-                <>{interp(v.t?.processTitle)}</>
+                <>{v.t?.processTitle}</>
               </h2>
               <ol className="tw:grid tw:gap-5 tw:md:grid-cols-3">
                 {list(v.process).map((step, $index) => (
                   <React.Fragment key={$index}>
                     <li>
-                      <>{interp(step)}</>
+                      <>{step}</>
                     </li>
                   </React.Fragment>
                 ))}
@@ -100,10 +100,10 @@ export function View({v}) {
             >
               <div className="tw:flex tw:flex-col tw:gap-4">
                 <h2 className="vf-weddings-inquiry-title tw:m-0 tw:font-display tw:font-medium tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">
-                  <>{interp(v.t?.fA)}</>
+                  <>{v.t?.fA}</>
                 </h2>
                 <p className="vf-weddings-inquiry-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                  <>{interp(v.t?.fP)}</>
+                  <>{v.t?.fP}</>
                 </p>
               </div>
               {v.notSent ? (
@@ -184,7 +184,7 @@ export function View({v}) {
                           loading={v.busy}
                           disabled={v.busy}
                         >
-                          <>{interp(v.t?.send)}</>
+                          <>{v.t?.send}</>
                         </DS.Button>
                       </div>
                     </div>
@@ -201,11 +201,11 @@ export function View({v}) {
                     className="tw:flex tw:flex-col tw:gap-4"
                   >
                     <DS.Alert tone="success" title={v.t?.okT}>
-                      <>{interp(v.t?.okP)}</>
+                      <>{v.t?.okP}</>
                     </DS.Alert>
                     <div>
                       <DS.Button variant="secondary" onClick={v.editMessage}>
-                        <>{interp(v.t?.editMessage)}</>
+                        <>{v.t?.editMessage}</>
                       </DS.Button>
                     </div>
                   </div>

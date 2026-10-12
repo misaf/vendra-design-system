@@ -1,7 +1,7 @@
 // StorefrontCheckout: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -27,16 +27,16 @@ export function View({v}) {
                 </div>
                 <div className="vf-checkout-heading tw:mb-6">
                   <h1>
-                    <>{interp(v.t?.payA)} </>
+                    <>{v.t?.payA} </>
                     <em className="vf-checkout-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{interp(v.t?.payB)}</>
+                      <>{v.t?.payB}</>
                     </em>
                   </h1>
                 </div>
                 <div className="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
                   <div className="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
                     <p className="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                      <>{interp(v.t?.payP)}</>
+                      <>{v.t?.payP}</>
                     </p>
                     <DS.RadioGroup
                       className="vf-checkout-methods"
@@ -59,7 +59,7 @@ export function View({v}) {
                     {v.discountHint ? (
                       <>
                         <p className="vf-checkout-wallet-hint tw:m-0 tw:text-sm">
-                          <>{interp(v.discountHint)}</>
+                          <>{v.discountHint}</>
                         </p>
                       </>
                     ) : null}
@@ -73,7 +73,7 @@ export function View({v}) {
                             href={v.topUpHref}
                             onClick={v.topUpGo}
                           >
-                            <>{interp(v.topUpLabel)}</>
+                            <>{v.topUpLabel}</>
                           </DS.Button>
                         </div>
                       </>
@@ -81,12 +81,12 @@ export function View({v}) {
                     {v.isWallet ? (
                       <>
                         <p className="vf-checkout-wallet-after tw:m-0 tw:text-sm tw:font-medium">
-                          <>{interp(v.walletAfter)}</>
+                          <>{v.walletAfter}</>
                         </p>
                       </>
                     ) : null}
                     <p className="tw:text-sm tw:text-quiet">
-                      <>{interp(v.paymentNotice)}</>
+                      <>{v.paymentNotice}</>
                     </p>
                     {v.isCard ? (
                       <>
@@ -101,11 +101,11 @@ export function View({v}) {
                           <>
                             <p className="vf-checkout-sheba tw:text-sm tw:flex tw:items-center tw:gap-1 tw:flex-wrap tw:m-0">
                               <>
-                                {interp(v.t?.sheba)}
+                                {v.t?.sheba}
                                 {': '}
                               </>
                               <bdi dir="ltr">
-                                <>{interp(v.payment?.sheba)}</>
+                                <>{v.payment?.sheba}</>
                               </bdi>
                               <DS.Tooltip content={v.t?.shebaTip}>
                                 <button
@@ -118,7 +118,7 @@ export function View({v}) {
                               </DS.Tooltip>
                             </p>
                             <DS.Button variant="ghost" size="sm" onClick={v.copySheba}>
-                              <>{interp(v.payLabels?.copy)}</>
+                              <>{v.payLabels?.copy}</>
                             </DS.Button>
                           </>
                         ) : null}
@@ -154,34 +154,34 @@ export function View({v}) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <>{interp(v.migration?.openWa)}</>
+                          <>{v.migration?.openWa}</>
                         </DS.Button>
                       </>
                     ) : null}
                     {v.busy ? (
                       <>
                         <p role="status">
-                          <>{interp(v.migration?.processing)}</>
+                          <>{v.migration?.processing}</>
                         </p>
                       </>
                     ) : null}
                     {v.failed ? (
                       <>
                         <DS.Alert tone="danger" title={v.migration?.failed}>
-                          <>{interp(v.migration?.failureBody)}</>
+                          <>{v.migration?.failureBody}</>
                         </DS.Alert>
                         <div className="tw:flex tw:gap-3">
                           <DS.Button onClick={v.retry}>
-                            <>{interp(v.migration?.retry)}</>
+                            <>{v.migration?.retry}</>
                           </DS.Button>
                           <DS.Button variant="ghost" onClick={v.otherMethod}>
-                            <>{interp(v.migration?.other)}</>
+                            <>{v.migration?.other}</>
                           </DS.Button>
                         </div>
                       </>
                     ) : null}
                     <DS.Alert tone="neutral" icon="shield-check">
-                      <>{interp(v.t?.safe)}</>
+                      <>{v.t?.safe}</>
                     </DS.Alert>
                     <div className="tw:flex tw:gap-3 tw:flex-wrap">
                       {v.desk ? (
@@ -194,7 +194,7 @@ export function View({v}) {
                             loading={v.busy}
                             disabled={v.placeDisabled}
                           >
-                            <>{interp(v.t?.place)}</>
+                            <>{v.t?.place}</>
                           </DS.Button>
                         </>
                       ) : null}
@@ -205,7 +205,7 @@ export function View({v}) {
                         href={v.backHref}
                         onClick={v.goBack}
                       >
-                        <>{interp(v.t?.back)}</>
+                        <>{v.t?.back}</>
                       </DS.Button>
                     </div>
                   </div>
@@ -239,7 +239,7 @@ export function View({v}) {
                     headingLevel={1}
                   />
                   <DS.Badge tone="accent">
-                    <>{interp(v.paymentStatus)}</>
+                    <>{v.paymentStatus}</>
                   </DS.Badge>
                   <div className="tw:w-full">
                     <DS.DetailList rows={v.doneRows} />
@@ -251,10 +251,10 @@ export function View({v}) {
                           <div className="vf-checkout-account tw:flex tw:items-center tw:justify-between tw:gap-4 tw:flex-wrap">
                             <div className="tw:flex tw:flex-col tw:gap-1 tw:[flex:1_1_260px]">
                               <h2 className="tw:m-0 tw:text-md tw:font-medium">
-                                <>{interp(v.t?.accountTitle)}</>
+                                <>{v.t?.accountTitle}</>
                               </h2>
                               <p className="tw:m-0 tw:text-sm tw:text-secondary">
-                                <>{interp(v.accountBody)}</>
+                                <>{v.accountBody}</>
                               </p>
                             </div>
                             <DS.Button
@@ -263,7 +263,7 @@ export function View({v}) {
                               href={v.href?.signin}
                               onClick={v.go?.signin}
                             >
-                              <>{interp(v.t?.accountCta)}</>
+                              <>{v.t?.accountCta}</>
                             </DS.Button>
                           </div>
                         </DS.Card>
@@ -277,10 +277,10 @@ export function View({v}) {
                       href={v.href?.track}
                       onClick={v.go?.track}
                     >
-                      <>{interp(v.t?.track)}</>
+                      <>{v.t?.track}</>
                     </DS.Button>
                     <DS.Button variant="secondary" href={v.href?.shop} onClick={v.go?.shop}>
-                      <>{interp(v.t?.keep)}</>
+                      <>{v.t?.keep}</>
                     </DS.Button>
                   </div>
                 </div>
@@ -296,10 +296,10 @@ export function View({v}) {
               <div className="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:py-3 tw:px-4 tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]">
                 <div className="vf-action-total">
                   <span className="vf-action-caption tw:text-xs tw:text-quiet">
-                    <>{interp(v.t?.total)}</>
+                    <>{v.t?.total}</>
                   </span>
                   <span className="vf-price">
-                    <>{interp(v.totalLabel)}</>
+                    <>{v.totalLabel}</>
                   </span>
                 </div>
                 <DS.Button
@@ -309,7 +309,7 @@ export function View({v}) {
                   loading={v.busy}
                   disabled={v.placeDisabled}
                 >
-                  <>{interp(v.t?.place)}</>
+                  <>{v.t?.place}</>
                 </DS.Button>
               </div>
             </>

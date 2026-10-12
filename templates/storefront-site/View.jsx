@@ -1,7 +1,7 @@
 // The click-through site: the routed page, the shared bag and saved items.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import StorefrontAccount from '../storefront-account/Page.jsx';
 import StorefrontBag from '../storefront-bag/Page.jsx';
 import StorefrontCheckout from '../storefront-checkout/Page.jsx';
@@ -24,7 +24,7 @@ export function View({v}) {
   return (
     <>
       <DS.LiveRegion>
-        <>{interp(v.announcement)}</>
+        <>{v.announcement}</>
       </DS.LiveRegion>
       {v.integrationError ? (
         <>

@@ -1,7 +1,7 @@
 // StorefrontShop: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -26,7 +26,7 @@ export function View({v}) {
                 <>
                   <aside className="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 tw:sticky tw:top-9 tw:[flex:1_1_240px] tw:max-w-[260px]">
                     <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
-                      <>{interp(v.t?.cats)}</>
+                      <>{v.t?.cats}</>
                     </div>
                     {list(v.categories).map((c, $index) => (
                       <React.Fragment key={$index}>
@@ -39,10 +39,10 @@ export function View({v}) {
                               className="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-medium tw:text-start tw:cursor-pointer"
                             >
                               <span>
-                                <>{interp(c?.label)}</>
+                                <>{c?.label}</>
                               </span>
                               <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                                <>{interp(c?.count)}</>
+                                <>{c?.count}</>
                               </span>
                             </button>
                           </>
@@ -56,10 +56,10 @@ export function View({v}) {
                               className="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"
                             >
                               <span>
-                                <>{interp(c?.label)}</>
+                                <>{c?.label}</>
                               </span>
                               <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                                <>{interp(c?.count)}</>
+                                <>{c?.count}</>
                               </span>
                             </button>
                           </>
@@ -69,13 +69,13 @@ export function View({v}) {
                     <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
                       <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
                         <legend className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">
-                          <>{interp(v.t?.occasion)}</>
+                          <>{v.t?.occasion}</>
                         </legend>
                         <div className="tw:flex tw:flex-wrap tw:gap-2">
                           {list(v.occasionOptions).map((o, $index) => (
                             <React.Fragment key={$index}>
                               <DS.Chip selected={o?.on} onClick={o?.pick}>
-                                <>{interp(o?.label)}</>
+                                <>{o?.label}</>
                               </DS.Chip>
                             </React.Fragment>
                           ))}
@@ -91,7 +91,7 @@ export function View({v}) {
                       />
                       <div className="tw:flex tw:flex-col tw:gap-2">
                         <span id="vf-price-label" className="ag-field__label">
-                          <>{interp(v.migration?.price)}</>
+                          <>{v.migration?.price}</>
                         </span>
                         <DS.RangeSlider
                           labelledBy="vf-price-label"
@@ -126,9 +126,9 @@ export function View({v}) {
                           <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
                             <span className="vf-shop-category-label tw:whitespace-nowrap">
                               <>
-                                {interp(c?.label)}
+                                {c?.label}
                                 {' \u00b7 '}
-                                {interp(c?.count)}
+                                {c?.count}
                               </>
                             </span>
                           </DS.Chip>
@@ -147,7 +147,7 @@ export function View({v}) {
                         onClick={v.openFilters}
                         iconStart="sliders-horizontal"
                       >
-                        <>{interp(v.filtersLabel)}</>
+                        <>{v.filtersLabel}</>
                       </DS.Button>
                       <div className="tw:flex-1 tw:min-w-0">
                         <DS.Select
@@ -170,7 +170,7 @@ export function View({v}) {
                             onRemove={filter?.remove}
                             onClick={filter?.remove}
                           >
-                            <>{interp(filter?.label)}</>
+                            <>{filter?.label}</>
                           </DS.Chip>
                         </React.Fragment>
                       ))}
@@ -180,7 +180,7 @@ export function View({v}) {
                         onClick={v.clearFilters}
                         className="vf-shop-clear-all"
                       >
-                        <>{interp(v.t?.clearAll)}</>
+                        <>{v.t?.clearAll}</>
                       </DS.Button>
                     </div>
                   </>
@@ -190,7 +190,7 @@ export function View({v}) {
                     {list(v.chips).map((f, $index) => (
                       <React.Fragment key={$index}>
                         <DS.Chip selected={f?.on} onClick={f?.toggle} aria-pressed={f?.on}>
-                          <>{interp(f?.label)}</>
+                          <>{f?.label}</>
                         </DS.Chip>
                       </React.Fragment>
                     ))}
@@ -202,7 +202,7 @@ export function View({v}) {
                       role="status"
                       className="vf-shop-result-count tw:text-sm tw:text-quiet"
                     >
-                      <>{interp(v.countLabel)}</>
+                      <>{v.countLabel}</>
                     </span>
                     {v.desk ? (
                       <>
@@ -222,7 +222,7 @@ export function View({v}) {
                   <>
                     <DS.Skeleton shape="card" lines={3} />
                     <p role="status">
-                      <>{interp(v.migration?.loading)}</>
+                      <>{v.migration?.loading}</>
                     </p>
                   </>
                 ) : null}
@@ -230,7 +230,7 @@ export function View({v}) {
                   <>
                     <DS.Alert tone="danger" title={v.migration?.failed} />
                     <DS.Button onClick={v.retry}>
-                      <>{interp(v.migration?.retry)}</>
+                      <>{v.migration?.retry}</>
                     </DS.Button>
                   </>
                 ) : null}
@@ -281,7 +281,7 @@ export function View({v}) {
                     />
                     <div className="tw:flex tw:justify-center">
                       <DS.Button variant="secondary" onClick={v.clear}>
-                        <>{interp(v.t?.clear)}</>
+                        <>{v.t?.clear}</>
                       </DS.Button>
                     </div>
                   </>
@@ -292,13 +292,13 @@ export function View({v}) {
               <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
                 <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
                   <legend className="ag-field__label tw:p-0 tw:mb-2">
-                    <>{interp(v.t?.occasion)}</>
+                    <>{v.t?.occasion}</>
                   </legend>
                   <div className="tw:flex tw:flex-wrap tw:gap-2">
                     {list(v.occasionOptions).map((o, $index) => (
                       <React.Fragment key={$index}>
                         <DS.Chip selected={o?.on} onClick={o?.pick}>
-                          <>{interp(o?.label)}</>
+                          <>{o?.label}</>
                         </DS.Chip>
                       </React.Fragment>
                     ))}
@@ -314,7 +314,7 @@ export function View({v}) {
                 />
                 <div className="tw:flex tw:flex-col tw:gap-2">
                   <span id="vf-price-label-dialog" className="ag-field__label">
-                    <>{interp(v.migration?.price)}</>
+                    <>{v.migration?.price}</>
                   </span>
                   <DS.RangeSlider
                     labelledBy="vf-price-label-dialog"
@@ -331,10 +331,10 @@ export function View({v}) {
               </div>
               <div className="vf-shop-dialog-actions tw:mt-5 tw:flex tw:flex-col tw:gap-2">
                 <DS.Button size="lg" block={true} onClick={v.closeFilters}>
-                  <>{interp(v.showResults)}</>
+                  <>{v.showResults}</>
                 </DS.Button>
                 <DS.Button variant="ghost" size="lg" block={true} onClick={v.clearFilters}>
-                  <>{interp(v.t?.clear)}</>
+                  <>{v.t?.clear}</>
                 </DS.Button>
               </div>
             </DS.Dialog>

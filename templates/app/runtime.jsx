@@ -1,5 +1,5 @@
 // How a page renders: its logic object (state, lifecycle and renderVals) lives in a small React host,
-// and the page's View renders the vals. State updates apply to the logic at once, as page code
+// and the page's View renders the vals (its props merged with renderVals()). State updates apply to the logic at once, as page code
 // expects, and the host re-renders.
 import React from 'react';
 import {vfPageClass} from '../_shared/page-lifecycle.js';
@@ -56,38 +56,11 @@ export function definePage(name, Logic, View) {
     render() {
       this.logic.props = this.props;
       const v = {...this.props, ...(this.logic.renderVals() || {})};
-      return (
-        <div className="sc-host" data-sc-name={name}>
-          <View v={v} />
-        </div>
-      );
+      return <View v={v} />;
     }
   }
   Page.displayName = name;
   return Page;
 }
 
-// An interpolated value: text in a span, elements as they are, nothing for null or booleans.
-export function interp(value) {
-  if (React.isValidElement(value) || Array.isArray(value)) return <>{value}</>;
-  if (value === undefined || value === null || typeof value === 'boolean') return null;
-  return <span className="sc-interp">{String(value)}</span>;
-}
-
 export const list = value => (Array.isArray(value) ? value : []);
-
-export function cssToObj(css) {
-  if (!css || typeof css !== 'string') return css;
-  const style = {};
-  for (const declaration of css.split(';')) {
-    const i = declaration.indexOf(':');
-    if (i < 0) continue;
-    const property = declaration.slice(0, i).trim();
-    style[
-      property.startsWith('--')
-        ? property
-        : property.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
-    ] = declaration.slice(i + 1).trim();
-  }
-  return style;
-}

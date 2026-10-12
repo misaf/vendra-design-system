@@ -1,7 +1,7 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -15,13 +15,13 @@ export function View({v}) {
               {v.isPhone ? (
                 <>
                   <h1>
-                    <>{interp(v.t?.inA)} </>
+                    <>{v.t?.inA} </>
                     <em className="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{interp(v.t?.inB)}</>
+                      <>{v.t?.inB}</>
                     </em>
                   </h1>
                   <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{interp(v.t?.inP)}</>
+                    <>{v.t?.inP}</>
                   </p>
                   <DS.PhoneInput
                     id="vf-phone"
@@ -32,39 +32,39 @@ export function View({v}) {
                     error={v.phoneErr}
                   />
                   <DS.Button variant="primary" size="lg" block={true} onClick={v.send}>
-                    <>{interp(v.t?.send)}</>
+                    <>{v.t?.send}</>
                   </DS.Button>
                   <p className="vf-signin-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">
-                    <>{interp(v.t?.terms?.before)}</>
+                    <>{v.t?.terms?.before}</>
                     <a
                       href={v.termsLink?.href}
                       onClick={v.termsLink?.go}
                       className="tw:text-inherit! tw:[text-underline-offset:3px]"
                     >
-                      <>{interp(v.t?.terms?.terms)}</>
+                      <>{v.t?.terms?.terms}</>
                     </a>
-                    <>{interp(v.t?.terms?.and)}</>
+                    <>{v.t?.terms?.and}</>
                     <a
                       href={v.privacyLink?.href}
                       onClick={v.privacyLink?.go}
                       className="tw:text-inherit! tw:[text-underline-offset:3px]"
                     >
-                      <>{interp(v.t?.terms?.privacy)}</>
+                      <>{v.t?.terms?.privacy}</>
                     </a>
-                    <>{interp(v.t?.terms?.after)}</>
+                    <>{v.t?.terms?.after}</>
                   </p>
                 </>
               ) : null}
               {v.isCode ? (
                 <>
                   <h1>
-                    <>{interp(v.t?.codeA)} </>
+                    <>{v.t?.codeA} </>
                     <em className="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{interp(v.t?.codeB)}</>
+                      <>{v.t?.codeB}</>
                     </em>
                   </h1>
                   <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{interp(v.codeP)}</>
+                    <>{v.codeP}</>
                   </p>
                   <DS.CodeInput
                     id="vf-code"
@@ -76,29 +76,29 @@ export function View({v}) {
                     hint={v.t?.codeHint}
                   />
                   <DS.Button variant="primary" size="lg" block={true} onClick={v.verify}>
-                    <>{interp(v.t?.verify)}</>
+                    <>{v.t?.verify}</>
                   </DS.Button>
                   <div className="vf-signin-resend tw:flex tw:flex-col tw:gap-2 tw:items-start">
                     {v.waiting ? (
                       <>
                         <p className="tw:m-0 tw:text-sm tw:text-quiet">
-                          <>{interp(v.resendIn)}</>
+                          <>{v.resendIn}</>
                         </p>
                       </>
                     ) : null}
                     {v.canResend ? (
                       <>
                         <DS.Button variant="secondary" iconStart="rotate-ccw" onClick={v.resend}>
-                          <>{interp(v.t?.resend)}</>
+                          <>{v.t?.resend}</>
                         </DS.Button>
                       </>
                     ) : null}
                     <p role="status" className="tw:m-0 tw:text-sm">
-                      <>{interp(v.resentText)}</>
+                      <>{v.resentText}</>
                     </p>
                   </div>
                   <DS.Button variant="ghost" iconStart="arrow-left" onClick={v.back}>
-                    <>{interp(v.t?.change)}</>
+                    <>{v.t?.change}</>
                   </DS.Button>
                 </>
               ) : null}
@@ -121,17 +121,17 @@ export function View({v}) {
                           href={v.checkoutHref}
                           onClick={v.backToCheckout}
                         >
-                          <>{interp(v.t?.backToCheckout)}</>
+                          <>{v.t?.backToCheckout}</>
                         </DS.Button>
                         <DS.Button variant="ghost" href={v.href?.account} onClick={v.go?.account}>
-                          <>{interp(v.t?.toAccount)}</>
+                          <>{v.t?.toAccount}</>
                         </DS.Button>
                       </>
                     ) : null}
                     {v.notFromCheckout ? (
                       <>
                         <DS.Button variant="primary" href={v.href?.account} onClick={v.go?.account}>
-                          <>{interp(v.t?.toAccount)}</>
+                          <>{v.t?.toAccount}</>
                         </DS.Button>
                       </>
                     ) : null}

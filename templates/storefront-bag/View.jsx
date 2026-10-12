@@ -1,7 +1,7 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,9 +28,9 @@ export function View({v}) {
                 {v.onBag ? (
                   <>
                     <h1>
-                      <>{interp(v.t?.titleA)} </>
+                      <>{v.t?.titleA} </>
                       <em className="vf-bag-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                        <>{interp(v.t?.titleB)}</>
+                        <>{v.t?.titleB}</>
                       </em>
                     </h1>
                   </>
@@ -38,9 +38,9 @@ export function View({v}) {
                 {v.onDelivery ? (
                   <>
                     <h1>
-                      <>{interp(v.t?.deliveryA)} </>
+                      <>{v.t?.deliveryA} </>
                       <em className="vf-bag-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                        <>{interp(v.t?.deliveryB)}</>
+                        <>{v.t?.deliveryB}</>
                       </em>
                     </h1>
                   </>
@@ -94,7 +94,7 @@ export function View({v}) {
                                           onClick={p?.go}
                                           className="tw:text-inherit tw:underline"
                                         >
-                                          <>{interp(p?.text)}</>
+                                          <>{p?.text}</>
                                         </a>
                                       </li>
                                     </React.Fragment>
@@ -108,7 +108,7 @@ export function View({v}) {
                           <>
                             <div className="vf-bag-signin tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-3 tw:px-4 tw:rounded-md tw:bg-sunken tw:text-sm">
                               <span>
-                                <>{interp(v.t?.signinPrompt)}</>
+                                <>{v.t?.signinPrompt}</>
                               </span>
                               <DS.Button
                                 variant="secondary"
@@ -117,7 +117,7 @@ export function View({v}) {
                                 href={v.signinHref}
                                 onClick={v.goSignin}
                               >
-                                <>{interp(v.t?.signin)}</>
+                                <>{v.t?.signin}</>
                               </DS.Button>
                             </div>
                           </>
@@ -130,19 +130,19 @@ export function View({v}) {
                             id="vf-recipient-title"
                             className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
                           >
-                            <>{interp(v.t?.recipient)}</>
+                            <>{v.t?.recipient}</>
                           </h2>
                           {v.hasSaved ? (
                             <>
                               <fieldset className="vf-bag-saved tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
                                 <legend className="ag-field__label tw:p-0 tw:mb-2">
-                                  <>{interp(v.t?.saved)}</>
+                                  <>{v.t?.saved}</>
                                 </legend>
                                 <div className="tw:flex tw:flex-wrap tw:gap-2">
                                   {list(v.savedAddresses).map((a, $index) => (
                                     <React.Fragment key={$index}>
                                       <DS.Chip selected={a?.on} onClick={a?.pick}>
-                                        <>{interp(a?.label)}</>
+                                        <>{a?.label}</>
                                       </DS.Chip>
                                     </React.Fragment>
                                   ))}
@@ -195,17 +195,17 @@ export function View({v}) {
                                   role="status"
                                 >
                                   <span className="ag-field__label">
-                                    <>{interp(v.t?.zone)}</>
+                                    <>{v.t?.zone}</>
                                   </span>
                                   {v.zoneText ? (
                                     <>
                                       <span className="tw:text-md tw:font-medium">
-                                        <>{interp(v.zoneText)}</>
+                                        <>{v.zoneText}</>
                                       </span>
                                     </>
                                   ) : null}
                                   <span className="ag-field__hint">
-                                    <>{interp(v.zoneStatus)}</>
+                                    <>{v.zoneStatus}</>
                                   </span>
                                 </div>
                               </>
@@ -213,10 +213,10 @@ export function View({v}) {
                             {v.mapFailed ? (
                               <>
                                 <span className="ag-field__label">
-                                  <>{interp(v.t?.pin)}</>
+                                  <>{v.t?.pin}</>
                                 </span>
                                 <p className="ag-field__hint tw:m-0">
-                                  <>{interp(v.t?.mapFailed)}</>
+                                  <>{v.t?.mapFailed}</>
                                 </p>
                                 <DS.Select
                                   id="vf-zone"
@@ -248,7 +248,7 @@ export function View({v}) {
                             id="vf-when-title"
                             className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
                           >
-                            <>{interp(v.t?.when)}</>
+                            <>{v.t?.when}</>
                           </h2>
                           <DS.ChoiceGroup
                             legend={v.t?.day}
@@ -296,10 +296,10 @@ export function View({v}) {
                               id="vf-cards-title"
                               className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
                             >
-                              <>{interp(v.t?.cards)}</>
+                              <>{v.t?.cards}</>
                             </h2>
                             <p className="ag-field__hint tw:m-0">
-                              <>{interp(v.t?.cardHint)}</>
+                              <>{v.t?.cardHint}</>
                             </p>
                           </div>
                           {list(v.cardLines).map((c, $index) => (
@@ -326,10 +326,10 @@ export function View({v}) {
                                     <div className="tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-2 tw:[border-top:1px_solid_var(--border-subtle)]">
                                       <span className="tw:flex tw:flex-col">
                                         <span className="tw:font-medium">
-                                          <>{interp(c?.name)}</>
+                                          <>{c?.name}</>
                                         </span>
                                         <span className="tw:text-sm tw:text-quiet">
-                                          <>{interp(c?.detail)}</>
+                                          <>{c?.detail}</>
                                         </span>
                                       </span>
                                       <DS.Button
@@ -339,7 +339,7 @@ export function View({v}) {
                                         aria-label={c?.addAria}
                                         onClick={c?.add}
                                       >
-                                        <>{interp(c?.addLabel)}</>
+                                        <>{c?.addLabel}</>
                                       </DS.Button>
                                     </div>
                                   </>
@@ -357,10 +357,10 @@ export function View({v}) {
                               id="vf-you-title"
                               className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
                             >
-                              <>{interp(v.t?.you)}</>
+                              <>{v.t?.you}</>
                             </h2>
                             <p className="ag-field__hint tw:m-0">
-                              <>{interp(v.t?.youHint)}</>
+                              <>{v.t?.youHint}</>
                             </p>
                           </div>
                           <div className="vf-bag-recipient-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))]">
@@ -399,7 +399,7 @@ export function View({v}) {
                           noValidate=""
                         >
                           <label className="ag-field__label" htmlFor="vf-promo">
-                            <>{interp(v.t?.promo)}</>
+                            <>{v.t?.promo}</>
                           </label>
                           <div className="vf-bag-promo-row tw:grid tw:gap-2">
                             <DS.Input
@@ -412,7 +412,7 @@ export function View({v}) {
                             />
                             <div className="vf-bag-promo-apply">
                               <DS.Button variant="ghost" size="sm" type="submit">
-                                <>{interp(v.t?.apply)}</>
+                                <>{v.t?.apply}</>
                               </DS.Button>
                             </div>
                           </div>
@@ -427,10 +427,10 @@ export function View({v}) {
                         >
                           <span className="tw:flex tw:items-center tw:gap-2">
                             <DS.Icon name="tag" size={16} />
-                            <>{interp(v.promoStatus)}</>
+                            <>{v.promoStatus}</>
                           </span>
                           <DS.Button variant="ghost" size="sm" onClick={v.removePromo}>
-                            <>{interp(v.t?.removePromo)}</>
+                            <>{v.t?.removePromo}</>
                           </DS.Button>
                         </div>
                       </>
@@ -446,7 +446,7 @@ export function View({v}) {
                               iconEnd="arrow-right"
                               onClick={v.toDelivery}
                             >
-                              <>{interp(v.t?.toDelivery)}</>
+                              <>{v.t?.toDelivery}</>
                             </DS.Button>
                           </>
                         ) : null}
@@ -459,7 +459,7 @@ export function View({v}) {
                               iconEnd="arrow-right"
                               onClick={v.next}
                             >
-                              <>{interp(v.t?.next)}</>
+                              <>{v.t?.next}</>
                             </DS.Button>
                           </>
                         ) : null}
@@ -475,12 +475,12 @@ export function View({v}) {
                           href={v.bagHref}
                           onClick={v.backToBag}
                         >
-                          <>{interp(v.t?.backToBag)}</>
+                          <>{v.t?.backToBag}</>
                         </DS.Button>
                       </>
                     ) : null}
                     <p className="vf-bag-payment-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet tw:text-center">
-                      <>{interp(v.t?.payNote)}</>
+                      <>{v.t?.payNote}</>
                     </p>
                   </aside>
                 </div>
@@ -497,7 +497,7 @@ export function View({v}) {
                     body={v.t?.emptyP}
                   />
                   <DS.Button variant="primary" onClick={v.restore}>
-                    <>{interp(v.t?.keep)}</>
+                    <>{v.t?.keep}</>
                   </DS.Button>
                 </div>
               </>
@@ -512,23 +512,23 @@ export function View({v}) {
               <div className="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:py-3 tw:px-4 tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]">
                 <div className="vf-action-total">
                   <span className="vf-action-caption tw:text-xs tw:text-quiet">
-                    <>{interp(v.t?.total)}</>
+                    <>{v.t?.total}</>
                   </span>
                   <span className="vf-price">
-                    <>{interp(v.totalLabel)}</>
+                    <>{v.totalLabel}</>
                   </span>
                 </div>
                 {v.onBag ? (
                   <>
                     <DS.Button variant="primary" iconEnd="arrow-right" onClick={v.toDelivery}>
-                      <>{interp(v.t?.toDelivery)}</>
+                      <>{v.t?.toDelivery}</>
                     </DS.Button>
                   </>
                 ) : null}
                 {v.onDelivery ? (
                   <>
                     <DS.Button variant="primary" iconEnd="arrow-right" onClick={v.next}>
-                      <>{interp(v.t?.next)}</>
+                      <>{v.t?.next}</>
                     </DS.Button>
                   </>
                 ) : null}

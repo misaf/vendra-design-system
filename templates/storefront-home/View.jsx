@@ -1,7 +1,7 @@
 // StorefrontHome: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,16 +14,16 @@ export function View({v}) {
             <section className="vf-home-hero tw:mx-auto tw:grid tw:items-center tw:max-w-page tw:py-8 tw:px-gutter tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
               <div className="tw:flex tw:flex-col tw:gap-5">
                 <div className="vf-home-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{interp(v.t?.eyebrow)}</>
+                  <>{v.t?.eyebrow}</>
                 </div>
                 <h1 className="vf-hero-title">
-                  <>{interp(v.t?.heroA)} </>
+                  <>{v.t?.heroA} </>
                   <em className="vf-home-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{interp(v.t?.heroB)}</>
+                    <>{v.t?.heroB}</>
                   </em>
                 </h1>
                 <p className="vf-home-intro tw:text-secondary tw:m-0 tw:max-w-[44ch] tw:text-md tw:leading-body tw:text-pretty">
-                  <>{interp(v.t?.heroP)}</>
+                  <>{v.t?.heroP}</>
                 </p>
                 <div className="tw:flex tw:gap-3 tw:flex-wrap">
                   <DS.Button
@@ -33,7 +33,7 @@ export function View({v}) {
                     href={v.href?.shop}
                     onClick={v.go?.shop}
                   >
-                    <>{interp(v.t?.cta)}</>
+                    <>{v.t?.cta}</>
                   </DS.Button>
                   <DS.Button
                     variant="ghost"
@@ -42,7 +42,7 @@ export function View({v}) {
                     href={v.waHref}
                     target="_blank"
                   >
-                    <>{interp(v.t?.wa)}</>
+                    <>{v.t?.wa}</>
                   </DS.Button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {interp, list, cssToObj} from '../app/runtime.jsx';
+import {list} from '../app/runtime.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -19,19 +19,19 @@ export function View({v}) {
                   noValidate=""
                 >
                   <h1>
-                    <>{interp(v.t?.lookup?.titleA)} </>
+                    <>{v.t?.lookup?.titleA} </>
                     <em className="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{interp(v.t?.lookup?.titleB)}</>
+                      <>{v.t?.lookup?.titleB}</>
                     </em>
                   </h1>
                   <p className="tw:text-secondary tw:m-0 tw:text-md tw:leading-body tw:text-pretty">
-                    <>{interp(v.t?.lookup?.intro)}</>
+                    <>{v.t?.lookup?.intro}</>
                   </p>
                   {v.lookupFailed ? (
                     <>
                       <div id="vf-lookup-failed" tabIndex="-1">
                         <DS.Alert tone="warning">
-                          <>{interp(v.t?.lookup?.failed)}</>
+                          <>{v.t?.lookup?.failed}</>
                         </DS.Alert>
                       </div>
                     </>
@@ -64,10 +64,10 @@ export function View({v}) {
                     type="submit"
                     iconStart="package-search"
                   >
-                    <>{interp(v.t?.lookup?.submit)}</>
+                    <>{v.t?.lookup?.submit}</>
                   </DS.Button>
                   <DS.Button variant="ghost" href={v.href?.shop} onClick={v.go?.shop}>
-                    <>{interp(v.t?.browse)}</>
+                    <>{v.t?.browse}</>
                   </DS.Button>
                 </form>
               </>
@@ -76,22 +76,22 @@ export function View({v}) {
               <>
                 <div className="vf-track-header tw:flex tw:flex-col tw:gap-3 tw:mb-7">
                   <div className="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                    <>{interp(v.t?.orderNo)}</>
+                    <>{v.t?.orderNo}</>
                   </div>
                   <h1>
-                    <>{interp(v.titleA)} </>
+                    <>{v.titleA} </>
                     <em className="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{interp(v.titleB)}</>
+                      <>{v.titleB}</>
                     </em>
                   </h1>
                   <p className="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{interp(v.statusP)}</>
+                    <>{v.statusP}</>
                   </p>
                   {v.pending ? (
                     <>
                       <div className="tw:max-w-measure">
                         <DS.Alert tone="neutral" icon="clock" title={v.pendingTitle}>
-                          <>{interp(v.pendingBody)}</>
+                          <>{v.pendingBody}</>
                         </DS.Alert>
                       </div>
                     </>
@@ -122,7 +122,7 @@ export function View({v}) {
                             />
                           </div>
                           <figcaption className="vf-track-photo-caption tw:text-sm tw:text-quiet">
-                            <>{interp(v.t?.photoCap)}</>
+                            <>{v.t?.photoCap}</>
                           </figcaption>
                         </figure>
                       </>
@@ -138,7 +138,7 @@ export function View({v}) {
                         rel="noopener noreferrer"
                         target="_blank"
                       >
-                        <>{interp(v.t?.ask)}</>
+                        <>{v.t?.ask}</>
                       </DS.Button>
                       <DS.Button
                         variant="secondary"
@@ -146,14 +146,14 @@ export function View({v}) {
                         href={v.href?.bag}
                         onClick={v.reorder}
                       >
-                        <>{interp(v.t?.again)}</>
+                        <>{v.t?.again}</>
                       </DS.Button>
                       <DS.Button
                         variant="ghost"
                         iconStart="package-search"
                         onClick={v.trackAnother}
                       >
-                        <>{interp(v.t?.lookup?.another)}</>
+                        <>{v.t?.lookup?.another}</>
                       </DS.Button>
                     </div>
                   </div>

@@ -7,4 +7,4 @@ const name = new URLSearchParams(location.search).get('page') || 'site';
 const page = pages['../storefront-' + name + '/Page.jsx'] || pages['../storefront-site/Page.jsx'];
 const Page = page.default;
 
-createRoot(document.getElementById('dc-root')).render(<Page {...page.defaults} />);
+createRoot(document.getElementById('root')).render(<Page {...page.defaults} />);
