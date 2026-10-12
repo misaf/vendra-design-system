@@ -10,11 +10,10 @@ export interface SelectChangeEvent {
   currentTarget: {value: string; name?: string; id: string};
   type: 'change';
 }
-export interface SelectProps
-  extends Omit<
-    React.HTMLAttributes<HTMLDivElement>,
-    'onChange' | 'defaultValue' | 'placeholder'
-  > {
+export interface SelectProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onChange' | 'defaultValue' | 'placeholder'
+> {
   label?: string;
   /** Helper text below the control, linked with aria-describedby="{id}-hint" */
   hint?: string;

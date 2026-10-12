@@ -6,7 +6,7 @@ const LILAC_300 = 'rgb(169, 155, 221)';
 
 test.beforeEach(async ({page}) => {
   await page.goto(FIXTURE);
-  await expect(page.getByRole('tablist')).toBeVisible();
+  await expect(page.locator('[data-test=tabs]').getByRole('tablist')).toBeVisible();
 });
 
 test.describe('Tooltip (WCAG 1.4.13)', () => {
@@ -69,9 +69,10 @@ test.describe('Tabs (ARIA tabs pattern)', () => {
   }
 
   test('roving tabindex and panel linkage', async ({page}) => {
-    const selected = page.getByRole('tab', {selected: true});
-    await expect(page.getByRole('tab')).toHaveCount(3);
-    await expect(page.locator('[role=tab][tabindex="0"]')).toHaveCount(1);
+    const selected = page.locator('[data-test=tabs]').getByRole('tab', {selected: true});
+    const tabs = page.locator('[data-test=tabs]');
+    await expect(tabs.getByRole('tab')).toHaveCount(3);
+    await expect(tabs.locator('[role=tab][tabindex="0"]')).toHaveCount(1);
     await page.getByRole('tab', {name: 'Profile'}).click();
     // The selected tab controls the visible panel, and the panel is named by that tab.
     const panelId = await selected.getAttribute('aria-controls');
@@ -151,6 +152,34 @@ test.describe('Select (React Aria listbox)', () => {
     await expect(list).toBeHidden();
     await expect(trigger).toBeFocused();
   });
+});
+
+test.describe('DatePicker (React Aria calendar)', () => {
+  for (const lang of ['en', 'fa']) {
+    test(`picks a day from the grid in the default calendar, before-min days are off (${lang})`, async ({
+      page
+    }) => {
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const open = lang === 'fa' ? 'انتخاب از تقویم' : 'Choose a date';
+      await page.getByRole('button', {name: open}).click();
+      const grid = page.getByRole('grid');
+      await expect(grid).toBeVisible();
+      // 8 October 2026 is 16 Mehr 1405: the grid shows Mehr in Persian, October in English.
+      await expect(page.locator('.ag-cal__title')).toHaveText(
+        lang === 'fa' ? /۱۴۰۵ مهر/ : /October 2026/
+      );
+      await expect(grid.locator('[data-selected]')).toHaveText(lang === 'fa' ? '۱۶' : '8');
+      // 4 October (12 Mehr) is before minDate.
+      const beforeMin = new RegExp('^' + (lang === 'fa' ? '۱۲' : '4') + '$');
+      await expect(
+        grid.locator('.ag-cal__cell[data-disabled]').filter({hasText: beforeMin})
+      ).toHaveCount(1);
+      await page.keyboard.press('ArrowDown');
+      await page.keyboard.press('Enter');
+      await expect(grid).toBeHidden();
+      await expect(page.locator('output[data-test=date]')).toHaveText('2026-10-15');
+    });
+  }
 });
 
 test.describe('Toast', () => {

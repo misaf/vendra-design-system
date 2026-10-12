@@ -1,4 +1,20 @@
 import React from 'react';
+import {
+  Button,
+  Calendar,
+  CalendarCell,
+  CalendarGrid,
+  DateInput,
+  DatePicker as AriaDatePicker,
+  DateSegment,
+  Dialog,
+  Group,
+  Heading,
+  I18nProvider,
+  Popover
+} from 'react-aria-components';
+import {GregorianCalendar, PersianCalendar, parseDate, toCalendar} from '@internationalized/date';
+import {Icon} from '../Icon/Icon.jsx';
 import {dates} from '../utils/dates.js';
 import {Select} from '../Select/Select.jsx';
 import {Tabs} from '../Tabs/Tabs.jsx';
@@ -12,6 +28,9 @@ const DEFAULT_LABELS = {
     year: 'Year',
     month: 'Month',
     day: 'Day',
+    open: 'Choose a date',
+    previous: 'Previous month',
+    next: 'Next month',
     equivalent: 'That’s {date}'
   },
   fa: {
@@ -20,15 +39,35 @@ const DEFAULT_LABELS = {
     year: 'سال',
     month: 'ماه',
     day: 'روز',
+    open: 'انتخاب از تقویم',
+    previous: 'ماه قبل',
+    next: 'ماه بعد',
     equivalent: 'برابر با {date}'
   }
 };
+const GREGORIAN = new GregorianCalendar();
+const PERSIAN = new PersianCalendar();
+// ISO ↔ React Aria's CalendarDate (a value in any calendar comes back as an ISO Gregorian date).
+const toDateValue = iso => {
+  try {
+    return iso ? parseDate(iso) : null;
+  } catch (error) {
+    return null;
+  }
+};
+// React Aria lines the month grid up with minValue/maxValue, so they must be in the shown calendar.
+const toBound = (iso, cal) => {
+  const dateValue = toDateValue(iso);
+  return dateValue ? toCalendar(dateValue, cal === 'j' ? PERSIAN : GREGORIAN) : undefined;
+};
+const toIso = dateValue => (dateValue ? toCalendar(dateValue, GREGORIAN).toString() : '');
 // Longest Gregorian months, for a yearly date that has no year to check against.
 const GREGORIAN_MAX_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-// Year / month / day selects in Jalali (Shamsi, 'j') or Gregorian ('g'), with a calendar toggle.
-// `value` is an ISO date ("2026-10-08"), or with `yearly` a recurring {cal, m, d} with no year.
-// Under the selects it shows the same date in the other calendar.
+// A date in Jalali (Shamsi, 'j') or Gregorian ('g'), with a calendar toggle. `value` is an ISO date
+// ("2026-10-08"): React Aria's DatePicker, a typed field (day, month and year segments) with a
+// month grid in a pop-up, both in the chosen calendar. With `yearly` it is a recurring {cal, m, d}
+// with no year, picked from month and day Selects. Under it, the same date in the other calendar.
 export function DatePicker({
   label,
   value,
@@ -53,6 +92,7 @@ export function DatePicker({
   const generatedId = React.useId();
   const fieldId = id || 'dp' + generatedId.replace(/:/g, '');
   const messageId = fieldId + '-hint';
+  const labelId = fieldId + '-label';
   const message = error || hint;
   const preferredCalendar = lang === 'fa' ? 'j' : 'g';
   const [uncontrolledCalendar, setUncontrolledCalendar] = React.useState(
@@ -140,6 +180,11 @@ export function DatePicker({
   let yearOptions = Array.from({length: years}, (_, i) => firstYear + i);
   if (draft.year && !yearOptions.includes(draft.year))
     yearOptions = [...yearOptions, draft.year].sort((a, b) => a - b);
+  // The last day offered: the end of the last of `years` years in the active calendar.
+  const lastYear = yearOptions[yearOptions.length - 1];
+  const lastIso = dates.iso(
+    dates.toDate(activeCalendar, lastYear, 12, dates.daysInMonth(activeCalendar, lastYear, 12))
+  );
   const monthNames = dates.monthNames(activeCalendar, lang);
   const localDigits = n => dates.digits(n, lang);
   const monthBeforeMin = month =>
@@ -177,7 +222,11 @@ export function DatePicker({
   return (
     <fieldset className={cx('ag-fieldset', 'ag-date', className)} style={style} disabled={disabled}>
       <legend className="ag-date__legend">
-        {label && <span className="ag-field__label">{label}</span>}
+        {label && (
+          <span id={labelId} className="ag-field__label">
+            {label}
+          </span>
+        )}
         {calendars.length > 1 && (
           <Tabs
             variant="pill"
@@ -191,47 +240,81 @@ export function DatePicker({
           />
         )}
       </legend>
-      <div className={cx('ag-date__grid', yearly && 'ag-date__grid--yearly')}>
-        {!yearly && (
+      {yearly ? (
+        <div className="ag-date__grid ag-date__grid--yearly">
           <Select
-            id={fieldId + '-y'}
-            label={text.year}
-            value={draft.year ? String(draft.year) : ''}
-            placeholder={draft.year ? undefined : '—'}
-            onChange={onPartChange('year')}
+            id={fieldId + '-m'}
+            label={text.month}
+            value={draft.month ? String(draft.month) : ''}
+            placeholder={draft.month ? undefined : '—'}
+            onChange={onPartChange('month')}
             aria-describedby={describedBy}
-            options={yearOptions.map(year => ({value: String(year), label: localDigits(year)}))}
+            options={monthNames.map((name, i) => ({
+              value: String(i + 1),
+              label: name,
+              disabled: monthBeforeMin(i + 1)
+            }))}
           />
-        )}
-        <Select
-          id={fieldId + '-m'}
-          label={text.month}
-          value={draft.month ? String(draft.month) : ''}
-          placeholder={draft.month ? undefined : '—'}
-          onChange={onPartChange('month')}
-          aria-describedby={describedBy}
-          options={monthNames.map((name, i) => ({
-            value: String(i + 1),
-            label: name,
-            disabled: monthBeforeMin(i + 1)
-          }))}
-        />
-        <Select
-          id={fieldId + '-d'}
-          label={text.day}
-          value={draft.day ? String(draft.day) : ''}
-          placeholder={draft.day ? undefined : '—'}
-          onChange={onPartChange('day')}
-          aria-describedby={describedBy}
-          aria-invalid={error ? true : undefined}
-          aria-errormessage={error ? messageId : undefined}
-          options={Array.from({length: daysIn(draft)}, (_, i) => ({
-            value: String(i + 1),
-            label: localDigits(i + 1),
-            disabled: dayBeforeMin(i + 1)
-          }))}
-        />
-      </div>
+          <Select
+            id={fieldId + '-d'}
+            label={text.day}
+            value={draft.day ? String(draft.day) : ''}
+            placeholder={draft.day ? undefined : '—'}
+            onChange={onPartChange('day')}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
+            aria-errormessage={error ? messageId : undefined}
+            options={Array.from({length: daysIn(draft)}, (_, i) => ({
+              value: String(i + 1),
+              label: localDigits(i + 1),
+              disabled: dayBeforeMin(i + 1)
+            }))}
+          />
+        </div>
+      ) : (
+        <I18nProvider locale={dates.locale(lang, activeCalendar)}>
+          <AriaDatePicker
+            value={toDateValue(value)}
+            onChange={dateValue => dateValue && onChange && onChange(toIso(dateValue))}
+            minValue={earliest ? toBound(dates.iso(earliest), activeCalendar) : undefined}
+            maxValue={toBound(lastIso, activeCalendar)}
+            isDisabled={disabled}
+            isInvalid={!!error}
+            validationBehavior="aria"
+            aria-labelledby={label ? labelId : undefined}
+            aria-label={label ? undefined : text.open}
+            aria-describedby={describedBy}
+            className="ag-date__picker"
+          >
+            <Group className={cx('ag-input ag-date__field', error && 'ag-input--error')}>
+              <DateInput id={fieldId} className="ag-date__input">
+                {segment => <DateSegment segment={segment} className="ag-date__segment" />}
+              </DateInput>
+              <Button className="ag-date__open" aria-label={text.open}>
+                <Icon name="calendar" size={18} />
+              </Button>
+            </Group>
+            <Popover className="ag-date__popover" placement="bottom end" offset={4}>
+              <Dialog className="ag-date__dialog" aria-label={label || text.open}>
+                <Calendar className="ag-cal">
+                  <header className="ag-cal__head">
+                    <Button slot="previous" className="ag-cal__nav" aria-label={text.previous}>
+                      <Icon name="chevron-left" size={18} />
+                    </Button>
+                    <Heading className="ag-cal__title" />
+                    <Button slot="next" className="ag-cal__nav" aria-label={text.next}>
+                      <Icon name="chevron-right" size={18} />
+                    </Button>
+                  </header>
+                  <CalendarGrid className="ag-cal__grid">
+                    {date => <CalendarCell date={date} className="ag-cal__cell" />}
+                  </CalendarGrid>
+                </Calendar>
+              </Dialog>
+            </Popover>
+          </AriaDatePicker>
+        </I18nProvider>
+      )}
       <FieldMessage id={messageId} error={!!error}>
         {message}
       </FieldMessage>

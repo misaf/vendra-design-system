@@ -9,6 +9,11 @@ export interface DatePickerLabels {
   year?: string;
   month?: string;
   day?: string;
+  /** The calendar button. Default "Choose a date" · «انتخاب از تقویم» */
+  open?: string;
+  /** Month grid arrows. Default "Previous month"/"Next month" · «ماه قبل»/«ماه بعد» */
+  previous?: string;
+  next?: string;
   /** "That’s {date}" · fa «برابر با {date}» */ equivalent?: string;
 }
 export interface DatePickerProps {
@@ -23,12 +28,12 @@ export interface DatePickerProps {
   calendars?: ('j' | 'g')[];
   /** Yearly date (birthdays, reminders): hides the year select, value is {cal, m, d}. Switching calendar converts the day. */
   yearly?: boolean;
-  /** Number of years offered, starting from the current year. Default 3 */
+  /** Number of years offered, starting from the current (or minDate's) year; later days are off. Default 3 */
   years?: number;
   /** ISO; earlier months/days are disabled */
   minDate?: string;
   hint?: string;
-  /** Rendered in #{id}-hint; the day Select gets aria-invalid + aria-errormessage */
+  /** Rendered in #{id}-hint; the date segments (or, yearly, the day Select) are marked invalid */
   error?: string;
   lang?: 'en' | 'fa';
   labels?: DatePickerLabels;
@@ -39,5 +44,5 @@ export interface DatePickerProps {
   className?: string;
   style?: React.CSSProperties;
 }
-/** <fieldset><legend> + pill calendar Tabs + year/month/day Selects. The day is clamped with daysInMonth and never rolls over. */
+/** <fieldset><legend> + pill calendar Tabs + React Aria's DatePicker (typed segments and a month grid in the chosen calendar); yearly dates use month/day Selects, clamped with daysInMonth. */
 export declare function DatePicker(props: DatePickerProps): JSX.Element;

@@ -2757,6 +2757,131 @@ a.ag-tabbar__item--current:hover {
 .ag-date .ag-select__value {
   padding-inline-end: var(--space-4);
 }
+/* The dated picker: React Aria's typed field (one segment per part) and its month grid. */
+.ag-date__picker {
+  display: flex;
+  flex-direction: column;
+}
+.ag-date__input {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding-block: var(--space-3);
+  font-size: var(--text-base);
+  color: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ag-date__segment {
+  padding-inline: 1px;
+  border-radius: var(--radius-xs);
+  outline: 0;
+}
+.ag-date__segment[data-type='literal'],
+.ag-date__segment[data-placeholder] {
+  color: var(--text-muted);
+}
+.ag-date__segment[data-focused] {
+  background: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+.ag-date__open,
+.ag-cal__nav {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.ag-date__open {
+  margin-inline-end: calc(-1 * var(--space-2));
+}
+.ag-date__open[data-hovered],
+.ag-cal__nav[data-hovered] {
+  background: var(--surface-hover);
+}
+.ag-date__open[data-focus-visible],
+.ag-cal__nav[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 0;
+}
+.ag-cal__nav[data-disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.ag-date__popover {
+  padding: var(--space-3);
+  background: var(--surface-card);
+  border: var(--border-hair) solid var(--border-input);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-body);
+}
+.ag-date__dialog {
+  margin: 0;
+  outline: 0;
+}
+.ag-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.ag-cal__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-body);
+}
+.ag-cal__grid {
+  border-collapse: collapse;
+}
+.ag-cal__grid th {
+  padding-bottom: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+}
+.ag-cal__cell {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: var(--text-sm);
+  color: var(--text-body);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  outline: 0;
+}
+.ag-cal__cell[data-outside-month] {
+  display: none;
+}
+.ag-cal__cell[data-hovered] {
+  background: var(--surface-hover);
+}
+.ag-cal__cell[data-selected] {
+  background: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+.ag-cal__cell[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-cal__cell[data-disabled],
+.ag-cal__cell[data-unavailable] {
+  color: var(--text-subtle);
+  background: transparent;
+  cursor: not-allowed;
+}
 
 /* components/LocationPicker/LocationPicker.css */
 .ag-location {
