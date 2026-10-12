@@ -21,6 +21,8 @@
     "./styles.css": "./dist/styles.css",
     "./tenants.css": "./dist/tenants.css",
     "./tenants/*.css": "./dist/tenants/*.css",
+    "./tokens.json": "./dist/tokens/tokens.json",
+    "./tokens/tenants/*.json": "./dist/tokens/tenants/*.json",
     "./fonts/*": "./dist/fonts/*",
     "./theme": {
       "import": {

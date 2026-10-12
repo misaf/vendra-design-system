@@ -50,5 +50,27 @@ export declare function tenantCss(
   spec: TenantSpec,
   options?: {allowFailing?: boolean}
 ): string;
+/** One W3C design token (DTCG). */
+export interface DesignToken {
+  $type?:
+    | 'color'
+    | 'dimension'
+    | 'duration'
+    | 'cubicBezier'
+    | 'fontFamily'
+    | 'fontWeight'
+    | 'number'
+    | 'shadow';
+  $value: unknown;
+}
+/**
+ * A custom-property map as W3C design tokens (DTCG JSON), for Style Dictionary and other tools
+ * that write Swift, Kotlin, Android XML or CSS. '--peony-500' → peony.500, '--white' →
+ * white.default, var(--x) → the alias {x…}. For a tenant, merge designTokens(tokens(spec).all)
+ * over @vendra/design-system/tokens.json (its aliases point at tokens there).
+ */
+export declare function designTokens(
+  vars: Record<string, string>
+): Record<string, Record<string, DesignToken>>;
 /** Flat hex palette for HTML email. */
 export declare function email(spec: TenantSpec): Record<string, string | null>;

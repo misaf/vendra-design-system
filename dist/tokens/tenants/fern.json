@@ -1,0 +1,343 @@
+{
+  "petal": {
+    "50": {
+      "$type": "color",
+      "$value": "#F4F7F6"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#EAEFED"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#DCE3E1"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#C7D0CD"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#A9B4B0"
+    }
+  },
+  "peony": {
+    "100": {
+      "$type": "color",
+      "$value": "#D8F0ED"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#B5E2DE"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#428783"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#1F6F6B"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#105955"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#043E3C"
+    }
+  },
+  "stem": {
+    "500": {
+      "$type": "color",
+      "$value": "#79589C"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#563F6F"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#3A2B4A"
+    }
+  },
+  "ink": {
+    "300": {
+      "$type": "color",
+      "$value": "#9AB0C2"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#4D6274"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#2B3D4C"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#14202A"
+    }
+  },
+  "border": {
+    "input": {
+      "$type": "color",
+      "$value": "#708699"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{petal.200}"
+    },
+    "default": {
+      "$type": "color",
+      "$value": "{petal.300}"
+    },
+    "strong": {
+      "$type": "color",
+      "$value": "{ink.700}"
+    },
+    "input-strong": {
+      "$type": "color",
+      "$value": "{ink.500}"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "{stem.700}"
+    }
+  },
+  "success": {
+    "default": {
+      "$value": "{leaf.700}"
+    },
+    "soft": {
+      "$value": "{leaf.100}"
+    },
+    "on-inverse": {
+      "$value": "{leaf.300}"
+    }
+  },
+  "warning": {
+    "default": {
+      "$value": "{pollen.600}"
+    },
+    "soft": {
+      "$value": "{pollen.100}"
+    },
+    "on-inverse": {
+      "$value": "{pollen.400}"
+    }
+  },
+  "info": {
+    "default": {
+      "$value": "{lilac.500}"
+    },
+    "soft": {
+      "$value": "{lilac.100}"
+    },
+    "on-inverse": {
+      "$value": "{lilac.300}"
+    }
+  },
+  "surface": {
+    "page": {
+      "$type": "color",
+      "$value": "{petal.50}"
+    },
+    "card": {
+      "$value": "{white.default}"
+    },
+    "sunken": {
+      "$type": "color",
+      "$value": "{petal.100}"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{petal.200}"
+    },
+    "inverse": {
+      "$type": "color",
+      "$value": "{stem.900}"
+    },
+    "overlay": {
+      "$type": "color",
+      "$value": "rgba(20,32,42,.42)"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "{petal.200}"
+    },
+    "disabled": {
+      "$type": "color",
+      "$value": "{petal.100}"
+    },
+    "strong": {
+      "$type": "color",
+      "$value": "{ink.900}"
+    },
+    "header": {
+      "$type": "color",
+      "$value": "rgba(244,247,246,.88)"
+    }
+  },
+  "text": {
+    "body": {
+      "$type": "color",
+      "$value": "{ink.900}"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{ink.700}"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{ink.500}"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{ink.300}"
+    },
+    "on-accent": {
+      "$value": "{white.default}"
+    },
+    "on-soft": {
+      "$type": "color",
+      "$value": "{peony.700}"
+    },
+    "on-inverse": {
+      "$type": "color",
+      "$value": "{petal.50}"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{peony.600}"
+    },
+    "on-strong": {
+      "$type": "color",
+      "$value": "{petal.50}"
+    },
+    "info": {
+      "$value": "{lilac.700}"
+    },
+    "inverse-muted": {
+      "$type": "color",
+      "$value": "{ink.300}"
+    }
+  },
+  "accent": {
+    "default": {
+      "$type": "color",
+      "$value": "{peony.500}"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "{peony.600}"
+    },
+    "press": {
+      "$type": "color",
+      "$value": "{peony.700}"
+    },
+    "soft": {
+      "$type": "color",
+      "$value": "{peony.100}"
+    },
+    "soft-hover": {
+      "$type": "color",
+      "$value": "{peony.200}"
+    },
+    "font-style": {
+      "$value": "normal"
+    },
+    "font-weight": {
+      "$type": "fontWeight",
+      "$value": 500
+    }
+  },
+  "focus": {
+    "ring-soft": {
+      "$value": "{lilac.100}"
+    },
+    "ring": {
+      "$value": "{lilac.500}"
+    },
+    "ring-on-inverse": {
+      "$value": "{lilac.300}"
+    }
+  },
+  "control": {
+    "on": {
+      "$value": "{leaf.500}"
+    }
+  },
+  "shadow": {
+    "sm": {
+      "$type": "shadow",
+      "$value": {
+        "color": "rgba(20,32,42,.06)",
+        "offsetX": "0px",
+        "offsetY": "1px",
+        "blur": "2px",
+        "spread": "0px"
+      }
+    },
+    "md": {
+      "$type": "shadow",
+      "$value": {
+        "color": "rgba(20,32,42,.18)",
+        "offsetX": "0px",
+        "offsetY": "8px",
+        "blur": "20px",
+        "spread": "-8px"
+      }
+    },
+    "lg": {
+      "$type": "shadow",
+      "$value": {
+        "color": "rgba(20,32,42,.28)",
+        "offsetX": "0px",
+        "offsetY": "24px",
+        "blur": "48px",
+        "spread": "-16px"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "$type": "fontFamily",
+      "$value": [
+        "Vazirmatn",
+        "Segoe UI",
+        "Tahoma",
+        "system-ui",
+        "sans-serif"
+      ]
+    }
+  },
+  "tracking": {
+    "display": {
+      "$type": "dimension",
+      "$value": "-.01em"
+    },
+    "button": {
+      "$type": "dimension",
+      "$value": ".02em"
+    }
+  },
+  "display": {
+    "case": {
+      "$value": "none"
+    }
+  },
+  "radius": {
+    "control": {
+      "$value": "{radius.pill}"
+    },
+    "arch": {
+      "$value": "24px 24px {radius.md} {radius.md}"
+    }
+  },
+  "button": {
+    "case": {
+      "$value": "none"
+    }
+  }
+}

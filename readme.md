@@ -14,8 +14,10 @@
 |---|---|
 | `@vendra/design-system` | 55 components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps`, `MESSAGES` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. Load once in the root layout. |
-| `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `email`, `VENDRA` (default spec). |
+| `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `designTokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
+| `@vendra/design-system/tokens.json` | Every design token as W3C design tokens (DTCG JSON), for native apps and design tools. |
+| `@vendra/design-system/tokens/tenants/<slug>.json` | The tokens a sample tenant changes, to merge over `tokens.json`. |
 
 Tenants are data, not files: the platform stores each theme spec and the storefront renders it per request. `tenantCss` refuses unsafe slugs, invalid specs and failing contrast, so its output is safe for a `<style>` element. Fall back to the default theme when it throws:
 
@@ -66,6 +68,26 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 - **Contrast:** `--accent` 4.5:1 with white text, `--text-accent` 4.5:1 on the page, `--border-input` 3:1, `--focus-ring-on-inverse` 3:1 on the inverse surface.
 - **Samples:** `clay` (terracotta, squared controls, uppercase Jost) and `fern` (teal, pill controls, deliberately near the contrast limits). Preview with `?tenant=<slug>`.
 - **Onboarding:** follow [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md) and design the theme in `guidelines/theme-builder.html`.
+
+## Design tokens for other platforms
+
+`tokens.json` holds every token (colours, type, spacing, radii, shadows, motion, character) in the W3C design tokens format: `--peony-500` is `peony.500`, `--accent` is `accent.default`, and semantic tokens are aliases (`success.default` → `{leaf.700}`). A tenant changes only colours and character, so its tokens merge over the base file: the sample tenants ship as `tokens/tenants/<slug>.json`, and a theme from your database converts at runtime with `designTokens(tokens(spec).all)` from `@vendra/design-system/theme`.
+
+Style Dictionary (4+) turns them into native code, for example Swift and Jetpack Compose:
+
+```js
+import StyleDictionary from 'style-dictionary';
+
+await new StyleDictionary({
+  source: ['node_modules/@vendra/design-system/dist/tokens/tokens.json', 'tenant.json'],
+  platforms: {
+    ios: {transformGroup: 'ios-swift', buildPath: 'ios/', files: [{destination: 'Tokens.swift', format: 'ios-swift/class.swift', options: {className: 'VendraTokens'}}]},
+    android: {transformGroup: 'compose', buildPath: 'android/', files: [{destination: 'Tokens.kt', format: 'compose/object', options: {className: 'VendraTokens', packageName: 'com.vendra'}}]}
+  }
+}).buildAllPlatforms();
+```
+
+Later sources win, so the tenant file overrides the base colours (Style Dictionary logs each override as a collision). Sizes in `rem` become points/dp at 16 per rem.
 
 ## Repo layout
 

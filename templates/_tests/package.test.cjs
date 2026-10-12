@@ -91,6 +91,44 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       console.error = quiet;
       console.warn = warn;
     }
+    // Design tokens for other platforms: W3C DTCG JSON whose aliases all resolve (a tenant's file
+    // over the base one), and the runtime designTokens gives the same as the build.
+    const baseTokens = JSON.parse(
+      fs.readFileSync(path.join(repo, 'dist/tokens/tokens.json'), 'utf8')
+    );
+    const lookup = (tree, ref) => ref.split('.').reduce((node, key) => node && node[key], tree);
+    const aliases = (tree, found = []) => {
+      for (const node of Object.values(tree))
+        if (node && typeof node === 'object')
+          if ('$value' in node)
+            JSON.stringify(node.$value).replace(/\{([\w.-]+)\}/g, (m, ref) => found.push(ref));
+          else aliases(node, found);
+      return found;
+    };
+    assert.deepEqual(lookup(baseTokens, 'peony.500'), {$type: 'color', $value: '#C8405F'});
+    assert.deepEqual(lookup(baseTokens, 'success.default'), {$type: 'color', $value: '{leaf.700}'});
+    assert.deepEqual(lookup(baseTokens, 'space.4'), {$type: 'dimension', $value: '1rem'});
+    assert.equal(lookup(baseTokens, 'dur.fast').$value, '140ms');
+    assert.equal(lookup(baseTokens, 'shadow.md').$value.offsetY, '8px');
+    for (const ref of aliases(baseTokens))
+      assert.ok(lookup(baseTokens, ref), 'tokens.json alias {' + ref + '} resolves');
+    for (const name of fs.readdirSync(path.join(repo, 'dist/tokens/tenants'))) {
+      const tenant = JSON.parse(
+        fs.readFileSync(path.join(repo, 'dist/tokens/tenants', name), 'utf8')
+      );
+      const merged = {...baseTokens};
+      for (const [group, entries] of Object.entries(tenant))
+        merged[group] = {...merged[group], ...entries};
+      for (const ref of aliases(tenant))
+        assert.ok(lookup(merged, ref), name + ' alias {' + ref + '} resolves over tokens.json');
+      const spec = JSON.parse(fs.readFileSync(path.join(repo, 'tokens/tenants', name), 'utf8'));
+      assert.deepEqual(
+        theme.designTokens(theme.tokens(spec).all),
+        tenant,
+        name + ' matches runtime'
+      );
+    }
+
     // Built-in wording follows VendraProvider's language; props and provider messages still win.
     const wording = (locale, messages, props = {}) =>
       renderToString(

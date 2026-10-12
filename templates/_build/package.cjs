@@ -94,17 +94,46 @@ function packageFiles() {
   for (const name of tenants) files.set('tenants/' + name, read('tokens/tenants/' + name));
   files.set('tenants.css', read('tokens/tenants.css'));
 
+  // Design tokens for other platforms (W3C DTCG JSON): the base system from tokens/*.css, and per
+  // sample tenant the tokens its theme changes (merge them over tokens.json).
+  const themeApi = require('../_shared/tenant-theme.js');
+  const json = value => JSON.stringify(value, null, 2) + '\n';
+  files.set('tokens/tokens.json', json(themeApi.designTokens(baseTokenVars())));
+  for (const name of tenants) {
+    const slug = name.slice(0, -4);
+    const spec = JSON.parse(read('tokens/tenants/' + slug + '.json'));
+    files.set(
+      'tokens/tenants/' + slug + '.json',
+      json(themeApi.designTokens(themeApi.tokens(spec).all))
+    );
+  }
+
   const theme = read('templates/_shared/tenant-theme.js');
   files.set('theme.cjs', HEADER + theme);
   files.set(
     'theme.js',
     HEADER +
       "import theme from './theme.cjs';\n" +
-      'export const {VENDRA, CHOICES, FONTS, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email} = theme;\n'
+      'export const {VENDRA, CHOICES, FONTS, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
   );
   files.set('theme.d.ts', read('templates/_shared/tenant-theme.d.ts'));
   files.set('theme.d.cts', read('templates/_shared/tenant-theme.d.ts'));
   return files;
+}
+
+// The base system's custom properties from the :root blocks in tokens/*.css (not @media
+// variants), in source order.
+function baseTokenVars() {
+  const vars = {};
+  for (const file of ['colors', 'typography', 'spacing', 'effects', 'character']) {
+    const css = read('tokens/' + file + '.css')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/@media[^{]*\{(?:[^{}]*\{[^}]*\})*[^}]*\}/g, '');
+    for (const block of css.match(/:root\s*\{[^}]*\}/g) || [])
+      for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g))
+        vars[match[1]] = match[2].trim();
+  }
+  return vars;
 }
 
 function listed(folder, prefix = '') {
