@@ -250,11 +250,12 @@ Object.assign(__ds_scope, { Badge });
 
 // components/IconButton/IconButton.jsx
 try { (() => {
+const { Button: AriaButton } = __ds_ns.__vendor["react-aria-components"];
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
-// An icon-only button, or link with `href`. `label` is its accessible name and tooltip; `active`
-// sets aria-pressed and `count` shows a badge.
-function IconButton({ icon, label, variant = "ghost", size = "md", active, count, className = "", type = "button", href, target, rel, ...rest }) {
+// An icon-only React Aria Button, or link with `href`. `label` is its accessible name and tooltip;
+// `active` sets aria-pressed and `count` shows a badge.
+function IconButton({ icon, label, variant = "ghost", size = "md", active, count, className = "", type = "button", href, target, rel, disabled, ...rest }) {
 	const iconSize = size === "sm" ? 16 : size === "lg" ? 22 : 20;
 	const classes = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, active && "ag-iconbtn--active", className);
 	// count may be a pre-localized string (Persian digits), so test for a value rather than count>0.
@@ -271,13 +272,15 @@ function IconButton({ icon, label, variant = "ghost", size = "md", active, count
 		className: classes,
 		...rest
 	}, content);
-	return /* @__PURE__ */ React.createElement("button", {
+	return /* @__PURE__ */ React.createElement(AriaButton, {
+		...rest,
 		type,
+		isDisabled: disabled,
 		"aria-label": label,
-		title: label,
 		"aria-pressed": active,
-		className: classes,
-		...rest
+		// React Aria passes on only the attributes it knows, so the tooltip title is set here.
+		ref: (element) => element && (element.title = label),
+		className: classes
 	}, content);
 }
 Object.assign(__ds_scope, { IconButton });
@@ -285,12 +288,14 @@ Object.assign(__ds_scope, { IconButton });
 
 // components/Button/Button.jsx
 try { (() => {
+const { Button: AriaButton } = __ds_ns.__vendor["react-aria-components"];
 const { Icon } = __ds_scope;
 const { cx } = __ds_scope;
-// href → <a> (navigation); no href → <button> (action). A disabled link drops its href and gets aria-disabled.
-// loading: spinner replaces iconStart, label stays (width doesn't jump), button is disabled + aria-busy; loadingLabel is announced to screen readers.
+// href → <a> (navigation); no href → React Aria's Button (action), with the usual props (onClick,
+// type, disabled, aria-*). A disabled link drops its href and gets aria-disabled.
+// loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
+// keeps focus but can't be pressed); loadingLabel is announced to screen readers.
 function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, ...rest }) {
-	if (loading) disabled = true;
 	const iconSize = size === "sm" ? 16 : size === "lg" ? 20 : 18;
 	const classes = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
 	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
@@ -311,19 +316,19 @@ function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, c
 		role: "status"
 	}, loadingLabel));
 	if (href != null) return /* @__PURE__ */ React.createElement("a", {
-		href: disabled ? undefined : href,
+		href: disabled || loading ? undefined : href,
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
-		"aria-disabled": disabled || undefined,
-		className: classes + (disabled ? " ag-btn--disabled" : ""),
+		"aria-disabled": disabled || loading || undefined,
+		className: classes + (disabled || loading ? " ag-btn--disabled" : ""),
 		...rest
 	}, content);
-	return /* @__PURE__ */ React.createElement("button", {
+	return /* @__PURE__ */ React.createElement(AriaButton, {
+		...rest,
 		type,
-		disabled,
-		"aria-busy": loading || undefined,
-		className: classes,
-		...rest
+		isDisabled: disabled,
+		isPending: loading,
+		className: classes
 	}, content);
 }
 Object.assign(__ds_scope, { Button });

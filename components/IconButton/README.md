@@ -1,6 +1,6 @@
 # IconButton
 
-Round icon-only button for header actions, favourites, close. Pass `href` to render a link.
+Round icon-only button (React Aria's Button) for header actions, favourites, close. Pass `href` to render a plain link. `label` is the accessible name and the `title` tooltip.
 
 ```jsx
 <IconButton icon="shopping-bag" label="Bag, 2 items" count={2} />

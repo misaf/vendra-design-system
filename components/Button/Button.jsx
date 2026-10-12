@@ -1,9 +1,12 @@
 import React from 'react';
+import {Button as AriaButton} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// href → <a> (navigation); no href → <button> (action). A disabled link drops its href and gets aria-disabled.
-// loading: spinner replaces iconStart, label stays (width doesn't jump), button is disabled + aria-busy; loadingLabel is announced to screen readers.
+// href → <a> (navigation); no href → React Aria's Button (action), with the usual props (onClick,
+// type, disabled, aria-*). A disabled link drops its href and gets aria-disabled.
+// loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
+// keeps focus but can't be pressed); loadingLabel is announced to screen readers.
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -21,7 +24,6 @@ export function Button({
   loadingLabel,
   ...rest
 }) {
-  if (loading) disabled = true;
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 20 : 18;
   const classes = cx(
     'ag-btn',
@@ -54,25 +56,19 @@ export function Button({
   if (href != null)
     return (
       <a
-        href={disabled ? undefined : href}
+        href={disabled || loading ? undefined : href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
-        aria-disabled={disabled || undefined}
-        className={classes + (disabled ? ' ag-btn--disabled' : '')}
+        aria-disabled={disabled || loading || undefined}
+        className={classes + (disabled || loading ? ' ag-btn--disabled' : '')}
         {...rest}
       >
         {content}
       </a>
     );
   return (
-    <button
-      type={type}
-      disabled={disabled}
-      aria-busy={loading || undefined}
-      className={classes}
-      {...rest}
-    >
+    <AriaButton {...rest} type={type} isDisabled={disabled} isPending={loading} className={classes}>
       {content}
-    </button>
+    </AriaButton>
   );
 }

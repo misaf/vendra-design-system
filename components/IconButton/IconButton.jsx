@@ -1,9 +1,10 @@
 import React from 'react';
+import {Button as AriaButton} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// An icon-only button, or link with `href`. `label` is its accessible name and tooltip; `active`
-// sets aria-pressed and `count` shows a badge.
+// An icon-only React Aria Button, or link with `href`. `label` is its accessible name and tooltip;
+// `active` sets aria-pressed and `count` shows a badge.
 export function IconButton({
   icon,
   label,
@@ -16,6 +17,7 @@ export function IconButton({
   href,
   target,
   rel,
+  disabled,
   ...rest
 }) {
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 22 : 20;
@@ -48,15 +50,17 @@ export function IconButton({
       </a>
     );
   return (
-    <button
-      type={type}
-      aria-label={label}
-      title={label}
-      aria-pressed={active}
-      className={classes}
+    <AriaButton
       {...rest}
+      type={type}
+      isDisabled={disabled}
+      aria-label={label}
+      aria-pressed={active}
+      // React Aria passes on only the attributes it knows, so the tooltip title is set here.
+      ref={element => element && (element.title = label)}
+      className={classes}
     >
       {content}
-    </button>
+    </AriaButton>
   );
 }

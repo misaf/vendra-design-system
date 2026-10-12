@@ -11,10 +11,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   target?: string;
   /** Defaults to "noopener noreferrer" when target="_blank" */
   rel?: string;
-  /** Shows a spinner in place of iconStart and disables the button (aria-busy). Keep the label — don't swap it for "Loading…". */
+  /** Shows a spinner in place of iconStart; the button stays focusable but can't be pressed (React Aria isPending). Keep the label — don't swap it for "Loading…". */
   loading?: boolean;
   /** Announced politely while loading, e.g. "Placing your order" */
   loadingLabel?: string;
   children?: React.ReactNode;
 }
+/** React Aria Button for actions; a plain <a> with href. Attributes React Aria doesn't know (title, tabIndex) aren't passed to the button. */
 export declare function Button(props: ButtonProps): JSX.Element;
