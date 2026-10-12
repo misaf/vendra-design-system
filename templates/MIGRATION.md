@@ -28,7 +28,7 @@ No duplicate storefront application remains.
 ## Previewing states
 
 Run `npm --prefix templates run dev` from the project root. Open
-`http://localhost:5173/templates/storefront-site/StorefrontSite.dc.html`.
+`http://localhost:5173/templates/app/` (or `npm --prefix templates run build:app` and `preview` for the production build).
 Use `?lang=en` or `?lang=fa`; add `&tenant=clay` (any tenant in `tokens/tenants/`) to preview another theme.
 
 Useful route examples:

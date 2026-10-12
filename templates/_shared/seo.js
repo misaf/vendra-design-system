@@ -72,7 +72,6 @@ export const VF_SEO = (() => {
   };
   const hrefFor = (state = {}, screen = 'home', extra = {}) =>
     routeParams({lang: state.lang, view: screen, ...extra});
-  // One click handler for every internal <a href>. Modified / middle clicks and target=_blank fall through to the browser.
   const isNoindex = view => NOINDEX.has(view);
 
   const abs = u => {

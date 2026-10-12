@@ -13,6 +13,7 @@ import {
 import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
+import {pageReady} from '../app/pages.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 const VF_BAG0 = vfSampleBag();
 const VF_SESSION = 'vendra-template:' + location.pathname;
@@ -31,6 +32,12 @@ function vfGuardRoute(state, r) {
   if (r.view === 'checkout' && vfCheckoutBlocked(state)) return vfCheckoutFallback(state, r.lang);
   if (r.view === 'account' && !vfAccountPhone()) return {lang: r.lang, view: 'signin'};
   return null;
+}
+// Shows a route at once when its page has loaded (page code may focus what it just rendered);
+// otherwise as a transition, so the current page stays on screen while the next one loads.
+function vfShowRoute(view, show) {
+  if (pageReady(view)) show();
+  else React.startTransition(show);
 }
 function vfSiteInitial(props) {
   let saved = {};
@@ -91,11 +98,13 @@ export function usePage(props) {
       if (guarded) r = vfReadRoute(vfRouteParams(guarded));
       const url = vfRouteParams(r);
       if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
-      page.setState({
-        route: r.view,
-        routeInfo: r,
-        lang: r.lang || page.state.lang
-      });
+      vfShowRoute(r.view, () =>
+        page.setState({
+          route: r.view,
+          routeInfo: r,
+          lang: r.lang || page.state.lang
+        })
+      );
       window.scrollTo(0, 0);
     };
   });
@@ -122,11 +131,13 @@ export function usePage(props) {
           page.navigate(guarded, true);
           return;
         }
-        page.setState({
-          route: r.view,
-          routeInfo: r,
-          lang: r.lang || page.props.lang || 'en'
-        });
+        vfShowRoute(r.view, () =>
+          page.setState({
+            route: r.view,
+            routeInfo: r,
+            lang: r.lang || page.props.lang || 'en'
+          })
+        );
       };
       window.addEventListener('popstate', page._pop);
       const guarded = vfGuardRoute(page.state, {view: page.state.route, lang: page.state.lang});

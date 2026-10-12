@@ -30,11 +30,13 @@ const React = (() => {
     useEffect: () => { index++; },
     useLayoutEffect: () => { index++; },
     useMemo: make => { index++; return make(); },
-    useCallback: fn => { index++; return fn; }
+    useCallback: fn => { index++; return fn; },
+    startTransition: fn => fn()
   };
 })();
 `;
 const componentHarness = `
+const pageReady = () => true;
 const __vfUsePageLogic = usePageLogic;
 usePageLogic = (props, init) => (globalThis.__vfPage = __vfUsePageLogic(props, init));
 class Component {

@@ -50,7 +50,6 @@ export function siteUrl(view, lang, extra = {}) {
   return SITE + '?' + q;
 }
 
-// Waits for the DC runtime to render the page shell and settle the language.
 // Waits until the page has requested nothing new for half a second (the browser's resource list
 // stops growing). Chrome's own network-idle signal sometimes never arrives for the app.
 export async function waitForQuiet(page) {

@@ -943,3 +943,42 @@ test('the Persian footer dates the copyright in the Persian calendar', async ({p
   );
   expect(await scanAxe(page)).toEqual([]);
 });
+
+// A page whose code fails to load (dev: its Page.jsx; build: its page-<name> chunk) shows a reload
+// alert, in the site and on its own, and the rest of the site keeps working.
+const SHOP_CODE = /storefront-shop\/Page\.jsx|\/page-shop-[\w-]+\.js/;
+
+test('a page that fails to load offers a reload', async ({page}) => {
+  await page.route(SHOP_CODE, route => route.abort());
+  await openSite(page, 'home', 'en');
+  await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  const alert = page.getByRole('alert').filter({hasText: 'This page didn’t load.'});
+  await expect(alert).toBeVisible();
+  await expect(alert.getByRole('button', {name: 'Reload'})).toBeVisible();
+  await page.evaluate(() => window.__vfSite.navigate({view: 'faq'}));
+  await expect(page.locator('h1')).toBeVisible();
+  await expect(alert).toHaveCount(0);
+});
+
+test('a standalone page that fails to load offers a reload', async ({page}) => {
+  await page.route(SHOP_CODE, route => route.abort());
+  await page.goto('/templates/app/?page=shop&lang=fa');
+  await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
+});
+
+test('while a page’s code loads, the current page stays on screen', async ({page}) => {
+  let release;
+  const held = new Promise(resolve => (release = resolve));
+  await page.route(SHOP_CODE, async route => {
+    await held;
+    await route.continue();
+  });
+  await openSite(page, 'home', 'en');
+  const home = await page.locator('h1').textContent();
+  await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  await page.waitForTimeout(300);
+  await expect(page.locator('h1')).toHaveText(home);
+  await expect(page.locator('#main')).toBeVisible();
+  release();
+  await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
+});

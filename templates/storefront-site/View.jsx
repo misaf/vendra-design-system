@@ -2,10 +2,12 @@
 import React, {Suspense, useEffect} from 'react';
 import {RouterProvider} from 'react-aria-components';
 import * as DS from '../app/ds.js';
+import {PageBoundary} from '../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../app/pages.js';
 import {list} from '../app/runtime.js';
 
-// Each page loads on first view; the rest follow once the browser is idle.
+// Each page loads on first view; the rest follow once the browser is idle. Navigating to a page
+// that is still loading is a transition (logic.js), so the current page stays until it is ready.
 const StorefrontAccount = lazyPage('account');
 const StorefrontBag = lazyPage('bag');
 const StorefrontCheckout = lazyPage('checkout');
@@ -36,229 +38,231 @@ export function View({v}) {
           <DS.Alert tone="danger" title={v.integrationErrorText} />
         </>
       ) : null}
-      <Suspense fallback={null}>
-        {v.is?.home ? (
-          <>
-            <StorefrontHome
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.shop ? (
-          <>
-            <StorefrontShop
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.product ? (
-          <>
-            <StorefrontProduct
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.bag ? (
-          <>
-            <StorefrontBag
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.checkout ? (
-          <>
-            <StorefrontCheckout
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.track ? (
-          <>
-            <StorefrontTrack
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.signin ? (
-          <>
-            <StorefrontSignin
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.account ? (
-          <>
-            <StorefrontAccount
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.weddings ? (
-          <>
-            <StorefrontWeddings
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.contact ? (
-          <>
-            <StorefrontContact
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.journal ? (
-          <>
-            <StorefrontJournal
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.post ? (
-          <>
-            <StorefrontPost
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.search ? (
-          <>
-            <StorefrontSearch
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.saved ? (
-          <>
-            <StorefrontSaved
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.policy ? (
-          <>
-            <StorefrontPolicy
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.faq ? (
-          <>
-            <StorefrontFaq
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-        {v.is?.notfound ? (
-          <>
-            <StorefrontNotfound
-              routeInfo={v.routeInfo}
-              lang={v.lang}
-              tenant={v.tenant}
-              mobile={v.mobile}
-              go={v.go}
-              store={v.store}
-              setLang={v.setLang}
-            />
-          </>
-        ) : null}
-      </Suspense>
+      <PageBoundary view={v.routeInfo?.view}>
+        <Suspense fallback={null}>
+          {v.is?.home ? (
+            <>
+              <StorefrontHome
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.shop ? (
+            <>
+              <StorefrontShop
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.product ? (
+            <>
+              <StorefrontProduct
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.bag ? (
+            <>
+              <StorefrontBag
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.checkout ? (
+            <>
+              <StorefrontCheckout
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.track ? (
+            <>
+              <StorefrontTrack
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.signin ? (
+            <>
+              <StorefrontSignin
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.account ? (
+            <>
+              <StorefrontAccount
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.weddings ? (
+            <>
+              <StorefrontWeddings
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.contact ? (
+            <>
+              <StorefrontContact
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.journal ? (
+            <>
+              <StorefrontJournal
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.post ? (
+            <>
+              <StorefrontPost
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.search ? (
+            <>
+              <StorefrontSearch
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.saved ? (
+            <>
+              <StorefrontSaved
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.policy ? (
+            <>
+              <StorefrontPolicy
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.faq ? (
+            <>
+              <StorefrontFaq
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.notfound ? (
+            <>
+              <StorefrontNotfound
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+        </Suspense>
+      </PageBoundary>
     </RouterProvider>
   );
 }
