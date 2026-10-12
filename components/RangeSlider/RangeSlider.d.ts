@@ -13,7 +13,7 @@ export interface RangeSliderProps {
   formatValue?: (v: number) => string;
   /** aria-labels for the two handles (range mode), read before the slider's name: "Minimum, Price" */
   labels?: {min: string; max: string};
-  /** Names the slider (and so its handle in single mode). Default "Value" */
+  /** Names the slider (and so its handle in single mode). Default "Value" · «مقدار», by VendraProvider's language */
   label?: string;
   /** id of a visible label naming the slider, instead of `label` */
   labelledBy?: string;

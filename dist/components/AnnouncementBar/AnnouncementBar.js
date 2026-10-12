@@ -3,15 +3,17 @@
 import React from "react";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 // A dismissible strip above the header (role="region", named by `label`) for store-wide news.
-export function AnnouncementBar({ children, onClose, closeLabel = "Dismiss", label, className = "" }) {
+export function AnnouncementBar({ children, onClose, closeLabel, label, className = "" }) {
+	const text = useMessages("AnnouncementBar", { close: closeLabel });
 	return /* @__PURE__ */ React.createElement("div", {
 		role: "region",
 		"aria-label": label,
 		className: cx("ag-announce", className)
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-announce__text" }, children), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",
-		label: closeLabel,
+		label: text.close,
 		className: "ag-announce__close",
 		onClick: onClose
 	}));

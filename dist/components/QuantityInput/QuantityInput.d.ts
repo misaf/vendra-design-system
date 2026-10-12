@@ -8,7 +8,7 @@ export interface QuantityStepperProps {
   /** Both buttons off (e.g. while the bag is updating). At min/max only that side turns off. */
   disabled?: boolean;
   size?: 'sm' | 'md';
-  /** dec/inc name the buttons, value names the count field. Default "Quantity" */
+  /** dec/inc name the buttons, value names the count field. Defaults come from VendraProvider's language (MESSAGES.QuantityInput) */
   labels?: {dec: string; inc: string; value?: string};
 }
 export declare function QuantityInput(props: QuantityStepperProps): React.JSX.Element;

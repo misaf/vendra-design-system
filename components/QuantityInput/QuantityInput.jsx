@@ -3,6 +3,7 @@ import {Button, Group, I18nProvider, Input, NumberField} from 'react-aria-compon
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 import {usePageLocale} from '../utils/locale.js';
+import {useMessages} from '../utils/messages.js';
 
 // A −/+ quantity control on React Aria's NumberField, controlled (`value`) or not (`defaultValue`),
 // clamped to min..max. The count is a text field (React Aria drops the spinbutton role, which
@@ -19,6 +20,7 @@ export function QuantityInput({
   labels = {}
 }) {
   const {locale, ref} = usePageLocale();
+  const text = useMessages('QuantityInput', labels, locale);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const quantity = value ?? uncontrolledValue;
   return (
@@ -33,7 +35,7 @@ export function QuantityInput({
         maxValue={max}
         step={1}
         isDisabled={disabled}
-        aria-label={labels.value || 'Quantity'}
+        aria-label={text.value}
         onChange={next => {
           if (Number.isNaN(next)) return;
           if (value === undefined) setUncontrolledValue(next);
@@ -44,11 +46,11 @@ export function QuantityInput({
         <Group
           className={cx('ag-qty', size === 'sm' && 'ag-qty--sm', disabled && 'ag-qty--disabled')}
         >
-          <Button slot="decrement" aria-label={labels.dec || 'Decrease'}>
+          <Button slot="decrement" aria-label={text.dec}>
             <Icon name="minus" size={16} />
           </Button>
           <Input className="ag-qty__val" />
-          <Button slot="increment" aria-label={labels.inc || 'Increase'}>
+          <Button slot="increment" aria-label={text.inc}>
             <Icon name="plus" size={16} />
           </Button>
         </Group>

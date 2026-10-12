@@ -5,12 +5,14 @@ import { Button, Group, I18nProvider, Input, NumberField } from "react-aria-comp
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
 import { usePageLocale } from "../utils/locale.js";
+import { useMessages } from "../utils/messages.js";
 // A −/+ quantity control on React Aria's NumberField, controlled (`value`) or not (`defaultValue`),
 // clamped to min..max. The count is a text field (React Aria drops the spinbutton role, which
 // VoiceOver can't focus): type a number, or use ↑/↓, Home/End or the buttons (which, as in React Aria, are left out of the Tab order). Digits follow the page's
 // language.
 export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", labels = {} }) {
 	const { locale, ref } = usePageLocale();
+	const text = useMessages("QuantityInput", labels, locale);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
 	const quantity = value ?? uncontrolledValue;
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(NumberField, {
@@ -21,7 +23,7 @@ export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onCh
 		maxValue: max,
 		step: 1,
 		isDisabled: disabled,
-		"aria-label": labels.value || "Quantity",
+		"aria-label": text.value,
 		onChange: (next) => {
 			if (Number.isNaN(next)) return;
 			if (value === undefined) setUncontrolledValue(next);
@@ -30,13 +32,13 @@ export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onCh
 		className: "ag-qty-root"
 	}, /* @__PURE__ */ React.createElement(Group, { className: cx("ag-qty", size === "sm" && "ag-qty--sm", disabled && "ag-qty--disabled") }, /* @__PURE__ */ React.createElement(Button, {
 		slot: "decrement",
-		"aria-label": labels.dec || "Decrease"
+		"aria-label": text.dec
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "minus",
 		size: 16
 	})), /* @__PURE__ */ React.createElement(Input, { className: "ag-qty__val" }), /* @__PURE__ */ React.createElement(Button, {
 		slot: "increment",
-		"aria-label": labels.inc || "Increase"
+		"aria-label": text.inc
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "plus",
 		size: 16

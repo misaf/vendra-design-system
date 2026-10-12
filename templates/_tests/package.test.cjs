@@ -57,10 +57,12 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
     assert.equal(typeof globalThis.window, 'undefined');
 
     // Components: every one renders on the server.
-    // Components are the capitalised function exports (ToastQueue is a class, not a component).
+    // Components are the capitalised function exports (ToastQueue is a class, not a component;
+    // MessagesContext is a React context).
     const components = Object.keys(ds).filter(
       name =>
         /^[A-Z][a-z]/.test(name) &&
+        ds[name].$$typeof !== Symbol.for('react.context') &&
         !(
           typeof ds[name] === 'function' &&
           /^class\b/.test(Function.prototype.toString.call(ds[name]))
@@ -87,6 +89,31 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       console.error = quiet;
       console.warn = warn;
     }
+    // Built-in wording follows VendraProvider's language; props and provider messages still win.
+    const wording = (locale, messages, props = {}) =>
+      renderToString(
+        React.createElement(
+          ds.VendraProvider,
+          {locale, messages},
+          React.createElement(ds.Alert, {title: 'Note', onClose: () => {}, ...props})
+        )
+      );
+    assert.match(wording('en-US'), /aria-label="Dismiss"/);
+    assert.match(wording('fa-IR'), /aria-label="بستن"/);
+    assert.match(wording('fa-IR', null, {closeLabel: 'Hide'}), /aria-label="Hide"/);
+    assert.match(wording('ar-AE', {ar: {Alert: {close: 'إغلاق'}}}), /aria-label="إغلاق"/);
+    assert.match(wording('de-DE'), /aria-label="Dismiss"/);
+    assert.deepEqual(
+      Object.keys(ds.MESSAGES.fa).sort(),
+      Object.keys(ds.MESSAGES.en).sort(),
+      'MESSAGES.fa covers every component in MESSAGES.en'
+    );
+    for (const component of Object.keys(ds.MESSAGES.en))
+      assert.deepEqual(
+        Object.keys(ds.MESSAGES.fa[component]).sort(),
+        Object.keys(ds.MESSAGES.en[component]).sort(),
+        'MESSAGES.fa.' + component + ' has the same keys as English'
+      );
     const link = renderToString(React.createElement(ds.Button, {href: '/shop'}, 'Shop'));
     assert.match(link, /^<a class="ag-btn ag-btn--primary ag-btn--md"[^>]* href="\/shop"/);
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));

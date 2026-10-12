@@ -4,6 +4,7 @@ import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 const ALERT_ICONS = {
 	neutral: "info",
 	warning: "triangle-alert",
@@ -12,7 +13,8 @@ const ALERT_ICONS = {
 };
 // An inline message. danger and warning interrupt screen readers (role="alert"); the others are
 // announced politely (role="status"). `icon={false}` hides the icon.
-export function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel = "Dismiss", className = "", style }) {
+export function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel, className = "", style }) {
+	const text = useMessages("Alert", { close: closeLabel });
 	const role = tone === "danger" || tone === "warning" ? "alert" : "status";
 	return /* @__PURE__ */ React.createElement("div", {
 		role,
@@ -24,7 +26,7 @@ export function Alert({ tone = "neutral", icon, title, children, action, onClose
 		className: "ag-alert__icon"
 	}), /* @__PURE__ */ React.createElement("div", { className: "ag-alert__body" }, /* @__PURE__ */ React.createElement("div", { className: "ag-alert__msg" }, title && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__title" }, title), children && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__text" }, children)), action && /* @__PURE__ */ React.createElement("div", { className: "ag-alert__action" }, action)), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",
-		label: closeLabel,
+		label: text.close,
 		className: "ag-alert__close",
 		onClick: onClose
 	}));

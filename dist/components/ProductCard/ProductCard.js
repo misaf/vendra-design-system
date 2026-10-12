@@ -5,8 +5,13 @@ import { Button, Link } from "react-aria-components";
 import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
-export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder = "Bouquet photo", favLabel = "Save" }) {
+export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
+	const text = useMessages("ProductCard", {
+		placeholder,
+		favorite: favLabel
+	});
 	const photos = (images && images.length ? images : image ? [{
 		src: image,
 		srcSet
@@ -39,12 +44,12 @@ export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, i
 		"aria-label": accessibleName,
 		onClick
 	}, name) : name;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, text.placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
 		tone: badgeTone,
 		className: "ag-product__badge"
 	}, badge), onFavorite && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "heart",
-		label: favLabel,
+		label: text.favorite,
 		variant: "solid",
 		size: "sm",
 		active: favorite,

@@ -3,6 +3,7 @@
 import React from "react";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
 	const slots = [];
@@ -26,7 +27,11 @@ function flattenSnap(children) {
 // A horizontal scroll-snap row. Pass children, or `items` + `renderItem`. With `arrows` it shows
 // its own prev/next buttons; otherwise drive it through `ref` (scrollPrev / scrollNext) and
 // `onScrollStateChange`, e.g. from SectionHeader.
-export const Carousel = React.forwardRef(function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel = "Previous", nextLabel = "Next", onScrollStateChange, bleed = true, className = "", style }, ref) {
+export const Carousel = React.forwardRef(function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel, nextLabel, onScrollStateChange, bleed = true, className = "", style }, ref) {
+	const text = useMessages("Carousel", {
+		previous: prevLabel,
+		next: nextLabel
+	});
 	const trackRef = React.useRef(null);
 	const [scrollState, setScrollState] = React.useState({
 		canPrev: false,
@@ -96,14 +101,14 @@ export const Carousel = React.forwardRef(function Carousel({ children, items, re
 		style: layout
 	}, arrows && /* @__PURE__ */ React.createElement("div", { className: "ag-carousel__nav" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
-		label: prevLabel,
+		label: text.previous,
 		variant: "outline",
 		size: "sm",
 		onClick: () => scrollPage(-1),
 		disabled: !scrollState.canPrev
 	}), /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-right",
-		label: nextLabel,
+		label: text.next,
 		variant: "outline",
 		size: "sm",
 		onClick: () => scrollPage(1),

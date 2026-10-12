@@ -3,6 +3,7 @@ import {I18nProvider, Slider, SliderThumb, SliderTrack} from 'react-aria-compone
 import {cx} from '../utils/cx.js';
 import {useClientLayoutEffect} from '../utils/effects.js';
 import {usePageLocale} from '../utils/locale.js';
+import {useMessages} from '../utils/messages.js';
 
 // A slider on React Aria: two handles over one track (or one with `range={false}`). Each handle is
 // a real range input for keyboards and screen readers (read as formatValue); dragging a handle or
@@ -17,13 +18,14 @@ export function RangeSlider({
   defaultValue,
   onChange,
   formatValue = number => String(number),
-  label = 'Value',
+  label,
   labelledBy,
-  labels = {min: 'Minimum', max: 'Maximum'},
+  labels,
   showValues = true,
   className = ''
 }) {
   const {locale, ref} = usePageLocale();
+  const text = useMessages('RangeSlider', {label, ...labels}, locale);
   const initial = defaultValue ?? (range ? [min, max] : min);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
   const current = value ?? uncontrolledValue;
@@ -58,7 +60,7 @@ export function RangeSlider({
       }
     : {insetInlineStart: 0, width: percent(values[0]) + '%'};
   // React Aria names each handle by its own label followed by the slider's (label or labelledBy).
-  const thumbLabels = range ? [labels.min, labels.max] : [undefined];
+  const thumbLabels = range ? [text.min, text.max] : [undefined];
   return (
     <I18nProvider locale={locale}>
       <Slider
@@ -68,7 +70,7 @@ export function RangeSlider({
         maxValue={max}
         step={step}
         onChange={change}
-        aria-label={labelledBy ? undefined : label}
+        aria-label={labelledBy ? undefined : text.label}
         aria-labelledby={labelledBy}
         className={cx('ag-range', !range && 'ag-range--single', className)}
       >

@@ -10,7 +10,7 @@ export interface OrderTimelineProps {
   status?: 'active' | 'done' | 'cancelled';
   /** aria-label for the <ol> */
   label?: string;
-  /** Visually hidden suffix on completed steps. Default "done" */
+  /** Visually hidden suffix on completed steps. Default "done" · «انجام شد», by VendraProvider's language */
   doneLabel?: string;
   className?: string;
   style?: React.CSSProperties;

@@ -14,7 +14,7 @@ export const ToastQueue = AriaToastQueue;
 // fixed at the bottom inline-end corner. Each toast is an alertdialog announced as it appears;
 // timers pause while the pointer or focus is on the region. `className` places it (for example
 // above a sticky mobile bar).
-export function ToastRegion({queue, label, closeLabel = 'Dismiss', className}) {
+export function ToastRegion({queue, label, closeLabel, className}) {
   return (
     <AriaToastRegion queue={queue} aria-label={label} className={cx('ag-toast-region', className)}>
       {({toast}) => <Toast toast={toast} {...toast.content} closeLabel={closeLabel} />}

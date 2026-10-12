@@ -2,6 +2,7 @@ import React from 'react';
 import {Button} from 'react-aria-components';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
@@ -15,15 +16,16 @@ export function LineItem({
   quantity,
   onQuantityChange,
   onRemove,
-  removeLabel = 'Remove',
+  removeLabel,
   quantityLabels,
   formatQuantity = n => String(n),
   size = 'lg',
   unavailable,
-  unavailableLabel = 'No longer available',
+  unavailableLabel,
   busy,
   className = ''
 }) {
+  const text = useMessages('LineItem', {remove: removeLabel, unavailable: unavailableLabel});
   const large = size !== 'sm';
   const thumbWidth = large ? 88 : 44;
   return (
@@ -55,7 +57,7 @@ export function LineItem({
           <div className="ag-line__name">{name}</div>
           {meta && <div className="ag-line__meta">{meta}</div>}
           {note && <div className="ag-line__note">{note}</div>}
-          {unavailable && <div className="ag-line__flag">{unavailableLabel}</div>}
+          {unavailable && <div className="ag-line__flag">{text.unavailable}</div>}
           {large && (onQuantityChange || onRemove) && (
             <div className="ag-line__actions">
               {onQuantityChange && !unavailable && (
@@ -68,7 +70,7 @@ export function LineItem({
               )}
               {onRemove && (
                 <Button className="ag-line__remove" onClick={onRemove}>
-                  {removeLabel}
+                  {text.remove}
                 </Button>
               )}
             </div>

@@ -13,7 +13,8 @@ import {
   I18nProvider,
   Popover,
   ToggleButton,
-  ToggleButtonGroup
+  ToggleButtonGroup,
+  useLocale
 } from 'react-aria-components';
 import {GregorianCalendar, PersianCalendar, parseDate, toCalendar} from '@internationalized/date';
 import {Icon} from '../Icon/Icon.jsx';
@@ -21,33 +22,8 @@ import {dates} from '../utils/dates.js';
 import {Select} from '../Select/Select.jsx';
 import {FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
+import {localeLanguage, useMessages} from '../utils/messages.js';
 
-const DEFAULT_LABELS = {
-  en: {
-    calendar: 'Calendar',
-    jalali: 'Shamsi',
-    gregorian: 'Gregorian',
-    year: 'Year',
-    month: 'Month',
-    day: 'Day',
-    open: 'Choose a date',
-    previous: 'Previous month',
-    next: 'Next month',
-    equivalent: 'That’s {date}'
-  },
-  fa: {
-    calendar: 'تقویم',
-    jalali: 'شمسی',
-    gregorian: 'میلادی',
-    year: 'سال',
-    month: 'ماه',
-    day: 'روز',
-    open: 'انتخاب از تقویم',
-    previous: 'ماه قبل',
-    next: 'ماه بعد',
-    equivalent: 'برابر با {date}'
-  }
-};
 const GREGORIAN = new GregorianCalendar();
 const PERSIAN = new PersianCalendar();
 // ISO ↔ React Aria's CalendarDate (a value in any calendar comes back as an ISO Gregorian date).
@@ -83,7 +59,7 @@ export function DatePicker({
   minDate,
   hint,
   error,
-  lang = 'en',
+  lang: langProp,
   labels,
   showEquivalent = true,
   disabled,
@@ -91,7 +67,9 @@ export function DatePicker({
   className = '',
   style
 }) {
-  const text = {...DEFAULT_LABELS[lang === 'fa' ? 'fa' : 'en'], ...labels};
+  // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
+  const lang = langProp || (localeLanguage(useLocale().locale) === 'fa' ? 'fa' : 'en');
+  const text = useMessages('DatePicker', labels, lang);
   const generatedId = React.useId();
   const fieldId = id || 'dp' + generatedId.replace(/:/g, '');
   const messageId = fieldId + '-hint';

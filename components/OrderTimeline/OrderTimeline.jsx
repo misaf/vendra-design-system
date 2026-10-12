@@ -1,6 +1,7 @@
 import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 // Vertical order progress. Cancelled renders nothing — the screen shows an Alert instead.
 export function OrderTimeline({
@@ -8,10 +9,11 @@ export function OrderTimeline({
   current = 0,
   status = 'active',
   label,
-  doneLabel = 'done',
+  doneLabel,
   className = '',
   style
 }) {
+  const text = useMessages('OrderTimeline', {done: doneLabel});
   if (status === 'cancelled') return null;
   return (
     <ol className={cx('ag-otl', className)} style={style} aria-label={label}>
@@ -33,7 +35,7 @@ export function OrderTimeline({
             </span>
             <span className="ag-otl__label">
               {step.label}
-              {done && <span className="ag-sr-only"> — {doneLabel}</span>}
+              {done && <span className="ag-sr-only"> — {text.done}</span>}
             </span>
             {step.time && <span className="ag-otl__time">{step.time}</span>}
           </li>

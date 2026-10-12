@@ -2,6 +2,7 @@ import React from 'react';
 import {Icon} from '../Icon/Icon.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 const ALERT_ICONS = {
   neutral: 'info',
@@ -19,10 +20,11 @@ export function Alert({
   children,
   action,
   onClose,
-  closeLabel = 'Dismiss',
+  closeLabel,
   className = '',
   style
 }) {
+  const text = useMessages('Alert', {close: closeLabel});
   const role = tone === 'danger' || tone === 'warning' ? 'alert' : 'status';
   return (
     <div role={role} className={cx('ag-alert', 'ag-alert--' + tone, className)} style={style}>
@@ -41,7 +43,7 @@ export function Alert({
         {action && <div className="ag-alert__action">{action}</div>}
       </div>
       {onClose && (
-        <IconButton icon="x" label={closeLabel} className="ag-alert__close" onClick={onClose} />
+        <IconButton icon="x" label={text.close} className="ag-alert__close" onClick={onClose} />
       )}
     </div>
   );

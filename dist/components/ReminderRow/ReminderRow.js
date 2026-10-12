@@ -7,19 +7,10 @@ import { IconButton } from "../IconButton/IconButton.js";
 import { Button } from "../Button/Button.js";
 import { Switch } from "../Switch/Switch.js";
 import { cx } from "../utils/cx.js";
-const DEFAULT_LABELS = {
-	paused: "Paused",
-	sendFlowers: "Send flowers",
-	reminderFor: "Reminder for {name}",
-	edit: "Edit reminder for {name}",
-	delete: "Delete reminder for {name}"
-};
+import { useMessages } from "../utils/messages.js";
 // One occasion reminder: arched date tile · name + meta · controls (drop below on narrow widths via container query).
 export function ReminderRow({ name, day, month, occasion, occasionIcon = "calendar-heart", before, channel = "sms", altDate, when, soon, on = true, onToggle, onEdit, onDelete, sendHref, sendOnClick, labels, className = "", style }) {
-	const text = {
-		...DEFAULT_LABELS,
-		...labels
-	};
+	const text = useMessages("ReminderRow", labels);
 	const named = (template) => template.replace("{name}", typeof name === "string" ? name : "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-remwrap", className),

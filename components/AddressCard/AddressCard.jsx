@@ -3,13 +3,8 @@ import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {Button} from '../Button/Button.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
-const DEFAULT_LABELS = {
-  edit: 'Edit {name}',
-  delete: 'Delete {name}',
-  default: 'Default',
-  makeDefault: 'Set as default'
-};
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
 export function AddressCard({
   label,
@@ -25,7 +20,7 @@ export function AddressCard({
   className = '',
   style
 }) {
-  const text = {...DEFAULT_LABELS, ...labels};
+  const text = useMessages('AddressCard', labels);
   const named = template => template.replace('{name}', label || '');
   return (
     <div className={cx('ag-card', 'ag-addr', className)} style={style}>

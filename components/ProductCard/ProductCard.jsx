@@ -3,6 +3,7 @@ import {Button, Link} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
 export function ProductCard({
@@ -23,9 +24,10 @@ export function ProductCard({
   onClick,
   href,
   linkLabel,
-  placeholder = 'Bouquet photo',
-  favLabel = 'Save'
+  placeholder,
+  favLabel
 }) {
+  const text = useMessages('ProductCard', {placeholder, favorite: favLabel});
   const photos = (images && images.length ? images : image ? [{src: image, srcSet}] : []).map(
     photo => (typeof photo === 'string' ? {src: photo} : photo)
   );
@@ -71,7 +73,11 @@ export function ProductCard({
           tone === 'product' && 'ag-arch--product'
         )}
       >
-        {mainPhoto ? renderPhoto(mainPhoto) : <div className="ag-product__ph">{placeholder}</div>}
+        {mainPhoto ? (
+          renderPhoto(mainPhoto)
+        ) : (
+          <div className="ag-product__ph">{text.placeholder}</div>
+        )}
         {hoverPhoto && renderPhoto(hoverPhoto, 'ag-product__alt')}
         {badge && (
           <Badge tone={badgeTone} className="ag-product__badge">
@@ -81,7 +87,7 @@ export function ProductCard({
         {onFavorite && (
           <IconButton
             icon="heart"
-            label={favLabel}
+            label={text.favorite}
             variant="solid"
             size="sm"
             active={favorite}

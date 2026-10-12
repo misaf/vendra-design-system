@@ -3,19 +3,12 @@
 import React from "react";
 import { Button } from "../Button/Button.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
 // Card-to-card transfer details: the card number in groups of four (always LTR) with a copy
 // button, then holder, bank and amount. Persian digits in `cardNumber` are accepted.
-export function PaymentCard({ cardNumber = "", holder, bank, amount, labels = {}, onCopy, className = "" }) {
-	const text = {
-		card: "Card number",
-		holder: "Card holder",
-		bank: "Bank",
-		amount: "Amount",
-		copy: "Copy",
-		copied: "Copied",
-		...labels
-	};
+export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onCopy, className = "" }) {
+	const text = useMessages("PaymentCard", labels);
 	const digits = String(cardNumber).replace(/[۰-۹]/g, (digit) => FA_DIGITS.indexOf(digit)).replace(/\D/g, "");
 	const grouped = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
 	const [copied, setCopied] = React.useState(false);

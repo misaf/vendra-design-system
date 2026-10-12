@@ -2,6 +2,7 @@ import React from 'react';
 import {Dialog as AriaDialog, Heading, Modal, ModalOverlay} from 'react-aria-components';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({title, titleId, onClose, closeLabel, footer, children, heading}) {
@@ -36,10 +37,11 @@ export function Dialog({
   children,
   footer,
   inline,
-  closeLabel = 'Close',
+  closeLabel,
   maxWidth,
   placement = 'center'
 }) {
+  const text = useMessages('Dialog', {close: closeLabel});
   const titleId = React.useId();
   const sheet = placement === 'start';
   const overlayClass = cx(
@@ -64,7 +66,7 @@ export function Dialog({
             title={title}
             titleId={titleId}
             onClose={onClose}
-            closeLabel={closeLabel}
+            closeLabel={text.close}
             footer={footer}
           >
             {children}
@@ -85,7 +87,7 @@ export function Dialog({
         <AriaDialog className="ag-dialog__frame">
           <Content
             onClose={onClose}
-            closeLabel={closeLabel}
+            closeLabel={text.close}
             footer={footer}
             heading={
               title ? (

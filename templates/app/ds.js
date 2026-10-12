@@ -53,3 +53,4 @@ export * from '../../components/Tabs/Tabs.jsx';
 export * from '../../components/Toast/Toast.jsx';
 export * from '../../components/ToastRegion/ToastRegion.jsx';
 export * from '../../components/Tooltip/Tooltip.jsx';
+export * from '../../components/VendraProvider/VendraProvider.jsx';

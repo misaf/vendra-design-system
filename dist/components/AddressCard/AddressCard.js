@@ -5,18 +5,10 @@ import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
 import { Button } from "../Button/Button.js";
 import { cx } from "../utils/cx.js";
-const DEFAULT_LABELS = {
-	edit: "Edit {name}",
-	delete: "Delete {name}",
-	default: "Default",
-	makeDefault: "Set as default"
-};
+import { useMessages } from "../utils/messages.js";
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
 export function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, onDelete, onMakeDefault, labels, className = "", style }) {
-	const text = {
-		...DEFAULT_LABELS,
-		...labels
-	};
+	const text = useMessages("AddressCard", labels);
 	const named = (template) => template.replace("{name}", label || "");
 	return /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-card", "ag-addr", className),

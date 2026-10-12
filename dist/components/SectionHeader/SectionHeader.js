@@ -3,9 +3,14 @@
 import React from "react";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 // A section title with an optional italic `accent`, eyebrow and action, plus prev/next arrows
 // when `onPrev`/`onNext` are given (pair them with a Carousel's ref).
-export function SectionHeader({ title, accent, eyebrow, level = "h2", action, onPrev, onNext, canPrev = true, canNext = true, prevLabel = "Previous", nextLabel = "Next", id, className = "", style }) {
+export function SectionHeader({ title, accent, eyebrow, level = "h2", action, onPrev, onNext, canPrev = true, canNext = true, prevLabel, nextLabel, id, className = "", style }) {
+	const text = useMessages("SectionHeader", {
+		previous: prevLabel,
+		next: nextLabel
+	});
 	const Heading = [
 		"h1",
 		"h2",
@@ -20,13 +25,13 @@ export function SectionHeader({ title, accent, eyebrow, level = "h2", action, on
 		className: "ag-sechead__title"
 	}, title, accent && /* @__PURE__ */ React.createElement(React.Fragment, null, " ", /* @__PURE__ */ React.createElement("em", null, accent)))), (action || hasArrows) && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__actions" }, action, hasArrows && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__arrows" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
-		label: prevLabel,
+		label: text.previous,
 		variant: "outline",
 		onClick: onPrev,
 		disabled: !onPrev || !canPrev
 	}), /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-right",
-		label: nextLabel,
+		label: text.next,
 		variant: "outline",
 		onClick: onNext,
 		disabled: !onNext || !canNext

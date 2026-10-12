@@ -5,15 +5,17 @@ import { I18nProvider, Slider, SliderThumb, SliderTrack } from "react-aria-compo
 import { cx } from "../utils/cx.js";
 import { useClientLayoutEffect } from "../utils/effects.js";
 import { usePageLocale } from "../utils/locale.js";
+import { useMessages } from "../utils/messages.js";
 // A slider on React Aria: two handles over one track (or one with `range={false}`). Each handle is
 // a real range input for keyboards and screen readers (read as formatValue); dragging a handle or
 // pressing the track moves the nearest one. The handles stay a step apart; RTL mirrors it, following
 // the page's language.
-export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (number) => String(number), label = "Value", labelledBy, labels = {
-	min: "Minimum",
-	max: "Maximum"
-}, showValues = true, className = "" }) {
+export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (number) => String(number), label, labelledBy, labels, showValues = true, className = "" }) {
 	const { locale, ref } = usePageLocale();
+	const text = useMessages("RangeSlider", {
+		label,
+		...labels
+	}, locale);
 	const initial = defaultValue ?? (range ? [min, max] : min);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
 	const current = value ?? uncontrolledValue;
@@ -46,7 +48,7 @@ export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value,
 		width: percent(values[0]) + "%"
 	};
 	// React Aria names each handle by its own label followed by the slider's (label or labelledBy).
-	const thumbLabels = range ? [labels.min, labels.max] : [undefined];
+	const thumbLabels = range ? [text.min, text.max] : [undefined];
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(Slider, {
 		ref,
 		value: range ? values : values[0],
@@ -54,7 +56,7 @@ export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value,
 		maxValue: max,
 		step,
 		onChange: change,
-		"aria-label": labelledBy ? undefined : label,
+		"aria-label": labelledBy ? undefined : text.label,
 		"aria-labelledby": labelledBy,
 		className: cx("ag-range", !range && "ag-range--single", className)
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-range__track" }, /* @__PURE__ */ React.createElement("span", {

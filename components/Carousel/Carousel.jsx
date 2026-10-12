@@ -1,6 +1,7 @@
 import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+import {useMessages} from '../utils/messages.js';
 
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
@@ -37,8 +38,8 @@ export const Carousel = React.forwardRef(function Carousel(
     gap = '16px',
     label,
     arrows,
-    prevLabel = 'Previous',
-    nextLabel = 'Next',
+    prevLabel,
+    nextLabel,
     onScrollStateChange,
     bleed = true,
     className = '',
@@ -46,6 +47,7 @@ export const Carousel = React.forwardRef(function Carousel(
   },
   ref
 ) {
+  const text = useMessages('Carousel', {previous: prevLabel, next: nextLabel});
   const trackRef = React.useRef(null);
   const [scrollState, setScrollState] = React.useState({canPrev: false, canNext: false});
   const lastState = React.useRef(null);
@@ -125,7 +127,7 @@ export const Carousel = React.forwardRef(function Carousel(
         <div className="ag-carousel__nav">
           <IconButton
             icon="chevron-left"
-            label={prevLabel}
+            label={text.previous}
             variant="outline"
             size="sm"
             onClick={() => scrollPage(-1)}
@@ -133,7 +135,7 @@ export const Carousel = React.forwardRef(function Carousel(
           />
           <IconButton
             icon="chevron-right"
-            label={nextLabel}
+            label={text.next}
             variant="outline"
             size="sm"
             onClick={() => scrollPage(1)}

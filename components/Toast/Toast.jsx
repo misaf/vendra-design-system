@@ -8,6 +8,7 @@ import {
 } from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {Button} from '../Button/Button.jsx';
+import {useMessages} from '../utils/messages.js';
 
 const ICONS = {
   success: 'circle-check',
@@ -54,16 +55,8 @@ function ToastBody({toast, tone = 'success', title, message, action, closeLabel,
 // A toast on React Aria (role="alertdialog", its text in an atomic alert). Inside a ToastRegion it
 // shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
 // and onClose is what its close button does.
-export function Toast({
-  toast: queued,
-  tone,
-  title,
-  message,
-  action,
-  onClose,
-  closeLabel = 'Dismiss',
-  style
-}) {
+export function Toast({toast: queued, tone, title, message, action, onClose, closeLabel, style}) {
+  const text = useMessages('Toast', {close: closeLabel});
   const key = React.useId();
   const latestClose = React.useRef(onClose);
   latestClose.current = onClose;
@@ -87,7 +80,7 @@ export function Toast({
         title={title}
         message={message}
         action={action}
-        closeLabel={closeLabel}
+        closeLabel={text.close}
         closable
         style={style}
       />
@@ -100,7 +93,7 @@ export function Toast({
         title={title}
         message={message}
         action={action}
-        closeLabel={closeLabel}
+        closeLabel={text.close}
         closable={!!onClose}
         style={style}
       />

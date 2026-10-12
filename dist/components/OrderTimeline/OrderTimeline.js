@@ -3,8 +3,10 @@
 import React from "react";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
+import { useMessages } from "../utils/messages.js";
 // Vertical order progress. Cancelled renders nothing — the screen shows an Alert instead.
-export function OrderTimeline({ steps = [], current = 0, status = "active", label, doneLabel = "done", className = "", style }) {
+export function OrderTimeline({ steps = [], current = 0, status = "active", label, doneLabel, className = "", style }) {
+	const text = useMessages("OrderTimeline", { done: doneLabel });
 	if (status === "cancelled") return null;
 	return /* @__PURE__ */ React.createElement("ol", {
 		className: cx("ag-otl", className),
@@ -24,6 +26,6 @@ export function OrderTimeline({ steps = [], current = 0, status = "active", labe
 		}, /* @__PURE__ */ React.createElement("span", { className: "ag-otl__dot" }, done && /* @__PURE__ */ React.createElement(Icon, {
 			name: "check",
 			size: 14
-		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, step.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", doneLabel)), step.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, step.time));
+		})), i < steps.length - 1 && /* @__PURE__ */ React.createElement("span", { className: cx("ag-otl__line", done && "ag-otl__line--done") })), /* @__PURE__ */ React.createElement("span", { className: "ag-otl__label" }, step.label, done && /* @__PURE__ */ React.createElement("span", { className: "ag-sr-only" }, " — ", text.done)), step.time && /* @__PURE__ */ React.createElement("span", { className: "ag-otl__time" }, step.time));
 	}));
 }
