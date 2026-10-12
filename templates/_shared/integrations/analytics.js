@@ -3,6 +3,8 @@
 // VF_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
 // (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
 // No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
+import {VF_STORE} from '../store-config.js';
+import {VF_CATEGORY_ITEM} from '../translations/categories.js';
 (() => {
   if (window.VF_TRACK) return;
   const EVENTS = {

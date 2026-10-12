@@ -1,4 +1,6 @@
 // Sample bank prefixes and card configuration; adapt from your payment provider.
+import {vfLatin} from './formatting.js';
+import {VF_STORE} from './store-config.js';
 (() => {
   const D = {};
   D.banks = [

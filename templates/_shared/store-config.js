@@ -1,6 +1,6 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
-const VF_STORE = {
+export const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
   currency: 'IRT',
   // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;

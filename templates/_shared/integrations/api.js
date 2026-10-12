@@ -1,5 +1,8 @@
 // Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
 // base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
+import {vfAccountLocale} from '../account-data.js';
+import {VF_PRODUCTS, vfProductId} from '../catalog.js';
+import {VF_STORE} from '../store-config.js';
 (() => {
   const KEY = 'vendra-saved-map';
   if (window.VF_API) return;

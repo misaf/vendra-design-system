@@ -2,6 +2,28 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {
+  VF_OCCASIONS,
+  vfAccountLoad,
+  vfAccountPhone,
+  vfAccountSave,
+  vfAccountSignOut,
+  vfReminderNext,
+  vfSampleOrders
+} from '../_shared/account-data.js';
+import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
+import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_ACCOUNT_TABS, vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {
+  vfBalanceDiscountOn,
+  vfTopUpAmount,
+  vfTopUpError,
+  vfWalletChange,
+  vfWalletOf
+} from '../_shared/wallet.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 export class Component extends VFPage {
   state = {

@@ -2,6 +2,10 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {VF_MONEY} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../_shared/translations/categories.js';
 export class Component extends VFPage {
   renderVals() {
     const fa = this.props.lang === 'fa';

@@ -2,6 +2,11 @@
 // and the page's View renders the vals. State updates apply to the logic at once, as page code
 // expects, and the host re-renders.
 import React from 'react';
+import {vfPageClass} from '../_shared/page-lifecycle.js';
+// These set window.VF_API, VF_TRACK and VF_PAYMENT, which pages and the shell call.
+import '../_shared/integrations/api.js';
+import '../_shared/integrations/analytics.js';
+import '../_shared/payments.js';
 
 export class DCLogic {
   constructor(props) {
@@ -23,7 +28,7 @@ export class DCLogic {
 }
 
 // The storefront page base (responsive state, focus, analytics), from the shared logic.
-export const VFPage = window.vfPageClass(DCLogic);
+export const VFPage = vfPageClass(DCLogic);
 
 export function definePage(name, Logic, View) {
   class Page extends React.Component {

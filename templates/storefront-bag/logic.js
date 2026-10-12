@@ -2,6 +2,41 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
+import {
+  VF_ADDONS,
+  vfCardMessages,
+  vfLineAvailable,
+  vfLineHasCard,
+  vfLineToken,
+  vfLineWithCard,
+  vfProductImage,
+  vfSampleBag,
+  vfTokenText
+} from '../_shared/catalog.js';
+import {
+  VF_DELIVERY,
+  VF_ZONES,
+  vfDeliveryCutoff,
+  vfDeliveryDate,
+  vfDeliveryDays,
+  vfDeliveryHint,
+  vfDeliverySlot,
+  vfDeliverySlots,
+  vfErrors,
+  vfFreeDelivery,
+  vfMobile,
+  vfTotals,
+  vfZone,
+  vfZoneAt
+} from '../_shared/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {vfDayMonth, vfDayName, vfSlotLabel} from '../_shared/translations/time.js';
 // Two checkout steps share this page: the bag (?view=bag) and delivery details (&step=delivery).
 export class Component extends VFPage {
   state = {

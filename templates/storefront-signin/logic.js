@@ -2,6 +2,11 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfAccountLogin, vfAccountSave} from '../_shared/account-data.js';
+import {vfMobile} from '../_shared/delivery.js';
+import {VF_FA_DIGITS} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 // Seconds before another code can be requested.
 const VF_SIGNIN_RESEND_SECONDS = 60;
 export class Component extends VFPage {

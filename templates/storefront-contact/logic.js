@@ -2,6 +2,11 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
+import {vfMobile} from '../_shared/delivery.js';
+import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/location.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_STORE} from '../_shared/store-config.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();

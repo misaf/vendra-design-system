@@ -1,6 +1,19 @@
 // Bilingual policy copy. Edit here, then run npm --prefix templates run build.
 // Fees, cut-offs, time slots and store details come from the shared config, so the policies stay current.
 // Each document is {title, intro, sections: [{title, paras: [...], items?: [...]}]}.
+import {
+  VF_DELIVERY_DAYS,
+  VF_FREE_DELIVERY_THRESHOLD,
+  VF_FREE_DELIVERY_ZONES,
+  VF_SLOTS,
+  VF_ZONES,
+  vfDeliveryCutoff,
+  vfZone
+} from '../_shared/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {VF_SHELL} from '../_shared/translations/shell.js';
+import {vfSlotLabel} from '../_shared/translations/time.js';
 export function vfCopy(S) {
   const fa = S.fa;
   const L = fa ? 'fa' : 'en';

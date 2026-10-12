@@ -6,7 +6,9 @@ const path = require('node:path');
 const templates = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(templates, file), 'utf8');
 const strip = code =>
-  code.replace(/^import [^;]*;\n/gm, '').replace(/^export (const|function|class|let) /gm, '$1 ');
+  code
+    .replace(/^import [^;]*;\n/gm, '')
+    .replace(/^export (?=(?:async |const |function|class |let |var ))/gm, '');
 
 // The page base class the browser builds in app/runtime.jsx.
 const vfPageLine = 'const VFPage = vfPageClass(DCLogic);';
@@ -20,4 +22,34 @@ function pageScript(folder) {
   return parts.map(strip).join('\n\n');
 }
 
-module.exports = {pageScript, strip};
+// The shared storefront logic (_shared/), in load order, as one script whose declarations are
+// globals, as page logic expects them in a vm context.
+const sharedFiles = [
+  'store-config.js',
+  'delivery.js',
+  'location.js',
+  'promotions.js',
+  'product-categories.js',
+  'catalog.js',
+  'translations/shell.js',
+  'translations/categories.js',
+  'translations/time.js',
+  'translations/location.js',
+  'account-data.js',
+  'wallet.js',
+  'payments.js',
+  'integrations/api.js',
+  'integrations/analytics.js',
+  'formatting.js',
+  'routing.js',
+  'page-lifecycle.js',
+  'navigation.js'
+];
+const sharedLogic =
+  'const VF_TENANT_SLUGS = ' +
+  JSON.stringify(require('../_build/tenants.cjs').tenantSlugs()) +
+  ';\n\n' +
+  sharedFiles.map(file => strip(read('_shared/' + file))).join('\n\n') +
+  '\n';
+
+module.exports = {pageScript, strip, sharedLogic, sharedFiles};

@@ -1,5 +1,9 @@
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
-function vfAccountPhone() {
+import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES, vfLineDetail} from './catalog.js';
+import {VF_DELIVERY, vfMobile} from './delivery.js';
+import {vfLatin} from './formatting.js';
+import {VF_STORE} from './store-config.js';
+export function vfAccountPhone() {
   try {
     return localStorage.getItem('vf-account-phone') || '';
   } catch {
@@ -7,10 +11,10 @@ function vfAccountPhone() {
   }
 }
 // Accounts are keyed by the mobile in its stored form, so 0912…, +98 912… and ۰۹۱۲… are one account.
-function vfAccountKey(phone) {
+export function vfAccountKey(phone) {
   return 'vf-account:' + (vfMobile(phone) || vfLatin(phone).replace(/\D/g, ''));
 }
-function vfAccountLoad(phone, lang = 'en') {
+export function vfAccountLoad(phone, lang = 'en') {
   try {
     const data = JSON.parse(localStorage.getItem(vfAccountKey(phone)) || 'null');
     if (data && Array.isArray(data.addresses) && Array.isArray(data.reminders) && data.profile) {
@@ -119,12 +123,12 @@ function vfAccountLoad(phone, lang = 'en') {
     ]
   };
 }
-function vfAccountSave(phone, data) {
+export function vfAccountSave(phone, data) {
   try {
     localStorage.setItem(vfAccountKey(phone), JSON.stringify(data));
   } catch {}
 }
-function vfAccountLogin(phone, lang) {
+export function vfAccountLogin(phone, lang) {
   phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
   try {
     localStorage.setItem('vf-account-phone', phone);
@@ -133,16 +137,16 @@ function vfAccountLogin(phone, lang) {
   vfAccountSave(phone, data);
   return data;
 }
-function vfAccountSignOut() {
+export function vfAccountSignOut() {
   try {
     localStorage.removeItem('vf-account-phone');
   } catch {}
 }
-function vfAccountLocale() {
+export function vfAccountLocale() {
   const phone = vfAccountPhone();
   return phone ? vfAccountLoad(phone).profile.locale : null;
 }
-const VF_OCCASIONS = [
+export const VF_OCCASIONS = [
   {
     id: 'birthday',
     icon: 'cake',
@@ -202,7 +206,7 @@ const VF_OCCASIONS = [
     fa: 'مناسبت دیگر'
   }
 ];
-function vfNormalizeReminder(r) {
+export function vfNormalizeReminder(r) {
   if (r.date && !r.m) {
     const d = window.AG_DATES.fromIso(r.date);
     if (d)
@@ -215,7 +219,7 @@ function vfNormalizeReminder(r) {
   }
   return r;
 }
-function vfReminderNext(r, today = new Date()) {
+export function vfReminderNext(r, today = new Date()) {
   r = vfNormalizeReminder(r);
   const D = window.AG_DATES,
     occasion = VF_OCCASIONS.find(o => o.id === r.occ);
@@ -246,13 +250,13 @@ function vfReminderNext(r, today = new Date()) {
 // metadata carries what the order needs beyond the API's fields, as strings: the product code
 // (`token`), `size`, comma-separated `addons` and the handwritten `cardMessage`.
 /** @type {[id: number, number: string, status: string, placedAt: string][]} */
-const VF_SAMPLE_ORDER_ROWS = [
+export const VF_SAMPLE_ORDER_ROWS = [
   [9001, 'VN-10522', 'out_for_delivery', '2026-10-04T09:30:00+03:30'],
   [9002, 'VN-10431', 'delivered', '2026-09-21T11:05:00+03:30'],
   [9003, 'VN-10302', 'delivered', '2026-09-02T16:40:00+03:30'],
   [9004, 'VB-TEST-1', 'cancelled', '2026-08-28T10:15:00+03:30']
 ];
-const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, placedAt]) => ({
+export const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, placedAt]) => ({
   id,
   number,
   status,
@@ -294,7 +298,7 @@ const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, placedAt]) 
 
 // Order fields the API doesn't provide yet (templates/API.md, "Order detail"), keyed by Order.number:
 // the delivery details, payment method and the customer's preferred language. The sample orders share them.
-const VF_SAMPLE_ORDER_EXTRAS = {
+export const VF_SAMPLE_ORDER_EXTRAS = {
   method: 'card',
   preferredLocale: 'fa',
   delivery: {
@@ -307,7 +311,7 @@ const VF_SAMPLE_ORDER_EXTRAS = {
 };
 
 // The storefront's bag line from an API OrderLine.
-function vfLineFromApi(line) {
+export function vfLineFromApi(line) {
   return window.AG_COMMERCE.lineFromApi(line, {
     products: VF_PRODUCTS,
     sizes: VF_SIZES,
@@ -318,7 +322,7 @@ function vfLineFromApi(line) {
 }
 
 // The storefront's order object from an API Order plus its extras.
-function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
+export function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
   return window.AG_COMMERCE.orderFromApi(order, {
     line: vfLineFromApi,
     delivery: {...VF_DELIVERY, ...extras.delivery},
@@ -327,6 +331,6 @@ function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
   });
 }
 
-function vfSampleOrders() {
+export function vfSampleOrders() {
   return VF_API_ORDERS.map(order => vfOrderFromApi(order));
 }

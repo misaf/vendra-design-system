@@ -2,6 +2,25 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {
+  VF_ADDONS,
+  VF_PRODUCTS,
+  VF_PRODUCT_DETAILS,
+  VF_SIZES,
+  vfFindProduct,
+  vfLineDetail,
+  vfProduct,
+  vfProductImage,
+  vfProductImages,
+  vfProductSub,
+  vfRecentlyViewed,
+  vfRememberViewed,
+  vfTokenText
+} from '../_shared/catalog.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfPageRoute} from '../_shared/routing.js';
+import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 export class Component extends VFPage {
   state = {
     size: 'petite',

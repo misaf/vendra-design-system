@@ -1,5 +1,5 @@
 // Routing and <head> helpers for the storefront (window.VF_SEO). Pages load this
-// before shared-logic.js.
+// before the app (app/index.html).
 // URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
 (() => {
   const SCREENS = new Set([

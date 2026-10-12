@@ -3,6 +3,9 @@ import React from 'react';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfProduct, vfProductImage} from '../_shared/catalog.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 export class Component extends VFPage {
   state = {
     copied: false

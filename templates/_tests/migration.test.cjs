@@ -48,7 +48,7 @@ function environment() {
   // browser tests check every component loads (expectNoViteError).
   vm.runInContext(read('templates/_runtime/helpers.js'), c);
   for (const f of ['seo', 'page-focus']) vm.runInContext(read('templates/_shared/' + f + '.js'), c);
-  vm.runInContext(require('../_build/generate.cjs').sharedLogic, c);
+  vm.runInContext(require('./page-script.cjs').sharedLogic, c);
   return {c, storage, timers};
 }
 function page(name, c, props = {}) {

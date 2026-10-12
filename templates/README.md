@@ -25,7 +25,7 @@ The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in 
 
 ## Editing a page
 
-Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (a class with state, lifecycle and `renderVals()`), `copy.js` and `styles.css`; `Page.jsx` joins logic and view with `definePage` from `app/runtime.jsx`. A view reads everything from `v`, the page's props merged with `renderVals()`; `interp()` renders a value as text. `logic.js` and `copy.js` are ES modules; the shared logic in `_shared/` still loads once as a classic script (`_runtime/shared-logic.js`), so its declarations are globals the pages read by name.
+Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (a class with state, lifecycle and `renderVals()`), `copy.js` and `styles.css`; `Page.jsx` joins logic and view with `definePage` from `app/runtime.jsx`. A view reads everything from `v`, the page's props merged with `renderVals()`; `interp()` renders a value as text. `logic.js`, `copy.js` and the shared logic in `_shared/` are ES modules that import what they use; the integrations (`VF_API`, `VF_TRACK`, `VF_PAYMENT`) attach to `window`, imported once by `app/runtime.jsx`. `_shared/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
@@ -45,7 +45,7 @@ npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, 
 ```
 
 - **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
-- **Shared logic only:** `node _build/generate.cjs` rewrites `_runtime/shared-logic.js` from `_shared/`.
+- **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
 ## Browser tests
@@ -63,7 +63,7 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`), `_shared/page-focus.js` and `_runtime/shared-logic.js`, then `_runtime/ds-base.js`, then the app module `app/main.jsx`.
+- **`app/index.html`:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`), and `_shared/page-focus.js` (classic scripts), then `_runtime/ds-base.js`, then the app module `app/main.jsx`.
 - **`_runtime/ds-base.js`:** loads `../styles.css`, then the active tenant's CSS, then `tailwind.css` and `custom.css`, each once. The tenant comes from `store-config.js` or `?tenant=`.
 - **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js` (the classic bundle) is only for the guideline cards.
 - **Dependencies:** the repo root's `node_modules` links to `templates/node_modules` (created on install), so component sources resolve React and React Aria.

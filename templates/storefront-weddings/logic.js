@@ -2,6 +2,9 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {VF_PRODUCT_PLACEHOLDER} from '../_shared/catalog.js';
+import {vfMobile} from '../_shared/delivery.js';
+import {vfShell} from '../_shared/navigation.js';
 export class Component extends VFPage {
   state = {
     sent: false,

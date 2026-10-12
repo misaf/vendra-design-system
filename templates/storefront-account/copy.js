@@ -1,4 +1,5 @@
 // Bilingual account copy.
+import {VF_PIN_COPY} from '../_shared/translations/location.js';
 export function vfCopy(S) {
   const n = S.n;
   const C = {

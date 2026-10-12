@@ -2,6 +2,18 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {
+  VF_CATEGORY_COPY,
+  VF_SHOP_OCCASIONS,
+  VF_SHOP_OCCASION_COPY
+} from '../_shared/translations/categories.js';
+import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
 const VF_CHIPS = [
   ['under3', p => p.price < 3000000],

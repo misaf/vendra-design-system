@@ -2,6 +2,27 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
+import {
+  vfCardMessages,
+  vfLineAvailable,
+  vfLineToken,
+  vfProductImage,
+  vfSampleBag
+} from '../_shared/catalog.js';
+import {VF_DELIVERY, vfCheckoutRequest, vfDeliveryDate, vfTotals} from '../_shared/delivery.js';
+import {VF_FA_DIGITS} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfSummaryRows} from '../_shared/promotions.js';
+import {vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {vfDeliveryWhen} from '../_shared/translations/time.js';
+import {
+  vfBalanceDiscountOn,
+  vfWalletBalance,
+  vfWalletChange,
+  vfWalletOf
+} from '../_shared/wallet.js';
 export class Component extends VFPage {
   state = {
     placed: false,

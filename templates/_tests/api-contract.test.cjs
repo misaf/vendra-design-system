@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
-const {sharedLogic} = require('../_build/generate.cjs');
+const {sharedLogic} = require('./page-script.cjs');
 
 const specFile = fs.readdirSync(path.join(root, 'uploads')).find(f => /^openapi-.*\.json$/.test(f));
 const spec = JSON.parse(fs.readFileSync(path.join(root, 'uploads', specFile), 'utf8'));

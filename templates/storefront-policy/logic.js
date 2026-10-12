@@ -2,6 +2,9 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {VF_FA_DIGITS} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_POLICIES, vfPageRoute} from '../_shared/routing.js';
 export class Component extends VFPage {
   renderVals() {
     const S = vfShell.call(this, this.props, 'policy');

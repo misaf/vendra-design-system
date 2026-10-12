@@ -1,7 +1,24 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+import {vfAccountLoad, vfAccountPhone} from './account-data.js';
+import {vfFindProduct, vfProductId} from './catalog.js';
+import {VF_FREE_DELIVERY_THRESHOLD} from './delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
+import {vfDirectionsUrl} from './location.js';
+import {vfPageTenant} from './page-lifecycle.js';
+import {
+  VF_POLICIES,
+  VF_ROUTES,
+  VF_ROUTE_EXTRA,
+  vfLinkHandler,
+  vfPageRoute,
+  vfRouteParams
+} from './routing.js';
+import {VF_STORE} from './store-config.js';
+import {VF_CATEGORY_COPY} from './translations/categories.js';
+import {VF_SHELL} from './translations/shell.js';
 
 // The store's announcement in this language, or '' once the visitor has closed it this session.
-function vfAnnouncementText(lang, st) {
+export function vfAnnouncementText(lang, st) {
   const text = VF_STORE.announcement && VF_STORE.announcement[lang];
   if (!text || st.vfAnnouncementClosed) return '';
   try {
@@ -10,14 +27,14 @@ function vfAnnouncementText(lang, st) {
   return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
 }
 // A value saved on this device, or '' when storage is empty or blocked.
-function vfStored(key) {
+export function vfStored(key) {
   try {
     return localStorage.getItem(key) || '';
   } catch {
     return '';
   }
 }
-function vfShell(props, page) {
+export function vfShell(props, page) {
   const self = this,
     st = self.state || {},
     store = props.store;

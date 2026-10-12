@@ -1,5 +1,7 @@
 // Storefront route registration, validation and links. Uses the core VF_SEO router.
-const VF_ROUTES = [
+import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
+import {VF_SHOP_OCCASIONS} from './translations/categories.js';
+export const VF_ROUTES = [
   'account',
   'bag',
   'checkout',
@@ -19,10 +21,10 @@ const VF_ROUTES = [
   'weddings'
 ];
 // Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
-const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
+export const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
 // Account tabs, in the order they appear.
-const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
-const VF_ROUTE_EXTRA = {
+export const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
+export const VF_ROUTE_EXTRA = {
   product: {
     id: 'VF-7K2M4Q',
     cat: 'boxes'
@@ -32,7 +34,7 @@ const VF_ROUTE_EXTRA = {
   }
 };
 // Keep template-only shopping parameters out of the core design-system router.
-function vfReadRoute(search = location.search) {
+export function vfReadRoute(search = location.search) {
   window.VF_SEO.register(...VF_ROUTES);
   const route = window.VF_SEO.readRoute(search),
     query = new URLSearchParams(search);
@@ -83,7 +85,7 @@ function vfReadRoute(search = location.search) {
   }
   return route;
 }
-function vfRouteParams(route) {
+export function vfRouteParams(route) {
   const query = new URLSearchParams(window.VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
@@ -104,11 +106,11 @@ function vfRouteParams(route) {
   }
   return '?' + query.toString();
 }
-function vfLinkHandler(go) {
+export function vfLinkHandler(go) {
   return window.VF_SEO.linkHandler((route, event) =>
     go(vfReadRoute(new URL(event.currentTarget.href, location.href).search))
   );
 }
-function vfPageRoute(props) {
+export function vfPageRoute(props) {
   return props.routeInfo || vfReadRoute();
 }

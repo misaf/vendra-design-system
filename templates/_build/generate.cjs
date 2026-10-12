@@ -1,52 +1,19 @@
-// Writes _runtime/shared-logic.js: the shared storefront logic in _shared/, loaded once by the app as
-// a classic script (its top-level declarations are globals the pages read by name).
-// Run from anywhere: node /path/to/templates/_build/generate.cjs [--check]
+// Writes _runtime/tenant-slugs.js: the tenant themes the storefront accepts in ?tenant=, from
+// tokens/tenants/*.json. Run from anywhere: node /path/to/templates/_build/generate.cjs [--check]
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const sharedLogicFiles = [
-  'store-config.js',
-  'delivery.js',
-  'location.js',
-  'promotions.js',
-  'catalog.js',
-  'translations/shell.js',
-  'translations/categories.js',
-  'translations/time.js',
-  'translations/location.js',
-  'account-data.js',
-  'wallet.js',
-  'payments.js',
-  'integrations/api.js',
-  'integrations/analytics.js',
-  'formatting.js',
-  'routing.js',
-  'page-lifecycle.js',
-  'navigation.js'
-];
 
-// The tenant list the storefront accepts in ?tenant=.
 const tenantSlugs = require('./tenants.cjs').tenantSlugs();
-const tenantList =
-  '// Source: tokens/tenants/*.json (generated)\nconst VF_TENANT_SLUGS = ' +
+const tenantSlugsFile = path.join(root, '_runtime', 'tenant-slugs.js');
+const tenantSlugsModule =
+  '// GENERATED from tokens/tenants/*.json by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' +
+  'export const VF_TENANT_SLUGS = ' +
   JSON.stringify(tenantSlugs) +
-  ';';
-
-function sourceCode(file) {
-  return (
-    '// Source: templates/' + file + '\n' + fs.readFileSync(path.join(root, file), 'utf8').trimEnd()
-  );
-}
-
-const sharedLogic =
-  [tenantList, ...sharedLogicFiles.map(file => sourceCode('_shared/' + file))].join('\n\n') + '\n';
-const sharedLogicFile = path.join(root, '_runtime', 'shared-logic.js');
-const sharedLogicRuntime =
-  '// GENERATED from templates/_shared/ by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' +
-  sharedLogic;
+  ';\n';
 
 function outputs() {
-  return new Map([[sharedLogicFile, sharedLogicRuntime]]);
+  return new Map([[tenantSlugsFile, tenantSlugsModule]]);
 }
 
 function generate(check = false) {
@@ -63,4 +30,4 @@ function generate(check = false) {
   return stale.length;
 }
 
-module.exports = {sharedLogic, outputs, generate};
+module.exports = {tenantSlugs, outputs, generate};

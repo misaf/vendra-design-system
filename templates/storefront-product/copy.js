@@ -1,5 +1,6 @@
 // Bilingual product copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {VF_ZONES, vfDeliveryCutoff, vfDeliveryHint} from '../_shared/delivery.js';
 export function vfCopy(S) {
   const m = S.m;
   return {

@@ -5,7 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const {sharedLogic, generate} = require('../_build/generate.cjs');
+const {generate} = require('../_build/generate.cjs');
+const {sharedLogic} = require('./page-script.cjs');
 const {pageScript} = require('./page-script.cjs');
 generate(true);
 function context() {
@@ -244,11 +245,6 @@ for (const folder of fs
   .readdirSync(path.join(root, 'templates'))
   .filter(x => x.startsWith('storefront-'))) {
   const script = pageScript(folder);
-  assert.equal(
-    read('templates/_runtime/shared-logic.js').endsWith(sharedLogic),
-    true,
-    '_runtime/shared-logic.js must match _shared/'
-  );
   if (folder !== 'storefront-site')
     assert.ok(
       /<main\s+id="main"/.test(read('templates/' + folder + '/View.jsx')),

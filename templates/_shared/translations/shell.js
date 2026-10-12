@@ -1,5 +1,6 @@
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
-const VF_SHELL = {
+import {VF_STORE} from '../store-config.js';
+export const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
     home: 'Home',

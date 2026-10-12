@@ -1,15 +1,21 @@
 // Responsive state, heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
+import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
+import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
+import {vfMobile} from './delivery.js';
+import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
+import {VF_STORE} from './store-config.js';
+import {VF_SHELL} from './translations/shell.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
-function vfTenant() {
+export function vfTenant() {
   const asked = new URLSearchParams(location.search).get('tenant');
   if (VF_TENANT_SLUGS.includes(asked)) return asked;
   return VF_TENANT_SLUGS.includes(VF_STORE.tenant) ? VF_STORE.tenant : 'default';
 }
 
 // A page's tenant: its own Theme setting when one is chosen, otherwise vfTenant().
-function vfPageTenant(props) {
+export function vfPageTenant(props) {
   const tenant = VF_TENANT_SLUGS.includes(props.tenant) ? props.tenant : vfTenant();
   vfApplyTenant(tenant);
   return tenant;
@@ -17,14 +23,14 @@ function vfPageTenant(props) {
 
 // Asks ds-base.js to load this tenant's stylesheet, and only that one. The loader
 // arrives asynchronously, so whichever of the two runs second does the loading.
-function vfApplyTenant(tenant) {
+export function vfApplyTenant(tenant) {
   if (window.VF_TENANT === tenant) return;
   window.VF_TENANT = tenant;
   if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
 }
 // The base class every storefront page extends. DCLogic is only handed to page logic
 // by the runtime, so each page builds the class with `const VFPage = vfPageClass(DCLogic);`.
-function vfPageClass(DCLogic) {
+export function vfPageClass(DCLogic) {
   // Start the request before the first render so the theme arrives with the page.
   vfApplyTenant(vfTenant());
   return class VFPage extends DCLogic {

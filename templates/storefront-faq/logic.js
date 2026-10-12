@@ -2,6 +2,7 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfShell} from '../_shared/navigation.js';
 export class Component extends VFPage {
   renderVals() {
     const S = vfShell.call(this, this.props, 'faq');

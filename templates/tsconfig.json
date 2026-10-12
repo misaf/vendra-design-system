@@ -1,6 +1,6 @@
 {
   // Type-checks the shared storefront logic as plain JavaScript; nothing is emitted.
-  // The _shared/ files load together as one script, so they share one global scope here too.
+  // The _shared/ files are ES modules that import one another.
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
-const {sharedLogic} = require('../_build/generate.cjs');
+const {sharedLogic} = require('./page-script.cjs');
 const store = {};
 const ctx = {
   URL,

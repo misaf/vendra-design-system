@@ -1,6 +1,19 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import React from 'react';
 import {DCLogic} from '../app/runtime.jsx';
+import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
+import {
+  vfLineHasCard,
+  vfLineToken,
+  vfLineWithCard,
+  vfProduct,
+  vfProductIds,
+  vfReorderLines,
+  vfSampleBag
+} from '../_shared/catalog.js';
+import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
+import {vfPageTenant} from '../_shared/page-lifecycle.js';
+import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
 const VF_BAG0 = vfSampleBag();
 const VF_SESSION = 'vendra-template:' + location.pathname;
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.

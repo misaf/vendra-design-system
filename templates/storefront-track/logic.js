@@ -2,6 +2,15 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {vfSampleOrders} from '../_shared/account-data.js';
+import {vfCardMessages, vfLineToken, vfProductImage, vfSampleBag} from '../_shared/catalog.js';
+import {vfMobile, vfTotals, vfZone} from '../_shared/delivery.js';
+import {VF_FA_DIGITS, vfLatin} from '../_shared/formatting.js';
+import {vfShell} from '../_shared/navigation.js';
+import {vfSummaryRows} from '../_shared/promotions.js';
+import {vfPageRoute} from '../_shared/routing.js';
+import {VF_STORE} from '../_shared/store-config.js';
+import {vfDeliveryWhen} from '../_shared/translations/time.js';
 // Orders this browser can look up: the latest order from this session, then the sample orders.
 function vfKnownOrders(store) {
   const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];

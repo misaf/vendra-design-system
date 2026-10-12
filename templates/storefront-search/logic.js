@@ -2,6 +2,9 @@
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
+import {VF_PRODUCTS, vfNormalizeToken, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {vfShell} from '../_shared/navigation.js';
+import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 export class Component extends VFPage {
   state = {
     q: ''

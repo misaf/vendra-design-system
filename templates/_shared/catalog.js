@@ -6,47 +6,12 @@
 // Product.token (e.g. VF-7K2M4Q), which customers quote and the studio and sellers search by. Its category
 // says what kind of product it is. Product.name holds a short searchable description that cards don't show.
 // Amounts are in Toman. All sample products intentionally use a neutral image placeholder.
-// Edit this file, then run: node templates/_build/generate.cjs
-const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
-
-// GET /api/catalog/product-categories
-const VF_API_PRODUCT_CATEGORIES = [
-  {
-    id: 11,
-    name: {en: 'Bouquets', fa: 'دسته‌گل'},
-    slug: {en: 'bouquets', fa: 'دسته-گل'},
-    description: {},
-    position: 1,
-    active: true
-  },
-  {
-    id: 12,
-    name: {en: 'Flower boxes', fa: 'باکس گل'},
-    slug: {en: 'boxes', fa: 'باکس-گل'},
-    description: {},
-    position: 2,
-    active: true
-  },
-  {
-    id: 13,
-    name: {en: 'Orchids', fa: 'ارکیده'},
-    slug: {en: 'orchids', fa: 'ارکیده'},
-    description: {},
-    position: 3,
-    active: true
-  },
-  {
-    id: 14,
-    name: {en: 'Bridal', fa: 'دسته‌گل عروس'},
-    slug: {en: 'bridal', fa: 'دسته-گل-عروس'},
-    description: {},
-    position: 4,
-    active: true
-  }
-];
+import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
+import {VF_CATEGORY_ITEM} from './translations/categories.js';
+export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
-const VF_API_PRODUCT_PRICES = [
+export const VF_API_PRODUCT_PRICES = [
   {
     id: 201,
     minorAmount: 4_100_000,
@@ -92,7 +57,7 @@ const VF_API_PRODUCT_PRICES = [
 ];
 
 // GET /api/content/multimedia (the first photo is the card photo; the rest fill the product page gallery)
-const VF_API_MULTIMEDIA = [301, 302, 303].map(id => ({
+export const VF_API_MULTIMEDIA = [301, 302, 303].map(id => ({
   id,
   uuid: 'sample-' + id,
   name: 'Product placeholder',
@@ -106,14 +71,14 @@ const VF_API_MULTIMEDIA = [301, 302, 303].map(id => ({
   customProperties: {},
   responsiveImages: {}
 }));
-const VF_SAMPLE_MEDIA = [
+export const VF_SAMPLE_MEDIA = [
   '/api/content/multimedia/301',
   '/api/content/multimedia/302',
   '/api/content/multimedia/303'
 ];
 
 // GET /api/catalog/products
-const VF_API_PRODUCTS = [
+export const VF_API_PRODUCTS = [
   {
     id: 101,
     token: 'VF-7K2M4Q',
@@ -247,7 +212,7 @@ const VF_API_PRODUCTS = [
 // work; `occasions` use the ids in VF_SHOP_OCCASIONS; `sizes: true` offers VF_SIZES; `noAddons`
 // lists extras the product can't take; `care: true` uses the description as care advice; `same` is
 // same-day delivery; `roses` feeds the roses filter.
-const VF_PRODUCT_EXTRAS = {
+export const VF_PRODUCT_EXTRAS = {
   'VF-7K2M4Q': {
     legacy: 'ivory',
     occasions: ['birthday', 'thanks'],
@@ -279,13 +244,13 @@ const VF_PRODUCT_EXTRAS = {
 };
 
 // An API record by its IRI (e.g. /api/catalog/product-prices/201) from a sample list.
-function vfApiRecord(list, iri) {
+export function vfApiRecord(list, iri) {
   return window.AG_COMMERCE.apiRecord(list, iri);
 }
 
 // The storefront's product object from an API Product, its price, photos and category, plus the
 // storefront-only extras.
-function vfProductFromApi(product, sources = {}) {
+export function vfProductFromApi(product, sources = {}) {
   return window.AG_COMMERCE.productFromApi(product, {
     prices: sources.prices || VF_API_PRODUCT_PRICES,
     media: sources.media || VF_API_MULTIMEDIA,
@@ -295,10 +260,10 @@ function vfProductFromApi(product, sources = {}) {
   });
 }
 
-const VF_PRODUCTS = VF_API_PRODUCTS.map(product => vfProductFromApi(product));
+export const VF_PRODUCTS = VF_API_PRODUCTS.map(product => vfProductFromApi(product));
 
 // Sizes for products with `sizes: true`; price is added to the product's price.
-const VF_SIZES = [
+export const VF_SIZES = [
   {
     id: 'petite',
     price: 0,
@@ -319,18 +284,18 @@ const VF_SIZES = [
   }
 ];
 // Optional extras a product can take.
-const VF_ADDONS = [
+export const VF_ADDONS = [
   {id: 'card', price: 150_000, name: {en: 'Handwritten card', fa: 'کارت دست‌نویس'}},
   {id: 'vase', price: 650_000, name: {en: 'Glass vase', fa: 'گلدان شیشه‌ای'}}
 ];
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
-function vfNormalizeToken(text) {
+export function vfNormalizeToken(text) {
   return window.AG_COMMERCE.normalizeCode(text);
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.
-function vfFindProduct(text) {
+export function vfFindProduct(text) {
   const raw = String(text || ''),
     key = vfNormalizeToken(raw);
   const slug = raw === 'ivory-classic' ? 'ivory' : raw;
@@ -341,24 +306,28 @@ function vfFindProduct(text) {
   );
 }
 
-function vfProduct(id) {
+export function vfProduct(id) {
   const product = vfFindProduct(id);
   if (!product) throw new Error('Unknown sample product: ' + id);
   return product;
 }
 
 // The product's code, from a code or an old slug ('' when unknown).
-function vfProductId(id) {
+export function vfProductId(id) {
   const product = vfFindProduct(id);
   return product ? product.id : '';
 }
 
 // Under the code, a product shows only its category, e.g. "Flower box". Its `sub` description is still searchable.
-function vfProductSub(product, lang = 'en') {
+export function vfProductSub(product, lang = 'en') {
   return VF_CATEGORY_ITEM[lang][product.cat];
 }
 
-function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUCT_PLACEHOLDER) {
+export function vfProductImage(
+  product,
+  lang = 'en',
+  asset = product.image || VF_PRODUCT_PLACEHOLDER
+) {
   const src = /^(https?:|data:|\/)/.test(asset)
     ? asset
     : (window.VF_ASSET_BASE || '../../') + asset;
@@ -368,33 +337,33 @@ function vfProductImage(product, lang = 'en', asset = product.image || VF_PRODUC
 }
 
 // Every product page photo; falls back to the card photo.
-function vfProductImages(product, lang = 'en') {
+export function vfProductImages(product, lang = 'en') {
   return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
 }
 
 // Lines added from the product page list their product, size and extras; older lines carry them in the id.
-function vfLineProductId(line) {
+export function vfLineProductId(line) {
   return vfProductId(line.productId || line.id.split('-')[0]) || line.productId || '';
 }
 
-function vfLineSize(line) {
+export function vfLineSize(line) {
   if ('size' in line) return line.size || null;
   const product = vfFindProduct(line.id.split('-')[0]);
   return product && product.sizes ? line.id.split('-')[1] || null : null;
 }
 
 // The code a line was ordered with: also its title in the bag, checkout, orders and messages.
-function vfLineToken(line) {
+export function vfLineToken(line) {
   return line.token || vfLineProductId(line);
 }
 
 // A code inside other text, isolated so it stays left to right in Persian.
-function vfTokenText(token) {
+export function vfTokenText(token) {
   return token ? '\u2066' + token + '\u2069' : '';
 }
 
 // A bag line's details: category, size and extras, e.g. "Flower box · Classic · 20 stems · Handwritten card".
-function vfLineDetail(product, size, addons, lang) {
+export function vfLineDetail(product, size, addons, lang) {
   const fa = lang === 'fa';
   return [VF_CATEGORY_ITEM[lang][product.cat]]
     .concat(product.sizes && size ? [size.name[lang], size.detail[lang]] : [])
@@ -403,7 +372,7 @@ function vfLineDetail(product, size, addons, lang) {
 }
 
 // Each demo gets its own bag objects; prices and codes come from the same catalog.
-function vfSampleBag() {
+export function vfSampleBag() {
   const box = vfProduct('VF-7K2M4Q'),
     orchid = vfProduct('VF-8RD5WN');
   const classic = VF_SIZES.find(size => size.id === 'classic'),
@@ -438,20 +407,20 @@ function vfSampleBag() {
 }
 
 // A line's extras: listed on lines added from the product page, read from the id on older lines.
-function vfLineAddons(line) {
+export function vfLineAddons(line) {
   return (
     line.addons ||
     VF_ADDONS.filter(addon => line.id.split(/[-+]/).includes(addon.id)).map(addon => addon.id)
   );
 }
 
-function vfLineHasCard(line) {
+export function vfLineHasCard(line) {
   return vfLineAddons(line).includes('card');
 }
 
 // Card messages written for an order's lines, named when there are several. Older orders kept one
 // order-wide message in delivery.card.
-function vfCardMessages(lines, delivery, lang) {
+export function vfCardMessages(lines, delivery, lang) {
   // The message keeps its own direction, so English inside Persian quotes (or the reverse) reads correctly.
   const quote = text =>
     lang === 'fa' ? '«\u2068' + text + '\u2069»' : '“\u2068' + text + '\u2069”';
@@ -463,7 +432,7 @@ function vfCardMessages(lines, delivery, lang) {
 }
 
 // The same line with a handwritten card added, priced and named as the product page would.
-function vfLineWithCard(line) {
+export function vfLineWithCard(line) {
   const productId = vfLineProductId(line);
   const size = vfLineSize(line);
   const addons = VF_ADDONS.filter(
@@ -489,11 +458,11 @@ function vfLineWithCard(line) {
 }
 
 // Each product's [English, Persian] detail text, from Product.description, keyed by product code.
-const VF_PRODUCT_DETAILS = Object.fromEntries(
+export const VF_PRODUCT_DETAILS = Object.fromEntries(
   VF_API_PRODUCTS.map(product => [product.token, [product.description.en, product.description.fa]])
 );
 
-function vfReorderLines(lines) {
+export function vfReorderLines(lines) {
   return lines.flatMap(line => {
     const product = vfFindProduct(vfLineProductId(line));
     if (!product || product.inStock === false) return [];
@@ -507,19 +476,19 @@ function vfReorderLines(lines) {
   });
 }
 
-function vfLineAvailable(line) {
+export function vfLineAvailable(line) {
   const p = vfFindProduct(vfLineProductId(line));
   return !!p && p.inStock !== false;
 }
 
 // Saved and recently viewed lists hold product codes; older lists held slugs, read here as codes.
-function vfProductIds(ids) {
+export function vfProductIds(ids) {
   return Array.isArray(ids) ? [...new Set(ids.map(vfProductId).filter(Boolean))] : [];
 }
 
 // Recently viewed products, newest first, kept in this browser only.
-const VF_RECENT_KEY = 'vendra-recently-viewed';
-function vfRecentlyViewed() {
+export const VF_RECENT_KEY = 'vendra-recently-viewed';
+export function vfRecentlyViewed() {
   try {
     const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
     return vfProductIds(ids);
@@ -527,7 +496,7 @@ function vfRecentlyViewed() {
     return [];
   }
 }
-function vfRememberViewed(id) {
+export function vfRememberViewed(id) {
   try {
     id = vfProductId(id);
     if (id)

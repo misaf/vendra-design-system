@@ -1,5 +1,5 @@
 // Shared copy for the delivery pin map (bag and account addresses).
-const VF_PIN_COPY = {
+export const VF_PIN_COPY = {
   en: {
     pinHint:
       'Drag or tap the map so the pin sits on the door. Arrow keys move the map; + and − zoom.',
