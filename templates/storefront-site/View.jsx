@@ -2,7 +2,7 @@
 import React from 'react';
 import {RouterProvider} from 'react-aria-components';
 import * as DS from '../app/ds.js';
-import {list} from '../app/runtime.jsx';
+import {list} from '../app/runtime.js';
 import StorefrontAccount from '../storefront-account/Page.jsx';
 import StorefrontBag from '../storefront-bag/Page.jsx';
 import StorefrontCheckout from '../storefront-checkout/Page.jsx';

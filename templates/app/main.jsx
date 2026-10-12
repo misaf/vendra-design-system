@@ -2,6 +2,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import './theme.js';
+import './runtime.js';
 
 const pages = import.meta.glob('../storefront-*/Page.jsx', {eager: true});
 const name = new URLSearchParams(location.search).get('page') || 'site';

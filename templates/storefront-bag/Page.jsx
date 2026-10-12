@@ -1,8 +1,10 @@
-import {Component} from './logic.js';
+import React from 'react';
+import {usePage} from './logic.js';
 import {View} from './View.jsx';
-import {definePage} from '../app/runtime.jsx';
 
 // Props a standalone preview starts with.
 export const defaults = {lang: 'en', tenant: 'default', mobile: false};
 
-export default definePage('StorefrontBag', Component, View);
+export default function StorefrontBag(props) {
+  return <View v={{...props, ...usePage(props)}} />;
+}

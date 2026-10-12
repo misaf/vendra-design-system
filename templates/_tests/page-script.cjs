@@ -10,11 +10,51 @@ const strip = code =>
     .replace(/^import [^;]*;\n/gm, '')
     .replace(/^export (?=(?:async |const |function|class |let |var ))/gm, '');
 
-// The page base class the browser builds in app/runtime.jsx.
-const vfPageLine = 'const VFPage = vfPageClass(DCLogic);';
+// Runs a page's usePage(props) hook outside React: a stand-in for React's hooks keeps each hook's
+// value between renders (effects don't run, as the logic tests never mounted pages), and
+// Component(props) returns the page object (state, setState, props and its helpers) with
+// renderVals() rendering the hook again. setState callbacks run at once, as the old test stub did.
+const hooksHarness = `
+const React = (() => {
+  let slots = [], index = 0;
+  const slot = make => (index in slots ? slots[index++] : (slots[index++] = make()));
+  return {
+    begin(next) { slots = next; index = 0; },
+    useRef: initial => slot(() => ({current: initial})),
+    useReducer: (reducer, initial) => slot(() => [initial, () => globalThis.__vfFlush()]),
+    useState: initial => slot(() => {
+      const box = [typeof initial === 'function' ? initial() : initial];
+      box[1] = value => { box[0] = typeof value === 'function' ? value(box[0]) : value; };
+      return box;
+    }),
+    useEffect: () => { index++; },
+    useLayoutEffect: () => { index++; },
+    useMemo: make => { index++; return make(); },
+    useCallback: fn => { index++; return fn; }
+  };
+})();
+`;
+const componentHarness = `
+const __vfUsePageLogic = usePageLogic;
+usePageLogic = (props, init) => (globalThis.__vfPage = __vfUsePageLogic(props, init));
+class Component {
+  constructor(props) {
+    const slots = [];
+    let page = null;
+    const render = () => {
+      React.begin(slots);
+      return usePage(page ? page.props : props);
+    };
+    globalThis.__vfFlush = () => page && page.done.splice(0).forEach(done => done());
+    render();
+    page = globalThis.__vfPage;
+    return new Proxy(page, {get: (target, key) => (key === 'renderVals' ? render : target[key])});
+  }
+}
+`;
 
 function pageScript(folder) {
-  const parts = [vfPageLine];
+  const parts = [];
   if (['storefront-journal', 'storefront-post'].includes(folder))
     parts.push(read('_shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
@@ -27,7 +67,7 @@ function pageScript(folder) {
         'close() { this.visibleToasts = []; } clear() { this.visibleToasts = []; } }'
     );
   parts.push(logic);
-  return parts.map(strip).join('\n\n');
+  return parts.map(strip).join('\n\n') + componentHarness;
 }
 
 // The shared storefront logic (_shared/), in load order, as one script whose declarations are
@@ -50,6 +90,7 @@ const sharedFiles = [
   'integrations/analytics.js',
   'formatting.js',
   'routing.js',
+  'page-state.js',
   'page-lifecycle.js',
   'navigation.js'
 ];
@@ -57,6 +98,7 @@ const sharedFiles = [
 const scoped = (name, file) =>
   'const ' + name + ' = (() => {\n' + strip(read(file)) + '\nreturn ' + name + ';\n})();\n';
 const sharedLogic =
+  hooksHarness +
   scoped('commerce', '../components/utils/commerce.js') +
   scoped('dates', '../components/utils/dates.js') +
   scoped('format', '../components/utils/format.js') +

@@ -406,9 +406,8 @@ for (const lang of ['en', 'fa']) {
       logic.renderVals().setSize(logic.renderVals().sizes[2].value);
       logic.renderVals().add();
       assert.equal(added.unit, 6000000, 'Generous surcharge remains selectable');
-      logic._vfAnnounce = () => {};
       logic._productId = 'VF-8RD5WN';
-      logic.componentDidUpdate();
+      logic.lifecycle.didUpdate();
       assert.equal(
         logic.renderVals().unitPrice,
         listing.price,

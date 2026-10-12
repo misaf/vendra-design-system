@@ -29,8 +29,10 @@ export function vfStored(key) {
     return '';
   }
 }
-export function vfShell(props, page) {
-  const self = this,
+// The shell's values for a page (header, menu, footer, consent, tabs) and its own bits of state on
+// the page object (menu, consent, newsletter, favourites).
+export function vfShell(self, page) {
+  const props = self.props,
     st = self.state || {},
     store = props.store;
   self._vfPage = page;

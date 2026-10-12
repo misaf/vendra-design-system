@@ -1,7 +1,7 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
-import {list} from '../app/runtime.jsx';
+import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {

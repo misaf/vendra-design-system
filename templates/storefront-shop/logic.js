@@ -1,6 +1,5 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import React from 'react';
-import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
@@ -15,282 +14,290 @@ import {
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 import {commerce} from '../../components/utils/commerce.js';
+import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
 const VF_CHIPS = [
   ['under3', p => p.price < 3000000],
   ['same', p => p.same],
   ['roses', p => p.roses]
 ];
-export class Component extends VFPage {
-  state = {
-    cat: 'all',
-    chips: [],
-    sort: 'featured',
-    favs: ['VF-8RD5WN']
+// The page: its state (applied at once, as the logic reads it back), effects and the values
+// its View renders.
+export function usePage(props) {
+  const page = usePageLogic(props, page => {
+    page.state = {
+      cat: 'all',
+      chips: [],
+      sort: 'featured',
+      favs: ['VF-8RD5WN']
+    };
+  });
+  useStorefrontPage(page);
+  return vals(page);
+}
+
+function vals(page) {
+  const fa = page.props.lang === 'fa';
+  const L = fa ? 'fa' : 'en';
+  const S = vfShell(page, 'shop');
+  const n = v => (fa ? VF_FA_DIGITS(v) : String(v));
+  const C = vfCopy(S);
+  const route = vfPageRoute(page.props);
+  const s = {
+    cat: route.cat || 'all',
+    sort: route.sort || 'featured',
+    chips: route.filters || [],
+    occasion: route.occasion || 'all',
+    date: route.date || ''
   };
-  renderVals() {
-    const fa = this.props.lang === 'fa';
-    const L = fa ? 'fa' : 'en';
-    const S = vfShell.call(this, this.props, 'shop');
-    const n = v => (fa ? VF_FA_DIGITS(v) : String(v));
-    const C = vfCopy(S);
-    const route = vfPageRoute(this.props);
-    const s = {
-      cat: route.cat || 'all',
-      sort: route.sort || 'featured',
-      chips: route.filters || [],
-      occasion: route.occasion || 'all',
-      date: route.date || ''
+  // Delivery days use the main zone's cut-off; a closed or unknown day in the URL is ignored.
+  const days = vfDeliveryDays(VF_ZONES[0].id);
+  const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
+  const dayLabel = d => vfDayName(d, fa) + ' · ' + vfDayMonth(d.date, fa);
+  const change = patch => {
+    const next = {
+      ...route,
+      view: 'shop',
+      lang: L,
+      cat: s.cat,
+      sort: s.sort,
+      filters: s.chips,
+      occasion: s.occasion,
+      date,
+      // A new filter or sort starts again from the first page.
+      page: 1,
+      ...patch
     };
-    // Delivery days use the main zone's cut-off; a closed or unknown day in the URL is ignored.
-    const days = vfDeliveryDays(VF_ZONES[0].id);
-    const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
-    const dayLabel = d => vfDayName(d, fa) + ' · ' + vfDayMonth(d.date, fa);
-    const change = patch => {
-      const next = {
-        ...route,
-        view: 'shop',
-        lang: L,
-        cat: s.cat,
-        sort: s.sort,
-        filters: s.chips,
-        occasion: s.occasion,
-        date,
-        // A new filter or sort starts again from the first page.
-        page: 1,
-        ...patch
-      };
-      // Filters refine this page, so they replace the history entry instead of adding one per tap.
-      if (this.props.go) this.props.go(next, true);
-      else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
-    };
-    const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
-    const price = [route.min || 0, route.max ?? priceMax],
-      inStock = !!route.stock,
-      extra = p =>
-        p.price >= price[0] &&
-        p.price <= price[1] &&
-        (!inStock || p.inStock !== false) &&
-        (s.occasion === 'all' || p.occasions.includes(s.occasion)) &&
-        (!date || vfDeliverableOn(p, date));
-    const demo = route.demo;
-    const inCat = p => s.cat === 'all' || p.cat === s.cat;
-    let list = VF_PRODUCTS.filter(inCat)
-      .filter(extra)
-      .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
-    if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
-    if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
-    const paged = commerce.page(list, route.page, VF_STORE.shopPageSize);
-    const activeFilters = [
-      ...(s.occasion !== 'all'
-        ? [
-            {
-              label: VF_SHOP_OCCASION_COPY[L][s.occasion],
-              remove: () =>
-                change({
-                  occasion: 'all'
-                })
-            }
-          ]
-        : []),
-      ...(price[0] > 0 || price[1] < priceMax
-        ? [
-            {
-              label: S.m(price[0]) + ' – ' + S.m(price[1]),
-              remove: () =>
-                change({
-                  min: 0,
-                  max: priceMax
-                })
-            }
-          ]
-        : []),
-      ...(date
-        ? [
-            {
-              label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
-              remove: () =>
-                change({
-                  date: ''
-                })
-            }
-          ]
-        : []),
-      ...(inStock
-        ? [
-            {
-              label: C.migration.stock,
-              remove: () =>
-                change({
-                  stock: false
-                })
-            }
-          ]
-        : [])
-    ];
-    const clear = () =>
+    // Filters refine this page, so they replace the history entry instead of adding one per tap.
+    if (page.props.go) page.props.go(next, true);
+    else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
+  };
+  const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
+  const price = [route.min || 0, route.max ?? priceMax],
+    inStock = !!route.stock,
+    extra = p =>
+      p.price >= price[0] &&
+      p.price <= price[1] &&
+      (!inStock || p.inStock !== false) &&
+      (s.occasion === 'all' || p.occasions.includes(s.occasion)) &&
+      (!date || vfDeliverableOn(p, date));
+  const demo = route.demo;
+  const inCat = p => s.cat === 'all' || p.cat === s.cat;
+  let list = VF_PRODUCTS.filter(inCat)
+    .filter(extra)
+    .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
+  if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
+  if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
+  const paged = commerce.page(list, route.page, VF_STORE.shopPageSize);
+  const activeFilters = [
+    ...(s.occasion !== 'all'
+      ? [
+          {
+            label: VF_SHOP_OCCASION_COPY[L][s.occasion],
+            remove: () =>
+              change({
+                occasion: 'all'
+              })
+          }
+        ]
+      : []),
+    ...(price[0] > 0 || price[1] < priceMax
+      ? [
+          {
+            label: S.m(price[0]) + ' – ' + S.m(price[1]),
+            remove: () =>
+              change({
+                min: 0,
+                max: priceMax
+              })
+          }
+        ]
+      : []),
+    ...(date
+      ? [
+          {
+            label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
+            remove: () =>
+              change({
+                date: ''
+              })
+          }
+        ]
+      : []),
+    ...(inStock
+      ? [
+          {
+            label: C.migration.stock,
+            remove: () =>
+              change({
+                stock: false
+              })
+          }
+        ]
+      : [])
+  ];
+  const clear = () =>
+    change({
+      filters: [],
+      cat: 'all',
+      sort: 'featured',
+      min: 0,
+      max: priceMax,
+      stock: false,
+      occasion: 'all',
+      date: ''
+    });
+  return {
+    ...S,
+    migration: C.migration,
+    filterOpen: !!page.state.filterOpen,
+    openFilters: () =>
+      page.setState({
+        filterOpen: true
+      }),
+    closeFilters: () =>
+      page.setState({
+        filterOpen: false
+      }),
+    activeFilters,
+    // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
+    hasActive: activeFilters.length > 0,
+    clearFilters: () => {
       change({
-        filters: [],
-        cat: 'all',
-        sort: 'featured',
         min: 0,
         max: priceMax,
         stock: false,
         occasion: 'all',
         date: ''
       });
-    return {
-      ...S,
-      migration: C.migration,
-      filterOpen: !!this.state.filterOpen,
-      openFilters: () =>
-        this.setState({
-          filterOpen: true
-        }),
-      closeFilters: () =>
-        this.setState({
-          filterOpen: false
-        }),
-      activeFilters,
-      // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
-      hasActive: activeFilters.length > 0,
-      clearFilters: () => {
+      // The button goes away with the filters, so focus moves to the updated result count
+      // (the filters dialog keeps focus while it is open).
+      if (!page.state.filterOpen) S.focus('vf-shop-count');
+    },
+    filtersLabel: activeFilters.length
+      ? C.migration.filters + ' (' + n(activeFilters.length) + ')'
+      : C.migration.filters,
+    price,
+    priceMax,
+    priceLabels: {
+      min: S.fa ? 'حداقل' : 'Minimum',
+      max: S.fa ? 'حداکثر' : 'Maximum'
+    },
+    formatPrice: S.m,
+    setPrice: ([min, max]) =>
+      change({
+        min,
+        max
+      }),
+    occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
+      label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
+      on: s.occasion === id,
+      pick: () =>
         change({
-          min: 0,
-          max: priceMax,
-          stock: false,
-          occasion: 'all',
-          date: ''
-        });
-        // The button goes away with the filters, so focus moves to the updated result count
-        // (the filters dialog keeps focus while it is open).
-        if (!this.state.filterOpen) S.focus('vf-shop-count');
+          occasion: id
+        })
+    })),
+    date,
+    dateOptions: [
+      {
+        value: '',
+        label: C.anyDay
       },
-      filtersLabel: activeFilters.length
-        ? C.migration.filters + ' (' + n(activeFilters.length) + ')'
-        : C.migration.filters,
-      price,
-      priceMax,
-      priceLabels: {
-        min: S.fa ? 'حداقل' : 'Minimum',
-        max: S.fa ? 'حداکثر' : 'Maximum'
-      },
-      formatPrice: S.m,
-      setPrice: ([min, max]) =>
-        change({
-          min,
-          max
-        }),
-      occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
-        label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
-        on: s.occasion === id,
+      ...days.map(d => ({
+        value: d.iso,
+        label: dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
+        disabled: d.soldOut || d.pastCutoff
+      }))
+    ],
+    setDate: value =>
+      change({
+        date: value
+      }),
+    showResults: C.showResults.replace('{count}', C.designCount(list.length)),
+    inStock,
+    setStock: value =>
+      change({
+        stock: value
+      }),
+    loading: demo === 'loading',
+    failed: demo === 'error',
+    retry: () =>
+      change({
+        demo: undefined
+      }),
+    frame: page.props.frame ?? 'soft',
+    t: {
+      ...S.t,
+      ...C
+    },
+    categories: VF_CATS.map(id => {
+      const on = s.cat === id;
+      return {
+        label: VF_CATEGORY_COPY[L][id],
+        count: n(VF_PRODUCTS.filter(p => (id === 'all' || p.cat === id) && extra(p)).length),
+        on,
+        off: !on,
         pick: () =>
           change({
-            occasion: id
+            cat: id
           })
-      })),
-      date,
-      dateOptions: [
-        {
-          value: '',
-          label: C.anyDay
-        },
-        ...days.map(d => ({
-          value: d.iso,
-          label:
-            dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
-          disabled: d.soldOut || d.pastCutoff
-        }))
-      ],
-      setDate: value =>
-        change({
-          date: value
-        }),
-      showResults: C.showResults.replace('{count}', C.designCount(list.length)),
-      inStock,
-      setStock: value =>
-        change({
-          stock: value
-        }),
-      loading: demo === 'loading',
-      failed: demo === 'error',
-      retry: () =>
-        change({
-          demo: undefined
-        }),
-      frame: this.props.frame ?? 'soft',
-      t: {
-        ...S.t,
-        ...C
-      },
-      categories: VF_CATS.map(id => {
-        const on = s.cat === id;
-        return {
-          label: VF_CATEGORY_COPY[L][id],
-          count: n(VF_PRODUCTS.filter(p => (id === 'all' || p.cat === id) && extra(p)).length),
-          on,
-          off: !on,
-          pick: () =>
-            change({
-              cat: id
-            })
-        };
+      };
+    }),
+    chips: VF_CHIPS.map(([id]) => {
+      const on = s.chips.includes(id);
+      return {
+        label: C.chipLabels[id],
+        on,
+        toggle: () =>
+          change({
+            filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
+          })
+      };
+    }),
+    sort: s.sort,
+    setSort: value =>
+      change({
+        sort: value
       }),
-      chips: VF_CHIPS.map(([id]) => {
-        const on = s.chips.includes(id);
-        return {
-          label: C.chipLabels[id],
-          on,
-          toggle: () =>
-            change({
-              filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
-            })
-        };
-      }),
-      sort: s.sort,
-      setSort: value =>
-        change({
-          sort: value
-        }),
-      sortOptions: C.sortOptions,
-      countLabel: C.designCount(list.length),
-      paging: {
-        shown: paged.shown,
-        total: paged.total,
-        status: C.showing(paged.shown, paged.total),
-        label: C.showMore,
-        href:
-          S.href.shop.split('?')[0] +
-          vfRouteParams({...route, view: 'shop', lang: L, page: paged.page + 1}),
-        // Loads the next page in place, then moves focus to its first product.
-        onClick: event => {
-          if (!this.props.go) return;
-          event.preventDefault();
-          const first = paged.shown;
-          change({page: paged.page + 1});
-          setTimeout(() => {
-            const links = document.querySelectorAll('.vf-shop-product-grid .ag-product__link');
-            links[first] && links[first].focus();
-          }, 0);
-        }
-      },
-      showPaging: paged.total > VF_STORE.shopPageSize,
-      hasItems: !demo && list.length > 0,
-      noItems: !demo && list.length === 0,
-      clear,
-      items: paged.items.map(p => {
-        const fav = S.isFav(p.id, ['VF-8RD5WN']);
-        return {
-          ...S.productLink(p.id),
-          images: [vfProductImage(p, L)],
-          name: p.id,
-          sub: vfProductSub(p, L),
-          badge: p[L].badge,
-          price: VF_MONEY(p.price, fa),
-          fav,
-          toggleFav: S.toggleFav(p.id, ['VF-8RD5WN'])
-        };
-      })
-    };
-  }
+    sortOptions: C.sortOptions,
+    countLabel: C.designCount(list.length),
+    paging: {
+      shown: paged.shown,
+      total: paged.total,
+      status: C.showing(paged.shown, paged.total),
+      label: C.showMore,
+      href:
+        S.href.shop.split('?')[0] +
+        vfRouteParams({...route, view: 'shop', lang: L, page: paged.page + 1}),
+      // Loads the next page in place, then moves focus to its first product.
+      onClick: event => {
+        if (!page.props.go) return;
+        event.preventDefault();
+        const first = paged.shown;
+        change({page: paged.page + 1});
+        setTimeout(() => {
+          const links = document.querySelectorAll('.vf-shop-product-grid .ag-product__link');
+          links[first] && links[first].focus();
+        }, 0);
+      }
+    },
+    showPaging: paged.total > VF_STORE.shopPageSize,
+    hasItems: !demo && list.length > 0,
+    noItems: !demo && list.length === 0,
+    clear,
+    items: paged.items.map(p => {
+      const fav = S.isFav(p.id, ['VF-8RD5WN']);
+      return {
+        ...S.productLink(p.id),
+        images: [vfProductImage(p, L)],
+        name: p.id,
+        sub: vfProductSub(p, L),
+        badge: p[L].badge,
+        price: VF_MONEY(p.price, fa),
+        fav,
+        toggleFav: S.toggleFav(p.id, ['VF-8RD5WN'])
+      };
+    })
+  };
 }

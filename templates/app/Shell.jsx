@@ -1,7 +1,7 @@
 // The storefront shell around every page: header, mobile menu, footer, consent and tab bar.
 import React from 'react';
 import * as DS from './ds.js';
-import {list} from './runtime.jsx';
+import {list} from './runtime.js';
 
 export function Shell({v, content, sticky}) {
   // --vf-bottom-bar: the height of the sticky bars at the bottom of the screen, so fixed layers
