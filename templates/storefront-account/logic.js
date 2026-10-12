@@ -24,6 +24,8 @@ import {
   vfWalletChange,
   vfWalletOf
 } from '../_shared/wallet.js';
+import {VF_NAV} from '../_shared/page-focus.js';
+import {dates} from '../../components/utils/dates.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 export class Component extends VFPage {
   state = {
@@ -66,7 +68,7 @@ export class Component extends VFPage {
         notice: E.saved
       });
     };
-    const focusError = () => setTimeout(() => window.VF_NAV.focusFirstInvalid(), 0);
+    const focusError = () => setTimeout(() => VF_NAV.focusFirstInvalid(), 0);
     const openAddress = a =>
       this.setState({
         errors: {},
@@ -125,11 +127,11 @@ export class Component extends VFPage {
       .map(r => {
         const next = vfReminderNext(r),
           o = VF_OCCASIONS.find(o => o.id === r.occ) || VF_OCCASIONS[0],
-          date = window.AG_DATES.parts(r.cal, next.date);
+          date = dates.parts(r.cal, next.date);
         return {
           name: tx(r.name),
           day: S.n(date[2]),
-          month: window.AG_DATES.monthNames(r.cal, L)[date[1] - 1],
+          month: dates.monthNames(r.cal, L)[date[1] - 1],
           occasion: o[L],
           icon: o.icon,
           before: E.beforeOptions[r.before],
@@ -137,10 +139,7 @@ export class Component extends VFPage {
           on: r.on,
           soon: r.on && next.days <= 14,
           when: S.n(next.days) + ' ' + E.inDays,
-          altDate: window.AG_DATES.dayMonth(
-            next.date,
-            window.AG_DATES.locale(L, r.cal === 'j' ? 'g' : 'j')
-          ),
+          altDate: dates.dayMonth(next.date, dates.locale(L, r.cal === 'j' ? 'g' : 'j')),
           toggle: v =>
             commit({
               ...account,
@@ -191,7 +190,7 @@ export class Component extends VFPage {
           f.m >= 1 &&
           f.m <= 12 &&
           f.d >= 1 &&
-          f.d <= window.AG_DATES.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m)
+          f.d <= dates.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m)
         ))
           errors.name = E.required;
       }
@@ -556,7 +555,7 @@ export class Component extends VFPage {
           const n = vfReminderNext({
               occ: o.id
             }),
-            p = window.AG_DATES.parts(f.cal, n.date);
+            p = dates.parts(f.cal, n.date);
           date = {
             cal: f.cal,
             m: p[1],

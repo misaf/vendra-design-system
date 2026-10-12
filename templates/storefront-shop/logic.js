@@ -14,6 +14,7 @@ import {
   VF_SHOP_OCCASION_COPY
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
+import {commerce} from '../../components/utils/commerce.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
 const VF_CHIPS = [
   ['under3', p => p.price < 3000000],
@@ -79,7 +80,7 @@ export class Component extends VFPage {
       .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
     if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
     if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
-    const paged = window.AG_COMMERCE.page(list, route.page, VF_STORE.shopPageSize);
+    const paged = commerce.page(list, route.page, VF_STORE.shopPageSize);
     const activeFilters = [
       ...(s.occasion !== 'all'
         ? [

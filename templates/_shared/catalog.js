@@ -8,6 +8,7 @@
 // Amounts are in Toman. All sample products intentionally use a neutral image placeholder.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_ITEM} from './translations/categories.js';
+import {commerce} from '../../components/utils/commerce.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
@@ -245,13 +246,13 @@ export const VF_PRODUCT_EXTRAS = {
 
 // An API record by its IRI (e.g. /api/catalog/product-prices/201) from a sample list.
 export function vfApiRecord(list, iri) {
-  return window.AG_COMMERCE.apiRecord(list, iri);
+  return commerce.apiRecord(list, iri);
 }
 
 // The storefront's product object from an API Product, its price, photos and category, plus the
 // storefront-only extras.
 export function vfProductFromApi(product, sources = {}) {
-  return window.AG_COMMERCE.productFromApi(product, {
+  return commerce.productFromApi(product, {
     prices: sources.prices || VF_API_PRODUCT_PRICES,
     media: sources.media || VF_API_MULTIMEDIA,
     categories: sources.categories || VF_API_PRODUCT_CATEGORIES,
@@ -291,7 +292,7 @@ export const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 export function vfNormalizeToken(text) {
-  return window.AG_COMMERCE.normalizeCode(text);
+  return commerce.normalizeCode(text);
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.

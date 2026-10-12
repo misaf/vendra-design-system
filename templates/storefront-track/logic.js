@@ -11,6 +11,7 @@ import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
+import {VF_NAV} from '../_shared/page-focus.js';
 // Orders this browser can look up: the latest order from this session, then the sample orders.
 function vfKnownOrders(store) {
   const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];
@@ -120,7 +121,7 @@ export class Component extends VFPage {
           phone = vfMobile(ls.lookupPhone);
         this.setState({lookupTried: true});
         if (!id || !phone) {
-          window.VF_NAV.focusFirstInvalid();
+          VF_NAV.focusFirstInvalid();
           return;
         }
         const match = vfKnownOrders(this.props.store).find(

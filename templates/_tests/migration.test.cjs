@@ -44,10 +44,6 @@ function environment() {
   c.scrollTo = () => {};
   vm.createContext(c);
   c.React = {forwardRef: f => f};
-  // The helpers (format, dates, commerce); the component bundle needs a real browser, where the
-  // browser tests check every component loads (expectNoViteError).
-  vm.runInContext(read('templates/_runtime/helpers.js'), c);
-  for (const f of ['seo', 'page-focus']) vm.runInContext(read('templates/_shared/' + f + '.js'), c);
   vm.runInContext(require('./page-script.cjs').sharedLogic, c);
   return {c, storage, timers};
 }

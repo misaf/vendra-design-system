@@ -9,6 +9,7 @@ import {vfLineHasCard, vfLineToken} from './catalog.js';
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from './promotions.js';
 import {VF_STORE} from './store-config.js';
+import {commerce} from '../../components/utils/commerce.js';
 
 // GET /api/delivery/zones
 export const VF_API_DELIVERY_ZONES = [
@@ -78,7 +79,7 @@ export const VF_API_DELIVERY_SCHEDULE = {
 
 // The storefront's zone object from an API DeliveryZone plus its extras.
 export function vfZoneFromApi(zone, extras = VF_DELIVERY_ZONE_EXTRAS) {
-  return window.AG_COMMERCE.zoneFromApi(zone, extras);
+  return commerce.zoneFromApi(zone, extras);
 }
 
 export const VF_ZONES = [...VF_API_DELIVERY_ZONES]
@@ -120,7 +121,7 @@ export const VF_DELIVERY = {
 };
 
 export function vfDeliveryCutoff(zone, persian) {
-  return window.AG_COMMERCE.cutoffText(zone.cutoff, persian);
+  return commerce.cutoffText(zone.cutoff, persian);
 }
 
 export function vfDeliveryHint(zone, persian) {
@@ -130,7 +131,7 @@ export function vfDeliveryHint(zone, persian) {
 // Fills delivery placeholders in text from the API (FAQ answers, pages), so fees and cut-offs stay
 // current: {fee:<zone>}, {cutoff:<zone>} (zone keys as in VF_ZONES) and {freeDeliveryFrom}.
 export function vfStoreText(text, money, persian) {
-  return window.AG_COMMERCE.fillText(text, {
+  return commerce.fillText(text, {
     fee: id => money(vfZone(id).fee),
     cutoff: id => vfDeliveryCutoff(vfZone(id), persian),
     freeDeliveryFrom: () => money(VF_FREE_DELIVERY_THRESHOLD)
@@ -143,11 +144,11 @@ export function vfZone(id) {
 
 // The zone id for a delivery pin, or null when the pin is outside every zone.
 export function vfZoneAt(location) {
-  return window.AG_COMMERCE.zoneAt(location, VF_ZONES, VF_STORE.studio);
+  return commerce.zoneAt(location, VF_ZONES, VF_STORE.studio);
 }
 
 export function vfIsoDate(date) {
-  return window.AG_COMMERCE.isoDate(date);
+  return commerce.isoDate(date);
 }
 
 // The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
@@ -165,7 +166,7 @@ export function vfDeliveryDays(zoneId, now = new Date()) {
             )
           )
         ];
-  return window.AG_COMMERCE.deliveryDays(
+  return commerce.deliveryDays(
     vfZone(zoneId).cutoff,
     {days: VF_DELIVERY_DAYS, soldOutDates: [...VF_SOLD_OUT_DATES, ...sample]},
     now
@@ -182,35 +183,32 @@ export function vfDeliverableOn(product, iso, now = new Date()) {
 
 // The chosen day when it is still open, otherwise the first open day.
 export function vfDeliveryDate(delivery, now = new Date()) {
-  return window.AG_COMMERCE.openDay(vfDeliveryDays(delivery.zone, now), delivery.date);
+  return commerce.openDay(vfDeliveryDays(delivery.zone, now), delivery.date);
 }
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 export function vfDeliverySlots(iso, now = new Date()) {
-  return window.AG_COMMERCE.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now);
+  return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now);
 }
 
 // The chosen slot when it is still open on the delivery day, otherwise the first open slot.
 export function vfDeliverySlot(delivery, now = new Date()) {
-  return window.AG_COMMERCE.openSlot(
-    vfDeliverySlots(vfDeliveryDate(delivery, now), now),
-    delivery.slot
-  );
+  return commerce.openSlot(vfDeliverySlots(vfDeliveryDate(delivery, now), now), delivery.slot);
 }
 
 export function vfPhone(value) {
-  return window.AG_COMMERCE.phone(value);
+  return commerce.phone(value);
 }
 
 // An Iranian mobile as 09xxxxxxxxx however it was typed (+98…, 9…), or '' when it isn't one.
 // Forms validate with it, and store and compare numbers in this form.
 export function vfMobile(value) {
-  return window.AG_COMMERCE.mobile(value);
+  return commerce.mobile(value);
 }
 
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
 export function vfErrors(delivery, lines = []) {
-  const mobile = value => !window.AG_COMMERCE.isMobile(value);
+  const mobile = value => !commerce.isMobile(value);
   const pinned = !delivery.noMap && vfValidLocation(delivery.location);
   return {
     name: !String(delivery.name || '').trim(),
@@ -228,7 +226,7 @@ export function vfErrors(delivery, lines = []) {
 
 // Whether a zone delivers free for this subtotal.
 export function vfFreeDelivery(zoneId, sub) {
-  return window.AG_COMMERCE.freeDelivery(zoneId, sub, {
+  return commerce.freeDelivery(zoneId, sub, {
     threshold: VF_FREE_DELIVERY_THRESHOLD,
     zones: VF_FREE_DELIVERY_ZONES
   });
@@ -242,7 +240,7 @@ export function vfCheckoutRequest(
   delivery,
   {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
 ) {
-  return window.AG_COMMERCE.checkoutRequest(lines, delivery, {
+  return commerce.checkoutRequest(lines, delivery, {
     slots: VF_API_DELIVERY_SCHEDULE.slots,
     currencyCode: VF_STORE.currency || 'IRT',
     deliveryDate: delivery.date || vfDeliveryDate(delivery),
@@ -257,7 +255,7 @@ export function vfCheckoutRequest(
 // `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
 // the balance discount off the products, after any promo code.
 export function vfTotals(lines, delivery, balance = null) {
-  return window.AG_COMMERCE.totals(
+  return commerce.totals(
     lines,
     {zone: vfZone(delivery.zone), promo: delivery.promo, balance},
     {

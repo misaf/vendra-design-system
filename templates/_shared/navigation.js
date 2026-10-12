@@ -9,6 +9,8 @@ import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from
 import {VF_STORE} from './store-config.js';
 import {VF_CATEGORY_COPY} from './translations/categories.js';
 import {VF_SHELL} from './translations/shell.js';
+import {VF_SEO} from './seo.js';
+import {VF_NAV} from './page-focus.js';
 
 // The store's announcement in this language, or '' once the visitor has closed it this session.
 export function vfAnnouncementText(lang, st) {
@@ -32,7 +34,7 @@ export function vfShell(props, page) {
     st = self.state || {},
     store = props.store;
   self._vfPage = page;
-  window.VF_SEO.register(...VF_ROUTES);
+  VF_SEO.register(...VF_ROUTES);
   const fa = props.lang === 'fa',
     L = fa ? 'fa' : 'en',
     T = VF_SHELL[L];
@@ -49,7 +51,7 @@ export function vfShell(props, page) {
   VF_ROUTES.forEach(r => {
     href[r] =
       (props.go ? '' : '../app/') +
-      window.VF_SEO.hrefFor(
+      VF_SEO.hrefFor(
         {
           lang: L
         },
@@ -292,7 +294,7 @@ export function vfShell(props, page) {
         : T.bagMany.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
     skipGo: e => {
       e.preventDefault();
-      window.VF_NAV.focusHeading();
+      VF_NAV.focusHeading();
     },
     standalone: !props.store,
     announcement: vfAnnouncementText(L, st),

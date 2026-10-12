@@ -1,7 +1,6 @@
-// Routing and <head> helpers for the storefront (window.VF_SEO). Pages load this
-// before the app (app/index.html).
+// Routing and <head> helpers for the storefront (VF_SEO).
 // URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
-(() => {
+export const VF_SEO = (() => {
   const SCREENS = new Set([
     'home',
     'shop',
@@ -149,6 +148,5 @@
     isNoindex,
     syncHead
   };
-  window.VF_SEO = S;
-  if (typeof module !== 'undefined' && module.exports) module.exports = S;
+  return S;
 })();

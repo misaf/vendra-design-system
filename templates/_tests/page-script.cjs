@@ -53,7 +53,15 @@ const sharedFiles = [
   'page-lifecycle.js',
   'navigation.js'
 ];
+// The package helpers and the routing / focus helpers the shared logic imports, each in its own scope.
+const scoped = (name, file) =>
+  'const ' + name + ' = (() => {\n' + strip(read(file)) + '\nreturn ' + name + ';\n})();\n';
 const sharedLogic =
+  scoped('commerce', '../components/utils/commerce.js') +
+  scoped('dates', '../components/utils/dates.js') +
+  scoped('format', '../components/utils/format.js') +
+  scoped('VF_SEO', '_shared/seo.js') +
+  scoped('VF_NAV', '_shared/page-focus.js') +
   'const VF_TENANT_SLUGS = ' +
   JSON.stringify(require('../_build/tenants.cjs').tenantSlugs()) +
   ';\n\n' +

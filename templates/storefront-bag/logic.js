@@ -37,6 +37,7 @@ import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel} from '../_shared/translations/time.js';
+import {VF_NAV} from '../_shared/page-focus.js';
 // Two checkout steps share this page: the bag (?view=bag) and delivery details (&step=delivery).
 export class Component extends VFPage {
   state = {
@@ -258,7 +259,7 @@ export class Component extends VFPage {
           // The map can't carry aria-invalid, so it is focused directly.
           if (problems.length > 1) S.focus('vf-errors');
           else if (problems[0].href === '#vf-map') S.focus('vf-map');
-          else window.VF_NAV.focusFirstInvalid();
+          else VF_NAV.focusFirstInvalid();
           return;
         }
         if (st)

@@ -3,6 +3,8 @@ import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES, vfLineDetail} 
 import {VF_DELIVERY, vfMobile} from './delivery.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
+import {commerce} from '../../components/utils/commerce.js';
+import {dates} from '../../components/utils/dates.js';
 export function vfAccountPhone() {
   try {
     return localStorage.getItem('vf-account-phone') || '';
@@ -208,7 +210,7 @@ export const VF_OCCASIONS = [
 ];
 export function vfNormalizeReminder(r) {
   if (r.date && !r.m) {
-    const d = window.AG_DATES.fromIso(r.date);
+    const d = dates.fromIso(r.date);
     if (d)
       return {
         ...r,
@@ -221,7 +223,7 @@ export function vfNormalizeReminder(r) {
 }
 export function vfReminderNext(r, today = new Date()) {
   r = vfNormalizeReminder(r);
-  const D = window.AG_DATES,
+  const D = dates,
     occasion = VF_OCCASIONS.find(o => o.id === r.occ);
   if (occasion && occasion.hijri) {
     const t = new Date(today);
@@ -229,14 +231,15 @@ export function vfReminderNext(r, today = new Date()) {
     const date = (VF_STORE.occasionDates.mothers || [])
       .map(D.fromIso)
       .filter(d => d && d >= t)
-      .sort((a, b) => a - b)[0];
+      .sort((a, b) => a.getTime() - b.getTime())[0];
     if (date)
       return {
         date,
         days: D.daysBetween(t, date),
         published: true
       };
-    return D.nextHijri(...occasion.hijri, t);
+    const [month, day] = occasion.hijri;
+    return D.nextHijri(month, day, t);
   }
   return D.nextYearly(
     {
@@ -312,7 +315,7 @@ export const VF_SAMPLE_ORDER_EXTRAS = {
 
 // The storefront's bag line from an API OrderLine.
 export function vfLineFromApi(line) {
-  return window.AG_COMMERCE.lineFromApi(line, {
+  return commerce.lineFromApi(line, {
     products: VF_PRODUCTS,
     sizes: VF_SIZES,
     addons: VF_ADDONS,
@@ -323,11 +326,11 @@ export function vfLineFromApi(line) {
 
 // The storefront's order object from an API Order plus its extras.
 export function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
-  return window.AG_COMMERCE.orderFromApi(order, {
+  return commerce.orderFromApi(order, {
     line: vfLineFromApi,
     delivery: {...VF_DELIVERY, ...extras.delivery},
     method: extras.method,
-    preferredLocale: extras.preferredLocale
+    preferredLocale: extras.preferredLocale === 'fa' ? 'fa' : 'en'
   });
 }
 

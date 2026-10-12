@@ -1,6 +1,6 @@
-// Storefront navigation + focus helpers (window.VF_NAV). The shared logic replaces href/link on
-// every render (they need the current lang). app/index.html loads this classic script before the app.
-(() => {
+// Storefront navigation + focus helpers (VF_NAV). The shared logic replaces href/link on every render
+// (they need the current lang).
+export const VF_NAV = (() => {
   // setTimeout, not rAF: rAF is paused in background tabs/iframes and the focus move would be lost
   const after = fn => setTimeout(fn, 30);
   const N = {
@@ -28,5 +28,5 @@
       });
     }
   };
-  window.VF_NAV = N;
+  return N;
 })();

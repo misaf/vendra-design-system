@@ -25,10 +25,6 @@ const ctx = {
 };
 ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
-// The helpers (format, dates, commerce); the component bundle needs a real browser.
-vm.runInContext(fs.readFileSync(path.join(root, 'templates/_runtime/helpers.js'), 'utf8'), ctx);
-for (const file of ['seo', 'page-focus'])
-  vm.runInContext(fs.readFileSync(path.join(root, 'templates/_shared', file + '.js'), 'utf8'), ctx);
 vm.runInContext(
   sharedLogic +
     '\nObject.assign(this, {VF_API_PRODUCT_CATEGORIES, VF_API_PRODUCT_PRICES, VF_API_MULTIMEDIA, VF_API_PRODUCTS, VF_API_DELIVERY_ZONES, VF_API_DELIVERY_SCHEDULE, VF_API_ORDERS, VF_DELIVERY, vfSampleBag, vfCheckoutRequest, vfApiRecord});',

@@ -4,6 +4,7 @@
 import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
+import {commerce} from '../../components/utils/commerce.js';
 
 // {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
 export function vfWalletOf(account) {
@@ -22,12 +23,12 @@ export function vfWalletBalance() {
 
 // Paying from a balance of at least discountFrom earns the balance discount.
 export function vfBalanceDiscountOn(balance) {
-  return window.AG_COMMERCE.balanceDiscountOn(balance, VF_STORE.wallet);
+  return commerce.balanceDiscountOn(balance, VF_STORE.wallet);
 }
 
 // discountPercent of the products' price (after any promo code) when the balance earns it.
 export function vfBalanceDiscount(balance, products) {
-  return window.AG_COMMERCE.balanceDiscount(balance, products, VF_STORE.wallet);
+  return commerce.balanceDiscount(balance, products, VF_STORE.wallet);
 }
 
 // A top-up amount, typed with any digits and separators; '' when nothing is typed.

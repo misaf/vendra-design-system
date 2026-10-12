@@ -91,7 +91,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Routing & URLs
 
-`templates/_shared/seo.js` → `window.VF_SEO` (storefront templates only; not part of the package).
+`templates/_shared/seo.js` → `VF_SEO`, an ES module the storefront imports (not part of the package).
 
 - Scheme: `?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>`. Home omits `view`.
 - Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
@@ -200,11 +200,11 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Helpers** (not components)
 - `components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
 - `components/utils/format.js` → `.format`: `CURRENCIES` (demo rates), `money(n, {currency, lang, currencies})`, `num()`. An ES module: `import {format}` from the package; pages get it from `templates/_runtime/helpers.js`.
-- `components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. Pages get it as `AG_COMMERCE`.
+- `components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
 - `components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
-- `templates/_shared/seo.js` → `window.VF_SEO` and `templates/_shared/page-focus.js` → `window.VF_NAV`: storefront-template helpers; see *Routing & URLs* and *Structured data*.
+- `templates/_shared/seo.js` → `VF_SEO` and `templates/_shared/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
 - `templates/communications/email-templates.js` → `window.VF_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
-- `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem`, with `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE` aliases, for the templates.
+- `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards; the storefront imports them.
 
 ### Intentional additions
 These came from the source system, which authored a standard set plus:

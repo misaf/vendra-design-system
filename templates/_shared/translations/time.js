@@ -1,6 +1,7 @@
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
 import {VF_SLOTS} from '../delivery.js';
 import {VF_FA_DIGITS} from '../formatting.js';
+import {dates} from '../../../components/utils/dates.js';
 export function vfSlotLabel(start, end, fa) {
   return fa
     ? '\u2068' + VF_FA_DIGITS(start) + ':۰۰\u2069 تا \u2068' + VF_FA_DIGITS(end) + ':۰۰\u2069'
@@ -18,7 +19,7 @@ export function vfDayName(day, fa) {
 
 // "5 October" or «۱۴ مهر».
 export function vfDayMonth(date, fa) {
-  const D = window.AG_DATES;
+  const D = dates;
   return D.dayMonth(date, D.locale(fa ? 'fa' : 'en', fa ? 'j' : 'g'));
 }
 
@@ -27,7 +28,7 @@ export function vfDeliveryWhen(delivery, fa) {
   const end = (VF_SLOTS.find(slot => slot.start === delivery.slot) || VF_SLOTS[1]).end;
   const slot = vfSlotLabel(delivery.slot, end, fa);
   if (!delivery.date) return slot;
-  const date = window.AG_DATES.fromIso(delivery.date);
+  const date = dates.fromIso(delivery.date);
   const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {
     weekday: fa ? 'long' : 'short'
   }).format(date);

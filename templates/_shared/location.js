@@ -2,14 +2,15 @@
 // components, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from './formatting.js';
+import {commerce} from '../../components/utils/commerce.js';
 
 export function vfValidLocation(location) {
-  return window.AG_COMMERCE.validLocation(location);
+  return commerce.validLocation(location);
 }
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
 export function vfPinLocation(latlng) {
-  return window.AG_COMMERCE.pinLocation(latlng);
+  return commerce.pinLocation(latlng);
 }
 
 export function vfLocationText(location, fa) {

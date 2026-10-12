@@ -6,6 +6,8 @@ import {vfMobile} from './delivery.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
 import {VF_STORE} from './store-config.js';
 import {VF_SHELL} from './translations/shell.js';
+import {VF_SEO} from './seo.js';
+import {VF_NAV} from './page-focus.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {
@@ -84,7 +86,7 @@ export function vfPageClass(DCLogic) {
             document.activeElement &&
             document.activeElement.closest('main') &&
             document.activeElement.matches('input, select, textarea');
-          if (!field) window.VF_NAV.focusHeading();
+          if (!field) VF_NAV.focusHeading();
           if (this.props.store && this.props.store.announce) this.props.store.announce(title);
           else
             this.setState({
@@ -93,12 +95,12 @@ export function vfPageClass(DCLogic) {
         }
         window.VF_VIEWED = true;
         const url = location.href;
-        window.VF_SEO.syncHead({
+        VF_SEO.syncHead({
           title: title + ' · ' + VF_SHELL[lang].brand,
           description: title,
           url,
           locale: lang,
-          noindex: window.VF_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
+          noindex: VF_SEO.isNoindex(this._vfPage) || this._vfPage === 'signin',
           alternates: Object.fromEntries(
             ['en', 'fa'].map(lang => [
               lang,

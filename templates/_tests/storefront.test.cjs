@@ -41,10 +41,6 @@ function context() {
   };
   ctx.window = {React: {}, innerWidth: 390, scrollTo: () => {}};
   vm.createContext(ctx);
-  // The helpers (format, dates, commerce); the component bundle needs a real browser.
-  vm.runInContext(read('templates/_runtime/helpers.js'), ctx);
-  for (const f of ['seo', 'page-focus'])
-    vm.runInContext(read('templates/_shared/' + f + '.js'), ctx);
   return {ctx, history};
 }
 const {ctx} = context();
@@ -328,7 +324,7 @@ for (const folder of fs
     assert.equal(logic.state.route, 'checkout');
     logic.renderVals().store.remove('VF-8RD5WN-card');
     logic.renderVals().store.add({...originalBag[1]});
-    const totals = c.window.AG_FORMAT.num(8300000, 'en');
+    const totals = vm.runInContext('format', c).num(8300000, 'en');
     assert.equal(totals, '8,300,000');
     const order = {
       lines: logic.state.bag,
@@ -485,7 +481,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(v.lines.length, 1);
   assert.equal(v.lines[0].name, lines[0][lang][0]);
   assert.ok(v.rows.some(r => r.value.includes('Demo recipient')));
-  assert.equal(v.sums.at(-1).value, c.window.AG_FORMAT.money(4650000, {lang}));
+  assert.equal(v.sums.at(-1).value, vm.runInContext('format', c).money(4650000, {lang}));
 }
 console.log(
   'Passed all product links/prices, URL filter restoration, language switching and completed-order tracking in English and Persian.'

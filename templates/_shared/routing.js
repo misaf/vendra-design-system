@@ -1,6 +1,7 @@
 // Storefront route registration, validation and links. Uses the core VF_SEO router.
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
+import {VF_SEO} from './seo.js';
 export const VF_ROUTES = [
   'account',
   'bag',
@@ -35,8 +36,8 @@ export const VF_ROUTE_EXTRA = {
 };
 // Keep template-only shopping parameters out of the core design-system router.
 export function vfReadRoute(search = location.search) {
-  window.VF_SEO.register(...VF_ROUTES);
-  const route = window.VF_SEO.readRoute(search),
+  VF_SEO.register(...VF_ROUTES);
+  const route = VF_SEO.readRoute(search),
     query = new URLSearchParams(search);
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
@@ -86,7 +87,7 @@ export function vfReadRoute(search = location.search) {
   return route;
 }
 export function vfRouteParams(route) {
-  const query = new URLSearchParams(window.VF_SEO.routeParams(route));
+  const query = new URLSearchParams(VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
