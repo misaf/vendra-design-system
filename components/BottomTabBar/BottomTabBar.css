@@ -1,7 +1,7 @@
 .ag-tabbar {
   background: var(--surface-header);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-top: var(--border-hair) solid var(--border-subtle);
   padding-bottom: env(safe-area-inset-bottom);
   font-family: var(--font-body);

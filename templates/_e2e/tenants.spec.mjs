@@ -44,6 +44,7 @@ function resolve(page, tenant, names) {
 
 for (const tenant of [null, ...TENANTS]) {
   test(`theme builder checks pass (${tenant || 'default'} tenant)`, async ({page}) => {
+    test.skip(process.env.E2E_TARGET === 'build', 'Guideline pages need the dev server');
     await page.goto('/templates/_e2e/fixtures/tokens.html');
     await expectNoViteError(page);
     const names = [...new Set(CHECKS.flatMap(([, fg, bg]) => [fg, bg]))];
@@ -108,11 +109,17 @@ for (const tenant of ['default', ...TENANTS, 'not-a-tenant']) {
     const expected = TENANTS.includes(tenant) ? tenant : 'default';
     expect(requested).toEqual(expected === 'default' ? [] : [`tenants/${expected}.css`]);
     await expect(page.locator('.vf-shell-container')).toHaveAttribute('data-tenant', expected);
-    const sheets = await page.evaluate(() =>
-      [...document.head.querySelectorAll('link[rel=stylesheet]')].map(l => l.href.split('/').pop())
-    );
+    // The tenant's rules come after every other stylesheet (they match :root's specificity).
     if (expected !== 'default')
-      expect(sheets.indexOf(`${expected}.css`)).toBeGreaterThan(sheets.indexOf('styles.css'));
+      expect(
+        await page.evaluate(() => {
+          // The app's stylesheets: Vite's injected styles in dev, linked files in the build.
+          const sheets = [
+            ...document.head.querySelectorAll('link[rel=stylesheet], style[data-vite-dev-id]')
+          ];
+          return sheets.at(-1)?.id === 'vf-tenant-css';
+        })
+      ).toBe(true);
     await expectNoThemeFlash(page);
   });
 }
@@ -136,6 +143,7 @@ for (const tenant of TENANTS) {
 // reads live tokens; the display font is left out because it adds web fallbacks.
 for (const tenant of ['default', ...TENANTS]) {
   test(`email palette matches the rendered theme (${tenant})`, async ({page}) => {
+    test.skip(process.env.E2E_TARGET === 'build', 'Guideline pages need the dev server');
     await page.goto('/templates/_e2e/fixtures/tokens.html');
     await page.addStyleTag({url: '/tokens/tenants.css'});
     await page.addScriptTag({url: '/templates/communications/email-templates.js'});
@@ -154,6 +162,7 @@ for (const tenant of ['default', ...TENANTS]) {
 // Every "Start from" choice in the builder (Vendra plus each tenant) must pass.
 for (const start of ['vendra', ...TENANTS]) {
   test(`theme builder: starting from ${start} passes all seven checks`, async ({page}) => {
+    test.skip(process.env.E2E_TARGET === 'build', 'Guideline pages need the dev server');
     await page.goto('/guidelines/theme-builder.html');
     await expectNoViteError(page);
     await page.locator('.tb-row select').first().selectOption(start);
@@ -166,6 +175,7 @@ for (const start of ['vendra', ...TENANTS]) {
 
 // Hand-set shades survive opening a tenant, and a new base colour drops only its own.
 test('theme builder keeps overrides until their base colour changes', async ({page}) => {
+  test.skip(process.env.E2E_TARGET === 'build', 'Guideline pages need the dev server');
   const spec = {
     description: '',
     colours: {accent: '#A9532E', neutral: '#E6DCCB', ink: '#1F1D18', footer: '#262E17'},

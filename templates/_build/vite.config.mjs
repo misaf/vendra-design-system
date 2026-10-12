@@ -85,12 +85,44 @@ function storefrontPreview() {
   };
 }
 
+// The production build copies what pages load by URL at run time: product images and placeholders,
+// the Leaflet map files and the tenant themes, at the same paths under the build.
+function storefrontAssets() {
+  let outDir;
+  return {
+    name: 'vendra-storefront-assets',
+    apply: 'build',
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
+    closeBundle() {
+      for (const folder of ['assets', 'templates/_vendor/leaflet'])
+        fs.cpSync(path.join(root, folder), path.join(outDir, folder), {recursive: true});
+      const tenants = path.join(root, 'tokens/tenants');
+      fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
+      for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
+        fs.copyFileSync(path.join(tenants, name), path.join(outDir, 'tokens/tenants', name));
+    }
+  };
+}
+
 export default defineConfig({
   root,
   publicDir: false,
   appType: 'mpa',
   cacheDir: path.join(templates, 'node_modules/.vite'),
-  plugins: [storefrontPreview()],
+  plugins: [storefrontPreview(), storefrontAssets()],
+  // npm run build:app → templates/_app-build/templates/app/index.html, served by npm run preview at
+  // the same path as in development.
+  build: {
+    outDir: path.join(templates, '_app-build'),
+    emptyOutDir: true,
+    // Evergreen browsers and Safari 16+: the minifier keeps -webkit-backdrop-filter for Safari and the
+    // standard property for the rest (sources list the prefixed one first).
+    cssTarget: ['chrome120', 'edge120', 'firefox120', 'safari16'],
+    rollupOptions: {input: path.join(templates, 'app/index.html')}
+  },
+  preview: {host: '127.0.0.1', port: 4173, strictPort: true},
   server: {
     host: '127.0.0.1',
     port: 5173,

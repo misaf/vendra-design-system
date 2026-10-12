@@ -13,3 +13,4 @@ tokens/tenants.css
 # writes marked regions into the storefront pages.
 *.html
 *.md
+templates/_app-build/

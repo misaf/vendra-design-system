@@ -42,6 +42,9 @@ npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, 
 npm --prefix templates run check         # fails on stale generated output or unformatted code
 npm --prefix templates test              # typecheck, storefront logic, generation, copy parity, package
 npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, tenants
+npm --prefix templates run build:app     # production build → templates/_app-build/ (same paths as dev)
+npm --prefix templates run preview       # serve the build at http://127.0.0.1:4173/templates/app/
+npm --prefix templates run test:e2e:build  # the storefront specs against the production build
 ```
 
 - **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
@@ -63,9 +66,10 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** loads `_shared/seo.js`, `_runtime/helpers.js` (`AG_FORMAT`, `AG_DATES`, `AG_COMMERCE`), and `_shared/page-focus.js` (classic scripts), then `_runtime/ds-base.js`, then the app module `app/main.jsx`.
-- **`_runtime/ds-base.js`:** loads `../styles.css`, then the active tenant's CSS, then `tailwind.css` and `custom.css`, each once. The tenant comes from `store-config.js` or `?tenant=`.
-- **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js` (the classic bundle) is only for the guideline cards.
+- **`app/index.html`:** only the root element and the app module, `app/main.jsx`.
+- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
+- **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Components:** the app imports them from `../components/` through `app/ds.js`; `_runtime/components.js`, `helpers.js` and `ds-base.js` are only for the guideline cards.
 - **Dependencies:** the repo root's `node_modules` links to `templates/node_modules` (created on install), so component sources resolve React and React Aria.
 
 ## Styling rules

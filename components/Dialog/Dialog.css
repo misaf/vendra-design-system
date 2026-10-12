@@ -2,8 +2,8 @@
   position: fixed;
   inset: 0;
   background: var(--surface-overlay);
-  backdrop-filter: blur(var(--blur-overlay));
   -webkit-backdrop-filter: blur(var(--blur-overlay));
+  backdrop-filter: blur(var(--blur-overlay));
   display: grid;
   place-items: center;
   z-index: var(--z-overlay);

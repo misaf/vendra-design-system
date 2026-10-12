@@ -1140,8 +1140,8 @@ a.ag-iconbtn {
   position: fixed;
   inset: 0;
   background: var(--surface-overlay);
-  backdrop-filter: blur(var(--blur-overlay));
   -webkit-backdrop-filter: blur(var(--blur-overlay));
+  backdrop-filter: blur(var(--blur-overlay));
   display: grid;
   place-items: center;
   z-index: var(--z-overlay);
@@ -1878,8 +1878,8 @@ button.ag-steps__btn:hover .ag-steps__label {
 /* components/BottomTabBar/BottomTabBar.css */
 .ag-tabbar {
   background: var(--surface-header);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-top: var(--border-hair) solid var(--border-subtle);
   padding-bottom: env(safe-area-inset-bottom);
   font-family: var(--font-body);
