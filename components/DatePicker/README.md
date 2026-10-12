@@ -1,6 +1,6 @@
 # DatePicker
 
-Jalali/Gregorian date picker: `<fieldset><legend>` with a pill calendar toggle, then React Aria's DatePicker: a typed field (one segment each for day, month and year, ↑/↓ to step) and a calendar button that opens a month grid in the chosen calendar (Shamsi grids start on Saturday in Persian). Yearly dates use month · day Selects. Needs the date helpers (`window.VendraDesignSystem.dates`, bundled from `components/utils/dates.js`).
+Jalali/Gregorian date picker: `<fieldset><legend>` with a Shamsi/Gregorian switch (a React Aria ToggleButtonGroup: one Tab stop, arrows move), then React Aria's DatePicker: a typed field (one segment each for day, month and year, ↑/↓ to step) and a calendar button that opens a month grid in the chosen calendar (Shamsi grids start on Saturday in Persian). Yearly dates use month · day Selects. Needs the date helpers (`window.VendraDesignSystem.dates`, bundled from `components/utils/dates.js`).
 
 ```jsx
 <DatePicker lang="fa" label="تاریخ مراسم" value={iso} onChange={setIso} minDate={DATES.iso(new Date())}/>

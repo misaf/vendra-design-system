@@ -5,21 +5,15 @@ import { Button, Disclosure, DisclosureGroup, DisclosurePanel, Heading } from "r
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
 const toList = (value) => value == null ? [] : Array.isArray(value) ? value : [value];
-// Disclosure panels under real headings, on React Aria's DisclosureGroup. Controlled with `openId`
-// (one id or a list), uncontrolled with `defaultOpenId`; `allowMultiple` keeps other panels open.
+// Disclosure panels under real headings, on React Aria's DisclosureGroup. Controlled with `value`
+// (the open ids), uncontrolled with `defaultValue`; onChange(ids) gets the open ids. `allowMultiple`
+// keeps other panels open.
 // Each button has aria-expanded and controls its panel, a region named by the button.
-export function Accordion({ items = [], openId, defaultOpenId, onToggle, allowMultiple, headingLevel = 3, className = "" }) {
-	const [uncontrolledOpen, setUncontrolledOpen] = React.useState(toList(defaultOpenId));
-	const openIds = openId !== undefined ? toList(openId) : uncontrolledOpen;
-	const change = (keys) => {
-		const next = [...keys].map(String);
-		const toggled = next.find((id) => !openIds.includes(id)) || openIds.find((id) => !next.includes(id));
-		if (openId === undefined) setUncontrolledOpen(next);
-		if (toggled !== undefined && onToggle) onToggle(toggled, next.includes(toggled), next);
-	};
+export function Accordion({ items = [], value, defaultValue, onChange, allowMultiple, headingLevel = 3, className = "" }) {
 	return /* @__PURE__ */ React.createElement(DisclosureGroup, {
-		expandedKeys: openIds,
-		onExpandedChange: change,
+		expandedKeys: value === undefined ? undefined : toList(value),
+		defaultExpandedKeys: toList(defaultValue),
+		onExpandedChange: (keys) => onChange && onChange([...keys].map(String)),
 		allowsMultipleExpanded: !!allowMultiple,
 		className: cx("ag-acc", className)
 	}, items.map((item) => /* @__PURE__ */ React.createElement(Disclosure, {

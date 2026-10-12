@@ -6,10 +6,11 @@ export interface AccordionItem {
 }
 export interface AccordionProps {
   items: AccordionItem[];
-  /** Controlled: id (or ids with allowMultiple) of open items */
-  openId?: string | string[] | null;
-  defaultOpenId?: string | string[];
-  onToggle?: (id: string, open: boolean, openIds: string[]) => void;
+  /** Controlled: the open item's id, or ids with allowMultiple */
+  value?: string | string[] | null;
+  defaultValue?: string | string[];
+  /** The open ids after a change */
+  onChange?: (openIds: string[]) => void;
   allowMultiple?: boolean;
   /** Heading level wrapping each button. Default 3 */
   headingLevel?: 2 | 3 | 4;

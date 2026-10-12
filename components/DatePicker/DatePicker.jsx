@@ -11,18 +11,20 @@ import {
   Group,
   Heading,
   I18nProvider,
-  Popover
+  Popover,
+  ToggleButton,
+  ToggleButtonGroup
 } from 'react-aria-components';
 import {GregorianCalendar, PersianCalendar, parseDate, toCalendar} from '@internationalized/date';
 import {Icon} from '../Icon/Icon.jsx';
 import {dates} from '../utils/dates.js';
 import {Select} from '../Select/Select.jsx';
-import {Tabs} from '../Tabs/Tabs.jsx';
 import {FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 
 const DEFAULT_LABELS = {
   en: {
+    calendar: 'Calendar',
     jalali: 'Shamsi',
     gregorian: 'Gregorian',
     year: 'Year',
@@ -34,6 +36,7 @@ const DEFAULT_LABELS = {
     equivalent: 'That’s {date}'
   },
   fa: {
+    calendar: 'تقویم',
     jalali: 'شمسی',
     gregorian: 'میلادی',
     year: 'سال',
@@ -227,16 +230,20 @@ export function DatePicker({
           </span>
         )}
         {calendars.length > 1 && (
-          <Tabs
-            variant="pill"
+          <ToggleButtonGroup
+            aria-label={text.calendar}
+            selectionMode="single"
+            disallowEmptySelection
+            selectedKeys={[activeCalendar]}
+            onSelectionChange={keys => keys.size && switchCalendar([...keys][0])}
             className="ag-date__cal"
-            items={calendars.map(cal => ({
-              id: cal,
-              label: cal === 'j' ? text.jalali : text.gregorian
-            }))}
-            value={activeCalendar}
-            onChange={switchCalendar}
-          />
+          >
+            {calendars.map(cal => (
+              <ToggleButton key={cal} id={cal} className="ag-date__cal-option">
+                {cal === 'j' ? text.jalali : text.gregorian}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
         )}
       </legend>
       {yearly ? (

@@ -7,9 +7,11 @@ Disclosure list for FAQ, care and delivery info. 60px rows, hairline dividers, c
   items={[
     {id: 'care', title: 'Flower care', content: 'Trim stems every 2 days.\nKeep away from fruit.'}
   ]}
-  defaultOpenId="care"
+  defaultValue="care"
 />
 ```
+
+Controlled with `value` (the open id, or ids with `allowMultiple`) and `onChange(openIds)`, like Tabs and Select; uncontrolled with `defaultValue`.
 
 ## Usage
 

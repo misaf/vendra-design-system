@@ -198,6 +198,16 @@ test.describe('DatePicker (React Aria calendar)', () => {
   }
 });
 
+test('DatePicker switches calendar and keeps the date', async ({page}) => {
+  await page.goto(FIXTURE + '?lang=fa');
+  const calendars = page.getByRole('radiogroup', {name: 'تقویم'});
+  await expect(calendars.getByRole('radio', {name: 'شمسی'})).toBeChecked();
+  await calendars.getByRole('radio', {name: 'میلادی'}).click();
+  await expect(calendars.getByRole('radio', {name: 'میلادی'})).toBeChecked();
+  await expect(page.locator('output[data-test=date]')).toHaveText('2026-10-08');
+  await expect(page.getByRole('spinbutton', {name: /ماه/})).toHaveText('۱۰');
+});
+
 test.describe('RadioGroup (React Aria)', () => {
   test('one Tab stop; arrows skip disabled radios; label alone names a radio', async ({page}) => {
     const group = page.getByRole('radiogroup', {name: 'Payment'});

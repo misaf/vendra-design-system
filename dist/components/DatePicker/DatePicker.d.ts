@@ -5,6 +5,8 @@ export interface YearlyDate {
   d: number;
 }
 export interface DatePickerLabels {
+  /** Names the calendar switch. Default "Calendar" · «تقویم» */
+  calendar?: string;
   jalali?: string;
   gregorian?: string;
   year?: string;
@@ -45,5 +47,5 @@ export interface DatePickerProps {
   className?: string;
   style?: React.CSSProperties;
 }
-/** <fieldset><legend> + pill calendar Tabs + React Aria's DatePicker (typed segments and a month grid in the chosen calendar); yearly dates use month/day Selects, clamped with daysInMonth. */
+/** <fieldset><legend> + a Shamsi/Gregorian switch (React Aria ToggleButtonGroup) + React Aria's DatePicker (typed segments and a month grid in the chosen calendar); yearly dates use month/day Selects, clamped with daysInMonth. */
 export declare function DatePicker(props: DatePickerProps): React.JSX.Element;

@@ -34,7 +34,7 @@ return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div
 <div className="g2">
 <div><div className="k">{t.km}</div><MenuList label={t.menu}>{t.mi.map((x,i)=><NavLink key={x} variant="menu" current={i===0}>{x}</NavLink>)}</MenuList></div>
 <div><div className="k">{t.kf}</div><MenuList title={t.ft}>{t.fi.map((x,i)=><NavLink key={x} variant="footer" current={i===2}>{x}</NavLink>)}</MenuList></div></div>
-<div><div className="k">{t.ka}</div><Accordion defaultOpenId="care" items={t.acc.map(([id,title,content])=>({id,title,content}))}/></div>
+<div><div className="k">{t.ka}</div><Accordion defaultValue="care" items={t.acc.map(([id,title,content])=>({id,title,content}))}/></div>
 <div><div className="k">{t.ks}</div><div style={{display:'flex',flexDirection:'column',gap:16}}>
 <SectionHeader eyebrow={t.eb} title={t.tt} accent={t.ac} action={<Button variant="ghost" size="sm" iconEnd="arrow-right">{t.all}</Button>} onPrev={()=>ref.current.scrollPrev()} onNext={()=>ref.current.scrollNext()} canPrev={s.canPrev} canNext={s.canNext} prevLabel={t.prev} nextLabel={t.next}/>
 <Carousel ref={ref} onScrollStateChange={setS} label={t.occL} perView={4.5} itemMin="110px" bleed={false}>{t.occ.map(o=><div key={o}><ArchFrame placeholderLabel={t.photo}/><div style={{fontFamily:'var(--font-display)',fontSize:18,marginTop:8}}>{o}</div></div>)}</Carousel></div></div>

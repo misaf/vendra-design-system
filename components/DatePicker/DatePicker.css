@@ -13,9 +13,41 @@
   padding: 0;
   margin-bottom: var(--space-2);
 }
-.ag-date__cal.ag-tabs--pill .ag-tab {
-  padding: var(--space-1) var(--space-3);
+.ag-date__cal {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-control);
+}
+.ag-date__cal-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: normal;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.ag-date__cal-option[data-hovered],
+.ag-date__cal-option[data-selected] {
+  color: var(--text-body);
+}
+.ag-date__cal-option[data-selected] {
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.ag-date__cal-option[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 .ag-date__grid {
   display: grid;
