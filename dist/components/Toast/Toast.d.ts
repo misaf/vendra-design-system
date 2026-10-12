@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface ToastProps {
+  /** The queued toast, when a ToastRegion renders it (internal) */
+  toast?: unknown;
   tone?: 'success' | 'info' | 'warning' | 'danger';
   title: React.ReactNode;
   message?: React.ReactNode;
@@ -9,5 +11,12 @@ export interface ToastProps {
   closeLabel?: string;
   style?: React.CSSProperties;
 }
-/** React Aria toast (alertdialog + atomic alert), rendered in place; the page positions it and decides how long it stays. */
+/** React Aria toast (alertdialog + atomic alert). On its own it renders in place; ToastRegion shows queued ones. */
 export declare function Toast(props: ToastProps): React.JSX.Element;
+/** What a queued toast shows. */
+export interface ToastContent {
+  tone?: 'success' | 'info' | 'warning' | 'danger';
+  title: React.ReactNode;
+  message?: React.ReactNode;
+  action?: {label: React.ReactNode; onClick?: (e: React.MouseEvent) => void; href?: string};
+}

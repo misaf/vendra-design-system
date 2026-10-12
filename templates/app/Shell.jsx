@@ -4,6 +4,20 @@ import * as DS from './ds.js';
 import {list} from './runtime.jsx';
 
 export function Shell({v, content, sticky}) {
+  // --vf-bottom-bar: the height of the sticky bars at the bottom of the screen, so fixed layers
+  // (toasts) sit above them.
+  React.useEffect(() => {
+    const bars = [...document.querySelectorAll('.vf-shell-bottom-bar, .vf-shell-consent-bar')];
+    const update = () =>
+      document.documentElement.style.setProperty(
+        '--vf-bottom-bar',
+        bars.reduce((height, bar) => height + bar.offsetHeight, 0) + 'px'
+      );
+    const observer = new ResizeObserver(update);
+    bars.forEach(bar => observer.observe(bar));
+    update();
+    return () => observer.disconnect();
+  });
   return (
     <>
       <div className="tw:bg-muted tw:min-h-screen">

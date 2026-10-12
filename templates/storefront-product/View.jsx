@@ -111,28 +111,6 @@ export function View({v}) {
                   />
                   {v.desk ? (
                     <>
-                      {v.toast ? (
-                        <>
-                          <div
-                            className="vf-product-toast tw:fixed tw:z-toast tw:bottom-6 tw:end-6 tw:max-w-[calc(100%_-_48px)]"
-                            onMouseEnter={v.holdToast}
-                            onMouseLeave={v.releaseToast}
-                            onFocus={v.holdToast}
-                            onBlur={v.releaseToast}
-                          >
-                            <DS.Toast
-                              title={v.toast?.title}
-                              action={v.toast?.action}
-                              onClose={v.toast?.close}
-                              closeLabel={v.t?.dismiss}
-                            />
-                          </div>
-                        </>
-                      ) : null}
-                    </>
-                  ) : null}
-                  {v.desk ? (
-                    <>
                       <div className="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]">
                         <DS.Button
                           variant="primary"
@@ -235,6 +213,11 @@ export function View({v}) {
                 </div>
               </div>
             </DS.Dialog>
+            <DS.ToastRegion
+              queue={v.toasts}
+              closeLabel={v.t?.dismiss}
+              className="vf-product-toasts"
+            />
           </main>
         </>
       }
@@ -252,24 +235,6 @@ export function View({v}) {
             >
               <>{v.t?.add}</>
             </DS.Button>
-            {v.toast ? (
-              <>
-                <div
-                  className="vf-product-toast tw:absolute tw:bottom-full tw:inset-x-4 tw:mb-3"
-                  onMouseEnter={v.holdToast}
-                  onMouseLeave={v.releaseToast}
-                  onFocus={v.holdToast}
-                  onBlur={v.releaseToast}
-                >
-                  <DS.Toast
-                    title={v.toast?.title}
-                    action={v.toast?.action}
-                    onClose={v.toast?.close}
-                    closeLabel={v.t?.dismiss}
-                  />
-                </div>
-              </>
-            ) : null}
           </div>
         </>
       }

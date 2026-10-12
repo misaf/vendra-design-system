@@ -1,6 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import React from 'react';
 import {VFPage} from '../app/runtime.jsx';
+import {ToastQueue} from '../app/ds.js';
 import {vfCopy} from './copy.js';
 import {
   VF_ADDONS,
@@ -22,12 +23,12 @@ import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute} from '../_shared/routing.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 export class Component extends VFPage {
+  toasts = new ToastQueue({maxVisibleToasts: 1});
   state = {
     size: 'petite',
     addons: [],
     qty: 1,
-    added: null,
-    toast: null
+    added: null
   };
   renderVals() {
     const fa = this.props.lang === 'fa';
@@ -70,14 +71,10 @@ export class Component extends VFPage {
           .replace('{code}', product.id)
       ),
       copyCode: () => {
-        const done = ok => {
-          this.setState({
-            toast: {
-              title: ok ? C.codeCopied.replace('{code}', vfTokenText(product.id)) : C.copyFailed
-            }
+        const done = ok =>
+          this._showToast({
+            title: ok ? C.codeCopied.replace('{code}', vfTokenText(product.id)) : C.copyFailed
           });
-          this._hideToastLater();
-        };
         // Without clipboard access, select the code and try the older copy command; the code stays selected either way.
         const fallback = () => {
           const el = document.getElementById('vf-product-code');
@@ -106,13 +103,10 @@ export class Component extends VFPage {
       toggleSave: () => {
         const saving = !S.isFav(product.id, []);
         S.toggleFav(product.id, [])();
-        this.setState({
-          toast: {
-            title: saving ? C.savedTitle : C.unsavedTitle,
-            saving
-          }
+        this._showToast({
+          title: saving ? C.savedTitle : C.unsavedTitle,
+          action: saving ? {label: C.viewSaved, href: S.href.saved} : undefined
         });
-        this._hideToastLater();
       },
       recentLabel: C.recentA + ' ' + C.recentB,
       hasRecent: vfRecentlyViewed().some(x => x !== product.id),
@@ -173,7 +167,7 @@ export class Component extends VFPage {
           });
         }
         // A small bag panel confirms what was added and offers the next step.
-        this._hideToast();
+        this.toasts.clear();
         this.setState({
           added: {
             line: {
@@ -212,26 +206,7 @@ export class Component extends VFPage {
         this.setState({
           added: null
         }),
-      toast: s.toast && {
-        title: s.toast.title,
-        action: s.toast.saving
-          ? {
-              label: C.viewSaved,
-              href: S.href.saved
-            }
-          : undefined,
-        close: () => this._hideToast()
-      },
-      // Stay while the pointer or focus is on the toast; WCAG 2.2.1.
-      holdToast: () => {
-        this._toastHeld = true;
-        clearTimeout(this._t);
-      },
-      releaseToast: e => {
-        if (e && e.currentTarget && e.currentTarget.contains(e.relatedTarget)) return;
-        this._toastHeld = false;
-        this._hideToastLater();
-      },
+      toasts: this.toasts,
       recent: vfRecentlyViewed()
         .filter(x => x !== product.id)
         .slice(0, 4)
@@ -259,17 +234,10 @@ export class Component extends VFPage {
       ]
     };
   }
-  _hideToastLater() {
-    clearTimeout(this._t);
-    if (!this._toastHeld) this._t = setTimeout(() => this._hideToast(), 6000);
-  }
-  _hideToast() {
-    clearTimeout(this._t);
-    this._toastHeld = false;
-    if (this.state.toast)
-      this.setState({
-        toast: null
-      });
+  // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.
+  _showToast(content) {
+    this.toasts.clear();
+    this.toasts.add(content, {timeout: 6000});
   }
   _rememberProduct() {
     vfRememberViewed(vfPageRoute(this.props).id || VF_PRODUCTS[0].id);
@@ -289,13 +257,13 @@ export class Component extends VFPage {
         size: 'petite',
         addons: [],
         qty: 1,
-        added: null,
-        toast: null
+        added: null
       });
+      this.toasts.clear();
     }
   }
   componentWillUnmount() {
     super.componentWillUnmount();
-    clearTimeout(this._t);
+    this.toasts.clear();
   }
 }

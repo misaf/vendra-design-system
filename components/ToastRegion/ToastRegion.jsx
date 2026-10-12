@@ -1,0 +1,23 @@
+import React from 'react';
+import {
+  UNSTABLE_ToastQueue as AriaToastQueue,
+  UNSTABLE_ToastRegion as AriaToastRegion
+} from 'react-aria-components';
+import {Toast} from '../Toast/Toast.jsx';
+import {cx} from '../utils/cx.js';
+
+// The toasts a page shows: queue.add({tone, title, message, action}, {timeout}) returns a key, and
+// close(key) or clear() removes them. A React Aria toast queue; ToastRegion shows it.
+export const ToastQueue = AriaToastQueue;
+
+// Where a ToastQueue's toasts appear: React Aria's toast region (a landmark you can reach with F6),
+// fixed at the bottom inline-end corner. Each toast is an alertdialog announced as it appears;
+// timers pause while the pointer or focus is on the region. `className` places it (for example
+// above a sticky mobile bar).
+export function ToastRegion({queue, label, closeLabel = 'Dismiss', className}) {
+  return (
+    <AriaToastRegion queue={queue} aria-label={label} className={cx('ag-toast-region', className)}>
+      {({toast}) => <Toast toast={toast} {...toast.content} closeLabel={closeLabel} />}
+    </AriaToastRegion>
+  );
+}

@@ -393,9 +393,17 @@ a:hover {
   height: auto;
   min-height: 52px;
 }
-/* While the desktop consent bar is showing, the save toast sits above it instead of on it. */
-.vf-page:has(.vf-shell-consent-bar) .vf-product-toast {
-  bottom: calc(var(--space-6) + 5rem);
+/* Save and copy confirmations sit above the sticky bottom bars (the mobile action and tab bars, or
+   the desktop consent bar); the shell keeps --vf-bottom-bar at their height. */
+.vf-product-toasts {
+  inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-6));
+}
+@media (max-width: 767px) {
+  .vf-product-toasts {
+    inset-inline: var(--space-4);
+    inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-3));
+    max-width: none;
+  }
 }
 
 

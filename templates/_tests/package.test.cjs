@@ -57,9 +57,17 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     assert.equal(typeof globalThis.window, 'undefined');
 
     // Components: every one renders on the server.
-    const components = Object.keys(ds).filter(name => /^[A-Z][a-z]/.test(name));
+    // Components are the capitalised function exports (ToastQueue is a class, not a component).
+    const components = Object.keys(ds).filter(
+      name =>
+        /^[A-Z][a-z]/.test(name) &&
+        !(
+          typeof ds[name] === 'function' &&
+          /^class\b/.test(Function.prototype.toString.call(ds[name]))
+        )
+    );
     assert.ok(components.length >= 45, 'only ' + components.length + ' components exported');
-    const props = {Icon: {name: 'flower-2'}};
+    const props = {Icon: {name: 'flower-2'}, ToastRegion: {queue: new ds.ToastQueue()}};
     // Parts that only exist inside their group render inside it.
     const groups = {ChoiceTile: 'ChoiceGroup', Radio: 'RadioGroup'};
     const element = name => {

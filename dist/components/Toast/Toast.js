@@ -10,27 +10,9 @@ const ICONS = {
 	warning: "triangle-alert",
 	danger: "circle-alert"
 };
-// A toast on React Aria (role="alertdialog" with its text in an atomic alert, labelled by the title
-// and described by the message). It renders where it is placed: the page decides where it shows and
-// how long it stays, and React Aria's close button calls onClose. The toast itself is never a click
-// target — put the follow-up in `action` (a real button or link).
-export function Toast({ tone = "success", title, message, action, onClose, closeLabel = "Dismiss", style }) {
-	const key = React.useId();
-	const latestClose = React.useRef(onClose);
-	latestClose.current = onClose;
-	// React Aria's Toast reads its queue from context; this one holds just this toast.
-	const toast = React.useMemo(() => ({
-		key,
-		content: null
-	}), [key]);
-	const state = React.useMemo(() => ({
-		visibleToasts: [toast],
-		add: () => key,
-		close: () => latestClose.current && latestClose.current(),
-		pauseAll() {},
-		resumeAll() {}
-	}), [key, toast]);
-	return /* @__PURE__ */ React.createElement(ToastStateContext.Provider, { value: state }, /* @__PURE__ */ React.createElement(AriaToast, {
+// What a toast shows: tone icon, title, message, the follow-up action and React Aria's close button.
+function ToastBody({ toast, tone = "success", title, message, action, closeLabel, closable, style }) {
+	return /* @__PURE__ */ React.createElement(AriaToast, {
 		toast,
 		className: "ag-toast",
 		style
@@ -52,12 +34,52 @@ export function Toast({ tone = "success", title, message, action, onClose, close
 		className: "ag-toast__action",
 		href: action.href,
 		onClick: action.onClick
-	}, action.label)), onClose && /* @__PURE__ */ React.createElement(AriaButton, {
+	}, action.label)), closable && /* @__PURE__ */ React.createElement(AriaButton, {
 		slot: "close",
 		className: "ag-toast__close",
 		"aria-label": closeLabel
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "x",
 		size: 16
-	}))));
+	})));
+}
+// A toast on React Aria (role="alertdialog", its text in an atomic alert). Inside a ToastRegion it
+// shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
+// and onClose is what its close button does.
+export function Toast({ toast: queued, tone, title, message, action, onClose, closeLabel = "Dismiss", style }) {
+	const key = React.useId();
+	const latestClose = React.useRef(onClose);
+	latestClose.current = onClose;
+	// React Aria's Toast reads its queue from context; this one holds just this toast.
+	const toast = React.useMemo(() => ({
+		key,
+		content: null
+	}), [key]);
+	const state = React.useMemo(() => ({
+		visibleToasts: [toast],
+		add: () => key,
+		close: () => latestClose.current && latestClose.current(),
+		pauseAll() {},
+		resumeAll() {}
+	}), [key, toast]);
+	if (queued) return /* @__PURE__ */ React.createElement(ToastBody, {
+		toast: queued,
+		tone,
+		title,
+		message,
+		action,
+		closeLabel,
+		closable: true,
+		style
+	});
+	return /* @__PURE__ */ React.createElement(ToastStateContext.Provider, { value: state }, /* @__PURE__ */ React.createElement(ToastBody, {
+		toast,
+		tone,
+		title,
+		message,
+		action,
+		closeLabel,
+		closable: !!onClose,
+		style
+	}));
 }

@@ -18,7 +18,15 @@ function pageScript(folder) {
   if (['storefront-journal', 'storefront-post'].includes(folder))
     parts.push(read('_shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
-  parts.push(read(folder + '/logic.js'));
+  const logic = read(folder + '/logic.js');
+  // Pages that queue toasts get a minimal queue (the component's is React Aria's).
+  if (logic.includes('ToastQueue'))
+    parts.push(
+      'class ToastQueue { constructor() { this.visibleToasts = []; } ' +
+        'add(content) { this.visibleToasts = [{key: "t", content}]; return "t"; } ' +
+        'close() { this.visibleToasts = []; } clear() { this.visibleToasts = []; } }'
+    );
+  parts.push(logic);
   return parts.map(strip).join('\n\n');
 }
 

@@ -51,4 +51,5 @@ export * from '../../components/Stepper/Stepper.jsx';
 export * from '../../components/Switch/Switch.jsx';
 export * from '../../components/Tabs/Tabs.jsx';
 export * from '../../components/Toast/Toast.jsx';
+export * from '../../components/ToastRegion/ToastRegion.jsx';
 export * from '../../components/Tooltip/Tooltip.jsx';

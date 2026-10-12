@@ -1323,6 +1323,25 @@ a.ag-iconbtn {
   color: var(--text-on-inverse);
 }
 
+/* components/ToastRegion/ToastRegion.css */
+/* ToastRegion: React Aria's landmark, fixed at the bottom inline-end corner above the page. */
+.ag-toast-region {
+  position: fixed;
+  z-index: var(--z-toast);
+  inset-block-end: var(--space-6);
+  inset-inline-end: var(--space-6);
+  max-width: calc(100% - 2 * var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  outline: none;
+}
+.ag-toast-region[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
 /* components/Tooltip/Tooltip.css */
 /* Tooltip: React Aria places the bubble (in a portal) above or below the trigger. */
 .ag-tip {
