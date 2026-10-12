@@ -120,7 +120,16 @@ export default defineConfig({
     // Evergreen browsers and Safari 16+: the minifier keeps -webkit-backdrop-filter for Safari and the
     // standard property for the rest (sources list the prefixed one first).
     cssTarget: ['chrome120', 'edge120', 'firefox120', 'safari16'],
-    rollupOptions: {input: path.join(templates, 'app/index.html')}
+    rollupOptions: {
+      input: path.join(templates, 'app/index.html'),
+      // Each page's chunk is named after its folder (storefront-shop/Page.jsx → page-shop).
+      output: {
+        chunkFileNames: chunk => {
+          const page = /storefront-([\w-]+)\/Page\.jsx$/.exec(chunk.facadeModuleId || '');
+          return 'assets/' + (page ? 'page-' + page[1] : '[name]') + '-[hash].js';
+        }
+      }
+    }
   },
   preview: {host: '127.0.0.1', port: 4173, strictPort: true},
   server: {
@@ -128,6 +137,8 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     fs: {allow: [root]},
+    // Pages load on demand; transform them at start so a first visit does not wait on them.
+    warmup: {clientFiles: ['./templates/app/main.jsx', './templates/storefront-*/Page.jsx']},
     watch: {ignored: ['**/.git/**', '**/node_modules/**']}
   },
   // The storefront app (templates/app) and the components import these; they are pre-bundled

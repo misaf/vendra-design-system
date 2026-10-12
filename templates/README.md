@@ -29,7 +29,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/main.jsx` finds it by folder name. Register the route in `_shared/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/custom.css`, and the import and route in `storefront-site/View.jsx`.
+**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `_shared/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/custom.css`, and the `lazyPage('<name>')` constant and route in `storefront-site/View.jsx`.
 
 ## Commands
 
@@ -67,6 +67,7 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 `_runtime/` is generated; never edit it.
 
 - **`app/index.html`:** only the root element and the app module, `app/main.jsx`.
+- **`app/pages.js`:** each `storefront-*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start.
 - **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
 - **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.

@@ -68,18 +68,16 @@ test('styles.css carries no tenant; tokens/tenants.css carries them all for card
   for (const tenant of TENANTS) expect(all).toContain(`@import url('tenants/${tenant}.css');`);
 });
 
-// Records what each frame showed: 'hidden' or the shell's background colour.
+// Records what each frame showed: 'hidden' or the shell's background colour (once it exists).
 async function recordFrames(page) {
   await page.addInitScript(() => {
     window.__vfFrames = [];
     const tick = () => {
+      // The page's own code loads on demand, so it may still be hidden before the shell exists.
       const el = document.querySelector('.vf-shell-container');
-      if (el)
-        window.__vfFrames.push(
-          getComputedStyle(document.body).visibility === 'hidden'
-            ? 'hidden'
-            : getComputedStyle(el).backgroundColor
-        );
+      if (document.body && getComputedStyle(document.body).visibility === 'hidden')
+        window.__vfFrames.push('hidden');
+      else if (el) window.__vfFrames.push(getComputedStyle(el).backgroundColor);
       if (window.__vfFrames.length < 120) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
