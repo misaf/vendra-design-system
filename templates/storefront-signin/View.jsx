@@ -38,7 +38,6 @@ export function View({v}) {
                     <>{v.t?.terms?.before}</>
                     <a
                       href={v.termsLink?.href}
-                      onClick={v.termsLink?.go}
                       className="tw:text-inherit! tw:[text-underline-offset:3px]"
                     >
                       <>{v.t?.terms?.terms}</>
@@ -46,7 +45,6 @@ export function View({v}) {
                     <>{v.t?.terms?.and}</>
                     <a
                       href={v.privacyLink?.href}
-                      onClick={v.privacyLink?.go}
                       className="tw:text-inherit! tw:[text-underline-offset:3px]"
                     >
                       <>{v.t?.terms?.privacy}</>
@@ -123,14 +121,14 @@ export function View({v}) {
                         >
                           <>{v.t?.backToCheckout}</>
                         </DS.Button>
-                        <DS.Button variant="ghost" href={v.href?.account} onClick={v.go?.account}>
+                        <DS.Button variant="ghost" href={v.href?.account}>
                           <>{v.t?.toAccount}</>
                         </DS.Button>
                       </>
                     ) : null}
                     {v.notFromCheckout ? (
                       <>
-                        <DS.Button variant="primary" href={v.href?.account} onClick={v.go?.account}>
+                        <DS.Button variant="primary" href={v.href?.account}>
                           <>{v.t?.toAccount}</>
                         </DS.Button>
                       </>

@@ -325,7 +325,14 @@ export class Component extends DCLogic {
       },
       mobile: s.mobile != null ? s.mobile : !!this.props.mobile,
       // replace: refine the current page (e.g. shop filters) without adding a history entry.
-      go: (r, replace) => this.navigate(r, !!replace)
+      go: (r, replace) => this.navigate(r, !!replace),
+      // React Aria links: in-site URLs switch the view in place; anything else loads normally.
+      routerNavigate: href => {
+        const url = new URL(href, location.href);
+        if (url.origin !== location.origin || url.pathname !== location.pathname)
+          return location.assign(url.href);
+        this.navigate(vfReadRoute(url.search));
+      }
     };
   }
 }

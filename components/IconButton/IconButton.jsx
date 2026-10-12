@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button as AriaButton} from 'react-aria-components';
+import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// An icon-only React Aria Button, or link with `href`. `label` is its accessible name and tooltip;
+// An icon-only React Aria Button, or React Aria Link with `href`. `label` is its accessible name and tooltip;
 // `active` sets aria-pressed and `count` shows a badge.
 export function IconButton({
   icon,
@@ -37,17 +37,17 @@ export function IconButton({
   );
   if (href)
     return (
-      <a
+      <Link
+        {...rest}
         href={href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
         aria-label={label}
-        title={label}
+        ref={element => element && (element.title = label)}
         className={classes}
-        {...rest}
       >
         {content}
-      </a>
+      </Link>
     );
   return (
     <AriaButton

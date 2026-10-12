@@ -25,7 +25,7 @@ export function View({v}) {
             {v.missing ? (
               <>
                 <DS.EmptyState title={v.migration?.missing} headingLevel={1} />
-                <DS.Button href={v.href?.journal} onClick={v.go?.journal}>
+                <DS.Button href={v.href?.journal}>
                   <>{v.migration?.back}</>
                 </DS.Button>
               </>
@@ -36,7 +36,6 @@ export function View({v}) {
                   <article className="vf-post-article tw:max-w-[720px] tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5">
                     <a
                       href={v.href?.journal}
-                      onClick={v.go?.journal}
                       className="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"
                     >
                       <DS.Icon name="arrow-left" size={16} />
@@ -146,7 +145,6 @@ export function View({v}) {
                         size="sm"
                         iconEnd="arrow-right"
                         href={v.href?.shop}
-                        onClick={v.go?.shop}
                       >
                         <>{v.t?.shopIt}</>
                       </DS.Button>
@@ -179,7 +177,6 @@ export function View({v}) {
                             price={p?.price}
                             images={p?.images}
                             href={p?.href}
-                            onClick={p?.go}
                             frame="soft"
                           />
                         </React.Fragment>
@@ -198,7 +195,6 @@ export function View({v}) {
                             excerpt={r?.excerpt}
                             meta={r?.meta}
                             href={r?.href}
-                            onClick={r?.go}
                           />
                         </React.Fragment>
                       ))}

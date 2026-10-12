@@ -5,14 +5,7 @@ import {VF_FREE_DELIVERY_THRESHOLD} from './delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
 import {vfDirectionsUrl} from './location.js';
 import {vfPageTenant} from './page-lifecycle.js';
-import {
-  VF_POLICIES,
-  VF_ROUTES,
-  VF_ROUTE_EXTRA,
-  vfLinkHandler,
-  vfPageRoute,
-  vfRouteParams
-} from './routing.js';
+import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
 import {VF_STORE} from './store-config.js';
 import {VF_CATEGORY_COPY} from './translations/categories.js';
 import {VF_SHELL} from './translations/shell.js';
@@ -52,8 +45,7 @@ export function vfShell(props, page) {
         : ['shop', 'product', 'saved', 'search'].includes(page)
           ? 'shop'
           : '';
-  const href = {},
-    go = {};
+  const href = {};
   VF_ROUTES.forEach(r => {
     href[r] =
       (props.go ? '' : '../app/') +
@@ -64,7 +56,6 @@ export function vfShell(props, page) {
         r,
         VF_ROUTE_EXTRA[r]
       );
-    go[r] = props.go ? vfLinkHandler(route => props.go(route)) : undefined;
   });
   const close = () =>
     self.setState({
@@ -95,16 +86,11 @@ export function vfShell(props, page) {
     label: T[r],
     current: cur[r],
     href: href[r],
-    go: props.go
-      ? vfLinkHandler(route => {
-          close();
-          props.go(route);
-        })
-      : undefined
+    // Closes the drawer; the link itself navigates (React Aria's router).
+    close
   }));
   const policyLink = doc => ({
-    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'policy', id: doc}),
-    go: props.go ? vfLinkHandler(props.go) : undefined
+    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'policy', id: doc})
   });
   const policyDoc = page === 'policy' ? (props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0]) : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
@@ -201,15 +187,13 @@ export function vfShell(props, page) {
     }
   };
   const shopLink = cat => ({
-    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat}),
-    go: props.go ? vfLinkHandler(props.go) : undefined
+    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat})
   });
   // Footer link columns, social links, contact lines and the bottom line.
   const F = T.footer;
   const footerLink = (r, label) => ({
     label,
     href: href[r],
-    go: go[r],
     current: cur[r] ? 'page' : undefined
   });
   const footer = {
@@ -265,7 +249,6 @@ export function vfShell(props, page) {
   const count = store ? store.count : 2,
     favList = store ? store.saved : st.vfFavs;
   return {
-    go,
     href,
     policyLink,
     policyLinks: VF_POLICIES.map(doc => ({
@@ -281,13 +264,11 @@ export function vfShell(props, page) {
           view: 'product',
           id: vfProductId(id) || id,
           cat: (vfFindProduct(id) || {}).cat
-        }),
-      go: props.go ? vfLinkHandler(props.go) : undefined
+        })
     }),
     occasionLink: occasion => ({
       href:
-        (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion}),
-      go: props.go ? vfLinkHandler(props.go) : undefined
+        (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion})
     }),
     shopLink,
     lang: L,
@@ -396,7 +377,6 @@ export function vfShell(props, page) {
         icon: 'house',
         label: T.home,
         href: href.home,
-        onClick: go.home,
         current: tab === 'home'
       },
       {
@@ -404,7 +384,6 @@ export function vfShell(props, page) {
         icon: 'layout-grid',
         label: T.shop,
         href: href.shop,
-        onClick: go.shop,
         current: tab === 'shop'
       },
       {
@@ -419,7 +398,6 @@ export function vfShell(props, page) {
         icon: 'shopping-bag',
         label: T.bag,
         href: href.bag,
-        onClick: go.bag,
         count: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
         current: tab === 'bag'
       }

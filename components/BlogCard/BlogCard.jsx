@@ -1,9 +1,10 @@
 import React from 'react';
+import {Button, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 // A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
-// the text; the title is the only link (or a button without `href`).
+// the text; the title is the only link (a React Aria Link, or a Button without `href`).
 export function BlogCard({
   image,
   srcSet,
@@ -23,7 +24,7 @@ export function BlogCard({
   className = ''
 }) {
   const Heading = 'h' + headingLevel;
-  const Link = href ? 'a' : 'button';
+  const TitleLink = href ? Link : Button;
   const wide = layout === 'wide';
   const imageSizes =
     sizes || (wide ? '(max-width: 767px) 100vw, 55vw' : '(max-width: 767px) 100vw, 400px');
@@ -51,14 +52,9 @@ export function BlogCard({
         {date && <span className="ag-eyebrow ag-blog__date">{date}</span>}
         {meta && <div className="ag-blog__meta">{meta}</div>}
         <Heading className="ag-blog__title">
-          <Link
-            href={href}
-            type={href ? undefined : 'button'}
-            className="ag-blog__link"
-            onClick={onClick}
-          >
+          <TitleLink href={href} className="ag-blog__link" onClick={onClick}>
             {title}
-          </Link>
+          </TitleLink>
         </Heading>
         {excerpt && <p className="ag-blog__excerpt">{excerpt}</p>}
         {cta && (

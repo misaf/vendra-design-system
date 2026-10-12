@@ -54,7 +54,6 @@ export function View({v}) {
                     meta={v.lead?.meta}
                     cta={v.t?.read}
                     href={v.lead?.href}
-                    onClick={v.lead?.go}
                   />
                 </div>
               </>
@@ -70,7 +69,6 @@ export function View({v}) {
                     excerpt={p?.excerpt}
                     meta={p?.meta}
                     href={p?.href}
-                    onClick={p?.go}
                   />
                 </React.Fragment>
               ))}

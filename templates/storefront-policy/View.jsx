@@ -32,7 +32,6 @@ export function View({v}) {
                     <li>
                       <a
                         href={p?.href}
-                        onClick={p?.go}
                         aria-current={p?.current}
                         className="vf-policy-switch-link tw:min-h-tap tw:whitespace-nowrap tw:inline-flex tw:items-center tw:px-4 tw:rounded-full tw:border tw:border-solid tw:border-input tw:text-sm tw:text-body! tw:no-underline! tw:hover:border-body tw:aria-[current=page]:bg-inverse tw:aria-[current=page]:border-inverse tw:aria-[current=page]:text-on-inverse!"
                       >

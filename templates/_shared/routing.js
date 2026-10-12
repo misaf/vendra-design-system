@@ -106,11 +106,6 @@ export function vfRouteParams(route) {
   }
   return '?' + query.toString();
 }
-export function vfLinkHandler(go) {
-  return window.VF_SEO.linkHandler((route, event) =>
-    go(vfReadRoute(new URL(event.currentTarget.href, location.href).search))
-  );
-}
 export function vfPageRoute(props) {
   return props.routeInfo || vfReadRoute();
 }

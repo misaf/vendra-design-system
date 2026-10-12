@@ -58,12 +58,7 @@ export function View({v}) {
                               <>{o?.total}</>
                             </div>
                             <div>
-                              <DS.Button
-                                variant="secondary"
-                                size="sm"
-                                href={o?.href}
-                                onClick={o?.go}
-                              >
+                              <DS.Button variant="secondary" size="sm" href={o?.href}>
                                 <>{o?.cta}</>
                               </DS.Button>
                             </div>
@@ -227,7 +222,6 @@ export function View({v}) {
                               favorite={true}
                               onFavorite={p?.remove}
                               href={p?.href}
-                              onClick={p?.go}
                             />
                           </React.Fragment>
                         ))}
@@ -243,7 +237,7 @@ export function View({v}) {
                           titleAccent={v.t?.savedEmptyB}
                           body={v.t?.savedEmptyP}
                         />
-                        <DS.Button variant="primary" href={v.href?.shop} onClick={v.go?.shop}>
+                        <DS.Button variant="primary" href={v.href?.shop}>
                           <>{v.t?.browse}</>
                         </DS.Button>
                       </div>
@@ -347,7 +341,6 @@ export function View({v}) {
                           altDate={r?.altDate}
                           when={r?.when}
                           sendHref={v.href?.shop}
-                          sendOnClick={v.go?.shop}
                           labels={v.remLabels}
                         />
                       </React.Fragment>

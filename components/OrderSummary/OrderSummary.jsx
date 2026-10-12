@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-aria-components';
 import {ArchFrame} from '../ArchFrame/ArchFrame.jsx';
 import {cx} from '../utils/cx.js';
 
@@ -22,9 +23,9 @@ export function OrderSummary({
             <div className="ag-osum__main">
               <div className="ag-osum__name">
                 {line.href ? (
-                  <a href={line.href} onClick={line.onClick}>
+                  <Link href={line.href} onClick={line.onClick}>
                     {line.name}
-                  </a>
+                  </Link>
                 ) : (
                   line.name
                 )}

@@ -14,7 +14,7 @@ import {VF_DELIVERY, vfCheckoutRequest, vfDeliveryDate, vfTotals} from '../_shar
 import {VF_FA_DIGITS} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
-import {vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {
@@ -128,7 +128,6 @@ export class Component extends VFPage {
       topUpHref:
         (this.props.go ? '' : '../app/') +
         vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
-      topUpGo: this.props.go ? vfLinkHandler(this.props.go) : undefined,
       busy: s.busy,
       placeDisabled: s.busy || s.failed || done || (method === 'wallet' && !canUseBalance),
       failed: s.failed,

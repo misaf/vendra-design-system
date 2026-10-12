@@ -1,9 +1,11 @@
 import React from 'react';
+import {Button, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// A navigation link (or a button without `href`) in header, footer or menu style;
-// `current` marks it aria-current="page". The menu style adds a chevron.
+// A navigation link (React Aria Link; a React Aria Button without `href`) in header, footer or menu
+// style; `current` marks it aria-current="page". The menu style adds a chevron. In-site links go
+// through the app's RouterProvider.
 export function NavLink({
   href,
   current,
@@ -13,15 +15,14 @@ export function NavLink({
   className = '',
   ...rest
 }) {
-  const Element = href ? 'a' : 'button';
+  const Element = href ? Link : Button;
   return (
     <Element
+      {...rest}
       href={href}
-      type={href ? undefined : 'button'}
       onClick={onClick}
       aria-current={current ? 'page' : undefined}
       className={cx('ag-nav', 'ag-nav--' + variant, current && 'ag-nav--current', className)}
-      {...rest}
     >
       <span>{children}</span>
       {variant === 'menu' && <Icon name="chevron-right" size={18} className="ag-nav__chev" />}

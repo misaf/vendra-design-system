@@ -42,34 +42,18 @@ export function Shell({v, content, sticky}) {
               <header className="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
                 <div className="vf-shell-desktop-header tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
                   <nav className="tw:flex tw:gap-1 tw:flex-wrap">
-                    <DS.NavLink
-                      variant="header"
-                      href={v.href?.shop}
-                      onClick={v.go?.shop}
-                      current={v.nav?.shop}
-                    >
+                    <DS.NavLink variant="header" href={v.href?.shop} current={v.nav?.shop}>
                       <>{v.t?.shop}</>
                     </DS.NavLink>
-                    <DS.NavLink
-                      variant="header"
-                      href={v.href?.weddings}
-                      onClick={v.go?.weddings}
-                      current={v.nav?.weddings}
-                    >
+                    <DS.NavLink variant="header" href={v.href?.weddings} current={v.nav?.weddings}>
                       <>{v.t?.weddings}</>
                     </DS.NavLink>
-                    <DS.NavLink
-                      variant="header"
-                      href={v.href?.journal}
-                      onClick={v.go?.journal}
-                      current={v.nav?.journal}
-                    >
+                    <DS.NavLink variant="header" href={v.href?.journal} current={v.nav?.journal}>
                       <>{v.t?.journal}</>
                     </DS.NavLink>
                   </nav>
                   <a
                     href={v.href?.home}
-                    onClick={v.go?.home}
                     className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
                   >
                     <>{v.t?.brand}</>
@@ -83,23 +67,12 @@ export function Shell({v, content, sticky}) {
                         label={v.t?.langL}
                       />
                     </div>
-                    <DS.IconButton
-                      icon="search"
-                      label={v.t?.search}
-                      href={v.href?.search}
-                      onClick={v.go?.search}
-                    />
-                    <DS.IconButton
-                      icon="user"
-                      label={v.t?.account}
-                      href={v.href?.account}
-                      onClick={v.go?.account}
-                    />
+                    <DS.IconButton icon="search" label={v.t?.search} href={v.href?.search} />
+                    <DS.IconButton icon="user" label={v.t?.account} href={v.href?.account} />
                     <DS.IconButton
                       icon="shopping-bag"
                       label={v.bagLabel}
                       href={v.href?.bag}
-                      onClick={v.go?.bag}
                       count={v.bagCount}
                     />
                   </div>
@@ -125,23 +98,16 @@ export function Shell({v, content, sticky}) {
                   </div>
                   <a
                     href={v.href?.home}
-                    onClick={v.go?.home}
                     className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
                   >
                     <>{v.t?.brand}</>
                   </a>
                   <div className="vf-shell-mobile-tools tw:flex tw:justify-end">
-                    <DS.IconButton
-                      icon="search"
-                      label={v.t?.search}
-                      href={v.href?.search}
-                      onClick={v.go?.search}
-                    />
+                    <DS.IconButton icon="search" label={v.t?.search} href={v.href?.search} />
                     <DS.IconButton
                       icon="shopping-bag"
                       label={v.bagLabel}
                       href={v.href?.bag}
-                      onClick={v.go?.bag}
                       count={v.bagCount}
                     />
                   </div>
@@ -161,12 +127,7 @@ export function Shell({v, content, sticky}) {
                 <DS.MenuList label={v.t?.mainNav}>
                   {list(v.menuItems).map((it, $index) => (
                     <React.Fragment key={$index}>
-                      <DS.NavLink
-                        variant="menu"
-                        href={it?.href}
-                        current={it?.current}
-                        onClick={it?.go}
-                      >
+                      <DS.NavLink variant="menu" href={it?.href} current={it?.current}>
                         <>{it?.label}</>
                       </DS.NavLink>
                     </React.Fragment>
@@ -208,7 +169,6 @@ export function Shell({v, content, sticky}) {
                 <div className="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-[400px] tw:flex tw:flex-col tw:gap-4">
                   <a
                     href={v.href?.home}
-                    onClick={v.go?.home}
                     className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
                   >
                     <>{v.t?.brand}</>
@@ -312,7 +272,6 @@ export function Shell({v, content, sticky}) {
                     <React.Fragment key={$index}>
                       <a
                         href={l?.href}
-                        onClick={l?.go}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
                         <>{l?.label}</>
@@ -334,7 +293,6 @@ export function Shell({v, content, sticky}) {
                     <React.Fragment key={$index}>
                       <a
                         href={l?.href}
-                        onClick={l?.go}
                         aria-current={l?.current}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
@@ -355,7 +313,6 @@ export function Shell({v, content, sticky}) {
                   </div>
                   <a
                     href={v.href?.faq}
-                    onClick={v.go?.faq}
                     aria-current={v.footer?.faqCurrent}
                     className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                   >
@@ -365,7 +322,6 @@ export function Shell({v, content, sticky}) {
                     <React.Fragment key={$index}>
                       <a
                         href={p?.href}
-                        onClick={p?.go}
                         aria-current={p?.current}
                         className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                       >
@@ -473,7 +429,6 @@ export function Shell({v, content, sticky}) {
                     <>{v.t?.consent?.body} </>
                     <a
                       href={v.consent?.policy?.href}
-                      onClick={v.consent?.policy?.go}
                       className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                     >
                       <>{v.t?.consent?.policy}</>
@@ -529,7 +484,6 @@ export function Shell({v, content, sticky}) {
                           <>{v.t?.consent?.body} </>
                           <a
                             href={v.consent?.policy?.href}
-                            onClick={v.consent?.policy?.go}
                             className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                           >
                             <>{v.t?.consent?.policy}</>

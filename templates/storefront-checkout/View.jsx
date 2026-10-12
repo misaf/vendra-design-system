@@ -71,7 +71,6 @@ export function View({v}) {
                             size="sm"
                             iconStart="banknote"
                             href={v.topUpHref}
-                            onClick={v.topUpGo}
                           >
                             <>{v.topUpLabel}</>
                           </DS.Button>
@@ -257,12 +256,7 @@ export function View({v}) {
                                 <>{v.accountBody}</>
                               </p>
                             </div>
-                            <DS.Button
-                              variant="secondary"
-                              iconStart="user"
-                              href={v.href?.signin}
-                              onClick={v.go?.signin}
-                            >
+                            <DS.Button variant="secondary" iconStart="user" href={v.href?.signin}>
                               <>{v.t?.accountCta}</>
                             </DS.Button>
                           </div>
@@ -271,15 +265,10 @@ export function View({v}) {
                     </>
                   ) : null}
                   <div className="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center">
-                    <DS.Button
-                      variant="primary"
-                      iconStart="package-search"
-                      href={v.href?.track}
-                      onClick={v.go?.track}
-                    >
+                    <DS.Button variant="primary" iconStart="package-search" href={v.href?.track}>
                       <>{v.t?.track}</>
                     </DS.Button>
-                    <DS.Button variant="secondary" href={v.href?.shop} onClick={v.go?.shop}>
+                    <DS.Button variant="secondary" href={v.href?.shop}>
                       <>{v.t?.keep}</>
                     </DS.Button>
                   </div>

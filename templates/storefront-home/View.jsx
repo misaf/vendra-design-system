@@ -26,13 +26,7 @@ export function View({v}) {
                   <>{v.t?.heroP}</>
                 </p>
                 <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                  <DS.Button
-                    variant="primary"
-                    size="lg"
-                    iconEnd="arrow-right"
-                    href={v.href?.shop}
-                    onClick={v.go?.shop}
-                  >
+                  <DS.Button variant="primary" size="lg" iconEnd="arrow-right" href={v.href?.shop}>
                     <>{v.t?.cta}</>
                   </DS.Button>
                   <DS.Button
@@ -68,7 +62,6 @@ export function View({v}) {
                       count={c?.count}
                       frame={v.frame}
                       href={c?.href}
-                      onClick={c?.go}
                     />
                   </React.Fragment>
                 ))}
@@ -102,7 +95,6 @@ export function View({v}) {
                       favorite={p?.fav}
                       onFavorite={p?.toggleFav}
                       href={p?.href}
-                      onClick={p?.go}
                     />
                   </React.Fragment>
                 ))}

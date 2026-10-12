@@ -31,13 +31,7 @@ export function View({v}) {
                     onChange={v.setQ}
                   />
                 </div>
-                <DS.IconButton
-                  icon="x"
-                  label={v.t?.close}
-                  variant="outline"
-                  href={v.href?.home}
-                  onClick={v.go?.home}
-                />
+                <DS.IconButton icon="x" label={v.t?.close} variant="outline" href={v.href?.home} />
               </div>
               {v.empty ? (
                 <>
@@ -70,7 +64,6 @@ export function View({v}) {
                       <React.Fragment key={$index}>
                         <a
                           href={r?.href}
-                          onClick={r?.go}
                           className="vf-search-result vf-search-row tw:grid tw:[grid-template-columns:48px_minmax(0,1fr)_auto] tw:gap-4 tw:items-center tw:py-3 tw:px-0 tw:[border-top:1px_solid_var(--border-subtle)] tw:text-body! tw:no-underline! tw:hover:bg-sunken"
                         >
                           <div className="vf-search-thumbnail tw:w-7 tw:flex-none">
@@ -115,7 +108,7 @@ export function View({v}) {
                       <DS.Button variant="primary" onClick={v.clearSearch}>
                         <>{v.t?.tryAgain}</>
                       </DS.Button>
-                      <DS.Button variant="secondary" href={v.href?.shop} onClick={v.go?.shop}>
+                      <DS.Button variant="secondary" href={v.href?.shop}>
                         <>{v.t?.browse}</>
                       </DS.Button>
                     </div>

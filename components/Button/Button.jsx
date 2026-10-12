@@ -1,10 +1,11 @@
 import React from 'react';
-import {Button as AriaButton} from 'react-aria-components';
+import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// href → <a> (navigation); no href → React Aria's Button (action), with the usual props (onClick,
-// type, disabled, aria-*). A disabled link drops its href and gets aria-disabled.
+// href → React Aria's Link (navigation; in-site links go through the app's RouterProvider); no href
+// → React Aria's Button (action), with onClick, type, disabled and the ARIA button attributes. A
+// disabled link renders without its href, aria-disabled.
 // loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
 // keeps focus but can't be pressed); loadingLabel is announced to screen readers.
 export function Button({
@@ -25,11 +26,6 @@ export function Button({
   autoFocus,
   ...rest
 }) {
-  // React focuses only form controls on autoFocus, so a link focuses itself when it mounts.
-  const linkRef = React.useRef(null);
-  React.useEffect(() => {
-    if (autoFocus && linkRef.current) linkRef.current.focus();
-  }, []);
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 20 : 18;
   const classes = cx(
     'ag-btn',
@@ -61,17 +57,17 @@ export function Button({
   );
   if (href != null)
     return (
-      <a
-        ref={linkRef}
-        href={disabled || loading ? undefined : href}
+      <Link
+        {...rest}
+        href={href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
-        aria-disabled={disabled || loading || undefined}
+        isDisabled={disabled || loading}
+        autoFocus={autoFocus}
         className={classes + (disabled || loading ? ' ag-btn--disabled' : '')}
-        {...rest}
       >
         {content}
-      </a>
+      </Link>
     );
   return (
     <AriaButton {...rest} type={type} isDisabled={disabled} isPending={loading} className={classes}>

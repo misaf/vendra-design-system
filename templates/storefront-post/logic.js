@@ -5,7 +5,7 @@ import {VFPage} from '../app/runtime.jsx';
 import {vfCopy} from './copy.js';
 import {vfProduct, vfProductImage} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 export class Component extends VFPage {
   state = {
     copied: false
@@ -90,7 +90,6 @@ export class Component extends VFPage {
                 post: p.id,
                 lang: L
               }),
-            go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
             title: p[L][0],
             excerpt: p[L][1],
             meta: (fa ? c[2] : c[1]) + ' · ' + p[L][2]

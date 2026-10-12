@@ -37,7 +37,6 @@ export function View({v}) {
                         favorite={true}
                         onFavorite={p?.remove}
                         href={p?.href}
-                        onClick={p?.go}
                       />
                     </React.Fragment>
                   ))}
@@ -53,7 +52,7 @@ export function View({v}) {
                     titleAccent={v.t?.emptyB}
                     body={v.t?.emptyP}
                   />
-                  <DS.Button variant="primary" href={v.href?.shop} onClick={v.go?.shop}>
+                  <DS.Button variant="primary" href={v.href?.shop}>
                     <>{v.t?.browse}</>
                   </DS.Button>
                 </div>

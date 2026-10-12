@@ -21,20 +21,10 @@ export function View({v}) {
                 headingLevel={1}
               />
               <div className="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center">
-                <DS.Button
-                  variant="primary"
-                  iconStart="house"
-                  href={v.href?.home}
-                  onClick={v.go?.home}
-                >
+                <DS.Button variant="primary" iconStart="house" href={v.href?.home}>
                   <>{v.t?.home}</>
                 </DS.Button>
-                <DS.Button
-                  variant="secondary"
-                  iconStart="search"
-                  href={v.href?.search}
-                  onClick={v.go?.search}
-                >
+                <DS.Button variant="secondary" iconStart="search" href={v.href?.search}>
                   <>{v.t?.search}</>
                 </DS.Button>
               </div>
@@ -53,7 +43,6 @@ export function View({v}) {
                       placeholder={v.t?.photo}
                       favLabel={v.t?.save}
                       href={p?.href}
-                      onClick={p?.go}
                     />
                   </React.Fragment>
                 ))}

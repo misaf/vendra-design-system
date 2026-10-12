@@ -207,19 +207,17 @@ export class Component extends VFPage {
         this.setState({
           added: null
         }),
-      checkout: e => {
+      // Closes the panel; the link itself goes to the bag.
+      checkout: () =>
         this.setState({
           added: null
-        });
-        if (S.go.bag) S.go.bag(e);
-      },
+        }),
       toast: s.toast && {
         title: s.toast.title,
         action: s.toast.saving
           ? {
               label: C.viewSaved,
-              href: S.href.saved,
-              onClick: S.go.saved
+              href: S.href.saved
             }
           : undefined,
         close: () => this._hideToast()

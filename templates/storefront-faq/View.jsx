@@ -65,7 +65,7 @@ export function View({v}) {
                       >
                         <>{v.t?.whatsapp}</>
                       </DS.Button>
-                      <DS.Button variant="ghost" href={v.href?.contact} onClick={v.go?.contact}>
+                      <DS.Button variant="ghost" href={v.href?.contact}>
                         <>{v.t?.contactUs}</>
                       </DS.Button>
                     </div>

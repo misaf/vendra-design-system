@@ -1,5 +1,6 @@
 // The click-through site: the routed page, the shared bag and saved items.
 import React from 'react';
+import {RouterProvider} from 'react-aria-components';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.jsx';
 import StorefrontAccount from '../storefront-account/Page.jsx';
@@ -22,7 +23,7 @@ import StorefrontWeddings from '../storefront-weddings/Page.jsx';
 
 export function View({v}) {
   return (
-    <>
+    <RouterProvider navigate={v.routerNavigate}>
       <DS.LiveRegion>
         <>{v.announcement}</>
       </DS.LiveRegion>
@@ -252,6 +253,6 @@ export function View({v}) {
           />
         </>
       ) : null}
-    </>
+    </RouterProvider>
   );
 }

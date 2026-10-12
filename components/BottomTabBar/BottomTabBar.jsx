@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from 'react-aria-components';
+import {Button, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
-// The phone tab bar. Items with `href` are links (aria-current="page" when current); the rest
+// The phone tab bar. Items with `href` are React Aria links (aria-current="page" when current); the rest
 // are React Aria buttons. `count` shows a badge on the icon.
 export function BottomTabBar({items = [], label, className = ''}) {
   return (
@@ -24,7 +24,7 @@ export function BottomTabBar({items = [], label, className = ''}) {
           return (
             <li key={item.id}>
               {item.href ? (
-                <a
+                <Link
                   href={item.href}
                   target={item.target}
                   rel={item.rel ?? (item.target === '_blank' ? 'noopener noreferrer' : undefined)}
@@ -33,7 +33,7 @@ export function BottomTabBar({items = [], label, className = ''}) {
                   onClick={item.onClick}
                 >
                   {content}
-                </a>
+                </Link>
               ) : (
                 <Button className={classes} aria-current={current} onClick={item.onClick}>
                   {content}

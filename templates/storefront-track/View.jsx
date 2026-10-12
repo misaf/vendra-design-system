@@ -66,7 +66,7 @@ export function View({v}) {
                   >
                     <>{v.t?.lookup?.submit}</>
                   </DS.Button>
-                  <DS.Button variant="ghost" href={v.href?.shop} onClick={v.go?.shop}>
+                  <DS.Button variant="ghost" href={v.href?.shop}>
                     <>{v.t?.browse}</>
                   </DS.Button>
                 </form>

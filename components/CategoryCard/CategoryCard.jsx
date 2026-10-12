@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from 'react-aria-components';
+import {Button, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
@@ -40,9 +40,9 @@ export function CategoryCard({
   );
   if (href)
     return (
-      <a href={href} className={cx('ag-cat', className)} onClick={onClick}>
+      <Link href={href} className={cx('ag-cat', className)} onClick={onClick}>
         {inner}
-      </a>
+      </Link>
     );
   return (
     <Button className={cx('ag-cat', className)} onClick={onClick}>

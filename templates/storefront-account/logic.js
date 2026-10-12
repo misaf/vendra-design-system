@@ -15,7 +15,7 @@ import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
-import {VF_ACCOUNT_TABS, vfLinkHandler, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {
   vfBalanceDiscountOn,
@@ -370,7 +370,6 @@ export class Component extends VFPage {
             id: o.id,
             lang: L
           }),
-        go: this.props.go ? vfLinkHandler(this.props.go) : undefined,
         id: o.id,
         status: (C.status[o.status] || [
           o.status === 'cancelled'

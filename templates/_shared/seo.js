@@ -74,16 +74,6 @@
   const hrefFor = (state = {}, screen = 'home', extra = {}) =>
     routeParams({lang: state.lang, view: screen, ...extra});
   // One click handler for every internal <a href>. Modified / middle clicks and target=_blank fall through to the browser.
-  const linkHandler = go => e => {
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
-      return;
-    const a = e.currentTarget;
-    if (!a || !a.href || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
-    const u = new URL(a.href, location.href);
-    if (u.origin !== location.origin || u.pathname !== location.pathname) return;
-    e.preventDefault();
-    go(readRoute(u.search), e);
-  };
   const isNoindex = view => NOINDEX.has(view);
 
   const abs = u => {
@@ -156,7 +146,6 @@
     readRoute,
     routeParams,
     hrefFor,
-    linkHandler,
     isNoindex,
     syncHead
   };

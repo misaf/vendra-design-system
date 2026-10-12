@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button} from 'react-aria-components';
+import {Button, Link} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 
-// The product name is the one interactive target: <a href> (or a React Aria button without href) with a stretched ::after covering the card.
+// The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
 export function ProductCard({
   name,
   subtitle,
@@ -52,9 +52,9 @@ export function ProductCard({
     (typeof name === 'string' && typeof price === 'string' ? name + ' — ' + price : undefined);
   const linked = !!(href || onClick);
   const title = href ? (
-    <a href={href} className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
+    <Link href={href} className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
       {name}
-    </a>
+    </Link>
   ) : onClick ? (
     <Button className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
       {name}

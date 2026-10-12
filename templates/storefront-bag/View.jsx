@@ -89,11 +89,7 @@ export function View({v}) {
                                   {list(v.problems).map((p, $index) => (
                                     <React.Fragment key={$index}>
                                       <li>
-                                        <a
-                                          href={p?.href}
-                                          onClick={p?.go}
-                                          className="tw:text-inherit tw:underline"
-                                        >
+                                        <a href={p?.href} className="tw:text-inherit tw:underline">
                                           <>{p?.text}</>
                                         </a>
                                       </li>

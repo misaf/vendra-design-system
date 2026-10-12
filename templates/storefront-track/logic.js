@@ -151,7 +151,7 @@ export class Component extends VFPage {
             this.props.store.reorder(order);
             this.props.go('bag');
           }
-        : S.go.bag,
+        : undefined,
       t: {
         ...S.t,
         ...C,

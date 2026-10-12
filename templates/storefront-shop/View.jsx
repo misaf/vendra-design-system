@@ -252,7 +252,6 @@ export function View({v}) {
                             favorite={p?.fav}
                             onFavorite={p?.toggleFav}
                             href={p?.href}
-                            onClick={p?.go}
                           />
                         </React.Fragment>
                       ))}

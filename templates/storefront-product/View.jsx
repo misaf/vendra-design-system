@@ -15,11 +15,7 @@ export function View({v}) {
               aria-label={v.t?.crumbs}
               className="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"
             >
-              <a
-                href={v.href?.shop}
-                onClick={v.go?.shop}
-                className="vf-product-breadcrumb-link tw:text-quiet!"
-              >
+              <a href={v.href?.shop} className="vf-product-breadcrumb-link tw:text-quiet!">
                 <>{v.t?.shop}</>
               </a>
               <span>{'\u00b7'}</span>
@@ -204,7 +200,6 @@ export function View({v}) {
                           favorite={p?.fav}
                           onFavorite={p?.toggleFav}
                           href={p?.href}
-                          onClick={p?.go}
                         />
                       </React.Fragment>
                     ))}
