@@ -145,7 +145,7 @@ function page(name, c, props = {}) {
   assert.equal(reorder.length, 1);
   assert.equal(reorder[0].unit, 5050000);
   const checkout = page('checkout', c, {routeInfo: {view: 'checkout', demo: 'error'}});
-  checkout.renderVals().setMethod({target: {value: 'online'}});
+  checkout.renderVals().setMethod('online');
   checkout.renderVals().place();
   assert.equal(checkout.state.busy, true);
   timers.pop()();
@@ -191,7 +191,7 @@ function page(name, c, props = {}) {
     },
     order: null
   };
-  cod.renderVals().setMethod({target: {value: 'cod'}});
+  cod.renderVals().setMethod('cod');
   cod.renderVals().place();
   assert.equal(cod.state.order, null);
   const codOption = cod.renderVals().methodOptions.find(o => o.value === 'cod');

@@ -1,51 +1,50 @@
 import React from 'react';
+import {Focusable, Tooltip as AriaTooltip, TooltipTrigger} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
 
-// WCAG 1.4.13: the bubble describes its trigger (aria-describedby), stays open while the pointer is over it, and Esc dismisses it until the pointer or focus leaves.
+// A tooltip on React Aria (WCAG 1.4.13): it shows on hover and keyboard focus, describes its trigger
+// (aria-describedby) while shown, and Esc dismisses it. React Aria ignores touch, so a tap on the
+// trigger toggles it too, and a tap anywhere else hides it. The trigger is a React Aria button
+// (Button, IconButton) or a native focusable element.
 export function Tooltip({content, placement = 'top', open, children}) {
-  const bubbleId = React.useId();
-  const [hover, setHover] = React.useState(false);
-  const [focus, setFocus] = React.useState(false);
-  const [dismissed, setDismissed] = React.useState(false);
-  const active = hover || focus;
+  const [tapped, setTapped] = React.useState(false);
+  const wrapperRef = React.useRef(null);
   React.useEffect(() => {
-    if (!active) return;
-    const onKeyDown = event => {
-      if (event.key === 'Escape') setDismissed(true);
+    if (!tapped) return;
+    const onPointerDown = event => {
+      if (!wrapperRef.current || !wrapperRef.current.contains(event.target)) setTapped(false);
     };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [active]);
-  React.useEffect(() => {
-    if (!active) setDismissed(false);
-  }, [active]);
-  // Template runtimes pass even a single child as an array, so unwrap a lone element before linking it.
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [tapped]);
+  // Template runtimes pass even a single child as an array, so unwrap a lone element first. A
+  // native element (a plain <button>) needs Focusable to reach React Aria's trigger props.
   const childList = React.Children.toArray(children);
   const onlyChild =
     childList.length === 1 && React.isValidElement(childList[0]) ? childList[0] : null;
-  const trigger = onlyChild
-    ? React.cloneElement(onlyChild, {
-        'aria-describedby': cx(onlyChild.props['aria-describedby'], bubbleId)
-      })
-    : children;
+  const trigger =
+    onlyChild && typeof onlyChild.type === 'string' ? <Focusable>{onlyChild}</Focusable> : children;
   return (
-    <span
-      className={cx('ag-tip', open && 'ag-tip--open', dismissed && 'ag-tip--dismissed')}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onFocus={() => setFocus(true)}
-      onBlur={event => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocus(false);
-      }}
+    <TooltipTrigger
+      isOpen={open || tapped ? true : undefined}
+      onOpenChange={isOpen => !isOpen && setTapped(false)}
+      delay={300}
+      closeDelay={200}
     >
-      {trigger}
       <span
-        id={bubbleId}
-        role="tooltip"
+        ref={wrapperRef}
+        className="ag-tip"
+        onPointerUp={event => event.pointerType === 'touch' && setTapped(shown => !shown)}
+      >
+        {trigger}
+      </span>
+      <AriaTooltip
+        placement={placement === 'bottom' ? 'bottom' : 'top'}
+        offset={8}
         className={cx('ag-tip__bubble', placement === 'bottom' && 'ag-tip__bubble--bottom')}
       >
         {content}
-      </span>
-    </span>
+      </AriaTooltip>
+    </TooltipTrigger>
   );
 }

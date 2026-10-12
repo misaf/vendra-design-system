@@ -343,7 +343,7 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
     .click();
   // The sample account's balance covers the order, so it pays from the balance by default.
   await expect(page.getByRole('radio', {name: 'Account balance'})).toBeChecked();
-  await page.getByRole('radio', {name: 'Card-to-card transfer'}).check();
+  await page.getByRole('radiogroup').getByText('Card-to-card transfer').click();
   await expect(page.locator('#vf-last4')).toBeVisible();
 });
 

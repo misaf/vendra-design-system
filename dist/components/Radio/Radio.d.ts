@@ -1,12 +1,16 @@
 import * as React from 'react';
-export interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface RadioProps {
   label?: React.ReactNode;
   /** Secondary muted line under the label, exposed as the accessible description (not part of the name) */
   description?: React.ReactNode;
-  name: string;
-  /** Helper text below, linked with aria-describedby (prefer ChoiceGroup/fieldset error for groups) */
-  hint?: React.ReactNode;
-  /** Error: danger ring, aria-invalid, aria-errormessage → hint */
-  error?: React.ReactNode;
+  /** What the RadioGroup's value becomes when this radio is chosen */
+  value: string;
+  disabled?: boolean;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  'aria-describedby'?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
+/** A React Aria radio. Place it inside <RadioGroup>, which holds the value, name, hint and error. */
 export declare function Radio(props: RadioProps): React.JSX.Element;

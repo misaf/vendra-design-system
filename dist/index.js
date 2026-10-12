@@ -41,6 +41,7 @@ export * from './components/PlacesMap/PlacesMap.js';
 export * from './components/ProductCard/ProductCard.js';
 export * from './components/QuantityInput/QuantityInput.js';
 export * from './components/Radio/Radio.js';
+export * from './components/RadioGroup/RadioGroup.js';
 export * from './components/RangeSlider/RangeSlider.js';
 export * from './components/ReminderRow/ReminderRow.js';
 export * from './components/SectionHeader/SectionHeader.js';

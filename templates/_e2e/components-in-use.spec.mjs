@@ -85,10 +85,10 @@ test('home arrivals scroll with the snap scroller', async ({page}, info) => {
 test('payment methods are radio buttons', async ({page}) => {
   await page.goto('/templates/storefront-checkout/StorefrontCheckout.dc.html');
   await expect(page.locator('#main')).toBeVisible();
-  const group = page.getByRole('group', {name: 'Choose a payment method'});
+  const group = page.getByRole('radiogroup', {name: 'Choose a payment method'});
   await expect(group.getByRole('radio')).toHaveCount(5);
   await expect(group.getByRole('radio', {name: 'Card-to-card transfer'})).toBeChecked();
-  await group.getByRole('radio', {name: 'Confirm on WhatsApp'}).check();
+  await group.getByText('Confirm on WhatsApp').click();
   await expect(page.locator('main h1')).toHaveText('Confirm on WhatsApp');
 });
 
@@ -103,9 +103,9 @@ test('the Sheba hint describes its button', async ({page}) => {
       sheba: 'IR000000000000000000000000'
     })
   );
-  const group = page.getByRole('group', {name: 'Choose a payment method'});
-  await group.getByRole('radio', {name: 'Online card demo'}).check();
-  await group.getByRole('radio', {name: 'Card-to-card transfer'}).check();
+  const group = page.getByRole('radiogroup', {name: 'Choose a payment method'});
+  await group.getByText('Online card demo').click();
+  await group.getByText('Card-to-card transfer').click();
   const info = page.getByRole('button', {name: 'About Sheba'});
   await info.hover();
   await expect(page.getByRole('tooltip')).toBeVisible();

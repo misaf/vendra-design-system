@@ -1,46 +1,27 @@
 import React from 'react';
-import {useField, FieldMessage} from '../Field/Field.jsx';
+import {Radio as AriaRadio, RadioGroup, RadioGroupStateContext} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
 
-// A native radio inside its <label>. The label alone names the radio; the description is read
-// after it (aria-describedby), so it never becomes part of the name.
-export function Radio({
-  label,
-  description,
-  hint,
-  error,
-  disabled,
-  id,
-  className,
-  style,
-  'aria-describedby': describedBy,
-  ...rest
-}) {
-  const {fieldId, messageId, message, controlProps} = useField({id, hint, error});
-  const labelId = fieldId + '-label';
-  const descriptionId = fieldId + '-desc';
+// One radio (React Aria) inside a RadioGroup, which holds the value and the keyboard. The label
+// alone names the radio; the description is read after it, so it never becomes part of the name.
+export function Radio({label, description, value, disabled, className, style, ...rest}) {
+  const radioId = React.useId();
+  const labelId = radioId + '-label';
+  const descriptionId = radioId + '-desc';
   const namedByLabel = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
-  const box = (
-    <label
-      className={cx(
-        'ag-check ag-check--radio',
-        error && 'ag-check--error',
-        disabled && 'ag-check--disabled',
-        !message && className
-      )}
-      style={message ? undefined : style}
+  const group = React.useContext(RadioGroupStateContext);
+  const radio = (
+    <AriaRadio
+      {...rest}
+      value={String(value ?? radioId)}
+      isDisabled={disabled}
+      aria-labelledby={namedByLabel ? labelId : rest['aria-labelledby']}
+      aria-describedby={cx(description && descriptionId, rest['aria-describedby']) || undefined}
+      className={({isDisabled}) =>
+        cx('ag-check ag-check--radio', isDisabled && 'ag-check--disabled', className)
+      }
+      style={style}
     >
-      <input
-        type="radio"
-        id={id}
-        disabled={disabled}
-        {...rest}
-        {...controlProps}
-        aria-labelledby={namedByLabel ? labelId : rest['aria-labelledby']}
-        aria-describedby={
-          cx(description && descriptionId, message && messageId, describedBy) || undefined
-        }
-      />
       <span className="ag-check__box"></span>
       <span className="ag-check__text">
         <span id={labelId}>{label}</span>
@@ -50,15 +31,10 @@ export function Radio({
           </span>
         )}
       </span>
-    </label>
+    </AriaRadio>
   );
-  if (!message) return box;
-  return (
-    <div className={cx('ag-field ag-field--check', className)} style={style}>
-      {box}
-      <FieldMessage id={messageId} error={!!error}>
-        {message}
-      </FieldMessage>
-    </div>
-  );
+  if (group) return radio;
+  // A React Aria radio needs its group: one outside RadioGroup gets one of its own (and no arrow
+  // keys to its neighbours), so wrap related radios in RadioGroup.
+  return <RadioGroup aria-labelledby={labelId}>{radio}</RadioGroup>;
 }

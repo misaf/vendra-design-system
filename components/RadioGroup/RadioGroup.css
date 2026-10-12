@@ -1,0 +1,6 @@
+/* RadioGroup: radios stacked in a column. */
+.ag-radios {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

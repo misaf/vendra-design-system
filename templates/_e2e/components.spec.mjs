@@ -9,43 +9,59 @@ test.beforeEach(async ({page}) => {
   await expect(page.locator('[data-test=tabs]').getByRole('tablist')).toBeVisible();
 });
 
-test.describe('Tooltip (WCAG 1.4.13)', () => {
-  test('describes its trigger', async ({page}) => {
+// React Aria counts hover as pointer input once the mouse has moved on the page, as it always has
+// for a person; Playwright's hover jumps straight onto the trigger.
+const hover = async (page, locator) => {
+  await page.mouse.move(1, 1);
+  await locator.hover();
+};
+
+test.describe('Tooltip (WCAG 1.4.13, React Aria)', () => {
+  test('describes its trigger while shown', async ({page}) => {
     const trigger = page.getByRole('button', {name: 'Save'});
-    const tip = page.getByRole('tooltip');
-    await expect(trigger).toHaveAttribute('aria-describedby', await tip.getAttribute('id'));
+    await expect(page.getByRole('tooltip')).toHaveCount(0);
+    await hover(page, trigger);
+    await expect(page.getByRole('tooltip')).toHaveText('Save to favourites');
     await expect(trigger).toHaveAccessibleDescription('Save to favourites');
   });
 
-  test('shows on hover, stays while hovering the bubble, Esc dismisses until the pointer leaves', async ({
-    page
-  }) => {
+  test('shows on hover, stays while hovering the bubble, Esc dismisses it', async ({page}) => {
     const trigger = page.getByRole('button', {name: 'Save'});
     const tip = page.getByRole('tooltip');
-    await expect(tip).toHaveCSS('opacity', '0');
-    await trigger.hover();
-    await expect(tip).toHaveCSS('opacity', '1');
+    await hover(page, trigger);
+    await expect(tip).toBeVisible();
     await tip.hover();
-    await expect(tip).toHaveCSS('opacity', '1');
+    await expect(tip).toBeVisible();
     await page.keyboard.press('Escape');
-    await expect(tip).toHaveCSS('opacity', '0');
-    await trigger.hover();
-    await expect(tip).toHaveCSS('opacity', '0');
+    await expect(tip).toHaveCount(0);
     await page.mouse.move(0, 0);
-    await trigger.hover();
-    await expect(tip).toHaveCSS('opacity', '1');
+    await hover(page, trigger);
+    await expect(tip).toBeVisible();
   });
 
   test('shows on keyboard focus and hides on blur', async ({page}) => {
     const tip = page.getByRole('tooltip');
     await page.keyboard.press('Tab');
     await expect(page.getByRole('button', {name: 'Save'})).toBeFocused();
-    await expect(tip).toHaveCSS('opacity', '1');
+    await expect(tip).toBeVisible();
     await page.keyboard.press('Escape');
-    await expect(tip).toHaveCSS('opacity', '0');
+    await expect(tip).toHaveCount(0);
     await page.keyboard.press('Tab');
+    await expect(tip).toHaveCount(0);
     await page.keyboard.press('Shift+Tab');
-    await expect(tip).toHaveCSS('opacity', '1');
+    await expect(tip).toBeVisible();
+  });
+
+  test('a tap toggles it on touch screens', async ({browser}) => {
+    const context = await browser.newContext({hasTouch: true});
+    const page = await context.newPage();
+    await page.goto(FIXTURE);
+    const tip = page.getByRole('tooltip');
+    await page.getByRole('button', {name: 'Save'}).tap();
+    await expect(tip).toBeVisible();
+    await page.locator('body').tap({position: {x: 5, y: 5}});
+    await expect(tip).toHaveCount(0);
+    await context.close();
   });
 });
 
@@ -182,6 +198,25 @@ test.describe('DatePicker (React Aria calendar)', () => {
   }
 });
 
+test.describe('RadioGroup (React Aria)', () => {
+  test('one Tab stop; arrows skip disabled radios; label alone names a radio', async ({page}) => {
+    const group = page.getByRole('radiogroup', {name: 'Payment'});
+    const card = group.getByRole('radio', {name: 'Card', exact: true});
+    await expect(card).toBeChecked();
+    await expect(card).toHaveAccessibleDescription('Transfer');
+    await card.focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(group.getByRole('radio', {name: 'WhatsApp'})).toBeChecked();
+    await expect(page.locator('output[data-test=pay]')).toHaveText('wa');
+    // Tab leaves the group: the radios are one stop.
+    await page.keyboard.press('Tab');
+    await expect(group.getByRole('radio', {name: 'Card', exact: true})).not.toBeFocused();
+    await expect(group.locator('input:focus')).toHaveCount(0);
+    await group.getByText('Card').click();
+    await expect(page.locator('output[data-test=pay]')).toHaveText('card');
+  });
+});
+
 test.describe('Toast', () => {
   test('close button is a 44px target and works', async ({page}) => {
     const close = page.getByRole('button', {name: 'Dismiss'});
@@ -206,8 +241,10 @@ test.describe('Toast', () => {
 });
 
 test.describe('Reduced motion', () => {
-  const tipDuration = page =>
-    page.getByRole('tooltip').evaluate(el => getComputedStyle(el).transitionDuration);
+  const tipDuration = async page => {
+    await hover(page, page.getByRole('button', {name: 'Save'}));
+    return page.getByRole('tooltip').evaluate(el => getComputedStyle(el).transitionDuration);
+  };
 
   test('motion tokens keep their durations by default', async ({page}) => {
     await expect.poll(() => tipDuration(page)).toBe('0.14s, 0.14s');

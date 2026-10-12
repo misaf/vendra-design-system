@@ -114,13 +114,13 @@ class Component extends VFPage {
         value: id,
         label,
         description: id === 'cod' && !codOk ? P.codOff : id === 'wallet' ? walletNote : undefined,
-        checked: id === method,
         disabled: s.busy || (id === 'cod' && !codOk) || (id === 'wallet' && !canUseBalance)
       })),
-      setMethod: e =>
+      method,
+      setMethod: value =>
         !s.busy &&
         this.setState({
-          method: e.target.value,
+          method: value,
           err: false,
           failed: false
         }),
