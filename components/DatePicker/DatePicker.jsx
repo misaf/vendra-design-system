@@ -150,8 +150,7 @@ export function DatePicker({
     }
   };
   // Changing year or month clamps the day (Mehr 30 → Esfand 1404 = 29). Never rolls over into the next month.
-  const onPartChange = part => event => {
-    const selected = event.target.value;
+  const onPartChange = part => selected => {
     const next = {...draft, [part]: selected ? +selected : undefined};
     if (next.day && next.month) next.day = Math.min(next.day, daysIn(next));
     setDraft(next);

@@ -26,7 +26,6 @@ export function LineItem({ image, srcSet, name, meta, note, price, quantity, onQ
 		value: quantity,
 		disabled: busy,
 		onChange: onQuantityChange,
-		format: formatQuantity,
 		labels: quantityLabels
 	}), onRemove && /* @__PURE__ */ React.createElement(Button, {
 		className: "ag-line__remove",

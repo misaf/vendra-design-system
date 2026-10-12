@@ -356,9 +356,9 @@ class Component extends VFPage {
       })),
       process: C.steps,
       guests: s.guests,
-      setGuests: e =>
+      setGuests: value =>
         this.setState({
-          guests: e.target.value
+          guests: value
         }),
       wDate: s.wDate,
       setWDate: v =>
@@ -384,9 +384,9 @@ class Component extends VFPage {
       apiError: s.apiError,
       busy: s.busy,
       email: s.email,
-      setEmail: e =>
+      setEmail: value =>
         this.setState({
-          email: e.target.value,
+          email: value,
           apiError: ''
         }),
       sent: s.sent,
@@ -398,33 +398,33 @@ class Component extends VFPage {
         S.focus('vf-wname');
       },
       name: s.name,
-      setName: e =>
+      setName: value =>
         this.setState({
-          name: e.target.value,
+          name: value,
           e1: false
         }),
       nameErr: s.e1 ? C.nameErr : undefined,
       phone: s.phone,
-      setPhone: e =>
+      setPhone: value =>
         this.setState({
-          phone: e.target.value,
+          phone: value,
           e2: false
         }),
       phoneErr: s.e2 ? C.phoneErr : undefined,
       type: s.type,
       budget: s.budget,
-      setType: e =>
+      setType: value =>
         this.setState({
-          type: e.target.value
+          type: value
         }),
-      setBudget: e =>
+      setBudget: value =>
         this.setState({
-          budget: e.target.value
+          budget: value
         }),
       notes: s.notes,
-      setNotes: e =>
+      setNotes: value =>
         this.setState({
-          notes: e.target.value
+          notes: value
         }),
       types: C.types,
       budgets: C.budgets,

@@ -22,8 +22,14 @@ export function Button({
   disabled,
   loading,
   loadingLabel,
+  autoFocus,
   ...rest
 }) {
+  // React focuses only form controls on autoFocus, so a link focuses itself when it mounts.
+  const linkRef = React.useRef(null);
+  React.useEffect(() => {
+    if (autoFocus && linkRef.current) linkRef.current.focus();
+  }, []);
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 20 : 18;
   const classes = cx(
     'ag-btn',
@@ -56,6 +62,7 @@ export function Button({
   if (href != null)
     return (
       <a
+        ref={linkRef}
         href={disabled || loading ? undefined : href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}

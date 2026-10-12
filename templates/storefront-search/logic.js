@@ -33,9 +33,9 @@ class Component extends VFPage {
         S.focus('vf-q');
       },
       q: this.state.q,
-      setQ: e =>
+      setQ: value =>
         this.setState({
-          q: e.target.value
+          q: value
         }),
       empty: !q,
       hasResults: res.length > 0,

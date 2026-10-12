@@ -97,7 +97,7 @@ function page(name, c, props = {}) {
     phone: '۰۹۱۲۳۴۵۶۷۸۹',
     recipient: 'Demo'
   }))
-    account.renderVals().set[key]({target: {value}});
+    account.renderVals().set[key](value);
   account._setLocation({lat: 35.83, lng: 50.96});
   assert.equal(account.state.errors.location, undefined);
   account.renderVals().saveForm();
@@ -114,12 +114,12 @@ function page(name, c, props = {}) {
   v = account.renderVals();
   v.addReminder();
   v = account.renderVals();
-  v.setOccasion({target: {value: 'nowruz'}});
+  v.setOccasion('nowruz');
   v = account.renderVals();
   assert.equal(v.dateLocked, true);
   assert.equal(v.dateValue.m, 1);
   assert.equal(v.dateValue.d, 1);
-  v.set.name({target: {value: 'Test occasion'}});
+  v.set.name('Test occasion');
   account.renderVals().saveForm();
   assert.equal(c.vfAccountLoad('09123456789').reminders.length, 4);
   const normalized = c.vfNormalizeReminder({date: '2026-02-14', occ: 'birthday'});
@@ -152,7 +152,7 @@ function page(name, c, props = {}) {
   assert.equal(checkout.state.failed, true);
   assert.equal(checkout.state.order, null);
   checkout.renderVals().otherMethod();
-  checkout.renderVals().setLast4({target: {value: '۱۲۳۴'}});
+  checkout.renderVals().setLast4('۱۲۳۴');
   checkout.renderVals().place();
   assert.equal(checkout.state.order.method, 'card');
   assert.equal(checkout.state.order.preferredLocale, 'fa');
@@ -164,15 +164,15 @@ function page(name, c, props = {}) {
   assert.equal(c.VF_API.live, false);
   c.VF_API.setBase('https://example.test');
   const contact = page('contact', c);
-  contact.renderVals().setMsg({target: {value: 'Keep this draft'}});
-  contact.renderVals().setPhone({target: {value: '09121234567'}});
+  contact.renderVals().setMsg('Keep this draft');
+  contact.renderVals().setPhone('09121234567');
   await contact.renderVals().send();
   assert.equal(contact.state.sent, false);
   assert.equal(contact.state.msg, 'Keep this draft');
   assert.ok(contact.state.apiError);
   // With an API base, an order goes out as a Checkout request; a failed request places nothing.
   const live = page('checkout', c);
-  live.renderVals().setLast4({target: {value: '1234'}});
+  live.renderVals().setLast4('1234');
   live.renderVals().place();
   assert.equal(live.state.busy, true);
   await new Promise(resolve => setImmediate(resolve));

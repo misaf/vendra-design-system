@@ -40,9 +40,9 @@ class Component extends VFPage {
       // Greets the customer by first name when the account has one.
       okName: s.name ? s.name.trim().split(/\s+/)[0] + '.' : C.okB,
       phone,
-      setPhone: e =>
+      setPhone: value =>
         this.setState({
-          phone: e.target.value,
+          phone: value,
           phoneTouched: true,
           pErr: false
         }),

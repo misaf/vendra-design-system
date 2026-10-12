@@ -63,7 +63,6 @@ export function LineItem({
                   value={quantity}
                   disabled={busy}
                   onChange={onQuantityChange}
-                  format={formatQuantity}
                   labels={quantityLabels}
                 />
               )}

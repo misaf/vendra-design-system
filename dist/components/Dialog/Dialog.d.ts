@@ -10,8 +10,6 @@ export interface DialogProps {
   inline?: boolean;
   closeLabel?: string;
   maxWidth?: number | string;
-  /** CSS selector inside the dialog to focus on open. Default: first focusable in body/footer, else the close button. */
-  initialFocus?: string;
   /** start = full-height sheet sliding in from the inline-start edge (mobile menu drawer); stays pinned to the viewport while open. Default center. */
   placement?: 'center' | 'start';
 }

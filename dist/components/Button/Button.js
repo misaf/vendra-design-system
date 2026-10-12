@@ -8,7 +8,12 @@ import { cx } from "../utils/cx.js";
 // type, disabled, aria-*). A disabled link drops its href and gets aria-disabled.
 // loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
 // keeps focus but can't be pressed); loadingLabel is announced to screen readers.
-export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, ...rest }) {
+export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, autoFocus, ...rest }) {
+	// React focuses only form controls on autoFocus, so a link focuses itself when it mounts.
+	const linkRef = React.useRef(null);
+	React.useEffect(() => {
+		if (autoFocus && linkRef.current) linkRef.current.focus();
+	}, []);
 	const iconSize = size === "sm" ? 16 : size === "lg" ? 20 : 18;
 	const classes = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
 	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement("span", {
@@ -29,6 +34,7 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 		role: "status"
 	}, loadingLabel));
 	if (href != null) return /* @__PURE__ */ React.createElement("a", {
+		ref: linkRef,
 		href: disabled || loading ? undefined : href,
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),

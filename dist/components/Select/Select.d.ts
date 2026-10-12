@@ -4,12 +4,6 @@ export interface SelectOption {
   label: string;
   disabled?: boolean;
 }
-/** What onChange receives: the chosen option's value on target.value, as a native select's event. */
-export interface SelectChangeEvent {
-  target: {value: string; name?: string; id: string};
-  currentTarget: {value: string; name?: string; id: string};
-  type: 'change';
-}
 export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   'onChange' | 'defaultValue' | 'placeholder'
@@ -24,7 +18,7 @@ export interface SelectProps extends Omit<
   placeholder?: string;
   value?: string;
   defaultValue?: string;
-  onChange?: (event: SelectChangeEvent) => void;
+  onChange?: (value: string) => void;
   disabled?: boolean;
   required?: boolean;
   /** Form field name; React Aria keeps a hidden native select for forms and autofill */

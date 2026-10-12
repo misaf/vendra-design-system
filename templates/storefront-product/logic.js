@@ -102,12 +102,10 @@ class Component extends VFPage {
       sizes: VF_SIZES.map(item => ({
         label: item.name[L],
         desc: item.detail[L] + ' · ' + (item.price ? '+' + m(item.price) : C.labels.base),
-        on: s.size === item.id,
-        pick: () =>
-          this.setState({
-            size: item.id
-          })
+        value: item.id
       })),
+      size: s.size,
+      setSize: id => this.setState({size: id}),
       addons: availableAddons.map(addon => {
         const on = s.addons.includes(addon.id);
         return {
@@ -124,7 +122,6 @@ class Component extends VFPage {
         this.setState({
           qty: q
         }),
-      fmt: fa ? n => VF_FA_DIGITS(n) : n => String(n),
       qtyLabels: {
         dec: C.dec,
         inc: C.inc,

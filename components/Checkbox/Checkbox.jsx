@@ -5,9 +5,8 @@ import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 
 // A checkbox on React Aria: the label is the whole target, and the state shows as data-selected,
-// data-focus-visible and data-disabled on it. It takes the usual input props (checked,
-// defaultChecked, disabled, required, name, value, onChange(event)); onChange gets an event whose
-// target is the real checkbox, already set to its new state. With a hint or error, the pair is
+// data-focus-visible and data-disabled on it. It takes checked/defaultChecked, disabled, required,
+// name, value and onChange(checked). With a hint or error, the pair is
 // wrapped in .ag-field and the message is linked to the checkbox (see Field).
 export function Checkbox({
   label,
@@ -27,12 +26,10 @@ export function Checkbox({
   ...rest
 }) {
   const {messageId, message, controlProps} = useField({id, hint, error, describedBy});
-  const inputRef = React.useRef(null);
   const box = (
     <AriaCheckbox
       {...rest}
       id={id}
-      inputRef={inputRef}
       name={name}
       value={value}
       isSelected={checked}
@@ -42,10 +39,7 @@ export function Checkbox({
       isInvalid={!!error}
       aria-describedby={controlProps['aria-describedby']}
       aria-errormessage={controlProps['aria-errormessage']}
-      onChange={() =>
-        onChange &&
-        onChange({target: inputRef.current, currentTarget: inputRef.current, type: 'change'})
-      }
+      onChange={onChange}
       className={cx(
         'ag-check ag-check--checkbox',
         error && 'ag-check--error',

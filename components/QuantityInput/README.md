@@ -7,7 +7,6 @@ Pill − / value / + control for quantities in product page and bag, on React Ar
 <QuantityInput size="sm" />
 ```
 
-> Changed in 0.2: `format` is ignored (digits follow the page language) and `labels.value` names the count.
 
 ## Usage
 

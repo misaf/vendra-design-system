@@ -3,9 +3,6 @@ import {Dialog as AriaDialog, Heading, Modal, ModalOverlay} from 'react-aria-com
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 
-const FOCUSABLE =
-  'a[href],area[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex="-1"]),[contenteditable="true"]';
-
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({title, titleId, onClose, closeLabel, footer, children, heading}) {
   return (
@@ -28,8 +25,9 @@ function Content({title, titleId, onClose, closeLabel, footer, children, heading
 }
 
 // A modal dialog on React Aria: role="dialog" + aria-modal, labelled by its title. While open, the
-// page behind is hidden from screen readers and can't scroll, focus stays inside, Esc and a click
-// outside close it (when there is onClose), and focus returns to the opener. `inline` previews sit
+// page behind is hidden from screen readers and can't scroll, focus moves to the dialog (or to a
+// control inside marked autoFocus) and stays inside, Esc and a click outside close it (when there is
+// onClose), and focus returns to the opener. `inline` previews sit
 // inside their parent instead, without moving focus or locking the page (several can share a card).
 export function Dialog({
   open,
@@ -40,11 +38,9 @@ export function Dialog({
   inline,
   closeLabel = 'Close',
   maxWidth,
-  initialFocus,
   placement = 'center'
 }) {
   const titleId = React.useId();
-  const dialogRef = React.useRef(null);
   const sheet = placement === 'start';
   const overlayClass = cx(
     'ag-dialog__overlay',
@@ -53,21 +49,6 @@ export function Dialog({
   );
   const dialogClass = cx('ag-dialog', sheet && 'ag-dialog--sheet');
   const style = maxWidth ? {maxWidth} : undefined;
-
-  // First focus: the initialFocus selector, else the first control outside the head, else the close button.
-  React.useEffect(() => {
-    if (!open || inline) return;
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    const candidates = [...dialog.querySelectorAll(FOCUSABLE)].filter(
-      element => element.getClientRects().length
-    );
-    const first =
-      (initialFocus && dialog.querySelector(initialFocus)) ||
-      candidates.find(element => !element.closest('.ag-dialog__head')) ||
-      candidates[0];
-    if (first) first.focus({preventScroll: true});
-  }, [open, inline]);
 
   if (inline) {
     if (!open) return null;
@@ -101,7 +82,7 @@ export function Dialog({
       className={overlayClass}
     >
       <Modal className={dialogClass} style={style}>
-        <AriaDialog ref={dialogRef} className="ag-dialog__frame">
+        <AriaDialog className="ag-dialog__frame">
           <Content
             onClose={onClose}
             closeLabel={closeLabel}

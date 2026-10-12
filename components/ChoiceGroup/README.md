@@ -4,7 +4,7 @@ Grid wrapper for ChoiceTile on React Aria's RadioGroup: one Tab stop, arrow keys
 
 `legend="Delivery time"` renders `<fieldset><legend>` (legend labels the radiogroup). `hint` / `error` sit under the tiles and are linked to the radiogroup (`aria-describedby`, `aria-invalid`, `aria-errormessage`).
 
-Inside a form, give the group a `name` and each tile a `value`: the selected tile's value is posted under that name.
+The group holds the choice: `value`/`defaultValue` and `onChange(value)`, with a `value` on each tile. Inside a form, give the group a `name`: the selected tile's value is posted under it.
 
 ## Usage
 
@@ -14,18 +14,12 @@ Inside a form, give the group a `name` and each tile a `value`: the selected til
 
 # ChoiceTile
 
-Selectable tile for delivery slots and zones. Selected = ink fill. Wrap in ChoiceGroup (radiogroup + arrow keys).
+Selectable tile for delivery slots and zones. Selected = ink fill. Always inside ChoiceGroup (radiogroup + arrow keys), which holds the value.
 
 ```jsx
-<ChoiceGroup label="Delivery time" columns={2}>
+<ChoiceGroup label="Delivery time" columns={2} value={slot} onChange={setSlot}>
   {slots.map(s => (
-    <ChoiceTile
-      key={s.id}
-      label={s.label}
-      description={s.fee}
-      selected={slot === s.id}
-      onSelect={() => setSlot(s.id)}
-    />
+    <ChoiceTile key={s.id} value={s.id} label={s.label} description={s.fee} />
   ))}
 </ChoiceGroup>
 ```

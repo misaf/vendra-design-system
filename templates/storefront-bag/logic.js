@@ -106,25 +106,25 @@ class Component extends VFPage {
       onBag: !onDelivery,
       onDelivery,
       delivery,
-      setName: e =>
+      setName: value =>
         update({
-          name: e.target.value
+          name: value
         }),
-      setPhone: e =>
+      setPhone: value =>
         update({
-          phone: e.target.value
+          phone: value
         }),
-      setAddress: e =>
+      setAddress: value =>
         update({
-          address: e.target.value
+          address: value
         }),
-      setSender: e =>
+      setSender: value =>
         update({
-          sender: e.target.value
+          sender: value
         }),
-      setSenderPhone: e =>
+      setSenderPhone: value =>
         update({
-          senderPhone: e.target.value
+          senderPhone: value
         }),
       nameError: shown('name') ? errors.name : undefined,
       phoneError: shown('phone') ? errors.phone : undefined,
@@ -283,12 +283,10 @@ class Component extends VFPage {
         detail: l[L][1],
         value: l.card || '',
         error: missingCard(l) ? errors.card : undefined,
-        setCard: e =>
+        setCard: value =>
           st
-            ? st.setCard(l.id, e.target.value)
-            : this._lines(lines =>
-                lines.map(x => (x.id === l.id ? {...x, card: e.target.value} : x))
-              ),
+            ? st.setCard(l.id, value)
+            : this._lines(lines => lines.map(x => (x.id === l.id ? {...x, card: value} : x))),
         addLabel: C.addCard.replace('{price}', cardPrice),
         addAria: C.addCardLabel
           .replace('{price}', cardPrice)
@@ -300,9 +298,9 @@ class Component extends VFPage {
         }
       })),
       zone: delivery.zone,
-      setZone: e =>
+      setZone: value =>
         update({
-          zone: e.target.value
+          zone: value
         }),
       zoneHint: vfDeliveryHint(z, fa),
       zones: VF_ZONES.map(zone => ({
@@ -318,24 +316,23 @@ class Component extends VFPage {
             : day.pastCutoff
               ? C.pastCutoff.replace('{time}', vfDeliveryCutoff(z, fa))
               : vfDayMonth(day.date, fa),
-          on: day.iso === date,
-          off,
-          pick: () =>
-            update({
-              date: day.iso
-            })
+          value: day.iso,
+          off
         };
       }),
       slots: vfDeliverySlots(date).map(({start, end, closed}) => ({
         label: vfSlotLabel(start, end, fa),
         desc: closed ? C.slotClosed : undefined,
-        on: slot === start,
-        off: closed,
-        pick: () =>
-          update({
-            slot: start
-          })
+        value: String(start),
+        off: closed
       })),
+      date,
+      setDate: iso => update({date: iso}),
+      slot: slot == null ? null : String(slot),
+      setSlot: value => {
+        const chosen = vfDeliverySlots(date).find(({start}) => String(start) === value);
+        if (chosen) update({slot: chosen.start});
+      },
       summary: live.map(l => ({
         image: vfProductImage(l, L).src,
         name: vfLineToken(l),
@@ -344,9 +341,9 @@ class Component extends VFPage {
       })),
       totalLabel: m(total),
       promoDraft: s.promoDraft,
-      setPromoDraft: e =>
+      setPromoDraft: value =>
         this.setState({
-          promoDraft: e.target.value,
+          promoDraft: value,
           promoError: null
         }),
       applyPromo: e => {

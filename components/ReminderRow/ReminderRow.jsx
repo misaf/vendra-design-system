@@ -78,7 +78,7 @@ export function ReminderRow({
           )}
           <Switch
             checked={on}
-            onChange={event => onToggle && onToggle(event.target.checked)}
+            onChange={checked => onToggle && onToggle(checked)}
             aria-label={named(text.reminderFor)}
           />
           {onEdit && (

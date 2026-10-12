@@ -453,8 +453,8 @@ class Component extends VFPage {
       // Guests find an order with its number and the mobile used for it (the recipient's or their own).
       lookupId: ls.lookupId,
       lookupPhone: ls.lookupPhone,
-      setLookupId: e => this.setState({lookupId: e.target.value, lookupFailed: false}),
-      setLookupPhone: e => this.setState({lookupPhone: e.target.value, lookupFailed: false}),
+      setLookupId: value => this.setState({lookupId: value, lookupFailed: false}),
+      setLookupPhone: value => this.setState({lookupPhone: value, lookupFailed: false}),
       lookupIdError: lookupErrors.id,
       lookupPhoneError: lookupErrors.phone,
       lookupFailed: ls.lookupFailed,

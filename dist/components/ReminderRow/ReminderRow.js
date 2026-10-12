@@ -40,7 +40,7 @@ export function ReminderRow({ name, day, month, occasion, occasionIcon = "calend
 		onClick: sendOnClick
 	}, text.sendFlowers), /* @__PURE__ */ React.createElement(Switch, {
 		checked: on,
-		onChange: (event) => onToggle && onToggle(event.target.checked),
+		onChange: (checked) => onToggle && onToggle(checked),
 		"aria-label": named(text.reminderFor)
 	}), onEdit && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "pencil",

@@ -438,10 +438,10 @@ for (const lang of ['en', 'fa']) {
       .items.find(item => item.name === v.t.name);
     assert.equal(v.unitPrice, listing.price, 'Default product price must match the listing');
     if (id === 'VF-7K2M4Q') {
-      v.sizes[1].pick();
+      v.setSize(v.sizes[1].value);
       logic.renderVals().add();
       assert.equal(added.unit, 4900000, 'Classic surcharge remains selectable');
-      logic.renderVals().sizes[2].pick();
+      logic.renderVals().setSize(logic.renderVals().sizes[2].value);
       logic.renderVals().add();
       assert.equal(added.unit, 6000000, 'Generous surcharge remains selectable');
       logic._vfAnnounce = () => {};

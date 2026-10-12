@@ -1,12 +1,15 @@
 import * as React from 'react';
 import type {InputProps} from '../Input/Input.js';
-export interface CodeInputProps extends Omit<InputProps, 'type' | 'multiline' | 'maxLength'> {
+export interface CodeInputProps extends Omit<
+  InputProps,
+  'type' | 'multiline' | 'maxLength' | 'onChange'
+> {
   /** Digits in the code; default 5. */
   length?: number;
   /** The code so far: digits only. */
   value?: string;
   /** The cleaned code (Latin digits, at most `length`). */
-  onValueChange?: (code: string) => void;
+  onChange?: (code: string) => void;
   /** Runs once the code has `length` digits. Submitting from here is the form's choice. */
   onComplete?: (code: string) => void;
 }

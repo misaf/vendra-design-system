@@ -143,11 +143,11 @@ class Component extends VFPage {
       isReminder = f.kind === 'reminder',
       occasion = VF_OCCASIONS.find(o => o.id === f.occ);
     // Templates can't call functions, so each field gets its own handler.
-    const setField = k => e =>
+    const setField = k => value =>
       this.setState({
         form: {
           ...f,
-          [k]: e.target.value
+          [k]: value
         },
         errors: {
           ...s.errors,
@@ -293,7 +293,7 @@ class Component extends VFPage {
           pick: () => this.setState({topUp: String(value), topUpError: '', topUpDone: ''})
         })),
         value: s.topUp,
-        set: e => this.setState({topUp: e.target.value, topUpError: '', topUpDone: ''}),
+        set: value => this.setState({topUp: value, topUpError: '', topUpDone: ''}),
         hint: fill(W.amountHint),
         error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
         busy: s.topUpBusy,
@@ -398,11 +398,11 @@ class Component extends VFPage {
       setProfile: Object.fromEntries(
         ['name', 'email', 'locale', 'sms'].map(k => [
           k,
-          e =>
+          value =>
             this.setState({
               profile: {
                 ...profile,
-                [k]: k === 'sms' ? e.target.checked : e.target.value
+                [k]: value
               },
               errors: {}
             })
@@ -518,15 +518,15 @@ class Component extends VFPage {
             ...value
           }
         }),
-      setBefore: e =>
+      setBefore: value =>
         this.setState({
           form: {
             ...f,
-            before: +e.target.value
+            before: +value
           }
         }),
-      setOccasion: e => {
-        const o = VF_OCCASIONS.find(o => o.id === e.target.value);
+      setOccasion: value => {
+        const o = VF_OCCASIONS.find(o => o.id === value);
         let date = o.fixed || {};
         if (o.hijri) {
           const n = vfReminderNext({

@@ -1,4 +1,11 @@
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange' | 'value' | 'defaultValue'
+> {
+  value?: string;
+  defaultValue?: string;
+  /** The text as typed */
+  onChange?: (value: string) => void;
   label?: string;
   /** Helper text below the control, linked with aria-describedby="{id}-hint" */
   hint?: string;

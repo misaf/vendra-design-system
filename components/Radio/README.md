@@ -11,7 +11,6 @@ Round radio on React Aria, always inside a `RadioGroup` (which holds the value, 
 
 Screen readers name the radio by `label` alone and read `description` after it as its description.
 
-> Changed in 0.2: Radio no longer takes `name`, `checked`, `onChange` or `hint`/`error`; those move to RadioGroup. A Radio outside a RadioGroup still renders, in a group of its own.
 
 ## Usage
 

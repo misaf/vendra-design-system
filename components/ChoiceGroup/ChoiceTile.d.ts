@@ -1,11 +1,9 @@
 export interface ChoiceTileProps {
   label: React.ReactNode;
   description?: React.ReactNode;
-  selected?: boolean;
+  /** What the ChoiceGroup's value becomes when this tile is chosen (and what a form posts) */
+  value: string;
   disabled?: boolean;
-  onSelect?: () => void;
-  /** Posted under the ChoiceGroup's `name` when selected */
-  value?: string;
   /** sm = 44px, md = 56px */
   size?: 'sm' | 'md';
   className?: string;

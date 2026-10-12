@@ -113,8 +113,8 @@
 </section>
 <section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h" aria-labelledby="vf-when-title">
 <h2 id="vf-when-title" class="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.when }}</h2>
-<x-import component-from-global-scope="VendraDesignSystem.ChoiceGroup" legend="{{ t.day }}" min-tile-width="{{ 104 }}" hint-size="100%,96px"><sc-for list="{{ days }}" as="d" hint-placeholder-count="7"><x-import component-from-global-scope="VendraDesignSystem.ChoiceTile" size="sm" label="{{ d.label }}" description="{{ d.desc }}" selected="{{ d.on }}" disabled="{{ d.off }}" on-select="{{ d.pick }}" hint-size="100%,56px"></x-import></sc-for></x-import>
-<x-import component-from-global-scope="VendraDesignSystem.ChoiceGroup" legend="{{ t.slot }}" min-tile-width="{{ 130 }}" hint-size="100%,96px"><sc-for list="{{ slots }}" as="z" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem.ChoiceTile" size="sm" label="{{ z.label }}" description="{{ z.desc }}" selected="{{ z.on }}" disabled="{{ z.off }}" on-select="{{ z.pick }}" hint-size="100%,44px"></x-import></sc-for></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.ChoiceGroup" legend="{{ t.day }}" min-tile-width="{{ 104 }}" value="{{ date }}" on-change="{{ setDate }}" hint-size="100%,96px"><sc-for list="{{ days }}" as="d" hint-placeholder-count="7"><x-import component-from-global-scope="VendraDesignSystem.ChoiceTile" size="sm" value="{{ d.value }}" label="{{ d.label }}" description="{{ d.desc }}" disabled="{{ d.off }}" hint-size="100%,56px"></x-import></sc-for></x-import>
+<x-import component-from-global-scope="VendraDesignSystem.ChoiceGroup" legend="{{ t.slot }}" min-tile-width="{{ 130 }}" value="{{ slot }}" on-change="{{ setSlot }}" hint-size="100%,96px"><sc-for list="{{ slots }}" as="z" hint-placeholder-count="4"><x-import component-from-global-scope="VendraDesignSystem.ChoiceTile" size="sm" value="{{ z.value }}" label="{{ z.label }}" description="{{ z.desc }}" disabled="{{ z.off }}" hint-size="100%,44px"></x-import></sc-for></x-import>
 </section>
 <section class="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h" aria-labelledby="vf-cards-title">
 <div class="tw:flex tw:flex-col tw:gap-1"><h2 id="vf-cards-title" class="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">{{ t.cards }}</h2><p class="ag-field__hint tw:m-0">{{ t.cardHint }}</p></div>
@@ -539,25 +539,25 @@ class Component extends VFPage {
       onBag: !onDelivery,
       onDelivery,
       delivery,
-      setName: e =>
+      setName: value =>
         update({
-          name: e.target.value
+          name: value
         }),
-      setPhone: e =>
+      setPhone: value =>
         update({
-          phone: e.target.value
+          phone: value
         }),
-      setAddress: e =>
+      setAddress: value =>
         update({
-          address: e.target.value
+          address: value
         }),
-      setSender: e =>
+      setSender: value =>
         update({
-          sender: e.target.value
+          sender: value
         }),
-      setSenderPhone: e =>
+      setSenderPhone: value =>
         update({
-          senderPhone: e.target.value
+          senderPhone: value
         }),
       nameError: shown('name') ? errors.name : undefined,
       phoneError: shown('phone') ? errors.phone : undefined,
@@ -716,12 +716,10 @@ class Component extends VFPage {
         detail: l[L][1],
         value: l.card || '',
         error: missingCard(l) ? errors.card : undefined,
-        setCard: e =>
+        setCard: value =>
           st
-            ? st.setCard(l.id, e.target.value)
-            : this._lines(lines =>
-                lines.map(x => (x.id === l.id ? {...x, card: e.target.value} : x))
-              ),
+            ? st.setCard(l.id, value)
+            : this._lines(lines => lines.map(x => (x.id === l.id ? {...x, card: value} : x))),
         addLabel: C.addCard.replace('{price}', cardPrice),
         addAria: C.addCardLabel
           .replace('{price}', cardPrice)
@@ -733,9 +731,9 @@ class Component extends VFPage {
         }
       })),
       zone: delivery.zone,
-      setZone: e =>
+      setZone: value =>
         update({
-          zone: e.target.value
+          zone: value
         }),
       zoneHint: vfDeliveryHint(z, fa),
       zones: VF_ZONES.map(zone => ({
@@ -751,24 +749,23 @@ class Component extends VFPage {
             : day.pastCutoff
               ? C.pastCutoff.replace('{time}', vfDeliveryCutoff(z, fa))
               : vfDayMonth(day.date, fa),
-          on: day.iso === date,
-          off,
-          pick: () =>
-            update({
-              date: day.iso
-            })
+          value: day.iso,
+          off
         };
       }),
       slots: vfDeliverySlots(date).map(({start, end, closed}) => ({
         label: vfSlotLabel(start, end, fa),
         desc: closed ? C.slotClosed : undefined,
-        on: slot === start,
-        off: closed,
-        pick: () =>
-          update({
-            slot: start
-          })
+        value: String(start),
+        off: closed
       })),
+      date,
+      setDate: iso => update({date: iso}),
+      slot: slot == null ? null : String(slot),
+      setSlot: value => {
+        const chosen = vfDeliverySlots(date).find(({start}) => String(start) === value);
+        if (chosen) update({slot: chosen.start});
+      },
       summary: live.map(l => ({
         image: vfProductImage(l, L).src,
         name: vfLineToken(l),
@@ -777,9 +774,9 @@ class Component extends VFPage {
       })),
       totalLabel: m(total),
       promoDraft: s.promoDraft,
-      setPromoDraft: e =>
+      setPromoDraft: value =>
         this.setState({
-          promoDraft: e.target.value,
+          promoDraft: value,
           promoError: null
         }),
       applyPromo: e => {

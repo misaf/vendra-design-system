@@ -4,7 +4,6 @@ import React from "react";
 import { Dialog as AriaDialog, Heading, Modal, ModalOverlay } from "react-aria-components";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
-const FOCUSABLE = "a[href],area[href],button:not([disabled]),input:not([disabled]):not([type=\"hidden\"]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex=\"-1\"]),[contenteditable=\"true\"]";
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({ title, titleId, onClose, closeLabel, footer, children, heading }) {
 	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading || (title ? /* @__PURE__ */ React.createElement("h2", {
@@ -18,25 +17,16 @@ function Content({ title, titleId, onClose, closeLabel, footer, children, headin
 	})), /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__body" }, children), footer && /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__foot" }, footer));
 }
 // A modal dialog on React Aria: role="dialog" + aria-modal, labelled by its title. While open, the
-// page behind is hidden from screen readers and can't scroll, focus stays inside, Esc and a click
-// outside close it (when there is onClose), and focus returns to the opener. `inline` previews sit
+// page behind is hidden from screen readers and can't scroll, focus moves to the dialog (or to a
+// control inside marked autoFocus) and stays inside, Esc and a click outside close it (when there is
+// onClose), and focus returns to the opener. `inline` previews sit
 // inside their parent instead, without moving focus or locking the page (several can share a card).
-export function Dialog({ open, onClose, title, children, footer, inline, closeLabel = "Close", maxWidth, initialFocus, placement = "center" }) {
+export function Dialog({ open, onClose, title, children, footer, inline, closeLabel = "Close", maxWidth, placement = "center" }) {
 	const titleId = React.useId();
-	const dialogRef = React.useRef(null);
 	const sheet = placement === "start";
 	const overlayClass = cx("ag-dialog__overlay", inline && "ag-dialog__overlay--inline", sheet && "ag-dialog__overlay--sheet");
 	const dialogClass = cx("ag-dialog", sheet && "ag-dialog--sheet");
 	const style = maxWidth ? { maxWidth } : undefined;
-	// First focus: the initialFocus selector, else the first control outside the head, else the close button.
-	React.useEffect(() => {
-		if (!open || inline) return;
-		const dialog = dialogRef.current;
-		if (!dialog) return;
-		const candidates = [...dialog.querySelectorAll(FOCUSABLE)].filter((element) => element.getClientRects().length);
-		const first = initialFocus && dialog.querySelector(initialFocus) || candidates.find((element) => !element.closest(".ag-dialog__head")) || candidates[0];
-		if (first) first.focus({ preventScroll: true });
-	}, [open, inline]);
 	if (inline) {
 		if (!open) return null;
 		return /* @__PURE__ */ React.createElement("div", { className: overlayClass }, /* @__PURE__ */ React.createElement("div", {
@@ -61,10 +51,7 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 	}, /* @__PURE__ */ React.createElement(Modal, {
 		className: dialogClass,
 		style
-	}, /* @__PURE__ */ React.createElement(AriaDialog, {
-		ref: dialogRef,
-		className: "ag-dialog__frame"
-	}, /* @__PURE__ */ React.createElement(Content, {
+	}, /* @__PURE__ */ React.createElement(AriaDialog, { className: "ag-dialog__frame" }, /* @__PURE__ */ React.createElement(Content, {
 		onClose,
 		closeLabel,
 		footer,

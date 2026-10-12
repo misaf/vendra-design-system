@@ -28,7 +28,7 @@ return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div
 <div className="col"><Checkbox label={t.card} defaultChecked/><Checkbox label={t.un} disabled/></div>
 <RadioGroup className="col" label={t.bs} name={'s-'+l} defaultValue={t.sz[1][0]}>{t.sz.map(([a,b])=><Radio key={a} value={a} label={a} description={b}/>)}</RadioGroup>
 <Switch label={t.sub} defaultChecked/>
-<div style={{display:'flex',gap:12,alignItems:'center'}}><QuantityInput defaultValue={2} format={f}/><QuantityInput size="sm" defaultValue={3} format={f}/></div>
+<div style={{display:'flex',gap:12,alignItems:'center'}}><QuantityInput defaultValue={2}/><QuantityInput size="sm" defaultValue={3}/></div>
 </div>
 <div><div className="k">{t.ke}</div><div className="g2">
 <PhoneInput id={'ph-'+l} label={t.phone} autoComplete="off" defaultValue="0912" error={t.phErr}/>
@@ -38,9 +38,9 @@ return <div lang={l} dir={isFa?'rtl':'ltr'} data-lang={isFa?'fa':undefined}><div
 </div></div>
 <div><div className="k">{t.kl}</div><div className="g2"><div><LocationPicker id={'lp-'+l} compact label={t.pin} status={t.pinH} value={null} onChange={()=>{}} loadLeaflet={()=>new Promise(()=>{})} tiles={{url:'',attribution:''}} center={[35.83,50.96]} locateLabel={t.locate}/></div><PlacesMap id={'pm-'+l} label={t.places} places={[]} height={220} loadLeaflet={()=>new Promise(()=>{})} tiles={{url:'',attribution:''}} center={[35.83,50.96]}/></div></div>
 <div><div className="k">{t.kd}</div>{DatePicker&&<DatePicker id={'dp-'+l} lang={l} label={t.date} value="2026-09-29" onChange={()=>{}}/>}</div>
-<div><div className="k">{t.kg}</div><ChoiceGroup id={'bs-'+l} legend={t.bs} error={t.bsErr} columns={3}>{t.bsz.map(x=><ChoiceTile key={x} size="sm" label={x} selected={false} onSelect={()=>{}}/>)}</ChoiceGroup></div>
-<div><div className="k">{t.kt}</div><ChoiceGroup label={t.dt} columns={4}>{t.slots.map(([id,a,b])=><ChoiceTile key={id} label={a} description={b} selected={slot===id} disabled={id==='20'} onSelect={()=>setSlot(id)}/>)}</ChoiceGroup>
-<div style={{marginTop:12}}><ChoiceGroup label={t.area} columns={3}>{t.areas.map((x,i)=><ChoiceTile key={x} size="sm" label={x} selected={z===i} onSelect={()=>setZ(i)}/>)}</ChoiceGroup></div></div>
+<div><div className="k">{t.kg}</div><ChoiceGroup id={'bs-'+l} legend={t.bs} error={t.bsErr} columns={3} value={null}>{t.bsz.map(x=><ChoiceTile key={x} size="sm" value={x} label={x}/>)}</ChoiceGroup></div>
+<div><div className="k">{t.kt}</div><ChoiceGroup label={t.dt} columns={4} value={slot} onChange={setSlot}>{t.slots.map(([id,a,b])=><ChoiceTile key={id} value={id} label={a} description={b} disabled={id==='20'}/>)}</ChoiceGroup>
+<div style={{marginTop:12}}><ChoiceGroup label={t.area} columns={3} value={String(z)} onChange={v=>setZ(+v)}>{t.areas.map((x,i)=><ChoiceTile key={x} size="sm" value={String(i)} label={x}/>)}</ChoiceGroup></div></div>
 <div className="g2">
 <div><div className="k">{t.kr}</div><RangeSlider min={0} max={10000000} step={100000} value={r} onChange={setR} formatValue={t.money} labels={t.rl} label={t.kr}/></div>
 <div><div className="k">{t.kr1}</div><RangeSlider range={false} min={0} max={100} step={5} value={one} onChange={setOne} label={t.stems} formatValue={t.st}/></div>

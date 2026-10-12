@@ -1,5 +1,5 @@
 import React from 'react';
-import {Radio as AriaRadio, RadioGroup, RadioGroupStateContext} from 'react-aria-components';
+import {Radio as AriaRadio} from 'react-aria-components';
 import {cx} from '../utils/cx.js';
 
 // One radio (React Aria) inside a RadioGroup, which holds the value and the keyboard. The label
@@ -9,8 +9,7 @@ export function Radio({label, description, value, disabled, className, style, ..
   const labelId = radioId + '-label';
   const descriptionId = radioId + '-desc';
   const namedByLabel = description && label && !rest['aria-label'] && !rest['aria-labelledby'];
-  const group = React.useContext(RadioGroupStateContext);
-  const radio = (
+  return (
     <AriaRadio
       {...rest}
       value={String(value ?? radioId)}
@@ -33,8 +32,4 @@ export function Radio({label, description, value, disabled, className, style, ..
       </span>
     </AriaRadio>
   );
-  if (group) return radio;
-  // A React Aria radio needs its group: one outside RadioGroup gets one of its own (and no arrow
-  // keys to its neighbours), so wrap related radios in RadioGroup.
-  return <RadioGroup aria-labelledby={labelId}>{radio}</RadioGroup>;
 }

@@ -6,8 +6,8 @@ import {cx} from '../utils/cx.js';
 
 // A labelled text field (or textarea with `multiline`) on React Aria's TextField. The label text
 // stays inside <label>; the hint or error sits under the control and is linked to it (see Field).
-// It takes the usual input props: value or defaultValue, onChange(event) and the native attributes
-// (type, required, autoComplete, dir…) go to the real input.
+// value or defaultValue and onChange(value) work as React Aria's; the native attributes (type,
+// required, autoComplete, dir…) go to the real input.
 export function Input({
   label,
   hint,
@@ -18,6 +18,7 @@ export function Input({
   id,
   value,
   defaultValue,
+  onChange,
   className,
   style,
   'aria-label': ariaLabel,
@@ -36,6 +37,7 @@ export function Input({
       id={fieldId}
       value={value}
       defaultValue={defaultValue}
+      onChange={onChange}
       isDisabled={disabled}
       isInvalid={!!error}
       validationBehavior="aria"

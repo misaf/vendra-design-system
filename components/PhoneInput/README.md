@@ -7,13 +7,15 @@ A phone number field built on Input: the phone keypad on touch screens, autofill
   label="Recipient mobile"
   autoComplete="off"
   value={phone}
-  onChange={event => setPhone(event.target.value)}
-  onValueChange={(number, isMobile) => setValid(isMobile)}
+  onChange={(typed, {mobile}) => {
+    setPhone(typed);
+    setValid(mobile);
+  }}
   error={phoneError}
 />
 ```
 
-- `onValueChange(number, isMobile)` gives an Iranian mobile in its one stored form however it was typed (`۰۹۱۲ ۳۴۵ ۶۷۸۹`, `+98 912 345 6789` and `912-345-6789` all → `09123456789`), and whether it is a mobile, the same check as `commerce.mobile`/`isMobile`. Store and compare numbers in that form.
+- `onChange(typed, {number, mobile})` also gives an Iranian mobile in its one stored form however it was typed (`۰۹۱۲ ۳۴۵ ۶۷۸۹`, `+98 912 345 6789` and `912-345-6789` all → `09123456789`), and whether it is a mobile, the same check as `commerce.mobile`/`isMobile`. Store and compare numbers in that form.
 - `autoComplete` defaults to `tel`, the customer's own number. Use `off` for someone else's, such as a gift recipient, so the browser doesn't fill in the customer's.
 - It styles nothing of its own: label, hint and error come from Input and Field.
 

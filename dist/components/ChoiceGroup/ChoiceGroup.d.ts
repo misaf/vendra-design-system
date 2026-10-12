@@ -12,6 +12,12 @@ export interface ChoiceGroupProps {
   id?: string;
   /** Form field name; the selected tile's `value` is posted under it */
   name?: string;
+  /** Controlled: the chosen tile's value (null for none) */
+  value?: string | null;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  /** Turns every tile off */
+  disabled?: boolean;
   /** Fixed column count; otherwise auto-fills tiles of minTileWidth */
   columns?: number;
   minTileWidth?: number;
@@ -22,5 +28,3 @@ export interface ChoiceGroupProps {
 }
 /** React Aria radiogroup: one Tab stop, arrow keys move and select (mirrored in RTL, following the page's language). */
 export declare function ChoiceGroup(props: ChoiceGroupProps): React.JSX.Element;
-/** Internal: how ChoiceTiles report to their ChoiceGroup. */
-export declare const choiceGroupContext: React.Context<unknown>;

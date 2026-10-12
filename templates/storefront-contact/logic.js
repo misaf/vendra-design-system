@@ -37,7 +37,7 @@ class Component extends VFPage {
           }
         ]
       : [];
-    const field = key => e => this.setState({[key]: e.target.value, apiError: ''});
+    const field = key => value => this.setState({[key]: value, apiError: ''});
     // The studio on a read-only map (PlacesMap), with the store's tiles and the vendored Leaflet.
     const placesView = {
       places,

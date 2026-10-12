@@ -169,13 +169,13 @@ class Component extends VFPage {
       last4: s.last4,
       last4Err: s.err ? C.last4Err : undefined,
       ref: s.ref,
-      setRef: e =>
+      setRef: value =>
         this.setState({
-          ref: e.target.value
+          ref: value
         }),
-      setLast4: e =>
+      setLast4: value =>
         this.setState({
-          last4: e.target.value
+          last4: value
             .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
             .replace(/\D/g, '')
             .slice(0, 4),

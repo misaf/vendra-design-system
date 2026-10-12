@@ -8,12 +8,12 @@ A one-time code field, such as the sign-in code sent by SMS. It is one input, no
   hint="We sent a 5-digit code to 0912 345 6789"
   length={5}
   value={code}
-  onValueChange={setCode}
+  onChange={setCode}
   error={codeError}
 />
 ```
 
-- Keeps digits only and accepts Persian or Arabic digits, so `onValueChange` always gets Latin digits, at most `length` of them.
+- Keeps digits only and accepts Persian or Arabic digits, so `onChange` always gets Latin digits, at most `length` of them.
 - `onComplete(code)` runs once the code is full. It doesn't submit by itself: a form that submits on completion should say so, because changing context on input without warning fails WCAG 3.2.2.
 - Digits are spaced and evenly sized (tabular figures) so the code is easy to check.
 

@@ -15,7 +15,6 @@ Jalali/Gregorian date picker: `<fieldset><legend>` with a pill calendar toggle, 
 - Errors follow Input: hint/error in `#{id}-hint`; the date segments (yearly: the day Select) are marked invalid, so a form that focuses its first invalid control lands on them.
 - Labels come in through `labels` (`open`, `previous`, `next` name the calendar buttons); digits follow `lang`.
 
-> Changed in 0.2: the dated picker is a typed field with a calendar grid instead of three Selects.
 
 ## Usage
 

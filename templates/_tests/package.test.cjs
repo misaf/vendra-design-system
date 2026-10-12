@@ -60,15 +60,20 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     const components = Object.keys(ds).filter(name => /^[A-Z][a-z]/.test(name));
     assert.ok(components.length >= 45, 'only ' + components.length + ' components exported');
     const props = {Icon: {name: 'flower-2'}};
+    // Parts that only exist inside their group render inside it.
+    const groups = {ChoiceTile: 'ChoiceGroup', Radio: 'RadioGroup'};
+    const element = name => {
+      const part = React.createElement(ds[name], {value: 'a', ...(props[name] || {})});
+      return groups[name]
+        ? React.createElement(ds[groups[name]], {label: 'Group'}, part)
+        : React.createElement(ds[name], props[name] || {});
+    };
     const quiet = console.error,
       warn = console.warn;
     console.error = console.warn = () => {};
     try {
       for (const name of components) {
-        assert.doesNotThrow(
-          () => renderToString(React.createElement(ds[name], props[name] || {})),
-          name + ' fails to server-render'
-        );
+        assert.doesNotThrow(() => renderToString(element(name)), name + ' fails to server-render');
       }
     } finally {
       console.error = quiet;
@@ -133,20 +138,18 @@ const app = fs.mkdtempSync(path.join(__dirname, '../node_modules/.vendra-package
     // PhoneInput and CodeInput clean what is typed: Persian digits, spaces and dashes.
     let phoneValue;
     ds.PhoneInput({
-      onValueChange: (number, mobile) => (phoneValue = [number, mobile])
-    }).props.onChange({
-      target: {value: '۰۹۱۲ ۳۴۵-۶۷۸۹'}
-    });
+      onChange: (typed, {number, mobile}) => (phoneValue = [number, mobile])
+    }).props.onChange('۰۹۱۲ ۳۴۵-۶۷۸۹');
     assert.deepEqual(phoneValue, ['09123456789', true]);
     let codeValue, completed;
     const codeInput = ds.CodeInput({
       length: 5,
       value: '1234',
-      onValueChange: code => (codeValue = code),
+      onChange: code => (codeValue = code),
       onComplete: code => (completed = code)
     });
     assert.equal(codeInput.props.autoComplete, 'one-time-code');
-    codeInput.props.onChange({target: {value: '۱۲۳۴۵۶ '}});
+    codeInput.props.onChange('۱۲۳۴۵۶ ');
     assert.equal(codeValue, '12345');
     assert.equal(completed, '12345');
     const letters = ['a', 'b', 'c', 'd', 'e'];

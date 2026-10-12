@@ -1,4 +1,9 @@
-export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange'
+> {
+  /** The new state */
+  onChange?: (checked: boolean) => void;
   label?: React.ReactNode;
   /** Helper text below the control, linked with aria-describedby="{id}-hint" */
   hint?: React.ReactNode;

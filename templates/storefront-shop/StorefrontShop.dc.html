@@ -522,15 +522,15 @@ class Component extends VFPage {
           disabled: d.soldOut || d.pastCutoff
         }))
       ],
-      setDate: e =>
+      setDate: value =>
         change({
-          date: e.target.value
+          date: value
         }),
       showResults: C.showResults.replace('{count}', C.designCount(list.length)),
       inStock,
-      setStock: e =>
+      setStock: value =>
         change({
-          stock: e.target.checked
+          stock: value
         }),
       loading: demo === 'loading',
       failed: demo === 'error',
@@ -568,9 +568,9 @@ class Component extends VFPage {
         };
       }),
       sort: s.sort,
-      setSort: e =>
+      setSort: value =>
         change({
-          sort: e.target.value
+          sort: value
         }),
       sortOptions: C.sortOptions,
       countLabel: C.designCount(list.length),

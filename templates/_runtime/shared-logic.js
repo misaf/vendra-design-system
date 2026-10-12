@@ -2249,7 +2249,7 @@ function vfShell(props, page) {
     draft,
     sending: !!news.sending,
     error: news.error || undefined,
-    setDraft: e => self.setState({vfNews: {...news, draft: e.target.value, error: ''}}),
+    setDraft: value => self.setState({vfNews: {...news, draft: value, error: ''}}),
     submit: e => {
       e && e.preventDefault && e.preventDefault();
       if (news.sending) return;

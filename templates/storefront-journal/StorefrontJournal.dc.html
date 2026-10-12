@@ -840,9 +840,9 @@ class Component extends VFPage {
       ...S,
       migration: C.migration,
       q: s.q,
-      setQ: e =>
+      setQ: value =>
         this.setState({
-          q: e.target.value
+          q: value
         }),
       clear: () =>
         this.setState({
