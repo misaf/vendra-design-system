@@ -305,7 +305,9 @@
       "$type": "fontFamily",
       "$value": [
         "Jost",
+        "Jost Fallback",
         "Vazirmatn",
+        "Vazirmatn Fallback",
         "Segoe UI",
         "Tahoma",
         "system-ui",

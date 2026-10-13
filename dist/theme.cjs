@@ -150,9 +150,11 @@
 
   // --- Character choices (the Theme builder's selects) ---
   const FONTS = {
-    serif: "'Instrument Serif','Vazirmatn',Georgia,'Times New Roman',serif",
-    sans: "'Jost','Vazirmatn','Segoe UI',Tahoma,system-ui,sans-serif",
-    vazir: "'Vazirmatn','Segoe UI',Tahoma,system-ui,sans-serif"
+    // Each web font is followed by its metric-matched local fallback (tokens/fonts.css).
+    serif:
+      "'Instrument Serif','Instrument Serif Fallback','Vazirmatn','Vazirmatn Fallback',Georgia,'Times New Roman',serif",
+    sans: "'Jost','Jost Fallback','Vazirmatn','Vazirmatn Fallback','Segoe UI',Tahoma,system-ui,sans-serif",
+    vazir: "'Vazirmatn','Vazirmatn Fallback','Segoe UI',Tahoma,system-ui,sans-serif"
   };
   const CHOICES = {
     headings: Object.keys(FONTS),

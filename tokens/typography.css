@@ -1,7 +1,7 @@
 :root{
 --font-display-latin:'Instrument Serif';--font-body-latin:'Jost';--font-display-fa:'Vazirmatn';--font-body-fa:'Vazirmatn';
---font-display:'Instrument Serif','Vazirmatn',Georgia,'Times New Roman',serif;
---font-body:'Jost','Vazirmatn','Segoe UI',Tahoma,system-ui,sans-serif;
+--font-display:'Instrument Serif','Instrument Serif Fallback','Vazirmatn','Vazirmatn Fallback',Georgia,'Times New Roman',serif;
+--font-body:'Jost','Jost Fallback','Vazirmatn','Vazirmatn Fallback','Segoe UI',Tahoma,system-ui,sans-serif;
 --text-2xs:.6875rem;--text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-md:1.125rem;--text-lg:1.375rem;--text-xl:1.75rem;--text-2xl:2.25rem;--text-3xl:3rem;--text-4xl:4rem;--text-5xl:5.5rem;
 --weight-light:300;/* @kind font */--weight-regular:400;/* @kind font */--weight-medium:500;/* @kind font */--weight-semibold:600;/* @kind font */
 --lh-tight:1.05;/* @kind other */--lh-snug:1.25;/* @kind other */--lh-body:1.6;/* @kind other */--lh-loose:1.8;/* @kind other */

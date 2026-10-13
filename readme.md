@@ -13,7 +13,7 @@
 | Import | What it is |
 |---|---|
 | `@vendra/design-system` | 55 components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps`, `MESSAGES` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
-| `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. Load once in the root layout. |
+| `@vendra/design-system/styles.css` | Fonts (with metric-matched local fallbacks, so the font swap doesn't shift the layout), tokens, base styles and every `ag-*` class. Load once in the root layout, and preload the body fonts your pages use (`fonts/jost-var-latin.woff2`, `fonts/vazirmatn-var-arabic.woff2`) with `<link rel="preload" as="font" type="font/woff2" crossorigin>`. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `designTokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
 | `@vendra/design-system/tokens.json` | Every design token as W3C design tokens (DTCG JSON), for native apps and design tools. |
