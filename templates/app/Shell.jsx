@@ -268,13 +268,18 @@ export function Shell({v, content, sticky}) {
                         noValidate
                         className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
                       >
-                        <label htmlFor="vf-news-email" className="ag-field__label">
+                        <label
+                          id="vf-news-email-label"
+                          htmlFor="vf-news-email"
+                          className="ag-field__label"
+                        >
                           <>{v.t?.newsletter?.label}</>
                         </label>
                         <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
                           <div className="tw:[flex:1_1_240px]">
                             <DS.Input
                               id="vf-news-email"
+                              aria-labelledby="vf-news-email-label"
                               value={v.newsletter?.draft}
                               onChange={v.newsletter?.setDraft}
                               error={v.newsletter?.error}

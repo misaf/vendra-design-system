@@ -394,12 +394,13 @@ export function View({v}) {
                           onSubmit={v.applyPromo}
                           noValidate
                         >
-                          <label className="ag-field__label" htmlFor="vf-promo">
+                          <label id="vf-promo-label" className="ag-field__label" htmlFor="vf-promo">
                             <>{v.t?.promo}</>
                           </label>
                           <div className="vf-bag-promo-row tw:grid tw:gap-2">
                             <DS.Input
                               id="vf-promo"
+                              aria-labelledby="vf-promo-label"
                               value={v.promoDraft}
                               onChange={v.setPromoDraft}
                               error={v.promoError}
