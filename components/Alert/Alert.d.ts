@@ -1,6 +1,6 @@
 export interface AlertProps {
-  /** Matches Badge and Toast. */
-  tone?: 'neutral' | 'warning' | 'danger' | 'success';
+  /** The status tones Badge and Toast share. */
+  tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
   /** Lucide icon name; defaults per tone. Pass false to hide. */
   icon?: string | false;
   title?: React.ReactNode;

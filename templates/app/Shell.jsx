@@ -240,7 +240,7 @@ export function Shell({v, content, sticky}) {
                             label={s?.label}
                             href={s?.href}
                             target={s?.target}
-                            variant="outline"
+                            variant="secondary"
                             className="ag-iconbtn--inverse"
                           />
                         </li>

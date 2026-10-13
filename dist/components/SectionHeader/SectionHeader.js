@@ -26,13 +26,13 @@ export function SectionHeader({ title, accent, eyebrow, level = "h2", action, on
 	}, title, accent && /* @__PURE__ */ React.createElement(React.Fragment, null, " ", /* @__PURE__ */ React.createElement("em", null, accent)))), (action || hasArrows) && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__actions" }, action, hasArrows && /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__arrows" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
 		label: text.previous,
-		variant: "outline",
+		variant: "secondary",
 		onClick: onPrev,
 		disabled: !onPrev || !canPrev
 	}), /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-right",
 		label: text.next,
-		variant: "outline",
+		variant: "secondary",
 		onClick: onNext,
 		disabled: !onNext || !canNext
 	}))));

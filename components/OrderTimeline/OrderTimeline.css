@@ -88,3 +88,25 @@
     break-inside: avoid;
   }
 }
+/* Forced colours drop the fills that mark progress: done dots and lines and the current dot's
+   centre take the system highlight. */
+@media (forced-colors: active) {
+  .ag-otl__step--done .ag-otl__dot {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-otl__step--done .ag-otl__dot .ag-icon {
+    background: HighlightText !important;
+  }
+  .ag-otl__line,
+  .ag-otl__step--current .ag-otl__dot::after {
+    forced-color-adjust: none;
+    background: GrayText;
+  }
+  .ag-otl__line--done,
+  .ag-otl__step--current .ag-otl__dot::after {
+    background: Highlight;
+  }
+}

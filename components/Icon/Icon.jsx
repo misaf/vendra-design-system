@@ -44,7 +44,7 @@ export function Icon({
       role={label ? 'img' : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-      className={cx(flip && 'ag-flip-rtl', className)}
+      className={cx('ag-icon', flip && 'ag-flip-rtl', className)}
       style={{
         display: 'inline-block',
         flex: 'none',

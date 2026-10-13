@@ -15,6 +15,12 @@
 .ag-alert--neutral .ag-alert__icon {
   color: var(--text-muted);
 }
+.ag-alert--info {
+  background: var(--info-soft);
+}
+.ag-alert--info .ag-alert__icon {
+  color: var(--text-info);
+}
 .ag-alert--warning {
   background: var(--warning-soft);
 }
@@ -62,4 +68,10 @@
   margin-block: -10px;
   margin-inline-end: -10px;
   flex: none;
+}
+/* Forced colours drop the tinted fill: give the alert an edge so it still reads as one box. */
+@media (forced-colors: active) {
+  .ag-alert {
+    border: var(--border-hair) solid;
+  }
 }

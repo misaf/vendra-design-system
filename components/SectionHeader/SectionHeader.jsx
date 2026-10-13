@@ -46,14 +46,14 @@ export function SectionHeader({
               <IconButton
                 icon="chevron-left"
                 label={text.previous}
-                variant="outline"
+                variant="secondary"
                 onClick={onPrev}
                 disabled={!onPrev || !canPrev}
               />
               <IconButton
                 icon="chevron-right"
                 label={text.next}
-                variant="outline"
+                variant="secondary"
                 onClick={onNext}
                 disabled={!onNext || !canNext}
               />

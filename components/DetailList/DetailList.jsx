@@ -9,7 +9,7 @@ export function DetailList({rows = [], className = '', style}) {
       {rows.filter(Boolean).map((row, i) => (
         <div key={i} className={cx('ag-dl__row', row.icon && 'ag-dl__row--icon')}>
           <dt className="ag-dl__label">
-            {row.icon && <Icon name={row.icon} size={18} className="ag-dl__icon" />}
+            {row.icon && <Icon name={row.icon} size={18} color="var(--text-accent)" />}
             {row.label}
           </dt>
           <dd className="ag-dl__value">{row.value}</dd>

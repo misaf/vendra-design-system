@@ -49,3 +49,29 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+/* Forced colours drop backgrounds: the track gets an edge and the thumb a system colour; on, both
+   take the system highlight. */
+@media (forced-colors: active) {
+  .ag-switch__track {
+    forced-color-adjust: none;
+    background: Canvas;
+    box-shadow: inset 0 0 0 1px CanvasText;
+  }
+  .ag-switch__thumb {
+    background: CanvasText;
+    box-shadow: none;
+  }
+  .ag-switch[data-selected] .ag-switch__track {
+    background: Highlight;
+    box-shadow: none;
+  }
+  .ag-switch[data-selected] .ag-switch__thumb {
+    background: HighlightText;
+  }
+  .ag-switch[data-disabled] .ag-switch__track {
+    box-shadow: inset 0 0 0 1px GrayText;
+  }
+  .ag-switch[data-disabled] .ag-switch__thumb {
+    background: GrayText;
+  }
+}

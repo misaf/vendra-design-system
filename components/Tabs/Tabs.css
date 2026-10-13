@@ -65,3 +65,19 @@
 .ag-tabs-root {
   display: contents;
 }
+/* Forced colours drop the underline fill and the pill's raised background: the active tab takes
+   the system highlight. */
+@media (forced-colors: active) {
+  .ag-tab--active::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+  .ag-tabs--pill .ag-tab--active {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ag-tabs--pill .ag-tab--active .ag-icon {
+    background: HighlightText !important;
+  }
+}

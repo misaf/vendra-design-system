@@ -31,7 +31,12 @@ export function View({v}) {
                     onChange={v.setQ}
                   />
                 </div>
-                <DS.IconButton icon="x" label={v.t?.close} variant="outline" href={v.href?.home} />
+                <DS.IconButton
+                  icon="x"
+                  label={v.t?.close}
+                  variant="secondary"
+                  href={v.href?.home}
+                />
               </div>
               {v.empty ? (
                 <>

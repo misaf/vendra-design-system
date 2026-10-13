@@ -95,3 +95,17 @@ button.ag-steps__btn:hover .ag-steps__label {
   line-height: var(--lh-body);
   color: var(--text-secondary);
 }
+/* Forced colours drop the filled dot of done and current steps: they take the system highlight. */
+@media (forced-colors: active) {
+  .ag-steps__item--done .ag-steps__dot,
+  .ag-steps__item--current .ag-steps__dot {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-steps__item--done .ag-steps__dot .ag-icon,
+  .ag-steps__item--current .ag-steps__dot .ag-icon {
+    background: HighlightText !important;
+  }
+}

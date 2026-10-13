@@ -73,3 +73,13 @@
     transition: none;
   }
 }
+/* Forced colours drop the dots' fill: draw them in system colours, the current one highlighted. */
+@media (forced-colors: active) {
+  .ag-gallery__dot span {
+    forced-color-adjust: none;
+    background: GrayText;
+  }
+  .ag-gallery__dot[aria-current] span {
+    background: Highlight;
+  }
+}

@@ -88,7 +88,7 @@ export function ProductCard({
           <IconButton
             icon="heart"
             label={text.favorite}
-            variant="solid"
+            variant="raised"
             size="sm"
             active={favorite}
             className="ag-product__fav"

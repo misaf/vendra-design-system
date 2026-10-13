@@ -61,3 +61,29 @@
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
+/* Forced colours drop backgrounds: the rail, the chosen span and the handles are redrawn in system
+   colours. */
+@media (forced-colors: active) {
+  .ag-range__track {
+    forced-color-adjust: none;
+  }
+  .ag-range__track::before {
+    background: GrayText;
+  }
+  .ag-range__fill {
+    background: Highlight;
+  }
+  .ag-range__thumb {
+    background: radial-gradient(circle, Canvas 0 9px, Highlight 9.5px 11px, transparent 11.5px);
+  }
+  .ag-range__thumb[data-focus-visible] {
+    background: radial-gradient(
+      circle,
+      Canvas 0 9px,
+      Highlight 9.5px 11px,
+      transparent 11.5px 13px,
+      CanvasText 13.5px 15px,
+      transparent 15.5px
+    );
+  }
+}

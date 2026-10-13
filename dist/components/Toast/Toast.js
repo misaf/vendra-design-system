@@ -6,6 +6,7 @@ import { Icon } from "../Icon/Icon.js";
 import { Button } from "../Button/Button.js";
 import { useMessages } from "../utils/messages.js";
 const ICONS = {
+	neutral: "info",
 	success: "circle-check",
 	info: "flower-2",
 	warning: "triangle-alert",

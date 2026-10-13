@@ -24,6 +24,9 @@
   color: var(--text-inverse-muted);
   margin-top: 2px;
 }
+.ag-toast__icon--neutral {
+  color: var(--text-inverse-muted);
+}
 .ag-toast__icon--success {
   color: var(--success-on-inverse);
 }
@@ -70,4 +73,10 @@
 .ag-toast__close:hover {
   background: var(--border-inverse);
   color: var(--text-on-inverse);
+}
+/* Forced colours drop the dark fill, which would leave the toast edgeless over the page: outline it. */
+@media (forced-colors: active) {
+  .ag-toast {
+    outline: var(--border-hair) solid;
+  }
 }

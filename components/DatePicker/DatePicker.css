@@ -199,3 +199,13 @@
   background: transparent;
   cursor: not-allowed;
 }
+/* Forced colours drop fills and shadows: the chosen calendar system and the chosen day take the
+   system highlight. */
+@media (forced-colors: active) {
+  .ag-date__cal-option[data-selected],
+  .ag-cal__cell[data-selected] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}

@@ -103,7 +103,7 @@ export function View({v}) {
                   <DS.IconButton
                     icon="heart"
                     label={v.t?.saveDesign}
-                    variant="outline"
+                    variant="secondary"
                     size="lg"
                     active={v.fav}
                     onClick={v.toggleSave}

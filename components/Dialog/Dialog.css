@@ -109,3 +109,11 @@
   padding: var(--space-4) var(--space-5h) var(--space-5);
   border-top: var(--border-hair) solid var(--border-subtle);
 }
+/* Forced colours drop the shadow and the dimmed backdrop, which would leave the dialog edgeless on
+   the page behind it: outline it. */
+@media (forced-colors: active) {
+  .ag-dialog,
+  .ag-dialog:focus {
+    outline: var(--border-hair) solid;
+  }
+}

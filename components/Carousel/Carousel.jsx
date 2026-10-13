@@ -128,7 +128,7 @@ export const Carousel = React.forwardRef(function Carousel(
           <IconButton
             icon="chevron-left"
             label={text.previous}
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => scrollPage(-1)}
             disabled={!scrollState.canPrev}
@@ -136,7 +136,7 @@ export const Carousel = React.forwardRef(function Carousel(
           <IconButton
             icon="chevron-right"
             label={text.next}
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => scrollPage(1)}
             disabled={!scrollState.canNext}

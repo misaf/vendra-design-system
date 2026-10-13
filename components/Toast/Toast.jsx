@@ -11,6 +11,7 @@ import {Button} from '../Button/Button.jsx';
 import {useMessages} from '../utils/messages.js';
 
 const ICONS = {
+  neutral: 'info',
   success: 'circle-check',
   info: 'flower-2',
   warning: 'triangle-alert',

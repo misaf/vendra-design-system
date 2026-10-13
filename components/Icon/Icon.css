@@ -1,0 +1,21 @@
+/* Forced-colour modes (Windows High Contrast) replace background colours, which would erase an
+   icon drawn as a mask over its background, and an inherited colour is still the authored one: draw
+   it in the system colour of its context instead. !important beats the inline background; a
+   component whose forced-colour styles fill a control with Highlight sets HighlightText the same way. */
+@media (forced-colors: active) {
+  .ag-icon {
+    forced-color-adjust: none;
+    background: CanvasText !important;
+  }
+  a .ag-icon {
+    background: LinkText !important;
+  }
+  button .ag-icon {
+    background: ButtonText !important;
+  }
+  :disabled .ag-icon,
+  [data-disabled] .ag-icon,
+  [aria-disabled='true'] .ag-icon {
+    background: GrayText !important;
+  }
+}

@@ -49,7 +49,7 @@ function App() {
     <VendraProvider locale={lang === 'fa' ? 'fa-IR' : 'en-US'}>
       <section data-test="tooltip">
         <Tooltip content="Save to favourites">
-          <IconButton icon="heart" label="Save" variant="outline" />
+          <IconButton icon="heart" label="Save" variant="secondary" />
         </Tooltip>{' '}
         <button type="button">After</button>
       </section>

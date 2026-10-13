@@ -43,3 +43,10 @@
   background: var(--surface-strong);
   color: var(--text-on-strong);
 }
+/* Forced colours drop the tinted fill, which would leave a badge as loose text: outline it. */
+@media (forced-colors: active) {
+  .ag-badge {
+    outline: var(--border-hair) solid;
+    outline-offset: calc(-1 * var(--border-hair));
+  }
+}

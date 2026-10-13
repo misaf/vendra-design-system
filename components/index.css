@@ -1,5 +1,6 @@
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
+@import url('Icon/Icon.css');
 @import url('Button/Button.css');
 @import url('IconButton/IconButton.css');
 @import url('Chip/Chip.css');

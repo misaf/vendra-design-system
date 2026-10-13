@@ -6,7 +6,7 @@ Small uppercase status label on product media or rows ("New", "Seasonal", "Sold 
 <Badge tone="success">Seasonal</Badge>
 ```
 
-Tones: neutral, accent (peony), success, warning, info, danger, solid (ink) — the status tones match Alert and Toast. Uppercase is dropped in Persian.
+Status tones neutral, info, success, warning and danger are shared with Alert and Toast; accent (peony) and solid (ink) are Badge's own emphasis tones. Uppercase is dropped in Persian.
 
 ## Usage
 

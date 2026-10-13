@@ -14,6 +14,6 @@ export function DetailList({ rows = [], className = "", style }) {
 	}, /* @__PURE__ */ React.createElement("dt", { className: "ag-dl__label" }, row.icon && /* @__PURE__ */ React.createElement(Icon, {
 		name: row.icon,
 		size: 18,
-		className: "ag-dl__icon"
+		color: "var(--text-accent)"
 	}), row.label), /* @__PURE__ */ React.createElement("dd", { className: "ag-dl__value" }, row.value))));
 }

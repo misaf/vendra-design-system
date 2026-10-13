@@ -50,7 +50,7 @@ export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, i
 	}, badge), onFavorite && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "heart",
 		label: text.favorite,
-		variant: "solid",
+		variant: "raised",
 		size: "sm",
 		active: favorite,
 		className: "ag-product__fav",

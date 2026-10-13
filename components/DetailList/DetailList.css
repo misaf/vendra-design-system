@@ -15,10 +15,6 @@
   font-size: var(--text-sm);
   color: var(--text-muted);
 }
-.ag-dl__icon {
-  color: var(--text-accent);
-  background: var(--text-accent) !important;
-}
 .ag-dl__value {
   margin: 2px 0 0;
   color: var(--text-body);

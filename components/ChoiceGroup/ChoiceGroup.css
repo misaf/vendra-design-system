@@ -69,3 +69,19 @@
     transition: none;
   }
 }
+/* Forced colours drop the selected fill: the chosen tile takes the system highlight, an error edge
+   is dashed. */
+@media (forced-colors: active) {
+  .ag-choice--selected {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-choice--selected .ag-icon {
+    background: HighlightText !important;
+  }
+  .ag-choices--error .ag-choice:not([data-selected]) {
+    border-style: dashed;
+  }
+}

@@ -32,3 +32,9 @@
     display: none !important;
   }
 }
+/* Forced colours drop the dark fill: outline the bubble so it stands off the page. */
+@media (forced-colors: active) {
+  .ag-tip__bubble {
+    outline: var(--border-hair) solid;
+  }
+}

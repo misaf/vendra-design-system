@@ -4,5 +4,5 @@
    exempts this input from that rule. */
 :lang(fa) .ag-code-input input {
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.3em !important;
+  letter-spacing: 0.3em;
 }

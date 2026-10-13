@@ -6,6 +6,7 @@ import {useMessages} from '../utils/messages.js';
 
 const ALERT_ICONS = {
   neutral: 'info',
+  info: 'info',
   warning: 'triangle-alert',
   danger: 'circle-alert',
   success: 'circle-check'

@@ -1,7 +1,7 @@
 export interface ToastProps {
   /** The queued toast, when a ToastRegion renders it (internal) */
   toast?: unknown;
-  tone?: 'success' | 'info' | 'warning' | 'danger';
+  tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
   title: React.ReactNode;
   message?: React.ReactNode;
   /** Small ghost button inside the toast, e.g. { label: 'View bag', href: '?view=bag' }. The toast itself is never the click target. */
@@ -14,7 +14,7 @@ export interface ToastProps {
 export declare function Toast(props: ToastProps): JSX.Element;
 /** What a queued toast shows. */
 export interface ToastContent {
-  tone?: 'success' | 'info' | 'warning' | 'danger';
+  tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
   title: React.ReactNode;
   message?: React.ReactNode;
   action?: {label: React.ReactNode; onClick?: (e: React.MouseEvent) => void; href?: string};

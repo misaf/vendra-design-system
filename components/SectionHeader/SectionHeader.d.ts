@@ -6,7 +6,7 @@ export interface SectionHeaderProps {
   level?: 'h1' | 'h2' | 'h3';
   /** Slot at the end of the row, e.g. <Button variant="ghost" size="sm" iconEnd="arrow-right">See all</Button> */
   action?: React.ReactNode;
-  /** Setting either shows outline chevron IconButtons (mirrored in RTL) */
+  /** Setting either shows secondary (outlined) chevron IconButtons (mirrored in RTL) */
   onPrev?: () => void;
   onNext?: () => void;
   /** false disables that arrow — wire to Carousel's onScrollStateChange */

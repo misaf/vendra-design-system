@@ -4,9 +4,9 @@ Round icon-only button (React Aria's Button) for header actions, favourites, clo
 
 ```jsx
 <IconButton icon="shopping-bag" label="Bag, 2 items" count={2} />
-<IconButton icon="heart" label="Save" variant="solid" active />
-<IconButton icon="message-circle" label="WhatsApp" variant="outline" href="https://wa.me/989129333034" target="_blank" />
-<IconButton icon="phone" label="Call" variant="outline" href="tel:+989129333034" />
+<IconButton icon="heart" label="Save" variant="raised" active />
+<IconButton icon="message-circle" label="WhatsApp" variant="secondary" href="https://wa.me/989129333034" target="_blank" />
+<IconButton icon="phone" label="Call" variant="secondary" href="tel:+989129333034" />
 ```
 
 On inverse (moss) surfaces add `className="ag-iconbtn--inverse"`.

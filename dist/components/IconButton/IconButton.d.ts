@@ -1,10 +1,13 @@
 import * as React from 'react';
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import type {ButtonDOMProps} from '../Button/Button.js';
+
+export interface IconButtonProps extends ButtonDOMProps {
   icon: string;
   /** Required accessible label (also used as title) */
   label: string;
-  /** outline = 1px --border-subtle circle; hover adds a linen-200 wash and --border-strong */
-  variant?: 'ghost' | 'outline' | 'solid';
+  /** Named as on Button and Card: ghost = no edge; secondary = 1px --border-subtle circle, hover adds
+   * --surface-hover and --border-strong; raised = white with a small shadow, for use over photos. */
+  variant?: 'ghost' | 'secondary' | 'raised';
   size?: 'sm' | 'md' | 'lg';
   /** Toggled on (e.g. favourited) */
   active?: boolean;

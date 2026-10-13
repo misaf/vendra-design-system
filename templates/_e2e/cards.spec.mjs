@@ -59,3 +59,35 @@ for (const card of cards()) {
     );
   });
 }
+
+// Forced-colour modes (Windows High Contrast) drop backgrounds and shadows. The component cards are
+// checked there too: every visible icon differs from the colour behind it, and selected,
+// checked and error states keep a visible difference (screenshot).
+for (const card of cards().filter(card => card.file.startsWith('guidelines/components/'))) {
+  test(`forced colours: ${card.file}`, async ({page}) => {
+    await page.emulateMedia({forcedColors: 'active', colorScheme: 'dark'});
+    const errors = await openCard(page, card);
+    expect(errors, 'no runtime errors').toEqual([]);
+    const invisible = await page.evaluate(() => {
+      // The colour behind an icon: its nearest ancestor with a painted background.
+      const backdrop = element => {
+        for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+          const color = getComputedStyle(ancestor).backgroundColor;
+          if (color !== 'rgba(0, 0, 0, 0)') return color;
+        }
+        return getComputedStyle(document.documentElement).backgroundColor;
+      };
+      return [...document.querySelectorAll('.ag-icon')]
+        .filter(
+          icon => icon.getClientRects().length && getComputedStyle(icon).visibility !== 'hidden'
+        )
+        .filter(icon => getComputedStyle(icon).backgroundColor === backdrop(icon))
+        .map(icon => icon.parentElement.className || icon.parentElement.tagName);
+    });
+    expect(invisible, 'icons drawn in the colour behind them').toEqual([]);
+    await expect(page).toHaveScreenshot(
+      'forced-colors__' + card.file.replace(/\.html$/, '').replaceAll('/', '__') + '.png',
+      {fullPage: true}
+    );
+  });
+}

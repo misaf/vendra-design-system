@@ -40,14 +40,14 @@ a.ag-iconbtn {
   text-decoration: none;
   box-sizing: border-box;
 }
-.ag-iconbtn--outline {
+.ag-iconbtn--secondary {
   border-color: var(--border-subtle);
   transition:
     background var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.ag-iconbtn--outline:hover:not(:disabled) {
+.ag-iconbtn--secondary:hover:not(:disabled) {
   background: var(--surface-hover);
   border-color: var(--border-strong);
 }
@@ -59,11 +59,11 @@ a.ag-iconbtn {
   background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
   border-color: var(--text-inverse-muted);
 }
-.ag-iconbtn--solid {
+.ag-iconbtn--raised {
   background: var(--white);
   box-shadow: var(--shadow-sm);
 }
-.ag-iconbtn--solid:hover:not(:disabled) {
+.ag-iconbtn--raised:hover:not(:disabled) {
   background: var(--surface-sunken);
 }
 .ag-iconbtn--active {

@@ -71,3 +71,15 @@
   color: var(--text-muted);
   cursor: not-allowed;
 }
+/* Forced colours drop the hover fill: the option under the pointer or keyboard takes the system
+   highlight. */
+@media (forced-colors: active) {
+  .ag-select__option[data-focused] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ag-select__option[data-focused] .ag-icon {
+    background: HighlightText !important;
+  }
+}

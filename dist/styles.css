@@ -77,7 +77,7 @@
 --border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
 --container-max:1240px;/* @kind spacing */--gutter:24px;/* @kind spacing */--header-h:72px;/* @kind spacing */--header-h-mobile:60px;/* @kind spacing */
 --tap-min:44px;/* @kind spacing */
---control-h-sm:36px;/* @kind spacing */--control-h-md:46px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:48px;/* @kind spacing */--measure:56ch;/* @kind spacing */
+--control-h-sm:36px;/* @kind spacing */--control-h-md:48px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:var(--control-h-md);/* @kind spacing */--measure:56ch;/* @kind spacing */
 }
 }
 /* tokens/effects.css */
@@ -135,6 +135,29 @@ a:hover{color:var(--accent-press)}
 @layer vendra.components {
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
+/* components/Icon/Icon.css */
+/* Forced-colour modes (Windows High Contrast) replace background colours, which would erase an
+   icon drawn as a mask over its background, and an inherited colour is still the authored one: draw
+   it in the system colour of its context instead. !important beats the inline background; a
+   component whose forced-colour styles fill a control with Highlight sets HighlightText the same way. */
+@media (forced-colors: active) {
+  .ag-icon {
+    forced-color-adjust: none;
+    background: CanvasText !important;
+  }
+  a .ag-icon {
+    background: LinkText !important;
+  }
+  button .ag-icon {
+    background: ButtonText !important;
+  }
+  :disabled .ag-icon,
+  [data-disabled] .ag-icon,
+  [aria-disabled='true'] .ag-icon {
+    background: GrayText !important;
+  }
+}
+
 /* components/Button/Button.css */
 .ag-btn {
   box-sizing: border-box;
@@ -275,14 +298,14 @@ a.ag-iconbtn {
   text-decoration: none;
   box-sizing: border-box;
 }
-.ag-iconbtn--outline {
+.ag-iconbtn--secondary {
   border-color: var(--border-subtle);
   transition:
     background var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.ag-iconbtn--outline:hover:not(:disabled) {
+.ag-iconbtn--secondary:hover:not(:disabled) {
   background: var(--surface-hover);
   border-color: var(--border-strong);
 }
@@ -294,11 +317,11 @@ a.ag-iconbtn {
   background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
   border-color: var(--text-inverse-muted);
 }
-.ag-iconbtn--solid {
+.ag-iconbtn--raised {
   background: var(--white);
   box-shadow: var(--shadow-sm);
 }
-.ag-iconbtn--solid:hover:not(:disabled) {
+.ag-iconbtn--raised:hover:not(:disabled) {
   background: var(--surface-sunken);
 }
 .ag-iconbtn--active {
@@ -356,6 +379,18 @@ a.ag-iconbtn {
   place-items: center;
   margin-inline-end: -6px;
   opacity: 0.7;
+}
+/* Forced colours drop the selected fill: a selected chip takes the system highlight. */
+@media (forced-colors: active) {
+  .ag-chip--selected {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-chip--selected .ag-icon {
+    background: HighlightText !important;
+  }
 }
 
 /* components/Tabs/Tabs.css */
@@ -426,6 +461,22 @@ a.ag-iconbtn {
 .ag-tabs-root {
   display: contents;
 }
+/* Forced colours drop the underline fill and the pill's raised background: the active tab takes
+   the system highlight. */
+@media (forced-colors: active) {
+  .ag-tab--active::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+  .ag-tabs--pill .ag-tab--active {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ag-tabs--pill .ag-tab--active .ag-icon {
+    background: HighlightText !important;
+  }
+}
 
 /* components/LanguageSwitch/LanguageSwitch.css */
 .ag-lang button:focus-visible {
@@ -454,6 +505,14 @@ a.ag-iconbtn {
 .ag-lang button[aria-pressed='true'] {
   background: var(--surface-strong);
   color: var(--text-on-strong);
+}
+/* Forced colours drop the pressed fill: the current language takes the system highlight. */
+@media (forced-colors: active) {
+  .ag-lang button[aria-pressed='true'] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
 }
 
 /* components/shared.css */
@@ -715,6 +774,13 @@ a.ag-iconbtn {
   background: var(--surface-strong);
   color: var(--text-on-strong);
 }
+/* Forced colours drop the tinted fill, which would leave a badge as loose text: outline it. */
+@media (forced-colors: active) {
+  .ag-badge {
+    outline: var(--border-hair) solid;
+    outline-offset: calc(-1 * var(--border-hair));
+  }
+}
 
 /* components/Card/Card.css */
 .ag-card {
@@ -830,6 +896,12 @@ a.ag-iconbtn {
   pointer-events: none;
   color: var(--text-muted);
 }
+/* Forced colours make the danger edge the same colour as any other: dash it instead. */
+@media (forced-colors: active) {
+  .ag-input--error {
+    border-style: dashed;
+  }
+}
 
 /* components/Select/Select.css */
 /* Select: the trigger keeps the .ag-input field look; the list pops up under it. */
@@ -905,6 +977,18 @@ a.ag-iconbtn {
   color: var(--text-muted);
   cursor: not-allowed;
 }
+/* Forced colours drop the hover fill: the option under the pointer or keyboard takes the system
+   highlight. */
+@media (forced-colors: active) {
+  .ag-select__option[data-focused] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ag-select__option[data-focused] .ag-icon {
+    background: HighlightText !important;
+  }
+}
 
 /* components/CodeInput/CodeInput.css */
 .ag-code-input input,
@@ -913,7 +997,7 @@ a.ag-iconbtn {
    exempts this input from that rule. */
 :lang(fa) .ag-code-input input {
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.3em !important;
+  letter-spacing: 0.3em;
 }
 
 /* components/Checkbox/Checkbox.css */
@@ -980,6 +1064,29 @@ a.ag-iconbtn {
 .ag-check__desc {
   font-size: var(--text-sm);
   color: var(--text-muted);
+}
+/* Forced colours drop backgrounds and shadows: the checked box and the radio dot take the system
+   highlight, the unchecked tick stays hidden and an error edge is dashed. */
+@media (forced-colors: active) {
+  .ag-check:not([data-selected]) .ag-check__box .ag-icon {
+    visibility: hidden;
+  }
+  .ag-check[data-selected] .ag-check__box {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-check[data-selected] .ag-check__box .ag-icon {
+    background: HighlightText !important;
+  }
+  .ag-check--radio[data-selected] .ag-check__box {
+    background: Canvas;
+    box-shadow: inset 0 0 0 4px Highlight;
+  }
+  .ag-check--error .ag-check__box {
+    border-style: dashed;
+  }
 }
 
 /* components/RadioGroup/RadioGroup.css */
@@ -1062,6 +1169,22 @@ a.ag-iconbtn {
     transition: none;
   }
 }
+/* Forced colours drop the selected fill: the chosen tile takes the system highlight, an error edge
+   is dashed. */
+@media (forced-colors: active) {
+  .ag-choice--selected {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-choice--selected .ag-icon {
+    background: HighlightText !important;
+  }
+  .ag-choices--error .ag-choice:not([data-selected]) {
+    border-style: dashed;
+  }
+}
 
 /* components/Switch/Switch.css */
 .ag-switch[data-disabled] {
@@ -1114,6 +1237,32 @@ a.ag-iconbtn {
 .ag-switch[data-focus-visible] .ag-switch__track {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+}
+/* Forced colours drop backgrounds: the track gets an edge and the thumb a system colour; on, both
+   take the system highlight. */
+@media (forced-colors: active) {
+  .ag-switch__track {
+    forced-color-adjust: none;
+    background: Canvas;
+    box-shadow: inset 0 0 0 1px CanvasText;
+  }
+  .ag-switch__thumb {
+    background: CanvasText;
+    box-shadow: none;
+  }
+  .ag-switch[data-selected] .ag-switch__track {
+    background: Highlight;
+    box-shadow: none;
+  }
+  .ag-switch[data-selected] .ag-switch__thumb {
+    background: HighlightText;
+  }
+  .ag-switch[data-disabled] .ag-switch__track {
+    box-shadow: inset 0 0 0 1px GrayText;
+  }
+  .ag-switch[data-disabled] .ag-switch__thumb {
+    background: GrayText;
+  }
 }
 
 /* components/QuantityInput/QuantityInput.css */
@@ -1289,6 +1438,14 @@ a.ag-iconbtn {
   padding: var(--space-4) var(--space-5h) var(--space-5);
   border-top: var(--border-hair) solid var(--border-subtle);
 }
+/* Forced colours drop the shadow and the dimmed backdrop, which would leave the dialog edgeless on
+   the page behind it: outline it. */
+@media (forced-colors: active) {
+  .ag-dialog,
+  .ag-dialog:focus {
+    outline: var(--border-hair) solid;
+  }
+}
 
 /* components/Toast/Toast.css */
 .ag-toast {
@@ -1316,6 +1473,9 @@ a.ag-iconbtn {
   font-size: var(--text-sm);
   color: var(--text-inverse-muted);
   margin-top: 2px;
+}
+.ag-toast__icon--neutral {
+  color: var(--text-inverse-muted);
 }
 .ag-toast__icon--success {
   color: var(--success-on-inverse);
@@ -1363,6 +1523,12 @@ a.ag-iconbtn {
 .ag-toast__close:hover {
   background: var(--border-inverse);
   color: var(--text-on-inverse);
+}
+/* Forced colours drop the dark fill, which would leave the toast edgeless over the page: outline it. */
+@media (forced-colors: active) {
+  .ag-toast {
+    outline: var(--border-hair) solid;
+  }
 }
 
 /* components/ToastRegion/ToastRegion.css */
@@ -1424,6 +1590,12 @@ a.ag-iconbtn {
 @media print {
   .ag-tip__bubble {
     display: none !important;
+  }
+}
+/* Forced colours drop the dark fill: outline the bubble so it stands off the page. */
+@media (forced-colors: active) {
+  .ag-tip__bubble {
+    outline: var(--border-hair) solid;
   }
 }
 
@@ -1585,6 +1757,12 @@ a.ag-cat:hover {
 .ag-alert--neutral .ag-alert__icon {
   color: var(--text-muted);
 }
+.ag-alert--info {
+  background: var(--info-soft);
+}
+.ag-alert--info .ag-alert__icon {
+  color: var(--text-info);
+}
 .ag-alert--warning {
   background: var(--warning-soft);
 }
@@ -1632,6 +1810,12 @@ a.ag-cat:hover {
   margin-block: -10px;
   margin-inline-end: -10px;
   flex: none;
+}
+/* Forced colours drop the tinted fill: give the alert an edge so it still reads as one box. */
+@media (forced-colors: active) {
+  .ag-alert {
+    border: var(--border-hair) solid;
+  }
 }
 
 /* components/EmptyState/EmptyState.css */
@@ -1937,6 +2121,20 @@ button.ag-steps__btn:hover .ag-steps__label {
   line-height: var(--lh-body);
   color: var(--text-secondary);
 }
+/* Forced colours drop the filled dot of done and current steps: they take the system highlight. */
+@media (forced-colors: active) {
+  .ag-steps__item--done .ag-steps__dot,
+  .ag-steps__item--current .ag-steps__dot {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-steps__item--done .ag-steps__dot .ag-icon,
+  .ag-steps__item--current .ag-steps__dot .ag-icon {
+    background: HighlightText !important;
+  }
+}
 
 /* components/BottomTabBar/BottomTabBar.css */
 .ag-tabbar {
@@ -2171,6 +2369,32 @@ a.ag-tabbar__item--current:hover {
   font-size: var(--text-sm);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
+}
+/* Forced colours drop backgrounds: the rail, the chosen span and the handles are redrawn in system
+   colours. */
+@media (forced-colors: active) {
+  .ag-range__track {
+    forced-color-adjust: none;
+  }
+  .ag-range__track::before {
+    background: GrayText;
+  }
+  .ag-range__fill {
+    background: Highlight;
+  }
+  .ag-range__thumb {
+    background: radial-gradient(circle, Canvas 0 9px, Highlight 9.5px 11px, transparent 11.5px);
+  }
+  .ag-range__thumb[data-focus-visible] {
+    background: radial-gradient(
+      circle,
+      Canvas 0 9px,
+      Highlight 9.5px 11px,
+      transparent 11.5px 13px,
+      CanvasText 13.5px 15px,
+      transparent 15.5px
+    );
+  }
 }
 
 /* components/BlogCard/BlogCard.css */
@@ -2549,6 +2773,16 @@ a.ag-tabbar__item--current:hover {
 @media (prefers-reduced-motion: reduce) {
   .ag-gallery__dot span {
     transition: none;
+  }
+}
+/* Forced colours drop the dots' fill: draw them in system colours, the current one highlighted. */
+@media (forced-colors: active) {
+  .ag-gallery__dot span {
+    forced-color-adjust: none;
+    background: GrayText;
+  }
+  .ag-gallery__dot[aria-current] span {
+    background: Highlight;
   }
 }
 
@@ -3018,6 +3252,16 @@ a.ag-tabbar__item--current:hover {
   background: transparent;
   cursor: not-allowed;
 }
+/* Forced colours drop fills and shadows: the chosen calendar system and the chosen day take the
+   system highlight. */
+@media (forced-colors: active) {
+  .ag-date__cal-option[data-selected],
+  .ag-cal__cell[data-selected] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
 
 /* components/LocationPicker/LocationPicker.css */
 .ag-location {
@@ -3180,6 +3424,28 @@ a.ag-tabbar__item--current:hover {
     break-inside: avoid;
   }
 }
+/* Forced colours drop the fills that mark progress: done dots and lines and the current dot's
+   centre take the system highlight. */
+@media (forced-colors: active) {
+  .ag-otl__step--done .ag-otl__dot {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-otl__step--done .ag-otl__dot .ag-icon {
+    background: HighlightText !important;
+  }
+  .ag-otl__line,
+  .ag-otl__step--current .ag-otl__dot::after {
+    forced-color-adjust: none;
+    background: GrayText;
+  }
+  .ag-otl__line--done,
+  .ag-otl__step--current .ag-otl__dot::after {
+    background: Highlight;
+  }
+}
 
 /* components/OrderSummary/OrderSummary.css */
 .ag-osum {
@@ -3295,10 +3561,6 @@ a.ag-tabbar__item--current:hover {
   gap: var(--space-2);
   font-size: var(--text-sm);
   color: var(--text-muted);
-}
-.ag-dl__icon {
-  color: var(--text-accent);
-  background: var(--text-accent) !important;
 }
 .ag-dl__value {
   margin: 2px 0 0;

@@ -89,3 +89,9 @@
   pointer-events: none;
   color: var(--text-muted);
 }
+/* Forced colours make the danger edge the same colour as any other: dash it instead. */
+@media (forced-colors: active) {
+  .ag-input--error {
+    border-style: dashed;
+  }
+}

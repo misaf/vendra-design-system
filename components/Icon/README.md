@@ -9,6 +9,7 @@ Renders a Lucide line icon (bundled locally in icon-svgs.js, CSS mask, inherits 
 
 - `label` makes it meaningful to screen readers.
 - Directional icons flip under `dir="rtl"` automatically.
+- In forced-colour modes (Windows High Contrast) it ignores `color` and takes the system text colour of its container (`Icon.css`).
 
 ## Usage
 

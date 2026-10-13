@@ -45,7 +45,7 @@ export function View({v}) {
                   <DS.IconButton
                     icon="instagram"
                     label={v.t?.instagram}
-                    variant="outline"
+                    variant="secondary"
                     href={v.instagram?.url}
                     rel="noopener noreferrer"
                     target="_blank"

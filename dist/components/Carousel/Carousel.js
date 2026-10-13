@@ -102,14 +102,14 @@ export const Carousel = React.forwardRef(function Carousel({ children, items, re
 	}, arrows && /* @__PURE__ */ React.createElement("div", { className: "ag-carousel__nav" }, /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-left",
 		label: text.previous,
-		variant: "outline",
+		variant: "secondary",
 		size: "sm",
 		onClick: () => scrollPage(-1),
 		disabled: !scrollState.canPrev
 	}), /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "chevron-right",
 		label: text.next,
-		variant: "outline",
+		variant: "secondary",
 		size: "sm",
 		onClick: () => scrollPage(1),
 		disabled: !scrollState.canNext
