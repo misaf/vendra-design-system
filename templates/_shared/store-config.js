@@ -39,6 +39,13 @@ export const VF_STORE = {
   whatsapp: 'https://wa.me/989129333034',
   instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
   email: '', // Optional public email, shown in the footer; '' hides it.
+  // Trust seals from the eNamad and Samandehi panels: paste each seal's link and image URL as the
+  // panel gives them (`image: null` shows the seal's name instead). The sample store has none
+  // issued, so it links to the issuers' own sites; [] hides the seals.
+  trustSeals: [
+    {kind: 'enamad', href: 'https://enamad.ir/', image: null},
+    {kind: 'samandehi', href: 'https://samandehi.ir/', image: null}
+  ],
   // Who built the storefront, credited in the footer's bottom line; null hides it.
   credit: {name: 'Misaf', url: 'https://github.com/misaf'},
   // Delivery pin map. OpenStreetMap's tile server is for light use: a busy store should switch

@@ -94,6 +94,7 @@ function vals(page) {
     ...(s.occasion !== 'all'
       ? [
           {
+            id: 'occasion',
             label: VF_SHOP_OCCASION_COPY[L][s.occasion],
             remove: () =>
               change({
@@ -105,6 +106,7 @@ function vals(page) {
     ...(price[0] > 0 || price[1] < priceMax
       ? [
           {
+            id: 'price',
             label: S.m(price[0]) + ' – ' + S.m(price[1]),
             remove: () =>
               change({
@@ -117,6 +119,7 @@ function vals(page) {
     ...(date
       ? [
           {
+            id: 'date',
             label: C.deliversOn.replace('{day}', dayLabel(days.find(d => d.iso === date))),
             remove: () =>
               change({
@@ -128,6 +131,7 @@ function vals(page) {
     ...(inStock
       ? [
           {
+            id: 'stock',
             label: C.migration.stock,
             remove: () =>
               change({
@@ -160,9 +164,16 @@ function vals(page) {
       page.setState({
         filterOpen: false
       }),
-    activeFilters,
+    // FilterBar moves focus along the filters as they go; after the last one, to the result count.
+    activeFilters: activeFilters.map(filter => ({
+      id: filter.id,
+      label: filter.label,
+      onRemove: () => {
+        filter.remove();
+        if (activeFilters.length === 1) S.focus('vf-shop-count');
+      }
+    })),
     // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
-    hasActive: activeFilters.length > 0,
     clearFilters: () => {
       change({
         min: 0,

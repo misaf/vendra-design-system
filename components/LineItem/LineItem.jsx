@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
+import {Price} from '../Price/Price.jsx';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
@@ -80,7 +81,7 @@ export function LineItem({
           {!large && quantity != null && (
             <span className="ag-line__qty">×{formatQuantity(quantity)}</span>
           )}
-          {!unavailable && <span className="ag-line__price">{price}</span>}
+          {!unavailable && <Price value={price} className="ag-line__price" />}
         </div>
       </div>
     </div>

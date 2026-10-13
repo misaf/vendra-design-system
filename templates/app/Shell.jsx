@@ -435,6 +435,15 @@ export function Shell({v, content, sticky}) {
                       </a>
                     </>
                   ) : null}
+                  {list(v.footer?.seals).length ? (
+                    <div className="vf-shell-footer-seals tw:flex tw:flex-wrap tw:gap-3 tw:mt-2">
+                      {list(v.footer?.seals).map((seal, $index) => (
+                        <React.Fragment key={$index}>
+                          <DS.TrustSeal kind={seal?.kind} href={seal?.href} image={seal?.image} />
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div className="vf-shell-footer-bottom tw:flex tw:flex-wrap tw:justify-between tw:items-center tw:gap-x-6 tw:gap-y-2 tw:pt-5 tw:[border-top:1px_solid_var(--border-inverse)] tw:text-xs tw:text-inverse-quiet">

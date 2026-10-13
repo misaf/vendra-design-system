@@ -142,6 +142,21 @@ export function usePage(props) {
         );
       };
       window.addEventListener('popstate', page._pop);
+      // Plain links to another view of the site (footer, policy and terms links) switch the view in
+      // place, as React Aria links do; a new tab, a download or another page loads normally.
+      page._click = event => {
+        if (event.defaultPrevented || event.button !== 0) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.target.closest?.('a[href]');
+        if (!link || link.hasAttribute('download')) return;
+        if (link.target && link.target !== '_self') return;
+        const url = new URL(link.href, location.href);
+        if (url.origin !== location.origin || url.pathname !== location.pathname || url.hash)
+          return;
+        event.preventDefault();
+        page.navigate(vfReadRoute(url.search));
+      };
+      document.addEventListener('click', page._click);
       const guarded = vfGuardRoute(page.state, {view: page.state.route, lang: page.state.lang});
       if (guarded) page.navigate(guarded, true);
     },
@@ -162,6 +177,7 @@ export function usePage(props) {
     },
     willUnmount() {
       window.removeEventListener('popstate', page._pop);
+      document.removeEventListener('click', page._click);
       if (window.__vfSite === page) delete window.__vfSite;
     }
   });

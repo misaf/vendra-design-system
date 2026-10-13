@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
+import {Price} from '../Price/Price.jsx';
 import {StockStatus} from '../StockStatus/StockStatus.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
@@ -105,10 +106,7 @@ export function ProductCard({
         <h3 className="ag-product__name">{title}</h3>
         <div className="ag-product__meta">
           <span className="ag-product__sub">{subtitle}</span>
-          <span className="ag-product__price">
-            {compareAt && <s>{compareAt}</s>}
-            {price}
-          </span>
+          <Price value={price} compareAt={compareAt} size="md" className="ag-product__price" />
         </div>
         {stock && <StockStatus stock={stock} hideInStock size="sm" className="ag-product__stock" />}
       </div>

@@ -8,6 +8,7 @@ export interface ProductCardProps {
   subtitle?: string;
   /** Pre-formatted price string (e.g. "$68" or "۱٬۲۰۰٬۰۰۰ تومان") */
   price: string;
+  /** The price before a reduction, formatted the same way; Price strikes it through */
   compareAt?: string;
   /** commerce.stockStatus(product): shown under the price unless the product is in stock */
   stock?: Stock;

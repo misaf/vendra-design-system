@@ -730,8 +730,11 @@ test('an unknown policy is not found', async ({page}) => {
 
 test('sign-in links to the terms and privacy policy', async ({page}) => {
   await openSite(page, 'signin', 'en');
+  // A plain link to another view switches it in place, without reloading the site.
+  await page.evaluate(() => (window.__vfSameDocument = true));
   await page.getByRole('main').getByRole('link', {name: 'privacy policy'}).click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('Privacy');
+  expect(await page.evaluate(() => window.__vfSameDocument)).toBe(true);
 });
 
 test('the shop clears every filter at once', async ({page}, info) => {
@@ -756,6 +759,27 @@ test('the shop clears every filter at once', async ({page}, info) => {
   // Every design again: the first page of four, out of six.
   await expect(page.locator('main .ag-product')).toHaveCount(4);
   await expect(page.getByText('Showing 4 of 6 designs')).toBeVisible();
+  await expect(page.locator('#vf-shop-count')).toBeFocused();
+});
+
+test('each filter that is on removes itself, and focus stays in the row', async ({page}) => {
+  await openSite(page, 'shop', 'en', {stock: '1', occasion: 'anniversary'});
+  const active = page.getByRole('group', {name: 'Active filters'});
+  await expect(active.getByRole('button')).toHaveText([
+    'Anniversary',
+    'In stock only',
+    'Clear all'
+  ]);
+  await expect(active.getByRole('button', {name: 'Remove Anniversary'})).not.toHaveAttribute(
+    'aria-pressed'
+  );
+  expect(await scanAxe(page)).toEqual([]);
+  await active.getByRole('button', {name: 'Remove Anniversary'}).click();
+  await expect(page).not.toHaveURL(/occasion=/);
+  await expect(active.getByRole('button', {name: 'Remove In stock only'})).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).not.toHaveURL(/stock=/);
+  await expect(active).toHaveCount(0);
   await expect(page.locator('#vf-shop-count')).toBeFocused();
 });
 
@@ -932,6 +956,12 @@ test('the footer lists shop and studio links, social links, contact details and 
     'href',
     'https://github.com/misaf'
   );
+  // The issuers check the referring site, so the seals keep it.
+  for (const name of ['eNamad trust seal', 'Samandehi registration']) {
+    const seal = footer.getByRole('link', {name});
+    await expect(seal).toHaveAttribute('referrerpolicy', 'origin');
+    await expect(seal).toHaveAttribute('rel', 'noopener');
+  }
   expect(await scanAxe(page)).toEqual([]);
 });
 

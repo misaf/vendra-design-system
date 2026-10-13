@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
+import { Price } from "../Price/Price.js";
 import { StockStatus } from "../StockStatus/StockStatus.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
@@ -59,7 +60,12 @@ export function ProductCard({ name, subtitle, price, compareAt, stock, image, sr
 			event.stopPropagation();
 			onFavorite();
 		}
-	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("span", { className: "ag-product__price" }, compareAt && /* @__PURE__ */ React.createElement("s", null, compareAt), price)), stock && /* @__PURE__ */ React.createElement(StockStatus, {
+	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement(Price, {
+		value: price,
+		compareAt,
+		size: "md",
+		className: "ag-product__price"
+	})), stock && /* @__PURE__ */ React.createElement(StockStatus, {
 		stock,
 		hideInStock: true,
 		size: "sm",

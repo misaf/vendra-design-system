@@ -5,9 +5,12 @@
 @import url('Button/Button.css');
 @import url('IconButton/IconButton.css');
 @import url('Chip/Chip.css');
+@import url('FilterBar/FilterBar.css');
 @import url('Tabs/Tabs.css');
 @import url('LanguageSwitch/LanguageSwitch.css');
 @import url('shared.css');
+@import url('Price/Price.css');
+@import url('TrustSeal/TrustSeal.css');
 @import url('StockStatus/StockStatus.css');
 @import url('ProductCard/ProductCard.css');
 @import url('Badge/Badge.css');

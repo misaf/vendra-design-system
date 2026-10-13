@@ -108,11 +108,6 @@
   gap: var(--space-1);
   text-align: end;
 }
-.ag-line__price {
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
 .ag-line__qty {
   font-size: var(--text-sm);
   color: var(--text-muted);

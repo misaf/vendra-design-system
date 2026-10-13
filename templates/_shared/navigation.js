@@ -238,6 +238,7 @@ export function vfShell(self, page) {
     directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
     email: VF_STORE.email || '',
     emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
+    seals: VF_STORE.trustSeals || [],
     copyright:
       '© ' +
       (fa

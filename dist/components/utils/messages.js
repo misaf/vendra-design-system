@@ -34,6 +34,11 @@ export const MESSAGES = {
 			equivalent: "That’s {date}"
 		},
 		Dialog: { close: "Close" },
+		FilterBar: {
+			label: "Active filters",
+			remove: "Remove {label}",
+			clearAll: "Clear all"
+		},
 		OrderTimeline: { done: "done" },
 		Pagination: {
 			label: "Pages",
@@ -75,6 +80,10 @@ export const MESSAGES = {
 			edit: "Edit reminder for {name}",
 			delete: "Delete reminder for {name}"
 		},
+		Price: {
+			was: "Was",
+			now: "Now"
+		},
 		SearchField: { clear: "Clear search" },
 		SectionHeader: {
 			previous: "Previous",
@@ -88,7 +97,11 @@ export const MESSAGES = {
 			soonOn: "Back on {date}",
 			out: "Sold out"
 		},
-		Toast: { close: "Dismiss" }
+		Toast: { close: "Dismiss" },
+		TrustSeal: {
+			enamad: "eNamad trust seal",
+			samandehi: "Samandehi registration"
+		}
 	},
 	fa: {
 		AddressCard: {
@@ -117,6 +130,11 @@ export const MESSAGES = {
 			equivalent: "برابر با {date}"
 		},
 		Dialog: { close: "بستن" },
+		FilterBar: {
+			label: "فیلترهای فعال",
+			remove: "حذف {label}",
+			clearAll: "پاک کردن همه"
+		},
 		OrderTimeline: { done: "انجام شد" },
 		Pagination: {
 			label: "صفحه‌ها",
@@ -158,6 +176,10 @@ export const MESSAGES = {
 			edit: "ویرایش یادآور {name}",
 			delete: "حذف یادآور {name}"
 		},
+		Price: {
+			was: "قیمت قبلی",
+			now: "قیمت فعلی"
+		},
 		SearchField: { clear: "پاک کردن جستجو" },
 		SectionHeader: {
 			previous: "قبلی",
@@ -171,7 +193,11 @@ export const MESSAGES = {
 			soonOn: "موجود از {date}",
 			out: "ناموجود"
 		},
-		Toast: { close: "بستن" }
+		Toast: { close: "بستن" },
+		TrustSeal: {
+			enamad: "نماد اعتماد الکترونیکی",
+			samandehi: "نشان ساماندهی"
+		}
 	}
 };
 // Extra or changed wording from VendraProvider, by language then component.

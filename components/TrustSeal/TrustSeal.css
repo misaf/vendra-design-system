@@ -1,0 +1,40 @@
+/* TrustSeal: the issuer's image on a light tile (the images are drawn for white), or its name. */
+.ag-seal {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 72px;
+  padding: var(--space-1);
+  box-sizing: content-box;
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  text-decoration: none;
+}
+.ag-seal img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+.ag-seal--text {
+  inline-size: auto;
+  min-inline-size: 64px;
+  max-inline-size: 112px;
+  padding-inline: var(--space-2);
+  border: var(--border-hair) solid var(--border-subtle);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+.ag-seal:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+@media (forced-colors: active) {
+  .ag-seal {
+    border: 1px solid LinkText;
+    color: LinkText;
+  }
+}

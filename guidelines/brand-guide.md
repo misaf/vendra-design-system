@@ -142,7 +142,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Button:** `primary` (accent fill, one per view), `secondary` (ink outline), `soft`, `ghost`. Sizes sm/md/lg; `iconStart`/`iconEnd`; `href` renders `<a>`.
 - **IconButton:** ghost / secondary (outlined 44px circle) / raised (white, shadowed — over photos). `active`, `count`, `href`; add `ag-iconbtn--inverse` on dark surfaces.
 - **Badge:** neutral, accent, success, warning, info, danger, solid (status tones shared with Alert and Toast). Uppercase in EN, never in FA.
-- **Chip:** filter chip; `selected` fills with ink; `onRemove`.
+- **Chip:** filter chip; `selected` fills with ink.
+- **FilterBar:** the filters that are on, each a "Remove …" button, then "Clear all"; focus moves to the next filter after a removal, and the app moves it when the bar goes.
 - **Card:** default (white + hairline), `sunken`, `raised`.
 - **ArchFrame:** image window on `--radius-arch`.
   - `shape`: arch, circle or soft. `ratio`: 4/5, 3/4, 4/3, 1/1 or `fill`.
@@ -194,6 +195,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 
 **Commerce**
 - **ProductCard:** a stretched link over the whole card, a favourite button above it, badge, arch or soft frame, crossfade to the second photo on hover.
+- **Price:** the app formats the amounts (`format.money`); a reduced price follows its struck-through `compareAt`, read as "Was … Now …". ProductCard and LineItem render it.
+- **TrustSeal:** the store's eNamad and Samandehi seals in the footer, with the link and image URLs as the issuers' panels give them and `referrerPolicy="origin"`; the seal's name shows when the image doesn't load.
 - **StockStatus:** in stock, "Only 2 left", "Back on 12 October" (Shamsi in Persian) or sold out, from `commerce.stockStatus(product)`; ProductCard shows it under the price unless the product is in stock.
 - **CategoryCard:** 4:5 tile with name and count.
 - **BlogCard:** journal post card.

@@ -1,0 +1,28 @@
+/* Price: tabular digits on one line; a reduced price follows the struck-through earlier one. */
+.ag-price {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-2);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ag-price--sm {
+  font-size: var(--text-sm);
+}
+.ag-price--md {
+  font-size: var(--text-base);
+}
+.ag-price--lg {
+  font-size: var(--text-lg);
+}
+.ag-price__was,
+.ag-price__now {
+  unicode-bidi: isolate;
+}
+.ag-price__was {
+  color: var(--text-muted);
+  font-size: 0.875em;
+  font-weight: var(--weight-regular);
+}

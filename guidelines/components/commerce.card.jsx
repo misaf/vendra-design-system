@@ -1,5 +1,5 @@
 import '../card-runtime.js';
-const { ProductCard, StockStatus, CategoryCard, BlogCard, Gallery, PaymentCard, LineItem } = window.VendraDesignSystem;
+const { ProductCard, Price, StockStatus, CategoryCard, BlogCard, Gallery, PaymentCard, LineItem } = window.VendraDesignSystem;
 const STOCK=[{status:'in'},{status:'low',count:2},{status:'soon',date:'2026-10-12'},{status:'soon',date:null},{status:'out'}];
 const P='../../assets/placeholder-studio.svg',PH='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
 const fa=n=>window.AG_FORMAT.num(n,'fa');
@@ -17,6 +17,7 @@ fa:{h:'فارسی',dig:fa,cur:'تومان',
 function Side({l}){const t=T[l];const m=n=>t.dig(n)+' '+t.cur;const [fav,setFav]=React.useState(true);const [q,setQ]=React.useState(1);const [b1,b2]=t.b;
 return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefined}><div className="lh">{t.h}</div>
 <div className="g3">{t.p.map(([n,s,pr,cmp,bd,tone],i)=><ProductCard key={n} href={'?lang='+l+'&view=product'} onClick={pd} frame={i===2?'soft':undefined} name={n} subtitle={s} price={m(pr)} compareAt={cmp?m(cmp):undefined} badge={bd} badgeTone={tone} images={i===0?[P,{src:P,crop:'50% 30%'}]:undefined} image={i?P:undefined} favorite={i===0?fav:undefined} onFavorite={i===0?()=>setFav(!fav):()=>{}} stock={i===1?STOCK[1]:i===2?STOCK[2]:undefined}/>)}</div>
+<div><div className="k">{l==='fa'?'قیمت · کوچک، متوسط، بزرگ و تخفیف‌خورده':'Price · sm, md, lg and reduced'}</div><div style={{display:'flex',gap:24,flexWrap:'wrap',alignItems:'baseline'}}><Price size="sm" value={m(490000)}/><Price size="md" value={m(2400000)}/><Price size="lg" value={m(3100000)}/><Price size="md" value={m(490000)} compareAt={m(560000)}/></div></div>
 <div><div className="k">{l==='fa'?'وضعیت موجودی':'StockStatus'}</div><div style={{display:'flex',gap:20,flexWrap:'wrap'}}>{STOCK.map((x,i)=><StockStatus key={i} stock={x}/>)}</div></div>
 <div><div className="k">{t.kb}</div><div className="g3">
 <BlogCard image={PH} date={b1[0]} title={b1[1]} excerpt={b1[2]} onClick={()=>{}}/>

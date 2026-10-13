@@ -160,31 +160,11 @@ export function View({v}) {
                     </div>
                   </>
                 ) : null}
-                {v.hasActive ? (
-                  <>
-                    <div className="vf-shop-active-filters tw:flex tw:gap-2 tw:flex-wrap tw:items-center">
-                      {list(v.activeFilters).map((filter, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.Chip
-                            selected={true}
-                            onRemove={filter?.remove}
-                            onClick={filter?.remove}
-                          >
-                            <>{filter?.label}</>
-                          </DS.Chip>
-                        </React.Fragment>
-                      ))}
-                      <DS.Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={v.clearFilters}
-                        className="vf-shop-clear-all"
-                      >
-                        <>{v.t?.clearAll}</>
-                      </DS.Button>
-                    </div>
-                  </>
-                ) : null}
+                <DS.FilterBar
+                  filters={list(v.activeFilters)}
+                  onClearAll={v.clearFilters}
+                  className="vf-shop-active-filters"
+                />
                 <div className="vf-shop-toolbar tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end">
                   <div className="tw:flex tw:gap-2 tw:flex-wrap">
                     {list(v.chips).map((f, $index) => (

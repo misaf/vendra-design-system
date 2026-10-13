@@ -52,9 +52,7 @@ export function View({v}) {
                       onClick={v.copyCode}
                     />
                   </div>
-                  <div className="vf-product-price tw:text-lg tw:font-medium">
-                    <>{v.unitPrice}</>
-                  </div>
+                  <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
                   <DS.StockStatus stock={v.stock} />
                   <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
                     <>{v.t?.desc}</>

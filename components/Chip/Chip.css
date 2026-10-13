@@ -27,12 +27,6 @@
   border-color: var(--surface-strong);
   color: var(--text-on-strong);
 }
-.ag-chip__x {
-  display: inline-grid;
-  place-items: center;
-  margin-inline-end: -6px;
-  opacity: 0.7;
-}
 /* Forced colours drop the selected fill: a selected chip takes the system highlight. */
 @media (forced-colors: active) {
   .ag-chip--selected {

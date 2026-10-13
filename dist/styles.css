@@ -422,12 +422,6 @@ a.ag-iconbtn {
   border-color: var(--surface-strong);
   color: var(--text-on-strong);
 }
-.ag-chip__x {
-  display: inline-grid;
-  place-items: center;
-  margin-inline-end: -6px;
-  opacity: 0.7;
-}
 /* Forced colours drop the selected fill: a selected chip takes the system highlight. */
 @media (forced-colors: active) {
   .ag-chip--selected {
@@ -439,6 +433,22 @@ a.ag-iconbtn {
   .ag-chip--selected .ag-icon {
     background: HighlightText !important;
   }
+}
+
+/* components/FilterBar/FilterBar.css */
+/* FilterBar: the filters that are on, as filled chips that remove themselves, then "Clear all". */
+.ag-filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ag-filterbar__x {
+  margin-inline-end: -6px;
+  opacity: 0.7;
+}
+.ag-filterbar__remove[data-hovered] .ag-filterbar__x {
+  opacity: 1;
 }
 
 /* components/Tabs/Tabs.css */
@@ -610,6 +620,78 @@ a.ag-iconbtn {
   outline-offset: 2px;
 }
 
+/* components/Price/Price.css */
+/* Price: tabular digits on one line; a reduced price follows the struck-through earlier one. */
+.ag-price {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-2);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ag-price--sm {
+  font-size: var(--text-sm);
+}
+.ag-price--md {
+  font-size: var(--text-base);
+}
+.ag-price--lg {
+  font-size: var(--text-lg);
+}
+.ag-price__was,
+.ag-price__now {
+  unicode-bidi: isolate;
+}
+.ag-price__was {
+  color: var(--text-muted);
+  font-size: 0.875em;
+  font-weight: var(--weight-regular);
+}
+
+/* components/TrustSeal/TrustSeal.css */
+/* TrustSeal: the issuer's image on a light tile (the images are drawn for white), or its name. */
+.ag-seal {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 72px;
+  padding: var(--space-1);
+  box-sizing: content-box;
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  text-decoration: none;
+}
+.ag-seal img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+.ag-seal--text {
+  inline-size: auto;
+  min-inline-size: 64px;
+  max-inline-size: 112px;
+  padding-inline: var(--space-2);
+  border: var(--border-hair) solid var(--border-subtle);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+}
+.ag-seal:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+@media (forced-colors: active) {
+  .ag-seal {
+    border: 1px solid LinkText;
+    color: LinkText;
+  }
+}
+
 /* components/StockStatus/StockStatus.css */
 /* StockStatus: an icon in the status colour and the words in the text colour. */
 .ag-stock {
@@ -773,20 +855,6 @@ a.ag-iconbtn {
   font-size: var(--text-sm);
   color: var(--text-muted);
   text-wrap: pretty;
-}
-.ag-product__price {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  font-size: var(--text-base);
-  font-weight: var(--weight-medium);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.ag-product__price s {
-  color: var(--text-muted);
-  font-weight: 400;
-  margin-inline-end: var(--space-2);
 }
 /* Few left, back soon or sold out, under the price. */
 .ag-product__stock {
@@ -2945,11 +3013,6 @@ a.ag-tabbar__item--current:hover {
   align-items: flex-end;
   gap: var(--space-1);
   text-align: end;
-}
-.ag-line__price {
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 .ag-line__qty {
   font-size: var(--text-sm);

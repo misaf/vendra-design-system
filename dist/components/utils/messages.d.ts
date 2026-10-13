@@ -19,6 +19,7 @@ export interface ComponentMessages {
     equivalent: string;
   };
   Dialog: {close: string};
+  FilterBar: {label: string; remove: string; clearAll: string};
   LanguageSwitch: {label: string};
   OrderTimeline: {done: string};
   Pagination: {label: string; previous: string; next: string; page: string};
@@ -41,11 +42,13 @@ export interface ComponentMessages {
     edit: string;
     delete: string;
   };
+  Price: {was: string; now: string};
   SearchField: {clear: string};
   SectionHeader: {previous: string; next: string};
   Spinner: {label: string};
   StockStatus: {in: string; low: string; soon: string; soonOn: string; out: string};
   Toast: {close: string};
+  TrustSeal: {enamad: string; samandehi: string};
 }
 /** Wording by language (e.g. "en", "fa", "ar"), then component; any part may be left out. */
 export type Messages = Record<
