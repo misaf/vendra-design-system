@@ -7,8 +7,8 @@ import {fileURLToPath} from 'node:url';
 // (.github/workflows/ci.yml), on the Chromium it ships, against the -linux screenshots.
 // Vite serves the repo root, so cards and fixtures load from their real paths.
 // E2E_TARGET=build runs the storefront specs against the production build (npm run build:app, served
-// by vite preview); the cards and the component and hydration fixtures need the dev server and
-// are skipped.
+// by vite preview); the cards, the component specs and the package and hydration fixtures need
+// the dev server and are skipped.
 const build = process.env.E2E_TARGET === 'build';
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
@@ -17,9 +17,11 @@ const channel = ci ? undefined : 'chrome';
 export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.mjs',
-  testIgnore: build ? ['cards.spec.mjs', 'components.spec.mjs', 'hydration.spec.mjs'] : [],
+  testIgnore: build ? ['cards.spec.mjs', 'package.spec.mjs', 'hydration.spec.mjs'] : [],
   outputDir: './test-results',
-  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}-{platform}{ext}',
+  // One screenshot folder for every project, whatever its testDir.
+  snapshotDir: './__screenshots__',
+  snapshotPathTemplate: '{snapshotDir}/{arg}-{platform}{ext}',
   fullyParallel: true,
   // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
   timeout: 60000,
@@ -70,7 +72,18 @@ export default defineConfig({
     {
       name: 'desktop',
       use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
-    }
+    },
+    // Each component's own spec, beside it (components/<Name>/<Name>.spec.mjs), on the fixture
+    // host page the dev server serves; a spec sets another viewport where it matters.
+    ...(build
+      ? []
+      : [
+          {
+            name: 'components',
+            testDir: '../../components',
+            use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
+          }
+        ])
   ],
   webServer: build
     ? {

@@ -70,10 +70,19 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`_tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Package on React 19:** `test:react19` installs React 19 and its types in a scratch app, runs the package test there (import, server render, wording, themes) and type-checks `dist/`'s declarations strictly. The workspace itself stays on React 18.3.1.
-3. **Browser tests:** `test:e2e` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.63.0-noble`), on its bundled Chromium (`CI` set: no Chrome channel, 2 workers, a fresh dev server), compared against the `-linux.png` baselines. `components.spec.mjs` tests each interactive component on its own (`fixtures/components.html`); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch.
+3. **Browser tests:** `test:e2e` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.63.0-noble`), on its bundled Chromium (`CI` set: no Chrome channel, 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch.
 4. **Production build:** `test:e2e:build` in the same image, with the performance budgets.
 
 A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
+
+## Component tests
+
+Every folder in `components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
+
+- **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `_e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
+- **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `_e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Name things as a customer would see them; storefront flows stay in `_e2e/features.spec.mjs`.
+- **Running:** `npx playwright test -c _e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`../components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
+- **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The build leaves `*.fixture.jsx` out of `dist/`, and `files: ["dist"]` keeps the specs out of the package.
 
 ## Runtime and export
 

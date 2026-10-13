@@ -10,14 +10,15 @@ const walk = dir =>
   fs.readdirSync(dir, {withFileTypes: true}).forEach(entry => {
     const file = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(file);
-    else if (entry.name.endsWith('.jsx')) components.push(entry.name.slice(0, -4));
+    else if (entry.name.endsWith('.jsx') && !entry.name.endsWith('.fixture.jsx'))
+      components.push(entry.name.slice(0, -4));
   });
 walk(path.join(root, '..', 'components'));
 const used = new Set();
 const buildingBlocks = new Set();
 const sources = fs
   .readdirSync(path.join(root, '..', 'components'), {recursive: true})
-  .filter(name => name.endsWith('.jsx'));
+  .filter(name => name.endsWith('.jsx') && !name.endsWith('.fixture.jsx'));
 for (const file of sources) {
   const code = fs.readFileSync(path.join(root, '..', 'components', file), 'utf8');
   for (const match of code.matchAll(/from '\.\.\/[A-Za-z]+\/([A-Za-z]+)\.jsx'/g))
@@ -39,8 +40,22 @@ assert.deepEqual(
   [],
   'components no storefront template uses'
 );
+// Every component folder carries its own browser test: <Name>.spec.mjs opening <Name>.fixture.jsx
+// (run by the e2e suite's components project).
+const folders = fs
+  .readdirSync(path.join(root, '..', 'components'), {withFileTypes: true})
+  .filter(entry => entry.isDirectory() && entry.name !== 'utils')
+  .map(entry => entry.name);
+const untested = folders.filter(folder => {
+  const base = path.join(root, '..', 'components', folder, folder);
+  if (!fs.existsSync(base + '.spec.mjs') || !fs.existsSync(base + '.fixture.jsx')) return true;
+  return !fs.readFileSync(base + '.spec.mjs', 'utf8').includes("'" + folder + "'");
+});
+assert.deepEqual(untested, [], 'component folders without a spec that opens their fixture');
 console.log(
   'Passed: all ' +
     components.length +
-    ' design-system components are used by a storefront template or another component.'
+    ' design-system components are used by a storefront template or another component, and all ' +
+    folders.length +
+    ' component folders have their own spec.'
 );

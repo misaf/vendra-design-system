@@ -28,7 +28,7 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 	}, loadingLabel));
 	if (href != null) return /* @__PURE__ */ React.createElement(Link, {
 		...rest,
-		href,
+		href: disabled || loading ? undefined : href,
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		isDisabled: disabled || loading,

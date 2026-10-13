@@ -56,7 +56,7 @@ export function Button({
     return (
       <Link
         {...rest}
-        href={href}
+        href={disabled || loading ? undefined : href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
         isDisabled={disabled || loading}
