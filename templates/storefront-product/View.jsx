@@ -11,22 +11,15 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
-            <nav
-              aria-label={v.t?.crumbs}
-              className="vf-product-breadcrumb tw:flex tw:gap-2 tw:text-sm tw:text-quiet tw:mb-5h"
-            >
-              <a href={v.href?.shop} className="vf-product-breadcrumb-link tw:text-quiet!">
-                <>{v.t?.shop}</>
-              </a>
-              <span>{'\u00b7'}</span>
-              <a
-                href={v.category?.href}
-                onClick={v.category?.go}
-                className="vf-product-breadcrumb-link tw:text-quiet!"
-              >
-                <>{v.t?.cat}</>
-              </a>
-            </nav>
+            <DS.Breadcrumb
+              label={v.t?.crumbs}
+              className="tw:mb-5h"
+              items={[
+                {label: v.t?.shop, href: v.href?.shop},
+                {label: v.t?.cat, href: v.category?.href},
+                {label: v.t?.name}
+              ]}
+            />
             <div className="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
               <div className="tw:flex tw:flex-col tw:gap-3">
                 <DS.Gallery

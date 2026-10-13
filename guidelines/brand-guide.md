@@ -158,6 +158,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill; `onComplete` never submits by itself.
 - **LocationPicker:** centre-pin map for the delivery point (drag, tap, arrow keys, "use my location"); the app passes `loadLeaflet()` and tiles, and `onFail` switches to a typed address.
 - **Select:** same field pattern, with `options`.
+- **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.
 - **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `components/ChoiceGroup/`).
@@ -175,12 +176,16 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **SectionHeader:** title + accent word, eyebrow, level h1–h3, action slot, prev/next arrows.
 - **Carousel:** scroll-snap row (`perView`, `perViewMobile`); `ref.scrollPrev()`/`scrollNext()`.
 - **PlacesMap:** read-only map of labelled places (studio, saved addresses); markers open their place by click, Enter or Space; the app passes `loadLeaflet()` and tiles.
+- **Breadcrumb:** where a page sits (shop › category › product); the last item is the current page.
+- **Pagination:** numbered pages with gaps, as links (`href(page)`) or in place (`onChange`); Persian digits under `fa`.
 - **LoadMore:** "Showing 4 of 6" status (a polite live region), progress bar and a "Show more" link to the next page; pair with `commerce.page`.
 
 **Feedback and overlays**
 - **Dialog:** focus trap, Esc closes, returns focus, locks scroll.
 - **Toast:** success, info, warning, danger. Follow-up actions go in `action`.
 - **Tooltip**, **Skeleton**.
+- **Spinner:** a ring for a short wait; a polite status unless `decorative` (Button's `loading` uses it).
+- **Meter:** a value towards a target (spend left before free delivery), with label and value text.
 - **Alert:** neutral, warning, danger, success; `action` slot.
 - **EmptyState:** icon disc, eyebrow, title + `titleAccent`, body, actions.
 - **AnnouncementBar:** dismissible top strip.

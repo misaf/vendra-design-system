@@ -14,6 +14,8 @@ import {
 } from '../_shared/catalog.js';
 import {
   VF_DELIVERY,
+  VF_FREE_DELIVERY_THRESHOLD,
+  VF_FREE_DELIVERY_ZONES,
   VF_ZONES,
   vfDeliveryCutoff,
   vfDeliveryDate,
@@ -447,6 +449,21 @@ function vals(page) {
         : C.promoUnknown
       : undefined,
     hasPromo: !onDelivery && !!delivery.promo,
+    // How far the subtotal is from free delivery, while the chosen zone can deliver free.
+    freeDelivery: VF_FREE_DELIVERY_ZONES.includes(z.id)
+      ? {
+          label:
+            sub >= VF_FREE_DELIVERY_THRESHOLD
+              ? C.freeReached
+              : C.freeLeft.replace('{amount}', m(VF_FREE_DELIVERY_THRESHOLD - sub)),
+          value: Math.min(sub, VF_FREE_DELIVERY_THRESHOLD),
+          max: VF_FREE_DELIVERY_THRESHOLD,
+          valueLabel: C.freeOf
+            .replace('{sub}', m(sub))
+            .replace('{threshold}', m(VF_FREE_DELIVERY_THRESHOLD)),
+          done: sub >= VF_FREE_DELIVERY_THRESHOLD
+        }
+      : null,
     noPromo: !onDelivery && !delivery.promo,
     promoStatus: (() => {
       const promo = VF_PROMOS.find(p => p.code === delivery.promo);

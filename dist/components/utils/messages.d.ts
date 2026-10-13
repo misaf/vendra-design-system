@@ -1,9 +1,10 @@
 import * as React from 'react';
-/** Built-in wording per component; {name} / {date} are filled in by the component. */
+/** Built-in wording per component; {name} / {date} / {page} are filled in by the component. */
 export interface ComponentMessages {
   AddressCard: {edit: string; delete: string; default: string; makeDefault: string};
   Alert: {close: string};
   AnnouncementBar: {close: string};
+  Breadcrumb: {label: string};
   Carousel: {previous: string; next: string};
   DatePicker: {
     calendar: string;
@@ -20,6 +21,7 @@ export interface ComponentMessages {
   Dialog: {close: string};
   LanguageSwitch: {label: string};
   OrderTimeline: {done: string};
+  Pagination: {label: string; previous: string; next: string; page: string};
   LineItem: {remove: string; unavailable: string};
   PaymentCard: {
     card: string;
@@ -39,7 +41,9 @@ export interface ComponentMessages {
     edit: string;
     delete: string;
   };
+  SearchField: {clear: string};
   SectionHeader: {previous: string; next: string};
+  Spinner: {label: string};
   Toast: {close: string};
 }
 /** Wording by language (e.g. "en", "fa", "ar"), then component; any part may be left out. */

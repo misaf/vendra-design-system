@@ -1,0 +1,38 @@
+/* Spinner: a ring with one edge open, turning in the current text colour. */
+.ag-spinner {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.ag-spin {
+  display: inline-block;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: ag-spin 0.7s linear infinite;
+  flex: none;
+}
+@keyframes ag-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-spin {
+    animation-duration: 2.4s;
+  }
+}
+/* Forced colours paint the open edge too, which leaves a still circle: keep it open in the system
+   text colour (button text inside buttons). */
+@media (forced-colors: active) {
+  .ag-spin {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    border-inline-end-color: transparent;
+  }
+  button .ag-spin,
+  .ag-btn .ag-spin {
+    border-color: ButtonText;
+    border-inline-end-color: transparent;
+  }
+}

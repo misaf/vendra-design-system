@@ -15,6 +15,8 @@ export const VF_STORE = {
   // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
   // a real store usually shows 12–24 (the API's itemsPerPage).
   shopPageSize: 4,
+  // Journal posts per page: the featured story and six more (the API's itemsPerPage).
+  journalPageSize: 7,
   apiBase: '', // Empty keeps every integration in local demo mode.
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   paymentDemo: {online: 'success', codZones: ['central', 'outer']},

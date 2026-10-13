@@ -1,0 +1,69 @@
+/* Pagination: a centred row of round page buttons; the current page is filled. */
+.ag-pages__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-body);
+}
+.ag-pages__page,
+.ag-pages__step {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  padding-inline: var(--space-2);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-body);
+  font: inherit;
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ag-pages__page[data-hovered],
+.ag-pages__step[data-hovered] {
+  background: var(--surface-hover);
+}
+.ag-pages__page[data-focus-visible],
+.ag-pages__step[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-pages__page--current,
+.ag-pages__page--current[data-hovered] {
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
+  font-weight: var(--weight-medium);
+}
+.ag-pages__step[data-disabled] {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ag-pages__step[data-disabled][data-hovered] {
+  background: transparent;
+}
+.ag-pages__gap {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--space-6);
+  color: var(--text-muted);
+}
+/* Forced colours drop the current page's fill: give it the system highlight. */
+@media (forced-colors: active) {
+  .ag-pages__page--current {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+}

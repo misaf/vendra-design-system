@@ -1,0 +1,31 @@
+/* SearchField: Input's shell with a clear button at the end; the browser's own clear control goes. */
+.ag-search input::-webkit-search-cancel-button,
+.ag-search input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ag-search__clear {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  margin-inline-end: calc(var(--space-3) * -1);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.ag-search__clear[data-hovered] {
+  background: var(--surface-hover);
+  color: var(--text-body);
+}
+.ag-search__clear[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.ag-search[data-empty] .ag-search__clear {
+  visibility: hidden;
+}

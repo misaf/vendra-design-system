@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
+import {Spinner} from '../Spinner/Spinner.jsx';
 import {cx} from '../utils/cx.js';
 
 // href → React Aria's Link (navigation; in-site links go through VendraProvider's navigate); no href
@@ -38,11 +39,7 @@ export function Button({
   const content = (
     <>
       {loading ? (
-        <span
-          className="ag-spin"
-          style={{width: iconSize, height: iconSize}}
-          aria-hidden="true"
-        ></span>
+        <Spinner size={iconSize} decorative />
       ) : (
         iconStart && <Icon name={iconStart} size={iconSize} />
       )}

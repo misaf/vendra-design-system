@@ -1089,3 +1089,66 @@ test.describe('focus is never hidden under the sticky bars', () => {
       expect(hidden).toEqual([]);
     });
 });
+
+test('the journal splits its stories across pages, keeping the page in the URL', async ({page}) => {
+  await openSite(page, 'journal', 'en');
+  const stories = page.locator('main .ag-blog');
+  const pages = page.getByRole('navigation', {name: 'Pages'});
+  await expect(stories).toHaveCount(7);
+  await expect(pages.getByRole('link', {name: 'Page 1'})).toHaveAttribute('aria-current', 'page');
+  await expect(pages.getByRole('link', {name: 'Previous page'})).toHaveAttribute(
+    'aria-disabled',
+    'true'
+  );
+  await pages.getByRole('link', {name: 'Page 2'}).click();
+  await expect(page).toHaveURL(/view=journal.*page=2/);
+  await expect(stories).toHaveCount(3);
+  await expect(pages.getByRole('link', {name: 'Page 2'})).toHaveAttribute('aria-current', 'page');
+  await page.reload();
+  await expect(stories).toHaveCount(3);
+  // A search starts again from the first page.
+  await page.getByRole('searchbox', {name: 'Search stories'}).fill('a');
+  await expect(page).not.toHaveURL(/page=/);
+  // Persian pages count in Persian digits.
+  await openSite(page, 'journal', 'fa');
+  await expect(
+    page.getByRole('navigation', {name: 'صفحه‌ها'}).getByRole('link', {name: 'صفحهٔ ۲'})
+  ).toHaveText('۲');
+});
+
+test('the search field clears with its button or Esc', async ({page}) => {
+  await openSite(page, 'search', 'en');
+  const box = page.getByRole('searchbox', {name: 'Search the shop'});
+  const clear = page.getByRole('button', {name: 'Clear search'});
+  await expect(clear).toBeHidden();
+  await box.fill('rose');
+  await expect(clear).toBeVisible();
+  await clear.click();
+  await expect(box).toHaveValue('');
+  await expect(box).toBeFocused();
+  await box.fill('rose');
+  await box.press('Escape');
+  await expect(box).toHaveValue('');
+});
+
+test('the product page shows where it sits in the shop', async ({page}) => {
+  await openSite(page, 'product', 'en', {id: 'VF-7K2M4Q'});
+  const crumbs = page.getByRole('navigation', {name: 'Breadcrumb'});
+  await expect(crumbs.getByRole('listitem')).toHaveCount(3);
+  await expect(crumbs.getByRole('link', {name: 'Shop'})).toHaveAttribute('href', /view=shop/);
+  await expect(crumbs.getByRole('link', {name: 'Flower boxes'})).toHaveAttribute(
+    'href',
+    /cat=boxes/
+  );
+  await expect(crumbs.locator('[aria-current="page"]')).toHaveText('VF-7K2M4Q');
+});
+
+test('the bag shows how far the order is from free delivery', async ({page}) => {
+  await openSite(page, 'bag', 'en');
+  const meter = page.getByRole('meter');
+  await expect(meter).toHaveAccessibleName(
+    /more for free delivery in Karaj|Free delivery in Karaj/
+  );
+  await expect(meter).toHaveAttribute('aria-valuetext', /of 5,000,000 Toman$/);
+  await expect(meter).toHaveAttribute('aria-valuemax', '5000000');
+});

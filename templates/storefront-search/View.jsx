@@ -21,10 +21,8 @@ export function View({v}) {
               </h1>
               <div className="vf-search-controls tw:flex tw:gap-3 tw:items-end">
                 <div className="vf-search-input tw:flex-1">
-                  <DS.Input
+                  <DS.SearchField
                     id="vf-q"
-                    type="search"
-                    iconStart="search"
                     label={v.t?.label}
                     placeholder={v.t?.ph}
                     value={v.q}

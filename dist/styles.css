@@ -158,6 +158,46 @@ a:hover{color:var(--accent-press)}
   }
 }
 
+/* components/Spinner/Spinner.css */
+/* Spinner: a ring with one edge open, turning in the current text colour. */
+.ag-spinner {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.ag-spin {
+  display: inline-block;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: ag-spin 0.7s linear infinite;
+  flex: none;
+}
+@keyframes ag-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-spin {
+    animation-duration: 2.4s;
+  }
+}
+/* Forced colours paint the open edge too, which leaves a still circle: keep it open in the system
+   text colour (button text inside buttons). */
+@media (forced-colors: active) {
+  .ag-spin {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+    border-inline-end-color: transparent;
+  }
+  button .ag-spin,
+  .ag-btn .ag-spin {
+    border-color: ButtonText;
+    border-inline-end-color: transparent;
+  }
+}
+
 /* components/Button/Button.css */
 .ag-btn {
   box-sizing: border-box;
@@ -516,26 +556,7 @@ a.ag-iconbtn {
 }
 
 /* components/shared.css */
-/* Shared by several components: focus rings, disabled states, the spinner and entrance animations. */
-.ag-spin {
-  display: inline-block;
-  box-sizing: border-box;
-  border: 2px solid currentColor;
-  border-inline-end-color: transparent;
-  border-radius: 50%;
-  animation: ag-spin 0.7s linear infinite;
-  flex: none;
-}
-@keyframes ag-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ag-spin {
-    animation-duration: 2.4s;
-  }
-}
+/* Shared by several components: focus rings, disabled states and entrance animations. */
 @keyframes ag-fade {
   from {
     opacity: 0;
@@ -988,6 +1009,39 @@ a.ag-iconbtn {
   .ag-select__option[data-focused] .ag-icon {
     background: HighlightText !important;
   }
+}
+
+/* components/SearchField/SearchField.css */
+/* SearchField: Input's shell with a clear button at the end; the browser's own clear control goes. */
+.ag-search input::-webkit-search-cancel-button,
+.ag-search input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ag-search__clear {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  margin-inline-end: calc(var(--space-3) * -1);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.ag-search__clear[data-hovered] {
+  background: var(--surface-hover);
+  color: var(--text-body);
+}
+.ag-search__clear[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.ag-search[data-empty] .ag-search__clear {
+  visibility: hidden;
 }
 
 /* components/CodeInput/CodeInput.css */
@@ -1919,6 +1973,129 @@ a.ag-cat:hover {
   background: var(--text-accent);
 }
 
+/* components/Pagination/Pagination.css */
+/* Pagination: a centred row of round page buttons; the current page is filled. */
+.ag-pages__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-body);
+}
+.ag-pages__page,
+.ag-pages__step {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--tap-min);
+  block-size: var(--tap-min);
+  padding-inline: var(--space-2);
+  border: var(--border-hair) solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-body);
+  font: inherit;
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ag-pages__page[data-hovered],
+.ag-pages__step[data-hovered] {
+  background: var(--surface-hover);
+}
+.ag-pages__page[data-focus-visible],
+.ag-pages__step[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-pages__page--current,
+.ag-pages__page--current[data-hovered] {
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
+  font-weight: var(--weight-medium);
+}
+.ag-pages__step[data-disabled] {
+  color: var(--text-muted);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ag-pages__step[data-disabled][data-hovered] {
+  background: transparent;
+}
+.ag-pages__gap {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: var(--space-6);
+  color: var(--text-muted);
+}
+/* Forced colours drop the current page's fill: give it the system highlight. */
+@media (forced-colors: active) {
+  .ag-pages__page--current {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+}
+
+/* components/Meter/Meter.css */
+/* Meter: label and value on one line, a thin bar under them. */
+.ag-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+}
+.ag-meter__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+.ag-meter__label {
+  color: var(--text-body);
+}
+.ag-meter__value {
+  color: var(--text-muted);
+}
+.ag-meter__track {
+  display: block;
+  block-size: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border-subtle);
+  overflow: hidden;
+}
+.ag-meter__fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: inline-size var(--dur-base) var(--ease-out);
+}
+.ag-meter--done .ag-meter__fill {
+  background: var(--success);
+}
+/* Forced colours drop both backgrounds: draw the track's edge and fill it with the system
+   highlight. */
+@media (forced-colors: active) {
+  .ag-meter__track {
+    border: var(--border-hair) solid CanvasText;
+  }
+  .ag-meter__fill,
+  .ag-meter--done .ag-meter__fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}
+
 /* components/AnnouncementBar/AnnouncementBar.css */
 .ag-announce {
   --focus-ring: var(--focus-ring-on-inverse);
@@ -2282,6 +2459,50 @@ a.ag-tabbar__item--current:hover {
 .ag-nav--current,
 .ag-nav--current:hover {
   color: var(--text-accent);
+}
+
+/* components/Breadcrumb/Breadcrumb.css */
+/* Breadcrumb: one quiet line of links with chevrons between them; the current page is plain text. */
+.ag-crumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+.ag-crumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.ag-crumbs__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+.ag-crumbs__link[data-hovered]:not([data-current]) {
+  color: var(--text-body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ag-crumbs__link[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-crumbs__link[data-current] {
+  color: var(--text-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ag-crumbs__sep {
+  color: var(--text-muted);
+  flex: none;
 }
 
 /* components/MenuList/MenuList.css */

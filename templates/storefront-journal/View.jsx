@@ -24,7 +24,7 @@ export function View({v}) {
               </div>
             </div>
             <div className="tw:mb-5">
-              <DS.Input label={v.migration?.search} value={v.q} onChange={v.setQ} type="search" />
+              <DS.SearchField label={v.migration?.search} value={v.q} onChange={v.setQ} />
             </div>
             {v.noStories ? (
               <>
@@ -73,6 +73,13 @@ export function View({v}) {
                 </React.Fragment>
               ))}
             </div>
+            <DS.Pagination
+              className="tw:mt-8"
+              page={v.paging?.page}
+              pageCount={v.paging?.pageCount}
+              href={v.paging?.href}
+              onChange={v.paging?.onChange}
+            />
           </main>
         </>
       }

@@ -84,6 +84,9 @@ export function vfReadRoute(search = location.search) {
     // How many "Show more" pages are open (?page=2 shows the first two pages).
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
+  // A journal page (?view=journal&page=2).
+  if (route.view === 'journal')
+    route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   return route;
 }
 export function vfRouteParams(route) {
@@ -105,6 +108,7 @@ export function vfRouteParams(route) {
     if (route.date) query.set('date', route.date);
     if (route.page > 1) query.set('page', route.page);
   }
+  if (route.view === 'journal' && route.page > 1) query.set('page', route.page);
   return '?' + query.toString();
 }
 export function vfPageRoute(props) {

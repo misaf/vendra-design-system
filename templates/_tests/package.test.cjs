@@ -197,6 +197,11 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       /no rate/
     );
     assert.deepEqual([...ds.dates.g2j(new Date(2026, 2, 21, 12))], [1405, 1, 1]);
+    // Pagination: first, last and one page either side of the current one; a one-page gap shows the page.
+    assert.deepEqual(ds.paginationRange(5, 10), [1, null, 4, 5, 6, null, 10]);
+    assert.deepEqual(ds.paginationRange(1, 3), [1, 2, 3]);
+    assert.deepEqual(ds.paginationRange(3, 7), [1, 2, 3, 4, null, 7]);
+    assert.deepEqual(ds.paginationRange(12, 12), [1, null, 11, 12]);
 
     // Commerce rules run on a tenant's own data, passed in: no globals, no window.
     const {commerce} = ds;

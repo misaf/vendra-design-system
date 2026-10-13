@@ -16,6 +16,7 @@ export const MESSAGES = {
     },
     Alert: {close: 'Dismiss'},
     AnnouncementBar: {close: 'Dismiss'},
+    Breadcrumb: {label: 'Breadcrumb'},
     Carousel: {previous: 'Previous', next: 'Next'},
     DatePicker: {
       calendar: 'Calendar',
@@ -31,6 +32,12 @@ export const MESSAGES = {
     },
     Dialog: {close: 'Close'},
     OrderTimeline: {done: 'done'},
+    Pagination: {
+      label: 'Pages',
+      previous: 'Previous page',
+      next: 'Next page',
+      page: 'Page {page}'
+    },
     LanguageSwitch: {label: 'Language'},
     LineItem: {remove: 'Remove', unavailable: 'No longer available'},
     PaymentCard: {
@@ -51,7 +58,9 @@ export const MESSAGES = {
       edit: 'Edit reminder for {name}',
       delete: 'Delete reminder for {name}'
     },
+    SearchField: {clear: 'Clear search'},
     SectionHeader: {previous: 'Previous', next: 'Next'},
+    Spinner: {label: 'Loading'},
     Toast: {close: 'Dismiss'}
   },
   fa: {
@@ -63,6 +72,7 @@ export const MESSAGES = {
     },
     Alert: {close: 'بستن'},
     AnnouncementBar: {close: 'بستن'},
+    Breadcrumb: {label: 'مسیر صفحه'},
     Carousel: {previous: 'قبلی', next: 'بعدی'},
     DatePicker: {
       calendar: 'تقویم',
@@ -78,6 +88,12 @@ export const MESSAGES = {
     },
     Dialog: {close: 'بستن'},
     OrderTimeline: {done: 'انجام شد'},
+    Pagination: {
+      label: 'صفحه‌ها',
+      previous: 'صفحهٔ قبل',
+      next: 'صفحهٔ بعد',
+      page: 'صفحهٔ {page}'
+    },
     LanguageSwitch: {label: 'زبان'},
     LineItem: {remove: 'حذف', unavailable: 'دیگر موجود نیست'},
     PaymentCard: {
@@ -98,7 +114,9 @@ export const MESSAGES = {
       edit: 'ویرایش یادآور {name}',
       delete: 'حذف یادآور {name}'
     },
+    SearchField: {clear: 'پاک کردن جستجو'},
     SectionHeader: {previous: 'قبلی', next: 'بعدی'},
+    Spinner: {label: 'در حال بارگذاری'},
     Toast: {close: 'بستن'}
   }
 };

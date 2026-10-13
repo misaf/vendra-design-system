@@ -1,0 +1,50 @@
+/* Meter: label and value on one line, a thin bar under them. */
+.ag-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+}
+.ag-meter__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+.ag-meter__label {
+  color: var(--text-body);
+}
+.ag-meter__value {
+  color: var(--text-muted);
+}
+.ag-meter__track {
+  display: block;
+  block-size: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border-subtle);
+  overflow: hidden;
+}
+.ag-meter__fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: inline-size var(--dur-base) var(--ease-out);
+}
+.ag-meter--done .ag-meter__fill {
+  background: var(--success);
+}
+/* Forced colours drop both backgrounds: draw the track's edge and fill it with the system
+   highlight. */
+@media (forced-colors: active) {
+  .ag-meter__track {
+    border: var(--border-hair) solid CanvasText;
+  }
+  .ag-meter__fill,
+  .ag-meter--done .ag-meter__fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}

@@ -386,6 +386,18 @@ export function View({v}) {
                   <aside className="vf-bag-summary tw:flex tw:flex-col tw:gap-4 tw:[flex:1_1_380px] tw:max-w-[440px] vf-sticky-panel">
                     <DS.Card padding={20}>
                       <DS.OrderSummary title={v.t?.summary} lines={v.summary} sums={v.sums} />
+                      {v.freeDelivery ? (
+                        <>
+                          <DS.Meter
+                            className="tw:mt-4"
+                            label={v.freeDelivery?.label}
+                            value={v.freeDelivery?.value}
+                            maxValue={v.freeDelivery?.max}
+                            valueLabel={v.freeDelivery?.valueLabel}
+                            done={v.freeDelivery?.done}
+                          />
+                        </>
+                      ) : null}
                     </DS.Card>
                     {v.noPromo ? (
                       <>

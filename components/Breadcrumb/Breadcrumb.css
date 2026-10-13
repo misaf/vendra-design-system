@@ -1,0 +1,42 @@
+/* Breadcrumb: one quiet line of links with chevrons between them; the current page is plain text. */
+.ag-crumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+.ag-crumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.ag-crumbs__link {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+.ag-crumbs__link[data-hovered]:not([data-current]) {
+  color: var(--text-body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ag-crumbs__link[data-focus-visible] {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.ag-crumbs__link[data-current] {
+  color: var(--text-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ag-crumbs__sep {
+  color: var(--text-muted);
+  flex: none;
+}
