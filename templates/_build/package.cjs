@@ -52,14 +52,18 @@ function declarations(file) {
   return (/\bReact\./.test(text) ? "import * as React from 'react';\n" : '') + text;
 }
 
-// styles.css with its @imports inlined, fonts next to it.
+// styles.css with its @imports inlined (an `@import … layer(name)` becomes `@layer name {…}`),
+// fonts next to it.
 function stylesheet(file, seen = new Set()) {
   if (seen.has(file)) return '';
   seen.add(file);
   return read(file)
-    .replace(/@import url\('([^']+)'\);\n?/g, (_, href) => {
+    .replace(/@import url\('([^']+)'\)(?: layer\(([\w.-]+)\))?;\n?/g, (_, href, layer) => {
       const child = path.posix.join(path.posix.dirname(file), href);
-      return '/* ' + child + ' */\n' + stylesheet(child, seen) + '\n';
+      const css = stylesheet(child, seen);
+      return (
+        '/* ' + child + ' */\n' + (layer ? '@layer ' + layer + ' {\n' + css + '\n}' : css) + '\n'
+      );
     })
     .replace(/url\('\.\.\/assets\/fonts\/([^']+)'\)/g, "url('./fonts/$1')");
 }

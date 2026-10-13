@@ -1,8 +1,10 @@
 html{-webkit-text-size-adjust:100%}
 body{transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out);margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
 .ag-display em{font-style:var(--accent-font-style);font-weight:var(--accent-font-weight)}
-:lang(fa) *{letter-spacing:0!important;font-style:normal}
-:lang(fa) em,:lang(fa) .ag-accent-italic{font-style:normal;font-weight:500}
+/* Persian has no italic and no tracking: !important in the base layer outranks every later layer (utilities included), so the one exception, the Latin digits of a CodeInput, is named here. */
+:lang(fa) *{font-style:normal!important}
+:lang(fa) *:not(.ag-code-input input){letter-spacing:0!important}
+:lang(fa) em,:lang(fa) .ag-accent-italic{font-weight:500}
 a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--accent-press)}
 ::selection{background:var(--blush-300);color:var(--ink-900)}

@@ -1,4 +1,13 @@
 /* GENERATED from styles.css by npm --prefix templates run build: tokens, base styles and every ag-* component class. */
+/* Cascade layers: the package's tokens, base styles and component classes sit in vendra.* layers,
+   so an app's own CSS wins predictably — anything unlayered (app styles, tenant themes) and any
+   layer declared after vendra (e.g. Tailwind's utilities) overrides a component without
+   specificity tricks or !important. With Tailwind's preflight, declare
+   `@layer theme, base, vendra, components, utilities;` first so the reset sits below vendra.
+   Third-party CSS the components restyle (Leaflet, for PlacesMap and LocationPicker) goes in
+   vendra.components with them, where the components' selectors meet it on specificity:
+   `@import url(…/leaflet.css) layer(vendra.components);`. */
+@layer vendra.tokens, vendra.base, vendra.components;
 /* tokens/fonts.css */
 /* Self-hosted web fonts (assets/fonts/, from Google Fonts — all SIL Open Font License). No network dependency.
    Latin: Instrument Serif (display, 400 + italic), Jost (body) — latin + latin-ext. Persian: Vazirmatn (display + UI/body) — arabic + latin.
@@ -21,6 +30,7 @@
 @font-face{font-family:'Vazirmatn Fallback';src:local('Tahoma');size-adjust:91.46%;ascent-override:112.12%;descent-override:58.73%;line-gap-override:0%;unicode-range:U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;}
 
 /* tokens/colors.css */
+@layer vendra.tokens {
 :root{
 --petal-50:#FBF8F6;--petal-100:#F5F0ED;--petal-200:#ECE4E0;--petal-300:#DCD1CC;--petal-400:#C2B5AF;
 --peony-100:#FBE6EA;--peony-200:#F6CFD7;--peony-400:#D9607A;--peony-500:#C8405F;--peony-600:#A8304D;--peony-700:#7E2139;
@@ -45,7 +55,9 @@
 --surface-header:rgba(251,248,246,.88);--text-inverse-muted:var(--ink-300);--border-inverse:var(--ink-700);
 }
 
+}
 /* tokens/typography.css */
+@layer vendra.tokens {
 :root{
 --font-display-latin:'Instrument Serif';--font-body-latin:'Jost';--font-display-fa:'Vazirmatn';--font-body-fa:'Vazirmatn';
 --font-display:'Instrument Serif','Instrument Serif Fallback','Vazirmatn','Vazirmatn Fallback',Georgia,'Times New Roman',serif;
@@ -56,7 +68,9 @@
 --tracking-eyebrow:.18em;/* @kind other */--tracking-button:.02em;/* @kind other */--tracking-display:-.015em;/* @kind other */
 }
 [data-lang="fa"]{--lh-tight:1.35;/* @kind other */--lh-snug:1.5;/* @kind other */--lh-body:1.9;/* @kind other */--lh-loose:2.1;/* @kind other */--tracking-eyebrow:0;/* @kind other */--tracking-button:0;/* @kind other */--tracking-display:0;/* @kind other */}
+}
 /* tokens/spacing.css */
+@layer vendra.tokens {
 :root{
 --space-0:0;--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-4h:1.25rem;--space-5:1.5rem;--space-5h:1.75rem;--space-6:2rem;--space-7:3rem;--space-8:4rem;--space-9:6rem;--space-10:8rem;
 --radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
@@ -65,7 +79,9 @@
 --tap-min:44px;/* @kind spacing */
 --control-h-sm:36px;/* @kind spacing */--control-h-md:46px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:48px;/* @kind spacing */--measure:56ch;/* @kind spacing */
 }
+}
 /* tokens/effects.css */
+@layer vendra.tokens {
 :root{
 --shadow-sm:0 1px 2px rgba(23,33,28,.06);
 --shadow-md:0 8px 20px -8px rgba(23,33,28,.18);
@@ -79,7 +95,9 @@
    0.01ms rather than 0 so transitionend and animationend still fire. */
 @media (prefers-reduced-motion:reduce){:root{--dur-fast:.01ms;/* @kind other */--dur-base:.01ms;/* @kind other */--dur-slow:.01ms;/* @kind other */}}
 
+}
 /* tokens/character.css */
+@layer vendra.tokens {
 /* Character tokens — the shape and voice a tenant theme may change. Defaults = Vendra Florist. */
 :root{
 --radius-control:var(--radius-pill);/* buttons, tags, badges, steppers, pill tabs, language switch, header links */
@@ -89,12 +107,16 @@
 --accent-font-weight:400;/* @kind font */
 }
 
+}
 /* tokens/base.css */
+@layer vendra.base {
 html{-webkit-text-size-adjust:100%}
 body{transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out);margin:0;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-body);-webkit-font-smoothing:antialiased}
 .ag-display em{font-style:var(--accent-font-style);font-weight:var(--accent-font-weight)}
-:lang(fa) *{letter-spacing:0!important;font-style:normal}
-:lang(fa) em,:lang(fa) .ag-accent-italic{font-style:normal;font-weight:500}
+/* Persian has no italic and no tracking: !important in the base layer outranks every later layer (utilities included), so the one exception, the Latin digits of a CodeInput, is named here. */
+:lang(fa) *{font-style:normal!important}
+:lang(fa) *:not(.ag-code-input input){letter-spacing:0!important}
+:lang(fa) em,:lang(fa) .ag-accent-italic{font-weight:500}
 a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--accent-press)}
 ::selection{background:var(--blush-300);color:var(--ink-900)}
@@ -108,7 +130,9 @@ a:hover{color:var(--accent-press)}
 .ag-accent-italic{font-family:var(--font-display);font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)}
 @media print{body{background:none;transition:none}h1,h2,h3,h4{break-after:avoid}img,svg,figure{break-inside:avoid}}/* paper: no page colour behind the text; headings stay with what follows */
 
+}
 /* components/index.css */
+@layer vendra.components {
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
 /* components/Button/Button.css */
@@ -885,7 +909,8 @@ a.ag-iconbtn {
 /* components/CodeInput/CodeInput.css */
 .ag-code-input input,
 /* The code is Latin digits read left to right, so it keeps its spacing on Persian pages, where
-   base.css otherwise sets letter-spacing to 0 (spacing breaks Persian letter joins). */
+   base.css otherwise sets letter-spacing to 0 (spacing breaks Persian letter joins); base.css
+   exempts this input from that rule. */
 :lang(fa) .ag-code-input input {
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.3em !important;
@@ -3455,3 +3480,4 @@ a.ag-tabbar__item--current:hover {
 }
 
 
+}

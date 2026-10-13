@@ -69,6 +69,18 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 - **Samples:** `clay` (terracotta, squared controls, uppercase Jost) and `fern` (teal, pill controls, deliberately near the contrast limits). Preview with `?tenant=<slug>`.
 - **Onboarding:** follow [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md) and design the theme in `guidelines/theme-builder.html`.
 
+## Overriding the styles
+
+The package CSS sits in cascade layers, `vendra.tokens`, `vendra.base` and `vendra.components`, so your own CSS wins without specificity battles: anything unlayered (your stylesheets, tenant themes) overrides a component class, as does any layer declared after `vendra`. With Tailwind, declare the order before importing anything, so the preflight reset sits below the components and utilities above them:
+
+```css
+@layer theme, base, vendra, components, utilities;
+@import '@vendra/design-system/styles.css';
+@import 'tailwindcss';
+```
+
+Two rules stay `!important` on purpose: Persian text is never italic or letter-spaced. Load Leaflet's stylesheet (PlacesMap, LocationPicker) into the components' layer: `@import 'leaflet/dist/leaflet.css' layer(vendra.components);`. (The reference storefront declares Tailwind's layers first instead and keeps its page CSS in `vendra.components`, because that CSS was written against the components' specificity.)
+
 ## Design tokens for other platforms
 
 `tokens.json` holds every token (colours, type, spacing, radii, shadows, motion, character) in the W3C design tokens format: `--peony-500` is `peony.500`, `--accent` is `accent.default`, and semantic tokens are aliases (`success.default` → `{leaf.700}`). A tenant changes only colours and character, so its tokens merge over the base file: the sample tenants ship as `tokens/tenants/<slug>.json`, and a theme from your database converts at runtime with `designTokens(tokens(spec).all)` from `@vendra/design-system/theme`.

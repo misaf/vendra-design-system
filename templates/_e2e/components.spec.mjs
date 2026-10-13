@@ -422,3 +422,19 @@ test.describe('Print', () => {
     }
   });
 });
+
+test.describe('Cascade layers', () => {
+  test("an app's own CSS overrides a component class without specificity tricks", async ({
+    page
+  }) => {
+    const button = page.getByRole('button', {name: 'Delivery details'});
+    // Hovered, the package styles it with .ag-btn--secondary:hover:not(:disabled, [data-pending]),
+    // three times the specificity of the app's single unlayered class below, which still wins.
+    await hover(page, button);
+    const hovered = await button.evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(hovered).not.toBe('rgba(0, 0, 0, 0)');
+    await page.addStyleTag({content: '.app-brand-button { background-color: rgb(1, 2, 3); }'});
+    await button.evaluate(el => el.classList.add('app-brand-button'));
+    await expect(button).toHaveCSS('background-color', 'rgb(1, 2, 3)');
+  });
+});

@@ -1,8 +1,17 @@
+/* Cascade layers: the package's tokens, base styles and component classes sit in vendra.* layers,
+   so an app's own CSS wins predictably — anything unlayered (app styles, tenant themes) and any
+   layer declared after vendra (e.g. Tailwind's utilities) overrides a component without
+   specificity tricks or !important. With Tailwind's preflight, declare
+   `@layer theme, base, vendra, components, utilities;` first so the reset sits below vendra.
+   Third-party CSS the components restyle (Leaflet, for PlacesMap and LocationPicker) goes in
+   vendra.components with them, where the components' selectors meet it on specificity:
+   `@import url(…/leaflet.css) layer(vendra.components);`. */
+@layer vendra.tokens, vendra.base, vendra.components;
 @import url('tokens/fonts.css');
-@import url('tokens/colors.css');
-@import url('tokens/typography.css');
-@import url('tokens/spacing.css');
-@import url('tokens/effects.css');
-@import url('tokens/character.css');
-@import url('tokens/base.css');
-@import url('components/index.css');
+@import url('tokens/colors.css') layer(vendra.tokens);
+@import url('tokens/typography.css') layer(vendra.tokens);
+@import url('tokens/spacing.css') layer(vendra.tokens);
+@import url('tokens/effects.css') layer(vendra.tokens);
+@import url('tokens/character.css') layer(vendra.tokens);
+@import url('tokens/base.css') layer(vendra.base);
+@import url('components/index.css') layer(vendra.components);

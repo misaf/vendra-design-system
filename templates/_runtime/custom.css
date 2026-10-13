@@ -1,3 +1,4 @@
+@layer vendra.components {
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 
 /* Source: _shared/shell.css */
@@ -464,3 +465,5 @@ html {
 /* Custom styles for the weddings page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
+
+}

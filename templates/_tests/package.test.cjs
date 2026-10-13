@@ -91,6 +91,11 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       console.error = quiet;
       console.warn = warn;
     }
+    // The package CSS sits in vendra.* cascade layers, so an app's own CSS overrides it predictably.
+    const packageCss = fs.readFileSync(path.join(repo, 'dist/styles.css'), 'utf8');
+    assert.match(packageCss, /^@layer vendra\.tokens, vendra\.base, vendra\.components;$/m);
+    assert.match(packageCss, /@layer vendra\.components \{[\s\S]*\.ag-btn\b/);
+
     // Design tokens for other platforms: W3C DTCG JSON whose aliases all resolve (a tenant's file
     // over the base one), and the runtime designTokens gives the same as the build.
     const baseTokens = JSON.parse(
@@ -347,7 +352,8 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
 
     // Styles: one file, fonts beside it, tenant files as published paths.
     const styles = fs.readFileSync(path.join(repo, 'dist/styles.css'), 'utf8');
-    assert.doesNotMatch(styles, /@import|\.\.\/assets/);
+    // (Comments may mention @import, e.g. how to load Leaflet's CSS into a layer.)
+    assert.doesNotMatch(styles.replace(/\/\*[\s\S]*?\*\//g, ''), /@import|\.\.\/assets/);
     for (const [, font] of styles.matchAll(/url\('\.\/(fonts\/[^']+)'\)/g))
       assert.ok(files.has('dist/' + font), font + ' is missing');
     for (const token of ['--accent:', '--control-h-md:', '.ag-btn {', '.ag-input {'])

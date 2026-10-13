@@ -14,6 +14,9 @@ function customCss(root) {
   );
   if (/@(?:apply|theme|source|import)\b/.test(css))
     throw new Error('Custom CSS must contain plain CSS only.');
-  return css;
+  // The page CSS joins the components' cascade layer: it was written to meet the ag-* classes on
+  // specificity (contextual exceptions win, generic heading rules don't), which only holds inside
+  // one layer. app/theme.js loads Tailwind first, so its utilities sit under both.
+  return '@layer vendra.components {\n' + css + '\n}\n';
 }
 module.exports = {customCss};

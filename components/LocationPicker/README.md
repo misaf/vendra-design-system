@@ -30,3 +30,5 @@ A delivery pin. The pin stays at the centre of the map, and wherever the map sto
 **Use when:** Choosing where flowers go: the delivery step and saved addresses.
 
 **Don’t use when:** Don’t use to show places the customer only looks at, such as the studio on the contact page; a read-only map with markers fits that.
+
+**Leaflet's stylesheet:** load it into the package's components layer, where this component's map styling meets it on specificity: `@import 'leaflet/dist/leaflet.css' layer(vendra.components);` in your app's CSS (a plain unlayered import would override it).

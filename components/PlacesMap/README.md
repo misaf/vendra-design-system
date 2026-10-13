@@ -30,3 +30,5 @@ A map of places to look at, not to choose: the studio on the contact page, the c
 **Use when:** Showing where things are: the studio, saved addresses, pickup points.
 
 **Don’t use when:** Don’t use to choose a point (LocationPicker), or as the only way to reach a place: list the places too.
+
+**Leaflet's stylesheet:** load it into the package's components layer, where this component's map styling meets it on specificity: `@import 'leaflet/dist/leaflet.css' layer(vendra.components);` in your app's CSS (a plain unlayered import would override it).

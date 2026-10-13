@@ -30,12 +30,13 @@ export function vfLoadLeaflet() {
   if (window.L && window.L.map) return Promise.resolve(window.L);
   if (window.vfLeafletLoading) return window.vfLeafletLoading;
   const base = (window.VF_ASSET_BASE || '../../') + 'templates/_vendor/leaflet/';
+  // Leaflet's stylesheet goes in the package's vendra.components layer, with the components that
+  // restyle it (PlacesMap, LocationPicker); unlayered, it would override them outright.
   if (!document.getElementById('vf-leaflet-css')) {
-    const link = document.createElement('link');
-    link.id = 'vf-leaflet-css';
-    link.rel = 'stylesheet';
-    link.href = base + 'leaflet.css';
-    document.head.appendChild(link);
+    const style = document.createElement('style');
+    style.id = 'vf-leaflet-css';
+    style.textContent = "@import url('" + base + "leaflet.css') layer(vendra.components);";
+    document.head.appendChild(style);
   }
   window.vfLeafletLoading = new Promise((resolve, reject) => {
     const script = document.createElement('script');
