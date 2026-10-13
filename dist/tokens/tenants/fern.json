@@ -306,6 +306,9 @@
       "$value": [
         "Vazirmatn",
         "Vazirmatn Fallback",
+        "Vazirmatn Fallback Naskh",
+        "Vazirmatn Fallback Sans",
+        "Vazirmatn Fallback Free",
         "Segoe UI",
         "Tahoma",
         "system-ui",
