@@ -72,6 +72,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Press:** translateY(1px) + one more step darker. **Focus:** 2px lilac ring, 2px offset; on `--surface-inverse` (footer, toast, announcement bar) add `.ag-on-inverse` so the ring switches to `--focus-ring-on-inverse` (lilac-300, 3:1).
 - **Light only:** no dark mode. Use semantic tokens (`--surface-*`, `--text-*`) — tenant themes (`data-tenant`) depend on it.
 - **Mobile first:** most customers arrive from Instagram on a phone. Breakpoints: mobile < 768px, tablet < 1100px. On mobile: 16px page gutters; a bottom tab bar (Home · Shop · WhatsApp · Bag) with safe-area padding; a sticky add-to-bag bar on product pages; horizontal snap-scrollers instead of wide grids; a 2-column product grid (12px column gap); display type at about half the desktop size (hero 48px, section titles 36px); every touch target at least 44px.
+- **Home first screen:** no decorative hero. A slim band carries the headline, when an order placed now arrives ("Order by 18:00 for same-day delivery in Karaj", or the next delivery day after the cut-off) and the shop button (same-day designs while today is open); this week's designs follow straight away, then occasions. A seasonal campaign (Nowruz, Yalda, Mother's Day) may take a banner when it has something time-bound to say.
 - **RTL:** all layout uses logical properties (`padding-inline`, `inset-inline-end`). Directional icons (arrows, chevrons) mirror via `.ag-flip-rtl` — the Icon component does this automatically.
 
 ## Iconography

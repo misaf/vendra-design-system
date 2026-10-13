@@ -91,7 +91,7 @@ A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
 - **Custom CSS** is for contextual selectors and component internals, in `_shared/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
-- **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the home or wedding hero and the main product image. Check EN and FA at 320px, 390px and desktop width.
+- **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px and desktop width.
 
 ## Demo behavior
 

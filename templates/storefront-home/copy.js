@@ -4,14 +4,13 @@ export function vfCopy(S) {
   const n = S.n;
   return {
     en: {
-      eyebrow: S.t.brand,
       heroA: 'Soft flowers,',
       heroB: 'gathered by hand.',
-      heroP:
-        'Blush roses, lilies and eucalyptus, wrapped in paper and satin. Hand-tied each morning from what the growers bring in.',
+      sameDay: 'Order by {time} for same-day delivery in Karaj.',
+      nextDay: 'Next delivery in Karaj: {day}, {date}.',
+      ctaSame: 'Shop same-day flowers',
       cta: 'Shop bouquets',
       wa: 'Order on WhatsApp',
-      heroPh: 'Hero photo',
       catEb: 'Shop by occasion',
       catA: 'Something for',
       catB: 'every day.',
@@ -27,14 +26,13 @@ export function vfCopy(S) {
       designCount: value => value + ' designs'
     },
     fa: {
-      eyebrow: S.t.brand,
       heroA: 'گل‌های لطیف،',
       heroB: 'چیده با دست.',
-      heroP:
-        'رز صورتی، لیلیوم و اکالیپتوس، پیچیده در کاغذ و ساتن. هر صبح از گل‌هایی که باغدارها می‌آورند، با دست بسته می‌شود.',
+      sameDay: 'سفارش تا ساعت {time}، تحویل همان روز در کرج.',
+      nextDay: 'نزدیک‌ترین تحویل در کرج: {day}، {date}.',
+      ctaSame: 'خرید گل‌های تحویل همان روز',
       cta: 'خرید دسته‌گل',
       wa: 'سفارش در واتساپ',
-      heroPh: 'عکس اصلی',
       catEb: 'خرید بر اساس مناسبت',
       catA: 'چیزی برای',
       catB: 'هر روز.',

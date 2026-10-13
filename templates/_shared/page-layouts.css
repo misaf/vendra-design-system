@@ -41,9 +41,6 @@
   max-width: none;
   padding: 0;
 }
-.vf-page .vf-shopping--home .vf-hero-title {
-  font-size: clamp(48px, 6cqi, 88px);
-}
 
 .vf-page main > aside {
   min-width: 0;
@@ -128,13 +125,6 @@
   }
   .vf-page[data-lang='fa'] .vf-form h1 {
     font-size: 34px;
-  }
-  .vf-page[data-lang='fa'] .vf-shopping--home .vf-hero-title {
-    font-size: 40px;
-    line-height: 1.5;
-  }
-  .vf-page .vf-shopping--home .vf-hero-title {
-    font-size: 48px;
   }
   .vf-page .vf-form aside,
   .vf-page .vf-shopping aside {

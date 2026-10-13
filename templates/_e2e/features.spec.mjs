@@ -1173,3 +1173,25 @@ test('products say when few are left or when they come back', async ({page}) => 
     'Back on 12 October'
   ]);
 });
+
+test('the home page says when an order placed now arrives', async ({page}) => {
+  await page.clock.setFixedTime(MORNING);
+  await openSite(page, 'home', 'en');
+  const main = page.getByRole('main');
+  await expect(main.locator('.vf-home-delivery')).toHaveText(
+    'Order by 18:00 for same-day delivery in Karaj.'
+  );
+  await expect(main.getByRole('link', {name: 'Shop same-day flowers'})).toHaveAttribute(
+    'href',
+    /view=shop.*filters=same/
+  );
+  // The designs come straight after the band.
+  await expect(main.locator('section').nth(1)).toHaveClass(/vf-home-arrivals/);
+  // After the cut-off, the next delivery day instead.
+  await page.clock.setFixedTime(new Date('2026-10-05T19:00:00+03:30'));
+  await openSite(page, 'home', 'fa');
+  await expect(main.locator('.vf-home-delivery')).toHaveText(
+    'نزدیک‌ترین تحویل در کرج: فردا، ۱۴ مهر.'
+  );
+  await expect(main.getByRole('link', {name: 'خرید دسته‌گل'})).toBeVisible();
+});
