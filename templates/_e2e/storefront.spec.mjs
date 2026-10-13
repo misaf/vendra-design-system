@@ -68,3 +68,34 @@ test.describe('shell', () => {
     await expect(panel).toHaveAttribute('aria-labelledby', await selected.getAttribute('id'));
   });
 });
+
+// In Persian, left-to-right fragments (product and order codes, phone numbers, times, emails,
+// Latin words) are isolated (dir="ltr", <bdi>, unicode-bidi: isolate or isolate marks in the
+// copy), so their digit groups and punctuation never reorder inside right-to-left text.
+test.describe('bidi', () => {
+  for (const view of Object.keys(VIEWS))
+    test(`Persian ${view} isolates left-to-right fragments`, async ({page}) => {
+      await openSite(page, view, 'fa');
+      const loose = await page.evaluate(() => {
+        const mixed =
+          /(\+?[0-9۰-۹]{2,}[ \-/:][0-9۰-۹]{2,})|([A-Za-z]+[\-.@:/][A-Za-z0-9])|([A-Za-z]{2,}.*[؀-ۿ])|([؀-ۿ].*[A-Za-z]{2,})/;
+        const found = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const text = walker.currentNode.textContent.trim();
+          const element = walker.currentNode.parentElement;
+          if (!mixed.test(text) || /[⁦-⁩]/.test(text) || !element.offsetParent) continue;
+          let isolated = false;
+          for (let node = element; node && node !== document.body; node = node.parentElement) {
+            const dir = node.getAttribute('dir');
+            if (dir === 'ltr' || dir === 'auto' || node.tagName === 'BDI') isolated = true;
+            else if (/isolate|plaintext/.test(getComputedStyle(node).unicodeBidi)) isolated = true;
+            if (isolated || dir === 'rtl') break;
+          }
+          if (!isolated) found.push(text.slice(0, 60));
+        }
+        return found;
+      });
+      expect(loose).toEqual([]);
+    });
+});
