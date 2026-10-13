@@ -1,14 +1,17 @@
 import {defineConfig, devices} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
-// Browser tests for the storefront and the design-system cards. They run on the
+// Browser tests for the storefront and the design-system cards. Locally they run on the
 // installed Google Chrome (channel: 'chrome') because the Playwright browser CDN
-// is not reachable from every region. Vite serves the repo root, so cards and
-// fixtures load from their real paths.
+// is not reachable from every region. CI runs them inside Playwright's Linux image
+// (.github/workflows/ci.yml), on the Chromium it ships, against the -linux screenshots.
+// Vite serves the repo root, so cards and fixtures load from their real paths.
 // E2E_TARGET=build runs the storefront specs against the production build (npm run build:app, served
 // by vite preview); the cards and component fixtures need the dev server and are skipped.
 const build = process.env.E2E_TARGET === 'build';
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
+const ci = !!process.env.CI;
+const channel = ci ? undefined : 'chrome';
 
 export default defineConfig({
   testDir: '.',
@@ -19,9 +22,10 @@ export default defineConfig({
   fullyParallel: true,
   // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
   timeout: 60000,
-  forbidOnly: !!process.env.CI,
-  // One Vite dev server serves every page; more workers than this starts timing out.
-  workers: 4,
+  forbidOnly: ci,
+  // One Vite dev server serves every page; more workers than this starts timing out. CI's
+  // runners have fewer cores.
+  workers: ci ? 2 : 4,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
   reporter: [['list'], ['html', {outputFolder: './playwright-report', open: 'never'}]],
@@ -45,7 +49,11 @@ export default defineConfig({
       cookies: [],
       origins: [{origin, localStorage: [{name: 'vf-consent', value: 'essential'}]}]
     },
-    channel: 'chrome',
+    channel,
+    // The store is in Karaj: delivery days and cut-offs read the clock in Tehran time, whatever
+    // the machine's own zone (CI runs in UTC).
+    timezoneId: 'Asia/Tehran',
+    locale: 'en-US',
     trace: 'retain-on-failure'
   },
   projects: [
@@ -53,14 +61,14 @@ export default defineConfig({
       name: 'mobile',
       use: {
         ...devices['Desktop Chrome'],
-        channel: 'chrome',
+        channel,
         viewport: {width: 390, height: 844},
         hasTouch: false
       }
     },
     {
       name: 'desktop',
-      use: {...devices['Desktop Chrome'], channel: 'chrome', viewport: {width: 1280, height: 900}}
+      use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
     }
   ],
   webServer: build
@@ -68,14 +76,14 @@ export default defineConfig({
         command: 'npm run build:app && npm run preview',
         cwd: '..',
         url: origin + '/templates/app/',
-        reuseExistingServer: true,
+        reuseExistingServer: !ci,
         timeout: 180000
       }
     : {
         command: 'npm run dev',
         cwd: '..',
         url: origin + '/templates/app/',
-        reuseExistingServer: true,
+        reuseExistingServer: !ci,
         timeout: 120000
       }
 });

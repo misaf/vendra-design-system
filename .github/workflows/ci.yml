@@ -1,0 +1,84 @@
+# Every push and pull request: formatting and generated files, unit tests, then the browser
+# tests. The browser tests run inside Playwright's Linux image, pinned to the version in
+# templates/package.json, so the -linux screenshot baselines stay comparable from run to run.
+# After a deliberate visual change, run the "Update screenshots" workflow to refresh them.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check and unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Formatting, and dist/, Tailwind, tenant CSS and the tenant list match their sources.
+      - run: npm --prefix templates run check
+      # Types, storefront logic, tenants, the package's server render and the API contract.
+      - run: npm --prefix templates test
+
+  e2e:
+    name: Browser tests (cards, pages, axe)
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    env:
+      CI: 'true'
+      HOME: /root
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm --prefix templates run test:e2e
+      - name: Keep the report and failing screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            templates/_e2e/playwright-report
+            templates/_e2e/test-results
+          retention-days: 14
+
+  e2e-build:
+    name: Production build and performance budgets
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --ipc=host
+    env:
+      CI: 'true'
+      HOME: /root
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm --prefix templates run test:e2e:build
+      - name: Keep the report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-build-report
+          path: |
+            templates/_e2e/playwright-report
+            templates/_e2e/test-results
+          retention-days: 14

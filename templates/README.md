@@ -53,7 +53,7 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 
 ## Browser tests
 
-`_e2e/` runs on the installed Google Chrome at 390px and 1280px, reusing a running dev server.
+`_e2e/` runs on the installed Google Chrome at 390px and 1280px, reusing a running dev server, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 - **`storefront`, `states`:** axe (WCAG 2.2 AA) on every view and on hidden states (menus, dialogs, validation, `?demo=loading|error`).
 - **`pages`, `cards`:** screenshot comparisons, with the clock frozen at 2026-10-05. `cards` also checks the Contrast card for every tenant.
@@ -63,6 +63,16 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and the home page's largest paint on slow 4G with a 4x slower CPU. They sit just above today's numbers; raise one only on purpose.
 
 Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `_e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `_e2e/playwright-report/`, then run `test:e2e:update`.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request:
+
+1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22.
+2. **Browser tests:** `test:e2e` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.63.0-noble`), on its bundled Chromium (`CI` set: no Chrome channel, 2 workers, a fresh dev server), compared against the `-linux.png` baselines.
+3. **Production build:** `test:e2e:build` in the same image, with the performance budgets.
+
+A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
 
 ## Runtime and export
 
