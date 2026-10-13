@@ -7,7 +7,8 @@ import {fileURLToPath} from 'node:url';
 // (.github/workflows/ci.yml), on the Chromium it ships, against the -linux screenshots.
 // Vite serves the repo root, so cards and fixtures load from their real paths.
 // E2E_TARGET=build runs the storefront specs against the production build (npm run build:app, served
-// by vite preview); the cards and component fixtures need the dev server and are skipped.
+// by vite preview); the cards and the component and hydration fixtures need the dev server and
+// are skipped.
 const build = process.env.E2E_TARGET === 'build';
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
@@ -16,7 +17,7 @@ const channel = ci ? undefined : 'chrome';
 export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.mjs',
-  testIgnore: build ? ['cards.spec.mjs', 'components.spec.mjs'] : [],
+  testIgnore: build ? ['cards.spec.mjs', 'components.spec.mjs', 'hydration.spec.mjs'] : [],
   outputDir: './test-results',
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}-{platform}{ext}',
   fullyParallel: true,

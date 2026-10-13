@@ -8,8 +8,10 @@ const {createRequire} = require('node:module');
 
 const repo = path.resolve(__dirname, '../..');
 const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
-// Inside the workspace's node_modules, so the package resolves react from there like a peer.
-const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-'));
+// Inside the workspace's node_modules, so the package resolves react from there like a peer;
+// react-19.cjs points VENDRA_PACKAGE_APP at an app with React 19 instead.
+const peers = process.env.VENDRA_PACKAGE_APP || repo;
+const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'));
 
 (async () => {
   try {
@@ -391,7 +393,13 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       .filter(n => n.endsWith('.css')))
       assert.ok(files.has('dist/tenants/' + name));
 
-    console.log('package tests passed (' + components.length + ' components server-rendered)');
+    console.log(
+      'package tests passed (' +
+        components.length +
+        ' components server-rendered, React ' +
+        React.version +
+        ')'
+    );
   } finally {
     fs.rmSync(app, {recursive: true, force: true});
   }

@@ -19,8 +19,18 @@ const {
   ChoiceTile,
   CodeInput,
   PhoneInput,
+  FilterBar,
+  Pagination,
+  Price,
+  TrustSeal,
+  Meter,
   VendraProvider
 } = window.VendraDesignSystem;
+const FILTERS = [
+  ['occasion', 'Anniversary'],
+  ['price', 'Under 3M'],
+  ['stock', 'In stock only']
+];
 const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
 document.documentElement.lang = lang;
 document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
@@ -45,6 +55,8 @@ function App() {
   const [completed, setCompleted] = React.useState('');
   const [phone, setPhone] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState({number: '', mobile: false});
+  const [filterIds, setFilterIds] = React.useState(FILTERS.map(([id]) => id));
+  const [page, setPage] = React.useState(1);
   return (
     <VendraProvider locale={lang === 'fa' ? 'fa-IR' : 'en-US'}>
       <section data-test="tooltip">
@@ -189,6 +201,39 @@ function App() {
         <output data-test="phone">
           {phoneNumber.number + (phoneNumber.mobile ? ' mobile' : '')}
         </output>
+      </section>
+      <section data-test="filters">
+        <FilterBar
+          filters={FILTERS.filter(([id]) => filterIds.includes(id)).map(([id, label]) => ({
+            id,
+            label,
+            onRemove: () => setFilterIds(ids => ids.filter(other => other !== id))
+          }))}
+          onClearAll={() => setFilterIds([])}
+        />
+        <button type="button" onClick={() => setFilterIds(FILTERS.map(([id]) => id))}>
+          Reset filters
+        </button>
+      </section>
+      <section data-test="pagination">
+        <Pagination page={page} pageCount={9} onChange={setPage} />
+        <Pagination
+          page={4}
+          pageCount={9}
+          href={number => '?page=' + number}
+          label="Linked pages"
+        />
+        <output data-test="page">{page}</output>
+      </section>
+      <section data-test="price">
+        <Price value="490,000 Toman" compareAt="560,000 Toman" />
+      </section>
+      <section data-test="seals">
+        <TrustSeal kind="enamad" href="https://enamad.ir/" image="/missing-seal.png" />
+        <TrustSeal kind="samandehi" href="https://samandehi.ir/" />
+      </section>
+      <section data-test="meter">
+        <Meter label="Free delivery" value={3800000} maxValue={5000000} valueLabel="3.8M of 5M" />
       </section>
     </VendraProvider>
   );

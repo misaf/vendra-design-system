@@ -30,8 +30,25 @@ jobs:
       - run: npm ci
       # Formatting, and dist/, Tailwind, tenant CSS and the tenant list match their sources.
       - run: npm --prefix templates run check
-      # Types, storefront logic, tenants, the package's server render and the API contract.
+      # Types, storefront logic, tenants, the package's server render, its bundle size and the API
+      # contract.
       - run: npm --prefix templates test
+
+  react-19:
+    name: Package on React 19
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The workspace tests on React 18.3.1; this installs React 19 in a scratch app and runs the
+      # package test (import, server render, wording, themes) and a strict type check there.
+      - run: npm --prefix templates run test:react19
 
   e2e:
     name: Browser tests (cards, pages, axe)

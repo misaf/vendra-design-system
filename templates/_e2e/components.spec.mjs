@@ -438,3 +438,106 @@ test.describe('Cascade layers', () => {
     await expect(button).toHaveCSS('background-color', 'rgb(1, 2, 3)');
   });
 });
+
+test.describe('FilterBar', () => {
+  for (const [lang, group, remove, clear] of [
+    ['en', 'Active filters', 'Remove {label}', 'Clear all'],
+    ['fa', 'فیلترهای فعال', 'حذف {label}', 'پاک کردن همه']
+  ])
+    test(`each filter is a named remove button; focus stays in the row (${lang})`, async ({
+      page
+    }) => {
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const bar = page.getByRole('group', {name: group});
+      const removeButton = label =>
+        bar.getByRole('button', {name: remove.replace('{label}', label)});
+      await expect(bar.getByRole('button')).toHaveCount(4);
+      await expect(removeButton('Anniversary')).not.toHaveAttribute('aria-pressed');
+      // The filter now in the removed one's place takes focus.
+      await removeButton('Under 3M').click();
+      await expect(removeButton('In stock only')).toBeFocused();
+      // After the last filter, "Clear all" is in its place.
+      await page.keyboard.press('Enter');
+      await expect(bar.getByRole('button', {name: clear})).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(bar).toHaveCount(0);
+    });
+});
+
+test.describe('Pagination', () => {
+  test('buttons change the page; the current page is marked; ends are disabled', async ({page}) => {
+    const pages = page.getByRole('navigation', {name: 'Pages'});
+    await expect(pages.getByRole('button', {name: 'Page 1'})).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    await expect(pages.getByRole('button', {name: 'Previous page'})).toBeDisabled();
+    await pages.getByRole('button', {name: 'Next page'}).click();
+    await expect(page.locator('output[data-test=page]')).toHaveText('2');
+    await expect(pages.getByRole('button', {name: 'Page 2'})).toHaveAttribute(
+      'aria-current',
+      'page'
+    );
+    await pages.getByRole('button', {name: 'Page 9'}).click();
+    await expect(pages.getByRole('button', {name: 'Next page'})).toBeDisabled();
+  });
+
+  test('with href every page is a real link', async ({page}) => {
+    const pages = page.getByRole('navigation', {name: 'Linked pages'});
+    await expect(pages.getByRole('link', {name: 'Page 5'})).toHaveAttribute('href', '?page=5');
+    await expect(pages.getByRole('link', {name: 'Next page'})).toHaveAttribute('href', '?page=5');
+    await expect(pages.getByRole('link', {name: 'Page 4'})).toHaveAttribute('aria-current', 'page');
+  });
+
+  test('page numbers and names follow the page language', async ({page}) => {
+    await page.goto(FIXTURE + '?lang=fa');
+    const pages = page.getByRole('navigation', {name: 'صفحه‌ها'});
+    await expect(pages.getByRole('button', {name: 'صفحهٔ ۱'})).toHaveText('۱');
+    await expect(pages.getByRole('button', {name: 'صفحهٔ بعد'})).toBeEnabled();
+  });
+});
+
+test.describe('Price', () => {
+  for (const [lang, said] of [
+    ['en', 'Was 560,000 Toman Now 490,000 Toman'],
+    ['fa', 'قیمت قبلی 560,000 Toman قیمت فعلی 490,000 Toman']
+  ])
+    test(`a reduced price says which is which (${lang})`, async ({page}) => {
+      await page.goto(FIXTURE + '?lang=' + lang);
+      const price = page.locator('[data-test=price] .ag-price');
+      // Screen readers read the hidden words; the strikethrough alone says nothing to them.
+      await expect(price).toHaveText(said);
+      await expect(price.locator('s')).toHaveCSS('text-decoration-line', 'line-through');
+    });
+});
+
+test.describe('TrustSeal', () => {
+  test('keeps the referrer the issuer checks, and names itself when the image fails', async ({
+    page
+  }) => {
+    const seals = page.locator('[data-test=seals]');
+    const enamad = seals.getByRole('link', {name: 'eNamad trust seal'});
+    await expect(enamad).toHaveAttribute('referrerpolicy', 'origin');
+    await expect(enamad).toHaveAttribute('rel', 'noopener');
+    await expect(enamad).toHaveAttribute('target', '_blank');
+    // /missing-seal.png fails to load (once the lazy image is near the viewport), so the name
+    // shows in its place.
+    await enamad.scrollIntoViewIfNeeded();
+    await expect(enamad).toHaveText('eNamad trust seal');
+    await expect(enamad.locator('img')).toHaveCount(0);
+    await expect(seals.getByRole('link', {name: 'Samandehi registration'})).toHaveAttribute(
+      'href',
+      'https://samandehi.ir/'
+    );
+  });
+});
+
+test.describe('Meter', () => {
+  test('a named meter with its value, range and readable value', async ({page}) => {
+    const meter = page.getByRole('meter', {name: 'Free delivery'});
+    await expect(meter).toHaveAttribute('aria-valuenow', '3800000');
+    await expect(meter).toHaveAttribute('aria-valuemin', '0');
+    await expect(meter).toHaveAttribute('aria-valuemax', '5000000');
+    await expect(meter).toHaveAttribute('aria-valuetext', '3.8M of 5M');
+  });
+});
