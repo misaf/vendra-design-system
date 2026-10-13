@@ -4,20 +4,56 @@ import * as DS from './ds.js';
 import {list} from './runtime.js';
 
 export function Shell({v, content, sticky}) {
-  // --vf-bottom-bar: the height of the sticky bars at the bottom of the screen, so fixed layers
-  // (toasts) sit above them.
+  // --vf-top-bar / --vf-bottom-bar: the heights of the sticky header and of the sticky bars at the
+  // bottom of the screen, so fixed layers (toasts) sit above them and the page scrolls a focused or
+  // linked element clear of them (scroll-padding in shell.css; WCAG 2.4.11).
   React.useEffect(() => {
+    const height = element => /** @type {HTMLElement} */ (element).offsetHeight;
+    const headers = [...document.querySelectorAll('.vf-shell-header')];
     const bars = [...document.querySelectorAll('.vf-shell-bottom-bar, .vf-shell-consent-bar')];
-    const update = () =>
-      document.documentElement.style.setProperty(
-        '--vf-bottom-bar',
-        bars.reduce((height, bar) => height + /** @type {HTMLElement} */ (bar).offsetHeight, 0) +
-          'px'
-      );
+    // Sticky side panels stick only while they fit between the header and the bottom bars.
+    const panels = [...document.querySelectorAll('.vf-sticky-panel')];
+    const update = () => {
+      const root = document.documentElement.style;
+      const bottom = bars.reduce((sum, bar) => sum + height(bar), 0);
+      root.setProperty('--vf-top-bar', Math.max(0, ...headers.map(height)) + 'px');
+      root.setProperty('--vf-bottom-bar', bottom + 'px');
+      // 6rem: the panels' sticky top (page-layouts.css), plus a little room above the bars.
+      const room = innerHeight - 6 * 16 - bottom - 16;
+      panels.forEach(panel => panel.toggleAttribute('data-vf-fits', height(panel) <= room));
+    };
     const observer = new ResizeObserver(update);
-    bars.forEach(bar => observer.observe(bar));
+    [...headers, ...bars, ...panels].forEach(element => observer.observe(element));
+    window.addEventListener('resize', update);
     update();
-    return () => observer.disconnect();
+    // The browser doesn't scroll an element that is already in the viewport, even when it sits under
+    // a sticky bar: after it has focused one, nudge the page so the element (or the label a visually
+    // hidden input belongs to) is clear of the bars.
+    const clear = event => {
+      const element = /** @type {HTMLElement} */ (event.target);
+      const chrome = '.vf-shell-header, .vf-shell-bottom-bar, .vf-shell-consent-bar';
+      if (!element.getBoundingClientRect || element.closest(chrome)) return;
+      requestAnimationFrame(() => {
+        const shown = element.offsetHeight > 2 ? element : element.closest('label') || element;
+        const box = shown.getBoundingClientRect();
+        const visible = list => list.filter(bar => height(bar) > 0);
+        const top = Math.max(0, ...visible(headers).map(bar => bar.getBoundingClientRect().bottom));
+        const bottom = Math.min(
+          innerHeight,
+          ...visible(bars).map(bar => bar.getBoundingClientRect().top)
+        );
+        const gap = 8;
+        if (box.top < top) window.scrollBy(0, box.top - top - gap);
+        else if (box.bottom > bottom && box.height < bottom - top)
+          window.scrollBy(0, box.bottom - bottom + gap);
+      });
+    };
+    document.addEventListener('focusin', clear);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', update);
+      document.removeEventListener('focusin', clear);
+    };
   });
   return (
     // The page's language for the components' built-in wording and React Aria's formats.

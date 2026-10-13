@@ -24,7 +24,7 @@ export function View({v}) {
             <div className="vf-shop-columns tw:flex tw:flex-wrap tw:gap-x-7 tw:gap-y-4 tw:items-start">
               {v.desk ? (
                 <>
-                  <aside className="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 tw:sticky tw:top-9 tw:[flex:1_1_240px] tw:max-w-[260px]">
+                  <aside className="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 vf-sticky-panel tw:[flex:1_1_240px] tw:max-w-[260px]">
                     <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
                       <>{v.t?.cats}</>
                     </div>

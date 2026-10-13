@@ -87,6 +87,13 @@ a:hover {
   order: 3;
 }
 
+/* Keyboard focus, in-page links and scrollIntoView stop clear of the sticky header and bottom
+   bars (heights measured by Shell), so a focused element is never hidden under them (WCAG 2.4.11). */
+html {
+  scroll-padding-block: calc(var(--vf-top-bar, 0px) + var(--space-2))
+    calc(var(--vf-bottom-bar, 0px) + var(--space-2));
+}
+
 /* Print: the page's content only (an order, a quote, a policy), without the site's navigation,
    footer, sticky bars or the cookie notice. */
 @media print {
@@ -316,10 +323,16 @@ a:hover {
   }
 }
 
-/* Keep keyboard targets clear of the sticky header and give form fields a visible ring. */
-.vf-page :is(input, textarea, select, button, a, [tabindex]) {
-  scroll-margin-block: 100px;
+/* Sticky side panels (filters, order summaries, contents) stick below the header only while they
+   fit between it and the sticky bottom bars (Shell sets data-vf-fits); a taller panel scrolls with
+   the page, so keyboard focus can always reach its last control (WCAG 2.4.11). */
+.vf-sticky-panel[data-vf-fits] {
+  position: sticky;
+  top: 6rem;
 }
+
+/* Give form fields a visible ring. (Keyboard targets stay clear of the sticky header and bottom
+   bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 3px;

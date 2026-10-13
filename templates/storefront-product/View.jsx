@@ -37,7 +37,7 @@ export function View({v}) {
                   sizes="(max-width: 767px) 100vw, 50vw"
                 />
               </div>
-              <div className="vf-product-details tw:flex tw:flex-col tw:gap-5 tw:sticky tw:top-9">
+              <div className="vf-product-details tw:flex tw:flex-col tw:gap-5 vf-sticky-panel">
                 <div className="vf-product-heading tw:flex tw:flex-col tw:gap-3">
                   <div className="tw:flex tw:gap-2 tw:items-center">
                     <DS.Badge tone="accent">

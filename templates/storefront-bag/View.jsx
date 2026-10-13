@@ -383,7 +383,7 @@ export function View({v}) {
                       </>
                     ) : null}
                   </div>
-                  <aside className="vf-bag-summary tw:flex tw:flex-col tw:gap-4 tw:[flex:1_1_380px] tw:max-w-[440px] tw:sticky tw:top-9">
+                  <aside className="vf-bag-summary tw:flex tw:flex-col tw:gap-4 tw:[flex:1_1_380px] tw:max-w-[440px] vf-sticky-panel">
                     <DS.Card padding={20}>
                       <DS.OrderSummary title={v.t?.summary} lines={v.summary} sums={v.sums} />
                     </DS.Card>

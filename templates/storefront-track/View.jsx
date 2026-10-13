@@ -156,7 +156,7 @@ export function View({v}) {
                       </DS.Button>
                     </div>
                   </div>
-                  <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-[440px] tw:sticky tw:top-9">
+                  <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-[440px] vf-sticky-panel">
                     <DS.Card padding={20}>
                       <DS.OrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
                     </DS.Card>

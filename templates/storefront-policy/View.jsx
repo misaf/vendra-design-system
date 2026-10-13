@@ -50,7 +50,7 @@ export function View({v}) {
             <div className="vf-info-columns vf-info-columns--policy tw:grid tw:[grid-template-columns:240px_minmax(0,1fr)] tw:gap-7 tw:items-start">
               <nav
                 aria-label={v.t?.toc}
-                className="vf-info-toc tw:sticky tw:top-9 tw:flex tw:flex-col tw:gap-1"
+                className="vf-info-toc vf-sticky-panel tw:flex tw:flex-col tw:gap-1"
               >
                 <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
                   <>{v.t?.toc}</>

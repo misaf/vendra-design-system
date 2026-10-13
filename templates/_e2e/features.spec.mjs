@@ -1023,3 +1023,69 @@ test.describe('print', () => {
     await expect(page.locator('main').getByRole('button').first()).toBeVisible();
   });
 });
+
+// WCAG 2.4.11 Focus Not Obscured: tabbing through a long page never leaves the focused element
+// under the sticky header or the sticky bars at the bottom of the screen.
+async function focusObscured(page) {
+  return page.evaluate(() => {
+    const element = document.activeElement;
+    const chrome = '.vf-shell-header, .vf-shell-bottom-bar, .vf-shell-consent-bar';
+    if (!element || element === document.body || element.closest(chrome)) return null;
+    // A visually hidden input (checkbox, radio) is seen as its label.
+    const shown = element.offsetHeight > 2 ? element : element.closest('label') || element;
+    const box = shown.getBoundingClientRect();
+    if (!box.height || !box.width) return null;
+    // What is painted at the element's centre (clamped to the viewport): a sticky bar there means
+    // the focused element is hidden under it.
+    const x = Math.min(innerWidth - 1, Math.max(0, box.left + box.width / 2));
+    const y = Math.min(innerHeight - 1, Math.max(0, box.top + box.height / 2));
+    const onTop = document.elementFromPoint(x, y);
+    const hidden =
+      box.bottom <= 0 ||
+      box.top >= innerHeight ||
+      (onTop && !element.contains(onTop) && onTop.closest(chrome));
+    return hidden
+      ? (
+          element.textContent ||
+          element.getAttribute('aria-label') ||
+          shown.textContent ||
+          element.tagName
+        )
+          .trim()
+          .slice(0, 40)
+      : null;
+  });
+}
+
+test.describe('focus is never hidden under the sticky bars', () => {
+  test.use({storageState: NO_CONSENT});
+  for (const [view, lang] of [
+    ['shop', 'en'],
+    ['shop', 'fa'],
+    ['bag', 'en'],
+    ['product', 'fa']
+  ])
+    test(`tabbing through ${view} (${lang})`, async ({page}) => {
+      await page.emulateMedia({reducedMotion: 'reduce'});
+      await openSite(page, view, lang);
+      const hidden = [];
+      // The shell nudges the page a frame after focus moves.
+      const settled = () =>
+        page.evaluate(
+          () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+        );
+      for (let i = 0; i < 40; i++) {
+        await page.keyboard.press('Tab');
+        await settled();
+        const name = await focusObscured(page);
+        if (name) hidden.push(name);
+      }
+      for (let i = 0; i < 25; i++) {
+        await page.keyboard.press('Shift+Tab');
+        await settled();
+        const name = await focusObscured(page);
+        if (name) hidden.push(name);
+      }
+      expect(hidden).toEqual([]);
+    });
+});

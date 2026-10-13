@@ -157,10 +157,16 @@
   }
 }
 
-/* Keep keyboard targets clear of the sticky header and give form fields a visible ring. */
-.vf-page :is(input, textarea, select, button, a, [tabindex]) {
-  scroll-margin-block: 100px;
+/* Sticky side panels (filters, order summaries, contents) stick below the header only while they
+   fit between it and the sticky bottom bars (Shell sets data-vf-fits); a taller panel scrolls with
+   the page, so keyboard focus can always reach its last control (WCAG 2.4.11). */
+.vf-sticky-panel[data-vf-fits] {
+  position: sticky;
+  top: 6rem;
 }
+
+/* Give form fields a visible ring. (Keyboard targets stay clear of the sticky header and bottom
+   bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
