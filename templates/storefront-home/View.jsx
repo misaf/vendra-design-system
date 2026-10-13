@@ -87,6 +87,7 @@ export function View({v}) {
                       name={p?.name}
                       subtitle={p?.sub}
                       price={p?.price}
+                      stock={p?.stock}
                       badge={p?.badge}
                       badgeTone="accent"
                       frame={v.frame}

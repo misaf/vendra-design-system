@@ -193,6 +193,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 
 **Commerce**
 - **ProductCard:** a stretched link over the whole card, a favourite button above it, badge, arch or soft frame, crossfade to the second photo on hover.
+- **StockStatus:** in stock, "Only 2 left", "Back on 12 October" (Shamsi in Persian) or sold out, from `commerce.stockStatus(product)`; ProductCard shows it under the price unless the product is in stock.
 - **CategoryCard:** 4:5 tile with name and count.
 - **BlogCard:** journal post card.
 - **PaymentCard:** card-to-card transfer details.

@@ -27,7 +27,8 @@ function vals(page) {
       images: [vfProductImage(p, L)],
       name: p.id,
       sub: vfProductSub(p, L),
-      price: S.m(p.price)
+      price: S.m(p.price),
+      stock: p.stock
     }))
   };
 }

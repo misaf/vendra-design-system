@@ -53,6 +53,7 @@ export * from './components/Skeleton/Skeleton.js';
 export * from './components/SkipLink/SkipLink.js';
 export * from './components/Spinner/Spinner.js';
 export * from './components/Stepper/Stepper.js';
+export * from './components/StockStatus/StockStatus.js';
 export * from './components/Switch/Switch.js';
 export * from './components/Tabs/Tabs.js';
 export * from './components/Toast/Toast.js';

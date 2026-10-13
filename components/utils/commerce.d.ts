@@ -91,6 +91,12 @@ export interface SummaryLabels {
   total: string;
 }
 /** Records as the Vendra API returns them (uploads/openapi-*.json). */
+/** A product's availability: in stock, few left, back soon (on `date`, ISO, when known) or sold out. */
+export type Stock =
+  | {status: 'in'}
+  | {status: 'low'; count: number}
+  | {status: 'soon'; date: string | null}
+  | {status: 'out'};
 export interface ApiRecord {
   id: number;
   [field: string]: any;
@@ -195,6 +201,8 @@ export interface Commerce {
   ): string;
   /** A record by its IRI from a list. */
   apiRecord<T extends ApiRecord>(list: T[], iri: string | null | undefined): T | null;
+  /** How available an API Product is, from inStock, quantity, stockThreshold, availableSoon and availabilityDate. */
+  stockStatus(product: ApiRecord): Stock;
   /** A storefront product from an API Product, with storefront-only `extras` by token. */
   productFromApi(
     product: ApiRecord,

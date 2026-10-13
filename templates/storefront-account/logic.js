@@ -422,6 +422,7 @@ function vals(page) {
       sub: vfProductSub(p, L),
       badge: p[L].badge,
       price: S.m(p.price),
+      stock: p.stock,
       remove: () => {
         S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
         S.focusAfterRemoval('.ag-product__fav', i);

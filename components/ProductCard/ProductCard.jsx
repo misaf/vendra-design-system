@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
+import {StockStatus} from '../StockStatus/StockStatus.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
 
@@ -11,6 +12,7 @@ export function ProductCard({
   subtitle,
   price,
   compareAt,
+  stock,
   image,
   srcSet,
   images,
@@ -108,6 +110,7 @@ export function ProductCard({
             {price}
           </span>
         </div>
+        {stock && <StockStatus stock={stock} hideInStock size="sm" className="ag-product__stock" />}
       </div>
     </div>
   );

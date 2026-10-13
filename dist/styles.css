@@ -602,6 +602,38 @@ a.ag-iconbtn {
   outline-offset: 2px;
 }
 
+/* components/StockStatus/StockStatus.css */
+/* StockStatus: an icon in the status colour and the words in the text colour. */
+.ag-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  color: var(--text-body);
+}
+.ag-stock--md {
+  font-size: var(--text-sm);
+}
+.ag-stock--sm {
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+}
+.ag-stock--in .ag-stock__icon {
+  color: var(--success);
+}
+.ag-stock--low .ag-stock__icon {
+  color: var(--warning);
+}
+.ag-stock--soon .ag-stock__icon {
+  color: var(--text-info);
+}
+.ag-stock--out {
+  color: var(--text-muted);
+}
+.ag-stock--out .ag-stock__icon {
+  color: var(--text-muted);
+}
+
 /* components/ProductCard/ProductCard.css */
 /* .ag-product__media and .ag-product__ph are also used by BlogCard, CategoryCard, Gallery and LineItem. */
 .ag-product__fav.ag-iconbtn--active svg {
@@ -747,6 +779,10 @@ a.ag-iconbtn {
   color: var(--text-muted);
   font-weight: 400;
   margin-inline-end: var(--space-2);
+}
+/* Few left, back soon or sold out, under the price. */
+.ag-product__stock {
+  margin-block-start: var(--space-1);
 }
 
 /* components/Badge/Badge.css */

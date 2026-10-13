@@ -68,6 +68,7 @@ function vals(page) {
         ...S.productLink(id),
         name: p.id,
         price: S.m(p.price),
+        stock: p.stock,
         images: [vfProductImage(p, L)]
       };
     }),

@@ -295,6 +295,7 @@ function vals(page) {
         sub: vfProductSub(p, L),
         badge: p[L].badge,
         price: VF_MONEY(p.price, fa),
+        stock: p.stock,
         fav,
         toggleFav: S.toggleFav(p.id, ['VF-8RD5WN'])
       };

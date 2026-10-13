@@ -81,6 +81,13 @@ export const MESSAGES = {
 			next: "Next"
 		},
 		Spinner: { label: "Loading" },
+		StockStatus: {
+			in: "In stock",
+			low: "Only {count} left",
+			soon: "Back soon",
+			soonOn: "Back on {date}",
+			out: "Sold out"
+		},
 		Toast: { close: "Dismiss" }
 	},
 	fa: {
@@ -157,6 +164,13 @@ export const MESSAGES = {
 			next: "بعدی"
 		},
 		Spinner: { label: "در حال بارگذاری" },
+		StockStatus: {
+			in: "موجود",
+			low: "فقط {count} عدد مانده",
+			soon: "به‌زودی موجود می‌شود",
+			soonOn: "موجود از {date}",
+			out: "ناموجود"
+		},
 		Toast: { close: "بستن" }
 	}
 };

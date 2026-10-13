@@ -143,3 +143,7 @@
   font-weight: 400;
   margin-inline-end: var(--space-2);
 }
+/* Few left, back soon or sold out, under the price. */
+.ag-product__stock {
+  margin-block-start: var(--space-1);
+}

@@ -55,6 +55,7 @@ export function View({v}) {
                   <div className="vf-product-price tw:text-lg tw:font-medium">
                     <>{v.unitPrice}</>
                   </div>
+                  <DS.StockStatus stock={v.stock} />
                   <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
                     <>{v.t?.desc}</>
                   </p>
@@ -89,7 +90,7 @@ export function View({v}) {
                   <DS.QuantityInput
                     value={v.qty}
                     min={1}
-                    max={9}
+                    max={v.qtyMax}
                     onChange={v.setQty}
                     labels={v.qtyLabels}
                   />
@@ -165,6 +166,7 @@ export function View({v}) {
                           name={p?.name}
                           subtitle={p?.sub}
                           price={p?.price}
+                          stock={p?.stock}
                           frame="soft"
                           placeholder={v.t?.photo}
                           favLabel={v.t?.save}

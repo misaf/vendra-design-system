@@ -212,6 +212,21 @@ const apiRecord = (list, iri) => {
   return list.find(record => record.id === id) || null;
 };
 
+// How available an API Product is: 'in' stock, 'low' (at or under its stockThreshold, with `count`
+// left), 'soon' (out of stock but availableSoon, with the ISO `date` it returns, or null), or 'out'.
+const stockStatus = product => {
+  if (!product.inStock)
+    return product.availableSoon
+      ? {
+          status: 'soon',
+          date: product.availabilityDate ? product.availabilityDate.slice(0, 10) : null
+        }
+      : {status: 'out'};
+  if (product.stockThreshold != null && product.quantity <= product.stockThreshold)
+    return {status: 'low', count: product.quantity};
+  return {status: 'in'};
+};
+
 // A storefront product from an API Product, resolved against its prices, photos and categories.
 // `extras` holds storefront fields the API doesn't have yet, keyed by Product.token.
 const productFromApi = (product, {prices, media, categories, extras = {}, placeholder}) => {
@@ -234,6 +249,7 @@ const productFromApi = (product, {prices, media, categories, extras = {}, placeh
     occasions: extra.occasions || [],
     cat: category ? category.slug.en : '',
     ...(product.inStock ? {} : {inStock: false}),
+    stock: stockStatus(product),
     price: price ? price.amount : null,
     image: images[0] || placeholder,
     images: images.length ? images : [placeholder],
@@ -377,6 +393,7 @@ export const commerce = {
   fillText,
   apiRecord,
   productFromApi,
+  stockStatus,
   zoneFromApi,
   lineFromApi,
   ORDER_STATUS,

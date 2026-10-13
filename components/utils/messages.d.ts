@@ -1,4 +1,4 @@
-/** Built-in wording per component; {name} / {date} / {page} are filled in by the component. */
+/** Built-in wording per component; {name} / {date} / {page} / {count} are filled in by the component. */
 export interface ComponentMessages {
   AddressCard: {edit: string; delete: string; default: string; makeDefault: string};
   Alert: {close: string};
@@ -43,6 +43,7 @@ export interface ComponentMessages {
   SearchField: {clear: string};
   SectionHeader: {previous: string; next: string};
   Spinner: {label: string};
+  StockStatus: {in: string; low: string; soon: string; soonOn: string; out: string};
   Toast: {close: string};
 }
 /** Wording by language (e.g. "en", "fa", "ar"), then component; any part may be left out. */

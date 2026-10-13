@@ -150,6 +150,9 @@ function vals(page) {
     recentLabel: C.recentA + ' ' + C.recentB,
     hasRecent: vfRecentlyViewed().some(x => x !== product.id),
     available: product.inStock !== false,
+    stock: product.stock,
+    // No more than the shop has left (nine at most, as before).
+    qtyMax: product.stock && product.stock.status === 'low' ? product.stock.count : 9,
     unavailable: product.inStock === false,
     category: S.shopLink(product.cat),
     productImages: vfProductImages(product, L),
@@ -256,6 +259,7 @@ function vals(page) {
         name: p.id,
         sub: vfProductSub(p, L),
         price: m(p.price),
+        stock: p.stock,
         fav: S.isFav(p.id, []),
         toggleFav: S.toggleFav(p.id, [])
       })),

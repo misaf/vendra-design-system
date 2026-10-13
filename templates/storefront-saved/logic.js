@@ -39,6 +39,7 @@ function vals(page) {
       sub: vfProductSub(p, L),
       badge: p[L].badge,
       price: S.m(p.price),
+      stock: p.stock,
       remove: () => {
         st
           ? st.toggleSave(p.id)

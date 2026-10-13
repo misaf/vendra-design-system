@@ -1152,3 +1152,24 @@ test('the bag shows how far the order is from free delivery', async ({page}) => 
   await expect(meter).toHaveAttribute('aria-valuetext', /of 5,000,000 Toman$/);
   await expect(meter).toHaveAttribute('aria-valuemax', '5000000');
 });
+
+test('products say when few are left or when they come back', async ({page}) => {
+  await openSite(page, 'product', 'en', {id: 'VF-9FA2KE'});
+  const main = page.getByRole('main');
+  await expect(main.locator('.vf-product-details .ag-stock')).toHaveText('Only 2 left');
+  // The quantity stops at what is left.
+  await expect(main.getByRole('button', {name: 'More', exact: true})).toBeEnabled();
+  await main.getByRole('button', {name: 'More', exact: true}).click();
+  await expect(main.getByRole('button', {name: 'More', exact: true})).toBeDisabled();
+  await openSite(page, 'product', 'en', {id: 'VF-6MT3VY'});
+  await expect(main.locator('.vf-product-details .ag-stock')).toHaveText('Back on 12 October');
+  await openSite(page, 'product', 'fa', {id: 'VF-6MT3VY'});
+  await expect(main.locator('.vf-product-details .ag-stock')).toHaveText('موجود از ۲۰ مهر');
+  // Cards call out only the products that need attention.
+  await openSite(page, 'shop', 'en');
+  await page.getByRole('link', {name: 'Show more'}).click();
+  await expect(page.locator('.vf-shop-product-grid .ag-stock')).toHaveText([
+    'Only 2 left',
+    'Back on 12 October'
+  ]);
+});

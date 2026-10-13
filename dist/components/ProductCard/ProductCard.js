@@ -4,10 +4,11 @@ import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
+import { StockStatus } from "../StockStatus/StockStatus.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
-export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
+export function ProductCard({ name, subtitle, price, compareAt, stock, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
 	const text = useMessages("ProductCard", {
 		placeholder,
 		favorite: favLabel
@@ -58,5 +59,10 @@ export function ProductCard({ name, subtitle, price, compareAt, image, srcSet, i
 			event.stopPropagation();
 			onFavorite();
 		}
-	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("span", { className: "ag-product__price" }, compareAt && /* @__PURE__ */ React.createElement("s", null, compareAt), price))));
+	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("span", { className: "ag-product__price" }, compareAt && /* @__PURE__ */ React.createElement("s", null, compareAt), price)), stock && /* @__PURE__ */ React.createElement(StockStatus, {
+		stock,
+		hideInStock: true,
+		size: "sm",
+		className: "ag-product__stock"
+	})));
 }

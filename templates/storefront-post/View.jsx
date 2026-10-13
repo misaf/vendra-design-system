@@ -175,6 +175,7 @@ export function View({v}) {
                           <DS.ProductCard
                             name={p?.name}
                             price={p?.price}
+                            stock={p?.stock}
                             images={p?.images}
                             href={p?.href}
                             frame="soft"

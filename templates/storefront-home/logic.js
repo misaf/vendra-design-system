@@ -39,7 +39,8 @@ function vals(page) {
       name: p.id,
       sub: vfProductSub(p, L),
       badge: p[L].badge,
-      price: VF_MONEY(p.price, fa)
+      price: VF_MONEY(p.price, fa),
+      stock: p.stock
     }))
   };
 }

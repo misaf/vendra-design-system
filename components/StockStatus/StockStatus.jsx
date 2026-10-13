@@ -1,0 +1,38 @@
+import React from 'react';
+import {Icon} from '../Icon/Icon.jsx';
+import {cx} from '../utils/cx.js';
+import {dates} from '../utils/dates.js';
+import {format} from '../utils/format.js';
+import {usePageLocale} from '../utils/locale.js';
+import {localeLanguage, useMessages} from '../utils/messages.js';
+
+const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: 'circle-x'};
+
+// A product's availability as an icon and a short line: in stock, "Only 2 left", "Back on 12
+// October" (Shamsi in Persian) or sold out. Pass commerce.stockStatus(product) as `stock`. Only the
+// icon takes the status colour; the words stay in the text colour so they always read. `hideInStock`
+// renders nothing for a product in stock (product cards show only what needs attention).
+export function StockStatus({stock, hideInStock, size = 'md', className, style}) {
+  const {locale, ref} = usePageLocale();
+  const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
+  const text = useMessages('StockStatus', undefined, locale);
+  const status = stock && ICONS[stock.status] ? stock.status : 'in';
+  if (status === 'in' && hideInStock) return null;
+  const date = status === 'soon' && stock.date ? dates.fromIso(stock.date) : null;
+  const label =
+    status === 'low'
+      ? text.low.replace('{count}', format.num(stock.count, language))
+      : status === 'soon' && date
+        ? text.soonOn.replace('{date}', dates.dayMonth(date, dates.locale(language)))
+        : text[status];
+  return (
+    <span
+      ref={ref}
+      className={cx('ag-stock', 'ag-stock--' + status, 'ag-stock--' + size, className)}
+      style={style}
+    >
+      <Icon name={ICONS[status]} size={size === 'sm' ? 14 : 16} className="ag-stock__icon" />
+      {label}
+    </span>
+  );
+}

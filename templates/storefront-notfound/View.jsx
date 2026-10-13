@@ -39,6 +39,7 @@ export function View({v}) {
                       name={p?.name}
                       subtitle={p?.sub}
                       price={p?.price}
+                      stock={p?.stock}
                       frame="soft"
                       placeholder={v.t?.photo}
                       favLabel={v.t?.save}

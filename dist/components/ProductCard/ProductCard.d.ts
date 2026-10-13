@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {Stock} from '../utils/commerce.js';
+
 export interface ProductCardProps {
   /** petal (default) or product (studio backdrop). */
   tone?: 'petal' | 'product';
@@ -7,6 +9,8 @@ export interface ProductCardProps {
   /** Pre-formatted price string (e.g. "$68" or "۱٬۲۰۰٬۰۰۰ تومان") */
   price: string;
   compareAt?: string;
+  /** commerce.stockStatus(product): shown under the price unless the product is in stock */
+  stock?: Stock;
   image?: string;
   /** Responsive candidates, e.g. "rose-400.jpg 400w, rose-800.jpg 800w" */
   srcSet?: string;

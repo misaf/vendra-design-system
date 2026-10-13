@@ -202,6 +202,20 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
     assert.deepEqual(ds.paginationRange(1, 3), [1, 2, 3]);
     assert.deepEqual(ds.paginationRange(3, 7), [1, 2, 3, 4, null, 7]);
     assert.deepEqual(ds.paginationRange(12, 12), [1, null, 11, 12]);
+    // Stock status from the API's own fields.
+    const stock = fields => ds.commerce.stockStatus({inStock: true, quantity: 10, ...fields});
+    assert.deepEqual(stock({stockThreshold: null}), {status: 'in'});
+    assert.deepEqual(stock({stockThreshold: 3}), {status: 'in'});
+    assert.deepEqual(stock({quantity: 3, stockThreshold: 3}), {status: 'low', count: 3});
+    assert.deepEqual(stock({inStock: false, quantity: 0}), {status: 'out'});
+    assert.deepEqual(
+      stock({inStock: false, availableSoon: true, availabilityDate: '2026-10-12T00:00:00+03:30'}),
+      {status: 'soon', date: '2026-10-12'}
+    );
+    assert.deepEqual(stock({inStock: false, availableSoon: true, availabilityDate: null}), {
+      status: 'soon',
+      date: null
+    });
 
     // Commerce rules run on a tenant's own data, passed in: no globals, no window.
     const {commerce} = ds;
