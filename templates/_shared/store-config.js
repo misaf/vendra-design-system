@@ -2,7 +2,16 @@
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 export const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
-  currency: 'IRT',
+  currency: 'IRT', // The active currency: a key in `currencies`.
+  // Units per 1 Toman (prices are stored in Toman). Toman and Rial are fixed; the others are SAMPLE
+  // rates. A real store takes them from its own rate source and keeps them current.
+  currencies: {
+    IRT: {rate: 1, dec: 0, sym: '', en: 'Toman', fa: 'تومان'},
+    IRR: {rate: 10, dec: 0, sym: '', en: 'Rial', fa: 'ریال'},
+    USD: {rate: 1 / 100000, dec: 2, sym: '$', en: 'USD', fa: 'دلار'},
+    EUR: {rate: 1 / 110000, dec: 2, sym: '€', en: 'EUR', fa: 'یورو'},
+    AED: {rate: 1 / 27000, dec: 0, sym: '', en: 'AED', fa: 'درهم'}
+  },
   // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
   // a real store usually shows 12–24 (the API's itemsPerPage).
   shopPageSize: 4,

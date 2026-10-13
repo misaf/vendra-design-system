@@ -9,16 +9,17 @@ export interface Currency {
   fa: string;
 }
 export interface MoneyOptions {
-  /** Key in `currencies`; defaults to 'IRT' (Toman). */
+  /** Key in `currencies`; defaults to 'IRT' (Toman). Throws if the table has no such currency. */
   currency?: string;
   lang?: 'en' | 'fa';
-  /** The tenant's own currency table; defaults to the DEMO rates in CURRENCIES. */
+  /** The tenant's currency table. Defaults to CURRENCIES, which has only Toman and Rial; any other
+   * currency needs the tenant's own rate. */
   currencies?: Record<string, Currency>;
 }
 export interface Format {
-  /** DEMO rates for IRT, IRR, USD, EUR and AED. */
+  /** The fixed currencies: IRT (Toman, rate 1) and IRR (Rial, rate 10). */
   CURRENCIES: Record<string, Currency>;
-  /** "4,200,000 Toman", "$42.00", "۴٬۲۰۰٬۰۰۰ تومان". */
+  /** "4,200,000 Toman", "$42.00", "۴٬۲۰۰٬۰۰۰ تومان". Throws for a currency missing from the table. */
   money(toman: number | string, options?: MoneyOptions): string;
   /** Grouped number; Persian digits and separators for 'fa'. */
   num(n: number | string, lang?: 'en' | 'fa'): string;

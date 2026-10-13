@@ -10,5 +10,6 @@ export function vfLatin(value) {
 export const VF_MONEY = (n, fa) =>
   format.money(n, {
     lang: fa ? 'fa' : 'en',
-    currency: VF_STORE.currency
+    currency: VF_STORE.currency,
+    currencies: VF_STORE.currencies
   });

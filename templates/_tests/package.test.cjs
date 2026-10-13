@@ -187,6 +187,15 @@ const app = fs.mkdtempSync(path.join(repo, 'node_modules/.vendra-package-test-')
       }),
       '£50.00'
     );
+    // Only Toman and Rial are built in; any other currency needs the tenant's rate, and an unknown one
+    // throws rather than printing the amount as Toman.
+    assert.deepEqual(Object.keys(ds.format.CURRENCIES), ['IRT', 'IRR']);
+    assert.equal(ds.format.money(4200000, {currency: 'IRR'}), '42,000,000 Rial');
+    assert.throws(() => ds.format.money(100, {currency: 'USD'}), /no rate for currency "USD"/);
+    assert.throws(
+      () => ds.format.money(100, {currency: 'GBP', currencies: {GBP: {rate: 0, dec: 2, sym: '£'}}}),
+      /no rate/
+    );
     assert.deepEqual([...ds.dates.g2j(new Date(2026, 2, 21, 12))], [1405, 1, 1]);
 
     // Commerce rules run on a tenant's own data, passed in: no globals, no window.

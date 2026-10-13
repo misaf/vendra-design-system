@@ -34,7 +34,7 @@ Never ship a tenant with Vendra Florist's logo. Until the real files arrive, the
 ## 3. Store data (florist · entered in admin)
 The storefront reads all of this as data (`templates/_shared/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
 - [ ] **Store name** in EN and FA. **Contact:** phone, WhatsApp, Instagram, address (EN + FA), map pin, opening hours.
-- [ ] **Currency:** one active currency (Toman, Rial, USD, EUR or AED).
+- [ ] **Currency:** one active currency. Toman and Rial are built in; for any other (USD, EUR, AED…) supply its rate per Toman in the store's `currencies` table and keep it current — `money()` throws for a currency without a rate.
 - [ ] **Delivery:** zones per country, with fee, same-day cut-off, time slots and free-delivery threshold.
 - [ ] **Categories:** choose from the 12 standard ones (Bouquets … Sympathy) and give each one a 4:5 photo.
 - [ ] **Products:** EN + FA name and subtitle, price (or "on request"), sizes, add-ons, 3:4 photos.

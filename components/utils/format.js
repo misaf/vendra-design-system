@@ -1,12 +1,10 @@
 // Shared formatting helpers: import { format } (the runtime bundle also exposes window.AG_FORMAT).
-// Prices are stored in Toman; rate = units per 1 Toman. CURRENCIES holds DEMO rates: a tenant passes its own
-// table as money(n, {currencies}).
+// Prices are stored in Toman; rate = units per 1 Toman. CURRENCIES holds only the fixed ones (Toman and
+// Rial, 1 Toman = 10 Rial). Any other currency changes in value, so its rate is the tenant's data: pass the
+// tenant's table as money(n, {currency, currencies}).
 const CURRENCIES = {
   IRT: {rate: 1, dec: 0, sym: '', en: 'Toman', fa: 'تومان'},
-  IRR: {rate: 10, dec: 0, sym: '', en: 'Rial', fa: 'ریال'},
-  USD: {rate: 1 / 100000, dec: 2, sym: '$', en: 'USD', fa: 'دلار'},
-  EUR: {rate: 1 / 110000, dec: 2, sym: '€', en: 'EUR', fa: 'یورو'},
-  AED: {rate: 1 / 27000, dec: 0, sym: '', en: 'AED', fa: 'درهم'}
+  IRR: {rate: 10, dec: 0, sym: '', en: 'Rial', fa: 'ریال'}
 };
 const loc = l => (l === 'fa' ? 'fa-IR' : 'en-US');
 // Normalize separators explicitly so Persian output is stable across browser locale data.
@@ -25,7 +23,14 @@ const formatNumber = (n, lang, options = {}) => {
 const num = (n, lang = 'en') => formatNumber(n, lang);
 // fa: number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first ($42.00), words after (4,200,000 Toman)
 const money = (n, {currency = 'IRT', lang = 'en', currencies = CURRENCIES} = {}) => {
-  const c = currencies[currency] || currencies.IRT || CURRENCIES.IRT;
+  const c = currencies[currency];
+  // A price in the wrong currency is worse than none: refuse instead of falling back to Toman.
+  if (!c || !(c.rate > 0))
+    throw new Error(
+      'money: no rate for currency ' +
+        JSON.stringify(currency) +
+        " — pass the tenant's currencies table"
+    );
   const s = formatNumber(Number(n) * c.rate, lang, {
     minimumFractionDigits: c.dec,
     maximumFractionDigits: c.dec

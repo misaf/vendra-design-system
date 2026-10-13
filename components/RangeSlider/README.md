@@ -9,7 +9,7 @@ Dual-thumb price range on React Aria's Slider. Accent fill between thumbs; mirro
   step={100000}
   value={range}
   onChange={setRange}
-  formatValue={v => money(v, lang)}
+  formatValue={v => format.money(v, {lang})}
   labels={{min: 'Min price', max: 'Max price'}}
 />
 ```
