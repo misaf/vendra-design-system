@@ -58,10 +58,13 @@ export function lazyPage(name) {
 
 // Fetches every page in the background (a failure here is retried when the page is shown).
 export function preloadPages() {
-  const run = () =>
+  const run = () => {
+    // Everything requested before this mark is what the first page needed (performance budgets).
+    performance.mark('vf-preload-pages');
     Object.keys(modules).forEach(key =>
       loadPage(key.split('/')[1].slice(11), false)?.catch(() => {})
     );
+  };
   if ('requestIdleCallback' in window) requestIdleCallback(run);
   else setTimeout(run, 200);
 }

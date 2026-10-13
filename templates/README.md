@@ -44,7 +44,7 @@ npm --prefix templates test              # typecheck, storefront logic, generati
 npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, tenants
 npm --prefix templates run build:app     # production build → templates/_app-build/ (same paths as dev)
 npm --prefix templates run preview       # serve the build at http://127.0.0.1:4173/templates/app/
-npm --prefix templates run test:e2e:build  # the storefront specs against the production build
+npm --prefix templates run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
 ```
 
 - **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
@@ -59,6 +59,8 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 - **`pages`, `cards`:** screenshot comparisons, with the clock frozen at 2026-10-05. `cards` also checks the Contrast card for every tenant.
 - **`components`, `components-in-use`, `features`:** component keyboard behavior, and storefront features end to end (promo codes, delivery pins, filters…).
 - **`tenants`:** the seven contrast checks, and that each storefront loads only its own tenant file.
+
+Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and the home page's largest paint on slow 4G with a 4x slower CPU. They sit just above today's numbers; raise one only on purpose.
 
 Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `_e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `_e2e/playwright-report/`, then run `test:e2e:update`.
 
