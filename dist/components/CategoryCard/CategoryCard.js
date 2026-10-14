@@ -3,16 +3,15 @@
 import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Icon } from "../Icon/Icon.js";
+import { Picture } from "../Picture/Picture.js";
 import { cx } from "../utils/cx.js";
 // A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
-export function CategoryCard({ label, count, image, srcSet, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", onClick, href, className = "" }) {
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: cx("ag-cat__media", "ag-product__media--" + frame) }, image ? /* @__PURE__ */ React.createElement("img", {
-		src: image,
-		srcSet,
-		sizes: srcSet ? sizes : undefined,
+export function CategoryCard({ label, count, image, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", onClick, href, className = "" }) {
+	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: cx("ag-cat__media", "ag-product__media--" + frame) }, image ? /* @__PURE__ */ React.createElement(Picture, {
+		image,
+		sizes,
 		alt: "",
-		loading: "lazy",
-		decoding: "async"
+		priority
 	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("span", { className: "ag-cat__row" }, /* @__PURE__ */ React.createElement("span", { className: "ag-cat__label" }, label), /* @__PURE__ */ React.createElement(Icon, {
 		name: "arrow-right",
 		size: 16,

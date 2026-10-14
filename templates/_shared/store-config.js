@@ -18,8 +18,11 @@ export const VF_STORE = {
   // Journal posts per page: the featured story and six more (the API's itemsPerPage).
   journalPageSize: 7,
   apiBase: '', // Empty keeps every integration in local demo mode.
+  // Where analytics events go, after the visitor accepts them (templates/API.md B31); null sends nothing.
+  analyticsUrl: null,
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
-  paymentDemo: {online: 'success', codZones: ['central', 'outer']},
+  // The simulated bank's answer to an online payment: paid, cancelled, failed or pending (VF_PAYMENT_RESULTS).
+  paymentDemo: {online: 'paid', codZones: ['central', 'outer']},
   // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
   announcement: {
     en: 'Free delivery in Karaj on orders over {freeDelivery}.',

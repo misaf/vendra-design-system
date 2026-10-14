@@ -221,6 +221,7 @@ export function View({v}) {
                         <React.Fragment key={$index}>
                           <DS.ProductCard
                             images={p?.images}
+                            priority={$index < 2}
                             name={p?.name}
                             subtitle={p?.sub}
                             price={p?.price}

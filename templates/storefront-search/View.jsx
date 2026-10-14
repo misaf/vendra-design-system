@@ -71,7 +71,8 @@ export function View({v}) {
                         >
                           <div className="vf-search-thumbnail tw:w-7 tw:flex-none">
                             <DS.ArchFrame
-                              src={r?.image?.src}
+                              src={r?.image}
+                              sizes="48px"
                               shape="soft"
                               size="thumb"
                               tone="product"

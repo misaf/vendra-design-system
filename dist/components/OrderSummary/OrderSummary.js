@@ -17,6 +17,7 @@ export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", cla
 		size: "thumb",
 		tone: "product",
 		src: line.image,
+		sizes: "56px",
 		alt: ""
 	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
 		href: line.href,

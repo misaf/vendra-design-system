@@ -5,6 +5,26 @@
 const PROPS = {
   Icon: {name: 'flower-2'},
   IconButton: {icon: 'heart', label: 'Save'},
+  PaymentStatus: {
+    status: 'pending',
+    amount: '۲٬۴۰۰٬۰۰۰ تومان',
+    orderNumber: 'VN-10522',
+    onCheckAgain() {},
+    supportHref: 'tel:+989121234567'
+  },
+  Picture: {
+    image: {
+      src: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"/%3E',
+      placeholder:
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"/%3E',
+      sources: [{type: 'image/avif', srcSet: 'data:image/avif;base64,AAAA 480w'}],
+      width: 4,
+      height: 5
+    },
+    alt: 'Roses',
+    priority: true
+  },
+  ResendCode: {seconds: 60, onResend() {}},
   Price: {value: '۴۹۰٬۰۰۰ تومان', compareAt: '۵۶۰٬۰۰۰ تومان'},
   Pagination: {page: 5, pageCount: 12, href: page => '?page=' + page},
   FilterBar: {

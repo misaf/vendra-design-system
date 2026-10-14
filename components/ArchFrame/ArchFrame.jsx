@@ -1,14 +1,15 @@
 import React from 'react';
+import {Picture} from '../Picture/Picture.jsx';
 import {cx} from '../utils/cx.js';
 
 const ARCH_RATIOS = {'4/5': '4 / 5', '3/4': '3 / 4', '4/3': '4 / 3', '1/1': '1 / 1'};
 
 // The brand's image window: an arch (or circle, soft or square) on --radius-arch, with a
-// striped placeholder until `src` is set. `ratio="fill"` stretches to the parent's height.
+// striped placeholder until `src` (a URL or a photo object, see Picture) is set. `ratio="fill"` stretches to the parent's height.
 export function ArchFrame({
   src,
-  srcSet,
   sizes,
+  priority,
   alt = '',
   ratio = '4/5',
   shape = 'arch',
@@ -50,13 +51,11 @@ export function ArchFrame({
       {...rest}
     >
       {src ? (
-        <img
-          src={src}
-          srcSet={srcSet}
-          sizes={srcSet ? sizes : undefined}
+        <Picture
+          image={src}
+          sizes={sizes}
           alt={alt}
-          loading="lazy"
-          decoding="async"
+          priority={priority}
           style={objectPosition ? {objectPosition} : undefined}
         />
       ) : placeholder ? (

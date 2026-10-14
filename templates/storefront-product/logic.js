@@ -39,7 +39,13 @@ export function usePage(props) {
       page.toasts.add(content, {timeout: 6000});
     };
     page._rememberProduct = () => {
-      vfRememberViewed(vfPageRoute(page.props).id || VF_PRODUCTS[0].id);
+      const id = vfPageRoute(page.props).id || VF_PRODUCTS[0].id;
+      vfRememberViewed(id);
+      const product = vfProduct(id);
+      window.VF_TRACK.event('view_item', {
+        items: [window.VF_TRACK.item(product)],
+        value: product.price
+      });
     };
   });
   useStorefrontPage(page);
@@ -213,7 +219,7 @@ function vals(page) {
       page.setState({
         added: {
           line: {
-            image: vfProductImage(product, L).src,
+            image: vfProductImage(product, L),
             name: product.id,
             meta:
               vfLineDetail(product, hasSizes ? size : null, chosenAddons, L) +

@@ -172,6 +172,33 @@ assert.equal(track.log.length, 3, 'the local QA log keeps every event');
 unsubscribe();
 track.event('search', {search_term: 'roses'});
 assert.equal(sent.length, 1, 'an unsubscribed listener receives nothing');
+// Only the contract's parameters leave (components/utils/analytics.js): a phone number, a card
+// message or a mobile typed into search can't ride along by mistake.
+const warn = console.warn;
+const warnings = [];
+console.warn = (...args) => warnings.push(args.join(' '));
+track.event('purchase', {
+  transaction_id: 'VN-1',
+  value: 2400000,
+  payment_type: 'online',
+  phone: '09121234567',
+  items: [{item_id: 'VF-7K2M4Q', price: 2400000, quantity: 1, card: 'Happy birthday, Shirin'}]
+});
+assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
+  event: 'purchase',
+  language: 'en',
+  currency: 'IRT',
+  transaction_id: 'VN-1',
+  value: 2400000,
+  payment_type: 'online',
+  items: [{item_id: 'VF-7K2M4Q', price: 2400000, quantity: 1}]
+});
+assert.deepEqual(warnings, ['VF_TRACK: purchase left out phone']);
+track.event('search', {search_term: '۰۹۱۲ ۱۲۳ ۴۵۶۷'});
+assert.equal(track.log.at(-1).search_term, '(personal data)');
+track.event('signed_up');
+assert.equal(warnings.at(-1), 'VF_TRACK: unknown event signed_up');
+console.warn = warn;
 store['vf-consent'] = 'maybe';
 assert.equal(track.consent(), '', 'an unknown stored choice asks again');
 

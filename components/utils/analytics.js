@@ -1,0 +1,73 @@
+// The storefront events every tenant reports, in one shape: import { analytics }. Names follow the
+// common ecommerce vocabulary so reports read the same in any tool, but nothing here sends anything:
+// the app passes each event to its own backend, after the visitor's consent.
+// Each event keeps only its listed parameters (plus `language` and `currency`), so a name, phone
+// number, address or card message can't reach a report by accident. No imports.
+
+// Product codes, not names: a product is known by its code in reports, as in the studio.
+const ITEM_KEYS = ['item_id', 'item_name', 'item_category', 'price', 'quantity'];
+const COMMON = ['language', 'currency'];
+
+const EVENTS = {
+  view_item: {about: 'A product page opened', params: ['items', 'value']},
+  add_to_cart: {about: 'Added to the bag', params: ['items', 'value']},
+  remove_from_cart: {about: 'Removed from the bag', params: ['items', 'value']},
+  view_cart: {about: 'The bag opened', params: ['items', 'value']},
+  begin_checkout: {about: 'From the bag to the payment step', params: ['items', 'value']},
+  add_payment_info: {about: 'Pay or place order pressed', params: ['payment_type', 'value']},
+  payment_result: {
+    about: 'The bank answered an online payment (PaymentStatus)',
+    params: ['transaction_id', 'status']
+  },
+  purchase: {about: 'Order placed', params: ['transaction_id', 'value', 'payment_type', 'items']},
+  search: {about: 'A search, once the typing settles', params: ['search_term', 'results']},
+  filter: {
+    about: 'A list filter added, removed or cleared (FilterBar)',
+    params: ['filter_id', 'value', 'action']
+  },
+  add_to_wishlist: {about: 'Product saved', params: ['items']},
+  reminder_created: {
+    about: 'Occasion reminder saved',
+    params: ['occasion', 'calendar', 'days_before', 'channel']
+  },
+  top_up: {about: 'Account balance topped up', params: ['value']},
+  login: {about: 'Signed in', params: ['method']},
+  code_resent: {about: 'A new sign-in code asked for (ResendCode)', params: []},
+  language_switch: {about: 'Page language changed (LanguageSwitch)', params: ['to']},
+  order_again: {about: '"Order again" pressed', params: ['transaction_id']},
+  contact_whatsapp: {about: 'WhatsApp link opened', params: []},
+  generate_lead: {about: 'Newsletter sign-up', params: ['lead_source']}
+};
+
+// A typed search can be a phone number or an email address; those never leave as they are.
+const searchTerm = value => {
+  const term = String(value ?? '')
+    .trim()
+    .slice(0, 100);
+  return /@|[\d۰-۹٠-٩][\d۰-۹٠-٩\s-]{6,}/.test(term) ? '(personal data)' : term;
+};
+const cleanItem = item =>
+  Object.fromEntries(
+    ITEM_KEYS.filter(key => item && item[key] != null).map(key => [key, item[key]])
+  );
+
+// {event, ...params} with only the event's own parameters, or null for a name not in EVENTS.
+// `dropped` (optional) collects the keys left out, for a warning in development.
+const event = (name, params = {}, dropped) => {
+  const spec = EVENTS[name];
+  if (!spec) return null;
+  const allowed = [...COMMON, ...spec.params];
+  const result = {event: name};
+  Object.keys(params).forEach(key => {
+    if (!allowed.includes(key) || params[key] === undefined) {
+      if (!allowed.includes(key) && dropped) dropped.push(key);
+      return;
+    }
+    if (key === 'items') result.items = (params.items || []).filter(Boolean).map(cleanItem);
+    else if (key === 'search_term') result.search_term = searchTerm(params.search_term);
+    else result[key] = params[key];
+  });
+  return result;
+};
+
+export const analytics = {EVENTS, ITEM_KEYS, event};

@@ -13,7 +13,7 @@ import {
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 import {commerce} from '../../components/utils/commerce.js';
-import {usePageLogic} from '../_shared/page-state.js';
+import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
 /** @type {[string, (product: any) => boolean][]} */
@@ -34,6 +34,11 @@ export function usePage(props) {
     };
   });
   useStorefrontPage(page);
+  useLifecycle(page, {
+    willUnmount() {
+      clearTimeout(page._priceTimer);
+    }
+  });
   return vals(page);
 }
 
@@ -55,6 +60,9 @@ function vals(page) {
   const days = vfDeliveryDays(VF_ZONES[0].id);
   const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
   const dayLabel = d => vfDayName(d, fa) + ' · ' + vfDayMonth(d.date, fa);
+  // Filters set here are reported as they change; FilterBar reports the ones removed from its row.
+  const filterUsed = (filterId, value, on) =>
+    window.VF_TRACK.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
   const change = patch => {
     const next = {
       ...route,
@@ -196,18 +204,24 @@ function vals(page) {
       max: S.fa ? 'حداکثر' : 'Maximum'
     },
     formatPrice: S.m,
-    setPrice: ([min, max]) =>
+    setPrice: ([min, max]) => {
       change({
         min,
         max
-      }),
+      });
+      // The slider reports every step of a drag; the range counts once it rests.
+      clearTimeout(page._priceTimer);
+      page._priceTimer = setTimeout(() => filterUsed('price', min + '-' + max, true), 800);
+    },
     occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
       label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
       on: s.occasion === id,
-      pick: () =>
+      pick: () => {
+        filterUsed('occasion', id, id !== 'all');
         change({
           occasion: id
-        })
+        });
+      }
     })),
     date,
     dateOptions: [
@@ -221,16 +235,20 @@ function vals(page) {
         disabled: d.soldOut || d.pastCutoff
       }))
     ],
-    setDate: value =>
+    setDate: value => {
+      filterUsed('date', value || undefined, !!value);
       change({
         date: value
-      }),
+      });
+    },
     showResults: C.showResults.replace('{count}', C.designCount(list.length)),
     inStock,
-    setStock: value =>
+    setStock: value => {
+      filterUsed('stock', undefined, !!value);
       change({
         stock: value
-      }),
+      });
+    },
     loading: demo === 'loading',
     failed: demo === 'error',
     retry: () =>
@@ -249,10 +267,12 @@ function vals(page) {
         count: n(VF_PRODUCTS.filter(p => (id === 'all' || p.cat === id) && extra(p)).length),
         on,
         off: !on,
-        pick: () =>
+        pick: () => {
+          filterUsed('category', id, id !== 'all');
           change({
             cat: id
-          })
+          });
+        }
       };
     }),
     chips: VF_CHIPS.map(([id]) => {
@@ -260,10 +280,12 @@ function vals(page) {
       return {
         label: C.chipLabels[id],
         on,
-        toggle: () =>
+        toggle: () => {
+          filterUsed(id, undefined, !on);
           change({
             filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
-          })
+          });
+        }
       };
     }),
     sort: s.sort,

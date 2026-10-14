@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type {AnalyticsEvent} from '../utils/analytics.js';
 import type {Messages} from '../utils/messages.js';
 
 export interface VendraProviderProps {
@@ -11,6 +12,11 @@ export interface VendraProviderProps {
   navigate?: (path: string, routerOptions?: unknown) => void;
   /** Turns a route into the href written on the link, e.g. adding a base path. */
   useHref?: (href: string) => string;
+  /** Receives the analytics events the components report (FilterBar filter, PaymentStatus
+   * payment_result, ResendCode code_resent, LanguageSwitch language_switch), already reduced to
+   * their own parameters by `analytics.event`. Send them on to your backend after consent. A nested
+   * VendraProvider without it keeps the outer one. */
+  onEvent?: (event: AnalyticsEvent) => void;
   children?: React.ReactNode;
 }
 /** Language and router for every component below: React Aria's I18nProvider (and RouterProvider when `navigate` is set) plus the components' built-in wording. Props on a component still win. */

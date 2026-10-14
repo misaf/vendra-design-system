@@ -1,8 +1,9 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
+import {Picture} from '../Picture/Picture.jsx';
 import {cx} from '../utils/cx.js';
 
-// Product photos in a swipeable scroll-snap track with dot buttons (React Aria); RTL scrolls the
+// Product photos (Picture: a URL or a photo object) in a swipeable scroll-snap track with dot buttons (React Aria); RTL scrolls the
 // other way.
 // The track is focusable so keyboard users can scroll it with the arrow keys (axe: scrollable-region-focusable).
 export function Gallery({
@@ -50,14 +51,7 @@ export function Gallery({
             aria-roledescription="slide"
             aria-label={slideLabel(i + 1, count)}
           >
-            <img
-              src={image.src}
-              srcSet={image.srcSet}
-              sizes={image.srcSet ? sizes : undefined}
-              alt={image.alt || ''}
-              loading={i ? 'lazy' : undefined}
-              decoding="async"
-            />
+            <Picture image={image} sizes={sizes} alt={image.alt || ''} priority={i === 0} />
           </div>
         ))}
       </div>

@@ -184,7 +184,7 @@ function vals(page) {
       value: r[2]
     })),
     lines: sampleLines.map(line => ({
-      image: vfProductImage(line, L).src,
+      image: vfProductImage(line, L),
       name: vfLineToken(line),
       meta: line[L][1] + ' · × ' + S.n(line.qty),
       note: vfCardMessages([line], {}, L) || undefined,

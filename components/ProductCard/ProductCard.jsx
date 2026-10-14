@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Badge} from '../Badge/Badge.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
+import {Picture} from '../Picture/Picture.jsx';
 import {Price} from '../Price/Price.jsx';
 import {StockStatus} from '../StockStatus/StockStatus.jsx';
 import {cx} from '../utils/cx.js';
@@ -15,8 +16,8 @@ export function ProductCard({
   compareAt,
   stock,
   image,
-  srcSet,
   images,
+  priority,
   sizes = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw',
   badge,
   badgeTone = 'neutral',
@@ -31,20 +32,18 @@ export function ProductCard({
   favLabel
 }) {
   const text = useMessages('ProductCard', {placeholder, favorite: favLabel});
-  const photos = (images && images.length ? images : image ? [{src: image, srcSet}] : []).map(
-    photo => (typeof photo === 'string' ? {src: photo} : photo)
+  const photos = (images && images.length ? images : image ? [image] : []).map(photo =>
+    typeof photo === 'string' ? {src: photo} : photo
   );
   // The second photo crossfades in on hover; it is decorative, so its alt is empty.
   const [mainPhoto, hoverPhoto] = photos;
   const renderPhoto = (photo, className) => (
-    <img
+    <Picture
+      image={photo}
       className={className}
-      src={photo.src}
-      srcSet={photo.srcSet}
-      sizes={photo.srcSet ? sizes : undefined}
+      sizes={sizes}
       alt={className ? '' : photo.alt || name}
-      loading="lazy"
-      decoding="async"
+      priority={!className && priority}
       style={
         photo.crop
           ? {objectPosition: photo.crop, transform: 'scale(1.6)', transformOrigin: photo.crop}

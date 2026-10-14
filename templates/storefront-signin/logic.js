@@ -2,12 +2,11 @@
 import {vfCopy} from './copy.js';
 import {vfAccountLogin, vfAccountSave} from '../_shared/account-data.js';
 import {vfMobile} from '../_shared/delivery.js';
-import {VF_FA_DIGITS} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-// Seconds before another code can be requested.
+// Seconds before another code can be requested (ResendCode keeps the time).
 const VF_SIGNIN_RESEND_SECONDS = 60;
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -19,28 +18,10 @@ export function usePage(props) {
       code: '',
       pErr: false,
       cErr: false,
-      left: 0,
       resent: false
-    };
-    page._countdown = () => {
-      page._stopCountdown();
-      page.setState({left: VF_SIGNIN_RESEND_SECONDS});
-      page._tick = setInterval(() => {
-        const left = Math.max(0, page.state.left - 1);
-        page.setState({left});
-        if (!left) page._stopCountdown();
-      }, 1000);
-    };
-    page._stopCountdown = () => {
-      clearInterval(page._tick);
     };
   });
   useStorefrontPage(page);
-  useLifecycle(page, {
-    willUnmount() {
-      page._stopCountdown();
-    }
-  });
   return vals(page);
 }
 
@@ -53,7 +34,6 @@ function vals(page) {
       const el = document.getElementById(id);
       el && el.focus();
     }, 0);
-  const n = v => (S.fa ? VF_FA_DIGITS(v) : String(v));
   // Signing in from checkout goes back there; the mobile from the last order fills the field.
   const fromCheckout = vfPageRoute(page.props).next === 'delivery';
   const store = page.props.store;
@@ -81,17 +61,11 @@ function vals(page) {
       }),
     phoneErr: s.pErr ? C.phoneErr : undefined,
     codeP: C.codeMessage(phone || '0912 000 0000'),
-    // A new code can be sent once the countdown ends.
-    waiting: s.left > 0,
-    canResend: s.left === 0,
-    resendIn: C.resendIn.replace(
-      '{time}',
-      n(Math.floor(s.left / 60)) + ':' + n(String(s.left % 60).padStart(2, '0'))
-    ),
+    // A new code can be sent once the wait ends.
+    resendSeconds: VF_SIGNIN_RESEND_SECONDS,
     resentText: s.resent ? C.resent : '',
     resend: () => {
       page.setState({code: '', cErr: false, resent: true});
-      page._countdown();
       focus('vf-code');
     },
     fromCheckout,
@@ -125,44 +99,44 @@ function vals(page) {
         phone,
         resent: false
       });
-      page._countdown();
       focus('vf-code');
     },
-    verify: () => {
-      if (s.code.length !== 5) {
-        page.setState({
-          cErr: true
-        });
-        focus('vf-code');
-        return;
-      }
-      const account = vfAccountLogin(s.phone, S.lang);
-      // The name given at checkout becomes the profile name when the account has none.
-      if (
-        last &&
-        last.delivery.sender &&
-        !account.profile.name &&
-        vfMobile(last.delivery.senderPhone) === vfMobile(s.phone)
-      ) {
-        account.profile.name = last.delivery.sender;
-        vfAccountSave(s.phone, account);
-      }
-      page._stopCountdown();
-      window.VF_TRACK.event('login');
-      if (page.props.setLang) page.props.setLang(account.profile.locale);
-      page.setState({
-        step: 'ok',
-        name: account.profile.name
-      });
-    },
+    verify: () => verifyCode(s.code),
+    // The code is checked as soon as all five digits are in (the hint says so), as when the
+    // phone fills it from the SMS.
+    completeCode: code => verifyCode(code),
     back: () => {
-      page._stopCountdown();
       page.setState({
         step: 'phone',
         code: '',
-        left: 0,
         resent: false
       });
     }
   };
+  function verifyCode(code) {
+    if (code.length !== 5) {
+      page.setState({
+        cErr: true
+      });
+      focus('vf-code');
+      return;
+    }
+    const account = vfAccountLogin(s.phone, S.lang);
+    // The name given at checkout becomes the profile name when the account has none.
+    if (
+      last &&
+      last.delivery.sender &&
+      !account.profile.name &&
+      vfMobile(last.delivery.senderPhone) === vfMobile(s.phone)
+    ) {
+      account.profile.name = last.delivery.sender;
+      vfAccountSave(s.phone, account);
+    }
+    window.VF_TRACK.event('login', {method: 'sms'});
+    if (page.props.setLang) page.props.setLang(account.profile.locale);
+    page.setState({
+      step: 'ok',
+      name: account.profile.name
+    });
+  }
 }

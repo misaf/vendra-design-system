@@ -1,7 +1,9 @@
 import * as React from 'react';
+import type {Photo} from '../Picture/Picture.js';
+
 export interface LineItemProps {
-  image?: string;
-  srcSet?: string;
+  /** A URL or a photo object (see Picture); sized to the thumbnail */
+  image?: Photo;
   name: React.ReactNode;
   /** e.g. "Classic · 2,400,000 Toman" */
   meta?: React.ReactNode;

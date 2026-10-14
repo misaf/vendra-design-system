@@ -19,7 +19,7 @@ export function OrderSummary({
       <ul className="ag-osum__lines">
         {lines.map((line, i) => (
           <li key={i} className="ag-osum__line">
-            <ArchFrame size="thumb" tone="product" src={line.image} alt="" />
+            <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
             <div className="ag-osum__main">
               <div className="ag-osum__name">
                 {line.href ? (

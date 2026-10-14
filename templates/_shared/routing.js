@@ -34,6 +34,9 @@ export const VF_ROUTE_EXTRA = {
     post: 'morning-at-the-studio'
   }
 };
+// What the sample store's simulated bank answers: paid, cancelled at the bank, refused, or not
+// confirmed yet.
+export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 // Keep template-only shopping parameters out of the core design-system router.
 export function vfReadRoute(search = location.search) {
   VF_SEO.register(...VF_ROUTES);
@@ -42,6 +45,14 @@ export function vfReadRoute(search = location.search) {
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // Back from the bank's payment page (?view=checkout&payment=return&order=VN-…). The sample store's
+  // simulated bank adds its answer as `result`; a live store asks the API for the payment instead.
+  if (route.view === 'checkout' && query.get('payment') === 'return') {
+    route.paymentOrder = /^VN-\d{1,16}$/.test(query.get('order') || '') ? query.get('order') : '';
+    route.paymentResult = VF_PAYMENT_RESULTS.includes(query.get('result'))
+      ? query.get('result')
+      : 'pending';
+  }
   // An account tab can be linked to (?view=account&tab=balance).
   if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab')))
     route.tab = query.get('tab');
@@ -94,6 +105,11 @@ export function vfRouteParams(route) {
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
+  if (route.view === 'checkout' && route.paymentOrder) {
+    query.set('payment', 'return');
+    query.set('order', route.paymentOrder);
+    query.set('result', route.paymentResult);
+  }
   if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
   if (route.view === 'shop') {
     if (route.min > 0) query.set('min', route.min);

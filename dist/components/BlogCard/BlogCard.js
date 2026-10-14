@@ -3,10 +3,11 @@
 import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Icon } from "../Icon/Icon.js";
+import { Picture } from "../Picture/Picture.js";
 import { cx } from "../utils/cx.js";
 // A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
 // the text; the title is the only link (a React Aria Link, or a Button without `href`).
-export function BlogCard({ image, srcSet, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "" }) {
+export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "" }) {
 	const Heading = "h" + headingLevel;
 	const TitleLink = href ? Link : Button;
 	const wide = layout === "wide";
@@ -14,14 +15,11 @@ export function BlogCard({ image, srcSet, sizes, date, meta, title, excerpt, cta
 	return /* @__PURE__ */ React.createElement("article", { className: cx("ag-blog", wide && "ag-blog--wide", className) }, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-blog__media", "ag-product__media--" + frame),
 		style: aspect ? { aspectRatio: aspect } : undefined
-	}, image ? /* @__PURE__ */ React.createElement("img", {
-		src: image,
-		srcSet,
-		sizes: srcSet ? imageSizes : undefined,
+	}, image ? /* @__PURE__ */ React.createElement(Picture, {
+		image,
+		sizes: imageSizes,
 		alt: "",
-		loading: priority ? undefined : "lazy",
-		fetchpriority: priority ? "high" : undefined,
-		decoding: "async"
+		priority
 	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-blog__body" }, date && /* @__PURE__ */ React.createElement("span", { className: "ag-eyebrow ag-blog__date" }, date), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-blog__meta" }, meta), /* @__PURE__ */ React.createElement(Heading, { className: "ag-blog__title" }, /* @__PURE__ */ React.createElement(TitleLink, {
 		href,
 		className: "ag-blog__link",

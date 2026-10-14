@@ -1,9 +1,12 @@
+import type {Photo} from '../Picture/Picture.js';
+
 export interface OrderSummaryLine {
   name: React.ReactNode;
   /** Renders the name as <a href> */
   href?: string;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-  image?: string;
+  /** A URL or a photo object (see Picture), shown as a thumbnail */
+  image?: Photo;
   /** e.g. "Generous · × 1" */
   meta?: React.ReactNode;
   /** Card message — italic in EN, upright in FA */

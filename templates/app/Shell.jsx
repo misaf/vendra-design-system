@@ -57,7 +57,10 @@ export function Shell({v, content, sticky}) {
   });
   return (
     // The page's language for the components' built-in wording and React Aria's formats.
-    <DS.VendraProvider locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}>
+    <DS.VendraProvider
+      locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}
+      onEvent={({event, ...params}) => window.VF_TRACK.event(event, params)}
+    >
       <div className="tw:bg-muted tw:min-h-screen">
         <div
           className="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]"

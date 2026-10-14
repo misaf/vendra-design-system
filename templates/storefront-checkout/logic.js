@@ -4,6 +4,7 @@ import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
   vfCardMessages,
   vfLineAvailable,
+  vfLineItems,
   vfLineToken,
   vfProductImage,
   vfSampleBag
@@ -23,6 +24,38 @@ import {
 } from '../_shared/wallet.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+// An online payment leaves for the bank's page and comes back to a new page load, so the order it
+// pays for waits in this tab's session meanwhile.
+const VF_PAYMENT_KEY = 'vf-online-payment';
+function vfPendingPayment(id) {
+  try {
+    const record = JSON.parse(sessionStorage.getItem(VF_PAYMENT_KEY) || 'null');
+    return record && record.id === id ? record : null;
+  } catch {
+    return null;
+  }
+}
+function vfKeepPayment(record) {
+  try {
+    if (record) sessionStorage.setItem(VF_PAYMENT_KEY, JSON.stringify(record));
+    else sessionStorage.removeItem(VF_PAYMENT_KEY);
+  } catch {}
+}
+// Asks whether the bank took the payment. The sample store's simulated bank put its answer in the
+// return link; a live store asks the API (templates/API.md, B30). Without the order in this tab
+// there is nothing to confirm here, so the customer is told not to pay twice.
+function vfVerifyPayment(page, result, record) {
+  clearTimeout(page._paymentTimer);
+  if (!record) {
+    page.setState({payment: {status: 'pending', record: null}});
+    return;
+  }
+  page.setState({payment: {status: 'verifying', record}});
+  page._paymentTimer = setTimeout(() => {
+    if (result === 'paid') page._paid(record);
+    else page.setState({payment: {status: result, record}});
+  }, 900);
+}
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -35,11 +68,17 @@ export function usePage(props) {
       order: null,
       method: null,
       busy: false,
-      failed: false
+      failed: false,
+      payment: null
     };
   });
   useStorefrontPage(page);
   useLifecycle(page, {
+    didMount() {
+      const route = vfPageRoute(page.props);
+      if (route.paymentOrder)
+        vfVerifyPayment(page, route.paymentResult, vfPendingPayment(route.paymentOrder));
+    },
     willUnmount() {
       clearTimeout(page._paymentTimer);
     }
@@ -110,6 +149,45 @@ function vals(page) {
         .replace('{gap}', m(discountGap))
         .replace('{saving}', m(discounted.balanceDiscount))
     : '';
+  // The checkout link without the bank's return parameters, so a reload doesn't verify again.
+  const leavePaymentUrl = () => {
+    if (vfPageRoute(page.props).paymentOrder)
+      history.replaceState(history.state, '', vfRouteParams({lang: L, view: 'checkout'}));
+  };
+  const completeOrder = record => {
+    // Paying from the balance takes the total out of it now; a failed deduction stops the order.
+    if (record.method === 'wallet') {
+      const account = vfWalletChange(phone, -record.totals.total, {
+        kind: 'order',
+        order: record.id
+      });
+      if (!account) {
+        page.setState({failed: true});
+        return;
+      }
+      record = {...record, balanceAfter: vfWalletOf(account).balance};
+    }
+    if (st) {
+      st.complete(record);
+    } else
+      page.setState({
+        placed: true,
+        order: record
+      });
+    window.VF_TRACK.event('purchase', {
+      transaction_id: record.id,
+      value: record.totals.total,
+      payment_type: record.method,
+      items: vfLineItems(record.lines)
+    });
+  };
+  // The bank confirmed an online payment: the order is placed, with the bank's tracking number.
+  page._paid = record => {
+    vfKeepPayment(null);
+    leavePaymentUrl();
+    page.setState({payment: null});
+    completeOrder({...record, ref: record.ref || String(Date.now()).slice(-12)});
+  };
   return {
     ...S,
     t: {
@@ -121,7 +199,7 @@ function vals(page) {
       place: method === 'card' ? C.place : P.actions[method],
       orderNo: order ? C.labels.order + '\u2068' + order.id + '\u2069' : C.orderNo
     },
-    paying: !done,
+    paying: !done && !s.payment,
     // After an order, a guest can sign in with the mobile they gave to keep it with their account.
     offerAccount: done && !vfAccountPhone(),
     accountBody: C.accountBody.replace(
@@ -231,89 +309,92 @@ function vals(page) {
       window.VF_TRACK.event('add_payment_info', {
         payment_type: method
       });
-      const complete = () => {
-        const id = 'VN-' + Date.now();
-        // Paying from the balance takes the total out of it now; a failed deduction stops the order.
-        let balanceAfter;
-        if (method === 'wallet') {
-          const account = vfWalletChange(phone, -totals.total, {kind: 'order', order: id});
-          if (!account) {
-            page.setState({failed: true});
-            return;
-          }
-          balanceAfter = vfWalletOf(account).balance;
-        }
-        const record = {
-          method,
-          paymentStatus: P.statuses[method],
-          preferredLocale: vfAccountLocale() || L,
-          id,
-          ...(balanceAfter != null ? {balanceAfter} : {}),
-          status: 'received',
-          createdAt: new Date().toISOString(),
-          lines: items.map(l => ({
-            ...l
-          })),
-          delivery: {
-            ...delivery,
-            date: delivery.date || vfDeliveryDate(delivery)
-          },
-          totals: {
-            ...totals
-          },
-          last4: s.last4,
-          ref: s.ref
-        };
-        if (st) {
-          st.complete(record);
-        } else
-          page.setState({
-            placed: true,
-            order: record
-          });
-        window.VF_TRACK.event('purchase', {
-          transaction_id: record.id,
-          value: totals.total,
-          payment_type: method
-        });
+      const record = {
+        method,
+        paymentStatus: P.statuses[method],
+        preferredLocale: vfAccountLocale() || L,
+        id: 'VN-' + Date.now(),
+        status: 'received',
+        createdAt: new Date().toISOString(),
+        lines: items.map(l => ({
+          ...l
+        })),
+        delivery: {
+          ...delivery,
+          date: delivery.date || vfDeliveryDate(delivery)
+        },
+        totals: {
+          ...totals
+        },
+        last4: s.last4,
+        ref: s.ref
       };
-      // With an API base, the order is sent as a Checkout request first; the demo completes at once.
-      const send = () => {
-        if (!window.VF_API.live) return complete();
+      // With an API base, the order is sent as a Checkout request first; the demo goes on at once.
+      const send = then => {
+        if (!window.VF_API.live) return then();
         const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
         page.setState({busy: true});
         window.VF_API.checkout(request).then(
           () => {
             page.setState({busy: false});
-            complete();
+            then();
           },
           () => page.setState({busy: false, failed: true})
         );
       };
-      if (method === 'online') {
-        page.setState({
-          busy: true
+      // Online, the customer pays on the bank's page and comes back to this page.
+      if (method === 'online')
+        send(() => {
+          vfKeepPayment(record);
+          page.setState({payment: {status: 'redirecting', record}});
         });
-        page._paymentTimer = setTimeout(() => {
-          page.setState({
-            busy: false
-          });
-          if (
-            page.props.payFail ||
-            vfPageRoute(page.props).demo === 'error' ||
-            VF_STORE.paymentDemo.online === 'failure'
-          ) {
-            page.setState({
-              failed: true
-            });
-            return;
-          }
-          send();
-        }, 500);
-      } else send();
+      else send(() => completeOrder(record));
     },
+    bankTrip: s.payment && {
+      status: s.payment.status,
+      amount: s.payment.record ? m(s.payment.record.totals.total) : undefined,
+      orderNumber: s.payment.record ? s.payment.record.id : undefined,
+      // The sample store's simulated bank is this page: the return link carries its answer. A
+      // live store sends the browser where the API's checkout result says (templates/API.md, B3).
+      redirect:
+        s.payment.status === 'redirecting'
+          ? {
+              url: location.pathname,
+              method: 'GET',
+              fields: Object.fromEntries(
+                new URLSearchParams(
+                  vfRouteParams({
+                    lang: L,
+                    view: 'checkout',
+                    paymentOrder: s.payment.record.id,
+                    paymentResult:
+                      vfPageRoute(page.props).demo === 'error'
+                        ? 'failed'
+                        : s.payment.record.attempt > 1
+                          ? 'paid'
+                          : VF_STORE.paymentDemo.online
+                  })
+                )
+              )
+            }
+          : undefined,
+      supportHref: 'tel:' + VF_STORE.phone
+    },
+    payRetry: () => {
+      const record = {...s.payment.record, attempt: (s.payment.record.attempt || 1) + 1};
+      vfKeepPayment(record);
+      leavePaymentUrl();
+      page.setState({payment: {status: 'redirecting', record}});
+    },
+    payOther: () => {
+      vfKeepPayment(null);
+      leavePaymentUrl();
+      page.setState({payment: null, method: 'card'});
+    },
+    payCheckAgain: () =>
+      s.payment.record ? vfVerifyPayment(page, 'paid', s.payment.record) : leavePaymentUrl(),
     lines: items.map(l => ({
-      image: vfProductImage(l, L).src,
+      image: vfProductImage(l, L),
       name: vfLineToken(l),
       meta: l[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(l.qty) : l.qty),
       total: m(l.unit * l.qty)

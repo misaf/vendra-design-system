@@ -135,7 +135,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Components
 
-All text comes in through props (no hard-coded copy). Numbers are passed pre-localized (Persian digits for fa). Images take `srcSet` + `sizes` (sizes only applies when srcSet is set) and load lazily. Motion respects `prefers-reduced-motion`. Each component's `README.md` has usage and its `.d.ts` has every prop.
+All text comes in through props (no hard-coded copy). Numbers are passed pre-localized (Persian digits for fa). Photos take a URL or a photo object (`Picture`: `srcSet`, AVIF/WebP `sources`, `width`/`height`, a blurred `placeholder`; `commerce.imageFromApi` builds it from an API Multimedia record) and load lazily; `priority` loads the first ones a page shows at once. Motion respects `prefers-reduced-motion`. Each component's `README.md` has usage and its `.d.ts` has every prop.
 
 **Basics**
 - **Icon:** Lucide glyph via CSS mask. Inherits `currentColor`; arrows and chevrons mirror in RTL.
@@ -157,7 +157,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Field:** `useField` (ids and `aria-*` wiring) and `FieldMessage` (hint or error), the base every control below is built on.
 - **Input:** label, hint, error (wired with `aria-describedby`), `iconStart`, `multiline`.
 - **PhoneInput:** Input for phone numbers: tel keypad, autofill (`autoComplete="off"` for a recipient), left to right in Persian; `onValueChange(number, isMobile)` gives Latin digits.
-- **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill; `onComplete` never submits by itself.
+- **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill and Web OTP (Chrome on Android fills it from an SMS ending `@<domain> #<code>`); `onComplete` never submits by itself, so a form that submits on completion says so in its hint.
+- **ResendCode:** "Send a new code" after a wait that runs on the clock (right after a trip to the SMS app), time left in the page's digits, one polite status when it ends.
 - **LocationPicker:** centre-pin map for the delivery point (drag, tap, arrow keys, "use my location"); the app passes `loadLeaflet()` and tiles, and `onFail` switches to a typed address.
 - **Select:** same field pattern, with `options`.
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
@@ -195,8 +196,10 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 
 **Commerce**
 - **ProductCard:** a stretched link over the whole card, a favourite button above it, badge, arch or soft frame, crossfade to the second photo on hover.
+- **Picture:** one photo at the width the layout shows it: `srcSet`, AVIF/WebP `sources` in a `<picture>`, `width`/`height` so the space is kept, a blurred placeholder until it loads, lazy unless `priority`. Every photo component renders it.
 - **Price:** the app formats the amounts (`format.money`); a reduced price follows its struck-through `compareAt`, read as "Was … Now …". ProductCard and LineItem render it.
 - **TrustSeal:** the store's eNamad and Samandehi seals in the footer, with the link and image URLs as the issuers' panels give them and `referrerPolicy="origin"`; the seal's name shows when the image doesn't load.
+- **PaymentStatus:** the trip to the bank's gateway and back: redirecting (a real form, GET or POST, that also submits by itself), verifying, then paid, cancelled, failed or pending. Pending (money taken, not confirmed) tells the customer not to pay again; focus moves to each new answer.
 - **StockStatus:** in stock, "Only 2 left", "Back on 12 October" (Shamsi in Persian) or sold out, from `commerce.stockStatus(product)`; ProductCard shows it under the price unless the product is in stock.
 - **CategoryCard:** 4:5 tile with name and count.
 - **BlogCard:** journal post card.

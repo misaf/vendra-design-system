@@ -1,0 +1,65 @@
+import React from 'react';
+import {cx} from '../utils/cx.js';
+
+// React 18 only knows the lowercase attribute; React 19 renamed the prop and warns on the old one.
+const FETCH_PRIORITY = /^18\./.test(React.version) ? 'fetchpriority' : 'fetchPriority';
+
+// One photo, at the size the layout shows it. `image` is a URL or {src, srcSet, sources, width,
+// height, placeholder, alt}: `sources` adds AVIF/WebP candidates in a <picture> for browsers that
+// read them, and `placeholder` (a tiny blurred data URI) shows until the photo has loaded. Photos
+// load lazily; `priority` loads the first one a page shows at once.
+export function Picture({
+  image,
+  alt,
+  sizes,
+  priority,
+  className,
+  style,
+  onLoad: onPhotoLoad,
+  ...rest
+}) {
+  const photo = typeof image === 'string' ? {src: image} : image || {};
+  const imgRef = React.useRef(null);
+  const [loaded, setLoaded] = React.useState(false);
+  // A photo from the cache can finish before hydration attaches onLoad.
+  React.useEffect(() => {
+    const img = imgRef.current;
+    setLoaded(!!(img && img.complete && img.naturalWidth));
+  }, [photo.src]);
+  if (!photo.src) return null;
+  const sources = photo.sources || [];
+  const img = (
+    <img
+      {...rest}
+      ref={imgRef}
+      className={cx(className, !loaded && photo.placeholder && 'ag-picture--waiting')}
+      src={photo.src}
+      srcSet={photo.srcSet}
+      sizes={photo.srcSet || sources.length ? sizes : undefined}
+      width={photo.width}
+      height={photo.height}
+      alt={alt ?? photo.alt ?? ''}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? undefined : 'async'}
+      {...(priority ? {[FETCH_PRIORITY]: 'high'} : {})}
+      style={
+        !loaded && photo.placeholder
+          ? {backgroundImage: 'url("' + photo.placeholder.replace(/"/g, '%22') + '")', ...style}
+          : style
+      }
+      onLoad={event => {
+        setLoaded(true);
+        if (onPhotoLoad) onPhotoLoad(event);
+      }}
+    />
+  );
+  if (!sources.length) return img;
+  return (
+    <picture className="ag-picture">
+      {sources.map(source => (
+        <source key={source.type} type={source.type} srcSet={source.srcSet} sizes={sizes} />
+      ))}
+      {img}
+    </picture>
+  );
+}

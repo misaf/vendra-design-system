@@ -102,6 +102,7 @@ const scoped = (name, file) =>
 const sharedLogic =
   hooksHarness +
   scoped('commerce', '../components/utils/commerce.js') +
+  scoped('analytics', '../components/utils/analytics.js') +
   scoped('dates', '../components/utils/dates.js') +
   scoped('format', '../components/utils/format.js') +
   scoped('VF_SEO', '_shared/seo.js') +

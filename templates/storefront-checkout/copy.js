@@ -118,13 +118,14 @@ export function vfCopy(S) {
       en: {
         actions: {
           wallet: 'Pay from balance',
-          online: 'Simulate online payment',
+          online: 'Continue to the bank',
           cod: 'Confirm demo order',
           wa: 'Confirm demo order'
         },
         descriptions: {
           wallet: 'The total comes out of your account balance. There’s nothing else to pay.',
-          online: 'Try the online payment flow using a simulated result.',
+          online:
+            'You pay on the bank’s page and come back here. In this preview the bank is simulated.',
           cod: 'Payment would be collected on delivery. Confirm this sample order.',
           wa: 'Open WhatsApp to review the prepared message, or confirm the sample order here.'
         },
@@ -148,8 +149,8 @@ export function vfCopy(S) {
           left: 'Balance left'
         },
         demo: 'Template preview: no money is transferred and no messages are sent.',
-        processing: 'Processing demo payment…',
-        failed: 'Demo payment failed',
+        processing: 'Sending your order…',
+        failed: 'Your order couldn’t be sent',
         failureBody: 'Your bag is preserved. Retry or choose another payment method.',
         retry: 'Try again',
         other: 'Choose another method',
@@ -157,7 +158,7 @@ export function vfCopy(S) {
         statuses: {
           wallet: 'Paid from balance',
           card: 'Awaiting transfer check',
-          online: 'Demo paid',
+          online: 'Paid online',
           cod: 'Pay on delivery',
           wa: 'Awaiting WhatsApp confirmation'
         }
@@ -165,13 +166,14 @@ export function vfCopy(S) {
       fa: {
         actions: {
           wallet: 'پرداخت از کیف پول',
-          online: 'شبیه‌سازی پرداخت آنلاین',
+          online: 'رفتن به درگاه بانک',
           cod: 'تأیید سفارش نمونه',
           wa: 'تأیید سفارش نمونه'
         },
         descriptions: {
           wallet: 'مبلغ کل از موجودی کیف پول شما کم می‌شود و پرداخت دیگری لازم نیست.',
-          online: 'روند پرداخت آنلاین را با نتیجه شبیه‌سازی‌شده امتحان کنید.',
+          online:
+            'پرداخت را در صفحه بانک انجام می‌دهید و به همین‌جا برمی‌گردید. در این پیش‌نمایش، بانک شبیه‌سازی شده است.',
           cod: 'مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.',
           wa: 'واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید.'
         },
@@ -195,8 +197,8 @@ export function vfCopy(S) {
           left: 'موجودی باقی‌مانده'
         },
         demo: 'پیش‌نمایش قالب: پولی منتقل و پیامی ارسال نمی‌شود.',
-        processing: 'در حال انجام پرداخت نمونه…',
-        failed: 'پرداخت نمونه ناموفق بود',
+        processing: 'در حال ثبت سفارش…',
+        failed: 'سفارش شما ثبت نشد',
         failureBody: 'سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.',
         retry: 'تلاش دوباره',
         other: 'انتخاب روش دیگر',
@@ -204,7 +206,7 @@ export function vfCopy(S) {
         statuses: {
           wallet: 'پرداخت از کیف پول',
           card: 'در انتظار بررسی واریز',
-          online: 'پرداخت نمونه انجام شد',
+          online: 'پرداخت آنلاین انجام شد',
           cod: 'پرداخت در محل',
           wa: 'در انتظار تأیید واتس‌اپ'
         }

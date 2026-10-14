@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {Photo} from '../Picture/Picture.js';
+
 import type {Stock} from '../utils/commerce.js';
 
 export interface ProductCardProps {
@@ -12,21 +14,14 @@ export interface ProductCardProps {
   compareAt?: string;
   /** commerce.stockStatus(product): shown under the price unless the product is in stock */
   stock?: Stock;
-  image?: string;
-  /** Responsive candidates, e.g. "rose-400.jpg 400w, rose-800.jpg 800w" */
-  srcSet?: string;
-  /** Rendered width hints; defaults to the 2/3/4-column grid. Only applied when srcSet is set. */
+  /** A URL or a photo object (see Picture) */
+  image?: Photo;
+  /** Rendered width hints; defaults to the 2/3/4-column grid. Applied when the photo has candidates. */
   sizes?: string;
-  /** All product photos, first is the cover. The second crossfades in on hover. Overrides image/srcSet. */
-  images?: Array<
-    | string
-    | {
-        src: string;
-        srcSet?: string;
-        alt?: string;
-        /** object-position for a zoomed detail crop, e.g. "50% 30%" */ crop?: string;
-      }
-  >;
+  /** All product photos, first is the cover. The second crossfades in on hover. Overrides image. */
+  images?: Photo[];
+  /** Cards in the first row a page shows: the cover loads at once, at high priority. Default lazy. */
+  priority?: boolean;
   badge?: string;
   badgeTone?: 'neutral' | 'accent' | 'success' | 'warning' | 'info' | 'danger' | 'solid';
   /** arch = signature rounded-top window; soft = 8px corners */

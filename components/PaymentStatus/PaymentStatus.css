@@ -1,0 +1,14 @@
+.ag-payment-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+}
+.ag-payment-status .ag-empty__actions form {
+  display: contents;
+}
+.ag-payment-status__details {
+  align-self: center;
+  width: 100%;
+  max-width: 28rem;
+}

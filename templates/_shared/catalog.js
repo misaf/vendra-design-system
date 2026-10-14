@@ -324,22 +324,31 @@ export function vfProductSub(product, lang = 'en') {
   return VF_CATEGORY_ITEM[lang][product.cat];
 }
 
+// A product photo for Picture, with its alt text in `lang`. `asset` is a URL or a photo
+// (commerce.imageFromApi); a relative URL is resolved against VF_ASSET_BASE.
 export function vfProductImage(
   product,
   lang = 'en',
-  asset = product.image || VF_PRODUCT_PLACEHOLDER
+  asset = product.image || VF_PRODUCT_PLACEHOLDER,
+  index = 0
 ) {
-  const src = /^(https?:|data:|\/)/.test(asset)
-    ? asset
-    : (window.VF_ASSET_BASE || '../../') + asset;
+  const photo = typeof asset === 'string' ? {src: asset} : asset;
+  const src = /^(https?:|data:|\/)/.test(photo.src)
+    ? photo.src
+    : (window.VF_ASSET_BASE || '../../') + photo.src;
   const name = VF_CATEGORY_ITEM[lang][product.cat] + ' ' + vfTokenText(product.id);
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
-  return {src, alt: asset === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : name};
+  const alts = product[lang] && product[lang].alts;
+  const alt =
+    photo.src === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : (alts && alts[index]) || name;
+  return {...photo, src, alt};
 }
 
 // Every product page photo; falls back to the card photo.
 export function vfProductImages(product, lang = 'en') {
-  return (product.images || [product.image]).map(asset => vfProductImage(product, lang, asset));
+  return (product.images || [product.image]).map((asset, index) =>
+    vfProductImage(product, lang, asset, index)
+  );
 }
 
 // Lines added from the product page list their product, size and extras; older lines carry them in the id.
@@ -356,6 +365,16 @@ export function vfLineSize(line) {
 // The code a line was ordered with: also its title in the bag, checkout, orders and messages.
 export function vfLineToken(line) {
   return line.token || vfLineProductId(line);
+}
+
+// Bag lines as analytics items (analytics.ITEM_KEYS): the code each was ordered with, its unit price and
+// quantity.
+export function vfLineItems(lines) {
+  return lines.map(line => ({
+    item_id: vfLineToken(line) || line.id,
+    price: line.unit,
+    quantity: line.qty
+  }));
 }
 
 // A code inside other text, isolated so it stays left to right in Persian.

@@ -1,4 +1,9 @@
-/** Built-in wording per component; {name} / {date} / {page} / {count} are filled in by the component. */
+/** A PaymentStatus state: its heading and the sentence under it ({gateway} is filled in). */
+export interface PaymentStatusWords {
+  title: string;
+  body: string;
+}
+/** Built-in wording per component; {name} / {date} / {page} / {count} / {gateway} / {time} are filled in by the component. */
 export interface ComponentMessages {
   AddressCard: {edit: string; delete: string; default: string; makeDefault: string};
   Alert: {close: string};
@@ -41,7 +46,26 @@ export interface ComponentMessages {
     edit: string;
     delete: string;
   };
+  PaymentStatus: {
+    bank: string;
+    redirecting: PaymentStatusWords;
+    verifying: PaymentStatusWords;
+    paid: PaymentStatusWords;
+    cancelled: PaymentStatusWords;
+    failed: PaymentStatusWords;
+    pending: PaymentStatusWords;
+    goToBank: string;
+    retry: string;
+    otherMethod: string;
+    checkAgain: string;
+    support: string;
+    amount: string;
+    order: string;
+    reference: string;
+  };
   Price: {was: string; now: string};
+  /** {time} is m:ss in the page's digits */
+  ResendCode: {wait: string; ready: string; resend: string};
   SearchField: {clear: string};
   SectionHeader: {previous: string; next: string};
   Spinner: {label: string};

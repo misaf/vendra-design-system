@@ -1,9 +1,13 @@
 import * as React from 'react';
+import type {Photo} from '../Picture/Picture.js';
+
 export interface ArchFrameProps extends React.HTMLAttributes<HTMLDivElement> {
-  src?: string;
-  /** Only applied with srcSet: sizes is ignored without it */
-  srcSet?: string;
+  /** A URL or a photo object with srcSet, AVIF/WebP sources and a placeholder (see Picture) */
+  src?: Photo;
+  /** The width the frame shows at; applied when the photo has candidates */
   sizes?: string;
+  /** The first photos a page shows: load at once, at high priority (Picture). Default lazy. */
+  priority?: boolean;
   /** Required for real images; '' marks decorative */
   alt?: string;
   /** Aspect ratio; circle is always 1/1. fill = no ratio, 100% of the parent's height (split panels where the text column sets the height) */

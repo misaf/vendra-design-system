@@ -2,6 +2,7 @@
 import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
   vfLineHasCard,
+  vfLineItems,
   vfLineToken,
   vfLineWithCard,
   vfProduct,
@@ -10,6 +11,7 @@ import {
   vfSampleBag
 } from '../_shared/catalog.js';
 import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
+import {VF_STORE} from '../_shared/store-config.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
 import {loadPage, pageReady} from '../app/pages.js';
@@ -28,7 +30,10 @@ function vfCheckoutFallback(state, lang) {
 }
 // The account needs a signed-in phone; signed-out customers see sign-in instead.
 function vfGuardRoute(state, r) {
-  if (r.view === 'checkout' && vfCheckoutBlocked(state)) return vfCheckoutFallback(state, r.lang);
+  // Back from the bank, checkout always opens: it says what happened to the payment, even in a tab
+  // that no longer holds the bag.
+  if (r.view === 'checkout' && !r.paymentOrder && vfCheckoutBlocked(state))
+    return vfCheckoutFallback(state, r.lang);
   if (r.view === 'account' && !vfAccountPhone()) return {lang: r.lang, view: 'signin'};
   return null;
 }
@@ -145,6 +150,10 @@ export function usePage(props) {
       // Plain links to another view of the site (footer, policy and terms links) switch the view in
       // place, as React Aria links do; a new tab, a download or another page loads normally.
       page._click = event => {
+        // Any way of opening the store's WhatsApp chat counts, wherever the link is.
+        const chat = event.target.closest?.('a[href]');
+        if (chat && VF_STORE.whatsapp && chat.href.startsWith(VF_STORE.whatsapp))
+          window.VF_TRACK.event('contact_whatsapp');
         if (event.defaultPrevented || event.button !== 0) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         const link = event.target.closest?.('a[href]');
@@ -157,7 +166,11 @@ export function usePage(props) {
         page.navigate(vfReadRoute(url.search));
       };
       document.addEventListener('click', page._click);
-      const guarded = vfGuardRoute(page.state, {view: page.state.route, lang: page.state.lang});
+      const guarded = vfGuardRoute(page.state, {
+        ...page.state.routeInfo,
+        view: page.state.route,
+        lang: page.state.lang
+      });
       if (guarded) page.navigate(guarded, true);
     },
     didUpdate() {
@@ -324,10 +337,18 @@ function vals(page) {
           };
         }),
       remove: id =>
-        page.setState(p => ({
-          order: null,
-          bag: p.bag.filter(x => x.id !== id)
-        })),
+        page.setState(p => {
+          const line = p.bag.find(x => x.id === id);
+          if (line)
+            window.VF_TRACK.event('remove_from_cart', {
+              items: vfLineItems([line]),
+              value: line.unit * line.qty
+            });
+          return {
+            order: null,
+            bag: p.bag.filter(x => x.id !== id)
+          };
+        }),
       reset: () =>
         page.setState({
           order: null,

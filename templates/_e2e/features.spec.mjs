@@ -353,8 +353,8 @@ test('a guest can sign in from checkout and come back to it', async ({page}) => 
   await expect(page).toHaveURL(/view=signin&next=delivery/);
   await page.fill('#vf-phone', '09125649438');
   await page.locator('main').getByRole('button', {name: 'Send code'}).click();
+  // The code is checked as soon as it is complete.
   await page.fill('#vf-code', '12345');
-  await page.locator('main').getByRole('button', {name: 'Sign in', exact: true}).click();
   await page.getByRole('link', {name: 'Back to checkout'}).click();
   await expect(page).toHaveURL(/step=delivery/);
   await expect(page.getByRole('group', {name: 'Send to a saved address'})).toBeVisible();
@@ -375,6 +375,27 @@ test('a new code can be sent once the countdown ends', async ({page}) => {
   await expect(page.locator('#vf-code')).toBeFocused();
   await expect(page.locator('main')).toContainText('You can ask for a new code in 1:00.');
   expect(await scanAxe(page)).toEqual([]);
+});
+
+test('on Android the code fills itself from the SMS and signs in', async ({page}) => {
+  // Chrome on Android hands over the code from an SMS ending "@<domain> #<code>" (Web OTP).
+  await page.addInitScript(() => {
+    window.OTPCredential = function OTPCredential() {};
+    const asked = (window.__otpAsked = []);
+    Object.defineProperty(navigator, 'credentials', {
+      value: {
+        get: options => {
+          asked.push(options.otp.transport.join());
+          return new Promise(resolve => setTimeout(() => resolve({code: '۱۲۳۴۵'}), 300));
+        }
+      }
+    });
+  });
+  await openSite(page, 'signin', 'en');
+  await page.fill('#vf-phone', '۰۹۱۲۵۶۴۹۴۳۸');
+  await page.locator('main').getByRole('button', {name: 'Send code'}).click();
+  await expect(page.locator('main h1')).toContainText('Welcome back');
+  expect(await page.evaluate(() => window.__otpAsked)).toEqual(['sms']);
 });
 
 test('a guest finds an order with its number and mobile', async ({page}) => {
@@ -433,6 +454,121 @@ test('a card-to-card order says its payment is being confirmed, and offers an ac
   // Signing in from there fills the mobile the order used.
   await page.goto(page.url().replace(/view=track.*/, 'view=signin'));
   await expect(page.locator('#vf-phone')).toHaveValue('09121112233');
+});
+
+// Online, the customer pays on the bank's page and comes back. The sample store's bank is
+// simulated: it answers through the return link (VF_STORE.paymentDemo.online, or "failed" with
+// ?demo=error).
+async function toOnlinePayment(page) {
+  await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.fill('#vf-name', 'Shirin Ahmadi');
+  await page.fill('#vf-phone', '09121234567');
+  await pinDelivery(page);
+  await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await fillSender(page);
+  await page
+    .getByRole('button', {name: 'Continue to payment'})
+    .locator('visible=true')
+    .first()
+    .click();
+  await page.getByRole('radio', {name: 'Online card demo'}).check({force: true});
+}
+
+test('an online payment goes to the bank and comes back paid', async ({page}) => {
+  await toOnlinePayment(page);
+  const loads = [];
+  page.on('load', () => loads.push(page.url()));
+  await page
+    .getByRole('button', {name: 'Continue to the bank'})
+    .locator('visible=true')
+    .first()
+    .click();
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('Taking you to the bank');
+  await expect(page.locator('.vf-mobile-action')).toBeHidden();
+  // The browser leaves for the bank, which sends it back to checkout with its answer.
+  await expect.poll(() => loads.some(url => url.includes('payment=return'))).toBe(true);
+  await expect(page.locator('main h1')).toContainText('Thank you');
+  await expect(page).not.toHaveURL(/payment=return/);
+  await expect(page.locator('main')).toContainText('Paid online');
+  await expect(page.locator('main dl')).toContainText(/Tracking number.*\d{12}/s);
+  // A reload doesn't ask the bank again or place a second order.
+  await page.reload();
+  await expect(page.locator('main h1')).toContainText('Thank you');
+});
+
+test('a payment the bank refuses keeps the bag and can be paid again', async ({page}) => {
+  await toOnlinePayment(page);
+  await page.evaluate(() => window.__vfSite.navigate({view: 'checkout', demo: 'error'}));
+  await page.getByRole('radio', {name: 'Online card demo'}).check({force: true});
+  await page
+    .getByRole('button', {name: 'Continue to the bank'})
+    .locator('visible=true')
+    .first()
+    .click();
+  const heading = page.getByRole('heading', {level: 1});
+  await expect(heading).toHaveText('The payment didn’t go through', {timeout: 10_000});
+  // The bank's answer takes focus, so a screen reader reads it.
+  await expect(heading).toBeFocused();
+  await expect(page.locator('main')).toContainText('within 72 hours');
+  expect(await scanAxe(page)).toEqual([]);
+  await page.getByRole('button', {name: 'Pay again'}).click();
+  await expect(page.locator('main h1')).toContainText('Thank you', {timeout: 10_000});
+});
+
+test('a return link for an order this tab doesn’t hold says not to pay twice', async ({page}) => {
+  await openSite(page, 'checkout', 'fa', {payment: 'return', order: 'VN-1', result: 'paid'});
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('پرداخت شما هنوز تأیید نشده');
+  await expect(page.locator('main')).toContainText('لطفاً دوباره پرداخت نکنید');
+  await expect(page.getByRole('link', {name: 'تماس با ما'})).toHaveAttribute(
+    'href',
+    'tel:+989129333034'
+  );
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('the storefront reports the contract’s events, and nothing personal', async ({page}, info) => {
+  // On phones the shop's filters are in a dialog; the events are the same.
+  test.skip(info.project.name !== 'desktop', 'desktop only');
+  const warnings = [];
+  page.on('console', message => {
+    if (message.text().startsWith('VF_TRACK')) warnings.push(message.text());
+  });
+  const names = () => page.evaluate(() => window.VF_TRACK.log.map(event => event.event));
+  await openSite(page, 'product', 'en');
+  const viewed = await page.evaluate(() => window.VF_TRACK.log.at(-1));
+  expect(viewed).toMatchObject({event: 'view_item', items: [{item_id: 'VF-7K2M4Q'}]});
+  await page
+    .getByRole('button', {name: /^Add to bag/})
+    .locator('visible=true')
+    .first()
+    .click();
+  await expect.poll(names).toContain('add_to_cart');
+  await page.evaluate(() => window.__vfSite.navigate({view: 'bag'}));
+  await expect.poll(names).toContain('view_cart');
+  await page.evaluate(() => window.__vfSite.navigate({view: 'search'}));
+  await page.getByRole('searchbox').fill('orchid');
+  // Once the typing settles, with how many it found.
+  await expect
+    .poll(() => page.evaluate(() => window.VF_TRACK.log.find(event => event.event === 'search')))
+    .toMatchObject({search_term: 'orchid', results: 1});
+  await page.getByRole('searchbox').fill('09121234567');
+  await expect
+    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
+    .toMatchObject({event: 'search', search_term: '(personal data)'});
+  await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  await page
+    .locator('.ag-switch', {hasText: 'In stock only'})
+    .locator('visible=true')
+    .first()
+    .click();
+  await expect
+    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
+    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'add'});
+  await page.getByRole('button', {name: 'Remove In stock only'}).click();
+  await expect
+    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
+    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'remove'});
+  expect(warnings).toEqual([]);
 });
 
 test('the shop filters by delivery day', async ({page}, info) => {

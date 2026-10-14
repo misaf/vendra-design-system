@@ -38,3 +38,19 @@ export function Providers({locale, children}) {
 Use this rather than importing React Aria's `RouterProvider` yourself. `react-aria-components` and `@internationalized/date` are peer dependencies, so your app and the components share one copy and its contexts. A nested `VendraProvider` without `navigate` keeps the outer router.
 
 Without a provider, components use React Aria's locale (an `I18nProvider` higher up, or the browser's) and plain links.
+
+**Analytics:** pass `onEvent` to receive the events the components report: FilterBar (`filter`, removed or cleared), PaymentStatus (`payment_result`), ResendCode (`code_resent`) and LanguageSwitch (`language_switch`). They come in the shape of `analytics.event` (`components/utils/analytics.js`), which lists every storefront event and keeps each to its own parameters, so a name, phone number or card message can't reach a report. The app reports its own events (product views, the bag, checkout, purchases) with the same helper, and sends them to its own backend once the visitor has accepted analytics.
+
+```jsx
+import {analytics, VendraProvider} from '@vendra/design-system';
+
+const send = event => consented() && queue.push(event);
+
+<VendraProvider locale={locale} onEvent={send}>
+  …
+</VendraProvider>;
+
+// In the app's own code:
+send(analytics.event('view_item', {items: [{item_id: product.code, price: product.price}]}));
+```
+

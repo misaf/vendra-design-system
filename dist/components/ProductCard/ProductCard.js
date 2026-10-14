@@ -4,30 +4,26 @@ import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Badge } from "../Badge/Badge.js";
 import { IconButton } from "../IconButton/IconButton.js";
+import { Picture } from "../Picture/Picture.js";
 import { Price } from "../Price/Price.js";
 import { StockStatus } from "../StockStatus/StockStatus.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
-export function ProductCard({ name, subtitle, price, compareAt, stock, image, srcSet, images, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
+export function ProductCard({ name, subtitle, price, compareAt, stock, image, images, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
 	const text = useMessages("ProductCard", {
 		placeholder,
 		favorite: favLabel
 	});
-	const photos = (images && images.length ? images : image ? [{
-		src: image,
-		srcSet
-	}] : []).map((photo) => typeof photo === "string" ? { src: photo } : photo);
+	const photos = (images && images.length ? images : image ? [image] : []).map((photo) => typeof photo === "string" ? { src: photo } : photo);
 	// The second photo crossfades in on hover; it is decorative, so its alt is empty.
 	const [mainPhoto, hoverPhoto] = photos;
-	const renderPhoto = (photo, className) => /* @__PURE__ */ React.createElement("img", {
+	const renderPhoto = (photo, className) => /* @__PURE__ */ React.createElement(Picture, {
+		image: photo,
 		className,
-		src: photo.src,
-		srcSet: photo.srcSet,
-		sizes: photo.srcSet ? sizes : undefined,
+		sizes,
 		alt: className ? "" : photo.alt || name,
-		loading: "lazy",
-		decoding: "async",
+		priority: !className && priority,
 		style: photo.crop ? {
 			objectPosition: photo.crop,
 			transform: "scale(1.6)",

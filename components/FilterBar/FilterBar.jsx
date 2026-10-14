@@ -6,15 +6,18 @@ import {cx} from '../utils/cx.js';
 import {useClientLayoutEffect} from '../utils/effects.js';
 import {usePageLocale} from '../utils/locale.js';
 import {useMessages} from '../utils/messages.js';
+import {useTrack} from '../utils/track.js';
 
 // The filters that are on, each a button that removes it ("Remove Anniversary"), then "Clear all".
 // `filters` are {id, label, onRemove}. After a removal, focus moves to the filter now in its place
 // (or the one before, or "Clear all"); when the last one goes the bar is gone, so the app moves
 // focus (e.g. to its result count), as it does for `onClearAll`. Renders nothing with no filters.
+// Removing or clearing reports a `filter` event (VendraProvider's onEvent).
 export function FilterBar({filters, onClearAll, label, clearAllLabel, className, style}) {
   const {locale, ref: barRef} = usePageLocale();
   const text = useMessages('FilterBar', {label, clearAll: clearAllLabel}, locale);
   const removedAt = React.useRef(null);
+  const track = useTrack();
   const count = filters ? filters.length : 0;
   useClientLayoutEffect(() => {
     const index = removedAt.current;
@@ -39,6 +42,7 @@ export function FilterBar({filters, onClearAll, label, clearAllLabel, className,
           aria-label={text.remove.replace('{label}', filter.label)}
           onPress={() => {
             removedAt.current = index;
+            track('filter', {filter_id: filter.id, action: 'remove'});
             filter.onRemove();
           }}
         >
@@ -47,7 +51,15 @@ export function FilterBar({filters, onClearAll, label, clearAllLabel, className,
         </AriaButton>
       ))}
       {onClearAll && (
-        <Button variant="ghost" size="sm" className="ag-filterbar__clear" onClick={onClearAll}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="ag-filterbar__clear"
+          onClick={() => {
+            track('filter', {action: 'clear'});
+            onClearAll();
+          }}
+        >
           {text.clearAll}
         </Button>
       )}

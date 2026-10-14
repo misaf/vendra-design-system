@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, '../..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
 function environment() {
   const storage = new Map(),
+    session = new Map(),
     timers = [];
   const c = {
     URL,
@@ -25,7 +26,11 @@ function environment() {
       setItem: (k, v) => storage.set(k, v),
       removeItem: k => storage.delete(k)
     },
-    sessionStorage: {getItem: () => null, setItem() {}},
+    sessionStorage: {
+      getItem: k => session.get(k) ?? null,
+      setItem: (k, v) => session.set(k, String(v)),
+      removeItem: k => session.delete(k)
+    },
     fetch: () => {
       throw Error('Unexpected network request');
     },
@@ -134,14 +139,57 @@ function page(name, c, props = {}) {
   ]);
   assert.equal(reorder.length, 1);
   assert.equal(reorder[0].unit, 5050000);
+  // Online, the customer leaves for the bank's page; the simulated bank's answer rides on the return
+  // link, and the order waits in this tab's session until the bank has confirmed it.
   const checkout = page('checkout', c, {routeInfo: {view: 'checkout', demo: 'error'}});
   checkout.renderVals().setMethod('online');
   checkout.renderVals().place();
-  assert.equal(checkout.state.busy, true);
-  timers.pop()();
-  assert.equal(checkout.state.failed, true);
+  let payment = checkout.renderVals().bankTrip;
+  assert.equal(payment.status, 'redirecting');
+  assert.equal(payment.redirect.method, 'GET');
+  assert.deepEqual(
+    [payment.redirect.fields.view, payment.redirect.fields.payment, payment.redirect.fields.result],
+    ['checkout', 'return', 'failed']
+  );
   assert.equal(checkout.state.order, null);
-  checkout.renderVals().otherMethod();
+  const orderNumber = payment.orderNumber;
+  const back = (result, id = orderNumber) => {
+    const returned = page('checkout', c, {
+      routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
+    });
+    returned.lifecycle.didMount();
+    return returned;
+  };
+  const refused = back('failed');
+  assert.equal(refused.state.payment.status, 'verifying');
+  timers.pop()();
+  assert.equal(refused.state.payment.status, 'failed');
+  assert.equal(refused.state.order, null);
+  // Paying again goes back to the bank for the same order, which the simulated bank now takes.
+  refused.renderVals().payRetry();
+  payment = refused.renderVals().bankTrip;
+  assert.equal(payment.orderNumber, orderNumber);
+  assert.equal(payment.redirect.fields.result, 'paid');
+  // Not confirmed yet: nothing is placed until a later check confirms it.
+  const unconfirmed = back('pending');
+  timers.pop()();
+  assert.equal(unconfirmed.state.payment.status, 'pending');
+  assert.equal(unconfirmed.renderVals().bankTrip.supportHref, 'tel:+989129333034');
+  unconfirmed.renderVals().payCheckAgain();
+  assert.equal(unconfirmed.state.payment.status, 'verifying');
+  timers.pop()();
+  assert.equal(unconfirmed.state.payment, null);
+  assert.equal(unconfirmed.state.order.id, orderNumber);
+  assert.equal(unconfirmed.state.order.method, 'online');
+  assert.equal(unconfirmed.state.order.paymentStatus, 'Paid online');
+  assert.match(unconfirmed.state.order.ref, /^\d{12}$/);
+  // Once placed, the order no longer waits; a return link for it (or from another tab) only says
+  // not to pay twice.
+  const stale = back('paid');
+  assert.equal(stale.state.payment.status, 'pending');
+  assert.equal(stale.state.payment.record, null);
+  checkout.renderVals().payOther();
+  assert.equal(checkout.state.payment, null);
   checkout.renderVals().setLast4('۱۲۳۴');
   checkout.renderVals().place();
   assert.equal(checkout.state.order.method, 'card');

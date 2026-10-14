@@ -1,13 +1,13 @@
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
+import {Picture} from '../Picture/Picture.jsx';
 import {cx} from '../utils/cx.js';
 
 // A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
 // the text; the title is the only link (a React Aria Link, or a Button without `href`).
 export function BlogCard({
   image,
-  srcSet,
   sizes,
   date,
   meta,
@@ -35,15 +35,7 @@ export function BlogCard({
         style={aspect ? {aspectRatio: aspect} : undefined}
       >
         {image ? (
-          <img
-            src={image}
-            srcSet={srcSet}
-            sizes={srcSet ? imageSizes : undefined}
-            alt=""
-            loading={priority ? undefined : 'lazy'}
-            fetchpriority={priority ? 'high' : undefined}
-            decoding="async"
-          />
+          <Picture image={image} sizes={imageSizes} alt="" priority={priority} />
         ) : (
           <span className="ag-product__ph"></span>
         )}

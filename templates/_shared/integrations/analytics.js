@@ -1,31 +1,16 @@
-// Analytics — one wrapper for every tracked event, using common ecommerce event names.
-// VF_TRACK.event(name, params). Keeps the last 50 in VF_TRACK.log for QA, and hands each event to the
-// VF_TRACK.subscribe(listener) listeners only after the visitor accepts analytics in the consent banner
-// (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a store subscribes a sender.
-// No personal data: never send names, phones, addresses or card messages. Every event carries language + currency.
+// Analytics: one wrapper for every tracked event, on the package's event contract
+// (components/utils/analytics.js, `analytics.EVENTS`). VF_TRACK.event(name, params) keeps only that
+// event's parameters, adds language and currency, keeps the last 50 in VF_TRACK.log for QA, and
+// hands each event to the VF_TRACK.subscribe(listener) listeners only after the visitor accepts
+// analytics in the consent banner (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a
+// store subscribes a sender to its own backend. Components report their events through
+// VendraProvider's onEvent, which the shell points here.
+import {analytics} from '../../../components/utils/analytics.js';
 import {VF_STORE} from '../store-config.js';
 import {VF_CATEGORY_ITEM} from '../translations/categories.js';
 (() => {
   if (window.VF_TRACK) return;
-  const EVENTS = {
-    view_item: 'Product page opened',
-    add_to_cart: 'Added to bag',
-    remove_from_cart: 'Removed from bag',
-    view_cart: 'Bag opened',
-    begin_checkout: 'Bag → payment step',
-    add_payment_info: 'Pay / Place order pressed',
-    purchase: 'Order placed',
-    top_up: 'Account balance topped up',
-    add_to_wishlist: 'Product saved',
-    search: 'Search submitted',
-    reminder_created: 'Occasion reminder saved',
-    sign_up: 'First sign-in',
-    login: 'Sign-in',
-    language_switch: 'Header language changed',
-    order_again: '“Order again” pressed',
-    contact_whatsapp: 'WhatsApp link opened',
-    generate_lead: 'Newsletter sign-up'
-  };
+  const EVENTS = analytics.EVENTS;
   // The visitor's choice from the consent banner: 'all', 'essential', or '' before they choose.
   const KEY = 'vf-consent';
   const consent = () => {
@@ -63,17 +48,39 @@ import {VF_CATEGORY_ITEM} from '../translations/categories.js';
         }
       : null;
   const event = (name, params = {}) => {
-    if (!EVENTS[name]) console.warn('VF_TRACK: unknown event', name);
-    const e = {
-      event: name,
-      ...ctx(),
-      ...params
-    };
-    log.push(e);
+    const dropped = [];
+    const built = analytics.event(name, {...ctx(), ...params}, dropped);
+    if (!built) {
+      console.warn('VF_TRACK: unknown event', name);
+      return;
+    }
+    // A parameter outside the contract never leaves; say so while building the page.
+    if (dropped.length) console.warn('VF_TRACK: ' + name + ' left out', dropped.join(', '));
+    log.push(built);
     if (log.length > 50) log.shift();
     if (consent() !== 'all') return;
-    listeners.forEach(listener => listener(e));
+    listeners.forEach(listener => listener(built));
   };
+  // The store's own collector (VF_STORE.analyticsUrl, templates/API.md B31): events go in batches of
+  // up to 20, and whatever is waiting goes when the page is hidden, by sendBeacon so leaving the page
+  // doesn't lose it. Only events that passed consent reach the queue.
+  if (VF_STORE.analyticsUrl) {
+    const queue = [];
+    const flush = () => {
+      if (!queue.length) return;
+      const batch = JSON.stringify({events: queue.splice(0)});
+      const body = new Blob([batch], {type: 'application/json'});
+      if (!navigator.sendBeacon || !navigator.sendBeacon(VF_STORE.analyticsUrl, body))
+        fetch(VF_STORE.analyticsUrl, {method: 'POST', body, keepalive: true}).catch(() => {});
+    };
+    subscribe(built => {
+      queue.push({...built, at: new Date().toISOString()});
+      if (queue.length >= 20) flush();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flush();
+    });
+  }
   window.VF_TRACK = {
     event,
     item,

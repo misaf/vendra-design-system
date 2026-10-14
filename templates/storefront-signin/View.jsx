@@ -69,6 +69,7 @@ export function View({v}) {
                     value={v.code}
                     length={5}
                     onChange={v.setCode}
+                    onComplete={v.completeCode}
                     error={v.codeErr}
                     hint={v.t?.codeHint}
                   />
@@ -76,20 +77,7 @@ export function View({v}) {
                     <>{v.t?.verify}</>
                   </DS.Button>
                   <div className="vf-signin-resend tw:flex tw:flex-col tw:gap-2 tw:items-start">
-                    {v.waiting ? (
-                      <>
-                        <p className="tw:m-0 tw:text-sm tw:text-quiet">
-                          <>{v.resendIn}</>
-                        </p>
-                      </>
-                    ) : null}
-                    {v.canResend ? (
-                      <>
-                        <DS.Button variant="secondary" iconStart="rotate-ccw" onClick={v.resend}>
-                          <>{v.t?.resend}</>
-                        </DS.Button>
-                      </>
-                    ) : null}
+                    <DS.ResendCode seconds={v.resendSeconds} onResend={v.resend} />
                     <p role="status" className="tw:m-0 tw:text-sm">
                       <>{v.resentText}</>
                     </p>

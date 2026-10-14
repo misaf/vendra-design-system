@@ -1,8 +1,10 @@
 import * as React from 'react';
+import type {Photo} from '../Picture/Picture.js';
+
 export interface BlogCardProps {
-  image?: string;
-  srcSet?: string;
-  /** Default '(max-width: 767px) 100vw, 400px' (wide: 55vw). Only applied when srcSet is set. */
+  /** A URL or a photo object (see Picture) */
+  image?: Photo;
+  /** Default '(max-width: 767px) 100vw, 400px' (wide: 55vw). Applied when the photo has candidates. */
   sizes?: string;
   /** Pre-formatted, localized date */
   date?: string;

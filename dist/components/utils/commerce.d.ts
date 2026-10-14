@@ -203,7 +203,12 @@ export interface Commerce {
   apiRecord<T extends ApiRecord>(list: T[], iri: string | null | undefined): T | null;
   /** How available an API Product is, from inStock, quantity, stockThreshold, availableSoon and availabilityDate. */
   stockStatus(product: ApiRecord): Stock;
-  /** A storefront product from an API Product, with storefront-only `extras` by token. */
+  /** A photo for Picture from an API Multimedia record (null without a URL). responsiveImages:
+   * "<width>" → URL in the photo's format, "<format> <width>" ("avif 480", "webp 960") → smaller
+   * formats; customProperties: width, height, placeholder (data: URI), alt_en, alt_fa. */
+  imageFromApi(record: ApiRecord | null | undefined, lang?: 'en' | 'fa'): ApiPhoto | null;
+  /** A storefront product from an API Product, with storefront-only `extras` by token. `image` and
+   * `images` are photos for Picture; `en.alts` / `fa.alts` hold their alt text. */
   productFromApi(
     product: ApiRecord,
     sources: {
@@ -255,6 +260,15 @@ export interface Commerce {
       cartToken?: string;
     }
   ): CheckoutRequest;
+}
+export interface ApiPhoto {
+  src: string;
+  srcSet?: string;
+  sources?: Array<{type: string; srcSet: string}>;
+  width?: number;
+  height?: number;
+  placeholder?: string;
+  alt?: string;
 }
 /** Storefront commerce rules (delivery, totals, promo and balance discounts, API adapters) as pure functions. */
 export declare const commerce: Commerce;

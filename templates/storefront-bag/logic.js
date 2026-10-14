@@ -6,6 +6,7 @@ import {
   vfCardMessages,
   vfLineAvailable,
   vfLineHasCard,
+  vfLineItems,
   vfLineToken,
   vfLineWithCard,
   vfProductImage,
@@ -90,6 +91,13 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       page._prefillSender();
+      const st = page.props.store;
+      const lines = st ? st.bag : page.state.lines;
+      if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
+        window.VF_TRACK.event('view_cart', {
+          items: vfLineItems(lines),
+          value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
+        });
     }
   });
   return vals(page);
@@ -312,6 +320,10 @@ function vals(page) {
           phone: vfMobile(delivery.phone),
           senderPhone: vfMobile(delivery.senderPhone)
         });
+      window.VF_TRACK.event('begin_checkout', {
+        items: vfLineItems(live.filter(vfLineAvailable)),
+        value: total
+      });
       if (page.props.go) page.props.go('checkout');
     },
     hasItems: live.length > 0,
@@ -333,7 +345,7 @@ function vals(page) {
       unavailableLabel: fa
         ? 'ناموجود؛ برای ادامه از سبد حذف کنید'
         : 'Unavailable; remove to continue',
-      image: vfProductImage(l, L).src,
+      image: vfProductImage(l, L),
       name: vfLineToken(l),
       meta: l[L][1] + ' · ' + C.labels.each + m(l.unit),
       note: String(l.card || '').trim()
@@ -413,7 +425,7 @@ function vals(page) {
       if (chosen) update({slot: chosen.start});
     },
     summary: live.map(l => ({
-      image: vfProductImage(l, L).src,
+      image: vfProductImage(l, L),
       name: vfLineToken(l),
       meta: l[L][1] + ' · × ' + n(l.qty),
       total: m(l.unit * l.qty)

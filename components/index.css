@@ -9,6 +9,8 @@
 @import url('Tabs/Tabs.css');
 @import url('LanguageSwitch/LanguageSwitch.css');
 @import url('shared.css');
+@import url('Picture/Picture.css');
+@import url('PaymentStatus/PaymentStatus.css');
 @import url('Price/Price.css');
 @import url('TrustSeal/TrustSeal.css');
 @import url('StockStatus/StockStatus.css');
@@ -19,6 +21,7 @@
 @import url('Select/Select.css');
 @import url('SearchField/SearchField.css');
 @import url('CodeInput/CodeInput.css');
+@import url('ResendCode/ResendCode.css');
 @import url('Checkbox/Checkbox.css');
 @import url('RadioGroup/RadioGroup.css');
 @import url('ChoiceGroup/ChoiceGroup.css');

@@ -227,19 +227,56 @@ const stockStatus = product => {
   return {status: 'in'};
 };
 
+// A photo for Picture from an API Multimedia record. `responsiveImages` maps "<width>" to a URL in the
+// photo's own format and "<format> <width>" (e.g. "avif 480", "webp 960") to smaller formats;
+// `customProperties` carries `width`, `height`, `placeholder` (a tiny blurred data: URI) and the alt
+// text per language as `alt_en` / `alt_fa`. null without a URL.
+const IMAGE_TYPES = {avif: 'image/avif', webp: 'image/webp', jpeg: 'image/jpeg', png: 'image/png'};
+const imageFromApi = (record, lang) => {
+  if (!record || !record.url) return null;
+  const candidates = {};
+  Object.entries(record.responsiveImages || {}).forEach(([key, url]) => {
+    const [format, width] = /^\d+$/.test(key) ? ['', key] : key.split(' ');
+    if (!url || !/^\d+$/.test(width || '')) return;
+    (candidates[format] = candidates[format] || []).push([Number(width), url]);
+  });
+  const srcSet = format =>
+    (candidates[format] || [])
+      .sort((a, b) => a[0] - b[0])
+      .map(([width, url]) => url + ' ' + width + 'w')
+      .join(', ');
+  const sources = ['avif', 'webp']
+    .filter(format => candidates[format])
+    .map(format => ({type: IMAGE_TYPES[format], srcSet: srcSet(format)}));
+  const custom = record.customProperties || {};
+  const size = value => (/^\d+$/.test(value || '') ? Number(value) : undefined);
+  const photo = {src: record.url};
+  if (candidates['']) photo.srcSet = srcSet('');
+  if (sources.length) photo.sources = sources;
+  if (size(custom.width) && size(custom.height)) {
+    photo.width = size(custom.width);
+    photo.height = size(custom.height);
+  }
+  if (/^data:image\//.test(custom.placeholder || '')) photo.placeholder = custom.placeholder;
+  if (lang && custom['alt_' + lang] != null) photo.alt = custom['alt_' + lang];
+  return photo;
+};
+
 // A storefront product from an API Product, resolved against its prices, photos and categories.
-// `extras` holds storefront fields the API doesn't have yet, keyed by Product.token.
+// `extras` holds storefront fields the API doesn't have yet, keyed by Product.token. `images` are
+// photos for Picture; each language's `alts` holds their alt text ('' when the API has none).
 const productFromApi = (product, {prices, media, categories, extras = {}, placeholder}) => {
   const extra = extras[product.token] || {};
   const price = apiRecord(prices, product.latestProductPrice);
   const category = categories.find(item => item.id === product.productCategory.id);
-  const images = product.multimedia
+  const records = product.multimedia
     .map(iri => apiRecord(media, iri))
-    .map(record => record && record.url)
-    .filter(Boolean);
+    .filter(record => record && record.url);
+  const images = records.map(record => imageFromApi(record));
   const {badge, ...flags} = extra;
   const words = lang => ({
     sub: product.name[lang] || '',
+    alts: records.map(record => imageFromApi(record, lang).alt ?? ''),
     ...(badge && badge[lang] ? {badge: badge[lang]} : {})
   });
   return {
@@ -251,8 +288,8 @@ const productFromApi = (product, {prices, media, categories, extras = {}, placeh
     ...(product.inStock ? {} : {inStock: false}),
     stock: stockStatus(product),
     price: price ? price.amount : null,
-    image: images[0] || placeholder,
-    images: images.length ? images : [placeholder],
+    image: images[0] || {src: placeholder},
+    images: images.length ? images : [{src: placeholder}],
     en: words('en'),
     fa: words('fa')
   };
@@ -293,7 +330,7 @@ const lineFromApi = (line, {products, sizes, addons, placeholder, describe}) => 
     addons: chosen,
     unit: line.unitAmount,
     qty: line.quantity,
-    image: product ? product.image : placeholder,
+    image: product ? product.image : {src: placeholder},
     ...(meta.cardMessage ? {card: meta.cardMessage} : {}),
     en: [token, product ? describe(product, sizeChoice, addonChoices, 'en') : ''],
     fa: [token, product ? describe(product, sizeChoice, addonChoices, 'fa') : '']
@@ -392,6 +429,7 @@ export const commerce = {
   page,
   fillText,
   apiRecord,
+  imageFromApi,
   productFromApi,
   stockStatus,
   zoneFromApi,

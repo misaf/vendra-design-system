@@ -216,6 +216,30 @@ export function View({v}) {
                 </div>
               </>
             ) : null}
+            {v.bankTrip ? (
+              <div className="vf-checkout-bank tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-5h">
+                <DS.Stepper
+                  label={v.t?.steps}
+                  steps={v.steps}
+                  current={2}
+                  doneLabel={v.t?.doneStep}
+                  formatNumber={v.fmt}
+                  compact={v.mob}
+                  captionFormat={v.caption}
+                />
+                <DS.PaymentStatus
+                  status={v.bankTrip?.status}
+                  amount={v.bankTrip?.amount}
+                  orderNumber={v.bankTrip?.orderNumber}
+                  redirect={v.bankTrip?.redirect}
+                  supportHref={v.bankTrip?.supportHref}
+                  onRetry={v.payRetry}
+                  onOtherMethod={v.payOther}
+                  onCheckAgain={v.payCheckAgain}
+                  headingLevel={1}
+                />
+              </div>
+            ) : null}
             {v.done ? (
               <>
                 <div className="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-5h">

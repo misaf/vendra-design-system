@@ -1,0 +1,9 @@
+/* The <picture> wrapper takes no box of its own, so frame CSS sizes the <img> as before. */
+.ag-picture {
+  display: contents;
+}
+/* The blurred placeholder fills the frame until the photo has loaded. */
+.ag-picture--waiting {
+  background-position: center;
+  background-size: cover;
+}

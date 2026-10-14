@@ -1,12 +1,10 @@
 import * as React from 'react';
-export interface GalleryImage {
-  src: string;
-  srcSet?: string;
-  alt?: string;
-}
+import type {Photo} from '../Picture/Picture.js';
+
 export interface GalleryProps {
-  images: GalleryImage[];
-  /** Default '(max-width: 767px) 100vw, 540px'. Applied per image when it has a srcSet. */
+  /** URLs or photo objects (see Picture); the first loads at once, the rest lazily */
+  images: Photo[];
+  /** Default '(max-width: 767px) 100vw, 540px'. Applied per image when it has candidates. */
   sizes?: string;
   frame?: 'arch' | 'soft';
   /** CSS aspect-ratio, default '3/4' */

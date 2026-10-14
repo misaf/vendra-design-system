@@ -219,6 +219,51 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
       date: null
     });
 
+    // Photos from an API Multimedia record: widths sorted per format, AVIF before WebP, size and
+    // placeholder only when valid, alt text per language. A record with only a URL is just the URL.
+    const media = {
+      url: 'https://cdn.example/rose.jpg',
+      responsiveImages: {
+        960: 'https://cdn.example/rose-960.jpg',
+        480: 'https://cdn.example/rose-480.jpg',
+        'webp 480': 'https://cdn.example/rose-480.webp',
+        'avif 480': 'https://cdn.example/rose-480.avif',
+        'avif 960': 'https://cdn.example/rose-960.avif',
+        'avif wide': 'https://cdn.example/broken.avif'
+      },
+      customProperties: {
+        width: '1200',
+        height: '1500',
+        placeholder: 'data:image/webp;base64,AAAA',
+        alt_en: 'Ivory roses in a linen box',
+        alt_fa: 'رز عاجی در باکس کتان'
+      }
+    };
+    assert.deepEqual(ds.commerce.imageFromApi(media, 'fa'), {
+      src: 'https://cdn.example/rose.jpg',
+      srcSet: 'https://cdn.example/rose-480.jpg 480w, https://cdn.example/rose-960.jpg 960w',
+      sources: [
+        {
+          type: 'image/avif',
+          srcSet: 'https://cdn.example/rose-480.avif 480w, https://cdn.example/rose-960.avif 960w'
+        },
+        {type: 'image/webp', srcSet: 'https://cdn.example/rose-480.webp 480w'}
+      ],
+      width: 1200,
+      height: 1500,
+      placeholder: 'data:image/webp;base64,AAAA',
+      alt: 'رز عاجی در باکس کتان'
+    });
+    assert.deepEqual(
+      ds.commerce.imageFromApi({
+        url: '/rose.jpg',
+        responsiveImages: {},
+        customProperties: {width: '1200', placeholder: 'javascript:alert(1)'}
+      }),
+      {src: '/rose.jpg'}
+    );
+    assert.equal(ds.commerce.imageFromApi({url: null}), null);
+
     // Commerce rules run on a tenant's own data, passed in: no globals, no window.
     const {commerce} = ds;
     const zones = [
@@ -261,12 +306,19 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     }).props.onChange('۰۹۱۲ ۳۴۵-۶۷۸۹');
     assert.deepEqual(phoneValue, ['09123456789', true]);
     let codeValue, completed;
-    const codeInput = ds.CodeInput({
-      length: 5,
-      value: '1234',
-      onChange: code => (codeValue = code),
-      onComplete: code => (completed = code)
-    });
+    // CodeInput uses hooks, so it is called inside a render to read the element it returns.
+    let codeInput;
+    renderToString(
+      React.createElement(() => {
+        codeInput = ds.CodeInput({
+          length: 5,
+          value: '1234',
+          onChange: code => (codeValue = code),
+          onComplete: code => (completed = code)
+        });
+        return null;
+      })
+    );
     assert.equal(codeInput.props.autoComplete, 'one-time-code');
     codeInput.props.onChange('۱۲۳۴۵۶ ');
     assert.equal(codeValue, '12345');

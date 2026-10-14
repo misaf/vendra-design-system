@@ -1,5 +1,5 @@
 import '../card-runtime.js';
-const { ProductCard, Price, StockStatus, CategoryCard, BlogCard, Gallery, PaymentCard, LineItem } = window.VendraDesignSystem;
+const { ProductCard, Price, StockStatus, CategoryCard, BlogCard, Gallery, PaymentCard, PaymentStatus, LineItem } = window.VendraDesignSystem;
 const STOCK=[{status:'in'},{status:'low',count:2},{status:'soon',date:'2026-10-12'},{status:'soon',date:null},{status:'out'}];
 const P='../../assets/placeholder-studio.svg',PH='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
 const fa=n=>window.AG_FORMAT.num(n,'fa');
@@ -27,6 +27,9 @@ return <div lang={l} dir={l==='fa'?'rtl':'ltr'} data-lang={l==='fa'?'fa':undefin
 <div style={{display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:20,alignItems:'start'}}>
 <div><div className="k">{t.kg}</div><Gallery label={t.gl} images={[1,2,3].map(n=>({src:P,alt:t.gl+' '+t.dig(n)}))}/></div>
 <div><div className="k">{t.kp}</div><PaymentCard cardNumber={t.pay.card} holder={t.pay.holder} bank={t.pay.bank} amount={m(4600000)} labels={t.labels}/></div></div>
+<div><div className="k">{l==='fa'?'وضعیت پرداخت · تأییدنشده و ناموفق':'PaymentStatus · pending and failed'}</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,alignItems:'start'}}>
+<PaymentStatus status="pending" headingLevel={3} amount={m(4600000)} orderNumber="VN-10522" reference={l==='fa'?'۱۲۳۴۵۶۷۸۹۰۱۲':'123456789012'} onCheckAgain={()=>{}} supportHref="tel:+989121234567"/>
+<PaymentStatus status="failed" headingLevel={3} onRetry={()=>{}} onOtherMethod={()=>{}}/></div></div>
 <div><div className="k">{t.kl}</div>
 <LineItem image={P} name={t.li[0]} meta={t.li[1]+' · '+m(2400000)} note={t.li[2]} price={m(2400000*q)} quantity={q} onQuantityChange={setQ} onRemove={()=>{}} formatQuantity={l==='fa'?fa:undefined}/>
 <div style={{borderTop:'1px solid var(--border-subtle)',paddingTop:8}}>{t.sm.map(([n,p,qq])=><LineItem key={n} size="sm" image={P} name={n} price={m(p*qq)} quantity={qq} formatQuantity={l==='fa'?fa:undefined}/>)}</div></div>

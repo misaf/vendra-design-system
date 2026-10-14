@@ -1,5 +1,6 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
+import {Picture} from '../Picture/Picture.jsx';
 import {Price} from '../Price/Price.jsx';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
@@ -9,7 +10,6 @@ import {useMessages} from '../utils/messages.js';
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
 export function LineItem({
   image,
-  srcSet,
   name,
   meta,
   note,
@@ -42,14 +42,7 @@ export function LineItem({
       >
         <span className="ag-line__thumb" style={{width: thumbWidth}}>
           {image ? (
-            <img
-              src={image}
-              srcSet={srcSet}
-              sizes={srcSet ? thumbWidth + 'px' : undefined}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
+            <Picture image={image} sizes={thumbWidth + 'px'} alt="" />
           ) : (
             <span className="ag-product__ph"></span>
           )}
