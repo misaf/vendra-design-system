@@ -15,7 +15,16 @@ for (const lang of ['en', 'fa'])
     await expect(previous).toBeEnabled();
     const moved = await track.evaluate(el => Math.abs(el.scrollLeft));
     expect(moved).toBeGreaterThan(100);
-    for (let i = 0; i < 6 && (await next.isEnabled()); i++) await next.click();
+    // The arrows follow the scroll a beat behind, so page by the track's own position (the
+    // component's rule: the end is within 1px of the far edge), waiting for each page to land.
+    const position = () => track.evaluate(el => Math.abs(el.scrollLeft));
+    const atEnd = () =>
+      track.evaluate(el => Math.abs(el.scrollLeft) >= el.scrollWidth - el.clientWidth - 1);
+    for (let i = 0; i < 6 && !(await atEnd()); i++) {
+      const before = await position();
+      await next.click();
+      await expect.poll(position).toBeGreaterThan(before);
+    }
     await expect(next).toBeDisabled();
     await previous.click();
     await expect(next).toBeEnabled();
