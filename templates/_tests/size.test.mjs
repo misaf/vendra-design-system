@@ -19,8 +19,10 @@ const PEERS = [
 ];
 // Budgets in gzipped bytes. Raise one only on purpose, saying why in the commit.
 const BUDGET = {
-  // The whole package.
-  everything: 36 * 1024,
+  // The whole package. 40 KB since ErrorSummary, PromoCodeField, ErrorBoundary and OfflineNotice
+  // (37.2 KB then); each component's own wording (messages.js) had just taken ~2.4 KB off every
+  // export with built-in words.
+  everything: 40 * 1024,
   // Any one export. Components that draw an Icon carry the icon set (ICON_SVGS, ~6 KB).
   oneExport: 15 * 1024,
   // Exports with no icon and no React Aria-heavy helpers: only themselves.

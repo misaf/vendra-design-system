@@ -217,6 +217,7 @@ export function Shell({v, content, sticky}) {
               </DS.Dialog>
             </>
           ) : null}
+          <DS.OfflineNotice />
           <div className="vf-shell-content tw:flex-1">{content}</div>
           <footer className="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
             <div className="vf-shell-footer-content tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-6 tw:flex tw:flex-col tw:gap-7">

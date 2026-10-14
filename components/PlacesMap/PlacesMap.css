@@ -11,7 +11,8 @@
   border-radius: 50%;
   background: var(--accent);
   border: 3px solid var(--surface-card);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  /* On map tiles, which don't take the theme's colours. */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35); /* stylelint-disable-line function-disallowed-list */
 }
 .ag-place-marker:focus-visible {
   outline: 2px solid var(--focus-ring);

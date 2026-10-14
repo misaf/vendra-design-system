@@ -5,6 +5,7 @@
 - **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (tenant storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
 - **Scope:** the customer-facing storefront only. Admin screens live in a separate framework; the storefront reads products, currency, delivery rules, hours and contact details as data.
 - **Rules and brand:** [guidelines/brand-guide.md](guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, payments and the release checklist.
+- **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md): setup, the checks every change runs, and `npm run new:component -- Name` for a new component.
 
 ## Using the package
 
@@ -12,7 +13,7 @@
 
 | Import | What it is |
 |---|---|
-| `@vendra/design-system` | 55 components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps`, `MESSAGES` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
+| `@vendra/design-system` | 71 components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts (with metric-matched local fallbacks, so the font swap doesn't shift the layout), tokens, base styles and every `ag-*` class. Load once in the root layout, and preload the body fonts your pages use (`fonts/jost-var-latin.woff2`, `fonts/vazirmatn-var-arabic.woff2`) with `<link rel="preload" as="font" type="font/woff2" crossorigin>`. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `designTokens`, `email`, `VENDRA` (default spec). |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
@@ -44,7 +45,7 @@ A server-rendered app does the same in its document template: put the CSS in a `
 
 `commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions.
 
-Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use English or Persian built-in wording (`MESSAGES`), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
+Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
 ```jsx
 import {VendraProvider} from '@vendra/design-system';

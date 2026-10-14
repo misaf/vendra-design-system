@@ -39,7 +39,7 @@ Run from the repo root (Node 20.19+ or 22.12+):
 npm ci                                   # first setup, at the repo root (templates is a workspace)
 npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/ (?lang=fa, ?page=<name> for one page)
 npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
-npm --prefix templates run check         # fails on stale generated output or unformatted code
+npm --prefix templates run check         # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm --prefix templates test              # typecheck, storefront logic, generation, copy parity, package
 npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, tenants
 npm --prefix templates run build:app     # production build → templates/_app-build/ (same paths as dev)
@@ -60,7 +60,7 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 - **`components`, `components-in-use`, `features`:** component keyboard behavior, and storefront features end to end (promo codes, delivery pins, filters…).
 - **`tenants`:** the seven contrast checks, and that each storefront loads only its own tenant file.
 
-Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and the home page's largest paint on slow 4G with a 4x slower CPU. They sit just above today's numbers; raise one only on purpose.
+Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
 Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `_e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `_e2e/playwright-report/`, then run `test:e2e:update`.
 
@@ -72,6 +72,8 @@ Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold
 2. **Package on React 19:** `test:react19` installs React 19 and its types in a scratch app, runs the package test there (import, server render, wording, themes) and type-checks `dist/`'s declarations strictly. The workspace itself stays on React 18.3.1.
 3. **Browser tests:** `test:e2e` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.63.0-noble`), on its bundled Chromium (`CI` set: no Chrome channel, 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch.
 4. **Production build:** `test:e2e:build` in the same image, with the performance budgets.
+
+Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change. React's majors are left out (the React 19 job covers the next one), and a Playwright bump must also move the image tag in the workflows, which `assets.test.cjs` checks.
 
 A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
 

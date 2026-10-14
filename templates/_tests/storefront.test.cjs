@@ -583,6 +583,7 @@ for (const name of [
   'bag',
   'checkout',
   'contact',
+  'error',
   'faq',
   'home',
   'journal',

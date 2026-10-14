@@ -1,6 +1,6 @@
 # OrderSummary
 
-Read-only order lines + totals (order page, confirmation). For editable bag lines use LineItem.
+Read-only order lines + totals (order page, confirmation). For editable bag lines use LineItem. Every amount (line totals and sum rows) renders as a `Price`, so totals have the same tabular digits as product prices and stay in one piece in Persian.
 
 ```jsx
 <OrderSummary

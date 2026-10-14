@@ -7,6 +7,7 @@ import {Price} from '../Price/Price.jsx';
 import {StockStatus} from '../StockStatus/StockStatus.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
 export function ProductCard({
@@ -31,7 +32,7 @@ export function ProductCard({
   placeholder,
   favLabel
 }) {
-  const text = useMessages('ProductCard', {placeholder, favorite: favLabel});
+  const text = useMessages('ProductCard', messages, {placeholder, favorite: favLabel});
   const photos = (images && images.length ? images : image ? [image] : []).map(photo =>
     typeof photo === 'string' ? {src: photo} : photo
   );

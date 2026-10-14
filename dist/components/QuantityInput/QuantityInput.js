@@ -6,13 +6,14 @@ import { Icon } from "../Icon/Icon.js";
 import { cx } from "../utils/cx.js";
 import { usePageLocale } from "../utils/locale.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // A −/+ quantity control on React Aria's NumberField, controlled (`value`) or not (`defaultValue`),
 // clamped to min..max. The count is a text field (React Aria drops the spinbutton role, which
 // VoiceOver can't focus): type a number, or use ↑/↓, Home/End or the buttons (which, as in React Aria, are left out of the Tab order). Digits follow the page's
 // language.
 export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", labels = {} }) {
 	const { locale, ref } = usePageLocale();
-	const text = useMessages("QuantityInput", labels, locale);
+	const text = useMessages("QuantityInput", messages, labels, locale);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
 	const quantity = value ?? uncontrolledValue;
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(NumberField, {

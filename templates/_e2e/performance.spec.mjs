@@ -11,10 +11,22 @@ const BUDGET = {
   firstPageFontKb: 110,
   // Cumulative layout shift while the web fonts arrive 1.2s late (metric-matched fallbacks).
   fontSwapCls: 0.05,
-  // Largest contentful paint on slow 4G (150ms, 1.6Mbps) with a 4x slower CPU. Generous: it
-  // catches large regressions, not small timing noise.
-  slowLcpMs: 5000
+  // Largest contentful paint on slow 4G (150ms, 1.6Mbps) with a 4x slower CPU (2.7–3.9s today).
+  // Generous: it catches large regressions, not small timing noise.
+  slowLcpMs: 5000,
+  // Main-thread time blocked by long tasks (the part of each past 50ms) from load until two
+  // seconds after the largest paint, on the same slow phone: how long a first tap can wait. Up to
+  // 370ms on a Mac and 850ms in CI's Linux image today; generous for the same reason.
+  slowBlockingMs: 1200
 };
+// The pages measured on the slow phone, with their largest-paint budget: the home page, and the
+// shop and product pages, which carry the most code (the product page paints at 5.9s in CI's Linux
+// image, 2.9s on a Mac).
+const SLOW = [
+  ['home', 'en', BUDGET.slowLcpMs],
+  ['shop', 'fa', 7000],
+  ['product', 'en', 7000]
+];
 const PAGES = [
   ['home', 'en'],
   ['shop', 'fa'],
@@ -69,23 +81,37 @@ test.describe('performance budgets', () => {
     });
   }
 
-  test('the home page paints within budget on a slow phone', async ({page}) => {
-    const cdp = await page.context().newCDPSession(page);
-    await cdp.send('Network.enable');
-    await cdp.send('Network.emulateNetworkConditions', {
-      offline: false,
-      latency: 150,
-      downloadThroughput: 1.6e6 / 8,
-      uploadThroughput: 750e3 / 8
+  for (const [view, lang, lcpBudget] of SLOW) {
+    test(`${view} (${lang}) paints and answers within budget on a slow phone`, async ({page}) => {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Network.enable');
+      await cdp.send('Network.emulateNetworkConditions', {
+        offline: false,
+        latency: 150,
+        downloadThroughput: 1.6e6 / 8,
+        uploadThroughput: 750e3 / 8
+      });
+      await cdp.send('Emulation.setCPUThrottlingRate', {rate: 4});
+      await page.addInitScript(() => {
+        window.__vfLcp = 0;
+        window.__vfBlocking = 0;
+        new PerformanceObserver(list => {
+          for (const entry of list.getEntries()) window.__vfLcp = entry.startTime;
+        }).observe({type: 'largest-contentful-paint', buffered: true});
+        new PerformanceObserver(list => {
+          for (const entry of list.getEntries())
+            if (!window.__vfLcp || entry.startTime < window.__vfLcp + 2000)
+              window.__vfBlocking += Math.max(0, entry.duration - 50);
+        }).observe({type: 'longtask', buffered: true});
+      });
+      await openSite(page, view, lang);
+      await page.waitForTimeout(2000);
+      const {lcp, blocking} = await page.evaluate(() => ({
+        lcp: window.__vfLcp,
+        blocking: Math.round(window.__vfBlocking)
+      }));
+      expect(lcp, 'largest paint (ms)').toBeLessThanOrEqual(lcpBudget);
+      expect(blocking, 'blocking time (ms)').toBeLessThanOrEqual(BUDGET.slowBlockingMs);
     });
-    await cdp.send('Emulation.setCPUThrottlingRate', {rate: 4});
-    await page.addInitScript(() => {
-      window.__vfLcp = 0;
-      new PerformanceObserver(list => {
-        for (const entry of list.getEntries()) window.__vfLcp = entry.startTime;
-      }).observe({type: 'largest-contentful-paint', buffered: true});
-    });
-    await openSite(page, 'home', 'en');
-    expect(await page.evaluate(() => window.__vfLcp)).toBeLessThanOrEqual(BUDGET.slowLcpMs);
-  });
+  }
 });

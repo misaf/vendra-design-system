@@ -150,17 +150,32 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.match(wording('fa-IR', null, {closeLabel: 'Hide'}), /aria-label="Hide"/);
     assert.match(wording('ar-AE', {ar: {Alert: {close: 'إغلاق'}}}), /aria-label="إغلاق"/);
     assert.match(wording('de-DE'), /aria-label="Dismiss"/);
-    assert.deepEqual(
-      Object.keys(ds.MESSAGES.fa).sort(),
-      Object.keys(ds.MESSAGES.en).sort(),
-      'MESSAGES.fa covers every component in MESSAGES.en'
-    );
-    for (const component of Object.keys(ds.MESSAGES.en))
-      assert.deepEqual(
-        Object.keys(ds.MESSAGES.fa[component]).sort(),
-        Object.keys(ds.MESSAGES.en[component]).sort(),
-        'MESSAGES.fa.' + component + ' has the same keys as English'
+    // Each component's wording (dist/components/<Name>/messages.js) has Persian for every English key.
+    const wordings = fs
+      .readdirSync(path.join(repo, 'dist/components'))
+      .filter(
+        name =>
+          /^[A-Z]/.test(name) &&
+          fs.existsSync(path.join(repo, 'dist/components', name, 'messages.js'))
       );
+    assert.ok(wordings.length > 20, 'components ship their own wording');
+    assert.equal(ds.MESSAGES, undefined, 'no shared catalog: each component carries its own words');
+    const keys = value =>
+      Object.entries(value)
+        .flatMap(([key, inner]) =>
+          typeof inner === 'object' ? keys(inner).map(sub => key + '.' + sub) : [key]
+        )
+        .sort();
+    for (const name of wordings) {
+      const {messages} = await import(
+        pathToFileURL(path.join(repo, 'dist/components', name, 'messages.js')).href
+      );
+      assert.deepEqual(
+        keys(messages.fa),
+        keys(messages.en),
+        name + ' wording: Persian matches English'
+      );
+    }
     // The app's router reaches the components' links through VendraProvider (one React Aria copy).
     const routed = renderToString(
       React.createElement(

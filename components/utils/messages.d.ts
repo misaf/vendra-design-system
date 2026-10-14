@@ -5,6 +5,11 @@ export interface PaymentStatusWords {
 }
 /** Built-in wording per component; {name} / {date} / {page} / {count} / {gateway} / {time} are filled in by the component. */
 export interface ComponentMessages {
+  OfflineNotice: {offline: string; online: string};
+  ErrorBoundary: {title: string; retry: string};
+  PromoCodeField: {label: string; apply: string; remove: string};
+  /** {count} in the page's digits */
+  ErrorSummary: {one: string; other: string};
   AddressCard: {edit: string; delete: string; default: string; makeDefault: string};
   Alert: {close: string};
   AnnouncementBar: {close: string};
@@ -78,14 +83,13 @@ export type Messages = Record<
   string,
   {[C in keyof ComponentMessages]?: Partial<ComponentMessages[C]>}
 >;
-/** The built-in catalog: English and Persian. */
-export declare const MESSAGES: {en: ComponentMessages; fa: ComponentMessages};
 export declare const MessagesContext: React.Context<Messages | null>;
 /** The language part of a locale: "fa-IR" → "fa". */
 export declare function localeLanguage(locale?: string): string;
-/** A component's wording: defined values in `props`, then the catalog in the current language (or `locale`), then English. */
+/** A component's wording: defined values in `props`, then its own `messages` (its folder's messages.js) in the current language (or `locale`), then English; VendraProvider's wording for `component` wins over the built-in one. */
 export declare function useMessages<C extends keyof ComponentMessages>(
   component: C,
+  messages: {en: ComponentMessages[C]; [language: string]: Partial<ComponentMessages[C]>},
   props?: Partial<ComponentMessages[C]>,
   locale?: string
 ): ComponentMessages[C];

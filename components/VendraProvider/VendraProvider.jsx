@@ -4,7 +4,7 @@ import {MessagesContext} from '../utils/messages.js';
 import {AnalyticsContext} from '../utils/track.js';
 
 // Sets up every component below it: the language (React Aria's locale for number and date formats
-// and keyboard direction, plus the components' built-in wording, MESSAGES), and the app's router.
+// and keyboard direction, plus the components' built-in wording), and the app's router.
 // `messages` adds a language or changes wording, by language then component:
 // {fa: {Dialog: {close: 'بستن پنجره'}}}; a component's own props still win. `navigate` (the app
 // router's push, e.g. Next.js's router.push) makes links (Button href, NavLink, ProductCard, ...)

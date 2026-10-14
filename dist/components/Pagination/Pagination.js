@@ -7,6 +7,7 @@ import { cx } from "../utils/cx.js";
 import { format } from "../utils/format.js";
 import { usePageLocale } from "../utils/locale.js";
 import { localeLanguage, useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // The pages to show: the first, the last, and `siblings` either side of the current one, with null
 // for each gap. A gap of one page shows that page instead.
 export function paginationRange(page, pageCount, siblings = 1) {
@@ -28,7 +29,7 @@ export function paginationRange(page, pageCount, siblings = 1) {
 // that change the page in place. Numbers follow the page's language (Persian digits under fa).
 export function Pagination({ page, pageCount, href, onChange, siblings = 1, label, previousLabel, nextLabel, className, style }) {
 	const { locale, ref } = usePageLocale();
-	const text = useMessages("Pagination", {
+	const text = useMessages("Pagination", messages, {
 		label,
 		previous: previousLabel,
 		next: nextLabel

@@ -100,7 +100,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - `routeParams(state)`, `readRoute(search)`, `hrefFor(state, screen, extra)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
 - `syncHead({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` sets `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default, and robots.
-- **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound.
+- **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound, error.
 - **track** takes an optional `id` = order number (`?view=track&id=VN-10522`, SAFE pattern). With a known id it shows the order page (`templates/storefront-track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
 
 ## Accessibility (WCAG 2.2 AA)
@@ -159,6 +159,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **PhoneInput:** Input for phone numbers: tel keypad, autofill (`autoComplete="off"` for a recipient), left to right in Persian; `onValueChange(number, isMobile)` gives Latin digits.
 - **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill and Web OTP (Chrome on Android fills it from an SMS ending `@<domain> #<code>`); `onComplete` never submits by itself, so a form that submits on completion says so in its hint.
 - **ResendCode:** "Send a new code" after a wait that runs on the clock (right after a trip to the SMS app), time left in the page's digits, one polite status when it ends.
+- **PromoCodeField:** a discount code with Apply inside the field's end (no `<form>` of its own: Enter applies), then the applied code with Remove; focus goes to the field when a code is refused or removed, to Remove when one applies.
+- **ErrorSummary:** after a failed submit, "Check 2 details to continue." in a danger Alert with a link to each field in form order (scrolls it to the middle and focuses it). Focus it after the submit; with one error, focusing that field is enough.
 - **LocationPicker:** centre-pin map for the delivery point (drag, tap, arrow keys, "use my location"); the app passes `loadLeaflet()` and tiles, and `onFail` switches to a typed address.
 - **Select:** same field pattern, with `options`.
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
@@ -192,12 +194,14 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **Alert:** neutral, warning, danger, success; `action` slot.
 - **EmptyState:** icon disc, eyebrow, title + `titleAccent`, body, actions.
 - **AnnouncementBar:** dismissible top strip.
+- **OfflineNotice:** once per app, under the header: a slim band while the connection is down, then "You’re back online." for a few seconds; an always-present polite live region, empty while online.
+- **ErrorBoundary:** wraps a secondary part (recently viewed, a map): if it fails while rendering, a quiet note with Try again replaces it and the page carries on; `onError` reports it, `resetKey` clears it. The 500 page (`?view=error`) offers a retry, the way home and the phone.
 - **LiveRegion:** one polite `role="status"` per page.
 
 **Commerce**
 - **ProductCard:** a stretched link over the whole card, a favourite button above it, badge, arch or soft frame, crossfade to the second photo on hover.
 - **Picture:** one photo at the width the layout shows it: `srcSet`, AVIF/WebP `sources` in a `<picture>`, `width`/`height` so the space is kept, a blurred placeholder until it loads, lazy unless `priority`. Every photo component renders it.
-- **Price:** the app formats the amounts (`format.money`); a reduced price follows its struck-through `compareAt`, read as "Was … Now …". ProductCard and LineItem render it.
+- **Price:** the app formats the amounts (`format.money`); a reduced price follows its struck-through `compareAt`, read as "Was … Now …". ProductCard, LineItem and OrderSummary (every amount) render it, and the sticky bars' totals use it.
 - **TrustSeal:** the store's eNamad and Samandehi seals in the footer, with the link and image URLs as the issuers' panels give them and `referrerPolicy="origin"`; the seal's name shows when the image doesn't load.
 - **PaymentStatus:** the trip to the bank's gateway and back: redirecting (a real form, GET or POST, that also submits by itself), verifying, then paid, cancelled, failed or pending. Pending (money taken, not confirmed) tells the customer not to pay again; focus moves to each new answer.
 - **StockStatus:** in stock, "Only 2 left", "Back on 12 October" (Shamsi in Persian) or sold out, from `commerce.stockStatus(product)`; ProductCard shows it under the price unless the product is in stock.

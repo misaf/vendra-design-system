@@ -6,6 +6,7 @@ import { cx } from "../utils/cx.js";
 import { format } from "../utils/format.js";
 import { usePageLocale } from "../utils/locale.js";
 import { localeLanguage, useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 import { useTrack } from "../utils/track.js";
 // "Send a new code" for a one-time code, after a wait. The wait runs on the clock, not on timer
 // ticks, so it is right when the customer comes back from reading the SMS (browsers slow timers in
@@ -14,7 +15,7 @@ import { useTrack } from "../utils/track.js";
 // `code_resent` (VendraProvider's onEvent).
 export function ResendCode({ seconds = 60, onResend, resendLabel, className, style }) {
 	const { locale, ref } = usePageLocale();
-	const text = useMessages("ResendCode", { resend: resendLabel }, locale);
+	const text = useMessages("ResendCode", messages, { resend: resendLabel }, locale);
 	const language = localeLanguage(locale) === "fa" ? "fa" : "en";
 	const track = useTrack();
 	const endsAt = React.useRef(null);

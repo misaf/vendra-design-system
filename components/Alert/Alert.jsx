@@ -3,6 +3,7 @@ import {Icon} from '../Icon/Icon.jsx';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 const ALERT_ICONS = {
   neutral: 'info',
@@ -25,7 +26,7 @@ export function Alert({
   className = '',
   style
 }) {
-  const text = useMessages('Alert', {close: closeLabel});
+  const text = useMessages('Alert', messages, {close: closeLabel});
   const role = tone === 'danger' || tone === 'warning' ? 'alert' : 'status';
   return (
     <div role={role} className={cx('ag-alert', 'ag-alert--' + tone, className)} style={style}>

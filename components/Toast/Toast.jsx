@@ -9,6 +9,7 @@ import {
 import {Icon} from '../Icon/Icon.jsx';
 import {Button} from '../Button/Button.jsx';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 const ICONS = {
   neutral: 'info',
@@ -57,7 +58,7 @@ function ToastBody({toast, tone = 'success', title, message, action, closeLabel,
 // shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
 // and onClose is what its close button does.
 export function Toast({toast: queued, tone, title, message, action, onClose, closeLabel, style}) {
-  const text = useMessages('Toast', {close: closeLabel});
+  const text = useMessages('Toast', messages, {close: closeLabel});
   const key = React.useId();
   const latestClose = React.useRef(onClose);
   latestClose.current = onClose;

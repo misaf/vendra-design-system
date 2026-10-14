@@ -5,6 +5,7 @@ import { Dialog as AriaDialog, Heading, Modal, ModalOverlay } from "react-aria-c
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // The head (title + close) and body shared by the modal and inline forms.
 function Content({ title, titleId, onClose, closeLabel, footer, children, heading }) {
 	return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-dialog__head" }, heading || (title ? /* @__PURE__ */ React.createElement("h2", {
@@ -23,7 +24,7 @@ function Content({ title, titleId, onClose, closeLabel, footer, children, headin
 // onClose), and focus returns to the opener. `inline` previews sit
 // inside their parent instead, without moving focus or locking the page (several can share a card).
 export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center" }) {
-	const text = useMessages("Dialog", { close: closeLabel });
+	const text = useMessages("Dialog", messages, { close: closeLabel });
 	const titleId = React.useId();
 	const sheet = placement === "start";
 	const overlayClass = cx("ag-dialog__overlay", inline && "ag-dialog__overlay--inline", sheet && "ag-dialog__overlay--sheet");

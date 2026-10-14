@@ -4,6 +4,7 @@ import React from "react";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
 	const slots = [];
@@ -28,7 +29,7 @@ function flattenSnap(children) {
 // its own prev/next buttons; otherwise drive it through `ref` (scrollPrev / scrollNext) and
 // `onScrollStateChange`, e.g. from SectionHeader.
 export const Carousel = React.forwardRef(function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel, nextLabel, onScrollStateChange, bleed = true, className = "", style }, ref) {
-	const text = useMessages("Carousel", {
+	const text = useMessages("Carousel", messages, {
 		previous: prevLabel,
 		next: nextLabel
 	});

@@ -1,0 +1,46 @@
+/* PromoCodeField: Apply sits inside the field's end. The field and button share one grid cell so
+   the button stays centred at any font height; an error message takes the next row. */
+.ag-promo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ag-promo__row {
+  display: grid;
+  gap: var(--space-2);
+}
+.ag-promo__row .ag-field {
+  display: contents;
+}
+.ag-promo__row .ag-input {
+  grid-area: 1/1;
+  padding-inline-end: 112px;
+}
+.ag-promo__apply {
+  grid-area: 1/1;
+  align-self: center;
+  justify-self: end;
+  margin-inline-end: 6px;
+  position: relative;
+  z-index: 1;
+}
+/* One focus ring around the whole field, not just the text box beside the button. */
+.ag-promo__row input:focus-visible {
+  outline: none;
+}
+.ag-promo__row .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.ag-promo__applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.ag-promo__code {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}

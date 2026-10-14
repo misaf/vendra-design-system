@@ -5,6 +5,7 @@ import {cx} from '../utils/cx.js';
 import {format} from '../utils/format.js';
 import {usePageLocale} from '../utils/locale.js';
 import {localeLanguage, useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // The pages to show: the first, the last, and `siblings` either side of the current one, with null
 // for each gap. A gap of one page shows that page instead.
@@ -40,7 +41,12 @@ export function Pagination({
   style
 }) {
   const {locale, ref} = usePageLocale();
-  const text = useMessages('Pagination', {label, previous: previousLabel, next: nextLabel}, locale);
+  const text = useMessages(
+    'Pagination',
+    messages,
+    {label, previous: previousLabel, next: nextLabel},
+    locale
+  );
   const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
   if (!(pageCount > 1)) return null;
   const current = Math.min(Math.max(1, page), pageCount);

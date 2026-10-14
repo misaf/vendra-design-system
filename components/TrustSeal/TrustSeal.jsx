@@ -2,6 +2,7 @@ import React from 'react';
 import {cx} from '../utils/cx.js';
 import {usePageLocale} from '../utils/locale.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // A trust seal from the tenant's eNamad or Samandehi panel: the link and image URLs exactly as the
 // panel gives them. Both carry referrerPolicy="origin", because the issuer checks which site shows
@@ -9,7 +10,7 @@ import {useMessages} from '../utils/messages.js';
 // image, or it fails to load (blocked, offline), the seal's name stands in and the link still works.
 export function TrustSeal({kind, href, image, label, className, style}) {
   const {locale, ref} = usePageLocale();
-  const text = useMessages('TrustSeal', undefined, locale);
+  const text = useMessages('TrustSeal', messages, undefined, locale);
   const name = label ?? text[kind] ?? kind;
   const [failedImage, setFailedImage] = React.useState(null);
   const showImage = !!image && failedImage !== image;

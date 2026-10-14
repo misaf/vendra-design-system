@@ -162,14 +162,7 @@ function vals(page) {
         ['senderPhone', 'vf-sender-phone', errors.senderPhone]
       ].filter(([key]) => invalid[key])
     )
-    .map(([, id, text]) => ({
-      text,
-      href: '#' + id,
-      go: e => {
-        e && e.preventDefault && e.preventDefault();
-        S.focus(id);
-      }
-    }));
+    .map(([, target, text]) => ({text, target}));
   const stepTo = next => {
     if (page.props.go) page.props.go({view: 'bag', step: next});
     else page.setState({step: next});
@@ -286,9 +279,7 @@ function vals(page) {
         page._update({noMap: true});
       }
     },
-    hasProblems: s.submitted && problems.length > 0,
-    problems,
-    problemTitle: C.errorTitle.replace('{count}', n(problems.length)),
+    problems: s.submitted ? problems : [],
     toDelivery: () => {
       if (live.some(l => !vfLineAvailable(l))) return;
       stepTo('delivery');
@@ -308,7 +299,7 @@ function vals(page) {
         // One problem goes straight to its field; several go to the summary that lists them.
         // The map can't carry aria-invalid, so it is focused directly.
         if (problems.length > 1) S.focus('vf-errors');
-        else if (problems[0].href === '#vf-map') S.focus('vf-map');
+        else if (problems[0].target === 'vf-map') S.focus('vf-map');
         else VF_NAV.focusFirstInvalid();
         return;
       }
@@ -437,14 +428,14 @@ function vals(page) {
         promoDraft: value,
         promoError: null
       }),
-    applyPromo: e => {
-      e && e.preventDefault && e.preventDefault();
-      const check = vfPromoCheck(s.promoDraft, sub);
+    // PromoCodeField moves focus: to the field when a code is refused or removed, to Remove when
+    // one applies.
+    applyPromo: code => {
+      const check = vfPromoCheck(code, sub);
       if ('error' in check) {
         page.setState({
           promoError: check
         });
-        S.focus('vf-promo');
         return;
       }
       update({
@@ -460,7 +451,7 @@ function vals(page) {
         ? C.promoMin.replace('{min}', m(s.promoError.min))
         : C.promoUnknown
       : undefined,
-    hasPromo: !onDelivery && !!delivery.promo,
+    promoShown: !onDelivery,
     // How far the subtotal is from free delivery, while the chosen zone can deliver free.
     freeDelivery: VF_FREE_DELIVERY_ZONES.includes(z.id)
       ? {
@@ -476,7 +467,6 @@ function vals(page) {
           done: sub >= VF_FREE_DELIVERY_THRESHOLD
         }
       : null,
-    noPromo: !onDelivery && !delivery.promo,
     promoStatus: (() => {
       const promo = VF_PROMOS.find(p => p.code === delivery.promo);
       if (!promo) return '';
@@ -486,12 +476,10 @@ function vals(page) {
           : C.promoPaused.replace('{min}', m(promo.min))
       ).replace('{code}', promo.code);
     })(),
-    removePromo: () => {
+    removePromo: () =>
       update({
         promo: ''
-      });
-      S.focus('vf-promo');
-    },
+      }),
     sums: vfSummaryRows(
       totals,
       delivery.promo,

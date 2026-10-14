@@ -16,6 +16,13 @@ function vfContactPrefill() {
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
+// The checked fields in form order, with their ids.
+const FIELDS = [
+  ['phone', 'vf-cphone'],
+  ['email', 'vf-cemail'],
+  ['msg', 'vf-cmsg']
+];
+
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
@@ -117,13 +124,21 @@ function vals(page) {
     msg: s.msg,
     setMsg: field('msg'),
     msgErr: s.submitted && invalid.msg ? C.msgErr : undefined,
+    // After a failed send, what to fix in form order, each linking to its field.
+    problems: s.submitted
+      ? FIELDS.filter(([key]) => invalid[key]).map(([key, target]) => ({
+          text: {phone: C.phoneErr, email: C.emailErr, msg: C.msgErr}[key],
+          target
+        }))
+      : [],
     send: () => {
       page.setState({
         submitted: true
       });
-      const first = ['phone', 'email', 'msg'].find(k => invalid[k]);
-      if (first) {
-        S.focus({phone: 'vf-cphone', email: 'vf-cemail', msg: 'vf-cmsg'}[first]);
+      // One problem goes straight to its field; several go to the summary that lists them.
+      const wrong = FIELDS.filter(([key]) => invalid[key]);
+      if (wrong.length) {
+        S.focus(wrong.length > 1 ? 'vf-contact-errors' : wrong[0][1]);
         return;
       }
       const success = () => {

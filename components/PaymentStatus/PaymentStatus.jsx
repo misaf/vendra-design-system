@@ -6,6 +6,7 @@ import {Spinner} from '../Spinner/Spinner.jsx';
 import {cx} from '../utils/cx.js';
 import {usePageLocale} from '../utils/locale.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 import {useTrack} from '../utils/track.js';
 
 const RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
@@ -43,7 +44,7 @@ export function PaymentStatus({
 }) {
   // The wording follows the nearest lang, as the page around it is written.
   const {locale, ref: rootRef} = usePageLocale();
-  const text = useMessages('PaymentStatus', {}, locale);
+  const text = useMessages('PaymentStatus', messages, {}, locale);
   const formRef = React.useRef(null);
   const firstStatus = React.useRef(status);
   const reported = React.useRef(null);

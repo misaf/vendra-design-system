@@ -1,0 +1,19 @@
+/* ErrorSummary: a danger Alert listing the fields to fix, each a link to its field. */
+.ag-error-summary {
+  border-radius: var(--radius-lg);
+}
+.ag-error-summary__list {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.ag-error-summary__list a {
+  /* Stacked links: each at least a 24px target (WCAG 2.5.8). */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 24px;
+  color: inherit;
+  text-decoration: underline;
+}

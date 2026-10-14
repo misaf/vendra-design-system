@@ -2,6 +2,7 @@ import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // A section title with an optional italic `accent`, eyebrow and action, plus prev/next arrows
 // when `onPrev`/`onNext` are given (pair them with a Carousel's ref).
@@ -21,7 +22,7 @@ export function SectionHeader({
   className = '',
   style
 }) {
-  const text = useMessages('SectionHeader', {previous: prevLabel, next: nextLabel});
+  const text = useMessages('SectionHeader', messages, {previous: prevLabel, next: nextLabel});
   const Heading = ['h1', 'h2', 'h3'].includes(level) ? level : 'h2';
   const hasArrows = onPrev || onNext;
   return (

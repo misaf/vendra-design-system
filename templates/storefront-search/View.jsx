@@ -87,9 +87,7 @@ export function View({v}) {
                               <>{r?.sub}</>
                             </span>
                           </span>
-                          <span className="vf-price">
-                            <>{r?.price}</>
-                          </span>
+                          <DS.Price value={r?.price} size="md" className="vf-price" />
                         </a>
                       </React.Fragment>
                     ))}

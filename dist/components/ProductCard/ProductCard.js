@@ -9,9 +9,10 @@ import { Price } from "../Price/Price.js";
 import { StockStatus } from "../StockStatus/StockStatus.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
 export function ProductCard({ name, subtitle, price, compareAt, stock, image, images, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
-	const text = useMessages("ProductCard", {
+	const text = useMessages("ProductCard", messages, {
 		placeholder,
 		favorite: favLabel
 	});

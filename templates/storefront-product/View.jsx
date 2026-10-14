@@ -142,42 +142,45 @@ export function View({v}) {
                 <DS.Accordion items={v.faq} defaultValue="care" />
               </div>
             </div>
-            {v.hasRecent ? (
-              <>
-                <section className="vf-product-recent tw:flex tw:flex-col tw:gap-6 tw:mt-9">
-                  <DS.SectionHeader
-                    eyebrow={v.t?.recentEb}
-                    title={v.t?.recentA}
-                    accent={v.t?.recentB}
-                  />
-                  <DS.Carousel
-                    label={v.recentLabel}
-                    perView={4}
-                    perViewMobile={2.2}
-                    itemMin="200px"
-                    gap="20px"
-                  >
-                    {list(v.recent).map((p, $index) => (
-                      <React.Fragment key={$index}>
-                        <DS.ProductCard
-                          images={p?.images}
-                          name={p?.name}
-                          subtitle={p?.sub}
-                          price={p?.price}
-                          stock={p?.stock}
-                          frame="soft"
-                          placeholder={v.t?.photo}
-                          favLabel={v.t?.save}
-                          favorite={p?.fav}
-                          onFavorite={p?.toggleFav}
-                          href={p?.href}
-                        />
-                      </React.Fragment>
-                    ))}
-                  </DS.Carousel>
-                </section>
-              </>
-            ) : null}
+            {/* Recently viewed comes from this browser's history; a bad entry mustn't take the page down. */}
+            <DS.ErrorBoundary resetKey={v.productId}>
+              {v.hasRecent ? (
+                <>
+                  <section className="vf-product-recent tw:flex tw:flex-col tw:gap-6 tw:mt-9">
+                    <DS.SectionHeader
+                      eyebrow={v.t?.recentEb}
+                      title={v.t?.recentA}
+                      accent={v.t?.recentB}
+                    />
+                    <DS.Carousel
+                      label={v.recentLabel}
+                      perView={4}
+                      perViewMobile={2.2}
+                      itemMin="200px"
+                      gap="20px"
+                    >
+                      {list(v.recent).map((p, $index) => (
+                        <React.Fragment key={$index}>
+                          <DS.ProductCard
+                            images={p?.images}
+                            name={p?.name}
+                            subtitle={p?.sub}
+                            price={p?.price}
+                            stock={p?.stock}
+                            frame="soft"
+                            placeholder={v.t?.photo}
+                            favLabel={v.t?.save}
+                            favorite={p?.fav}
+                            onFavorite={p?.toggleFav}
+                            href={p?.href}
+                          />
+                        </React.Fragment>
+                      ))}
+                    </DS.Carousel>
+                  </section>
+                </>
+              ) : null}
+            </DS.ErrorBoundary>
             <DS.Dialog
               open={v.addedOpen}
               onClose={v.closeAdded}
@@ -217,8 +220,8 @@ export function View({v}) {
       sticky={
         <>
           <div className="vf-product-mobile-action tw:relative tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
-            <div className="vf-product-mobile-total tw:flex-1 tw:font-medium tw:text-sm">
-              <>{v.totalLabel}</>
+            <div className="vf-product-mobile-total tw:flex-1">
+              <DS.Price value={v.totalLabel} size="sm" />
             </div>
             <DS.Button
               variant="primary"

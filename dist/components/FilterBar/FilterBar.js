@@ -8,6 +8,7 @@ import { cx } from "../utils/cx.js";
 import { useClientLayoutEffect } from "../utils/effects.js";
 import { usePageLocale } from "../utils/locale.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 import { useTrack } from "../utils/track.js";
 // The filters that are on, each a button that removes it ("Remove Anniversary"), then "Clear all".
 // `filters` are {id, label, onRemove}. After a removal, focus moves to the filter now in its place
@@ -16,7 +17,7 @@ import { useTrack } from "../utils/track.js";
 // Removing or clearing reports a `filter` event (VendraProvider's onEvent).
 export function FilterBar({ filters, onClearAll, label, clearAllLabel, className, style }) {
 	const { locale, ref: barRef } = usePageLocale();
-	const text = useMessages("FilterBar", {
+	const text = useMessages("FilterBar", messages, {
 		label,
 		clearAll: clearAllLabel
 	}, locale);

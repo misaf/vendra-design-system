@@ -7,10 +7,11 @@ import { Price } from "../Price/Price.js";
 import { QuantityInput } from "../QuantityInput/QuantityInput.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
 export function LineItem({ image, name, meta, note, price, quantity, onQuantityChange, onRemove, removeLabel, quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel, busy, className = "" }) {
-	const text = useMessages("LineItem", {
+	const text = useMessages("LineItem", messages, {
 		remove: removeLabel,
 		unavailable: unavailableLabel
 	});

@@ -1,9 +1,11 @@
 import React from 'react';
 import {Link} from 'react-aria-components';
 import {ArchFrame} from '../ArchFrame/ArchFrame.jsx';
+import {Price} from '../Price/Price.jsx';
 import {cx} from '../utils/cx.js';
 
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
+// Every amount is a Price, so totals share the product prices' digits and stay whole in RTL.
 export function OrderSummary({
   lines = [],
   sums = [],
@@ -33,7 +35,7 @@ export function OrderSummary({
               {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
               {line.note && <div className="ag-osum__note">{line.note}</div>}
             </div>
-            <div className="ag-osum__total">{line.total}</div>
+            {line.total != null && <Price value={line.total} className="ag-osum__total" />}
           </li>
         ))}
       </ul>
@@ -42,7 +44,9 @@ export function OrderSummary({
           {sums.map((sum, i) => (
             <div key={i} className={cx('ag-osum__sum', sum.strong && 'ag-osum__sum--strong')}>
               <dt>{sum.label}</dt>
-              <dd>{sum.value}</dd>
+              <dd>
+                <Price value={sum.value} />
+              </dd>
             </div>
           ))}
         </dl>

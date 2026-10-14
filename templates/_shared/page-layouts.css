@@ -67,8 +67,7 @@
   row-gap: 4px;
 }
 .vf-page .ag-product__price,
-.vf-page .ag-line__price,
-.vf-price {
+.vf-page .ag-line__price {
   font-size: var(--text-base);
   font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;

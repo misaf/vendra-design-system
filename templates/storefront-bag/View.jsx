@@ -77,29 +77,7 @@ export function View({v}) {
                     ) : null}
                     {v.onDelivery ? (
                       <>
-                        {v.hasProblems ? (
-                          <>
-                            <div
-                              id="vf-errors"
-                              tabIndex={-1}
-                              className="vf-bag-errors tw:rounded-lg"
-                            >
-                              <DS.Alert tone="danger" title={v.problemTitle}>
-                                <ul className="vf-bag-error-list tw:m-0 tw:ps-5 tw:flex tw:flex-col tw:gap-1">
-                                  {list(v.problems).map((p, $index) => (
-                                    <React.Fragment key={$index}>
-                                      <li>
-                                        <a href={p?.href} className="tw:text-inherit tw:underline">
-                                          <>{p?.text}</>
-                                        </a>
-                                      </li>
-                                    </React.Fragment>
-                                  ))}
-                                </ul>
-                              </DS.Alert>
-                            </div>
-                          </>
-                        ) : null}
+                        <DS.ErrorSummary id="vf-errors" errors={v.problems} />
                         {v.guest ? (
                           <>
                             <div className="vf-bag-signin tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-3 tw:px-4 tw:rounded-md tw:bg-sunken tw:text-sm">
@@ -399,49 +377,17 @@ export function View({v}) {
                         </>
                       ) : null}
                     </DS.Card>
-                    {v.noPromo ? (
+                    {v.promoShown ? (
                       <>
-                        <form
-                          className="vf-bag-promo tw:flex tw:flex-col tw:gap-2"
-                          onSubmit={v.applyPromo}
-                          noValidate
-                        >
-                          <label id="vf-promo-label" className="ag-field__label" htmlFor="vf-promo">
-                            <>{v.t?.promo}</>
-                          </label>
-                          <div className="vf-bag-promo-row tw:grid tw:gap-2">
-                            <DS.Input
-                              id="vf-promo"
-                              aria-labelledby="vf-promo-label"
-                              value={v.promoDraft}
-                              onChange={v.setPromoDraft}
-                              error={v.promoError}
-                              autoComplete="off"
-                              dir="ltr"
-                            />
-                            <div className="vf-bag-promo-apply">
-                              <DS.Button variant="ghost" size="sm" type="submit">
-                                <>{v.t?.apply}</>
-                              </DS.Button>
-                            </div>
-                          </div>
-                        </form>
-                      </>
-                    ) : null}
-                    {v.hasPromo ? (
-                      <>
-                        <div
-                          className="vf-bag-promo-applied tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm"
-                          role="status"
-                        >
-                          <span className="tw:flex tw:items-center tw:gap-2">
-                            <DS.Icon name="tag" size={16} />
-                            <>{v.promoStatus}</>
-                          </span>
-                          <DS.Button variant="ghost" size="sm" onClick={v.removePromo}>
-                            <>{v.t?.removePromo}</>
-                          </DS.Button>
-                        </div>
+                        <DS.PromoCodeField
+                          id="vf-promo"
+                          value={v.promoDraft}
+                          onChange={v.setPromoDraft}
+                          onApply={v.applyPromo}
+                          error={v.promoError}
+                          applied={v.promoStatus}
+                          onRemove={v.removePromo}
+                        />
                       </>
                     ) : null}
                     {v.desk ? (
@@ -523,9 +469,7 @@ export function View({v}) {
                   <span className="vf-action-caption tw:text-xs tw:text-quiet">
                     <>{v.t?.total}</>
                   </span>
-                  <span className="vf-price">
-                    <>{v.totalLabel}</>
-                  </span>
+                  <DS.Price value={v.totalLabel} size="md" className="vf-price" />
                 </div>
                 {v.onBag ? (
                   <>

@@ -783,6 +783,41 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   await expect(page.getByRole('region', {name: 'Message sent.'})).toBeFocused();
 });
 
+test('several contact problems are listed together, each linking to its field', async ({page}) => {
+  await openSite(page, 'contact', 'en');
+  await page.fill('#vf-cemail', 'shirin@');
+  await page.getByRole('button', {name: 'Send', exact: true}).click();
+  const summary = page.locator('#vf-contact-errors');
+  await expect(summary).toBeFocused();
+  await expect(summary).toContainText('Check 2 details to continue.');
+  await expect(summary.getByRole('link')).toHaveCount(2);
+  expect(await scanAxe(page)).toEqual([]);
+  await summary.getByRole('link').last().click();
+  await expect(page.locator('#vf-cmsg')).toBeFocused();
+});
+
+test('the site says when the connection drops and when it is back', async ({page, context}) => {
+  await openSite(page, 'shop', 'fa');
+  const band = page.locator('.ag-offline');
+  await expect(band).toHaveText('');
+  await context.setOffline(true);
+  await expect(band).toContainText('اتصال اینترنت شما قطع است.');
+  expect(await scanAxe(page)).toEqual([]);
+  await context.setOffline(false);
+  await expect(band).toHaveText('دوباره آنلاین هستید.');
+});
+
+test('the server-error page offers a retry, the way home and the phone', async ({page}) => {
+  await openSite(page, 'error', 'en');
+  const main = page.getByRole('main');
+  await expect(main.getByRole('heading', {level: 1})).toContainText('Something went wrong');
+  await expect(main.getByRole('link', {name: 'Back home'})).toBeVisible();
+  await expect(main.getByRole('link', {name: /^Call /})).toHaveAttribute('href', /^tel:/);
+  await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', /noindex/);
+  await main.getByRole('button', {name: 'Try again'}).click();
+  await expect(main.getByRole('heading', {level: 1})).toContainText('Something went wrong');
+});
+
 test('contact fills in a signed-in customer', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');

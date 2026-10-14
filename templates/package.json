@@ -4,7 +4,7 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.package.json",
     "build": "node _build/build.cjs",
-    "check": "node _build/build.cjs --check && prettier --ignore-path ../.prettierignore --check ../components .",
+    "check": "node _build/build.cjs --check && prettier --ignore-path ../.prettierignore --check ../components . && npm run lint:css",
     "test": "npm run typecheck && node _tests/storefront.test.cjs && node _tests/assets.test.cjs && node _tests/migration.test.cjs && node _tests/tenants.test.cjs && node _tests/components.test.cjs && node _tests/features.test.cjs && node _tests/package.test.cjs && node _tests/size.test.mjs && node _tests/api-contract.test.cjs",
     "test:react19": "node _tests/react-19.cjs",
     "dev": "vite --config _build/vite.config.mjs",
@@ -13,7 +13,9 @@
     "test:e2e:build": "E2E_TARGET=build playwright test -c _e2e/playwright.config.mjs",
     "test:e2e": "playwright test -c _e2e/playwright.config.mjs",
     "test:e2e:update": "playwright test -c _e2e/playwright.config.mjs --update-snapshots",
-    "format": "prettier --ignore-path ../.prettierignore --write ../components ."
+    "format": "prettier --ignore-path ../.prettierignore --write ../components .",
+    "lint:css": "stylelint \"../components/**/*.css\" \"_shared/*.css\" \"storefront-*/*.css\"",
+    "new:component": "node _build/new-component.cjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
@@ -21,9 +23,10 @@
     "@tailwindcss/cli": "4.3.3",
     "@types/react": "18.3.31",
     "prettier": "3.9.9",
-    "rolldown": "1.2.13",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "rolldown": "1.2.13",
+    "stylelint": "17.15.0",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.2"

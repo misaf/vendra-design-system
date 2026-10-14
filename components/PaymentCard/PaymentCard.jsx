@@ -2,6 +2,7 @@ import React from 'react';
 import {Button} from '../Button/Button.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
 
@@ -16,7 +17,7 @@ export function PaymentCard({
   onCopy,
   className = ''
 }) {
-  const text = useMessages('PaymentCard', labels);
+  const text = useMessages('PaymentCard', messages, labels);
   const digits = String(cardNumber)
     .replace(/[۰-۹]/g, digit => FA_DIGITS.indexOf(digit))
     .replace(/\D/g, '');

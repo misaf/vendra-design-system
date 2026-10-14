@@ -3,6 +3,7 @@
 import React from "react";
 import { ToggleButton } from "react-aria-components";
 import { useMessages } from "../utils/messages.js";
+import { messages } from "./messages.js";
 import { useTrack } from "../utils/track.js";
 // The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
 // own `lang`. Choosing one reports `language_switch` (VendraProvider's onEvent).
@@ -13,7 +14,7 @@ export function LanguageSwitch({ value = "en", onChange, label, options = [{
 	id: "fa",
 	label: "فا"
 }] }) {
-	const text = useMessages("LanguageSwitch", { label });
+	const text = useMessages("LanguageSwitch", messages, { label });
 	const track = useTrack();
 	return /* @__PURE__ */ React.createElement("div", {
 		className: "ag-lang",

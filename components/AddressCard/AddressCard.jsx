@@ -4,6 +4,7 @@ import {IconButton} from '../IconButton/IconButton.jsx';
 import {Button} from '../Button/Button.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
 export function AddressCard({
@@ -20,7 +21,7 @@ export function AddressCard({
   className = '',
   style
 }) {
-  const text = useMessages('AddressCard', labels);
+  const text = useMessages('AddressCard', messages, labels);
   const named = template => template.replace('{name}', label || '');
   return (
     <div className={cx('ag-card', 'ag-addr', className)} style={style}>

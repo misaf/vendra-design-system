@@ -37,7 +37,8 @@ export const VIEWS = {
   post: {post: 'morning-at-the-studio'},
   policy: {},
   weddings: {},
-  notfound: {}
+  notfound: {},
+  error: {}
 };
 
 export function siteUrl(view, lang, extra = {}) {

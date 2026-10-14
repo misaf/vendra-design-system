@@ -7,6 +7,7 @@ export const VF_ROUTES = [
   'bag',
   'checkout',
   'contact',
+  'error',
   'faq',
   'home',
   'journal',

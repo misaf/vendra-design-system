@@ -11,11 +11,12 @@ export interface OrderSummaryLine {
   meta?: React.ReactNode;
   /** Card message — italic in EN, upright in FA */
   note?: React.ReactNode;
-  /** Pre-formatted line total */
+  /** The line total, formatted by the app (format.money); shown as a Price */
   total?: React.ReactNode;
 }
 export interface OrderSummarySum {
   label: React.ReactNode;
+  /** The amount, formatted by the app; shown as a Price (a discount row's "−…" too) */
   value: React.ReactNode;
   /** Grand total row */ strong?: boolean;
 }

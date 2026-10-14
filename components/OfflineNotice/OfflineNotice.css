@@ -1,0 +1,26 @@
+/* OfflineNotice: a slim band under the header while offline; empty (no height) while online. */
+.ag-offline--offline,
+.ag-offline--back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--lh-snug);
+  text-align: center;
+}
+.ag-offline--offline {
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+}
+.ag-offline--back {
+  background: var(--success-soft);
+  color: var(--text-body);
+}
+.ag-offline--back svg {
+  color: var(--success);
+}
+.ag-offline svg {
+  flex: none;
+}

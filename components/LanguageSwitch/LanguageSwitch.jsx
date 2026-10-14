@@ -1,6 +1,7 @@
 import React from 'react';
 import {ToggleButton} from 'react-aria-components';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 import {useTrack} from '../utils/track.js';
 
 // The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
@@ -14,7 +15,7 @@ export function LanguageSwitch({
     {id: 'fa', label: 'فا'}
   ]
 }) {
-  const text = useMessages('LanguageSwitch', {label});
+  const text = useMessages('LanguageSwitch', messages, {label});
   const track = useTrack();
   return (
     <div className="ag-lang" role="group" aria-label={text.label}>

@@ -51,21 +51,24 @@ export function View({v}) {
                     target="_blank"
                   />
                 </div>
-                {v.studioMap ? (
-                  <>
-                    <DS.PlacesMap
-                      id="vf-contact-map"
-                      label={v.t?.mapL}
-                      places={v.placesView?.places}
-                      height={300}
-                      loadLeaflet={v.placesView?.load}
-                      tiles={v.placesView?.tiles}
-                      center={v.placesView?.center}
-                      zoom={v.placesView?.zoom}
-                      onFail={v.placesView?.fail}
-                    />
-                  </>
-                ) : null}
+                {/* The map runs third-party code; if it fails, the address and directions still show. */}
+                <DS.ErrorBoundary onError={v.placesView?.fail}>
+                  {v.studioMap ? (
+                    <>
+                      <DS.PlacesMap
+                        id="vf-contact-map"
+                        label={v.t?.mapL}
+                        places={v.placesView?.places}
+                        height={300}
+                        loadLeaflet={v.placesView?.load}
+                        tiles={v.placesView?.tiles}
+                        center={v.placesView?.center}
+                        zoom={v.placesView?.zoom}
+                        onFail={v.placesView?.fail}
+                      />
+                    </>
+                  ) : null}
+                </DS.ErrorBoundary>
                 {v.hasDirections ? (
                   <>
                     <div>
@@ -89,6 +92,7 @@ export function View({v}) {
                 {v.notSent ? (
                   <>
                     <div className="tw:flex tw:flex-col tw:gap-4">
+                      <DS.ErrorSummary id="vf-contact-errors" errors={v.problems} />
                       <DS.Input
                         id="vf-cname"
                         value={v.name}

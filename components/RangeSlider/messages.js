@@ -1,0 +1,13 @@
+// RangeSlider's built-in wording (accessible names and small labels), read with useMessages.
+export const messages = {
+  en: {
+    label: 'Value',
+    min: 'Minimum',
+    max: 'Maximum'
+  },
+  fa: {
+    label: 'مقدار',
+    min: 'حداقل',
+    max: 'حداکثر'
+  }
+};

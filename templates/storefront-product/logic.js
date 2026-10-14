@@ -154,6 +154,7 @@ function vals(page) {
       });
     },
     recentLabel: C.recentA + ' ' + C.recentB,
+    productId: product.id,
     hasRecent: vfRecentlyViewed().some(x => x !== product.id),
     available: product.inStock !== false,
     stock: product.stock,

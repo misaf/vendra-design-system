@@ -53,7 +53,8 @@
     "build": "npm --prefix templates run build",
     "check": "npm --prefix templates run check",
     "test": "npm --prefix templates test",
-    "test:e2e": "npm --prefix templates run test:e2e"
+    "test:e2e": "npm --prefix templates run test:e2e",
+    "new:component": "npm --prefix templates run new:component --"
   },
   "devDependencies": {
     "@internationalized/date": "3.12.4",

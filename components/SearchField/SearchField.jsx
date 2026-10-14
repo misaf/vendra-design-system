@@ -9,6 +9,7 @@ import {Icon} from '../Icon/Icon.jsx';
 import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // A search box on React Aria's SearchField, styled like Input: a search icon, the text, and a clear
 // button once there is text. Esc clears the text, Enter calls onSubmit(value). value or defaultValue
@@ -34,7 +35,7 @@ export function SearchField({
   ...rest
 }) {
   const {fieldId, messageId, message, controlProps} = useField({id, hint, error, describedBy});
-  const text = useMessages('SearchField', {clear: clearLabel});
+  const text = useMessages('SearchField', messages, {clear: clearLabel});
   // Clicking the padding around the control (or its icon) focuses the control.
   const focusControl = event => {
     if (event.target === event.currentTarget) document.getElementById(fieldId)?.focus();

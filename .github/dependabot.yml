@@ -1,0 +1,48 @@
+# Weekly pull requests for the pinned tools, each tested by CI like any change. A release waits two
+# weeks before it is offered (cooldown), so a broken or hijacked version is usually pulled first.
+# - React stays on 18 in the workspace on purpose: the "Package on React 19" job tests the next
+#   major, so React's own majors are left for a deliberate upgrade.
+# - @playwright/test must match the Playwright image in .github/workflows/*.yml (assets.test.cjs
+#   fails otherwise): on its pull request, bump the image tag too, then run "Update screenshots".
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 14
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: react
+        update-types: [version-update:semver-major]
+      - dependency-name: react-dom
+        update-types: [version-update:semver-major]
+      - dependency-name: '@types/react'
+        update-types: [version-update:semver-major]
+    groups:
+      react-aria:
+        patterns: ['react-aria-components', '@internationalized/*']
+      playwright:
+        patterns: ['@playwright/test', '@axe-core/playwright']
+      build-tools:
+        patterns:
+          [
+            'vite',
+            'rolldown',
+            'tailwindcss',
+            '@tailwindcss/*',
+            'typescript',
+            'prettier',
+            'stylelint'
+          ]
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 14
+    groups:
+      actions:
+        patterns: ['*']

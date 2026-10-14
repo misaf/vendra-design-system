@@ -2,6 +2,7 @@ import React from 'react';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.
 function flattenSnap(children) {
@@ -47,7 +48,7 @@ export const Carousel = React.forwardRef(function Carousel(
   },
   ref
 ) {
-  const text = useMessages('Carousel', {previous: prevLabel, next: nextLabel});
+  const text = useMessages('Carousel', messages, {previous: prevLabel, next: nextLabel});
   const trackRef = React.useRef(null);
   const [scrollState, setScrollState] = React.useState({canPrev: false, canNext: false});
   const lastState = React.useRef(null);

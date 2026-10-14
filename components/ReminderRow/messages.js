@@ -1,0 +1,17 @@
+// ReminderRow's built-in wording (accessible names and small labels), read with useMessages.
+export const messages = {
+  en: {
+    paused: 'Paused',
+    sendFlowers: 'Send flowers',
+    reminderFor: 'Reminder for {name}',
+    edit: 'Edit reminder for {name}',
+    delete: 'Delete reminder for {name}'
+  },
+  fa: {
+    paused: 'متوقف',
+    sendFlowers: 'ارسال گل',
+    reminderFor: 'یادآور برای {name}',
+    edit: 'ویرایش یادآور {name}',
+    delete: 'حذف یادآور {name}'
+  }
+};

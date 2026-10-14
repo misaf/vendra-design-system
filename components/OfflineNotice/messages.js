@@ -1,0 +1,12 @@
+// OfflineNotice's built-in wording (accessible names and small labels), read with useMessages.
+export const messages = {
+  en: {
+    offline: 'You’re offline. Pages you’ve opened still show; reconnect to order or send anything.',
+    online: 'You’re back online.'
+  },
+  fa: {
+    offline:
+      'اتصال اینترنت شما قطع است. صفحه‌هایی که باز کرده‌اید دیده می‌شوند؛ برای سفارش یا ارسال، دوباره وصل شوید.',
+    online: 'دوباره آنلاین هستید.'
+  }
+};

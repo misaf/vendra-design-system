@@ -1,0 +1,8 @@
+// ErrorSummary's built-in wording (accessible names and small labels), read with useMessages.
+export const messages = {
+  en: {one: 'Check this detail to continue.', other: 'Check {count} details to continue.'},
+  fa: {
+    one: 'این مورد را بررسی کنید تا ادامه دهید.',
+    other: '{count} مورد را بررسی کنید تا ادامه دهید.'
+  }
+};

@@ -3646,7 +3646,9 @@ a.ag-tabbar__item--current:hover {
 .ag-location--compact .ag-location__map {
   block-size: 220px;
 }
-/* The pin stays at the map's centre, its point on the chosen spot. */
+/* The pin stays at the map's centre, its point on the chosen spot. Map tiles never mirror, so the
+   pin is placed and shadowed in the map's own (physical, untinted) terms. */
+/* stylelint-disable property-disallowed-list, function-disallowed-list */
 .ag-location__pin {
   position: absolute;
   left: 50%;
@@ -3657,6 +3659,7 @@ a.ag-tabbar__item--current:hover {
   pointer-events: none;
   filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
 }
+/* stylelint-enable property-disallowed-list, function-disallowed-list */
 .ag-location__row {
   display: flex;
   align-items: flex-start;
@@ -3681,7 +3684,8 @@ a.ag-tabbar__item--current:hover {
   border-radius: 50%;
   background: var(--accent);
   border: 3px solid var(--surface-card);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+  /* On map tiles, which don't take the theme's colours. */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35); /* stylelint-disable-line function-disallowed-list */
 }
 .ag-place-marker:focus-visible {
   outline: 2px solid var(--focus-ring);
@@ -3874,9 +3878,7 @@ a.ag-tabbar__item--current:hover {
   font-size: var(--text-sm);
 }
 .ag-osum__total {
-  font-weight: var(--weight-medium);
-  white-space: nowrap;
-  text-align: end;
+  justify-content: end;
 }
 .ag-osum__sums {
   margin: var(--space-3) 0 0;
@@ -3897,6 +3899,10 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-osum__sum dd {
   text-align: end;
+}
+/* A sum row is as heavy as its label; only the grand total stands out. */
+.ag-osum__sum .ag-price {
+  font-weight: inherit;
 }
 .ag-osum__sum--strong {
   color: var(--text-body);
@@ -4108,6 +4114,103 @@ a.ag-tabbar__item--current:hover {
     padding-top: var(--space-3);
     border-top: var(--border-hair) solid var(--border-subtle);
   }
+}
+
+/* components/PromoCodeField/PromoCodeField.css */
+/* PromoCodeField: Apply sits inside the field's end. The field and button share one grid cell so
+   the button stays centred at any font height; an error message takes the next row. */
+.ag-promo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ag-promo__row {
+  display: grid;
+  gap: var(--space-2);
+}
+.ag-promo__row .ag-field {
+  display: contents;
+}
+.ag-promo__row .ag-input {
+  grid-area: 1/1;
+  padding-inline-end: 112px;
+}
+.ag-promo__apply {
+  grid-area: 1/1;
+  align-self: center;
+  justify-self: end;
+  margin-inline-end: 6px;
+  position: relative;
+  z-index: 1;
+}
+/* One focus ring around the whole field, not just the text box beside the button. */
+.ag-promo__row input:focus-visible {
+  outline: none;
+}
+.ag-promo__row .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.ag-promo__applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.ag-promo__code {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* components/ErrorSummary/ErrorSummary.css */
+/* ErrorSummary: a danger Alert listing the fields to fix, each a link to its field. */
+.ag-error-summary {
+  border-radius: var(--radius-lg);
+}
+.ag-error-summary__list {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.ag-error-summary__list a {
+  /* Stacked links: each at least a 24px target (WCAG 2.5.8). */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 24px;
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* components/OfflineNotice/OfflineNotice.css */
+/* OfflineNotice: a slim band under the header while offline; empty (no height) while online. */
+.ag-offline--offline,
+.ag-offline--back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--lh-snug);
+  text-align: center;
+}
+.ag-offline--offline {
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+}
+.ag-offline--back {
+  background: var(--success-soft);
+  color: var(--text-body);
+}
+.ag-offline--back svg {
+  color: var(--success);
+}
+.ag-offline svg {
+  flex: none;
 }
 
 

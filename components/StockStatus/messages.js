@@ -1,0 +1,17 @@
+// StockStatus's built-in wording (accessible names and small labels), read with useMessages.
+export const messages = {
+  en: {
+    in: 'In stock',
+    low: 'Only {count} left',
+    soon: 'Back soon',
+    soonOn: 'Back on {date}',
+    out: 'Sold out'
+  },
+  fa: {
+    in: 'موجود',
+    low: 'فقط {count} عدد مانده',
+    soon: 'به‌زودی موجود می‌شود',
+    soonOn: 'موجود از {date}',
+    out: 'ناموجود'
+  }
+};

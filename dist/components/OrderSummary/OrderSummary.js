@@ -3,8 +3,10 @@
 import React from "react";
 import { Link } from "react-aria-components";
 import { ArchFrame } from "../ArchFrame/ArchFrame.js";
+import { Price } from "../Price/Price.js";
 import { cx } from "../utils/cx.js";
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
+// Every amount is a Price, so totals share the product prices' digits and stay whole in RTL.
 export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", className = "", style }) {
 	const Title = titleAs;
 	return /* @__PURE__ */ React.createElement("section", {
@@ -22,8 +24,11 @@ export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", cla
 	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
 		href: line.href,
 		onClick: line.onClick
-	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__total" }, line.total)))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
+	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), line.total != null && /* @__PURE__ */ React.createElement(Price, {
+		value: line.total,
+		className: "ag-osum__total"
+	})))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
 		className: cx("ag-osum__sum", sum.strong && "ag-osum__sum--strong")
-	}, /* @__PURE__ */ React.createElement("dt", null, sum.label), /* @__PURE__ */ React.createElement("dd", null, sum.value)))));
+	}, /* @__PURE__ */ React.createElement("dt", null, sum.label), /* @__PURE__ */ React.createElement("dd", null, /* @__PURE__ */ React.createElement(Price, { value: sum.value }))))));
 }

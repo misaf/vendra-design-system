@@ -55,9 +55,7 @@
   font-size: var(--text-sm);
 }
 .ag-osum__total {
-  font-weight: var(--weight-medium);
-  white-space: nowrap;
-  text-align: end;
+  justify-content: end;
 }
 .ag-osum__sums {
   margin: var(--space-3) 0 0;
@@ -78,6 +76,10 @@
 }
 .ag-osum__sum dd {
   text-align: end;
+}
+/* A sum row is as heavy as its label; only the grand total stands out. */
+.ag-osum__sum .ag-price {
+  font-weight: inherit;
 }
 .ag-osum__sum--strong {
   color: var(--text-body);

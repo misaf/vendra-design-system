@@ -5,6 +5,7 @@ import {Price} from '../Price/Price.jsx';
 import {QuantityInput} from '../QuantityInput/QuantityInput.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
@@ -26,7 +27,10 @@ export function LineItem({
   busy,
   className = ''
 }) {
-  const text = useMessages('LineItem', {remove: removeLabel, unavailable: unavailableLabel});
+  const text = useMessages('LineItem', messages, {
+    remove: removeLabel,
+    unavailable: unavailableLabel
+  });
   const large = size !== 'sm';
   const thumbWidth = large ? 88 : 44;
   return (

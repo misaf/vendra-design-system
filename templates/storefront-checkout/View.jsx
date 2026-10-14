@@ -311,9 +311,7 @@ export function View({v}) {
                   <span className="vf-action-caption tw:text-xs tw:text-quiet">
                     <>{v.t?.total}</>
                   </span>
-                  <span className="vf-price">
-                    <>{v.totalLabel}</>
-                  </span>
+                  <DS.Price value={v.totalLabel} size="md" className="vf-price" />
                 </div>
                 <DS.Button
                   variant="primary"

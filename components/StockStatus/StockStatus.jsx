@@ -5,6 +5,7 @@ import {dates} from '../utils/dates.js';
 import {format} from '../utils/format.js';
 import {usePageLocale} from '../utils/locale.js';
 import {localeLanguage, useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: 'circle-x'};
 
@@ -15,7 +16,7 @@ const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: '
 export function StockStatus({stock, hideInStock, size = 'md', className, style}) {
   const {locale, ref} = usePageLocale();
   const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
-  const text = useMessages('StockStatus', undefined, locale);
+  const text = useMessages('StockStatus', messages, undefined, locale);
   const status = stock && ICONS[stock.status] ? stock.status : 'in';
   if (status === 'in' && hideInStock) return null;
   const date = status === 'soon' && stock.date ? dates.fromIso(stock.date) : null;

@@ -31,3 +31,19 @@ assert.ok(
   'Component internals remain explicit custom exceptions'
 );
 assert.ok(!/@(?:apply|theme|source|import)\b/.test(custom));
+
+// CI and "Update screenshots" run in Playwright's Linux image; it must be the same version as
+// @playwright/test, or the browser differs from the one the -linux baselines were taken with.
+const playwright = require('@playwright/test/package.json').version;
+const workflows = path.resolve(root, '../.github/workflows');
+for (const name of fs.readdirSync(workflows)) {
+  for (const [, tag] of fs
+    .readFileSync(path.join(workflows, name), 'utf8')
+    .matchAll(/mcr\.microsoft\.com\/playwright:v([\w.-]+?)-\w+\b/g))
+    assert.equal(
+      tag,
+      playwright,
+      name + ' uses Playwright image v' + tag + '; @playwright/test is ' + playwright
+    );
+}
+console.log('Passed: the CI Playwright image matches @playwright/test ' + playwright + '.');

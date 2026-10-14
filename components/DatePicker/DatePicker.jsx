@@ -23,6 +23,7 @@ import {Select} from '../Select/Select.jsx';
 import {FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {localeLanguage, useMessages} from '../utils/messages.js';
+import {messages} from './messages.js';
 
 const GREGORIAN = new GregorianCalendar();
 const PERSIAN = new PersianCalendar();
@@ -69,7 +70,7 @@ export function DatePicker({
 }) {
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
   const lang = langProp || (localeLanguage(useLocale().locale) === 'fa' ? 'fa' : 'en');
-  const text = useMessages('DatePicker', labels, lang);
+  const text = useMessages('DatePicker', messages, labels, lang);
   const generatedId = React.useId();
   const fieldId = id || 'dp' + generatedId.replace(/:/g, '');
   const messageId = fieldId + '-hint';
