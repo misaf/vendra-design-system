@@ -485,8 +485,11 @@ test('an online payment goes to the bank and comes back paid', async ({page}) =>
     .click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('Taking you to the bank');
   await expect(page.locator('.vf-mobile-action')).toBeHidden();
-  // The browser leaves for the bank, which sends it back to checkout with its answer.
-  await expect.poll(() => loads.some(url => url.includes('payment=return'))).toBe(true);
+  // The browser leaves for the bank, which sends it back to checkout with its answer. PaymentStatus
+  // waits 1.5s before it leaves, then a full page load follows: more than the default 5s under load.
+  await expect
+    .poll(() => loads.some(url => url.includes('payment=return')), {timeout: 20_000})
+    .toBe(true);
   await expect(page.locator('main h1')).toContainText('Thank you');
   await expect(page).not.toHaveURL(/payment=return/);
   await expect(page.locator('main')).toContainText('Paid online');
