@@ -9,7 +9,7 @@ import {
   vfReminderNext,
   vfSampleOrders
 } from '../_shared/account-data.js';
-import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -430,7 +430,7 @@ function vals(page) {
       images: [vfProductImage(p, L)],
       name: p.id,
       sub: vfProductSub(p, L),
-      badge: p[L].badge,
+      badge: vfProductBadge(p, L),
       price: S.m(p.price),
       stock: p.stock,
       remove: () => {

@@ -28,16 +28,25 @@ export const VF_STORE = {
   shopPageSize: 4,
   // Journal posts per page: the featured story and six more (the API's itemsPerPage).
   journalPageSize: 7,
+  // The studio's ready-made designs, already arranged and quickest to send: the home page shows them
+  // first, in this order, by product code (templates/API.md B32). Sold-out
+  // ones are skipped.
+  featuredProducts: ['VF-4CJ6ZB', 'VF-8RD5WN', 'VF-3HX9TP', 'VF-9FA2KE'],
+  // How many of the latest journal posts the home page shows.
+  homePosts: 3,
   apiBase: '', // Empty keeps every integration in local demo mode.
   // Where analytics events go, after the visitor accepts them (templates/API.md B31); null sends nothing.
   analyticsUrl: null,
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   // The simulated bank's answer to an online payment: paid, cancelled, failed or pending (VF_PAYMENT_RESULTS).
   paymentDemo: {online: 'paid'},
-  // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
+  // Site-wide message above the header; null hides it. {delivery} becomes when an order placed now
+  // arrives (with a link to the same-day designs while that's today); {freeDelivery} the free-delivery
+  // threshold. `mobile` is an optional shorter version for phones, where the bar has less room.
   announcement: {
-    en: 'Free delivery in Karaj on orders over {freeDelivery}.',
-    fa: 'ارسال رایگان در کرج برای سفارش‌های بالای {freeDelivery}.'
+    en: '{delivery} Free delivery over {freeDelivery}.',
+    fa: '{delivery} ارسال رایگان برای سفارش‌های بالای {freeDelivery}.',
+    mobile: {en: '{delivery}', fa: '{delivery}'}
   },
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
   // One or two sentences under the brand in the footer.

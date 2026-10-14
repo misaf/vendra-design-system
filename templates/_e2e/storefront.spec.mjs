@@ -25,7 +25,7 @@ test.describe('shell', () => {
 
   test('footer links use the on-inverse focus ring at 3:1', async ({page}) => {
     await openSite(page, 'home', 'en');
-    const link = page.locator('.ag-on-inverse a').first();
+    const link = page.locator('footer.ag-on-inverse a').first();
     await link.scrollIntoViewIfNeeded();
     await link.focus();
     await page.keyboard.press('Shift+Tab');
@@ -33,6 +33,15 @@ test.describe('shell', () => {
     await expect(link).toBeFocused();
     const ring = await link.evaluate(el => getComputedStyle(el).outlineColor);
     expect(contrast(ring, await backgroundBehind(link))).toBeGreaterThanOrEqual(3);
+    // The weddings band's button: its ring sits outside the pink button, on the dark band.
+    const button = page.locator('.vf-home-weddings').getByRole('link');
+    await button.focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(button).toBeFocused();
+    const bandRing = await button.evaluate(el => getComputedStyle(el).outlineColor);
+    const band = await button.evaluate(el => getComputedStyle(el.parentElement).backgroundColor);
+    expect(contrast(bandRing, band)).toBeGreaterThanOrEqual(3);
   });
 
   test('first load leaves focus at the top; in-site navigation focuses the heading', async ({

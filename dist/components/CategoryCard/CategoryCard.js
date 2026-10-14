@@ -6,24 +6,28 @@ import { Icon } from "../Icon/Icon.js";
 import { Picture } from "../Picture/Picture.js";
 import { cx } from "../utils/cx.js";
 // A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
-export function CategoryCard({ label, count, image, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", onClick, href, className = "" }) {
-	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: cx("ag-cat__media", "ag-product__media--" + frame) }, image ? /* @__PURE__ */ React.createElement(Picture, {
+// frame="circle" is the small round version for a quick row of categories.
+export function CategoryCard({ label, count, image, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", aspect, onClick, href, className = "" }) {
+	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
+		className: cx("ag-cat__media", "ag-product__media--" + frame),
+		style: aspect ? { aspectRatio: aspect } : undefined
+	}, image ? /* @__PURE__ */ React.createElement(Picture, {
 		image,
 		sizes,
 		alt: "",
 		priority
-	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("span", { className: "ag-cat__row" }, /* @__PURE__ */ React.createElement("span", { className: "ag-cat__label" }, label), /* @__PURE__ */ React.createElement(Icon, {
+	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("span", { className: "ag-cat__row" }, /* @__PURE__ */ React.createElement("span", { className: "ag-cat__label" }, label), frame !== "circle" && /* @__PURE__ */ React.createElement(Icon, {
 		name: "arrow-right",
 		size: 16,
 		className: "ag-cat__arrow"
 	})), count && /* @__PURE__ */ React.createElement("span", { className: "ag-cat__count" }, count));
 	if (href) return /* @__PURE__ */ React.createElement(Link, {
 		href,
-		className: cx("ag-cat", className),
+		className: cx("ag-cat", "ag-cat--" + frame, className),
 		onClick
 	}, inner);
 	return /* @__PURE__ */ React.createElement(Button, {
-		className: cx("ag-cat", className),
+		className: cx("ag-cat", "ag-cat--" + frame, className),
 		onClick
 	}, inner);
 }

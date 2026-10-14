@@ -241,7 +241,7 @@ export function vfCopy(S) {
                   (features.reminders ? 'Occasion reminders and news are' : 'News is') +
                   ' only sent if you turn them on, and you can turn them off at any time in your account.' +
                   (features.newsletter
-                    ? ' Our email newsletter only goes to addresses that signed up in the site footer, and every email has an unsubscribe link.'
+                    ? ' Our email newsletter only goes to addresses that signed up on our home page, and every email has an unsubscribe link.'
                     : '')
               ]
             },
@@ -560,7 +560,7 @@ export function vfCopy(S) {
                   (features.reminders ? 'یادآورهای مناسبتی و خبرها' : 'خبرها') +
                   ' فقط اگر خودتان روشنشان کنید فرستاده می‌شوند و هر زمان در حساب کاربری می‌توانید خاموششان کنید.' +
                   (features.newsletter
-                    ? ' خبرنامه ایمیلی فقط برای نشانی‌هایی فرستاده می‌شود که در پایین سایت عضو شده‌اند و در هر ایمیل پیوند لغو عضویت هست.'
+                    ? ' خبرنامه ایمیلی فقط برای نشانی‌هایی فرستاده می‌شود که در صفحه اصلی سایت عضو شده‌اند و در هر ایمیل پیوند لغو عضویت هست.'
                     : '')
               ]
             },

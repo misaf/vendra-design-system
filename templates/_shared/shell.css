@@ -32,33 +32,6 @@ a:hover {
     min-width: 0;
   }
 }
-/* The footer sits on the inverse surface: field labels, hints and errors switch to the on-inverse colours. */
-.vf-shell-footer .ag-field__label {
-  color: var(--text-on-inverse);
-}
-.vf-shell-footer .ag-field__hint {
-  color: var(--text-inverse-muted);
-}
-.vf-shell-footer .ag-field__hint--error {
-  color: var(--danger-on-inverse);
-}
-/* The newsletter field and its button share one 48px row. */
-.vf-shell-newsletter-form .ag-input {
-  box-sizing: border-box;
-  height: var(--control-h-input);
-  min-height: 0;
-}
-.vf-shell-newsletter-form .ag-input input {
-  padding-block: 0;
-  align-self: stretch;
-}
-.vf-shell-newsletter-form .ag-input input:focus-visible {
-  outline: none;
-}
-.vf-shell-newsletter-form .ag-input:has(input:focus-visible) {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 3px;
-}
 /* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
    The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
 .vf-shell-consent-bar .vf-shell-consent {
@@ -104,4 +77,13 @@ html {
   .vf-shell-container {
     min-height: 0 !important;
   }
+}
+/* The announcement's link: underlined, with an arrow that follows the reading direction. */
+.vf-shell-announcement-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 500;
+  white-space: nowrap;
+  text-underline-offset: 3px;
 }

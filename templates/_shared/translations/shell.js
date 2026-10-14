@@ -27,6 +27,9 @@ export const VF_SHELL = {
     discount: 'Discount',
     news: 'Store news',
     dismissNews: 'Dismiss message',
+    sameDay: 'Order by {time} for same-day delivery in Karaj.',
+    nextDay: 'Next delivery in Karaj: {day}, {date}.',
+    shopSameDay: 'Shop same-day',
     waLong: 'Order on WhatsApp',
     langL: 'Language',
     faq: 'FAQ',
@@ -49,16 +52,6 @@ export const VF_SHELL = {
       privacy: 'Privacy',
       terms: 'Terms of use',
       accessibility: 'Accessibility'
-    },
-    newsletter: {
-      title: 'Letters from the studio',
-      body: 'New seasonal designs and occasion reminders, about twice a month.',
-      label: 'Email address',
-      submit: 'Subscribe',
-      sending: 'Subscribing…',
-      error: 'Enter an email address like name@example.com.',
-      failed: 'We couldn’t sign you up just now. Please try again.',
-      done: 'Thanks! {email} is on the list. Every email has an unsubscribe link.'
     },
     consent: {
       title: 'Your privacy',
@@ -97,6 +90,9 @@ export const VF_SHELL = {
     discount: 'تخفیف',
     news: 'خبر فروشگاه',
     dismissNews: 'بستن پیام',
+    sameDay: 'سفارش تا ساعت {time}، تحویل همان روز در کرج.',
+    nextDay: 'نزدیک‌ترین تحویل در کرج: {day}، {date}.',
+    shopSameDay: 'خرید برای امروز',
     waLong: 'سفارش در واتساپ',
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
@@ -119,16 +115,6 @@ export const VF_SHELL = {
       privacy: 'حریم خصوصی',
       terms: 'شرایط استفاده',
       accessibility: 'دسترس‌پذیری'
-    },
-    newsletter: {
-      title: 'نامه‌های استودیو',
-      body: 'طرح‌های تازه فصل و یادآور مناسبت‌ها، حدود دو بار در ماه.',
-      label: 'نشانی ایمیل',
-      submit: 'عضویت',
-      sending: 'در حال عضویت…',
-      error: 'ایمیلی مانند name@example.com وارد کنید.',
-      failed: 'الان نتوانستیم عضویت را ثبت کنیم. لطفاً دوباره امتحان کنید.',
-      done: 'ممنون! {email} به فهرست اضافه شد. در هر ایمیل پیوند لغو عضویت هست.'
     },
     consent: {
       title: 'حریم خصوصی شما',

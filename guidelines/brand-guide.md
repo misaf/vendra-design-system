@@ -124,7 +124,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 A store turns on only the parts it runs, the way it picks its payment methods. Nothing it has turned off shows anywhere: no link, page, field or sentence about it.
 
-- **Features** (`commerce.STORE_FEATURES`; the sample store's `VF_STORE.features`): promo codes (the bag's code field and its discount), same-day delivery (off: the first delivery day is tomorrow, and the same-day filter, hints and policy wording go), the weddings page, the journal and its posts, occasion reminders (the account tab), and the footer newsletter. A turned-off page is a 404; the menu, header, footer and policy text leave it out.
+- **Features** (`commerce.STORE_FEATURES`; the sample store's `VF_STORE.features`): promo codes (the bag's code field and its discount), same-day delivery (off: the first delivery day is tomorrow, and the same-day filter, hints and policy wording go), the weddings page, the journal and its posts, occasion reminders (the account tab), and the home page newsletter. A turned-off page is a 404; the menu, header, footer and policy text leave it out.
 - **Add-ons** follow the store's add-on list: no add-ons, no extras on the product page; no handwritten card, no card messages in the bag.
 - **Languages** (`VF_STORE.languages`, the first is the default): with one, the language switch is hidden, links in the other language open in this one, and hreflang lists only it.
 - **Contact channels**: the phone is required; WhatsApp, Instagram and email are optional. Without WhatsApp its buttons, the tab bar's chat tab and the WhatsApp payment method go too.

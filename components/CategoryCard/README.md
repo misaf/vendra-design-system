@@ -11,7 +11,7 @@ Photo tile linking to a product category (Bouquets, Flower boxes, Wedding car…
 />
 ```
 
-Image zooms gently on hover; the arrow mirrors in RTL.
+Image zooms gently on hover; the arrow mirrors in RTL. `frame="circle"` makes a small round tile with the name centred under it (no arrow) for a quick row of categories; give it a narrow column (72–120px). The photo is 4:5 by default; `aspect` (a CSS aspect-ratio such as `"1/1"`) makes a shorter tile where the row shouldn't fill the screen.
 
 `href` renders `<a>` (navigation — preferred); without it a `<button>`.
 

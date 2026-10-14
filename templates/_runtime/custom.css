@@ -36,33 +36,6 @@ a:hover {
     min-width: 0;
   }
 }
-/* The footer sits on the inverse surface: field labels, hints and errors switch to the on-inverse colours. */
-.vf-shell-footer .ag-field__label {
-  color: var(--text-on-inverse);
-}
-.vf-shell-footer .ag-field__hint {
-  color: var(--text-inverse-muted);
-}
-.vf-shell-footer .ag-field__hint--error {
-  color: var(--danger-on-inverse);
-}
-/* The newsletter field and its button share one 48px row. */
-.vf-shell-newsletter-form .ag-input {
-  box-sizing: border-box;
-  height: var(--control-h-input);
-  min-height: 0;
-}
-.vf-shell-newsletter-form .ag-input input {
-  padding-block: 0;
-  align-self: stretch;
-}
-.vf-shell-newsletter-form .ag-input input:focus-visible {
-  outline: none;
-}
-.vf-shell-newsletter-form .ag-input:has(input:focus-visible) {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 3px;
-}
 /* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
    The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
 .vf-shell-consent-bar .vf-shell-consent {
@@ -108,6 +81,15 @@ html {
   .vf-shell-container {
     min-height: 0 !important;
   }
+}
+/* The announcement's link: underlined, with an arrow that follows the reading direction. */
+.vf-shell-announcement-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 500;
+  white-space: nowrap;
+  text-underline-offset: 3px;
 }
 
 
@@ -213,18 +195,19 @@ html {
   min-width: 0;
 }
 
-/* Share row heights without truncating names or subtitles. */
+/* Share row heights without truncating names or subtitles: photo, name, subtitle, price and the
+   stock note ("Only 2 left"), which most cards leave empty. */
 .vf-product-grid .ag-product {
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 4;
+  grid-row: span 5;
   min-width: 0;
   row-gap: 14px;
 }
 .vf-product-grid .ag-product > div:last-child {
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 3;
+  grid-row: span 4;
   row-gap: 4px;
 }
 .vf-product-grid .ag-product__meta {
@@ -362,6 +345,41 @@ html {
 /* Source: storefront-home/styles.css */
 /* Custom styles for the home page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* The page's h1 heads the category row, so it takes the section-title size rather than a hero's. */
+.vf-home-top .ag-sechead--h1 .ag-sechead__title {
+  font-size: clamp(2rem, 4vw, var(--text-3xl));
+}
+@media (max-width: 767px) {
+  .vf-home-top .ag-sechead--h1 .ag-sechead__title {
+    font-size: var(--text-2xl);
+  }
+}
+/* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
+   pink is too dark to read there). */
+.vf-home-weddings-accent {
+  font-style: var(--accent-font-style);
+  font-weight: var(--accent-font-weight);
+}
+:lang(fa) .vf-home-weddings-accent {
+  font-style: normal;
+}
+/* The newsletter field and its button share one 48px row. */
+.vf-home-newsletter-form .ag-input {
+  box-sizing: border-box;
+  height: var(--control-h-input);
+  min-height: 0;
+}
+.vf-home-newsletter-form .ag-input input {
+  padding-block: 0;
+  align-self: stretch;
+}
+.vf-home-newsletter-form .ag-input input:focus-visible {
+  outline: none;
+}
+.vf-home-newsletter-form .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
 
 
 /* Source: storefront-journal/styles.css */

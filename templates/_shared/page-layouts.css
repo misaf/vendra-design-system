@@ -46,18 +46,19 @@
   min-width: 0;
 }
 
-/* Share row heights without truncating names or subtitles. */
+/* Share row heights without truncating names or subtitles: photo, name, subtitle, price and the
+   stock note ("Only 2 left"), which most cards leave empty. */
 .vf-product-grid .ag-product {
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 4;
+  grid-row: span 5;
   min-width: 0;
   row-gap: 14px;
 }
 .vf-product-grid .ag-product > div:last-child {
   display: grid;
   grid-template-rows: subgrid;
-  grid-row: span 3;
+  grid-row: span 4;
   row-gap: 4px;
 }
 .vf-product-grid .ag-product__meta {

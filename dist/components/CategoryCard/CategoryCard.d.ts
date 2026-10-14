@@ -12,8 +12,11 @@ export interface CategoryCardProps {
   sizes?: string;
   /** The first photos a page shows: load at once, at high priority (Picture). Default lazy. */
   priority?: boolean;
-  /** arch = signature rounded-top window; soft = 8px corners */
-  frame?: 'arch' | 'soft';
+  /** arch = signature rounded-top window; soft = 8px corners; circle = a small round photo with the name
+   * centred under it (no arrow), for a quick row of categories */
+  frame?: 'arch' | 'soft' | 'circle';
+  /** CSS aspect-ratio for the photo; default 4/5 */
+  aspect?: string;
   /** Renders <a href> instead of <button> */
   href?: string;
   onClick?: (e: React.MouseEvent) => void;

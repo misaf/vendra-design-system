@@ -447,12 +447,14 @@ function page(name, c, props = {}) {
        VF_STORE.instagram = null; VF_STORE.paymentMethods = [{id: 'whatsapp'}, {id: 'online'}];`,
       store
     );
-    // Shell: no weddings or journal links, newsletter, language switch or WhatsApp.
+    // Shell: no weddings or journal links, language switch or WhatsApp; the home page, no newsletter.
     const home = page('home', store, {lang: 'fa'}).renderVals();
     const labels = home.menuItems.map(item => item.label).join(' ');
     assert.ok(!/عروسی|دفترچه/.test(labels), labels);
     assert.equal(home.footer.studio.length, 4);
     assert.equal(home.newsletter, false);
+    assert.deepEqual(json(home.posts), [], 'no journal posts on the home page');
+    assert.equal(home.weddings, null, 'no weddings band');
     assert.equal(home.hasLang, false);
     assert.equal(home.waHref, '');
     assert.deepEqual(json(home.tabs.map(tab => tab.id)), ['home', 'shop', 'bag']);
@@ -467,7 +469,7 @@ function page(name, c, props = {}) {
     assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
     assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');
     const shop = page('shop', store, {lang: 'fa'}).renderVals();
-    assert.equal(shop.chips.length, 2);
+    assert.equal(shop.chips.length, 3, 'ready, under 3M and roses; no same-day');
     // No promo codes: no field, and a saved code takes nothing off.
     assert.equal(page('bag', store, {lang: 'fa'}).renderVals().promoShown, false);
     const lines = store.vfSampleBag();

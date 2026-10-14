@@ -1010,7 +1010,53 @@ test('each filter that is on removes itself, and focus stays in the row', async 
   await expect(page.locator('#vf-shop-count')).toBeFocused();
 });
 
-test('the footer newsletter checks the address and confirms the sign-up', async ({page}) => {
+test('the home page shows the categories, ready-made designs, weddings and the latest posts', async ({
+  page
+}) => {
+  await openSite(page, 'home', 'en');
+  // The categories, the ready-made designs, occasions, new designs, weddings, the journal and the
+  // newsletter
+  // (the announcement carries the delivery line).
+  const order = await page
+    .locator('main > section')
+    .evaluateAll(sections => sections.map(section => section.className.match(/vf-home-[a-z]+/)[0]));
+  expect(order).toEqual([
+    'vf-home-top',
+    'vf-home-featured',
+    'vf-home-categories',
+    'vf-home-arrivals',
+    'vf-home-weddings',
+    'vf-home-journal',
+    'vf-home-newsletter'
+  ]);
+  const featured = page.locator('.vf-home-featured');
+  await expect(featured.getByRole('heading', {name: 'Ready to send.'})).toBeVisible();
+  await expect(featured.getByText('Ready', {exact: true})).toHaveCount(4);
+  await expect(featured.getByRole('listitem')).toHaveCount(4);
+  await expect(featured.getByRole('listitem').first()).toContainText('VF-4CJ6ZB');
+  const journal = page.locator('.vf-home-journal');
+  await expect(journal.getByRole('heading', {level: 3})).toHaveText([
+    'What’s in season this autumn',
+    'Five ways to keep a bouquet fresh',
+    'Choosing your bridal bouquet'
+  ]);
+  // Every category, in the store's order, as a row of circles; each opens its shop filter.
+  const categories = page.getByRole('region', {name: 'Categories'});
+  await expect(categories.getByRole('link')).toHaveCount(12);
+  await expect(categories.getByRole('link').first()).toHaveAccessibleName('Bouquets');
+  await expect(categories.getByRole('link', {name: 'Plants'})).toHaveAttribute(
+    'href',
+    /cat=plants/
+  );
+  await expect(
+    page.locator('.vf-home-weddings').getByRole('link', {name: 'Plan your wedding flowers'})
+  ).toHaveAttribute('href', /view=weddings/);
+  expect(await scanAxe(page)).toEqual([]);
+  await journal.getByRole('link', {name: /Five ways to keep a bouquet fresh/}).click();
+  await expect(page).toHaveURL(/view=post&post=care/);
+});
+
+test('the home page newsletter checks the address and confirms the sign-up', async ({page}) => {
   await openSite(page, 'home', 'en');
   const form = page.getByRole('region', {name: 'Letters from the studio'});
   await form.getByRole('button', {name: 'Subscribe'}).click();
@@ -1400,6 +1446,49 @@ test('the product page shows where it sits in the shop', async ({page}) => {
   await expect(crumbs.locator('[aria-current="page"]')).toHaveText('VF-7K2M4Q');
 });
 
+test('ready-made designs: a shop filter, the Ready badge everywhere and a link from home', async ({
+  page
+}) => {
+  await openSite(page, 'home', 'en');
+  await page.locator('.vf-home-featured').getByRole('link', {name: 'All ready to send'}).click();
+  await expect(page).toHaveURL(/view=shop.*filters=ready/);
+  const main = page.getByRole('main');
+  await expect(
+    main.getByRole('button', {name: 'Ready to send', pressed: true}).locator('visible=true')
+  ).toHaveCount(1);
+  // The four ready-made designs, each marked Ready in place of New or Bestseller.
+  const cards = main.locator('.ag-product');
+  await expect(cards).toHaveCount(4);
+  await expect(cards.getByText('Ready', {exact: true})).toHaveCount(4);
+  await openSite(page, 'product', 'en', {id: 'VF-4CJ6ZB'});
+  await expect(page.locator('.vf-product-heading .ag-badge')).toHaveText('Ready');
+  await openSite(page, 'product', 'en', {id: 'VF-7K2M4Q'});
+  await expect(page.locator('.vf-product-heading .ag-badge')).toHaveText('New');
+});
+
+test('the shop names the open category above its title', async ({page}) => {
+  await openSite(page, 'shop', 'en');
+  await expect(page.locator('main .ag-sechead__eyebrow')).toHaveText('All flowers');
+  await openSite(page, 'shop', 'fa', {cat: 'orchids'});
+  await expect(page.locator('main .ag-sechead__eyebrow')).toHaveText('ارکیده');
+});
+
+test('the shop lists only categories with designs, and still opens an empty one', async ({
+  page
+}) => {
+  await openSite(page, 'shop', 'en');
+  const main = page.getByRole('main');
+  await expect(main.getByRole('button', {name: /^Bouquets/}).locator('visible=true')).toHaveCount(
+    1
+  );
+  await expect(main.getByRole('button', {name: /^Plants/})).toHaveCount(0);
+  await openSite(page, 'shop', 'en', {cat: 'plants'});
+  await expect(
+    main.getByRole('button', {name: /^Plants/, pressed: true}).locator('visible=true')
+  ).toHaveCount(1);
+  await expect(page.getByRole('heading', {name: /Nothing here/})).toBeVisible();
+});
+
 test('the bag shows how far the order is from free delivery', async ({page}) => {
   await openSite(page, 'bag', 'en');
   const meter = page.getByRole('meter');
@@ -1429,26 +1518,40 @@ test('products say when few are left or when they come back', async ({page}) => 
     'Only 2 left',
     'Back on 12 October'
   ]);
+  // Each note has its own line under the price, never on top of it.
+  for (const card of await page.locator('.vf-shop-product-grid .ag-product:has(.ag-stock)').all()) {
+    const price = await card.locator('.ag-product__price').boundingBox();
+    const stock = await card.locator('.ag-stock').boundingBox();
+    expect(stock.y).toBeGreaterThanOrEqual(price.y + price.height);
+  }
 });
 
-test('the home page says when an order placed now arrives', async ({page}) => {
+test('the announcement says when an order placed now arrives, on every page', async ({
+  page
+}, info) => {
   await page.clock.setFixedTime(MORNING);
   await openSite(page, 'home', 'en');
-  const main = page.getByRole('main');
-  await expect(main.locator('.vf-home-delivery')).toHaveText(
-    'Order by 18:00 for same-day delivery in Karaj.'
-  );
-  await expect(main.getByRole('link', {name: 'Shop same-day flowers'})).toHaveAttribute(
+  const bar = page.getByRole('region', {name: 'Store news'});
+  // Phones get the store's shorter version: the delivery line without the free-delivery sentence.
+  if (info.project.name === 'mobile') {
+    await expect(bar).toContainText('Order by 18:00 for same-day delivery in Karaj.');
+    await expect(bar).not.toContainText('Free delivery');
+  } else
+    await expect(bar).toContainText(
+      'Order by 18:00 for same-day delivery in Karaj. Free delivery over 5,000,000 Toman.'
+    );
+  await expect(bar.getByRole('link', {name: 'Shop same-day'})).toHaveAttribute(
     'href',
     /view=shop.*filters=same/
   );
-  // The designs come straight after the band.
-  await expect(main.locator('section').nth(1)).toHaveClass(/vf-home-arrivals/);
-  // After the cut-off, the next delivery day instead.
+  // The home page opens on its heading and the categories.
+  const main = page.getByRole('main');
+  await expect(main.locator('section').first()).toHaveClass(/vf-home-top/);
+  await expect(main.getByRole('heading', {level: 1})).toHaveText('Shop by category.');
+  // After the cut-off, the next delivery day instead, and no same-day link.
   await page.clock.setFixedTime(new Date('2026-10-05T19:00:00+03:30'));
-  await openSite(page, 'home', 'fa');
-  await expect(main.locator('.vf-home-delivery')).toHaveText(
-    'نزدیک‌ترین تحویل در کرج: فردا، ۱۴ مهر.'
-  );
-  await expect(main.getByRole('link', {name: 'خرید دسته‌گل'})).toBeVisible();
+  await openSite(page, 'shop', 'fa');
+  const faBar = page.getByRole('region', {name: 'خبر فروشگاه'});
+  await expect(faBar).toContainText('نزدیک‌ترین تحویل در کرج: فردا، ۱۴ مهر.');
+  await expect(faBar.getByRole('link')).toHaveCount(0);
 });

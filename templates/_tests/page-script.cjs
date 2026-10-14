@@ -57,7 +57,7 @@ class Component {
 
 function pageScript(folder) {
   const parts = [];
-  if (['storefront-journal', 'storefront-post'].includes(folder))
+  if (['storefront-home', 'storefront-journal', 'storefront-post'].includes(folder))
     parts.push(read('_shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
   const logic = read(folder + '/logic.js');

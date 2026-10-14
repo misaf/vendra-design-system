@@ -7,7 +7,7 @@ import {openSite, scanAxe} from './helpers.mjs';
 test('announcement bar closes for the rest of the session', async ({page}) => {
   await openSite(page, 'home', 'en');
   const bar = page.getByRole('region', {name: 'Store news'});
-  await expect(bar).toContainText('Free delivery in Karaj on orders over 5,000,000 Toman.');
+  await expect(bar).toContainText('same-day delivery in Karaj');
   await bar.getByRole('button', {name: 'Dismiss message'}).click();
   await expect(bar).toHaveCount(0);
   await openSite(page, 'shop', 'fa');

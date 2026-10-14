@@ -89,6 +89,15 @@ export function Shell({v, content, sticky}) {
                 onClose={v.closeAnnouncement}
               >
                 <>{v.announcement}</>
+                {v.announcementLink ? (
+                  <>
+                    {' '}
+                    <a href={v.announcementLink.href} className="vf-shell-announcement-link">
+                      <>{v.announcementLink.label}</>
+                      <DS.Icon name="arrow-right" size={14} className="ag-flip-rtl" />
+                    </a>
+                  </>
+                ) : null}
               </DS.AnnouncementBar>
             </>
           ) : null}
@@ -266,73 +275,6 @@ export function Shell({v, content, sticky}) {
                     ))}
                   </ul>
                 </div>
-                {v.newsletter ? (
-                  <section
-                    aria-labelledby="vf-news-title"
-                    className="vf-shell-footer-newsletter tw:[flex:1_1_320px] tw:max-w-[560px] tw:flex tw:flex-col tw:gap-3"
-                  >
-                    <h2
-                      id="vf-news-title"
-                      className="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display"
-                    >
-                      <>{v.t?.newsletter?.title}</>
-                    </h2>
-                    <p className="tw:m-0 tw:text-sm tw:text-inverse-quiet tw:max-w-measure">
-                      <>{v.t?.newsletter?.body}</>
-                    </p>
-                    {v.newsletter?.open ? (
-                      <>
-                        <form
-                          onSubmit={v.newsletter?.submit}
-                          noValidate
-                          className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
-                        >
-                          <label
-                            id="vf-news-email-label"
-                            htmlFor="vf-news-email"
-                            className="ag-field__label"
-                          >
-                            <>{v.t?.newsletter?.label}</>
-                          </label>
-                          <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
-                            <div className="tw:[flex:1_1_240px]">
-                              <DS.Input
-                                id="vf-news-email"
-                                aria-labelledby="vf-news-email-label"
-                                value={v.newsletter?.draft}
-                                onChange={v.newsletter?.setDraft}
-                                error={v.newsletter?.error}
-                                type="email"
-                                dir="ltr"
-                                autoComplete="email"
-                              />
-                            </div>
-                            <DS.Button
-                              type="submit"
-                              loading={v.newsletter?.sending}
-                              loadingLabel={v.t?.newsletter?.sending}
-                              className="vf-shell-newsletter-submit tw:h-[48px]!"
-                            >
-                              <>{v.t?.newsletter?.submit}</>
-                            </DS.Button>
-                          </div>
-                        </form>
-                      </>
-                    ) : null}
-                    {v.newsletter?.done ? (
-                      <>
-                        <p
-                          id="vf-news-done"
-                          tabIndex={-1}
-                          role="status"
-                          className="tw:m-0 tw:text-sm"
-                        >
-                          <>{v.newsletter?.doneText}</>
-                        </p>
-                      </>
-                    ) : null}
-                  </section>
-                ) : null}
               </div>
               <div className="vf-shell-footer-columns tw:grid tw:[grid-template-columns:repeat(auto-fit,minmax(140px,1fr))] tw:gap-x-5 tw:gap-y-7 tw:pt-7 tw:[border-top:1px_solid_var(--border-inverse)]">
                 <nav

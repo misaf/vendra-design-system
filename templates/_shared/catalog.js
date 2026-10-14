@@ -9,6 +9,7 @@
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_ITEM} from './translations/categories.js';
 import {commerce} from '../../components/utils/commerce.js';
+import {VF_STORE} from './store-config.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
@@ -526,4 +527,14 @@ export function vfRememberViewed(id) {
         JSON.stringify([id, ...vfRecentlyViewed().filter(x => x !== id)].slice(0, 8))
       );
   } catch {}
+}
+
+// The studio's ready-made designs (VF_STORE.featuredProducts): already arranged, so quickest to send.
+// Their cards and page say "Ready" in place of any other badge.
+export const VF_READY_BADGE = {en: 'Ready', fa: 'آماده'};
+export function vfReady(product) {
+  return product.inStock !== false && VF_STORE.featuredProducts.includes(product.id);
+}
+export function vfProductBadge(product, lang) {
+  return vfReady(product) ? VF_READY_BADGE[lang] : product[lang].badge;
 }

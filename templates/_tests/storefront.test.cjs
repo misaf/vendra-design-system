@@ -425,7 +425,8 @@ for (const lang of ['en', 'fa']) {
   assert.equal(v.items.length, 2);
   assert.ok(v.items[0].href.includes('id=VF-9FA2KE&cat=bouquets'));
   assert.equal(v.items[0].name, 'VF-9FA2KE');
-  v.chips[1].toggle();
+  // Ready to send, Under 3M, Same day, Roses.
+  v.chips[2].toggle();
   assert.ok(!next.filters.includes('same'));
   v.categories[2].pick();
   assert.equal(next.cat, 'boxes');

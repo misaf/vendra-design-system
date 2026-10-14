@@ -3,6 +3,10 @@ import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
+import {VF_CATEGORY_SLUGS} from './product-categories.js';
+
+// The shop's quick filters (?filters=), in the order the shop shows them.
+export const VF_SHOP_FILTERS = ['ready', 'under3', 'same', 'roses'];
 export const VF_ROUTES = [
   'account',
   'bag',
@@ -85,7 +89,7 @@ export function vfReadRoute(search = location.search) {
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id))
     route.view = 'notfound';
   if (route.view === 'shop') {
-    route.cat = ['bouquets', 'boxes', 'orchids', 'bridal'].includes(route.cat) ? route.cat : 'all';
+    route.cat = VF_CATEGORY_SLUGS.includes(route.cat) ? route.cat : 'all';
     route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
     const max = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const number = (key, fallback) => {
@@ -99,7 +103,7 @@ export function vfReadRoute(search = location.search) {
       ...new Set(
         (query.get('filters') || '')
           .split(',')
-          .filter(id => ['under3', 'same', 'roses'].includes(id))
+          .filter(id => VF_SHOP_FILTERS.includes(id))
           .filter(id => id !== 'same' || features.sameDay)
       )
     ].sort();
@@ -134,7 +138,7 @@ export function vfRouteParams(route) {
     if (route.stock) query.set('stock', '1');
     if (route.cat === 'all') query.delete('cat');
     if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => ['under3', 'same', 'roses'].includes(id));
+    const filters = (route.filters || []).filter(id => VF_SHOP_FILTERS.includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
     if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
     if (route.date) query.set('date', route.date);

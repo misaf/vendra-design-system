@@ -37,6 +37,7 @@ export function vfCopy(S) {
         }
       ],
       chipLabels: {
+        ready: 'Ready to send',
         under3: 'Under 3M',
         same: 'Same day',
         roses: 'Roses'
@@ -82,6 +83,7 @@ export function vfCopy(S) {
         }
       ],
       chipLabels: {
+        ready: 'آماده ارسال',
         under3: 'زیر ۳ میلیون',
         same: 'ارسال همان روز',
         roses: 'رز'

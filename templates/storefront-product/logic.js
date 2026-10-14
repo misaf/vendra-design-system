@@ -9,6 +9,7 @@ import {
   vfFindProduct,
   vfLineDetail,
   vfProduct,
+  vfProductBadge,
   vfProductImage,
   vfProductImages,
   vfProductSub,
@@ -100,7 +101,7 @@ function vals(page) {
       // Products have no names: the code is the title and the category says what it is.
       name: product.id,
       sub: vfProductSub(product, L),
-      badge: product[L].badge || C.labels.vendraFlowers,
+      badge: vfProductBadge(product, L) || C.labels.vendraFlowers,
       desc: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
       cat: VF_CATEGORY_COPY[L][product.cat],
       careT: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT,

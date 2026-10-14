@@ -1,2 +1,37 @@
 /* Custom styles for the home page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* The page's h1 heads the category row, so it takes the section-title size rather than a hero's. */
+.vf-home-top .ag-sechead--h1 .ag-sechead__title {
+  font-size: clamp(2rem, 4vw, var(--text-3xl));
+}
+@media (max-width: 767px) {
+  .vf-home-top .ag-sechead--h1 .ag-sechead__title {
+    font-size: var(--text-2xl);
+  }
+}
+/* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
+   pink is too dark to read there). */
+.vf-home-weddings-accent {
+  font-style: var(--accent-font-style);
+  font-weight: var(--accent-font-weight);
+}
+:lang(fa) .vf-home-weddings-accent {
+  font-style: normal;
+}
+/* The newsletter field and its button share one 48px row. */
+.vf-home-newsletter-form .ag-input {
+  box-sizing: border-box;
+  height: var(--control-h-input);
+  min-height: 0;
+}
+.vf-home-newsletter-form .ag-input input {
+  padding-block: 0;
+  align-self: stretch;
+}
+.vf-home-newsletter-form .ag-input input:focus-visible {
+  outline: none;
+}
+.vf-home-newsletter-form .ag-input:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}

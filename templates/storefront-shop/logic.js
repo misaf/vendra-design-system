@@ -1,6 +1,12 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {
+  VF_PRODUCTS,
+  vfProductBadge,
+  vfProductImage,
+  vfProductSub,
+  vfReady
+} from '../_shared/catalog.js';
 import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -15,9 +21,11 @@ import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 import {commerce} from '../../components/utils/commerce.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-const VF_CATS = ['all', 'bouquets', 'boxes', 'orchids', 'bridal'];
+import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
+const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
 /** @type {[string, (product: any) => boolean][]} */
 const VF_CHIPS = [
+  ['ready', p => vfReady(p)],
   ['under3', p => p.price < 3000000],
   ['same', p => p.same],
   ['roses', p => p.roses]
@@ -258,9 +266,14 @@ function vals(page) {
     frame: page.props.frame ?? 'soft',
     t: {
       ...S.t,
-      ...C
+      ...C,
+      // The open category names the page; "All flowers" otherwise.
+      eyebrow: s.cat === 'all' ? C.eyebrow : VF_CATEGORY_COPY[L][s.cat]
     },
-    categories: VF_CATS.map(id => {
+    // A category with no designs at all stays out of the filter, unless it's the one open.
+    categories: VF_CATS.filter(
+      id => id === 'all' || id === s.cat || VF_PRODUCTS.some(p => p.cat === id)
+    ).map(id => {
       const on = s.cat === id;
       return {
         label: VF_CATEGORY_COPY[L][id],
@@ -327,7 +340,7 @@ function vals(page) {
         images: [vfProductImage(p, L)],
         name: p.id,
         sub: vfProductSub(p, L),
-        badge: p[L].badge,
+        badge: vfProductBadge(p, L),
         price: VF_MONEY(p.price, fa),
         stock: p.stock,
         fav,

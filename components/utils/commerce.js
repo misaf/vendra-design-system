@@ -371,7 +371,7 @@ const orderFromApi = (order, {line, delivery, method, preferredLocale}) => ({
 // - weddings: the weddings and events page with its inquiry form.
 // - journal: the journal and its posts.
 // - reminders: yearly occasion reminders in the account.
-// - newsletter: the email sign-up in the footer.
+// - newsletter: the email sign-up on the home page.
 // Add-ons (and the handwritten card's message) follow the store's add-on list instead.
 const STORE_FEATURES = ['promoCodes', 'sameDay', 'weddings', 'journal', 'reminders', 'newsletter'];
 

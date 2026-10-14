@@ -1,7 +1,11 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
-import {vfAccountLoad, vfAccountPhone} from './account-data.js';
 import {vfFindProduct, vfProductId} from './catalog.js';
-import {VF_FREE_DELIVERY_THRESHOLD} from './delivery.js';
+import {
+  VF_FREE_DELIVERY_THRESHOLD,
+  VF_ZONES,
+  vfDeliveryCutoff,
+  vfDeliveryDays
+} from './delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
 import {vfDirectionsUrl} from './location.js';
 import {vfPageTenant} from './page-lifecycle.js';
@@ -9,17 +13,44 @@ import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from
 import {VF_STORE, vfFeatures} from './store-config.js';
 import {VF_CATEGORY_COPY} from './translations/categories.js';
 import {VF_SHELL} from './translations/shell.js';
+import {vfDayMonth, vfDayName} from './translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
 
-// The store's announcement in this language, or '' once the visitor has closed it this session.
-export function vfAnnouncementText(lang, st) {
-  const text = VF_STORE.announcement && VF_STORE.announcement[lang];
+// When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
+// open day ('' when none is open). sameDay says whether it is today.
+export function vfNextDelivery(lang) {
+  const fa = lang === 'fa';
+  const T = VF_SHELL[lang];
+  const zone = VF_ZONES[0];
+  const next = vfDeliveryDays(zone.id).find(day => !day.soldOut && !day.pastCutoff);
+  if (!next) return {text: '', sameDay: false};
+  if (next.offset === 0)
+    return {text: T.sameDay.replace('{time}', vfDeliveryCutoff(zone, fa)), sameDay: true};
+  return {
+    text: T.nextDay
+      .replace('{day}', vfDayName(next, fa))
+      .replace('{date}', vfDayMonth(next.date, fa)),
+    sameDay: false
+  };
+}
+// The store's announcement in this language (its shorter phone version on a phone, when it has one),
+// or '' once the visitor has closed it this session. {delivery} becomes when an order placed now
+// arrives; {freeDelivery} the free-delivery threshold.
+export function vfAnnouncementSource(lang, mobile) {
+  const announcement = VF_STORE.announcement;
+  return (announcement && ((mobile && announcement.mobile?.[lang]) || announcement[lang])) || '';
+}
+export function vfAnnouncementText(lang, st, mobile = false) {
+  const text = vfAnnouncementSource(lang, mobile);
   if (!text || st.vfAnnouncementClosed) return '';
   try {
     if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
   } catch {}
-  return text.replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'));
+  return text
+    .replace('{delivery}', vfNextDelivery(lang).text)
+    .replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'))
+    .trim();
 }
 // A value saved on this device, or '' when storage is empty or blocked.
 export function vfStored(key) {
@@ -30,7 +61,7 @@ export function vfStored(key) {
   }
 }
 // The shell's values for a page (header, menu, footer, consent, tabs) and its own bits of state on
-// the page object (menu, consent, newsletter, favourites).
+// the page object (menu, consent, favourites).
 export function vfShell(self, page) {
   const props = self.props,
     st = self.state || {},
@@ -121,47 +152,6 @@ export function vfShell(self, page) {
       },
       tries === 10 ? 0 : 50
     );
-  // Footer newsletter: the draft lives in page state; a finished sign-up is remembered on this device.
-  const N = T.newsletter,
-    news = st.vfNews || {};
-  const signedUp = news.done || vfStored('vf-newsletter');
-  const accountPhone = vfAccountPhone();
-  const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
-  const draft = news.draft ?? profile.email ?? '';
-  const newsletter = features.newsletter && {
-    open: !signedUp,
-    done: !!signedUp,
-    doneText: N.done.replace('{email}', '\u2066' + signedUp + '\u2069'),
-    draft,
-    sending: !!news.sending,
-    error: news.error || undefined,
-    setDraft: value => self.setState({vfNews: {...news, draft: value, error: ''}}),
-    submit: e => {
-      e && e.preventDefault && e.preventDefault();
-      if (news.sending) return;
-      const email = draft.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        self.setState({vfNews: {...news, draft, error: N.error}});
-        focus('vf-news-email');
-        return;
-      }
-      self.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.VF_API.newsletter(email, profile.name).then(
-        () => {
-          try {
-            localStorage.setItem('vf-newsletter', email);
-          } catch {}
-          window.VF_TRACK.event('generate_lead', {lead_source: 'newsletter'});
-          self.setState({vfNews: {done: email}});
-          focus('vf-news-done');
-        },
-        () => {
-          self.setState({vfNews: {...news, draft, sending: false, error: N.failed}});
-          focus('vf-news-email');
-        }
-      );
-    }
-  };
   // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
   // Closing it makes no choice (so nothing is sent) and hides it for this browser session only.
   let dismissed = !!st.vfConsentDismissed;
@@ -301,7 +291,17 @@ export function vfShell(self, page) {
       VF_NAV.focusHeading();
     },
     standalone: !props.store,
-    announcement: vfAnnouncementText(L, st),
+    announcement: vfAnnouncementText(L, st, mob),
+    // While same-day delivery is open, a delivery announcement links to the same-day designs.
+    announcementLink:
+      vfAnnouncementSource(L, mob).includes('{delivery}') && vfNextDelivery(L).sameDay
+        ? {
+            label: T.shopSameDay,
+            href:
+              href.shop.split('?')[0] +
+              vfRouteParams({view: 'shop', lang: L, cat: 'all', filters: ['same']})
+          }
+        : null,
     closeAnnouncement: () => {
       // Keyed by the message, so a new announcement shows again.
       try {
@@ -326,7 +326,6 @@ export function vfShell(self, page) {
         }
       }, 0),
     focus,
-    newsletter,
     footer,
     consent,
     openMenu: () =>
