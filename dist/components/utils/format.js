@@ -6,15 +6,15 @@
 const CURRENCIES = {
 	IRT: {
 		rate: 1,
-		dec: 0,
-		sym: "",
+		decimals: 0,
+		symbol: "",
 		en: "Toman",
 		fa: "تومان"
 	},
 	IRR: {
 		rate: 10,
-		dec: 0,
-		sym: "",
+		decimals: 0,
+		symbol: "",
 		en: "Rial",
 		fa: "ریال"
 	}
@@ -28,21 +28,21 @@ const formatNumber = (n, lang, options = {}) => {
 	});
 	return formatter.formatToParts(Number(n)).map((p) => lang === "fa" ? p.type === "group" ? "٬" : p.type === "decimal" ? "٫" : p.value : p.value).join("");
 };
-const num = (n, lang = "en") => formatNumber(n, lang);
+const number = (n, lang = "en") => formatNumber(n, lang);
 // fa: number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first ($42.00), words after (4,200,000 Toman)
 const money = (n, { currency = "IRT", lang = "en", currencies = CURRENCIES } = {}) => {
 	const c = currencies[currency];
 	// A price in the wrong currency is worse than none: refuse instead of falling back to Toman.
 	if (!c || !(c.rate > 0)) throw new Error("money: no rate for currency " + JSON.stringify(currency) + " — pass the tenant's currencies table");
 	const s = formatNumber(Number(n) * c.rate, lang, {
-		minimumFractionDigits: c.dec,
-		maximumFractionDigits: c.dec
+		minimumFractionDigits: c.decimals,
+		maximumFractionDigits: c.decimals
 	});
 	if (lang === "fa") return s + " " + c.fa;
-	return c.sym ? c.sym + s : s + " " + c.en;
+	return c.symbol ? c.symbol + s : s + " " + c.en;
 };
 export const format = {
 	CURRENCIES,
 	money,
-	num
+	number
 };

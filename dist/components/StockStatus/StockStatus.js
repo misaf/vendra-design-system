@@ -25,7 +25,7 @@ export function StockStatus({ stock, hideInStock, size = "md", className, style 
 	const status = stock && ICONS[stock.status] ? stock.status : "in";
 	if (status === "in" && hideInStock) return null;
 	const date = status === "soon" && stock.date ? dates.fromIso(stock.date) : null;
-	const label = status === "low" ? text.low.replace("{count}", format.num(stock.count, language)) : status === "soon" && date ? text.soonOn.replace("{date}", dates.dayMonth(date, dates.locale(language))) : text[status];
+	const label = status === "low" ? text.low.replace("{count}", format.number(stock.count, language)) : status === "soon" && date ? text.soonOn.replace("{date}", dates.dayMonth(date, dates.locale(language))) : text[status];
 	return /* @__PURE__ */ React.createElement("span", {
 		ref,
 		className: cx("ag-stock", "ag-stock--" + status, "ag-stock--" + size, className),

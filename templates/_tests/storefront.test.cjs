@@ -324,7 +324,7 @@ for (const folder of fs
     assert.equal(logic.state.route, 'checkout');
     logic.renderVals().store.remove('VF-8RD5WN-card');
     logic.renderVals().store.add({...originalBag[1]});
-    const totals = vm.runInContext('format', c).num(8300000, 'en');
+    const totals = vm.runInContext('format', c).number(8300000, 'en');
     assert.equal(totals, '8,300,000');
     const order = {
       lines: logic.state.bag,

@@ -54,7 +54,7 @@ function vals(page) {
   const L = S.lang;
   const q = page.state.q.trim().toLowerCase();
   const C = vfCopy(S);
-  const res = vfSearchProducts(page.state.q);
+  const results = vfSearchProducts(page.state.q);
   const pop = C.popularTerms;
   return {
     ...S,
@@ -78,9 +78,9 @@ function vals(page) {
       page._report(value, VF_SEARCH_SETTLE_MS);
     },
     empty: !q,
-    hasResults: res.length > 0,
-    noResults: !!q && !res.length,
-    countLabel: C.resultCount(res.length),
+    hasResults: results.length > 0,
+    noResults: !!q && !results.length,
+    countLabel: C.resultCount(results.length),
     popular: pop.map(l => ({
       label: l,
       pick: () => {
@@ -90,7 +90,7 @@ function vals(page) {
         page._report(l, 0);
       }
     })),
-    results: res.map(p => ({
+    results: results.map(p => ({
       ...S.productLink(p.id),
       image: vfProductImage(p, L),
       name: p.id,

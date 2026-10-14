@@ -42,7 +42,7 @@ export interface ComponentMessages {
     copied: string;
   };
   ProductCard: {placeholder: string; favorite: string};
-  QuantityInput: {value: string; dec: string; inc: string};
+  QuantityInput: {value: string; decrease: string; increase: string};
   RangeSlider: {label: string; min: string; max: string};
   ReminderRow: {
     paused: string;

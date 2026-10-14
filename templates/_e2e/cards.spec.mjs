@@ -49,13 +49,20 @@ for (const tenant of [null, ...TENANTS]) {
   });
 }
 
+// Cards whose striped photo placeholders shift by a sub-pixel under a loaded full run
+// (about 120 pixels of the stripes' phase); everything else keeps the config's 25.
+const PLACEHOLDER_SLACK = {'guidelines/components/commerce.html': 200};
+
 for (const card of cards()) {
   test(`card: ${card.file}`, async ({page}) => {
     const errors = await openCard(page, card);
     expect(errors, 'no runtime errors').toEqual([]);
     await expect(page).toHaveScreenshot(
       card.file.replace(/\.html$/, '').replaceAll('/', '__') + '.png',
-      {fullPage: true}
+      {
+        fullPage: true,
+        ...(PLACEHOLDER_SLACK[card.file] && {maxDiffPixels: PLACEHOLDER_SLACK[card.file]})
+      }
     );
   });
 }

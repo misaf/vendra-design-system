@@ -89,9 +89,9 @@ export function Pagination({
                 …
               </span>
             ) : (
-              control(number, format.num(number, language), {
+              control(number, format.number(number, language), {
                 className: cx('ag-pages__page', number === current && 'ag-pages__page--current'),
-                'aria-label': text.page.replace('{page}', format.num(number, language)),
+                'aria-label': text.page.replace('{page}', format.number(number, language)),
                 'aria-current': number === current ? 'page' : undefined
               })
             )}

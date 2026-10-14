@@ -21,10 +21,10 @@ export const VF_NAV = (() => {
     focusFirstInvalid(root) {
       after(() => {
         const r = root || document.querySelector('main') || document;
-        const el = r.querySelector(
+        const invalidField = r.querySelector(
           '[aria-invalid="true"],[data-invalid] > [aria-haspopup="listbox"],input:invalid,select:invalid,textarea:invalid'
         );
-        if (el) el.focus();
+        if (invalidField) invalidField.focus();
       });
     }
   };

@@ -227,7 +227,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 
 **Helpers** (not components)
 - `components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
-- `components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `num()`. An ES module: `import {format}` from the package; the storefront imports it.
+- `components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
 - `components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
 - `components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `templates/_shared/seo.js` → `VF_SEO` and `templates/_shared/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.

@@ -42,9 +42,9 @@ export function ResendCode({seconds = 60, onResend, resendLabel, className, styl
     };
   }, [left > 0]);
   const time =
-    format.num(Math.floor(left / 60), language) +
+    format.number(Math.floor(left / 60), language) +
     ':' +
-    format.num(left % 60, language).padStart(2, language === 'fa' ? '۰' : '0');
+    format.number(left % 60, language).padStart(2, language === 'fa' ? '۰' : '0');
   return (
     <div ref={ref} className={cx('ag-resend', className)} style={style}>
       {left > 0 ? (

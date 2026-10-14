@@ -200,7 +200,7 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.equal(
       ds.format.money(100, {
         currency: 'GBP',
-        currencies: {GBP: {rate: 0.5, dec: 2, sym: '£', en: 'GBP', fa: 'پوند'}}
+        currencies: {GBP: {rate: 0.5, decimals: 2, symbol: '£', en: 'GBP', fa: 'پوند'}}
       }),
       '£50.00'
     );
@@ -210,7 +210,11 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.equal(ds.format.money(4200000, {currency: 'IRR'}), '42,000,000 Rial');
     assert.throws(() => ds.format.money(100, {currency: 'USD'}), /no rate for currency "USD"/);
     assert.throws(
-      () => ds.format.money(100, {currency: 'GBP', currencies: {GBP: {rate: 0, dec: 2, sym: '£'}}}),
+      () =>
+        ds.format.money(100, {
+          currency: 'GBP',
+          currencies: {GBP: {rate: 0, decimals: 2, symbol: '£'}}
+        }),
       /no rate/
     );
     assert.deepEqual([...ds.dates.g2j(new Date(2026, 2, 21, 12))], [1405, 1, 1]);

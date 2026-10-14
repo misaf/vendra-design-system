@@ -2,7 +2,7 @@ import '../card-runtime.js';
 const { ProductCard, Price, StockStatus, CategoryCard, BlogCard, Gallery, PaymentCard, PaymentStatus, LineItem } = window.VendraDesignSystem;
 const STOCK=[{status:'in'},{status:'low',count:2},{status:'soon',date:'2026-10-12'},{status:'soon',date:null},{status:'out'}];
 const P='../../assets/placeholder-studio.svg',PH='../../assets/placeholder.svg';const pd=e=>e.preventDefault();
-const fa=n=>window.AG_FORMAT.num(n,'fa');
+const fa=n=>window.AG_FORMAT.number(n,'fa');
 const T={
 en:{h:'English',dig:n=>n.toLocaleString('en-US'),cur:'Toman',
  p:[['Lavender Whisper','Peach, pink & violet roses',2400000,null,'New','accent'],['Pampas & Rust','Dried · lasts a year',490000,560000,'Dried','warning'],['Garden Rose','Fresh · 12 stems',3100000,null,'Seasonal','success']],

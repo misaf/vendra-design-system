@@ -47,11 +47,11 @@ export function QuantityInput({
         <Group
           className={cx('ag-qty', size === 'sm' && 'ag-qty--sm', disabled && 'ag-qty--disabled')}
         >
-          <Button slot="decrement" aria-label={text.dec}>
+          <Button slot="decrement" aria-label={text.decrease}>
             <Icon name="minus" size={16} />
           </Button>
           <Input className="ag-qty__val" />
-          <Button slot="increment" aria-label={text.inc}>
+          <Button slot="increment" aria-label={text.increase}>
             <Icon name="plus" size={16} />
           </Button>
         </Group>

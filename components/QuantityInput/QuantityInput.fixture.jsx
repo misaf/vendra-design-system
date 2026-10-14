@@ -10,7 +10,7 @@ export function Fixture() {
         min={1}
         max={3}
         onChange={setQuantity}
-        labels={{dec: 'Fewer', inc: 'More', value: 'Quantity'}}
+        labels={{decrease: 'Fewer', increase: 'More', value: 'Quantity'}}
       />
       <QuantityInput defaultValue={1} disabled />
       <output data-test="quantity">{quantity}</output>

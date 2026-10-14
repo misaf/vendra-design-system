@@ -16,8 +16,10 @@ export function vfPinLocation(latlng) {
 export function vfLocationText(location, fa) {
   if (!vfValidLocation(location)) return '';
   // Persian uses its own digits, decimal mark (٫) and comma (،); the pair stays isolated from the sentence.
-  const num = v => (fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5));
-  return '\u2068' + num(location.lat) + (fa ? '، ' : ', ') + num(location.lng) + '\u2069';
+  const coordinate = v => (fa ? VF_FA_DIGITS(v.toFixed(5)).replace('.', '٫') : v.toFixed(5));
+  return (
+    '\u2068' + coordinate(location.lat) + (fa ? '، ' : ', ') + coordinate(location.lng) + '\u2069'
+  );
 }
 
 // A route to the place in the visitor's own maps app (Google Maps opens natively on phones).

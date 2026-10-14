@@ -323,8 +323,8 @@ function vals(page) {
           err: true
         });
         setTimeout(() => {
-          const el = document.getElementById('vf-last4');
-          el && el.focus();
+          const lastFourField = document.getElementById('vf-last4');
+          lastFourField && lastFourField.focus();
         }, 0);
         return;
       }

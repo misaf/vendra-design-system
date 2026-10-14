@@ -83,16 +83,16 @@ export const VF_SEO = (() => {
     }
   };
   const upsert = (sel, tag, attrs) => {
-    let el = document.head.querySelector(sel);
-    if (!el) {
-      el = document.createElement(tag);
-      el.setAttribute('data-ag-seo', '');
-      document.head.appendChild(el);
+    let element = document.head.querySelector(sel);
+    if (!element) {
+      element = document.createElement(tag);
+      element.setAttribute('data-ag-seo', '');
+      document.head.appendChild(element);
     }
-    for (const k in attrs) el.setAttribute(k, attrs[k]);
-    return el;
+    for (const k in attrs) element.setAttribute(k, attrs[k]);
+    return element;
   };
-  const drop = sel => document.head.querySelectorAll(sel).forEach(el => el.remove());
+  const drop = sel => document.head.querySelectorAll(sel).forEach(element => element.remove());
   const meta = (key, name, content) =>
     content == null || content === ''
       ? drop('meta[' + key + '="' + name + '"]')

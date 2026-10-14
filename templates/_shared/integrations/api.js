@@ -15,7 +15,7 @@ import {VF_STORE} from '../store-config.js';
       return !!A.base;
     }
   };
-  const req = async (method, path, body) => {
+  const request = async (method, path, body) => {
     const r = await fetch(A.base + path, {
       method,
       headers: {
@@ -62,7 +62,7 @@ import {VF_STORE} from '../store-config.js';
   A.saveItem = async slug => {
     const id = pid(slug);
     if (!A.live || id == null) return null;
-    const r = await req('POST', '/api/customers/saved-items', {
+    const r = await request('POST', '/api/customers/saved-items', {
       sellableType: 'product',
       sellableId: id,
       metadata: {
@@ -81,7 +81,7 @@ import {VF_STORE} from '../store-config.js';
     const m = map();
     const sid = m[slug];
     if (!A.live || sid == null) return null;
-    await req('DELETE', '/api/customers/saved-items/' + sid);
+    await request('DELETE', '/api/customers/saved-items/' + sid);
     delete m[slug];
     setMap(m);
     return true;
@@ -89,7 +89,7 @@ import {VF_STORE} from '../store-config.js';
   // GET /api/customers/wishlists -> default list's items -> product slugs
   A.loadSaved = async () => {
     if (!A.live) return null;
-    const r = await req('GET', '/api/customers/wishlists');
+    const r = await request('GET', '/api/customers/wishlists');
     const lists = (r && (r['hydra:member'] || r.member || r.data)) || [];
     const w = lists.find(l => l.isDefault) || lists[0];
     if (!w) return [];
@@ -114,7 +114,7 @@ import {VF_STORE} from '../store-config.js';
   // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
   A.checkout = async body => {
     if (!A.live) return null;
-    return req('POST', '/api/sales/checkout', body);
+    return request('POST', '/api/sales/checkout', body);
   };
   // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
   A.inquiry = async body => {
@@ -122,7 +122,7 @@ import {VF_STORE} from '../store-config.js';
       await new Promise(r => setTimeout(r, 600));
       return null;
     }
-    return req('POST', '/api/support/inquiries', body);
+    return request('POST', '/api/support/inquiries', body);
   };
   // POST /api/marketing/newsletter-subscriptions {email, name} -> 204
   A.newsletter = async (email, name) => {
@@ -130,7 +130,7 @@ import {VF_STORE} from '../store-config.js';
       await new Promise(r => setTimeout(r, 600));
       return null;
     }
-    return req('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
+    return request('POST', '/api/marketing/newsletter-subscriptions', {email, name: name || null});
   };
   // Language for all processing (orders, reminders, SMS, WhatsApp, email, receipts) = the account setting, never the page language.
   // Changing it in Profile should save it to the account once the API has a profile endpoint (templates/API.md B12).

@@ -847,7 +847,11 @@ test('the server-error page offers a retry, the way home and the phone', async (
   await expect(main.getByRole('link', {name: 'Back home'})).toBeVisible();
   await expect(main.getByRole('link', {name: /^Call /})).toHaveAttribute('href', /^tel:/);
   await expect(page.locator('meta[name=robots]')).toHaveAttribute('content', /noindex/);
-  await main.getByRole('button', {name: 'Try again'}).click();
+  // Try again reloads the page: wait for the reload before looking for the heading again.
+  await Promise.all([
+    page.waitForEvent('load'),
+    main.getByRole('button', {name: 'Try again'}).click()
+  ]);
   await expect(main.getByRole('heading', {level: 1})).toContainText('Something went wrong');
 });
 

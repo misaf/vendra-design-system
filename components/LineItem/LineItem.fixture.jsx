@@ -15,7 +15,7 @@ export function Fixture() {
           quantity={quantity}
           onQuantityChange={setQuantity}
           onRemove={() => setRemoved(true)}
-          quantityLabels={{dec: 'Fewer', inc: 'More', value: 'Quantity'}}
+          quantityLabels={{decrease: 'Fewer', increase: 'More', value: 'Quantity'}}
         />
       )}
       <LineItem size="sm" name="Ivory Rib Box" price="8,200,000 Toman" quantity={2} />

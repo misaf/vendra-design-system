@@ -89,7 +89,7 @@ function vals(page) {
     id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
     phone: ls.lookupTried && !vfMobile(ls.lookupPhone) ? C.lookup.phoneErr : undefined
   };
-  const idx = {
+  const currentStep = {
     received: 0,
     preparing: 2,
     onTheWay: 3,
@@ -164,14 +164,14 @@ function vals(page) {
     titleA: h[0],
     titleB: h[1],
     statusP: h[2],
-    current: idx,
+    current: currentStep,
     delivered: st === 'delivered',
     // A real order carries the courier's photo URL; samples show the placeholder.
     photo: (order && order.deliveryPhoto) || undefined,
     tlStatus: st === 'cancelled' ? 'cancelled' : st === 'delivered' ? 'done' : 'active',
     steps: C.steps.map((l, i) => ({
       label: l,
-      time: i <= idx ? C.times[i] || undefined : undefined
+      time: i <= currentStep ? C.times[i] || undefined : undefined
     })),
     rows: C.rows.map(r => ({
       icon: r[0],

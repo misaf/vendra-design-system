@@ -1,6 +1,6 @@
 import '../card-runtime.js';
 const { Tabs, LanguageSwitch, Accordion, Stepper, BottomTabBar, NavLink, MenuList, SectionHeader, Carousel, LoadMore, Button, ArchFrame } = window.VendraDesignSystem;
-const fa=n=>window.AG_FORMAT.num(n,'fa');
+const fa=n=>window.AG_FORMAT.number(n,'fa');
 const chip={height:52,display:'grid',placeItems:'center',background:'var(--surface-sunken)',borderRadius:8,fontSize:14};
 const T={
 en:{h:'English',tabs:['Description','Care','Delivery'],pills:['All','Fresh','Dried'],kst:'Stepper',chk:'Checkout',steps:['Bag','Delivery','Payment','Done'],done:'(completed)',kc:'Stepper · compact (phones)',csteps:['Bag','Time & card','Confirmed'],cap:undefined,

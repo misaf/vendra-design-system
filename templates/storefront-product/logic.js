@@ -124,11 +124,11 @@ function vals(page) {
         });
       // Without clipboard access, select the code and try the older copy command; the code stays selected either way.
       const fallback = () => {
-        const el = document.getElementById('vf-product-code');
+        const codeElement = document.getElementById('vf-product-code');
         let ok = false;
-        if (el) {
+        if (codeElement) {
           const range = document.createRange();
-          range.selectNodeContents(el);
+          range.selectNodeContents(codeElement);
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
@@ -190,8 +190,8 @@ function vals(page) {
         qty: q
       }),
     qtyLabels: {
-      dec: C.dec,
-      inc: C.inc,
+      decrease: C.decrease,
+      increase: C.increase,
       value: C.quantity
     },
     addLabel:

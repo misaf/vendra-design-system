@@ -32,7 +32,7 @@ import {VF_CATEGORY_ITEM} from '../translations/categories.js';
     listeners.push(listener);
     return () => listeners.splice(listeners.indexOf(listener), 1);
   };
-  const ctx = () => ({
+  const context = () => ({
     language: document.documentElement?.lang || 'en',
     currency: VF_STORE.currency || 'IRT'
   });
@@ -49,7 +49,7 @@ import {VF_CATEGORY_ITEM} from '../translations/categories.js';
       : null;
   const event = (name, params = {}) => {
     const dropped = [];
-    const built = analytics.event(name, {...ctx(), ...params}, dropped);
+    const built = analytics.event(name, {...context(), ...params}, dropped);
     if (!built) {
       console.warn('VF_TRACK: unknown event', name);
       return;

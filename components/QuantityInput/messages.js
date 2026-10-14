@@ -2,12 +2,12 @@
 export const messages = {
   en: {
     value: 'Quantity',
-    dec: 'Decrease',
-    inc: 'Increase'
+    decrease: 'Decrease',
+    increase: 'Increase'
   },
   fa: {
     value: 'تعداد',
-    dec: 'کم کردن',
-    inc: 'افزودن'
+    decrease: 'کم کردن',
+    increase: 'افزودن'
   }
 };

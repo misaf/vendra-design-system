@@ -337,8 +337,8 @@ function vals(page) {
       C.caption.replace('{n}', i).replace('{total}', count).replace('{label}', label),
     fmt: fa ? v => VF_FA_DIGITS(v) : v => String(v),
     qtyLabels: {
-      dec: C.dec,
-      inc: C.inc,
+      decrease: C.decrease,
+      increase: C.increase,
       value: C.quantity
     },
     lines: live.map((l, i) => ({

@@ -42,7 +42,7 @@ export function ResendCode({ seconds = 60, onResend, resendLabel, className, sty
 			document.removeEventListener("visibilitychange", tick);
 		};
 	}, [left > 0]);
-	const time = format.num(Math.floor(left / 60), language) + ":" + format.num(left % 60, language).padStart(2, language === "fa" ? "۰" : "0");
+	const time = format.number(Math.floor(left / 60), language) + ":" + format.number(left % 60, language).padStart(2, language === "fa" ? "۰" : "0");
 	return /* @__PURE__ */ React.createElement("div", {
 		ref,
 		className: cx("ag-resend", className),

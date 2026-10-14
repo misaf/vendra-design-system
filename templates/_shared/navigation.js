@@ -69,7 +69,7 @@ export function vfShell(self, page) {
     self.setState({
       vfMenu: false
     });
-  const cur = {
+  const isCurrent = {
     home: page === 'home',
     shop: ['shop', 'product'].includes(page),
     weddings: page === 'weddings',
@@ -94,7 +94,7 @@ export function vfShell(self, page) {
     .filter(offered)
     .map(r => ({
       label: T[r],
-      current: cur[r],
+      current: isCurrent[r],
       href: href[r],
       // Closes the drawer; the link itself navigates (React Aria's router).
       close
@@ -115,8 +115,8 @@ export function vfShell(self, page) {
   const focus = (id, tries = 10) =>
     setTimeout(
       () => {
-        const el = document.getElementById(id);
-        if (el) el.focus();
+        const target = document.getElementById(id);
+        if (target) target.focus();
         else if (tries > 1) focus(id, tries - 1);
       },
       tries === 10 ? 0 : 50
@@ -204,11 +204,11 @@ export function vfShell(self, page) {
   const footerLink = (r, label) => ({
     label,
     href: href[r],
-    current: cur[r] ? 'page' : undefined
+    current: isCurrent[r] ? 'page' : undefined
   });
   const footer = {
     tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
-    faqCurrent: cur.faq ? 'page' : undefined,
+    faqCurrent: isCurrent.faq ? 'page' : undefined,
     shop: [
       {...shopLink('all'), label: F.allFlowers},
       ...['bouquets', 'boxes', 'orchids', 'bridal'].map(cat => ({
@@ -286,9 +286,9 @@ export function vfShell(self, page) {
     previewMobile: !!props.mobile,
     frameW: mob ? '390px' : 'none',
     nav: {
-      shop: cur.shop,
-      weddings: cur.weddings,
-      journal: cur.journal
+      shop: isCurrent.shop,
+      weddings: isCurrent.weddings,
+      journal: isCurrent.journal
     },
     bagCount: count ? (fa ? VF_FA_DIGITS(count) : count) : undefined,
     bagLabel: !count

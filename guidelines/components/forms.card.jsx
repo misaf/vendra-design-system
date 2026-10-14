@@ -1,6 +1,6 @@
 import '../card-runtime.js';
 const { DatePicker, Input, PhoneInput, CodeInput, LocationPicker, PlacesMap, Select, Checkbox, Radio, RadioGroup, Switch, QuantityInput, ChoiceTile, ChoiceGroup, RangeSlider } = window.VendraDesignSystem;
-const fa=n=>window.AG_FORMAT.num(n,'fa');
+const fa=n=>window.AG_FORMAT.number(n,'fa');
 const T={
 en:{h:'English',d:n=>n.toLocaleString('en-US'),name:'Recipient name',ph:'e.g. Shirin',win:'Delivery window',wins:['Morning · 8–12','Afternoon · 12–16','Evening · 16–20'],card:'Add a handwritten card',un:'Unavailable',sz:[['Petite','8–10 stems'],['Generous','15–18 stems']],sub:'Weekly subscription',
  ke:'Errors · label → control → hint',phone:'Recipient phone',phErr:'Enter an 11-digit mobile number.',code:'Sign-in code',codeH:'We sent a 5-digit code to 0912 345 6789.',kl:'LocationPicker · PlacesMap · maps load in the app (frames shown here)',places:'Your saved addresses',pin:'Delivery pin',pinH:'Move the map so the pin sits on the front door.',locate:'Use my location',nameH:'As written on the card.',terms:'I agree to the delivery terms',termsErr:'Please accept the terms to continue.',zone:'Delivery area',zph:'Choose an area',zones:['Karaj — central','Tehran'],zErr:'Choose where we deliver.',

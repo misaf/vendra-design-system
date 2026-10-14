@@ -22,7 +22,7 @@ export function StockStatus({stock, hideInStock, size = 'md', className, style})
   const date = status === 'soon' && stock.date ? dates.fromIso(stock.date) : null;
   const label =
     status === 'low'
-      ? text.low.replace('{count}', format.num(stock.count, language))
+      ? text.low.replace('{count}', format.number(stock.count, language))
       : status === 'soon' && date
         ? text.soonOn.replace('{date}', dates.dayMonth(date, dates.locale(language)))
         : text[status];

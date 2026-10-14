@@ -33,13 +33,13 @@ export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onCh
 		className: "ag-qty-root"
 	}, /* @__PURE__ */ React.createElement(Group, { className: cx("ag-qty", size === "sm" && "ag-qty--sm", disabled && "ag-qty--disabled") }, /* @__PURE__ */ React.createElement(Button, {
 		slot: "decrement",
-		"aria-label": text.dec
+		"aria-label": text.decrease
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "minus",
 		size: 16
 	})), /* @__PURE__ */ React.createElement(Input, { className: "ag-qty__val" }), /* @__PURE__ */ React.createElement(Button, {
 		slot: "increment",
-		"aria-label": text.inc
+		"aria-label": text.increase
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: "plus",
 		size: 16

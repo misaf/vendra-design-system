@@ -17,7 +17,7 @@ export interface LineItemProps {
   /** lg only */
   onRemove?: () => void;
   removeLabel?: string;
-  quantityLabels?: {dec: string; inc: string; value?: string};
+  quantityLabels?: {decrease: string; increase: string; value?: string};
   formatQuantity?: (n: number) => string;
   /** lg = bag row (88px thumb, stepper); sm = order summary (44px thumb, "×2") */
   size?: 'lg' | 'sm';

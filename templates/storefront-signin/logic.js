@@ -31,8 +31,8 @@ function vals(page) {
   const C = vfCopy(S);
   const focus = id =>
     setTimeout(() => {
-      const el = document.getElementById(id);
-      el && el.focus();
+      const target = document.getElementById(id);
+      target && target.focus();
     }, 0);
   // Signing in from checkout goes back there; the mobile from the last order fills the field.
   const fromCheckout = vfPageRoute(page.props).next === 'delivery';

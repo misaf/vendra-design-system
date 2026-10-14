@@ -17,11 +17,11 @@ export const VF_STORE = {
   // Units per 1 Toman (prices are stored in Toman). Toman and Rial are fixed; the others are SAMPLE
   // rates. A real store takes them from its own rate source and keeps them current.
   currencies: {
-    IRT: {rate: 1, dec: 0, sym: '', en: 'Toman', fa: 'تومان'},
-    IRR: {rate: 10, dec: 0, sym: '', en: 'Rial', fa: 'ریال'},
-    USD: {rate: 1 / 100000, dec: 2, sym: '$', en: 'USD', fa: 'دلار'},
-    EUR: {rate: 1 / 110000, dec: 2, sym: '€', en: 'EUR', fa: 'یورو'},
-    AED: {rate: 1 / 27000, dec: 0, sym: '', en: 'AED', fa: 'درهم'}
+    IRT: {rate: 1, decimals: 0, symbol: '', en: 'Toman', fa: 'تومان'},
+    IRR: {rate: 10, decimals: 0, symbol: '', en: 'Rial', fa: 'ریال'},
+    USD: {rate: 1 / 100000, decimals: 2, symbol: '$', en: 'USD', fa: 'دلار'},
+    EUR: {rate: 1 / 110000, decimals: 2, symbol: '€', en: 'EUR', fa: 'یورو'},
+    AED: {rate: 1 / 27000, decimals: 0, symbol: '', en: 'AED', fa: 'درهم'}
   },
   // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
   // a real store usually shows 12–24 (the API's itemsPerPage).
