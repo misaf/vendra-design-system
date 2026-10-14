@@ -19,6 +19,7 @@ export const VF_ROUTES = [
   'notfound',
   'policy',
   'post',
+  'presentation',
   'product',
   'saved',
   'search',

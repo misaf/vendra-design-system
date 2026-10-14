@@ -17,6 +17,7 @@ const StorefrontNotfound = lazyPage('notfound');
 const StorefrontError = lazyPage('error');
 const StorefrontPolicy = lazyPage('policy');
 const StorefrontPost = lazyPage('post');
+const StorefrontPresentation = lazyPage('presentation');
 const StorefrontProduct = lazyPage('product');
 const StorefrontSaved = lazyPage('saved');
 const StorefrontSearch = lazyPage('search');
@@ -186,6 +187,19 @@ export function View({v}) {
           {v.is?.post ? (
             <>
               <StorefrontPost
+                routeInfo={v.routeInfo}
+                lang={v.lang}
+                tenant={v.tenant}
+                mobile={v.mobile}
+                go={v.go}
+                store={v.store}
+                setLang={v.setLang}
+              />
+            </>
+          ) : null}
+          {v.is?.presentation ? (
+            <>
+              <StorefrontPresentation
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}

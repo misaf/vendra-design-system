@@ -30,6 +30,7 @@ export * from '../../components/Icon/Icon.jsx';
 export * from '../../components/IconButton/IconButton.jsx';
 export * from '../../components/Input/Input.jsx';
 export * from '../../components/LanguageSwitch/LanguageSwitch.jsx';
+export * from '../../components/Lightbox/Lightbox.jsx';
 export * from '../../components/LineItem/LineItem.jsx';
 export * from '../../components/LiveRegion/LiveRegion.jsx';
 export * from '../../components/LoadMore/LoadMore.jsx';

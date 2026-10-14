@@ -1,0 +1,62 @@
+// Bilingual copy for the counter presentation. Edit here, then run npm --prefix templates run build.
+export function vfCopy(S) {
+  const n = S.n;
+  return {
+    en: {
+      title: 'Presentation',
+      search: 'Find a design',
+      searchHint: 'A product code, a flower or a kind',
+      categories: 'Kinds',
+      ready: 'Ready',
+      settings: 'Presentation settings',
+      showPrices: 'Show prices',
+      readyOnly: 'Ready designs only',
+      fullscreen: 'Full screen',
+      keepAwake: 'Keep the screen on',
+      leave: 'Leave the presentation',
+      done: 'Done',
+      open: 'Show {code} full screen',
+      soldOut: 'Sold out',
+      viewer: 'Designs',
+      send: 'Send to customer',
+      sendTitle: 'Send {code}',
+      sendBody: 'The customer scans this with their phone camera to open the design and order it.',
+      qr: 'QR code for {code}',
+      whatsapp: 'Share on WhatsApp',
+      copy: 'Copy link',
+      copied: 'Link copied',
+      count: value => (value === 1 ? '1 design' : n(value) + ' designs'),
+      none: 'No designs match',
+      noneBody: 'Try part of the code, a flower or a kind.',
+      showAll: 'Show all designs'
+    },
+    fa: {
+      title: 'نمایش',
+      search: 'پیدا کردن طرح',
+      searchHint: 'کد محصول، نام گل یا نوع آن',
+      categories: 'نوع‌ها',
+      ready: 'آماده',
+      settings: 'تنظیمات نمایش',
+      showPrices: 'نمایش قیمت‌ها',
+      readyOnly: 'فقط طرح‌های آماده',
+      fullscreen: 'تمام‌صفحه',
+      keepAwake: 'روشن ماندن صفحه',
+      leave: 'خروج از نمایش',
+      done: 'تمام',
+      open: 'نمایش تمام‌صفحهٔ {code}',
+      soldOut: 'ناموجود',
+      viewer: 'طرح‌ها',
+      send: 'ارسال برای مشتری',
+      sendTitle: 'ارسال {code}',
+      sendBody: 'مشتری این را با دوربین گوشی‌اش اسکن می‌کند تا طرح را ببیند و سفارش دهد.',
+      qr: 'کد QR برای {code}',
+      whatsapp: 'اشتراک در واتس‌اپ',
+      copy: 'کپی پیوند',
+      copied: 'پیوند کپی شد',
+      count: value => n(value) + ' طرح',
+      none: 'طرحی پیدا نشد',
+      noneBody: 'بخشی از کد، نام گل یا نوع آن را امتحان کنید.',
+      showAll: 'نمایش همهٔ طرح‌ها'
+    }
+  }[S.lang];
+}

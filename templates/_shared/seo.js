@@ -29,7 +29,8 @@ export const VF_SEO = (() => {
     'saved',
     'search',
     'notfound',
-    'error'
+    'error',
+    'presentation'
   ]);
   const PARAMS = ['id', 'cat', 'post', 'm'];
   const NUMERIC = new Set(['m']); // params whose ids are numeric → digits only

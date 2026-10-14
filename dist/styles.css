@@ -4264,5 +4264,144 @@ a.ag-tabbar__item--current:hover {
   }
 }
 
+/* components/Lightbox/Lightbox.css */
+/* Lightbox: a dark full-screen stage. The photo fits inside it whole; the bar, the dots and the
+   caption sit on the dark surface around it. Colours from tokens, logical sides (start/end). */
+.ag-lightbox__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: var(--surface-inverse);
+  animation: ag-fade var(--dur-base) var(--ease-out);
+}
+.ag-lightbox,
+.ag-lightbox__frame {
+  height: 100%;
+}
+.ag-lightbox__frame {
+  display: flex;
+  flex-direction: column;
+  color: var(--text-on-inverse);
+  font-family: var(--font-body);
+}
+.ag-lightbox__frame:focus {
+  outline: none;
+}
+.ag-lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+}
+.ag-lightbox__position {
+  padding-inline: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-inverse-muted);
+}
+.ag-lightbox__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* One cell the stage's own size, so the photo's 100% is the stage, not the photo itself. */
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  padding-inline: var(--space-3);
+  touch-action: pan-y;
+  user-select: none;
+}
+.ag-lightbox__photo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius-md);
+}
+.ag-lightbox__step {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ag-lightbox__step--previous {
+  inset-inline-start: var(--space-4);
+}
+.ag-lightbox__step--next {
+  inset-inline-end: var(--space-4);
+}
+.ag-lightbox__step[data-disabled] {
+  opacity: 0;
+}
+.ag-lightbox__dots {
+  display: flex;
+  justify-content: center;
+}
+.ag-lightbox__dot {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  min-height: var(--tap-min);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.ag-lightbox__dot span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--text-inverse-muted);
+  transition: width var(--dur-base) var(--ease-out);
+}
+.ag-lightbox__dot[aria-current] span {
+  width: 22px;
+  background: var(--text-on-inverse);
+}
+.ag-lightbox__dot[data-focus-visible] {
+  outline: 2px solid var(--focus-ring-on-inverse);
+  outline-offset: -4px;
+  border-radius: var(--radius-pill);
+}
+.ag-lightbox__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-5) var(--space-5);
+}
+.ag-lightbox__text {
+  min-width: 0;
+}
+.ag-lightbox__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-lightbox__overlay {
+    animation: none;
+  }
+  .ag-lightbox__dot span {
+    transition: none;
+  }
+}
+/* Forced colours drop the dark surface's fill: outline the photo and draw the dots in system colours. */
+@media (forced-colors: active) {
+  .ag-lightbox__photo {
+    outline: var(--border-hair) solid;
+  }
+  .ag-lightbox__dot span {
+    forced-color-adjust: none;
+    background: GrayText;
+  }
+  .ag-lightbox__dot[aria-current] span {
+    background: Highlight;
+  }
+}
+
 
 }

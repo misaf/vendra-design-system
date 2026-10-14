@@ -1,23 +1,9 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfNormalizeToken, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {vfProductImage, vfProductSub, vfSearchProducts} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
-import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-// The products a search finds. A product code, typed whole or in part (3 or more characters), finds
-// its product; so do its kind and description.
-function vfSearchProducts(text) {
-  const q = text.trim().toLowerCase();
-  const code = vfNormalizeToken(q);
-  const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
-  const words = p =>
-    ['en', 'fa']
-      .map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat])
-      .join(' ')
-      .toLowerCase();
-  return q ? VF_PRODUCTS.filter(p => byCode(p) || words(p).includes(q)) : [];
-}
 // Results update as the customer types; a search is reported once the typing settles.
 const VF_SEARCH_SETTLE_MS = 1000;
 // The page: its state (applied at once, as the logic reads it back), effects and the values
