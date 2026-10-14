@@ -18,6 +18,16 @@ test('the shimmer stops with reduced motion', async ({page}) => {
   expect(running).toBe(0);
 });
 
+test('stays visible in forced colours, outlined instead of filled', async ({page}) => {
+  await page.emulateMedia({forcedColors: 'active'});
+  await openComponent(page, 'Skeleton');
+  const circle = page.locator('.circle');
+  await expect(circle).toHaveCSS('border-top-style', 'solid');
+  await expect(circle).toHaveCSS('border-top-width', '1px');
+  const shimmer = await circle.evaluate(node => getComputedStyle(node, '::after').display);
+  expect(shimmer).toBe('none');
+});
+
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'Skeleton');
 });

@@ -63,7 +63,16 @@ export function vfCopy(S) {
       freeReached: 'Free delivery in Karaj',
       freeOf: '{sub} of {threshold}',
       next: 'Continue to payment',
-      payNote: 'Card-to-card payment on the next step. No card details are stored.',
+      // {methods}: the store's payment methods (VF_STORE.paymentMethods), from payWays.
+      payNote: 'You pay on the next step: {methods}. We never store card details.',
+      payWays: {
+        online: 'online',
+        card: 'card-to-card',
+        cod: 'on delivery',
+        wallet: 'from your balance',
+        whatsapp: 'on WhatsApp'
+      },
+      payOr: ' or ',
       promoUnknown: 'We don’t recognise that code.',
       promoMin: 'This code needs a subtotal of {min}.',
       promoOn: '{code} · {percent}% off',
@@ -151,7 +160,15 @@ export function vfCopy(S) {
       freeReached: 'ارسال رایگان در کرج',
       freeOf: '{sub} از {threshold}',
       next: 'ادامه و پرداخت',
-      payNote: 'پرداخت کارت‌به‌کارت در مرحله بعد. اطلاعات کارت ذخیره نمی‌شود.',
+      payNote: 'پرداخت در مرحله بعد: {methods}. اطلاعات کارت ذخیره نمی‌شود.',
+      payWays: {
+        online: 'آنلاین',
+        card: 'کارت به کارت',
+        cod: 'در محل',
+        wallet: 'از کیف پول',
+        whatsapp: 'در واتساپ'
+      },
+      payOr: ' یا ',
       promoUnknown: 'این کد معتبر نیست.',
       promoMin: 'این کد برای جمع خرید از {min} به بالاست.',
       promoOn: '{code} · {percent}٪ تخفیف',

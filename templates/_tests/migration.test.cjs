@@ -188,8 +188,11 @@ function page(name, c, props = {}) {
   const stale = back('paid');
   assert.equal(stale.state.payment.status, 'pending');
   assert.equal(stale.state.payment.record, null);
+  // Another method: the store's first usable one that isn't online (here the balance covers it).
   checkout.renderVals().payOther();
   assert.equal(checkout.state.payment, null);
+  assert.equal(checkout.renderVals().method, 'wallet');
+  checkout.renderVals().setMethod('card');
   checkout.renderVals().setLast4('۱۲۳۴');
   checkout.renderVals().place();
   assert.equal(checkout.state.order.method, 'card');
@@ -229,9 +232,9 @@ function page(name, c, props = {}) {
     },
     order: null
   };
+  // Pay on delivery doesn't reach Tehran: it can't be chosen, and the order stays on a usable method.
   cod.renderVals().setMethod('cod');
-  cod.renderVals().place();
-  assert.equal(cod.state.order, null);
+  assert.notEqual(cod.renderVals().method, 'cod');
   const codOption = cod.renderVals().methodOptions.find(o => o.value === 'cod');
   assert.equal(codOption.disabled, true);
   assert.ok(codOption.description);
@@ -341,6 +344,88 @@ function page(name, c, props = {}) {
       /<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g
     ))
       assert.ok(fs.existsSync(path.join(root, path.dirname(card), url)), card + ' → ' + url);
+  // Each payment method is a feature the store turns on by listing it (VF_STORE.paymentMethods).
+  {
+    const {c: store} = environment();
+    const json = value => JSON.parse(JSON.stringify(value));
+    const offer = methods =>
+      vm.runInContext('VF_STORE.paymentMethods = ' + JSON.stringify(methods), store);
+    const card = {
+      id: 'card',
+      cardNumber: '6221061072645437',
+      holder: {en: 'Demo', fa: 'نمونه'},
+      bank: {en: 'Saman Bank', fa: 'بانک سامان'}
+    };
+    const delivery = zone => ({
+      bag: store.vfSampleBag(),
+      delivery: {zone, name: 'Demo', address: 'Example address', phone: '09123456789', slot: 12},
+      order: null
+    });
+    // The rules: in the store's order, unknown ids dropped, each usable or not for this order.
+    const options = json(
+      vm.runInContext(
+        `commerce.paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
+          {id: 'online'}], {zone: 'tehran', balance: 100, total: 500})`,
+        store
+      )
+    );
+    assert.deepEqual(
+      options.map(option => [option.id, option.available, option.reason || null]),
+      [
+        ['cod', false, 'zone'],
+        ['wallet', false, 'balance'],
+        ['online', true, null]
+      ]
+    );
+    assert.equal(
+      vm.runInContext(`commerce.defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
+      'online'
+    );
+    // Card-to-card only: no choice to make, its steps show; the bag, terms and account follow.
+    offer([card]);
+    let only = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.equal(only.showMethods, false);
+    assert.equal(only.method, 'card');
+    assert.equal(only.isCard, true);
+    assert.equal(only.payment.cardNumber, '6221061072645437');
+    assert.match(
+      page('bag', store).renderVals().t.payNote,
+      /^You pay on the next step: card-to-card\./
+    );
+    const terms = JSON.stringify(page('policy', store, {doc: 'terms'}).renderVals());
+    assert.match(terms, /You can pay by card-to-card transfer\./);
+    const privacy = JSON.stringify(page('policy', store, {doc: 'privacy'}).renderVals().doc);
+    assert.match(privacy, /only ask for the last four digits/);
+    assert.ok(!/Online payments/.test(privacy), 'no online payment sentence without online');
+    const statement = JSON.stringify(
+      page('policy', store, {doc: 'accessibility'}).renderVals().doc
+    );
+    assert.match(statement, /Known limits/);
+    assert.ok(!/bank’s own page/.test(statement));
+    const account = page('account', store, {tab: 'balance'}).renderVals();
+    assert.ok(!account.tabItems.some(tab => tab.id === 'balance'), 'no balance tab without wallet');
+    assert.equal(account.isBalance, false);
+    // Pay on delivery only: usable inside its zones; elsewhere nothing can be placed, and the
+    // customer is told to call.
+    offer([{id: 'cod', zones: ['central']}]);
+    only = page('checkout', store, {store: delivery('central')}).renderVals();
+    assert.equal(only.method, 'cod');
+    assert.equal(only.noMethod, false);
+    const outside = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.equal(outside.method, null);
+    assert.equal(outside.noMethod, true);
+    assert.equal(outside.placeDisabled, true);
+    // The store's order is the checkout's order.
+    offer([{id: 'whatsapp'}, {id: 'online'}, card]);
+    const listed = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.deepEqual(json(listed.methodOptions.map(option => option.value)), [
+      'whatsapp',
+      'online',
+      'card'
+    ]);
+    assert.equal(listed.method, 'whatsapp');
+    assert.equal(listed.isWhatsapp, true);
+  }
   console.log(
     'Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, optional API mode, article blocks, bilingual communications and relocated card paths.'
   );

@@ -869,7 +869,13 @@ test('home occasions scroll as a carousel', async ({page}, info) => {
 test('the footer opens each policy and the policy page switches between them', async ({page}) => {
   await openSite(page, 'home', 'fa');
   const help = page.getByRole('navigation', {name: 'راهنما'});
-  for (const name of ['ارسال و تحویل', 'بازگشت و بازپرداخت', 'حریم خصوصی', 'شرایط استفاده'])
+  for (const name of [
+    'ارسال و تحویل',
+    'بازگشت و بازپرداخت',
+    'حریم خصوصی',
+    'شرایط استفاده',
+    'دسترس‌پذیری'
+  ])
     await expect(help.getByRole('link', {name})).toBeVisible();
   await help.getByRole('link', {name: 'شرایط استفاده'}).click();
   await expect(page).toHaveURL(/view=policy&id=terms/);
@@ -883,6 +889,16 @@ test('the footer opens each policy and the policy page switches between them', a
   await switcher.getByRole('link', {name: 'بازگشت و بازپرداخت'}).click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('بازگشت و بازپرداخت');
   await expect(page.locator('main')).toContainText('۲۴ ساعت');
+});
+
+test('the accessibility statement says what we aim for and how to reach us', async ({page}) => {
+  await openSite(page, 'policy', 'en', {id: 'accessibility'});
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('Accessibility');
+  const main = page.getByRole('main');
+  await expect(main).toContainText('WCAG) 2.2 at level AA');
+  await expect(main.getByRole('heading', {name: 'Known limits'})).toBeVisible();
+  await expect(main).toContainText('+98 912 933 3034');
+  expect(await scanAxe(page)).toEqual([]);
 });
 
 test('policies quote the live delivery rules', async ({page}) => {

@@ -361,11 +361,10 @@ export function vfShell(self, page) {
     phoneHref: 'tel:' + VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,
-    payment: {
-      ...VF_STORE.payment,
-      holder: VF_STORE.payment.holder[L],
-      bank: VF_STORE.payment.bank[L]
-    },
+    // The store's card for card-to-card transfers, in the page's language; null when it doesn't take them.
+    payment: (card => (card ? {...card, holder: card.holder[L], bank: card.bank[L]} : null))(
+      VF_STORE.paymentMethods.find(method => method.id === 'card')
+    ),
     isFav: (id, def) => (favList || def).includes(id),
     toggleFav: (id, def) => () => {
       if (store) {

@@ -24,3 +24,10 @@
 .ag-offline svg {
   flex: none;
 }
+/* Forced colours drop the band's background: a rule under it keeps it apart from the page. */
+@media (forced-colors: active) {
+  .ag-offline--offline,
+  .ag-offline--back {
+    border-block-end: 1px solid CanvasText;
+  }
+}

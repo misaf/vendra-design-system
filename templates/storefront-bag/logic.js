@@ -184,7 +184,15 @@ function vals(page) {
     waHref: live.length ? S.waWith(waOrder) : S.waHref,
     t: {
       ...S.t,
-      ...C
+      ...C,
+      payNote: C.payNote.replace(
+        '{methods}',
+        VF_STORE.paymentMethods
+          .map(method => C.payWays[method.id])
+          .filter(Boolean)
+          .join(fa ? '، ' : ', ')
+          .replace(/(.*)(، |, )/, '$1' + C.payOr)
+      )
     },
     onBag: !onDelivery,
     onDelivery,

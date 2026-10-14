@@ -7,7 +7,8 @@ export function vfCopy(S) {
         card: 'Card to card',
         online: 'Online payment',
         cod: 'Pay on delivery',
-        wa: 'WhatsApp confirmation'
+        whatsapp: 'WhatsApp confirmation',
+        wallet: 'Account balance'
       },
       orderNo: 'Order VN-10522',
       progress: 'Order progress',
@@ -60,7 +61,7 @@ export function vfCopy(S) {
       pending: {
         title: 'Payment being confirmed',
         card: 'We’re matching your transfer from the card ending {last4}, usually within an hour. We’ll text {phone} once it’s confirmed and start arranging your flowers.',
-        wa: 'Confirm the order on WhatsApp so we can start arranging your flowers.'
+        whatsapp: 'Confirm the order on WhatsApp so we can start arranging your flowers.'
       },
       lookup: {
         titleA: 'Track an',
@@ -83,7 +84,8 @@ export function vfCopy(S) {
         card: 'کارت به کارت',
         online: 'پرداخت آنلاین',
         cod: 'پرداخت هنگام تحویل',
-        wa: 'تأیید در واتساپ'
+        whatsapp: 'تأیید در واتساپ',
+        wallet: 'کیف پول'
       },
       orderNo: 'سفارش VN-10522',
       progress: 'وضعیت سفارش',
@@ -136,7 +138,7 @@ export function vfCopy(S) {
       pending: {
         title: 'در حال تأیید پرداخت',
         card: 'واریز از کارتِ با پایانِ {last4} را بررسی می‌کنیم؛ معمولاً تا یک ساعت. پس از تأیید به {phone} پیامک می‌دهیم و چیدن گل‌ها را شروع می‌کنیم.',
-        wa: 'سفارش را در واتساپ تأیید کنید تا چیدن گل‌ها را شروع کنیم.'
+        whatsapp: 'سفارش را در واتساپ تأیید کنید تا چیدن گل‌ها را شروع کنیم.'
       },
       lookup: {
         titleA: 'پیگیری',

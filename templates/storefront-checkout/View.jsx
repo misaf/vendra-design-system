@@ -38,24 +38,46 @@ export function View({v}) {
                     <p className="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
                       <>{v.t?.payP}</>
                     </p>
-                    <DS.RadioGroup
-                      className="vf-checkout-methods"
-                      legend={v.migration?.choose}
-                      name="vf-pay-method"
-                      value={v.method}
-                      onChange={v.setMethod}
-                    >
-                      {list(v.methodOptions).map((o, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.Radio
-                            value={o?.value}
-                            label={o?.label}
-                            description={o?.description}
-                            disabled={o?.disabled}
-                          />
-                        </React.Fragment>
-                      ))}
-                    </DS.RadioGroup>
+                    {v.showMethods ? (
+                      <>
+                        <DS.RadioGroup
+                          className="vf-checkout-methods"
+                          legend={v.migration?.choose}
+                          name="vf-pay-method"
+                          value={v.method}
+                          onChange={v.setMethod}
+                        >
+                          {list(v.methodOptions).map((o, $index) => (
+                            <React.Fragment key={$index}>
+                              <DS.Radio
+                                value={o?.value}
+                                label={o?.label}
+                                description={o?.description}
+                                disabled={o?.disabled}
+                              />
+                            </React.Fragment>
+                          ))}
+                        </DS.RadioGroup>
+                      </>
+                    ) : null}
+                    {v.noMethod ? (
+                      <>
+                        <DS.Alert
+                          tone="warning"
+                          title={v.migration?.noMethod}
+                          action={
+                            <DS.Button
+                              size="sm"
+                              variant="secondary"
+                              iconStart="phone"
+                              href={v.phoneHref}
+                            >
+                              <>{v.phoneLabel}</>
+                            </DS.Button>
+                          }
+                        />
+                      </>
+                    ) : null}
                     {v.discountHint ? (
                       <>
                         <p className="vf-checkout-wallet-hint tw:m-0 tw:text-sm">
@@ -145,7 +167,7 @@ export function View({v}) {
                         </div>
                       </>
                     ) : null}
-                    {v.isWa ? (
+                    {v.isWhatsapp ? (
                       <>
                         <DS.Button
                           variant="secondary"

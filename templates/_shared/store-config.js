@@ -22,7 +22,7 @@ export const VF_STORE = {
   analyticsUrl: null,
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   // The simulated bank's answer to an online payment: paid, cancelled, failed or pending (VF_PAYMENT_RESULTS).
-  paymentDemo: {online: 'paid', codZones: ['central', 'outer']},
+  paymentDemo: {online: 'paid'},
   // Site-wide message above the header; null hides it. {freeDelivery} becomes the free-delivery threshold.
   announcement: {
     en: 'Free delivery in Karaj on orders over {freeDelivery}.',
@@ -68,9 +68,21 @@ export const VF_STORE = {
     minTopUp: 1_000_000,
     maxTopUp: 500_000_000
   },
-  payment: {
-    cardNumber: '6221061072645437',
-    holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
-    bank: {en: 'Saman Bank', fa: 'بانک سامان'}
-  }
+  // How this store takes payment: each entry turns one method on, and the checkout lists them in this
+  // order and starts on the first one the order can use (the balance, when it covers the order). Leave one out to turn it off (the account's Balance tab goes with `wallet`). Methods and
+  // their settings: commerce.PAYMENT_METHODS in components/utils/commerce.js.
+  /** @type {import('../../components/utils/commerce.js').PaymentMethod[]} */
+  paymentMethods: [
+    {id: 'wallet'},
+    {
+      id: 'card',
+      cardNumber: '6221061072645437',
+      holder: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+      bank: {en: 'Saman Bank', fa: 'بانک سامان'}
+    },
+    {id: 'online'},
+    // Pay on delivery reaches these delivery zones only.
+    {id: 'cod', zones: ['central', 'outer']},
+    {id: 'whatsapp'}
+  ]
 };

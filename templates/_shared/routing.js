@@ -23,7 +23,7 @@ export const VF_ROUTES = [
   'weddings'
 ];
 // Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
-export const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms'];
+export const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms', 'accessibility'];
 // Account tabs, in the order they appear.
 export const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
 export const VF_ROUTE_EXTRA = {

@@ -245,7 +245,7 @@ export function Shell({v, content, sticky}) {
                             href={s?.href}
                             target={s?.target}
                             variant="secondary"
-                            className="ag-iconbtn--inverse"
+                            inverse={true}
                           />
                         </li>
                       </React.Fragment>
@@ -492,7 +492,9 @@ export function Shell({v, content, sticky}) {
                       icon="x"
                       label={v.t?.consent?.close}
                       onClick={v.consent?.close}
-                      className="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2"
+                      variant="secondary"
+                      inverse={true}
+                      className="vf-shell-consent-close tw:-me-2"
                     />
                   </div>
                   <p className="tw:m-0">
@@ -547,7 +549,9 @@ export function Shell({v, content, sticky}) {
                             icon="x"
                             label={v.t?.consent?.close}
                             onClick={v.consent?.close}
-                            className="ag-iconbtn--inverse vf-shell-consent-close tw:-me-2"
+                            variant="secondary"
+                            inverse={true}
+                            className="vf-shell-consent-close tw:-me-2"
                           />
                         </div>
                         <p className="tw:m-0">

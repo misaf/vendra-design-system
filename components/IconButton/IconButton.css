@@ -53,11 +53,18 @@ a.ag-iconbtn {
 }
 .ag-iconbtn--inverse {
   color: var(--text-on-inverse);
+}
+.ag-iconbtn--inverse.ag-iconbtn--secondary {
   border-color: var(--border-inverse);
 }
 .ag-iconbtn--inverse:hover:not(:disabled) {
   background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+}
+.ag-iconbtn--inverse.ag-iconbtn--secondary:hover:not(:disabled) {
   border-color: var(--text-inverse-muted);
+}
+.ag-iconbtn--inverse:focus-visible {
+  outline-color: var(--focus-ring-on-inverse);
 }
 .ag-iconbtn--raised {
   background: var(--white);

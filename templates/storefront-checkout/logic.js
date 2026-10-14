@@ -9,7 +9,14 @@ import {
   vfProductImage,
   vfSampleBag
 } from '../_shared/catalog.js';
-import {VF_DELIVERY, vfCheckoutRequest, vfDeliveryDate, vfTotals} from '../_shared/delivery.js';
+import {commerce} from '../../components/utils/commerce.js';
+import {
+  VF_DELIVERY,
+  vfCheckoutRequest,
+  vfDeliveryDate,
+  vfTotals,
+  vfZone
+} from '../_shared/delivery.js';
 import {VF_FA_DIGITS} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
@@ -111,10 +118,20 @@ function vals(page) {
     balance = vfWalletBalance();
   const balanceTotals = vfTotals(items, delivery, balance);
   const canUseBalance = balance != null && balance >= balanceTotals.total;
-  const method = order ? order.method || 'card' : s.method || (canUseBalance ? 'wallet' : 'card'),
-    codOk = VF_STORE.paymentDemo.codZones.includes(delivery.zone),
+  // The methods this store offers (VF_STORE.paymentMethods), each usable for this order or not.
+  const options = commerce.paymentOptions(VF_STORE.paymentMethods, {
+    zone: delivery.zone,
+    balance,
+    total: balanceTotals.total
+  });
+  const offers = id => options.some(option => option.id === id);
+  const usable = id => options.some(option => option.id === id && option.available);
+  // After a failed payment or order: the first usable method that isn't the one that failed.
+  const otherThan = id => (options.find(option => option.available && option.id !== id) || {id}).id;
+  const method = order ? order.method || 'card' : commerce.defaultPaymentMethod(options, s.method),
     P = C.migration,
     PW = P.wallet;
+  const codZones = (options.find(option => option.id === 'cod') || {}).zones || [];
   const totals = order
     ? order.totals
     : method === 'wallet'
@@ -193,9 +210,9 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
-      payA: method === 'card' ? C.payA : P.methods[method],
+      payA: method === 'card' ? C.payA : P.methods[method] || C.pay,
       payB: method === 'card' ? C.payB : '',
-      payP: method === 'card' ? C.payP : P.descriptions[method],
+      payP: method === 'card' ? C.payP : method ? P.descriptions[method] : '',
       place: method === 'card' ? C.place : P.actions[method],
       orderNo: order ? C.labels.order + '\u2068' + order.id + '\u2069' : C.orderNo
     },
@@ -209,25 +226,34 @@ function vals(page) {
         '\u2069'
     ),
     isCard: method === 'card',
-    isWa: method === 'wa',
+    isWhatsapp: method === 'whatsapp',
     isWallet: method === 'wallet',
+    // None of the store's methods reaches this order (pay on delivery only, outside its zones).
+    noMethod: !done && !method,
     walletAfter: fillWallet(PW.after, (balance || 0) - totals.total),
     // A signed-in customer whose balance is short can top up first; the bag waits here.
-    showTopUp: balance != null && (!canUseBalance || !!discountHint) && !done,
-    discountHint,
+    showTopUp: offers('wallet') && balance != null && (!canUseBalance || !!discountHint) && !done,
+    discountHint: offers('wallet') ? discountHint : '',
     topUpLabel: PW.topUp,
     topUpHref:
       (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
     busy: s.busy,
-    placeDisabled: s.busy || s.failed || done || (method === 'wallet' && !canUseBalance),
+    placeDisabled: s.busy || s.failed || done || !method,
     failed: s.failed,
     paymentNotice: P.demo,
     method,
-    methodOptions: Object.entries(P.methods).map(([id, label]) => ({
-      value: id,
-      label,
-      description: id === 'cod' && !codOk ? P.codOff : id === 'wallet' ? walletNote : undefined,
-      disabled: s.busy || (id === 'cod' && !codOk) || (id === 'wallet' && !canUseBalance)
+    // With one method there is nothing to choose: its own heading and steps show.
+    showMethods: options.length > 1,
+    methodOptions: options.map(option => ({
+      value: option.id,
+      label: P.methods[option.id],
+      description:
+        option.reason === 'zone'
+          ? P.codOff.replace('{zones}', codZones.map(id => vfZone(id)[L]).join(fa ? '، ' : ', '))
+          : option.id === 'wallet'
+            ? walletNote
+            : undefined,
+      disabled: s.busy || !option.available
     })),
     setMethod: value =>
       !s.busy &&
@@ -252,7 +278,7 @@ function vals(page) {
     otherMethod: () =>
       page.setState({
         failed: false,
-        method: 'card'
+        method: otherThan(method)
       }),
     paymentStatus: P.statuses[method],
     done,
@@ -276,7 +302,7 @@ function vals(page) {
     totalLabel: m(totals.total),
     caption: C.caption,
     payLabels: C.payLabels,
-    copySheba: () => navigator.clipboard.writeText(VF_STORE.payment.sheba || ''),
+    copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
     last4: s.last4,
     last4Err: s.err ? C.last4Err : undefined,
     ref: s.ref,
@@ -294,8 +320,7 @@ function vals(page) {
       }),
     place: () => {
       if (s.busy || done || items.some(l => !vfLineAvailable(l))) return;
-      if (method === 'cod' && !codOk) return;
-      if (method === 'wallet' && !canUseBalance) return;
+      if (!usable(method)) return;
       if (method === 'card' && s.last4.length !== 4) {
         page.setState({
           err: true
@@ -389,7 +414,7 @@ function vals(page) {
     payOther: () => {
       vfKeepPayment(null);
       leavePaymentUrl();
-      page.setState({payment: null, method: 'card'});
+      page.setState({payment: null, method: otherThan('online')});
     },
     payCheckAgain: () =>
       s.payment.record ? vfVerifyPayment(page, 'paid', s.payment.record) : leavePaymentUrl(),

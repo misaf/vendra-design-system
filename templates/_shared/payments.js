@@ -58,11 +58,16 @@ import {VF_STORE} from './store-config.js';
     }
     return s % 10 === 0;
   };
+  // Sets the card-to-card method's card (VF_STORE.paymentMethods); does nothing when the store
+  // doesn't take card-to-card.
   D.setPayCard = ({cardNumber, holderEn, holderFa, sheba}) => {
     const n = vfLatin(cardNumber || '')
       .replace(/\D/g, '')
       .slice(0, 16);
-    Object.assign(VF_STORE.payment, {
+    const method = VF_STORE.paymentMethods.find(item => item.id === 'card');
+    if (!method) return;
+    Object.assign(method, {
+      cardNumber: n,
       card: n.replace(/(\d{4})(?=\d)/g, '$1 '),
       holder: {
         en: holderEn || '',

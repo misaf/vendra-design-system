@@ -4,13 +4,14 @@ import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 // An icon-only React Aria Button, or React Aria Link with `href`. `label` is its accessible name and tooltip;
-// `active` sets aria-pressed and `count` shows a badge.
+// `active` sets aria-pressed and `count` shows a badge; `inverse` draws it light for a dark surface.
 export function IconButton({
   icon,
   label,
   variant = 'ghost',
   size = 'md',
   active,
+  inverse,
   count,
   className = '',
   type = 'button',
@@ -25,6 +26,7 @@ export function IconButton({
     'ag-iconbtn',
     'ag-iconbtn--' + variant,
     'ag-iconbtn--' + size,
+    inverse && 'ag-iconbtn--inverse',
     active && 'ag-iconbtn--active',
     className
   );

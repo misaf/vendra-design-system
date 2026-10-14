@@ -84,7 +84,7 @@ function vals(page) {
   }
   // A card-to-card or WhatsApp order waits for the studio to confirm payment before it is arranged.
   const method = order ? order.method || 'card' : 'card';
-  const pending = !!order && st === 'received' && ['card', 'wa'].includes(method);
+  const pending = !!order && st === 'received' && ['card', 'whatsapp'].includes(method);
   const contact = order ? order.delivery.senderPhone || order.delivery.phone : '';
   const lookupErrors = {
     id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
@@ -110,8 +110,8 @@ function vals(page) {
     pending,
     pendingTitle: C.pending.title,
     pendingBody:
-      method === 'wa'
-        ? C.pending.wa
+      method === 'whatsapp'
+        ? C.pending.whatsapp
         : C.pending.card
             .replace('{last4}', S.n((order && order.last4) || ''))
             .replace('{phone}', '\u2068' + S.n(contact) + '\u2069'),

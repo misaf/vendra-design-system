@@ -120,14 +120,15 @@ export function vfCopy(S) {
           wallet: 'Pay from balance',
           online: 'Continue to the bank',
           cod: 'Confirm demo order',
-          wa: 'Confirm demo order'
+          whatsapp: 'Confirm demo order'
         },
         descriptions: {
           wallet: 'The total comes out of your account balance. There’s nothing else to pay.',
           online:
             'You pay on the bank’s page and come back here. In this preview the bank is simulated.',
           cod: 'Payment would be collected on delivery. Confirm this sample order.',
-          wa: 'Open WhatsApp to review the prepared message, or confirm the sample order here.'
+          whatsapp:
+            'Open WhatsApp to review the prepared message, or confirm the sample order here.'
         },
         choose: 'Choose a payment method',
         methods: {
@@ -135,9 +136,11 @@ export function vfCopy(S) {
           card: 'Card-to-card transfer',
           online: 'Online card demo',
           cod: 'Pay on delivery',
-          wa: 'Confirm on WhatsApp'
+          whatsapp: 'Confirm on WhatsApp'
         },
-        codOff: 'Available for Karaj delivery only.',
+        codOff: 'Only for delivery in {zones}.',
+        noMethod:
+          'None of our payment methods reaches this order: pay on delivery doesn’t cover this address. Call or WhatsApp us and we’ll take it by phone, or change the delivery address.',
         wallet: {
           signIn: 'Sign in to pay from your account balance.',
           balance: 'Balance {balance}.',
@@ -160,7 +163,7 @@ export function vfCopy(S) {
           card: 'Awaiting transfer check',
           online: 'Paid online',
           cod: 'Pay on delivery',
-          wa: 'Awaiting WhatsApp confirmation'
+          whatsapp: 'Awaiting WhatsApp confirmation'
         }
       },
       fa: {
@@ -168,14 +171,14 @@ export function vfCopy(S) {
           wallet: 'پرداخت از کیف پول',
           online: 'رفتن به درگاه بانک',
           cod: 'تأیید سفارش نمونه',
-          wa: 'تأیید سفارش نمونه'
+          whatsapp: 'تأیید سفارش نمونه'
         },
         descriptions: {
           wallet: 'مبلغ کل از موجودی کیف پول شما کم می‌شود و پرداخت دیگری لازم نیست.',
           online:
             'پرداخت را در صفحه بانک انجام می‌دهید و به همین‌جا برمی‌گردید. در این پیش‌نمایش، بانک شبیه‌سازی شده است.',
           cod: 'مبلغ هنگام تحویل دریافت می‌شود. این سفارش نمونه را تأیید کنید.',
-          wa: 'واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید.'
+          whatsapp: 'واتساپ را برای مشاهده پیام آماده باز کنید یا سفارش نمونه را اینجا تأیید کنید.'
         },
         choose: 'انتخاب روش پرداخت',
         methods: {
@@ -183,9 +186,11 @@ export function vfCopy(S) {
           card: 'کارت به کارت',
           online: 'نمونه پرداخت آنلاین',
           cod: 'پرداخت در محل',
-          wa: 'تأیید در واتس‌اپ'
+          whatsapp: 'تأیید در واتس‌اپ'
         },
-        codOff: 'فقط برای ارسال در کرج در دسترس است.',
+        codOff: 'فقط برای ارسال در {zones}.',
+        noMethod:
+          'هیچ‌کدام از روش‌های پرداخت ما برای این سفارش در دسترس نیست: پرداخت در محل به این نشانی نمی‌رسد. با ما تماس بگیرید یا در واتساپ پیام دهید تا سفارش را تلفنی ثبت کنیم، یا نشانی تحویل را تغییر دهید.',
         wallet: {
           signIn: 'برای پرداخت از کیف پول وارد حساب شوید.',
           balance: 'موجودی {balance}.',
@@ -208,7 +213,7 @@ export function vfCopy(S) {
           card: 'در انتظار بررسی واریز',
           online: 'پرداخت آنلاین انجام شد',
           cod: 'پرداخت در محل',
-          wa: 'در انتظار تأیید واتس‌اپ'
+          whatsapp: 'در انتظار تأیید واتس‌اپ'
         }
       }
     }[S.lang]

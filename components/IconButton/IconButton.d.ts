@@ -8,6 +8,9 @@ export interface IconButtonProps extends ButtonDOMProps {
    * --surface-hover and --border-strong; raised = white with a small shadow, for use over photos. */
   variant?: 'ghost' | 'secondary' | 'raised';
   size?: 'sm' | 'md' | 'lg';
+  /** On a dark surface (the footer, the consent banner): a light icon, a dark-surface edge for
+   * secondary, a lighter hover and the on-dark focus ring. Not with raised */
+  inverse?: boolean;
   /** Toggled on (e.g. favourited) */
   active?: boolean;
   /** Small count bubble (bag items). Number or pre-localized string; hidden when 0/empty. Put the count in `label` too, for screen readers. */

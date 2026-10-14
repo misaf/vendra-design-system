@@ -27,7 +27,32 @@ export function vfCopy(S) {
   );
   const slots = VF_SLOTS.map(slot => vfSlotLabel(slot.start, slot.end, fa)).join(fa ? '، ' : ', ');
   const freeZones = zoneList(VF_FREE_DELIVERY_ZONES, fa ? ' و ' : ' and ');
-  const codZones = zoneList(VF_STORE.paymentDemo.codZones, fa ? ' و ' : ' and ');
+  // The store's payment methods (VF_STORE.paymentMethods), as the terms and privacy text name them.
+  const methods = VF_STORE.paymentMethods.map(method => method.id);
+  const offers = id => methods.includes(id);
+  const cod = VF_STORE.paymentMethods.find(method => method.id === 'cod');
+  const codZones = cod && cod.zones ? zoneList(cod.zones, fa ? ' و ' : ' and ') : '';
+  const ways = {
+    en: {
+      online: 'online',
+      card: 'by card-to-card transfer',
+      cod: 'on delivery' + (codZones ? ' in ' + codZones : ''),
+      wallet: 'from your account balance',
+      whatsapp: 'once we confirm your order on WhatsApp'
+    },
+    fa: {
+      online: 'آنلاین',
+      card: 'کارت به کارت',
+      cod: (codZones ? 'در ' + codZones + ' ' : '') + 'هنگام تحویل',
+      wallet: 'از کیف پول حساب',
+      whatsapp: 'پس از تأیید سفارش در واتساپ'
+    }
+  }[L];
+  const payWays = methods
+    .map(id => ways[id])
+    .filter(Boolean)
+    .join(fa ? '، ' : ', ')
+    .replace(/(.*)(، |, )/, fa ? '$1 یا ' : '$1 or ');
   const brand = VF_STORE.brand[L],
     address = VF_STORE.address[L],
     hours = VF_STORE.hours[L];
@@ -176,7 +201,13 @@ export function vfCopy(S) {
             {
               title: 'What we don’t keep',
               paras: [
-                'We never see or store your full card number. Online payments are handled by the bank’s payment page; for card-to-card transfers we only ask for the last four digits so we can match the payment.'
+                'We never see or store your full card number.' +
+                  (offers('online')
+                    ? ' Online payments are handled by the bank’s payment page.'
+                    : '') +
+                  (offers('card')
+                    ? ' For card-to-card transfers we only ask for the last four digits so we can match the payment.'
+                    : '')
               ]
             },
             {
@@ -218,6 +249,48 @@ export function vfCopy(S) {
             }
           ]
         },
+        accessibility: {
+          title: T.accessibility,
+          intro:
+            'We want everyone to be able to choose and send flowers here: with a keyboard, a screen reader, zoomed in, in English or Persian, on any phone.',
+          sections: [
+            {
+              title: 'What we aim for',
+              paras: [
+                'This site aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA, in both languages.'
+              ]
+            },
+            {
+              title: 'What we do',
+              items: [
+                'Every page and control works with a keyboard, with a visible focus ring, and starts with a link that skips to the content.',
+                'Buttons, fields and errors are named for screen readers; forms list what to fix and take you to each field.',
+                'Text and controls meet contrast minimums, including in Windows high-contrast mode, and the site keeps working at 200% zoom.',
+                'Persian pages read right to left with Persian digits; animations stop when your device asks for reduced motion.',
+                'Every page is checked automatically for accessibility problems in both languages before each release.'
+              ]
+            },
+            {
+              title: 'Known limits',
+              items: [
+                'The delivery map needs sight and a pointer or arrow keys; you can type the address instead.',
+                offers('online') &&
+                  'Online payment happens on the bank’s own page, which we don’t control.',
+                'The trust seals in the footer are images served by their issuers.'
+              ].filter(Boolean)
+            },
+            {
+              title: 'Tell us',
+              paras: [
+                'If something here doesn’t work for you, call or WhatsApp us on ' +
+                  phone +
+                  ' (' +
+                  hours +
+                  '). We’ll take your order by phone in the meantime and fix the page.'
+              ]
+            }
+          ]
+        },
         terms: {
           title: T.terms,
           intro:
@@ -238,8 +311,8 @@ export function vfCopy(S) {
             {
               title: 'Prices and payment',
               paras: [
-                'Prices are in Toman and include everything except delivery, which is shown at checkout before you pay. You can pay online, by card-to-card transfer, or on delivery in ' +
-                  codZones +
+                'Prices are in Toman and include everything except delivery, which is shown at checkout before you pay. You can pay ' +
+                  payWays +
                   '.'
               ]
             },
@@ -438,7 +511,11 @@ export function vfCopy(S) {
             {
               title: 'چه چیزی نگه نمی‌داریم',
               paras: [
-                'شماره کامل کارت شما را هرگز نمی‌بینیم و ذخیره نمی‌کنیم. پرداخت آنلاین در درگاه بانک انجام می‌شود و برای کارت به کارت فقط چهار رقم آخر را می‌پرسیم تا پرداخت را تطبیق دهیم.'
+                'شماره کامل کارت شما را هرگز نمی‌بینیم و ذخیره نمی‌کنیم.' +
+                  (offers('online') ? ' پرداخت آنلاین در درگاه بانک انجام می‌شود.' : '') +
+                  (offers('card')
+                    ? ' برای کارت به کارت فقط چهار رقم آخر را می‌پرسیم تا پرداخت را تطبیق دهیم.'
+                    : '')
               ]
             },
             {
@@ -480,6 +557,48 @@ export function vfCopy(S) {
             }
           ]
         },
+        accessibility: {
+          title: T.accessibility,
+          intro:
+            'می‌خواهیم همه بتوانند اینجا گل انتخاب کنند و بفرستند: با صفحه‌کلید، صفحه‌خوان، بزرگ‌نمایی، به فارسی یا انگلیسی و با هر گوشی.',
+          sections: [
+            {
+              title: 'هدف ما',
+              paras: [
+                'این سایت می‌کوشد در هر دو زبان با سطح AA رهنمودهای دسترس‌پذیری محتوای وب (WCAG 2.2) سازگار باشد.'
+              ]
+            },
+            {
+              title: 'کارهایی که می‌کنیم',
+              items: [
+                'همه صفحه‌ها و کنترل‌ها با صفحه‌کلید کار می‌کنند، حلقه فوکوس دیده می‌شود و هر صفحه با پیوندی برای رفتن به محتوا شروع می‌شود.',
+                'دکمه‌ها، فیلدها و خطاها برای صفحه‌خوان نام دارند؛ فرم‌ها مواردی را که باید اصلاح شوند فهرست می‌کنند و شما را به هر فیلد می‌برند.',
+                'متن و کنترل‌ها کنتراست لازم را دارند، در حالت کنتراست بالای ویندوز هم، و سایت در بزرگ‌نمایی ۲۰۰٪ کار می‌کند.',
+                'صفحه‌های فارسی راست‌به‌چپ و با رقم‌های فارسی‌اند و وقتی دستگاه شما حرکت کمتر بخواهد، پویانمایی‌ها متوقف می‌شوند.',
+                'پیش از هر انتشار، همه صفحه‌ها در هر دو زبان به‌طور خودکار از نظر دسترس‌پذیری بررسی می‌شوند.'
+              ]
+            },
+            {
+              title: 'محدودیت‌های شناخته‌شده',
+              items: [
+                'نقشه نشانی تحویل به دیدن و اشاره‌گر یا کلیدهای جهت نیاز دارد؛ می‌توانید نشانی را تایپ کنید.',
+                offers('online') &&
+                  'پرداخت اینترنتی در صفحه خود بانک انجام می‌شود که در اختیار ما نیست.',
+                'نمادهای اعتماد پایین صفحه تصویرهایی‌اند که صادرکننده‌شان نمایش می‌دهد.'
+              ].filter(Boolean)
+            },
+            {
+              title: 'به ما بگویید',
+              paras: [
+                'اگر بخشی از سایت برای شما کار نمی‌کند، با ' +
+                  phone +
+                  ' تماس بگیرید یا در واتساپ پیام دهید (' +
+                  hours +
+                  '). تا رفع مشکل، سفارشتان را تلفنی ثبت می‌کنیم.'
+              ]
+            }
+          ]
+        },
         terms: {
           title: T.terms,
           intro:
@@ -500,9 +619,9 @@ export function vfCopy(S) {
             {
               title: 'قیمت و پرداخت',
               paras: [
-                'قیمت‌ها به تومان است و همه‌چیز جز هزینه ارسال را شامل می‌شود؛ هزینه ارسال پیش از پرداخت نمایش داده می‌شود. می‌توانید آنلاین، کارت به کارت، یا در ' +
-                  codZones +
-                  ' هنگام تحویل پرداخت کنید.'
+                'قیمت‌ها به تومان است و همه‌چیز جز هزینه ارسال را شامل می‌شود؛ هزینه ارسال پیش از پرداخت نمایش داده می‌شود. می‌توانید ' +
+                  payWays +
+                  ' پرداخت کنید.'
               ]
             },
             {

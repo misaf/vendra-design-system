@@ -33,7 +33,7 @@ function vals(page) {
         id: 's' + (i + 1),
         href: '#s' + (i + 1),
         title: (L === 'fa' ? VF_FA_DIGITS(i + 1) : i + 1) + '. ' + x.title,
-        paras: x.paras.map(text => ({text})),
+        paras: (x.paras || []).map(text => ({text})),
         hasItems: !!(x.items && x.items.length),
         items: (x.items || []).map(text => ({text}))
       }))

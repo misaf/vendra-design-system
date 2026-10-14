@@ -80,7 +80,13 @@ function vals(page) {
   const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter(
     (o, i, list) => list.findIndex(x => x.id === o.id) === i
   );
-  const tab = s.tab || vfPageRoute(page.props).tab || page.props.tab || 'orders',
+  // The Balance tab is the account side of paying from a balance: it shows only when the store takes
+  // that method (VF_STORE.paymentMethods).
+  const tabs = VF_ACCOUNT_TABS.filter(
+    id => id !== 'balance' || VF_STORE.paymentMethods.some(method => method.id === 'wallet')
+  );
+  const asked = s.tab || vfPageRoute(page.props).tab || page.props.tab;
+  const tab = tabs.includes(asked) ? asked : 'orders',
     tx = v => (typeof v === 'string' ? v : v[L] || v.en);
   const commit = data => {
     vfAccountSave(phone, data);
@@ -322,9 +328,9 @@ function vals(page) {
       page.setState({
         tab: id
       }),
-    tabItems: VF_ACCOUNT_TABS.map((id, i) => ({
+    tabItems: tabs.map(id => ({
       id,
-      label: C.tabs[i]
+      label: C.tabs[VF_ACCOUNT_TABS.indexOf(id)]
     })),
     isOrders: tab === 'orders',
     isSaved: tab === 'saved',

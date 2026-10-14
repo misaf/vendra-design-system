@@ -47,7 +47,8 @@ export const VF_SHELL = {
       shipping: 'Shipping & delivery',
       returns: 'Returns & refunds',
       privacy: 'Privacy',
-      terms: 'Terms of use'
+      terms: 'Terms of use',
+      accessibility: 'Accessibility'
     },
     newsletter: {
       title: 'Letters from the studio',
@@ -116,7 +117,8 @@ export const VF_SHELL = {
       shipping: 'ارسال و تحویل',
       returns: 'بازگشت و بازپرداخت',
       privacy: 'حریم خصوصی',
-      terms: 'شرایط استفاده'
+      terms: 'شرایط استفاده',
+      accessibility: 'دسترس‌پذیری'
     },
     newsletter: {
       title: 'نامه‌های استودیو',

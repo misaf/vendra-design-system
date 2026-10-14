@@ -23,7 +23,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 - **Slot times:** `DeliverySlot.startsAt`/`endsAt` are `"08:00"`; a slot's start hour is its key in the bag.
 - **Order statuses:** `placed`, `arranging`, `ready`, `out_for_delivery`, `delivered`, `cancelled` (the storefront shows them as received, preparing, on the way, delivered, cancelled).
 - **Line metadata:** `OrderLine.metadata` (and `CartLine.metadata`) carry `token`, `size`, comma-separated `addons` and `cardMessage`, as strings.
-- **Checkout:** `gateway` is `card`, `online`, `cod` or `wallet`; for card-to-card, `paymentReference` is the card's last 4 digits and the transfer reference, separated by a space. Several card messages go in `cardMessage` as `CODE: message` lines.
+- **Checkout:** `gateway` is the payment method: `card`, `online`, `cod`, `wallet` or `whatsapp` (`commerce.PAYMENT_METHODS`); for card-to-card, `paymentReference` is the card's last 4 digits and the transfer reference, separated by a space. Several card messages go in `cardMessage` as `CODE: message` lines.
 - **Text placeholders:** content text may contain `{fee:<zone>}`, `{cutoff:<zone>}` (zone keys `central`, `outer`, `alborz`, `tehran`) and `{freeDeliveryFrom}`; the storefront fills them from the delivery rules (`vfStoreText`), so fees in FAQ answers never go stale.
 - **Photos:** `Multimedia.responsiveImages` maps `"<width>"` to a URL in the photo's own format and `"<format> <width>"` (`"avif 480"`, `"webp 960"`) to smaller formats; `Multimedia.customProperties` carries `width` and `height` in pixels, `placeholder` (a tiny blurred `data:image/…` URI) and the alt text as `alt_en` / `alt_fa`. `commerce.imageFromApi` turns a record into what `Picture` renders: AVIF and WebP for browsers that read them, the right width for the layout, and the blurred photo until it loads. A record with only `url` still works.
 - **Order totals:** the discount is `itemsAmount + deliveryAmount - totalAmount` until `Order` reports it (B17).
@@ -58,7 +58,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 17. **Order detail:** document the `status` values above, with timestamps per step for the timeline, delivery date/slot/address, discount and balance amounts, delivery photo, cancellation.
 
 ### Store settings
-18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), address and map pin, opening hours, active currency, announcement, theme spec (for `tenantCss`), card-to-card payment details, cash-on-delivery zones.
+18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), address and map pin, opening hours, active currency, announcement, theme spec (for `tenantCss`), and the payment methods the store offers, in its order, each with its settings: the card for card-to-card (number, holder, bank, Sheba), the zones pay on delivery reaches, and whether online, balance and WhatsApp orders are on. The storefront has the shape as `VF_STORE.paymentMethods` (`commerce.PaymentMethod`).
 
 ### Marketing
 19. **Promo codes:** validate a code against a cart and return the discount.

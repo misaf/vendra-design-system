@@ -117,7 +117,8 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Payments
 
-- **PCI DSS**: doesn't apply. Payment is card-to-card (customer bank → shop card), so no card data passes through or is stored by the storefront. Only the last 4 digits and the tracking number the customer types are sent, as a transfer reference.
+- **Each way to pay is a feature the store turns on**: online (the bank's page and back), card-to-card, pay on delivery (in the zones it lists), account balance, and WhatsApp confirmation. The store lists the ones it offers, in its order, with each one's settings (`commerce.PaymentMethod`; the sample store's `VF_STORE.paymentMethods`); `commerce.paymentOptions` says which of them this order can use and why not. The checkout shows a choice only when there are two or more, starts on the first usable one (the balance, when it covers the order), and with none usable (pay on delivery outside its zones) says so and offers the phone. The bag's note, the terms and privacy text, the accessibility statement and the account's Balance tab follow the same list.
+- **PCI DSS**: the storefront never collects card numbers. Online payment happens on the bank's page; card-to-card sends only the last 4 digits and the tracking number the customer types, as a transfer reference.
 
 ## Storefront release checklist
 
@@ -130,8 +131,8 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - [ ] Contrast card passes; no `--text-subtle` used for copy.
 - [ ] Persian: no italics, Persian digits, time ranges wrapped in FSI/PDI, mirrored layout.
 - [ ] Persian dates read weekday، day month year; Esfand clamps to 29 in non-leap years.
-- [ ] Policy pages (Shipping & delivery, Returns & refunds, Privacy, Terms) have the real text, with no SAMPLE banners; they're linked from the footer.
-- [ ] Payment is card-to-card only: no card numbers are collected or logged.
+- [ ] Policy pages (Shipping & delivery, Returns & refunds, Privacy, Terms, Accessibility) have the real text, with no SAMPLE banners; they're linked from the footer.
+- [ ] Only the store's real payment methods are listed (`paymentMethods`), each with its real settings; no card numbers are collected or logged.
 
 ## Components
 
@@ -140,7 +141,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Basics**
 - **Icon:** Lucide glyph via CSS mask. Inherits `currentColor`; arrows and chevrons mirror in RTL.
 - **Button:** `primary` (accent fill, one per view), `secondary` (ink outline), `soft`, `ghost`. Sizes sm/md/lg; `iconStart`/`iconEnd`; `href` renders `<a>`.
-- **IconButton:** ghost / secondary (outlined 44px circle) / raised (white, shadowed — over photos). `active`, `count`, `href`; add `ag-iconbtn--inverse` on dark surfaces.
+- **IconButton:** ghost / secondary (outlined 44px circle) / raised (white, shadowed — over photos). `active`, `count`, `href`; `inverse` on dark surfaces (footer, consent banner).
 - **Badge:** neutral, accent, success, warning, info, danger, solid (status tones shared with Alert and Toast). Uppercase in EN, never in FA.
 - **Chip:** filter chip; `selected` fills with ink.
 - **FilterBar:** the filters that are on, each a "Remove …" button, then "Clear all"; focus moves to the next filter after a removal, and the app moves it when the bar goes.

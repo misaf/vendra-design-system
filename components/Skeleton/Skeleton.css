@@ -64,3 +64,13 @@
     animation: none;
   }
 }
+/* Forced colours drop backgrounds, which would leave nothing: outline each shape in GrayText (the
+   system colour for unavailable things) instead, without the shimmer. */
+@media (forced-colors: active) {
+  .ag-skel {
+    border: 1px solid GrayText;
+  }
+  .ag-skel::after {
+    display: none;
+  }
+}
