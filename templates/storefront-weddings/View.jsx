@@ -29,16 +29,18 @@ export function View({v}) {
                   <DS.Button variant="primary" size="lg" href="#inquiry" iconEnd="arrow-down">
                     <>{v.t?.plan}</>
                   </DS.Button>
-                  <DS.Button
-                    variant="ghost"
-                    size="lg"
-                    iconStart="message-circle"
-                    href={v.waHref}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <>{v.t?.wa}</>
-                  </DS.Button>
+                  {v.waHref ? (
+                    <DS.Button
+                      variant="ghost"
+                      size="lg"
+                      iconStart="message-circle"
+                      href={v.waHref}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <>{v.t?.wa}</>
+                    </DS.Button>
+                  ) : null}
                 </div>
               </div>
               <DS.ArchFrame ratio="4/5" placeholderLabel={v.t?.ph} alt="" />
@@ -110,6 +112,7 @@ export function View({v}) {
                 <>
                   <DS.Card padding={24}>
                     <div className="tw:flex tw:flex-col tw:gap-4">
+                      <DS.ErrorSummary id="vf-wedding-errors" errors={v.problems} />
                       <div className="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]">
                         <DS.Input
                           id="vf-wname"

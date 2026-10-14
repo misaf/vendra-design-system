@@ -60,6 +60,8 @@ function vals(page) {
         pErr: false
       }),
     phoneErr: s.pErr ? C.phoneErr : undefined,
+    // After a failed step, its problem as a summary linking to the field (the field takes focus).
+    phoneProblems: s.pErr ? [{text: C.phoneErr, target: 'vf-phone'}] : [],
     codeP: C.codeMessage(phone || '0912 000 0000'),
     // A new code can be sent once the wait ends.
     resendSeconds: VF_SIGNIN_RESEND_SECONDS,
@@ -86,6 +88,7 @@ function vals(page) {
         cErr: false
       }),
     codeErr: s.cErr ? C.codeErr : undefined,
+    codeProblems: s.cErr ? [{text: C.codeErr, target: 'vf-code'}] : [],
     send: () => {
       if (!vfMobile(phone)) {
         page.setState({

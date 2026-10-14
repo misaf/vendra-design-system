@@ -101,6 +101,11 @@ function vals(page) {
         e2: false
       }),
     phoneErr: s.e2 ? C.phoneErr : undefined,
+    // After a failed send, what to fix in form order, each linking to its field.
+    problems: [
+      s.e1 && {text: C.nameErr, target: 'vf-wname'},
+      s.e2 && {text: C.phoneErr, target: 'vf-wphone'}
+    ].filter(Boolean),
     type: s.type,
     budget: s.budget,
     setType: value =>
@@ -126,10 +131,8 @@ function vals(page) {
           e1,
           e2
         });
-        setTimeout(() => {
-          const el = document.getElementById(e1 ? 'vf-wname' : 'vf-wphone');
-          el && el.focus();
-        }, 0);
+        // One problem goes straight to its field; both go to the summary that lists them.
+        S.focus(e1 && e2 ? 'vf-wedding-errors' : e1 ? 'vf-wname' : 'vf-wphone');
         return;
       }
       const success = () => {

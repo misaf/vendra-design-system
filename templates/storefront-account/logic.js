@@ -14,7 +14,7 @@ import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
 import {
   vfBalanceDiscountOn,
   vfTopUpAmount,
@@ -81,9 +81,11 @@ function vals(page) {
     (o, i, list) => list.findIndex(x => x.id === o.id) === i
   );
   // The Balance tab is the account side of paying from a balance: it shows only when the store takes
-  // that method (VF_STORE.paymentMethods).
-  const tabs = VF_ACCOUNT_TABS.filter(
-    id => id !== 'balance' || VF_STORE.paymentMethods.some(method => method.id === 'wallet')
+  // that method (VF_STORE.paymentMethods). Reminders show when the store offers them (VF_STORE.features).
+  const tabs = VF_ACCOUNT_TABS.filter(id =>
+    id === 'balance'
+      ? VF_STORE.paymentMethods.some(method => method.id === 'wallet')
+      : id !== 'reminders' || vfFeatures().reminders
   );
   const asked = s.tab || vfPageRoute(page.props).tab || page.props.tab;
   const tab = tabs.includes(asked) ? asked : 'orders',
@@ -226,8 +228,10 @@ function vals(page) {
       page.setState({
         errors
       });
-      // The map comes first in the form and can't carry aria-invalid, so it takes focus itself.
-      if (errors.location) S.focus('vf-address-map');
+      // Several problems go to the summary that lists them; one goes to its field. The map can't
+      // carry aria-invalid, so it takes focus itself.
+      if (Object.keys(errors).length > 1) S.focus('vf-editor-errors');
+      else if (errors.location) S.focus('vf-address-map');
       else focusError();
       return;
     }
@@ -460,6 +464,7 @@ function vals(page) {
       ])
     ),
     emailError: s.errors.email,
+    profileProblems: s.errors.email ? [{text: s.errors.email, target: 'vf-pemail'}] : [],
     saveProfile: () => {
       if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
         page.setState({
@@ -514,6 +519,15 @@ function vals(page) {
         : E.addReminder,
     form: f,
     errors: s.errors,
+    // After a failed save, what to fix in form order, each linking to its field.
+    editorProblems: [
+      ['location', 'vf-address-map'],
+      ['line', 'vf-address-line'],
+      ['phone', 'vf-address-phone'],
+      ['name', 'vf-reminder-name']
+    ]
+      .filter(([key]) => s.errors[key])
+      .map(([key, target]) => ({text: s.errors[key], target})),
     set: Object.fromEntries(
       ['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [k, setField(k)])
     ),

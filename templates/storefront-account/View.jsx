@@ -352,6 +352,7 @@ export function View({v}) {
               {v.isProfile ? (
                 <>
                   <div className="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]">
+                    <DS.ErrorSummary id="vf-profile-errors" errors={v.profileProblems} />
                     <DS.Input
                       id="vf-pname"
                       label={v.t?.name}
@@ -404,6 +405,7 @@ export function View({v}) {
             </p>
             <DS.Dialog open={v.formOpen} title={v.formTitle} onClose={v.closeForm}>
               <div className="tw:flex tw:flex-col tw:gap-4">
+                <DS.ErrorSummary id="vf-editor-errors" errors={v.editorProblems} />
                 {v.isAddress ? (
                   <>
                     <DS.Input

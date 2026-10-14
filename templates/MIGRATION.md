@@ -42,7 +42,9 @@ Useful route examples:
 The checkout page supports `demo=error` for its online payment simulation. In the
 click-through site, fill the bag delivery form before opening checkout. An empty
 bag redirects to the bag page. The payment methods the store offers
-(`paymentMethods`: their order, the card/holder/Sheba, the pay-on-delivery zones), the online
+(`paymentMethods`: their order, the card/holder/Sheba, the pay-on-delivery zones), the optional
+parts it runs (`features`: promo codes, same-day delivery, weddings, journal, reminders, newsletter),
+its languages (`languages`), its contact channels (`whatsapp`, `instagram`, `email`: null hides one), the online
 payment demo result, currency and API base live in `_shared/store-config.js`.
 After changing configuration, run `npm --prefix templates run build`.
 

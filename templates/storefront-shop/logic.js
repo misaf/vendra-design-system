@@ -5,7 +5,7 @@ import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js'
 import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
@@ -275,7 +275,8 @@ function vals(page) {
         }
       };
     }),
-    chips: VF_CHIPS.map(([id]) => {
+    // Same-day goes with the store's same-day delivery.
+    chips: VF_CHIPS.filter(([id]) => id !== 'same' || vfFeatures().sameDay).map(([id]) => {
       const on = s.chips.includes(id);
       return {
         label: C.chipLabels[id],

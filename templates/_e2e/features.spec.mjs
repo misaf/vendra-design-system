@@ -796,6 +796,39 @@ test('several contact problems are listed together, each linking to its field', 
   await expect(page.locator('#vf-cmsg')).toBeFocused();
 });
 
+test('a wedding inquiry lists what it still needs, each linking to its field', async ({page}) => {
+  await openSite(page, 'weddings', 'en');
+  await page.getByRole('button', {name: 'Send inquiry'}).click();
+  const summary = page.locator('#vf-wedding-errors');
+  await expect(summary).toBeFocused();
+  await expect(summary.getByRole('link')).toHaveCount(2);
+  expect(await scanAxe(page)).toEqual([]);
+  await summary.getByRole('link').last().click();
+  await expect(page.locator('#vf-wphone')).toBeFocused();
+});
+
+test('a sign-in problem shows above the field, and the field takes focus', async ({page}) => {
+  await openSite(page, 'signin', 'en');
+  await page.getByRole('button', {name: 'Send code'}).click();
+  await expect(page.locator('#vf-phone')).toBeFocused();
+  await expect(page.locator('#vf-signin-errors').getByRole('link')).toHaveCount(1);
+  expect(await scanAxe(page)).toEqual([]);
+});
+
+test('the address editor lists every problem before it saves', async ({page}) => {
+  await openSite(page, 'account', 'en');
+  await page.getByRole('tab', {name: 'Addresses'}).click();
+  await page.getByRole('button', {name: 'Add an address'}).click();
+  await page.fill('#vf-address-phone', '');
+  await page.getByRole('dialog').getByRole('button', {name: 'Save'}).click();
+  const summary = page.locator('#vf-editor-errors');
+  await expect(summary).toBeFocused();
+  await expect(summary.getByRole('link')).toHaveCount(3);
+  expect(await scanAxe(page)).toEqual([]);
+  await summary.getByRole('link').nth(1).click();
+  await expect(page.locator('#vf-address-line')).toBeFocused();
+});
+
 test('the site says when the connection drops and when it is back', async ({page, context}) => {
   await openSite(page, 'shop', 'fa');
   const band = page.locator('.ag-offline');

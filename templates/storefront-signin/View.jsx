@@ -22,6 +22,7 @@ export function View({v}) {
                   <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
                     <>{v.t?.inP}</>
                   </p>
+                  <DS.ErrorSummary id="vf-signin-errors" errors={v.phoneProblems} />
                   <DS.PhoneInput
                     id="vf-phone"
                     label={v.t?.phone}
@@ -63,6 +64,7 @@ export function View({v}) {
                   <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
                     <>{v.codeP}</>
                   </p>
+                  <DS.ErrorSummary id="vf-code-errors" errors={v.codeProblems} />
                   <DS.CodeInput
                     id="vf-code"
                     label={v.t?.code}

@@ -74,16 +74,18 @@ export function View({v}) {
                     </DS.ChoiceGroup>
                   </>
                 ) : null}
-                <fieldset className="vf-product-extras tw:[border:0] tw:p-0 tw:m-0 tw:flex tw:flex-col tw:gap-3">
-                  <legend className="vf-product-extras-legend tw:text-sm tw:font-medium tw:mb-3 tw:p-0">
-                    <>{v.t?.extras}</>
-                  </legend>
-                  {list(v.addons).map((a, $index) => (
-                    <React.Fragment key={$index}>
-                      <DS.Checkbox label={a?.label} checked={a?.on} onChange={a?.toggle} />
-                    </React.Fragment>
-                  ))}
-                </fieldset>
+                {v.addons?.length ? (
+                  <fieldset className="vf-product-extras tw:[border:0] tw:p-0 tw:m-0 tw:flex tw:flex-col tw:gap-3">
+                    <legend className="vf-product-extras-legend tw:text-sm tw:font-medium tw:mb-3 tw:p-0">
+                      <>{v.t?.extras}</>
+                    </legend>
+                    {list(v.addons).map((a, $index) => (
+                      <React.Fragment key={$index}>
+                        <DS.Checkbox label={a?.label} checked={a?.on} onChange={a?.toggle} />
+                      </React.Fragment>
+                    ))}
+                  </fieldset>
+                ) : null}
                 <div className="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
                   <DS.QuantityInput
                     value={v.qty}

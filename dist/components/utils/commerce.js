@@ -48,11 +48,13 @@ const zoneAt = (location, zones, origin) => {
 const isoDate = (date) => date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
 // A cut-off time ("18:00") for a sentence; Persian digits, isolated so it stays left to right.
 const cutoffText = (cutoff, persian) => persian ? "⁨" + persianDigits(cutoff) + "⁩" : cutoff;
-// The next `days` days for a zone's cut-off, each marked sold out or past today's cut-off.
-const deliveryDays = (cutoff, { days, soldOutDates = [] }, now = new Date()) => {
+// The next `days` days for a zone's cut-off, each marked sold out or past today's cut-off. Without
+// `sameDay` the days start tomorrow.
+const deliveryDays = (cutoff, { days, soldOutDates = [], sameDay = true }, now = new Date()) => {
 	const [hour, minute] = cutoff.split(":").map(Number);
 	const pastCutoff = now.getHours() * 60 + now.getMinutes() >= hour * 60 + minute;
-	return Array.from({ length: days }, (_, offset) => {
+	return Array.from({ length: days }, (_, index) => {
+		const offset = sameDay ? index : index + 1;
 		const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
 		const iso = isoDate(date);
 		return {
@@ -312,6 +314,25 @@ const orderFromApi = (order, { line, delivery, method, preferredLocale }) => ({
 	last4: order.paymentReference,
 	preferredLocale
 });
+// The optional parts of a storefront; like its payment methods, a store turns each on by listing it:
+// - promoCodes: the bag's promo-code field and its discount.
+// - sameDay: delivery today, until each zone's cut-off (off: the first day is tomorrow).
+// - weddings: the weddings and events page with its inquiry form.
+// - journal: the journal and its posts.
+// - reminders: yearly occasion reminders in the account.
+// - newsletter: the email sign-up in the footer.
+// Add-ons (and the handwritten card's message) follow the store's add-on list instead.
+const STORE_FEATURES = [
+	"promoCodes",
+	"sameDay",
+	"weddings",
+	"journal",
+	"reminders",
+	"newsletter"
+];
+// The store's feature list as {promoCodes: true, sameDay: false, …}, one key per STORE_FEATURES id;
+// unknown ids are dropped.
+const storeFeatures = (list) => Object.fromEntries(STORE_FEATURES.map((id) => [id, (list || []).includes(id)]));
 // The ways a store can take payment; each is a feature the store turns on by listing it. `id` is
 // also the Checkout `gateway`:
 // - online: the bank's payment page and back (PaymentStatus).
@@ -404,6 +425,8 @@ export const commerce = {
 	lineFromApi,
 	ORDER_STATUS,
 	orderFromApi,
+	STORE_FEATURES,
+	storeFeatures,
 	PAYMENT_METHODS,
 	paymentOptions,
 	defaultPaymentMethod,

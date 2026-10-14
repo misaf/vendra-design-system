@@ -100,12 +100,20 @@ export function Shell({v, content, sticky}) {
                     <DS.NavLink variant="header" href={v.href?.shop} current={v.nav?.shop}>
                       <>{v.t?.shop}</>
                     </DS.NavLink>
-                    <DS.NavLink variant="header" href={v.href?.weddings} current={v.nav?.weddings}>
-                      <>{v.t?.weddings}</>
-                    </DS.NavLink>
-                    <DS.NavLink variant="header" href={v.href?.journal} current={v.nav?.journal}>
-                      <>{v.t?.journal}</>
-                    </DS.NavLink>
+                    {v.features?.weddings ? (
+                      <DS.NavLink
+                        variant="header"
+                        href={v.href?.weddings}
+                        current={v.nav?.weddings}
+                      >
+                        <>{v.t?.weddings}</>
+                      </DS.NavLink>
+                    ) : null}
+                    {v.features?.journal ? (
+                      <DS.NavLink variant="header" href={v.href?.journal} current={v.nav?.journal}>
+                        <>{v.t?.journal}</>
+                      </DS.NavLink>
+                    ) : null}
                   </nav>
                   <a
                     href={v.href?.home}
@@ -114,14 +122,16 @@ export function Shell({v, content, sticky}) {
                     <>{v.t?.brand}</>
                   </a>
                   <div className="tw:flex tw:gap-1 tw:items-center">
-                    <div className="vf-shell-header-lang tw:me-2">
-                      <DS.LanguageSwitch
-                        value={v.lang}
-                        onChange={v.setLang}
-                        options={v.langOpts}
-                        label={v.t?.langL}
-                      />
-                    </div>
+                    {v.hasLang ? (
+                      <div className="vf-shell-header-lang tw:me-2">
+                        <DS.LanguageSwitch
+                          value={v.lang}
+                          onChange={v.setLang}
+                          options={v.langOpts}
+                          label={v.t?.langL}
+                        />
+                      </div>
+                    ) : null}
                     <DS.IconButton icon="search" label={v.t?.search} href={v.href?.search} />
                     <DS.IconButton icon="user" label={v.t?.account} href={v.href?.account} />
                     <DS.IconButton
@@ -141,15 +151,17 @@ export function Shell({v, content, sticky}) {
                 <div className="vf-shell-mobile-header tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px]">
                   <div className="tw:flex">
                     <DS.IconButton icon="menu" label={v.t?.menu} onClick={v.openMenu} />
-                    <button
-                      type="button"
-                      onClick={v.otherLang?.pick}
-                      lang={v.otherLang?.lang}
-                      aria-label={v.otherLang?.name}
-                      className="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer"
-                    >
-                      <>{v.otherLang?.label}</>
-                    </button>
+                    {v.hasLang ? (
+                      <button
+                        type="button"
+                        onClick={v.otherLang?.pick}
+                        lang={v.otherLang?.lang}
+                        aria-label={v.otherLang?.name}
+                        className="vf-shell-mobile-lang tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer"
+                      >
+                        <>{v.otherLang?.label}</>
+                      </button>
+                    ) : null}
                   </div>
                   <a
                     href={v.href?.home}
@@ -204,15 +216,17 @@ export function Shell({v, content, sticky}) {
                       </div>
                     </>
                   ) : null}
-                  <DS.Button
-                    variant="secondary"
-                    iconStart="message-circle"
-                    href={v.waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <>{v.t?.waLong}</>
-                  </DS.Button>
+                  {v.waHref ? (
+                    <DS.Button
+                      variant="secondary"
+                      iconStart="message-circle"
+                      href={v.waHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <>{v.t?.waLong}</>
+                    </DS.Button>
+                  ) : null}
                 </div>
               </DS.Dialog>
             </>
@@ -252,71 +266,73 @@ export function Shell({v, content, sticky}) {
                     ))}
                   </ul>
                 </div>
-                <section
-                  aria-labelledby="vf-news-title"
-                  className="vf-shell-footer-newsletter tw:[flex:1_1_320px] tw:max-w-[560px] tw:flex tw:flex-col tw:gap-3"
-                >
-                  <h2
-                    id="vf-news-title"
-                    className="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display"
+                {v.newsletter ? (
+                  <section
+                    aria-labelledby="vf-news-title"
+                    className="vf-shell-footer-newsletter tw:[flex:1_1_320px] tw:max-w-[560px] tw:flex tw:flex-col tw:gap-3"
                   >
-                    <>{v.t?.newsletter?.title}</>
-                  </h2>
-                  <p className="tw:m-0 tw:text-sm tw:text-inverse-quiet tw:max-w-measure">
-                    <>{v.t?.newsletter?.body}</>
-                  </p>
-                  {v.newsletter?.open ? (
-                    <>
-                      <form
-                        onSubmit={v.newsletter?.submit}
-                        noValidate
-                        className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
-                      >
-                        <label
-                          id="vf-news-email-label"
-                          htmlFor="vf-news-email"
-                          className="ag-field__label"
+                    <h2
+                      id="vf-news-title"
+                      className="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display"
+                    >
+                      <>{v.t?.newsletter?.title}</>
+                    </h2>
+                    <p className="tw:m-0 tw:text-sm tw:text-inverse-quiet tw:max-w-measure">
+                      <>{v.t?.newsletter?.body}</>
+                    </p>
+                    {v.newsletter?.open ? (
+                      <>
+                        <form
+                          onSubmit={v.newsletter?.submit}
+                          noValidate
+                          className="vf-shell-newsletter-form tw:flex tw:flex-col tw:gap-2 tw:max-w-[560px]"
                         >
-                          <>{v.t?.newsletter?.label}</>
-                        </label>
-                        <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
-                          <div className="tw:[flex:1_1_240px]">
-                            <DS.Input
-                              id="vf-news-email"
-                              aria-labelledby="vf-news-email-label"
-                              value={v.newsletter?.draft}
-                              onChange={v.newsletter?.setDraft}
-                              error={v.newsletter?.error}
-                              type="email"
-                              dir="ltr"
-                              autoComplete="email"
-                            />
-                          </div>
-                          <DS.Button
-                            type="submit"
-                            loading={v.newsletter?.sending}
-                            loadingLabel={v.t?.newsletter?.sending}
-                            className="vf-shell-newsletter-submit tw:h-[48px]!"
+                          <label
+                            id="vf-news-email-label"
+                            htmlFor="vf-news-email"
+                            className="ag-field__label"
                           >
-                            <>{v.t?.newsletter?.submit}</>
-                          </DS.Button>
-                        </div>
-                      </form>
-                    </>
-                  ) : null}
-                  {v.newsletter?.done ? (
-                    <>
-                      <p
-                        id="vf-news-done"
-                        tabIndex={-1}
-                        role="status"
-                        className="tw:m-0 tw:text-sm"
-                      >
-                        <>{v.newsletter?.doneText}</>
-                      </p>
-                    </>
-                  ) : null}
-                </section>
+                            <>{v.t?.newsletter?.label}</>
+                          </label>
+                          <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
+                            <div className="tw:[flex:1_1_240px]">
+                              <DS.Input
+                                id="vf-news-email"
+                                aria-labelledby="vf-news-email-label"
+                                value={v.newsletter?.draft}
+                                onChange={v.newsletter?.setDraft}
+                                error={v.newsletter?.error}
+                                type="email"
+                                dir="ltr"
+                                autoComplete="email"
+                              />
+                            </div>
+                            <DS.Button
+                              type="submit"
+                              loading={v.newsletter?.sending}
+                              loadingLabel={v.t?.newsletter?.sending}
+                              className="vf-shell-newsletter-submit tw:h-[48px]!"
+                            >
+                              <>{v.t?.newsletter?.submit}</>
+                            </DS.Button>
+                          </div>
+                        </form>
+                      </>
+                    ) : null}
+                    {v.newsletter?.done ? (
+                      <>
+                        <p
+                          id="vf-news-done"
+                          tabIndex={-1}
+                          role="status"
+                          className="tw:m-0 tw:text-sm"
+                        >
+                          <>{v.newsletter?.doneText}</>
+                        </p>
+                      </>
+                    ) : null}
+                  </section>
+                ) : null}
               </div>
               <div className="vf-shell-footer-columns tw:grid tw:[grid-template-columns:repeat(auto-fit,minmax(140px,1fr))] tw:gap-x-5 tw:gap-y-7 tw:pt-7 tw:[border-top:1px_solid_var(--border-inverse)]">
                 <nav

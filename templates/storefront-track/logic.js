@@ -7,7 +7,6 @@ import {VF_FA_DIGITS, vfLatin} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {usePageLogic} from '../_shared/page-state.js';
@@ -101,11 +100,7 @@ function vals(page) {
   return {
     ...S,
     hasOrder,
-    waHref: order
-      ? VF_STORE.whatsapp +
-        '?text=' +
-        encodeURIComponent((fa ? 'درباره سفارش ' : 'About order ') + order.id)
-      : S.waHref,
+    waHref: order ? S.waWith((fa ? 'درباره سفارش ' : 'About order ') + order.id) : S.waHref,
     noOrder: !hasOrder,
     pending,
     pendingTitle: C.pending.title,

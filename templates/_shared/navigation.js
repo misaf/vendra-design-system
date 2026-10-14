@@ -6,7 +6,7 @@ import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
 import {vfDirectionsUrl} from './location.js';
 import {vfPageTenant} from './page-lifecycle.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
-import {VF_STORE} from './store-config.js';
+import {VF_STORE, vfFeatures} from './store-config.js';
 import {VF_CATEGORY_COPY} from './translations/categories.js';
 import {VF_SHELL} from './translations/shell.js';
 import {VF_SEO} from './seo.js';
@@ -38,6 +38,9 @@ export function vfShell(self, page) {
   self._vfPage = page;
   VF_SEO.register(...VF_ROUTES);
   const fa = props.lang === 'fa';
+  const features = vfFeatures();
+  // Pages a store can turn off, and their links with them.
+  const offered = route => features[route] !== false;
   /** @type {'en' | 'fa'} */
   const L = fa ? 'fa' : 'en';
   const T = VF_SHELL[L];
@@ -87,13 +90,15 @@ export function vfShell(self, page) {
     'account',
     'track',
     'faq'
-  ].map(r => ({
-    label: T[r],
-    current: cur[r],
-    href: href[r],
-    // Closes the drawer; the link itself navigates (React Aria's router).
-    close
-  }));
+  ]
+    .filter(offered)
+    .map(r => ({
+      label: T[r],
+      current: cur[r],
+      href: href[r],
+      // Closes the drawer; the link itself navigates (React Aria's router).
+      close
+    }));
   const policyLink = doc => ({
     href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'policy', id: doc})
   });
@@ -123,7 +128,7 @@ export function vfShell(self, page) {
   const accountPhone = vfAccountPhone();
   const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
   const draft = news.draft ?? profile.email ?? '';
-  const newsletter = {
+  const newsletter = features.newsletter && {
     open: !signedUp,
     done: !!signedUp,
     doneText: N.done.replace('{email}', '\u2066' + signedUp + '\u2069'),
@@ -211,14 +216,9 @@ export function vfShell(self, page) {
         label: VF_CATEGORY_COPY[L][cat]
       }))
     ],
-    studio: [
-      footerLink('weddings', T.weddings),
-      footerLink('journal', T.journal),
-      footerLink('contact', T.contact),
-      footerLink('track', T.track),
-      footerLink('account', T.account),
-      footerLink('saved', T.saved)
-    ],
+    studio: ['weddings', 'journal', 'contact', 'track', 'account', 'saved']
+      .filter(offered)
+      .map(r => footerLink(r, T[r])),
     social: [
       ...(VF_STORE.instagram
         ? [
@@ -335,7 +335,8 @@ export function vfShell(self, page) {
       }),
     closeMenu: close,
     menuItems,
-    hasLang: true,
+    features,
+    hasLang: VF_STORE.languages.length > 1,
     setLang,
     // Mobile headers have room for one button: it switches to the other language.
     otherLang: {
@@ -354,7 +355,7 @@ export function vfShell(self, page) {
         label: 'فا'
       }
     ],
-    waHref: VF_STORE.whatsapp,
+    waHref: VF_STORE.whatsapp || '',
     // A WhatsApp chat with the message already written; pages use it to quote product codes.
     waWith: text =>
       VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',
@@ -391,13 +392,17 @@ export function vfShell(self, page) {
         href: href.shop,
         current: tab === 'shop'
       },
-      {
-        id: 'wa',
-        icon: 'message-circle',
-        label: T.wa,
-        href: VF_STORE.whatsapp,
-        target: '_blank'
-      },
+      ...(VF_STORE.whatsapp
+        ? [
+            {
+              id: 'wa',
+              icon: 'message-circle',
+              label: T.wa,
+              href: VF_STORE.whatsapp,
+              target: '_blank'
+            }
+          ]
+        : []),
       {
         id: 'bag',
         icon: 'shopping-bag',

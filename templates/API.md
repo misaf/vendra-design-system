@@ -58,7 +58,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 17. **Order detail:** document the `status` values above, with timestamps per step for the timeline, delivery date/slot/address, discount and balance amounts, delivery photo, cancellation.
 
 ### Store settings
-18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), address and map pin, opening hours, active currency, announcement, theme spec (for `tenantCss`), and the payment methods the store offers, in its order, each with its settings: the card for card-to-card (number, holder, bank, Sheba), the zones pay on delivery reaches, and whether online, balance and WhatsApp orders are on. The storefront has the shape as `VF_STORE.paymentMethods` (`commerce.PaymentMethod`).
+18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), address and map pin, opening hours, active currency, announcement, theme spec (for `tenantCss`), and the payment methods the store offers, in its order, each with its settings: the card for card-to-card (number, holder, bank, Sheba), the zones pay on delivery reaches, and whether online, balance and WhatsApp orders are on. The storefront has the shape as `VF_STORE.paymentMethods` (`commerce.PaymentMethod`). Also the optional parts the store runs, as a list of `commerce.STORE_FEATURES` ids (`promoCodes`, `sameDay`, `weddings`, `journal`, `reminders`, `newsletter`; `VF_STORE.features`), its languages with the default first (`VF_STORE.languages`), and which contact channels it has (WhatsApp, Instagram and email each optional).
 
 ### Marketing
 19. **Promo codes:** validate a code against a cart and return the discount.

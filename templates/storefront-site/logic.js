@@ -11,7 +11,7 @@ import {
   vfSampleBag
 } from '../_shared/catalog.js';
 import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfLanguage} from '../_shared/store-config.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
 import {loadPage, pageReady} from '../app/pages.js';
@@ -68,7 +68,7 @@ function vfSiteInitial(props) {
     routeInfo: route,
     lang: new URLSearchParams(location.search).has('lang')
       ? route.lang
-      : vfAccountLocale() || props.lang || 'en',
+      : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
     mobile: null,
     bag: Array.isArray(saved.bag) ? saved.bag : VF_BAG0,
     saved: Array.isArray(saved.saved)

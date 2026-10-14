@@ -1,5 +1,6 @@
 // Bilingual signin copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfFeatures} from '../_shared/store-config.js';
 export function vfCopy(S) {
   return {
     en: {
@@ -27,7 +28,9 @@ export function vfCopy(S) {
       backToCheckout: 'Back to checkout',
       okA: 'Welcome back,',
       okB: 'Shirin.',
-      okP: 'Your orders, addresses and reminders are waiting.',
+      okP: vfFeatures().reminders
+        ? 'Your orders, addresses and reminders are waiting.'
+        : 'Your orders and addresses are waiting.',
       toAccount: 'Go to my account',
       codeMessage: phone => 'We sent a code to \u2066' + phone + '\u2069.'
     },
@@ -57,7 +60,9 @@ export function vfCopy(S) {
       backToCheckout: 'بازگشت به ادامه خرید',
       okA: 'خوش برگشتید،',
       okB: 'شیرین.',
-      okP: 'سفارش‌ها، آدرس‌ها و یادآورهای شما آماده‌اند.',
+      okP: vfFeatures().reminders
+        ? 'سفارش‌ها، آدرس‌ها و یادآورهای شما آماده‌اند.'
+        : 'سفارش‌ها و آدرس‌های شما آماده‌اند.',
       toAccount: 'رفتن به حساب',
       codeMessage: phone => 'کد را به \u2066' + phone + '\u2069 فرستادیم.'
     }

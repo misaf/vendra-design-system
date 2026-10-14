@@ -2,6 +2,7 @@
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
+import {vfFeatures, vfLanguage} from './store-config.js';
 export const VF_ROUTES = [
   'account',
   'bag',
@@ -42,7 +43,16 @@ export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 export function vfReadRoute(search = location.search) {
   VF_SEO.register(...VF_ROUTES);
   const route = VF_SEO.readRoute(search),
-    query = new URLSearchParams(search);
+    query = new URLSearchParams(search),
+    features = vfFeatures();
+  // A language the store doesn't offer opens in its default one.
+  if (route.lang) route.lang = vfLanguage(route.lang);
+  // Pages the store has turned off don't exist.
+  if (
+    (route.view === 'weddings' && !features.weddings) ||
+    (['journal', 'post'].includes(route.view) && !features.journal)
+  )
+    route.view = 'notfound';
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
@@ -55,7 +65,11 @@ export function vfReadRoute(search = location.search) {
       : 'pending';
   }
   // An account tab can be linked to (?view=account&tab=balance).
-  if (route.view === 'account' && VF_ACCOUNT_TABS.includes(query.get('tab')))
+  if (
+    route.view === 'account' &&
+    VF_ACCOUNT_TABS.includes(query.get('tab')) &&
+    (query.get('tab') !== 'reminders' || features.reminders)
+  )
     route.tab = query.get('tab');
   // Sign-in started from checkout returns there (?view=signin&next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
@@ -86,6 +100,7 @@ export function vfReadRoute(search = location.search) {
         (query.get('filters') || '')
           .split(',')
           .filter(id => ['under3', 'same', 'roses'].includes(id))
+          .filter(id => id !== 'same' || features.sameDay)
       )
     ].sort();
     route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion'))

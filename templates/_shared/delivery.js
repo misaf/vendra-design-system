@@ -8,7 +8,7 @@
 import {vfLineHasCard, vfLineToken} from './catalog.js';
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from './promotions.js';
-import {VF_STORE} from './store-config.js';
+import {VF_STORE, vfFeatures} from './store-config.js';
 import {commerce} from '../../components/utils/commerce.js';
 
 // GET /api/delivery/zones
@@ -124,7 +124,9 @@ export function vfDeliveryCutoff(zone, persian) {
   return commerce.cutoffText(zone.cutoff, persian);
 }
 
+// "Same day before 18:00"; '' when the store doesn't deliver the same day.
 export function vfDeliveryHint(zone, persian) {
+  if (!vfFeatures().sameDay) return '';
   return (persian ? 'ارسال همان روز تا ' : 'Same day before ') + vfDeliveryCutoff(zone, persian);
 }
 
@@ -151,7 +153,8 @@ export function vfIsoDate(date) {
   return commerce.isoDate(date);
 }
 
-// The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off.
+// The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off; from
+// tomorrow when the store doesn't deliver the same day.
 export function vfDeliveryDays(zoneId, now = new Date()) {
   const sample =
     VF_SAMPLE_SOLD_OUT_IN_DAYS == null
@@ -168,7 +171,11 @@ export function vfDeliveryDays(zoneId, now = new Date()) {
         ];
   return commerce.deliveryDays(
     vfZone(zoneId).cutoff,
-    {days: VF_DELIVERY_DAYS, soldOutDates: [...VF_SOLD_OUT_DATES, ...sample]},
+    {
+      days: VF_DELIVERY_DAYS,
+      soldOutDates: [...VF_SOLD_OUT_DATES, ...sample],
+      sameDay: vfFeatures().sameDay
+    },
     now
   );
 }
@@ -253,11 +260,11 @@ export function vfCheckoutRequest(
 }
 
 // `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
-// the balance discount off the products, after any promo code.
+// the balance discount off the products, after any promo code (when the store takes them).
 export function vfTotals(lines, delivery, balance = null) {
   return commerce.totals(
     lines,
-    {zone: vfZone(delivery.zone), promo: delivery.promo, balance},
+    {zone: vfZone(delivery.zone), promo: vfFeatures().promoCodes ? delivery.promo : '', balance},
     {
       freeDelivery: {threshold: VF_FREE_DELIVERY_THRESHOLD, zones: VF_FREE_DELIVERY_ZONES},
       promos: typeof VF_PROMOS === 'undefined' ? [] : VF_PROMOS,

@@ -56,15 +56,17 @@ export function View({v}) {
                       <>{v.t?.helpBody}</>
                     </p>
                     <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                      <DS.Button
-                        variant="primary"
-                        iconStart="message-circle"
-                        href={v.waHref}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <>{v.t?.whatsapp}</>
-                      </DS.Button>
+                      {v.waHref ? (
+                        <DS.Button
+                          variant="primary"
+                          iconStart="message-circle"
+                          href={v.waHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <>{v.t?.whatsapp}</>
+                        </DS.Button>
+                      ) : null}
                       <DS.Button variant="ghost" href={v.href?.contact}>
                         <>{v.t?.contactUs}</>
                       </DS.Button>

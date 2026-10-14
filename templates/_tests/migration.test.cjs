@@ -426,8 +426,96 @@ function page(name, c, props = {}) {
     assert.equal(listed.method, 'whatsapp');
     assert.equal(listed.isWhatsapp, true);
   }
+  // The optional parts of the storefront are features too (VF_STORE.features), as are its languages
+  // and contact channels: a store with none of them, in Persian only, without WhatsApp or Instagram.
+  {
+    const {c: store} = environment();
+    const json = value => JSON.parse(JSON.stringify(value));
+    assert.deepEqual(
+      json(vm.runInContext("commerce.storeFeatures(['journal', 'paypal'])", store)),
+      {
+        promoCodes: false,
+        sameDay: false,
+        weddings: false,
+        journal: true,
+        reminders: false,
+        newsletter: false
+      }
+    );
+    vm.runInContext(
+      `VF_STORE.features = []; VF_STORE.languages = ['fa']; VF_STORE.whatsapp = null;
+       VF_STORE.instagram = null; VF_STORE.paymentMethods = [{id: 'whatsapp'}, {id: 'online'}];`,
+      store
+    );
+    // Shell: no weddings or journal links, newsletter, language switch or WhatsApp.
+    const home = page('home', store, {lang: 'fa'}).renderVals();
+    const labels = home.menuItems.map(item => item.label).join(' ');
+    assert.ok(!/عروسی|دفترچه/.test(labels), labels);
+    assert.equal(home.footer.studio.length, 4);
+    assert.equal(home.newsletter, false);
+    assert.equal(home.hasLang, false);
+    assert.equal(home.waHref, '');
+    assert.deepEqual(json(home.tabs.map(tab => tab.id)), ['home', 'shop', 'bag']);
+    // Routes: its pages are gone, English opens in Persian, the same-day filter is dropped.
+    const route = search => json(store.vfReadRoute(search));
+    assert.equal(route('?view=weddings').view, 'notfound');
+    assert.equal(route('?view=journal').view, 'notfound');
+    assert.equal(route('?view=post&post=morning-at-the-studio').view, 'notfound');
+    assert.equal(route('?lang=en&view=faq').lang, 'fa');
+    assert.deepEqual(route('?view=shop&filters=same,roses').filters, ['roses']);
+    // No same-day delivery: the first day is tomorrow, and nothing says "same day".
+    assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
+    assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');
+    const shop = page('shop', store, {lang: 'fa'}).renderVals();
+    assert.equal(shop.chips.length, 2);
+    // No promo codes: no field, and a saved code takes nothing off.
+    assert.equal(page('bag', store, {lang: 'fa'}).renderVals().promoShown, false);
+    const lines = store.vfSampleBag();
+    assert.equal(
+      store.vfTotals(lines, {zone: 'central', promo: 'WELCOME10'}).discount,
+      0,
+      'no promo discount without promo codes'
+    );
+    // No reminders tab; no WhatsApp payment without WhatsApp; contact lists only what it has.
+    vm.runInContext("vfAccountLogin('09123456789', 'fa')", store);
+    const account = page('account', store, {lang: 'fa', tab: 'reminders'}).renderVals();
+    assert.ok(!account.tabItems.some(tab => tab.id === 'reminders'));
+    assert.equal(account.isReminders, false);
+    const checkout = page('checkout', store, {
+      lang: 'fa',
+      store: {
+        bag: lines,
+        delivery: {
+          zone: 'central',
+          name: 'Demo',
+          address: 'Example',
+          phone: '09123456789',
+          slot: 12
+        },
+        order: null
+      }
+    }).renderVals();
+    assert.equal(checkout.method, 'online');
+    assert.equal(checkout.showMethods, false);
+    const contact = page('contact', store, {lang: 'fa'}).renderVals();
+    assert.deepEqual(json(contact.rows.map(row => row.icon)), ['map-pin', 'clock', 'phone']);
+    const privacy = JSON.stringify(
+      page('policy', store, {lang: 'fa', doc: 'privacy'}).renderVals().doc
+    );
+    assert.ok(!/یادآور|خبرنامه/.test(privacy), 'privacy names no reminders or newsletter');
+    const shipping = JSON.stringify(
+      page('policy', store, {lang: 'fa', doc: 'shipping'}).renderVals().doc
+    );
+    assert.ok(!/ارسال همان روز برای سفارش تا/.test(shipping));
+    // No add-ons: the product page has no extras and the bag can't add a card.
+    vm.runInContext('VF_ADDONS.splice(0)', store);
+    assert.equal(page('product', store, {lang: 'fa'}).renderVals().addons.length, 0);
+    const bag = page('bag', store, {lang: 'fa'}).renderVals();
+    assert.ok(bag.cardLines.every(line => !line.noCard));
+    assert.equal(bag.cardsShown, false);
+  }
   console.log(
-    'Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, optional API mode, article blocks, bilingual communications and relocated card paths.'
+    'Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, store features, optional API mode, article blocks, bilingual communications and relocated card paths.'
   );
 })().catch(e => {
   console.error(e);

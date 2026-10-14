@@ -103,7 +103,7 @@ function vfAnnounce(page) {
       locale: lang,
       noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',
       alternates: Object.fromEntries(
-        ['en', 'fa'].map(lang => [
+        VF_STORE.languages.map(lang => [
           lang,
           (page.props.go ? '' : '../app/') +
             vfRouteParams({

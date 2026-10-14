@@ -120,6 +120,15 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - **Each way to pay is a feature the store turns on**: online (the bank's page and back), card-to-card, pay on delivery (in the zones it lists), account balance, and WhatsApp confirmation. The store lists the ones it offers, in its order, with each one's settings (`commerce.PaymentMethod`; the sample store's `VF_STORE.paymentMethods`); `commerce.paymentOptions` says which of them this order can use and why not. The checkout shows a choice only when there are two or more, starts on the first usable one (the balance, when it covers the order), and with none usable (pay on delivery outside its zones) says so and offers the phone. The bag's note, the terms and privacy text, the accessibility statement and the account's Balance tab follow the same list.
 - **PCI DSS**: the storefront never collects card numbers. Online payment happens on the bank's page; card-to-card sends only the last 4 digits and the tracking number the customer types, as a transfer reference.
 
+## Store features
+
+A store turns on only the parts it runs, the way it picks its payment methods. Nothing it has turned off shows anywhere: no link, page, field or sentence about it.
+
+- **Features** (`commerce.STORE_FEATURES`; the sample store's `VF_STORE.features`): promo codes (the bag's code field and its discount), same-day delivery (off: the first delivery day is tomorrow, and the same-day filter, hints and policy wording go), the weddings page, the journal and its posts, occasion reminders (the account tab), and the footer newsletter. A turned-off page is a 404; the menu, header, footer and policy text leave it out.
+- **Add-ons** follow the store's add-on list: no add-ons, no extras on the product page; no handwritten card, no card messages in the bag.
+- **Languages** (`VF_STORE.languages`, the first is the default): with one, the language switch is hidden, links in the other language open in this one, and hreflang lists only it.
+- **Contact channels**: the phone is required; WhatsApp, Instagram and email are optional. Without WhatsApp its buttons, the tab bar's chat tab and the WhatsApp payment method go too.
+
 ## Storefront release checklist
 
 - [ ] Product pages show price and availability. Paid add-ons are never pre-selected.
@@ -133,6 +142,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - [ ] Persian dates read weekday، day month year; Esfand clamps to 29 in non-leap years.
 - [ ] Policy pages (Shipping & delivery, Returns & refunds, Privacy, Terms, Accessibility) have the real text, with no SAMPLE banners; they're linked from the footer.
 - [ ] Only the store's real payment methods are listed (`paymentMethods`), each with its real settings; no card numbers are collected or logged.
+- [ ] Only the features, languages and contact channels the store runs are on (`features`, `languages`, `whatsapp`/`instagram`/`email`).
 
 ## Components
 
@@ -161,7 +171,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **CodeInput:** one-field one-time code: digits only, Persian digits accepted, SMS autofill and Web OTP (Chrome on Android fills it from an SMS ending `@<domain> #<code>`); `onComplete` never submits by itself, so a form that submits on completion says so in its hint.
 - **ResendCode:** "Send a new code" after a wait that runs on the clock (right after a trip to the SMS app), time left in the page's digits, one polite status when it ends.
 - **PromoCodeField:** a discount code with Apply inside the field's end (no `<form>` of its own: Enter applies), then the applied code with Remove; focus goes to the field when a code is refused or removed, to Remove when one applies.
-- **ErrorSummary:** after a failed submit, "Check 2 details to continue." in a danger Alert with a link to each field in form order (scrolls it to the middle and focuses it). Focus it after the submit; with one error, focusing that field is enough.
+- **ErrorSummary:** after a failed submit, "Check 2 details to continue." in a danger Alert with a link to each field in form order (scrolls it to the middle and focuses it). Focus it after the submit; with one error, focusing that field is enough. Every storefront form has one: bag, contact, weddings, sign-in, the account's address and reminder editor and its profile.
 - **LocationPicker:** centre-pin map for the delivery point (drag, tap, arrow keys, "use my location"); the app passes `loadLeaflet()` and tiles, and `onFail` switches to a typed address.
 - **Select:** same field pattern, with `options`.
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.

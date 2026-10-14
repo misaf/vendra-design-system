@@ -89,16 +89,16 @@ function vals(page) {
       instagram: C.labels.instagram,
       editMessage: C.labels.returnToForm
     },
-    rows: ['map-pin', 'clock', 'phone', 'message-circle', 'instagram'].map((icon, i) => ({
-      icon,
-      label: C.rowLabels[i],
-      value:
-        i === 0
-          ? S.t.address
-          : i === 1
-            ? S.t.hours
-            : '⁨' + [S.phoneLabel, S.phoneLabel, S.instagram.label][i - 2] + '⁩'
-    })),
+    // The channels the store has (VF_STORE): WhatsApp and Instagram rows go when they are null.
+    rows: [
+      ['map-pin', S.t.address],
+      ['clock', S.t.hours],
+      ['phone', '⁨' + S.phoneLabel + '⁩'],
+      ['message-circle', S.waHref && '⁨' + S.phoneLabel + '⁩'],
+      ['instagram', S.instagram && '⁨' + S.instagram.label + '⁩']
+    ]
+      .map(([icon, value], i) => ({icon, label: C.rowLabels[i], value}))
+      .filter(row => row.value),
     studioMap: !!directions && !s.mapFailed,
     hasDirections: !!directions,
     directions,

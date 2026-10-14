@@ -27,14 +27,16 @@ export function View({v}) {
                 <DS.Button variant="primary" iconEnd="arrow-right" href={v.cta?.href}>
                   <>{v.cta?.label}</>
                 </DS.Button>
-                <DS.Button
-                  variant="ghost"
-                  iconStart="message-circle"
-                  href={v.waHref}
-                  target="_blank"
-                >
-                  <>{v.t?.wa}</>
-                </DS.Button>
+                {v.waHref ? (
+                  <DS.Button
+                    variant="ghost"
+                    iconStart="message-circle"
+                    href={v.waHref}
+                    target="_blank"
+                  >
+                    <>{v.t?.wa}</>
+                  </DS.Button>
+                ) : null}
               </div>
             </section>
             <section className="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">

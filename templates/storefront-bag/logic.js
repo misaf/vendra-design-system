@@ -36,7 +36,7 @@ import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/locatio
 import {vfShell} from '../_shared/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
@@ -132,7 +132,9 @@ function vals(page) {
   const saved = phone ? vfAccountLoad(phone, L).addresses : [];
   const zoneLabel = zone =>
     (fa ? zone.fa : zone.en) + ' · ' + (vfFreeDelivery(zone.id, sub) ? C.free : m(zone.fee));
-  const cardPrice = m(VF_ADDONS.find(addon => addon.id === 'card').price);
+  // The handwritten card is an add-on (VF_ADDONS): a store without it has no card messages.
+  const cardAddon = VF_ADDONS.find(addon => addon.id === 'card');
+  const cardPrice = cardAddon ? m(cardAddon.price) : '';
   const missingCard = l => s.submitted && vfLineHasCard(l) && !String(l.card || '').trim();
   // Error summary rows in form order; each links to the field that needs attention.
   const problems = [
@@ -187,7 +189,7 @@ function vals(page) {
       ...C,
       payNote: C.payNote.replace(
         '{methods}',
-        VF_STORE.paymentMethods
+        vfPaymentMethods()
           .map(method => C.payWays[method.id])
           .filter(Boolean)
           .join(fa ? '، ' : ', ')
@@ -364,10 +366,11 @@ function vals(page) {
       }
     })),
     // Lines with a handwritten card need its message; the others can add one here.
+    cardsShown: !!cardAddon || live.some(vfLineHasCard),
     cardLines: live.map((l, i) => ({
       id: 'vf-card-' + i,
       hasCard: vfLineHasCard(l),
-      noCard: !vfLineHasCard(l),
+      noCard: !vfLineHasCard(l) && !!cardAddon,
       label: C.cardFor.replace('{name}', vfTokenText(vfLineToken(l))),
       name: vfLineToken(l),
       detail: l[L][1],
@@ -459,7 +462,7 @@ function vals(page) {
         ? C.promoMin.replace('{min}', m(s.promoError.min))
         : C.promoUnknown
       : undefined,
-    promoShown: !onDelivery,
+    promoShown: !onDelivery && vfFeatures().promoCodes,
     // How far the subtotal is from free delivery, while the chosen zone can deliver free.
     freeDelivery: VF_FREE_DELIVERY_ZONES.includes(z.id)
       ? {

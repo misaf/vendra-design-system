@@ -130,15 +130,17 @@ export function View({v}) {
                       <DS.DetailList rows={v.rows} />
                     </DS.Card>
                     <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                      <DS.Button
-                        variant="primary"
-                        iconStart="message-circle"
-                        href={v.waHref}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        <>{v.t?.ask}</>
-                      </DS.Button>
+                      {v.waHref ? (
+                        <DS.Button
+                          variant="primary"
+                          iconStart="message-circle"
+                          href={v.waHref}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          <>{v.t?.ask}</>
+                        </DS.Button>
+                      ) : null}
                       <DS.Button
                         variant="secondary"
                         iconStart="rotate-ccw"

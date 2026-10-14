@@ -396,19 +396,21 @@ export function vfSampleBag() {
     orchid = vfProduct('VF-8RD5WN');
   const classic = VF_SIZES.find(size => size.id === 'classic'),
     card = VF_ADDONS.find(addon => addon.id === 'card');
+  // The box comes with a handwritten card when the store offers one.
+  const extras = card ? [card] : [];
   return [
     {
-      id: box.id + '-classic-card',
+      id: box.id + '-classic' + (card ? '-card' : ''),
       productId: box.id,
       token: box.id,
       size: 'classic',
-      addons: ['card'],
-      unit: box.price + classic.price + card.price,
+      addons: extras.map(addon => addon.id),
+      unit: box.price + classic.price + (card ? card.price : 0),
       qty: 1,
       image: box.image,
-      card: 'Happy birthday, Shirin.',
-      en: [box.id, vfLineDetail(box, classic, [card], 'en')],
-      fa: [box.id, vfLineDetail(box, classic, [card], 'fa')]
+      ...(card ? {card: 'Happy birthday, Shirin.'} : {}),
+      en: [box.id, vfLineDetail(box, classic, extras, 'en')],
+      fa: [box.id, vfLineDetail(box, classic, extras, 'fa')]
     },
     {
       id: orchid.id,
@@ -470,7 +472,7 @@ export function vfLineWithCard(line) {
     size,
     addons: addons.map(addon => addon.id),
     id: productId + (size ? '-' + size : '') + '-' + addons.map(addon => addon.id).join('+'),
-    unit: line.unit + VF_ADDONS.find(addon => addon.id === 'card').price,
+    unit: line.unit + (VF_ADDONS.find(addon => addon.id === 'card') || {price: 0}).price,
     en: names('en'),
     fa: names('fa')
   };

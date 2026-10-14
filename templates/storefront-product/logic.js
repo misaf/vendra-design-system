@@ -19,6 +19,7 @@ import {
 import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute} from '../_shared/routing.js';
+import {vfFeatures} from '../_shared/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -103,7 +104,8 @@ function vals(page) {
       desc: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
       cat: VF_CATEGORY_COPY[L][product.cat],
       careT: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT,
-      ship: product.same ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
+      ship:
+        product.same && vfFeatures().sameDay ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
     },
     hasSizes,
     // WhatsApp questions quote the code, here and in the menu's WhatsApp button.

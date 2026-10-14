@@ -1,5 +1,6 @@
 // Bilingual checkout copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfFeatures} from '../_shared/store-config.js';
 export function vfCopy(S) {
   const result = {
     en: {
@@ -37,7 +38,8 @@ export function vfCopy(S) {
       keep: 'Keep browsing',
       accountTitle: 'Save your details for next time',
       accountBody:
-        'Sign in with {phone} to keep this order with your addresses and occasion reminders.',
+        'Sign in with {phone} to keep this order with your addresses' +
+        (vfFeatures().reminders ? ' and occasion reminders.' : '.'),
       accountCta: 'Sign in',
       when: 'Delivery',
       to: 'Deliver to',
@@ -91,7 +93,8 @@ export function vfCopy(S) {
       keep: 'ادامه خرید',
       accountTitle: 'مشخصاتتان را برای دفعه بعد نگه دارید',
       accountBody:
-        'با {phone} وارد شوید تا این سفارش کنار آدرس‌ها و یادآورهای مناسبت‌هایتان بماند.',
+        'با {phone} وارد شوید تا این سفارش کنار آدرس‌ها' +
+        (vfFeatures().reminders ? ' و یادآورهای مناسبت‌هایتان بماند.' : 'یتان بماند.'),
       accountCta: 'ورود',
       when: 'زمان ارسال',
       to: 'تحویل به',

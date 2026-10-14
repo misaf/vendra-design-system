@@ -11,7 +11,7 @@ import {
   vfZone
 } from '../_shared/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {VF_SHELL} from '../_shared/translations/shell.js';
 import {vfSlotLabel} from '../_shared/translations/time.js';
 export function vfCopy(S) {
@@ -20,15 +20,23 @@ export function vfCopy(S) {
   const m = v => VF_MONEY(v, fa);
   const n = v => (fa ? VF_FA_DIGITS(v) : String(v));
   const zoneList = (names, sep) => names.map(id => vfZone(id)[L]).join(sep);
+  // The store's optional parts (VF_STORE.features): the text names only what it offers.
+  const features = vfFeatures();
   const zones = VF_ZONES.map(z =>
-    fa
-      ? z.fa + ': ' + m(z.fee) + '، ارسال همان روز برای سفارش تا ساعت ' + vfDeliveryCutoff(z, true)
-      : z.en + ': ' + m(z.fee) + ', same day when you order by ' + vfDeliveryCutoff(z, false)
+    !features.sameDay
+      ? z[L] + ': ' + m(z.fee)
+      : fa
+        ? z.fa +
+          ': ' +
+          m(z.fee) +
+          '، ارسال همان روز برای سفارش تا ساعت ' +
+          vfDeliveryCutoff(z, true)
+        : z.en + ': ' + m(z.fee) + ', same day when you order by ' + vfDeliveryCutoff(z, false)
   );
   const slots = VF_SLOTS.map(slot => vfSlotLabel(slot.start, slot.end, fa)).join(fa ? '، ' : ', ');
   const freeZones = zoneList(VF_FREE_DELIVERY_ZONES, fa ? ' و ' : ' and ');
   // The store's payment methods (VF_STORE.paymentMethods), as the terms and privacy text name them.
-  const methods = VF_STORE.paymentMethods.map(method => method.id);
+  const methods = vfPaymentMethods().map(method => method.id);
   const offers = id => methods.includes(id);
   const cod = VF_STORE.paymentMethods.find(method => method.id === 'cod');
   const codZones = cod && cod.zones ? zoneList(cod.zones, fa ? ' و ' : ' and ') : '';
@@ -195,7 +203,9 @@ export function vfCopy(S) {
                 'Your name, mobile number and, if you give it, your email.',
                 'Recipients’ names, mobile numbers, addresses and map pins.',
                 'Your orders, card messages and delivery photos.',
-                'Addresses, saved products and occasion reminders you keep in your account.'
+                features.reminders
+                  ? 'Addresses, saved products and occasion reminders you keep in your account.'
+                  : 'Addresses and saved products you keep in your account.'
               ]
             },
             {
@@ -213,7 +223,9 @@ export function vfCopy(S) {
             {
               title: 'Why we use it',
               paras: [
-                'To arrange and deliver your orders, keep you updated about them, send the reminders you set up, and reply when you contact us.'
+                'To arrange and deliver your orders, keep you updated about them, ' +
+                  (features.reminders ? 'send the reminders you set up, ' : '') +
+                  'and reply when you contact us.'
               ]
             },
             {
@@ -225,7 +237,12 @@ export function vfCopy(S) {
             {
               title: 'Messages from us',
               paras: [
-                'Order updates are sent by text. Occasion reminders and news are only sent if you turn them on, and you can turn them off at any time in your account. Our email newsletter only goes to addresses that signed up in the site footer, and every email has an unsubscribe link.'
+                'Order updates are sent by text. ' +
+                  (features.reminders ? 'Occasion reminders and news are' : 'News is') +
+                  ' only sent if you turn them on, and you can turn them off at any time in your account.' +
+                  (features.newsletter
+                    ? ' Our email newsletter only goes to addresses that signed up in the site footer, and every email has an unsubscribe link.'
+                    : '')
               ]
             },
             {
@@ -244,7 +261,9 @@ export function vfCopy(S) {
             {
               title: 'Your choices',
               paras: [
-                'You can see and change your details, addresses and reminders in your account, and ask us to delete your account at any time. Contact us with any question about your data.'
+                'You can see and change your details, addresses' +
+                  (features.reminders ? ' and reminders' : '') +
+                  ' in your account, and ask us to delete your account at any time. Contact us with any question about your data.'
               ]
             }
           ]
@@ -505,7 +524,9 @@ export function vfCopy(S) {
                 'نام، شماره موبایل و اگر بدهید، ایمیل شما.',
                 'نام، شماره موبایل، نشانی و پین نقشه گیرندگان.',
                 'سفارش‌ها، متن کارت‌ها و عکس‌های تحویل.',
-                'نشانی‌ها، محصولات ذخیره‌شده و یادآورهای مناسبتی که در حساب خود نگه می‌دارید.'
+                features.reminders
+                  ? 'نشانی‌ها، محصولات ذخیره‌شده و یادآورهای مناسبتی که در حساب خود نگه می‌دارید.'
+                  : 'نشانی‌ها و محصولات ذخیره‌شده‌ای که در حساب خود نگه می‌دارید.'
               ]
             },
             {
@@ -521,7 +542,9 @@ export function vfCopy(S) {
             {
               title: 'چرا از آن استفاده می‌کنیم',
               paras: [
-                'برای آماده‌سازی و ارسال سفارش، خبر دادن درباره وضعیت آن، فرستادن یادآورهایی که خودتان تنظیم کرده‌اید و پاسخ به پیام‌هایتان.'
+                'برای آماده‌سازی و ارسال سفارش، خبر دادن درباره وضعیت آن' +
+                  (features.reminders ? '، فرستادن یادآورهایی که خودتان تنظیم کرده‌اید' : '') +
+                  ' و پاسخ به پیام‌هایتان.'
               ]
             },
             {
@@ -533,7 +556,12 @@ export function vfCopy(S) {
             {
               title: 'پیام‌های ما',
               paras: [
-                'خبرهای سفارش با پیامک فرستاده می‌شود. یادآورهای مناسبتی و خبرها فقط اگر خودتان روشنشان کنید فرستاده می‌شوند و هر زمان در حساب کاربری می‌توانید خاموششان کنید. خبرنامه ایمیلی فقط برای نشانی‌هایی فرستاده می‌شود که در پایین سایت عضو شده‌اند و در هر ایمیل پیوند لغو عضویت هست.'
+                'خبرهای سفارش با پیامک فرستاده می‌شود. ' +
+                  (features.reminders ? 'یادآورهای مناسبتی و خبرها' : 'خبرها') +
+                  ' فقط اگر خودتان روشنشان کنید فرستاده می‌شوند و هر زمان در حساب کاربری می‌توانید خاموششان کنید.' +
+                  (features.newsletter
+                    ? ' خبرنامه ایمیلی فقط برای نشانی‌هایی فرستاده می‌شود که در پایین سایت عضو شده‌اند و در هر ایمیل پیوند لغو عضویت هست.'
+                    : '')
               ]
             },
             {
@@ -552,7 +580,10 @@ export function vfCopy(S) {
             {
               title: 'اختیار با شماست',
               paras: [
-                'اطلاعات، نشانی‌ها و یادآورهایتان را در حساب کاربری می‌بینید و تغییر می‌دهید و هر زمان می‌توانید حذف حساب را از ما بخواهید. برای هر پرسشی درباره اطلاعاتتان با ما تماس بگیرید.'
+                (features.reminders
+                  ? 'اطلاعات، نشانی‌ها و یادآورهایتان'
+                  : 'اطلاعات و نشانی‌هایتان') +
+                  ' را در حساب کاربری می‌بینید و تغییر می‌دهید و هر زمان می‌توانید حذف حساب را از ما بخواهید. برای هر پرسشی درباره اطلاعاتتان با ما تماس بگیرید.'
               ]
             }
           ]

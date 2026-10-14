@@ -99,6 +99,8 @@ export const VF_SEO = (() => {
       : upsert('meta[' + key + '="' + name + '"]', 'meta', {[key]: name, content});
   const LOCALE = {en: 'en_US', fa: 'fa_IR'};
   // Sets <title>, description, og:*, twitter:*, canonical, hreflang en/fa/x-default and robots.
+  // `alternates` holds the page in each language the store offers; x-default is the English one, or
+  // the only one.
   /** @param {{title?: string, description?: string, image?: string, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean}} [head] */
   const syncHead = ({
     title,
@@ -120,7 +122,8 @@ export const VF_SEO = (() => {
     meta('property', 'og:url', href);
     meta('property', 'og:type', type);
     meta('property', 'og:locale', LOCALE[locale] || locale);
-    meta('property', 'og:locale:alternate', LOCALE[locale === 'fa' ? 'en' : 'fa']);
+    const other = locale === 'fa' ? 'en' : 'fa';
+    meta('property', 'og:locale:alternate', alternates[other] ? LOCALE[other] : null);
     meta('name', 'twitter:card', img ? 'summary_large_image' : 'summary');
     meta('name', 'twitter:title', title);
     meta('name', 'twitter:description', description);
@@ -128,7 +131,11 @@ export const VF_SEO = (() => {
     if (href) upsert('link[rel="canonical"]', 'link', {rel: 'canonical', href});
     else drop('link[rel="canonical"]');
     for (const h of ['en', 'fa', 'x-default']) {
-      const u = abs(h === 'x-default' ? alternates['x-default'] || alternates.en : alternates[h]);
+      const u = abs(
+        h === 'x-default'
+          ? alternates['x-default'] || alternates.en || alternates.fa
+          : alternates[h]
+      );
       const sel = 'link[rel="alternate"][hreflang="' + h + '"]';
       if (u && !noindex) upsert(sel, 'link', {rel: 'alternate', hreflang: h, href: u});
       else drop(sel);

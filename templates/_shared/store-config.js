@@ -1,7 +1,18 @@
 // Store identity and contact details. Change these once, then run npm --prefix templates run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
+import {commerce} from '../../components/utils/commerce.js';
+
 export const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
+  // The storefront's languages; the first is the default. With one, the language switch is hidden and
+  // links in the other language open in this one.
+  /** @type {('en' | 'fa')[]} */
+  languages: ['en', 'fa'],
+  // Optional parts of the storefront: each id turns one on; leave one out to turn it off (its page,
+  // links and fields go with it). The ids: commerce.STORE_FEATURES in components/utils/commerce.js.
+  // Add-ons and the handwritten card's message follow VF_ADDONS in catalog.js.
+  /** @type {import('../../components/utils/commerce.js').StoreFeature[]} */
+  features: ['promoCodes', 'sameDay', 'weddings', 'journal', 'reminders', 'newsletter'],
   currency: 'IRT', // The active currency: a key in `currencies`.
   // Units per 1 Toman (prices are stored in Toman). Toman and Rial are fixed; the others are SAMPLE
   // rates. A real store takes them from its own rate source and keeps them current.
@@ -39,6 +50,8 @@ export const VF_STORE = {
   hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',
+  // Contact channels: null hides one (the phone is required). Without WhatsApp, its links, the tab
+  // bar's chat button and the WhatsApp payment method go too.
   whatsapp: 'https://wa.me/989129333034',
   instagram: {url: 'https://instagram.com/misaf1990', label: '@misaf1990'},
   email: '', // Optional public email, shown in the footer; '' hides it.
@@ -86,3 +99,17 @@ export const VF_STORE = {
     {id: 'whatsapp'}
   ]
 };
+
+// Each optional part of the storefront as on or off (vfFeatures().promoCodes…), read from
+// VF_STORE.features each time.
+export function vfFeatures() {
+  return commerce.storeFeatures(VF_STORE.features);
+}
+// `lang` when the storefront offers it, otherwise its default language.
+export function vfLanguage(lang) {
+  return VF_STORE.languages.includes(lang) ? lang : VF_STORE.languages[0];
+}
+// The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp.
+export function vfPaymentMethods() {
+  return VF_STORE.paymentMethods.filter(method => method.id !== 'whatsapp' || !!VF_STORE.whatsapp);
+}

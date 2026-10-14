@@ -30,26 +30,30 @@ export function View({v}) {
                   <DS.DetailList rows={v.rows} />
                 </DS.Card>
                 <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                  <DS.Button
-                    variant="ghost"
-                    iconStart="message-circle"
-                    href={v.waHref}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <>{v.t?.wa}</>
-                  </DS.Button>
+                  {v.waHref ? (
+                    <DS.Button
+                      variant="ghost"
+                      iconStart="message-circle"
+                      href={v.waHref}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <>{v.t?.wa}</>
+                    </DS.Button>
+                  ) : null}
                   <DS.Button variant="secondary" iconStart="phone" href={v.phoneHref}>
                     <>{v.t?.call}</>
                   </DS.Button>
-                  <DS.IconButton
-                    icon="instagram"
-                    label={v.t?.instagram}
-                    variant="secondary"
-                    href={v.instagram?.url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  />
+                  {v.instagram ? (
+                    <DS.IconButton
+                      icon="instagram"
+                      label={v.t?.instagram}
+                      variant="secondary"
+                      href={v.instagram?.url}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    />
+                  ) : null}
                 </div>
                 {/* The map runs third-party code; if it fails, the address and directions still show. */}
                 <DS.ErrorBoundary onError={v.placesView?.fail}>

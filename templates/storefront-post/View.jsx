@@ -160,14 +160,16 @@ export function View({v}) {
                       >
                         {'WhatsApp'}
                       </DS.Button>
-                      <DS.Button
-                        variant="ghost"
-                        href={v.instagram?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {'Instagram'}
-                      </DS.Button>
+                      {v.instagram ? (
+                        <DS.Button
+                          variant="ghost"
+                          href={v.instagram?.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {'Instagram'}
+                        </DS.Button>
+                      ) : null}
                     </div>
                     <div className="vf-product-grid tw:grid tw:gap-5 tw:mt-5 tw:grid-cols-2 tw:md:grid-cols-3">
                       {list(v.storyProducts).map((p, $index) => (

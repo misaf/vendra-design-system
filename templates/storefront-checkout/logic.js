@@ -21,7 +21,7 @@ import {VF_FA_DIGITS} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {
   vfBalanceDiscountOn,
@@ -119,7 +119,7 @@ function vals(page) {
   const balanceTotals = vfTotals(items, delivery, balance);
   const canUseBalance = balance != null && balance >= balanceTotals.total;
   // The methods this store offers (VF_STORE.paymentMethods), each usable for this order or not.
-  const options = commerce.paymentOptions(VF_STORE.paymentMethods, {
+  const options = commerce.paymentOptions(vfPaymentMethods(), {
     zone: delivery.zone,
     balance,
     total: balanceTotals.total
@@ -263,14 +263,11 @@ function vals(page) {
         failed: false
       }),
     migration: P,
-    waOrder:
-      VF_STORE.whatsapp +
-      '?text=' +
-      encodeURIComponent(
-        items.map(l => vfLineToken(l) + ', ' + l[L][1] + ' × ' + l.qty).join('\n') +
-          '\n' +
-          m(totals.total)
-      ),
+    waOrder: S.waWith(
+      items.map(l => vfLineToken(l) + ', ' + l[L][1] + ' × ' + l.qty).join('\n') +
+        '\n' +
+        m(totals.total)
+    ),
     retry: () =>
       page.setState({
         failed: false

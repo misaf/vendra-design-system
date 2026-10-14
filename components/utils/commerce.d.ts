@@ -110,6 +110,9 @@ export interface DeliverySlot {
 }
 /** The Checkout request body (POST /api/sales/checkout). */
 /** A way to pay; also the Checkout `gateway`. */
+/** An optional part of the storefront a store turns on (commerce.STORE_FEATURES). */
+export type StoreFeature =
+  'promoCodes' | 'sameDay' | 'weddings' | 'journal' | 'reminders' | 'newsletter';
 export type PaymentMethodId = 'online' | 'card' | 'cod' | 'wallet' | 'whatsapp';
 /** One of the store's payment methods, with its settings. A store offers the methods it lists. */
 export type PaymentMethod =
@@ -151,6 +154,9 @@ export interface CheckoutRequest {
 }
 export interface Commerce {
   /** Every payment method the package knows, in its default order. */
+  STORE_FEATURES: StoreFeature[];
+  /** The store's feature list as one boolean per STORE_FEATURES id; unknown ids are dropped. */
+  storeFeatures(list: readonly string[] | null | undefined): Record<StoreFeature, boolean>;
   PAYMENT_METHODS: PaymentMethodId[];
   /** The store's methods (in its order, unknown ids dropped), each marked available or not for this
    * order: pay on delivery outside its zones, or a balance that is missing or short of `total`. */
@@ -189,7 +195,8 @@ export interface Commerce {
   cutoffText(cutoff: string, persian: boolean): string;
   deliveryDays(
     cutoff: string,
-    options: {days: number; soldOutDates?: string[]},
+    /** sameDay: false starts the days tomorrow */
+    options: {days: number; soldOutDates?: string[]; sameDay?: boolean},
     now?: Date
   ): DeliveryDay[];
   /** The chosen day when open, otherwise the first open day. */
