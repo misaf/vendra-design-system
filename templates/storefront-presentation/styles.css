@@ -1,0 +1,8 @@
+/* Custom styles for the counter presentation. */
+/* The page uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+/* The QR code stays dark on white whatever the tenant's colours, so every phone camera reads it. */
+.vf-presentation-qr {
+  background: var(--white);
+  color: var(--ink-900);
+}

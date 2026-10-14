@@ -1,9 +1,10 @@
-// The storefront shell around every page: header, mobile menu, footer, consent and tab bar.
+// The storefront shell around every page: header, mobile menu, footer, consent and tab bar; `bare`
+// keeps only the provider, skip link and notices.
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 
-export function Shell({v, content, sticky}) {
+export function Shell({v, content, sticky, bare = false}) {
   // --vf-top-bar / --vf-bottom-bar: the heights of the sticky header and of the sticky bars at the
   // bottom of the screen, so fixed layers (toasts) sit above them and the page scrolls a focused or
   // linked element clear of them (scroll-padding in shell.css; WCAG 2.4.11).
@@ -55,6 +56,35 @@ export function Shell({v, content, sticky}) {
       document.removeEventListener('focusin', clear);
     };
   });
+  // A bare page (the counter presentation) fills the screen on its own: the skip link and notices
+  // stay, but none of the header, menu, footer, consent or tab bar.
+  if (bare)
+    return (
+      <DS.VendraProvider
+        locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}
+        onEvent={({event, ...params}) => window.VF_TRACK.event(event, params)}
+      >
+        <div
+          className="vf-shell-bare tw:min-h-screen tw:font-body"
+          data-tenant={v.tenant}
+          lang={v.lang}
+          dir={v.dir}
+          data-lang={v.lang}
+          data-vf-mobile={v.mob}
+        >
+          <DS.SkipLink href="#main" onClick={v.skipGo}>
+            <>{v.t?.skip}</>
+          </DS.SkipLink>
+          {v.standalone ? (
+            <DS.LiveRegion>
+              <>{v.vfAnnouncement}</>
+            </DS.LiveRegion>
+          ) : null}
+          <DS.OfflineNotice />
+          {content}
+        </div>
+      </DS.VendraProvider>
+    );
   return (
     // The page's language for the components' built-in wording and React Aria's formats.
     <DS.VendraProvider

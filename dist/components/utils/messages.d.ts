@@ -4,8 +4,16 @@ export interface PaymentStatusWords {
   title: string;
   body: string;
 }
-/** Built-in wording per component; {name} / {date} / {page} / {count} / {gateway} / {time} are filled in by the component. */
+/** Built-in wording per component; {name} / {date} / {page} / {index} / {count} / {gateway} / {time} are filled in by the component. */
 export interface ComponentMessages {
+  Lightbox: {
+    label: string;
+    previous: string;
+    next: string;
+    close: string;
+    position: string;
+    photo: string;
+  };
   OfflineNotice: {offline: string; online: string};
   ErrorBoundary: {title: string; retry: string};
   PromoCodeField: {label: string; apply: string; remove: string};

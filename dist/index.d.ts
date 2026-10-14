@@ -30,6 +30,7 @@ export * from './components/Icon/icon-svgs.js';
 export * from './components/IconButton/IconButton.js';
 export * from './components/Input/Input.js';
 export * from './components/LanguageSwitch/LanguageSwitch.js';
+export * from './components/Lightbox/Lightbox.js';
 export * from './components/LineItem/LineItem.js';
 export * from './components/LiveRegion/LiveRegion.js';
 export * from './components/LoadMore/LoadMore.js';

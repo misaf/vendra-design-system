@@ -591,6 +591,7 @@ for (const name of [
   'notfound',
   'policy',
   'post',
+  'presentation',
   'product',
   'saved',
   'search',

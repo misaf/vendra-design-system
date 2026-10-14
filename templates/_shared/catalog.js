@@ -7,7 +7,7 @@
 // says what kind of product it is. Product.name holds a short searchable description that cards don't show.
 // Amounts are in Toman. All sample products intentionally use a neutral image placeholder.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
-import {VF_CATEGORY_ITEM} from './translations/categories.js';
+import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';
 import {commerce} from '../../components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
@@ -350,6 +350,20 @@ export function vfProductImages(product, lang = 'en') {
   return (product.images || [product.image]).map((asset, index) =>
     vfProductImage(product, lang, asset, index)
   );
+}
+
+// The products a search finds (the search page and the counter presentation). A product code, typed
+// whole or in part (3 or more characters), finds its product; so do its kind and description.
+export function vfSearchProducts(text, products = VF_PRODUCTS) {
+  const q = text.trim().toLowerCase();
+  const code = vfNormalizeToken(q);
+  const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
+  const words = p =>
+    ['en', 'fa']
+      .map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat])
+      .join(' ')
+      .toLowerCase();
+  return q ? products.filter(p => byCode(p) || words(p).includes(q)) : [];
 }
 
 // Lines added from the product page list their product, size and extras; older lines carry them in the id.

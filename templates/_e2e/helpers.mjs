@@ -36,6 +36,7 @@ export const VIEWS = {
   journal: {},
   post: {post: 'morning-at-the-studio'},
   policy: {},
+  presentation: {},
   weddings: {},
   notfound: {},
   error: {}
