@@ -366,7 +366,11 @@ function vals(page) {
   };
   // The price a design comes to in the size and with the extras chosen for it on screen.
   const quote = product => vfBagLine(product, st.pick.size, st.pick.addons);
-  const orderTotal = st.order.reduce((sum, line) => sum + line.unit * line.qty, 0);
+  // A design that sold out after it was ordered stays in the order, marked, so the seller can tell
+  // the customer; it is left out of the total and of what is handed over (the phone would drop it).
+  const lineSoldOut = line => vfFindProduct(line.productId)?.inStock === false;
+  const available = st.order.filter(line => !lineSoldOut(line));
+  const orderTotal = available.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const setOrder = order => page.setState({order});
   // Clearing the shortlist or the order closes its dialog and can be undone for a few seconds, as one
   // tap clears it.
@@ -421,8 +425,8 @@ function vals(page) {
       body: C.handOverBody,
       qrLabel: C.qr.replace('{code}', C.order),
       code: '',
-      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(st.order)})),
-      tooLong: !VF_LINES_PATTERN.test(vfLinesParam(st.order)),
+      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(available)})),
+      tooLong: !VF_LINES_PATTERN.test(vfLinesParam(available)),
       tooLongBody: C.orderTooLong
     };
   })();
@@ -607,7 +611,7 @@ function vals(page) {
       id: line.id,
       image: vfProductImage(vfFindProduct(line.productId), L),
       name: line.token,
-      meta: line[L][1],
+      meta: lineSoldOut(line) ? C.soldOut + ' · ' + line[L][1] : line[L][1],
       price: S.m(line.unit * line.qty),
       quantity: line.qty,
       setQuantity: qty =>
@@ -615,6 +619,7 @@ function vals(page) {
       remove: () => setOrder(page.state.order.filter(item => item.id !== line.id))
     })),
     orderTotal: S.m(orderTotal),
+    canHandOver: !!available.length,
     orderOpen: st.panel === 'order',
     openOrder: () => page.setState({panel: 'order'}),
     clearOrder: () => clearWithUndo({order: []}, C.orderCleared),
