@@ -21,7 +21,8 @@ function Qr({text, label}) {
   );
 }
 
-// The code, kind and price under a photo; `large` in the full-screen view.
+// The code under a photo (and "Sold out" when it is); `large` in the full-screen view. The price
+// sits beside it. Nothing more: the presentation is about the photos.
 function Label({v, item, large = false}) {
   return (
     <span className="tw:flex tw:flex-col">
@@ -34,9 +35,11 @@ function Label({v, item, large = false}) {
       >
         <>{item.code}</>
       </span>
-      <span className={large ? 'tw:text-inverse-quiet' : 'tw:text-sm tw:text-quiet'}>
-        <>{item.soldOut ? item.kind + ' · ' + v.t?.soldOut : item.kind}</>
-      </span>
+      {item.soldOut ? (
+        <span className={large ? 'tw:text-inverse-quiet' : 'tw:text-sm tw:text-quiet'}>
+          <>{v.t?.soldOut}</>
+        </span>
+      ) : null}
     </span>
   );
 }
@@ -174,6 +177,7 @@ export function View({v}) {
                     ) : null}
                   </div>
                   {index === v.open &&
+                  v.optionsOpen &&
                   !v.slideshowRunning &&
                   !item.soldOut &&
                   (item.sizes.length || item.addons.length) ? (
@@ -223,6 +227,15 @@ export function View({v}) {
                     active={item.starred}
                     onClick={item.star}
                   />
+                  {!item.soldOut && (item.sizes.length || item.addons.length) ? (
+                    <DS.IconButton
+                      icon="sliders-horizontal"
+                      label={v.t?.options}
+                      inverse={true}
+                      active={v.optionsOpen}
+                      onClick={v.toggleOptions}
+                    />
+                  ) : null}
                   {item.soldOut ? null : (
                     <DS.Button
                       variant="soft"

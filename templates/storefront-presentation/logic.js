@@ -13,7 +13,6 @@ import {
   vfLinesParam,
   vfProductImage,
   vfProductImages,
-  vfProductSub,
   vfReady,
   vfSearchProducts
 } from '../_shared/catalog.js';
@@ -78,7 +77,12 @@ function vfViewerProducts(state) {
 
 // The full-screen view closed, with no size or extras chosen.
 function vfViewerClosed() {
-  return {open: null, source: 'shown', pick: {size: VF_SIZES[0].id, addons: []}};
+  return {
+    open: null,
+    source: 'shown',
+    pick: {size: VF_SIZES[0].id, addons: []},
+    optionsOpen: false
+  };
 }
 
 // Holds the screen awake while the setting is on and the page is visible (the browser lets go of
@@ -213,6 +217,8 @@ export function usePage(props) {
       only: '',
       open: null,
       pick: {size: VF_SIZES[0].id, addons: []},
+      // The size and extras choices stay folded away, so the photo keeps the screen.
+      optionsOpen: false,
       shortlist: [],
       order: [],
       justAdded: '',
@@ -345,10 +351,10 @@ function vals(page) {
     };
   })();
   const kinds = ['all', ...new Set(VF_PRODUCTS.map(product => product.cat))];
+  // Only the photo, the code and the price: the presentation shows designs, not their details.
   const card = product => ({
     id: product.id,
     code: product.id,
-    kind: vfProductSub(product, L),
     price: S.m(product.price),
     image: vfProductImage(product, L),
     ready: vfReady(product),
@@ -400,8 +406,15 @@ function vals(page) {
     open: st.open,
     slideshowRunning: st.slideshowRunning,
     setOpen: index =>
-      page.setState({open: index, pick: {size: VF_SIZES[0].id, addons: []}, justAdded: ''}),
+      page.setState({
+        open: index,
+        pick: {size: VF_SIZES[0].id, addons: []},
+        optionsOpen: false,
+        justAdded: ''
+      }),
     closeViewer: () => page.setState(vfViewerClosed()),
+    optionsOpen: st.optionsOpen,
+    toggleOptions: () => page.setState({optionsOpen: !page.state.optionsOpen}),
     viewer: viewerProducts.map(product => {
       const line = quote(product);
       const addons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
