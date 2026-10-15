@@ -45,6 +45,8 @@ const VF_SLIDE_MS = 6_000;
 const VF_STOCK_MS = 120_000;
 // How long "Cleared · Undo" stays.
 const VF_UNDO_MS = 8_000;
+// What counts as someone using the screen, for the slideshow.
+const VF_ACTIVITY = ['pointerdown', 'keydown', 'wheel'];
 
 function vfReadSettings() {
   try {
@@ -271,8 +273,8 @@ export function usePage(props) {
       document.addEventListener('visibilitychange', page._onVisibility);
       document.addEventListener('fullscreenchange', page._onFullscreen);
       document.addEventListener('keydown', page._onKey);
-      for (const type of ['pointerdown', 'keydown'])
-        document.addEventListener(type, page._onActivity, true);
+      for (const type of VF_ACTIVITY)
+        document.addEventListener(type, page._onActivity, {capture: true, passive: true});
       vfSyncWakeLock(page);
       vfRestartIdle(page);
       if (window.VF_API.live) {
@@ -292,8 +294,7 @@ export function usePage(props) {
       document.removeEventListener('visibilitychange', page._onVisibility);
       document.removeEventListener('fullscreenchange', page._onFullscreen);
       document.removeEventListener('keydown', page._onKey);
-      for (const type of ['pointerdown', 'keydown'])
-        document.removeEventListener(type, page._onActivity, true);
+      for (const type of VF_ACTIVITY) document.removeEventListener(type, page._onActivity, true);
       page.toasts.clear();
       if (page._wakeLock) page._wakeLock.release().catch(() => {});
     }
