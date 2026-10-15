@@ -523,6 +523,8 @@ function vals(page) {
             'https://wa.me/?text=' +
             encodeURIComponent((sendInfo.code ? sendInfo.code + '\n' : '') + sendInfo.url),
           copied: st.copied,
+          // The clipboard is there only on a secure (https) page.
+          canCopy: typeof navigator !== 'undefined' && !!navigator.clipboard,
           copy: () =>
             navigator.clipboard?.writeText(sendInfo.url).then(
               () => {
