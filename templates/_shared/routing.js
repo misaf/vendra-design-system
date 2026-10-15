@@ -1,5 +1,5 @@
 // Storefront route registration, validation and links. Uses the core VF_SEO router.
-import {VF_LINES_PATTERN, VF_PRODUCTS, vfFindProduct} from './catalog.js';
+import {VF_LINES_PATTERN, VF_PRODUCTS, VF_SAVED_IDS_PATTERN, vfFindProduct} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
@@ -65,7 +65,7 @@ export function vfReadRoute(search = location.search) {
   // it to this visitor's bag or saved list once, then drops it from the address.
   if (route.view === 'bag' && VF_LINES_PATTERN.test(query.get('lines') || ''))
     route.lines = query.get('lines');
-  if (route.view === 'saved' && /^[\w,-]{1,400}$/.test(query.get('ids') || ''))
+  if (route.view === 'saved' && VF_SAVED_IDS_PATTERN.test(query.get('ids') || ''))
     route.ids = query.get('ids');
   // Back from the bank's payment page (?view=checkout&payment=return&order=VN-…). The sample store's
   // simulated bank adds its answer as `result`; a live store asks the API for the payment instead.

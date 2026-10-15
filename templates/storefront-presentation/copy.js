@@ -55,6 +55,10 @@ export function vfCopy(S) {
       dismiss: 'Dismiss',
       shortlistCleared: 'Shortlist cleared',
       orderCleared: 'Order cleared',
+      shortlistTooLong:
+        'The shortlist is too long for one code. Remove a few designs, or send it in two parts.',
+      orderTooLong:
+        'The order is too long for one code. Remove a few lines, or hand it over in two parts.',
       sendShortlist: 'Send the shortlist',
       shortlistTitle: 'The customer’s shortlist',
       shortlistBody: 'The customer scans this to keep these designs in their saved list.',
@@ -128,6 +132,10 @@ export function vfCopy(S) {
       dismiss: 'بستن',
       shortlistCleared: 'فهرست منتخب پاک شد',
       orderCleared: 'سفارش پاک شد',
+      shortlistTooLong:
+        'فهرست منتخب برای یک کد بیش از حد بلند است. چند طرح را حذف کنید یا آن را در دو بخش بفرستید.',
+      orderTooLong:
+        'سفارش برای یک کد بیش از حد بلند است. چند ردیف را حذف کنید یا آن را در دو بخش تحویل دهید.',
       sendShortlist: 'ارسال فهرست منتخب',
       shortlistTitle: 'فهرست منتخب مشتری',
       shortlistBody: 'مشتری این را اسکن می‌کند تا این طرح‌ها در فهرست ذخیره‌شده‌اش بمانند.',

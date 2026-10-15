@@ -255,30 +255,37 @@ export function View({v}) {
           <DS.Dialog open={!!v.send} onClose={v.closeSend} title={v.send?.title} maxWidth={420}>
             {v.send ? (
               <div className="tw:flex tw:flex-col tw:gap-4">
+                {v.send.tooLong ? <DS.Alert tone="warning" title={v.send.tooLongBody} /> : null}
                 <div className="vf-presentation-tag tw:flex tw:flex-col tw:items-center tw:gap-2">
-                  <Qr text={v.send.url} label={v.send.qrLabel} />
+                  {v.send.tooLong ? null : <Qr text={v.send.url} label={v.send.qrLabel} />}
                   {v.send.code ? (
                     <span className="tw:font-display tw:text-xl tw:tracking-display" dir="ltr">
                       <>{v.send.code}</>
                     </span>
                   ) : null}
                 </div>
-                <p className="tw:m-0">
-                  <>{v.send.body}</>
-                </p>
+                {v.send.tooLong ? null : (
+                  <p className="tw:m-0">
+                    <>{v.send.body}</>
+                  </p>
+                )}
                 <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                  <DS.Button
-                    variant="secondary"
-                    iconStart="message-circle"
-                    href={v.send.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <>{v.t?.whatsapp}</>
-                  </DS.Button>
-                  <DS.Button variant="secondary" iconStart="copy" onClick={v.send.copy}>
-                    <>{v.send.copied ? v.t?.copied : v.t?.copy}</>
-                  </DS.Button>
+                  {v.send.tooLong ? null : (
+                    <DS.Button
+                      variant="secondary"
+                      iconStart="message-circle"
+                      href={v.send.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <>{v.t?.whatsapp}</>
+                    </DS.Button>
+                  )}
+                  {v.send.tooLong ? null : (
+                    <DS.Button variant="secondary" iconStart="copy" onClick={v.send.copy}>
+                      <>{v.send.copied ? v.t?.copied : v.t?.copy}</>
+                    </DS.Button>
+                  )}
                   {v.send.tag ? (
                     <DS.Button variant="secondary" iconStart="tag" onClick={v.send.print}>
                       <>{v.t?.printTag}</>
