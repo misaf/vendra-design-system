@@ -104,6 +104,24 @@ function storefrontAssets() {
       fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
         fs.copyFileSync(path.join(tenants, name), path.join(outDir, 'tokens/tenants', name));
+      // Pages serves the artifact root; keep its entry point useful as well as direct app links.
+      fs.writeFileSync(
+        path.join(outDir, 'index.html'),
+        `<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vendra demo</title>
+<script>
+const target = new URL('templates/app/', location.href);
+target.search = location.search || '?lang=en';
+target.hash = location.hash;
+location.replace(target.href);
+</script>
+<a href="templates/app/?lang=en">Open the Vendra demo</a>
+</html>
+`
+      );
     }
   };
 }

@@ -51,6 +51,25 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 - **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
+## GitHub Pages demo
+
+`.github/workflows/pages.yml` builds and deploys the app on pushes to `master`, or when run manually
+from Actions. Repository Settings → Pages → Source must be **GitHub Actions**. The workflow passes
+`--base /<repository-name>/` to Vite, keeping local development at `/` while published scripts, images
+and tenant themes use the repository path. The uploaded artifact is `templates/_app-build/`.
+
+The repository's Pages root opens the storefront; direct links can select a view and language:
+`https://misaf.github.io/vendra-design-system/templates/app/?view=presentation&lang=en`.
+This hosts the sample-data demo; live API services need their own backend.
+
+To verify the same paths locally:
+
+```sh
+npm --prefix templates run build:app -- --base /vendra-design-system/
+npm --prefix templates run preview -- --base /vendra-design-system/
+# http://127.0.0.1:4173/vendra-design-system/templates/app/?view=presentation&lang=en
+```
+
 ## Browser tests
 
 `_e2e/` runs on the installed Google Chrome at 390px and 1280px, reusing a running dev server, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
