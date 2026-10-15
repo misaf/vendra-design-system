@@ -104,7 +104,7 @@ export function vfCopy(S) {
       unlockHint: 'تنظیمات قفل است.',
       wrongPin: 'رمز درست نیست.',
       leave: 'خروج از نمایش',
-      done: 'تمام',
+      done: 'انجام شد',
       open: 'نمایش تمام‌صفحهٔ {code}',
       soldOut: 'ناموجود',
       viewer: 'طرح‌ها',
