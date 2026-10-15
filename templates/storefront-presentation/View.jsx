@@ -46,11 +46,61 @@ function Label({v, item, large = false}) {
 
 function Display({v}) {
   const item = v.displayProduct;
+  const [controls, setControls] = React.useState(false);
+  const timer = React.useRef(null);
+  const pointer = React.useRef(null);
+  const reveal = () => {
+    clearTimeout(timer.current);
+    setControls(true);
+    timer.current = setTimeout(() => setControls(false), 4000);
+  };
+  React.useEffect(() => () => clearTimeout(timer.current), []);
   return (
-    <section className="vf-display ag-on-inverse" aria-label={v.t.viewer}>
+    <section
+      className="vf-display ag-on-inverse"
+      aria-label={v.t.viewer}
+      tabIndex={0}
+      aria-describedby="vf-display-hint"
+      data-controls={controls}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          reveal();
+        }
+      }}
+      onPointerDown={event => {
+        const target = /** @type {Element} */ (event.target);
+        if (target.closest('button, a, input')) return;
+        pointer.current = {x: event.clientX, y: event.clientY};
+      }}
+      onPointerCancel={() => {
+        pointer.current = null;
+      }}
+      onPointerUp={event => {
+        const start = pointer.current;
+        pointer.current = null;
+        if (!start) return;
+        const dx = event.clientX - start.x,
+          dy = event.clientY - start.y;
+        if (v.displayMode === 'tablet' && Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy)) {
+          const next = dx < 0 !== (v.dir === 'rtl');
+          (next ? v.nextDisplay : v.previousDisplay)();
+        } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) reveal();
+      }}
+    >
+      <span id="vf-display-hint" className="ag-sr-only">
+        {v.t.displayHint}
+      </span>
       {item ? (
         <>
-          <DS.Picture image={item.image} priority sizes="100vw" className="vf-display-photo" />
+          <DS.Picture
+            image={item.image}
+            priority
+            sizes="100vw"
+            draggable={false}
+            className="vf-display-photo"
+          />
           <div className="vf-display-caption">
             <Label v={v} item={item} large />
             {v.showPrices ? <DS.Price value={item.price} /> : null}
@@ -63,15 +113,15 @@ function Display({v}) {
         <DS.IconButton icon="settings" label={v.t.sellerTools} inverse onClick={v.openTools} />
       </div>
       {v.displayMode === 'tablet' && item ? (
-        <div className="vf-display-navigation">
+        <div hidden={!controls} className="vf-display-navigation">
           <DS.IconButton
-            icon="chevron-left"
+            icon={v.dir === 'rtl' ? 'chevron-right' : 'chevron-left'}
             label={v.t.previousDesign}
             inverse
             onClick={v.previousDisplay}
           />
           <DS.IconButton
-            icon="chevron-right"
+            icon={v.dir === 'rtl' ? 'chevron-left' : 'chevron-right'}
             label={v.t.nextDesign}
             inverse
             onClick={v.nextDisplay}

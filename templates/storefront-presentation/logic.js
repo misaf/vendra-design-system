@@ -328,7 +328,21 @@ export function usePage(props) {
       // "/" jumps to the search, unless the seller is typing or a dialog is open.
       page._onKey = event => {
         const target = /** @type {HTMLElement} */ (event.target);
-        if (event.key !== '/' || event.defaultPrevented) return;
+        if (event.defaultPrevented) return;
+        if (
+          !page.state.browsing &&
+          !page.state.panel &&
+          !page.state.send &&
+          !target.closest('input, textarea, select, button, a')
+        ) {
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            event.preventDefault();
+            const next = (event.key === 'ArrowRight') !== (page.props.lang === 'fa');
+            vfDisplayStep(page, next ? 1 : -1);
+            return;
+          }
+        }
+        if (event.key !== '/') return;
         if (target.closest('input, textarea, select, [role=dialog]')) return;
         event.preventDefault();
         page.setState({browsing: true, panel: null}, () =>

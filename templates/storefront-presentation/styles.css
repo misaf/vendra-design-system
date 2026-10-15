@@ -158,3 +158,27 @@
 .vf-presentation [hidden] {
   display: none;
 }
+
+/* Controls fade out without removing the keyboard's route to the seller drawer. */
+.vf-display {
+  touch-action: pan-y;
+}
+.vf-display:focus-visible {
+  outline: 2px solid var(--focus-ring-on-inverse);
+  outline-offset: -4px;
+}
+.vf-display-tools {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.vf-display[data-controls='true'] .vf-display-tools,
+.vf-display-tools:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-display-tools {
+    transition: none;
+  }
+}
