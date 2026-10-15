@@ -488,6 +488,7 @@ export function View({v}) {
               )}
             </div>
           </DS.Dialog>
+          <DS.ToastRegion queue={v.toasts} closeLabel={v.t?.dismiss} />
         </main>
       }
       sticky={<></>}

@@ -4,6 +4,7 @@
 // shortlist to compare and an order to hand over, and passes either to the customer's phone as a
 // QR code. Unattended, it can play the designs as a slideshow.
 import {vfCopy} from './copy.js';
+import {ToastQueue} from '../app/ds.js';
 import {
   VF_ADDONS,
   VF_PRODUCTS,
@@ -40,6 +41,8 @@ const VF_IDLE_MS = 60_000;
 const VF_SLIDE_MS = 6_000;
 // How often an open presentation asks the API what is in stock.
 const VF_STOCK_MS = 120_000;
+// How long "Cleared · Undo" stays.
+const VF_UNDO_MS = 8_000;
 
 function vfReadSettings() {
   try {
@@ -235,6 +238,7 @@ export function usePage(props) {
       fullscreen: false,
       stockAt: 0
     };
+    page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page._report = text => {
       clearTimeout(page._searchTimer);
       if (!text.trim()) return;
@@ -288,6 +292,7 @@ export function usePage(props) {
       document.removeEventListener('keydown', page._onKey);
       for (const type of ['pointerdown', 'keydown'])
         document.removeEventListener(type, page._onActivity, true);
+      page.toasts.clear();
       if (page._wakeLock) page._wakeLock.release().catch(() => {});
     }
   });
@@ -319,6 +324,26 @@ function vals(page) {
   const quote = product => vfBagLine(product, st.pick.size, st.pick.addons);
   const orderTotal = st.order.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const setOrder = order => page.setState({order});
+  // Clearing the shortlist or the order closes its dialog and can be undone for a few seconds, as one
+  // tap clears it.
+  const clearWithUndo = (key, title) => {
+    const kept = page.state[key];
+    page.setState({[key]: [], panel: null});
+    page.toasts.clear();
+    page.toasts.add(
+      {
+        title,
+        action: {
+          label: C.undo,
+          onClick: () => {
+            page.setState({[key]: kept});
+            page.toasts.clear();
+          }
+        }
+      },
+      {timeout: VF_UNDO_MS}
+    );
+  };
   // What the send dialog hands over, as a link for the customer's phone.
   const sendInfo = (() => {
     if (!st.send) return null;
@@ -363,6 +388,7 @@ function vals(page) {
   return {
     ...S,
     t: {...S.t, ...C},
+    toasts: page.toasts,
     q: st.q,
     setQ: value => {
       page.setState({q: value, open: null, source: 'shown'});
@@ -511,7 +537,7 @@ function vals(page) {
       })),
     shortlistOpen: st.panel === 'shortlist',
     openShortlist: () => page.setState({panel: 'shortlist'}),
-    clearShortlist: () => page.setState({shortlist: []}),
+    clearShortlist: () => clearWithUndo('shortlist', C.shortlistCleared),
     sendShortlist: () =>
       page.setState({panel: null, send: {kind: 'shortlist', id: ''}, copied: false}),
     // The order built at the counter.
@@ -531,7 +557,7 @@ function vals(page) {
     orderTotal: S.m(orderTotal),
     orderOpen: st.panel === 'order',
     openOrder: () => page.setState({panel: 'order'}),
-    clearOrder: () => page.setState({order: []}),
+    clearOrder: () => clearWithUndo('order', C.orderCleared),
     handOver: () => page.setState({panel: null, send: {kind: 'order', id: ''}, copied: false}),
     closePanel: () => {
       vfStopCamera(page);
