@@ -49,8 +49,8 @@ for (const tenant of [null, ...TENANTS]) {
   });
 }
 
-// Cards whose striped photo placeholders shift by a sub-pixel under a loaded full run
-// (about 120 pixels of the stripes' phase); everything else keeps the config's 25.
+// Cards whose striped photo placeholders shift by a sub-pixel under a loaded full run, in normal
+// and forced colours (about 120 pixels of the stripes' phase); everything else keeps the config's 25.
 const PLACEHOLDER_SLACK = {'guidelines/components/commerce.html': 200};
 
 for (const card of cards()) {
@@ -94,7 +94,10 @@ for (const card of cards().filter(card => card.file.startsWith('guidelines/compo
     expect(invisible, 'icons drawn in the colour behind them').toEqual([]);
     await expect(page).toHaveScreenshot(
       'forced-colors__' + card.file.replace(/\.html$/, '').replaceAll('/', '__') + '.png',
-      {fullPage: true}
+      {
+        fullPage: true,
+        ...(PLACEHOLDER_SLACK[card.file] && {maxDiffPixels: PLACEHOLDER_SLACK[card.file]})
+      }
     );
   });
 }
