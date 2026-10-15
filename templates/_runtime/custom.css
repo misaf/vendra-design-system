@@ -412,6 +412,24 @@ html {
   color: var(--ink-900);
 }
 
+/* "Print a tag" prints only the QR code and the design's code, to stand beside the design in the
+   shop; the presentation's tag scanner reads it back. */
+@media print {
+  body:has(.vf-presentation-tag) * {
+    visibility: hidden;
+  }
+  .vf-presentation-tag,
+  .vf-presentation-tag * {
+    visibility: visible;
+  }
+  .vf-presentation-tag {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 6cm;
+  }
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */

@@ -29,6 +29,18 @@ export function View({v}) {
                   slideLabel={v.t?.slide}
                   sizes="(max-width: 767px) 100vw, 50vw"
                 />
+                <div>
+                  <DS.Button variant="secondary" size="sm" iconStart="image" onClick={v.openPhotos}>
+                    <>{v.t?.fullScreen}</>
+                  </DS.Button>
+                </div>
+                <DS.Lightbox
+                  label={v.t?.photos}
+                  items={v.photoItems}
+                  index={v.photo}
+                  onIndexChange={v.setPhoto}
+                  onClose={v.closePhotos}
+                />
               </div>
               <div className="vf-product-details tw:flex tw:flex-col tw:gap-5 vf-sticky-panel">
                 <div className="vf-product-heading tw:flex tw:flex-col tw:gap-3">

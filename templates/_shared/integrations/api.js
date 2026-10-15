@@ -111,6 +111,21 @@ import {VF_STORE} from '../store-config.js';
     setMap(m);
     return slugs;
   };
+  // GET /api/catalog/products -> {token: {inStock, quantity}}: what is in stock now, for screens that
+  // stay open all day (the counter presentation). null in demo mode.
+  A.loadStock = async () => {
+    if (!A.live) return null;
+    const r = await request('GET', '/api/catalog/products?itemsPerPage=200');
+    const products = (r && (r['hydra:member'] || r.member || r.data)) || [];
+    return Object.fromEntries(
+      products
+        .filter(product => product.token)
+        .map(product => [
+          product.token,
+          {inStock: product.inStock !== false, quantity: product.quantity ?? null}
+        ])
+    );
+  };
   // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
   A.checkout = async body => {
     if (!A.live) return null;

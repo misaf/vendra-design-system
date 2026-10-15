@@ -38,6 +38,7 @@ export function vfCopy(S) {
       viewSaved: 'View saved',
       dismiss: 'Dismiss',
       photos: 'Product photos',
+      fullScreen: 'View full screen',
       slide: (i, n) => 'Photo ' + i + ' of ' + n,
       care: 'Care',
       careT:
@@ -92,6 +93,7 @@ export function vfCopy(S) {
       viewSaved: 'مشاهده ذخیره‌ها',
       dismiss: 'بستن',
       photos: 'عکس‌های محصول',
+      fullScreen: 'نمایش تمام‌صفحه',
       slide: (i, n) => 'عکس ' + S.n(i) + ' از ' + S.n(n),
       care: 'نگهداری',
       careT:
