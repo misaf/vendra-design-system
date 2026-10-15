@@ -5,7 +5,7 @@ export function vfCopy(S) {
     en: {
       title: 'Presentation',
       search: 'Find a design',
-      searchHint: 'A product code, a flower or a kind',
+      searchHint: 'Code, flower or kind',
       categories: 'Kinds',
       ready: 'Ready',
       settings: 'Presentation settings',
@@ -74,7 +74,7 @@ export function vfCopy(S) {
     fa: {
       title: 'نمایش',
       search: 'پیدا کردن طرح',
-      searchHint: 'کد محصول، نام گل یا نوع آن',
+      searchHint: 'کد، نام گل یا نوع',
       categories: 'نوع‌ها',
       ready: 'آماده',
       settings: 'تنظیمات نمایش',

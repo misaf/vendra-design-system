@@ -57,62 +57,51 @@ export function View({v}) {
             <>{v.t?.title}</>
           </h1>
           <div className="vf-presentation-bar tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-            <div className="tw:mx-auto tw:max-w-page tw:px-gutter tw:py-3 tw:flex tw:flex-col tw:gap-3">
-              <div className="tw:flex tw:items-end tw:gap-2">
-                <div className="tw:flex-1 tw:min-w-0">
-                  <DS.SearchField
-                    id="vf-presentation-q"
-                    label={v.t?.search}
-                    placeholder={v.t?.searchHint}
-                    value={v.q}
-                    onChange={v.setQ}
-                    onSubmit={v.submitQ}
-                  />
+            <div className="vf-presentation-bar-row tw:mx-auto tw:max-w-page tw:px-gutter tw:py-2">
+              <div className="vf-presentation-search tw:min-w-0">
+                <DS.SearchField
+                  id="vf-presentation-q"
+                  aria-label={v.t?.search}
+                  placeholder={v.t?.searchHint}
+                  value={v.q}
+                  onChange={v.setQ}
+                  onSubmit={v.submitQ}
+                />
+              </div>
+              <div
+                role="group"
+                aria-label={v.t?.categories}
+                className="vf-presentation-kinds tw:min-w-0 tw:flex tw:gap-2 tw:overflow-x-auto"
+              >
+                {list(v.kinds).map(kind => (
+                  <DS.Chip key={kind.id} selected={kind.selected} onClick={kind.pick}>
+                    <>{kind.label}</>
+                  </DS.Chip>
+                ))}
+              </div>
+              <div className="vf-presentation-tools tw:flex tw:items-center tw:gap-1">
+                <div
+                  role="status"
+                  className="vf-presentation-count tw:text-sm tw:text-quiet tw:whitespace-nowrap tw:me-2"
+                >
+                  <>{v.countLabel}</>
                 </div>
                 {v.canScan ? (
-                  <DS.IconButton
-                    icon="camera"
-                    label={v.t?.scan}
-                    variant="secondary"
-                    onClick={v.openScan}
-                  />
+                  <DS.IconButton icon="camera" label={v.t?.scan} onClick={v.openScan} />
                 ) : null}
                 <DS.IconButton
                   icon="star"
                   label={v.shortlistLabel}
-                  variant="secondary"
                   count={v.shortlistCount ? v.n(v.shortlistCount) : undefined}
                   onClick={v.openShortlist}
                 />
                 <DS.IconButton
                   icon="shopping-bag"
                   label={v.orderLabel}
-                  variant="secondary"
                   count={v.orderCount ? v.n(v.orderCount) : undefined}
                   onClick={v.openOrder}
                 />
-                <DS.IconButton
-                  icon="settings"
-                  label={v.t?.settings}
-                  variant="secondary"
-                  onClick={v.openSettings}
-                />
-              </div>
-              <div className="tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap">
-                <div
-                  role="group"
-                  aria-label={v.t?.categories}
-                  className="tw:flex tw:gap-2 tw:flex-wrap"
-                >
-                  {list(v.kinds).map(kind => (
-                    <DS.Chip key={kind.id} selected={kind.selected} onClick={kind.pick}>
-                      <>{kind.label}</>
-                    </DS.Chip>
-                  ))}
-                </div>
-                <div role="status" className="tw:text-sm tw:text-quiet">
-                  <>{v.countLabel}</>
-                </div>
+                <DS.IconButton icon="settings" label={v.t?.settings} onClick={v.openSettings} />
               </div>
             </div>
           </div>

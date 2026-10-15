@@ -430,6 +430,51 @@ html {
   }
 }
 
+/* The compact bar: search, kinds and tools on one row on a TV or a landscape tablet; narrower, the
+   kinds take a row of their own under the search and tools. The kinds scroll sideways rather than
+   wrap onto more rows. */
+.vf-presentation-bar-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 340px) minmax(0, 1fr) auto;
+  grid-template-areas: 'search kinds tools';
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.vf-presentation-search {
+  grid-area: search;
+}
+.vf-presentation-kinds {
+  grid-area: kinds;
+}
+.vf-presentation-tools {
+  grid-area: tools;
+}
+@media (max-width: 1023px) {
+  .vf-presentation-bar-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'search tools'
+      'kinds kinds';
+  }
+}
+/* On a phone the count makes way for the tools; it is still announced. */
+@media (max-width: 639px) {
+  .vf-presentation-count {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+.vf-presentation-kinds {
+  scrollbar-width: none;
+}
+.vf-presentation-kinds > * {
+  flex: none;
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
