@@ -104,6 +104,9 @@ export function View({v}) {
                   count={v.orderCount ? v.n(v.orderCount) : undefined}
                   onClick={v.openOrder}
                 />
+                {v.canStartOver ? (
+                  <DS.IconButton icon="rotate-ccw" label={v.t?.startOver} onClick={v.startOver} />
+                ) : null}
                 <DS.IconButton icon="settings" label={v.t?.settings} onClick={v.openSettings} />
               </div>
             </div>

@@ -15,7 +15,8 @@ export function vfCopy(S) {
       fullscreen: 'Full screen',
       keepAwake: 'Keep the screen on',
       slideshow: 'Slideshow when idle',
-      slideshowHint: 'After a minute untouched, the designs play one by one. A touch stops it.',
+      slideshowHint:
+        'After a minute untouched, the designs play one by one and a shortlist or order already handed over is cleared. A touch stops it.',
       pin: 'Settings PIN',
       pinHint: 'Four digits asked for before the settings open. Leave empty for none.',
       pinSet: 'PIN set',
@@ -55,6 +56,8 @@ export function vfCopy(S) {
       dismiss: 'Dismiss',
       shortlistCleared: 'Shortlist cleared',
       orderCleared: 'Order cleared',
+      startOver: 'Next customer',
+      startedOver: 'Ready for the next customer',
       shortlistTooLong:
         'The shortlist is too long for one code. Remove a few designs, or send it in two parts.',
       orderTooLong:
@@ -92,7 +95,7 @@ export function vfCopy(S) {
       keepAwake: 'روشن ماندن صفحه',
       slideshow: 'نمایش خودکار هنگام بیکاری',
       slideshowHint:
-        'اگر یک دقیقه کسی صفحه را لمس نکند، طرح‌ها یکی‌یکی نمایش داده می‌شوند. با یک لمس متوقف می‌شود.',
+        'اگر یک دقیقه کسی صفحه را لمس نکند، طرح‌ها یکی‌یکی نمایش داده می‌شوند و فهرست منتخب یا سفارشی که تحویل شده پاک می‌شود. با یک لمس متوقف می‌شود.',
       pin: 'رمز تنظیمات',
       pinHint: 'چهار رقمی که پیش از باز شدن تنظیمات پرسیده می‌شود. برای نداشتن رمز خالی بگذارید.',
       pinSet: 'رمز تعیین شد',
@@ -132,6 +135,8 @@ export function vfCopy(S) {
       dismiss: 'بستن',
       shortlistCleared: 'فهرست منتخب پاک شد',
       orderCleared: 'سفارش پاک شد',
+      startOver: 'مشتری بعدی',
+      startedOver: 'آماده برای مشتری بعدی',
       shortlistTooLong:
         'فهرست منتخب برای یک کد بیش از حد بلند است. چند طرح را حذف کنید یا آن را در دو بخش بفرستید.',
       orderTooLong:

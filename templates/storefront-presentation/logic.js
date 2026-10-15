@@ -84,6 +84,23 @@ function vfViewerProducts(state) {
   return vfShownProducts(state);
 }
 
+// What a customer leaves on the tablet: their search, kind, shortlist and order.
+const VF_CUSTOMER = {q: '', cat: 'all', shortlist: [], order: []};
+function vfCustomerKept(state, keys = Object.keys(VF_CUSTOMER)) {
+  return Object.fromEntries(keys.map(key => [key, state[key]]));
+}
+// When the slideshow starts, the customer has gone: what was handed over to their phone (and not
+// changed since) leaves the tablet, with the search. An order or shortlist not handed over stays,
+// as the seller may only have stepped away.
+function vfForgetHandedOver(page) {
+  const {handed, shortlist, order} = page.state;
+  const patch = {};
+  if (shortlist.length && handed.shortlist === shortlist) patch.shortlist = [];
+  if (order.length && handed.order === order) patch.order = [];
+  if (!Object.keys(patch).length) return;
+  page.setState({...patch, q: '', cat: 'all', handed: {shortlist: null, order: null}});
+}
+
 // The full-screen view closed, with no size or extras chosen.
 function vfViewerClosed() {
   return {
@@ -131,6 +148,7 @@ function vfRestartIdle(page) {
     if (page.state.panel || page.state.send) return vfRestartIdle(page);
     const count = vfShownProducts(page.state).length;
     if (!count) return;
+    vfForgetHandedOver(page);
     // The slideshow shows each design at its own price, whatever was last chosen on screen.
     page.setState({...vfViewerClosed(), slideshowRunning: true, open: 0});
     page._slideTimer = setInterval(
@@ -253,6 +271,8 @@ export function usePage(props) {
       scanError: '',
       slideshowRunning: false,
       calm: false,
+      // The shortlist and order last handed over to a customer's phone.
+      handed: {shortlist: null, order: null},
       fullscreen: false,
       stockAt: 0
     };
@@ -350,9 +370,9 @@ function vals(page) {
   const setOrder = order => page.setState({order});
   // Clearing the shortlist or the order closes its dialog and can be undone for a few seconds, as one
   // tap clears it.
-  const clearWithUndo = (key, title) => {
-    const kept = page.state[key];
-    page.setState({[key]: [], panel: null});
+  const clearWithUndo = (patch, title) => {
+    const kept = vfCustomerKept(page.state, Object.keys(patch));
+    page.setState({...patch, ...vfViewerClosed(), panel: null});
     page.toasts.clear();
     page.toasts.add(
       {
@@ -360,7 +380,7 @@ function vals(page) {
         action: {
           label: C.undo,
           onClick: () => {
-            page.setState({[key]: kept});
+            page.setState(kept);
             page.toasts.clear();
           }
         }
@@ -572,9 +592,14 @@ function vals(page) {
       })),
     shortlistOpen: st.panel === 'shortlist',
     openShortlist: () => page.setState({panel: 'shortlist'}),
-    clearShortlist: () => clearWithUndo('shortlist', C.shortlistCleared),
+    clearShortlist: () => clearWithUndo({shortlist: []}, C.shortlistCleared),
     sendShortlist: () =>
-      page.setState({panel: null, send: {kind: 'shortlist', id: ''}, copied: false}),
+      page.setState({
+        panel: null,
+        send: {kind: 'shortlist', id: ''},
+        copied: false,
+        handed: {...st.handed, shortlist: st.shortlist}
+      }),
     // The order built at the counter.
     orderCount: st.order.reduce((sum, line) => sum + line.qty, 0),
     orderLabel: C.orderCount(st.order.reduce((sum, line) => sum + line.qty, 0)),
@@ -592,8 +617,17 @@ function vals(page) {
     orderTotal: S.m(orderTotal),
     orderOpen: st.panel === 'order',
     openOrder: () => page.setState({panel: 'order'}),
-    clearOrder: () => clearWithUndo('order', C.orderCleared),
-    handOver: () => page.setState({panel: null, send: {kind: 'order', id: ''}, copied: false}),
+    clearOrder: () => clearWithUndo({order: []}, C.orderCleared),
+    // "Next customer" clears what the last one left, with an Undo.
+    canStartOver: !!st.shortlist.length || !!st.order.length || !!st.q.trim() || st.cat !== 'all',
+    startOver: () => clearWithUndo(VF_CUSTOMER, C.startedOver),
+    handOver: () =>
+      page.setState({
+        panel: null,
+        send: {kind: 'order', id: ''},
+        copied: false,
+        handed: {...st.handed, order: st.order}
+      }),
     closePanel: () => {
       vfStopCamera(page);
       page.setState({panel: null, pinEntry: '', pinError: false, scanError: ''});
