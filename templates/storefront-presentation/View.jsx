@@ -118,7 +118,7 @@ export function View({v}) {
                   </DS.Button>
                 </div>
               ) : (
-                <ul className="tw:list-none tw:m-0 tw:p-0 tw:grid tw:gap-5 tw:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]">
+                <ul className="tw:list-none tw:m-0 tw:p-0 tw:grid tw:gap-5 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))]">
                   {list(v.tiles).map(tile => (
                     <li key={tile.id} className="tw:relative">
                       <button
@@ -130,7 +130,7 @@ export function View({v}) {
                         <span className="tw:relative tw:block tw:w-full tw:[aspect-ratio:4/5] tw:rounded-md tw:overflow-hidden tw:bg-muted">
                           <DS.Picture
                             image={tile.image}
-                            sizes="(max-width: 767px) 100vw, 33vw"
+                            sizes="(max-width: 767px) 100vw, 50vw"
                             className="tw:w-full tw:h-full tw:object-cover tw:block"
                           />
                           {tile.ready ? (
