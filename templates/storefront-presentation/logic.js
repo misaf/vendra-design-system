@@ -32,6 +32,7 @@ const VF_PRESENTATION_SETTINGS = {
   displayMode: 'tablet',
   displayLayout: 'single',
   captionMode: 'code',
+  slideSeconds: 10,
   showPrices: true,
   readyOnly: false,
   hideSoldOut: false,
@@ -62,7 +63,8 @@ function vfReadSettings() {
         typeof saved[key] === typeof value &&
         (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key])) &&
         (key !== 'displayLayout' || ['single', 'pair'].includes(saved[key])) &&
-        (key !== 'captionMode' || ['photo', 'code', 'price'].includes(saved[key]))
+        (key !== 'captionMode' || ['photo', 'code', 'price'].includes(saved[key])) &&
+        (key !== 'slideSeconds' || [6, 10, 15].includes(saved[key]))
           ? saved[key]
           : value
       ])
@@ -96,15 +98,63 @@ function vfViewerProducts(state) {
 function vfDisplayPair(state) {
   return state.settings.displayLayout === 'pair' && state.displayLandscape;
 }
+function vfDisplayItems(state, index) {
+  const products = vfShownProducts(state);
+  return products.length
+    ? Array.from(
+        {length: vfDisplayPair(state) && products.length > 1 ? 2 : 1},
+        (_, offset) => products[(index + offset) % products.length]
+      )
+    : [];
+}
+function vfDisplayImageKey(product, lang) {
+  const image = vfProductImage(product, lang);
+  return JSON.stringify([product.id, image.src, image.srcSet, image.sources]);
+}
+function vfDisplayCommit(page) {
+  const {pendingIndex} = page.state;
+  if (pendingIndex == null) return;
+  const items = vfDisplayItems(page.state, pendingIndex);
+  if (
+    !items.length ||
+    !items.every(product => page._displayReady.has(vfDisplayImageKey(product, page.props.lang)))
+  )
+    return;
+  clearTimeout(page._displayWait);
+  page.setState({displayIndex: pendingIndex, pendingIndex: null, displayIssue: false});
+  // Give the newly decoded product its full dwell, including after manual navigation.
+  page._displayTimerKey = null;
+  vfSyncDisplay(page);
+}
 function vfDisplayStep(page, delta) {
   const count = vfShownProducts(page.state).length;
-  page.setState({
-    displayIndex:
-      (page.state.displayIndex + delta * (vfDisplayPair(page.state) ? 2 : 1) + count * 2) %
-      (count || 1)
-  });
+  if (!count || page.state.pendingIndex != null) return;
+  const index =
+    (page.state.displayIndex + delta * (vfDisplayPair(page.state) ? 2 : 1) + count * 2) % count;
+  clearTimeout(page._displayWait);
+  page.setState({pendingIndex: index, preloadVersion: page.state.preloadVersion + 1});
+  vfDisplayCommit(page);
+  if (page.state.pendingIndex != null)
+    page._displayWait = setTimeout(() => {
+      page.setState({pendingIndex: null, displayIssue: true});
+    }, 15000);
 }
 function vfSyncDisplay(page) {
+  // Cancel a pending replacement if the seller changes the pool, layout, or opens another task.
+  const context = JSON.stringify([
+    page.state.browsing,
+    page.state.panel,
+    page.state.send?.kind,
+    page.state.settings.displayMode,
+    page.state.settings.displayLayout,
+    page.state.displayLandscape,
+    vfShownProducts(page.state).map(product => product.id)
+  ]);
+  if (page._displayContext !== context) {
+    page._displayContext = context;
+    clearTimeout(page._displayWait);
+    if (page.state.pendingIndex != null) page.setState({pendingIndex: null});
+  }
   const playing =
     !page._unmounted &&
     !page.state.browsing &&
@@ -112,10 +162,15 @@ function vfSyncDisplay(page) {
     !page.state.panel &&
     !page.state.send &&
     document.visibilityState !== 'hidden';
-  if (page._displayPlaying === playing) return;
-  page._displayPlaying = playing;
+  const timerKey = JSON.stringify([playing, page.state.settings.slideSeconds]);
+  if (page._displayTimerKey === timerKey) return;
+  page._displayTimerKey = timerKey;
   clearInterval(page._displayTimer);
-  if (playing) page._displayTimer = setInterval(() => vfDisplayStep(page, 1), VF_SLIDE_MS);
+  if (playing)
+    page._displayTimer = setInterval(
+      () => vfDisplayStep(page, 1),
+      page.state.settings.slideSeconds * 1000
+    );
 }
 
 // What a customer leaves on the tablet: their search, kind, shortlist and order.
@@ -288,6 +343,9 @@ export function usePage(props) {
       cat: 'all',
       browsing: false,
       displayIndex: 0,
+      pendingIndex: null,
+      preloadVersion: 0,
+      displayIssue: false,
       displayLandscape: false,
       settings: vfReadSettings(),
       source: 'shown',
@@ -315,6 +373,7 @@ export function usePage(props) {
       fullscreen: false,
       stockAt: 0
     };
+    page._displayReady = new Set();
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page._report = text => {
       clearTimeout(page._searchTimer);
@@ -396,6 +455,7 @@ export function usePage(props) {
       clearInterval(page._slideTimer);
       clearInterval(page._stockTimer);
       clearInterval(page._displayTimer);
+      clearTimeout(page._displayWait);
       vfStopCamera(page);
       document.removeEventListener('visibilitychange', page._onVisibility);
       document.removeEventListener('fullscreenchange', page._onFullscreen);
@@ -516,6 +576,7 @@ function vals(page) {
     code: product.id,
     price: S.m(product.price),
     image: vfProductImage(product, L),
+    imageKey: vfDisplayImageKey(product, L),
     ready: vfReady(product),
     soldOut: product.inStock === false
   });
@@ -530,11 +591,27 @@ function vals(page) {
     setCaptionMode: setting('captionMode'),
     displayLayout: st.settings.displayLayout,
     setDisplayLayout: setting('displayLayout'),
-    displayProducts: products.length
-      ? Array.from({length: vfDisplayPair(st) && products.length > 1 ? 2 : 1}, (_, index) =>
-          card(products[(st.displayIndex + index) % products.length])
-        )
-      : [],
+    displayProducts: vfDisplayItems(st, st.displayIndex).map(card),
+    preloadProducts: vfDisplayItems(
+      st,
+      st.pendingIndex ?? st.displayIndex + (vfDisplayPair(st) ? 2 : 1)
+    ).map(card),
+    preloadVersion: st.preloadVersion,
+    displayLoaded: key => {
+      page._displayReady.add(key);
+      vfDisplayCommit(page);
+    },
+    displayFailed: key => {
+      if (
+        st.pendingIndex != null &&
+        vfDisplayItems(st, st.pendingIndex).some(product => vfDisplayImageKey(product, L) === key)
+      ) {
+        clearTimeout(page._displayWait);
+        page.setState({pendingIndex: null, displayIssue: true});
+      }
+    },
+    slideSeconds: st.settings.slideSeconds,
+    setSlideSeconds: value => setting('slideSeconds')(Number(value)),
     previousDisplay: () => vfDisplayStep(page, -1),
     nextDisplay: () => vfDisplayStep(page, 1),
     toolsOpen: st.panel === 'tools',
