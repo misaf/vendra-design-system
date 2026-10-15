@@ -1657,6 +1657,50 @@ test('a sold-out design is shown and starred, but not offered for sale', async (
   await expect(viewer.getByRole('button', {name: 'Size and extras'})).toHaveCount(0);
 });
 
+test('a design that sells out after it was ordered is not handed over', async ({page}) => {
+  // A live API that, from the next stock check, has VF-7K2M4Q sold out.
+  let soldOut = false;
+  await page.route('https://api.test/**', route =>
+    route.fulfill({
+      json: route.request().url().includes('/api/catalog/products?')
+        ? {member: [{token: 'VF-7K2M4Q', inStock: !soldOut}]}
+        : {}
+    })
+  );
+  await page.addInitScript(() => {
+    let api;
+    Object.defineProperty(window, 'VF_API', {
+      configurable: true,
+      get: () => api,
+      set: value => {
+        api = value;
+        api.setBase('https://api.test');
+      }
+    });
+  });
+  await page.clock.install();
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await viewer.getByRole('button', {name: 'Add to the order'}).click();
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', {name: /Show VF-8RD5WN full screen/}).click();
+  await viewer.getByRole('button', {name: 'Add to the order'}).click();
+  await page.keyboard.press('Escape');
+  soldOut = true;
+  await page.clock.runFor(121_000);
+  await expect(
+    page.getByRole('button', {name: /Show VF-7K2M4Q full screen, .*Sold out/})
+  ).toBeVisible();
+  await page.getByRole('button', {name: 'Order, 2'}).click();
+  const order = page.getByRole('dialog', {name: 'The customer’s order'});
+  await expect(order.getByText(/Sold out/)).toBeVisible();
+  await order.getByRole('button', {name: 'Hand over the order'}).click();
+  const link = await page.getByRole('link', {name: 'Share on WhatsApp'}).getAttribute('href');
+  const handed = new URL(decodeURIComponent(link.split('?text=')[1]));
+  expect(handed.searchParams.get('lines')).toMatch(/^VF-8RD5WN\.[^,]*$/);
+});
+
 test('clearing the presentation’s shortlist can be undone', async ({page}) => {
   await openSite(page, 'presentation', 'en');
   await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
