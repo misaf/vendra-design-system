@@ -77,3 +77,27 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('.vf-display-tools')).toHaveCSS('opacity', '1');
   });
 }
+
+test('paired products fit a landscape screen and return to one in portrait', async ({
+  page
+}, info) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayLayout: 'pair'}))
+  );
+  await page.setViewportSize({width: 1280, height: 720});
+  await openSite(page, 'presentation', 'en');
+  await expect(page.locator('.vf-display-photo')).toHaveCount(2);
+  const photos = page.locator('.vf-display-photo');
+  await expect(photos.first()).toHaveCSS('object-fit', 'contain');
+  const first = await photos.nth(0).boundingBox(),
+    second = await photos.nth(1).boundingBox();
+  expect(first.x + first.width).toBeLessThan(second.x);
+  expect(first.y).toBeGreaterThan(0);
+  if (info.project.name === 'desktop')
+    await expect(page).toHaveScreenshot('presentation-paired-en.png');
+  await page.locator('.vf-display').press('ArrowRight');
+  await expect(page.locator('.vf-display-caption').first()).toContainText('VF-8RD5WN');
+  await page.setViewportSize({width: 390, height: 844});
+  await expect(photos).toHaveCount(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+});
