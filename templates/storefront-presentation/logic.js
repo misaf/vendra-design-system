@@ -174,15 +174,23 @@ async function vfStartCamera(page) {
 }
 
 // Asks the API what is in stock and marks the catalog's products, so a design that sells out
-// during the day leaves the presentation (with "Hide sold-out designs") or shows as sold out.
+// during the day leaves the presentation (with "Hide sold-out designs") or shows as sold out. The
+// design on screen stays on screen as the list around it changes; if it left the list, the
+// full-screen view closes.
 function vfRefreshStock(page) {
   window.VF_API.loadStock()
     .then(stock => {
       if (!stock) return;
+      const {open} = page.state;
+      const onScreen = open == null ? null : vfViewerProducts(page.state)[open];
       VF_PRODUCTS.forEach(product => {
         if (stock[product.id]) product.inStock = stock[product.id].inStock;
       });
-      page.setState({stockAt: Date.now()});
+      const index = onScreen ? vfViewerProducts(page.state).indexOf(onScreen) : -1;
+      page.setState({
+        stockAt: Date.now(),
+        ...(onScreen ? (index >= 0 ? {open: index} : vfViewerClosed()) : {})
+      });
     })
     .catch(() => {});
 }
