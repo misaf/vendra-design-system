@@ -468,8 +468,14 @@ html {
     white-space: nowrap;
   }
 }
+/* A finger swipes the kinds sideways; a mouse needs a scrollbar to reach the ones past the edge. */
 .vf-presentation-kinds {
   scrollbar-width: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vf-presentation-kinds {
+    scrollbar-width: thin;
+  }
 }
 .vf-presentation-kinds > * {
   flex: none;
