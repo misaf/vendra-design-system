@@ -92,20 +92,28 @@ function Display({v}) {
       <span id="vf-display-hint" className="ag-sr-only">
         {v.t.displayHint}
       </span>
-      {item ? (
-        <>
-          <DS.Picture
-            image={item.image}
-            priority
-            sizes="100vw"
-            draggable={false}
-            className="vf-display-photo"
-          />
-          <div className="vf-display-caption">
-            <Label v={v} item={item} large />
-            {v.showPrices ? <DS.Price value={item.price} /> : null}
-          </div>
-        </>
+      {v.displayProducts.length ? (
+        <div
+          className={
+            'vf-display-media' + (v.displayProducts.length > 1 ? ' vf-display-media--pair' : '')
+          }
+        >
+          {v.displayProducts.map(product => (
+            <figure key={product.id} className="vf-display-product">
+              <DS.Picture
+                image={product.image}
+                priority
+                sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
+                draggable={false}
+                className="vf-display-photo"
+              />
+              <figcaption className="vf-display-caption">
+                <Label v={v} item={product} large />
+                {v.showPrices ? <DS.Price value={product.price} /> : null}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       ) : (
         <p>{v.t.none}</p>
       )}
@@ -577,6 +585,15 @@ export function View({v}) {
                 options={[
                   {value: 'tablet', label: v.t.tablet},
                   {value: 'tv', label: v.t.tv}
+                ]}
+              />
+              <DS.Select
+                label={v.t.displayLayout}
+                value={v.displayLayout}
+                onChange={v.setDisplayLayout}
+                options={[
+                  {value: 'single', label: v.t.singlePhoto},
+                  {value: 'pair', label: v.t.pairedPhotos}
                 ]}
               />
               <DS.Switch

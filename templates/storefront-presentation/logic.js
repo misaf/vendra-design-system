@@ -30,6 +30,7 @@ import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 const VF_PRESENTATION_KEY = 'vf-presentation';
 const VF_PRESENTATION_SETTINGS = {
   displayMode: 'tablet',
+  displayLayout: 'single',
   showPrices: true,
   readyOnly: false,
   hideSoldOut: false,
@@ -58,7 +59,8 @@ function vfReadSettings() {
       Object.entries(VF_PRESENTATION_SETTINGS).map(([key, value]) => [
         key,
         typeof saved[key] === typeof value &&
-        (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key]))
+        (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key])) &&
+        (key !== 'displayLayout' || ['single', 'pair'].includes(saved[key]))
           ? saved[key]
           : value
       ])
@@ -89,9 +91,16 @@ function vfViewerProducts(state) {
 }
 
 // Display playback is separate from the seller's full-screen quote viewer.
+function vfDisplayPair(state) {
+  return state.settings.displayLayout === 'pair' && state.displayLandscape;
+}
 function vfDisplayStep(page, delta) {
   const count = vfShownProducts(page.state).length;
-  page.setState({displayIndex: (page.state.displayIndex + delta + count) % (count || 1)});
+  page.setState({
+    displayIndex:
+      (page.state.displayIndex + delta * (vfDisplayPair(page.state) ? 2 : 1) + count * 2) %
+      (count || 1)
+  });
 }
 function vfSyncDisplay(page) {
   const playing =
@@ -277,6 +286,7 @@ export function usePage(props) {
       cat: 'all',
       browsing: false,
       displayIndex: 0,
+      displayLandscape: false,
       settings: vfReadSettings(),
       source: 'shown',
       only: '',
@@ -320,6 +330,10 @@ export function usePage(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
+      page._displayMedia = window.matchMedia('(min-width: 768px) and (min-aspect-ratio: 4/3)');
+      page._onDisplayMedia = () => page.setState({displayLandscape: page._displayMedia.matches});
+      page._displayMedia.addEventListener('change', page._onDisplayMedia);
+      page._onDisplayMedia();
       page._onVisibility = () => {
         vfSyncWakeLock(page);
         vfSyncDisplay(page);
@@ -371,6 +385,7 @@ export function usePage(props) {
     },
     willUnmount() {
       page._unmounted = true;
+      page._displayMedia.removeEventListener('change', page._onDisplayMedia);
       clearTimeout(page._searchTimer);
       clearTimeout(page._copiedTimer);
       clearTimeout(page._addedTimer);
@@ -509,6 +524,13 @@ function vals(page) {
     display: !st.browsing,
     displayMode: st.settings.displayMode,
     displayProduct: products.length ? card(products[st.displayIndex % products.length]) : null,
+    displayLayout: st.settings.displayLayout,
+    setDisplayLayout: setting('displayLayout'),
+    displayProducts: products.length
+      ? Array.from({length: vfDisplayPair(st) && products.length > 1 ? 2 : 1}, (_, index) =>
+          card(products[(st.displayIndex + index) % products.length])
+        )
+      : [],
     previousDisplay: () => vfDisplayStep(page, -1),
     nextDisplay: () => vfDisplayStep(page, 1),
     toolsOpen: st.panel === 'tools',
