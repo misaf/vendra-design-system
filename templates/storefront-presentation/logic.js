@@ -393,7 +393,15 @@ function vals(page) {
     showPrices: st.settings.showPrices,
     tiles: products.map((product, index) => ({
       ...card(product),
-      openLabel: C.open.replace('{code}', product.id),
+      // The tile's name carries what it shows: the code, the price (when shown) and Ready/Sold out.
+      openLabel: [
+        C.open.replace('{code}', product.id),
+        st.settings.showPrices ? S.m(product.price) : '',
+        vfReady(product) ? C.ready : '',
+        product.inStock === false ? C.soldOut : ''
+      ]
+        .filter(Boolean)
+        .join(', '),
       open: () => page.setState({source: 'shown', open: index}),
       starred: inShortlist(product.id),
       starLabel: (inShortlist(product.id) ? C.removeShortlist : C.addShortlist).replace(
