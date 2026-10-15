@@ -249,9 +249,11 @@ export function View({v}) {
                       <>{item.added ? v.t?.added : v.t?.addOrder}</>
                     </DS.Button>
                   )}
-                  <DS.Button variant="primary" iconStart="send" onClick={item.sendIt}>
-                    <>{v.t?.send}</>
-                  </DS.Button>
+                  {item.soldOut ? null : (
+                    <DS.Button variant="primary" iconStart="send" onClick={item.sendIt}>
+                      <>{v.t?.send}</>
+                    </DS.Button>
+                  )}
                 </>
               );
             }}
