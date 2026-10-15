@@ -31,14 +31,49 @@ for (const lang of ['en', 'fa']) {
     const tools = lang === 'en' ? 'Seller tools' : 'ابزار فروشنده';
     const browse = lang === 'en' ? 'Browse designs' : 'مرور طرح‌ها';
     await expect(page.getByRole('button', {name: browse, exact: true})).toHaveCount(0);
+    await page.locator('.vf-display').press('Enter');
     await page.getByRole('button', {name: tools, exact: true}).click();
     await expect(page.getByRole('dialog', {name: tools})).toBeVisible();
     expect(await scanAxe(page)).toEqual([]);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', {name: tools, exact: true})).toBeFocused();
+    await page.locator('.vf-display').press('Enter');
     await page.getByRole('button', {name: tools, exact: true}).click();
     await page.getByRole('button', {name: browse, exact: true}).click();
     await expect(page.getByRole('searchbox')).toBeFocused();
     await expect(page.locator('.vf-display')).toHaveCount(0);
+  });
+}
+
+for (const lang of ['en', 'fa']) {
+  test(`quiet navigation changes products without revealing controls (${lang})`, async ({page}) => {
+    await page.clock.install();
+    await openSite(page, 'presentation', lang);
+    const stage = page.locator('.vf-display');
+    await stage.press(lang === 'en' ? 'ArrowRight' : 'ArrowLeft');
+    await expect(page.locator('.vf-display-caption')).toContainText('VF-3HX9TP');
+    await expect(stage).toHaveAttribute('data-controls', 'false');
+    const box = await stage.boundingBox();
+    const y = box.y + box.height / 2;
+    const from = lang === 'en' ? 0.8 : 0.2,
+      to = 1 - from;
+    await page.mouse.move(box.x + box.width * from, y);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * to, y, {steps: 8});
+    await page.mouse.up();
+    await expect(page.locator('.vf-display-caption')).toContainText('VF-8RD5WN');
+    await expect(stage).toHaveAttribute('data-controls', 'false');
+    await stage.click({position: {x: 10, y: 10}});
+    await expect(stage).toHaveAttribute('data-controls', 'true');
+    await page.clock.runFor(4100);
+    await expect(stage).toHaveAttribute('data-controls', 'false');
+    await stage.press('Tab');
+    await expect(
+      page.getByRole('button', {
+        name: lang === 'en' ? 'Seller tools' : 'ابزار فروشنده',
+        exact: true
+      })
+    ).toBeFocused();
+    await expect(page.locator('.vf-display-tools')).toHaveCSS('opacity', '1');
   });
 }

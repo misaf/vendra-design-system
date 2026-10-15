@@ -4,6 +4,7 @@ import {NO_CONSENT, openSite, pinDelivery, scanAxe, choiceTile} from './helpers.
 // Counter workflows remain available from the display-first presentation.
 async function openCounter(page, lang) {
   await openSite(page, 'presentation', lang);
+  await page.locator('.vf-display').press('Enter');
   await page
     .getByRole('button', {name: lang === 'fa' ? 'ابزار فروشنده' : 'Seller tools', exact: true})
     .click();

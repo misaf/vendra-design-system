@@ -4,6 +4,7 @@ export function vfCopy(S) {
   return {
     en: {
       title: 'Presentation',
+      displayHint: 'Swipe or use arrow keys to browse. Tap or press Enter to reveal seller tools.',
       sellerTools: 'Seller tools',
       displayMode: 'Display preset',
       tablet: 'Tablet',
@@ -92,6 +93,8 @@ export function vfCopy(S) {
     },
     fa: {
       title: 'نمایش',
+      displayHint:
+        'برای مرور، بکشید یا از کلیدهای جهت استفاده کنید. برای دیدن ابزار فروشنده، لمس کنید یا Enter بزنید.',
       sellerTools: 'ابزار فروشنده',
       displayMode: 'حالت نمایش',
       tablet: 'تبلت',
