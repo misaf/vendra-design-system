@@ -7,7 +7,9 @@ import {vfCopy} from './copy.js';
 import {ToastQueue} from '../app/ds.js';
 import {
   VF_ADDONS,
+  VF_LINES_PATTERN,
   VF_PRODUCTS,
+  VF_SAVED_IDS_PATTERN,
   VF_SIZES,
   vfBagLine,
   vfFindProduct,
@@ -368,14 +370,21 @@ function vals(page) {
         body: C.shortlistBody,
         qrLabel: C.qr.replace('{code}', C.shortlist),
         code: '',
-        url: absolute(prefix + vfRouteParams({lang: L, view: 'saved', ids: st.shortlist.join(',')}))
+        url: absolute(
+          prefix + vfRouteParams({lang: L, view: 'saved', ids: st.shortlist.join(',')})
+        ),
+        // Longer than a link may carry, the customer's phone would open an empty list.
+        tooLong: !VF_SAVED_IDS_PATTERN.test(st.shortlist.join(',')),
+        tooLongBody: C.shortlistTooLong
       };
     return {
       title: C.orderTitle,
       body: C.handOverBody,
       qrLabel: C.qr.replace('{code}', C.order),
       code: '',
-      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(st.order)}))
+      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(st.order)})),
+      tooLong: !VF_LINES_PATTERN.test(vfLinesParam(st.order)),
+      tooLongBody: C.orderTooLong
     };
   })();
   const kinds = ['all', ...new Set(VF_PRODUCTS.map(product => product.cat))];

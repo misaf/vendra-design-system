@@ -471,6 +471,8 @@ export function vfBagLine(product, sizeId = null, addonIds = [], qty = 1) {
 // phone: each line is code.size.extra+extra.quantity, lines separated by commas, e.g.
 // VF-7K2M4Q.classic.card.1,VF-8RD5WN...2. Prices are not in the link; they come from the catalog.
 export const VF_LINES_PATTERN = /^[\w.+,-]{1,600}$/;
+// Saved designs in a link (?view=saved&ids=…), as handed over from the shop counter.
+export const VF_SAVED_IDS_PATTERN = /^[\w,-]{1,400}$/;
 export function vfLinesParam(lines) {
   return lines
     .map(line =>
