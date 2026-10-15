@@ -5,6 +5,9 @@ import {NO_CONSENT, openSite, pinDelivery, scanAxe, choiceTile} from './helpers.
 async function openCounter(page, lang) {
   await openSite(page, 'presentation', lang);
   await page
+    .getByRole('button', {name: lang === 'fa' ? 'ابزار فروشنده' : 'Seller tools', exact: true})
+    .click();
+  await page
     .getByRole('button', {name: lang === 'fa' ? 'مرور طرح‌ها' : 'Browse designs', exact: true})
     .click();
 }
