@@ -114,14 +114,25 @@ function Display({v}) {
                 (v.captionMode === 'photo' ? ' vf-display-product--photo' : '')
               }
             >
-              <DS.Picture
-                image={product.image}
-                priority
-                sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
-                draggable={false}
-                onLoad={event => loaded(event, product.imageKey)}
-                className="vf-display-photo"
-              />
+              {product.unavailableImage ? (
+                <div
+                  className="vf-display-photo-fallback"
+                  role="img"
+                  aria-label={v.t.photoUnavailable}
+                >
+                  <DS.Icon name="image" size={48} />
+                </div>
+              ) : (
+                <DS.Picture
+                  image={product.image}
+                  priority
+                  sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
+                  draggable={false}
+                  onLoad={event => loaded(event, product.imageKey)}
+                  onError={() => v.displayFailed(product.imageKey)}
+                  className="vf-display-photo"
+                />
+              )}
               {v.captionMode !== 'photo' ? (
                 <figcaption className="vf-display-caption">
                   <span className="vf-display-code" dir="ltr">
@@ -180,6 +191,7 @@ export function View({v}) {
     <Shell
       v={v}
       bare={true}
+      quiet={v.display}
       content={
         <main
           id="main"
@@ -307,6 +319,19 @@ export function View({v}) {
             maxWidth={440}
           >
             <div className="tw:flex tw:flex-col tw:gap-3">
+              {!v.online ? <DS.Alert tone="warning" title={v.t.offlineStatus} /> : null}
+              {v.displayIssue ? <DS.Alert tone="warning" title={v.t.photoIssue} /> : null}
+              {v.stockIssue ? <DS.Alert tone="warning" title={v.t.stockIssue} /> : null}
+              {v.stockUpdated ? (
+                <p className="tw:m-0 tw:text-sm tw:text-quiet">
+                  {v.t.stockUpdated} <bdi>{v.stockUpdated}</bdi>
+                </p>
+              ) : null}
+              {v.displayIssue ? (
+                <DS.Button variant="secondary" disabled={!v.online} onClick={v.retryDisplay}>
+                  {v.t.retryPhotos}
+                </DS.Button>
+              ) : null}
               <DS.Button variant="secondary" onClick={v.browse}>
                 {v.t.browse}
               </DS.Button>
