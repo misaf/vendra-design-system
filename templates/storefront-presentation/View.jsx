@@ -163,6 +163,7 @@ export function View({v}) {
           </div>
           <DS.Lightbox
             label={v.t?.viewer}
+            className={'vf-presentation-viewer' + (v.calm ? ' vf-presentation-viewer--calm' : '')}
             items={list(v.viewer).map((item, index) => ({
               id: item.id,
               images: item.images,
