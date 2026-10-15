@@ -1639,6 +1639,91 @@ test('untouched, the presentation plays its designs; a touch keeps the one on sc
   await expect(viewer.getByText('VF-3HX9TP')).toBeVisible();
 });
 
+test('presentation tiles are named with their price and Ready', async ({page}) => {
+  await openSite(page, 'presentation', 'en');
+  await expect(
+    page.getByRole('button', {name: 'Show VF-3HX9TP full screen, 2,800,000 Toman, Ready'})
+  ).toBeVisible();
+});
+
+test('clearing the presentation’s shortlist can be undone', async ({page}) => {
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
+  await page.getByRole('button', {name: 'Add VF-8RD5WN to the shortlist'}).click();
+  await page.getByRole('button', {name: 'Shortlist, 2'}).click();
+  await page.getByRole('dialog', {name: 'Shortlist'}).getByRole('button', {name: 'Clear'}).click();
+  await expect(page.getByRole('button', {name: 'Shortlist, 0'})).toBeVisible();
+  await page.getByRole('button', {name: 'Undo'}).click();
+  await expect(page.getByRole('button', {name: 'Shortlist, 2'})).toBeVisible();
+});
+
+test('“Next customer” clears the last one’s search and shortlist, with an Undo', async ({page}) => {
+  await openSite(page, 'presentation', 'en');
+  await expect(page.getByRole('button', {name: 'Next customer'})).toHaveCount(0);
+  await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
+  await page.getByLabel('Find a design').fill('orchid');
+  await page.getByRole('button', {name: 'Next customer'}).click();
+  await expect(page.getByRole('button', {name: 'Shortlist, 0'})).toBeVisible();
+  await expect(page.getByLabel('Find a design')).toHaveValue('');
+  await expect(page.getByRole('button', {name: 'Next customer'})).toHaveCount(0);
+  await page.getByRole('button', {name: 'Undo'}).click();
+  await expect(page.getByRole('button', {name: 'Shortlist, 1'})).toBeVisible();
+  await expect(page.getByLabel('Find a design')).toHaveValue('orchid');
+});
+
+test('the slideshow clears a shortlist handed over, and keeps one that wasn’t', async ({page}) => {
+  await page.clock.install();
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
+  );
+  await openSite(page, 'presentation', 'en');
+  // Not handed over: the seller may only have stepped away.
+  await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
+  await page.clock.runFor(61_000);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', {name: 'Shortlist, 1'})).toBeVisible();
+  // Handed over: it is on the customer's phone now.
+  await page.getByRole('button', {name: 'Shortlist, 1'}).click();
+  await page.getByRole('button', {name: 'Send the shortlist'}).click();
+  await page.keyboard.press('Escape');
+  await page.clock.runFor(61_000);
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', {name: 'Shortlist, 0'})).toBeVisible();
+});
+
+test('the slideshow shows each design at its own price', async ({page}) => {
+  await page.clock.install();
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
+  );
+  await openSite(page, 'presentation', 'en');
+  await page.getByLabel('Find a design').fill('7k2');
+  await page.getByLabel('Find a design').press('Enter');
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await viewer.getByRole('button', {name: 'Size and extras'}).click();
+  await viewer.getByRole('button', {name: /Classic/}).click();
+  await viewer.getByRole('button', {name: 'Glass vase'}).click();
+  await expect(viewer.getByText('5,550,000 Toman')).toBeVisible();
+  await page.clock.runFor(61_000);
+  await expect(viewer.getByText('4,100,000 Toman')).toBeVisible();
+});
+
+test('untouched, the full-screen view leaves only the photo, code and price', async ({page}) => {
+  await page.clock.install();
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await expect(viewer.getByText('1 of 6')).toBeVisible();
+  await page.clock.runFor(4_500);
+  await expect(viewer.getByText('1 of 6')).toBeHidden();
+  await expect(viewer.getByRole('button', {name: 'Send to customer'})).toBeHidden();
+  await expect(viewer.getByText('VF-7K2M4Q')).toBeVisible();
+  await expect(viewer.getByText('4,100,000 Toman')).toBeVisible();
+  // A touch brings the controls back.
+  await page.mouse.click(5, 300);
+  await expect(viewer.getByText('1 of 6')).toBeVisible();
+});
+
 test('scanning a design’s tag opens it full screen', async ({page}) => {
   // A stand-in camera and QR reader: the tag holds the design's product page address.
   await page.addInitScript(() => {
