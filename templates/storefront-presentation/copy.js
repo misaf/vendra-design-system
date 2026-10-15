@@ -4,6 +4,7 @@ export function vfCopy(S) {
   return {
     en: {
       title: 'Presentation',
+      sellerTools: 'Seller tools',
       displayMode: 'Display preset',
       tablet: 'Tablet',
       tv: 'TV',
@@ -91,6 +92,7 @@ export function vfCopy(S) {
     },
     fa: {
       title: 'نمایش',
+      sellerTools: 'ابزار فروشنده',
       displayMode: 'حالت نمایش',
       tablet: 'تبلت',
       tv: 'تلویزیون',

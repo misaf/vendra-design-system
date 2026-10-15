@@ -168,7 +168,7 @@ function vfRestartIdle(page) {
   clearTimeout(page._idleTimer);
   clearInterval(page._slideTimer);
   if (page.state.slideshowRunning) page.setState({slideshowRunning: false});
-  if (!page.state.settings.slideshow) return;
+  if (!page.state.browsing || !page.state.settings.slideshow) return;
   page._idleTimer = setTimeout(() => {
     if (page.state.panel || page.state.send) return vfRestartIdle(page);
     const count = vfShownProducts(page.state).length;
@@ -331,7 +331,9 @@ export function usePage(props) {
         if (event.key !== '/' || event.defaultPrevented) return;
         if (target.closest('input, textarea, select, [role=dialog]')) return;
         event.preventDefault();
-        document.getElementById('vf-presentation-q')?.focus();
+        page.setState({browsing: true, panel: null}, () =>
+          document.getElementById('vf-presentation-q')?.focus()
+        );
       };
       page._onActivity = () => {
         vfRestartIdle(page);
@@ -495,7 +497,13 @@ function vals(page) {
     displayProduct: products.length ? card(products[st.displayIndex % products.length]) : null,
     previousDisplay: () => vfDisplayStep(page, -1),
     nextDisplay: () => vfDisplayStep(page, 1),
-    browse: () => page.setState({browsing: true}),
+    toolsOpen: st.panel === 'tools',
+    openTools: () => page.setState({panel: 'tools'}),
+    browse: () =>
+      page.setState({browsing: true, panel: null}, () => {
+        vfRestartIdle(page);
+        S.focus('vf-presentation-q');
+      }),
     resumeDisplay: () => page.setState({browsing: false, panel: null, ...vfViewerClosed()}),
     setDisplayMode: setting('displayMode'),
     q: st.q,

@@ -60,10 +60,7 @@ function Display({v}) {
         <p>{v.t.none}</p>
       )}
       <div className="vf-display-tools">
-        <DS.Button variant="soft" onClick={v.browse}>
-          {v.t.browse}
-        </DS.Button>
-        <DS.IconButton icon="settings" label={v.t.settings} inverse onClick={v.openSettings} />
+        <DS.IconButton icon="settings" label={v.t.sellerTools} inverse onClick={v.openTools} />
       </div>
       {v.displayMode === 'tablet' && item ? (
         <div className="vf-display-navigation">
@@ -210,6 +207,38 @@ export function View({v}) {
             </div>
           </div>
           {v.display ? <Display v={v} /> : null}
+          <DS.Dialog
+            open={v.toolsOpen}
+            onClose={v.closePanel}
+            title={v.t.sellerTools}
+            placement="start"
+            maxWidth={440}
+          >
+            <div className="tw:flex tw:flex-col tw:gap-3">
+              <DS.Button variant="secondary" onClick={v.browse}>
+                {v.t.browse}
+              </DS.Button>
+              <DS.Button variant="secondary" iconStart="star" onClick={v.openShortlist}>
+                {v.shortlistLabel}
+              </DS.Button>
+              <DS.Button variant="secondary" iconStart="shopping-bag" onClick={v.openOrder}>
+                {v.orderLabel}
+              </DS.Button>
+              {v.canScan ? (
+                <DS.Button variant="secondary" iconStart="camera" onClick={v.openScan}>
+                  {v.t.scan}
+                </DS.Button>
+              ) : null}
+              {v.canStartOver ? (
+                <DS.Button variant="secondary" onClick={v.startOver}>
+                  {v.t.startOver}
+                </DS.Button>
+              ) : null}
+              <DS.Button variant="secondary" iconStart="settings" onClick={v.openSettings}>
+                {v.t.settings}
+              </DS.Button>
+            </div>
+          </DS.Dialog>
           <DS.Lightbox
             label={v.t?.viewer}
             className={'vf-presentation-viewer' + (v.calm ? ' vf-presentation-viewer--calm' : '')}
