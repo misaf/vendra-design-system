@@ -29,6 +29,7 @@ import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // customer out of the settings; it is stored on the tablet as it is.
 const VF_PRESENTATION_KEY = 'vf-presentation';
 const VF_PRESENTATION_SETTINGS = {
+  displayMode: 'tablet',
   showPrices: true,
   readyOnly: false,
   hideSoldOut: false,
@@ -56,7 +57,10 @@ function vfReadSettings() {
     return Object.fromEntries(
       Object.entries(VF_PRESENTATION_SETTINGS).map(([key, value]) => [
         key,
-        typeof saved[key] === typeof value ? saved[key] : value
+        typeof saved[key] === typeof value &&
+        (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key]))
+          ? saved[key]
+          : value
       ])
     );
   } catch {
@@ -82,6 +86,25 @@ function vfViewerProducts(state) {
   if (state.source === 'shortlist') return state.shortlist.map(vfFindProduct).filter(Boolean);
   if (state.source === 'only') return [vfFindProduct(state.only)].filter(Boolean);
   return vfShownProducts(state);
+}
+
+// Display playback is separate from the seller's full-screen quote viewer.
+function vfDisplayStep(page, delta) {
+  const count = vfShownProducts(page.state).length;
+  page.setState({displayIndex: (page.state.displayIndex + delta + count) % (count || 1)});
+}
+function vfSyncDisplay(page) {
+  const playing =
+    !page._unmounted &&
+    !page.state.browsing &&
+    page.state.settings.displayMode === 'tv' &&
+    !page.state.panel &&
+    !page.state.send &&
+    document.visibilityState !== 'hidden';
+  if (page._displayPlaying === playing) return;
+  page._displayPlaying = playing;
+  clearInterval(page._displayTimer);
+  if (playing) page._displayTimer = setInterval(() => vfDisplayStep(page, 1), VF_SLIDE_MS);
 }
 
 // What a customer leaves on the tablet: their search, kind, shortlist and order.
@@ -252,6 +275,8 @@ export function usePage(props) {
     page.state = {
       q: '',
       cat: 'all',
+      browsing: false,
+      displayIndex: 0,
       settings: vfReadSettings(),
       source: 'shown',
       only: '',
@@ -295,7 +320,10 @@ export function usePage(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
-      page._onVisibility = () => vfSyncWakeLock(page);
+      page._onVisibility = () => {
+        vfSyncWakeLock(page);
+        vfSyncDisplay(page);
+      };
       page._onFullscreen = () => page.setState({fullscreen: !!document.fullscreenElement});
       // "/" jumps to the search, unless the seller is typing or a dialog is open.
       page._onKey = event => {
@@ -316,10 +344,14 @@ export function usePage(props) {
         document.addEventListener(type, page._onActivity, {capture: true, passive: true});
       vfSyncWakeLock(page);
       vfRestartIdle(page);
+      vfSyncDisplay(page);
       if (window.VF_API.live) {
         vfRefreshStock(page);
         page._stockTimer = setInterval(() => vfRefreshStock(page), VF_STOCK_MS);
       }
+    },
+    didUpdate() {
+      vfSyncDisplay(page);
     },
     willUnmount() {
       page._unmounted = true;
@@ -330,6 +362,7 @@ export function usePage(props) {
       clearTimeout(page._calmTimer);
       clearInterval(page._slideTimer);
       clearInterval(page._stockTimer);
+      clearInterval(page._displayTimer);
       vfStopCamera(page);
       document.removeEventListener('visibilitychange', page._onVisibility);
       document.removeEventListener('fullscreenchange', page._onFullscreen);
@@ -355,6 +388,7 @@ function vals(page) {
     page.setState({settings, ...vfViewerClosed()});
     if (key === 'keepAwake') vfSyncWakeLock(page);
     if (key === 'slideshow') vfRestartIdle(page);
+    vfSyncDisplay(page);
   };
   const absolute = href => new URL(href, location.href).href;
   const prefix = page.props.go ? '' : '../app/';
@@ -456,6 +490,14 @@ function vals(page) {
     ...S,
     t: {...S.t, ...C},
     toasts: page.toasts,
+    display: !st.browsing,
+    displayMode: st.settings.displayMode,
+    displayProduct: products.length ? card(products[st.displayIndex % products.length]) : null,
+    previousDisplay: () => vfDisplayStep(page, -1),
+    nextDisplay: () => vfDisplayStep(page, 1),
+    browse: () => page.setState({browsing: true}),
+    resumeDisplay: () => page.setState({browsing: false, panel: null, ...vfViewerClosed()}),
+    setDisplayMode: setting('displayMode'),
     q: st.q,
     setQ: value => {
       page.setState({q: value, open: null, source: 'shown'});

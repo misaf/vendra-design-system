@@ -44,6 +44,47 @@ function Label({v, item, large = false}) {
   );
 }
 
+function Display({v}) {
+  const item = v.displayProduct;
+  return (
+    <section className="vf-display ag-on-inverse" aria-label={v.t.viewer}>
+      {item ? (
+        <>
+          <DS.Picture image={item.image} priority sizes="100vw" className="vf-display-photo" />
+          <div className="vf-display-caption">
+            <Label v={v} item={item} large />
+            {v.showPrices ? <DS.Price value={item.price} /> : null}
+          </div>
+        </>
+      ) : (
+        <p>{v.t.none}</p>
+      )}
+      <div className="vf-display-tools">
+        <DS.Button variant="soft" onClick={v.browse}>
+          {v.t.browse}
+        </DS.Button>
+        <DS.IconButton icon="settings" label={v.t.settings} inverse onClick={v.openSettings} />
+      </div>
+      {v.displayMode === 'tablet' && item ? (
+        <div className="vf-display-navigation">
+          <DS.IconButton
+            icon="chevron-left"
+            label={v.t.previousDesign}
+            inverse
+            onClick={v.previousDisplay}
+          />
+          <DS.IconButton
+            icon="chevron-right"
+            label={v.t.nextDesign}
+            inverse
+            onClick={v.nextDisplay}
+          />
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 export function View({v}) {
   React.useEffect(vfKeepOffline, []);
   return (
@@ -59,7 +100,10 @@ export function View({v}) {
           <h1 className="ag-sr-only">
             <>{v.t?.title}</>
           </h1>
-          <div className="vf-presentation-bar tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
+          <div
+            hidden={v.display}
+            className="vf-presentation-bar tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]"
+          >
             <div className="vf-presentation-bar-row tw:mx-auto tw:max-w-page tw:px-gutter tw:py-2">
               <div className="vf-presentation-search tw:min-w-0">
                 <DS.SearchField
@@ -83,6 +127,7 @@ export function View({v}) {
                 ))}
               </div>
               <div className="vf-presentation-tools tw:flex tw:items-center tw:gap-1">
+                <DS.IconButton icon="play" label={v.t.resumeDisplay} onClick={v.resumeDisplay} />
                 <div
                   role="status"
                   className="vf-presentation-count tw:text-sm tw:text-quiet tw:whitespace-nowrap tw:me-2"
@@ -111,7 +156,7 @@ export function View({v}) {
               </div>
             </div>
           </div>
-          <div className="tw:flex-1">
+          <div hidden={v.display} className="tw:flex-1">
             <div className="tw:mx-auto tw:max-w-page tw:px-gutter tw:py-5">
               {v.noResults ? (
                 <div className="tw:flex tw:flex-col tw:items-center tw:gap-4 tw:py-8">
@@ -164,6 +209,7 @@ export function View({v}) {
               )}
             </div>
           </div>
+          {v.display ? <Display v={v} /> : null}
           <DS.Lightbox
             label={v.t?.viewer}
             className={'vf-presentation-viewer' + (v.calm ? ' vf-presentation-viewer--calm' : '')}
@@ -445,6 +491,15 @@ export function View({v}) {
             }
           >
             <div className="tw:flex tw:flex-col tw:gap-4">
+              <DS.Select
+                label={v.t.displayMode}
+                value={v.displayMode}
+                onChange={v.setDisplayMode}
+                options={[
+                  {value: 'tablet', label: v.t.tablet},
+                  {value: 'tv', label: v.t.tv}
+                ]}
+              />
               <DS.Switch
                 label={v.t?.showPrices}
                 checked={v.settings?.showPrices}

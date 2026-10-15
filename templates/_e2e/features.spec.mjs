@@ -1,6 +1,14 @@
 import {test, expect} from '@playwright/test';
 import {NO_CONSENT, openSite, pinDelivery, scanAxe, choiceTile} from './helpers.mjs';
 
+// Counter workflows remain available from the display-first presentation.
+async function openCounter(page, lang) {
+  await openSite(page, 'presentation', lang);
+  await page
+    .getByRole('button', {name: lang === 'fa' ? 'مرور طرح‌ها' : 'Browse designs', exact: true})
+    .click();
+}
+
 // Delivery days, promo codes, shop occasions, recently viewed products, the delivery photo,
 // delivery pins, saved addresses and products in the account, and the contact page, in the click-through site.
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
@@ -1559,7 +1567,7 @@ test('the announcement says when an order placed now arrives, on every page', as
 test('the counter presentation finds, quotes, shortlists and hands over an order', async ({
   page
 }) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   // No site chrome: the page is the designs.
   await expect(page.locator('.vf-shell-header, .vf-shell-footer')).toHaveCount(0);
   // Part of a code and Enter open that design full screen.
@@ -1606,7 +1614,7 @@ test('the counter presentation finds, quotes, shortlists and hands over an order
 test('presentation sharing preserves the quoted size and extras on the customer’s phone', async ({
   page
 }) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await viewer.getByRole('button', {name: 'Size and extras'}).click();
@@ -1648,7 +1656,7 @@ test('presentation wake-lock rejection waits for a visibility change before retr
       }
     });
   });
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.clock.runFor(1_000);
   expect(await page.evaluate(() => window.__vfWakeRequests)).toBe(1);
   await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
@@ -1685,7 +1693,7 @@ for (const lang of ['en', 'fa']) {
   test(`presentation hides order prices and restores them when enabled (${lang})`, async ({
     page
   }) => {
-    await openSite(page, 'presentation', lang);
+    await openCounter(page, lang);
     await page.locator('.vf-presentation-tile').first().click();
     await page
       .getByRole('dialog', {name: labels.viewer})
@@ -1719,7 +1727,7 @@ for (const lang of ['en', 'fa']) {
         JSON.stringify({readyOnly: true, hideSoldOut: true, pin: '2468'})
       )
     );
-    await openSite(page, 'presentation', lang);
+    await openCounter(page, lang);
     await page.getByLabel(labels.search).fill('nonexistent');
     await page.getByRole('button', {name: labels.clear, exact: true}).click();
     await expect(page.locator('.vf-presentation-tile')).toHaveCount(4);
@@ -1741,7 +1749,7 @@ for (const lang of ['en', 'fa']) {
     await page.addInitScript(() => {
       window.BarcodeDetector = class {};
     });
-    await openSite(page, 'presentation', lang);
+    await openCounter(page, lang);
     await page.locator('.vf-presentation-tile').first().click();
     await page
       .getByRole('dialog', {name: labels.viewer})
@@ -1771,7 +1779,7 @@ for (const lang of ['en', 'fa']) {
 }
 
 test('the presentation settings sit behind their PIN once one is set', async ({page}) => {
-  await openSite(page, 'presentation', 'fa');
+  await openCounter(page, 'fa');
   await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();
   await page.getByLabel('رمز تنظیمات').fill('2468');
   await expect(page.getByText('رمز تعیین شد')).toBeVisible();
@@ -1790,7 +1798,7 @@ test('untouched, the presentation plays its designs; a touch keeps the one on sc
   await page.addInitScript(() =>
     localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
   );
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   // Photos only: each design's code and price, without the controls.
   await page.clock.runFor(61_000);
@@ -1807,14 +1815,14 @@ test('untouched, the presentation plays its designs; a touch keeps the one on sc
 });
 
 test('presentation tiles are named with their price and Ready', async ({page}) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await expect(
     page.getByRole('button', {name: 'Show VF-3HX9TP full screen, 2,800,000 Toman, Ready'})
   ).toBeVisible();
 });
 
 test('a sold-out design is shown and starred, but not offered for sale', async ({page}) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: /Show VF-6MT3VY full screen, .*, Sold out/}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('Sold out')).toBeVisible();
@@ -1846,7 +1854,7 @@ test('a design that sells out after it was ordered is not handed over', async ({
     });
   });
   await page.clock.install();
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await viewer.getByRole('button', {name: 'Add to the order'}).click();
@@ -1869,7 +1877,7 @@ test('a design that sells out after it was ordered is not handed over', async ({
 });
 
 test('clearing the presentation’s shortlist can be undone', async ({page}) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
   await page.getByRole('button', {name: 'Add VF-8RD5WN to the shortlist'}).click();
   await page.getByRole('button', {name: 'Shortlist, 2'}).click();
@@ -1880,7 +1888,7 @@ test('clearing the presentation’s shortlist can be undone', async ({page}) => 
 });
 
 test('“Next customer” clears the last one’s search and shortlist, with an Undo', async ({page}) => {
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await expect(page.getByRole('button', {name: 'Next customer'})).toHaveCount(0);
   await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
   await page.getByLabel('Find a design').fill('orchid');
@@ -1898,7 +1906,7 @@ test('the slideshow clears a shortlist handed over, and keeps one that wasn’t'
   await page.addInitScript(() =>
     localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
   );
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   // Not handed over: the seller may only have stepped away.
   await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
   await page.clock.runFor(61_000);
@@ -1918,7 +1926,7 @@ test('the slideshow shows each design at its own price', async ({page}) => {
   await page.addInitScript(() =>
     localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
   );
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByLabel('Find a design').fill('7k2');
   await page.getByLabel('Find a design').press('Enter');
   const viewer = page.getByRole('dialog', {name: 'Designs'});
@@ -1932,7 +1940,7 @@ test('the slideshow shows each design at its own price', async ({page}) => {
 
 test('untouched, the full-screen view leaves only the photo, code and price', async ({page}) => {
   await page.clock.install();
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('1 of 6')).toBeVisible();
@@ -1959,7 +1967,7 @@ test('scanning a design’s tag opens it full screen', async ({page}) => {
       }
     };
   });
-  await openSite(page, 'presentation', 'en');
+  await openCounter(page, 'en');
   await page.getByRole('button', {name: 'Scan a tag'}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('VF-8RD5WN')).toBeVisible();
