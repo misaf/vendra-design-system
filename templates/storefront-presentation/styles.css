@@ -79,7 +79,8 @@
 /* The calm full-screen view: untouched, the bar, arrows, dots and buttons step aside so the photo
    fills the screen, with the code and the price in a small tag in the corner. A touch or a key
    brings them back; so does keyboard focus on any of them. */
-.vf-presentation-viewer--calm:not(:has(:focus-visible)) {
+/* (The viewer itself takes focus as it opens; only focus on one of its controls counts.) */
+.vf-presentation-viewer--calm:not(:has(:focus-visible:not(.ag-lightbox__frame))) {
   & .ag-lightbox__bar,
   & .ag-lightbox__step,
   & .ag-lightbox__dots,
