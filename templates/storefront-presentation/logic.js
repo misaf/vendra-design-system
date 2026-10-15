@@ -76,6 +76,11 @@ function vfViewerProducts(state) {
   return vfShownProducts(state);
 }
 
+// The full-screen view closed, with no size or extras chosen.
+function vfViewerClosed() {
+  return {open: null, source: 'shown', pick: {size: VF_SIZES[0].id, addons: []}};
+}
+
 // Holds the screen awake while the setting is on and the page is visible (the browser lets go of
 // the lock whenever the page is hidden, so it is asked for again on return).
 async function vfSyncWakeLock(page) {
@@ -105,7 +110,8 @@ function vfRestartIdle(page) {
     if (page.state.panel || page.state.send) return vfRestartIdle(page);
     const count = vfShownProducts(page.state).length;
     if (!count) return;
-    page.setState({slideshowRunning: true, source: 'shown', open: 0});
+    // The slideshow shows each design at its own price, whatever was last chosen on screen.
+    page.setState({...vfViewerClosed(), slideshowRunning: true, open: 0});
     page._slideTimer = setInterval(
       () =>
         page.setState({
@@ -275,7 +281,7 @@ function vals(page) {
   const setting = key => value => {
     const settings = {...page.state.settings, [key]: value};
     vfSaveSettings(settings);
-    page.setState({settings, open: null, source: 'shown'});
+    page.setState({settings, ...vfViewerClosed()});
     if (key === 'keepAwake') vfSyncWakeLock(page);
     if (key === 'slideshow') vfRestartIdle(page);
   };
@@ -378,8 +384,7 @@ function vals(page) {
     slideshowRunning: st.slideshowRunning,
     setOpen: index =>
       page.setState({open: index, pick: {size: VF_SIZES[0].id, addons: []}, justAdded: ''}),
-    closeViewer: () =>
-      page.setState({open: null, source: 'shown', pick: {size: VF_SIZES[0].id, addons: []}}),
+    closeViewer: () => page.setState(vfViewerClosed()),
     viewer: viewerProducts.map(product => {
       const line = quote(product);
       const addons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
