@@ -362,9 +362,11 @@ export function View({v}) {
                   <DS.Button variant="secondary" onClick={v.clearOrder}>
                     <>{v.t?.clear}</>
                   </DS.Button>
-                  <DS.Button variant="primary" iconStart="send" onClick={v.handOver}>
-                    <>{v.t?.handOver}</>
-                  </DS.Button>
+                  {v.canHandOver ? (
+                    <DS.Button variant="primary" iconStart="send" onClick={v.handOver}>
+                      <>{v.t?.handOver}</>
+                    </DS.Button>
+                  ) : null}
                 </>
               ) : null
             }
