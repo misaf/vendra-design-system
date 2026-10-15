@@ -31,6 +31,7 @@ const VF_PRESENTATION_KEY = 'vf-presentation';
 const VF_PRESENTATION_SETTINGS = {
   displayMode: 'tablet',
   displayLayout: 'single',
+  captionMode: 'code',
   showPrices: true,
   readyOnly: false,
   hideSoldOut: false,
@@ -60,7 +61,8 @@ function vfReadSettings() {
         key,
         typeof saved[key] === typeof value &&
         (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key])) &&
-        (key !== 'displayLayout' || ['single', 'pair'].includes(saved[key]))
+        (key !== 'displayLayout' || ['single', 'pair'].includes(saved[key])) &&
+        (key !== 'captionMode' || ['photo', 'code', 'price'].includes(saved[key]))
           ? saved[key]
           : value
       ])
@@ -524,6 +526,8 @@ function vals(page) {
     display: !st.browsing,
     displayMode: st.settings.displayMode,
     displayProduct: products.length ? card(products[st.displayIndex % products.length]) : null,
+    captionMode: st.settings.captionMode,
+    setCaptionMode: setting('captionMode'),
     displayLayout: st.settings.displayLayout,
     setDisplayLayout: setting('displayLayout'),
     displayProducts: products.length

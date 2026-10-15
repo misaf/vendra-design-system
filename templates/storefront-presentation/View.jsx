@@ -62,6 +62,7 @@ function Display({v}) {
       tabIndex={0}
       aria-describedby="vf-display-hint"
       data-controls={controls}
+      data-mode={v.displayMode}
       onKeyDown={event => {
         if (event.target !== event.currentTarget) return;
         if (event.key === 'Enter' || event.key === ' ') {
@@ -99,7 +100,13 @@ function Display({v}) {
           }
         >
           {v.displayProducts.map(product => (
-            <figure key={product.id} className="vf-display-product">
+            <figure
+              key={product.id}
+              className={
+                'vf-display-product' +
+                (v.captionMode === 'photo' ? ' vf-display-product--photo' : '')
+              }
+            >
               <DS.Picture
                 image={product.image}
                 priority
@@ -107,10 +114,16 @@ function Display({v}) {
                 draggable={false}
                 className="vf-display-photo"
               />
-              <figcaption className="vf-display-caption">
-                <Label v={v} item={product} large />
-                {v.showPrices ? <DS.Price value={product.price} /> : null}
-              </figcaption>
+              {v.captionMode !== 'photo' ? (
+                <figcaption className="vf-display-caption">
+                  <span className="vf-display-code" dir="ltr">
+                    {product.code}
+                  </span>
+                  {v.captionMode === 'price' && v.showPrices ? (
+                    <DS.Price value={product.price} />
+                  ) : null}
+                </figcaption>
+              ) : null}
             </figure>
           ))}
         </div>
@@ -594,6 +607,16 @@ export function View({v}) {
                 options={[
                   {value: 'single', label: v.t.singlePhoto},
                   {value: 'pair', label: v.t.pairedPhotos}
+                ]}
+              />
+              <DS.Select
+                label={v.t.captions}
+                value={v.captionMode}
+                onChange={v.setCaptionMode}
+                options={[
+                  {value: 'photo', label: v.t.photoOnly},
+                  {value: 'code', label: v.t.photoCode},
+                  {value: 'price', label: v.t.photoPrice}
                 ]}
               />
               <DS.Switch

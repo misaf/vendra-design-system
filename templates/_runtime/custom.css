@@ -608,6 +608,28 @@ html {
   }
 }
 
+.vf-display-product--photo {
+  grid-template-rows: minmax(0, 1fr);
+}
+.vf-display-code {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 44px);
+  letter-spacing: var(--tracking-display);
+  white-space: nowrap;
+}
+.vf-display-caption .ag-price {
+  font-size: clamp(18px, 1.5vw, 24px);
+}
+.vf-display[data-mode='tv'] .vf-display-media {
+  padding: clamp(24px, 4vmin, 80px);
+}
+.vf-display[data-mode='tv'] .vf-display-code {
+  font-size: clamp(28px, 3vw, 64px);
+}
+.vf-display[data-mode='tv'] .vf-display-caption .ag-price {
+  font-size: clamp(20px, 2vw, 40px);
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
