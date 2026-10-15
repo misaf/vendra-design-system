@@ -281,11 +281,11 @@ export function View({v}) {
                       <>{v.t?.whatsapp}</>
                     </DS.Button>
                   )}
-                  {v.send.tooLong ? null : (
+                  {v.send.canCopy && !v.send.tooLong ? (
                     <DS.Button variant="secondary" iconStart="copy" onClick={v.send.copy}>
                       <>{v.send.copied ? v.t?.copied : v.t?.copy}</>
                     </DS.Button>
-                  )}
+                  ) : null}
                   {v.send.tag ? (
                     <DS.Button variant="secondary" iconStart="tag" onClick={v.send.print}>
                       <>{v.t?.printTag}</>
