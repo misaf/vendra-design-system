@@ -41,6 +41,8 @@ const VF_SEARCH_SETTLE_MS = 1000;
 // Untouched this long, the slideshow starts; it then moves on at this pace.
 const VF_IDLE_MS = 60_000;
 const VF_SLIDE_MS = 6_000;
+// Untouched this long, the full-screen view goes calm: only the photo, the code and the price stay.
+const VF_CALM_MS = 4_000;
 // How often an open presentation asks the API what is in stock.
 const VF_STOCK_MS = 120_000;
 // How long "Cleared · Undo" stays.
@@ -141,6 +143,17 @@ function vfRestartIdle(page) {
   }, VF_IDLE_MS);
 }
 
+// A touch or a key brings the full-screen view's controls back; untouched for VF_CALM_MS, they go
+// again (not while the seller is choosing a size or extras, or a dialog is open over it).
+function vfRestartCalm(page) {
+  clearTimeout(page._calmTimer);
+  if (page.state.calm) page.setState({calm: false});
+  page._calmTimer = setTimeout(() => {
+    const {open, optionsOpen, send, panel} = page.state;
+    if (open != null && !optionsOpen && !send && !panel) page.setState({calm: true});
+  }, VF_CALM_MS);
+}
+
 // The QR code on a design's tag holds its product page's address (or just its code).
 function vfScannedProduct(text) {
   try {
@@ -239,6 +252,7 @@ export function usePage(props) {
       pinDraft: '',
       scanError: '',
       slideshowRunning: false,
+      calm: false,
       fullscreen: false,
       stockAt: 0
     };
@@ -269,7 +283,10 @@ export function usePage(props) {
         event.preventDefault();
         document.getElementById('vf-presentation-q')?.focus();
       };
-      page._onActivity = () => vfRestartIdle(page);
+      page._onActivity = () => {
+        vfRestartIdle(page);
+        vfRestartCalm(page);
+      };
       document.addEventListener('visibilitychange', page._onVisibility);
       document.addEventListener('fullscreenchange', page._onFullscreen);
       document.addEventListener('keydown', page._onKey);
@@ -288,6 +305,7 @@ export function usePage(props) {
       clearTimeout(page._copiedTimer);
       clearTimeout(page._addedTimer);
       clearTimeout(page._idleTimer);
+      clearTimeout(page._calmTimer);
       clearInterval(page._slideTimer);
       clearInterval(page._stockTimer);
       vfStopCamera(page);
@@ -452,6 +470,7 @@ function vals(page) {
     // The full-screen view: each design with its size and extras choices (for the one on screen).
     open: st.open,
     slideshowRunning: st.slideshowRunning,
+    calm: st.calm,
     setOpen: index =>
       page.setState({
         open: index,

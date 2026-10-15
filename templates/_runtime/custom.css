@@ -481,6 +481,29 @@ html {
   flex: none;
 }
 
+/* The calm full-screen view: untouched, the bar, arrows, dots and buttons step aside so the photo
+   fills the screen, with the code and the price in a small tag in the corner. A touch or a key
+   brings them back; so does keyboard focus on any of them. */
+.vf-presentation-viewer--calm:not(:has(:focus-visible)) {
+  & .ag-lightbox__bar,
+  & .ag-lightbox__step,
+  & .ag-lightbox__dots,
+  & .ag-lightbox__actions {
+    display: none;
+  }
+  & .ag-lightbox__stage {
+    padding-block: var(--space-3);
+  }
+  & .ag-lightbox__caption {
+    position: absolute;
+    inset-block-end: var(--space-5);
+    inset-inline-start: var(--space-5);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--surface-inverse) 88%, transparent);
+  }
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
