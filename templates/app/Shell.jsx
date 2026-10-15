@@ -4,7 +4,7 @@ import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 
-export function Shell({v, content, sticky, bare = false}) {
+export function Shell({v, content, sticky, bare = false, quiet = false}) {
   // --vf-top-bar / --vf-bottom-bar: the heights of the sticky header and of the sticky bars at the
   // bottom of the screen, so fixed layers (toasts) sit above them and the page scrolls a focused or
   // linked element clear of them (scroll-padding in shell.css; WCAG 2.4.11).
@@ -80,7 +80,7 @@ export function Shell({v, content, sticky, bare = false}) {
               <>{v.vfAnnouncement}</>
             </DS.LiveRegion>
           ) : null}
-          <DS.OfflineNotice />
+          {quiet ? null : <DS.OfflineNotice />}
           {content}
         </div>
       </DS.VendraProvider>

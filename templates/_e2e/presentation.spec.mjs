@@ -75,6 +75,8 @@ for (const lang of ['en', 'fa']) {
       })
     ).toBeFocused();
     await expect(page.locator('.vf-display-tools')).toHaveCSS('opacity', '1');
+    await page.keyboard.press(lang === 'en' ? 'ArrowRight' : 'ArrowLeft');
+    await expect(page.locator('.vf-display-caption')).toContainText('VF-4CJ6ZB');
   });
 }
 
@@ -172,4 +174,58 @@ test('a seller saves a category collection that survives reload', async ({page})
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('vf-presentation')))
   ).toMatchObject({displayCollection: 'category', displayCategory: 'boxes'});
+});
+
+for (const lang of ['en', 'fa']) {
+  test(`connection changes stay inside seller tools (${lang})`, async ({page}) => {
+    await openSite(page, 'presentation', lang);
+    await page.context().setOffline(true);
+    await expect(page.locator('.vf-display-photo')).toBeVisible();
+    await expect(page.locator('.ag-offline')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollHeight - innerHeight)).toBe(0);
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    await page.locator('.vf-display').press('Enter');
+    await page
+      .getByRole('button', {name: lang === 'en' ? 'Seller tools' : 'ابزار فروشنده', exact: true})
+      .click();
+    await expect(page.getByRole('alert')).toContainText(
+      lang === 'en' ? 'Offline.' : 'اتصال برقرار نیست'
+    );
+    await page.context().setOffline(false);
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+}
+
+test('failed photos use a quiet fallback and can be retried by the seller', async ({page}) => {
+  await page.route('**/assets/placeholders/product.svg', route => route.abort());
+  await openSite(page, 'presentation', 'en');
+  await expect(page.locator('.vf-display-photo-fallback')).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  await page.locator('.vf-display').press('Enter');
+  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await expect(page.getByRole('alert')).toContainText('Some photos could not load.');
+  await page.unroute('**/assets/placeholders/product.svg');
+  await page.getByRole('button', {name: 'Retry photos', exact: true}).click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vf-display-photo')).toBeVisible();
+  await expect(page.locator('.vf-display-photo-fallback')).toHaveCount(0);
+});
+
+test('pointer use of seller tools returns to a completely quiet display', async ({page}) => {
+  await page.clock.install();
+  await openSite(page, 'presentation', 'en');
+  await page.locator('.vf-display').click({position: {x: 10, y: 10}});
+  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await page.getByRole('dialog').getByRole('button', {name: 'Close', exact: true}).click();
+  await page.clock.runFor(4100);
+  await expect(page.locator('.vf-display-tools')).toHaveCSS('opacity', '0');
+});
+
+test('a TV remote can open seller tools before a control has focus', async ({page}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv'}))
+  );
+  await openSite(page, 'presentation', 'en');
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
 });

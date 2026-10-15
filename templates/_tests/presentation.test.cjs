@@ -34,6 +34,8 @@ function presentation(settings = {}) {
   };
   ctx.window = {
     innerWidth: 1280,
+    addEventListener() {},
+    removeEventListener() {},
     scrollTo() {},
     matchMedia: () => ({matches: false, addEventListener() {}, removeEventListener() {}})
   };
@@ -123,3 +125,16 @@ console.log('Passed decoded image handoff, failure retention, slideshow timing a
   );
 }
 console.log('Passed curated collections, category loops, validation and customer-state isolation.');
+
+{
+  const {page} = presentation();
+  page.renderVals().nextDisplay();
+  page.renderVals().displayFailed(page.renderVals().preloadProducts[0].imageKey);
+  assert.equal(page.state.displayIndex, 0);
+  assert.equal(page.state.displayIssue, true);
+  page.renderVals().retryDisplay();
+  assert.equal(page.state.displayIndex, 0, 'retry never changes the product on screen');
+  assert.equal(page.state.displayIssue, false);
+  assert.equal(page.state.failedImageKeys.length, 0);
+}
+console.log('Passed quiet image failure and recovery state.');

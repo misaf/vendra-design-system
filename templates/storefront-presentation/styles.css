@@ -193,7 +193,7 @@
   transition: opacity var(--dur-base) var(--ease-out);
 }
 .vf-display[data-controls='true'] .vf-display-tools,
-.vf-display-tools:focus-within {
+.vf-display-tools:has(:focus-visible) {
   opacity: 1;
   pointer-events: auto;
 }
@@ -248,5 +248,17 @@
 @media (prefers-reduced-motion: reduce) {
   .vf-display-product {
     animation: none;
+  }
+}
+
+.vf-display-photo-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  color: var(--text-inverse-muted);
+}
+@media (max-width: 639px) {
+  .vf-presentation-tools {
+    flex-wrap: wrap;
   }
 }

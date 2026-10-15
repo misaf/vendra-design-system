@@ -350,7 +350,7 @@ async function vfStartCamera(page) {
 function vfRefreshStock(page) {
   window.VF_API.loadStock()
     .then(stock => {
-      if (!stock) return;
+      if (page._unmounted || !stock) return;
       const {open} = page.state;
       const onScreen = open == null ? null : vfViewerProducts(page.state)[open];
       VF_PRODUCTS.forEach(product => {
@@ -359,10 +359,13 @@ function vfRefreshStock(page) {
       const index = onScreen ? vfViewerProducts(page.state).indexOf(onScreen) : -1;
       page.setState({
         stockAt: Date.now(),
+        stockIssue: false,
         ...(onScreen ? (index >= 0 ? {open: index} : vfViewerClosed()) : {})
       });
     })
-    .catch(() => {});
+    .catch(() => {
+      if (!page._unmounted) page.setState({stockIssue: true});
+    });
 }
 
 export function usePage(props) {
@@ -375,6 +378,9 @@ export function usePage(props) {
       pendingIndex: null,
       preloadVersion: 0,
       displayIssue: false,
+      failedImageKeys: [],
+      online: typeof navigator === 'undefined' || navigator.onLine !== false,
+      stockIssue: false,
       displayLandscape: false,
       settings: vfReadSettings(),
       source: 'shown',
@@ -424,6 +430,13 @@ export function usePage(props) {
       page._onDisplayMedia = () => page.setState({displayLandscape: page._displayMedia.matches});
       page._displayMedia.addEventListener('change', page._onDisplayMedia);
       page._onDisplayMedia();
+      page._onConnection = () => {
+        const online = navigator.onLine !== false;
+        page.setState({online, ...(online ? {preloadVersion: page.state.preloadVersion + 1} : {})});
+        if (online && window.VF_API.live) vfRefreshStock(page);
+      };
+      window.addEventListener('online', page._onConnection);
+      window.addEventListener('offline', page._onConnection);
       page._onVisibility = () => {
         vfSyncWakeLock(page);
         vfSyncDisplay(page);
@@ -437,8 +450,14 @@ export function usePage(props) {
           !page.state.browsing &&
           !page.state.panel &&
           !page.state.send &&
-          !target.closest('input, textarea, select, button, a')
+          !target.closest('input, textarea, select')
         ) {
+          // A TV remote can open the seller drawer before anything on the page has focus.
+          if (event.key === 'Enter' && !target.closest('button, a')) {
+            event.preventDefault();
+            page.setState({panel: 'tools'});
+            return;
+          }
           if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
             event.preventDefault();
             const next = (event.key === 'ArrowRight') !== (page.props.lang === 'fa');
@@ -475,6 +494,8 @@ export function usePage(props) {
     },
     willUnmount() {
       page._unmounted = true;
+      window.removeEventListener('online', page._onConnection);
+      window.removeEventListener('offline', page._onConnection);
       page._displayMedia.removeEventListener('change', page._onDisplayMedia);
       clearTimeout(page._searchTimer);
       clearTimeout(page._copiedTimer);
@@ -612,6 +633,7 @@ function vals(page) {
     price: S.m(product.price),
     image: vfProductImage(product, L),
     imageKey: vfDisplayImageKey(product, L),
+    unavailableImage: st.failedImageKeys.includes(vfDisplayImageKey(product, L)),
     ready: vfReady(product),
     soldOut: product.inStock === false
   });
@@ -659,18 +681,44 @@ function vals(page) {
       st.pendingIndex ?? st.displayIndex + (vfDisplayPair(st) ? 2 : 1)
     ).map(card),
     preloadVersion: st.preloadVersion,
+    online: st.online,
+    displayIssue: st.displayIssue,
+    stockIssue: st.stockIssue,
+    stockUpdated: st.stockAt
+      ? new Intl.DateTimeFormat(L, {hour: '2-digit', minute: '2-digit'}).format(
+          new Date(st.stockAt)
+        )
+      : '',
+    retryDisplay: () =>
+      page.setState({
+        failedImageKeys: [],
+        displayIssue: false,
+        preloadVersion: page.state.preloadVersion + 1
+      }),
     displayLoaded: key => {
+      if (page._unmounted) return;
       page._displayReady.add(key);
+      if (page.state.failedImageKeys.includes(key)) {
+        const failedImageKeys = page.state.failedImageKeys.filter(value => value !== key);
+        page.setState({failedImageKeys, displayIssue: !!failedImageKeys.length});
+      }
       vfDisplayCommit(page);
     },
     displayFailed: key => {
-      if (
-        st.pendingIndex != null &&
-        vfDisplayItems(st, st.pendingIndex).some(product => vfDisplayImageKey(product, L) === key)
-      ) {
-        clearTimeout(page._displayWait);
-        page.setState({pendingIndex: null, displayIssue: true});
-      }
+      if (page._unmounted) return;
+      page._displayReady.delete(key);
+      const failedImageKeys = [...new Set([...page.state.failedImageKeys, key])];
+      const pending =
+        page.state.pendingIndex != null &&
+        vfDisplayItems(page.state, page.state.pendingIndex).some(
+          product => vfDisplayImageKey(product, L) === key
+        );
+      if (pending) clearTimeout(page._displayWait);
+      page.setState({
+        failedImageKeys,
+        displayIssue: true,
+        ...(pending ? {pendingIndex: null} : {})
+      });
     },
     slideSeconds: st.settings.slideSeconds,
     setSlideSeconds: value => setting('slideSeconds')(Number(value)),
