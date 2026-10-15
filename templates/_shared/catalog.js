@@ -442,6 +442,54 @@ export function vfSampleBag() {
   ];
 }
 
+// A bag line for a product in a size (an id from VF_SIZES, or null) with extras (VF_ADDONS ids),
+// as the product page adds it. Sizes and extras the product doesn't offer are left out.
+export function vfBagLine(product, sizeId = null, addonIds = [], qty = 1) {
+  const size = product.sizes ? VF_SIZES.find(item => item.id === sizeId) || VF_SIZES[0] : null;
+  const addons = VF_ADDONS.filter(
+    addon => addonIds.includes(addon.id) && !(product.noAddons || []).includes(addon.id)
+  );
+  return {
+    image: product.image,
+    productId: product.id,
+    token: product.id,
+    size: size ? size.id : null,
+    addons: addons.map(addon => addon.id),
+    id:
+      product.id +
+      (size ? '-' + size.id : '') +
+      (addons.length ? '-' + addons.map(addon => addon.id).join('+') : ''),
+    unit:
+      product.price + (size ? size.price : 0) + addons.reduce((sum, addon) => sum + addon.price, 0),
+    qty,
+    en: [product.id, vfLineDetail(product, size, addons, 'en')],
+    fa: [product.id, vfLineDetail(product, size, addons, 'fa')]
+  };
+}
+
+// Bag lines in a link (?view=bag&lines=…), so a bag made at the shop counter opens on the customer's
+// phone: each line is code.size.extra+extra.quantity, lines separated by commas, e.g.
+// VF-7K2M4Q.classic.card.1,VF-8RD5WN...2. Prices are not in the link; they come from the catalog.
+export const VF_LINES_PATTERN = /^[\w.+,-]{1,600}$/;
+export function vfLinesParam(lines) {
+  return lines
+    .map(line =>
+      [vfLineToken(line), vfLineSize(line) || '', vfLineAddons(line).join('+'), line.qty].join('.')
+    )
+    .join(',');
+}
+// The lines a link carries; unknown or sold-out products are dropped, quantities kept to 1–99.
+export function vfLinesFromParam(text) {
+  if (!VF_LINES_PATTERN.test(text || '')) return [];
+  return text.split(',').flatMap(part => {
+    const [code, size, addons, qty] = part.split('.');
+    const product = vfFindProduct(code);
+    if (!product || product.inStock === false) return [];
+    const count = Math.min(99, Math.max(1, parseInt(qty, 10) || 1));
+    return [vfBagLine(product, size || null, (addons || '').split('+').filter(Boolean), count)];
+  });
+}
+
 // A line's extras: listed on lines added from the product page, read from the id on older lines.
 export function vfLineAddons(line) {
   return (

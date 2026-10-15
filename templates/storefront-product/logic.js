@@ -6,6 +6,7 @@ import {
   VF_PRODUCTS,
   VF_PRODUCT_DETAILS,
   VF_SIZES,
+  vfBagLine,
   vfFindProduct,
   vfLineDetail,
   vfProduct,
@@ -33,7 +34,8 @@ export function usePage(props) {
       size: 'petite',
       addons: [],
       qty: 1,
-      added: null
+      added: null,
+      photo: null
     };
     // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.
     page._showToast = content => {
@@ -166,6 +168,12 @@ function vals(page) {
     unavailable: product.inStock === false,
     category: S.shopLink(product.cat),
     productImages: vfProductImages(product, L),
+    // Each photo full screen, one after another (Lightbox).
+    photoItems: vfProductImages(product, L).map((image, index) => ({id: index, images: [image]})),
+    photo: page.state.photo,
+    setPhoto: index => page.setState({photo: index}),
+    openPhotos: () => page.setState({photo: 0}),
+    closePhotos: () => page.setState({photo: null}),
     unitPrice: m(base + (hasSizes ? size.price : 0)),
     sizes: VF_SIZES.map(item => ({
       label: item.name[L],
@@ -202,21 +210,14 @@ function vals(page) {
       if (product.inStock === false) return;
       const st = page.props.store;
       if (st) {
-        st.add({
-          image: product.image,
-          productId: product.id,
-          token: product.id,
-          size: hasSizes ? s.size : null,
-          addons: chosenAddons.map(addon => addon.id),
-          id:
-            product.id +
-            (hasSizes ? '-' + s.size : '') +
-            (chosenAddons.length ? '-' + chosenAddons.map(addon => addon.id).join('+') : ''),
-          unit,
-          qty: s.qty,
-          en: [product.id, vfLineDetail(product, hasSizes ? size : null, chosenAddons, 'en')],
-          fa: [product.id, vfLineDetail(product, hasSizes ? size : null, chosenAddons, 'fa')]
-        });
+        st.add(
+          vfBagLine(
+            product,
+            hasSizes ? s.size : null,
+            chosenAddons.map(addon => addon.id),
+            s.qty
+          )
+        );
       }
       // A small bag panel confirms what was added and offers the next step.
       page.toasts.clear();

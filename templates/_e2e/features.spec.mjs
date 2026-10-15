@@ -1555,3 +1555,110 @@ test('the announcement says when an order placed now arrives, on every page', as
   await expect(faBar).toContainText('نزدیک‌ترین تحویل در کرج: فردا، ۱۴ مهر.');
   await expect(faBar.getByRole('link')).toHaveCount(0);
 });
+
+test('the counter presentation finds, quotes, shortlists and hands over an order', async ({
+  page
+}) => {
+  await openSite(page, 'presentation', 'en');
+  // No site chrome: the page is the designs.
+  await expect(page.locator('.vf-shell-header, .vf-shell-footer')).toHaveCount(0);
+  // Part of a code and Enter open that design full screen.
+  await page.getByLabel('Find a design').fill('7k2');
+  await page.getByLabel('Find a design').press('Enter');
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await expect(viewer.getByText('VF-7K2M4Q')).toBeVisible();
+  // Its sizes and extras change the price it comes to.
+  await expect(viewer.getByText('4,100,000 Toman')).toBeVisible();
+  await viewer.getByRole('button', {name: /Classic/}).click();
+  await viewer.getByRole('button', {name: 'Glass vase'}).click();
+  await expect(viewer.getByText('5,550,000 Toman')).toBeVisible();
+  await viewer.getByRole('button', {name: 'Add to the order'}).click();
+  await viewer.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
+  await page.keyboard.press('Escape');
+  await page.getByLabel('Find a design').fill('');
+  await page.getByRole('button', {name: 'Add VF-8RD5WN to the shortlist'}).click();
+  // The shortlist compares the starred designs and sends them as one link.
+  await page.getByRole('button', {name: 'Shortlist, 2'}).click();
+  const shortlist = page.getByRole('dialog', {name: 'Shortlist'});
+  await expect(shortlist.getByRole('listitem')).toHaveCount(2);
+  await shortlist.getByRole('button', {name: 'Send the shortlist'}).click();
+  await expect(page.getByRole('dialog', {name: 'The customer’s shortlist'})).toBeVisible();
+  await expect(page.getByRole('link', {name: 'Share on WhatsApp'})).toHaveAttribute(
+    'href',
+    /view%3Dsaved%26ids%3DVF-7K2M4Q%252CVF-8RD5WN/
+  );
+  await page.keyboard.press('Escape');
+  // The order opens in the customer's own bag.
+  await page.getByRole('button', {name: 'Order, 1'}).click();
+  await page.getByRole('button', {name: 'Hand over the order'}).click();
+  const link = await page.getByRole('link', {name: 'Share on WhatsApp'}).getAttribute('href');
+  const handed = new URL(decodeURIComponent(link.split('?text=')[1]));
+  expect(handed.searchParams.get('lines')).toBe('VF-7K2M4Q.classic.vase.1');
+  const phone = await page.context().newPage();
+  await phone.goto(handed.pathname + handed.search);
+  await expect(phone).toHaveURL(/view=bag$/);
+  await expect(phone.getByText('VF-7K2M4Q').first()).toBeVisible();
+  await expect(phone.getByText(/Classic · 20 stems · Glass vase/).first()).toBeVisible();
+});
+
+test('the presentation settings sit behind their PIN once one is set', async ({page}) => {
+  await openSite(page, 'presentation', 'fa');
+  await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();
+  await page.getByLabel('رمز تنظیمات').fill('2468');
+  await expect(page.getByText('رمز تعیین شد')).toBeVisible();
+  await page.getByRole('button', {name: 'تمام', exact: true}).click();
+  await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();
+  await page.getByLabel('تنظیمات قفل است.').fill('1111');
+  await expect(page.getByText('رمز درست نیست.')).toBeVisible();
+  await page.getByLabel('تنظیمات قفل است.').fill('2468');
+  await expect(page.getByRole('dialog', {name: 'تنظیمات نمایش'})).toBeVisible();
+});
+
+test('untouched, the presentation plays its designs; a touch keeps the one on screen', async ({
+  page
+}) => {
+  await page.clock.install();
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({slideshow: true}))
+  );
+  await openSite(page, 'presentation', 'en');
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await page.clock.runFor(61_000);
+  await expect(viewer.getByText('1 of 6')).toBeVisible();
+  await page.clock.runFor(6_000);
+  await expect(viewer.getByText('2 of 6')).toBeVisible();
+  await page.mouse.click(5, 300);
+  await page.clock.runFor(12_000);
+  await expect(viewer.getByText('2 of 6')).toBeVisible();
+});
+
+test('scanning a design’s tag opens it full screen', async ({page}) => {
+  // A stand-in camera and QR reader: the tag holds the design's product page address.
+  await page.addInitScript(() => {
+    const canvas = document.createElement('canvas');
+    canvas.getContext('2d').fillRect(0, 0, 10, 10);
+    navigator.mediaDevices.getUserMedia = async () => canvas.captureStream();
+    // @ts-ignore
+    window.BarcodeDetector = class {
+      async detect() {
+        return [{rawValue: location.origin + '/templates/app/?view=product&id=VF-8RD5WN'}];
+      }
+    };
+  });
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: 'Scan a tag'}).click();
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await expect(viewer.getByText('VF-8RD5WN')).toBeVisible();
+  await expect(viewer.getByText('1 of 1')).toBeVisible();
+});
+
+test('the product page shows its photos full screen', async ({page}) => {
+  await openSite(page, 'product', 'en');
+  await page.getByRole('button', {name: 'View full screen'}).click();
+  const viewer = page.getByRole('dialog', {name: 'Product photos'});
+  await expect(viewer.getByText('1 of 3')).toBeVisible();
+  await page.keyboard.press('ArrowRight');
+  await expect(viewer.getByText('2 of 3')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', {name: 'View full screen'})).toBeFocused();
+});

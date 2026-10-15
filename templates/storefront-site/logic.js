@@ -5,6 +5,7 @@ import {
   vfLineItems,
   vfLineToken,
   vfLineWithCard,
+  vfLinesFromParam,
   vfProduct,
   vfProductIds,
   vfReorderLines,
@@ -46,6 +47,12 @@ function vfShowRoute(page, view, show) {
   const latest = () => navigation === page._navigation && show();
   (loadPage(view) || Promise.resolve()).then(latest, latest);
 }
+// A bag with handed-over lines added; a line with the same product, size and extras is replaced.
+function vfJoinLines(bag, lines) {
+  if (!lines.length) return bag;
+  const ids = new Set(lines.map(line => line.id));
+  return [...bag.filter(line => !ids.has(line.id)), ...lines];
+}
 function vfSiteInitial(props) {
   let saved = {};
   try {
@@ -57,6 +64,14 @@ function vfSiteInitial(props) {
   // An old product link (?id=ivory) is rewritten with the product's category and code.
   if (route.view === 'product' && vfRouteParams(route) !== location.search)
     history.replaceState({}, '', vfRouteParams(route));
+  // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
+  // are replaced, and the link is dropped from the address so a reload doesn't add them again.
+  const handedLines = route.lines ? vfLinesFromParam(route.lines) : [];
+  const handedIds = route.ids ? vfProductIds(route.ids.split(',')) : [];
+  if (route.lines || route.ids) {
+    route = {...route, lines: undefined, ids: undefined};
+    history.replaceState({}, '', vfRouteParams(route));
+  }
   // Open sign-in straight away rather than flashing the account first.
   if (route.view === 'account' && !vfAccountPhone()) {
     route = vfReadRoute(vfRouteParams({lang: route.lang, view: 'signin'}));
@@ -70,10 +85,21 @@ function vfSiteInitial(props) {
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
     mobile: null,
-    bag: Array.isArray(saved.bag) ? saved.bag : VF_BAG0,
-    saved: Array.isArray(saved.saved)
-      ? vfProductIds(saved.saved)
-      : ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'],
+    // The demo's sample bag and saved items stand in only when nothing was handed over.
+    bag: vfJoinLines(
+      Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
+      handedLines
+    ),
+    saved: [
+      ...new Set([
+        ...(Array.isArray(saved.saved)
+          ? vfProductIds(saved.saved)
+          : handedIds.length
+            ? []
+            : ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE']),
+        ...handedIds
+      ])
+    ],
     delivery: {
       ...VF_DELIVERY,
       ...saved.delivery

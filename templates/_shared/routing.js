@@ -1,5 +1,5 @@
 // Storefront route registration, validation and links. Uses the core VF_SEO router.
-import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
+import {VF_LINES_PATTERN, VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
@@ -61,6 +61,12 @@ export function vfReadRoute(search = location.search) {
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+  // A bag or a shortlist handed over from the shop counter (the presentation's QR code): the site adds
+  // it to this visitor's bag or saved list once, then drops it from the address.
+  if (route.view === 'bag' && VF_LINES_PATTERN.test(query.get('lines') || ''))
+    route.lines = query.get('lines');
+  if (route.view === 'saved' && /^[\w,-]{1,400}$/.test(query.get('ids') || ''))
+    route.ids = query.get('ids');
   // Back from the bank's payment page (?view=checkout&payment=return&order=VN-…). The sample store's
   // simulated bank adds its answer as `result`; a live store asks the API for the payment instead.
   if (route.view === 'checkout' && query.get('payment') === 'return') {
@@ -125,6 +131,8 @@ export function vfRouteParams(route) {
   const query = new URLSearchParams(VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
+  if (route.view === 'bag' && route.lines) query.set('lines', route.lines);
+  if (route.view === 'saved' && route.ids) query.set('ids', route.ids);
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'checkout' && route.paymentOrder) {
     query.set('payment', 'return');

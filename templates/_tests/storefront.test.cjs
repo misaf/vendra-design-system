@@ -48,6 +48,35 @@ vm.runInContext(
   sharedLogic + '\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=vfPhone;',
   ctx
 );
+// A bag made at the shop counter travels in a link and comes back as the same lines, priced from
+// the catalog; unknown and sold-out products, bad sizes and extras the product can't take drop out.
+{
+  const {ctx: c} = context();
+  vm.runInContext(
+    sharedLogic +
+      '\nthis.line=vfBagLine;this.param=vfLinesParam;this.read=vfLinesFromParam;this.product=vfProduct;',
+    c
+  );
+  const box = c.product('VF-7K2M4Q'),
+    orchid = c.product('VF-8RD5WN');
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const lines = [c.line(box, 'classic', ['card', 'vase'], 2), c.line(orchid, null, ['vase'], 1)];
+  assert.equal(c.param(lines), 'VF-7K2M4Q.classic.card+vase.2,VF-8RD5WN...1');
+  assert.equal(lines[1].addons.length, 0, 'the orchid takes no vase');
+  const back = c.read(c.param(lines));
+  assert.deepEqual(
+    plain(back.map(line => [line.id, line.unit, line.qty])),
+    plain(lines.map(line => [line.id, line.unit, line.qty]))
+  );
+  assert.equal(
+    c.read('VF-NOPE00..card.1,VF-6MT3VY...1').length,
+    0,
+    'unknown and sold-out lines drop'
+  );
+  assert.equal(c.read('VF-7K2M4Q.huge..500')[0].qty, 99);
+  assert.equal(c.read('VF-7K2M4Q.huge..500')[0].size, 'petite', 'an unknown size is the first');
+  assert.equal(c.read('<script>').length, 0);
+}
 for (const [zone, fee] of [
   ['central', 80000],
   ['outer', 120000],
@@ -260,6 +289,27 @@ for (const folder of fs
       'Sticky action total must match the order summary'
     );
   if (folder === 'storefront-site') {
+    // A bag and a shortlist handed over from the counter join the visitor's own, once.
+    {
+      const {ctx: hc, history: handHistory} = context();
+      hc.location.search = '?lang=en&view=bag&lines=VF-8RD5WN...2';
+      vm.runInContext(sharedLogic, hc);
+      vm.runInContext(script + '\nthis.Logic=Component;', hc);
+      const handed = new hc.Logic({lang: 'en', tenant: 'default', mobile: false});
+      assert.deepEqual(
+        JSON.parse(JSON.stringify(handed.state.bag.map(line => [line.id, line.qty]))),
+        [['VF-8RD5WN', 2]],
+        'a fresh visitor gets only the handed-over bag'
+      );
+      assert.deepEqual(
+        [...handHistory.at(-1)],
+        ['replace', '?lang=en&view=bag'],
+        'the link is dropped'
+      );
+      hc.location.search = '?lang=en&view=saved&ids=VF-3HX9TP,VF-NOPE00';
+      const shortlisted = new hc.Logic({lang: 'en', tenant: 'default', mobile: false});
+      assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
+    }
     logic.navigate('faq');
     assert.equal(logic.state.route, 'faq');
     assert.ok(history.at(-1)[1].includes('view=faq'));

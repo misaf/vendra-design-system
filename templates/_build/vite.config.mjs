@@ -86,7 +86,7 @@ function storefrontPreview() {
 }
 
 // The production build copies what pages load by URL at run time: product images and placeholders,
-// the Leaflet map files and the tenant themes, at the same paths under the build.
+// the Leaflet map files, the tenant themes and the service worker, at the same paths under the build.
 function storefrontAssets() {
   let outDir;
   return {
@@ -98,6 +98,8 @@ function storefrontAssets() {
     closeBundle() {
       for (const folder of ['assets', 'templates/_vendor/leaflet'])
         fs.cpSync(path.join(root, folder), path.join(outDir, folder), {recursive: true});
+      // The service worker sits beside the app's page, so it can serve the whole app.
+      fs.copyFileSync(path.join(templates, 'app/sw.js'), path.join(outDir, 'templates/app/sw.js'));
       const tenants = path.join(root, 'tokens/tenants');
       fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
