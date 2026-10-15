@@ -33,6 +33,9 @@ const VF_PRESENTATION_SETTINGS = {
   displayLayout: 'single',
   captionMode: 'code',
   slideSeconds: 10,
+  displayCollection: 'all',
+  displayCategory: 'all',
+  displayIds: [],
   showPrices: true,
   readyOnly: false,
   hideSoldOut: false,
@@ -57,18 +60,26 @@ const VF_ACTIVITY = ['pointerdown', 'keydown', 'wheel'];
 function vfReadSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(VF_PRESENTATION_KEY) || '{}') || {};
-    return Object.fromEntries(
+    const settings = Object.fromEntries(
       Object.entries(VF_PRESENTATION_SETTINGS).map(([key, value]) => [
         key,
         typeof saved[key] === typeof value &&
         (key !== 'displayMode' || ['tablet', 'tv'].includes(saved[key])) &&
         (key !== 'displayLayout' || ['single', 'pair'].includes(saved[key])) &&
         (key !== 'captionMode' || ['photo', 'code', 'price'].includes(saved[key])) &&
-        (key !== 'slideSeconds' || [6, 10, 15].includes(saved[key]))
+        (key !== 'slideSeconds' || [6, 10, 15].includes(saved[key])) &&
+        (key !== 'displayCollection' || ['all', 'category', 'selected'].includes(saved[key])) &&
+        (key !== 'displayIds' || Array.isArray(saved[key]))
           ? saved[key]
           : value
       ])
     );
+    settings.displayIds = [...new Set(settings.displayIds)].filter(id =>
+      VF_PRODUCTS.some(product => product.id === id)
+    );
+    if (!['all', ...VF_PRODUCTS.map(product => product.cat)].includes(settings.displayCategory))
+      settings.displayCategory = 'all';
+    return settings;
   } catch {
     return {...VF_PRESENTATION_SETTINGS};
   }
@@ -94,12 +105,30 @@ function vfViewerProducts(state) {
   return vfShownProducts(state);
 }
 
+// A device's display collection is independent of the current customer's search and shortlist.
+function vfDisplayProducts(state) {
+  const settings = state.settings;
+  const products =
+    settings.displayCollection === 'selected'
+      ? settings.displayIds.map(vfFindProduct).filter(Boolean)
+      : VF_PRODUCTS;
+  return products
+    .filter(
+      product =>
+        settings.displayCollection !== 'category' ||
+        settings.displayCategory === 'all' ||
+        product.cat === settings.displayCategory
+    )
+    .filter(product => !settings.readyOnly || vfReady(product))
+    .filter(product => !settings.hideSoldOut || product.inStock !== false);
+}
+
 // Display playback is separate from the seller's full-screen quote viewer.
 function vfDisplayPair(state) {
   return state.settings.displayLayout === 'pair' && state.displayLandscape;
 }
 function vfDisplayItems(state, index) {
-  const products = vfShownProducts(state);
+  const products = vfDisplayProducts(state);
   return products.length
     ? Array.from(
         {length: vfDisplayPair(state) && products.length > 1 ? 2 : 1},
@@ -127,7 +156,7 @@ function vfDisplayCommit(page) {
   vfSyncDisplay(page);
 }
 function vfDisplayStep(page, delta) {
-  const count = vfShownProducts(page.state).length;
+  const count = vfDisplayProducts(page.state).length;
   if (!count || page.state.pendingIndex != null) return;
   const index =
     (page.state.displayIndex + delta * (vfDisplayPair(page.state) ? 2 : 1) + count * 2) % count;
@@ -148,7 +177,7 @@ function vfSyncDisplay(page) {
     page.state.settings.displayMode,
     page.state.settings.displayLayout,
     page.state.displayLandscape,
-    vfShownProducts(page.state).map(product => product.id)
+    vfDisplayProducts(page.state).map(product => product.id)
   ]);
   if (page._displayContext !== context) {
     page._displayContext = context;
@@ -474,11 +503,17 @@ function vals(page) {
   const C = vfCopy(S);
   const st = page.state;
   const products = vfShownProducts(st);
+  const displayPool = vfDisplayProducts(st);
   const viewerProducts = vfViewerProducts(st);
   const setting = key => value => {
     const settings = {...page.state.settings, [key]: value};
     vfSaveSettings(settings);
-    page.setState({settings, ...vfViewerClosed()});
+    const collectionChanged = ['displayCollection', 'displayCategory', 'displayIds'].includes(key);
+    page.setState({
+      settings,
+      ...vfViewerClosed(),
+      ...(collectionChanged ? {displayIndex: 0, pendingIndex: null} : {})
+    });
     if (key === 'keepAwake') vfSyncWakeLock(page);
     if (key === 'slideshow') vfRestartIdle(page);
     vfSyncDisplay(page);
@@ -586,7 +621,34 @@ function vals(page) {
     toasts: page.toasts,
     display: !st.browsing,
     displayMode: st.settings.displayMode,
-    displayProduct: products.length ? card(products[st.displayIndex % products.length]) : null,
+    displayProduct: displayPool.length
+      ? card(displayPool[st.displayIndex % displayPool.length])
+      : null,
+    displayCollection: st.settings.displayCollection,
+    displayCategory: st.settings.displayCategory,
+    setDisplayCollection: setting('displayCollection'),
+    setDisplayCategory: setting('displayCategory'),
+    displayCategories: kinds.map(id => ({value: id, label: VF_CATEGORY_COPY[L][id]})),
+    collectionProducts: VF_PRODUCTS.map(product => ({
+      id: product.id,
+      selected: st.settings.displayIds.includes(product.id),
+      toggle: checked => {
+        const ids = page.state.settings.displayIds;
+        setting('displayIds')(
+          checked ? [...new Set([...ids, product.id])] : ids.filter(id => id !== product.id)
+        );
+      }
+    })),
+    canUseShortlist: !!st.shortlist.length,
+    useShortlist: () => {
+      const settings = {
+        ...page.state.settings,
+        displayCollection: 'selected',
+        displayIds: [...page.state.shortlist]
+      };
+      vfSaveSettings(settings);
+      page.setState({settings, displayIndex: 0, pendingIndex: null});
+    },
     captionMode: st.settings.captionMode,
     setCaptionMode: setting('captionMode'),
     displayLayout: st.settings.displayLayout,

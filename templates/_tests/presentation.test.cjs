@@ -70,3 +70,56 @@ function presentation(settings = {}) {
   assert.equal(timers.size, 0, 'unmount releases every playback timer');
 }
 console.log('Passed decoded image handoff, failure retention, slideshow timing and cleanup.');
+
+{
+  const {page} = presentation({
+    displayCollection: 'selected',
+    displayIds: ['VF-8RD5WN', 'unknown', 'VF-7K2M4Q', 'VF-8RD5WN']
+  });
+  assert.deepEqual(Array.from(page.state.settings.displayIds), ['VF-8RD5WN', 'VF-7K2M4Q']);
+  assert.equal(page.renderVals().displayProduct.id, 'VF-8RD5WN');
+  page.renderVals().setQ('7k2');
+  assert.equal(
+    page.renderVals().displayProduct.id,
+    'VF-8RD5WN',
+    'customer searches do not change the saved collection'
+  );
+  page.setState({shortlist: ['VF-4CJ6ZB']});
+  assert.equal(
+    page.renderVals().displayProduct.id,
+    'VF-8RD5WN',
+    'customer shortlist changes do not change the saved collection'
+  );
+  page.renderVals().useShortlist();
+  assert.equal(page.renderVals().displayProduct.id, 'VF-4CJ6ZB');
+}
+{
+  const {page} = presentation({displayCollection: 'category', displayCategory: 'boxes'});
+  assert.equal(page.renderVals().displayProduct.id, 'VF-7K2M4Q');
+  page.renderVals().nextDisplay();
+  const next = page.renderVals().preloadProducts[0];
+  assert.equal(next.id, 'VF-4CJ6ZB');
+  page.renderVals().displayLoaded(next.imageKey);
+  assert.equal(page.renderVals().displayProduct.id, 'VF-4CJ6ZB');
+}
+{
+  const {page} = presentation({
+    displayCollection: 'selected',
+    displayIds: ['VF-6MT3VY', 'VF-8RD5WN', 'VF-7K2M4Q'],
+    readyOnly: true,
+    hideSoldOut: true
+  });
+  assert.equal(page.renderVals().displayProduct.id, 'VF-8RD5WN');
+  assert.equal(page.renderVals().preloadProducts[0].id, 'VF-8RD5WN');
+  page.renderVals().setDisplayCollection('selected');
+  page
+    .renderVals()
+    .collectionProducts.find(product => product.id === 'VF-8RD5WN')
+    .toggle(false);
+  assert.equal(
+    page.renderVals().displayProduct,
+    null,
+    'an empty eligible collection never falls back to unrelated designs'
+  );
+}
+console.log('Passed curated collections, category loops, validation and customer-state isolation.');

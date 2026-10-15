@@ -154,3 +154,22 @@ test('TV slideshow honors a longer dwell and pauses in seller dialogs', async ({
   await page.clock.runFor(15100);
   await expect(page.locator('.vf-display-caption')).toContainText('VF-8RD5WN');
 });
+
+test('a seller saves a category collection that survives reload', async ({page}) => {
+  await openSite(page, 'presentation', 'en');
+  await page.locator('.vf-display').press('Enter');
+  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await page.getByRole('button', {name: 'Presentation settings', exact: true}).click();
+  await page.getByRole('button', {name: /Display collection$/}).click();
+  await page.getByRole('option', {name: 'By category', exact: true}).click();
+  await page.getByRole('button', {name: /Display category$/}).click();
+  await page.getByRole('option', {name: 'Flower boxes', exact: true}).click();
+  await page.getByRole('button', {name: 'Done', exact: true}).click();
+  await page.locator('.vf-display').press('ArrowRight');
+  await expect(page.locator('.vf-display-code')).toHaveText('VF-4CJ6ZB');
+  await page.reload();
+  await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('vf-presentation')))
+  ).toMatchObject({displayCollection: 'category', displayCategory: 'boxes'});
+});
