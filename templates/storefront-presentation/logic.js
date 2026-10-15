@@ -316,10 +316,13 @@ function vals(page) {
   const absolute = href => new URL(href, location.href).href;
   const prefix = page.props.go ? '' : '../app/';
   const inShortlist = id => st.shortlist.includes(id);
-  const toggleShortlist = id =>
+  // From the latest state, so quick taps on several stars all count.
+  const toggleShortlist = id => {
+    const shortlist = page.state.shortlist;
     page.setState({
-      shortlist: inShortlist(id) ? st.shortlist.filter(x => x !== id) : [...st.shortlist, id]
+      shortlist: shortlist.includes(id) ? shortlist.filter(x => x !== id) : [...shortlist, id]
     });
+  };
   // The price a design comes to in the size and with the extras chosen for it on screen.
   const quote = product => vfBagLine(product, st.pick.size, st.pick.addons);
   const orderTotal = st.order.reduce((sum, line) => sum + line.unit * line.qty, 0);
