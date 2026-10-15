@@ -1646,6 +1646,17 @@ test('presentation tiles are named with their price and Ready', async ({page}) =
   ).toBeVisible();
 });
 
+test('a sold-out design is shown and starred, but not offered for sale', async ({page}) => {
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: /Show VF-6MT3VY full screen, .*, Sold out/}).click();
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await expect(viewer.getByText('Sold out')).toBeVisible();
+  await expect(viewer.getByRole('button', {name: 'Add VF-6MT3VY to the shortlist'})).toBeVisible();
+  await expect(viewer.getByRole('button', {name: 'Send to customer'})).toHaveCount(0);
+  await expect(viewer.getByRole('button', {name: 'Add to the order'})).toHaveCount(0);
+  await expect(viewer.getByRole('button', {name: 'Size and extras'})).toHaveCount(0);
+});
+
 test('clearing the presentation’s shortlist can be undone', async ({page}) => {
   await openSite(page, 'presentation', 'en');
   await page.getByRole('button', {name: 'Add VF-7K2M4Q to the shortlist'}).click();
