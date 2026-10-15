@@ -136,7 +136,7 @@ function Display({v}) {
           ))}
         </div>
       ) : (
-        <p>{v.t.none}</p>
+        <p>{v.t.displayEmpty}</p>
       )}
       <div className="vf-display-preload" aria-hidden="true">
         {v.preloadProducts.map(product => (
@@ -621,6 +621,45 @@ export function View({v}) {
                   {value: 'tv', label: v.t.tv}
                 ]}
               />
+              <DS.Select
+                label={v.t.displayCollection}
+                value={v.displayCollection}
+                onChange={v.setDisplayCollection}
+                options={[
+                  {value: 'all', label: v.t.allDesigns},
+                  {value: 'category', label: v.t.byCategory},
+                  {value: 'selected', label: v.t.selectedDesigns}
+                ]}
+              />
+              {v.displayCollection === 'category' ? (
+                <DS.Select
+                  label={v.t.displayCategory}
+                  value={v.displayCategory}
+                  onChange={v.setDisplayCategory}
+                  options={v.displayCategories}
+                />
+              ) : null}
+              {v.displayCollection === 'selected' ? (
+                <div
+                  role="group"
+                  aria-label={v.t.selectedDesigns}
+                  className="tw:flex tw:flex-col tw:gap-2"
+                >
+                  {v.collectionProducts.map(product => (
+                    <DS.Checkbox
+                      key={product.id}
+                      label={<span dir="ltr">{product.id}</span>}
+                      checked={product.selected}
+                      onChange={product.toggle}
+                    />
+                  ))}
+                </div>
+              ) : null}
+              {v.canUseShortlist ? (
+                <DS.Button variant="secondary" onClick={v.useShortlist}>
+                  {v.t.useShortlist}
+                </DS.Button>
+              ) : null}
               <DS.Select
                 label={v.t.displayLayout}
                 value={v.displayLayout}
