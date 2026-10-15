@@ -82,21 +82,29 @@ function vfViewerClosed() {
 }
 
 // Holds the screen awake while the setting is on and the page is visible (the browser lets go of
-// the lock whenever the page is hidden, so it is asked for again on return).
+// the lock whenever the page is hidden, so it is asked for again on return). One request at a time;
+// a lock granted after the setting went off or the page went away is let go at once.
 async function vfSyncWakeLock(page) {
-  const wanted = page.state.settings.keepAwake && document.visibilityState === 'visible';
+  const wanted =
+    !page._unmounted && page.state.settings.keepAwake && document.visibilityState === 'visible';
   if (!wanted) {
     if (page._wakeLock) page._wakeLock.release().catch(() => {});
     page._wakeLock = null;
     return;
   }
-  if (page._wakeLock || !('wakeLock' in navigator)) return;
+  if (page._wakeLock || page._wakeLockPending || !('wakeLock' in navigator)) return;
+  page._wakeLockPending = true;
   try {
-    page._wakeLock = await navigator.wakeLock.request('screen');
-    page._wakeLock.addEventListener('release', () => (page._wakeLock = null));
+    const lock = await navigator.wakeLock.request('screen');
+    lock.addEventListener('release', () => {
+      if (page._wakeLock === lock) page._wakeLock = null;
+    });
+    page._wakeLock = lock;
   } catch {
     page._wakeLock = null;
   }
+  page._wakeLockPending = false;
+  vfSyncWakeLock(page);
 }
 
 // The slideshow: after VF_IDLE_MS without a touch or key it opens the first design and moves on
@@ -261,6 +269,7 @@ export function usePage(props) {
       }
     },
     willUnmount() {
+      page._unmounted = true;
       clearTimeout(page._searchTimer);
       clearTimeout(page._copiedTimer);
       clearTimeout(page._addedTimer);
