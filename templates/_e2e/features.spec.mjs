@@ -1603,6 +1603,173 @@ test('the counter presentation finds, quotes, shortlists and hands over an order
   await expect(phone.getByText(/Classic · 20 stems · Glass vase/).first()).toBeVisible();
 });
 
+test('presentation sharing preserves the quoted size and extras on the customer’s phone', async ({
+  page
+}) => {
+  await openSite(page, 'presentation', 'en');
+  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  const viewer = page.getByRole('dialog', {name: 'Designs'});
+  await viewer.getByRole('button', {name: 'Size and extras'}).click();
+  await viewer.getByRole('button', {name: /Classic/}).click();
+  await viewer.getByRole('button', {name: 'Glass vase', exact: true}).click();
+  await expect(viewer.getByText('5,550,000 Toman')).toBeVisible();
+  await viewer.getByRole('button', {name: 'Send to customer'}).click();
+  const href = await page.getByRole('link', {name: 'Share on WhatsApp'}).getAttribute('href');
+  const shared = new URL(new URL(href).searchParams.get('text').split('\n').pop());
+  expect(shared.searchParams.get('size')).toBe('classic');
+  expect(shared.searchParams.get('addons')).toBe('vase');
+  const phone = await page.context().newPage();
+  await phone.goto(shared.href);
+  await expect(phone.getByRole('radio', {name: 'Classic', exact: true})).toBeChecked();
+  await expect(phone.getByRole('checkbox', {name: /Glass vase/})).toBeChecked();
+  await expect(phone.getByText(/5,550,000 Toman/).first()).toBeVisible();
+  await phone.reload();
+  await expect(phone.getByText(/5,550,000 Toman/).first()).toBeVisible();
+  // The same product opens with the quote's choices in Persian too.
+  shared.searchParams.set('lang', 'fa');
+  await phone.goto(shared.href);
+  await expect(phone.locator('html')).toHaveAttribute('lang', 'fa');
+  await expect(phone.getByRole('radio', {name: /کلاسیک/})).toBeChecked();
+});
+
+test('presentation wake-lock rejection waits for a visibility change before retrying', async ({
+  page
+}) => {
+  await page.clock.install();
+  await page.addInitScript(() => {
+    window.__vfWakeRequests = 0;
+    Object.defineProperty(navigator, 'wakeLock', {
+      value: {
+        request: async () => {
+          window.__vfWakeRequests++;
+          await new Promise(resolve => setTimeout(resolve, 10));
+          throw new DOMException('Screen lock denied', 'NotAllowedError');
+        }
+      }
+    });
+  });
+  await openSite(page, 'presentation', 'en');
+  await page.clock.runFor(1_000);
+  expect(await page.evaluate(() => window.__vfWakeRequests)).toBe(1);
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await page.clock.runFor(1_000);
+  expect(await page.evaluate(() => window.__vfWakeRequests)).toBe(2);
+});
+
+for (const lang of ['en', 'fa']) {
+  const labels =
+    lang === 'en'
+      ? {
+          settings: 'Presentation settings',
+          prices: 'Show prices',
+          done: 'Done',
+          order: 'Order, 1',
+          viewer: 'Designs',
+          add: 'Add to the order',
+          search: 'Find a design',
+          clear: 'Clear search and category',
+          unlock: 'Enter the PIN'
+        }
+      : {
+          settings: 'تنظیمات نمایش',
+          prices: 'نمایش قیمت‌ها',
+          done: 'انجام شد',
+          order: 'سفارش، ۱',
+          viewer: 'طرح‌ها',
+          add: 'افزودن به سفارش',
+          search: 'پیدا کردن طرح',
+          clear: 'پاک کردن جست‌وجو و نوع',
+          unlock: 'رمز را وارد کنید'
+        };
+
+  test(`presentation hides order prices and restores them when enabled (${lang})`, async ({
+    page
+  }) => {
+    await openSite(page, 'presentation', lang);
+    await page.locator('.vf-presentation-tile').first().click();
+    await page
+      .getByRole('dialog', {name: labels.viewer})
+      .getByRole('button', {name: labels.add, exact: true})
+      .click();
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', {name: labels.settings}).click();
+    await page.getByRole('switch', {name: labels.prices, exact: true}).press('Space');
+    await page.getByRole('button', {name: labels.done, exact: true}).click();
+    await page.getByRole('button', {name: labels.order, exact: true}).click();
+    const order = page.getByRole('dialog');
+    await expect(order.locator('.ag-price')).toHaveText(['']);
+    await expect(
+      order.getByRole('textbox', {name: lang === 'en' ? 'Quantity' : 'تعداد'})
+    ).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', {name: labels.settings}).click();
+    await page.getByRole('switch', {name: labels.prices, exact: true}).press('Space');
+    await page.getByRole('button', {name: labels.done, exact: true}).click();
+    await page.getByRole('button', {name: labels.order, exact: true}).click();
+    await expect(order.locator('.ag-price')).toHaveCount(2);
+    await expect(order.locator('.ag-price').first()).not.toHaveText('');
+  });
+
+  test(`presentation search recovery preserves PIN-protected device filters (${lang})`, async ({
+    page
+  }) => {
+    await page.addInitScript(() =>
+      localStorage.setItem(
+        'vf-presentation',
+        JSON.stringify({readyOnly: true, hideSoldOut: true, pin: '2468'})
+      )
+    );
+    await openSite(page, 'presentation', lang);
+    await page.getByLabel(labels.search).fill('nonexistent');
+    await page.getByRole('button', {name: labels.clear, exact: true}).click();
+    await expect(page.locator('.vf-presentation-tile')).toHaveCount(4);
+    await page.getByRole('button', {name: labels.settings}).click();
+    await expect(page.getByRole('dialog', {name: labels.unlock, exact: true})).toBeVisible();
+    await page.keyboard.press('Escape');
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('vf-presentation')))).toEqual({
+      readyOnly: true,
+      hideSoldOut: true,
+      pin: '2468'
+    });
+    await page.reload();
+    await expect(page.locator('.vf-presentation-tile')).toHaveCount(4);
+  });
+
+  test(`presentation keeps search usable with every customer tool on narrow screens (${lang})`, async ({
+    page
+  }) => {
+    await page.addInitScript(() => {
+      window.BarcodeDetector = class {};
+    });
+    await openSite(page, 'presentation', lang);
+    await page.locator('.vf-presentation-tile').first().click();
+    await page
+      .getByRole('dialog', {name: labels.viewer})
+      .getByRole('button', {name: labels.add, exact: true})
+      .click();
+    await page.keyboard.press('Escape');
+    for (const width of [320, 390]) {
+      await page.setViewportSize({width, height: 844});
+      await expect
+        .poll(() => page.getByLabel(labels.search).evaluate(el => el.getBoundingClientRect().width))
+        .toBeGreaterThan(150);
+      await expect
+        .poll(() =>
+          page.locator('.vf-presentation-search').evaluate(el => el.getBoundingClientRect().width)
+        )
+        .toBeGreaterThanOrEqual(width - 48);
+      await page.getByLabel(labels.search).fill('7k2');
+      await expect(page.locator('.vf-presentation-tile')).toHaveCount(1);
+      await expect(page.getByRole('button', {name: labels.settings})).toBeInViewport();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+        )
+      ).toBe(0);
+    }
+  });
+}
+
 test('the presentation settings sit behind their PIN once one is set', async ({page}) => {
   await openSite(page, 'presentation', 'fa');
   await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();

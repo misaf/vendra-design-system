@@ -379,19 +379,21 @@ export function View({v}) {
                     image={line.image}
                     name={line.name}
                     meta={line.meta}
-                    price={line.price}
+                    price={v.showPrices ? line.price : ''}
                     quantity={line.quantity}
                     onQuantityChange={line.setQuantity}
                     onRemove={line.remove}
                     formatQuantity={v.n}
                   />
                 ))}
-                <div className="tw:flex tw:justify-between tw:font-medium tw:pt-2 tw:[border-top:1px_solid_var(--border-subtle)]">
-                  <span>
-                    <>{v.t?.total}</>
-                  </span>
-                  <DS.Price value={v.orderTotal} size="md" />
-                </div>
+                {v.showPrices ? (
+                  <div className="tw:flex tw:justify-between tw:font-medium tw:pt-2 tw:[border-top:1px_solid_var(--border-subtle)]">
+                    <span>
+                      <>{v.t?.total}</>
+                    </span>
+                    <DS.Price value={v.orderTotal} size="md" />
+                  </div>
+                ) : null}
               </div>
             ) : (
               <p className="tw:m-0">

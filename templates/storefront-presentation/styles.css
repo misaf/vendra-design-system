@@ -26,8 +26,8 @@
 }
 
 /* The compact bar: search, kinds and tools on one row on a TV or a landscape tablet; narrower, the
-   kinds take a row of their own under the search and tools. The kinds scroll sideways rather than
-   wrap onto more rows. */
+   kinds take a row of their own under the search and tools. On phones the search takes its own
+   full row too. The kinds scroll sideways rather than wrap onto more rows. */
 .vf-presentation-bar-row {
   display: grid;
   grid-template-columns: minmax(200px, 340px) minmax(0, 1fr) auto;
@@ -54,6 +54,16 @@
 }
 /* On a phone the count makes way for the tools; it is still announced. */
 @media (max-width: 639px) {
+  .vf-presentation-bar-row {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'search'
+      'tools'
+      'kinds';
+  }
+  .vf-presentation-tools {
+    justify-content: flex-end;
+  }
   .vf-presentation-count {
     position: absolute;
     width: 1px;

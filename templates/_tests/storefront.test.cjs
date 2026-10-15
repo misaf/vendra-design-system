@@ -415,6 +415,38 @@ function loadPage(name, props = {}, search = '') {
   vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
+// A shared quote round-trips through the router and initializes the product's choices, including
+// subsequent links to the same product. Invalid choices use the catalog's normal fallback rules.
+{
+  const {ctx: c} = context();
+  vm.runInContext(sharedLogic + '\nthis.read=vfReadRoute;this.params=vfRouteParams;', c);
+  const route = c.read('?lang=en&view=product&id=VF-7K2M4Q&size=classic&addons=vase,card,vase');
+  assert.equal(route.size, 'classic');
+  assert.deepEqual(Array.from(route.addons), ['card', 'vase']);
+  const restored = c.read(c.params(route));
+  assert.equal(restored.size, route.size);
+  assert.deepEqual(Array.from(restored.addons), ['card', 'vase']);
+  const invalid = c.read('?view=product&id=VF-8RD5WN&size=huge&addons=vase,unknown');
+  assert.equal(invalid.size, null);
+  assert.deepEqual(Array.from(invalid.addons), []);
+  const badSize = c.read('?view=product&id=VF-7K2M4Q&size=huge&addons=unknown');
+  assert.equal(badSize.size, 'petite');
+  assert.deepEqual(Array.from(badSize.addons), []);
+  const {logic} = loadPage('product', {routeInfo: route});
+  assert.equal(logic.state.size, 'classic');
+  assert.deepEqual(Array.from(logic.state.addons), ['card', 'vase']);
+  logic.lifecycle.didMount();
+  logic.props = {...logic.props, routeInfo: {...route, size: 'generous', addons: []}};
+  logic.renderVals();
+  logic.lifecycle.didUpdate();
+  assert.equal(logic.state.size, 'generous');
+  assert.deepEqual(Array.from(logic.state.addons), []);
+  logic.props = {...logic.props, routeInfo: {view: 'product', id: route.id}};
+  logic.renderVals();
+  logic.lifecycle.didUpdate();
+  assert.equal(logic.state.size, 'petite');
+  assert.deepEqual(Array.from(logic.state.addons), []);
+}
 for (const lang of ['en', 'fa']) {
   for (const id of ['VF-7K2M4Q', 'VF-3HX9TP', 'VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE', 'VF-6MT3VY']) {
     let added;
