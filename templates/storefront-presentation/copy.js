@@ -4,6 +4,13 @@ export function vfCopy(S) {
   return {
     en: {
       title: 'Presentation',
+      displayMode: 'Display preset',
+      tablet: 'Tablet',
+      tv: 'TV',
+      browse: 'Browse designs',
+      resumeDisplay: 'Return to display',
+      previousDesign: 'Previous design',
+      nextDesign: 'Next design',
       search: 'Find a design',
       searchHint: 'Code, flower or kind',
       categories: 'Kinds',
@@ -84,6 +91,13 @@ export function vfCopy(S) {
     },
     fa: {
       title: 'نمایش',
+      displayMode: 'حالت نمایش',
+      tablet: 'تبلت',
+      tv: 'تلویزیون',
+      browse: 'مرور طرح‌ها',
+      resumeDisplay: 'بازگشت به نمایش',
+      previousDesign: 'طرح قبلی',
+      nextDesign: 'طرح بعدی',
       search: 'پیدا کردن طرح',
       searchHint: 'کد، نام گل یا نوع',
       categories: 'نوع‌ها',
