@@ -39,8 +39,9 @@ export function vfCopy(S) {
       copied: 'Link copied',
       count: value => (value === 1 ? '1 design' : n(value) + ' designs'),
       none: 'No designs match',
-      noneBody: 'Try part of the code, a flower or a kind.',
-      showAll: 'Show all designs',
+      noneBody:
+        'Try part of the code, a flower or a kind. Ready and availability settings still apply.',
+      showAll: 'Clear search and category',
       size: 'Size',
       extras: 'Extras',
       options: 'Size and extras',
@@ -118,8 +119,9 @@ export function vfCopy(S) {
       copied: 'پیوند کپی شد',
       count: value => n(value) + ' طرح',
       none: 'طرحی پیدا نشد',
-      noneBody: 'بخشی از کد، نام گل یا نوع آن را امتحان کنید.',
-      showAll: 'نمایش همهٔ طرح‌ها',
+      noneBody:
+        'بخشی از کد، نام گل یا نوع آن را امتحان کنید. تنظیمات آماده بودن و موجودی همچنان اعمال می‌شود.',
+      showAll: 'پاک کردن جست‌وجو و نوع',
       size: 'اندازه',
       extras: 'افزودنی‌ها',
       options: 'اندازه و افزودنی‌ها',

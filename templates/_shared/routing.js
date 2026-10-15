@@ -1,5 +1,11 @@
 // Storefront route registration, validation and links. Uses the core VF_SEO router.
-import {VF_LINES_PATTERN, VF_PRODUCTS, VF_SAVED_IDS_PATTERN, vfFindProduct} from './catalog.js';
+import {
+  VF_LINES_PATTERN,
+  VF_PRODUCTS,
+  VF_SAVED_IDS_PATTERN,
+  vfBagLine,
+  vfFindProduct
+} from './catalog.js';
 import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
@@ -91,6 +97,12 @@ export function vfReadRoute(search = location.search) {
     if (product) {
       route.id = product.id;
       route.cat = product.cat;
+      // A counter quote opens with the same size and extras; catalog rules discard invalid choices.
+      if (query.has('size') || query.has('addons')) {
+        const line = vfBagLine(product, query.get('size'), (query.get('addons') || '').split(','));
+        route.size = line.size;
+        route.addons = line.addons;
+      }
     } else route.view = 'notfound';
   }
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id))
@@ -133,6 +145,10 @@ export function vfRouteParams(route) {
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'bag' && route.lines) query.set('lines', route.lines);
   if (route.view === 'saved' && route.ids) query.set('ids', route.ids);
+  if (route.view === 'product') {
+    if (route.size) query.set('size', route.size);
+    if (route.addons?.length) query.set('addons', route.addons.join(','));
+  }
   if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
   if (route.view === 'checkout' && route.paymentOrder) {
     query.set('payment', 'return');

@@ -134,7 +134,9 @@ async function vfSyncWakeLock(page) {
     page._wakeLock = null;
   }
   page._wakeLockPending = false;
-  vfSyncWakeLock(page);
+  // Reconcile a granted lock with settings/visibility that changed while it was pending.
+  // A rejection waits for the next visibility change or setting toggle instead of retrying.
+  if (page._wakeLock) vfSyncWakeLock(page);
 }
 
 // The slideshow: after VF_IDLE_MS without a touch or key it opens the first design and moves on
@@ -403,7 +405,17 @@ function vals(page) {
         body: C.sendBody,
         qrLabel: C.qr.replace('{code}', product.id),
         code: product.id,
-        url: absolute(S.productLink(product.id).href),
+        url: absolute(
+          prefix +
+            vfRouteParams({
+              lang: L,
+              view: 'product',
+              id: product.id,
+              cat: product.cat,
+              size: st.send.size,
+              addons: st.send.addons
+            })
+        ),
         tag: true
       };
     }
@@ -463,12 +475,6 @@ function vals(page) {
     noResults: !products.length,
     showAll: () => {
       page.setState({q: '', cat: 'all'});
-      const settings = page.state.settings;
-      if (settings.readyOnly || settings.hideSoldOut) {
-        const next = {...settings, readyOnly: false, hideSoldOut: false};
-        vfSaveSettings(next);
-        page.setState({settings: next});
-      }
       S.focus('vf-presentation-q');
     },
     showPrices: st.settings.showPrices,
@@ -557,7 +563,11 @@ function vals(page) {
           clearTimeout(page._addedTimer);
           page._addedTimer = setTimeout(() => page.setState({justAdded: ''}), 2000);
         },
-        sendIt: () => page.setState({send: {kind: 'product', id: product.id}, copied: false})
+        sendIt: () =>
+          page.setState({
+            send: {kind: 'product', id: product.id, size: line.size, addons: line.addons},
+            copied: false
+          })
       };
     }),
     // The send dialog.

@@ -25,14 +25,25 @@ import {vfFeatures} from '../_shared/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+
+// A shared counter quote supplies validated choices through the product route.
+function vfProductSelection(props) {
+  const route = vfPageRoute(props);
+  const product = vfFindProduct(route.id) || VF_PRODUCTS[0];
+  const line = vfBagLine(product, route.size, route.addons || []);
+  return {size: line.size || VF_SIZES[0].id, addons: line.addons};
+}
+function vfProductRouteKey(props) {
+  const route = vfPageRoute(props);
+  return JSON.stringify([route.id, route.size, route.addons]);
+}
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page.state = {
-      size: 'petite',
-      addons: [],
+      ...vfProductSelection(props),
       qty: 1,
       added: null,
       photo: null
@@ -56,6 +67,7 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       page._productId = vfPageRoute(page.props).id;
+      page._productRouteKey = vfProductRouteKey(page.props);
       page._rememberProduct();
     },
     didUpdate() {
@@ -63,9 +75,12 @@ export function usePage(props) {
       if (page._productId !== id) {
         page._productId = id;
         page._rememberProduct();
+      }
+      const key = vfProductRouteKey(page.props);
+      if (page._productRouteKey !== key) {
+        page._productRouteKey = key;
         page.setState({
-          size: 'petite',
-          addons: [],
+          ...vfProductSelection(page.props),
           qty: 1,
           added: null
         });
