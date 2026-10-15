@@ -6,6 +6,8 @@ export function vfCopy(S) {
       title: 'Presentation',
       displayHint: 'Swipe or use arrow keys to browse. Tap or press Enter to reveal seller tools.',
       sellerTools: 'Seller tools',
+      slideTiming: 'Time per slide',
+      seconds: 'seconds',
       captions: 'Product captions',
       photoOnly: 'Photo only',
       photoCode: 'Photo and code',
@@ -103,6 +105,8 @@ export function vfCopy(S) {
       displayHint:
         'برای مرور، بکشید یا از کلیدهای جهت استفاده کنید. برای دیدن ابزار فروشنده، لمس کنید یا Enter بزنید.',
       sellerTools: 'ابزار فروشنده',
+      slideTiming: 'زمان هر اسلاید',
+      seconds: 'ثانیه',
       captions: 'نوشتهٔ کنار محصول',
       photoOnly: 'فقط تصویر',
       photoCode: 'تصویر و کد',

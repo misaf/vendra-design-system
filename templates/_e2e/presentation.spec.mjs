@@ -14,7 +14,7 @@ for (const lang of ['en', 'fa']) {
 test('TV preset plays immediately and persists across reload', async ({page}) => {
   await page.clock.install();
   await page.addInitScript(() =>
-    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv'}))
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv', slideSeconds: 6}))
   );
   await openSite(page, 'presentation', 'en');
   await expect(page.locator('.vf-display-caption')).toContainText('VF-7K2M4Q');
@@ -129,4 +129,28 @@ test('hidden prices override a caption preset that would otherwise show them', a
   await openSite(page, 'presentation', 'en');
   await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
   await expect(page.locator('.vf-display-caption .ag-price')).toHaveCount(0);
+});
+
+test('TV slideshow honors a longer dwell and pauses in seller dialogs', async ({page}) => {
+  const start = new Date('2026-10-15T09:00:00Z');
+  await page.clock.install({time: start});
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv', slideSeconds: 15}))
+  );
+  await openSite(page, 'presentation', 'en');
+  await page.locator('.vf-display').press('Enter');
+  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await page.clock.pauseAt(new Date(start.getTime() + 60000));
+  await page.keyboard.press('Escape');
+  await page.clock.runFor(14900);
+  await expect(page.locator('.vf-display-caption')).toContainText('VF-7K2M4Q');
+  await page.clock.runFor(200);
+  await expect(page.locator('.vf-display-caption')).toContainText('VF-3HX9TP');
+  await page.locator('.vf-display').press('Enter');
+  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await page.clock.runFor(45000);
+  await expect(page.locator('.vf-display-caption')).toContainText('VF-3HX9TP');
+  await page.keyboard.press('Escape');
+  await page.clock.runFor(15100);
+  await expect(page.locator('.vf-display-caption')).toContainText('VF-8RD5WN');
 });

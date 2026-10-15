@@ -46,6 +46,13 @@ function Label({v, item, large = false}) {
 
 function Display({v}) {
   const item = v.displayProduct;
+  const loaded = (event, key) => {
+    const image = event.currentTarget;
+    Promise.resolve(image.decode ? image.decode() : undefined).then(
+      () => v.displayLoaded(key),
+      () => v.displayFailed(key)
+    );
+  };
   const [controls, setControls] = React.useState(false);
   const timer = React.useRef(null);
   const pointer = React.useRef(null);
@@ -112,6 +119,7 @@ function Display({v}) {
                 priority
                 sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
                 draggable={false}
+                onLoad={event => loaded(event, product.imageKey)}
                 className="vf-display-photo"
               />
               {v.captionMode !== 'photo' ? (
@@ -130,6 +138,19 @@ function Display({v}) {
       ) : (
         <p>{v.t.none}</p>
       )}
+      <div className="vf-display-preload" aria-hidden="true">
+        {v.preloadProducts.map(product => (
+          <DS.Picture
+            key={product.imageKey + ':' + v.preloadVersion}
+            image={product.image}
+            alt=""
+            priority
+            sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
+            onLoad={event => loaded(event, product.imageKey)}
+            onError={() => v.displayFailed(product.imageKey)}
+          />
+        ))}
+      </div>
       <div className="vf-display-tools">
         <DS.IconButton icon="settings" label={v.t.sellerTools} inverse onClick={v.openTools} />
       </div>
@@ -618,6 +639,15 @@ export function View({v}) {
                   {value: 'code', label: v.t.photoCode},
                   {value: 'price', label: v.t.photoPrice}
                 ]}
+              />
+              <DS.Select
+                label={v.t.slideTiming}
+                value={String(v.slideSeconds)}
+                onChange={v.setSlideSeconds}
+                options={[6, 10, 15].map(seconds => ({
+                  value: String(seconds),
+                  label: v.n(seconds) + ' ' + v.t.seconds
+                }))}
               />
               <DS.Switch
                 label={v.t?.showPrices}

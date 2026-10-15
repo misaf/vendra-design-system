@@ -630,6 +630,32 @@ html {
   font-size: clamp(20px, 2vw, 40px);
 }
 
+/* Decode the next photos off stage; only complete replacements enter the presentation. */
+.vf-display-preload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.vf-display-product {
+  animation: vf-display-enter var(--dur-base) var(--ease-out);
+}
+@keyframes vf-display-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-display-product {
+    animation: none;
+  }
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
