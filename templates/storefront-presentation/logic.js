@@ -470,7 +470,8 @@ function vals(page) {
     // The full-screen view: each design with its size and extras choices (for the one on screen).
     open: st.open,
     slideshowRunning: st.slideshowRunning,
-    calm: st.calm,
+    // The slideshow plays photos only, with the code and the price in the corner.
+    calm: st.calm || st.slideshowRunning,
     setOpen: index =>
       page.setState({
         open: index,
