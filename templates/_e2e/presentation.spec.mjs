@@ -101,3 +101,32 @@ test('paired products fit a landscape screen and return to one in portrait', asy
   await expect(photos).toHaveCount(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
 });
+
+for (const mode of ['photo', 'code', 'price']) {
+  test(`caption preset ${mode} controls only the intended information`, async ({page}) => {
+    await page.addInitScript(
+      captionMode =>
+        localStorage.setItem('vf-presentation', JSON.stringify({captionMode, displayMode: 'tv'})),
+      mode
+    );
+    await openSite(page, 'presentation', 'fa');
+    await expect(page.locator('.vf-display-caption')).toHaveCount(mode === 'photo' ? 0 : 1);
+    await expect(page.locator('.vf-display-caption .ag-price')).toHaveCount(
+      mode === 'price' ? 1 : 0
+    );
+    if (mode !== 'photo') await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
+    expect(await scanAxe(page)).toEqual([]);
+  });
+}
+
+test('hidden prices override a caption preset that would otherwise show them', async ({page}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      'vf-presentation',
+      JSON.stringify({captionMode: 'price', showPrices: false})
+    )
+  );
+  await openSite(page, 'presentation', 'en');
+  await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
+  await expect(page.locator('.vf-display-caption .ag-price')).toHaveCount(0);
+});
