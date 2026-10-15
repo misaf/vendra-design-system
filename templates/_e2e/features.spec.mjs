@@ -1567,8 +1567,10 @@ test('the counter presentation finds, quotes, shortlists and hands over an order
   await page.getByLabel('Find a design').press('Enter');
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('VF-7K2M4Q')).toBeVisible();
-  // Its sizes and extras change the price it comes to.
+  // Its sizes and extras, folded away until asked for, change the price it comes to.
   await expect(viewer.getByText('4,100,000 Toman')).toBeVisible();
+  await expect(viewer.getByRole('button', {name: /Classic/})).toHaveCount(0);
+  await viewer.getByRole('button', {name: 'Size and extras'}).click();
   await viewer.getByRole('button', {name: /Classic/}).click();
   await viewer.getByRole('button', {name: 'Glass vase'}).click();
   await expect(viewer.getByText('5,550,000 Toman')).toBeVisible();
@@ -1606,7 +1608,7 @@ test('the presentation settings sit behind their PIN once one is set', async ({p
   await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();
   await page.getByLabel('رمز تنظیمات').fill('2468');
   await expect(page.getByText('رمز تعیین شد')).toBeVisible();
-  await page.getByRole('button', {name: 'تمام', exact: true}).click();
+  await page.getByRole('button', {name: 'انجام شد', exact: true}).click();
   await page.getByRole('button', {name: 'تنظیمات نمایش'}).click();
   await page.getByLabel('تنظیمات قفل است.').fill('1111');
   await expect(page.getByText('رمز درست نیست.')).toBeVisible();
@@ -1623,13 +1625,18 @@ test('untouched, the presentation plays its designs; a touch keeps the one on sc
   );
   await openSite(page, 'presentation', 'en');
   const viewer = page.getByRole('dialog', {name: 'Designs'});
+  // Photos only: each design's code and price, without the controls.
   await page.clock.runFor(61_000);
-  await expect(viewer.getByText('1 of 6')).toBeVisible();
+  await expect(viewer.getByText('VF-7K2M4Q')).toBeVisible();
+  await expect(viewer.getByText('1 of 6')).toBeHidden();
+  await expect(viewer.getByRole('button', {name: 'Send to customer'})).toBeHidden();
   await page.clock.runFor(6_000);
-  await expect(viewer.getByText('2 of 6')).toBeVisible();
+  await expect(viewer.getByText('VF-3HX9TP')).toBeVisible();
+  // A touch stops it on that design and brings the controls back.
   await page.mouse.click(5, 300);
-  await page.clock.runFor(12_000);
   await expect(viewer.getByText('2 of 6')).toBeVisible();
+  await page.clock.runFor(12_000);
+  await expect(viewer.getByText('VF-3HX9TP')).toBeVisible();
 });
 
 test('scanning a design’s tag opens it full screen', async ({page}) => {
