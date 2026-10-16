@@ -20,7 +20,7 @@ jobs:
       CI: 'true'
       HOME: /root
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: npm ci
       # Rewrites the screenshots that differ or are missing; the other tests still have to pass.
       - run: npm --prefix templates run test:e2e:update
