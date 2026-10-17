@@ -75,9 +75,11 @@
   transform: scaleX(-1) rotate(-25deg);
 }
 .vf-home-featured-band::after {
-  inset: 0;
+  inset: 11rem 0 0;
   background-color: var(--text-accent);
-  mask: url('../../assets/patterns/floral-outline.svg') 0 0 / 17.5rem 17.5rem repeat;
+  mask:
+    url('../../assets/patterns/floral-outline.svg') left -12rem top / 18rem 18rem repeat-y,
+    url('../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem repeat-y;
   opacity: 0.16;
 }
 @media (max-width: 767px) {
@@ -95,6 +97,13 @@
     width: 15rem;
     height: 15rem;
     opacity: 0.18;
+  }
+  .vf-home-featured-band::after {
+    mask:
+      url('../../assets/patterns/floral-outline.svg') left -12.5rem top / 15rem 15rem repeat-y,
+      url('../../assets/patterns/floral-outline.svg') right -12.5rem top 7.5rem / 15rem 15rem
+        repeat-y;
+    opacity: 0.12;
   }
 }
 @media (forced-colors: active) {
