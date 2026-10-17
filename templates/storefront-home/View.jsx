@@ -143,7 +143,7 @@ export function View({v}) {
                 aria-labelledby="vf-home-weddings-title"
                 className="vf-home-weddings tw:mx-auto tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0"
               >
-                <div className="tw:bg-inverse tw:text-on-inverse ag-on-inverse tw:rounded-md tw:p-6 tw:md:p-8 tw:flex tw:flex-wrap tw:items-end tw:justify-between tw:gap-x-8 tw:gap-y-5">
+                <div className="vf-home-weddings-band tw:bg-inverse tw:text-on-inverse ag-on-inverse tw:rounded-md tw:p-6 tw:md:p-8 tw:flex tw:flex-wrap tw:items-end tw:justify-between tw:gap-x-8 tw:gap-y-5">
                   <div className="tw:[flex:1_1_320px] tw:max-w-[640px] tw:flex tw:flex-col tw:gap-3">
                     <div className="ag-eyebrow tw:text-inverse-quiet!">
                       <>{v.t?.wedEb}</>
