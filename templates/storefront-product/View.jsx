@@ -52,17 +52,13 @@ export function View({v}) {
                       <>{v.t?.sub}</>
                     </span>
                   </div>
-                  <div className="vf-product-title tw:flex tw:items-center tw:gap-2">
+                  <div className="vf-product-title tw:flex tw:flex-wrap tw:items-center tw:gap-2">
                     <h1 id="vf-product-code">
                       <>{v.t?.name}</>
                     </h1>
-                    <DS.IconButton
-                      icon="copy"
-                      label={v.t?.copyCode}
-                      variant="ghost"
-                      size="sm"
-                      onClick={v.copyCode}
-                    />
+                    <DS.Button iconStart="copy" variant="ghost" onClick={v.copyCode}>
+                      <>{v.t?.copyCode}</>
+                    </DS.Button>
                   </div>
                   <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
                   <DS.StockStatus stock={v.stock} />
