@@ -723,9 +723,13 @@ html {
   grid-template-rows: minmax(0, 1fr);
 }
 .vf-display-code {
-  font-family: var(--font-display);
+  font-family: var(--vf-code-font);
   font-size: clamp(24px, 3vw, 44px);
-  letter-spacing: var(--tracking-display);
+  font-weight: 500;
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  direction: ltr;
+  unicode-bidi: isolate;
   white-space: nowrap;
 }
 .vf-display-caption .ag-price {
