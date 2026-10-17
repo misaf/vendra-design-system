@@ -141,7 +141,7 @@ test('TV slideshow honors a longer dwell and pauses in seller dialogs', async ({
   );
   await openSite(page, 'presentation', 'en');
   await page.locator('.vf-display').press('Enter');
-  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
   await page.clock.pauseAt(new Date(start.getTime() + 60000));
   await page.keyboard.press('Escape');
   await page.clock.runFor(14900);
@@ -149,7 +149,7 @@ test('TV slideshow honors a longer dwell and pauses in seller dialogs', async ({
   await page.clock.runFor(200);
   await expect(page.locator('.vf-display-caption')).toContainText('VF-3HX9TP');
   await page.locator('.vf-display').press('Enter');
-  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+  await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
   await page.clock.runFor(45000);
   await expect(page.locator('.vf-display-caption')).toContainText('VF-3HX9TP');
   await page.keyboard.press('Escape');
@@ -280,4 +280,20 @@ test('seller setup saves named collections and exports only display preferences'
       () => JSON.parse(localStorage.getItem('vf-presentation-collections'))[0].name
     )
   ).toBe('Window display');
+});
+
+test('automatic playback skips a failed product photo without freezing the collection', async ({
+  page
+}) => {
+  await page.clock.install();
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv', slideSeconds: 6}))
+  );
+  await page.route('**/assets/products/pink-bouquet*', route => route.abort());
+  await openSite(page, 'presentation', 'en');
+  await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
+  await page.clock.runFor(6100);
+  await expect(page.locator('.vf-display-code')).toHaveText('VF-8RD5WN');
+  await page.locator('.vf-display').press('Enter');
+  await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
 });
