@@ -16,3 +16,14 @@
     max-width: none;
   }
 }
+
+/* Portrait tablets have room for a compact photo and purchase details side by side. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .vf-product-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .vf-product-columns .ag-gallery__track {
+    max-height: 65dvh;
+  }
+}
