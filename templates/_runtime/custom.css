@@ -668,6 +668,22 @@ html {
   }
 }
 
+/* TV seller controls remain legible from the same viewing distance as the product captions. */
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog {
+  font-size: clamp(20px, 1.5vw, 32px);
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog--sheet {
+  width: min(640px, 90vw);
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog .ag-btn {
+  font-size: inherit;
+  min-height: 64px;
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
