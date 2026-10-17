@@ -229,3 +229,23 @@ test('a TV remote can open seller tools before a control has focus', async ({pag
   await page.keyboard.press('Enter');
   await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
 });
+
+test('TV directional keys navigate seller tools and Back returns to the display', async ({
+  page
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv'}))
+  );
+  await openSite(page, 'presentation', 'en');
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog', {name: 'Seller tools', exact: true});
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('ArrowDown');
+  await expect(dialog.getByRole('button', {name: 'Close', exact: true})).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(dialog.getByRole('button', {name: 'Browse designs', exact: true})).toBeFocused();
+  await page.keyboard.press('ArrowUp');
+  await expect(dialog.getByRole('button', {name: 'Close', exact: true})).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+});

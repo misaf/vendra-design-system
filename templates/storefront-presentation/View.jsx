@@ -196,6 +196,7 @@ export function View({v}) {
         <main
           id="main"
           tabIndex={-1}
+          data-display-mode={v.displayMode}
           className="vf-presentation tw:min-h-screen tw:bg-page tw:text-body tw:flex tw:flex-col"
         >
           <h1 className="ag-sr-only">

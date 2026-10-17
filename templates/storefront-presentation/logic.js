@@ -488,6 +488,41 @@ export function usePage(props) {
       page._onKey = event => {
         const target = /** @type {HTMLElement} */ (event.target);
         if (event.defaultPrevented) return;
+        if (page.state.settings.displayMode === 'tv' && page.state.panel) {
+          if (['Escape', 'BrowserBack', 'GoBack'].includes(event.key)) {
+            event.preventDefault();
+            page.setState({panel: 'tools' === page.state.panel ? null : 'tools'});
+            return;
+          }
+          const dialog = target.closest('[role=dialog]');
+          const composite = target.closest(
+            'input, textarea, select, [role=listbox], [role=combobox], [role=spinbutton], [role=tablist]'
+          );
+          if (dialog && !composite && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+            const controls = Array.from(
+              dialog.querySelectorAll(
+                'button:not(:disabled), a[href], input:not(:disabled), [tabindex="0"]'
+              )
+            ).filter(
+              element =>
+                element.getClientRects().length && element.getAttribute('aria-hidden') !== 'true'
+            );
+            if (controls.length) {
+              event.preventDefault();
+              const index = controls.indexOf(target);
+              const next =
+                index < 0
+                  ? event.key === 'ArrowDown'
+                    ? 0
+                    : controls.length - 1
+                  : (index + (event.key === 'ArrowDown' ? 1 : -1) + controls.length) %
+                    controls.length;
+              /** @type {HTMLElement} */ (controls[next]).focus();
+            }
+            return;
+          }
+        }
+
         if (
           !page.state.browsing &&
           !page.state.panel &&
