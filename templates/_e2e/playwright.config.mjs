@@ -73,6 +73,20 @@ export default defineConfig({
       name: 'desktop',
       use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
     },
+    ...[
+      {name: 'touch-phone', viewport: {width: 390, height: 844}, hasTouch: true},
+      {name: 'tablet', viewport: {width: 1180, height: 820}, hasTouch: true},
+      {name: 'tv', viewport: {width: 1920, height: 1080}, hasTouch: false}
+    ].map(device => ({
+      name: device.name,
+      testMatch: 'devices.spec.mjs',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel,
+        viewport: device.viewport,
+        hasTouch: device.hasTouch
+      }
+    })),
     // Each component's own spec, beside it (components/<Name>/<Name>.spec.mjs), on the fixture
     // host page the dev server serves; a spec sets another viewport where it matters.
     ...(build
