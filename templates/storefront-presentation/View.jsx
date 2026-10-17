@@ -74,7 +74,8 @@ function Display({v}) {
         if (event.target !== event.currentTarget) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          reveal();
+          if (v.displayMode === 'tv') v.openTools();
+          else reveal();
         }
       }}
       onPointerDown={event => {

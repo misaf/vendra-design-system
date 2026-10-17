@@ -331,3 +331,17 @@ body:has(.vf-presentation[data-display-mode='tv']) .ag-select__option {
   font-size: clamp(20px, 1.5vw, 32px);
   min-height: 64px;
 }
+
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog .ag-iconbtn {
+  width: 64px;
+  height: 64px;
+}
+
+[dir='rtl'] .vf-display-tools {
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-left));
+}
+
+body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[data-focus-visible] {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 4px;
+}

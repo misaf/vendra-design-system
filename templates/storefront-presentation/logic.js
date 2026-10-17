@@ -561,8 +561,13 @@ export function usePage(props) {
           }
           const dialog = target.closest('[role=dialog]');
           const composite = target.closest(
-            'input, textarea, select, [role=listbox], [role=combobox], [role=spinbutton], [role=tablist]'
+            'select, [role=listbox], [role=option], [role=combobox], [role=spinbutton], [role=tablist]'
           );
+          if (
+            target.matches('input:not([type=checkbox]):not([type=radio]), textarea') &&
+            ['ArrowLeft', 'ArrowRight'].includes(event.key)
+          )
+            return;
           if (
             dialog &&
             !composite &&
@@ -570,7 +575,7 @@ export function usePage(props) {
           ) {
             const controls = Array.from(
               dialog.querySelectorAll(
-                'button:not(:disabled), a[href], input:not(:disabled), [tabindex="0"]'
+                'button:not(:disabled), a[href], input:not(:disabled), textarea:not(:disabled), summary, [tabindex="0"]'
               )
             ).filter(
               element =>
