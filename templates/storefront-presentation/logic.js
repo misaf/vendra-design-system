@@ -554,6 +554,12 @@ export function usePage(props) {
         const target = /** @type {HTMLElement} */ (event.target);
         if (event.defaultPrevented) return;
         if (page.state.settings.displayMode === 'tv' && page.state.panel) {
+          if (event.key === 'Enter' && target.matches('input[type=checkbox], input[type=radio]')) {
+            event.preventDefault();
+            target.click();
+            return;
+          }
+
           if (['Escape', 'BrowserBack', 'GoBack'].includes(event.key)) {
             event.preventDefault();
             page.setState({panel: 'tools' === page.state.panel ? null : 'tools'});
