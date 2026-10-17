@@ -7,8 +7,10 @@
 const sw = /** @type {any} */ (self);
 // Pages are kept one per path (the app is one page whatever its query); files and photos up to
 // FILES_MAX, the oldest let go first, so a tablet that runs for months doesn't fill up.
-const PAGES = 'vf-pages-v2';
-const FILES = 'vf-files-v2';
+const SCOPE = new URL(sw.registration.scope).pathname;
+const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
+const PAGES = CACHE_PREFIX + '-pages-v3';
+const FILES = CACHE_PREFIX + '-files-v3';
 const FILES_MAX = 400;
 const API_PUBLIC = /^\/api\/catalog\//;
 
@@ -20,7 +22,7 @@ sw.addEventListener('activate', (/** @type {any} */ event) =>
       .then(names =>
         Promise.all(
           names
-            .filter(name => name.startsWith('vf-') && ![PAGES, FILES].includes(name))
+            .filter(name => name.startsWith(CACHE_PREFIX) && ![PAGES, FILES].includes(name))
             .map(name => caches.delete(name))
         )
       )
@@ -65,4 +67,55 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
   else if (url.pathname.startsWith('/api/')) return;
   else if (/\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))
     event.respondWith(fromCache(request));
+});
+
+// Cache hashed app assets from the build manifest and explicit product photos. Never cache a
+// customer API response through this channel. Await each write before reporting offline readiness.
+sw.addEventListener('message', event => {
+  if (event.data?.type !== 'PREPARE_DISPLAY' || !event.ports[0]) return;
+  const port = event.ports[0];
+  event.waitUntil(
+    (async () => {
+      let completed = 0;
+      let total = 0;
+      try {
+        const manifest = await fetch(new URL('offline-manifest.json', sw.location.href), {
+          cache: 'no-store'
+        }).then(response => {
+          if (!response.ok) throw new Error('manifest');
+          return response.json();
+        });
+        const app = new URL('./', sw.location.href);
+        const root = new URL('../../', sw.location.href).pathname;
+        const urls = [
+          ...new Set([...manifest, ...(Array.isArray(event.data.urls) ? event.data.urls : [])])
+        ]
+          .map(value => new URL(value, sw.location.href))
+          .filter(
+            url =>
+              url.origin === sw.location.origin &&
+              url.pathname.startsWith(root) &&
+              (url.pathname === app.pathname ||
+                /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))
+          );
+        total = urls.length;
+        for (const url of urls) {
+          const cache = await caches.open(url.pathname === app.pathname ? PAGES : FILES);
+          const key = url.origin + url.pathname + (url.pathname === app.pathname ? '' : url.search);
+          let response = url.pathname === app.pathname ? null : await cache.match(key);
+          if (!response) response = await fetch(url.href, {cache: 'reload'});
+          if (!response.ok) throw new Error('asset');
+          await cache.put(key, response.clone());
+          completed++;
+          port.postMessage({status: 'preparing', completed, total});
+        }
+        await trim(await caches.open(FILES));
+        port.postMessage({status: 'ready', completed, total});
+      } catch {
+        port.postMessage({status: 'failed', completed, total});
+      } finally {
+        port.close();
+      }
+    })()
+  );
 });

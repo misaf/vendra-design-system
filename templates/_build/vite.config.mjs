@@ -89,11 +89,13 @@ function storefrontPreview() {
 // the Leaflet map files, the tenant themes and the service worker, at the same paths under the build.
 function storefrontAssets() {
   let outDir;
+  let base;
   return {
     name: 'vendra-storefront-assets',
     apply: 'build',
     configResolved(config) {
       outDir = config.build.outDir;
+      base = config.base;
     },
     closeBundle() {
       for (const folder of ['assets', 'templates/_vendor/leaflet'])
@@ -104,6 +106,21 @@ function storefrontAssets() {
       fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
         fs.copyFileSync(path.join(tenants, name), path.join(outDir, 'tokens/tenants', name));
+      const files = fs
+        .readdirSync(outDir, {recursive: true})
+        .map(String)
+        .filter(
+          name =>
+            /\.(js|css|woff2?|svg|png|jpe?g|webp|avif)$/.test(name) &&
+            name !== 'templates/app/sw.js'
+        );
+      fs.writeFileSync(
+        path.join(outDir, 'templates/app/offline-manifest.json'),
+        JSON.stringify([
+          base + 'templates/app/',
+          ...files.map(name => base + name.replaceAll(path.sep, '/'))
+        ])
+      );
       // Pages serves the artifact root; keep its entry point useful as well as direct app links.
       fs.writeFileSync(
         path.join(outDir, 'index.html'),
