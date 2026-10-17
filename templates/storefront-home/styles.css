@@ -43,7 +43,7 @@
 }
 .vf-home-weddings-band::before {
   inset-block-start: -3rem;
-  inset-inline-end: -1rem;
+  inset-inline-end: -5rem;
   width: 24rem;
   height: 24rem;
   background-color: var(--text-inverse-muted);
@@ -83,10 +83,10 @@
 @media (max-width: 767px) {
   .vf-home-weddings-band::before {
     inset-block-start: -2.5rem;
-    inset-inline-end: -2rem;
-    width: 13rem;
-    height: 13rem;
-    opacity: 0.08;
+    inset-inline-end: -3rem;
+    width: 11rem;
+    height: 11rem;
+    opacity: 0.12;
   }
   .vf-home-newsletter-band::after {
     inset-block-end: auto;
