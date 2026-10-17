@@ -146,3 +146,40 @@ Every folder in `components/` has its own browser test beside the component: `<N
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `_shared/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
+
+
+## Shop display setup
+
+Presentation opens directly on a product. Tap the screen (or use OK on a TV remote) to open Seller
+tools, then **Set up this display**. Choose manual phone/tablet operation or automatic TV playback,
+a collection, layout, captions, dwell time and optional full screen. **Start display** validates that
+there is an eligible product. Device readiness stays inside seller tools: actual wake-lock state,
+full screen, cached offline readiness and the last live stock update.
+
+Select products using thumbnails and codes; search narrows the picker without clearing selections.
+A preview and count show the eligible collection. Save up to 20 named display collections on this
+device. Saving an existing name replaces its preferences; deleting a saved collection leaves the
+current display unchanged. These profiles preserve the device's PIN when loaded.
+
+**Transfer display setup** exports versioned JSON or a shareable link. Open a setup link on another
+device, enter seller tools, review it and apply it. Only validated display preferences transfer;
+PINs, customer orders, shortlists, personal details and named collection storage are excluded.
+Imports preserve the destination device's PIN. Invalid data is rejected visibly.
+
+The production build prepares its app shell and sample imagery on the first visit. Wait for
+**Ready offline** in seller tools before disconnecting. Missing photos keep the last good product
+and are skipped with bounded retry backoff; the seller can retry immediately. The service worker
+retains versioned files for open displays during updates, with a bounded cache scoped to this app.
+Photo-only mode excludes sold-out designs; other caption modes label them when included.
+
+The sample catalog uses locally stored AI-generated product photography; see `assets/products/README.md`.
+It illustrates fictional products and is not evidence of a real shop's inventory.
+
+The permanent `touch-phone`, `tablet` and `tv` Playwright projects exercise real Chromium touch input,
+RTL swipes, orientation changes, cached collection loops, reconnect and service-worker updates:
+
+```sh
+npm --prefix templates run test:e2e:build -- devices.spec.mjs --project=touch-phone --project=tablet --project=tv
+```
+
+Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the intended hardware.
