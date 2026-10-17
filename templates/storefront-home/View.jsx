@@ -210,7 +210,7 @@ export function View({v}) {
                 aria-labelledby="vf-news-title"
                 className="vf-home-newsletter tw:mx-auto tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0"
               >
-                <div className="tw:bg-sunken tw:rounded-md tw:p-6 tw:flex tw:flex-wrap tw:items-end tw:justify-between tw:gap-x-8 tw:gap-y-5">
+                <div className="vf-home-newsletter-band tw:bg-sunken tw:rounded-md tw:p-6 tw:flex tw:flex-wrap tw:items-end tw:justify-between tw:gap-x-8 tw:gap-y-5">
                   <div className="tw:[flex:1_1_280px] tw:flex tw:flex-col tw:gap-2">
                     <h2
                       id="vf-news-title"
