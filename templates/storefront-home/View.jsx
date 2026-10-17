@@ -195,6 +195,7 @@ export function View({v}) {
                         aspect="4/3"
                         headingLevel={3}
                         title={post?.title}
+                        image={post?.image}
                         excerpt={post?.excerpt}
                         meta={post?.meta}
                         href={post?.href}

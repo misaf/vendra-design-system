@@ -50,6 +50,7 @@ export function View({v}) {
                     frame="arch"
                     priority={true}
                     title={v.lead?.title}
+                    image={v.lead?.image}
                     excerpt={v.lead?.excerpt}
                     meta={v.lead?.meta}
                     cta={v.t?.read}
@@ -66,6 +67,7 @@ export function View({v}) {
                     frame="soft"
                     aspect="4/3"
                     title={p?.title}
+                    image={p?.image}
                     excerpt={p?.excerpt}
                     meta={p?.meta}
                     href={p?.href}

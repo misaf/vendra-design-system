@@ -1,0 +1,55 @@
+{
+  "tool": "Built-in OpenAI image generation",
+  "date": "2026-10-18",
+  "common": "Use case: photorealistic-natural. Asset type: florist journal editorial photo, landscape 4:3. Warm natural daylight, soft realistic shadows, restrained cream/greige palette with natural floral color, tactile materials, believable botanical details, premium independent florist magazine style matching warm neutral catalog photography. Balanced composition, main subject in central 75%, usable 4:3 and square card crops. No collage, overlays, text, letters, watermark, logos, people or hands. One photograph only.",
+  "subjects": [
+    {
+      "slug": "autumn",
+      "subject": "An autumn florist arrangement in a low stoneware vase: burgundy dahlias, rust and cream chrysanthemums, apricot garden roses, rosehips and eucalyptus on a pale stone tabletop beside a softly lit plaster wall."
+    },
+    {
+      "slug": "care",
+      "subject": "A fresh mixed pink and ivory bouquet in a spotless clear glass vase filled with clean water, neatly angled cut stems visible below the waterline without submerged leaves, folded linen and simple florist snips nearby on a pale counter."
+    },
+    {
+      "slug": "bridal",
+      "subject": "An airy ivory bridal bouquet of garden roses, white sweet peas and gentle greenery with trailing silk ribbons, resting diagonally on unadorned ivory bridal fabric on a pale linen table. Intimate editorial detail."
+    },
+    {
+      "slug": "orchids",
+      "subject": "A healthy blooming white phalaenopsis orchid on a pale wooden windowsill, indirect morning light through a sheer curtain, dark glossy leaves, discreet terracotta outer pot and a fresh green flower spike, calm home interior."
+    },
+    {
+      "slug": "morning-at-the-studio",
+      "subject": "A believable florist's workbench in a small quiet sunlit courtyard: buckets of fresh pink and white roses, lisianthus and eucalyptus, an unfinished bouquet, kraft paper, ivory ribbon and floral snips on a worn pale wooden table. Early morning, authentic working florist, no people."
+    },
+    {
+      "slug": "flowers-for-friends",
+      "subject": "A small relaxed bouquet of soft pink roses, peach carnations and daisies wrapped simply in brown kraft paper, lying diagonally on a warm pale kitchen table with a tiny blank cream gift card and a loose natural twine bow. Thoughtful everyday gift."
+    },
+    {
+      "slug": "bouquet-last-longer",
+      "subject": "Close editorial detail of fresh cream and blush flower stems in a clear water-filled glass vase, green stems and clean diagonal cut ends clearly visible, all leaves above the waterline, flowers at the top, pale countertop and muted greige wall."
+    },
+    {
+      "slug": "yalda-flowers",
+      "subject": "An intimate Persian Yalda table vignette with a low arrangement of deep red roses and burgundy flowers, two pomegranates with one cut open showing ruby seeds, a small bowl of walnuts and unlit brass candle holder on natural linen. Sophisticated cozy seasonal editorial photograph, no written material."
+    },
+    {
+      "slug": "bridal-bouquet-guide",
+      "subject": "Three distinct small bridal bouquets arranged neatly side by side on warm ivory linen: one compact round ivory rose bouquet, one airy garden bouquet of white sweet peas and light green foliage, one softly cascading white orchid bouquet. Clearly distinguish the three shapes, each with plain ivory silk ribbon."
+    },
+    {
+      "slug": "orchid-care",
+      "subject": "Close editorial photograph of the base of a white phalaenopsis orchid in a clear nursery pot: visible healthy silver-gray roots and bark medium, broad green leaves above, a few white blooms visible higher in the frame, on a warm pale windowsill with indirect light. No water pooling."
+    },
+    {
+      "slug": "studio-doorway",
+      "subject": "A welcoming independent florist studio doorway in warm morning light, buckets of fresh pink roses, white lisianthus and eucalyptus arranged by the open door, a small pale wooden counter with kraft wrapping paper and a half-wrapped bouquet. No signs, lettering, people or brands."
+    },
+    {
+      "slug": "bridal-cascade",
+      "subject": "A graceful cascading bridal bouquet of white phalaenopsis orchids, a few ivory roses and delicate green foliage with long plain ivory silk ribbons, resting diagonally on warm ivory linen, full orchid cascade and gathered stems visible. Natural bridal editorial detail, no people."
+    }
+  ]
+}

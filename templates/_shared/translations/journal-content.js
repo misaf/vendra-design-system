@@ -2,6 +2,7 @@
 export const VF_POSTS = [
   {
     id: 'autumn',
+    image: 'assets/journal/autumn.webp',
     cat: 'seasonal',
     en: [
       'What’s in season this autumn',
@@ -18,6 +19,7 @@ export const VF_POSTS = [
   },
   {
     id: 'care',
+    image: 'assets/journal/care.webp',
     cat: 'care',
     en: [
       'Five ways to keep a bouquet fresh',
@@ -34,6 +36,7 @@ export const VF_POSTS = [
   },
   {
     id: 'bridal',
+    image: 'assets/journal/bridal.webp',
     cat: 'weddings',
     en: [
       'Choosing your bridal bouquet',
@@ -50,6 +53,7 @@ export const VF_POSTS = [
   },
   {
     id: 'orchids',
+    image: 'assets/journal/orchids.webp',
     cat: 'care',
     en: [
       'Orchids that bloom again',
@@ -69,6 +73,7 @@ VF_POSTS.push(
   ...[
     {
       id: 'morning-at-the-studio',
+      image: 'assets/journal/morning-at-the-studio.webp',
       cat: 'studio',
       en: [
         'A morning at the Vendra workbench',
@@ -95,7 +100,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/morning-at-the-studio.webp',
             'On mild days we take the workbench outside into the courtyard.'
           ],
           ['h', 'Nine o’clock: the first orders'],
@@ -106,7 +111,7 @@ VF_POSTS.push(
           ['quote', 'We make every bouquet as if we were the one receiving it.'],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/studio-doorway.webp',
             'Walk-in customers can choose stems from the buckets at the door and watch their bouquet being wrapped.'
           ],
           [
@@ -130,7 +135,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/morning-at-the-studio.webp',
             'روزهایی که هوا ملایم است، میز کار را به حیاط می‌بریم.'
           ],
           ['h', 'ساعت نه: اولین سفارش‌ها'],
@@ -141,7 +146,7 @@ VF_POSTS.push(
           ['quote', 'هر دسته‌گل را طوری می‌سازیم که انگار خودمان قرار است آن را هدیه بگیریم.'],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/studio-doorway.webp',
             'مشتری‌های حضوری می‌توانند گل‌ها را از سطل‌های دم در انتخاب کنند و بسته‌بندی دسته‌گلشان را تماشا کنند.'
           ],
           [
@@ -158,6 +163,7 @@ VF_POSTS.push(
     },
     {
       id: 'flowers-for-friends',
+      image: 'assets/journal/flowers-for-friends.webp',
       cat: 'occasions',
       en: [
         'Flowers aren’t only for special days',
@@ -184,7 +190,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/flowers-for-friends.webp',
             'A kraft-paper wrap keeps it relaxed and easy to carry.'
           ],
           ['h', 'Keep the message short'],
@@ -213,7 +219,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/flowers-for-friends.webp',
             'بسته‌بندی کاغذ کرافت، دسته‌گل را ساده و راحت برای حمل نگه می‌دارد.'
           ],
           ['h', 'پیام را کوتاه بنویسید'],
@@ -232,6 +238,7 @@ VF_POSTS.push(
     },
     {
       id: 'bouquet-last-longer',
+      image: 'assets/journal/bouquet-last-longer.webp',
       cat: 'care',
       en: [
         'Five small habits that make a bouquet last a week',
@@ -263,7 +270,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/bouquet-last-longer.webp',
             'Remove any leaves that sit below the waterline — they rot and cloud the water.'
           ],
           ['h', '3. Keep them cool and out of the sun'],
@@ -298,7 +305,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/bouquet-last-longer.webp',
             'برگ‌هایی را که زیر آب می‌مانند جدا کنید — می‌پوسند و آب را کدر می‌کنند.'
           ],
           ['h', '۳. دور از آفتاب و گرما'],
@@ -321,6 +328,7 @@ VF_POSTS.push(
     },
     {
       id: 'yalda-flowers',
+      image: 'assets/journal/yalda-flowers.webp',
       cat: 'occasions',
       en: [
         'Flowers for Yalda night: deep reds and candlelight',
@@ -347,7 +355,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/yalda-flowers.webp',
             'A low arrangement keeps faces visible across the table.'
           ],
           ['h', 'Order early'],
@@ -376,7 +384,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/yalda-flowers.webp',
             'گل‌آرایی کوتاه، صورت‌ها را دو طرف سفره پنهان نمی‌کند.'
           ],
           ['h', 'زودتر سفارش دهید'],
@@ -398,6 +406,7 @@ VF_POSTS.push(
     },
     {
       id: 'bridal-bouquet-guide',
+      image: 'assets/journal/bridal-bouquet-guide.webp',
       cat: 'weddings',
       en: [
         'Choosing a bridal bouquet that feels like you',
@@ -424,7 +433,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/bridal-cascade.webp',
             'White phalaenopsis orchids trail beautifully and hold up well in summer heat.'
           ],
           ['h', 'Think about the season'],
@@ -438,7 +447,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/categories/wedding-cars.webp',
             'Car flowers are built on the morning of the wedding and fixed with soft ties that won’t mark the paint.'
           ],
           [
@@ -462,7 +471,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/bridal-cascade.webp',
             'ارکیده فالانوپسیس سفید زیبا آویزان می‌شود و در گرمای تابستان هم دوام می‌آورد.'
           ],
           ['h', 'به فصل فکر کنید'],
@@ -476,7 +485,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/categories/wedding-cars.webp',
             'گل ماشین صبح روز عروسی ساخته و با بست‌های نرم بسته می‌شود تا روی رنگ ماشین اثری نگذارد.'
           ],
           [
@@ -493,6 +502,7 @@ VF_POSTS.push(
     },
     {
       id: 'orchid-care',
+      image: 'assets/journal/orchid-care.webp',
       cat: 'plants',
       en: [
         'Orchid care: water less than you think',
@@ -519,7 +529,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/orchid-care.webp',
             'Silvery roots mean it’s time to water; green roots mean wait.'
           ],
           ['h', 'Bright, but not direct, light'],
@@ -545,7 +555,7 @@ VF_POSTS.push(
           ],
           [
             'img',
-            'assets/placeholders/product.svg',
+            'assets/journal/orchid-care.webp',
             'ریشه نقره‌ای یعنی وقت آب دادن است؛ ریشه سبز یعنی صبر کنید.'
           ],
           ['h', 'نور زیاد، اما غیرمستقیم'],

@@ -1,5 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
+import {vfJournalImage} from '../_shared/journal-images.js';
 import {vfCopy} from './copy.js';
 import {vfProduct, vfProductImage} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -49,6 +50,7 @@ function vals(page) {
     },
     hasBlocks: !!post?.body,
     hasClassic: !post?.body,
+    image: vfJournalImage(post?.image),
     blocks: (post?.body?.[L] || []).map(([type, value, caption]) => ({
       paragraph: type === 'p',
       heading: type === 'h',
@@ -57,10 +59,8 @@ function vals(page) {
       tips: type === 'tips',
       value,
       caption,
-      src:
-        type === 'img'
-          ? (window.VF_ASSET_BASE || '../../') + (typeof value === 'string' ? value : value.src)
-          : undefined
+      photo:
+        type === 'img' ? vfJournalImage(typeof value === 'string' ? value : value.src) : undefined
     })),
     storyProducts: (post?.products || []).map(id => {
       const p = vfProduct(id);
@@ -105,6 +105,7 @@ function vals(page) {
               lang: L
             }),
           title: p[L][0],
+          image: vfJournalImage(p.image),
           excerpt: p[L][1],
           meta: (fa ? c[2] : c[1]) + ' · ' + p[L][2]
         };

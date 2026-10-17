@@ -1,5 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
+import {vfJournalImage} from '../_shared/journal-images.js';
 import {vfCopy} from './copy.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
@@ -41,6 +42,7 @@ function vals(page) {
           lang: L
         }),
       title: p[L][0],
+      image: vfJournalImage(p.image),
       excerpt: p[L][1],
       meta: (fa ? c[2] : c[1]) + ' · ' + p[L][3] + ' · ' + p[L][2]
     };
