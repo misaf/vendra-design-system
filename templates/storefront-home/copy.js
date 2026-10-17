@@ -4,6 +4,7 @@ export function vfCopy(S) {
   const n = S.n;
   return {
     en: {
+      newsDemo: 'Demo preview: {email} was not subscribed. No emails will be sent.',
       title: 'Shop by',
       titleAccent: 'category.',
       categoriesLabel: 'Categories',
@@ -49,6 +50,7 @@ export function vfCopy(S) {
       newsDone: 'Thanks! {email} is on the list. Every email has an unsubscribe link.'
     },
     fa: {
+      newsDemo: 'پیش‌نمایش آزمایشی: {email} عضو نشد و ایمیلی ارسال نمی‌شود.',
       title: 'خرید بر اساس',
       titleAccent: 'دسته‌بندی.',
       categoriesLabel: 'دسته‌بندی‌ها',

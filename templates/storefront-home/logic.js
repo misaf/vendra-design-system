@@ -94,7 +94,10 @@ function newsletter(page, S, C, L) {
   return {
     open: !signedUp,
     done: !!signedUp,
-    doneText: C.newsDone.replace('{email}', '\u2066' + signedUp + '\u2069'),
+    doneText: (window.VF_API.live ? C.newsDone : C.newsDemo).replace(
+      '{email}',
+      '\u2066' + signedUp + '\u2069'
+    ),
     draft,
     sending: !!news.sending,
     error: news.error || undefined,

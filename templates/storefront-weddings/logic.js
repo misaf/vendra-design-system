@@ -38,6 +38,7 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
+      ...(!window.VF_API.live ? {okT: C.demoTitle, okP: C.demoBody} : {}),
       editMessage: C.labels.returnToForm
     },
     gallery: [1, 2, 3].map(n => ({

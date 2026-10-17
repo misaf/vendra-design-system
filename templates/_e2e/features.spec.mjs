@@ -795,7 +795,7 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   expect(await scanAxe(page)).toEqual([]);
   await page.fill('#vf-cemail', 'shirin@example.com');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
-  await expect(page.getByRole('region', {name: 'Message sent.'})).toBeFocused();
+  await expect(page.getByRole('region', {name: 'Demo preview complete'})).toBeFocused();
 });
 
 test('several contact problems are listed together, each linking to its field', async ({page}) => {
