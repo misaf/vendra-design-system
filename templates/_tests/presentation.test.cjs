@@ -133,6 +133,11 @@ console.log('Passed curated collections, category loops, validation and customer
   page.renderVals().displayFailed(page.renderVals().preloadProducts[0].imageKey);
   assert.equal(page.state.displayIndex, 0);
   assert.equal(page.state.displayIssue, true);
+  assert.equal(
+    page.renderVals().preloadProducts.length,
+    0,
+    'background preloads also respect the failed-photo backoff'
+  );
   page.renderVals().retryDisplay();
   assert.equal(page.state.displayIndex, 0, 'retry never changes the product on screen');
   assert.equal(page.state.displayIssue, false);
