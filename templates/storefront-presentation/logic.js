@@ -961,7 +961,13 @@ function vals(page) {
     preloadProducts: vfDisplayItems(
       st,
       st.pendingIndex ?? st.displayIndex + (vfDisplayPair(st) ? 2 : 1)
-    ).map(card),
+    )
+      .filter(
+        product =>
+          st.pendingIndex != null ||
+          (page._displayFailures.get(vfDisplayImageKey(product, L))?.retryAt || 0) <= Date.now()
+      )
+      .map(card),
     preloadVersion: st.preloadVersion,
     online: st.online,
     displayIssue: st.displayIssue,
