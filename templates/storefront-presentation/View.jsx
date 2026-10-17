@@ -189,7 +189,12 @@ function Display({v}) {
 }
 
 export function View({v}) {
-  React.useEffect(vfKeepOffline, []);
+  const [offline, setOffline] = React.useState({status: 'preparing', completed: 0, total: 0});
+  const offlineUrls = v.offlineUrls.join('\n');
+  React.useEffect(
+    () => vfKeepOffline(offlineUrls.split('\n').filter(Boolean), setOffline),
+    [offlineUrls]
+  );
   return (
     <Shell
       v={v}
@@ -323,6 +328,12 @@ export function View({v}) {
             maxWidth={440}
           >
             <div className="tw:flex tw:flex-col tw:gap-3">
+              <p className="tw:m-0 tw:text-sm" role="status" data-offline-status={offline.status}>
+                {v.t.offlineStates[offline.status]}
+                {offline.status === 'preparing' && offline.total
+                  ? ' ' + v.n(offline.completed) + '/' + v.n(offline.total)
+                  : ''}
+              </p>
               {!v.online ? <DS.Alert tone="warning" title={v.t.offlineStatus} /> : null}
               {v.displayIssue ? <DS.Alert tone="warning" title={v.t.photoIssue} /> : null}
               {v.stockIssue ? <DS.Alert tone="warning" title={v.t.stockIssue} /> : null}
@@ -336,6 +347,33 @@ export function View({v}) {
                   {v.t.retryPhotos}
                 </DS.Button>
               ) : null}
+              {!v.setupDone ? <p className="tw:m-0">{v.t.setupIntro}</p> : null}
+              <DS.Button variant="secondary" onClick={v.openSetup}>
+                {v.t.setupTitle}
+              </DS.Button>
+              {v.transferText ? (
+                <DS.Button variant="secondary" onClick={v.openSettings}>
+                  {v.t.reviewSetup}
+                </DS.Button>
+              ) : null}
+              <dl className="tw:m-0 tw:flex tw:flex-col tw:gap-2" aria-label={v.t.deviceStatus}>
+                <div>
+                  <dt>{v.t.screenStatus}</dt>
+                  <dd>
+                    {v.canFullscreen
+                      ? v.fullscreen
+                        ? v.t.fullscreenActive
+                        : v.t.fullscreenInactive
+                      : v.t.unsupported}
+                  </dd>
+                </div>
+                <div>
+                  <dt>{v.t.wakeStatus}</dt>
+                  <dd>{v.canWake ? v.t.wakeStates[v.wakeStatus] : v.t.unsupported}</dd>
+                </div>
+              </dl>
+              {!v.stockUpdated ? <p className="tw:m-0 tw:text-sm">{v.t.stockDemo}</p> : null}
+              <p className="tw:m-0 tw:text-sm tw:text-quiet">{v.t.gallerySample}</p>
               <DS.Button variant="secondary" onClick={v.browse}>
                 {v.t.browse}
               </DS.Button>
@@ -627,20 +665,48 @@ export function View({v}) {
           <DS.Dialog
             open={v.settingsOpen}
             onClose={v.closePanel}
-            title={v.t?.settings}
-            maxWidth={440}
+            title={v.isSetup ? v.t.setupTitle : v.t?.settings}
+            maxWidth={640}
             footer={
               <>
                 <DS.Button variant="secondary" href={v.href?.home}>
                   <>{v.t?.leave}</>
                 </DS.Button>
-                <DS.Button variant="primary" onClick={v.closePanel}>
-                  <>{v.t?.done}</>
+                <DS.Button variant="secondary" onClick={v.closePanel}>
+                  {v.t.done}
+                </DS.Button>
+                <DS.Button variant="primary" disabled={!v.canStartDisplay} onClick={v.startDisplay}>
+                  {v.t.startDisplay}
                 </DS.Button>
               </>
             }
           >
             <div className="tw:flex tw:flex-col tw:gap-4">
+              {v.isSetup ? <p className="tw:m-0">{v.t.setupIntro}</p> : null}
+              {v.canFullscreen ? (
+                <DS.Switch
+                  label={v.t.startFullscreen}
+                  checked={v.setupFullscreen}
+                  onChange={v.setSetupFullscreen}
+                />
+              ) : null}
+              {v.savedCollections.length ? (
+                <div className="tw:flex tw:flex-col tw:gap-2">
+                  <DS.Select
+                    label={v.t.savedCollections}
+                    value={v.activeCollection}
+                    options={v.savedCollections}
+                    onChange={v.loadCollection}
+                  />
+                  <DS.Button
+                    variant="secondary"
+                    disabled={!v.activeCollection}
+                    onClick={v.deleteCollection}
+                  >
+                    {v.t.deleteCollection}
+                  </DS.Button>
+                </div>
+              ) : null}
               <DS.Select
                 label={v.t.displayMode}
                 value={v.displayMode}
@@ -674,10 +740,23 @@ export function View({v}) {
                   aria-label={v.t.selectedDesigns}
                   className="tw:flex tw:flex-col tw:gap-2"
                 >
+                  <DS.SearchField
+                    aria-label={v.t.collectionSearch}
+                    value={v.collectionQuery}
+                    onChange={v.setCollectionQuery}
+                  />
+                  <p className="tw:m-0" role="status">
+                    {v.t.selectionCount}: {v.n(v.selectedCount)}
+                  </p>
                   {v.collectionProducts.map(product => (
                     <DS.Checkbox
                       key={product.id}
-                      label={<span dir="ltr">{product.id}</span>}
+                      label={
+                        <span className="vf-collection-product">
+                          <DS.Picture image={product.image} sizes="64px" />
+                          <span dir="ltr">{product.id}</span>
+                        </span>
+                      }
                       checked={product.selected}
                       onChange={product.toggle}
                     />
@@ -689,6 +768,38 @@ export function View({v}) {
                   {v.t.useShortlist}
                 </DS.Button>
               ) : null}
+              <div
+                role="group"
+                aria-label={v.t.previewCollection}
+                className="vf-collection-preview"
+              >
+                {v.previewProducts.map(product => (
+                  <figure key={product.id}>
+                    <DS.Picture image={product.image} sizes="120px" />
+                    <figcaption dir="ltr">{product.code}</figcaption>
+                  </figure>
+                ))}
+              </div>
+              {!v.canStartDisplay ? (
+                <DS.Alert tone="warning" title={v.t.emptyCollection} />
+              ) : (
+                <p className="tw:m-0" role="status">
+                  {v.t.count(v.eligibleCount)}
+                </p>
+              )}
+              <DS.Input
+                label={v.t.collectionName}
+                value={v.collectionName}
+                onChange={v.setCollectionName}
+                maxLength={60}
+              />
+              <DS.Button
+                variant="secondary"
+                disabled={!v.canSaveCollection}
+                onClick={v.saveCollection}
+              >
+                {v.t.saveCollection}
+              </DS.Button>
               <DS.Select
                 label={v.t.displayLayout}
                 value={v.displayLayout}
@@ -754,6 +865,33 @@ export function View({v}) {
                   <>{v.t?.slideshowHint}</>
                 </span>
               </div>
+              <details className="vf-setup-transfer">
+                <summary>{v.t.configuration}</summary>
+                <p>{v.t.configurationHint}</p>
+                <DS.Input
+                  multiline
+                  label={v.t.configurationText}
+                  value={v.transferText}
+                  onChange={v.setTransferText}
+                  error={v.transferError ? v.t.configurationError : undefined}
+                  maxLength={12000}
+                />
+                <div className="tw:flex tw:flex-wrap tw:gap-2 tw:mt-3">
+                  <DS.Button variant="secondary" onClick={v.exportSetup}>
+                    {v.t.exportSetup}
+                  </DS.Button>
+                  <DS.Button
+                    variant="secondary"
+                    disabled={!v.transferText.trim()}
+                    onClick={v.importSetup}
+                  >
+                    {v.t.importSetup}
+                  </DS.Button>
+                  <DS.Button variant="secondary" href={v.setupLink} target="_blank" rel="noopener">
+                    {v.t.setupLink}
+                  </DS.Button>
+                </div>
+              </details>
               {v.hasPin ? (
                 <div className="tw:flex tw:items-center tw:justify-between tw:gap-3">
                   <span>
