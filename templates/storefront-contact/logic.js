@@ -86,6 +86,7 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
+      ...(!window.VF_API.live ? {okT: C.demoTitle, okP: C.demoBody} : {}),
       instagram: C.labels.instagram,
       editMessage: C.labels.returnToForm
     },

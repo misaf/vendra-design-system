@@ -3,6 +3,8 @@
 export function vfCopy(S) {
   return {
     en: {
+      demoTitle: 'Demo preview complete',
+      demoBody: 'Nothing was sent. This demo does not contact the studio or request a reply.',
       galleryTitle: 'Recent work placeholders',
       processTitle: 'How it works',
       steps: ['Tell us about your day', 'Choose a floral proposal', 'We arrange and deliver'],
@@ -62,6 +64,9 @@ export function vfCopy(S) {
       budgets: ['Under 20M Toman', '20–50M Toman', 'Over 50M Toman', 'Not sure yet']
     },
     fa: {
+      demoTitle: 'پیش‌نمایش آزمایشی کامل شد',
+      demoBody:
+        'پیامی ارسال نشد. این نسخهٔ نمایشی با استودیو تماس نمی‌گیرد و پاسخی دریافت نمی‌شود.',
       galleryTitle: 'جای تصاویر نمونه‌کار',
       processTitle: 'مراحل کار',
       steps: ['از روز مراسم بگویید', 'پیشنهاد گل‌آرایی را انتخاب کنید', 'گل‌آرایی و تحویل با ما'],
