@@ -150,22 +150,63 @@ function vfDisplayCommit(page) {
   )
     return;
   clearTimeout(page._displayWait);
-  page.setState({displayIndex: pendingIndex, pendingIndex: null, displayIssue: false});
+  page.setState({
+    displayIndex: pendingIndex,
+    pendingIndex: null,
+    displayIssue: !!page.state.failedImageKeys.length
+  });
   // Give the newly decoded product its full dwell, including after manual navigation.
   page._displayTimerKey = null;
   vfSyncDisplay(page);
 }
-function vfDisplayStep(page, delta) {
+function vfDisplayFailure(page, key) {
+  page._displayReady.delete(key);
+  const failures = (page._displayFailures.get(key)?.attempts || 0) + 1;
+  page._displayFailures.set(key, {
+    attempts: failures,
+    retryAt: Date.now() + Math.min(300000, 30000 * 2 ** Math.min(failures - 1, 4))
+  });
+  const failedImageKeys = [...new Set([...page.state.failedImageKeys, key])];
+  const pending =
+    page.state.pendingIndex != null &&
+    vfDisplayItems(page.state, page.state.pendingIndex).some(
+      product => vfDisplayImageKey(product, page.props.lang) === key
+    );
+  if (pending) clearTimeout(page._displayWait);
+  page.setState({failedImageKeys, displayIssue: true, ...(pending ? {pendingIndex: null} : {})});
+}
+function vfDisplayStep(page, delta, automatic = false) {
   const count = vfDisplayProducts(page.state).length;
-  if (!count || page.state.pendingIndex != null) return;
-  const index =
-    (page.state.displayIndex + delta * (vfDisplayPair(page.state) ? 2 : 1) + count * 2) % count;
+  if (!count || (automatic && page.state.pendingIndex != null)) return;
   clearTimeout(page._displayWait);
+  // A new gesture replaces a slow request. Never let one bad photo block the whole collection.
+  const stride = vfDisplayPair(page.state) ? 2 : 1;
+  let index = null;
+  for (let offset = 0; offset < count; offset++) {
+    const candidate = (page.state.displayIndex + delta * (stride + offset) + count * 3) % count;
+    if (
+      vfDisplayItems(page.state, candidate).every(
+        product =>
+          (page._displayFailures.get(vfDisplayImageKey(product, page.props.lang))?.retryAt || 0) <=
+          Date.now()
+      )
+    ) {
+      index = candidate;
+      break;
+    }
+  }
+  if (index == null) {
+    page.setState({pendingIndex: null});
+    return;
+  }
   page.setState({pendingIndex: index, preloadVersion: page.state.preloadVersion + 1});
   vfDisplayCommit(page);
   if (page.state.pendingIndex != null)
     page._displayWait = setTimeout(() => {
-      page.setState({pendingIndex: null, displayIssue: true});
+      for (const product of vfDisplayItems(page.state, index)) {
+        const key = vfDisplayImageKey(product, page.props.lang);
+        if (!page._displayReady.has(key)) vfDisplayFailure(page, key);
+      }
     }, 15000);
 }
 function vfSyncDisplay(page) {
@@ -197,7 +238,7 @@ function vfSyncDisplay(page) {
   clearInterval(page._displayTimer);
   if (playing)
     page._displayTimer = setInterval(
-      () => vfDisplayStep(page, 1),
+      () => vfDisplayStep(page, 1, true),
       page.state.settings.slideSeconds * 1000
     );
 }
@@ -409,6 +450,7 @@ export function usePage(props) {
       stockAt: 0
     };
     page._displayReady = new Set();
+    page._displayFailures = new Map();
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page._report = text => {
       clearTimeout(page._searchTimer);
@@ -689,15 +731,18 @@ function vals(page) {
           new Date(st.stockAt)
         )
       : '',
-    retryDisplay: () =>
+    retryDisplay: () => {
+      page._displayFailures.clear();
       page.setState({
         failedImageKeys: [],
         displayIssue: false,
         preloadVersion: page.state.preloadVersion + 1
-      }),
+      });
+    },
     displayLoaded: key => {
       if (page._unmounted) return;
       page._displayReady.add(key);
+      page._displayFailures.delete(key);
       if (page.state.failedImageKeys.includes(key)) {
         const failedImageKeys = page.state.failedImageKeys.filter(value => value !== key);
         page.setState({failedImageKeys, displayIssue: !!failedImageKeys.length});
@@ -706,24 +751,12 @@ function vals(page) {
     },
     displayFailed: key => {
       if (page._unmounted) return;
-      page._displayReady.delete(key);
-      const failedImageKeys = [...new Set([...page.state.failedImageKeys, key])];
-      const pending =
-        page.state.pendingIndex != null &&
-        vfDisplayItems(page.state, page.state.pendingIndex).some(
-          product => vfDisplayImageKey(product, L) === key
-        );
-      if (pending) clearTimeout(page._displayWait);
-      page.setState({
-        failedImageKeys,
-        displayIssue: true,
-        ...(pending ? {pendingIndex: null} : {})
-      });
+      vfDisplayFailure(page, key);
     },
     slideSeconds: st.settings.slideSeconds,
     setSlideSeconds: value => setting('slideSeconds')(Number(value)),
     previousDisplay: () => vfDisplayStep(page, -1),
-    nextDisplay: () => vfDisplayStep(page, 1),
+    nextDisplay: () => vfDisplayStep(page, 1, true),
     toolsOpen: st.panel === 'tools',
     openTools: () => page.setState({panel: 'tools'}),
     browse: () =>
