@@ -1,5 +1,23 @@
 /* Three storefront page families. Exceptions are named and kept here. */
 
+/* Codes are identifiers: use distinct, evenly spaced characters instead of the display face. */
+.vf-page,
+.vf-display {
+  --vf-code-font: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.vf-page .ag-product__name {
+  font-family: var(--vf-code-font);
+  font-size: var(--text-base);
+  font-weight: 500;
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  line-height: 1.5;
+}
+.vf-page .ag-product__link {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 .vf-page .vf-shopping,
 .vf-page .vf-form,
 .vf-page .vf-info {
@@ -99,10 +117,6 @@
 }
 .vf-page[data-lang='fa'] main blockquote {
   line-height: var(--lh-snug);
-}
-.vf-page[data-lang='fa'] .ag-product__name {
-  font-size: 20px;
-  line-height: 1.5;
 }
 @media (max-width: 767px) {
   .vf-page .vf-shopping,
