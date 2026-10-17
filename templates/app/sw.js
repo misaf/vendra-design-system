@@ -12,6 +12,7 @@ const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
 const PAGES = CACHE_PREFIX + '-pages-v3';
 const FILES = CACHE_PREFIX + '-files-v3';
 const FILES_MAX = 400;
+let protectedFiles = new Set();
 const API_PUBLIC = /^\/api\/catalog\//;
 
 sw.addEventListener('install', () => sw.skipWaiting());
@@ -45,7 +46,10 @@ const fromNetwork = async (request, key) => {
 const trim = async cache => {
   const keys = await cache.keys();
   await Promise.all(
-    keys.slice(0, Math.max(0, keys.length - FILES_MAX)).map(key => cache.delete(key))
+    keys
+      .filter(key => !protectedFiles.has(key.url))
+      .slice(0, Math.max(0, keys.length - FILES_MAX))
+      .map(key => cache.delete(key))
   );
 };
 const fromCache = async request => {
@@ -87,6 +91,12 @@ sw.addEventListener('message', event => {
         });
         const app = new URL('./', sw.location.href);
         const root = new URL('../../', sw.location.href).pathname;
+        if (
+          (event.data.urls || []).some(
+            value => new URL(value, sw.location.href).origin !== sw.location.origin
+          )
+        )
+          throw new Error('external-photo');
         const urls = [
           ...new Set([...manifest, ...(Array.isArray(event.data.urls) ? event.data.urls : [])])
         ]
@@ -99,11 +109,13 @@ sw.addEventListener('message', event => {
                 /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))
           );
         total = urls.length;
+        if (total > FILES_MAX) throw new Error('collection-too-large');
+        protectedFiles = new Set(urls.map(url => url.href));
         for (const url of urls) {
           const cache = await caches.open(url.pathname === app.pathname ? PAGES : FILES);
           const key = url.origin + url.pathname + (url.pathname === app.pathname ? '' : url.search);
-          let response =
-            url.pathname === app.pathname ? null : await cache.match(key, {ignoreVary: true});
+          const immutable = /-[\w-]{8}\.(js|css|woff2?)$/.test(url.pathname);
+          let response = immutable ? await cache.match(key, {ignoreVary: true}) : null;
           if (!response) response = await fetch(url.href, {cache: 'reload'});
           if (!response.ok) throw new Error('asset');
           await cache.put(key, response.clone());
