@@ -363,6 +363,48 @@ html {
 :lang(fa) .vf-home-weddings-accent {
   font-style: normal;
 }
+/* Quiet decorative layers stay behind the copy and controls. The sprig sits at the outer
+   end of the wedding band and mirrors with the reading direction. */
+.vf-home-weddings-band {
+  position: relative;
+  isolation: isolate;
+}
+.vf-home-weddings-band {
+  overflow: clip;
+}
+.vf-home-weddings-band::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.vf-home-weddings-band::before {
+  inset-block-start: -3rem;
+  inset-inline-end: -1rem;
+  width: 24rem;
+  height: 24rem;
+  background-color: var(--text-inverse-muted);
+  mask: url('../../assets/patterns/botanical-sprig.svg') center / contain no-repeat;
+  opacity: 0.16;
+  transform: rotate(-14deg);
+}
+.vf-home-weddings-band:dir(rtl)::before {
+  transform: scaleX(-1) rotate(-14deg);
+}
+@media (max-width: 767px) {
+  .vf-home-weddings-band::before {
+    inset-block-start: -2.5rem;
+    inset-inline-end: -2rem;
+    width: 13rem;
+    height: 13rem;
+    opacity: 0.08;
+  }
+}
+@media (forced-colors: active) {
+  .vf-home-weddings-band::before {
+    display: none;
+  }
+}
 /* The newsletter field and its button share one 48px row. */
 .vf-home-newsletter-form .ag-input {
   box-sizing: border-box;
