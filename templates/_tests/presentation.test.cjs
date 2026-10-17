@@ -193,6 +193,16 @@ console.log('Passed failed-photo skipping, bounded retry and pending navigation 
   page.renderVals().loadCollection('Winter window');
   assert.equal(page.state.settings.displayMode, 'tv');
   assert.equal(page.state.settings.pin, '1234');
+  page
+    .renderVals()
+    .setTransferText(JSON.stringify({version: 1, settings: {displayMode: 'invalid'}}));
+  page.renderVals().importSetup();
+  assert.equal(
+    page.state.transferError,
+    true,
+    'invalid preference values are rejected without changing settings'
+  );
+  assert.equal(page.state.settings.displayMode, 'tv');
   page.renderVals().setTransferText('{"version":99}');
   page.renderVals().importSetup();
   assert.equal(page.state.transferError, true);
