@@ -684,6 +684,73 @@ body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
   outline-offset: 4px;
 }
 
+.vf-collection-product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.vf-collection-product img {
+  width: 64px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+.vf-collection-preview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.vf-collection-preview figure {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-xs);
+}
+.vf-collection-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: contain;
+}
+.vf-setup-transfer summary {
+  cursor: pointer;
+  padding-block: var(--space-3);
+}
+.vf-display-tools {
+  inset-block-start: max(var(--space-3), env(safe-area-inset-top));
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-right));
+}
+
+body:has(.vf-presentation) .ag-dialog__foot {
+  flex-wrap: wrap;
+}
+body:has(.vf-presentation[data-display-mode='tv'])
+  .ag-dialog
+  :is(.ag-field__label, .ag-select__value, .ag-switch, .ag-input input, .ag-input textarea) {
+  font-size: inherit;
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog__title {
+  font-size: clamp(28px, 2vw, 44px);
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-select__option {
+  font-size: clamp(20px, 1.5vw, 32px);
+  min-height: 64px;
+}
+
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog .ag-iconbtn {
+  width: 64px;
+  height: 64px;
+}
+
+[dir='rtl'] .vf-display-tools {
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-left));
+}
+
+body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[data-focus-visible] {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
@@ -702,6 +769,17 @@ body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
     inset-inline: var(--space-4);
     inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-3));
     max-width: none;
+  }
+}
+
+/* Portrait tablets have room for a compact photo and purchase details side by side. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .vf-product-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .vf-product-columns .ag-gallery__track {
+    max-height: 65dvh;
   }
 }
 
