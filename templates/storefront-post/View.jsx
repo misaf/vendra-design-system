@@ -78,11 +78,11 @@ export function View({v}) {
                             {b?.image ? (
                               <>
                                 <figure>
-                                  <img
-                                    src={b?.src}
+                                  <DS.Picture
+                                    image={b?.photo}
                                     alt={b?.caption}
-                                    className="tw:w-full tw:rounded-md"
-                                    loading="lazy"
+                                    sizes="(max-width: 760px) 100vw, 720px"
+                                    className="tw:w-full tw:h-auto tw:rounded-md"
                                   />
                                   <figcaption className="tw:text-sm tw:text-quiet">
                                     <>{b?.caption}</>
@@ -111,7 +111,14 @@ export function View({v}) {
                     ) : null}
                     {v.hasClassic ? (
                       <>
-                        <DS.ArchFrame ratio="4/3" shape="soft" placeholderLabel={v.t?.ph} alt="" />
+                        <DS.ArchFrame
+                          ratio="4/3"
+                          shape="soft"
+                          src={v.image}
+                          sizes="(max-width: 760px) 100vw, 720px"
+                          priority={true}
+                          alt=""
+                        />
                         <div className="vf-post-copy tw:flex tw:flex-col tw:text-body tw:gap-4h tw:text-md tw:leading-body">
                           {list(v.paras1).map((p, $index) => (
                             <React.Fragment key={$index}>
@@ -195,6 +202,7 @@ export function View({v}) {
                             frame="soft"
                             aspect="4/3"
                             title={r?.title}
+                            image={r?.image}
                             excerpt={r?.excerpt}
                             meta={r?.meta}
                             href={r?.href}

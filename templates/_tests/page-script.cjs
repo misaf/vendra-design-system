@@ -81,6 +81,7 @@ const sharedFiles = [
   'promotions.js',
   'product-categories.js',
   'category-images.js',
+  'journal-images.js',
   'catalog.js',
   'translations/shell.js',
   'translations/categories.js',

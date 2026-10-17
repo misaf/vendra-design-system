@@ -12,6 +12,7 @@ import {
 } from '../_shared/translations/categories.js';
 import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
 import {vfCategoryImage} from '../_shared/category-images.js';
+import {vfJournalImage} from '../_shared/journal-images.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {usePageLogic} from '../_shared/page-state.js';
@@ -77,6 +78,7 @@ function vals(page) {
           return {
             href: S.href.post.split('?')[0] + vfRouteParams({view: 'post', post: post.id, lang: L}),
             title: post[L][0],
+            image: vfJournalImage(post.image),
             excerpt: post[L][1],
             meta: (fa ? category[2] : category[1]) + ' · ' + post[L][3]
           };
