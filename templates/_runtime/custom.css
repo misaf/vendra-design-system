@@ -407,10 +407,10 @@ html {
   opacity: 0.045;
 }
 .vf-home-newsletter-band::after {
-  inset-block-end: -4rem;
-  inset-inline-end: -1rem;
-  width: 22rem;
-  height: 22rem;
+  inset-block-end: -3rem;
+  inset-inline-end: -4rem;
+  width: 18rem;
+  height: 18rem;
   background-color: var(--text-muted);
   mask: url('../../assets/patterns/botanical-sprig.svg') center / contain no-repeat;
   opacity: 0.24;
@@ -436,8 +436,9 @@ html {
   .vf-home-newsletter-band::after {
     inset-block-end: auto;
     inset-block-start: -3rem;
-    width: 17rem;
-    height: 17rem;
+    inset-inline-end: -6rem;
+    width: 15rem;
+    height: 15rem;
     opacity: 0.18;
   }
 }
