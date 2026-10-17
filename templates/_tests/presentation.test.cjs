@@ -138,3 +138,16 @@ console.log('Passed curated collections, category loops, validation and customer
   assert.equal(page.state.failedImageKeys.length, 0);
 }
 console.log('Passed quiet image failure and recovery state.');
+
+{
+  const {page} = presentation({displayMode: 'tv'});
+  page.renderVals().nextDisplay();
+  page.renderVals().displayFailed(page.renderVals().preloadProducts[0].imageKey);
+  page.renderVals().nextDisplay();
+  assert.equal(page.state.pendingIndex, 2, 'a bad image is skipped until its retry window');
+  page.renderVals().previousDisplay();
+  assert.equal(page.state.pendingIndex, 5, 'a reverse gesture cancels a slow replacement');
+  page.renderVals().retryDisplay();
+  assert.equal(page._displayFailures.size, 0, 'seller retry clears backoff');
+}
+console.log('Passed failed-photo skipping, bounded retry and pending navigation cancellation.');
