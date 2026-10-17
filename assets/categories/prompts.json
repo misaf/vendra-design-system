@@ -1,0 +1,55 @@
+{
+  "tool": "Built-in OpenAI image generation",
+  "date": "2026-10-18",
+  "common": "Use case: product-mockup. Asset type: square category thumbnail for a premium florist storefront. ONE photorealistic studio photograph. Scene: warm pale greige seamless backdrop and matching surface, soft natural side light, gentle realistic shadow, understated editorial catalog quality, fine botanical detail, natural colors. Square 1:1, centered isolated subject fully contained in central 72% with generous clear margins, recognizable cropped to a circle, nothing important near corners. No text, labels, logos, watermark, collage, borders, props or people. Consistent elegant florist series.",
+  "subjects": [
+    {
+      "slug": "bouquets",
+      "subject": "A generous hand-tied mixed bouquet of peach roses, mauve lisianthus, pink ranunculus and eucalyptus, wrapped in simple ivory florist paper. Clearly a wrapped bouquet, no vase."
+    },
+    {
+      "slug": "boxes",
+      "subject": "A low round ivory linen flower box densely arranged with blush roses, cream garden roses and white lisianthus, a simple ivory satin bow. Clearly a flower box."
+    },
+    {
+      "slug": "orchids",
+      "subject": "Two gracefully arching stems of pristine white phalaenopsis orchids above broad dark green leaves, in a simple matte sand ceramic pot. Entire plant visible."
+    },
+    {
+      "slug": "bridal",
+      "subject": "A delicate airy bridal hand bouquet of ivory garden roses, white sweet peas and small white blossoms, with long flowing ivory silk ribbons and exposed gathered green stems. No bride or hands."
+    },
+    {
+      "slug": "rose-bouquets",
+      "subject": "A hand-tied bouquet of deep red roses with subtle dark green foliage, gathered with a burgundy ribbon, visible stems, no vase or box."
+    },
+    {
+      "slug": "baskets",
+      "subject": "A low natural woven wicker basket filled with soft peach roses, cream daisies, white lisianthus and fresh eucalyptus, basket and handle clearly visible."
+    },
+    {
+      "slug": "plants",
+      "subject": "A healthy compact monstera deliciosa with several beautiful split green leaves in a simple matte sand ceramic planter. Entire plant visible."
+    },
+    {
+      "slug": "dried",
+      "subject": "A sculptural small arrangement of dried pampas grass, beige bunny tails, wheat and muted rust preserved foliage in a small matte ivory vase. Clearly dry natural textures."
+    },
+    {
+      "slug": "wreaths",
+      "subject": "An upright circular floral wreath of white roses and cream chrysanthemums with green foliage, supported discreetly on a simple slim stand, entire ring visible."
+    },
+    {
+      "slug": "table",
+      "subject": "A low wide elegant table centerpiece of peach garden roses, white lisianthus and fine greenery in a shallow ivory ceramic bowl, viewed slightly from above, arrangement clearly wider than tall."
+    },
+    {
+      "slug": "wedding-cars",
+      "subject": "An unbranded elegant ivory wedding sedan seen in front three-quarter view, hood decorated with tasteful white roses, eucalyptus and delicate ivory ribbons, no license plate text, no people. Entire front and most of car visible, decoration prominent."
+    },
+    {
+      "slug": "gifts",
+      "subject": "An open ivory gift box with a small floral arrangement of blush roses at one side, wrapped artisan chocolates and a small unbranded cream candle at the other side, ivory ribbon, clearly a combined flower and gift hamper."
+    }
+  ]
+}

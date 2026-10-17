@@ -11,6 +11,7 @@ import {
   VF_SHOP_OCCASION_COPY
 } from '../_shared/translations/categories.js';
 import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
+import {vfCategoryImage} from '../_shared/category-images.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {usePageLogic} from '../_shared/page-state.js';
@@ -55,7 +56,8 @@ function vals(page) {
     // The shop's categories, in the store's order, as the round row at the top.
     categories: VF_CATEGORY_SLUGS.map(slug => ({
       ...S.shopLink(slug),
-      label: VF_CATEGORY_COPY[L][slug]
+      label: VF_CATEGORY_COPY[L][slug],
+      image: vfCategoryImage(slug)
     })),
     occasions: VF_SHOP_OCCASIONS.map(id => ({
       ...S.occasionLink(id),

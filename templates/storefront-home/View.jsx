@@ -26,7 +26,13 @@ export function View({v}) {
               >
                 {list(v.categories).map((c, $index) => (
                   <React.Fragment key={$index}>
-                    <DS.CategoryCard frame="circle" label={c?.label} href={c?.href} />
+                    <DS.CategoryCard
+                      frame="circle"
+                      label={c?.label}
+                      href={c?.href}
+                      image={c?.image}
+                      sizes="(max-width: 640px) 22vw, 120px"
+                    />
                   </React.Fragment>
                 ))}
               </DS.Carousel>
