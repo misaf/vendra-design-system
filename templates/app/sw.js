@@ -50,7 +50,7 @@ const trim = async cache => {
 };
 const fromCache = async request => {
   const cache = await caches.open(FILES);
-  const cached = await cache.match(request);
+  const cached = await cache.match(request, {ignoreVary: true});
   if (cached) return cached;
   const response = await fetch(request);
   if (response.ok) cache.put(request, response.clone()).then(() => trim(cache));
@@ -102,7 +102,8 @@ sw.addEventListener('message', event => {
         for (const url of urls) {
           const cache = await caches.open(url.pathname === app.pathname ? PAGES : FILES);
           const key = url.origin + url.pathname + (url.pathname === app.pathname ? '' : url.search);
-          let response = url.pathname === app.pathname ? null : await cache.match(key);
+          let response =
+            url.pathname === app.pathname ? null : await cache.match(key, {ignoreVary: true});
           if (!response) response = await fetch(url.href, {cache: 'reload'});
           if (!response.ok) throw new Error('asset');
           await cache.put(key, response.clone());
