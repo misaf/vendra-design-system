@@ -1080,7 +1080,7 @@ test('the home page newsletter checks the address and confirms the sign-up', asy
   await email.press('Enter');
   // The address is wrapped in bidi isolates so it reads correctly inside Persian text.
   const done = page.locator('#vf-news-done');
-  await expect(done).toHaveText(/rose@example\.com\u2069? is on the list/);
+  await expect(done).toHaveText(/rose@example\.com\u2069? was not subscribed/);
   await expect(done).toBeFocused();
   await page.reload();
   await expect(done).toBeVisible();
