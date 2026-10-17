@@ -197,14 +197,14 @@ for (const lang of ['en', 'fa']) {
 }
 
 test('failed photos use a quiet fallback and can be retried by the seller', async ({page}) => {
-  await page.route('**/assets/placeholders/product.svg', route => route.abort());
+  await page.route('**/assets/products/**', route => route.abort());
   await openSite(page, 'presentation', 'en');
   await expect(page.locator('.vf-display-photo-fallback')).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
   await page.locator('.vf-display').press('Enter');
   await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
   await expect(page.getByRole('alert')).toContainText('Some photos could not load.');
-  await page.unroute('**/assets/placeholders/product.svg');
+  await page.unroute('**/assets/products/**');
   await page.getByRole('button', {name: 'Retry photos', exact: true}).click();
   await page.keyboard.press('Escape');
   await expect(page.locator('.vf-display-photo')).toBeVisible();
@@ -243,9 +243,41 @@ test('TV directional keys navigate seller tools and Back returns to the display'
   await page.keyboard.press('ArrowDown');
   await expect(dialog.getByRole('button', {name: 'Close', exact: true})).toBeFocused();
   await page.keyboard.press('ArrowDown');
-  await expect(dialog.getByRole('button', {name: 'Browse designs', exact: true})).toBeFocused();
+  await expect(
+    dialog.getByRole('button', {name: 'Set up this display', exact: true})
+  ).toBeFocused();
   await page.keyboard.press('ArrowUp');
   await expect(dialog.getByRole('button', {name: 'Close', exact: true})).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
+});
+
+test('seller setup saves named collections and exports only display preferences', async ({
+  page
+}) => {
+  await openSite(page, 'presentation', 'en');
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', {name: 'Set up this display', exact: true}).click();
+  await expect(page.getByRole('dialog', {name: 'Set up this display', exact: true})).toBeVisible();
+  await page.getByRole('textbox', {name: 'Collection name', exact: true}).fill('Window display');
+  await page.getByRole('button', {name: 'Save collection', exact: true}).click();
+  await expect(page.getByRole('button', {name: /Saved display collections$/})).toContainText(
+    'Window display'
+  );
+  await page.getByText('Transfer display setup', {exact: true}).click();
+  await page.getByRole('button', {name: 'Export setup', exact: true}).click();
+  const exported = JSON.parse(
+    await page.getByRole('textbox', {name: 'Setup data or link', exact: true}).inputValue()
+  );
+  expect(exported.settings).not.toHaveProperty('pin');
+  expect(exported.settings).not.toHaveProperty('shortlist');
+  expect(exported.settings).not.toHaveProperty('order');
+  await page.getByRole('button', {name: 'Start display', exact: true}).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.reload();
+  expect(
+    await page.evaluate(
+      () => JSON.parse(localStorage.getItem('vf-presentation-collections'))[0].name
+    )
+  ).toBe('Window display');
 });

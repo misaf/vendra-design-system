@@ -28,6 +28,7 @@ import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // The counter settings, kept on this device (the shop's tablet). The PIN only keeps a curious
 // customer out of the settings; it is stored on the tablet as it is.
 const VF_PRESENTATION_KEY = 'vf-presentation';
+const VF_COLLECTIONS_KEY = 'vf-presentation-collections';
 const VF_PRESENTATION_SETTINGS = {
   displayMode: 'tablet',
   displayLayout: 'single',
@@ -57,9 +58,8 @@ const VF_UNDO_MS = 8_000;
 // What counts as someone using the screen, for the slideshow.
 const VF_ACTIVITY = ['pointerdown', 'keydown', 'wheel'];
 
-function vfReadSettings() {
+function vfNormalizeSettings(saved = {}) {
   try {
-    const saved = JSON.parse(localStorage.getItem(VF_PRESENTATION_KEY) || '{}') || {};
     const settings = Object.fromEntries(
       Object.entries(VF_PRESENTATION_SETTINGS).map(([key, value]) => [
         key,
@@ -82,6 +82,44 @@ function vfReadSettings() {
     return settings;
   } catch {
     return {...VF_PRESENTATION_SETTINGS};
+  }
+}
+function vfReadSettings() {
+  try {
+    return vfNormalizeSettings(JSON.parse(localStorage.getItem(VF_PRESENTATION_KEY) || '{}'));
+  } catch {
+    return vfNormalizeSettings();
+  }
+}
+function vfPortableSettings(settings) {
+  const normalized = vfNormalizeSettings(settings);
+  return Object.fromEntries(Object.entries(normalized).filter(([key]) => key !== 'pin'));
+}
+function vfReadCollections() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(VF_COLLECTIONS_KEY) || '[]');
+    if (!Array.isArray(stored)) return [];
+    return stored
+      .slice(0, 20)
+      .filter(value => value && typeof value.name === 'string' && value.name.trim())
+      .map(value => ({
+        name: value.name.trim().slice(0, 60),
+        settings: vfPortableSettings(value.settings)
+      }));
+  } catch {
+    return [];
+  }
+}
+function vfStoreCollections(collections) {
+  try {
+    localStorage.setItem(VF_COLLECTIONS_KEY, JSON.stringify(collections));
+  } catch {}
+}
+function vfSharedSetup() {
+  try {
+    return new URL(location.href).searchParams.get('display')?.slice(0, 12000) || '';
+  } catch {
+    return '';
   }
 }
 function vfSaveSettings(settings) {
@@ -282,18 +320,27 @@ async function vfSyncWakeLock(page) {
   if (!wanted) {
     if (page._wakeLock) page._wakeLock.release().catch(() => {});
     page._wakeLock = null;
+    if (!page._unmounted && page.state.wakeStatus !== 'inactive')
+      page.setState({wakeStatus: 'inactive'});
     return;
   }
-  if (page._wakeLock || page._wakeLockPending || !('wakeLock' in navigator)) return;
+  if (!('wakeLock' in navigator)) return;
+  if (page._wakeLock || page._wakeLockPending) return;
+  page.setState({wakeStatus: 'requesting'});
   page._wakeLockPending = true;
   try {
     const lock = await navigator.wakeLock.request('screen');
     lock.addEventListener('release', () => {
-      if (page._wakeLock === lock) page._wakeLock = null;
+      if (page._wakeLock === lock) {
+        page._wakeLock = null;
+        if (!page._unmounted) page.setState({wakeStatus: 'inactive'});
+      }
     });
     page._wakeLock = lock;
+    if (!page._unmounted) page.setState({wakeStatus: 'active'});
   } catch {
     page._wakeLock = null;
+    if (!page._unmounted) page.setState({wakeStatus: 'denied'});
   }
   page._wakeLockPending = false;
   // Reconcile a granted lock with settings/visibility that changed while it was pending.
@@ -417,6 +464,21 @@ export function usePage(props) {
     page.state = {
       q: '',
       cat: 'all',
+      setupDone: (() => {
+        try {
+          return !!localStorage.getItem('vf-display-setup-done');
+        } catch {
+          return false;
+        }
+      })(),
+      collections: vfReadCollections(),
+      collectionName: '',
+      activeCollection: '',
+      collectionQuery: '',
+      transferText: vfSharedSetup(),
+      transferError: false,
+      setupFullscreen: false,
+      wakeStatus: 'unsupported',
       browsing: false,
       displayIndex: 0,
       pendingIndex: null,
@@ -501,7 +563,11 @@ export function usePage(props) {
           const composite = target.closest(
             'input, textarea, select, [role=listbox], [role=combobox], [role=spinbutton], [role=tablist]'
           );
-          if (dialog && !composite && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+          if (
+            dialog &&
+            !composite &&
+            ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+          ) {
             const controls = Array.from(
               dialog.querySelectorAll(
                 'button:not(:disabled), a[href], input:not(:disabled), [tabindex="0"]'
@@ -515,10 +581,12 @@ export function usePage(props) {
               const index = controls.indexOf(target);
               const next =
                 index < 0
-                  ? event.key === 'ArrowDown'
+                  ? ['ArrowDown', 'ArrowRight'].includes(event.key)
                     ? 0
                     : controls.length - 1
-                  : (index + (event.key === 'ArrowDown' ? 1 : -1) + controls.length) %
+                  : (index +
+                      (['ArrowDown', 'ArrowRight'].includes(event.key) ? 1 : -1) +
+                      controls.length) %
                     controls.length;
               /** @type {HTMLElement} */ (controls[next]).focus();
             }
@@ -721,6 +789,118 @@ function vals(page) {
     ...S,
     t: {...S.t, ...C},
     toasts: page.toasts,
+    setupDone: st.setupDone,
+    isSetup: st.panel === 'setup',
+    openSetup: () => page.setState({panel: st.settings.pin ? 'unlock' : 'setup'}),
+    setupFullscreen: st.setupFullscreen,
+    setSetupFullscreen: value => page.setState({setupFullscreen: value}),
+    startDisplay: () => {
+      if (!vfDisplayProducts(page.state).length) return;
+      if (page.state.setupFullscreen && document.fullscreenEnabled)
+        document.documentElement.requestFullscreen().catch(() => {});
+      try {
+        localStorage.setItem('vf-display-setup-done', '1');
+      } catch {}
+      page.setState({setupDone: true, panel: null, browsing: false});
+    },
+    canStartDisplay: !!displayPool.length,
+    wakeStatus: st.wakeStatus,
+    canWake: typeof navigator !== 'undefined' && 'wakeLock' in navigator,
+    collectionName: st.collectionName,
+    setCollectionName: value => page.setState({collectionName: value.slice(0, 60)}),
+    savedCollections: st.collections.map(item => ({value: item.name, label: item.name})),
+    activeCollection: st.activeCollection,
+    loadCollection: name => {
+      const saved = page.state.collections.find(item => item.name === name);
+      if (!saved) return;
+      const settings = {...vfNormalizeSettings(saved.settings), pin: page.state.settings.pin};
+      vfSaveSettings(settings);
+      page.setState({
+        settings,
+        activeCollection: name,
+        collectionName: name,
+        displayIndex: 0,
+        pendingIndex: null
+      });
+    },
+    canSaveCollection:
+      !!st.collectionName.trim() &&
+      !!displayPool.length &&
+      (st.collections.length < 20 ||
+        st.collections.some(item => item.name === st.collectionName.trim())),
+    saveCollection: () => {
+      const name = page.state.collectionName.trim();
+      if (!name || !vfDisplayProducts(page.state).length) return;
+      const current = page.state.collections;
+      if (current.length >= 20 && !current.some(item => item.name === name)) return;
+      const collections = [
+        ...current.filter(item => item.name !== name),
+        {name, settings: vfPortableSettings(page.state.settings)}
+      ];
+      vfStoreCollections(collections);
+      page.setState({collections, activeCollection: name});
+    },
+    deleteCollection: () => {
+      const collections = page.state.collections.filter(
+        item => item.name !== page.state.activeCollection
+      );
+      vfStoreCollections(collections);
+      page.setState({collections, activeCollection: '', collectionName: ''});
+    },
+    collectionQuery: st.collectionQuery,
+    setCollectionQuery: value => page.setState({collectionQuery: value}),
+    selectedCount: st.settings.displayIds.length,
+    eligibleCount: displayPool.length,
+    previewProducts: displayPool.slice(0, 4).map(card),
+    transferText: st.transferText,
+    transferError: st.transferError,
+    setTransferText: value =>
+      page.setState({transferText: value.slice(0, 12000), transferError: false}),
+    exportSetup: () =>
+      page.setState({
+        transferText: JSON.stringify({
+          version: 1,
+          settings: vfPortableSettings(page.state.settings)
+        })
+      }),
+    setupLink: (() => {
+      const url = new URL(
+        typeof location !== 'undefined' ? location.href : 'http://localhost/templates/app/'
+      );
+      url.search = new URLSearchParams({
+        view: 'presentation',
+        lang: L,
+        display: JSON.stringify({version: 1, settings: vfPortableSettings(st.settings)})
+      }).toString();
+      url.hash = '';
+      return url.href;
+    })(),
+    importSetup: () => {
+      try {
+        const text = page.state.transferText.trim();
+        const value = JSON.parse(
+          text.startsWith('{') ? text : new URL(text).searchParams.get('display')
+        );
+        if (
+          value?.version !== 1 ||
+          !value.settings ||
+          typeof value.settings !== 'object' ||
+          Array.isArray(value.settings)
+        )
+          throw new Error('setup');
+        const settings = {...vfNormalizeSettings(value.settings), pin: page.state.settings.pin};
+        vfSaveSettings(settings);
+        page.setState({settings, displayIndex: 0, pendingIndex: null, transferError: false});
+        const url = new URL(location.href);
+        url.searchParams.delete('display');
+        history.replaceState(history.state, '', url.href);
+      } catch {
+        page.setState({transferError: true});
+      }
+    },
+    offlineUrls: displayPool.flatMap(product =>
+      vfProductImages(product, L).map(image => image.src)
+    ),
     display: !st.browsing,
     displayMode: st.settings.displayMode,
     displayProduct: displayPool.length
@@ -731,8 +911,11 @@ function vals(page) {
     setDisplayCollection: setting('displayCollection'),
     setDisplayCategory: setting('displayCategory'),
     displayCategories: kinds.map(id => ({value: id, label: VF_CATEGORY_COPY[L][id]})),
-    collectionProducts: VF_PRODUCTS.map(product => ({
-      id: product.id,
+    collectionProducts: (st.collectionQuery.trim()
+      ? vfSearchProducts(st.collectionQuery)
+      : VF_PRODUCTS
+    ).map(product => ({
+      ...card(product),
       selected: st.settings.displayIds.includes(product.id),
       toggle: checked => {
         const ids = page.state.settings.displayIds;
@@ -996,7 +1179,7 @@ function vals(page) {
       page.setState({panel: null, pinEntry: '', pinError: false, scanError: ''});
     },
     // Settings, behind the PIN when one is set.
-    settingsOpen: st.panel === 'settings',
+    settingsOpen: ['settings', 'setup'].includes(st.panel),
     unlockOpen: st.panel === 'unlock',
     openSettings: () =>
       page.setState({panel: st.settings.pin ? 'unlock' : 'settings', pinDraft: ''}),

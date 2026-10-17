@@ -7,6 +7,7 @@ function presentation(settings = {}) {
   const ctx = {
     URL,
     URLSearchParams,
+    history: {state: null, replaceState() {}},
     console,
     document: {
       getElementById: () => null,
@@ -151,3 +152,51 @@ console.log('Passed quiet image failure and recovery state.');
   assert.equal(page._displayFailures.size, 0, 'seller retry clears backoff');
 }
 console.log('Passed failed-photo skipping, bounded retry and pending navigation cancellation.');
+
+{
+  const {page} = presentation({
+    displayCollection: 'selected',
+    displayIds: ['VF-6MT3VY'],
+    captionMode: 'code'
+  });
+  assert.equal(page.renderVals().displayProduct.soldOut, true);
+  page.renderVals().setCaptionMode('photo');
+  assert.equal(
+    page.renderVals().displayProduct,
+    null,
+    'photo-only mode excludes unavailable designs that cannot be labelled'
+  );
+}
+
+{
+  const {page} = presentation({pin: '1234', displayMode: 'tv'});
+  page.renderVals().viewer[0].addToOrder();
+  page.setState({shortlist: ['VF-7K2M4Q']});
+  page.renderVals().setCollectionName('Winter window');
+  page.renderVals().saveCollection();
+  assert.equal(page.state.collections.length, 1);
+  assert.equal(page.state.collections[0].settings.pin, undefined);
+  page.renderVals().exportSetup();
+  const exported = JSON.parse(page.state.transferText);
+  assert.equal(exported.settings.pin, undefined);
+  assert.equal(exported.settings.order, undefined);
+  assert.equal(exported.settings.shortlist, undefined);
+  page.renderVals().setTransferText(
+    JSON.stringify({
+      version: 1,
+      settings: {displayMode: 'tablet', pin: '0000', order: ['private']}
+    })
+  );
+  page.renderVals().importSetup();
+  assert.equal(page.state.settings.pin, '1234', 'imports never replace this device PIN');
+  assert.equal(page.state.settings.displayMode, 'tablet');
+  page.renderVals().loadCollection('Winter window');
+  assert.equal(page.state.settings.displayMode, 'tv');
+  assert.equal(page.state.settings.pin, '1234');
+  page.renderVals().setTransferText('{"version":99}');
+  page.renderVals().importSetup();
+  assert.equal(page.state.transferError, true);
+  page.renderVals().deleteCollection();
+  assert.equal(page.state.collections.length, 0);
+}
+console.log('Passed named collections and configuration transfer without PIN or customer data.');

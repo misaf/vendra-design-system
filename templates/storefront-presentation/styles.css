@@ -278,3 +278,56 @@ body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
   outline: 4px solid var(--focus-ring);
   outline-offset: 4px;
 }
+
+.vf-collection-product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.vf-collection-product img {
+  width: 64px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+.vf-collection-preview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.vf-collection-preview figure {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-xs);
+}
+.vf-collection-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: contain;
+}
+.vf-setup-transfer summary {
+  cursor: pointer;
+  padding-block: var(--space-3);
+}
+.vf-display-tools {
+  inset-block-start: max(var(--space-3), env(safe-area-inset-top));
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-right));
+}
+
+body:has(.vf-presentation) .ag-dialog__foot {
+  flex-wrap: wrap;
+}
+body:has(.vf-presentation[data-display-mode='tv'])
+  .ag-dialog
+  :is(.ag-field__label, .ag-select__value, .ag-switch, .ag-input input, .ag-input textarea) {
+  font-size: inherit;
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog__title {
+  font-size: clamp(28px, 2vw, 44px);
+}
+body:has(.vf-presentation[data-display-mode='tv']) .ag-select__option {
+  font-size: clamp(20px, 1.5vw, 32px);
+  min-height: 64px;
+}
