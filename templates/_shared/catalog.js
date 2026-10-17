@@ -5,7 +5,7 @@
 // Products have no shown names: several designs can look alike, so each one is known by its unique code,
 // Product.token (e.g. VF-7K2M4Q), which customers quote and the studio and sellers search by. Its category
 // says what kind of product it is. Product.name holds a short searchable description that cards don't show.
-// Amounts are in Toman. All sample products intentionally use a neutral image placeholder.
+// Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';
 import {commerce} from '../../components/utils/commerce.js';
@@ -59,25 +59,36 @@ export const VF_API_PRODUCT_PRICES = [
 ];
 
 // GET /api/content/multimedia (the first photo is the card photo; the rest fill the product page gallery)
-export const VF_API_MULTIMEDIA = [301, 302, 303].map(id => ({
-  id,
-  uuid: 'sample-' + id,
-  name: 'Product placeholder',
-  fileName: 'product.svg',
-  collection: 'images',
-  mimeType: 'image/svg+xml',
-  bytes: 0,
-  disk: 'public',
-  url: VF_PRODUCT_PLACEHOLDER,
-  generatedConversions: {},
-  customProperties: {},
-  responsiveImages: {}
-}));
-export const VF_SAMPLE_MEDIA = [
-  '/api/content/multimedia/301',
-  '/api/content/multimedia/302',
-  '/api/content/multimedia/303'
+const VF_SAMPLE_PHOTOS = [
+  'ivory-box',
+  'pink-bouquet',
+  'orchid',
+  'red-box',
+  'blush-bouquet',
+  'bridal'
 ];
+export const VF_API_MULTIMEDIA = VF_SAMPLE_PHOTOS.flatMap((name, index) =>
+  [0, 1, 2].map(offset => ({
+    id: 301 + index * 3 + offset,
+    uuid: 'sample-' + (301 + index * 3 + offset),
+    name: 'AI-generated sample product',
+    fileName: name + '.webp',
+    collection: 'images',
+    mimeType: 'image/webp',
+    bytes: 0,
+    disk: 'public',
+    url: 'assets/products/' + name + '.webp',
+    generatedConversions: {},
+    customProperties: {width: '1120', height: '1400'},
+    responsiveImages: {
+      480: 'assets/products/' + name + '-480.webp',
+      1120: 'assets/products/' + name + '.webp'
+    }
+  }))
+);
+const VF_SAMPLE_MEDIA = VF_SAMPLE_PHOTOS.map((_, index) =>
+  [0, 1, 2].map(offset => '/api/content/multimedia/' + (301 + index * 3 + offset))
+);
 
 // GET /api/catalog/products
 export const VF_API_PRODUCTS = [
@@ -99,7 +110,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 12, type: 'ProductCategory', label: 'Flower boxes'},
     productPrices: ['/api/catalog/product-prices/201'],
     latestProductPrice: '/api/catalog/product-prices/201',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[0],
     options: []
   },
   {
@@ -120,7 +131,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 11, type: 'ProductCategory', label: 'Bouquets'},
     productPrices: ['/api/catalog/product-prices/202'],
     latestProductPrice: '/api/catalog/product-prices/202',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[1],
     options: []
   },
   {
@@ -141,7 +152,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 13, type: 'ProductCategory', label: 'Orchids'},
     productPrices: ['/api/catalog/product-prices/203'],
     latestProductPrice: '/api/catalog/product-prices/203',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[2],
     options: []
   },
   {
@@ -162,7 +173,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 12, type: 'ProductCategory', label: 'Flower boxes'},
     productPrices: ['/api/catalog/product-prices/204'],
     latestProductPrice: '/api/catalog/product-prices/204',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[3],
     options: []
   },
   {
@@ -183,7 +194,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 11, type: 'ProductCategory', label: 'Bouquets'},
     productPrices: ['/api/catalog/product-prices/205'],
     latestProductPrice: '/api/catalog/product-prices/205',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[4],
     options: []
   },
   {
@@ -204,7 +215,7 @@ export const VF_API_PRODUCTS = [
     productCategory: {id: 14, type: 'ProductCategory', label: 'Bridal'},
     productPrices: ['/api/catalog/product-prices/206'],
     latestProductPrice: '/api/catalog/product-prices/206',
-    multimedia: VF_SAMPLE_MEDIA,
+    multimedia: VF_SAMPLE_MEDIA[5],
     options: []
   }
 ];
@@ -342,7 +353,27 @@ export function vfProductImage(
   const alts = product[lang] && product[lang].alts;
   const alt =
     photo.src === VF_PRODUCT_PLACEHOLDER ? label + ' — ' + name : (alts && alts[index]) || name;
-  return {...photo, src, alt};
+  const resolveSet = value =>
+    value &&
+    value
+      .split(',')
+      .map(candidate => {
+        const [url, descriptor] = candidate.trim().split(/\s+/);
+        return (
+          (/^(https?:|data:|\/)/.test(url) ? url : (window.VF_ASSET_BASE || '../../') + url) +
+          (descriptor ? ' ' + descriptor : '')
+        );
+      })
+      .join(', ');
+  return {
+    ...photo,
+    src,
+    alt,
+    ...(photo.srcSet ? {srcSet: resolveSet(photo.srcSet)} : {}),
+    ...(photo.sources
+      ? {sources: photo.sources.map(source => ({...source, srcSet: resolveSet(source.srcSet)}))}
+      : {})
+  };
 }
 
 // Every product page photo; falls back to the card photo.
