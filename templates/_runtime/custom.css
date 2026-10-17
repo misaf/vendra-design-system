@@ -370,11 +370,13 @@ html {
   position: relative;
   isolation: isolate;
 }
-.vf-home-weddings-band {
+.vf-home-weddings-band,
+.vf-home-newsletter-band {
   overflow: clip;
 }
 .vf-home-weddings-band::before,
-.vf-home-newsletter-band::before {
+.vf-home-newsletter-band::before,
+.vf-home-newsletter-band::after {
   content: '';
   position: absolute;
   z-index: -1;
@@ -399,6 +401,19 @@ html {
   background: url('../../assets/patterns/paper-grain.svg') repeat;
   opacity: 0.045;
 }
+.vf-home-newsletter-band::after {
+  inset-block-end: -4rem;
+  inset-inline-end: -1rem;
+  width: 22rem;
+  height: 22rem;
+  background-color: var(--text-muted);
+  mask: url('../../assets/patterns/botanical-sprig.svg') center / contain no-repeat;
+  opacity: 0.24;
+  transform: rotate(-25deg);
+}
+.vf-home-newsletter-band:dir(rtl)::after {
+  transform: scaleX(-1) rotate(-25deg);
+}
 @media (max-width: 767px) {
   .vf-home-weddings-band::before {
     inset-block-start: -2.5rem;
@@ -407,10 +422,18 @@ html {
     height: 13rem;
     opacity: 0.08;
   }
+  .vf-home-newsletter-band::after {
+    inset-block-end: auto;
+    inset-block-start: -3rem;
+    width: 17rem;
+    height: 17rem;
+    opacity: 0.18;
+  }
 }
 @media (forced-colors: active) {
   .vf-home-weddings-band::before,
-  .vf-home-newsletter-band::before {
+  .vf-home-newsletter-band::before,
+  .vf-home-newsletter-band::after {
     display: none;
   }
 }
