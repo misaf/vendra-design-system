@@ -2,9 +2,9 @@
 // The VF_API_* lists are sample responses shaped like the Vendra API (uploads/openapi-*.json):
 // ProductCategory, ProductPrice, Multimedia and Product. A live store replaces them with API data;
 // vfProductFromApi turns each Product into the storefront's product object, VF_PRODUCTS.
-// Products have no shown names: several designs can look alike, so each one is known by its unique code,
-// Product.token (e.g. VF-7K2M4Q), which customers quote and the studio and sellers search by. Its category
-// says what kind of product it is. Product.name holds a short searchable description that cards don't show.
+// Each design is identified by its unique Product.token (e.g. VF-7K2M4Q), which customers quote and
+// sellers search by. Listings and seller workflows lead with this code. Homepage cards lead with the
+// short bilingual Product.name description and keep the code underneath for reference.
 // Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';

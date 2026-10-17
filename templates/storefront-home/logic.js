@@ -41,8 +41,8 @@ function vals(page) {
     toggleFav: S.toggleFav(p.id, []),
     ...S.productLink(p.id),
     images: [vfProductImage(p, L)],
-    name: p.id,
-    sub: vfProductSub(p, L),
+    name: p[L].sub || p.id,
+    sub: vfProductSub(p, L) + ' · \u2066' + p.id + '\u2069',
     badge: vfProductBadge(p, L),
     price: VF_MONEY(p.price, fa),
     stock: p.stock
