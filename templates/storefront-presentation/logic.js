@@ -899,6 +899,14 @@ function vals(page) {
           Array.isArray(value.settings)
         )
           throw new Error('setup');
+        const portable = vfPortableSettings(value.settings);
+        if (
+          Object.entries(value.settings).some(
+            ([key, value]) =>
+              key in portable && JSON.stringify(value) !== JSON.stringify(portable[key])
+          )
+        )
+          throw new Error('invalid-preference');
         const settings = {...vfNormalizeSettings(value.settings), pin: page.state.settings.pin};
         vfSaveSettings(settings);
         page.setState({settings, displayIndex: 0, pendingIndex: null, transferError: false});

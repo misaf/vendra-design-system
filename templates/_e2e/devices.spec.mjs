@@ -111,3 +111,34 @@ test('a new service worker activates without interrupting an open display', asyn
     await fs.writeFile(workerPath, original);
   }
 });
+
+test('a setup link can be reviewed on a fresh device before applying its preferences', async ({
+  page,
+  browser
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv'}))
+  );
+  await openSite(page, 'presentation', 'en');
+  await page.keyboard.press('Enter');
+  await page.getByRole('button', {name: 'Set up this display', exact: true}).click();
+  await page.getByText('Transfer display setup', {exact: true}).click();
+  const link = await page
+    .getByRole('link', {name: 'Open shareable setup link', exact: true})
+    .getAttribute('href');
+  const destination = await browser.newContext();
+  try {
+    const next = await destination.newPage();
+    await next.goto(link);
+    await expect(next.locator('.vf-display')).toHaveAttribute('data-mode', 'tablet');
+    await next.keyboard.press('Enter');
+    await next.getByRole('button', {name: 'Review shared setup', exact: true}).click();
+    await next.getByText('Transfer display setup', {exact: true}).click();
+    await next.getByRole('button', {name: 'Apply setup', exact: true}).click();
+    expect(
+      await next.evaluate(() => JSON.parse(localStorage.getItem('vf-presentation')).displayMode)
+    ).toBe('tv');
+  } finally {
+    await destination.close();
+  }
+});
