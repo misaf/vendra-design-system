@@ -39,7 +39,7 @@ export function View({v}) {
             </section>
             {v.featured?.length ? (
               <section className="vf-home-featured tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">
-                <div className="tw:bg-accent-soft tw:rounded-md tw:p-5 tw:md:p-7 tw:flex tw:flex-col tw:gap-6">
+                <div className="vf-home-featured-band tw:bg-accent-soft tw:rounded-md tw:p-5 tw:md:p-7 tw:flex tw:flex-col tw:gap-6">
                   <DS.SectionHeader
                     eyebrow={v.t?.featEb}
                     title={v.t?.featA}
