@@ -120,7 +120,10 @@ function vfDisplayProducts(state) {
         product.cat === settings.displayCategory
     )
     .filter(product => !settings.readyOnly || vfReady(product))
-    .filter(product => !settings.hideSoldOut || product.inStock !== false);
+    .filter(
+      product =>
+        product.inStock !== false || (!settings.hideSoldOut && settings.captionMode !== 'photo')
+    );
 }
 
 // Display playback is separate from the seller's full-screen quote viewer.

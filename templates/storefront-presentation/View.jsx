@@ -138,6 +138,9 @@ function Display({v}) {
                   <span className="vf-display-code" dir="ltr">
                     {product.code}
                   </span>
+                  {product.soldOut ? (
+                    <span className="tw:text-inverse-quiet">{v.t.soldOut}</span>
+                  ) : null}
                   {v.captionMode === 'price' && v.showPrices ? (
                     <DS.Price value={product.price} />
                   ) : null}
