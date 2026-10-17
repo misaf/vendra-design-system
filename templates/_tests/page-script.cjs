@@ -80,6 +80,7 @@ const sharedFiles = [
   'location.js',
   'promotions.js',
   'product-categories.js',
+  'category-images.js',
   'catalog.js',
   'translations/shell.js',
   'translations/categories.js',
