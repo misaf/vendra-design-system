@@ -21,16 +21,20 @@
 /* Quiet decorative layers stay behind the copy and controls. The sprig sits at the outer
    end of the wedding band and mirrors with the reading direction. */
 .vf-home-weddings-band,
+.vf-home-featured-band,
 .vf-home-newsletter-band {
   position: relative;
   isolation: isolate;
 }
 .vf-home-weddings-band,
-.vf-home-newsletter-band {
+.vf-home-newsletter-band,
+.vf-home-featured-band {
   overflow: clip;
 }
 .vf-home-weddings-band::before,
+.vf-home-featured-band::before,
 .vf-home-newsletter-band::before,
+.vf-home-featured-band::after,
 .vf-home-newsletter-band::after {
   content: '';
   position: absolute;
@@ -50,7 +54,8 @@
 .vf-home-weddings-band:dir(rtl)::before {
   transform: scaleX(-1) rotate(-14deg);
 }
-.vf-home-newsletter-band::before {
+.vf-home-newsletter-band::before,
+.vf-home-featured-band::before {
   inset: 0;
   border-radius: inherit;
   background: url('../../assets/patterns/paper-grain.svg') repeat;
@@ -68,6 +73,12 @@
 }
 .vf-home-newsletter-band:dir(rtl)::after {
   transform: scaleX(-1) rotate(-25deg);
+}
+.vf-home-featured-band::after {
+  inset: 0;
+  background-color: var(--text-accent);
+  mask: url('../../assets/patterns/floral-outline.svg') 0 0 / 17.5rem 17.5rem repeat;
+  opacity: 0.16;
 }
 @media (max-width: 767px) {
   .vf-home-weddings-band::before {
@@ -87,7 +98,9 @@
 }
 @media (forced-colors: active) {
   .vf-home-weddings-band::before,
+  .vf-home-featured-band::before,
   .vf-home-newsletter-band::before,
+  .vf-home-featured-band::after,
   .vf-home-newsletter-band::after {
     display: none;
   }

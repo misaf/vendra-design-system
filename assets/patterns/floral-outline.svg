@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="translate(70 75) rotate(-18)">
+    <circle r="7"/>
+    <path d="M0-7C-24-32-19-49 0-43C19-49 24-32 0-7ZM7 0C32-24 49-19 43 0C49 19 32 24 7 0ZM0 7C24 32 19 49 0 43C-19 49-24 32 0 7ZM-7 0C-32 24-49 19-43 0C-49-19-32-24-7 0Z"/>
+  </g>
+  <path d="M193 168C193 193 206 219 231 241M208 210C187 213 174 201 176 186C194 184 207 194 208 210ZM219 228C218 207 228 193 242 194C247 210 237 225 219 228Z"/>
+</svg>
