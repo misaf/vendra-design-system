@@ -79,7 +79,8 @@ export default defineConfig({
       {name: 'tv', viewport: {width: 1920, height: 1080}, hasTouch: false}
     ].map(device => ({
       name: device.name,
-      testMatch: 'devices.spec.mjs',
+      // The tv project also opens the storefront in TV mode (tv.spec.mjs).
+      testMatch: device.name === 'tv' ? ['devices.spec.mjs', 'tv.spec.mjs'] : 'devices.spec.mjs',
       use: {
         ...devices['Desktop Chrome'],
         channel,

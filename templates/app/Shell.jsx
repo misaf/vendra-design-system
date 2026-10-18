@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
   // --vf-top-bar / --vf-bottom-bar: the heights of the sticky header and of the sticky bars at the
@@ -56,6 +57,10 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
       document.removeEventListener('focusin', clear);
     };
   });
+  // TV mode (templates/README.md): the density for the overlays, and the remote's arrow keys. The
+  // presentation sets its own density and handles its own keys.
+  const density = useVfDensity();
+  useVfRemoteNavigation(!bare && density === 'tv');
   // A bare page (the counter presentation) fills the screen on its own: the skip link and notices
   // stay, but none of the header, menu, footer, consent or tab bar.
   if (bare)
@@ -90,6 +95,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
     <DS.VendraProvider
       locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}
       onEvent={({event, ...params}) => window.VF_TRACK.event(event, params)}
+      density={density}
     >
       <div className="tw:bg-muted tw:min-h-screen">
         <div

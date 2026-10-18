@@ -11,6 +11,8 @@ a:hover{color:var(--accent-press)}
 [dir="rtl"] .ag-flip-rtl{transform:scaleX(-1)}
 :where(a,button,[role="button"],summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:var(--focus-width) solid var(--focus-ring);outline-offset:var(--focus-offset)}
 :where(h1,h2,h3,main)[tabindex="-1"]:focus{outline:none}
+/* TV: findable from across the room. Each component's ring already thickens with --focus-width; a glow of the ring colour fills the gap and spreads past it, around the control or around the card whose stretched link has focus. !important in the base layer outranks a component's own shadow while it is focused. */
+[data-density="tv"] :is(:focus-visible,[data-focus-visible]):not(.ag-product__link,.ag-blog__link),[data-density="tv"] :is(.ag-product,.ag-blog):has(:is(.ag-product__link,.ag-blog__link):focus-visible){box-shadow:0 0 0 calc(var(--focus-offset) * 2 + var(--focus-width) * 2) color-mix(in srgb,var(--focus-ring) 40%,transparent)!important}
 /* A density scope sets its own body text size (on <html> the body already does). */
 :where([data-density]:not(html)){font-size:var(--text-base)}
 .ag-on-inverse{--focus-ring:var(--focus-ring-on-inverse)}/* any container on --surface-inverse: focus rings inside it stay 3:1 */

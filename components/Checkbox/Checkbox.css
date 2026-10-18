@@ -12,6 +12,11 @@
   cursor: pointer;
   line-height: 1.4;
 }
+/* Read from across the room: each row is a TV-sized target. */
+[data-density='tv'] .ag-check {
+  min-height: var(--control-h-xs);
+  align-items: center;
+}
 .ag-check input {
   position: absolute;
   opacity: 0;

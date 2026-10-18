@@ -126,6 +126,40 @@ Every folder in `components/` has its own browser test beside the component: `<N
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
 - **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px and desktop width.
 
+## TV mode
+
+The storefront runs on a television, read from about 3 metres and driven by a remote's arrows and OK
+(Enter). `main.jsx` decides before the first render (`_shared/tv.js` → `vfApplyTvMode`) and sets
+`data-density="tv"` on `<html>`; the Shell passes the same density to `VendraProvider` for the overlays.
+First match wins:
+
+1. **`?tv=1` / `?tv=0`** in the address turns TV mode on or off and remembers it on this device
+   (`localStorage` `vf-tv`). Open the store once with `?tv=1` on the TV, or bookmark it.
+2. **The remembered choice** from an earlier visit.
+3. **A TV browser:** a user agent naming a TV platform (Tizen, webOS, Android/Google TV, Fire TV,
+   Bravia, HbbTV, consoles…), or a screen at least 1440px wide that reports no pointer at all.
+   Many TV browsers report a coarse or fine pointer (a pointing remote), so the media query alone
+   misses most sets; the user agent and `?tv=1` cover them.
+
+In TV mode:
+
+- **Sizes** come from the `tv` density (`tokens/spacing.css`, `typography.css`): 24px body text, 64px
+  tap minimum, 1760px content width and 48px gutters. Controls with a fixed size (the shell's text
+  links, LanguageSwitch, Breadcrumb links, Gallery dots, Checkbox and Switch rows, the QuantityInput
+  count, RangeSlider thumbs) take at least `--control-h-xs` (48px), so nothing interactive is smaller.
+- **Arrow keys** move focus to the nearest item in that direction (`useVfRemoteNavigation`, on
+  `components/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
+  open dialog. Directions are physical, so Persian (RTL) needs no mirroring. Tab order and what
+  screen readers announce don't change. Widgets that use the arrows themselves keep them: tabs,
+  lists, menus, radio groups, sliders, the Lightbox, and the caret in text fields (up and down
+  still leave a text field). With nothing in that direction, the arrow scrolls the page.
+- **Focus** shows the thicker `tv` ring (`--focus-width`, `--focus-offset`) plus a glow of
+  `--focus-ring` around the control, or around the card whose link has focus (`tokens/base.css`).
+
+The `tv` Playwright project (1920×1080, no touch) runs `tv.spec.mjs`: home, shop and product in
+both languages with no horizontal overflow and no control under 48px, and the arrow keys reaching
+and pressing Add to bag.
+
 ## Demo behavior
 
 - **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `?view=product&id=VF-7K2M4Q&cat=boxes`. Old slugs resolve through `legacy`.

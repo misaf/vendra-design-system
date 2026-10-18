@@ -21,6 +21,13 @@
   text-decoration: none;
   border-radius: var(--radius-xs);
 }
+/* Read from across the room: each link is a TV-sized target. */
+[data-density='tv'] .ag-crumbs__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
+  min-width: var(--control-h-xs);
+}
 .ag-crumbs__link[data-hovered]:not([data-current]) {
   color: var(--text-body);
   text-decoration: underline;
