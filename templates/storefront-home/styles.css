@@ -1,37 +1,10 @@
 /* Custom styles for the home page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
-/* The page's h1 heads the category row, so it takes the section-title size rather than a hero's. */
-.vf-home-top .ag-sechead--h1 .ag-sechead__title {
-  font-size: clamp(2rem, 4vw, var(--text-3xl));
-}
-@media (width < 768px) {
-  .vf-home-top .ag-sechead--h1 .ag-sechead__title {
-    font-size: var(--text-2xl);
-  }
-}
 /* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
    pink is too dark to read there). */
 .vf-home-weddings-accent {
   font-style: var(--accent-font-style);
   font-weight: var(--accent-font-weight);
-}
-/* Keep the ready-made heading readable beside its compact action, and spend phone width on photos. */
-@media (width < 768px) {
-  .vf-home-featured .ag-sechead__title {
-    font-size: var(--text-xl);
-  }
-  .vf-home-featured-link.ag-btn {
-    padding-inline: 0;
-  }
-}
-@container (width < 320px) {
-  .vf-home-featured .ag-sechead {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .vf-home-featured .ag-sechead__actions {
-    align-self: flex-end;
-  }
 }
 :lang(fa) .vf-home-weddings-accent {
   font-style: normal;

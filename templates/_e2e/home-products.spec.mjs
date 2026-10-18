@@ -154,7 +154,7 @@ for (const lang of ['en', 'fa']) {
         return {section: style.getPropertyValue('--space-9').trim(), body: style.fontSize};
       });
     expect(await spacing()).toEqual({section: '3rem', body: '16px'});
-    for (const selector of ['.vf-home-featured', '.vf-home-journal']) {
+    for (const selector of ['.vf-home-featured', '.vf-home-arrivals', '.vf-home-journal']) {
       const section = page.locator(selector);
       const title = await section.locator('.ag-sechead__title').boundingBox();
       const action = await section.locator('.ag-sechead__actions').boundingBox();

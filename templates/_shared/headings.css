@@ -1,0 +1,93 @@
+/* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
+   Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
+.vf-page .ag-sechead__title {
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  max-inline-size: 32ch;
+}
+.vf-page:lang(fa) .ag-sechead__title {
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+}
+/* Home is a collection index. Its page title leads; every collection uses the same h2 scale. */
+.vf-shopping--home .ag-sechead--h1 .ag-sechead__title {
+  font-size: var(--text-3xl);
+}
+.vf-shopping--home h2.ag-sechead__title,
+.vf-shopping--home .vf-home-weddings h2 {
+  font-size: var(--text-2xl);
+  line-height: var(--lh-snug);
+  text-wrap: pretty;
+}
+/* The header itself supplies the query width. Children share one grid, so the action never
+   reduces a narrow title to a sliver. Logical grid columns follow the language direction. */
+.vf-shopping--home .ag-sechead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+}
+.vf-shopping--home .ag-sechead__text {
+  display: contents;
+}
+.vf-shopping--home .ag-sechead__eyebrow {
+  grid-area: 1 / 1;
+}
+.vf-shopping--home .ag-sechead__title {
+  grid-area: 1 / 1;
+}
+.vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__title {
+  grid-row: 2;
+}
+.vf-shopping--home .ag-sechead__actions {
+  grid-area: 1 / 2;
+  min-inline-size: 0;
+}
+.vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__actions {
+  grid-row: 2;
+}
+.vf-shopping--home .ag-sechead__actions .ag-btn {
+  min-block-size: var(--tap-min);
+  block-size: auto;
+  white-space: normal;
+  text-align: start;
+}
+@container (width < 640px) {
+  .vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__actions {
+    grid-row: 1;
+    max-inline-size: 55cqi;
+  }
+  .vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__title {
+    grid-column: 1 / -1;
+  }
+  .vf-shopping--home .ag-sechead__actions .ag-btn {
+    padding-inline: 0;
+    font-size: var(--text-sm);
+  }
+}
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-page main h1:where(:not(#vf-product-code)),
+  :where(html:not([data-density='tv'])) .vf-page .vf-form h1,
+  :where(html:not([data-density='tv']))
+    .vf-page[data-lang='fa']
+    main
+    h1:where(:not(#vf-product-code)),
+  :where(html:not([data-density='tv'])) .vf-page[data-lang='fa'] .vf-form h1 {
+    font-size: clamp(1.875rem, 4cqi, 2.5rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-page main h2 {
+    font-size: clamp(1.5rem, 3.5cqi, 1.875rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-home-top .ag-sechead--h1 .ag-sechead__title {
+    font-size: clamp(1.875rem, 4cqi, 2.25rem);
+  }
+  :where(html:not([data-density='tv']))
+    .vf-shopping--home
+    .ag-sechead:not(.ag-sechead--h1)
+    .ag-sechead__title {
+    font-size: clamp(1.5rem, 3.5cqi, 1.75rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--home .vf-home-weddings h2 {
+    font-size: clamp(1.5rem, 3.5cqi, 1.75rem);
+  }
+}

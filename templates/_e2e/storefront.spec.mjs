@@ -34,13 +34,13 @@ test.describe('shell', () => {
     const ring = await link.evaluate(el => getComputedStyle(el).outlineColor);
     expect(contrast(ring, await backgroundBehind(link))).toBeGreaterThanOrEqual(3);
     // The weddings band's button: its ring sits outside the pink button, on the dark band.
-    const button = page.locator('.vf-home-weddings').getByRole('link');
+    const button = page.locator('.vf-home-weddings').getByRole('link').first();
     await button.focus();
     await page.keyboard.press('Shift+Tab');
     await page.keyboard.press('Tab');
     await expect(button).toBeFocused();
     const bandRing = await button.evaluate(el => getComputedStyle(el).outlineColor);
-    const band = await button.evaluate(el => getComputedStyle(el.parentElement).backgroundColor);
+    const band = await backgroundBehind(button.locator('..'));
     expect(contrast(bandRing, band)).toBeGreaterThanOrEqual(3);
   });
 
