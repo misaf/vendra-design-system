@@ -13,11 +13,13 @@ export function View({v}) {
           <main id="main" tabIndex={-1} className="vf-shopping vf-shopping--home">
             <section className="vf-home-top tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-7 tw:px-gutter tw:pb-0">
               <DS.SectionHeader level="h1" title={v.t?.title} accent={v.t?.titleAccent} />
-              <DS.Carousel
+              <CollectionCarousel
+                total={list(v.categories).length}
+                countLabel={v.t?.categoryCount(list(v.categories).length)}
                 className="vf-home-category-circles vf-home-carousel"
                 label={v.t?.categoriesLabel}
                 perView={9}
-                perViewMobile={2.15}
+                perViewMobile={3.15}
                 itemMin="140px"
                 gap="20px"
                 arrows={true}
@@ -35,7 +37,7 @@ export function View({v}) {
                     />
                   </React.Fragment>
                 ))}
-              </DS.Carousel>
+              </CollectionCarousel>
             </section>
             {v.featured?.length ? (
               <section className="vf-home-featured tw:mx-auto tw:max-w-page tw:pt-8 tw:px-4 tw:md:px-gutter tw:pb-0">
@@ -70,7 +72,9 @@ export function View({v}) {
                   <p className="tw:m-0 tw:-mt-3 tw:text-secondary tw:max-w-measure">
                     <>{v.t?.featText}</>
                   </p>
-                  <DS.Carousel
+                  <CollectionCarousel
+                    total={list(v.featured).length}
+                    countLabel={v.t?.designCount(list(v.featured).length)}
                     className="vf-home-featured-products vf-home-product-carousel vf-home-carousel"
                     label={v.t?.featLabel}
                     perView={4}
@@ -101,7 +105,7 @@ export function View({v}) {
                         />
                       </React.Fragment>
                     ))}
-                  </DS.Carousel>
+                  </CollectionCarousel>
                 </div>
               </section>
             ) : null}
@@ -111,7 +115,9 @@ export function View({v}) {
             >
               <DS.SectionHeader id="vf-home-occasions-title" title={v.t?.catA} accent={v.t?.catB} />
               <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.catText}</p>
-              <DS.Carousel
+              <CollectionCarousel
+                total={list(v.occasions).length}
+                countLabel={v.t?.occasionCount(list(v.occasions).length)}
                 className="vf-home-category-row vf-home-carousel"
                 label={v.t?.catLabel}
                 perView={4}
@@ -135,7 +141,7 @@ export function View({v}) {
                     />
                   </React.Fragment>
                 ))}
-              </DS.Carousel>
+              </CollectionCarousel>
             </section>
             <section
               aria-labelledby="vf-home-studio-title"
@@ -153,7 +159,9 @@ export function View({v}) {
                 }
               />
               <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.newText}</p>
-              <DS.Carousel
+              <CollectionCarousel
+                total={list(v.products).length}
+                countLabel={v.t?.designCount(list(v.products).length)}
                 className="vf-home-product-row vf-home-product-carousel vf-home-carousel"
                 label={v.t?.newLabel}
                 perView={4}
@@ -185,7 +193,7 @@ export function View({v}) {
                     />
                   </React.Fragment>
                 ))}
-              </DS.Carousel>
+              </CollectionCarousel>
             </section>
             {v.weddings ? (
               <section
@@ -238,7 +246,9 @@ export function View({v}) {
                   }
                 />
                 <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.postText}</p>
-                <DS.Carousel
+                <CollectionCarousel
+                  total={list(v.posts).length}
+                  countLabel={v.t?.storyCount(list(v.posts).length)}
                   className="vf-home-journal-row vf-home-carousel"
                   label={v.t?.postLabel}
                   perView={3}
@@ -264,7 +274,7 @@ export function View({v}) {
                       />
                     </React.Fragment>
                   ))}
-                </DS.Carousel>
+                </CollectionCarousel>
               </section>
             ) : null}
             {v.newsletter ? (
@@ -339,5 +349,29 @@ export function View({v}) {
       }
       sticky={<></>}
     />
+  );
+}
+
+// Page-specific composition: keep scrolling in the shared Carousel and expose how much there is
+// to browse. The measured overflow state also handles small catalogues and viewport changes.
+function CollectionCarousel({total, countLabel, perView, label, ...props}) {
+  const [overflow, setOverflow] = React.useState(null);
+  return (
+    <div
+      className="vf-home-collection"
+      data-items={total}
+      data-fits-row={total <= perView ? 'true' : undefined}
+      data-overflow={overflow == null ? undefined : String(overflow)}
+    >
+      <span className="vf-home-collection-count" aria-hidden="true">
+        {countLabel}
+      </span>
+      <DS.Carousel
+        {...props}
+        label={`${label} · ${countLabel}`}
+        perView={perView}
+        onScrollStateChange={({canPrev, canNext}) => setOverflow(canPrev || canNext)}
+      />
+    </div>
   );
 }
