@@ -187,7 +187,7 @@ html {
 .vf-display {
   --vf-code-font: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 }
-.vf-page .ag-product:not(.ag-product--with-code) .ag-product__name {
+.vf-page .ag-product__name {
   font-family: var(--vf-code-font);
   font-size: var(--text-base);
   font-weight: 500;
@@ -195,7 +195,7 @@ html {
   letter-spacing: 0.025em;
   line-height: 1.5;
 }
-.vf-page .ag-product:not(.ag-product--with-code) .ag-product__link {
+.vf-page .ag-product__link {
   direction: ltr;
   unicode-bidi: isolate;
 }
@@ -246,10 +246,26 @@ html {
   min-width: 0;
 }
 
-/* Natural rows keep localized names, codes and stock messages together without reserving
-   empty tracks. The parent catalogue grid still aligns photo edges across each row. */
+/* Share row heights without truncating names or subtitles: photo, name, subtitle, price and the
+   stock note ("Only 2 left"), which most cards leave empty. */
 .vf-product-grid .ag-product {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 5;
   min-width: 0;
+  row-gap: 14px;
+}
+.vf-product-grid .ag-product > div:last-child {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
+  row-gap: 4px;
+}
+.vf-product-grid .ag-product__meta {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 2;
+  row-gap: 4px;
 }
 .vf-page .ag-product__price,
 .vf-page .ag-line__price {
@@ -376,20 +392,6 @@ html {
   .vf-page .vf-shopping--home {
     padding-block-start: 0;
   }
-}
-
-/* Named cards preserve readable Persian leading; codes remain isolated, secondary identifiers. */
-.vf-page .ag-product--with-code .ag-product__name {
-  line-height: var(--lh-snug);
-}
-.vf-page .ag-product--with-code .ag-product__price {
-  font-weight: var(--weight-semibold);
-}
-.vf-page .ag-product__code {
-  font-family: var(--vf-code-font);
-}
-[data-density='tv'] .vf-page .ag-product__code {
-  font-size: var(--text-base);
 }
 
 

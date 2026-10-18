@@ -212,7 +212,6 @@ export function View({v}) {
                             images={p?.images}
                             priority={$index < 2}
                             name={p?.name}
-                            code={p?.code}
                             subtitle={p?.sub}
                             price={p?.price}
                             stock={p?.stock}

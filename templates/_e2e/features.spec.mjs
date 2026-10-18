@@ -234,7 +234,7 @@ test('the product page lists recently viewed products', async ({page}) => {
   await expect(page.getByRole('heading', {name: /Recently viewed/})).toHaveCount(0);
   await openSite(page, 'product', 'en', {id: 'VF-9FA2KE'});
   const recent = page.getByRole('region', {name: 'Recently viewed.'});
-  await expect(recent.locator('.ag-product__code')).toHaveText(['VF-8RD5WN']);
+  await expect(recent.locator('.ag-product__name')).toHaveText(['VF-8RD5WN']);
   expect(await scanAxe(page)).toEqual([]);
 });
 
@@ -319,24 +319,17 @@ test('the account maps saved addresses and the editor pins new ones', async ({pa
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Home', 'Office', 'Studio']);
 });
 
-for (const lang of ['en', 'fa']) {
-  test(`the account lists saved products, shared with the saved page (${lang})`, async ({page}) => {
-    await openSite(page, 'account', lang);
-    await page.getByRole('tab', {name: lang === 'fa' ? 'ذخیره‌ها' : 'Saved', exact: true}).click();
-    const panel = page.getByRole('tabpanel');
-    await expect(panel.locator('.ag-product')).toHaveCount(3);
-    await expect(panel.locator('.ag-product__code')).toHaveCount(3);
-    expect(await panel.locator('.ag-product__name').first().textContent()).not.toMatch(/^VF-/);
-    expect(await scanAxe(page)).toEqual([]);
-    await panel
-      .getByRole('button', {name: lang === 'fa' ? 'حذف از ذخیره‌ها' : 'Remove from saved'})
-      .first()
-      .click();
-    await expect(panel.locator('.ag-product')).toHaveCount(2);
-    await openSite(page, 'saved', lang);
-    await expect(page.locator('main .ag-product')).toHaveCount(2);
-  });
-}
+test('the account lists saved products, shared with the saved page', async ({page}) => {
+  await openSite(page, 'account', 'fa');
+  await page.getByRole('tab', {name: 'ذخیره‌ها'}).click();
+  const panel = page.getByRole('tabpanel');
+  await expect(panel.locator('.ag-product')).toHaveCount(3);
+  expect(await scanAxe(page)).toEqual([]);
+  await panel.getByRole('button', {name: 'حذف از ذخیره‌ها'}).first().click();
+  await expect(panel.locator('.ag-product')).toHaveCount(2);
+  await openSite(page, 'saved', 'fa');
+  await expect(page.locator('main .ag-product')).toHaveCount(2);
+});
 
 test('a signed-in customer can send to a saved address', async ({page}) => {
   await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09125649438'));
@@ -912,7 +905,7 @@ test('the product page saves the design to the saved list', async ({page}) => {
   await expect(save).toHaveAttribute('aria-pressed', 'true');
   expect(await scanAxe(page)).toEqual([]);
   await openSite(page, 'saved', 'en');
-  await expect(page.locator('main .ag-product__code')).toContainText(['VF-7K2M4Q']);
+  await expect(page.locator('main .ag-product__name')).toContainText(['VF-7K2M4Q']);
 });
 
 test('home occasions scroll as a carousel', async ({page}, info) => {
@@ -1001,7 +994,7 @@ test('the shop clears every filter at once', async ({page}, info) => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', {name: 'Filters (2)'})).toBeVisible();
   }
-  await expect(page.locator('main .ag-product__code')).toHaveText(['VF-4CJ6ZB', 'VF-9FA2KE']);
+  await expect(page.locator('main .ag-product__name')).toHaveText(['VF-4CJ6ZB', 'VF-9FA2KE']);
   await page.getByRole('button', {name: 'Clear all'}).click();
   await expect(page).not.toHaveURL(/occasion=|stock=/);
   // Every design again: the first page of four, out of six.

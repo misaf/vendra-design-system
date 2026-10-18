@@ -14,11 +14,7 @@ Catalogue tile: 4:5 arch-framed image, serif name, muted subtitle, price. Use in
 
 `frame="soft"` for dense grids; pass pre-formatted, localized price strings.
 
-Pass `href` (product URL): the name becomes `<a href>` stretched over the card; `onClick` goes on that link (never preventDefault-ed inside). `linkLabel` defaults to `name — price`, or `name — code — price` when an optional `code` is supplied. Without href, `onClick` renders a real `<button>`. Favourite stays clickable above the link; focus ring covers the card (8px radius).
-
-Pass `code` for designs with a stable reference: the name becomes a compact body-face heading,
-category/subtitle and an isolated left-to-right code share a wrapping row, and the price gets stronger weight.
-Use the actual product description as `name`; keep routing and order identity on the code.
+Pass `href` (product URL): the name becomes `<a href>` stretched over the card; `onClick` goes on that link (never preventDefault-ed inside). `linkLabel` defaults to `name — price`. Without href, `onClick` renders a real `<button>`. Favourite stays clickable above the link; focus ring covers the card (8px radius).
 
 ## Usage
 
