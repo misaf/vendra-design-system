@@ -38,22 +38,29 @@ export function View({v}) {
               </DS.Carousel>
             </section>
             {v.featured?.length ? (
-              <section className="vf-home-featured tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">
-                <div className="vf-home-featured-band tw:bg-accent-soft tw:rounded-md tw:p-5 tw:md:p-7 tw:flex tw:flex-col tw:gap-6">
+              <section className="vf-home-featured tw:mx-auto tw:max-w-page tw:pt-8 tw:px-4 tw:md:px-gutter tw:pb-0">
+                <div className="vf-home-featured-band tw:bg-accent-soft tw:rounded-md tw:p-4 tw:md:p-5 tw:min-[1024px]:p-7 tw:flex tw:flex-col tw:gap-5 tw:md:gap-6">
                   <DS.SectionHeader
                     eyebrow={v.t?.featEb}
                     title={v.t?.featA}
                     accent={v.t?.featB}
                     action={
-                      <DS.Button variant="ghost" iconEnd="arrow-right" href={v.readyHref}>
-                        <>{v.t?.featAll}</>
+                      <DS.Button
+                        variant="ghost"
+                        iconEnd="arrow-right"
+                        href={v.readyHref}
+                        size={v.mob ? 'sm' : 'md'}
+                        className="vf-home-featured-link tw:min-h-tap"
+                        aria-label={v.mob ? v.t?.featAllLabel : undefined}
+                      >
+                        <>{v.mob ? v.t?.featAllShort : v.t?.featAll}</>
                       </DS.Button>
                     }
                   />
                   <p className="tw:m-0 tw:-mt-3 tw:text-secondary tw:max-w-measure">
                     <>{v.t?.featText}</>
                   </p>
-                  <ul className="vf-home-featured-grid tw:list-none tw:m-0 tw:p-0 tw:grid tw:grid-cols-2 tw:md:grid-cols-4 tw:gap-x-5 tw:gap-y-7">
+                  <ul className="vf-home-featured-grid tw:list-none tw:m-0 tw:p-0 tw:grid tw:grid-cols-2 tw:min-[1024px]:grid-cols-4 tw:gap-x-3 tw:md:gap-x-5 tw:gap-y-6">
                     {list(v.featured).map((p, $index) => (
                       <li key={$index}>
                         <DS.ProductCard
