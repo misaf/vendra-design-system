@@ -15,17 +15,17 @@ for (const lang of ['en', 'fa']) {
         const carousel = page.locator(selector);
         const track = carousel.getByRole('region');
         await expect(track).toHaveAccessibleName(/.+/);
-        const previous = carousel.getByRole('button').first();
-        const next = carousel.getByRole('button').nth(1);
-        await expect(previous).toBeVisible();
+        const previous = carousel.getByRole('button', {includeHidden: true}).first();
+        const next = carousel.getByRole('button', {includeHidden: true}).nth(1);
         await expect(previous).toBeDisabled();
-        const target = await next.boundingBox();
-        expect(Math.min(target.width, target.height)).toBeGreaterThanOrEqual(44);
         const cards = carousel.locator('.ag-product');
         expect((await cards.first().boundingBox()).width).toBeGreaterThanOrEqual(
           width === 390 ? 260 : 220
         );
         if (width < 1024 || (await cards.count()) > 4) {
+          await expect(previous).toBeVisible();
+          const target = await next.boundingBox();
+          expect(Math.min(target.width, target.height)).toBeGreaterThanOrEqual(44);
           await expect(next).toBeEnabled();
           await next.tap();
           await expect
@@ -62,6 +62,8 @@ for (const lang of ['en', 'fa']) {
             .poll(() => track.evaluate(element => Math.abs(element.scrollLeft)))
             .toBeGreaterThan(100);
         } else {
+          await expect(previous).toBeHidden();
+          await expect(next).toBeHidden();
           expect(
             await track.evaluate(element => element.scrollWidth - element.clientWidth)
           ).toBeLessThanOrEqual(1);
@@ -110,17 +112,26 @@ for (const lang of ['en', 'fa']) {
             .toBe(true);
         }
         expect((await cards.first().boundingBox()).width).toBeGreaterThanOrEqual(
-          selector.includes('circles') ? 100 : 220
+          selector.includes('circles') ? (width === 390 ? 88 : 100) : 220
         );
-        const previous = carousel.getByRole('button').first();
-        const next = carousel.getByRole('button').nth(1);
-        for (const button of [previous, next]) {
-          await expect(button).toBeVisible();
-          const box = await button.boundingBox();
-          expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+        if (selector.includes('circles') && width === 390) {
+          const trackBox = await track.boundingBox();
+          const third = await cards.nth(2).boundingBox();
+          expect(third.x).toBeGreaterThanOrEqual(trackBox.x - 1);
+          expect(third.x + third.width).toBeLessThanOrEqual(trackBox.x + trackBox.width + 1);
         }
+        const previous = carousel.getByRole('button', {includeHidden: true}).first();
+        const next = carousel.getByRole('button', {includeHidden: true}).nth(1);
+        const count = carousel.locator('..').locator('.vf-home-collection-count');
+        await expect(track).toHaveAccessibleName(new RegExp(await count.textContent()));
         await expect(previous).toBeDisabled();
         if (width < 1024 || (await cards.count()) > desktopCount) {
+          await expect(count).toBeVisible();
+          for (const button of [previous, next]) {
+            await expect(button).toBeVisible();
+            const box = await button.boundingBox();
+            expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+          }
           await expect(next).toBeEnabled();
           await next.tap();
           await expect
@@ -130,6 +141,9 @@ for (const lang of ['en', 'fa']) {
           await expect(cards.last().getByRole('link')).toBeFocused();
           await expect(previous).toBeEnabled();
         } else {
+          await expect(previous).toBeHidden();
+          await expect(next).toBeHidden();
+          await expect(count).toBeHidden();
           await expect(next).toBeDisabled();
           expect(
             await track.evaluate(element => element.scrollWidth - element.clientWidth)
@@ -178,5 +192,32 @@ for (const lang of ['en', 'fa']) {
     await page.setViewportSize({width: 768, height: 1024});
     await openSite(page, 'home', lang, {tv: '1'});
     expect((await spacing()).section).toBe('9rem');
+  });
+}
+
+for (const lang of ['en', 'fa']) {
+  test(`collection navigation follows overflow when resizing without reloading (${lang})`, async ({
+    page
+  }) => {
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await page.setViewportSize({width: 390, height: 844});
+    await openSite(page, 'home', lang);
+    const carousel = page.locator('.vf-home-journal-row');
+    const next = carousel.getByRole('button', {includeHidden: true}).nth(1);
+    const count = carousel.locator('..').locator('.vf-home-collection-count');
+    await expect(next).toBeVisible();
+    await expect(count).toBeVisible();
+    await page.setViewportSize({width: 1280, height: 900});
+    await expect(next).toBeHidden();
+    await expect(count).toBeHidden();
+    await page.setViewportSize({width: 390, height: 844});
+    await expect(next).toBeVisible();
+    await expect(count).toBeVisible();
+    await next.tap();
+    await expect(carousel.getByRole('button', {includeHidden: true}).first()).toBeEnabled();
+    // The last story stays reachable by keyboard after returning to a narrow layout.
+    const last = carousel.getByRole('link').last();
+    await last.focus();
+    await expect(last).toBeFocused();
   });
 }
