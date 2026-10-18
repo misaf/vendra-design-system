@@ -90,6 +90,16 @@
   font-size: var(--text-base);
   font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;
+}
+/* Keep the amount readable: narrow cards can put the currency on the next line. */
+.vf-page .ag-product__price {
+  white-space: normal;
+}
+.vf-page .ag-product__price .ag-price__now {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.vf-page .ag-line__price {
   white-space: nowrap;
 }
 .vf-page .ag-line__thumb {
