@@ -10,7 +10,7 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-form vf-form--checkout tw:mx-auto">
             {v.paying ? (
               <>
                 <div className="vf-checkout-steps tw:mb-5h">

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite} from './helpers.mjs';
+import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
 
 test.use({hasTouch: true});
 
@@ -7,6 +7,20 @@ async function expectTapTarget(target) {
   const box = await target.boundingBox();
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
+}
+
+async function expectFieldClearOfBars(field) {
+  await field.focus();
+  await expect
+    .poll(() =>
+      field.evaluate(el => {
+        const box = el.getBoundingClientRect();
+        const top = document.querySelector('.vf-shell-header').getBoundingClientRect().bottom;
+        const bottom = document.querySelector('.vf-shell-bottom-bar').getBoundingClientRect().top;
+        return box.top >= top && box.bottom <= bottom;
+      })
+    )
+    .toBe(true);
 }
 
 async function swipe(page, target, rtl) {
@@ -98,25 +112,36 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await expectTapTarget(page.locator('.ag-location .leaflet-control-zoom a').first());
     for (const id of ['vf-name', 'vf-phone', 'vf-address', 'vf-sender', 'vf-sender-phone']) {
-      const field = page.locator('#' + id);
-      await field.focus();
-      await expect
-        .poll(() =>
-          field.evaluate(el => {
-            const box = el.getBoundingClientRect();
-            const top = document.querySelector('.vf-shell-header').getBoundingClientRect().bottom;
-            const bottom = document
-              .querySelector('.vf-shell-bottom-bar')
-              .getBoundingClientRect().top;
-            return box.top >= top && box.bottom <= bottom;
-          })
-        )
-        .toBe(true);
+      await expectFieldClearOfBars(page.locator('#' + id));
     }
     await expectTapTarget(page.locator('.ag-btn--sm').first());
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       390
     );
+  });
+
+  test(`payment fields stay usable above the phone bars (${lang})`, async ({page}) => {
+    await page.setViewportSize({width: 390, height: 450});
+    await openSite(page, 'bag', lang, {step: 'delivery'});
+    await page.locator('#vf-name').fill('Shirin Ahmadi');
+    await page.locator('#vf-phone').fill('09121234567');
+    await pinDelivery(page);
+    await page.locator('#vf-address').fill('Plaque 12, unit 3');
+    await page.locator('#vf-sender').fill('Sara Karimi');
+    await page.locator('#vf-sender-phone').fill('09121112233');
+    await page
+      .getByRole('button', {name: lang === 'fa' ? 'ادامه و پرداخت' : 'Continue to payment'})
+      .locator('visible=true')
+      .first()
+      .tap();
+    await expect(page.locator('.vf-checkout-payment')).toBeVisible();
+    for (const id of ['vf-last4', 'vf-ref']) {
+      const field = page.locator('#' + id);
+      await expectFieldClearOfBars(field);
+      await expectTapTarget(field);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+    expect(await scanAxe(page)).toEqual([]);
   });
 
   test(`tablet presentation preserves the design across portrait and landscape (${lang})`, async ({

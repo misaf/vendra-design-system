@@ -13,7 +13,7 @@ export function View({v}) {
           <main
             id="main"
             tabIndex={-1}
-            className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-6"
+            className="vf-shopping vf-shopping--shop tw:mx-auto tw:flex tw:flex-col tw:gap-6"
           >
             <DS.SectionHeader
               level="h1"
