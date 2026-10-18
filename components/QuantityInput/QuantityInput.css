@@ -57,3 +57,18 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-qty {
+    min-height: 48px;
+  }
+  .ag-qty button {
+    width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
+  .ag-qty__val {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
+}

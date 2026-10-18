@@ -85,3 +85,12 @@
     border-style: dashed;
   }
 }
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-check {
+    box-sizing: border-box;
+    min-height: var(--tap-min);
+    padding-block: 10px;
+  }
+}
