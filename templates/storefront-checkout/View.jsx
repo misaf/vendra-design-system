@@ -49,6 +49,28 @@ export function View({v}) {
                 </div>
                 <div className="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
                   <div className="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">
+                    <section aria-labelledby="vf-delivery-review-title">
+                      <DS.Card padding={16} className="vf-checkout-delivery-review">
+                        <div className="tw:flex tw:items-center tw:justify-between tw:flex-wrap tw:gap-2 tw:mb-3">
+                          <h2
+                            id="vf-delivery-review-title"
+                            className="tw:m-0 tw:text-lg! tw:leading-snug"
+                          >
+                            {v.t?.deliveryReview}
+                          </h2>
+                          <DS.Button
+                            variant="ghost"
+                            size="md"
+                            iconStart="pencil"
+                            href={v.backHref}
+                            onClick={v.goBack}
+                          >
+                            {v.t?.editDelivery}
+                          </DS.Button>
+                        </div>
+                        <DS.DetailList rows={v.deliveryRows} />
+                      </DS.Card>
+                    </section>
                     <p className="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
                       <>{v.t?.payP}</>
                     </p>
