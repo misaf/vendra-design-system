@@ -185,3 +185,33 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('.vf-shell-header[data-e2e]')).toHaveCount(1);
   });
 }
+
+for (const lang of ['en', 'fa']) {
+  for (const width of [320, 390, 768]) {
+    test(`search controls and results fit at ${width}px (${lang})`, async ({page}) => {
+      await page.setViewportSize({width, height: 844});
+      await openSite(page, 'search', lang);
+      const search = page.getByRole('searchbox');
+      const close = page.locator('.vf-search-controls a');
+      const fits = async () => {
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+          width
+        );
+        const box = await close.boundingBox();
+        expect(box.width).toBeGreaterThanOrEqual(44);
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(width);
+      };
+      await fits();
+      await search.fill('VF-7K2M4Q');
+      await expect(page.locator('.vf-search-result').first()).toBeVisible();
+      await fits();
+      await expectPricesInsideCards(page.locator('.vf-search-result'));
+      await page.locator('.ag-search__clear').tap();
+      await expect(search).toHaveValue('');
+      await fits();
+      await close.tap();
+      await expect(page.locator('.vf-home-top')).toBeVisible();
+    });
+  }
+}

@@ -15,12 +15,12 @@ export function View({v}) {
             tabIndex={-1}
             className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-5"
           >
-            <div className="vf-reading tw:max-w-wide tw:mx-auto">
+            <div className="vf-reading tw:w-full tw:max-w-wide tw:mx-auto">
               <h1 className="ag-display">
                 <>{v.t?.label}</>
               </h1>
               <div className="vf-search-controls tw:flex tw:gap-3 tw:items-end">
-                <div className="vf-search-input tw:flex-1">
+                <div className="vf-search-input tw:min-w-0 tw:flex-1">
                   <DS.SearchField
                     id="vf-q"
                     label={v.t?.label}
@@ -33,6 +33,7 @@ export function View({v}) {
                   icon="x"
                   label={v.t?.close}
                   variant="secondary"
+                  className="tw:flex-none"
                   href={v.href?.home}
                 />
               </div>
