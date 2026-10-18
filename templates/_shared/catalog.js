@@ -2,9 +2,9 @@
 // The VF_API_* lists are sample responses shaped like the Vendra API (uploads/openapi-*.json):
 // ProductCategory, ProductPrice, Multimedia and Product. A live store replaces them with API data;
 // vfProductFromApi turns each Product into the storefront's product object, VF_PRODUCTS.
-// Product.token (e.g. VF-7K2M4Q) remains the stable identity customers quote and the studio searches by.
-// Cards lead with the localized Product.name description and show the code beside the category.
-// Product pages, orders and counter presentation continue to identify designs by their code.
+// Products have no shown names: several designs can look alike, so each one is known by its unique code,
+// Product.token (e.g. VF-7K2M4Q), which customers quote and the studio and sellers search by. Its category
+// says what kind of product it is. Product.name holds a short searchable description that cards don't show.
 // Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';
@@ -331,15 +331,9 @@ export function vfProductId(id) {
   return product ? product.id : '';
 }
 
-// A product's category, e.g. "Flower box", used alongside its name and code.
+// Under the code, a product shows only its category, e.g. "Flower box". Its `sub` description is still searchable.
 export function vfProductSub(product, lang = 'en') {
   return VF_CATEGORY_ITEM[lang][product.cat];
-}
-
-// A descriptive card label from the API's localized name. Empty names fall back to the category;
-// identity and routing always use product.id, never this display label.
-export function vfProductName(product, lang = 'en') {
-  return product[lang]?.sub?.trim() || vfProductSub(product, lang) || product.id;
 }
 
 // A product photo for Picture, with its alt text in `lang`. `asset` is a URL or a photo

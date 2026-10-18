@@ -13,7 +13,6 @@ import {messages} from './messages.js';
 export function ProductCard({
   name,
   subtitle,
-  code,
   price,
   compareAt,
   stock,
@@ -55,9 +54,7 @@ export function ProductCard({
   );
   const accessibleName =
     linkLabel ??
-    (typeof name === 'string' && typeof price === 'string'
-      ? [name, code, price].filter(Boolean).join(' — ')
-      : undefined);
+    (typeof name === 'string' && typeof price === 'string' ? name + ' — ' + price : undefined);
   const linked = !!(href || onClick);
   const title = href ? (
     <Link href={href} className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
@@ -71,9 +68,7 @@ export function ProductCard({
     name
   );
   return (
-    <div
-      className={cx('ag-product', linked && 'ag-product--link', code && 'ag-product--with-code')}
-    >
+    <div className={cx('ag-product', linked && 'ag-product--link')}>
       <div
         className={cx(
           'ag-product__media',
@@ -110,16 +105,7 @@ export function ProductCard({
       <div>
         <h3 className="ag-product__name">{title}</h3>
         <div className="ag-product__meta">
-          {code ? (
-            <div className="ag-product__identity">
-              {subtitle && <span className="ag-product__sub">{subtitle}</span>}
-              <bdi dir="ltr" className="ag-product__code">
-                {code}
-              </bdi>
-            </div>
-          ) : (
-            <span className="ag-product__sub">{subtitle}</span>
-          )}
+          <span className="ag-product__sub">{subtitle}</span>
           <Price value={price} compareAt={compareAt} size="md" className="ag-product__price" />
         </div>
         {stock && <StockStatus stock={stock} hideInStock size="sm" className="ag-product__stock" />}

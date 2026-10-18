@@ -183,8 +183,6 @@ export function View({v}) {
                         <React.Fragment key={$index}>
                           <DS.ProductCard
                             name={p?.name}
-                            code={p?.code}
-                            subtitle={p?.sub}
                             price={p?.price}
                             stock={p?.stock}
                             images={p?.images}

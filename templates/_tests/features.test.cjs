@@ -283,16 +283,6 @@ assert.equal(
 assert.equal(ctx.vfWalletOf(ctx.vfAccountLoad('09120000001')).history[0].amount, 2_000_000);
 assert.equal(ctx.vfWalletOf({}).balance, 0, 'accounts from before balances start at zero');
 
-// Missing descriptive names must still produce useful localized card titles, while codes stay stable.
-for (const lang of ['en', 'fa']) {
-  const product = ctx.vfProduct('VF-7K2M4Q');
-  assert.equal(ctx.vfProductName(product, lang), product[lang].sub);
-  assert.equal(
-    ctx.vfProductName({...product, [lang]: {sub: '   '}}, lang),
-    lang === 'fa' ? 'باکس گل' : 'Flower box'
-  );
-}
-
 console.log(
   'Passed account balance, product codes, delivery days, promo codes, delivery pins, shop occasions, recently viewed products and analytics consent.'
 );

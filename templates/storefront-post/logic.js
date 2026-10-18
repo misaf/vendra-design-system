@@ -2,7 +2,7 @@
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {vfJournalImage} from '../_shared/journal-images.js';
 import {vfCopy} from './copy.js';
-import {vfProductName, vfProductSub, vfProduct, vfProductImage} from '../_shared/catalog.js';
+import {vfProduct, vfProductImage} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
@@ -66,9 +66,7 @@ function vals(page) {
       const p = vfProduct(id);
       return {
         ...S.productLink(id),
-        name: vfProductName(p, L),
-        code: p.id,
-        sub: vfProductSub(p, L),
+        name: p.id,
         price: S.m(p.price),
         stock: p.stock,
         images: [vfProductImage(p, L)]

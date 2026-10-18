@@ -1,12 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {
-  vfProductName,
-  VF_PRODUCTS,
-  vfProductBadge,
-  vfProductImage,
-  vfProductSub
-} from '../_shared/catalog.js';
+import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_MONEY} from '../_shared/formatting.js';
 import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {vfShell, vfStored} from '../_shared/navigation.js';
@@ -47,8 +41,7 @@ function vals(page) {
     toggleFav: S.toggleFav(p.id, []),
     ...S.productLink(p.id),
     images: [vfProductImage(p, L)],
-    name: vfProductName(p, L),
-    code: p.id,
+    name: p.id,
     sub: vfProductSub(p, L),
     badge: vfProductBadge(p, L),
     price: VF_MONEY(p.price, fa),
