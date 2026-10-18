@@ -288,6 +288,21 @@ html {
   border-radius: var(--radius-md);
 }
 
+/* At TV text sizes, a sidebar cannot fit the photo, identifier and price on one line. Keep
+   identifiers intact by giving the amount a separate row in narrow summary cards. */
+[data-density='tv'] .vf-page .ag-osum {
+  container: vf-tv-summary / inline-size;
+}
+@container vf-tv-summary (width < 480px) {
+  .ag-osum__line {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .ag-osum__total {
+    grid-column: 2;
+    justify-content: start;
+  }
+}
+
 .vf-mobile-action .vf-action-total {
   flex: none;
   min-width: max-content;

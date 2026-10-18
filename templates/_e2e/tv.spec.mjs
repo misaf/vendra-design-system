@@ -113,3 +113,30 @@ for (const lang of LANGS) {
     ).toBeGreaterThanOrEqual(40);
   });
 }
+
+for (const lang of LANGS) {
+  test(`narrow TV summaries keep codes and amounts readable (${lang})`, async ({page}) => {
+    await page.setViewportSize({width: 1280, height: 720});
+    await openSite(page, 'bag', lang, {tv: '1', step: 'delivery'});
+    const lines = page.locator('.vf-bag-summary .ag-osum__line');
+    expect(await lines.count()).toBeGreaterThan(0);
+    for (const line of await lines.all()) {
+      const measured = await line.evaluate(element => {
+        const name = element.querySelector('.ag-osum__name');
+        const main = element.querySelector('.ag-osum__main').getBoundingClientRect();
+        const amount = element.querySelector('.ag-osum__total').getBoundingClientRect();
+        const box = element.getBoundingClientRect();
+        return {
+          nameHeight: name.getBoundingClientRect().height,
+          lineHeight: parseFloat(getComputedStyle(name).lineHeight),
+          amountBelow: amount.top >= main.bottom,
+          amountInside: amount.left >= box.left && amount.right <= box.right
+        };
+      });
+      expect(measured.nameHeight).toBeLessThanOrEqual(measured.lineHeight + 1);
+      expect(measured.amountBelow).toBe(true);
+      expect(measured.amountInside).toBe(true);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+  });
+}
