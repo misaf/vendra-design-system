@@ -166,7 +166,17 @@ export function View({v}) {
                   className="vf-shop-active-filters"
                 />
                 <div className="vf-shop-toolbar tw:flex tw:justify-between tw:gap-4 tw:flex-wrap tw:items-end">
-                  <div className="tw:flex tw:gap-2 tw:flex-wrap">
+                  <div
+                    className="vf-shop-quick-filters tw:flex tw:gap-2 tw:flex-wrap"
+                    role="group"
+                    aria-label={v.t?.quickFilters}
+                    tabIndex={v.mob ? 0 : undefined}
+                    onFocus={event => {
+                      const target = /** @type {HTMLElement} */ (event.target);
+                      if (target !== event.currentTarget)
+                        target.scrollIntoView({block: 'nearest', inline: 'nearest'});
+                    }}
+                  >
                     {list(v.chips).map((f, $index) => (
                       <React.Fragment key={$index}>
                         <DS.Chip selected={f?.on} onClick={f?.toggle} aria-pressed={f?.on}>
