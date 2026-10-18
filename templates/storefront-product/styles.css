@@ -57,3 +57,19 @@
     text-align: end;
   }
 }
+
+/* Landscape phones have the width for two compact columns, but little height for a tall photo. */
+@media (height < 480px) and (orientation: landscape) {
+  @container (width >= 600px) {
+    .vf-product-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+    .vf-product-columns .ag-gallery__track {
+      max-height: 70dvh;
+    }
+    .vf-product-columns .ag-gallery__slide img {
+      object-fit: contain;
+    }
+  }
+}

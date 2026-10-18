@@ -185,3 +185,14 @@
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }
+
+@media (height < 480px) and (orientation: landscape) {
+  .vf-page .vf-shopping,
+  .vf-page .vf-form,
+  .vf-page .vf-info {
+    padding-block-start: var(--space-4);
+  }
+  .vf-page .vf-shopping--home {
+    padding-block-start: 0;
+  }
+}

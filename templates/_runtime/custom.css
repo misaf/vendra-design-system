@@ -116,6 +116,15 @@ html {
   min-width: var(--control-h-xs);
 }
 
+/* Short landscape screens need their height for the product. Keep the header, consent and
+   purchase/navigation bars in normal flow, with every control still reachable by scrolling. */
+@media (height < 480px) and (orientation: landscape) {
+  .vf-shell-header,
+  .vf-shell-bottom-bar {
+    position: static;
+  }
+}
+
 
 /* Source: _shared/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
@@ -357,6 +366,17 @@ html {
 .vf-page :is(input, textarea, select):focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
+}
+
+@media (height < 480px) and (orientation: landscape) {
+  .vf-page .vf-shopping,
+  .vf-page .vf-form,
+  .vf-page .vf-info {
+    padding-block-start: var(--space-4);
+  }
+  .vf-page .vf-shopping--home {
+    padding-block-start: 0;
+  }
 }
 
 
@@ -946,6 +966,22 @@ body:has(.vf-presentation) .ag-dialog__foot {
   }
   .vf-product-sizes .ag-choice__desc {
     text-align: end;
+  }
+}
+
+/* Landscape phones have the width for two compact columns, but little height for a tall photo. */
+@media (height < 480px) and (orientation: landscape) {
+  @container (width >= 600px) {
+    .vf-product-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+    .vf-product-columns .ag-gallery__track {
+      max-height: 70dvh;
+    }
+    .vf-product-columns .ag-gallery__slide img {
+      object-fit: contain;
+    }
   }
 }
 

@@ -111,3 +111,12 @@ html {
   min-height: var(--control-h-xs);
   min-width: var(--control-h-xs);
 }
+
+/* Short landscape screens need their height for the product. Keep the header, consent and
+   purchase/navigation bars in normal flow, with every control still reachable by scrolling. */
+@media (height < 480px) and (orientation: landscape) {
+  .vf-shell-header,
+  .vf-shell-bottom-bar {
+    position: static;
+  }
+}

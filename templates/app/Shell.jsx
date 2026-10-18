@@ -11,14 +11,15 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
   // linked element clear of them (scroll-padding in shell.css; WCAG 2.4.11).
   React.useEffect(() => {
     const height = element => /** @type {HTMLElement} */ (element).offsetHeight;
+    const isSticky = element => getComputedStyle(element).position === 'sticky';
     const headers = [...document.querySelectorAll('.vf-shell-header')];
     const bars = [...document.querySelectorAll('.vf-shell-bottom-bar')];
     // Sticky side panels stick only while they fit between the header and the bottom bars.
     const panels = [...document.querySelectorAll('.vf-sticky-panel')];
     const update = () => {
       const root = document.documentElement.style;
-      const bottom = bars.reduce((sum, bar) => sum + height(bar), 0);
-      root.setProperty('--vf-top-bar', Math.max(0, ...headers.map(height)) + 'px');
+      const bottom = bars.filter(isSticky).reduce((sum, bar) => sum + height(bar), 0);
+      root.setProperty('--vf-top-bar', Math.max(0, ...headers.filter(isSticky).map(height)) + 'px');
       root.setProperty('--vf-bottom-bar', bottom + 'px');
       // 6rem: the panels' sticky top (page-layouts.css), plus a little room above the bars.
       const room = innerHeight - 6 * 16 - bottom - 16;
@@ -38,7 +39,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
       requestAnimationFrame(() => {
         const shown = element.offsetHeight > 2 ? element : element.closest('label') || element;
         const box = shown.getBoundingClientRect();
-        const visible = list => list.filter(bar => height(bar) > 0);
+        const visible = list => list.filter(bar => isSticky(bar) && height(bar) > 0);
         const top = Math.max(0, ...visible(headers).map(bar => bar.getBoundingClientRect().bottom));
         const bottom = Math.min(
           innerHeight,
