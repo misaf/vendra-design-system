@@ -23,6 +23,10 @@
   .vf-home-featured-link.ag-btn {
     padding-inline: 0;
   }
+  /* Phones swipe the rows; the prev/next arrows start at 768px. */
+  .vf-shopping--home .ag-carousel__nav {
+    display: none;
+  }
 }
 @container (width < 320px) {
   .vf-home-featured .ag-sechead {

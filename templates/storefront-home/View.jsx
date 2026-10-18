@@ -20,7 +20,7 @@ export function View({v}) {
                 perViewMobile={4.4}
                 itemMin="96px"
                 gap="20px"
-                arrows={v.desk}
+                arrows={true}
                 prevLabel={v.t?.categoriesPrev}
                 nextLabel={v.t?.categoriesNext}
               >
@@ -45,16 +45,26 @@ export function View({v}) {
                     title={v.t?.featA}
                     accent={v.t?.featB}
                     action={
-                      <DS.Button
-                        variant="ghost"
-                        iconEnd="arrow-right"
-                        href={v.readyHref}
-                        size={v.mob ? 'sm' : 'md'}
-                        className="vf-home-featured-link tw:min-h-tap"
-                        aria-label={v.mob ? v.t?.featAllLabel : undefined}
-                      >
-                        <>{v.mob ? v.t?.featAllShort : v.t?.featAll}</>
-                      </DS.Button>
+                      <>
+                        <DS.Button
+                          variant="ghost"
+                          iconEnd="arrow-right"
+                          href={v.readyHref}
+                          size="sm"
+                          className="vf-home-featured-link tw:min-h-tap tw:md:hidden!"
+                          aria-label={v.t?.featAllLabel}
+                        >
+                          <>{v.t?.featAllShort}</>
+                        </DS.Button>
+                        <DS.Button
+                          variant="ghost"
+                          iconEnd="arrow-right"
+                          href={v.readyHref}
+                          className="vf-home-featured-link tw:min-h-tap tw:max-md:hidden!"
+                        >
+                          <>{v.t?.featAll}</>
+                        </DS.Button>
+                      </>
                     }
                   />
                   <p className="tw:m-0 tw:-mt-3 tw:text-secondary tw:max-w-measure">
@@ -93,7 +103,7 @@ export function View({v}) {
                 perViewMobile={2.2}
                 itemMin="150px"
                 gap="20px"
-                arrows={v.desk}
+                arrows={true}
                 prevLabel={v.t?.catPrev}
                 nextLabel={v.t?.catNext}
               >
@@ -119,7 +129,7 @@ export function View({v}) {
                 perViewMobile={2.2}
                 itemMin="200px"
                 gap="20px"
-                arrows={v.desk}
+                arrows={true}
                 prevLabel={v.t?.prev}
                 nextLabel={v.t?.next}
               >
@@ -190,7 +200,7 @@ export function View({v}) {
                   perViewMobile={1.2}
                   itemMin="240px"
                   gap="20px"
-                  arrows={v.desk}
+                  arrows={true}
                   prevLabel={v.t?.postPrev}
                   nextLabel={v.t?.postNext}
                 >

@@ -34,15 +34,15 @@ export function vfNextDelivery(lang) {
     sameDay: false
   };
 }
-// The store's announcement in this language (its shorter phone version on a phone, when it has one),
+// The store's announcement in this language (its shorter phone version with `phone`, when it has one),
 // or '' once the visitor has closed it this session. {delivery} becomes when an order placed now
 // arrives; {freeDelivery} the free-delivery threshold.
-export function vfAnnouncementSource(lang, mobile) {
+export function vfAnnouncementSource(lang, phone) {
   const announcement = VF_STORE.announcement;
-  return (announcement && ((mobile && announcement.mobile?.[lang]) || announcement[lang])) || '';
+  return (announcement && ((phone && announcement.mobile?.[lang]) || announcement[lang])) || '';
 }
-export function vfAnnouncementText(lang, st, mobile = false) {
-  const text = vfAnnouncementSource(lang, mobile);
+export function vfAnnouncementText(lang, st, phone = false) {
+  const text = vfAnnouncementSource(lang, phone);
   if (!text || st.vfAnnouncementClosed) return '';
   try {
     if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
@@ -75,7 +75,6 @@ export function vfShell(self, page) {
   /** @type {'en' | 'fa'} */
   const L = fa ? 'fa' : 'en';
   const T = VF_SHELL[L];
-  const mob = !!props.mobile || (st.vfMobile === undefined ? window.innerWidth < 768 : st.vfMobile);
   const tab =
     page === 'home'
       ? 'home'
@@ -170,8 +169,7 @@ export function vfShell(self, page) {
     hideConsent({vfConsent: value});
   };
   const consent = {
-    desk: consentShown && !mob,
-    mob: consentShown && mob,
+    shown: consentShown,
     accept: () => choose('all'),
     essential: () => choose('essential'),
     close: () => {
@@ -271,10 +269,6 @@ export function vfShell(self, page) {
     fa,
     dir: fa ? 'rtl' : 'ltr',
     tenant: vfPageTenant(props),
-    mob,
-    desk: !mob,
-    previewMobile: !!props.mobile,
-    frameW: mob ? '390px' : 'none',
     nav: {
       shop: isCurrent.shop,
       weddings: isCurrent.weddings,
@@ -291,10 +285,12 @@ export function vfShell(self, page) {
       VF_NAV.focusHeading();
     },
     standalone: !props.store,
-    announcement: vfAnnouncementText(L, st, mob),
+    // Both versions render; CSS shows the phone one below 768px.
+    announcement: vfAnnouncementText(L, st),
+    announcementPhone: vfAnnouncementText(L, st, true),
     // While same-day delivery is open, a delivery announcement links to the same-day designs.
     announcementLink:
-      vfAnnouncementSource(L, mob).includes('{delivery}') && vfNextDelivery(L).sameDay
+      vfAnnouncementSource(L).includes('{delivery}') && vfNextDelivery(L).sameDay
         ? {
             label: T.shopSameDay,
             href:

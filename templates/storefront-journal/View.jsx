@@ -46,7 +46,7 @@ export function View({v}) {
               <>
                 <div className="vf-journal-featured tw:mb-8">
                   <DS.BlogCard
-                    layout={v.leadLayout}
+                    layout="wide"
                     frame="arch"
                     priority={true}
                     title={v.lead?.title}

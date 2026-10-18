@@ -24,9 +24,11 @@ for (const lang of ['en', 'fa']) {
     [258, 1, 190],
     [320, 2, 120],
     [360, 2, 140],
+    [375, 2, 145],
     [390, 2, 155],
     [768, 2, 300],
-    [1024, 4, 180]
+    [1024, 4, 180],
+    [1280, 4, 220]
   ]) {
     test(`readable featured products and compact shop layout at ${width}px (${lang})`, async ({
       page
@@ -108,4 +110,78 @@ for (const lang of ['en', 'fa']) {
       );
     });
   }
+}
+
+// The shell's three tiers come from CSS breakpoints: phones get the compact header and the tab bar,
+// portrait tablets (768–1023px) the menu header with room for the language switch and account and
+// no tab bar, and 1024px up the desktop header. Resizing switches tiers without a reload.
+const TIERS = [
+  [320, 'phone'],
+  [375, 'phone'],
+  [768, 'tablet'],
+  [1024, 'desktop'],
+  [1280, 'desktop']
+];
+async function expectTier(page, width, tier, lang) {
+  const en = lang === 'en';
+  const header = page.locator('.vf-shell-header');
+  const menu = header.getByRole('button', {name: en ? 'Menu' : 'منو', exact: true});
+  const account = header.getByRole('link', {name: en ? 'Account' : 'حساب', exact: true});
+  const tabs = page.locator('.ag-tabbar');
+  await expect(header.locator('.vf-shell-desktop-header')).toBeVisible({
+    visible: tier === 'desktop'
+  });
+  await expect(header.locator('.vf-shell-mobile-header')).toBeVisible({
+    visible: tier !== 'desktop'
+  });
+  await expect(menu).toBeVisible({visible: tier !== 'desktop'});
+  await expect(account).toBeVisible({visible: tier !== 'phone'});
+  await expect(header.locator('.ag-lang:visible')).toHaveCount(tier === 'phone' ? 0 : 1);
+  await expect(tabs).toBeVisible({visible: tier === 'phone'});
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    width
+  );
+}
+
+for (const lang of ['en', 'fa']) {
+  for (const [width, tier] of TIERS)
+    test(`the shell shows its ${tier} layout at ${width}px (${lang})`, async ({page}) => {
+      await page.setViewportSize({width, height: 900});
+      await openSite(page, 'product', lang);
+      await expectTier(page, width, tier, lang);
+      // The product's own add-to-bag: a sticky bar above the tab bar on phones, in the buy box from 768px.
+      await expect(page.locator('.vf-product-mobile-action')).toBeVisible({
+        visible: tier === 'phone'
+      });
+      await expect(page.locator('.vf-product-add-button')).toBeVisible({
+        visible: tier !== 'phone'
+      });
+      if (tier !== 'desktop') {
+        await page
+          .locator('.vf-shell-header')
+          .getByRole('button', {name: lang === 'en' ? 'Menu' : 'منو', exact: true})
+          .click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+      }
+    });
+
+  test(`resizing moves between the tiers in place (${lang})`, async ({page}) => {
+    await page.setViewportSize({width: 375, height: 900});
+    await openSite(page, 'home', lang);
+    // Mark the header: CSS switches tiers, so the same element stays through every width.
+    await page.evaluate(() =>
+      document.querySelector('.vf-shell-header').setAttribute('data-e2e', '1')
+    );
+    await page
+      .locator('.vf-shell-header')
+      .getByRole('button', {name: lang === 'en' ? 'Menu' : 'منو', exact: true})
+      .click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    for (const [width, tier] of [...TIERS, ...[...TIERS].reverse()]) {
+      await page.setViewportSize({width, height: 900});
+      if (tier === 'desktop') await expect(page.getByRole('dialog')).toHaveCount(0);
+      await expectTier(page, width, tier, lang);
+    }
+    await expect(page.locator('.vf-shell-header[data-e2e]')).toHaveCount(1);
+  });
 }

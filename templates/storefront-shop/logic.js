@@ -44,14 +44,11 @@ export function usePage(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
-      page._shopMedia = window.matchMedia('(max-width: 1023px)');
-      page._shopResize = () =>
-        page.setState({
-          compactShop: page._shopMedia.matches,
-          ...(!page._shopMedia.matches ? {filterOpen: false} : {})
-        });
+      // The Filters dialog belongs to the compact layout (below 1024px, CSS); widening the window
+      // to the sidebar closes it.
+      page._shopMedia = window.matchMedia('(width >= 1024px)');
+      page._shopResize = () => page._shopMedia.matches && page.setState({filterOpen: false});
       page._shopMedia.addEventListener('change', page._shopResize);
-      page._shopResize();
     },
     willUnmount() {
       clearTimeout(page._priceTimer);
@@ -181,7 +178,6 @@ function vals(page) {
     });
   return {
     ...S,
-    compactShop: S.mob || (page.state.compactShop ?? window.innerWidth < 1024),
     migration: C.migration,
     filterOpen: !!page.state.filterOpen,
     openFilters: () =>

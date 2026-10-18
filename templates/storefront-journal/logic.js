@@ -77,7 +77,6 @@ function vals(page) {
     },
     loading: route.demo === 'loading',
     noStories: !all.length,
-    leadLayout: S.mob ? 'stack' : 'wide',
     t: {
       ...S.t,
       ...C

@@ -39,11 +39,6 @@
     scroll-padding-inline: var(--space-1);
     scrollbar-width: thin;
   }
-  .vf-shop-quick-filters:focus-visible {
-    outline: var(--focus-width) solid var(--focus-ring);
-    outline-offset: var(--focus-offset);
-    border-radius: var(--radius-md);
-  }
   .vf-shop-toolbar > div:last-child {
     justify-content: flex-end;
   }

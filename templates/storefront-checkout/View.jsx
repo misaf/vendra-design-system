@@ -14,16 +14,30 @@ export function View({v}) {
             {v.paying ? (
               <>
                 <div className="vf-checkout-steps tw:mb-5h">
-                  <DS.Stepper
-                    label={v.t?.steps}
-                    steps={v.steps}
-                    current={2}
-                    onStepClick={v.stepClick}
-                    doneLabel={v.t?.doneStep}
-                    formatNumber={v.fmt}
-                    compact={v.mob}
-                    captionFormat={v.caption}
-                  />
+                  <div className="tw:md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={2}
+                      onStepClick={v.stepClick}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+
+                      compact={true}
+                    />
+                  </div>
+                  <div className="tw:max-md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={2}
+                      onStepClick={v.stepClick}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+                    />
+                  </div>
                 </div>
                 <div className="vf-checkout-heading tw:mb-6">
                   <h1>
@@ -205,20 +219,18 @@ export function View({v}) {
                       <>{v.t?.safe}</>
                     </DS.Alert>
                     <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                      {v.desk ? (
-                        <>
-                          <DS.Button
-                            variant="primary"
-                            size="lg"
-                            iconEnd="arrow-right"
-                            onClick={v.place}
-                            loading={v.busy}
-                            disabled={v.placeDisabled}
-                          >
-                            <>{v.t?.place}</>
-                          </DS.Button>
-                        </>
-                      ) : null}
+                      <div className="tw:contents tw:max-md:hidden">
+                        <DS.Button
+                          variant="primary"
+                          size="lg"
+                          iconEnd="arrow-right"
+                          onClick={v.place}
+                          loading={v.busy}
+                          disabled={v.placeDisabled}
+                        >
+                          <>{v.t?.place}</>
+                        </DS.Button>
+                      </div>
                       <DS.Button
                         variant="ghost"
                         size="lg"
@@ -240,15 +252,28 @@ export function View({v}) {
             ) : null}
             {v.bankTrip ? (
               <div className="vf-checkout-bank tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-5h">
-                <DS.Stepper
-                  label={v.t?.steps}
-                  steps={v.steps}
-                  current={2}
-                  doneLabel={v.t?.doneStep}
-                  formatNumber={v.fmt}
-                  compact={v.mob}
-                  captionFormat={v.caption}
-                />
+                <div className="tw:md:hidden">
+                  <DS.Stepper
+                    label={v.t?.steps}
+                    steps={v.steps}
+                    current={2}
+                    doneLabel={v.t?.doneStep}
+                    formatNumber={v.fmt}
+                    captionFormat={v.caption}
+
+                    compact={true}
+                  />
+                </div>
+                <div className="tw:max-md:hidden">
+                  <DS.Stepper
+                    label={v.t?.steps}
+                    steps={v.steps}
+                    current={2}
+                    doneLabel={v.t?.doneStep}
+                    formatNumber={v.fmt}
+                    captionFormat={v.caption}
+                  />
+                </div>
                 <DS.PaymentStatus
                   status={v.bankTrip?.status}
                   amount={v.bankTrip?.amount}
@@ -265,15 +290,28 @@ export function View({v}) {
             {v.done ? (
               <>
                 <div className="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-5h">
-                  <DS.Stepper
-                    label={v.t?.steps}
-                    steps={v.steps}
-                    current={3}
-                    doneLabel={v.t?.doneStep}
-                    formatNumber={v.fmt}
-                    compact={v.mob}
-                    captionFormat={v.caption}
-                  />
+                  <div className="tw:md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={3}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+
+                      compact={true}
+                    />
+                  </div>
+                  <div className="tw:max-md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={3}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+                    />
+                  </div>
                   <DS.EmptyState
                     icon="check"
                     tone="accent"

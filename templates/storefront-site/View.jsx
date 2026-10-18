@@ -47,7 +47,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -60,7 +59,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -73,7 +71,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -86,7 +83,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -99,7 +95,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -112,7 +107,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -125,7 +119,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -138,7 +131,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -151,7 +143,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -164,7 +155,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -177,7 +167,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -190,7 +179,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -203,7 +191,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -216,7 +203,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -229,7 +215,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -242,7 +227,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -255,7 +239,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -268,7 +251,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
@@ -281,7 +263,6 @@ export function View({v}) {
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
-                mobile={v.mobile}
                 go={v.go}
                 store={v.store}
                 setLang={v.setLang}
