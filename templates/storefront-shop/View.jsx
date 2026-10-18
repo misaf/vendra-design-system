@@ -22,144 +22,128 @@ export function View({v}) {
               accent={v.t?.titleB}
             />
             <div className="vf-shop-columns tw:flex tw:flex-wrap tw:gap-x-7 tw:gap-y-4 tw:items-start">
-              {!v.compactShop ? (
-                <>
-                  <aside className="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 vf-sticky-panel tw:[flex:1_1_240px] tw:max-w-sidebar">
-                    <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
-                      <>{v.t?.cats}</>
-                    </div>
-                    {list(v.categories).map((c, $index) => (
-                      <React.Fragment key={$index}>
-                        {c?.on ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={c?.pick}
-                              aria-pressed="true"
-                              className="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-medium tw:text-start tw:cursor-pointer"
-                            >
-                              <span>
-                                <>{c?.label}</>
-                              </span>
-                              <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                                <>{c?.count}</>
-                              </span>
-                            </button>
-                          </>
-                        ) : null}
-                        {c?.off ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={c?.pick}
-                              aria-pressed="false"
-                              className="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"
-                            >
-                              <span>
-                                <>{c?.label}</>
-                              </span>
-                              <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                                <>{c?.count}</>
-                              </span>
-                            </button>
-                          </>
-                        ) : null}
-                      </React.Fragment>
-                    ))}
-                    <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
-                      <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
-                        <legend className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">
-                          <>{v.t?.occasion}</>
-                        </legend>
-                        <div className="tw:flex tw:flex-wrap tw:gap-2">
-                          {list(v.occasionOptions).map((o, $index) => (
-                            <React.Fragment key={$index}>
-                              <DS.Chip selected={o?.on} onClick={o?.pick}>
-                                <>{o?.label}</>
-                              </DS.Chip>
-                            </React.Fragment>
-                          ))}
-                        </div>
-                      </fieldset>
-                      <DS.Select
-                        id="vf-shop-date"
-                        label={v.t?.deliverOn}
-                        hint={v.t?.dateHint}
-                        value={v.date}
-                        options={v.dateOptions}
-                        onChange={v.setDate}
-                      />
-                      <div className="tw:flex tw:flex-col tw:gap-2">
-                        <span id="vf-price-label" className="ag-field__label">
-                          <>{v.migration?.price}</>
-                        </span>
-                        <DS.RangeSlider
-                          labelledBy="vf-price-label"
-                          min={0}
-                          max={v.priceMax}
-                          step={100000}
-                          value={v.price}
-                          onChange={v.setPrice}
-                          formatValue={v.formatPrice}
-                          labels={v.priceLabels}
-                        />
-                      </div>
-                      <DS.Switch
-                        label={v.migration?.stock}
-                        checked={v.inStock}
-                        onChange={v.setStock}
-                      />
-                    </div>
-                  </aside>
-                </>
-              ) : null}
-              {v.compactShop ? (
-                <>
-                  <div
-                    role="group"
-                    aria-label={v.t?.cats}
-                    className="vf-shop-mobile-categories tw:flex tw:gap-2 tw:w-full tw:overflow-x-auto tw:pb-1 tw:[scrollbar-width:none]"
-                  >
-                    {list(v.categories).map((c, $index) => (
-                      <React.Fragment key={$index}>
-                        <div className="vf-shop-category-chip tw:flex-none">
-                          <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
-                            <span className="vf-shop-category-label tw:whitespace-nowrap">
-                              <>
-                                {c?.label}
-                                {' \u00b7 '}
-                                {c?.count}
-                              </>
-                            </span>
+              <aside className="vf-shop-sidebar tw:max-lg:hidden tw:flex tw:flex-col tw:gap-1 vf-sticky-panel tw:[flex:1_1_240px] tw:max-w-sidebar">
+                <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
+                  <>{v.t?.cats}</>
+                </div>
+                {list(v.categories).map((c, $index) => (
+                  <React.Fragment key={$index}>
+                    {c?.on ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={c?.pick}
+                          aria-pressed="true"
+                          className="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-medium tw:text-start tw:cursor-pointer"
+                        >
+                          <span>
+                            <>{c?.label}</>
+                          </span>
+                          <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
+                            <>{c?.count}</>
+                          </span>
+                        </button>
+                      </>
+                    ) : null}
+                    {c?.off ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={c?.pick}
+                          aria-pressed="false"
+                          className="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"
+                        >
+                          <span>
+                            <>{c?.label}</>
+                          </span>
+                          <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
+                            <>{c?.count}</>
+                          </span>
+                        </button>
+                      </>
+                    ) : null}
+                  </React.Fragment>
+                ))}
+                <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
+                  <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
+                    <legend className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">
+                      <>{v.t?.occasion}</>
+                    </legend>
+                    <div className="tw:flex tw:flex-wrap tw:gap-2">
+                      {list(v.occasionOptions).map((o, $index) => (
+                        <React.Fragment key={$index}>
+                          <DS.Chip selected={o?.on} onClick={o?.pick}>
+                            <>{o?.label}</>
                           </DS.Chip>
-                        </div>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </>
-              ) : null}
-              <section className="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
-                {v.compactShop ? (
-                  <>
-                    <div className="vf-shop-mobile-bar tw:flex tw:gap-3 tw:items-center">
-                      <DS.Button
-                        variant="secondary"
-                        onClick={v.openFilters}
-                        iconStart="sliders-horizontal"
-                      >
-                        <>{v.filtersLabel}</>
-                      </DS.Button>
-                      <div className="tw:flex-1 tw:min-w-0">
-                        <DS.Select
-                          aria-label={v.t?.sort}
-                          value={v.sort}
-                          options={v.sortOptions}
-                          onChange={v.setSort}
-                        />
-                      </div>
+                        </React.Fragment>
+                      ))}
                     </div>
-                  </>
-                ) : null}
+                  </fieldset>
+                  <DS.Select
+                    id="vf-shop-date"
+                    label={v.t?.deliverOn}
+                    hint={v.t?.dateHint}
+                    value={v.date}
+                    options={v.dateOptions}
+                    onChange={v.setDate}
+                  />
+                  <div className="tw:flex tw:flex-col tw:gap-2">
+                    <span id="vf-price-label" className="ag-field__label">
+                      <>{v.migration?.price}</>
+                    </span>
+                    <DS.RangeSlider
+                      labelledBy="vf-price-label"
+                      min={0}
+                      max={v.priceMax}
+                      step={100000}
+                      value={v.price}
+                      onChange={v.setPrice}
+                      formatValue={v.formatPrice}
+                      labels={v.priceLabels}
+                    />
+                  </div>
+                  <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
+                </div>
+              </aside>
+              <div
+                role="group"
+                aria-label={v.t?.cats}
+                className="vf-shop-mobile-categories tw:lg:hidden tw:flex tw:gap-2 tw:w-full tw:overflow-x-auto tw:pb-1 tw:[scrollbar-width:none]"
+              >
+                {list(v.categories).map((c, $index) => (
+                  <React.Fragment key={$index}>
+                    <div className="vf-shop-category-chip tw:flex-none">
+                      <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
+                        <span className="vf-shop-category-label tw:whitespace-nowrap">
+                          <>
+                            {c?.label}
+                            {' \u00b7 '}
+                            {c?.count}
+                          </>
+                        </span>
+                      </DS.Chip>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+              <section className="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
+                <div className="vf-shop-mobile-bar tw:lg:hidden tw:flex tw:gap-3 tw:items-center">
+                  <DS.Button
+                    variant="secondary"
+                    onClick={v.openFilters}
+                    iconStart="sliders-horizontal"
+                  >
+                    <>{v.filtersLabel}</>
+                  </DS.Button>
+                  <div className="tw:flex-1 tw:min-w-0">
+                    <DS.Select
+                      aria-label={v.t?.sort}
+                      value={v.sort}
+                      options={v.sortOptions}
+                      onChange={v.setSort}
+                    />
+                  </div>
+                </div>
                 <DS.FilterBar
                   filters={list(v.activeFilters)}
                   onClearAll={v.clearFilters}
@@ -170,7 +154,6 @@ export function View({v}) {
                     className="vf-shop-quick-filters tw:flex tw:gap-2 tw:flex-wrap"
                     role="group"
                     aria-label={v.t?.quickFilters}
-                    tabIndex={v.mob ? 0 : undefined}
                     onFocus={event => {
                       const target = /** @type {HTMLElement} */ (event.target);
                       if (target !== event.currentTarget)
@@ -194,18 +177,14 @@ export function View({v}) {
                     >
                       <>{v.countLabel}</>
                     </span>
-                    {!v.compactShop ? (
-                      <>
-                        <div className="vf-shop-sorting tw:w-[200px]">
-                          <DS.Select
-                            aria-label={v.t?.sort}
-                            value={v.sort}
-                            options={v.sortOptions}
-                            onChange={v.setSort}
-                          />
-                        </div>
-                      </>
-                    ) : null}
+                    <div className="vf-shop-sorting tw:max-lg:hidden tw:w-[200px]">
+                      <DS.Select
+                        aria-label={v.t?.sort}
+                        value={v.sort}
+                        options={v.sortOptions}
+                        onChange={v.setSort}
+                      />
+                    </div>
                   </div>
                 </div>
                 {v.loading ? (

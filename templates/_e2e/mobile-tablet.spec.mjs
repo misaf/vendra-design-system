@@ -34,8 +34,8 @@ for (const lang of ['en', 'fa']) {
   }) => {
     await page.setViewportSize({width: 768, height: 1024});
     await openSite(page, 'shop', lang);
-    await expect(page.locator('.vf-shop-sidebar')).toHaveCount(0);
-    await expectTapTarget(page.locator('.ag-lang button').first());
+    await expect(page.locator('.vf-shop-sidebar')).toBeHidden();
+    await expectTapTarget(page.locator('.vf-shell-header .ag-lang:visible button').first());
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
       768
     );

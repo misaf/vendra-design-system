@@ -14,16 +14,30 @@ export function View({v}) {
             {v.hasItems ? (
               <>
                 <div className="vf-bag-steps tw:mb-5h">
-                  <DS.Stepper
-                    label={v.t?.steps}
-                    steps={v.steps}
-                    current={v.stepIndex}
-                    onStepClick={v.stepClick}
-                    doneLabel={v.t?.doneStep}
-                    formatNumber={v.fmt}
-                    compact={v.mob}
-                    captionFormat={v.caption}
-                  />
+                  <div className="tw:md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={v.stepIndex}
+                      onStepClick={v.stepClick}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+
+                      compact={true}
+                    />
+                  </div>
+                  <div className="tw:max-md:hidden">
+                    <DS.Stepper
+                      label={v.t?.steps}
+                      steps={v.steps}
+                      current={v.stepIndex}
+                      onStepClick={v.stepClick}
+                      doneLabel={v.t?.doneStep}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+                    />
+                  </div>
                 </div>
                 {v.onBag ? (
                   <>
@@ -392,36 +406,34 @@ export function View({v}) {
                         />
                       </>
                     ) : null}
-                    {v.desk ? (
-                      <>
-                        {v.onBag ? (
-                          <>
-                            <DS.Button
-                              variant="primary"
-                              size="lg"
-                              block={true}
-                              iconEnd="arrow-right"
-                              onClick={v.toDelivery}
-                            >
-                              <>{v.t?.toDelivery}</>
-                            </DS.Button>
-                          </>
-                        ) : null}
-                        {v.onDelivery ? (
-                          <>
-                            <DS.Button
-                              variant="primary"
-                              size="lg"
-                              block={true}
-                              iconEnd="arrow-right"
-                              onClick={v.next}
-                            >
-                              <>{v.t?.next}</>
-                            </DS.Button>
-                          </>
-                        ) : null}
-                      </>
-                    ) : null}
+                    <div className="tw:contents tw:max-md:hidden">
+                      {v.onBag ? (
+                        <>
+                          <DS.Button
+                            variant="primary"
+                            size="lg"
+                            block={true}
+                            iconEnd="arrow-right"
+                            onClick={v.toDelivery}
+                          >
+                            <>{v.t?.toDelivery}</>
+                          </DS.Button>
+                        </>
+                      ) : null}
+                      {v.onDelivery ? (
+                        <>
+                          <DS.Button
+                            variant="primary"
+                            size="lg"
+                            block={true}
+                            iconEnd="arrow-right"
+                            onClick={v.next}
+                          >
+                            <>{v.t?.next}</>
+                          </DS.Button>
+                        </>
+                      ) : null}
+                    </div>
                     {v.onDelivery ? (
                       <>
                         <DS.Button

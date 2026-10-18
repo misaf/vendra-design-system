@@ -84,7 +84,6 @@ function vfSiteInitial(props) {
     lang: new URLSearchParams(location.search).has('lang')
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
-    mobile: null,
     // The demo's sample bag and saved items stand in only when nothing was handed over.
     bag: vfJoinLines(
       Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
@@ -408,7 +407,6 @@ function vals(page) {
           saved: ids
         })
     },
-    mobile: s.mobile != null ? s.mobile : !!page.props.mobile,
     // replace: refine the current page (e.g. shop filters) without adding a history entry.
     go: (r, replace) => page.navigate(r, !!replace),
     // React Aria links: in-site URLs switch the view in place; anything else loads normally.

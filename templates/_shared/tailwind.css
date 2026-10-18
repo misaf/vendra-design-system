@@ -12,6 +12,8 @@
 @theme inline {
   --*: initial;
   --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
   --font-body: var(--font-body);
   --font-display: var(--font-display);
   --font-weight-medium: 500;

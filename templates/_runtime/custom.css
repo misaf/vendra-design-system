@@ -2,7 +2,7 @@
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 
 /* Source: _shared/shell.css */
-/* Template document defaults and preview sizing. */
+/* Template document defaults. */
 body {
   margin: 0;
 }
@@ -11,10 +11,6 @@ a {
 }
 a:hover {
   color: var(--accent-hover);
-}
-[data-vf-preview='true'] {
-  max-width: 390px;
-  contain: layout;
 }
 .vf-page,
 .vf-page * {
@@ -36,29 +32,31 @@ a:hover {
     min-width: 0;
   }
 }
-/* Desktop consent: one slim bar along the bottom (title, text, choices, close) so it never covers filters or products.
-   The banner markup is shared with the phone layout, where it stays a stacked card above the tab bar. */
-.vf-shell-consent-bar .vf-shell-consent {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
-  align-items: center;
-  column-gap: var(--space-5);
-  border-radius: 0;
-  box-shadow: none;
-  padding: var(--space-3) var(--space-6);
-}
-.vf-shell-consent-bar .vf-shell-consent > div:first-child {
-  display: contents;
-}
-.vf-shell-consent-bar .vf-shell-consent > p {
-  order: 1;
-}
-.vf-shell-consent-bar .vf-shell-consent > div:last-child {
-  order: 2;
-  flex-wrap: nowrap;
-}
-.vf-shell-consent-bar .vf-shell-consent-close {
-  order: 3;
+/* From 768px the consent notice is one slim bar along the bottom (title, text, choices, close), so it
+   never covers filters or products. On phones the same markup stays a stacked card above the tab bar. */
+@media (width >= 768px) {
+  .vf-shell-consent-bar .vf-shell-consent {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: var(--space-5);
+    border-radius: 0;
+    box-shadow: none;
+    padding: var(--space-3) var(--space-6);
+  }
+  .vf-shell-consent-bar .vf-shell-consent > div:first-child {
+    display: contents;
+  }
+  .vf-shell-consent-bar .vf-shell-consent > p {
+    order: 1;
+  }
+  .vf-shell-consent-bar .vf-shell-consent > div:last-child {
+    order: 2;
+    flex-wrap: nowrap;
+  }
+  .vf-shell-consent-bar .vf-shell-consent-close {
+    order: 3;
+  }
 }
 
 /* Keyboard focus, in-page links and scrollIntoView stop clear of the sticky header and bottom
@@ -417,6 +415,10 @@ html {
   }
   .vf-home-featured-link.ag-btn {
     padding-inline: 0;
+  }
+  /* Phones swipe the rows; the prev/next arrows start at 768px. */
+  .vf-shopping--home .ag-carousel__nav {
+    display: none;
   }
 }
 @container (width < 320px) {
@@ -979,11 +981,6 @@ body:has(.vf-presentation) .ag-dialog__foot {
     padding: var(--space-1);
     scroll-padding-inline: var(--space-1);
     scrollbar-width: thin;
-  }
-  .vf-shop-quick-filters:focus-visible {
-    outline: var(--focus-width) solid var(--focus-ring);
-    outline-offset: var(--focus-offset);
-    border-radius: var(--radius-md);
   }
   .vf-shop-toolbar > div:last-child {
     justify-content: flex-end;

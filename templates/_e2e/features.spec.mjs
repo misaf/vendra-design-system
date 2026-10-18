@@ -1545,12 +1545,15 @@ test('the announcement says when an order placed now arrives, on every page', as
   await openSite(page, 'home', 'en');
   const bar = page.getByRole('region', {name: 'Store news'});
   // Phones get the store's shorter version: the delivery line without the free-delivery sentence.
+  // Both versions are in the page and CSS shows one, so read the rendered text.
+  const shown = {useInnerText: true};
   if (info.project.name === 'mobile') {
-    await expect(bar).toContainText('Order by 18:00 for same-day delivery in Karaj.');
-    await expect(bar).not.toContainText('Free delivery');
+    await expect(bar).toContainText('Order by 18:00 for same-day delivery in Karaj.', shown);
+    await expect(bar).not.toContainText('Free delivery', shown);
   } else
     await expect(bar).toContainText(
-      'Order by 18:00 for same-day delivery in Karaj. Free delivery over 5,000,000 Toman.'
+      'Order by 18:00 for same-day delivery in Karaj. Free delivery over 5,000,000 Toman.',
+      shown
     );
   await expect(bar.getByRole('link', {name: 'Shop same-day'})).toHaveAttribute(
     'href',
@@ -1634,9 +1637,19 @@ test('presentation sharing preserves the quoted size and extras on the customerâ
   await phone.goto(shared.href);
   await expect(phone.getByRole('radio', {name: 'Classic', exact: true})).toBeChecked();
   await expect(phone.getByRole('checkbox', {name: /Glass vase/})).toBeChecked();
-  await expect(phone.getByText(/5,550,000 Toman/).first()).toBeVisible();
+  await expect(
+    phone
+      .getByText(/5,550,000 Toman/)
+      .locator('visible=true')
+      .first()
+  ).toBeVisible();
   await phone.reload();
-  await expect(phone.getByText(/5,550,000 Toman/).first()).toBeVisible();
+  await expect(
+    phone
+      .getByText(/5,550,000 Toman/)
+      .locator('visible=true')
+      .first()
+  ).toBeVisible();
   // The same product opens with the quote's choices in Persian too.
   shared.searchParams.set('lang', 'fa');
   await phone.goto(shared.href);

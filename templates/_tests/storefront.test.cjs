@@ -278,7 +278,7 @@ for (const folder of fs
   const {ctx: c, history} = context();
   vm.runInContext(sharedLogic, c);
   vm.runInContext(script + '\nthis.Logic=Component;', c);
-  const logic = new c.Logic({lang: 'en', tenant: 'default', mobile: false});
+  const logic = new c.Logic({lang: 'en', tenant: 'default'});
   const values = logic.renderVals();
   assert.ok(values);
   parsed++;
@@ -295,7 +295,7 @@ for (const folder of fs
       hc.location.search = '?lang=en&view=bag&lines=VF-8RD5WN...2';
       vm.runInContext(sharedLogic, hc);
       vm.runInContext(script + '\nthis.Logic=Component;', hc);
-      const handed = new hc.Logic({lang: 'en', tenant: 'default', mobile: false});
+      const handed = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual(
         JSON.parse(JSON.stringify(handed.state.bag.map(line => [line.id, line.qty]))),
         [['VF-8RD5WN', 2]],
@@ -307,7 +307,7 @@ for (const folder of fs
         'the link is dropped'
       );
       hc.location.search = '?lang=en&view=saved&ids=VF-3HX9TP,VF-NOPE00';
-      const shortlisted = new hc.Logic({lang: 'en', tenant: 'default', mobile: false});
+      const shortlisted = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
     }
     logic.navigate('faq');
@@ -387,11 +387,12 @@ for (const folder of fs
     assert.equal(logic.state.order.totals.total, 8300000);
     assert.equal(logic.state.order.delivery.name, 'Sample');
   } else {
-    assert.equal(values.mob, true);
+    // Phone, tablet and desktop layouts come from CSS breakpoints, not a JavaScript flag.
+    assert.ok(!('mob' in values) && !('desk' in values), 'no JavaScript layout breakpoint');
     assert.ok(values.href.shop.includes('view=shop'));
   }
   if (folder === 'storefront-faq') {
-    const fa = new c.Logic({lang: 'fa', tenant: 'clay', mobile: false}).renderVals();
+    const fa = new c.Logic({lang: 'fa', tenant: 'clay'}).renderVals();
     assert.equal(fa.dir, 'rtl');
     assert.equal(fa.tenant, 'clay');
     assert.equal(fa.groups.length, 3);
@@ -695,3 +696,15 @@ for (const name of [
 }
 console.log('Passed recursive English/Persian copy parity, including nested labels and lists.');
 // The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
+// Layout never branches on a JavaScript breakpoint: the shell and every view render all their
+// structures and CSS picks one, so the first paint already matches the final layout.
+for (const file of [
+  'templates/app/Shell.jsx',
+  ...fs
+    .readdirSync(path.join(root, 'templates'))
+    .filter(folder => folder.startsWith('storefront-'))
+    .flatMap(folder => ['templates/' + folder + '/View.jsx', 'templates/' + folder + '/logic.js'])
+    .filter(file => fs.existsSync(path.join(root, file)))
+])
+  assert.doesNotMatch(read(file), /\b(v|S)\.(mob|desk|compactShop)\b/, file);
+console.log('Passed: no view lays out from a JavaScript breakpoint.');

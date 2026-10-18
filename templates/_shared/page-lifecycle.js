@@ -1,4 +1,4 @@
-// Responsive state, heading focus, announcements and SEO for storefront pages.
+// Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
@@ -30,19 +30,11 @@ export function vfApplyTenant(tenant) {
   window.VF_TENANT = tenant;
   if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
 }
-// What every storefront page does around its own logic: track the phone breakpoint (vfMobile), send
-// the page-view analytics event, and once each render settles set the document language and
+// What every storefront page does around its own logic: send the page-view analytics event, and once each render settles set the document language and
 // direction, move focus to a new heading and announce it, and update <head> (title, alternates).
 export function useStorefrontPage(page) {
   useLifecycle(page, {
     didMount() {
-      page._vfMedia = window.matchMedia('(max-width:767px)');
-      page._vfResize = () =>
-        page.setState({
-          vfMobile: page._vfMedia.matches
-        });
-      page._vfMedia.addEventListener('change', page._vfResize);
-      page._vfResize();
       const route = vfPageRoute(page.props);
       const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
         page._vfPage
@@ -60,7 +52,6 @@ export function useStorefrontPage(page) {
       vfAnnounce(page);
     },
     willUnmount() {
-      page._vfMedia && page._vfMedia.removeEventListener('change', page._vfResize);
       clearTimeout(page._vfTimer);
     }
   });

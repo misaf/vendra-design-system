@@ -113,22 +113,18 @@ export function View({v}) {
                     onClick={v.toggleSave}
                     className="vf-product-save"
                   />
-                  {v.desk ? (
-                    <>
-                      <div className="vf-product-add-button tw:min-w-0 vf-product-add tw:[flex:1_1_260px]">
-                        <DS.Button
-                          variant="primary"
-                          size="lg"
-                          block={true}
-                          iconStart="shopping-bag"
-                          onClick={v.add}
-                          disabled={v.unavailable}
-                        >
-                          <>{v.addLabel}</>
-                        </DS.Button>
-                      </div>
-                    </>
-                  ) : null}
+                  <div className="vf-product-add-button tw:max-md:hidden tw:min-w-0 vf-product-add tw:[flex:1_1_260px]">
+                    <DS.Button
+                      variant="primary"
+                      size="lg"
+                      block={true}
+                      iconStart="shopping-bag"
+                      onClick={v.add}
+                      disabled={v.unavailable}
+                    >
+                      <>{v.addLabel}</>
+                    </DS.Button>
+                  </div>
                 </div>
                 <div className="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet">
                   <DS.Icon name="truck" size={18} />
