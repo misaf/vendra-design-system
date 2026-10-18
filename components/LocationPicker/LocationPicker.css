@@ -11,6 +11,14 @@
 .ag-location--compact .ag-location__map {
   block-size: 220px;
 }
+/* Keep map zoom actions as easy to tap as the form controls beside them. */
+@media (any-pointer: coarse) {
+  .ag-location .leaflet-control-zoom.leaflet-bar a {
+    min-inline-size: var(--tap-min);
+    min-block-size: var(--tap-min);
+    line-height: var(--tap-min);
+  }
+}
 /* The pin stays at the map's centre, its point on the chosen spot. Map tiles never mirror, so the
    pin is placed and shadowed in the map's own (physical, untinted) terms. */
 /* stylelint-disable property-disallowed-list, function-disallowed-list */

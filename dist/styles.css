@@ -593,6 +593,12 @@ a.ag-iconbtn {
   background: var(--surface-strong);
   color: var(--text-on-strong);
 }
+@media (any-pointer: coarse) {
+  .ag-lang button {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
+}
 /* Forced colours drop the pressed fill: the current language takes the system highlight. */
 @media (forced-colors: active) {
   .ag-lang button[aria-pressed='true'] {
@@ -3742,6 +3748,14 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-location--compact .ag-location__map {
   block-size: 220px;
+}
+/* Keep map zoom actions as easy to tap as the form controls beside them. */
+@media (any-pointer: coarse) {
+  .ag-location .leaflet-control-zoom.leaflet-bar a {
+    min-inline-size: var(--tap-min);
+    min-block-size: var(--tap-min);
+    line-height: var(--tap-min);
+  }
 }
 /* The pin stays at the map's centre, its point on the chosen spot. Map tiles never mirror, so the
    pin is placed and shadowed in the map's own (physical, untinted) terms. */

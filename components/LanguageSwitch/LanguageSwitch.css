@@ -25,6 +25,12 @@
   background: var(--surface-strong);
   color: var(--text-on-strong);
 }
+@media (any-pointer: coarse) {
+  .ag-lang button {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
+}
 /* Forced colours drop the pressed fill: the current language takes the system highlight. */
 @media (forced-colors: active) {
   .ag-lang button[aria-pressed='true'] {
