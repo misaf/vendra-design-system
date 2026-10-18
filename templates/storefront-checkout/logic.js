@@ -297,6 +297,11 @@ function vals(page) {
       page.props.go({view: 'bag', step: 'delivery'});
     },
     totalLabel: m(totals.total),
+    deliveryRows: [
+      {label: C.to, value: delivery.name + ' · \u2068' + (delivery.phone || '') + '\u2069'},
+      {label: C.address, value: vfZone(delivery.zone)[L] + ' · ' + delivery.address},
+      {label: C.when, value: slotLabel}
+    ],
     caption: C.caption,
     payLabels: C.payLabels,
     copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
