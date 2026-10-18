@@ -374,6 +374,19 @@ function vals(page) {
             bag: p.bag.filter(x => x.id !== id)
           };
         }),
+      // Undo restores the captured configuration and its original position, without repricing it.
+      restoreLine: (line, index) =>
+        page.setState(p => {
+          if (p.bag.some(item => item.id === line.id)) return null;
+          window.VF_TRACK.event('add_to_cart', {
+            items: vfLineItems([line]),
+            value: line.unit * line.qty
+          });
+          return {
+            order: null,
+            bag: [...p.bag.slice(0, index), line, ...p.bag.slice(index)]
+          };
+        }),
       reset: () =>
         page.setState({
           order: null,

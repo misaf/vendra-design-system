@@ -48,6 +48,7 @@ export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
       lines: vfSampleBag(),
+      removed: null,
       step: null,
       delivery: {
         ...VF_DELIVERY
@@ -329,6 +330,22 @@ function vals(page) {
     },
     hasItems: live.length > 0,
     noItems: live.length === 0,
+    removedMessage: s.removed
+      ? C.removed.replace('{name}', vfTokenText(vfLineToken(s.removed.line)))
+      : '',
+    undoRemove: () => {
+      const removed = page.state.removed;
+      if (!removed) return;
+      // Restore only this line, rather than an old bag snapshot that could overwrite other changes.
+      if (st) st.restoreLine(removed.line, removed.index);
+      else
+        page._lines(lines => [
+          ...lines.slice(0, removed.index),
+          removed.line,
+          ...lines.slice(removed.index)
+        ]);
+      page.setState({removed: null}, () => S.focusAfterRemoval('.ag-line__remove', removed.index));
+    },
     steps: [C.s1, C.s2, C.s3, C.s4].map(label => ({
       label
     })),
@@ -361,8 +378,10 @@ function vals(page) {
           ? st.setQty(l.id, q)
           : page._lines(lines => lines.map(x => (x.id === l.id ? {...x, qty: q} : x))),
       remove: () => {
+        page.setState({removed: {line: {...l}, index: i}}, () =>
+          document.getElementById('vf-bag-undo')?.focus()
+        );
         st ? st.remove(l.id) : page._lines(lines => lines.filter(x => x.id !== l.id));
-        S.focusAfterRemoval('.ag-line__remove', i);
       }
     })),
     // Lines with a handwritten card need its message; the others can add one here.

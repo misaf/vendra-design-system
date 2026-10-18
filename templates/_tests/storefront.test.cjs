@@ -416,6 +416,70 @@ function loadPage(name, props = {}, search = '') {
   vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
+// Delayed page announcements respect focus received after they were scheduled.
+{
+  const {ctx: c} = context();
+  const pending = [];
+  let focused = 0;
+  c.setTimeout = callback => pending.push(callback);
+  c.document.querySelector = () => ({
+    hasAttribute: () => true,
+    focus: () => focused++
+  });
+  vm.runInContext(sharedLogic + '\nthis.nav=VF_NAV;', c);
+  const active = (field, keep) => ({
+    closest: selector => (selector === 'main' || keep ? {} : null),
+    matches: () => field
+  });
+  // Focus may arrive after the heading move was queued, especially after opening payment.
+  for (const element of [active(true, false), active(false, true)]) {
+    c.document.activeElement = null;
+    c.nav.focusHeading({preserveFocus: true});
+    c.document.activeElement = element;
+    pending.shift()();
+    assert.equal(focused, 0);
+  }
+  c.document.activeElement = active(false, false);
+  c.nav.focusHeading({preserveFocus: true});
+  pending.shift()();
+  assert.equal(focused, 1, 'ordinary navigation still focuses the heading');
+  c.document.activeElement = active(true, false);
+  c.nav.focusHeading();
+  pending.shift()();
+  assert.equal(focused, 2, 'the skip link can explicitly move focus');
+}
+
+// Both standalone and routed bags restore an exact line without duplicating it.
+for (const lang of ['en', 'fa']) {
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const {logic: bag, ctx: c} = loadPage('bag', {lang});
+  c.setTimeout = () => 0;
+  bag.renderVals().lines[0].setQty(2);
+  const removed = plain(bag.state.lines[0]);
+  bag.renderVals().lines[0].remove();
+  bag.renderVals().lines[0].setQty(3);
+  const remaining = plain(bag.state.lines[0]);
+  const undo = bag.renderVals().undoRemove;
+  undo();
+  undo();
+  assert.deepEqual(plain(bag.state.lines), [removed, remaining]);
+  assert.equal(bag.renderVals().removedMessage, '');
+  bag.renderVals().lines[0].remove();
+  bag.renderVals().lines[0].remove();
+  assert.equal(bag.renderVals().noItems, true);
+  assert.ok(bag.renderVals().removedMessage.includes(remaining.token));
+  bag.renderVals().undoRemove();
+  assert.deepEqual(plain(bag.state.lines), [remaining]);
+
+  const {logic: site} = loadPage('site', {lang});
+  const first = plain(site.state.bag[0]);
+  site.renderVals().store.remove(first.id);
+  site.renderVals().store.setQty(site.state.bag[0].id, 4);
+  const other = plain(site.state.bag[0]);
+  site.renderVals().store.restoreLine(first, 0);
+  site.renderVals().store.restoreLine(first, 0);
+  assert.deepEqual(plain(site.state.bag), [first, other]);
+}
 // A shared quote round-trips through the router and initializes the product's choices, including
 // subsequent links to the same product. Invalid choices use the catalog's normal fallback rules.
 {
