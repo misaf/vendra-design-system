@@ -2,6 +2,7 @@
 import {vfCopy} from './copy.js';
 import {vfProductImage, vfProductSub, vfSearchProducts} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // Results update as the customer types; a search is reported once the typing settles.
@@ -11,7 +12,7 @@ const VF_SEARCH_SETTLE_MS = 1000;
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
-      q: ''
+      q: vfPageRoute(page.props).q || ''
     };
     page._report = (text, delay) => {
       clearTimeout(page._searchTimer);
@@ -38,10 +39,17 @@ export function usePage(props) {
 function vals(page) {
   const S = vfShell(page, 'search');
   const L = S.lang;
-  const q = page.state.q.trim().toLowerCase();
+  const route = vfPageRoute(page.props);
+  const query = page.props.go ? route.q || '' : page.state.q;
+  const q = query.trim().toLowerCase();
   const C = vfCopy(S);
-  const results = vfSearchProducts(page.state.q);
+  const results = vfSearchProducts(query);
   const pop = C.popularTerms;
+  const change = (value, delay = VF_SEARCH_SETTLE_MS) => {
+    if (page.props.go) page.props.go({...route, view: 'search', lang: L, q: value}, true);
+    else page.setState({q: value});
+    page._report(value, delay);
+  };
   return {
     ...S,
     t: {
@@ -51,30 +59,25 @@ function vals(page) {
       browse: C.labels.browseTheShop
     },
     clearSearch: () => {
-      page.setState({
-        q: ''
-      });
+      change('');
       S.focus('vf-q');
     },
-    q: page.state.q,
-    setQ: value => {
-      page.setState({
-        q: value
-      });
-      page._report(value, VF_SEARCH_SETTLE_MS);
-    },
+    closeHref:
+      (page.props.go ? '' : '../app/') +
+      vfRouteParams({
+        ...page.props.store?.searchReturn,
+        view: page.props.store?.searchReturn?.view || 'home',
+        lang: L
+      }),
+    q: query,
+    setQ: change,
     empty: !q,
     hasResults: results.length > 0,
     noResults: !!q && !results.length,
     countLabel: C.resultCount(results.length),
     popular: pop.map(l => ({
       label: l,
-      pick: () => {
-        page.setState({
-          q: l
-        });
-        page._report(l, 0);
-      }
+      pick: () => change(l, 0)
     })),
     results: results.map(p => ({
       ...S.productLink(p.id),

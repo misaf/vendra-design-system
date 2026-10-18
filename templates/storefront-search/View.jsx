@@ -34,7 +34,7 @@ export function View({v}) {
                   label={v.t?.close}
                   variant="secondary"
                   className="tw:flex-none"
-                  href={v.href?.home}
+                  href={v.closeHref}
                 />
               </div>
               {v.empty ? (
