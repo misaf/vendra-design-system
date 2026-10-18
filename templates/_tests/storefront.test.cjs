@@ -457,6 +457,19 @@ for (const lang of ['en', 'fa']) {
       store: {saved: [], add: line => (added = line)}
     });
     const v = logic.renderVals();
+    const care = v.faq.find(item => item.id === 'care').content;
+    assert.ok(care.trim(), 'Every product retains care instructions');
+    assert.notEqual(care, v.t.desc, 'Care must not repeat the product description');
+    assert.equal(v.t.careT, care, 'Product copy and the care accordion use the same advice');
+    if (id === 'VF-8RD5WN') {
+      assert.equal(
+        care,
+        lang === 'fa'
+          ? 'وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
+          : 'Water when the roots turn silver and keep in indirect light.'
+      );
+      assert.ok(!v.t.desc.includes(care), 'Orchid care is shown only in the care section');
+    }
     v.add();
     if (id === 'VF-6MT3VY') {
       assert.equal(added, undefined);

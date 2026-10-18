@@ -112,6 +112,7 @@ function vals(page) {
   const extra = chosenAddons.reduce((sum, addon) => sum + addon.price, 0);
   const unit = base + (hasSizes ? size.price : 0) + extra;
   const total = unit * s.qty;
+  const care = product.care?.[L] || C.careT;
   return {
     ...S,
     t: {
@@ -123,7 +124,7 @@ function vals(page) {
       badge: vfProductBadge(product, L) || C.labels.vendraFlowers,
       desc: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
       cat: VF_CATEGORY_COPY[L][product.cat],
-      careT: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT,
+      careT: care,
       ship:
         product.same && vfFeatures().sameDay ? C.ship : C.labels.chooseYourDeliveryWindowAtCheckout
     },
@@ -298,7 +299,7 @@ function vals(page) {
       {
         id: 'care',
         title: C.care,
-        content: product.care ? VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0] : C.careT
+        content: care
       },
       {
         id: 'delivery',
