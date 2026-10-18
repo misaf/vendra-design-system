@@ -275,7 +275,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           <footer className="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
             <div className="vf-shell-footer-content tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-6 tw:flex tw:flex-col tw:gap-7">
               <div className="vf-shell-footer-top tw:flex tw:flex-wrap tw:justify-between tw:gap-x-9 tw:gap-y-7">
-                <div className="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-[400px] tw:flex tw:flex-col tw:gap-4">
+                <div className="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-form tw:flex tw:flex-col tw:gap-4">
                   <a
                     href={v.href?.home}
                     className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"

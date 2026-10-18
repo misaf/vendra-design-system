@@ -104,6 +104,10 @@
    no others. Components lay out by their container (@container) rather than the viewport. */
 --breakpoint-md:768px;/* @kind spacing */--breakpoint-lg:1024px;/* @kind spacing */--breakpoint-xl:1440px;/* @kind spacing */
 }
+/* Content widths for single-column blocks, scaled with the density where it is set. */
+:root,[data-density]{
+--width-sidebar:calc(260px * var(--size-scale));/* @kind spacing */--width-media:calc(320px * var(--size-scale));/* @kind spacing */--width-form:calc(440px * var(--size-scale));/* @kind spacing */--width-narrow:calc(520px * var(--size-scale));/* @kind spacing */--width-prose:calc(680px * var(--size-scale));/* @kind spacing */--width-wide:calc(760px * var(--size-scale));/* @kind spacing */
+}
 [data-density="compact"]{
 --space-1:.1875rem;--space-2:.375rem;--space-3:.5625rem;--space-4:.75rem;--space-4h:.9375rem;--space-5:1.125rem;--space-5h:1.3125rem;--space-6:1.5rem;--space-7:2.25rem;--space-8:3rem;--space-9:4.5rem;--space-10:6rem;
 --gutter:16px;--header-h:60px;--header-h-mobile:52px;

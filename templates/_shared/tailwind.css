@@ -68,6 +68,12 @@
   --spacing-tap: var(--tap-min);
   --container-page: var(--container-max);
   --container-measure: var(--measure);
+  --container-sidebar: var(--width-sidebar);
+  --container-media: var(--width-media);
+  --container-form: var(--width-form);
+  --container-narrow: var(--width-narrow);
+  --container-prose: var(--width-prose);
+  --container-wide: var(--width-wide);
   --z-index-header: var(--z-header);
   --z-index-tabbar: var(--z-tabbar);
   --z-index-overlay: var(--z-overlay);

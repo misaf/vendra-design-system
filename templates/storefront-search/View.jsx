@@ -15,7 +15,7 @@ export function View({v}) {
             tabIndex={-1}
             className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-5"
           >
-            <div className="vf-reading tw:max-w-[760px] tw:mx-auto">
+            <div className="vf-reading tw:max-w-wide tw:mx-auto">
               <h1 className="ag-display">
                 <>{v.t?.label}</>
               </h1>

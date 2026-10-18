@@ -10,7 +10,7 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
-            <div className="vf-form-narrow tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto">
+            <div className="vf-form-narrow tw:flex tw:flex-col tw:gap-5 tw:max-w-form tw:mx-auto">
               {v.isPhone ? (
                 <>
                   <h1>

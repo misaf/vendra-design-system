@@ -13,7 +13,7 @@ export function View({v}) {
             {v.noOrder ? (
               <>
                 <form
-                  className="vf-track-lookup tw:flex tw:flex-col tw:gap-5 tw:max-w-[420px] tw:mx-auto"
+                  className="vf-track-lookup tw:flex tw:flex-col tw:gap-5 tw:max-w-form tw:mx-auto"
                   onSubmit={v.findOrder}
                   noValidate
                 >
@@ -110,7 +110,7 @@ export function View({v}) {
                     {v.delivered ? (
                       <>
                         <figure className="vf-track-photo tw:m-0 tw:flex tw:flex-col tw:gap-3">
-                          <div className="vf-track-photo-frame tw:max-w-[320px]">
+                          <div className="vf-track-photo-frame tw:max-w-media">
                             <DS.ArchFrame
                               src={v.photo}
                               ratio="4/5"
@@ -158,7 +158,7 @@ export function View({v}) {
                       </DS.Button>
                     </div>
                   </div>
-                  <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-[440px] vf-sticky-panel">
+                  <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-form vf-sticky-panel">
                     <DS.Card padding={20}>
                       <DS.OrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
                     </DS.Card>

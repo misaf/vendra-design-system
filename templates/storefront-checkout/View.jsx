@@ -230,7 +230,7 @@ export function View({v}) {
                       </DS.Button>
                     </div>
                   </div>
-                  <aside className="vf-checkout-summary tw:[flex:1_1_360px] tw:max-w-[440px] vf-sticky-panel">
+                  <aside className="vf-checkout-summary tw:[flex:1_1_360px] tw:max-w-form vf-sticky-panel">
                     <DS.Card padding={20}>
                       <DS.OrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
                     </DS.Card>
@@ -239,7 +239,7 @@ export function View({v}) {
               </>
             ) : null}
             {v.bankTrip ? (
-              <div className="vf-checkout-bank tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-5h">
+              <div className="vf-checkout-bank tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-5h">
                 <DS.Stepper
                   label={v.t?.steps}
                   steps={v.steps}
@@ -264,7 +264,7 @@ export function View({v}) {
             ) : null}
             {v.done ? (
               <>
-                <div className="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[640px] tw:gap-5h">
+                <div className="vf-checkout-success tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-5h">
                   <DS.Stepper
                     label={v.t?.steps}
                     steps={v.steps}

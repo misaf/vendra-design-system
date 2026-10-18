@@ -87,3 +87,29 @@ html {
   white-space: nowrap;
   text-underline-offset: 3px;
 }
+/* Touch: the announcement link reaches the bar's full tap height without growing the bar, and footer
+   links are full-height rows rather than bare lines of text. */
+@media (any-pointer: coarse) {
+  .vf-shell-announcement-link {
+    padding-block: calc((var(--tap-min) - 1lh) / 2);
+    margin-block: calc((1lh - var(--tap-min)) / 2);
+  }
+  .vf-shell-footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+}
+/* TV: every text link in the shell is a full control a remote can land on. */
+[data-density='tv']
+  :is(
+    .vf-shell-footer-link,
+    .vf-shell-announcement-link,
+    .vf-shell-consent-link,
+    .vf-shell-footer-credit a
+  ) {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
+  min-width: var(--control-h-xs);
+}
