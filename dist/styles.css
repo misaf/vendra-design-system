@@ -303,6 +303,13 @@ a:hover{color:var(--accent-press)}
   width: 100%;
 }
 
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-btn--sm {
+    min-height: var(--tap-min);
+  }
+}
+
 /* components/IconButton/IconButton.css */
 .ag-iconbtn:focus-visible {
   outline: 2px solid var(--focus-ring);
@@ -399,6 +406,14 @@ a.ag-iconbtn {
   text-align: center;
 }
 
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-iconbtn--sm {
+    width: var(--tap-min);
+    height: var(--tap-min);
+  }
+}
+
 /* components/Chip/Chip.css */
 .ag-chip:focus-visible {
   outline: 2px solid var(--focus-ring);
@@ -439,6 +454,13 @@ a.ag-iconbtn {
   }
   .ag-chip--selected .ag-icon {
     background: HighlightText !important;
+  }
+}
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-chip {
+    min-height: var(--tap-min);
   }
 }
 
@@ -1303,6 +1325,15 @@ a.ag-iconbtn {
   }
 }
 
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-check {
+    box-sizing: border-box;
+    min-height: var(--tap-min);
+    padding-block: 10px;
+  }
+}
+
 /* components/RadioGroup/RadioGroup.css */
 /* RadioGroup: radios stacked in a column. */
 .ag-radios {
@@ -1538,6 +1569,21 @@ a.ag-iconbtn {
 .ag-qty[data-focus-visible] {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-qty {
+    min-height: 48px;
+  }
+  .ag-qty button {
+    width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
+  .ag-qty__val {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
 }
 
 /* components/Dialog/Dialog.css */
@@ -3196,6 +3242,13 @@ a.ag-tabbar__item--current:hover {
   }
   .ag-gallery__dot[aria-current] span {
     background: Highlight;
+  }
+}
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-gallery__dot {
+    min-width: var(--tap-min);
   }
 }
 

@@ -83,3 +83,10 @@
     background: Highlight;
   }
 }
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-gallery__dot {
+    min-width: var(--tap-min);
+  }
+}

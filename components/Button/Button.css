@@ -93,3 +93,10 @@
 .ag-btn--block {
   width: 100%;
 }
+
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-btn--sm {
+    min-height: var(--tap-min);
+  }
+}
