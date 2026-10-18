@@ -955,6 +955,34 @@ body:has(.vf-presentation) .ag-dialog__foot {
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
+.vf-product-columns > *,
+.vf-product-details > * {
+  min-inline-size: 0;
+}
+.vf-product-heading {
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--border-subtle);
+}
+.vf-product-price-stock {
+  margin-block-start: var(--space-2);
+}
+.vf-product-heading .vf-product-price {
+  font-weight: var(--weight-semibold);
+}
+.vf-product-heading .vf-product-description {
+  margin-block-start: var(--space-1);
+}
+.vf-product-title .ag-btn {
+  min-block-size: var(--tap-min);
+  height: auto;
+  white-space: normal;
+  text-align: start;
+}
+/* Let the purchase bar wrap when the amount and translated action cannot share a row. */
+.vf-product-mobile-action > .ag-btn {
+  flex: 1 1 auto;
+  min-block-size: var(--tap-min);
+}
 .vf-page .vf-product-details .vf-product-title h1 {
   font-family: var(--vf-code-font);
   font-size: clamp(1.375rem, 3vw, 2rem);
@@ -998,6 +1026,17 @@ body:has(.vf-presentation) .ag-dialog__foot {
    three prices into tiny tiles. The panel width also covers phones and portrait tablets. */
 .vf-product-details {
   container-type: inline-size;
+}
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-product-details {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-product-extras {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-product-extras-legend {
+    margin-block-end: var(--space-2);
+  }
 }
 @container (width < 380px) {
   .vf-product-sizes .ag-choices {
