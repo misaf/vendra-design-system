@@ -102,3 +102,14 @@ for (const lang of LANGS) {
     await expect.poll(async () => badgeNumber(await badge.textContent())).toBe(inBag + 1);
   });
 }
+
+for (const lang of LANGS) {
+  test(`product code scales with TV type (${lang})`, async ({page}) => {
+    await openSite(page, 'product', lang, {tv: '1'});
+    expect(
+      await page
+        .locator('.vf-product-title h1')
+        .evaluate(element => parseFloat(getComputedStyle(element).fontSize))
+    ).toBeGreaterThanOrEqual(40);
+  });
+}

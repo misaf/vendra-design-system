@@ -968,6 +968,9 @@ body:has(.vf-presentation) .ag-dialog__foot {
     text-align: end;
   }
 }
+[data-density='tv'] .vf-product-details .vf-product-title h1 {
+  font-size: var(--text-xl);
+}
 
 /* Landscape phones have the width for two compact columns, but little height for a tall photo. */
 @media (height < 480px) and (orientation: landscape) {
