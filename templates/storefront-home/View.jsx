@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
+import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
 export function View({v}) {
   return (
@@ -349,29 +350,5 @@ export function View({v}) {
       }
       sticky={<></>}
     />
-  );
-}
-
-// Page-specific composition: keep scrolling in the shared Carousel and expose how much there is
-// to browse. The measured overflow state also handles small catalogues and viewport changes.
-function CollectionCarousel({total, countLabel, perView, label, ...props}) {
-  const [overflow, setOverflow] = React.useState(null);
-  return (
-    <div
-      className="vf-home-collection"
-      data-items={total}
-      data-fits-row={total <= perView ? 'true' : undefined}
-      data-overflow={overflow == null ? undefined : String(overflow)}
-    >
-      <span className="vf-home-collection-count" aria-hidden="true">
-        {countLabel}
-      </span>
-      <DS.Carousel
-        {...props}
-        label={`${label} · ${countLabel}`}
-        perView={perView}
-        onScrollStateChange={({canPrev, canNext}) => setOverflow(canPrev || canNext)}
-      />
-    </div>
   );
 }

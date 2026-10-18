@@ -122,7 +122,7 @@ for (const lang of ['en', 'fa']) {
         }
         const previous = carousel.getByRole('button', {includeHidden: true}).first();
         const next = carousel.getByRole('button', {includeHidden: true}).nth(1);
-        const count = carousel.locator('..').locator('.vf-home-collection-count');
+        const count = carousel.locator('..').locator('.vf-collection-count');
         await expect(track).toHaveAccessibleName(new RegExp(await count.textContent()));
         await expect(previous).toBeDisabled();
         if (width < 1024 || (await cards.count()) > desktopCount) {
@@ -204,7 +204,7 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'home', lang);
     const carousel = page.locator('.vf-home-journal-row');
     const next = carousel.getByRole('button', {includeHidden: true}).nth(1);
-    const count = carousel.locator('..').locator('.vf-home-collection-count');
+    const count = carousel.locator('..').locator('.vf-collection-count');
     await expect(next).toBeVisible();
     await expect(count).toBeVisible();
     await page.setViewportSize({width: 1280, height: 900});

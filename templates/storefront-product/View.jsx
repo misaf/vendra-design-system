@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {Shell} from '../app/Shell.jsx';
+import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
 export function View({v}) {
   return (
@@ -175,23 +176,34 @@ export function View({v}) {
             <DS.ErrorBoundary resetKey={v.productId}>
               {v.hasRecent ? (
                 <>
-                  <section className="vf-product-recent tw:flex tw:flex-col tw:gap-6 tw:mt-9">
+                  <section className="vf-product-recent tw:flex tw:flex-col">
                     <DS.SectionHeader
                       eyebrow={v.t?.recentEb}
                       title={v.t?.recentA}
                       accent={v.t?.recentB}
                     />
-                    <DS.Carousel
+                    <CollectionCarousel
+                      key={v.productId}
+                      total={list(v.recent).length}
+                      countLabel={v.t?.recentCount(list(v.recent).length)}
                       label={v.recentLabel}
                       perView={4}
-                      perViewMobile={2.2}
-                      itemMin="200px"
+                      perViewMobile={1.15}
+                      itemMin="220px"
                       gap="20px"
+                      arrows={true}
+                      prevLabel={v.t?.recentPrev}
+                      nextLabel={v.t?.recentNext}
                     >
                       {list(v.recent).map((p, $index) => (
                         <React.Fragment key={$index}>
                           <DS.ProductCard
                             images={p?.images}
+                            sizes={
+                              v.recent.length === 1
+                                ? '(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 25vw'
+                                : '(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw'
+                            }
                             name={p?.name}
                             subtitle={p?.sub}
                             price={p?.price}
@@ -205,7 +217,7 @@ export function View({v}) {
                           />
                         </React.Fragment>
                       ))}
-                    </DS.Carousel>
+                    </CollectionCarousel>
                   </section>
                 </>
               ) : null}

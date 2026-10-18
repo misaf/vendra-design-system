@@ -1,4 +1,17 @@
 /* Custom styles for the product page. */
+.vf-product-recent {
+  gap: var(--space-5);
+  margin-block-start: var(--space-9);
+}
+.vf-product-recent .vf-collection[data-items='1'] .ag-carousel__track {
+  --carousel-per-view-mobile: 1;
+}
+@media (width >= 1024px) {
+  .vf-product-recent .ag-sechead__title {
+    font-size: var(--text-2xl);
+    line-height: var(--lh-snug);
+  }
+}
 .vf-product-columns > *,
 .vf-product-details > * {
   min-inline-size: 0;
@@ -75,6 +88,10 @@
   container-type: inline-size;
 }
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-product-recent {
+    gap: var(--space-3);
+    margin-block-start: var(--space-7);
+  }
   :where(html:not([data-density='tv'])) .vf-product-details {
     gap: var(--space-4);
   }
