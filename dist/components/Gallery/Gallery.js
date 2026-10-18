@@ -7,15 +7,18 @@ import { cx } from "../utils/cx.js";
 // Product photos (Picture: a URL or a photo object) in a swipeable scroll-snap track with dot buttons (React Aria); RTL scrolls the
 // other way.
 // The track is focusable so keyboard users can scroll it with the arrow keys (axe: scrollable-region-focusable).
-export function Gallery({ images = [], sizes = "(max-width: 767px) 100vw, 540px", frame = "arch", aspect = "3/4", label, slideLabel = (i, n) => i + " / " + n, className = "" }) {
+export function Gallery({ images = [], sizes = "(max-width: 767px) 100vw, 540px", frame = "arch", aspect = "3/4", label, slideLabel = (i, n) => i + " / " + n, onIndexChange, className = "" }) {
 	const trackRef = React.useRef(null);
 	const [currentSlide, setCurrentSlide] = React.useState(0);
 	const count = images.length;
 	const onScroll = () => {
 		const track = trackRef.current;
-		if (!track) return;
-		const slide = Math.round(Math.abs(track.scrollLeft) / track.clientWidth);
-		if (slide !== currentSlide) setCurrentSlide(slide);
+		if (!track || !track.clientWidth || !count) return;
+		const slide = Math.min(count - 1, Math.round(Math.abs(track.scrollLeft) / track.clientWidth));
+		if (slide !== currentSlide) {
+			setCurrentSlide(slide);
+			onIndexChange?.(slide);
+		}
 	};
 	const goTo = (slide) => {
 		const track = trackRef.current;

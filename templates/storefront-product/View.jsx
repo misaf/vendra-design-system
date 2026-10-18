@@ -23,7 +23,9 @@ export function View({v}) {
             <div className="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
               <div className="tw:flex tw:flex-col tw:gap-3">
                 <DS.Gallery
+                  key={v.t?.name}
                   images={v.productImages}
+                  onIndexChange={v.setGalleryPhoto}
                   aspect="4/5"
                   label={v.t?.photos}
                   slideLabel={v.t?.slide}
