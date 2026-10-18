@@ -63,7 +63,12 @@ export function View({v}) {
                     </DS.Badge>
                   </div>
                   <div className="vf-product-price-stock tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
-                    <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
+                    <div className="tw:flex tw:flex-col tw:gap-1">
+                      <span className="vf-product-unit-label tw:text-sm tw:text-quiet">
+                        {v.unitPriceLabel}
+                      </span>
+                      <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
+                    </div>
                     <DS.StockStatus stock={v.stock} />
                   </div>
                   <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
@@ -99,6 +104,19 @@ export function View({v}) {
                     ))}
                   </fieldset>
                 ) : null}
+                <div className="vf-product-selection-summary tw:flex tw:flex-col tw:gap-1">
+                  <div
+                    className="vf-product-selection-total tw:max-md:hidden tw:flex tw:flex-wrap tw:items-baseline tw:justify-between tw:gap-2"
+                    role="status"
+                    aria-atomic="true"
+                  >
+                    <span className="tw:text-sm tw:font-medium">{v.selectionTotalLabel}</span>
+                    <DS.Price value={v.totalLabel} />
+                  </div>
+                  <p className="vf-product-total-hint tw:m-0 tw:text-sm tw:text-quiet">
+                    {v.totalHint}
+                  </p>
+                </div>
                 <div className="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
                   <DS.QuantityInput
                     value={v.qty}
@@ -231,7 +249,14 @@ export function View({v}) {
       sticky={
         <>
           <div className="vf-product-mobile-action tw:relative tw:flex tw:flex-wrap tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
-            <div className="vf-product-mobile-total tw:flex-1">
+            <div
+              className="vf-product-mobile-total tw:flex-1 tw:flex tw:flex-col tw:gap-1"
+              role="status"
+              aria-atomic="true"
+            >
+              <span className="vf-product-total-label tw:text-xs tw:text-quiet">
+                {v.selectionTotalLabel}
+              </span>
               <DS.Price value={v.totalLabel} size="sm" />
             </div>
             <DS.Button
@@ -240,7 +265,7 @@ export function View({v}) {
               onClick={v.add}
               disabled={v.unavailable}
             >
-              <>{v.t?.add}</>
+              <>{v.addLabel}</>
             </DS.Button>
           </div>
         </>

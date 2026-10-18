@@ -193,6 +193,9 @@ function vals(page) {
     openPhotos: () => page.setState({photo: page.state.galleryPhoto || 0}),
     closePhotos: () => page.setState({photo: null}),
     unitPrice: m(base + (hasSizes ? size.price : 0)),
+    unitPriceLabel: availableAddons.length ? C.priceBeforeExtras : C.priceEach,
+    selectionTotalLabel: C.selectionTotal(s.qty),
+    totalHint: chosenAddons.length ? C.totalWithExtras : C.totalDelivery,
     sizes: VF_SIZES.map(item => ({
       label: item.name[L],
       desc: item.detail[L] + ' · ' + (item.price ? '+' + m(item.price) : C.labels.base),
@@ -221,8 +224,7 @@ function vals(page) {
       increase: C.increase,
       value: C.quantity
     },
-    addLabel:
-      (product.inStock === false ? (fa ? 'ناموجود' : 'Sold out') : C.add) + ' · ' + m(total),
+    addLabel: product.inStock === false ? (fa ? 'ناموجود' : 'Sold out') : C.add,
     totalLabel: m(total),
     add: () => {
       if (product.inStock === false) return;
