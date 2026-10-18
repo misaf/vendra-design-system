@@ -167,4 +167,37 @@ for (const lang of ['en', 'fa']) {
     await tiles.nth(1).tap();
     await expect(tiles.nth(1)).toHaveAttribute('data-selected', 'true');
   });
+
+  test(`short landscape leaves content clear of the shell (${lang})`, async ({page}, info) => {
+    test.skip(info.project.name !== 'touch-phone', 'phone rotation');
+    // Keep the first-visit notice present: this formerly covered almost the whole screen together
+    // with the header and purchase/navigation bars at 667 x 375.
+    await page.addInitScript(() => localStorage.removeItem('vf-consent'));
+    await page.setViewportSize({width: 667, height: 375});
+    await openSite(page, 'product', lang);
+    await expect(page.locator('.vf-shell-consent')).toBeAttached();
+    const gallery = await page.locator('.ag-gallery__track').boundingBox();
+    const details = await page.locator('.vf-product-details').boundingBox();
+    expect(Math.abs(gallery.y - details.y)).toBeLessThan(1);
+    expect(gallery.height).toBeLessThanOrEqual(375 * 0.7 + 1);
+    for (const selector of ['.vf-shell-header', '.vf-shell-bottom-bar'])
+      await expect(page.locator(selector)).toHaveCSS('position', 'static');
+    await expect
+      .poll(() =>
+        page.evaluate(() => document.documentElement.style.getPropertyValue('--vf-bottom-bar'))
+      )
+      .toBe('0px');
+    await page.locator('.vf-product-title h1').scrollIntoViewIfNeeded();
+    await expect(page.locator('.vf-product-title h1')).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
+    await page.setViewportSize({width: 390, height: 844});
+    await expect(page.locator('.vf-shell-header')).toHaveCSS('position', 'sticky');
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          parseFloat(document.documentElement.style.getPropertyValue('--vf-bottom-bar'))
+        )
+      )
+      .toBeGreaterThan(0);
+  });
 }
