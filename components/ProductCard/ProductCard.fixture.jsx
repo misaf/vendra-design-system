@@ -1,7 +1,7 @@
 import React from 'react';
 import {ProductCard} from './ProductCard.jsx';
 
-export function Fixture() {
+export function Fixture({lang = 'en'}) {
   const [favorite, setFavorite] = React.useState(false);
   const [opened, setOpened] = React.useState('');
   return (
@@ -23,6 +23,14 @@ export function Fixture() {
         price="3,100,000 Toman"
         stock={{status: 'in'}}
         onClick={() => setOpened('garden')}
+      />
+      <ProductCard
+        name={lang === 'fa' ? 'رز و لیسیانتوس' : 'Roses and lisianthus'}
+        subtitle={lang === 'fa' ? 'باکس گل' : 'Flower box'}
+        code="VF-7K2M4Q"
+        price={lang === 'fa' ? '۴٬۱۰۰٬۰۰۰ تومان' : '4,100,000 Toman'}
+        href="#identified"
+        stock={{status: 'out'}}
       />
       <output data-test="opened">{opened}</output>
     </div>

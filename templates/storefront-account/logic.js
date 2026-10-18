@@ -9,7 +9,13 @@ import {
   vfReminderNext,
   vfSampleOrders
 } from '../_shared/account-data.js';
-import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {
+  vfProductName,
+  VF_PRODUCTS,
+  vfProductBadge,
+  vfProductImage,
+  vfProductSub
+} from '../_shared/catalog.js';
 import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -428,7 +434,8 @@ function vals(page) {
     savedItems: saved.map((p, i) => ({
       ...S.productLink(p.id),
       images: [vfProductImage(p, L)],
-      name: p.id,
+      name: vfProductName(p, L),
+      code: p.id,
       sub: vfProductSub(p, L),
       badge: vfProductBadge(p, L),
       price: S.m(p.price),

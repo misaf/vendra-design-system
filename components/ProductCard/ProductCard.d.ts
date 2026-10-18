@@ -7,6 +7,8 @@ export interface ProductCardProps {
   tone?: 'petal' | 'product';
   name: string;
   subtitle?: string;
+  /** Optional stable identifier, shown beside the subtitle and included in the default link name. */
+  code?: string;
   /** Pre-formatted price string (e.g. "$68" or "۱٬۲۰۰٬۰۰۰ تومان") */
   price: string;
   /** The price before a reduction, formatted the same way; Price strikes it through */
@@ -29,7 +31,7 @@ export interface ProductCardProps {
   onFavorite?: () => void;
   /** Product URL. The name becomes <a href> with a stretched link over the whole card. onClick goes on that link; the component never calls preventDefault. */
   href?: string;
-  /** Accessible name of the link. Default: name + " — " + price */
+  /** Accessible name of the link. Default: name, optional code, and price joined by " — " */
   linkLabel?: string;
   /** Without href: the name renders as a real <button> (stretched the same way) */
   onClick?: (e: React.MouseEvent) => void;

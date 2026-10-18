@@ -91,6 +91,7 @@ export function View({v}) {
                           images={p?.images}
                           sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
                           name={p?.name}
+                          code={p?.code}
                           subtitle={p?.sub}
                           price={p?.price}
                           stock={p?.stock}
@@ -179,6 +180,7 @@ export function View({v}) {
                       sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
                       priority={$index < 2}
                       name={p?.name}
+                      code={p?.code}
                       subtitle={p?.sub}
                       price={p?.price}
                       stock={p?.stock}
