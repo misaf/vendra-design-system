@@ -140,3 +140,22 @@ for (const lang of LANGS) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
   });
 }
+
+for (const lang of LANGS) {
+  test(`a remote places the delivery pin and leaves the map (${lang})`, async ({page}) => {
+    await openSite(page, 'bag', lang, {tv: '1', step: 'delivery'});
+    const map = page.locator('#vf-map.leaflet-container');
+    await expect(map).toBeVisible();
+    await map.focus();
+    await page.keyboard.press('ArrowUp');
+    await expect(page.locator('#vf-map-status')).toHaveText(/[0-9۰-۹]{2}[.٫][0-9۰-۹]/);
+    await expect(map).toBeFocused();
+    const first = await page.locator('#vf-map-status').textContent();
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#vf-map-status')).not.toHaveText(first);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.ag-location__row button')).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.locator('.ag-location__row button')).not.toBeFocused();
+  });
+}

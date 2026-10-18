@@ -126,7 +126,7 @@ const VF_GROUP_ITEMS =
 // Widgets that keep every arrow: popover lists and grids (Escape, the remote's Back, closes them),
 // the Lightbox's photo strip (left and right turn the photos), and multi-line text.
 const VF_KEEPS_ARROWS =
-  'textarea, select, [contenteditable=""], [contenteditable="true"], [role="listbox"], [role="menu"], [role="grid"], [role="tree"], [role="combobox"]';
+  'textarea, select, [contenteditable=""], [contenteditable="true"], [role="listbox"], [role="menu"], [role="grid"], [role="tree"], [role="combobox"], .ag-location .leaflet-container';
 
 // Whether the focused element uses this arrow itself, so spatial navigation leaves it alone.
 function vfKeepsArrow(element, direction) {
@@ -169,11 +169,26 @@ function vfKeepsArrow(element, direction) {
 // function that stops it.
 export function vfRemoteNavigation() {
   const onKeyDown = event => {
-    const direction = arrowDirection(event.key);
-    if (!direction || event.defaultPrevented) return;
+    if (event.defaultPrevented) return;
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     const active = /** @type {HTMLElement} */ (document.activeElement);
     const focused = active && active !== document.body ? active : null;
+    // A delivery map pans with all four arrows. Back exits to its next surrounding control,
+    // so a remote can both place the pin and leave the map without a Tab key.
+    const map = focused && focused.closest('.ag-location .leaflet-container');
+    if (event.key === 'Escape' && map) {
+      const location = map.closest('.ag-location');
+      const next = vfTargets(location).find(target => !map.contains(target.element));
+      if (next) {
+        event.preventDefault();
+        event.stopPropagation();
+        setInteractionModality('keyboard');
+        next.element.focus();
+      }
+      return;
+    }
+    const direction = arrowDirection(event.key);
+    if (!direction) return;
     if (focused && vfKeepsArrow(focused, direction)) return;
     const scope =
       (focused && focused.closest('[role="dialog"], [role="alertdialog"]')) ||
