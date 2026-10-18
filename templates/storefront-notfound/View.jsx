@@ -37,6 +37,7 @@ export function View({v}) {
                     <DS.ProductCard
                       images={p?.images}
                       name={p?.name}
+                      code={p?.code}
                       subtitle={p?.sub}
                       price={p?.price}
                       stock={p?.stock}

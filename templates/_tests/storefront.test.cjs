@@ -480,7 +480,7 @@ for (const lang of ['en', 'fa']) {
     // Page 2 of the shop shows every sample product (four per page).
     const listing = loadPage('shop', {lang, routeInfo: {view: 'shop', lang, page: 2}})
       .logic.renderVals()
-      .items.find(item => item.name === v.t.name);
+      .items.find(item => item.code === v.t.name);
     assert.equal(v.unitPrice, listing.price, 'Default product price must match the listing');
     if (id === 'VF-7K2M4Q') {
       v.setSize(v.sizes[1].value);
@@ -507,7 +507,11 @@ for (const lang of ['en', 'fa']) {
   let v = shop.renderVals();
   assert.equal(v.items.length, 2);
   assert.ok(v.items[0].href.includes('id=VF-9FA2KE&cat=bouquets'));
-  assert.equal(v.items[0].name, 'VF-9FA2KE');
+  assert.equal(v.items[0].code, 'VF-9FA2KE');
+  assert.equal(
+    v.items[0].name,
+    lang === 'fa' ? 'رز باغی · اکالیپتوس' : 'Garden roses · eucalyptus'
+  );
   // Ready to send, Under 3M, Same day, Roses.
   v.chips[2].toggle();
   assert.ok(!next.filters.includes('same'));

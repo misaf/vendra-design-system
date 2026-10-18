@@ -2,6 +2,7 @@
 import {ToastQueue} from '../app/ds.js';
 import {vfCopy} from './copy.js';
 import {
+  vfProductName,
   VF_ADDONS,
   VF_PRODUCTS,
   VF_PRODUCT_DETAILS,
@@ -285,7 +286,8 @@ function vals(page) {
       .map(p => ({
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p.id,
+        name: vfProductName(p, L),
+        code: p.id,
         sub: vfProductSub(p, L),
         price: m(p.price),
         stock: p.stock,

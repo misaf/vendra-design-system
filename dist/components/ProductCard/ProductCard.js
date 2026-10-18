@@ -11,7 +11,7 @@ import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";
 // The product name is the one interactive target: a React Aria Link (or Button without href) with a stretched ::after covering the card.
-export function ProductCard({ name, subtitle, price, compareAt, stock, image, images, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
+export function ProductCard({ name, subtitle, code, price, compareAt, stock, image, images, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", badge, badgeTone = "neutral", frame = "arch", tone, favorite, onFavorite, onClick, href, linkLabel, placeholder, favLabel }) {
 	const text = useMessages("ProductCard", messages, {
 		placeholder,
 		favorite: favLabel
@@ -31,7 +31,11 @@ export function ProductCard({ name, subtitle, price, compareAt, stock, image, im
 			transformOrigin: photo.crop
 		} : undefined
 	});
-	const accessibleName = linkLabel ?? (typeof name === "string" && typeof price === "string" ? name + " — " + price : undefined);
+	const accessibleName = linkLabel ?? (typeof name === "string" && typeof price === "string" ? [
+		name,
+		code,
+		price
+	].filter(Boolean).join(" — ") : undefined);
 	const linked = !!(href || onClick);
 	const title = href ? /* @__PURE__ */ React.createElement(Link, {
 		href,
@@ -43,7 +47,7 @@ export function ProductCard({ name, subtitle, price, compareAt, stock, image, im
 		"aria-label": accessibleName,
 		onClick
 	}, name) : name;
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, text.placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
+	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-product", linked && "ag-product--link", code && "ag-product--with-code") }, /* @__PURE__ */ React.createElement("div", { className: cx("ag-product__media", "ag-product__media--" + frame, tone === "product" && "ag-arch--product") }, mainPhoto ? renderPhoto(mainPhoto) : /* @__PURE__ */ React.createElement("div", { className: "ag-product__ph" }, text.placeholder), hoverPhoto && renderPhoto(hoverPhoto, "ag-product__alt"), badge && /* @__PURE__ */ React.createElement(Badge, {
 		tone: badgeTone,
 		className: "ag-product__badge"
 	}, badge), onFavorite && /* @__PURE__ */ React.createElement(IconButton, {
@@ -57,7 +61,10 @@ export function ProductCard({ name, subtitle, price, compareAt, stock, image, im
 			event.stopPropagation();
 			onFavorite();
 		}
-	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement(Price, {
+	})), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h3", { className: "ag-product__name" }, title), /* @__PURE__ */ React.createElement("div", { className: "ag-product__meta" }, code ? /* @__PURE__ */ React.createElement("div", { className: "ag-product__identity" }, subtitle && /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement("bdi", {
+		dir: "ltr",
+		className: "ag-product__code"
+	}, code)) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__sub" }, subtitle), /* @__PURE__ */ React.createElement(Price, {
 		value: price,
 		compareAt,
 		size: "md",

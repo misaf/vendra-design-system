@@ -1,6 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
 import {
+  vfProductName,
   VF_PRODUCTS,
   vfProductBadge,
   vfProductImage,
@@ -346,7 +347,8 @@ function vals(page) {
       return {
         ...S.productLink(p.id),
         images: [vfProductImage(p, L)],
-        name: p.id,
+        name: vfProductName(p, L),
+        code: p.id,
         sub: vfProductSub(p, L),
         badge: vfProductBadge(p, L),
         price: VF_MONEY(p.price, fa),

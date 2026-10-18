@@ -68,7 +68,9 @@ for (const lang of ['en', 'fa']) {
         expect(
           await products.first().evaluate(el => {
             const title = el.querySelector('.ag-product__name').getBoundingClientRect();
-            const sub = el.querySelector('.ag-product__sub').getBoundingClientRect();
+            const sub = (
+              el.querySelector('.ag-product__identity') || el.querySelector('.ag-product__sub')
+            ).getBoundingClientRect();
             const price = el.querySelector('.ag-product__price').getBoundingClientRect();
             return Math.max(sub.top - title.bottom, price.top - sub.bottom);
           })

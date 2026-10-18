@@ -37,3 +37,26 @@ test('without href the name is a button', async ({page}) => {
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'ProductCard');
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`named designs keep their code and stock readable in a narrow card (${lang})`, async ({
+    page
+  }) => {
+    await openComponent(page, 'ProductCard', lang);
+    await page.addStyleTag({content: '.ag-product--with-code{inline-size:160px}'});
+    const card = page.locator('.ag-product--with-code');
+    const code = card.locator('.ag-product__code');
+    await expect(card.getByRole('link')).toHaveAccessibleName(/VF-7K2M4Q/);
+    await expect(code).toHaveText('VF-7K2M4Q');
+    await expect(code).toHaveCSS('direction', 'ltr');
+    await expect(card.locator('.ag-stock')).toContainText(lang === 'fa' ? 'ناموجود' : 'Sold out');
+    const bounds = await card.boundingBox();
+    for (const selector of ['.ag-product__name', '.ag-product__code', '.ag-product__price']) {
+      const text = await card.locator(selector).boundingBox();
+      expect(text.x).toBeGreaterThanOrEqual(bounds.x - 1);
+      expect(text.x + text.width).toBeLessThanOrEqual(bounds.x + bounds.width + 1);
+    }
+    await card.getByRole('link').focus();
+    await expect(card.getByRole('link')).toBeFocused();
+  });
+}

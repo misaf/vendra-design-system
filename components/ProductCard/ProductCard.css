@@ -133,3 +133,38 @@
 .ag-product__stock {
   margin-block-start: var(--space-1);
 }
+
+/* Identified designs lead with their readable name; their stable code stays easy to quote. */
+.ag-product--with-code .ag-product__name {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  line-height: var(--lh-snug);
+  overflow-wrap: anywhere;
+}
+.ag-product--with-code > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.ag-product__identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(var(--space-1) / 2) var(--space-2);
+  min-inline-size: 0;
+}
+.ag-product__code {
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-sm);
+  line-height: var(--lh-snug);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  color: var(--text-secondary);
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+}
+.ag-product--with-code .ag-product__price {
+  font-weight: var(--weight-semibold);
+}
