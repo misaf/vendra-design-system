@@ -140,8 +140,8 @@ export const VF_API_PRODUCTS = [
     name: {en: 'Phalaenopsis · ceramic pot', fa: 'فالانوپسیس · گلدان سرامیکی'},
     slug: {en: 'phalaenopsis-ceramic-pot', fa: 'فالانوپسیس-گلدان-سرامیکی'},
     description: {
-      en: 'A Phalaenopsis orchid in a ceramic pot. Water when the roots turn silver and keep in indirect light.',
-      fa: 'ارکیده فالانوپسیس در گلدان سرامیکی. وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
+      en: 'A Phalaenopsis orchid in a ceramic pot.',
+      fa: 'ارکیده فالانوپسیس در گلدان سرامیکی.'
     },
     quantity: 8,
     inStock: true,
@@ -223,7 +223,7 @@ export const VF_API_PRODUCTS = [
 // Storefront fields the API doesn't provide yet (templates/API.md, "Product data the storefront
 // shows"), keyed by Product.token. `legacy` is the old slug, so earlier links and saved lists still
 // work; `occasions` use the ids in VF_SHOP_OCCASIONS; `sizes: true` offers VF_SIZES; `noAddons`
-// lists extras the product can't take; `care: true` uses the description as care advice; `same` is
+// lists extras the product can't take; `care` holds localized advice separate from its description; `same` is
 // same-day delivery; `roses` feeds the roses filter.
 export const VF_PRODUCT_EXTRAS = {
   'VF-7K2M4Q': {
@@ -239,7 +239,10 @@ export const VF_PRODUCT_EXTRAS = {
     legacy: 'orchid',
     occasions: ['thanks', 'sympathy'],
     noAddons: ['vase'],
-    care: true
+    care: {
+      en: 'Water when the roots turn silver and keep in indirect light.',
+      fa: 'وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
+    }
   },
   'VF-4CJ6ZB': {
     legacy: 'crimson',
