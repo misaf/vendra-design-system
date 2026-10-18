@@ -972,6 +972,9 @@ body:has(.vf-presentation) .ag-dialog__foot {
 .vf-product-heading .vf-product-description {
   margin-block-start: var(--space-1);
 }
+.vf-product-selection-total .ag-price {
+  font-weight: var(--weight-semibold);
+}
 .vf-product-title .ag-btn {
   min-block-size: var(--tap-min);
   height: auto;
