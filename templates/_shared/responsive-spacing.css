@@ -1,5 +1,5 @@
 /* Compact spacing for phones and tablets. Body type and control dimensions keep their normal
-   readable, touch-friendly sizes; only the large layout spaces and heading scale get tighter. */
+   readable, touch-friendly sizes; only the large layout spaces get tighter. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
   :where(html:not([data-density='tv'])) .vf-page {
     --space-6: 1.5rem;
@@ -8,18 +8,6 @@
     --space-9: 3rem;
     --space-10: 4rem;
   }
-  :where(html:not([data-density='tv'])) .vf-page main h1:where(:not(#vf-product-code)),
-  :where(html:not([data-density='tv'])) .vf-page .vf-form h1,
-  :where(html:not([data-density='tv']))
-    .vf-page[data-lang='fa']
-    main
-    h1:where(:not(#vf-product-code)),
-  :where(html:not([data-density='tv'])) .vf-page[data-lang='fa'] .vf-form h1 {
-    font-size: clamp(1.875rem, 4cqi, 2.5rem);
-  }
-  :where(html:not([data-density='tv'])) .vf-page main h2 {
-    font-size: clamp(1.5rem, 3.5cqi, 1.875rem);
-  }
   :where(html:not([data-density='tv'])) .vf-shopping--home > section {
     padding-block-start: var(--space-7);
     gap: var(--space-4);
@@ -27,57 +15,10 @@
   :where(html:not([data-density='tv'])) .vf-shopping--home > .vf-home-top {
     padding-block-start: var(--space-6);
   }
-  :where(html:not([data-density='tv'])) .vf-home-top .ag-sechead--h1 .ag-sechead__title {
-    font-size: clamp(1.875rem, 4cqi, 2.25rem);
-  }
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:not(.ag-sechead--h1)
-    .ag-sechead__title {
-    font-size: clamp(1.5rem, 3.5cqi, 1.75rem);
-  }
   :where(html:not([data-density='tv'])) .vf-home-featured-band {
     gap: var(--space-4);
   }
   :where(html:not([data-density='tv'])) .vf-home-carousel .ag-carousel__nav {
     margin-block-end: var(--space-2);
-  }
-}
-
-/* On phones, an action shares the eyebrow row. The title gets the full width, so a short Persian
-   heading doesn't break into a narrow column beside a full-size action button. */
-@media (width < 768px) {
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:has(.ag-eyebrow):has(.ag-sechead__actions) {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-1) var(--space-3);
-    align-items: center;
-  }
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:has(.ag-eyebrow):has(.ag-sechead__actions)
-    .ag-sechead__text {
-    display: contents;
-  }
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:has(.ag-eyebrow):has(.ag-sechead__actions)
-    .ag-eyebrow {
-    grid-area: 1 / 1;
-  }
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:has(.ag-eyebrow):has(.ag-sechead__actions)
-    .ag-sechead__actions {
-    grid-area: 1 / 2;
-  }
-  :where(html:not([data-density='tv']))
-    .vf-shopping--home
-    .ag-sechead:has(.ag-eyebrow):has(.ag-sechead__actions)
-    .ag-sechead__title {
-    grid-area: 2 / 1 / auto / -1;
-    text-wrap: pretty;
   }
 }
