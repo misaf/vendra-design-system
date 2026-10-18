@@ -45,16 +45,8 @@ export function View({v}) {
                 />
               </div>
               <div className="vf-product-details tw:flex tw:flex-col tw:gap-5 vf-sticky-panel">
-                <div className="vf-product-heading tw:flex tw:flex-col tw:gap-3">
-                  <div className="tw:flex tw:gap-2 tw:items-center">
-                    <DS.Badge tone="accent">
-                      <>{v.t?.badge}</>
-                    </DS.Badge>
-                    <span className="vf-product-subtitle tw:text-sm tw:text-quiet">
-                      <>{v.t?.sub}</>
-                    </span>
-                  </div>
-                  <div className="vf-product-title tw:flex tw:flex-wrap tw:items-center tw:gap-2">
+                <div className="vf-product-heading tw:flex tw:flex-col tw:gap-2">
+                  <div className="vf-product-title tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
                     <h1 id="vf-product-code">
                       <>{v.t?.name}</>
                     </h1>
@@ -62,8 +54,18 @@ export function View({v}) {
                       <>{v.t?.copyCode}</>
                     </DS.Button>
                   </div>
-                  <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
-                  <DS.StockStatus stock={v.stock} />
+                  <div className="vf-product-category tw:flex tw:flex-wrap tw:gap-2 tw:items-center">
+                    <span className="vf-product-subtitle tw:text-sm tw:text-quiet">
+                      <>{v.t?.sub}</>
+                    </span>
+                    <DS.Badge tone="accent">
+                      <>{v.t?.badge}</>
+                    </DS.Badge>
+                  </div>
+                  <div className="vf-product-price-stock tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
+                    <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
+                    <DS.StockStatus stock={v.stock} />
+                  </div>
                   <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
                     <>{v.t?.desc}</>
                   </p>
@@ -228,7 +230,7 @@ export function View({v}) {
       }
       sticky={
         <>
-          <div className="vf-product-mobile-action tw:relative tw:flex tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
+          <div className="vf-product-mobile-action tw:relative tw:flex tw:flex-wrap tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
             <div className="vf-product-mobile-total tw:flex-1">
               <DS.Price value={v.totalLabel} size="sm" />
             </div>
