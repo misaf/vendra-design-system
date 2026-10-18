@@ -90,3 +90,7 @@
     min-width: var(--tap-min);
   }
 }
+/* Read from across the room: as wide as a TV control. */
+[data-density='tv'] .ag-gallery__dot {
+  min-width: var(--control-h-xs);
+}

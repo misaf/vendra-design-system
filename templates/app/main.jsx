@@ -5,8 +5,10 @@ import './theme.js';
 import './runtime.js';
 import {PageError} from './PageError.jsx';
 import {loadPage, reloadOnStaleFiles} from './pages.js';
+import {vfApplyTvMode} from '../_shared/tv.js';
 
 reloadOnStaleFiles();
+vfApplyTvMode();
 
 const name = new URLSearchParams(location.search).get('page') || 'site';
 const root = createRoot(document.getElementById('root'));

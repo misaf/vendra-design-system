@@ -81,4 +81,5 @@ export * from './components/utils/format.js';
 export * from './components/utils/locale.js';
 export * from './components/utils/maps.js';
 export * from './components/utils/messages.js';
+export * from './components/utils/spatial.js';
 export * from './components/utils/track.js';

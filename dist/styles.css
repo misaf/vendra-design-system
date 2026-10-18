@@ -169,6 +169,8 @@ a:hover{color:var(--accent-press)}
 [dir="rtl"] .ag-flip-rtl{transform:scaleX(-1)}
 :where(a,button,[role="button"],summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:var(--focus-width) solid var(--focus-ring);outline-offset:var(--focus-offset)}
 :where(h1,h2,h3,main)[tabindex="-1"]:focus{outline:none}
+/* TV: findable from across the room. Each component's ring already thickens with --focus-width; a glow of the ring colour fills the gap and spreads past it, around the control or around the card whose stretched link has focus. !important in the base layer outranks a component's own shadow while it is focused. */
+[data-density="tv"] :is(:focus-visible,[data-focus-visible]):not(.ag-product__link,.ag-blog__link),[data-density="tv"] :is(.ag-product,.ag-blog):has(:is(.ag-product__link,.ag-blog__link):focus-visible){box-shadow:0 0 0 calc(var(--focus-offset) * 2 + var(--focus-width) * 2) color-mix(in srgb,var(--focus-ring) 40%,transparent)!important}
 /* A density scope sets its own body text size (on <html> the body already does). */
 :where([data-density]:not(html)){font-size:var(--text-base)}
 .ag-on-inverse{--focus-ring:var(--focus-ring-on-inverse)}/* any container on --surface-inverse: focus rings inside it stay 3:1 */
@@ -645,6 +647,11 @@ a.ag-iconbtn {
     min-width: var(--tap-min);
     min-height: var(--tap-min);
   }
+}
+/* Read from across the room: a TV-sized control. */
+[data-density='tv'] .ag-lang button {
+  height: var(--control-h-xs);
+  min-width: var(--control-h-xs);
 }
 /* Forced colours drop the pressed fill: the current language takes the system highlight. */
 @media (forced-colors: active) {
@@ -1304,6 +1311,11 @@ a.ag-iconbtn {
   cursor: pointer;
   line-height: 1.4;
 }
+/* Read from across the room: each row is a TV-sized target. */
+[data-density='tv'] .ag-check {
+  min-height: var(--control-h-xs);
+  align-items: center;
+}
 .ag-check input {
   position: absolute;
   opacity: 0;
@@ -1497,6 +1509,10 @@ a.ag-iconbtn {
   font-size: var(--text-base);
   cursor: pointer;
 }
+/* Read from across the room: the row is a TV-sized target. */
+[data-density='tv'] .ag-switch {
+  min-height: var(--control-h-xs);
+}
 .ag-switch input {
   position: absolute;
   opacity: 0;
@@ -1637,6 +1653,11 @@ a.ag-iconbtn {
     min-width: var(--tap-min);
     min-height: var(--tap-min);
   }
+}
+/* Read from across the room: the count is a TV-sized target too. */
+[data-density='tv'] .ag-qty__val {
+  min-width: var(--control-h-xs);
+  min-height: var(--control-h-xs);
 }
 
 /* components/Dialog/Dialog.css */
@@ -2781,6 +2802,13 @@ a.ag-tabbar__item--current:hover {
   text-decoration: none;
   border-radius: var(--radius-xs);
 }
+/* Read from across the room: each link is a TV-sized target. */
+[data-density='tv'] .ag-crumbs__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
+  min-width: var(--control-h-xs);
+}
 .ag-crumbs__link[data-hovered]:not([data-current]) {
   color: var(--text-body);
   text-decoration: underline;
@@ -2855,8 +2883,9 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-range__thumb {
   top: 50%;
-  width: 44px;
-  height: 44px;
+  /* The touch target: at least 44px, larger where the density asks for more (tv). */
+  width: max(44px, var(--tap-min));
+  height: max(44px, var(--tap-min));
   border-radius: 50%;
   cursor: grab;
   background: radial-gradient(
@@ -3308,6 +3337,10 @@ a.ag-tabbar__item--current:hover {
   .ag-gallery__dot {
     min-width: var(--tap-min);
   }
+}
+/* Read from across the room: as wide as a TV control. */
+[data-density='tv'] .ag-gallery__dot {
+  min-width: var(--control-h-xs);
 }
 
 /* components/ArchFrame/ArchFrame.css */

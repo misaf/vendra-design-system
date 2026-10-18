@@ -202,12 +202,13 @@ export function View({v}) {
       bare={true}
       quiet={v.display}
       content={
-        // On a TV everything (the dialogs and the viewer too) is sized for the far side of the room.
-        <DS.VendraProvider density={v.displayMode === 'tv' ? 'tv' : undefined}>
+        // On a TV everything (the dialogs and the viewer too) is sized for the far side of the room;
+        // the tablet preset stays comfortable even where the storefront's TV mode is on.
+        <DS.VendraProvider density={v.displayMode === 'tv' ? 'tv' : 'comfortable'}>
           <main
             id="main"
             tabIndex={-1}
-            data-density={v.displayMode === 'tv' ? 'tv' : undefined}
+            data-density={v.displayMode === 'tv' ? 'tv' : 'comfortable'}
             className="vf-presentation tw:min-h-screen tw:bg-page tw:text-body tw:flex tw:flex-col tw:[container-type:inline-size]"
           >
             <h1 className="ag-sr-only">

@@ -139,7 +139,7 @@ export function View({v}) {
                 {v.waHref ? (
                   <>
                     <a
-                      className="vf-product-ask tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-secondary tw:self-start tw:[text-underline-offset:3px]"
+                      className="vf-product-ask tw:flex tw:items-center tw:in-data-[density=tv]:min-h-tap tw:gap-3 tw:text-sm tw:text-secondary tw:self-start tw:[text-underline-offset:3px]"
                       href={v.waHref}
                       target="_blank"
                       rel="noopener noreferrer"

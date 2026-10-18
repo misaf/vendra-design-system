@@ -29,8 +29,9 @@
 }
 .ag-range__thumb {
   top: 50%;
-  width: 44px;
-  height: 44px;
+  /* The touch target: at least 44px, larger where the density asks for more (tv). */
+  width: max(44px, var(--tap-min));
+  height: max(44px, var(--tap-min));
   border-radius: 50%;
   cursor: grab;
   background: radial-gradient(

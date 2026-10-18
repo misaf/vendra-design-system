@@ -72,3 +72,8 @@
     min-height: var(--tap-min);
   }
 }
+/* Read from across the room: the count is a TV-sized target too. */
+[data-density='tv'] .ag-qty__val {
+  min-width: var(--control-h-xs);
+  min-height: var(--control-h-xs);
+}

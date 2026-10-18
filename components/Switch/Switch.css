@@ -10,6 +10,10 @@
   font-size: var(--text-base);
   cursor: pointer;
 }
+/* Read from across the room: the row is a TV-sized target. */
+[data-density='tv'] .ag-switch {
+  min-height: var(--control-h-xs);
+}
 .ag-switch input {
   position: absolute;
   opacity: 0;
