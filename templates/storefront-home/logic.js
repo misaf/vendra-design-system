@@ -69,7 +69,7 @@ function vals(page) {
         image: designs.length ? vfProductImage(designs[0], L) : undefined
       };
     }),
-    // The studio's ready-made designs, in its order; the new-this-week row leaves them
+    // The studio's ready-made designs, in its order; the studio collection leaves them
     // out while at least four other designs remain (a small catalogue shows them all).
     featured: featured.map(card),
     readyHref: shop + vfRouteParams({view: 'shop', lang: L, cat: 'all', filters: ['ready']}),

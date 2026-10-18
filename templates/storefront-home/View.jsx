@@ -105,8 +105,12 @@ export function View({v}) {
                 </div>
               </section>
             ) : null}
-            <section className="vf-home-categories tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0">
-              <DS.SectionHeader title={v.t?.catA} accent={v.t?.catB} />
+            <section
+              aria-labelledby="vf-home-occasions-title"
+              className="vf-home-categories tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0"
+            >
+              <DS.SectionHeader id="vf-home-occasions-title" title={v.t?.catA} accent={v.t?.catB} />
+              <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.catText}</p>
               <DS.Carousel
                 className="vf-home-category-row vf-home-carousel"
                 label={v.t?.catLabel}
@@ -133,8 +137,22 @@ export function View({v}) {
                 ))}
               </DS.Carousel>
             </section>
-            <section className="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">
-              <DS.SectionHeader eyebrow={v.t?.newEb} title={v.t?.newA} accent={v.t?.newB} />
+            <section
+              aria-labelledby="vf-home-studio-title"
+              className="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0"
+            >
+              <DS.SectionHeader
+                id="vf-home-studio-title"
+                eyebrow={v.t?.newEb}
+                title={v.t?.newA}
+                accent={v.t?.newB}
+                action={
+                  <DS.Button variant="ghost" iconEnd="arrow-right" href={v.href?.shop}>
+                    {v.t?.newAll}
+                  </DS.Button>
+                }
+              />
+              <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.newText}</p>
               <DS.Carousel
                 className="vf-home-product-row vf-home-product-carousel vf-home-carousel"
                 label={v.t?.newLabel}
@@ -189,15 +207,27 @@ export function View({v}) {
                       <>{v.t?.wedText}</>
                     </p>
                   </div>
-                  <DS.Button variant="primary" iconEnd="arrow-right" href={v.weddings?.href}>
-                    <>{v.t?.wedCta}</>
-                  </DS.Button>
+                  <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-4">
+                    <DS.Button variant="primary" iconEnd="arrow-right" href={v.weddings?.href}>
+                      <>{v.t?.wedCta}</>
+                    </DS.Button>
+                    <a
+                      className="tw:text-on-inverse! tw:underline tw:underline-offset-4 tw:min-h-tap tw:inline-flex tw:items-center"
+                      href={v.href?.contact}
+                    >
+                      {v.t?.customCta}
+                    </a>
+                  </div>
                 </div>
               </section>
             ) : null}
             {v.posts?.length ? (
-              <section className="vf-home-journal tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0">
+              <section
+                aria-labelledby="vf-home-journal-title"
+                className="vf-home-journal tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0"
+              >
                 <DS.SectionHeader
+                  id="vf-home-journal-title"
                   eyebrow={v.t?.postEb}
                   title={v.t?.postA}
                   accent={v.t?.postB}
@@ -207,6 +237,7 @@ export function View({v}) {
                     </DS.Button>
                   }
                 />
+                <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.postText}</p>
                 <DS.Carousel
                   className="vf-home-journal-row vf-home-carousel"
                   label={v.t?.postLabel}
