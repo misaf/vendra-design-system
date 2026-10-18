@@ -14,8 +14,8 @@
     background var(--dur-fast) var(--ease-out);
 }
 .ag-nav:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-nav--header {
   min-height: var(--tap-min);
@@ -42,7 +42,7 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
-  min-height: 60px;
+  min-height: calc(var(--control-h-lg) + var(--space-1));
   padding: 0;
   border-bottom: var(--border-hair) solid var(--border-subtle);
   font-family: var(--font-display);

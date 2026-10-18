@@ -4,6 +4,7 @@ import React from "react";
 import { Dialog as AriaDialog, Heading, Modal, ModalOverlay } from "react-aria-components";
 import { IconButton } from "../IconButton/IconButton.js";
 import { cx } from "../utils/cx.js";
+import { useDensity } from "../utils/density.js";
 import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";
 // The head (title + close) and body shared by the modal and inline forms.
@@ -25,14 +26,19 @@ function Content({ title, titleId, onClose, closeLabel, footer, children, headin
 // inside their parent instead, without moving focus or locking the page (several can share a card).
 export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center" }) {
 	const text = useMessages("Dialog", messages, { close: closeLabel });
+	const density = useDensity();
 	const titleId = React.useId();
 	const sheet = placement === "start";
 	const overlayClass = cx("ag-dialog__overlay", inline && "ag-dialog__overlay--inline", sheet && "ag-dialog__overlay--sheet");
 	const dialogClass = cx("ag-dialog", sheet && "ag-dialog--sheet");
-	const style = maxWidth ? { maxWidth } : undefined;
+	// A number is the width at the comfortable density; it grows and shrinks with the others.
+	const style = maxWidth ? { maxWidth: typeof maxWidth === "number" ? `calc(${maxWidth}px * var(--size-scale, 1))` : maxWidth } : undefined;
 	if (inline) {
 		if (!open) return null;
-		return /* @__PURE__ */ React.createElement("div", { className: overlayClass }, /* @__PURE__ */ React.createElement("div", {
+		return /* @__PURE__ */ React.createElement("div", {
+			className: overlayClass,
+			"data-density": density
+		}, /* @__PURE__ */ React.createElement("div", {
 			role: "dialog",
 			"aria-labelledby": title ? titleId : undefined,
 			className: dialogClass,
@@ -50,7 +56,8 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 		onOpenChange: (isOpen) => !isOpen && onClose && onClose(),
 		isDismissable: !!onClose,
 		isKeyboardDismissDisabled: !onClose,
-		className: overlayClass
+		className: overlayClass,
+		"data-density": density
 	}, /* @__PURE__ */ React.createElement(Modal, {
 		className: dialogClass,
 		style

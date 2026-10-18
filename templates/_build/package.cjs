@@ -132,15 +132,15 @@ function packageFiles() {
   return files;
 }
 
-// The base system's custom properties from the :root blocks in tokens/*.css (not @media
-// variants), in source order.
+// The base system's custom properties from the :root blocks in tokens/*.css (not @media or
+// density variants; comfortable is the default), in source order.
 function baseTokenVars() {
   const vars = {};
   for (const file of ['colors', 'typography', 'spacing', 'effects', 'character']) {
     const css = read('tokens/' + file + '.css')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/@media[^{]*\{(?:[^{}]*\{[^}]*\})*[^}]*\}/g, '');
-    for (const block of css.match(/:root\s*\{[^}]*\}/g) || [])
+    for (const block of css.match(/:root(?:,\[data-density="comfortable"\])?\s*\{[^}]*\}/g) || [])
       for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g))
         vars[match[1]] = match[2].trim();
   }

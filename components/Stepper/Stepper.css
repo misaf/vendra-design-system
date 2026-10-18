@@ -15,7 +15,7 @@
 }
 .ag-steps__item + .ag-steps__item::before {
   content: '';
-  width: 28px;
+  width: var(--space-5h);
   height: 1px;
   background: var(--border-default);
 }
@@ -40,14 +40,14 @@ button.ag-steps__btn:hover .ag-steps__label {
   text-underline-offset: 3px;
 }
 .ag-steps__btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-steps__dot {
   flex: none;
   box-sizing: border-box;
-  width: 26px;
-  height: 26px;
+  width: calc(26px * var(--size-scale));
+  height: calc(26px * var(--size-scale));
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -83,10 +83,10 @@ button.ag-steps__btn:hover .ag-steps__label {
   gap: var(--space-1);
 }
 .ag-steps--compact .ag-steps__item + .ag-steps__item::before {
-  width: 20px;
+  width: var(--space-4h);
 }
 .ag-steps--compact .ag-steps__btn {
-  min-width: 44px;
+  min-width: var(--tap-min);
   justify-content: center;
 }
 .ag-steps__caption {

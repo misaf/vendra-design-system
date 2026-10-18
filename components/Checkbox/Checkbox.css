@@ -20,8 +20,8 @@
 }
 .ag-check__box {
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: calc(20px * var(--size-scale));
+  height: calc(20px * var(--size-scale));
   box-sizing: border-box;
   border: var(--border-thick) solid var(--border-input-strong);
   background: var(--white);
@@ -44,11 +44,11 @@
 }
 .ag-check--radio[data-selected] .ag-check__box {
   background: var(--white);
-  box-shadow: inset 0 0 0 4px var(--surface-strong);
+  box-shadow: inset 0 0 0 calc(4px * var(--size-scale)) var(--surface-strong);
 }
 .ag-check[data-focus-visible] .ag-check__box {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-check--disabled {
   opacity: 0.45;

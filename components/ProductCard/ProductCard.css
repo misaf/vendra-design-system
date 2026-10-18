@@ -39,8 +39,8 @@
   outline: none;
 }
 .ag-product--link:focus-within {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-md);
 }
 .ag-product--link:focus-within:not(:has(.ag-product__link:focus-visible)) {

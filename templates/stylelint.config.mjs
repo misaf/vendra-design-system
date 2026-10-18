@@ -1,7 +1,9 @@
 // Two rules for every stylesheet in components/ and the storefront (npm run lint:css, part of
 // check): colours come from tokens, so a tenant theme and forced-colours mode reach every part; and
 // sides are logical (start/end, not left/right), so the Persian pages mirror without overrides.
-// Colours are written only in tokens/ (and the generated tenant themes).
+// Colours are written only in tokens/ (and the generated tenant themes). Media queries take only
+// the breakpoints in tokens/spacing.css (--breakpoint-md/lg/xl), in range syntax; anything finer
+// is a container query (components lay out by the space they get, not by the viewport).
 const PHYSICAL = [
   'left',
   'right',
@@ -20,6 +22,17 @@ export default {
     'property-disallowed-list': [
       PHYSICAL,
       {message: 'Use the logical property (inset-inline-start, margin-inline-end, …)'}
+    ],
+    'media-feature-range-notation': [
+      'context',
+      {message: 'Write the width in range syntax: (width < 768px), (width >= 1024px)'}
+    ],
+    'media-feature-name-value-allowed-list': [
+      {width: ['768px', '1024px', '1440px']},
+      {
+        message:
+          'Breakpoints are 768px, 1024px and 1440px (tokens/spacing.css); for another width use a container query'
+      }
     ],
     'declaration-property-value-disallowed-list': [
       {'/^(float|clear|text-align|caption-side)$/': ['left', 'right']},

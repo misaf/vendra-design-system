@@ -8,6 +8,7 @@ import { cx } from "../utils/cx.js";
 import { format } from "../utils/format.js";
 import { localeLanguage, useMessages } from "../utils/messages.js";
 import { usePageLocale } from "../utils/locale.js";
+import { useDensity } from "../utils/density.js";
 import { messages } from "./messages.js";
 // How far a finger has to travel sideways before a swipe changes the item.
 const SWIPE_MIN = 48;
@@ -18,6 +19,7 @@ const photoSrc = (photo) => typeof photo === "string" ? photo : photo && photo.s
 // position ("3 of 14") is announced as it changes; the neighbours' first photos load ahead.
 export function Lightbox({ items = [], index, onIndexChange, onClose, label, previousLabel, nextLabel, closeLabel, actions, sizes = "100vw", className }) {
 	const { locale, ref: localeRef } = usePageLocale();
+	const density = useDensity();
 	const text = useMessages("Lightbox", messages, {
 		label,
 		previous: previousLabel,
@@ -73,7 +75,8 @@ export function Lightbox({ items = [], index, onIndexChange, onClose, label, pre
 		isOpen: open,
 		onOpenChange: (isOpen) => !isOpen && onClose && onClose(),
 		isDismissable: false,
-		className: "ag-lightbox__overlay"
+		className: "ag-lightbox__overlay",
+		"data-density": density
 	}, /* @__PURE__ */ React.createElement(Modal, { className: cx("ag-lightbox", className) }, /* @__PURE__ */ React.createElement(Dialog, {
 		"aria-label": text.label,
 		className: "ag-lightbox__frame ag-on-inverse",

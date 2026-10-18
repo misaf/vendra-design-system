@@ -23,10 +23,12 @@ const maskUrl = (name) => {
 	return maskCache[name] = svg ? "url(\"data:image/svg+xml," + encodeURIComponent(svg).replace(/'/g, "%27") + "\")" : null;
 };
 // A Lucide icon drawn with a CSS mask, so it takes `color` (currentColor by default). Decorative
-// unless `label` is set; arrows and chevrons mirror in RTL unless `flipRtl={false}`.
+// unless `label` is set; arrows and chevrons mirror in RTL unless `flipRtl={false}`. A number
+// `size` is pixels at the comfortable density and follows `data-density` (--size-scale).
 export function Icon({ name, size = 20, color = "currentColor", label, flipRtl, className = "", style, ...rest }) {
 	const mask = maskUrl(name);
 	const flip = flipRtl ?? DIRECTIONAL.includes(name);
+	const length = typeof size === "number" ? `calc(${size}px * var(--size-scale, 1))` : size;
 	return /* @__PURE__ */ React.createElement("span", {
 		role: label ? "img" : undefined,
 		"aria-label": label,
@@ -35,8 +37,8 @@ export function Icon({ name, size = 20, color = "currentColor", label, flipRtl, 
 		style: {
 			display: "inline-block",
 			flex: "none",
-			width: size,
-			height: size,
+			width: length,
+			height: length,
 			background: mask ? color : "transparent",
 			WebkitMask: mask ? mask + " center/contain no-repeat" : undefined,
 			mask: mask ? mask + " center/contain no-repeat" : undefined,

@@ -2,6 +2,7 @@ import React from 'react';
 import {Dialog as AriaDialog, Heading, Modal, ModalOverlay} from 'react-aria-components';
 import {IconButton} from '../IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
+import {useDensity} from '../utils/density.js';
 import {useMessages} from '../utils/messages.js';
 import {messages} from './messages.js';
 
@@ -43,6 +44,7 @@ export function Dialog({
   placement = 'center'
 }) {
   const text = useMessages('Dialog', messages, {close: closeLabel});
+  const density = useDensity();
   const titleId = React.useId();
   const sheet = placement === 'start';
   const overlayClass = cx(
@@ -51,12 +53,18 @@ export function Dialog({
     sheet && 'ag-dialog__overlay--sheet'
   );
   const dialogClass = cx('ag-dialog', sheet && 'ag-dialog--sheet');
-  const style = maxWidth ? {maxWidth} : undefined;
+  // A number is the width at the comfortable density; it grows and shrinks with the others.
+  const style = maxWidth
+    ? {
+        maxWidth:
+          typeof maxWidth === 'number' ? `calc(${maxWidth}px * var(--size-scale, 1))` : maxWidth
+      }
+    : undefined;
 
   if (inline) {
     if (!open) return null;
     return (
-      <div className={overlayClass}>
+      <div className={overlayClass} data-density={density}>
         <div
           role="dialog"
           aria-labelledby={title ? titleId : undefined}
@@ -83,6 +91,7 @@ export function Dialog({
       isDismissable={!!onClose}
       isKeyboardDismissDisabled={!onClose}
       className={overlayClass}
+      data-density={density}
     >
       <Modal className={dialogClass} style={style}>
         <AriaDialog className="ag-dialog__frame">

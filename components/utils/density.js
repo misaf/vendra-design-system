@@ -1,0 +1,12 @@
+import React from 'react';
+
+// The density the components below are shown at: 'compact', 'comfortable' or 'tv'. In the page's
+// flow, `data-density` on a container is enough (tokens/spacing.css rescales everything inside
+// it). Overlays (Dialog, Lightbox, Select and DatePicker popovers) open at the end of <body>,
+// outside that container, so they take the density from VendraProvider's `density` instead and
+// set it on their own root.
+export const DensityContext = React.createContext(undefined);
+
+export function useDensity() {
+  return React.useContext(DensityContext);
+}

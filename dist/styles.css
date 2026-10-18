@@ -70,23 +70,57 @@
 --font-display-latin:'Instrument Serif';--font-body-latin:'Jost';--font-display-fa:'Vazirmatn';--font-body-fa:'Vazirmatn';
 --font-display:'Instrument Serif','Instrument Serif Fallback','Vazirmatn','Vazirmatn Fallback','Vazirmatn Fallback Naskh','Vazirmatn Fallback Sans','Vazirmatn Fallback Free',Georgia,'Times New Roman',serif;
 --font-body:'Jost','Jost Fallback','Vazirmatn','Vazirmatn Fallback','Vazirmatn Fallback Naskh','Vazirmatn Fallback Sans','Vazirmatn Fallback Free','Segoe UI',Tahoma,system-ui,sans-serif;
---text-2xs:.6875rem;--text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-md:1.125rem;--text-lg:1.375rem;--text-xl:1.75rem;--text-2xl:2.25rem;--text-3xl:3rem;--text-4xl:4rem;--text-5xl:5.5rem;
 --weight-light:300;/* @kind font */--weight-regular:400;/* @kind font */--weight-medium:500;/* @kind font */--weight-semibold:600;/* @kind font */
 --lh-tight:1.05;/* @kind other */--lh-snug:1.25;/* @kind other */--lh-body:1.6;/* @kind other */--lh-loose:1.8;/* @kind other */
 --tracking-eyebrow:.18em;/* @kind other */--tracking-button:.02em;/* @kind other */--tracking-display:-.015em;/* @kind other */
 }
+/* The type scale follows the density (see spacing.css). Compact keeps small text readable and
+   tightens the headings; tv sets body text at 24px for a screen read from across the room. */
+:root,[data-density="comfortable"]{--text-2xs:.6875rem;--text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-md:1.125rem;--text-lg:1.375rem;--text-xl:1.75rem;--text-2xl:2.25rem;--text-3xl:3rem;--text-4xl:4rem;--text-5xl:5.5rem}
+[data-density="compact"]{--text-2xs:.6875rem;--text-xs:.75rem;--text-sm:.8125rem;--text-base:.9375rem;--text-md:1.0625rem;--text-lg:1.25rem;--text-xl:1.5rem;--text-2xl:1.875rem;--text-3xl:2.5rem;--text-4xl:3.25rem;--text-5xl:4.5rem}
+[data-density="tv"]{--text-2xs:1.125rem;--text-xs:1.25rem;--text-sm:1.375rem;--text-base:1.5rem;--text-md:1.75rem;--text-lg:2rem;--text-xl:2.5rem;--text-2xl:3rem;--text-3xl:4rem;--text-4xl:5rem;--text-5xl:6.5rem}
 [data-lang="fa"]{--lh-tight:1.35;/* @kind other */--lh-snug:1.5;/* @kind other */--lh-body:1.9;/* @kind other */--lh-loose:2.1;/* @kind other */--tracking-eyebrow:0;/* @kind other */--tracking-button:0;/* @kind other */--tracking-display:0;/* @kind other */}
+
 }
 /* tokens/spacing.css */
 @layer vendra.tokens {
-:root{
+/* Density: comfortable is the default. [data-density="compact"|"comfortable"|"tv"] on any element
+   rescales the spacing, control heights, tap minimum, focus ring and type scale for everything
+   inside it: compact for dense screens with a mouse, tv for a screen read from across the room.
+   Components size themselves from these tokens; one-off sizes multiply by --size-scale. */
+:root,[data-density="comfortable"]{
 --space-0:0;--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-4h:1.25rem;--space-5:1.5rem;--space-5h:1.75rem;--space-6:2rem;--space-7:3rem;--space-8:4rem;--space-9:6rem;--space-10:8rem;
---radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
---border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
 --container-max:1240px;/* @kind spacing */--gutter:24px;/* @kind spacing */--header-h:72px;/* @kind spacing */--header-h-mobile:60px;/* @kind spacing */
 --tap-min:44px;/* @kind spacing */
---control-h-sm:36px;/* @kind spacing */--control-h-md:48px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:var(--control-h-md);/* @kind spacing */--measure:56ch;/* @kind spacing */
+--control-h-xs:32px;/* @kind spacing */--control-h-sm:36px;/* @kind spacing */--control-h-md:48px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:var(--control-h-md);/* @kind spacing */
+--size-scale:1;/* @kind other */--focus-width:2px;/* @kind spacing */--focus-offset:2px;/* @kind spacing */
 }
+:root{
+--radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
+--border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
+--measure:56ch;/* @kind spacing */
+/* Breakpoints, for reference only: @media cannot read custom properties, so stylesheets write the
+   values themselves, in range syntax ((width < 768px), (width >= 1024px)); npm run lint:css allows
+   no others. Components lay out by their container (@container) rather than the viewport. */
+--breakpoint-md:768px;/* @kind spacing */--breakpoint-lg:1024px;/* @kind spacing */--breakpoint-xl:1440px;/* @kind spacing */
+}
+[data-density="compact"]{
+--space-1:.1875rem;--space-2:.375rem;--space-3:.5625rem;--space-4:.75rem;--space-4h:.9375rem;--space-5:1.125rem;--space-5h:1.3125rem;--space-6:1.5rem;--space-7:2.25rem;--space-8:3rem;--space-9:4.5rem;--space-10:6rem;
+--gutter:16px;--header-h:60px;--header-h-mobile:52px;
+--tap-min:36px;
+--control-h-xs:28px;--control-h-sm:32px;--control-h-md:40px;--control-h-lg:48px;--control-h-input:var(--control-h-md);
+--size-scale:.875;
+}
+/* Touch keeps its 44px minimum whatever the density. */
+@media (any-pointer:coarse){[data-density="compact"]{--tap-min:44px}}
+[data-density="tv"]{
+--space-1:.375rem;--space-2:.75rem;--space-3:1.125rem;--space-4:1.5rem;--space-4h:1.875rem;--space-5:2.25rem;--space-5h:2.625rem;--space-6:3rem;--space-7:4.5rem;--space-8:6rem;--space-9:9rem;--space-10:12rem;
+--container-max:1760px;--gutter:48px;--header-h:96px;--header-h-mobile:96px;
+--tap-min:64px;
+--control-h-xs:48px;--control-h-sm:56px;--control-h-md:72px;--control-h-lg:88px;--control-h-input:var(--control-h-md);
+--size-scale:1.5;--focus-width:4px;--focus-offset:4px;
+}
+
 }
 /* tokens/effects.css */
 @layer vendra.tokens {
@@ -129,8 +163,10 @@ a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px;t
 a:hover{color:var(--accent-press)}
 ::selection{background:var(--blush-300);color:var(--ink-900)}
 [dir="rtl"] .ag-flip-rtl{transform:scaleX(-1)}
-:where(a,button,[role="button"],summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+:where(a,button,[role="button"],summary,[tabindex]:not([tabindex="-1"])):focus-visible{outline:var(--focus-width) solid var(--focus-ring);outline-offset:var(--focus-offset)}
 :where(h1,h2,h3,main)[tabindex="-1"]:focus{outline:none}
+/* A density scope sets its own body text size (on <html> the body already does). */
+:where([data-density]:not(html)){font-size:var(--text-base)}
 .ag-on-inverse{--focus-ring:var(--focus-ring-on-inverse)}/* any container on --surface-inverse: focus rings inside it stay 3:1 */
 .ag-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
 .ag-display{font-family:var(--font-display);font-weight:500;text-transform:var(--display-case);line-height:var(--lh-tight);letter-spacing:var(--tracking-display)}
@@ -232,8 +268,8 @@ a:hover{color:var(--accent-press)}
   transform: translateY(1px);
 }
 .ag-btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-btn:disabled,
 .ag-btn--disabled {
@@ -312,8 +348,8 @@ a:hover{color:var(--accent-press)}
 
 /* components/IconButton/IconButton.css */
 .ag-iconbtn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-iconbtn:disabled {
   opacity: 0.45;
@@ -335,16 +371,16 @@ a:hover{color:var(--accent-press)}
     color var(--dur-fast) var(--ease-out);
 }
 .ag-iconbtn--sm {
-  width: 32px;
-  height: 32px;
+  width: var(--control-h-xs);
+  height: var(--control-h-xs);
 }
 .ag-iconbtn--md {
   width: var(--tap-min);
   height: var(--tap-min);
 }
 .ag-iconbtn--lg {
-  width: 52px;
-  height: 52px;
+  width: calc(var(--tap-min) + var(--space-2));
+  height: calc(var(--tap-min) + var(--space-2));
 }
 .ag-iconbtn--ghost:hover:not(:disabled) {
   background: var(--surface-hover);
@@ -393,15 +429,15 @@ a.ag-iconbtn {
   position: absolute;
   top: 2px;
   inset-inline-end: 0;
-  min-width: 18px;
-  height: 18px;
-  padding-inline: 5px;
+  min-width: calc(18px * var(--size-scale));
+  height: calc(18px * var(--size-scale));
+  padding-inline: calc(5px * var(--size-scale));
   box-sizing: border-box;
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--text-on-accent);
   font-size: var(--text-2xs);
-  line-height: 18px;
+  line-height: calc(18px * var(--size-scale));
   font-weight: 500;
   text-align: center;
 }
@@ -416,8 +452,8 @@ a.ag-iconbtn {
 
 /* components/Chip/Chip.css */
 .ag-chip:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-chip {
   display: inline-flex;
@@ -482,8 +518,8 @@ a.ag-iconbtn {
 
 /* components/Tabs/Tabs.css */
 .ag-tab[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-tabs {
   display: flex;
@@ -532,6 +568,7 @@ a.ag-iconbtn {
   display: inline-flex;
 }
 .ag-tabs--pill .ag-tab {
+  min-height: var(--control-h-xs);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-control);
   font-size: var(--text-sm);
@@ -542,6 +579,12 @@ a.ag-iconbtn {
 }
 .ag-tabs--pill .ag-tab--active::after {
   display: none;
+}
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-tabs--pill .ag-tab {
+    min-height: var(--tap-min);
+  }
 }
 /* React Aria's wrapper around the list and panel takes no part in layout: the list and panel sit in
    the page's own flow, as they did before. */
@@ -567,8 +610,8 @@ a.ag-iconbtn {
 
 /* components/LanguageSwitch/LanguageSwitch.css */
 .ag-lang button:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-lang {
   display: inline-flex;
@@ -651,8 +694,8 @@ a.ag-iconbtn {
   outline: none;
 }
 .ag-map:has(.leaflet-container:focus-visible) {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* components/Picture/Picture.css */
@@ -744,8 +787,8 @@ a.ag-iconbtn {
   text-wrap: balance;
 }
 .ag-seal:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 @media (forced-colors: active) {
   .ag-seal {
@@ -828,8 +871,8 @@ a.ag-iconbtn {
   outline: none;
 }
 .ag-product--link:focus-within {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-md);
 }
 .ag-product--link:focus-within:not(:has(.ag-product__link:focus-visible)) {
@@ -1135,7 +1178,7 @@ a.ag-iconbtn {
 }
 .ag-select__popover {
   min-width: var(--trigger-width);
-  max-height: min(320px, var(--visual-viewport-height, 100vh));
+  max-height: min(calc(320px * var(--size-scale)), var(--visual-viewport-height, 100vh));
   overflow: auto;
   background: var(--surface-card);
   border: var(--border-hair) solid var(--border-input);
@@ -1162,8 +1205,8 @@ a.ag-iconbtn {
   background: var(--surface-hover);
 }
 .ag-select__option[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
 }
 .ag-select__option[data-selected] {
   font-weight: var(--weight-medium);
@@ -1211,7 +1254,7 @@ a.ag-iconbtn {
   color: var(--text-body);
 }
 .ag-search__clear[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 1px;
 }
 .ag-search[data-empty] .ag-search__clear {
@@ -1265,8 +1308,8 @@ a.ag-iconbtn {
 }
 .ag-check__box {
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: calc(20px * var(--size-scale));
+  height: calc(20px * var(--size-scale));
   box-sizing: border-box;
   border: var(--border-thick) solid var(--border-input-strong);
   background: var(--white);
@@ -1289,11 +1332,11 @@ a.ag-iconbtn {
 }
 .ag-check--radio[data-selected] .ag-check__box {
   background: var(--white);
-  box-shadow: inset 0 0 0 4px var(--surface-strong);
+  box-shadow: inset 0 0 0 calc(4px * var(--size-scale)) var(--surface-strong);
 }
 .ag-check[data-focus-visible] .ag-check__box {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-check--disabled {
   opacity: 0.45;
@@ -1363,7 +1406,7 @@ a.ag-iconbtn {
   justify-content: center;
   gap: 2px;
   box-sizing: border-box;
-  min-height: 56px;
+  min-height: var(--control-h-lg);
   padding: var(--space-2) var(--space-4);
   border: var(--border-hair) solid var(--border-input);
   border-radius: var(--radius-md);
@@ -1387,8 +1430,8 @@ a.ag-iconbtn {
   border-color: var(--border-strong);
 }
 .ag-choice[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-choice--selected {
   background: var(--text-body);
@@ -1457,8 +1500,8 @@ a.ag-iconbtn {
   height: 1px;
 }
 .ag-switch__track {
-  width: 44px;
-  height: 26px;
+  width: calc(44px * var(--size-scale));
+  height: calc(26px * var(--size-scale));
   border-radius: var(--radius-pill);
   background: var(--border-input);
   position: relative;
@@ -1467,10 +1510,10 @@ a.ag-iconbtn {
 }
 .ag-switch__thumb {
   position: absolute;
-  top: 3px;
-  inset-inline-start: 3px;
-  width: 20px;
-  height: 20px;
+  top: calc(3px * var(--size-scale));
+  inset-inline-start: calc(3px * var(--size-scale));
+  width: calc(20px * var(--size-scale));
+  height: calc(20px * var(--size-scale));
   border-radius: 50%;
   background: var(--white);
   box-shadow: var(--shadow-sm);
@@ -1480,14 +1523,14 @@ a.ag-iconbtn {
   background: var(--control-on);
 }
 .ag-switch[data-selected] .ag-switch__thumb {
-  transform: translateX(18px);
+  transform: translateX(calc(18px * var(--size-scale)));
 }
 [dir='rtl'] .ag-switch[data-selected] .ag-switch__thumb {
-  transform: translateX(-18px);
+  transform: translateX(calc(-18px * var(--size-scale)));
 }
 .ag-switch[data-focus-visible] .ag-switch__track {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 /* Forced colours drop backgrounds: the track gets an edge and the thumb a system colour; on, both
    take the system highlight. */
@@ -1529,10 +1572,10 @@ a.ag-iconbtn {
   font-family: var(--font-body);
 }
 .ag-qty--sm {
-  height: 34px;
+  height: calc(var(--control-h-sm) - 2px);
 }
 .ag-qty button {
-  width: 40px;
+  width: calc(var(--tap-min) - var(--space-1));
   height: 100%;
   border: 0;
   background: transparent;
@@ -1553,8 +1596,8 @@ a.ag-iconbtn {
   border-color: var(--border-subtle);
 }
 .ag-qty__val {
-  width: 28px;
-  min-width: 28px;
+  width: var(--space-5h);
+  min-width: var(--space-5h);
   padding: 0;
   border: 0;
   outline: 0;
@@ -1573,14 +1616,14 @@ a.ag-iconbtn {
 }
 /* The count is the one Tab stop, so the ring goes round the whole control. */
 .ag-qty[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* Touch targets stay comfortable on phones, tablets and hybrid screens. */
 @media (any-pointer: coarse) {
   .ag-qty {
-    min-height: 48px;
+    min-height: var(--control-h-md);
   }
   .ag-qty button {
     width: var(--tap-min);
@@ -1613,8 +1656,8 @@ a.ag-iconbtn {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 480px;
-  max-height: calc(100% - 48px);
+  max-width: calc(480px * var(--size-scale));
+  max-height: calc(100% - 2 * var(--space-5));
   overflow: auto;
   animation: ag-rise var(--dur-slow) var(--ease-out);
   font-family: var(--font-body);
@@ -1637,9 +1680,9 @@ a.ag-iconbtn {
 .ag-dialog--sheet {
   position: sticky;
   top: 0;
-  width: min(320px, 86%);
-  height: 100vh;
-  max-height: 100vh;
+  width: min(calc(320px * var(--size-scale)), 86%);
+  height: 100dvh;
+  max-height: 100dvh;
   border-radius: 0;
   border-start-end-radius: var(--radius-lg);
   border-end-end-radius: var(--radius-lg);
@@ -1719,7 +1762,7 @@ a.ag-iconbtn {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  width: 360px;
+  width: calc(360px * var(--size-scale));
   max-width: 100%;
   box-sizing: border-box;
   padding-block: var(--space-4);
@@ -1811,8 +1854,8 @@ a.ag-iconbtn {
   outline: none;
 }
 .ag-toast-region[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-md);
 }
 
@@ -1880,8 +1923,8 @@ a.ag-iconbtn {
   color: var(--text-body);
 }
 .ag-cat:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-md);
 }
 a.ag-cat,
@@ -2259,8 +2302,8 @@ a.ag-cat:hover {
 }
 .ag-pages__page[data-focus-visible],
 .ag-pages__step[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-pages__page--current,
 .ag-pages__page--current[data-hovered] {
@@ -2401,7 +2444,7 @@ a.ag-cat:hover {
   justify-content: space-between;
   gap: var(--space-4);
   width: 100%;
-  min-height: 60px;
+  min-height: calc(var(--control-h-lg) + var(--space-1));
   padding-block: var(--space-3);
   padding-inline: 0;
   background: none;
@@ -2415,8 +2458,8 @@ a.ag-cat:hover {
   cursor: pointer;
 }
 .ag-acc__btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-acc__chev {
   color: var(--text-muted);
@@ -2467,7 +2510,7 @@ a.ag-cat:hover {
 }
 .ag-steps__item + .ag-steps__item::before {
   content: '';
-  width: 28px;
+  width: var(--space-5h);
   height: 1px;
   background: var(--border-default);
 }
@@ -2492,14 +2535,14 @@ button.ag-steps__btn:hover .ag-steps__label {
   text-underline-offset: 3px;
 }
 .ag-steps__btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-steps__dot {
   flex: none;
   box-sizing: border-box;
-  width: 26px;
-  height: 26px;
+  width: calc(26px * var(--size-scale));
+  height: calc(26px * var(--size-scale));
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -2535,10 +2578,10 @@ button.ag-steps__btn:hover .ag-steps__label {
   gap: var(--space-1);
 }
 .ag-steps--compact .ag-steps__item + .ag-steps__item::before {
-  width: 20px;
+  width: var(--space-4h);
 }
 .ag-steps--compact .ag-steps__btn {
-  min-width: 44px;
+  min-width: var(--tap-min);
   justify-content: center;
 }
 .ag-steps__caption {
@@ -2601,8 +2644,8 @@ button.ag-steps__btn:hover .ag-steps__label {
   font-size: var(--text-xs);
 }
 .ag-tabbar__item:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
   border-radius: var(--radius-md);
 }
 a.ag-tabbar__item,
@@ -2663,8 +2706,8 @@ a.ag-tabbar__item--current:hover {
     background var(--dur-fast) var(--ease-out);
 }
 .ag-nav:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-nav--header {
   min-height: var(--tap-min);
@@ -2691,7 +2734,7 @@ a.ag-tabbar__item--current:hover {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  min-height: 60px;
+  min-height: calc(var(--control-h-lg) + var(--space-1));
   padding: 0;
   border-bottom: var(--border-hair) solid var(--border-subtle);
   font-family: var(--font-display);
@@ -2740,8 +2783,8 @@ a.ag-tabbar__item--current:hover {
   text-underline-offset: 3px;
 }
 .ag-crumbs__link[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-crumbs__link[data-current] {
   color: var(--text-body);
@@ -2889,6 +2932,10 @@ a.ag-tabbar__item--current:hover {
   min-width: 0;
 }
 .ag-blog--wide {
+  display: block;
+  container-type: inline-size;
+}
+.ag-blog__layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: var(--space-4) var(--space-7);
@@ -2901,7 +2948,7 @@ a.ag-tabbar__item--current:hover {
   gap: var(--space-3);
 }
 .ag-blog--wide .ag-blog__title {
-  font-size: clamp(1.875rem, 4vw, var(--text-3xl));
+  font-size: clamp(1.875rem, 4cqi, var(--text-3xl));
   line-height: 1.1;
   text-wrap: balance;
 }
@@ -2910,8 +2957,9 @@ a.ag-tabbar__item--current:hover {
   color: var(--text-secondary);
   -webkit-line-clamp: 4;
 }
-@media (max-width: 767px) {
-  .ag-blog--wide {
+/* The wide card stacks when it has phone-sized room, whatever the viewport. */
+@container (width < 600px) {
+  .ag-blog__layout {
     grid-template-columns: 1fr;
   }
   .ag-blog--wide .ag-blog__media {
@@ -2962,8 +3010,8 @@ a.ag-tabbar__item--current:hover {
   border-radius: var(--radius-md);
 }
 .ag-blog__link:focus-visible::after {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
 }
 .ag-blog__excerpt {
   margin: 0;
@@ -3141,8 +3189,8 @@ a.ag-tabbar__item--current:hover {
   color: var(--text-body);
 }
 .ag-line__remove:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-line__end {
   display: flex;
@@ -3183,8 +3231,8 @@ a.ag-tabbar__item--current:hover {
   display: none;
 }
 .ag-gallery__track:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
 }
 .ag-gallery__slide {
   flex: 0 0 100%;
@@ -3226,8 +3274,8 @@ a.ag-tabbar__item--current:hover {
   background: var(--text-body);
 }
 .ag-gallery__dot:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -2);
   border-radius: var(--radius-pill);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -3347,6 +3395,7 @@ a.ag-tabbar__item--current:hover {
 
 /* components/SectionHeader/SectionHeader.css */
 .ag-sechead {
+  container-type: inline-size;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -3364,17 +3413,17 @@ a.ag-tabbar__item--current:hover {
   text-transform: var(--display-case);
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2rem, 4vw, var(--text-3xl));
+  font-size: clamp(2rem, 4cqi, var(--text-3xl));
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   color: var(--text-body);
   text-wrap: balance;
 }
 .ag-sechead--h1 .ag-sechead__title {
-  font-size: clamp(2.5rem, 5vw, var(--text-4xl));
+  font-size: clamp(2.5rem, 5cqi, var(--text-4xl));
 }
 .ag-sechead--h3 .ag-sechead__title {
-  font-size: clamp(1.625rem, 3vw, 2.125rem);
+  font-size: clamp(1.625rem, 3cqi, 2.125rem);
 }
 .ag-sechead__title em {
   font-style: var(--accent-font-style);
@@ -3395,7 +3444,8 @@ a.ag-tabbar__item--current:hover {
   display: flex;
   gap: var(--space-2);
 }
-@media (max-width: 767px) {
+/* The title sizes by the room the header has, not by the viewport. */
+@container (width < 600px) {
   .ag-sechead__title {
     font-size: var(--text-2xl);
   }
@@ -3410,6 +3460,7 @@ a.ag-tabbar__item--current:hover {
 /* components/Carousel/Carousel.css */
 .ag-carousel {
   position: relative;
+  container-type: inline-size;
 }
 .ag-carousel__nav {
   display: flex;
@@ -3435,8 +3486,8 @@ a.ag-tabbar__item--current:hover {
   display: none;
 }
 .ag-carousel__track:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-sm);
 }
 .ag-carousel__item,
@@ -3447,7 +3498,8 @@ a.ag-tabbar__item--current:hover {
 .ag-carousel--contents .ag-carousel__track > [data-snap-group] {
   display: contents;
 }
-@media (max-width: 767px) {
+/* Phone-sized room (a phone, or a narrow column): the mobile count per view, and a bleed edge. */
+@container (width < 600px) {
   .ag-carousel__track {
     grid-auto-columns: calc(
       (100% - var(--carousel-gap) * (var(--carousel-per-view-mobile) - 1)) /
@@ -3506,8 +3558,8 @@ a.ag-tabbar__item--current:hover {
 .ag-skip:focus-visible {
   transform: none;
   box-shadow: var(--shadow-lg); /* shadow only once shown: hidden, it bled into the header */
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 @media (prefers-reduced-motion: reduce) {
   .ag-skip {
@@ -3550,7 +3602,7 @@ a.ag-tabbar__item--current:hover {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: 32px;
+  min-height: var(--control-h-xs);
   padding: var(--space-1) var(--space-3);
   border: 0;
   border-radius: var(--radius-control);
@@ -3571,12 +3623,14 @@ a.ag-tabbar__item--current:hover {
   box-shadow: var(--shadow-sm);
 }
 .ag-date__cal-option[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-date__grid {
   display: grid;
-  grid-template-columns: minmax(84px, 1fr) minmax(0, 1.6fr) minmax(68px, 1fr);
+  grid-template-columns:
+    minmax(calc(84px * var(--size-scale)), 1fr) minmax(0, 1.6fr)
+    minmax(calc(68px * var(--size-scale)), 1fr);
   gap: var(--space-2);
 }
 .ag-date__grid--yearly {
@@ -3633,8 +3687,8 @@ a.ag-tabbar__item--current:hover {
 .ag-cal__nav {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
@@ -3651,7 +3705,7 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-date__open[data-focus-visible],
 .ag-cal__nav[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 0;
 }
 .ag-cal__nav[data-disabled] {
@@ -3695,8 +3749,8 @@ a.ag-tabbar__item--current:hover {
 .ag-cal__cell {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: calc(var(--tap-min) - var(--space-1));
+  height: calc(var(--tap-min) - var(--space-1));
   border-radius: 50%;
   font-size: var(--text-sm);
   color: var(--text-body);
@@ -3715,14 +3769,24 @@ a.ag-tabbar__item--current:hover {
   color: var(--text-on-strong);
 }
 .ag-cal__cell[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-cal__cell[data-disabled],
 .ag-cal__cell[data-unavailable] {
   color: var(--text-subtle);
   background: transparent;
   cursor: not-allowed;
+}
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-date__cal-option,
+  .ag-date__open,
+  .ag-cal__nav,
+  .ag-cal__cell {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
 }
 /* Forced colours drop fills and shadows: the chosen calendar system and the chosen day take the
    system highlight. */
@@ -3799,8 +3863,8 @@ a.ag-tabbar__item--current:hover {
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.35); /* stylelint-disable-line function-disallowed-list */
 }
 .ag-place-marker:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .leaflet-tooltip.ag-place-label {
   font-family: var(--font-body);
@@ -4259,7 +4323,7 @@ a.ag-tabbar__item--current:hover {
   outline: none;
 }
 .ag-promo__row .ag-input:has(input:focus-visible) {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }
 .ag-promo__applied {
@@ -4408,7 +4472,7 @@ a.ag-tabbar__item--current:hover {
 .ag-lightbox__dot {
   display: grid;
   place-items: center;
-  min-width: 24px;
+  min-width: var(--space-5);
   min-height: var(--tap-min);
   padding: 0;
   background: none;
@@ -4417,19 +4481,19 @@ a.ag-tabbar__item--current:hover {
 }
 .ag-lightbox__dot span {
   display: block;
-  width: 6px;
-  height: 6px;
+  width: calc(6px * var(--size-scale));
+  height: calc(6px * var(--size-scale));
   border-radius: var(--radius-pill);
   background: var(--text-inverse-muted);
   transition: width var(--dur-base) var(--ease-out);
 }
 .ag-lightbox__dot[aria-current] span {
-  width: 22px;
+  width: calc(22px * var(--size-scale));
   background: var(--text-on-inverse);
 }
 .ag-lightbox__dot[data-focus-visible] {
-  outline: 2px solid var(--focus-ring-on-inverse);
-  outline-offset: -4px;
+  outline: var(--focus-width) solid var(--focus-ring-on-inverse);
+  outline-offset: calc(var(--focus-offset) * -2);
   border-radius: var(--radius-pill);
 }
 .ag-lightbox__caption {

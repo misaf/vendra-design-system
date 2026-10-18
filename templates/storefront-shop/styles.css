@@ -1,7 +1,7 @@
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
-@media (max-width: 1023px) {
+@media (width < 1024px) {
   .vf-shop-product-grid {
     row-gap: var(--space-6);
   }
@@ -18,7 +18,7 @@
     gap: var(--space-1);
   }
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-shop-product-grid {
     column-gap: var(--space-3);
   }
@@ -40,15 +40,15 @@
     scrollbar-width: thin;
   }
   .vf-shop-quick-filters:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
+    outline: var(--focus-width) solid var(--focus-ring);
+    outline-offset: var(--focus-offset);
     border-radius: var(--radius-md);
   }
   .vf-shop-toolbar > div:last-child {
     justify-content: flex-end;
   }
 }
-@media (max-width: 319px) {
+@container (width < 320px) {
   .vf-page .vf-shop-product-grid {
     grid-template-columns: minmax(0, 1fr) !important;
   }

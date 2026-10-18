@@ -25,8 +25,8 @@
 .ag-skip:focus-visible {
   transform: none;
   box-shadow: var(--shadow-lg); /* shadow only once shown: hidden, it bled into the header */
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 @media (prefers-reduced-motion: reduce) {
   .ag-skip {

@@ -2,6 +2,7 @@ import * as React from 'react';
 export interface IconProps {
   /** Lucide icon name, kebab-case (e.g. "flower-2", "shopping-bag"). */
   name: string;
+  /** Pixels at the comfortable density; scales with `data-density` (--size-scale). Default 20. */
   size?: number;
   color?: string;
   /** Accessible label; omit for decorative icons. */

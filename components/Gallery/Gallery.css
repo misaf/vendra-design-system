@@ -16,8 +16,8 @@
   display: none;
 }
 .ag-gallery__track:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
 }
 .ag-gallery__slide {
   flex: 0 0 100%;
@@ -59,8 +59,8 @@
   background: var(--text-body);
 }
 .ag-gallery__dot:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -2);
   border-radius: var(--radius-pill);
 }
 @media (prefers-reduced-motion: no-preference) {

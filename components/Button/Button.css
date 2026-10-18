@@ -23,8 +23,8 @@
   transform: translateY(1px);
 }
 .ag-btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-btn:disabled,
 .ag-btn--disabled {

@@ -4,7 +4,7 @@
 .vf-home-top .ag-sechead--h1 .ag-sechead__title {
   font-size: clamp(2rem, 4vw, var(--text-3xl));
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-top .ag-sechead--h1 .ag-sechead__title {
     font-size: var(--text-2xl);
   }
@@ -16,7 +16,7 @@
   font-weight: var(--accent-font-weight);
 }
 /* Keep the ready-made heading readable beside its compact action, and spend phone width on photos. */
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-featured .ag-sechead__title {
     font-size: var(--text-xl);
   }
@@ -24,7 +24,7 @@
     padding-inline: 0;
   }
 }
-@media (max-width: 319px) {
+@container (width < 320px) {
   .vf-home-featured .ag-sechead {
     flex-direction: column;
     align-items: stretch;
@@ -103,7 +103,7 @@
     url('../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem repeat-y;
   opacity: 0.16;
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-weddings-band::before {
     inset-block-start: -2.5rem;
     inset-inline-end: -3rem;
@@ -150,6 +150,6 @@
   outline: none;
 }
 .vf-home-newsletter-form .ag-input:has(input:focus-visible) {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }

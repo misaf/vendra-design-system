@@ -34,7 +34,7 @@
 }
 .ag-select__popover {
   min-width: var(--trigger-width);
-  max-height: min(320px, var(--visual-viewport-height, 100vh));
+  max-height: min(calc(320px * var(--size-scale)), var(--visual-viewport-height, 100vh));
   overflow: auto;
   background: var(--surface-card);
   border: var(--border-hair) solid var(--border-input);
@@ -61,8 +61,8 @@
   background: var(--surface-hover);
 }
 .ag-select__option[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
 }
 .ag-select__option[data-selected] {
   font-weight: var(--weight-medium);

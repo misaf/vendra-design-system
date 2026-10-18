@@ -6,6 +6,7 @@ import {cx} from '../utils/cx.js';
 import {format} from '../utils/format.js';
 import {localeLanguage, useMessages} from '../utils/messages.js';
 import {usePageLocale} from '../utils/locale.js';
+import {useDensity} from '../utils/density.js';
 import {messages} from './messages.js';
 
 // How far a finger has to travel sideways before a swipe changes the item.
@@ -30,6 +31,7 @@ export function Lightbox({
   className
 }) {
   const {locale, ref: localeRef} = usePageLocale();
+  const density = useDensity();
   const text = useMessages(
     'Lightbox',
     messages,
@@ -89,6 +91,7 @@ export function Lightbox({
       onOpenChange={isOpen => !isOpen && onClose && onClose()}
       isDismissable={false}
       className="ag-lightbox__overlay"
+      data-density={density}
     >
       <Modal className={cx('ag-lightbox', className)}>
         <Dialog

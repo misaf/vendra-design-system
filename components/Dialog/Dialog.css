@@ -18,8 +18,8 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 480px;
-  max-height: calc(100% - 48px);
+  max-width: calc(480px * var(--size-scale));
+  max-height: calc(100% - 2 * var(--space-5));
   overflow: auto;
   animation: ag-rise var(--dur-slow) var(--ease-out);
   font-family: var(--font-body);
@@ -42,9 +42,9 @@
 .ag-dialog--sheet {
   position: sticky;
   top: 0;
-  width: min(320px, 86%);
-  height: 100vh;
-  max-height: 100vh;
+  width: min(calc(320px * var(--size-scale)), 86%);
+  height: 100dvh;
+  max-height: 100dvh;
   border-radius: 0;
   border-start-end-radius: var(--radius-lg);
   border-end-end-radius: var(--radius-lg);

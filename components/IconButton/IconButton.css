@@ -1,6 +1,6 @@
 .ag-iconbtn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-iconbtn:disabled {
   opacity: 0.45;
@@ -22,16 +22,16 @@
     color var(--dur-fast) var(--ease-out);
 }
 .ag-iconbtn--sm {
-  width: 32px;
-  height: 32px;
+  width: var(--control-h-xs);
+  height: var(--control-h-xs);
 }
 .ag-iconbtn--md {
   width: var(--tap-min);
   height: var(--tap-min);
 }
 .ag-iconbtn--lg {
-  width: 52px;
-  height: 52px;
+  width: calc(var(--tap-min) + var(--space-2));
+  height: calc(var(--tap-min) + var(--space-2));
 }
 .ag-iconbtn--ghost:hover:not(:disabled) {
   background: var(--surface-hover);
@@ -80,15 +80,15 @@ a.ag-iconbtn {
   position: absolute;
   top: 2px;
   inset-inline-end: 0;
-  min-width: 18px;
-  height: 18px;
-  padding-inline: 5px;
+  min-width: calc(18px * var(--size-scale));
+  height: calc(18px * var(--size-scale));
+  padding-inline: calc(5px * var(--size-scale));
   box-sizing: border-box;
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--text-on-accent);
   font-size: var(--text-2xs);
-  line-height: 18px;
+  line-height: calc(18px * var(--size-scale));
   font-weight: 500;
   text-align: center;
 }

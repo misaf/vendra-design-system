@@ -128,7 +128,7 @@
 .vf-page[data-lang='fa'] main blockquote {
   line-height: var(--lh-snug);
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page .vf-shopping,
   .vf-page .vf-form,
   .vf-page .vf-info {
@@ -158,7 +158,7 @@
     column-gap: var(--space-4) !important;
   }
 }
-@media (max-width: 359px) {
+@container (width < 360px) {
   .vf-page .vf-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -182,6 +182,6 @@
 /* Give form fields a visible ring. (Keyboard targets stay clear of the sticky header and bottom
    bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }

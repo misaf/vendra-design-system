@@ -10,10 +10,10 @@
   font-family: var(--font-body);
 }
 .ag-qty--sm {
-  height: 34px;
+  height: calc(var(--control-h-sm) - 2px);
 }
 .ag-qty button {
-  width: 40px;
+  width: calc(var(--tap-min) - var(--space-1));
   height: 100%;
   border: 0;
   background: transparent;
@@ -34,8 +34,8 @@
   border-color: var(--border-subtle);
 }
 .ag-qty__val {
-  width: 28px;
-  min-width: 28px;
+  width: var(--space-5h);
+  min-width: var(--space-5h);
   padding: 0;
   border: 0;
   outline: 0;
@@ -54,14 +54,14 @@
 }
 /* The count is the one Tab stop, so the ring goes round the whole control. */
 .ag-qty[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* Touch targets stay comfortable on phones, tablets and hybrid screens. */
 @media (any-pointer: coarse) {
   .ag-qty {
-    min-height: 48px;
+    min-height: var(--control-h-md);
   }
   .ag-qty button {
     width: var(--tap-min);

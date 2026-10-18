@@ -74,7 +74,7 @@
 .ag-lightbox__dot {
   display: grid;
   place-items: center;
-  min-width: 24px;
+  min-width: var(--space-5);
   min-height: var(--tap-min);
   padding: 0;
   background: none;
@@ -83,19 +83,19 @@
 }
 .ag-lightbox__dot span {
   display: block;
-  width: 6px;
-  height: 6px;
+  width: calc(6px * var(--size-scale));
+  height: calc(6px * var(--size-scale));
   border-radius: var(--radius-pill);
   background: var(--text-inverse-muted);
   transition: width var(--dur-base) var(--ease-out);
 }
 .ag-lightbox__dot[aria-current] span {
-  width: 22px;
+  width: calc(22px * var(--size-scale));
   background: var(--text-on-inverse);
 }
 .ag-lightbox__dot[data-focus-visible] {
-  outline: 2px solid var(--focus-ring-on-inverse);
-  outline-offset: -4px;
+  outline: var(--focus-width) solid var(--focus-ring-on-inverse);
+  outline-offset: calc(var(--focus-offset) * -2);
   border-radius: var(--radius-pill);
 }
 .ag-lightbox__caption {

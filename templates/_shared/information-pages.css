@@ -27,7 +27,7 @@
 .vf-info-toc .vf-info-eyebrow {
   margin-block-end: var(--space-2);
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page .vf-info {
     padding-block-start: var(--space-6);
   }
