@@ -34,7 +34,7 @@ export function vfCopy(S) {
       wedCta: 'Plan your wedding flowers',
       featAll: 'All ready to send',
       featAllShort: 'View all',
-      featAllLabel: 'View all ready-to-send designs',
+      featAllLabel: 'View all ready to send',
       postEb: 'From the journal',
       postA: 'Stories from',
       postB: 'the studio.',
