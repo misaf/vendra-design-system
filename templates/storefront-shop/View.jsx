@@ -22,7 +22,7 @@ export function View({v}) {
               accent={v.t?.titleB}
             />
             <div className="vf-shop-columns tw:flex tw:flex-wrap tw:gap-x-7 tw:gap-y-4 tw:items-start">
-              {v.desk ? (
+              {!v.compactShop ? (
                 <>
                   <aside className="vf-shop-sidebar tw:flex tw:flex-col tw:gap-1 vf-sticky-panel tw:[flex:1_1_240px] tw:max-w-[260px]">
                     <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
@@ -113,7 +113,7 @@ export function View({v}) {
                   </aside>
                 </>
               ) : null}
-              {v.mob ? (
+              {v.compactShop ? (
                 <>
                   <div
                     role="group"
@@ -139,7 +139,7 @@ export function View({v}) {
                 </>
               ) : null}
               <section className="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
-                {v.mob ? (
+                {v.compactShop ? (
                   <>
                     <div className="vf-shop-mobile-bar tw:flex tw:gap-3 tw:items-center">
                       <DS.Button
@@ -184,7 +184,7 @@ export function View({v}) {
                     >
                       <>{v.countLabel}</>
                     </span>
-                    {v.desk ? (
+                    {!v.compactShop ? (
                       <>
                         <div className="vf-shop-sorting tw:w-[200px]">
                           <DS.Select
