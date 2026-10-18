@@ -1,24 +1,65 @@
-/* Compact spacing for phones and tablets. Body type and control dimensions keep their normal
-   readable, touch-friendly sizes; only the large layout spaces get tighter. */
+/* Compact spacing for phones and tablets. Layout gaps and card text stacks get tighter;
+   body type and control dimensions keep their normal readable, touch-friendly sizes. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
   :where(html:not([data-density='tv'])) .vf-page {
     --space-6: 1.5rem;
-    --space-7: 2rem;
-    --space-8: 2.5rem;
-    --space-9: 3rem;
-    --space-10: 4rem;
+    --space-7: 1.75rem;
+    --space-8: 2rem;
+    --space-9: 2.5rem;
+    --space-10: 3rem;
   }
   :where(html:not([data-density='tv'])) .vf-shopping--home > section {
-    padding-block-start: var(--space-7);
-    gap: var(--space-4);
+    padding-block-start: var(--space-5);
+    gap: var(--space-3);
   }
   :where(html:not([data-density='tv'])) .vf-shopping--home > .vf-home-top {
     padding-block-start: var(--space-6);
   }
   :where(html:not([data-density='tv'])) .vf-home-featured-band {
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
   :where(html:not([data-density='tv'])) .vf-home-carousel .ag-carousel__nav {
     margin-block-end: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-home-featured-band > p {
+    margin-block-start: calc(-1 * var(--space-1));
+  }
+  :where(html:not([data-density='tv'])) .vf-home-weddings-band,
+  :where(html:not([data-density='tv'])) .vf-home-newsletter-band {
+    padding: var(--space-4h);
+    gap: var(--space-4);
+  }
+  /* Keep photo geometry, prices and stock messages intact. Compact the text stack rather than
+     shrinking type or reserving an empty stock row on every card in a catalogue grid. */
+  :where(html:not([data-density='tv'])) .vf-page .ag-product {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-product-grid {
+    row-gap: var(--space-5);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-product-grid .ag-product {
+    display: flex;
+    grid-row: auto;
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product > div:last-child,
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__meta {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: calc(var(--space-1) / 2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__name {
+    line-height: 1.25;
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__sub,
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__price {
+    line-height: var(--lh-snug);
+  }
+  /* Stacked stories need a tighter caption rhythm; long-form article text keeps its leading. */
+  :where(html:not([data-density='tv'])) .vf-page .ag-blog:not(.ag-blog--wide) {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-blog:not(.ag-blog--wide) .ag-blog__body {
+    gap: var(--space-1);
   }
 }

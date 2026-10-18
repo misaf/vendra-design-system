@@ -153,7 +153,7 @@ for (const lang of ['en', 'fa']) {
         const style = getComputedStyle(element);
         return {section: style.getPropertyValue('--space-9').trim(), body: style.fontSize};
       });
-    expect(await spacing()).toEqual({section: '3rem', body: '16px'});
+    expect(await spacing()).toEqual({section: '2.5rem', body: '16px'});
     for (const selector of ['.vf-home-featured', '.vf-home-arrivals', '.vf-home-journal']) {
       const section = page.locator(selector);
       const title = await section.locator('.ag-sechead__title').boundingBox();
@@ -170,9 +170,9 @@ for (const lang of ['en', 'fa']) {
       expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
     }
     await page.setViewportSize({width: 768, height: 1024});
-    expect((await spacing()).section).toBe('3rem');
+    expect((await spacing()).section).toBe('2.5rem');
     await page.setViewportSize({width: 1180, height: 820});
-    expect((await spacing()).section).toBe('3rem');
+    expect((await spacing()).section).toBe('2.5rem');
     await page.setViewportSize({width: 1440, height: 900});
     expect((await spacing()).section).toBe('6rem');
     await page.setViewportSize({width: 768, height: 1024});
