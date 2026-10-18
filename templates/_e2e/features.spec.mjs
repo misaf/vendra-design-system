@@ -1044,8 +1044,8 @@ test('the home page shows the categories, ready-made designs, weddings and the l
   const featured = page.locator('.vf-home-featured');
   await expect(featured.getByRole('heading', {name: 'Ready to send.'})).toBeVisible();
   await expect(featured.getByText('Ready', {exact: true})).toHaveCount(4);
-  await expect(featured.getByRole('listitem')).toHaveCount(4);
-  await expect(featured.getByRole('listitem').first()).toContainText('VF-4CJ6ZB');
+  await expect(featured.locator('.ag-product')).toHaveCount(4);
+  await expect(featured.locator('.ag-product').first()).toContainText('VF-4CJ6ZB');
   const journal = page.locator('.vf-home-journal');
   await expect(journal.getByRole('heading', {level: 3})).toHaveText([
     'What’s in season this autumn',

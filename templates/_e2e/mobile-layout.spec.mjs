@@ -20,15 +20,15 @@ async function expectPricesInsideCards(cards) {
 }
 
 for (const lang of ['en', 'fa']) {
-  for (const [width, columns, minimumPhoto] of [
-    [258, 1, 190],
-    [320, 2, 120],
-    [360, 2, 140],
-    [375, 2, 145],
-    [390, 2, 155],
-    [768, 2, 300],
-    [1024, 4, 180],
-    [1280, 4, 220]
+  for (const [width, minimumPhoto] of [
+    [258, 165],
+    [320, 210],
+    [360, 240],
+    [375, 250],
+    [390, 260],
+    [768, 220],
+    [1024, 180],
+    [1280, 220]
   ]) {
     test(`readable featured products and compact shop layout at ${width}px (${lang})`, async ({
       page
@@ -36,11 +36,8 @@ for (const lang of ['en', 'fa']) {
       await page.setViewportSize({width, height: 900});
       await openSite(page, 'home', lang);
       await page.evaluate(() => document.fonts.ready);
-      const grid = page.locator('.vf-home-featured-grid');
-      expect(
-        await grid.evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length)
-      ).toBe(columns);
-      const cards = grid.locator('.ag-product');
+      const carousel = page.locator('.vf-home-featured-products');
+      const cards = carousel.locator('.ag-product');
       expect((await cards.first().boundingBox()).width).toBeGreaterThanOrEqual(minimumPhoto);
       await expectPricesInsideCards(cards);
       if (width >= 320 && width < 768) {

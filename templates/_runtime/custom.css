@@ -464,9 +464,6 @@ html {
   .vf-home-featured .ag-sechead__actions {
     align-self: flex-end;
   }
-  .vf-home-featured-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
 :lang(fa) .vf-home-weddings-accent {
   font-style: normal;
@@ -584,6 +581,27 @@ html {
 .vf-home-newsletter-form .ag-input:has(input:focus-visible) {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
+}
+
+/* Product rows keep explicit navigation on touch screens as well as a glimpse of the next card.
+   Category and journal rows keep their existing compact navigation. */
+.vf-shopping--home .vf-home-product-carousel .ag-carousel__nav {
+  display: flex;
+}
+.vf-home-product-carousel .ag-carousel__nav .ag-iconbtn {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+/* The scroll viewport clips outward outlines; keep product and track focus rings inside it. */
+.vf-home-product-carousel .ag-product--link:focus-within,
+.vf-home-product-carousel .ag-carousel__track:focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+/* Four products fit the desktop composition; tablets keep comfortably sized scrollable cards. */
+@media screen and (width >= 1024px) {
+  .vf-home-product-carousel .ag-carousel__track {
+    --carousel-item-min: 0px;
+  }
 }
 
 
