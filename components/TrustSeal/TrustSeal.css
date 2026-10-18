@@ -29,8 +29,8 @@
   text-wrap: balance;
 }
 .ag-seal:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 @media (forced-colors: active) {
   .ag-seal {

@@ -15,7 +15,7 @@
   justify-content: space-between;
   gap: var(--space-4);
   width: 100%;
-  min-height: 60px;
+  min-height: calc(var(--control-h-lg) + var(--space-1));
   padding-block: var(--space-3);
   padding-inline: 0;
   background: none;
@@ -29,8 +29,8 @@
   cursor: pointer;
 }
 .ag-acc__btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-acc__chev {
   color: var(--text-muted);

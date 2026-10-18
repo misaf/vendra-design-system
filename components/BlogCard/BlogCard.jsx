@@ -28,8 +28,8 @@ export function BlogCard({
   const wide = layout === 'wide';
   const imageSizes =
     sizes || (wide ? '(max-width: 767px) 100vw, 55vw' : '(max-width: 767px) 100vw, 400px');
-  return (
-    <article className={cx('ag-blog', wide && 'ag-blog--wide', className)}>
+  const content = (
+    <>
       <div
         className={cx('ag-blog__media', 'ag-product__media--' + frame)}
         style={aspect ? {aspectRatio: aspect} : undefined}
@@ -56,6 +56,12 @@ export function BlogCard({
           </span>
         )}
       </div>
+    </>
+  );
+  // The wide card is its own container, so its layout follows its width; the grid sits inside.
+  return (
+    <article className={cx('ag-blog', wide && 'ag-blog--wide', className)}>
+      {wide ? <div className="ag-blog__layout">{content}</div> : content}
     </article>
   );
 }

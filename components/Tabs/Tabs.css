@@ -1,6 +1,6 @@
 .ag-tab[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-tabs {
   display: flex;
@@ -49,6 +49,7 @@
   display: inline-flex;
 }
 .ag-tabs--pill .ag-tab {
+  min-height: var(--control-h-xs);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-control);
   font-size: var(--text-sm);
@@ -59,6 +60,12 @@
 }
 .ag-tabs--pill .ag-tab--active::after {
   display: none;
+}
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-tabs--pill .ag-tab {
+    min-height: var(--tap-min);
+  }
 }
 /* React Aria's wrapper around the list and panel takes no part in layout: the list and panel sit in
    the page's own flow, as they did before. */

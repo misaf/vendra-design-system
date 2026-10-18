@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-height: 32px;
+  min-height: var(--control-h-xs);
   padding: var(--space-1) var(--space-3);
   border: 0;
   border-radius: var(--radius-control);
@@ -46,12 +46,14 @@
   box-shadow: var(--shadow-sm);
 }
 .ag-date__cal-option[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-date__grid {
   display: grid;
-  grid-template-columns: minmax(84px, 1fr) minmax(0, 1.6fr) minmax(68px, 1fr);
+  grid-template-columns:
+    minmax(calc(84px * var(--size-scale)), 1fr) minmax(0, 1.6fr)
+    minmax(calc(68px * var(--size-scale)), 1fr);
   gap: var(--space-2);
 }
 .ag-date__grid--yearly {
@@ -108,8 +110,8 @@
 .ag-cal__nav {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
   padding: 0;
   border: 0;
   border-radius: var(--radius-pill);
@@ -126,7 +128,7 @@
 }
 .ag-date__open[data-focus-visible],
 .ag-cal__nav[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 0;
 }
 .ag-cal__nav[data-disabled] {
@@ -170,8 +172,8 @@
 .ag-cal__cell {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: calc(var(--tap-min) - var(--space-1));
+  height: calc(var(--tap-min) - var(--space-1));
   border-radius: 50%;
   font-size: var(--text-sm);
   color: var(--text-body);
@@ -190,14 +192,24 @@
   color: var(--text-on-strong);
 }
 .ag-cal__cell[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-cal__cell[data-disabled],
 .ag-cal__cell[data-unavailable] {
   color: var(--text-subtle);
   background: transparent;
   cursor: not-allowed;
+}
+/* Touch targets stay comfortable on phones, tablets and hybrid screens. */
+@media (any-pointer: coarse) {
+  .ag-date__cal-option,
+  .ag-date__open,
+  .ag-cal__nav,
+  .ag-cal__cell {
+    min-width: var(--tap-min);
+    min-height: var(--tap-min);
+  }
 }
 /* Forced colours drop fills and shadows: the chosen calendar system and the chosen day take the
    system highlight. */

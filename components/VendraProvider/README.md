@@ -1,6 +1,6 @@
 # VendraProvider
 
-Sets the language and the router for every component below it, once, around the app.
+Sets the language, the router and the overlays' density for every component below it, once, around the app. A nested `VendraProvider` changes only the props it is given and keeps the outer ones.
 
 ```jsx
 <VendraProvider locale={lang === 'fa' ? 'fa-IR' : 'en-US'}>
@@ -36,6 +36,14 @@ export function Providers({locale, children}) {
 ```
 
 Use this rather than importing React Aria's `RouterProvider` yourself. `react-aria-components` and `@internationalized/date` are peer dependencies, so your app and the components share one copy and its contexts. A nested `VendraProvider` without `navigate` keeps the outer router.
+
+**Density:** `data-density="compact" | "comfortable" | "tv"` on any container rescales the spacing, control heights, tap minimum, focus ring and type scale inside it (`tokens/spacing.css`; comfortable is the default). Dialogs, the Lightbox and the Select and DatePicker popovers open at the end of `<body>`, outside that container, so give them the same density with a nested provider:
+
+```jsx
+<VendraProvider density="tv">
+  <main data-density="tv">…</main>
+</VendraProvider>
+```
 
 Without a provider, components use React Aria's locale (an `I18nProvider` higher up, or the browser's) and plain links.
 

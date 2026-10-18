@@ -4,21 +4,28 @@ import React from "react";
 import { I18nProvider, RouterProvider } from "react-aria-components";
 import { MessagesContext } from "../utils/messages.js";
 import { AnalyticsContext } from "../utils/track.js";
+import { DensityContext } from "../utils/density.js";
 // Sets up every component below it: the language (React Aria's locale for number and date formats
 // and keyboard direction, plus the components' built-in wording), and the app's router.
 // `messages` adds a language or changes wording, by language then component:
 // {fa: {Dialog: {close: 'بستن پنجره'}}}; a component's own props still win. `navigate` (the app
 // router's push, e.g. Next.js's router.push) makes links (Button href, NavLink, ProductCard, ...)
 // navigate client-side; `useHref` turns a route into a real href (e.g. adding a base path). A
-// nested VendraProvider without `navigate` keeps the outer router. `onEvent(event)` receives the
+// `onEvent(event)` receives the
 // analytics events the components report (FilterBar, PaymentStatus, ResendCode, LanguageSwitch), in
-// the shape of `analytics.event`; the app adds its own and sends them on after consent. Put one
-// around the app.
-export function VendraProvider({ locale, messages, navigate, useHref, onEvent, children }) {
-	const inner = /* @__PURE__ */ React.createElement(MessagesContext.Provider, { value: messages || null }, children);
-	const content = /* @__PURE__ */ React.createElement(I18nProvider, { locale }, onEvent ? /* @__PURE__ */ React.createElement(AnalyticsContext.Provider, { value: onEvent }, inner) : inner);
-	return navigate ? /* @__PURE__ */ React.createElement(RouterProvider, {
+// the shape of `analytics.event`; the app adds its own and sends them on after consent. `density`
+// ('compact', 'comfortable' or 'tv') reaches the overlays, which open outside the page's flow; set
+// the same value as `data-density` on the container it applies to. Put one around the app; a
+// nested one changes only the props it is given and keeps the outer ones.
+export function VendraProvider({ locale, messages, navigate, useHref, onEvent, density, children }) {
+	let content = children;
+	if (density) content = /* @__PURE__ */ React.createElement(DensityContext.Provider, { value: density }, content);
+	if (onEvent) content = /* @__PURE__ */ React.createElement(AnalyticsContext.Provider, { value: onEvent }, content);
+	if (messages) content = /* @__PURE__ */ React.createElement(MessagesContext.Provider, { value: messages }, content);
+	if (locale) content = /* @__PURE__ */ React.createElement(I18nProvider, { locale }, content);
+	if (navigate) content = /* @__PURE__ */ React.createElement(RouterProvider, {
 		navigate,
 		useHref
-	}, content) : content;
+	}, content);
+	return content;
 }

@@ -12,7 +12,7 @@ export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClic
 	const TitleLink = href ? Link : Button;
 	const wide = layout === "wide";
 	const imageSizes = sizes || (wide ? "(max-width: 767px) 100vw, 55vw" : "(max-width: 767px) 100vw, 400px");
-	return /* @__PURE__ */ React.createElement("article", { className: cx("ag-blog", wide && "ag-blog--wide", className) }, /* @__PURE__ */ React.createElement("div", {
+	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-blog__media", "ag-product__media--" + frame),
 		style: aspect ? { aspectRatio: aspect } : undefined
 	}, image ? /* @__PURE__ */ React.createElement(Picture, {
@@ -31,4 +31,6 @@ export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClic
 		name: "arrow-right",
 		size: 16
 	}))));
+	// The wide card is its own container, so its layout follows its width; the grid sits inside.
+	return /* @__PURE__ */ React.createElement("article", { className: cx("ag-blog", wide && "ag-blog--wide", className) }, wide ? /* @__PURE__ */ React.createElement("div", { className: "ag-blog__layout" }, content) : content);
 }

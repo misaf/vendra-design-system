@@ -23,6 +23,7 @@ import {Select} from '../Select/Select.jsx';
 import {FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {localeLanguage, useMessages} from '../utils/messages.js';
+import {useDensity} from '../utils/density.js';
 import {messages} from './messages.js';
 
 const GREGORIAN = new GregorianCalendar();
@@ -71,6 +72,7 @@ export function DatePicker({
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
   const lang = langProp || (localeLanguage(useLocale().locale) === 'fa' ? 'fa' : 'en');
   const text = useMessages('DatePicker', messages, labels, lang);
+  const density = useDensity();
   const generatedId = React.useId();
   const fieldId = id || 'dp' + generatedId.replace(/:/g, '');
   const messageId = fieldId + '-hint';
@@ -279,7 +281,12 @@ export function DatePicker({
                 <Icon name="calendar" size={18} />
               </Button>
             </Group>
-            <Popover className="ag-date__popover" placement="bottom end" offset={4}>
+            <Popover
+              className="ag-date__popover"
+              placement="bottom end"
+              offset={4}
+              data-density={density}
+            >
               <Dialog className="ag-date__dialog" aria-label={label || text.open}>
                 <Calendar className="ag-cal">
                   <header className="ag-cal__head">

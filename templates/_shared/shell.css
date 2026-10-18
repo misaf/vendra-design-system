@@ -23,7 +23,7 @@ a:hover {
 .vf-page main > * {
   min-width: 0;
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page main {
     padding-inline: 16px !important;
   }

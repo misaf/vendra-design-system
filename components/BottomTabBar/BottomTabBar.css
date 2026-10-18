@@ -36,8 +36,8 @@
   font-size: var(--text-xs);
 }
 .ag-tabbar__item:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
   border-radius: var(--radius-md);
 }
 a.ag-tabbar__item,

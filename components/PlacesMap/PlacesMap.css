@@ -15,8 +15,8 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.35); /* stylelint-disable-line function-disallowed-list */
 }
 .ag-place-marker:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .leaflet-tooltip.ag-place-label {
   font-family: var(--font-body);

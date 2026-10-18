@@ -1,8 +1,36 @@
-:root{
+/* Density: comfortable is the default. [data-density="compact"|"comfortable"|"tv"] on any element
+   rescales the spacing, control heights, tap minimum, focus ring and type scale for everything
+   inside it: compact for dense screens with a mouse, tv for a screen read from across the room.
+   Components size themselves from these tokens; one-off sizes multiply by --size-scale. */
+:root,[data-density="comfortable"]{
 --space-0:0;--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-4h:1.25rem;--space-5:1.5rem;--space-5h:1.75rem;--space-6:2rem;--space-7:3rem;--space-8:4rem;--space-9:6rem;--space-10:8rem;
---radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
---border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
 --container-max:1240px;/* @kind spacing */--gutter:24px;/* @kind spacing */--header-h:72px;/* @kind spacing */--header-h-mobile:60px;/* @kind spacing */
 --tap-min:44px;/* @kind spacing */
---control-h-sm:36px;/* @kind spacing */--control-h-md:48px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:var(--control-h-md);/* @kind spacing */--measure:56ch;/* @kind spacing */
+--control-h-xs:32px;/* @kind spacing */--control-h-sm:36px;/* @kind spacing */--control-h-md:48px;/* @kind spacing */--control-h-lg:56px;/* @kind spacing */--control-h-input:var(--control-h-md);/* @kind spacing */
+--size-scale:1;/* @kind other */--focus-width:2px;/* @kind spacing */--focus-offset:2px;/* @kind spacing */
+}
+:root{
+--radius-xs:2px;--radius-sm:4px;--radius-md:8px;--radius-lg:16px;--radius-pill:999px;--radius-arch:160px 160px var(--radius-md) var(--radius-md);
+--border-hair:1px;/* @kind spacing */--border-thick:1.5px;/* @kind spacing */
+--measure:56ch;/* @kind spacing */
+/* Breakpoints, for reference only: @media cannot read custom properties, so stylesheets write the
+   values themselves, in range syntax ((width < 768px), (width >= 1024px)); npm run lint:css allows
+   no others. Components lay out by their container (@container) rather than the viewport. */
+--breakpoint-md:768px;/* @kind spacing */--breakpoint-lg:1024px;/* @kind spacing */--breakpoint-xl:1440px;/* @kind spacing */
+}
+[data-density="compact"]{
+--space-1:.1875rem;--space-2:.375rem;--space-3:.5625rem;--space-4:.75rem;--space-4h:.9375rem;--space-5:1.125rem;--space-5h:1.3125rem;--space-6:1.5rem;--space-7:2.25rem;--space-8:3rem;--space-9:4.5rem;--space-10:6rem;
+--gutter:16px;--header-h:60px;--header-h-mobile:52px;
+--tap-min:36px;
+--control-h-xs:28px;--control-h-sm:32px;--control-h-md:40px;--control-h-lg:48px;--control-h-input:var(--control-h-md);
+--size-scale:.875;
+}
+/* Touch keeps its 44px minimum whatever the density. */
+@media (any-pointer:coarse){[data-density="compact"]{--tap-min:44px}}
+[data-density="tv"]{
+--space-1:.375rem;--space-2:.75rem;--space-3:1.125rem;--space-4:1.5rem;--space-4h:1.875rem;--space-5:2.25rem;--space-5h:2.625rem;--space-6:3rem;--space-7:4.5rem;--space-8:6rem;--space-9:9rem;--space-10:12rem;
+--container-max:1760px;--gutter:48px;--header-h:96px;--header-h-mobile:96px;
+--tap-min:64px;
+--control-h-xs:48px;--control-h-sm:56px;--control-h-md:72px;--control-h-lg:88px;--control-h-input:var(--control-h-md);
+--size-scale:1.5;--focus-width:4px;--focus-offset:4px;
 }

@@ -27,7 +27,7 @@ a:hover {
 .vf-page main > * {
   min-width: 0;
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page main {
     padding-inline: 16px !important;
   }
@@ -123,7 +123,7 @@ html {
 .vf-info-toc .vf-info-eyebrow {
   margin-block-end: var(--space-2);
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page .vf-info {
     padding-block-start: var(--space-6);
   }
@@ -277,7 +277,7 @@ html {
 .vf-page[data-lang='fa'] main blockquote {
   line-height: var(--lh-snug);
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-page .vf-shopping,
   .vf-page .vf-form,
   .vf-page .vf-info {
@@ -307,7 +307,7 @@ html {
     column-gap: var(--space-4) !important;
   }
 }
-@media (max-width: 359px) {
+@container (width < 360px) {
   .vf-page .vf-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
@@ -331,7 +331,7 @@ html {
 /* Give form fields a visible ring. (Keyboard targets stay clear of the sticky header and bottom
    bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -373,7 +373,7 @@ html {
 .vf-home-top .ag-sechead--h1 .ag-sechead__title {
   font-size: clamp(2rem, 4vw, var(--text-3xl));
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-top .ag-sechead--h1 .ag-sechead__title {
     font-size: var(--text-2xl);
   }
@@ -385,7 +385,7 @@ html {
   font-weight: var(--accent-font-weight);
 }
 /* Keep the ready-made heading readable beside its compact action, and spend phone width on photos. */
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-featured .ag-sechead__title {
     font-size: var(--text-xl);
   }
@@ -393,7 +393,7 @@ html {
     padding-inline: 0;
   }
 }
-@media (max-width: 319px) {
+@container (width < 320px) {
   .vf-home-featured .ag-sechead {
     flex-direction: column;
     align-items: stretch;
@@ -472,7 +472,7 @@ html {
     url('../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem repeat-y;
   opacity: 0.16;
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-home-weddings-band::before {
     inset-block-start: -2.5rem;
     inset-inline-end: -3rem;
@@ -519,7 +519,7 @@ html {
   outline: none;
 }
 .vf-home-newsletter-form .ag-input:has(input:focus-visible) {
-  outline: 2px solid var(--focus-ring);
+  outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -591,7 +591,7 @@ html {
 .vf-presentation-tools {
   grid-area: tools;
 }
-@media (max-width: 1023px) {
+@media (width < 1024px) {
   .vf-presentation-bar-row {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
@@ -600,7 +600,7 @@ html {
   }
 }
 /* On a phone the count makes way for the tools; it is still announced. */
-@media (max-width: 639px) {
+@container (width < 640px) {
   .vf-presentation-bar-row {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -731,7 +731,7 @@ html {
   touch-action: pan-y;
 }
 .vf-display:focus-visible {
-  outline: 2px solid var(--focus-ring-on-inverse);
+  outline: var(--focus-width) solid var(--focus-ring-on-inverse);
   outline-offset: -4px;
 }
 .vf-display-tools {
@@ -808,26 +808,10 @@ html {
   min-height: 0;
   color: var(--text-inverse-muted);
 }
-@media (max-width: 639px) {
+@container (width < 640px) {
   .vf-presentation-tools {
     flex-wrap: wrap;
   }
-}
-
-/* TV seller controls remain legible from the same viewing distance as the product captions. */
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog {
-  font-size: clamp(20px, 1.5vw, 32px);
-}
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog--sheet {
-  width: min(640px, 90vw);
-}
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog .ag-btn {
-  font-size: inherit;
-  min-height: 64px;
-}
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
-  outline: 4px solid var(--focus-ring);
-  outline-offset: 4px;
 }
 
 .vf-collection-product {
@@ -870,31 +854,9 @@ body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog :focus-visible {
 body:has(.vf-presentation) .ag-dialog__foot {
   flex-wrap: wrap;
 }
-body:has(.vf-presentation[data-display-mode='tv'])
-  .ag-dialog
-  :is(.ag-field__label, .ag-select__value, .ag-switch, .ag-input input, .ag-input textarea) {
-  font-size: inherit;
-}
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog__title {
-  font-size: clamp(28px, 2vw, 44px);
-}
-body:has(.vf-presentation[data-display-mode='tv']) .ag-select__option {
-  font-size: clamp(20px, 1.5vw, 32px);
-  min-height: 64px;
-}
-
-body:has(.vf-presentation[data-display-mode='tv']) .ag-dialog .ag-iconbtn {
-  width: 64px;
-  height: 64px;
-}
 
 [dir='rtl'] .vf-display-tools {
   inset-inline-end: max(var(--space-3), env(safe-area-inset-left));
-}
-
-body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[data-focus-visible] {
-  outline: 4px solid var(--focus-ring);
-  outline-offset: 4px;
 }
 
 
@@ -920,7 +882,7 @@ body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[da
 .vf-product-toasts {
   inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-6));
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-product-toasts {
     inset-inline: var(--space-4);
     inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-3));
@@ -929,7 +891,7 @@ body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[da
 }
 
 /* Portrait tablets have room for a compact photo and purchase details side by side. */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (768px <= width < 1024px) {
   .vf-product-columns {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-5);
@@ -954,7 +916,7 @@ body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[da
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
-@media (max-width: 1023px) {
+@media (width < 1024px) {
   .vf-shop-product-grid {
     row-gap: var(--space-6);
   }
@@ -971,7 +933,7 @@ body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[da
     gap: var(--space-1);
   }
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-shop-product-grid {
     column-gap: var(--space-3);
   }
@@ -993,15 +955,15 @@ body:has(.vf-presentation[data-display-mode='tv']) :is(.ag-switch, .ag-check)[da
     scrollbar-width: thin;
   }
   .vf-shop-quick-filters:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
+    outline: var(--focus-width) solid var(--focus-ring);
+    outline-offset: var(--focus-offset);
     border-radius: var(--radius-md);
   }
   .vf-shop-toolbar > div:last-child {
     justify-content: flex-end;
   }
 }
-@media (max-width: 319px) {
+@container (width < 320px) {
   .vf-page .vf-shop-product-grid {
     grid-template-columns: minmax(0, 1fr) !important;
   }

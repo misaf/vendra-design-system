@@ -6,6 +6,7 @@ import { Icon } from "../Icon/Icon.js";
 import { useField, FieldMessage } from "../Field/Field.js";
 import { cx } from "../utils/cx.js";
 import { usePageLocale } from "../utils/locale.js";
+import { useDensity } from "../utils/density.js";
 // A labelled pop-up list on React Aria's Select, styled like Input. Options are strings or
 // {value, label, disabled}. It takes `value` (or `defaultValue`), onChange(value), and
 // `name`/`required`/`autoComplete` for forms (React Aria keeps a
@@ -19,6 +20,7 @@ export function Select({ label, hint, error, options = [], placeholder = "", dis
 		describedBy
 	});
 	const { locale, ref } = usePageLocale();
+	const density = useDensity();
 	const invalid = !!error || ariaInvalid === true || ariaInvalid === "true";
 	const toKey = (selected) => selected == null || selected === "" ? null : String(selected);
 	const items = options.map((option) => typeof option === "string" ? {
@@ -50,7 +52,8 @@ export function Select({ label, hint, error, options = [], placeholder = "", dis
 		error: !!error
 	}, message), /* @__PURE__ */ React.createElement(Popover, {
 		className: "ag-select__popover",
-		offset: 4
+		offset: 4,
+		"data-density": density
 	}, /* @__PURE__ */ React.createElement(ListBox, {
 		className: "ag-select__list",
 		items

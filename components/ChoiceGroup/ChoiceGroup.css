@@ -12,7 +12,7 @@
   justify-content: center;
   gap: 2px;
   box-sizing: border-box;
-  min-height: 56px;
+  min-height: var(--control-h-lg);
   padding: var(--space-2) var(--space-4);
   border: var(--border-hair) solid var(--border-input);
   border-radius: var(--radius-md);
@@ -36,8 +36,8 @@
   border-color: var(--border-strong);
 }
 .ag-choice[data-focus-visible] {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .ag-choice--selected {
   background: var(--text-body);

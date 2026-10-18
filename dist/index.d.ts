@@ -75,6 +75,7 @@ export * from './components/utils/analytics.js';
 export * from './components/utils/commerce.js';
 export * from './components/utils/cx.js';
 export * from './components/utils/dates.js';
+export * from './components/utils/density.js';
 export * from './components/utils/effects.js';
 export * from './components/utils/format.js';
 export * from './components/utils/locale.js';

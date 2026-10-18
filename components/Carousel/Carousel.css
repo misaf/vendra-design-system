@@ -1,5 +1,6 @@
 .ag-carousel {
   position: relative;
+  container-type: inline-size;
 }
 .ag-carousel__nav {
   display: flex;
@@ -25,8 +26,8 @@
   display: none;
 }
 .ag-carousel__track:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 4px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-sm);
 }
 .ag-carousel__item,
@@ -37,7 +38,8 @@
 .ag-carousel--contents .ag-carousel__track > [data-snap-group] {
   display: contents;
 }
-@media (max-width: 767px) {
+/* Phone-sized room (a phone, or a narrow column): the mobile count per view, and a bleed edge. */
+@container (width < 600px) {
   .ag-carousel__track {
     grid-auto-columns: calc(
       (100% - var(--carousel-gap) * (var(--carousel-per-view-mobile) - 1)) /

@@ -9,6 +9,7 @@ export interface DialogProps {
   /** Position absolute inside nearest positioned parent (for previews). Inline dialogs don't move/trap focus or lock scroll. */
   inline?: boolean;
   closeLabel?: string;
+  /** A number is pixels at the comfortable density and scales with `data-density` (`--size-scale`); a string is used as written. */
   maxWidth?: number | string;
   /** start = full-height sheet sliding in from the inline-start edge (mobile menu drawer); stays pinned to the viewport while open. Default center. */
   placement?: 'center' | 'start';

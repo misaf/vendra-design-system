@@ -19,7 +19,7 @@
 .vf-product-toasts {
   inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-6));
 }
-@media (max-width: 767px) {
+@media (width < 768px) {
   .vf-product-toasts {
     inset-inline: var(--space-4);
     inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-3));
@@ -28,7 +28,7 @@
 }
 
 /* Portrait tablets have room for a compact photo and purchase details side by side. */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (768px <= width < 1024px) {
   .vf-product-columns {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--space-5);
