@@ -141,3 +141,42 @@ for (const lang of ['en', 'fa']) {
     });
   }
 }
+
+for (const lang of ['en', 'fa']) {
+  test(`compact spacing and full-width phone headings keep touch targets readable (${lang})`, async ({
+    page
+  }) => {
+    await page.setViewportSize({width: 390, height: 844});
+    await openSite(page, 'home', lang);
+    const spacing = () =>
+      page.locator('.vf-page').evaluate(element => {
+        const style = getComputedStyle(element);
+        return {section: style.getPropertyValue('--space-9').trim(), body: style.fontSize};
+      });
+    expect(await spacing()).toEqual({section: '3rem', body: '16px'});
+    for (const selector of ['.vf-home-featured', '.vf-home-journal']) {
+      const section = page.locator(selector);
+      const title = await section.locator('.ag-sechead__title').boundingBox();
+      const action = await section.locator('.ag-sechead__actions').boundingBox();
+      const heading = await section.locator('.ag-sechead').boundingBox();
+      expect(title.y).toBeGreaterThanOrEqual(action.y + action.height);
+      expect(title.width).toBeGreaterThanOrEqual(heading.width - 1);
+      expect(
+        parseFloat(await section.evaluate(element => getComputedStyle(element).paddingBlockStart))
+      ).toBeLessThanOrEqual(32);
+    }
+    for (const button of await page.locator('.vf-home-carousel .ag-carousel__nav button').all()) {
+      const box = await button.boundingBox();
+      expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+    }
+    await page.setViewportSize({width: 768, height: 1024});
+    expect((await spacing()).section).toBe('3rem');
+    await page.setViewportSize({width: 1180, height: 820});
+    expect((await spacing()).section).toBe('3rem');
+    await page.setViewportSize({width: 1440, height: 900});
+    expect((await spacing()).section).toBe('6rem');
+    await page.setViewportSize({width: 768, height: 1024});
+    await openSite(page, 'home', lang, {tv: '1'});
+    expect((await spacing()).section).toBe('9rem');
+  });
+}
