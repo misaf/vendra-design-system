@@ -395,6 +395,64 @@ html {
 }
 
 
+/* Source: _shared/collection-carousel.css */
+/* Every collection keeps explicit navigation on touch screens and a glimpse of the next card. */
+.vf-collection-carousel .ag-carousel__nav {
+  display: flex;
+}
+.vf-collection-carousel .ag-carousel__nav .ag-iconbtn {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+/* The scroll viewport clips outward outlines; keep product and track focus rings inside it. */
+.vf-collection-carousel .ag-product--link:focus-within,
+.vf-collection-carousel .ag-cat:focus-visible,
+.vf-collection-carousel .ag-blog__link:focus-visible::after,
+.vf-collection-carousel .ag-carousel__track:focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+/* Desktop keeps each collection's configured count; tablets keep comfortably sized cards. */
+@media screen and (width >= 1024px) {
+  .vf-collection-carousel .ag-carousel__track {
+    --carousel-item-min: 0px;
+  }
+}
+
+/* Counts occupy the unused start of the navigation row; the shared arrows stay at the end. */
+.vf-collection {
+  position: relative;
+  min-inline-size: 0;
+}
+.vf-collection-count {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-min);
+  max-inline-size: calc(100% - var(--tap-min) * 2 - var(--space-3));
+  font-size: var(--text-sm);
+  line-height: var(--lh-snug);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+/* No empty row of disabled arrows when a collection fits. Measured state handles resizing and
+   small collections; the data-only defaults below prevent a first-paint jump for full rows. */
+.vf-collection[data-overflow='false'] .ag-carousel__nav,
+.vf-collection[data-overflow='false'] .vf-collection-count,
+.vf-collection[data-items='1'] .ag-carousel__nav,
+.vf-collection[data-items='1'] .vf-collection-count {
+  display: none;
+}
+@media screen and (width >= 1024px) {
+  .vf-collection[data-fits-row='true']:not([data-overflow='true']) .ag-carousel__nav,
+  .vf-collection[data-fits-row='true']:not([data-overflow='true']) .vf-collection-count {
+    display: none;
+  }
+}
+
+
 /* Source: storefront-account/styles.css */
 /* Custom styles for the account page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
@@ -552,63 +610,6 @@ html {
   outline-offset: 3px;
 }
 
-/* Every collection keeps explicit navigation on touch screens and a glimpse of the next card. */
-.vf-shopping--home .vf-home-carousel .ag-carousel__nav {
-  display: flex;
-}
-.vf-home-carousel .ag-carousel__nav .ag-iconbtn {
-  min-width: var(--tap-min);
-  min-height: var(--tap-min);
-}
-/* The scroll viewport clips outward outlines; keep product and track focus rings inside it. */
-.vf-home-carousel .ag-product--link:focus-within,
-.vf-home-carousel .ag-cat:focus-visible,
-.vf-home-carousel .ag-blog__link:focus-visible::after,
-.vf-home-carousel .ag-carousel__track:focus-visible {
-  outline-offset: calc(-1 * var(--focus-width));
-}
-/* Desktop keeps each collection's configured count; tablets keep comfortably sized cards. */
-@media screen and (width >= 1024px) {
-  .vf-home-carousel .ag-carousel__track {
-    --carousel-item-min: 0px;
-  }
-}
-
-/* Counts occupy the unused start of the navigation row; the shared arrows stay at the end. */
-.vf-home-collection {
-  position: relative;
-  min-inline-size: 0;
-}
-.vf-home-collection-count {
-  position: absolute;
-  z-index: 1;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  display: flex;
-  align-items: center;
-  min-block-size: var(--tap-min);
-  max-inline-size: calc(100% - var(--tap-min) * 2 - var(--space-3));
-  font-size: var(--text-sm);
-  line-height: var(--lh-snug);
-  color: var(--text-secondary);
-  pointer-events: none;
-}
-/* No empty row of disabled arrows when a collection fits. Measured state handles resizing and
-   small collections; the data-only defaults below prevent a first-paint jump for full rows. */
-.vf-shopping--home .vf-home-collection[data-overflow='false'] .ag-carousel__nav,
-.vf-home-collection[data-overflow='false'] .vf-home-collection-count,
-.vf-shopping--home .vf-home-collection[data-items='1'] .ag-carousel__nav,
-.vf-home-collection[data-items='1'] .vf-home-collection-count {
-  display: none;
-}
-@media screen and (width >= 1024px) {
-  .vf-shopping--home
-    .vf-home-collection[data-fits-row='true']:not([data-overflow='true'])
-    .ag-carousel__nav,
-  .vf-home-collection[data-fits-row='true']:not([data-overflow='true']) .vf-home-collection-count {
-    display: none;
-  }
-}
 /* Very narrow windows retain two category choices rather than squeezing their labels. */
 @container (width < 300px) {
   .vf-home-category-circles .ag-carousel__track {
@@ -955,6 +956,19 @@ body:has(.vf-presentation) .ag-dialog__foot {
 
 /* Source: storefront-product/styles.css */
 /* Custom styles for the product page. */
+.vf-product-recent {
+  gap: var(--space-5);
+  margin-block-start: var(--space-9);
+}
+.vf-product-recent .vf-collection[data-items='1'] .ag-carousel__track {
+  --carousel-per-view-mobile: 1;
+}
+@media (width >= 1024px) {
+  .vf-product-recent .ag-sechead__title {
+    font-size: var(--text-2xl);
+    line-height: var(--lh-snug);
+  }
+}
 .vf-product-columns > *,
 .vf-product-details > * {
   min-inline-size: 0;
@@ -1031,6 +1045,10 @@ body:has(.vf-presentation) .ag-dialog__foot {
   container-type: inline-size;
 }
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-product-recent {
+    gap: var(--space-3);
+    margin-block-start: var(--space-7);
+  }
   :where(html:not([data-density='tv'])) .vf-product-details {
     gap: var(--space-4);
   }
@@ -1175,7 +1193,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
   :where(html:not([data-density='tv'])) .vf-home-featured-band {
     gap: var(--space-3);
   }
-  :where(html:not([data-density='tv'])) .vf-home-carousel .ag-carousel__nav {
+  :where(html:not([data-density='tv'])) .vf-collection-carousel .ag-carousel__nav {
     margin-block-end: var(--space-2);
   }
   :where(html:not([data-density='tv'])) .vf-home-featured-band > p {

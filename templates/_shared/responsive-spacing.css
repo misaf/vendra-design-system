@@ -18,7 +18,7 @@
   :where(html:not([data-density='tv'])) .vf-home-featured-band {
     gap: var(--space-3);
   }
-  :where(html:not([data-density='tv'])) .vf-home-carousel .ag-carousel__nav {
+  :where(html:not([data-density='tv'])) .vf-collection-carousel .ag-carousel__nav {
     margin-block-end: var(--space-2);
   }
   :where(html:not([data-density='tv'])) .vf-home-featured-band > p {

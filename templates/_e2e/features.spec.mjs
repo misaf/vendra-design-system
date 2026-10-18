@@ -233,7 +233,7 @@ test('the product page lists recently viewed products', async ({page}) => {
   await openSite(page, 'product', 'en', {id: 'VF-8RD5WN'});
   await expect(page.getByRole('heading', {name: /Recently viewed/})).toHaveCount(0);
   await openSite(page, 'product', 'en', {id: 'VF-9FA2KE'});
-  const recent = page.getByRole('region', {name: 'Recently viewed.'});
+  const recent = page.getByRole('region', {name: /^Recently viewed\./});
   await expect(recent.locator('.ag-product__name')).toHaveText(['VF-8RD5WN']);
   expect(await scanAxe(page)).toEqual([]);
 });
