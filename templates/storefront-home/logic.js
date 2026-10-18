@@ -60,11 +60,15 @@ function vals(page) {
       label: VF_CATEGORY_COPY[L][slug],
       image: vfCategoryImage(slug)
     })),
-    occasions: VF_SHOP_OCCASIONS.map(id => ({
-      ...S.occasionLink(id),
-      label: VF_SHOP_OCCASION_COPY[L][id],
-      count: C.designCount(VF_PRODUCTS.filter(p => p.occasions.includes(id)).length)
-    })),
+    occasions: VF_SHOP_OCCASIONS.map(id => {
+      const designs = VF_PRODUCTS.filter(product => product.occasions.includes(id));
+      return {
+        ...S.occasionLink(id),
+        label: VF_SHOP_OCCASION_COPY[L][id],
+        count: C.designCount(designs.length),
+        image: designs.length ? vfProductImage(designs[0], L) : undefined
+      };
+    }),
     // The studio's ready-made designs, in its order; the new-this-week row leaves them
     // out while at least four other designs remain (a small catalogue shows them all).
     featured: featured.map(card),
