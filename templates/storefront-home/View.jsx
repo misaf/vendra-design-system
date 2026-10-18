@@ -14,11 +14,11 @@ export function View({v}) {
             <section className="vf-home-top tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-7 tw:px-gutter tw:pb-0">
               <DS.SectionHeader level="h1" title={v.t?.title} accent={v.t?.titleAccent} />
               <DS.Carousel
-                className="vf-home-category-circles"
+                className="vf-home-category-circles vf-home-carousel"
                 label={v.t?.categoriesLabel}
                 perView={9}
-                perViewMobile={4.4}
-                itemMin="96px"
+                perViewMobile={2.15}
+                itemMin="140px"
                 gap="20px"
                 arrows={true}
                 prevLabel={v.t?.categoriesPrev}
@@ -31,7 +31,7 @@ export function View({v}) {
                       label={c?.label}
                       href={c?.href}
                       image={c?.image}
-                      sizes="(max-width: 640px) 22vw, 120px"
+                      sizes="(max-width: 767px) 45vw, 140px"
                     />
                   </React.Fragment>
                 ))}
@@ -71,7 +71,7 @@ export function View({v}) {
                     <>{v.t?.featText}</>
                   </p>
                   <DS.Carousel
-                    className="vf-home-featured-products vf-home-product-carousel"
+                    className="vf-home-featured-products vf-home-product-carousel vf-home-carousel"
                     label={v.t?.featLabel}
                     perView={4}
                     perViewMobile={1.15}
@@ -108,11 +108,11 @@ export function View({v}) {
             <section className="vf-home-categories tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0">
               <DS.SectionHeader title={v.t?.catA} accent={v.t?.catB} />
               <DS.Carousel
-                className="vf-home-category-row"
+                className="vf-home-category-row vf-home-carousel"
                 label={v.t?.catLabel}
                 perView={4}
-                perViewMobile={2.2}
-                itemMin="150px"
+                perViewMobile={1.15}
+                itemMin="220px"
                 gap="20px"
                 arrows={true}
                 prevLabel={v.t?.catPrev}
@@ -123,6 +123,8 @@ export function View({v}) {
                     <DS.CategoryCard
                       label={c?.label}
                       count={c?.count}
+                      image={c?.image}
+                      sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
                       frame={v.frame}
                       aspect="1/1"
                       href={c?.href}
@@ -134,7 +136,7 @@ export function View({v}) {
             <section className="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">
               <DS.SectionHeader eyebrow={v.t?.newEb} title={v.t?.newA} accent={v.t?.newB} />
               <DS.Carousel
-                className="vf-home-product-row vf-home-product-carousel"
+                className="vf-home-product-row vf-home-product-carousel vf-home-carousel"
                 label={v.t?.newLabel}
                 perView={4}
                 perViewMobile={1.15}
@@ -206,10 +208,10 @@ export function View({v}) {
                   }
                 />
                 <DS.Carousel
-                  className="vf-home-journal-row"
+                  className="vf-home-journal-row vf-home-carousel"
                   label={v.t?.postLabel}
                   perView={3}
-                  perViewMobile={1.2}
+                  perViewMobile={1.15}
                   itemMin="240px"
                   gap="20px"
                   arrows={true}
