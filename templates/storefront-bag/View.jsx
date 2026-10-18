@@ -11,6 +11,23 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-form vf-form--bag tw:mx-auto">
+            {v.removedMessage ? (
+              <div className="vf-bag-undo tw:mb-4">
+                <DS.Alert
+                  title={v.removedMessage}
+                  action={
+                    <DS.Button
+                      id="vf-bag-undo"
+                      data-vf-keep-focus
+                      variant="secondary"
+                      onClick={v.undoRemove}
+                    >
+                      {v.t?.undo}
+                    </DS.Button>
+                  }
+                />
+              </div>
+            ) : null}
             {v.hasItems ? (
               <>
                 <div className="vf-bag-steps tw:mb-5h">
@@ -63,7 +80,10 @@ export function View({v}) {
                   <div className="vf-bag-items tw:min-w-0 tw:flex tw:flex-col tw:[flex:999_1_480px] tw:gap-7">
                     {v.onBag ? (
                       <>
-                        <div className="vf-bag-line-list tw:flex tw:flex-col tw:[border-top:1px_solid_var(--border-subtle)]">
+                        <div
+                          data-vf-keep-focus
+                          className="vf-bag-line-list tw:flex tw:flex-col tw:[border-top:1px_solid_var(--border-subtle)]"
+                        >
                           {list(v.lines).map((l, $index) => (
                             <React.Fragment key={$index}>
                               <div className="vf-bag-line tw:[border-bottom:1px_solid_var(--border-subtle)] tw:py-4h tw:px-0">

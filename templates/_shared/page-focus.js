@@ -7,8 +7,17 @@ export const VF_NAV = (() => {
     href: () => '?',
     link: () => {},
     // Screen or step change → focus the page's h1 (tabindex="-1", no focus ring, no scroll jump).
-    focusHeading() {
+    focusHeading({preserveFocus = false} = {}) {
       after(() => {
+        // Check when the delayed move actually runs: a field or recovery action may have
+        // received focus since the page scheduled its heading announcement.
+        const active = document.activeElement;
+        if (
+          preserveFocus &&
+          active?.closest('main') &&
+          (active.matches('input, select, textarea') || active.closest('[data-vf-keep-focus]'))
+        )
+          return;
         const h = /** @type {HTMLElement | null} */ (
           document.querySelector('main h1') || document.querySelector('main')
         );

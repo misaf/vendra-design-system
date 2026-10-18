@@ -73,12 +73,9 @@ function vfAnnounce(page) {
     // skip link and header; the browser already reads the new page. Only later
     // views (in-site navigation, a replaced h1) move focus and announce.
     if (window.VF_VIEWED) {
-      // A form field the page has just focused (e.g. "Track another order") keeps focus; the heading is still announced.
-      const field =
-        document.activeElement &&
-        document.activeElement.closest('main') &&
-        document.activeElement.matches('input, select, textarea');
-      if (!field) VF_NAV.focusHeading();
+      // Keep an explicitly focused field or recovery control (e.g. Undo after the last bag item
+      // disappears). The changed heading is still announced and its SEO is updated.
+      VF_NAV.focusHeading({preserveFocus: true});
       if (page.props.store && page.props.store.announce) page.props.store.announce(title);
       else
         page.setState({
