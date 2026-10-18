@@ -71,6 +71,7 @@ export function View({v}) {
                 {v.hasSizes ? (
                   <>
                     <DS.ChoiceGroup
+                      className="vf-product-sizes"
                       legend={v.t?.size}
                       columns={3}
                       value={v.size}

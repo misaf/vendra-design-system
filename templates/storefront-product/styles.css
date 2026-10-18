@@ -37,3 +37,23 @@
     max-height: 65dvh;
   }
 }
+
+/* A narrow purchase panel reads each size and its surcharge on one row, rather than squeezing
+   three prices into tiny tiles. The panel width also covers phones and portrait tablets. */
+.vf-product-details {
+  container-type: inline-size;
+}
+@container (width < 380px) {
+  .vf-product-sizes .ag-choices {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .vf-product-sizes .ag-choice {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .vf-product-sizes .ag-choice__desc {
+    text-align: end;
+  }
+}

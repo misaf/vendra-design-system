@@ -142,3 +142,29 @@ test('a setup link can be reviewed on a fresh device before applying its prefere
     await destination.close();
   }
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`narrow purchase panels keep size prices readable (${lang})`, async ({page}, info) => {
+    test.skip(info.project.name === 'tv', 'touch purchase panels');
+    if (info.project.name === 'tablet') await page.setViewportSize({width: 768, height: 1024});
+    await openSite(page, 'product', lang);
+    const tiles = page.locator('.vf-product-sizes .ag-choice');
+    const boxes = await tiles.evaluateAll(elements =>
+      elements.map(element => {
+        const box = element.getBoundingClientRect();
+        return {
+          x: box.x,
+          y: box.y,
+          width: box.width,
+          height: box.height,
+          overflow: element.scrollWidth > element.clientWidth
+        };
+      })
+    );
+    expect(boxes).toHaveLength(3);
+    expect(boxes.every(box => box.width >= 280 && box.height >= 44 && !box.overflow)).toBe(true);
+    expect(boxes[1].y).toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height);
+    await tiles.nth(1).tap();
+    await expect(tiles.nth(1)).toHaveAttribute('data-selected', 'true');
+  });
+}
