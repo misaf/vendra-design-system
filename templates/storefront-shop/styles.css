@@ -1,2 +1,55 @@
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
+@media (max-width: 1023px) {
+  .vf-shop-product-grid {
+    row-gap: var(--space-6);
+  }
+  .vf-shop-product-grid .ag-product {
+    display: flex;
+    grid-row: auto;
+    gap: var(--space-3);
+  }
+  .vf-shop-product-grid .ag-product > div:last-child,
+  .vf-shop-product-grid .ag-product__meta {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: var(--space-1);
+  }
+}
+@media (max-width: 767px) {
+  .vf-shop-product-grid {
+    column-gap: var(--space-3);
+  }
+  .vf-shop-results {
+    gap: var(--space-4);
+  }
+  .vf-shop-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+  .vf-shop-quick-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  .vf-shop-quick-filters:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
+  .vf-shop-toolbar > div:last-child {
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 319px) {
+  .vf-page .vf-shop-product-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
