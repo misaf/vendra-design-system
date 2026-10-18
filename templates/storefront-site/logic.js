@@ -53,6 +53,14 @@ function vfJoinLines(bag, lines) {
   const ids = new Set(lines.map(line => line.id));
   return [...bag.filter(line => !ids.has(line.id)), ...lines];
 }
+// The return page belongs to this search history entry, so Back/Forward and reloads keep its
+// original context. Only an internal, validated route can be used as the close destination.
+function vfSearchReturnRoute() {
+  const value = history.state?.vfSearchReturn;
+  if (typeof value !== 'string' || !value.startsWith('?')) return null;
+  const route = vfReadRoute(value);
+  return route.view === 'search' ? null : route;
+}
 function vfSiteInitial(props) {
   let saved = {};
   try {
@@ -81,6 +89,7 @@ function vfSiteInitial(props) {
   return {
     route: route.view,
     routeInfo: route,
+    searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
     lang: new URLSearchParams(location.search).has('lang')
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
@@ -130,13 +139,26 @@ export function usePage(props) {
       if (guarded) r = vfReadRoute(vfRouteParams(guarded));
       const url = vfRouteParams(r);
       vfShowRoute(page, r.view, () => {
-        if (url !== location.search) history[replace ? 'replaceState' : 'pushState']({}, '', url);
+        const refiningSearch = replace && r.view === 'search' && page.state.route === 'search';
+        const searchReturn =
+          r.view !== 'search'
+            ? null
+            : page.state.route === 'search'
+              ? page.state.searchReturn
+              : {...page.state.routeInfo, view: page.state.route, lang: page.state.lang};
+        if (url !== location.search)
+          history[replace ? 'replaceState' : 'pushState'](
+            searchReturn ? {vfSearchReturn: vfRouteParams(searchReturn)} : {},
+            '',
+            url
+          );
         page.setState({
           route: r.view,
           routeInfo: r,
+          searchReturn,
           lang: r.lang || page.state.lang
         });
-        window.scrollTo(0, 0);
+        if (!refiningSearch) window.scrollTo(0, 0);
       });
     };
   });
@@ -167,6 +189,7 @@ export function usePage(props) {
           page.setState({
             route: r.view,
             routeInfo: r,
+            searchReturn: r.view === 'search' ? vfSearchReturnRoute() : null,
             lang: r.lang || page.props.lang || 'en'
           })
         );
@@ -254,6 +277,7 @@ function vals(page) {
       delivery: s.delivery,
       order: s.order,
       lastOrder: s.lastOrder,
+      searchReturn: s.searchReturn,
       count: s.bag.reduce((a, l) => a + l.qty, 0),
       announce: title => {
         if (page.state.announcement !== title)

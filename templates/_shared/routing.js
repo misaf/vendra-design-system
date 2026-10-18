@@ -65,6 +65,8 @@ export function vfReadRoute(search = location.search) {
   )
     route.view = 'notfound';
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
+  // Preserve the exact typed query, including trailing spaces while the customer is typing.
+  if (route.view === 'search') route.q = query.get('q') || '';
   // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
   // A bag or a shortlist handed over from the shop counter (the presentation's QR code): the site adds
@@ -142,6 +144,7 @@ export function vfReadRoute(search = location.search) {
 export function vfRouteParams(route) {
   const query = new URLSearchParams(VF_SEO.routeParams(route));
   if (route.demo) query.set('demo', route.demo);
+  if (route.view === 'search' && route.q) query.set('q', route.q);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
   if (route.view === 'bag' && route.lines) query.set('lines', route.lines);
   if (route.view === 'saved' && route.ids) query.set('ids', route.ids);

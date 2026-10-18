@@ -416,6 +416,59 @@ function loadPage(name, props = {}, search = '') {
   vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
+// Search queries round-trip independently of page state; their Close destination belongs to the
+// history entry, not a single global "last page" that product exploration could overwrite.
+for (const lang of ['en', 'fa']) {
+  const {logic: site, ctx: c} = loadPage(
+    'site',
+    {lang},
+    '?lang=' + lang + '&view=shop&cat=bouquets&filters=roses&sort=low'
+  );
+  const entries = [];
+  for (const method of ['pushState', 'replaceState'])
+    c.history[method] = (state, title, url) => {
+      entries.push([method, url]);
+      c.history.state = state;
+      c.location.search = url;
+    };
+  site.navigate('search');
+  const origin = c.history.state.vfSearchReturn;
+  assert.ok(origin.includes('cat=bouquets'));
+  assert.ok(origin.includes('filters=roses'));
+  const query = lang === 'fa' ? ' ارکیده & + ' : ' Orchid & + ';
+  site.navigate({view: 'search', lang, q: query}, true);
+  assert.equal(entries.at(-1)[0], 'replaceState');
+  assert.equal(c.history.state.vfSearchReturn, origin);
+  assert.equal(site.state.routeInfo.q, query);
+  assert.equal(new URLSearchParams(c.location.search).get('q'), query);
+  const reloaded = new c.Logic({lang});
+  assert.equal(reloaded.state.routeInfo.q, query);
+  assert.equal(reloaded.renderVals().store.searchReturn.cat, 'bouquets');
+  assert.equal(reloaded.renderVals().store.searchReturn.sort, 'low');
+  c.history.state = {vfSearchReturn: 'https://example.com/'};
+  assert.equal(new c.Logic({lang}).state.searchReturn, null);
+  c.history.state = {vfSearchReturn: '?view=search&q=loop'};
+  assert.equal(new c.Logic({lang}).state.searchReturn, null);
+
+  const calls = [];
+  const {logic: search, ctx: sc} = loadPage('search', {
+    lang,
+    routeInfo: {view: 'search', lang, q: query},
+    store: {searchReturn: reloaded.state.searchReturn},
+    go: (route, replace) => calls.push([route, replace])
+  });
+  sc.setTimeout = () => 0;
+  assert.equal(search.renderVals().q, query);
+  const close = new URLSearchParams(search.renderVals().closeHref);
+  assert.equal(close.get('view'), 'shop');
+  assert.equal(close.get('filters'), 'roses');
+  assert.equal(close.get('lang'), lang);
+  search.renderVals().setQ('VF-8RD5WN');
+  assert.equal(calls.at(-1)[0].q, 'VF-8RD5WN');
+  assert.equal(calls.at(-1)[1], true);
+  search.renderVals().clearSearch();
+  assert.equal(calls.at(-1)[0].q, '');
+}
 // Delayed page announcements respect focus received after they were scheduled.
 {
   const {ctx: c} = context();
