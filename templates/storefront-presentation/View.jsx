@@ -14,7 +14,7 @@ function Qr({text, label}) {
       aria-label={label}
       viewBox={'0 0 ' + size + ' ' + size}
       shapeRendering="crispEdges"
-      className="vf-presentation-qr tw:block tw:w-full tw:max-w-[280px] tw:mx-auto tw:rounded-md"
+      className="vf-presentation-qr tw:block tw:w-full tw:max-w-media tw:mx-auto tw:rounded-md"
     >
       <path d={path} fill="currentColor" />
     </svg>

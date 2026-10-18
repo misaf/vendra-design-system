@@ -32,8 +32,8 @@ export function View({v}) {
             ) : null}
             {v.hasPost ? (
               <>
-                <div className="vf-reading tw:max-w-[760px] tw:mx-auto">
-                  <article className="vf-post-article tw:max-w-[720px] tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5">
+                <div className="vf-reading tw:max-w-wide tw:mx-auto">
+                  <article className="vf-post-article tw:max-w-wide tw:my-0 tw:mx-auto tw:flex tw:flex-col tw:gap-5">
                     <a
                       href={v.href?.journal}
                       className="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"

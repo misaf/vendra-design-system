@@ -11,7 +11,7 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
-            <div className="vf-notfound-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-[600px] tw:gap-4h">
+            <div className="vf-notfound-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-4h">
               <DS.EmptyState
                 icon="flower-2"
                 eyebrow={v.t?.code}

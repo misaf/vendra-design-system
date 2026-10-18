@@ -151,7 +151,7 @@ export function View({v}) {
                 className="vf-home-weddings tw:mx-auto tw:max-w-page tw:pt-9 tw:px-gutter tw:pb-0"
               >
                 <div className="vf-home-weddings-band tw:bg-inverse tw:text-on-inverse ag-on-inverse tw:rounded-md tw:p-6 tw:md:p-8 tw:flex tw:flex-wrap tw:items-end tw:justify-between tw:gap-x-8 tw:gap-y-5">
-                  <div className="tw:[flex:1_1_320px] tw:max-w-[640px] tw:flex tw:flex-col tw:gap-3">
+                  <div className="tw:[flex:1_1_320px] tw:max-w-prose tw:flex tw:flex-col tw:gap-3">
                     <div className="ag-eyebrow tw:text-inverse-quiet!">
                       <>{v.t?.wedEb}</>
                     </div>
@@ -233,7 +233,7 @@ export function View({v}) {
                     <form
                       onSubmit={v.newsletter?.submit}
                       noValidate
-                      className="vf-home-newsletter-form tw:[flex:1_1_320px] tw:max-w-[520px] tw:flex tw:flex-col tw:gap-2"
+                      className="vf-home-newsletter-form tw:[flex:1_1_320px] tw:max-w-narrow tw:flex tw:flex-col tw:gap-2"
                     >
                       <label
                         id="vf-news-email-label"
@@ -271,7 +271,7 @@ export function View({v}) {
                       id="vf-news-done"
                       tabIndex={-1}
                       role="status"
-                      className="tw:m-0 tw:text-sm tw:[flex:1_1_320px] tw:max-w-[520px]"
+                      className="tw:m-0 tw:text-sm tw:[flex:1_1_320px] tw:max-w-narrow"
                     >
                       <>{v.newsletter?.doneText}</>
                     </p>

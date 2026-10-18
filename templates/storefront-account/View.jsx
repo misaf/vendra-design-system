@@ -71,7 +71,7 @@ export function View({v}) {
               ) : null}
               {v.isBalance ? (
                 <>
-                  <div className="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-[760px]">
+                  <div className="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-wide">
                     <DS.Card padding={24}>
                       <div className="tw:flex tw:flex-col tw:gap-2">
                         <span id="vf-balance-label" className="tw:text-sm tw:text-quiet">
@@ -91,7 +91,7 @@ export function View({v}) {
                     </DS.Card>
                     <section
                       aria-labelledby="vf-topup-title"
-                      className="tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]"
+                      className="tw:flex tw:flex-col tw:gap-4 tw:max-w-narrow"
                     >
                       <h2 id="vf-topup-title" className="tw:m-0 tw:text-xl">
                         <>{v.t?.balance?.topUp}</>
@@ -297,7 +297,7 @@ export function View({v}) {
               ) : null}
               {v.isReminders ? (
                 <>
-                  <div className="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-[760px]">
+                  <div className="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-wide">
                     <div>
                       <DS.Button id="vf-add-reminder" iconStart="plus" onClick={v.addReminder}>
                         <>{v.editor?.addReminder}</>
@@ -351,7 +351,7 @@ export function View({v}) {
               ) : null}
               {v.isProfile ? (
                 <>
-                  <div className="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-[520px]">
+                  <div className="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-narrow">
                     <DS.ErrorSummary id="vf-profile-errors" errors={v.profileProblems} />
                     <DS.Input
                       id="vf-pname"
