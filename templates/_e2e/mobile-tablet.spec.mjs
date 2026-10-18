@@ -35,6 +35,10 @@ for (const lang of ['en', 'fa']) {
     await page.setViewportSize({width: 768, height: 1024});
     await openSite(page, 'shop', lang);
     await expect(page.locator('.vf-shop-sidebar')).toHaveCount(0);
+    await expectTapTarget(page.locator('.ag-lang button').first());
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      768
+    );
     const product = page.locator('.vf-shop-product-grid .ag-product').first();
     await expect(product).toBeVisible();
     expect((await product.boundingBox()).y).toBeLessThan(700);
@@ -92,6 +96,7 @@ for (const lang of ['en', 'fa']) {
   }) => {
     await page.setViewportSize({width: 390, height: 450});
     await openSite(page, 'bag', lang, {step: 'delivery'});
+    await expectTapTarget(page.locator('.ag-location .leaflet-control-zoom a').first());
     for (const id of ['vf-name', 'vf-phone', 'vf-address', 'vf-sender', 'vf-sender-phone']) {
       const field = page.locator('#' + id);
       await field.focus();
