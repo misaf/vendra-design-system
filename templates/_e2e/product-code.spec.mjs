@@ -17,7 +17,7 @@ for (const lang of ['en', 'fa']) {
       });
     });
     await openSite(page, 'home', lang);
-    const link = page.locator('.vf-home-featured-grid .ag-product__link').first();
+    const link = page.locator('.vf-home-featured-products .ag-product__link').first();
     const code = (await link.innerText()).trim();
     expect(code).toMatch(/^VF-[A-Z0-9]+$/);
     expect(await link.evaluate(el => getComputedStyle(el.parentElement).fontFamily)).toContain(

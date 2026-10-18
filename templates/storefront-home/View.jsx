@@ -70,11 +70,22 @@ export function View({v}) {
                   <p className="tw:m-0 tw:-mt-3 tw:text-secondary tw:max-w-measure">
                     <>{v.t?.featText}</>
                   </p>
-                  <ul className="vf-home-featured-grid tw:list-none tw:m-0 tw:p-0 tw:grid tw:grid-cols-2 tw:min-[1024px]:grid-cols-4 tw:gap-x-3 tw:md:gap-x-5 tw:gap-y-6">
+                  <DS.Carousel
+                    className="vf-home-featured-products vf-home-product-carousel"
+                    label={v.t?.featLabel}
+                    perView={4}
+                    perViewMobile={1.15}
+                    itemMin="220px"
+                    gap="20px"
+                    arrows={true}
+                    prevLabel={v.t?.featPrev}
+                    nextLabel={v.t?.featNext}
+                  >
                     {list(v.featured).map((p, $index) => (
-                      <li key={$index}>
+                      <React.Fragment key={$index}>
                         <DS.ProductCard
                           images={p?.images}
+                          sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
                           name={p?.name}
                           subtitle={p?.sub}
                           price={p?.price}
@@ -88,9 +99,9 @@ export function View({v}) {
                           onFavorite={p?.toggleFav}
                           href={p?.href}
                         />
-                      </li>
+                      </React.Fragment>
                     ))}
-                  </ul>
+                  </DS.Carousel>
                 </div>
               </section>
             ) : null}
@@ -123,11 +134,11 @@ export function View({v}) {
             <section className="vf-home-arrivals tw:mx-auto tw:flex tw:flex-col tw:gap-6 tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-0">
               <DS.SectionHeader eyebrow={v.t?.newEb} title={v.t?.newA} accent={v.t?.newB} />
               <DS.Carousel
-                className="vf-home-product-row"
+                className="vf-home-product-row vf-home-product-carousel"
                 label={v.t?.newLabel}
                 perView={4}
-                perViewMobile={2.2}
-                itemMin="200px"
+                perViewMobile={1.15}
+                itemMin="220px"
                 gap="20px"
                 arrows={true}
                 prevLabel={v.t?.prev}
@@ -137,6 +148,7 @@ export function View({v}) {
                   <React.Fragment key={$index}>
                     <DS.ProductCard
                       images={p?.images}
+                      sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
                       priority={$index < 2}
                       name={p?.name}
                       subtitle={p?.sub}
