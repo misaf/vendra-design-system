@@ -46,6 +46,7 @@ export function usePage(props) {
       ...vfProductSelection(props),
       qty: 1,
       added: null,
+      galleryPhoto: 0,
       photo: null
     };
     // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.
@@ -74,6 +75,7 @@ export function usePage(props) {
       const id = vfPageRoute(page.props).id;
       if (page._productId !== id) {
         page._productId = id;
+        page.setState({galleryPhoto: 0, photo: null});
         page._rememberProduct();
       }
       const key = vfProductRouteKey(page.props);
@@ -187,7 +189,8 @@ function vals(page) {
     photoItems: vfProductImages(product, L).map((image, index) => ({id: index, images: [image]})),
     photo: page.state.photo,
     setPhoto: index => page.setState({photo: index}),
-    openPhotos: () => page.setState({photo: 0}),
+    setGalleryPhoto: index => page.setState({galleryPhoto: index}),
+    openPhotos: () => page.setState({photo: page.state.galleryPhoto || 0}),
     closePhotos: () => page.setState({photo: null}),
     unitPrice: m(base + (hasSizes ? size.price : 0)),
     sizes: VF_SIZES.map(item => ({

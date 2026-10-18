@@ -13,6 +13,8 @@ export interface GalleryProps {
   label?: string;
   /** Localized slide / dot label, e.g. (i,n) => `${i} از ${n}` */
   slideLabel?: (i: number, n: number) => string;
+  /** Reports the zero-based active slide after scrolling or choosing a dot. */
+  onIndexChange?: (index: number) => void;
   className?: string;
 }
 export declare function Gallery(props: GalleryProps): React.JSX.Element;

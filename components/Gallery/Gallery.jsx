@@ -13,6 +13,7 @@ export function Gallery({
   aspect = '3/4',
   label,
   slideLabel = (i, n) => i + ' / ' + n,
+  onIndexChange,
   className = ''
 }) {
   const trackRef = React.useRef(null);
@@ -20,9 +21,12 @@ export function Gallery({
   const count = images.length;
   const onScroll = () => {
     const track = trackRef.current;
-    if (!track) return;
-    const slide = Math.round(Math.abs(track.scrollLeft) / track.clientWidth);
-    if (slide !== currentSlide) setCurrentSlide(slide);
+    if (!track || !track.clientWidth || !count) return;
+    const slide = Math.min(count - 1, Math.round(Math.abs(track.scrollLeft) / track.clientWidth));
+    if (slide !== currentSlide) {
+      setCurrentSlide(slide);
+      onIndexChange?.(slide);
+    }
   };
   const goTo = slide => {
     const track = trackRef.current;
