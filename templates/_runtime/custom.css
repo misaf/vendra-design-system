@@ -1240,6 +1240,55 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
+/* Source: _shared/commerce-spacing.css */
+/* Compact shopping and checkout rhythm. Keep type, photos, fields and controls at their
+   existing sizes; remove space between groups and the bag's duplicated row padding. */
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-shopping--shop {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-columns {
+    row-gap: var(--space-3);
+    column-gap: var(--space-5);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-results {
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-toolbar {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--shop .ag-loadmore {
+    margin-block-start: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-steps, .vf-checkout-steps),
+  :where(html:not([data-density='tv'])) .vf-checkout-heading {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-form--bag > h1 {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-columns, .vf-checkout-columns, .vf-bag-items) {
+    gap: var(--space-4h);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-delivery, .vf-checkout-payment) {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv']))
+    :is(.vf-bag-recipient-grid, .vf-checkout-receipt-grid, .vf-bag-summary) {
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-bag-line {
+    padding-block: 0;
+  }
+  :where(html:not([data-density='tv'])) .vf-bag-line .ag-line {
+    padding-block: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-summary, .vf-checkout-summary) .ag-osum__line {
+    padding-block: var(--space-2);
+  }
+}
+
+
 /* Source: _shared/headings.css */
 /* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
    Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
