@@ -125,6 +125,64 @@ html {
   }
 }
 
+/* Phone footer: one compact navigation stack, with contact details always available. The shared
+   accordion handles keyboard and screen-reader state; CSS alone selects the responsive layout. */
+.vf-shell-footer-expanded {
+  display: contents;
+}
+.vf-shell-footer-compact {
+  display: none;
+}
+@media (width < 768px) {
+  :where(html:not([data-density='tv'])) .vf-shell-footer-expanded {
+    display: none;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact {
+    display: block;
+    --text-body: var(--text-on-inverse);
+    --text-secondary: var(--text-on-inverse);
+    --text-muted: var(--text-inverse-muted);
+    --border-subtle: var(--border-inverse);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-content {
+    padding-block-start: var(--space-5);
+    padding-block-end: var(--space-4h);
+    gap: var(--space-4h);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-columns {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-5);
+    padding-block-start: 0;
+    border-block-start: 0;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .ag-acc__btn {
+    min-block-size: var(--control-h-lg);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .ag-acc__content {
+    padding-block-end: var(--space-3);
+    white-space: normal;
+  }
+  /* A closing panel stays mounted for its height transition. Remove its links from the Tab
+     order immediately, so a quick Tab cannot land on a link that is disappearing. */
+  :where(html:not([data-density='tv']))
+    .vf-shell-footer-compact
+    .ag-acc__item:not(.ag-acc__item--open)
+    .ag-acc__panel {
+    visibility: hidden;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .vf-shell-footer-nav {
+    gap: 0;
+    align-items: stretch;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .vf-shell-footer-link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tap-min);
+  }
+}
+
 
 /* Source: _shared/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */

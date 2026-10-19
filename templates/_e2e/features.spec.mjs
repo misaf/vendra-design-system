@@ -1,5 +1,12 @@
 import {test, expect} from '@playwright/test';
-import {NO_CONSENT, openSite, pinDelivery, scanAxe, choiceTile} from './helpers.mjs';
+import {
+  NO_CONSENT,
+  openSite,
+  openFooterGroup,
+  pinDelivery,
+  scanAxe,
+  choiceTile
+} from './helpers.mjs';
 
 // Counter workflows remain available from the display-first presentation.
 async function openCounter(page, lang) {
@@ -922,7 +929,7 @@ test('home occasions scroll as a carousel', async ({page}, info) => {
 
 test('the footer opens each policy and the policy page switches between them', async ({page}) => {
   await openSite(page, 'home', 'fa');
-  const help = page.getByRole('navigation', {name: 'راهنما'});
+  const help = await openFooterGroup(page, 'راهنما');
   for (const name of [
     'ارسال و تحویل',
     'بازگشت و بازپرداخت',
@@ -1125,6 +1132,7 @@ test.describe('a first visit', () => {
     await expect(page.locator('#main')).toBeVisible();
     await expect(banner).toHaveCount(0);
     // Cookie settings in the footer asks again and hands focus back afterwards.
+    await openFooterGroup(page, 'Help');
     const settings = page.getByRole('button', {name: 'Cookie settings'});
     await settings.click();
     await expect(banner).toBeFocused();
@@ -1224,8 +1232,10 @@ test('the footer lists shop and studio links, social links, contact details and 
 }) => {
   await openSite(page, 'home', 'en');
   const footer = page.getByRole('contentinfo');
+  await openFooterGroup(page, 'Shop');
   await footer.getByRole('navigation', {name: 'Shop'}).getByRole('link', {name: 'Orchids'}).click();
   await expect(page).toHaveURL(/view=shop&cat=orchids/);
+  await openFooterGroup(page, 'The studio');
   await expect(
     footer.getByRole('navigation', {name: 'The studio'}).getByRole('link', {name: 'Journal'})
   ).toBeVisible();
@@ -1249,6 +1259,10 @@ test('the footer lists shop and studio links, social links, contact details and 
     await expect(seal).toHaveAttribute('referrerpolicy', 'origin');
     await expect(seal).toHaveAttribute('rel', 'noopener');
   }
+  // Check the page's stretched product-card hit targets with its content on screen, rather than
+  // clipped under the sticky header after navigating through the footer. Footer controls also
+  // have their own keyboard, touch and axe coverage in footer.spec.mjs.
+  await page.evaluate(() => window.scrollTo(0, 0));
   expect(await scanAxe(page)).toEqual([]);
 });
 
