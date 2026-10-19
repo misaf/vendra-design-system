@@ -177,13 +177,6 @@
   .vf-page .vf-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
-  .vf-search-row {
-    grid-template-columns: 48px minmax(0, 1fr);
-    column-gap: var(--space-3);
-  }
-  .vf-search-row .vf-price {
-    grid-column: 2;
-  }
 }
 
 /* Sticky side panels (filters, order summaries, contents) stick below the header only while they
