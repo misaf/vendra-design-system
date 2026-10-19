@@ -196,6 +196,7 @@ export function vfShell(self, page) {
     current: isCurrent[r] ? 'page' : undefined
   });
   const footer = {
+    address: VF_STORE.address[L],
     tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
     faqCurrent: isCurrent.faq ? 'page' : undefined,
     shop: [
@@ -410,6 +411,7 @@ export function vfShell(self, page) {
     ],
     n: v => (fa ? VF_FA_DIGITS(v) : String(v)),
     m: v => VF_MONEY(v, fa),
+    shellText: T,
     t: T
   };
 }

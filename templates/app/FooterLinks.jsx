@@ -37,7 +37,7 @@ function FooterNavigation({v, group, compact = false}) {
           onClick={v.consent?.open}
           className="vf-shell-footer-link tw:p-0 tw:[border:0] tw:bg-transparent tw:text-on-inverse tw:[font:inherit] tw:text-start tw:cursor-pointer tw:hover:underline! tw:[text-underline-offset:4px]"
         >
-          {v.t?.consent?.settings}
+          {v.shellText?.consent?.settings}
         </button>
       )}
     </nav>
@@ -46,13 +46,13 @@ function FooterNavigation({v, group, compact = false}) {
 
 export function FooterLinks({v}) {
   const groups = [
-    {id: 'shop', title: v.t?.footer?.shop, links: list(v.footer?.shop)},
-    {id: 'studio', title: v.t?.footer?.studio, links: list(v.footer?.studio)},
+    {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
+    {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
     {
       id: 'help',
-      title: v.t?.help,
+      title: v.shellText?.help,
       links: [
-        {href: v.href?.faq, label: v.t?.faq, current: v.footer?.faqCurrent},
+        {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
         ...list(v.policyLinks)
       ]
     }

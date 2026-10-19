@@ -90,7 +90,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           data-lang={v.lang}
         >
           <DS.SkipLink href="#main" onClick={v.skipGo}>
-            <>{v.t?.skip}</>
+            <>{v.shellText?.skip}</>
           </DS.SkipLink>
           {v.standalone ? (
             <DS.LiveRegion>
@@ -118,7 +118,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           data-lang={v.lang}
         >
           <DS.SkipLink href="#main" onClick={v.skipGo}>
-            <>{v.t?.skip}</>
+            <>{v.shellText?.skip}</>
           </DS.SkipLink>
           {v.standalone ? (
             <>
@@ -130,8 +130,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           {v.announcement ? (
             <>
               <DS.AnnouncementBar
-                label={v.t?.news}
-                closeLabel={v.t?.dismissNews}
+                label={v.shellText?.news}
+                closeLabel={v.shellText?.dismissNews}
                 onClose={v.closeAnnouncement}
               >
                 {v.announcementPhone !== v.announcement ? (
@@ -158,16 +158,16 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             <div className="vf-shell-desktop-header tw:max-lg:hidden tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
               <nav className="tw:flex tw:gap-1 tw:flex-wrap">
                 <DS.NavLink variant="header" href={v.href?.shop} current={v.nav?.shop}>
-                  <>{v.t?.shop}</>
+                  <>{v.shellText?.shop}</>
                 </DS.NavLink>
                 {v.features?.weddings ? (
                   <DS.NavLink variant="header" href={v.href?.weddings} current={v.nav?.weddings}>
-                    <>{v.t?.weddings}</>
+                    <>{v.shellText?.weddings}</>
                   </DS.NavLink>
                 ) : null}
                 {v.features?.journal ? (
                   <DS.NavLink variant="header" href={v.href?.journal} current={v.nav?.journal}>
-                    <>{v.t?.journal}</>
+                    <>{v.shellText?.journal}</>
                   </DS.NavLink>
                 ) : null}
               </nav>
@@ -175,7 +175,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                 href={v.href?.home}
                 className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
               >
-                <>{v.t?.brand}</>
+                <>{v.shellText?.brand}</>
               </a>
               <div className="tw:flex tw:gap-1 tw:items-center">
                 {v.hasLang ? (
@@ -184,12 +184,12 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                       value={v.lang}
                       onChange={v.setLang}
                       options={v.langOpts}
-                      label={v.t?.langL}
+                      label={v.shellText?.langL}
                     />
                   </div>
                 ) : null}
-                <DS.IconButton icon="search" label={v.t?.search} href={v.href?.search} />
-                <DS.IconButton icon="user" label={v.t?.account} href={v.href?.account} />
+                <DS.IconButton icon="search" label={v.shellText?.search} href={v.href?.search} />
+                <DS.IconButton icon="user" label={v.shellText?.account} href={v.href?.account} />
                 <DS.IconButton
                   icon="shopping-bag"
                   label={v.bagLabel}
@@ -202,7 +202,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                     shop's tools. A tablet (768px up) has room for the language switch and account. */}
             <div className="vf-shell-mobile-header tw:lg:hidden tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px] tw:md:gap-4 tw:md:h-header tw:md:px-gutter tw:md:[grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)]">
               <div className="tw:flex">
-                <DS.IconButton icon="menu" label={v.t?.menu} onClick={v.openMenu} />
+                <DS.IconButton icon="menu" label={v.shellText?.menu} onClick={v.openMenu} />
                 {v.hasLang ? (
                   <button
                     type="button"
@@ -219,7 +219,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                 href={v.href?.home}
                 className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:md:text-xl tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
               >
-                <>{v.t?.brand}</>
+                <>{v.shellText?.brand}</>
               </a>
               <div className="vf-shell-mobile-tools tw:flex tw:justify-end tw:items-center tw:md:gap-1">
                 {v.hasLang ? (
@@ -228,14 +228,14 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                       value={v.lang}
                       onChange={v.setLang}
                       options={v.langOpts}
-                      label={v.t?.langL}
+                      label={v.shellText?.langL}
                     />
                   </div>
                 ) : null}
-                <DS.IconButton icon="search" label={v.t?.search} href={v.href?.search} />
+                <DS.IconButton icon="search" label={v.shellText?.search} href={v.href?.search} />
                 <DS.IconButton
                   icon="user"
-                  label={v.t?.account}
+                  label={v.shellText?.account}
                   href={v.href?.account}
                   className="tw:max-md:hidden!"
                 />
@@ -253,10 +253,10 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             placement="start"
             open={v.menuOpen}
             onClose={v.closeMenu}
-            title={v.t?.brand}
-            closeLabel={v.t?.closeMenu}
+            title={v.shellText?.brand}
+            closeLabel={v.shellText?.closeMenu}
           >
-            <DS.MenuList label={v.t?.mainNav}>
+            <DS.MenuList label={v.shellText?.mainNav}>
               {list(v.menuItems).map((it, $index) => (
                 <React.Fragment key={$index}>
                   <DS.NavLink variant="menu" href={it?.href} current={it?.current}>
@@ -270,13 +270,13 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                 <>
                   <div className="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
                     <span>
-                      <>{v.t?.langL}</>
+                      <>{v.shellText?.langL}</>
                     </span>
                     <DS.LanguageSwitch
                       value={v.lang}
                       onChange={v.setLang}
                       options={v.langOpts}
-                      label={v.t?.langL}
+                      label={v.shellText?.langL}
                     />
                   </div>
                 </>
@@ -289,7 +289,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <>{v.t?.waLong}</>
+                  <>{v.shellText?.waLong}</>
                 </DS.Button>
               ) : null}
             </div>
@@ -304,13 +304,13 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                     href={v.href?.home}
                     className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
                   >
-                    <>{v.t?.brand}</>
+                    <>{v.shellText?.brand}</>
                   </a>
                   <p className="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">
                     <>{v.footer?.tagline}</>
                   </p>
                   <ul
-                    aria-label={v.t?.footer?.social}
+                    aria-label={v.shellText?.footer?.social}
                     className="vf-shell-footer-social tw:flex tw:gap-2 tw:list-none tw:m-0 tw:p-0"
                   >
                     {list(v.footer?.social).map((s, $index) => (
@@ -334,10 +334,10 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                 <FooterLinks v={v} />
                 <div className="vf-shell-footer-details tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm">
                   <div className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1">
-                    <>{v.t?.visit}</>
+                    <>{v.shellText?.visit}</>
                   </div>
                   <address className="tw:not-italic tw:leading-body">
-                    <>{v.t?.address}</>
+                    <>{v.footer?.address}</>
                   </address>
                   {v.footer?.directions ? (
                     <>
@@ -347,12 +347,12 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                         rel="noopener noreferrer"
                         className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                       >
-                        <>{v.t?.footer?.directions}</>
+                        <>{v.shellText?.footer?.directions}</>
                       </a>
                     </>
                   ) : null}
                   <div className="tw:text-inverse-quiet">
-                    <>{v.t?.hours}</>
+                    <>{v.shellText?.hours}</>
                   </div>
                   <a
                     href={v.phoneHref}
@@ -421,11 +421,11 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                       id="vf-consent-title"
                       className="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display"
                     >
-                      <>{v.t?.consent?.title}</>
+                      <>{v.shellText?.consent?.title}</>
                     </h2>
                     <DS.IconButton
                       icon="x"
-                      label={v.t?.consent?.close}
+                      label={v.shellText?.consent?.close}
                       onClick={v.consent?.close}
                       variant="secondary"
                       inverse={true}
@@ -433,12 +433,12 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                     />
                   </div>
                   <p className="tw:m-0">
-                    <>{v.t?.consent?.body} </>
+                    <>{v.shellText?.consent?.body} </>
                     <a
                       href={v.consent?.policy?.href}
                       className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                     >
-                      <>{v.t?.consent?.policy}</>
+                      <>{v.shellText?.consent?.policy}</>
                     </a>
                   </p>
                   <div className="tw:flex tw:flex-wrap tw:gap-2">
@@ -447,14 +447,14 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                       onClick={v.consent?.accept}
                       className="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken"
                     >
-                      <>{v.t?.consent?.accept}</>
+                      <>{v.shellText?.consent?.accept}</>
                     </button>
                     <button
                       type="button"
                       onClick={v.consent?.essential}
                       className="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]"
                     >
-                      <>{v.t?.consent?.essential}</>
+                      <>{v.shellText?.consent?.essential}</>
                     </button>
                   </div>
                 </section>
@@ -462,7 +462,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             ) : null}
             <div className="vf-shell-phone-bar tw:md:hidden">
               {sticky}
-              <DS.BottomTabBar items={v.tabs} label={v.t?.mainNav} />
+              <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
             </div>
           </div>
         </div>
