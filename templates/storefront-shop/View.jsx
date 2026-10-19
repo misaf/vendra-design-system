@@ -258,8 +258,22 @@ export function View({v}) {
                 ) : null}
               </section>
             </div>
-            <DS.Dialog title={v.migration?.filters} open={v.filterOpen} onClose={v.closeFilters}>
-              <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
+            <DS.Dialog
+              title={v.migration?.filters}
+              open={v.filterOpen}
+              onClose={v.closeFilters}
+              footer={
+                <div className="vf-shop-dialog-actions tw:w-full tw:flex tw:flex-col tw:gap-2">
+                  <DS.Button size="lg" block={true} onClick={v.closeFilters}>
+                    <>{v.showResults}</>
+                  </DS.Button>
+                  <DS.Button variant="ghost" size="lg" block={true} onClick={v.clearFilters}>
+                    <>{v.t?.clear}</>
+                  </DS.Button>
+                </div>
+              }
+            >
+              <div className="vf-shop-filter-fields tw:flex tw:flex-col tw:gap-4">
                 <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
                   <legend className="ag-field__label tw:p-0 tw:mb-2">
                     <>{v.t?.occasion}</>
@@ -298,14 +312,6 @@ export function View({v}) {
                   />
                 </div>
                 <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
-              </div>
-              <div className="vf-shop-dialog-actions tw:mt-5 tw:flex tw:flex-col tw:gap-2">
-                <DS.Button size="lg" block={true} onClick={v.closeFilters}>
-                  <>{v.showResults}</>
-                </DS.Button>
-                <DS.Button variant="ghost" size="lg" block={true} onClick={v.clearFilters}>
-                  <>{v.t?.clear}</>
-                </DS.Button>
               </div>
             </DS.Dialog>
           </main>
