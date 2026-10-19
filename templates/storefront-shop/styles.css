@@ -48,3 +48,33 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+/* Keep the shop's actions outside the scrolling options, including on short touch screens. */
+@media (width < 1024px) {
+  .ag-dialog__overlay:has(.vf-shop-filter-fields) {
+    padding: var(--space-4);
+  }
+  .ag-dialog:has(.vf-shop-filter-fields),
+  .ag-dialog__frame:has(.vf-shop-filter-fields) {
+    max-block-size: calc(100dvh - 2 * var(--space-4));
+    overflow: hidden;
+  }
+  .ag-dialog__frame:has(.vf-shop-filter-fields) {
+    display: flex;
+    flex-direction: column;
+  }
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__head,
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__foot {
+    flex-shrink: 0;
+    padding: var(--space-4);
+  }
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__body {
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+  .vf-shop-filter-fields {
+    gap: var(--space-3);
+  }
+}
