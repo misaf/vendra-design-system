@@ -78,3 +78,35 @@
     gap: var(--space-3);
   }
 }
+
+/* Tablet controls share the row without stretching the three-option sort across the page. */
+@media (768px <= width < 1024px) {
+  .vf-shop-columns,
+  .vf-shop-results {
+    row-gap: var(--space-3);
+  }
+  .vf-shop-mobile-bar {
+    justify-content: space-between;
+  }
+  .vf-shop-mobile-bar > div {
+    flex: 0 1 280px;
+  }
+  .vf-shop-toolbar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .vf-shop-quick-filters {
+    flex: 1;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+    overflow-x: auto;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  .vf-shop-quick-filters .ag-chip,
+  .vf-shop-toolbar > div:last-child {
+    flex: none;
+  }
+}
