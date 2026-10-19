@@ -1,2 +1,47 @@
-/* Custom styles for the journal page. */
-/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* Keep browsing controls compact while preserving readable stories and full tap targets. */
+@media (width < 1024px) {
+  :where(html:not([data-density='tv'])) .vf-journal-header {
+    gap: var(--space-3);
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-journal h1.ag-sechead__title {
+    font-size: clamp(1.875rem, 4cqi, 2.25rem);
+    line-height: var(--lh-snug);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-header .ag-sechead__text {
+    gap: var(--space-1);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-categories .ag-chip {
+    flex: none;
+    white-space: nowrap;
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-search {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured {
+    margin-block-end: var(--space-6);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__body {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__title {
+    font-size: var(--text-xl);
+    line-height: var(--lh-snug);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__excerpt {
+    font-size: var(--text-base);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-article-grid {
+    row-gap: var(--space-6);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-pagination {
+    margin-block-start: var(--space-6);
+  }
+}

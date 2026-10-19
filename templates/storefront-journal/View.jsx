@@ -10,10 +10,19 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-info tw:mx-auto">
+          <main id="main" tabIndex={-1} className="vf-info vf-journal tw:mx-auto">
             <div className="vf-journal-header tw:flex tw:flex-col tw:gap-4h tw:mb-7">
               <DS.SectionHeader level="h1" eyebrow={v.t?.eb} title={v.t?.hA} accent={v.t?.hB} />
-              <div className="tw:flex tw:gap-2 tw:flex-wrap">
+              <div
+                role="group"
+                aria-label={v.t?.categories}
+                className="vf-journal-categories tw:flex tw:gap-2 tw:flex-wrap"
+                onFocus={event => {
+                  const target = /** @type {HTMLElement} */ (event.target);
+                  if (target !== event.currentTarget)
+                    target.scrollIntoView({block: 'nearest', inline: 'nearest'});
+                }}
+              >
                 {list(v.cats).map((c, $index) => (
                   <React.Fragment key={$index}>
                     <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
@@ -23,7 +32,7 @@ export function View({v}) {
                 ))}
               </div>
             </div>
-            <div className="tw:mb-5">
+            <div className="vf-journal-search tw:mb-5">
               <DS.SearchField label={v.migration?.search} value={v.q} onChange={v.setQ} />
             </div>
             {v.noStories ? (
@@ -76,7 +85,7 @@ export function View({v}) {
               ))}
             </div>
             <DS.Pagination
-              className="tw:mt-8"
+              className="vf-journal-pagination tw:mt-8"
               page={v.paging?.page}
               pageCount={v.paging?.pageCount}
               href={v.paging?.href}
