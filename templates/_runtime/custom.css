@@ -417,13 +417,6 @@ html {
   .vf-page .vf-product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
-  .vf-search-row {
-    grid-template-columns: 48px minmax(0, 1fr);
-    column-gap: var(--space-3);
-  }
-  .vf-search-row .vf-price {
-    grid-column: 2;
-  }
 }
 
 /* Sticky side panels (filters, order summaries, contents) stick below the header only while they
@@ -1177,8 +1170,36 @@ body:has(.vf-presentation) .ag-dialog__foot {
 
 
 /* Source: storefront-search/styles.css */
-/* Custom styles for the search page. */
-/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* Result layout follows available reading space, including narrow embedded views. */
+.vf-search-results {
+  container: vf-search-results / inline-size;
+}
+.vf-search-name {
+  align-self: flex-start;
+  font-family: var(--vf-code-font);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.vf-search-subtitle {
+  overflow-wrap: anywhere;
+}
+@container vf-search-results (width < 560px) {
+  .vf-search-row {
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-1);
+    align-items: start;
+  }
+  .vf-search-thumbnail {
+    grid-row: 1 / span 2;
+  }
+  .vf-search-row .vf-price {
+    grid-column: 2;
+    font-size: var(--text-sm);
+  }
+}
 
 
 /* Source: storefront-shop/styles.css */
