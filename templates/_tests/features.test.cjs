@@ -71,7 +71,7 @@ assert.equal(
   ctx.vfDeliveryWhen({date: '2026-10-06', slot: '12'}, false),
   'Tue 6 October · 12:00–16:00'
 );
-assert.match(ctx.vfDeliveryWhen({date: '2026-10-06', slot: '12'}, true), /^سه‌شنبه، ۱۴ مهر · /);
+assert.match(ctx.vfDeliveryWhen({date: '2026-10-06', slot: '12'}, true), /^سه‌شنبه، ۱۴ مهر، /);
 assert.equal(
   ctx.vfDeliveryWhen({slot: '08'}, false),
   '08:00–12:00',

@@ -1,16 +1,8 @@
 /* Three storefront page families. Exceptions are named and kept here. */
 
-/* Codes are identifiers: use distinct, evenly spaced characters instead of the display face. */
-.vf-page,
-.vf-display {
-  --vf-code-font: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-}
+/* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
 .vf-page .ag-product__name {
-  font-family: var(--vf-code-font);
   font-size: var(--text-base);
-  font-weight: 500;
-  font-variant-numeric: slashed-zero tabular-nums;
-  letter-spacing: 0.025em;
   line-height: 1.5;
 }
 .vf-page .ag-product__link {
@@ -36,7 +28,7 @@
 .vf-page main h1,
 .vf-page main h2 {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   text-transform: var(--display-case);
@@ -152,18 +144,9 @@
   .vf-page .vf-shopping--home {
     padding: 0 !important;
   }
-  .vf-page main h1 {
-    font-size: 40px;
-  }
-  .vf-page .vf-form h1 {
-    font-size: 36px;
-  }
+  /* Phone heading sizes come from headings.css, on the type scale; Persian needs the taller line. */
   .vf-page[data-lang='fa'] main h1 {
-    font-size: 36px;
     line-height: 1.5;
-  }
-  .vf-page[data-lang='fa'] .vf-form h1 {
-    font-size: 34px;
   }
   .vf-page .vf-form aside,
   .vf-page .vf-shopping aside {
@@ -191,7 +174,7 @@
    bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: calc(var(--focus-offset) * 1.5);
 }
 
 @media (height < 480px) and (orientation: landscape) {

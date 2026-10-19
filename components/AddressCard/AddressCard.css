@@ -14,7 +14,7 @@
 }
 .ag-addr__label {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-size: var(--text-lg);
   line-height: 1.2;
   min-width: 0;

@@ -16,7 +16,7 @@
   --breakpoint-xl: 1440px;
   --font-body: var(--font-body);
   --font-display: var(--font-display);
-  --font-weight-medium: 500;
+  --font-weight-medium: var(--weight-medium);
   --color-page: var(--surface-page);
   --color-muted: var(--surface-muted);
   --color-inverse: var(--surface-inverse);

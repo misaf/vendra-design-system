@@ -10,6 +10,7 @@ import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';
 import {commerce} from '../../components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
+import {vfSeparator} from './formatting.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
@@ -95,7 +96,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 101,
     token: 'VF-7K2M4Q',
-    name: {en: 'Roses · lisianthus · satin', fa: 'رز · لیسیانتوس · ساتن'},
+    name: {en: 'Roses · lisianthus · satin', fa: 'رز، لیسیانتوس، ساتن'},
     slug: {en: 'roses-lisianthus-satin', fa: 'رز-لیسیانتوس-ساتن'},
     description: {
       en: 'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.',
@@ -116,7 +117,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 102,
     token: 'VF-3HX9TP',
-    name: {en: 'Seasonal · 15 stems', fa: 'فصلی · ۱۵ شاخه'},
+    name: {en: 'Seasonal · 15 stems', fa: 'فصلی، ۱۵ شاخه'},
     slug: {en: 'seasonal-15-stems', fa: 'فصلی-۱۵-شاخه'},
     description: {
       en: 'A seasonal bouquet of fifteen stems in soft lavender tones.',
@@ -137,7 +138,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 103,
     token: 'VF-8RD5WN',
-    name: {en: 'Phalaenopsis · ceramic pot', fa: 'فالانوپسیس · گلدان سرامیکی'},
+    name: {en: 'Phalaenopsis · ceramic pot', fa: 'فالانوپسیس، گلدان سرامیکی'},
     slug: {en: 'phalaenopsis-ceramic-pot', fa: 'فالانوپسیس-گلدان-سرامیکی'},
     description: {
       en: 'A Phalaenopsis orchid in a ceramic pot.',
@@ -158,7 +159,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 104,
     token: 'VF-4CJ6ZB',
-    name: {en: 'Red roses · velvet box', fa: 'رز قرمز · باکس مخمل'},
+    name: {en: 'Red roses · velvet box', fa: 'رز قرمز، باکس مخمل'},
     slug: {en: 'red-roses-velvet-box', fa: 'رز-قرمز-باکس-مخمل'},
     description: {
       en: 'Red roses arranged in a velvet hatbox for a bold gift.',
@@ -179,7 +180,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 105,
     token: 'VF-9FA2KE',
-    name: {en: 'Garden roses · eucalyptus', fa: 'رز باغی · اکالیپتوس'},
+    name: {en: 'Garden roses · eucalyptus', fa: 'رز باغی، اکالیپتوس'},
     slug: {en: 'garden-roses-eucalyptus', fa: 'رز-باغی-اکالیپتوس'},
     description: {
       en: 'Garden roses and eucalyptus arranged in a soft pink bouquet.',
@@ -200,7 +201,7 @@ export const VF_API_PRODUCTS = [
   {
     id: 106,
     token: 'VF-6MT3VY',
-    name: {en: 'Peonies · ranunculus', fa: 'گل صد‌تومانی · آلاله'},
+    name: {en: 'Peonies · ranunculus', fa: 'گل صد‌تومانی، آلاله'},
     slug: {en: 'peonies-ranunculus', fa: 'گل-صد‌تومانی-آلاله'},
     description: {
       en: 'An ivory bridal posy of peonies and ranunculus.',
@@ -436,7 +437,7 @@ export function vfLineDetail(product, size, addons, lang) {
   return [VF_CATEGORY_ITEM[lang][product.cat]]
     .concat(product.sizes && size ? [size.name[lang], size.detail[lang]] : [])
     .concat(addons.map(addon => addon.name[lang]))
-    .join(' · ');
+    .join(vfSeparator(lang));
 }
 
 // Each demo gets its own bag objects; prices and codes come from the same catalog.
@@ -548,7 +549,9 @@ export function vfCardMessages(lines, delivery, lang) {
   if (!cards.length) return delivery && delivery.card ? delivery.card : '';
   return cards.length === 1
     ? quote(cards[0].card)
-    : cards.map(line => vfTokenText(vfLineToken(line)) + ': ' + quote(line.card)).join(' · ');
+    : cards
+        .map(line => vfTokenText(vfLineToken(line)) + ': ' + quote(line.card))
+        .join(vfSeparator(lang));
 }
 
 // The same line with a handwritten card added, priced and named as the product page would.
@@ -560,9 +563,12 @@ export function vfLineWithCard(line) {
   );
   const names = lang => {
     const detail = line[lang][1]
-      .split(' · ')
+      .split(/ · |، /)
       .filter(part => !VF_ADDONS.some(addon => addon.name[lang] === part));
-    return [vfLineToken(line), detail.concat(addons.map(addon => addon.name[lang])).join(' · ')];
+    return [
+      vfLineToken(line),
+      detail.concat(addons.map(addon => addon.name[lang])).join(vfSeparator(lang))
+    ];
   };
   return {
     ...line,

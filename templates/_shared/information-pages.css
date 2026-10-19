@@ -11,7 +11,7 @@
 .vf-info h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   text-transform: var(--display-case);

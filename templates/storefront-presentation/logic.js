@@ -20,6 +20,7 @@ import {
   vfSearchProducts
 } from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
+import {vfSeparator} from '../_shared/formatting.js';
 import {vfRouteParams} from '../_shared/routing.js';
 import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
@@ -1083,7 +1084,7 @@ function vals(page) {
         sizes: product.sizes
           ? VF_SIZES.map(size => ({
               id: size.id,
-              label: size.name[L] + ' · ' + size.detail[L],
+              label: size.name[L] + vfSeparator(L) + size.detail[L],
               selected: line.size === size.id,
               pick: () => page.setState({pick: {...page.state.pick, size: size.id}})
             }))
@@ -1177,7 +1178,7 @@ function vals(page) {
       id: line.id,
       image: vfProductImage(vfFindProduct(line.productId), L),
       name: line.token,
-      meta: lineSoldOut(line) ? C.soldOut + ' · ' + line[L][1] : line[L][1],
+      meta: lineSoldOut(line) ? C.soldOut + vfSeparator(L) + line[L][1] : line[L][1],
       price: S.m(line.unit * line.qty),
       quantity: line.qty,
       setQuantity: qty =>

@@ -1,6 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {vfJournalImage} from '../_shared/journal-images.js';
+import {vfSeparator} from '../_shared/formatting.js';
 import {vfCopy} from './copy.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
@@ -44,7 +45,7 @@ function vals(page) {
       title: p[L][0],
       image: vfJournalImage(p.image),
       excerpt: p[L][1],
-      meta: (fa ? c[2] : c[1]) + ' · ' + p[L][3] + ' · ' + p[L][2]
+      meta: [fa ? c[2] : c[1], p[L][3], p[L][2]].join(vfSeparator(L))
     };
   });
   // One page of posts (?page=2); a page past the end shows the last one.

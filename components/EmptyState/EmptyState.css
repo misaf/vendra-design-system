@@ -39,7 +39,7 @@
   margin: 0;
   text-transform: var(--display-case);
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-size: clamp(2rem, 5vw, var(--text-3xl));
   line-height: var(--lh-tight);
   color: var(--text-body);
@@ -52,7 +52,7 @@
 }
 :lang(fa) .ag-empty__title em {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .ag-empty__body {
   margin: var(--space-4) 0 0;

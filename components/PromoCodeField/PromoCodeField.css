@@ -31,7 +31,8 @@
 }
 .ag-promo__row .ag-input:has(input:focus-visible) {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 3px;
+  /* Clears the field's own soft focus glow. */
+  outline-offset: calc(var(--focus-offset) * 1.5);
 }
 .ag-promo__applied {
   display: flex;

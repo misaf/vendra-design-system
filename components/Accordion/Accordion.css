@@ -23,7 +23,7 @@
   text-align: start;
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-snug);
   color: var(--text-body);
   cursor: pointer;

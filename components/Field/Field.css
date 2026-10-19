@@ -48,8 +48,10 @@
     box-shadow var(--dur-fast) var(--ease-out);
   position: relative;
 }
-.ag-input:hover {
-  border-color: var(--border-input-strong);
+@media (hover: hover) {
+  .ag-input:hover {
+    border-color: var(--border-input-strong);
+  }
 }
 .ag-input:focus-within {
   border-color: var(--border-strong);
@@ -60,7 +62,7 @@
 }
 .ag-input--disabled {
   background: var(--surface-disabled);
-  opacity: 0.6;
+  opacity: var(--opacity-disabled);
 }
 .ag-input input,
 .ag-input textarea {

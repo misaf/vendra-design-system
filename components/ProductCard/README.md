@@ -1,10 +1,10 @@
 # ProductCard
 
-Catalogue tile: 4:5 arch-framed image, serif name, muted subtitle, price. Use in grids of 3–4. The name is the link (`href`) or, with only `onClick`, a React Aria button.
+Catalogue tile: 4:5 arch-framed image, product code as the name (`--font-code`, e.g. `VF-7K2M4Q`), muted subtitle, price. Use in grids of 3–4. The name is the link (`href`) or, with only `onClick`, a React Aria button.
 
 ```jsx
 <ProductCard
-  name="Wild Meadow"
+  name="VF-7K2M4Q"
   subtitle="Seasonal · 15 stems"
   price="$68"
   badge="New"

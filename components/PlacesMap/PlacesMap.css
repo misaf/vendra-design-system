@@ -21,7 +21,7 @@
 .leaflet-tooltip.ag-place-label {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   color: var(--text-body);
   background: var(--surface-card);
   border: 1px solid var(--border-default);

@@ -15,17 +15,25 @@
   font-family: var(--font-body);
   font-size: var(--text-sm);
   cursor: pointer;
-  transition: all var(--dur-fast) var(--ease-out);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
   white-space: nowrap;
   flex-shrink: 0;
 }
-.ag-chip:hover {
+/* React Aria reports hover from a mouse or pen only, so a tap leaves no hover behind. */
+.ag-chip[data-hovered]:not([data-disabled], .ag-chip--selected) {
   border-color: var(--border-strong);
 }
 .ag-chip--selected {
   background: var(--surface-strong);
   border-color: var(--surface-strong);
   color: var(--text-on-strong);
+}
+.ag-chip[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
 }
 /* Forced colours drop the selected fill: a selected chip takes the system highlight. */
 @media (forced-colors: active) {

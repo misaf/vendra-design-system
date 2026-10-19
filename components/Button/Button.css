@@ -28,7 +28,7 @@
 }
 .ag-btn:disabled,
 .ag-btn--disabled {
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .ag-btn--disabled {
@@ -60,8 +60,10 @@
   background: var(--accent);
   color: var(--text-on-accent);
 }
-.ag-btn--primary:hover:not(:disabled, [data-pending]) {
-  background: var(--accent-hover);
+@media (hover: hover) {
+  .ag-btn--primary:hover:not(:disabled, [data-pending]) {
+    background: var(--accent-hover);
+  }
 }
 .ag-btn--primary:active:not(:disabled, [data-pending]) {
   background: var(--accent-press);
@@ -71,24 +73,30 @@
   color: var(--text-body);
   border-color: var(--border-strong);
 }
-.ag-btn--secondary:hover:not(:disabled, [data-pending]) {
-  background: var(--surface-strong);
-  border-color: var(--surface-strong);
-  color: var(--text-on-strong);
+@media (hover: hover) {
+  .ag-btn--secondary:hover:not(:disabled, [data-pending]) {
+    background: var(--surface-strong);
+    border-color: var(--surface-strong);
+    color: var(--text-on-strong);
+  }
 }
 .ag-btn--soft {
   background: var(--accent-soft);
   color: var(--text-on-soft);
 }
-.ag-btn--soft:hover:not(:disabled, [data-pending]) {
-  background: var(--accent-soft-hover);
+@media (hover: hover) {
+  .ag-btn--soft:hover:not(:disabled, [data-pending]) {
+    background: var(--accent-soft-hover);
+  }
 }
 .ag-btn--ghost {
   background: transparent;
   color: var(--text-body);
 }
-.ag-btn--ghost:hover:not(:disabled, [data-pending]) {
-  background: var(--surface-hover);
+@media (hover: hover) {
+  .ag-btn--ghost:hover:not(:disabled, [data-pending]) {
+    background: var(--surface-hover);
+  }
 }
 .ag-btn--block {
   width: 100%;

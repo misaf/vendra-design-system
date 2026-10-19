@@ -3,7 +3,7 @@
 }
 .ag-osum__title {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-size: var(--text-xl);
   line-height: var(--lh-tight);
   margin: 0 0 var(--space-3);
@@ -22,6 +22,9 @@
   border-bottom: var(--border-hair) solid var(--border-subtle);
 }
 .ag-osum__name {
+  font-family: var(--font-code);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
   font-weight: var(--weight-medium);
   overflow-wrap: anywhere;
 }
@@ -31,9 +34,11 @@
   text-decoration-color: var(--border-default);
   text-underline-offset: 3px;
 }
-.ag-osum__name a:hover {
-  color: var(--text-accent);
-  text-decoration-color: currentColor;
+@media (hover: hover) {
+  .ag-osum__name a:hover {
+    color: var(--text-accent);
+    text-decoration-color: currentColor;
+  }
 }
 .ag-osum__meta {
   font-size: var(--text-sm);

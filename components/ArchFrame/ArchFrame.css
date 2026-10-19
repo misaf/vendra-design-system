@@ -30,7 +30,7 @@
   width: 48px;
   min-width: 44px;
   max-width: 56px;
-  border-radius: 24px 24px 0 0;
+  border-radius: var(--radius-arch);
 }
 .ag-arch--thumb.ag-arch--circle {
   border-radius: 50%;
@@ -52,8 +52,10 @@
   display: block;
   transition: transform var(--dur-slow) var(--ease-out);
 }
-.ag-arch--zoom:hover img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .ag-arch--zoom:hover img {
+    transform: scale(1.04);
+  }
 }
 .ag-arch__ph {
   position: absolute;
@@ -79,7 +81,9 @@
   .ag-arch img {
     transition: none;
   }
-  .ag-arch--zoom:hover img {
-    transform: none;
+  @media (hover: hover) {
+    .ag-arch--zoom:hover img {
+      transform: none;
+    }
   }
 }

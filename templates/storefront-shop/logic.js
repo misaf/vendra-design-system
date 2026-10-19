@@ -8,7 +8,7 @@ import {
   vfReady
 } from '../_shared/catalog.js';
 import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
@@ -75,7 +75,7 @@ function vals(page) {
   // Delivery days use the main zone's cut-off; a closed or unknown day in the URL is ignored.
   const days = vfDeliveryDays(VF_ZONES[0].id);
   const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
-  const dayLabel = d => vfDayName(d, fa) + ' · ' + vfDayMonth(d.date, fa);
+  const dayLabel = d => vfDayName(d, fa) + vfSeparator(fa) + vfDayMonth(d.date, fa);
   // Filters set here are reported as they change; FilterBar reports the ones removed from its row.
   const filterUsed = (filterId, value, on) =>
     window.VF_TRACK.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
@@ -247,7 +247,13 @@ function vals(page) {
       },
       ...days.map(d => ({
         value: d.iso,
-        label: dayLabel(d) + (d.soldOut ? ' · ' + C.soldOut : d.pastCutoff ? ' · ' + C.closed : ''),
+        label:
+          dayLabel(d) +
+          (d.soldOut
+            ? vfSeparator(fa) + C.soldOut
+            : d.pastCutoff
+              ? vfSeparator(fa) + C.closed
+              : ''),
         disabled: d.soldOut || d.pastCutoff
       }))
     ],

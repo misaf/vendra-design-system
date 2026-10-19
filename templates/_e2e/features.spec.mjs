@@ -289,7 +289,7 @@ test('without a map, a full typed address is enough', async ({page}) => {
   await expect(page.locator('#vf-map')).toHaveCount(0);
   await expect(page.locator('main')).toContainText('نقشه بارگذاری نشد');
   // Without the pin, the zone is chosen from the list; zones that deliver free say so.
-  await expect(page.locator('#vf-zone')).toContainText('مرکز کرج · رایگان');
+  await expect(page.locator('#vf-zone')).toContainText('مرکز کرج، رایگان');
   await fillSender(page);
   await page.fill('#vf-name', 'شیرین احمدی');
   await page.fill('#vf-phone', '09121234567');

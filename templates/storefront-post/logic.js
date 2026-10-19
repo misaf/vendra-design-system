@@ -1,6 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {vfJournalImage} from '../_shared/journal-images.js';
+import {vfSeparator} from '../_shared/formatting.js';
 import {vfCopy} from './copy.js';
 import {vfProduct, vfProductImage} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -36,7 +37,7 @@ function vals(page) {
   if (post) {
     C.title = post[L][0];
     C.lede = post[L][1];
-    C.meta = post[L].slice(2).join(' · ');
+    C.meta = post[L].slice(2).join(vfSeparator(L));
   }
   return {
     migration: C.migration,
@@ -107,7 +108,7 @@ function vals(page) {
           title: p[L][0],
           image: vfJournalImage(p.image),
           excerpt: p[L][1],
-          meta: (fa ? c[2] : c[1]) + ' · ' + p[L][2]
+          meta: (fa ? c[2] : c[1]) + vfSeparator(L) + p[L][2]
         };
       })
   };

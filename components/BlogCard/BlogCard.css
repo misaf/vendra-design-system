@@ -58,7 +58,7 @@
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-2);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .ag-blog__media img {
   width: 100%;
@@ -67,8 +67,10 @@
   display: block;
   transition: transform var(--dur-slow) var(--ease-out);
 }
-.ag-blog:hover .ag-blog__media img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .ag-blog:hover .ag-blog__media img {
+    transform: scale(1.04);
+  }
 }
 .ag-blog__meta {
   display: flex;
@@ -81,7 +83,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-snug);
   text-wrap: pretty;
 }

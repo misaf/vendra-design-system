@@ -19,7 +19,7 @@
   block-size: var(--tap-min);
   padding-inline: var(--space-2);
   border: var(--border-hair) solid transparent;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--text-body);
   font: inherit;
@@ -46,7 +46,7 @@
 }
 .ag-pages__step[data-disabled] {
   color: var(--text-muted);
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .ag-pages__step[data-disabled][data-hovered] {
