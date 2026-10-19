@@ -102,7 +102,7 @@
     margin-block-end: var(--space-2);
   }
 }
-@container (width < 380px) {
+@container (width < 420px) {
   .vf-product-sizes .ag-choices {
     grid-template-columns: minmax(0, 1fr) !important;
   }
@@ -133,5 +133,23 @@
     .vf-product-columns .ag-gallery__slide img {
       object-fit: contain;
     }
+  }
+}
+
+/* Touch tablets need the configured total and action while the purchase panel scrolls. Reuse
+   the phone action; keep the phone navigation hidden and let Shell measure the bar for focus. */
+@media (768px <= width < 1024px), (1024px <= width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-shell-phone-bar:has(.vf-product-mobile-action) {
+    display: block;
+  }
+  :where(html:not([data-density='tv']))
+    .vf-shell-phone-bar:has(.vf-product-mobile-action)
+    .ag-tabbar,
+  :where(html:not([data-density='tv'])) .vf-product-add-button,
+  :where(html:not([data-density='tv'])) .vf-product-selection-total {
+    display: none;
+  }
+  :where(html:not([data-density='tv'])) .vf-product-mobile-action {
+    padding-inline: var(--space-5);
   }
 }

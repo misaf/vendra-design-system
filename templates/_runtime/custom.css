@@ -1174,7 +1174,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
     margin-block-end: var(--space-2);
   }
 }
-@container (width < 380px) {
+@container (width < 420px) {
   .vf-product-sizes .ag-choices {
     grid-template-columns: minmax(0, 1fr) !important;
   }
@@ -1205,6 +1205,24 @@ body:has(.vf-presentation) .ag-dialog__foot {
     .vf-product-columns .ag-gallery__slide img {
       object-fit: contain;
     }
+  }
+}
+
+/* Touch tablets need the configured total and action while the purchase panel scrolls. Reuse
+   the phone action; keep the phone navigation hidden and let Shell measure the bar for focus. */
+@media (768px <= width < 1024px), (1024px <= width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-shell-phone-bar:has(.vf-product-mobile-action) {
+    display: block;
+  }
+  :where(html:not([data-density='tv']))
+    .vf-shell-phone-bar:has(.vf-product-mobile-action)
+    .ag-tabbar,
+  :where(html:not([data-density='tv'])) .vf-product-add-button,
+  :where(html:not([data-density='tv'])) .vf-product-selection-total {
+    display: none;
+  }
+  :where(html:not([data-density='tv'])) .vf-product-mobile-action {
+    padding-inline: var(--space-5);
   }
 }
 
@@ -1326,6 +1344,38 @@ body:has(.vf-presentation) .ag-dialog__foot {
   }
   .vf-shop-filter-fields {
     gap: var(--space-3);
+  }
+}
+
+/* Tablet controls share the row without stretching the three-option sort across the page. */
+@media (768px <= width < 1024px) {
+  .vf-shop-columns,
+  .vf-shop-results {
+    row-gap: var(--space-3);
+  }
+  .vf-shop-mobile-bar {
+    justify-content: space-between;
+  }
+  .vf-shop-mobile-bar > div {
+    flex: 0 1 280px;
+  }
+  .vf-shop-toolbar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .vf-shop-quick-filters {
+    flex: 1;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+    overflow-x: auto;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  .vf-shop-quick-filters .ag-chip,
+  .vf-shop-toolbar > div:last-child {
+    flex: none;
   }
 }
 
