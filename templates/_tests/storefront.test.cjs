@@ -469,6 +469,52 @@ for (const lang of ['en', 'fa']) {
   search.renderVals().clearSearch();
   assert.equal(calls.at(-1)[0].q, '');
 }
+// Saved-products Undo preserves other changes, recovers the final item and ignores duplicates.
+for (const lang of ['en', 'fa']) {
+  const {logic: saved, ctx: c} = loadPage('saved', {lang});
+  c.setTimeout = () => 0;
+  const original = Array.from(saved.renderVals().items, item => item.name);
+  saved.renderVals().items[0].remove();
+  saved.renderVals().items[0].remove();
+  const undo = saved.renderVals().undoRemove;
+  undo();
+  undo();
+  assert.deepEqual(
+    Array.from(saved.renderVals().items, item => item.name),
+    original.slice(1)
+  );
+  saved.renderVals().items[0].remove();
+  saved.renderVals().items[0].remove();
+  assert.equal(saved.renderVals().noItems, true);
+  saved.renderVals().undoRemove();
+  assert.deepEqual(
+    Array.from(saved.renderVals().items, item => item.name),
+    original.slice(-1)
+  );
+
+  let ids = [...original];
+  const store = {
+    get saved() {
+      return ids;
+    },
+    toggleSave(id) {
+      ids = ids.includes(id) ? ids.filter(item => item !== id) : [...ids, id];
+    }
+  };
+  const {logic: routed, ctx: rc} = loadPage('saved', {lang, store});
+  rc.setTimeout = () => 0;
+  routed.renderVals().items[0].remove();
+  ids.push('VF-7K2M4Q');
+  routed.renderVals().undoRemove();
+  assert.equal(new Set(ids).size, 4);
+  assert.ok(ids.includes('VF-7K2M4Q'));
+  assert.ok(ids.includes(original[0]));
+  routed.renderVals().items[0].remove();
+  ids.push('VF-7K2M4Q');
+  routed.renderVals().undoRemove();
+  assert.equal(ids.filter(id => id === 'VF-7K2M4Q').length, 1);
+}
+
 // Delayed page announcements respect focus received after they were scheduled.
 {
   const {ctx: c} = context();
