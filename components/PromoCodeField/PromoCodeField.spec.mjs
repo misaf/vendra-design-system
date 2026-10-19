@@ -38,3 +38,30 @@ test('an empty field applies nothing', async ({page}) => {
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'PromoCodeField');
 });
+
+test.describe('narrow touch field', () => {
+  test.use({viewport: {width: 320, height: 720}, hasTouch: true});
+  for (const [lang, label, apply] of [
+    ['en', 'Promo code', 'Apply'],
+    ['fa', 'کد تخفیف', 'اعمال']
+  ]) {
+    test(`the input and action fit without horizontal overflow (${lang})`, async ({page}) => {
+      await openComponent(page, 'PromoCodeField', lang);
+      await page.evaluate(() => document.fonts.ready);
+      const field = page.getByRole('textbox', {name: label});
+      const button = page.getByRole('button', {name: apply, exact: true});
+      const row = await page.locator('.ag-promo__row').boundingBox();
+      const shell = await page.locator('.ag-promo__row .ag-input').boundingBox();
+      expect(shell.width).toBeLessThanOrEqual(row.width);
+      expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(44);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+        320
+      );
+      await field.fill('WELCOME10');
+      await field.press('Tab');
+      await expect(button).toBeFocused();
+      await button.press('Enter');
+      await expect(page.getByRole('status')).toContainText('WELCOME10');
+    });
+  }
+});
