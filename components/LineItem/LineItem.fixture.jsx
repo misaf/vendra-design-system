@@ -13,6 +13,7 @@ export function Fixture() {
           note="Card: “Happy birthday”"
           price={2400000 * quantity + ' Toman'}
           quantity={quantity}
+          quantityMax={2}
           onQuantityChange={setQuantity}
           onRemove={() => setRemoved(true)}
           quantityLabels={{decrease: 'Fewer', increase: 'More', value: 'Quantity'}}

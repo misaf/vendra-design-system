@@ -6,6 +6,7 @@ test('a bag row changes quantity and removes itself', async ({page}) => {
   await expect(page.locator('.ag-line__price').first()).toHaveText('2400000 Toman');
   await page.getByRole('button', {name: 'More'}).click();
   await expect(page.locator('.ag-line__price').first()).toHaveText('4800000 Toman');
+  await expect(page.getByRole('button', {name: 'More'})).toBeDisabled();
   await page.getByRole('button', {name: 'Remove'}).first().click();
   await expect(page.getByText('Lavender Whisper')).toHaveCount(0);
 });

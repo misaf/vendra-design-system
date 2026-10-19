@@ -11,4 +11,6 @@ Bag / order-summary row with an arch thumbnail. The name is the product code, se
 
 **Use when:** Bag rows (lg, editable) and order summaries (sm, read-only). Set `unavailable` when a product is sold out or discontinued; `busy` while a quantity change saves.
 
+Pass `quantityMax` to cap the quantity at the remaining stock for this line. When different configurations share inventory, subtract the quantities in the other rows first.
+
 **Don’t use when:** Don’t use for product browsing (ProductCard) or wishlist grids.

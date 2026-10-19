@@ -10,7 +10,7 @@ import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
-export function LineItem({ image, name, meta, note, price, quantity, onQuantityChange, onRemove, removeLabel, quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel, busy, className = "" }) {
+export function LineItem({ image, name, meta, note, price, quantity, quantityMax, onQuantityChange, onRemove, removeLabel, quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel, busy, className = "" }) {
 	const text = useMessages("LineItem", messages, {
 		remove: removeLabel,
 		unavailable: unavailableLabel
@@ -29,6 +29,7 @@ export function LineItem({ image, name, meta, note, price, quantity, onQuantityC
 		alt: ""
 	}) : /* @__PURE__ */ React.createElement("span", { className: "ag-product__ph" })), /* @__PURE__ */ React.createElement("div", { className: "ag-line__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-line__name" }, name), meta && /* @__PURE__ */ React.createElement("div", { className: "ag-line__meta" }, meta), note && /* @__PURE__ */ React.createElement("div", { className: "ag-line__note" }, note), unavailable && /* @__PURE__ */ React.createElement("div", { className: "ag-line__flag" }, text.unavailable), large && (onQuantityChange || onRemove) && /* @__PURE__ */ React.createElement("div", { className: "ag-line__actions" }, onQuantityChange && !unavailable && /* @__PURE__ */ React.createElement(QuantityInput, {
 		value: quantity,
+		max: quantityMax,
 		disabled: busy,
 		onChange: onQuantityChange,
 		labels: quantityLabels

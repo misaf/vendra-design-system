@@ -16,6 +16,7 @@ export function LineItem({
   note,
   price,
   quantity,
+  quantityMax,
   onQuantityChange,
   onRemove,
   removeLabel,
@@ -61,6 +62,7 @@ export function LineItem({
               {onQuantityChange && !unavailable && (
                 <QuantityInput
                   value={quantity}
+                  max={quantityMax}
                   disabled={busy}
                   onChange={onQuantityChange}
                   labels={quantityLabels}
