@@ -104,7 +104,19 @@ export async function openFooterGroup(page, name) {
 // load lazy images, then wait until the page height holds still for a few frames.
 export async function settlePage(page) {
   await page.evaluate(async () => {
+    // A web font that fails to load would leave fallback glyphs in the screenshot (and in a
+    // baseline written with --update-snapshots), so fail loudly and let the test's retry load it
+    // again. The '... Fallback' faces in tokens/fonts.css are local() metric matches that are
+    // meant to be missing on most machines.
     await Promise.all([...document.fonts].map(face => face.load().catch(() => null)));
+    const failed = [...document.fonts].filter(
+      face => face.status === 'error' && !/ Fallback\b/.test(face.family)
+    );
+    if (failed.length)
+      throw new Error(
+        'Fonts failed to load: ' +
+          failed.map(face => `${face.family} ${face.weight} ${face.style}`).join(', ')
+      );
     const imgs = [...document.images];
     imgs.forEach(img => {
       img.loading = 'eager';
