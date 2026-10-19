@@ -50,17 +50,56 @@ jobs:
       # package test (import, server render, wording, themes) and a strict type check there.
       - run: npm --prefix templates run test:react19
 
+  # Picks the machine for the browser tests. With the repository variable E2E_RUNS_ON set (a JSON
+  # label list such as ["self-hosted","vendra-e2e"]), pushes, manual runs and pull requests from
+  # this repository's own branches run on that self-hosted runner, with E2E_WORKERS workers. Pull
+  # requests from forks always stay on GitHub's runners, so outside code never reaches the server.
+  # There the container is capped at E2E_CPUS cores (when set) and 5 GB, so the server's own
+  # services keep the rest.
+  runner:
+    name: Pick the browser-test runner
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      labels: ${{ steps.pick.outputs.labels }}
+      workers: ${{ steps.pick.outputs.workers }}
+      options: ${{ steps.pick.outputs.options }}
+    steps:
+      - id: pick
+        env:
+          RUNS_ON: ${{ vars.E2E_RUNS_ON }}
+          WORKERS: ${{ vars.E2E_WORKERS }}
+          CPUS: ${{ vars.E2E_CPUS }}
+          TRUSTED: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          if [ -n "$RUNS_ON" ] && [ "$TRUSTED" = true ]; then
+            limits=' --memory=5g --memory-swap=5g'
+            if [ -n "$CPUS" ]; then limits="$limits --cpus=$CPUS"; fi
+            {
+              echo "labels=$RUNS_ON"
+              echo "workers=$WORKERS"
+              echo "options=--ipc=host$limits"
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo 'labels="ubuntu-24.04"'
+              echo 'workers='
+              echo 'options=--ipc=host'
+            } >> "$GITHUB_OUTPUT"
+          fi
+
   e2e:
     name: Browser tests (cards, pages, axe)
-    needs: check
-    runs-on: ubuntu-24.04
+    needs: [check, runner]
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 45
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
-      options: --ipc=host
+      options: ${{ needs.runner.outputs.options }}
     env:
       CI: 'true'
       HOME: /root
+      E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
@@ -74,18 +113,24 @@ jobs:
             templates/_e2e/playwright-report
             templates/_e2e/test-results
           retention-days: 14
+      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
+      # runner can clean it before the next job.
+      - name: Return the workspace to the runner user
+        if: always()
+        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"
 
   e2e-build:
     name: Production build and performance budgets
-    needs: check
-    runs-on: ubuntu-24.04
+    needs: [check, runner]
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 30
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
-      options: --ipc=host
+      options: ${{ needs.runner.outputs.options }}
     env:
       CI: 'true'
       HOME: /root
+      E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
@@ -99,3 +144,8 @@ jobs:
             templates/_e2e/playwright-report
             templates/_e2e/test-results
           retention-days: 14
+      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
+      # runner can clean it before the next job.
+      - name: Return the workspace to the runner user
+        if: always()
+        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"

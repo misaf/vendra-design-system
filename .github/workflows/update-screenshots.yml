@@ -1,6 +1,8 @@
 # Run by hand after a deliberate visual change: it renders every card and page in the same
 # Linux image as CI and commits the changed -linux screenshots to the branch it ran on. Look
-# at the committed images before merging, as with the local -darwin ones.
+# at the committed images before merging, as with the local -darwin ones. It runs on the
+# self-hosted runner when the repository variable E2E_RUNS_ON names one (see ci.yml); only people
+# with write access can start it.
 name: Update screenshots
 
 on:
@@ -11,14 +13,15 @@ permissions:
 
 jobs:
   update:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.E2E_RUNS_ON && fromJSON(vars.E2E_RUNS_ON) || 'ubuntu-24.04' }}
     timeout-minutes: 45
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
-      options: --ipc=host
+      options: ${{ vars.E2E_RUNS_ON && format('--ipc=host --memory=5g --memory-swap=5g{0}', vars.E2E_CPUS && format(' --cpus={0}', vars.E2E_CPUS) || '') || '--ipc=host' }}
     env:
       CI: 'true'
       HOME: /root
+      E2E_WORKERS: ${{ vars.E2E_RUNS_ON && vars.E2E_WORKERS || '' }}
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
@@ -36,3 +39,8 @@ jobs:
             git commit -m 'Update the Linux screenshots'
             git push
           fi
+      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
+      # runner can clean it before the next job.
+      - name: Return the workspace to the runner user
+        if: always()
+        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"

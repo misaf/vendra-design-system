@@ -13,6 +13,7 @@
     "test:e2e:build": "E2E_TARGET=build playwright test -c _e2e/playwright.config.mjs",
     "test:e2e": "playwright test -c _e2e/playwright.config.mjs",
     "test:e2e:update": "playwright test -c _e2e/playwright.config.mjs --update-snapshots",
+    "test:e2e:remote": "node _e2e/remote.mjs",
     "format": "prettier --ignore-path ../.prettierignore --write ../components .",
     "lint:css": "stylelint \"../components/**/*.css\" \"_shared/*.css\" \"storefront-*/*.css\"",
     "new:component": "node _build/new-component.cjs"
