@@ -6,13 +6,15 @@ export function vfCopy(S) {
       eb: 'Notes from the studio',
       hA: 'The',
       hB: 'journal.',
-      read: 'Read the story'
+      read: 'Read the story',
+      categories: 'Story categories'
     },
     fa: {
       eb: 'یادداشت‌های استودیو',
       hA: 'دفترچه',
       hB: 'وندرا.',
-      read: 'خواندن مطلب'
+      read: 'خواندن مطلب',
+      categories: 'دسته‌بندی مطالب'
     }
   }[S.lang];
   return {
