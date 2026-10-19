@@ -79,7 +79,13 @@ export function usePage(props) {
       method: null,
       busy: false,
       failed: false,
-      payment: null
+      payment: null,
+      ...page.props.store?.paymentDraft
+    };
+    page._draft = patch => {
+      page.setState(patch);
+      const {method, last4, ref} = page.state;
+      page.props.store?.setPaymentDraft?.({method, last4, ref});
     };
   });
   useStorefrontPage(page);
@@ -141,7 +147,7 @@ function vals(page) {
       ? balanceTotals
       : vfTotals(items, delivery);
   const slotLabel = vfDeliveryWhen(
-    {...delivery, date: delivery.date || vfDeliveryDate(delivery)},
+    {...delivery, date: delivery.date || vfDeliveryDate(delivery, new Date(), items)},
     fa
   );
   const fillWallet = (text, amount) =>
@@ -157,7 +163,7 @@ function vals(page) {
         : fillWallet(vfBalanceDiscountOn(balance) ? PW.discount : PW.balance, balance);
   const done = !!order || s.placed || page.props.step === 'done';
   const orderReady = event => {
-    const changed = vfDeliveryChanged(delivery);
+    const changed = vfDeliveryChanged(delivery, new Date(), items);
     const stockChanged = items.some(
       line => !vfLineAvailable(line) || !vfLineQuantityValid(line, items)
     );
@@ -270,7 +276,7 @@ function vals(page) {
     })),
     setMethod: value =>
       !s.busy &&
-      page.setState({
+      page._draft({
         method: value,
         err: false,
         failed: false
@@ -285,7 +291,7 @@ function vals(page) {
         failed: false
       }),
     otherMethod: () =>
-      page.setState({
+      page._draft({
         failed: false,
         method: otherThan(method)
       }),
@@ -324,11 +330,11 @@ function vals(page) {
     last4Err: s.err ? C.last4Err : undefined,
     ref: s.ref,
     setRef: value =>
-      page.setState({
+      page._draft({
         ref: value
       }),
     setLast4: value =>
-      page.setState({
+      page._draft({
         last4: value
           .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
           .replace(/\D/g, '')
@@ -363,7 +369,7 @@ function vals(page) {
         })),
         delivery: {
           ...delivery,
-          date: delivery.date || vfDeliveryDate(delivery)
+          date: delivery.date || vfDeliveryDate(delivery, new Date(), items)
         },
         totals: {
           ...totals
@@ -431,7 +437,7 @@ function vals(page) {
     payOther: () => {
       vfKeepPayment(null);
       leavePaymentUrl();
-      page.setState({payment: null, method: otherThan('online')});
+      page._draft({payment: null, method: otherThan('online')});
     },
     payCheckAgain: () =>
       s.payment.record ? vfVerifyPayment(page, 'paid', s.payment.record) : leavePaymentUrl(),

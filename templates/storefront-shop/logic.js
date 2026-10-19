@@ -350,7 +350,7 @@ function vals(page) {
     items: paged.items.map(p => {
       const fav = S.isFav(p.id, ['VF-8RD5WN']);
       return {
-        ...S.productLink(p.id),
+        ...S.productLink(p.id, {date}),
         images: [vfProductImage(p, L)],
         name: p.id,
         sub: vfProductSub(p, L),

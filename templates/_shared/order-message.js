@@ -4,7 +4,7 @@ import {vfDeliveryWhen} from './translations/time.js';
 import {vfZone} from './delivery.js';
 import {VF_MONEY, VF_FA_DIGITS} from './formatting.js';
 
-export function vfOrderMessage(lines, delivery, total, lang) {
+export function vfOrderMessage(lines, delivery, total, lang, {deliveryPending = false} = {}) {
   const fa = lang === 'fa';
   const text = fa
     ? {
@@ -40,7 +40,18 @@ export function vfOrderMessage(lines, delivery, total, lang) {
     [text.from, delivery.sender],
     [text.senderPhone, delivery.senderPhone],
     [text.card, vfCardMessages(lines, delivery, lang)],
-    [text.total, VF_MONEY(total, fa)]
+    [
+      deliveryPending ? (fa ? 'جمع کالاها پیش از ارسال' : 'Total before delivery') : text.total,
+      VF_MONEY(total, fa)
+    ],
+    ...(deliveryPending
+      ? [
+          [
+            fa ? 'هزینه ارسال' : 'Delivery fee',
+            fa ? 'پس از تعیین نشانی محاسبه می‌شود' : 'Calculated after the delivery address is set'
+          ]
+        ]
+      : [])
   ];
   return [
     text.title,

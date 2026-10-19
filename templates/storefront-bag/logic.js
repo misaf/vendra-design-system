@@ -11,7 +11,8 @@ import {
   vfLineToken,
   vfLineQuantityMax,
   vfLineQuantityValid,
-  vfLineWithCard,
+  vfAddCard,
+  vfUndoCardAddition,
   vfProductImage,
   vfSampleBag,
   vfTokenText
@@ -24,6 +25,8 @@ import {
   vfDeliveryCutoff,
   vfDeliveryDate,
   vfDeliveryChanged,
+  vfDeliveryQuoted,
+  vfBagSameDay,
   vfDeliveryDays,
   vfDeliveryHint,
   vfDeliverySlot,
@@ -53,6 +56,7 @@ export function usePage(props) {
     page.state = {
       lines: vfSampleBag(),
       removed: null,
+      cardAddition: null,
       step: null,
       delivery: {
         ...VF_DELIVERY
@@ -124,9 +128,13 @@ function vals(page) {
   const totals = vfTotals(live.filter(vfLineAvailable), delivery);
   const {sub, total} = totals;
   const z = vfZone(delivery.zone);
-  const date = vfDeliveryDate(delivery);
-  const slot = vfDeliverySlot(delivery);
-  const deliveryChanged = vfDeliveryChanged(delivery);
+  const date = vfDeliveryDate(delivery, new Date(), live);
+  const slot = vfDeliverySlot(delivery, new Date(), live);
+  const deliveryChanged = vfDeliveryChanged(delivery, new Date(), live);
+  const quoted = vfDeliveryQuoted(delivery);
+  const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
+  const displayedTotal = quoted ? total : total - totals.fee;
+  const cardAddition = st ? st.cardAddition : s.cardAddition;
   const quantitiesValid = live.every(line => vfLineQuantityValid(line, live));
   const invalid = vfErrors(delivery, live);
   const update = patch => page._update(patch);
@@ -181,8 +189,9 @@ function vals(page) {
   const waOrder = vfOrderMessage(
     live,
     {...delivery, date: deliveryChanged ? '' : date, slot},
-    total,
-    L
+    displayedTotal,
+    L,
+    {deliveryPending: !quoted}
   );
   return {
     ...S,
@@ -190,6 +199,7 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
+      total: quoted ? C.total : C.beforeDelivery,
       payNote: C.payNote.replace(
         '{methods}',
         vfPaymentMethods()
@@ -247,7 +257,7 @@ function vals(page) {
           : '',
     // With a map, the pin decides the zone; the select is only the fallback when the map fails.
     zoneText: pinned && !invalid.outside ? zoneLabel(z) : '',
-    zoneStatus: pinned && !invalid.outside ? C.zoneSet + vfDeliveryHint(z, fa) : C.zonePending,
+    zoneStatus: pinned && !invalid.outside ? C.zoneSet + deliveryHint : C.zonePending,
     hasSaved: saved.length > 0,
     // Guests can sign in to use saved addresses, then come back to this step.
     guest: !phone,
@@ -295,6 +305,7 @@ function vals(page) {
     },
     problems: s.submitted ? problems : [],
     deliveryChanged,
+    preparationNotice: !vfBagSameDay(live) ? C.preparationNotice : '',
     deliverySuggestion: date && slot != null ? vfDeliveryWhen({...delivery, date, slot}, fa) : '',
     confirmDelivery: () => update({date, slot}),
     toDelivery: () => {
@@ -310,7 +321,7 @@ function vals(page) {
     next: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
       // Recheck at click time too: the customer may have left this form open past the cutoff.
-      if (vfDeliveryChanged(delivery)) {
+      if (vfDeliveryChanged(delivery, new Date(), live)) {
         page.setState({submitted: true});
         S.focus('vf-delivery-changed');
         return;
@@ -405,9 +416,26 @@ function vals(page) {
       }
     })),
     // Lines with a handwritten card need its message; the others can add one here.
+    cardAddedMessage: cardAddition
+      ? C.cardAdded.replace('{name}', vfTokenText(vfLineToken(cardAddition.line)))
+      : '',
+    undoCardLabel: cardAddition
+      ? C.undoCard.replace('{name}', vfTokenText(vfLineToken(cardAddition.line)))
+      : '',
+    undoCard: () => {
+      if (!cardAddition) return;
+      if (st) st.undoCard();
+      else
+        page.setState({
+          lines: vfUndoCardAddition(page.state.lines, cardAddition),
+          cardAddition: null
+        });
+      S.focus('vf-add-card-' + cardAddition.line.id);
+    },
     cardsShown: !!cardAddon || live.some(vfLineHasCard),
     cardLines: live.map((l, i) => ({
       id: 'vf-card-' + i,
+      addButtonId: 'vf-add-card-' + l.id,
       hasCard: vfLineHasCard(l),
       noCard: !vfLineHasCard(l) && !!cardAddon,
       label: C.cardFor.replace('{name}', vfTokenText(vfLineToken(l))),
@@ -425,7 +453,10 @@ function vals(page) {
         .replace('{name}', vfTokenText(vfLineToken(l))),
       add: () => {
         if (st) st.addCard(l.id);
-        else page._lines(lines => lines.map(x => (x.id === l.id ? vfLineWithCard(x) : x)));
+        else {
+          const added = vfAddCard(page.state.lines, l.id);
+          if (added) page.setState(added);
+        }
         setTimeout(() => S.focus('vf-card-' + i), 0);
       }
     })),
@@ -434,12 +465,12 @@ function vals(page) {
       update({
         zone: value
       }),
-    zoneHint: vfDeliveryHint(z, fa),
+    zoneHint: deliveryHint,
     zones: VF_ZONES.map(zone => ({
       value: zone.id,
       label: zoneLabel(zone)
     })),
-    days: vfDeliveryDays(delivery.zone).map(day => {
+    days: vfDeliveryDays(delivery.zone, new Date(), live).map(day => {
       const off = day.soldOut || day.pastCutoff;
       return {
         label: vfDayName(day, fa),
@@ -471,7 +502,7 @@ function vals(page) {
       meta: l[L][1] + ' · × ' + n(l.qty),
       total: m(l.unit * l.qty)
     })),
-    totalLabel: m(total),
+    totalLabel: m(displayedTotal),
     promoDraft: s.promoDraft,
     setPromoDraft: value =>
       page.setState({
@@ -503,20 +534,21 @@ function vals(page) {
       : undefined,
     promoShown: !onDelivery && vfFeatures().promoCodes,
     // How far the subtotal is from free delivery, while the chosen zone can deliver free.
-    freeDelivery: VF_FREE_DELIVERY_ZONES.includes(z.id)
-      ? {
-          label:
-            sub >= VF_FREE_DELIVERY_THRESHOLD
-              ? C.freeReached
-              : C.freeLeft.replace('{amount}', m(VF_FREE_DELIVERY_THRESHOLD - sub)),
-          value: Math.min(sub, VF_FREE_DELIVERY_THRESHOLD),
-          max: VF_FREE_DELIVERY_THRESHOLD,
-          valueLabel: C.freeOf
-            .replace('{sub}', m(sub))
-            .replace('{threshold}', m(VF_FREE_DELIVERY_THRESHOLD)),
-          done: sub >= VF_FREE_DELIVERY_THRESHOLD
-        }
-      : null,
+    freeDelivery:
+      quoted && VF_FREE_DELIVERY_ZONES.includes(z.id)
+        ? {
+            label:
+              sub >= VF_FREE_DELIVERY_THRESHOLD
+                ? C.freeReached
+                : C.freeLeft.replace('{amount}', m(VF_FREE_DELIVERY_THRESHOLD - sub)),
+            value: Math.min(sub, VF_FREE_DELIVERY_THRESHOLD),
+            max: VF_FREE_DELIVERY_THRESHOLD,
+            valueLabel: C.freeOf
+              .replace('{sub}', m(sub))
+              .replace('{threshold}', m(VF_FREE_DELIVERY_THRESHOLD)),
+            done: sub >= VF_FREE_DELIVERY_THRESHOLD
+          }
+        : null,
     promoStatus: (() => {
       const promo = VF_PROMOS.find(p => p.code === delivery.promo);
       if (!promo) return '';
@@ -531,11 +563,17 @@ function vals(page) {
         promo: ''
       }),
     sums: vfSummaryRows(
-      totals,
+      quoted ? totals : {...totals, fee: 0, total: displayedTotal},
       delivery.promo,
       {...C, discount: S.t.discount, balanceDiscount: S.t.balanceDiscount},
       m,
       S.n
+    ).map(row =>
+      !quoted && row.label === C.fee
+        ? {...row, value: C.feePending}
+        : !quoted && row.strong
+          ? {...row, label: C.beforeDelivery}
+          : row
     ),
     restore: e => {
       e && e.preventDefault && e.preventDefault();

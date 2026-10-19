@@ -109,6 +109,19 @@ export function vfReadRoute(search = location.search) {
   }
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id))
     route.view = 'notfound';
+  // Keep the shopper's intended date on product links, including reloads and language changes.
+  if (['shop', 'product'].includes(route.view)) {
+    const value = query.get('date') || '';
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + 'T12:00:00') : null;
+    const parts = value.split('-').map(Number);
+    route.date =
+      date &&
+      date.getFullYear() === parts[0] &&
+      date.getMonth() + 1 === parts[1] &&
+      date.getDate() === parts[2]
+        ? value
+        : '';
+  }
   if (route.view === 'shop') {
     route.cat = VF_CATEGORY_SLUGS.includes(route.cat) ? route.cat : 'all';
     route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
@@ -132,7 +145,6 @@ export function vfReadRoute(search = location.search) {
       ? query.get('occasion')
       : 'all';
     // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
-    route.date = /^\d{4}-\d{2}-\d{2}$/.test(query.get('date') || '') ? query.get('date') : '';
     // How many "Show more" pages are open (?page=2 shows the first two pages).
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
@@ -149,6 +161,7 @@ export function vfRouteParams(route) {
   if (route.view === 'bag' && route.lines) query.set('lines', route.lines);
   if (route.view === 'saved' && route.ids) query.set('ids', route.ids);
   if (route.view === 'product') {
+    if (route.date) query.set('date', route.date);
     if (route.size) query.set('size', route.size);
     if (route.addons?.length) query.set('addons', route.addons.join(','));
   }

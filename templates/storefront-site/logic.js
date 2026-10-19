@@ -1,12 +1,12 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
-  vfLineHasCard,
   vfLineItems,
   vfLineToken,
   vfLineQuantityMax,
   vfLineQuantityValid,
-  vfLineWithCard,
+  vfAddCard,
+  vfUndoCardAddition,
   vfLinesFromParam,
   vfProduct,
   vfProductIds,
@@ -27,7 +27,7 @@ function vfCheckoutBlocked(state) {
     !state.order &&
     (!state.bag.length ||
       Object.values(vfErrors(state.delivery, state.bag)).some(Boolean) ||
-      vfDeliveryChanged(state.delivery) ||
+      vfDeliveryChanged(state.delivery, new Date(), state.bag) ||
       state.bag.some(line => !vfLineQuantityValid(line, state.bag)))
   );
 }
@@ -124,6 +124,14 @@ function vfSiteInitial(props) {
       ...VF_DELIVERY,
       ...saved.delivery
     },
+    paymentDraft: {
+      method: saved.paymentDraft?.method || null,
+      last4: String(saved.paymentDraft?.last4 || '')
+        .replace(/\D/g, '')
+        .slice(0, 4),
+      ref: String(saved.paymentDraft?.ref || '')
+    },
+    cardAddition: null,
     order: saved.order || null,
     lastOrder: saved.lastOrder || saved.order || null,
     announcement: ''
@@ -235,7 +243,7 @@ export function usePage(props) {
     },
     didUpdate() {
       try {
-        const {bag, saved, delivery, order, lastOrder} = page.state;
+        const {bag, saved, delivery, order, lastOrder, paymentDraft} = page.state;
         sessionStorage.setItem(
           VF_SESSION,
           JSON.stringify({
@@ -243,7 +251,8 @@ export function usePage(props) {
             saved,
             delivery,
             order,
-            lastOrder
+            lastOrder,
+            paymentDraft
           })
         );
       } catch {}
@@ -287,6 +296,9 @@ function vals(page) {
       bag: s.bag,
       saved: s.saved,
       delivery: s.delivery,
+      paymentDraft: s.paymentDraft,
+      setPaymentDraft: patch =>
+        page.setState(current => ({paymentDraft: {...current.paymentDraft, ...patch}})),
       order: s.order,
       lastOrder: s.lastOrder,
       searchReturn: s.searchReturn,
@@ -310,6 +322,8 @@ function vals(page) {
           const bag = vfReorderBag(order.lines, current.bag, mode);
           return {
             order: null,
+            paymentDraft: {method: null, last4: '', ref: ''},
+            cardAddition: null,
             bag,
             delivery:
               mode === 'add' && current.bag.length
@@ -324,11 +338,13 @@ function vals(page) {
           order,
           lastOrder: order,
           bag: [],
+          paymentDraft: {method: null, last4: '', ref: ''},
+          cardAddition: null,
           delivery: {
             ...VF_DELIVERY
           }
         }),
-      add: line =>
+      add: (line, date) =>
         page.setState(p => {
           window.VF_TRACK.event('add_to_cart', {
             items: [
@@ -343,6 +359,7 @@ function vals(page) {
           const ex = p.bag.find(x => x.id === line.id);
           return {
             order: null,
+            ...(date ? {delivery: {...p.delivery, date}} : {}),
             bag: ex
               ? p.bag.map(x =>
                   x.id === line.id
@@ -382,29 +399,18 @@ function vals(page) {
               : x
           )
         })),
-      // Adds a handwritten card to a line, joining an identical line already in the bag.
+      cardAddition: s.cardAddition,
       addCard: id =>
-        page.setState(p => {
-          const line = p.bag.find(x => x.id === id);
-          if (!line || vfLineHasCard(line)) return null;
-          const carded = vfLineWithCard(line),
-            twin = p.bag.find(x => x.id === carded.id);
-          return {
-            order: null,
-            bag: twin
-              ? p.bag
-                  .filter(x => x.id !== id)
-                  .map(x =>
-                    x === twin
-                      ? {
-                          ...x,
-                          qty: x.qty + line.qty
-                        }
-                      : x
-                  )
-              : p.bag.map(x => (x === line ? carded : x))
-          };
+        page.setState(current => {
+          const added = vfAddCard(current.bag, id);
+          return added ? {order: null, bag: added.lines, cardAddition: added.cardAddition} : null;
         }),
+      undoCard: () =>
+        page.setState(current => ({
+          order: null,
+          bag: vfUndoCardAddition(current.bag, current.cardAddition),
+          cardAddition: null
+        })),
       remove: id =>
         page.setState(p => {
           const line = p.bag.find(x => x.id === id);
@@ -434,10 +440,14 @@ function vals(page) {
       reset: () =>
         page.setState({
           order: null,
+          paymentDraft: {method: null, last4: '', ref: ''},
+          cardAddition: null,
           bag: VF_BAG0
         }),
       clear: () =>
         page.setState({
+          paymentDraft: {method: null, last4: '', ref: ''},
+          cardAddition: null,
           bag: []
         }),
       toggleSave: id => {

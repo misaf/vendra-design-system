@@ -33,6 +33,10 @@ async function fillSender(page) {
 test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
   await page.clock.setFixedTime(MORNING);
   await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.evaluate(() => {
+    const site = window.__vfSite;
+    site.setState({bag: [site.state.bag[0]]});
+  });
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   await expect(days.getByRole('radio')).toHaveCount(7);
   await expect(days.getByRole('radio', {name: /^Today/})).toBeChecked();
@@ -47,6 +51,10 @@ test('the bag offers delivery days and skips sold-out ones', async ({page}) => {
 test('after the cut-off, today is closed', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T19:00:00+03:30'));
   await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.evaluate(() => {
+    const site = window.__vfSite;
+    site.setState({bag: [site.state.bag[0]]});
+  });
   const days = page.getByRole('radiogroup', {name: 'Delivery day'});
   const today = days.getByRole('radio', {name: 'Today', exact: true});
   await expect(today).toBeDisabled();
@@ -57,6 +65,10 @@ test('after the cut-off, today is closed', async ({page}) => {
 test('today’s slots close two hours before they end', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T14:30:00+03:30'));
   await openSite(page, 'bag', 'en', {step: 'delivery'});
+  await page.evaluate(() => {
+    const site = window.__vfSite;
+    site.setState({bag: [site.state.bag[0]]});
+  });
   const slots = page.getByRole('radiogroup', {name: 'Time slot'});
   for (const name of ['08:00–12:00', '12:00–16:00']) {
     const slot = slots.getByRole('radio', {name, exact: true});

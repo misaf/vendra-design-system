@@ -262,6 +262,9 @@ export function View({v}) {
                           >
                             <>{v.t?.when}</>
                           </h2>
+                          {v.preparationNotice && (
+                            <p className="ag-field__hint tw:m-0">{v.preparationNotice}</p>
+                          )}
                           {v.deliveryChanged && (
                             <div id="vf-delivery-changed" tabIndex={-1}>
                               <DS.Alert tone="warning" title={v.t.deliveryChanged}>
@@ -331,6 +334,22 @@ export function View({v}) {
                                 <>{v.t?.cardHint}</>
                               </p>
                             </div>
+                            {v.cardAddedMessage && (
+                              <DS.Alert
+                                tone="neutral"
+                                title={v.cardAddedMessage}
+                                action={
+                                  <DS.Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={v.undoCard}
+                                    aria-label={v.undoCardLabel}
+                                  >
+                                    {v.t.undo}
+                                  </DS.Button>
+                                }
+                              />
+                            )}
                             {list(v.cardLines).map((c, $index) => (
                               <React.Fragment key={$index}>
                                 <div className="vf-bag-card">
@@ -362,6 +381,7 @@ export function View({v}) {
                                           </span>
                                         </span>
                                         <DS.Button
+                                          id={c.addButtonId}
                                           variant="secondary"
                                           size="sm"
                                           iconStart="plus"

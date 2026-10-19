@@ -252,7 +252,8 @@ function vals(page) {
             hasSizes ? s.size : null,
             chosenAddons.map(addon => addon.id),
             quantity
-          )
+          ),
+          vfPageRoute(page.props).date
         );
       }
       // A small bag panel confirms what was added and offers the next step.

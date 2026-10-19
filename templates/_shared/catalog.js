@@ -583,6 +583,40 @@ export function vfLineWithCard(line) {
   };
 }
 
+// Capture only the addition being undone; later edits to other lines stay intact.
+export function vfAddCard(lines, id) {
+  const line = lines.find(item => item.id === id);
+  if (!line || vfLineHasCard(line)) return null;
+  const carded = vfLineWithCard(line);
+  const twin = lines.find(item => item.id === carded.id);
+  return {
+    cardAddition: {line: {...line}, cardedId: carded.id, index: lines.indexOf(line)},
+    lines: twin
+      ? lines
+          .filter(item => item.id !== id)
+          .map(item => (item === twin ? {...item, qty: item.qty + line.qty} : item))
+      : lines.map(item => (item === line ? carded : item))
+  };
+}
+
+export function vfUndoCardAddition(lines, addition) {
+  if (!addition) return lines;
+  const carded = lines.find(item => item.id === addition.cardedId);
+  if (!carded) return lines;
+  const qty = Math.min(addition.line.qty, carded.qty);
+  const remaining = lines.flatMap(item =>
+    item !== carded ? [item] : item.qty > qty ? [{...item, qty: item.qty - qty}] : []
+  );
+  const original = remaining.find(item => item.id === addition.line.id);
+  if (original)
+    return remaining.map(item => (item === original ? {...item, qty: item.qty + qty} : item));
+  return [
+    ...remaining.slice(0, addition.index),
+    {...addition.line, qty},
+    ...remaining.slice(addition.index)
+  ];
+}
+
 // Each product's [English, Persian] detail text, from Product.description, keyed by product code.
 export const VF_PRODUCT_DETAILS = Object.fromEntries(
   VF_API_PRODUCTS.map(product => [product.token, [product.description.en, product.description.fa]])
