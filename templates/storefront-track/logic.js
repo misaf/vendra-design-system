@@ -3,7 +3,7 @@ import {vfCopy} from './copy.js';
 import {vfSampleOrders} from '../_shared/account-data.js';
 import {vfCardMessages, vfLineToken, vfProductImage, vfSampleBag} from '../_shared/catalog.js';
 import {vfMobile, vfTotals, vfZone} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, vfLatin} from '../_shared/formatting.js';
+import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute} from '../_shared/routing.js';
@@ -68,9 +68,13 @@ function vals(page) {
     const zone = vfZone(d.zone);
     C.orderNo = C.labels.order + '\u2068' + order.id + '\u2069';
     C.rows = [
-      ['map-pin', C.labels.deliverTo, d.address + ' · ' + zone[L]],
+      ['map-pin', C.labels.deliverTo, d.address + vfSeparator(L) + zone[L]],
       ['calendar', C.labels.delivery, vfDeliveryWhen(d, fa)],
-      ['user', C.labels.recipient, d.name + ' · ' + (fa ? VF_FA_DIGITS(d.phone) : d.phone)],
+      [
+        'user',
+        C.labels.recipient,
+        d.name + vfSeparator(L) + (fa ? VF_FA_DIGITS(d.phone) : d.phone)
+      ],
       ['quote', C.labels.cardMessage, vfCardMessages(order.lines, d, L) || C.labels.noMessage],
       [
         'banknote',

@@ -94,7 +94,7 @@
 .ag-dialog__title {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-size: var(--text-xl);
   line-height: var(--lh-snug);
 }

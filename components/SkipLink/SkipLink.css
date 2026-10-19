@@ -18,8 +18,10 @@
   transform: translateY(calc(-100% - 24px));
   transition: transform var(--dur-fast) var(--ease-out);
 }
-.ag-skip:hover {
-  color: var(--text-on-inverse);
+@media (hover: hover) {
+  .ag-skip:hover {
+    color: var(--text-on-inverse);
+  }
 }
 .ag-skip:focus,
 .ag-skip:focus-visible {

@@ -18,7 +18,7 @@ import {
   vfRememberViewed,
   vfTokenText
 } from '../_shared/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute} from '../_shared/routing.js';
 import {vfFeatures} from '../_shared/store-config.js';
@@ -199,7 +199,7 @@ function vals(page) {
     totalHint: chosenAddons.length ? C.totalWithExtras : C.totalDelivery,
     sizes: VF_SIZES.map(item => ({
       label: item.name[L],
-      desc: item.detail[L] + ' · ' + (item.price ? '+' + m(item.price) : C.labels.base),
+      desc: item.detail[L] + vfSeparator(L) + (item.price ? '+' + m(item.price) : C.labels.base),
       value: item.id
     })),
     size: s.size,

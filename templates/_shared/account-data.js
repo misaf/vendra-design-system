@@ -257,7 +257,7 @@ export const VF_SAMPLE_ORDER_ROWS = [
   [9001, 'VN-10522', 'out_for_delivery', '2026-10-04T09:30:00+03:30'],
   [9002, 'VN-10431', 'delivered', '2026-09-21T11:05:00+03:30'],
   [9003, 'VN-10302', 'delivered', '2026-09-02T16:40:00+03:30'],
-  [9004, 'VB-TEST-1', 'cancelled', '2026-08-28T10:15:00+03:30']
+  [9004, 'VN-10187', 'cancelled', '2026-08-28T10:15:00+03:30']
 ];
 export const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, placedAt]) => ({
   id,

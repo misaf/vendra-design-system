@@ -33,7 +33,7 @@ for (const lang of ['en', 'fa']) {
     await expectAmounts(4900000, 5700000);
     await page.getByRole('button', {name: fa ? 'بیشتر' : 'More', exact: true}).click();
     await expectAmounts(4900000, 11400000);
-    await expect(total).toContainText(fa ? 'جمع · ۲ عدد' : 'Total · 2 items');
+    await expect(total).toContainText(fa ? 'جمع ۲ عدد' : 'Total · 2 items');
     await expect(page.locator('.vf-product-total-hint')).toHaveText(
       fa
         ? 'با اقلام اضافه انتخاب‌شده. هزینه ارسال هنگام ثبت سفارش محاسبه می‌شود.'

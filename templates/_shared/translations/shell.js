@@ -97,7 +97,7 @@ export const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
-    balanceDiscount: 'تخفیف کیف پول · ٪{percent}',
+    balanceDiscount: 'تخفیف کیف پول، ٪{percent}',
     footer: {
       shop: 'فروشگاه',
       allFlowers: 'همه گل‌ها',

@@ -16,7 +16,7 @@
   margin: 0;
   text-transform: var(--display-case);
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-size: clamp(2rem, 4cqi, var(--text-3xl));
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
@@ -36,7 +36,7 @@
 }
 :lang(fa) .ag-sechead__title em {
   font-style: normal;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .ag-sechead__actions {
   flex: none;

@@ -16,10 +16,15 @@
   outline-offset: calc(var(--focus-offset) * 2);
   border-radius: var(--radius-md);
 }
-a.ag-cat,
-a.ag-cat:hover {
+a.ag-cat {
   text-decoration: none;
   color: var(--text-body);
+}
+@media (hover: hover) {
+  a.ag-cat:hover {
+    text-decoration: none;
+    color: var(--text-body);
+  }
 }
 .ag-cat__media {
   position: relative;
@@ -35,8 +40,10 @@ a.ag-cat:hover {
   display: block;
   transition: transform var(--dur-slow) var(--ease-out);
 }
-.ag-cat:hover .ag-cat__media img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .ag-cat:hover .ag-cat__media img {
+    transform: scale(1.04);
+  }
 }
 .ag-cat__row {
   display: flex;
@@ -47,7 +54,7 @@ a.ag-cat:hover {
 .ag-cat__label {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-snug);
 }
 .ag-cat__arrow {
@@ -56,12 +63,16 @@ a.ag-cat:hover {
     transform var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.ag-cat:hover .ag-cat__arrow {
-  color: var(--text-accent);
-  transform: translateX(3px);
+@media (hover: hover) {
+  .ag-cat:hover .ag-cat__arrow {
+    color: var(--text-accent);
+    transform: translateX(3px);
+  }
 }
-[dir='rtl'] .ag-cat:hover .ag-cat__arrow {
-  transform: scaleX(-1) translateX(3px);
+@media (hover: hover) {
+  [dir='rtl'] .ag-cat:hover .ag-cat__arrow {
+    transform: scaleX(-1) translateX(3px);
+  }
 }
 .ag-cat__count {
   font-size: var(--text-sm);
@@ -86,7 +97,7 @@ a.ag-cat:hover {
 .ag-cat--circle .ag-cat__label {
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .ag-cat--circle .ag-cat__count {
   margin-top: calc(-1 * var(--space-1));

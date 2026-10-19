@@ -17,7 +17,7 @@ import {
   vfTotals,
   vfZone
 } from '../_shared/delivery.js';
-import {VF_FA_DIGITS} from '../_shared/formatting.js';
+import {VF_FA_DIGITS, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
@@ -298,8 +298,11 @@ function vals(page) {
     },
     totalLabel: m(totals.total),
     deliveryRows: [
-      {label: C.to, value: delivery.name + ' · \u2068' + (delivery.phone || '') + '\u2069'},
-      {label: C.address, value: vfZone(delivery.zone)[L] + ' · ' + delivery.address},
+      {
+        label: C.to,
+        value: delivery.name + vfSeparator(L) + '\u2068' + (delivery.phone || '') + '\u2069'
+      },
+      {label: C.address, value: vfZone(delivery.zone)[L] + vfSeparator(L) + delivery.address},
       {label: C.when, value: slotLabel}
     ],
     caption: C.caption,
@@ -442,19 +445,26 @@ function vals(page) {
       {
         icon: 'map-pin',
         label: C.to,
-        value: delivery.name + ' · ' + delivery.address + ' · \u2068' + delivery.phone + '\u2069'
+        value:
+          delivery.name +
+          vfSeparator(L) +
+          delivery.address +
+          vfSeparator(L) +
+          '\u2068' +
+          delivery.phone +
+          '\u2069'
       },
       {
         icon: 'user',
         label: C.labels.from,
         value: delivery.sender
-          ? delivery.sender + ' · \u2068' + delivery.senderPhone + '\u2069'
+          ? delivery.sender + vfSeparator(L) + '\u2068' + delivery.senderPhone + '\u2069'
           : ''
       },
       {
         icon: 'banknote',
         label: C.pay,
-        value: P.methods[method] + ' · ' + m(totals.total)
+        value: P.methods[method] + vfSeparator(L) + m(totals.total)
       },
       {
         icon: 'banknote',

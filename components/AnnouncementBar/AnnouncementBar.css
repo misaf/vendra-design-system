@@ -24,8 +24,10 @@
   transform: translateY(-50%);
   color: inherit;
 }
-.ag-announce .ag-announce__close:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+@media (hover: hover) {
+  .ag-announce .ag-announce__close:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+  }
 }
 
 /* Print: store-wide news is not part of the page. */

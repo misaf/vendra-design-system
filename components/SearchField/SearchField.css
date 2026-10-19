@@ -24,7 +24,7 @@
 }
 .ag-search__clear[data-focus-visible] {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 1px;
+  outline-offset: calc(var(--focus-offset) / 2);
 }
 .ag-search[data-empty] .ag-search__clear {
   visibility: hidden;

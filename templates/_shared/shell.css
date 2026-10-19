@@ -5,8 +5,10 @@ body {
 a {
   color: var(--text-accent);
 }
-a:hover {
-  color: var(--accent-hover);
+@media (hover: hover) {
+  a:hover {
+    color: var(--accent-hover);
+  }
 }
 .vf-page,
 .vf-page * {
@@ -81,7 +83,7 @@ html {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   white-space: nowrap;
   text-underline-offset: 3px;
 }

@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
-import {VF_MONEY} from '../_shared/formatting.js';
+import {VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {vfShell, vfStored} from '../_shared/navigation.js';
 import {vfRouteParams} from '../_shared/routing.js';
@@ -84,7 +84,7 @@ function vals(page) {
             title: post[L][0],
             image: vfJournalImage(post.image),
             excerpt: post[L][1],
-            meta: (fa ? category[2] : category[1]) + ' · ' + post[L][3]
+            meta: (fa ? category[2] : category[1]) + vfSeparator(L) + post[L][3]
           };
         })
       : [],

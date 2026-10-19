@@ -1,6 +1,6 @@
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
 import {VF_SLOTS} from '../delivery.js';
-import {VF_FA_DIGITS} from '../formatting.js';
+import {VF_FA_DIGITS, vfSeparator} from '../formatting.js';
 import {dates} from '../../../components/utils/dates.js';
 export function vfSlotLabel(start, end, fa) {
   return fa
@@ -23,7 +23,7 @@ export function vfDayMonth(date, fa) {
   return D.dayMonth(date, D.locale(fa ? 'fa' : 'en', fa ? 'j' : 'g'));
 }
 
-// When an order arrives: «سه‌شنبه، ۱۴ مهر · ۱۲:۰۰ تا ۱۶:۰۰» / "Tue 6 October · 12:00–16:00".
+// When an order arrives: «سه‌شنبه، ۱۴ مهر، ۱۲:۰۰ تا ۱۶:۰۰» / "Tue 6 October · 12:00–16:00".
 export function vfDeliveryWhen(delivery, fa) {
   const end = (VF_SLOTS.find(slot => slot.start === delivery.slot) || VF_SLOTS[1]).end;
   const slot = vfSlotLabel(delivery.slot, end, fa);
@@ -32,5 +32,5 @@ export function vfDeliveryWhen(delivery, fa) {
   const weekday = new Intl.DateTimeFormat(fa ? 'fa-IR' : 'en-GB', {
     weekday: fa ? 'long' : 'short'
   }).format(date);
-  return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + ' · ' + slot;
+  return weekday + (fa ? '، ' : ' ') + vfDayMonth(date, fa) + vfSeparator(fa) + slot;
 }

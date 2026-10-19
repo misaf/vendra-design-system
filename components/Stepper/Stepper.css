@@ -35,9 +35,11 @@
 button.ag-steps__btn {
   cursor: pointer;
 }
-button.ag-steps__btn:hover .ag-steps__label {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+@media (hover: hover) {
+  button.ag-steps__btn:hover .ag-steps__label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 .ag-steps__btn:focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
@@ -53,7 +55,7 @@ button.ag-steps__btn:hover .ag-steps__label {
   place-items: center;
   border: var(--border-hair) solid var(--border-strong);
   font-size: var(--text-xs);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;
   color: var(--text-body);
 }
@@ -68,7 +70,7 @@ button.ag-steps__btn:hover .ag-steps__label {
 }
 .ag-steps__item--current .ag-steps__btn {
   color: var(--text-body);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .ag-steps-wrap {
   display: flex;

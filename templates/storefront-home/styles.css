@@ -121,7 +121,7 @@
 }
 .vf-home-newsletter-form .ag-input:has(input:focus-visible) {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: calc(var(--focus-offset) * 1.5);
 }
 
 /* Very narrow windows retain two category choices rather than squeezing their labels. */

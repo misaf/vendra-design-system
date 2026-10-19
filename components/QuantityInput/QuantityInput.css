@@ -23,11 +23,13 @@
   color: var(--text-body);
   border-radius: var(--radius-control);
 }
-.ag-qty button:hover:not(:disabled) {
-  background: var(--surface-hover);
+@media (hover: hover) {
+  .ag-qty button:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
 }
 .ag-qty button:disabled {
-  opacity: 0.35;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .ag-qty--disabled {

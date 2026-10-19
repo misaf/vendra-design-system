@@ -40,17 +40,17 @@
   outline-offset: var(--focus-offset);
 }
 .ag-choice--selected {
-  background: var(--text-body);
-  border-color: var(--text-body);
-  color: var(--surface-page);
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
 }
 .ag-choice[data-disabled] {
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .ag-choice__label {
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;
 }
 .ag-choice--sm .ag-choice__label {

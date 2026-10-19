@@ -9,8 +9,10 @@ body {
 a {
   color: var(--text-accent);
 }
-a:hover {
-  color: var(--accent-hover);
+@media (hover: hover) {
+  a:hover {
+    color: var(--accent-hover);
+  }
 }
 .vf-page,
 .vf-page * {
@@ -85,7 +87,7 @@ html {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   white-space: nowrap;
   text-underline-offset: 3px;
 }
@@ -198,7 +200,7 @@ html {
 .vf-info h2 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   text-transform: var(--display-case);
@@ -240,17 +242,9 @@ html {
 /* Source: _shared/page-layouts.css */
 /* Three storefront page families. Exceptions are named and kept here. */
 
-/* Codes are identifiers: use distinct, evenly spaced characters instead of the display face. */
-.vf-page,
-.vf-display {
-  --vf-code-font: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-}
+/* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
 .vf-page .ag-product__name {
-  font-family: var(--vf-code-font);
   font-size: var(--text-base);
-  font-weight: 500;
-  font-variant-numeric: slashed-zero tabular-nums;
-  letter-spacing: 0.025em;
   line-height: 1.5;
 }
 .vf-page .ag-product__link {
@@ -276,7 +270,7 @@ html {
 .vf-page main h1,
 .vf-page main h2 {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: var(--lh-tight);
   letter-spacing: var(--tracking-display);
   text-transform: var(--display-case);
@@ -392,18 +386,9 @@ html {
   .vf-page .vf-shopping--home {
     padding: 0 !important;
   }
-  .vf-page main h1 {
-    font-size: 40px;
-  }
-  .vf-page .vf-form h1 {
-    font-size: 36px;
-  }
+  /* Phone heading sizes come from headings.css, on the type scale; Persian needs the taller line. */
   .vf-page[data-lang='fa'] main h1 {
-    font-size: 36px;
     line-height: 1.5;
-  }
-  .vf-page[data-lang='fa'] .vf-form h1 {
-    font-size: 34px;
   }
   .vf-page .vf-form aside,
   .vf-page .vf-shopping aside {
@@ -431,7 +416,7 @@ html {
    bars through scroll-padding in shell.css.) */
 .vf-page :is(input, textarea, select):focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: calc(var(--focus-offset) * 1.5);
 }
 
 @media (height < 480px) and (orientation: landscape) {
@@ -677,7 +662,7 @@ html {
 }
 .vf-home-newsletter-form .ag-input:has(input:focus-visible) {
   outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: calc(var(--focus-offset) * 1.5);
 }
 
 /* Very narrow windows retain two category choices rather than squeezing their labels. */
@@ -963,9 +948,9 @@ html {
   grid-template-rows: minmax(0, 1fr);
 }
 .vf-display-code {
-  font-family: var(--vf-code-font);
+  font-family: var(--font-code);
   font-size: clamp(24px, 3vw, 44px);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: slashed-zero tabular-nums;
   letter-spacing: 0.025em;
   direction: ltr;
@@ -1116,9 +1101,9 @@ body:has(.vf-presentation) .ag-dialog__foot {
   min-block-size: var(--tap-min);
 }
 .vf-page .vf-product-details .vf-product-title h1 {
-  font-family: var(--vf-code-font);
+  font-family: var(--font-code);
   font-size: clamp(1.375rem, 3vw, 2rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: slashed-zero tabular-nums;
   letter-spacing: 0.025em;
   line-height: 1.3;
@@ -1239,7 +1224,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 .vf-search-name {
   align-self: flex-start;
-  font-family: var(--vf-code-font);
+  font-family: var(--font-code);
   font-variant-numeric: slashed-zero tabular-nums;
   letter-spacing: 0.025em;
   line-height: 1.5;

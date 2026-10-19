@@ -108,7 +108,7 @@ export function vfCopy(S) {
       card: 'کارت',
       labels: {
         order: 'سفارش ',
-        cardToCard: 'کارت به کارت · ',
+        cardToCard: 'کارت به کارت، ',
         cardMessage: 'متن کارت',
         from: 'فرستنده'
       },
@@ -118,7 +118,7 @@ export function vfCopy(S) {
         copy: 'کپی',
         copied: 'کپی شد'
       },
-      caption: (step, total, label) => 'مرحله ' + step + ' از ' + total + ' · ' + label
+      caption: (step, total, label) => 'مرحله ' + step + ' از ' + total + '، ' + label
     }
   }[S.lang];
   return {

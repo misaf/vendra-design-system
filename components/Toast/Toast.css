@@ -48,9 +48,11 @@
   margin-inline-start: calc(-1 * var(--space-4));
   color: var(--text-on-inverse);
 }
-.ag-toast .ag-toast__action:hover:not(:disabled) {
-  background: var(--border-inverse);
-  color: var(--text-on-inverse);
+@media (hover: hover) {
+  .ag-toast .ag-toast__action:hover:not(:disabled) {
+    background: var(--border-inverse);
+    color: var(--text-on-inverse);
+  }
 }
 .ag-toast__close {
   box-sizing: border-box;
@@ -70,9 +72,11 @@
     background var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.ag-toast__close:hover {
-  background: var(--border-inverse);
-  color: var(--text-on-inverse);
+@media (hover: hover) {
+  .ag-toast__close:hover {
+    background: var(--border-inverse);
+    color: var(--text-on-inverse);
+  }
 }
 /* Forced colours drop the dark fill, which would leave the toast edgeless over the page: outline it. */
 @media (forced-colors: active) {

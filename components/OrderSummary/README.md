@@ -7,7 +7,7 @@ Read-only order lines + totals (order page, confirmation). For editable bag line
   title="Your order"
   lines={[
     {
-      name: 'Lavender Whisper',
+      name: 'VF-8RD5WN',
       href: '?view=product&id=lavender-whisper',
       image: src,
       meta: 'Generous · × 1',
@@ -23,7 +23,7 @@ Read-only order lines + totals (order page, confirmation). For editable bag line
 />
 ```
 
-- The name is an `<a href>` only when `href` is given (navigation is always a link).
+- The name is the product code, set in `--font-code`; it is an `<a href>` only when `href` is given (navigation is always a link).
 - All values arrive pre-formatted through `money()`; the note is italic in EN and upright in FA.
 
 ## Usage

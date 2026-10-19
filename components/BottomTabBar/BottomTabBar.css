@@ -40,15 +40,25 @@
   outline-offset: calc(var(--focus-offset) * -1);
   border-radius: var(--radius-md);
 }
-a.ag-tabbar__item,
-a.ag-tabbar__item:hover {
+a.ag-tabbar__item {
   text-decoration: none;
   color: var(--text-muted);
 }
-.ag-tabbar__item--current,
-a.ag-tabbar__item--current:hover {
+@media (hover: hover) {
+  a.ag-tabbar__item:hover {
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+}
+.ag-tabbar__item--current {
   color: var(--text-body);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
+}
+@media (hover: hover) {
+  a.ag-tabbar__item--current:hover {
+    color: var(--text-body);
+    font-weight: var(--weight-medium);
+  }
 }
 .ag-tabbar__item--current .ag-tabbar__icon {
   color: var(--text-accent);
@@ -70,7 +80,7 @@ a.ag-tabbar__item--current:hover {
   color: var(--text-on-accent);
   font-size: var(--text-2xs);
   line-height: 17px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   text-align: center;
 }
 

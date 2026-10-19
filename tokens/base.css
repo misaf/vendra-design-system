@@ -4,7 +4,7 @@ body{transition:background var(--dur-base) var(--ease-out),color var(--dur-base)
 /* Persian has no italic and no tracking: !important in the base layer outranks every later layer (utilities included), so the one exception, the Latin digits of a CodeInput, is named here. */
 :lang(fa) *{font-style:normal!important}
 :lang(fa) *:not(.ag-code-input input){letter-spacing:0!important}
-:lang(fa) em,:lang(fa) .ag-accent-italic{font-weight:500}
+:lang(fa) em,:lang(fa) .ag-accent-italic{font-weight:var(--weight-medium)}
 a{color:var(--text-accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--accent-press)}
 ::selection{background:var(--blush-300);color:var(--ink-900)}
@@ -17,7 +17,7 @@ a:hover{color:var(--accent-press)}
 :where([data-density]:not(html)){font-size:var(--text-base)}
 .ag-on-inverse{--focus-ring:var(--focus-ring-on-inverse)}/* any container on --surface-inverse: focus rings inside it stay 3:1 */
 .ag-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
-.ag-display{font-family:var(--font-display);font-weight:500;text-transform:var(--display-case);line-height:var(--lh-tight);letter-spacing:var(--tracking-display)}
+.ag-display{font-family:var(--font-display);font-weight:var(--weight-medium);text-transform:var(--display-case);line-height:var(--lh-tight);letter-spacing:var(--tracking-display)}
 .ag-eyebrow{font-family:var(--font-body);font-size:var(--text-xs);font-weight:500;text-transform:uppercase;letter-spacing:var(--tracking-eyebrow);color:var(--text-muted)}
 .ag-accent-italic{font-family:var(--font-display);font-style:var(--accent-font-style);font-weight:var(--accent-font-weight);color:var(--text-accent)}
 @media print{body{background:none;transition:none}h1,h2,h3,h4{break-after:avoid}img,svg,figure{break-inside:avoid}}/* paper: no page colour behind the text; headings stay with what follows */

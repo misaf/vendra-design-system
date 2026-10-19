@@ -23,9 +23,11 @@
   border-radius: var(--radius-control);
   font-size: var(--text-base);
 }
-.ag-nav--header:hover {
-  background: var(--surface-muted);
-  color: var(--text-body);
+@media (hover: hover) {
+  .ag-nav--header:hover {
+    background: var(--surface-muted);
+    color: var(--text-body);
+  }
 }
 .ag-nav--footer {
   min-height: var(--tap-min);
@@ -33,10 +35,12 @@
   font-size: var(--text-sm);
   color: inherit;
 }
-.ag-nav--footer:hover {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+@media (hover: hover) {
+  .ag-nav--footer:hover {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 .ag-nav--menu {
   display: flex;
@@ -47,16 +51,22 @@
   border-bottom: var(--border-hair) solid var(--border-subtle);
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   text-align: start;
 }
-.ag-nav--menu:hover {
-  color: var(--text-body);
+@media (hover: hover) {
+  .ag-nav--menu:hover {
+    color: var(--text-body);
+  }
 }
 .ag-nav__chev {
   color: var(--text-muted);
 }
-.ag-nav--current,
-.ag-nav--current:hover {
+.ag-nav--current {
   color: var(--text-accent);
+}
+@media (hover: hover) {
+  .ag-nav--current:hover {
+    color: var(--text-accent);
+  }
 }

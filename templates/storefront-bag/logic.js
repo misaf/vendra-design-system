@@ -31,7 +31,7 @@ import {
   vfZone,
   vfZoneAt
 } from '../_shared/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
@@ -132,7 +132,9 @@ function vals(page) {
   const tx = v => (typeof v === 'string' ? v : v[L] || v.en);
   const saved = phone ? vfAccountLoad(phone, L).addresses : [];
   const zoneLabel = zone =>
-    (fa ? zone.fa : zone.en) + ' · ' + (vfFreeDelivery(zone.id, sub) ? C.free : m(zone.fee));
+    (fa ? zone.fa : zone.en) +
+    vfSeparator(fa) +
+    (vfFreeDelivery(zone.id, sub) ? C.free : m(zone.fee));
   // The handwritten card is an add-on (VF_ADDONS): a store without it has no card messages.
   const cardAddon = VF_ADDONS.find(addon => addon.id === 'card');
   const cardPrice = cardAddon ? m(cardAddon.price) : '';
@@ -365,7 +367,7 @@ function vals(page) {
         : 'Unavailable; remove to continue',
       image: vfProductImage(l, L),
       name: vfLineToken(l),
-      meta: l[L][1] + ' · ' + C.labels.each + m(l.unit),
+      meta: l[L][1] + vfSeparator(L) + C.labels.each + m(l.unit),
       note: String(l.card || '').trim()
         ? vfCardMessages([l], {}, L)
         : vfLineHasCard(l)

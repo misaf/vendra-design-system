@@ -26,7 +26,7 @@
 }
 .ag-pay__num {
   font-size: clamp(1.25rem, 4vw, 1.625rem);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -45,7 +45,7 @@
   font-size: var(--text-base);
 }
 .ag-pay__amount dd {
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   font-variant-numeric: tabular-nums;
 }
 

@@ -3,7 +3,7 @@
   outline-offset: var(--focus-offset);
 }
 .ag-iconbtn:disabled {
-  opacity: 0.45;
+  opacity: var(--opacity-disabled);
   cursor: not-allowed;
 }
 .ag-iconbtn {
@@ -33,8 +33,10 @@
   width: calc(var(--tap-min) + var(--space-2));
   height: calc(var(--tap-min) + var(--space-2));
 }
-.ag-iconbtn--ghost:hover:not(:disabled) {
-  background: var(--surface-hover);
+@media (hover: hover) {
+  .ag-iconbtn--ghost:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
 }
 a.ag-iconbtn {
   text-decoration: none;
@@ -47,9 +49,11 @@ a.ag-iconbtn {
     border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
 }
-.ag-iconbtn--secondary:hover:not(:disabled) {
-  background: var(--surface-hover);
-  border-color: var(--border-strong);
+@media (hover: hover) {
+  .ag-iconbtn--secondary:hover:not(:disabled) {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+  }
 }
 .ag-iconbtn--inverse {
   color: var(--text-on-inverse);
@@ -57,11 +61,15 @@ a.ag-iconbtn {
 .ag-iconbtn--inverse.ag-iconbtn--secondary {
   border-color: var(--border-inverse);
 }
-.ag-iconbtn--inverse:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+@media (hover: hover) {
+  .ag-iconbtn--inverse:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--text-on-inverse) 12%, transparent);
+  }
 }
-.ag-iconbtn--inverse.ag-iconbtn--secondary:hover:not(:disabled) {
-  border-color: var(--text-inverse-muted);
+@media (hover: hover) {
+  .ag-iconbtn--inverse.ag-iconbtn--secondary:hover:not(:disabled) {
+    border-color: var(--text-inverse-muted);
+  }
 }
 .ag-iconbtn--inverse:focus-visible {
   outline-color: var(--focus-ring-on-inverse);
@@ -70,8 +78,10 @@ a.ag-iconbtn {
   background: var(--white);
   box-shadow: var(--shadow-sm);
 }
-.ag-iconbtn--raised:hover:not(:disabled) {
-  background: var(--surface-sunken);
+@media (hover: hover) {
+  .ag-iconbtn--raised:hover:not(:disabled) {
+    background: var(--surface-sunken);
+  }
 }
 .ag-iconbtn--active {
   color: var(--text-accent);
@@ -89,7 +99,7 @@ a.ag-iconbtn {
   color: var(--text-on-accent);
   font-size: var(--text-2xs);
   line-height: calc(18px * var(--size-scale));
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   text-align: center;
 }
 

@@ -2,6 +2,7 @@
 --font-display-latin:'Instrument Serif';--font-body-latin:'Jost';--font-display-fa:'Vazirmatn';--font-body-fa:'Vazirmatn';
 --font-display:'Instrument Serif','Instrument Serif Fallback','Vazirmatn','Vazirmatn Fallback','Vazirmatn Fallback Naskh','Vazirmatn Fallback Sans','Vazirmatn Fallback Free',Georgia,'Times New Roman',serif;
 --font-body:'Jost','Jost Fallback','Vazirmatn','Vazirmatn Fallback','Vazirmatn Fallback Naskh','Vazirmatn Fallback Sans','Vazirmatn Fallback Free','Segoe UI',Tahoma,system-ui,sans-serif;
+--font-code:ui-monospace,'SFMono-Regular',Consolas,'Liberation Mono',monospace;/* product codes and other identifiers: distinct, evenly spaced characters */
 --weight-light:300;/* @kind font */--weight-regular:400;/* @kind font */--weight-medium:500;/* @kind font */--weight-semibold:600;/* @kind font */
 --lh-tight:1.05;/* @kind other */--lh-snug:1.25;/* @kind other */--lh-body:1.6;/* @kind other */--lh-loose:1.8;/* @kind other */
 --tracking-eyebrow:.18em;/* @kind other */--tracking-button:.02em;/* @kind other */--tracking-display:-.015em;/* @kind other */
