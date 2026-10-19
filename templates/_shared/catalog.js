@@ -607,6 +607,35 @@ export function vfLineAvailable(line) {
   return !!p && p.inStock !== false;
 }
 
+// Stock is shared by every size/add-on configuration of a product.
+export function vfLineQuantityMax(line, lines = []) {
+  const product = vfFindProduct(vfLineProductId(line));
+  if (!product || product.inStock === false) return 0;
+  const limit = Number.isFinite(product.quantity) ? product.quantity : 99;
+  const others = lines
+    .filter(item => item.id !== line.id && vfLineProductId(item) === product.id)
+    .reduce((sum, item) => sum + item.qty, 0);
+  return Math.max(0, Math.min(99, limit - others));
+}
+
+export function vfLineQuantityValid(line, lines) {
+  return line.qty >= 1 && line.qty <= vfLineQuantityMax(line, lines);
+}
+
+export function vfReorderBag(lines, currentBag, mode) {
+  let bag = mode === 'add' ? [...currentBag] : [];
+  for (const line of vfReorderLines(lines)) {
+    const existing = bag.find(item => item.id === line.id);
+    const previous = existing?.qty || 0;
+    const room = Math.max(0, vfLineQuantityMax(line, bag) - previous);
+    const qty = previous + Math.min(line.qty, room);
+    if (!qty) continue;
+    const next = {...line, ...existing, unit: line.unit, qty};
+    bag = existing ? bag.map(item => (item.id === line.id ? next : item)) : [...bag, next];
+  }
+  return bag;
+}
+
 // Saved and recently viewed lists hold product codes; older lists held slugs, read here as codes.
 export function vfProductIds(ids) {
   return Array.isArray(ids) ? [...new Set(ids.map(vfProductId).filter(Boolean))] : [];

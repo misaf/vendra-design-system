@@ -203,6 +203,18 @@ export function vfDeliverySlot(delivery, now = new Date()) {
   return commerce.openSlot(vfDeliverySlots(vfDeliveryDate(delivery, now), now), delivery.slot);
 }
 
+// Empty defaults can pick the first window; an explicit choice must never change unnoticed.
+export function vfDeliveryChanged(delivery, now = new Date()) {
+  const date = vfDeliveryDate(delivery, now);
+  const slot = vfDeliverySlot(delivery, now);
+  return (
+    !date ||
+    slot == null ||
+    (!!delivery.date && delivery.date !== date) ||
+    (!!delivery.date && delivery.slot != null && String(delivery.slot) !== String(slot))
+  );
+}
+
 export function vfPhone(value) {
   return commerce.phone(value);
 }

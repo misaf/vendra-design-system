@@ -29,6 +29,12 @@ export function vfCopy(S) {
       zonePending: 'Place the pin to see the zone and delivery fee.',
       zoneSet: 'Set from the pin. ',
       slotClosed: 'Closed',
+      deliveryChanged:
+        'Your chosen delivery window is no longer available. Confirm a new window before continuing.',
+      confirmDelivery: 'Use this delivery window',
+      noDelivery: 'No delivery windows are available. Please contact the studio.',
+      stockChanged:
+        'This quantity exceeds the remaining stock. Reduce it or remove the item to continue.',
       cards: 'Cards',
       cardsIntro: 'Add a handwritten card to any item.',
       cardFor: 'Card for {name}',
@@ -104,6 +110,12 @@ export function vfCopy(S) {
       }
     },
     fa: {
+      deliveryChanged:
+        'زمان ارسال انتخابی دیگر در دسترس نیست. پیش از ادامه، زمان جدید را تأیید کنید.',
+      confirmDelivery: 'تأیید این زمان ارسال',
+      noDelivery: 'زمانی برای ارسال موجود نیست. لطفاً با استودیو تماس بگیرید.',
+      stockChanged:
+        'این تعداد بیش از موجودی است. برای ادامه، تعداد را کم کنید یا کالا را حذف کنید.',
       steps: 'مراحل خرید',
       s1: 'سبد',
       s2: 'ارسال',

@@ -289,6 +289,7 @@ const productFromApi = (product, {prices, media, categories, extras = {}, placeh
     cat: category ? category.slug.en : '',
     ...(product.inStock ? {} : {inStock: false}),
     stock: stockStatus(product),
+    quantity: product.quantity,
     price: price ? price.amount : null,
     image: images[0] || {src: placeholder},
     images: images.length ? images : [{src: placeholder}],

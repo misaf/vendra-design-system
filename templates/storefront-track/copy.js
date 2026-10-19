@@ -3,6 +3,22 @@
 export function vfCopy(S) {
   return {
     en: {
+      reorderTitle: 'Review your repeat order',
+      reorderChoose: 'What should happen to your current bag?',
+      reorderAdd: 'Add to current bag',
+      reorderAddHint:
+        'Matching items combine quantities and keep the current bag’s card message and delivery details.',
+      reorderReplace: 'Replace current bag',
+      reorderReplaceHint:
+        'Removes every item currently in your bag and uses the earlier delivery details.',
+      reorderCancel: 'Cancel',
+      reorderIntro:
+        'Add the available items at today’s prices. Review delivery details before paying.',
+      reorderUnavailable: '{name} is unavailable and will be left out.',
+      reorderPrice: '{name}: each price changed from {old} to {new}.',
+      reorderQuantity: '{name}: only {qty} can be added with the current stock.',
+      reorderNone: 'None of these items are available. Your current bag is unchanged.',
+
       paymentMethods: {
         card: 'Card to card',
         online: 'Online payment',
@@ -80,6 +96,22 @@ export function vfCopy(S) {
       }
     },
     fa: {
+      reorderTitle: 'مرور سفارش دوباره',
+      reorderChoose: 'با سبد فعلی چه کنیم؟',
+      reorderAdd: 'افزودن به سبد فعلی',
+      reorderAddHint:
+        'تعداد کالاهای یکسان جمع می‌شود؛ پیام کارت و اطلاعات ارسال سبد فعلی حفظ می‌شود.',
+      reorderReplace: 'جایگزینی سبد فعلی',
+      reorderReplaceHint:
+        'همه کالاهای سبد فعلی حذف می‌شوند و اطلاعات ارسال سفارش قبلی استفاده می‌شود.',
+      reorderCancel: 'انصراف',
+      reorderIntro:
+        'کالاهای موجود با قیمت امروز افزوده می‌شوند. پیش از پرداخت اطلاعات ارسال را بررسی کنید.',
+      reorderUnavailable: '{name} موجود نیست و افزوده نمی‌شود.',
+      reorderPrice: '{name}: قیمت هر عدد از {old} به {new} تغییر کرده است.',
+      reorderQuantity: '{name}: با موجودی فعلی فقط {qty} عدد قابل افزودن است.',
+      reorderNone: 'هیچ‌کدام از این کالاها موجود نیست. سبد فعلی شما تغییر نمی‌کند.',
+
       paymentMethods: {
         card: 'کارت به کارت',
         online: 'پرداخت آنلاین',

@@ -9,6 +9,7 @@ import {
   vfBagLine,
   vfFindProduct,
   vfLineDetail,
+  vfLineQuantityMax,
   vfProduct,
   vfProductBadge,
   vfProductImage,
@@ -111,7 +112,14 @@ function vals(page) {
   const chosenAddons = availableAddons.filter(addon => s.addons.includes(addon.id));
   const extra = chosenAddons.reduce((sum, addon) => sum + addon.price, 0);
   const unit = base + (hasSizes ? size.price : 0) + extra;
-  const total = unit * s.qty;
+  const line = vfBagLine(product, hasSizes ? s.size : null, s.addons);
+  const bag = page.props.store?.bag || [];
+  const remaining = Math.max(
+    0,
+    vfLineQuantityMax(line, bag) - (bag.find(item => item.id === line.id)?.qty || 0)
+  );
+  const quantity = Math.min(s.qty, Math.max(1, remaining));
+  const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
   return {
     ...S,
@@ -182,8 +190,8 @@ function vals(page) {
     available: product.inStock !== false,
     stock: product.stock,
     // No more than the shop has left (nine at most, as before).
-    qtyMax: product.stock && product.stock.status === 'low' ? product.stock.count : 9,
-    unavailable: product.inStock === false,
+    qtyMax: Math.max(1, Math.min(9, remaining)),
+    unavailable: product.inStock === false || remaining === 0,
     category: S.shopLink(product.cat),
     productImages: vfProductImages(product, L),
     // Each photo full screen, one after another (Lightbox).
@@ -195,7 +203,7 @@ function vals(page) {
     closePhotos: () => page.setState({photo: null}),
     unitPrice: m(base + (hasSizes ? size.price : 0)),
     unitPriceLabel: availableAddons.length ? C.priceBeforeExtras : C.priceEach,
-    selectionTotalLabel: C.selectionTotal(s.qty),
+    selectionTotalLabel: C.selectionTotal(quantity),
     totalHint: chosenAddons.length ? C.totalWithExtras : C.totalDelivery,
     sizes: VF_SIZES.map(item => ({
       label: item.name[L],
@@ -215,7 +223,7 @@ function vals(page) {
           })
       };
     }),
-    qty: s.qty,
+    qty: quantity,
     setQty: q =>
       page.setState({
         qty: q
@@ -225,10 +233,17 @@ function vals(page) {
       increase: C.increase,
       value: C.quantity
     },
-    addLabel: product.inStock === false ? (fa ? 'ناموجود' : 'Sold out') : C.add,
+    addLabel:
+      remaining === 0 && product.inStock !== false
+        ? C.stockInBag
+        : product.inStock === false
+          ? fa
+            ? 'ناموجود'
+            : 'Sold out'
+          : C.add,
     totalLabel: m(total),
     add: () => {
-      if (product.inStock === false) return;
+      if (product.inStock === false || remaining === 0) return;
       const st = page.props.store;
       if (st) {
         st.add(
@@ -236,7 +251,7 @@ function vals(page) {
             product,
             hasSizes ? s.size : null,
             chosenAddons.map(addon => addon.id),
-            s.qty
+            quantity
           )
         );
       }
@@ -250,7 +265,7 @@ function vals(page) {
             meta:
               vfLineDetail(product, hasSizes ? size : null, chosenAddons, L) +
               ' · × ' +
-              (fa ? VF_FA_DIGITS(s.qty) : s.qty),
+              (fa ? VF_FA_DIGITS(quantity) : quantity),
             total: m(total)
           }
         }
