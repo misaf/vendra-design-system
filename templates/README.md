@@ -45,6 +45,7 @@ npm --prefix templates run test:e2e      # Playwright: axe, screenshots, cards, 
 npm --prefix templates run build:app     # production build → templates/_app-build/ (same paths as dev)
 npm --prefix templates run preview       # serve the build at http://127.0.0.1:4173/templates/app/
 npm --prefix templates run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
+npm --prefix templates run test:e2e:remote # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
 - **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
@@ -95,6 +96,27 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change. React's majors are left out (the React 19 job covers the next one), and a Playwright bump must also move the image tag in the workflows, which `assets.test.cjs` checks.
 
 A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
+
+### On a remote server (optional)
+
+`test:e2e:remote` runs the browser tests on a Linux server with Docker instead of this machine. It syncs the checkout with rsync (git-ignored files stay here), runs `test:e2e` there in the same Playwright image as CI (the tag follows the installed `@playwright/test`), then copies back `playwright-report/`, `test-results/` and any `-linux.png` files the run wrote. The local `test:e2e` is unchanged.
+
+```bash
+VENDRA_E2E_HOST=me@build-box npm --prefix templates run test:e2e:remote
+VENDRA_E2E_HOST=me@build-box npm --prefix templates run test:e2e:remote -- pages.spec.mjs --update-snapshots
+```
+
+`VENDRA_E2E_HOST` is the ssh destination (key login; an `~/.ssh/config` alias works). `VENDRA_E2E_DIR` sets the folder on the server (default `vendra-e2e`), `E2E_WORKERS` the worker count (default 8 there; the config also reads it locally), and `E2E_TARGET=build` runs `test:e2e:build`. The server needs `rsync`, and Docker usable by the ssh user without sudo. `node_modules` lives in the `vendra-e2e-node-modules` volume and is reinstalled only when `package-lock.json` changes. Keep screenshot runs in the container: outside it the server's fonts and Chromium draw differently from the `-linux.png` baselines.
+
+### CI on a self-hosted runner (optional)
+
+The browser jobs in `ci.yml` (`e2e`, `e2e-build`) and **Update screenshots** can run on your own server instead of GitHub's machines; the `check` and React 19 jobs stay on GitHub. Nothing changes until the repository variable `E2E_RUNS_ON` is set.
+
+1. On the server (Linux, with Docker usable by the runner's user), add a runner under **Settings → Actions → Runners → New self-hosted runner**, give it the label `vendra-e2e`, and install it as a service (`sudo ./svc.sh install && sudo ./svc.sh start`). A second runner with the same label in another folder lets `e2e` and `e2e-build` run at the same time.
+2. Under **Settings → Secrets and variables → Actions → Variables**, set `E2E_RUNS_ON` to `["self-hosted","vendra-e2e"]`, and optionally `E2E_WORKERS` (Playwright workers, for example `8`) and `E2E_CPUS` (cores the job's container may use, for example `8`). On the self-hosted runner the container is also capped at 5 GB of memory, so the server's other services keep the rest.
+3. Under **Settings → Actions → General**, keep "Require approval for all external contributors" for fork pull requests.
+
+The jobs still run in the pinned Playwright image, so the `-linux.png` baselines are the same as on GitHub's machines. Pull requests from forks always run on GitHub's runners (the `runner` job in `ci.yml` decides), because this repository is public and a fork's code must never run on the server. Unset `E2E_RUNS_ON` to go back to GitHub's runners.
 
 ## Component tests
 

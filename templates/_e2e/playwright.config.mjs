@@ -27,8 +27,8 @@ export default defineConfig({
   timeout: 60000,
   forbidOnly: ci,
   // One Vite dev server serves every page; more workers than this starts timing out. CI's
-  // runners have fewer cores.
-  workers: ci ? 2 : 4,
+  // runners have fewer cores. E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
+  workers: Number(process.env.E2E_WORKERS) || (ci ? 2 : 4),
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
   reporter: [['list'], ['html', {outputFolder: './playwright-report', open: 'never'}]],
