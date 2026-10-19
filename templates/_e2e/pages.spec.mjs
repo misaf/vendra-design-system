@@ -1,5 +1,8 @@
 import {test, expect} from '@playwright/test';
+import {VISUAL_BROWSER} from './visual-browser.mjs';
 import {LANGS, VIEWS, openSite, settlePage} from './helpers.mjs';
+
+test.use(VISUAL_BROWSER);
 
 // Full-page screenshots of every routed view in English and Persian at both
 // widths, to catch RTL and responsive layout regressions. The clock is frozen

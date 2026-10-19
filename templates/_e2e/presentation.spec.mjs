@@ -1,5 +1,8 @@
 import {test, expect} from '@playwright/test';
+import {VISUAL_BROWSER} from './visual-browser.mjs';
 import {openSite, scanAxe} from './helpers.mjs';
+
+test.use(VISUAL_BROWSER);
 
 for (const lang of ['en', 'fa']) {
   test(`display presets start on a product without the catalog (${lang})`, async ({page}) => {

@@ -146,12 +146,14 @@ for (const lang of ['en', 'fa']) {
       await page.setViewportSize({width, height: 900});
       await openSite(page, 'product', lang);
       await expectTier(page, width, tier, lang);
-      // The product's own add-to-bag: a sticky bar above the tab bar on phones, in the buy box from 768px.
+      // This fixture has touch input: phones and tablets keep their purchase action visible,
+      // independently of the header tier. The inline action returns at the wide layout.
+      const stickyPurchase = width < 1440;
       await expect(page.locator('.vf-product-mobile-action')).toBeVisible({
-        visible: tier === 'phone'
+        visible: stickyPurchase
       });
       await expect(page.locator('.vf-product-add-button')).toBeVisible({
-        visible: tier !== 'phone'
+        visible: !stickyPurchase
       });
       if (tier !== 'desktop') {
         await page

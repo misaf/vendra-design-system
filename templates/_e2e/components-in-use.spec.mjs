@@ -70,7 +70,7 @@ test('saving a design shows a toast that waits while the pointer is on it', asyn
 
 test('home arrivals scroll with the snap scroller', async ({page}, info) => {
   await openSite(page, 'home', 'fa');
-  const row = page.getByRole('region', {name: 'تازه‌های این هفته'});
+  const row = page.getByRole('region', {name: /^طرح‌های استودیو ·/});
   await expect(row.locator('.ag-product')).toHaveCount(5);
   const overflow = await row.evaluate(el => el.scrollWidth > el.clientWidth);
   expect(overflow).toBe(true);

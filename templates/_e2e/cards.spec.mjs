@@ -1,7 +1,10 @@
 import {test, expect} from '@playwright/test';
+import {VISUAL_BROWSER} from './visual-browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {ROOT as root, TENANTS, expectNoViteError, waitForQuiet} from './helpers.mjs';
+
+test.use(VISUAL_BROWSER);
 
 // Every @dsCard in guidelines/ and components/, at the viewport its header declares.
 function cards() {

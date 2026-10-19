@@ -490,7 +490,17 @@ async function toOnlinePayment(page) {
     .locator('visible=true')
     .first()
     .click();
-  await page.getByRole('radio', {name: 'Online card demo'}).check({force: true});
+  await chooseOnlinePayment(page);
+}
+
+// The checkout step can still be mounting (after "Continue to payment" or a navigate()) and render
+// the method again with its default, so the choice is retried until it holds.
+async function chooseOnlinePayment(page) {
+  const online = page.getByRole('radio', {name: 'Online card demo'});
+  await expect(async () => {
+    await online.check({force: true, timeout: 2_000});
+    await expect(online).toBeChecked({timeout: 1_000});
+  }).toPass({timeout: 15_000});
 }
 
 test('an online payment goes to the bank and comes back paid', async ({page}) => {
@@ -521,20 +531,32 @@ test('an online payment goes to the bank and comes back paid', async ({page}) =>
 test('a payment the bank refuses keeps the bag and can be paid again', async ({page}) => {
   await toOnlinePayment(page);
   await page.evaluate(() => window.__vfSite.navigate({view: 'checkout', demo: 'error'}));
-  await page.getByRole('radio', {name: 'Online card demo'}).check({force: true});
+  await chooseOnlinePayment(page);
+  const refusedReturn = page.waitForURL(
+    url =>
+      url.searchParams.get('payment') === 'return' && url.searchParams.get('result') === 'failed',
+    {waitUntil: 'load', timeout: 20_000}
+  );
   await page
     .getByRole('button', {name: 'Continue to the bank'})
     .locator('visible=true')
     .first()
     .click();
+  await refusedReturn;
   const heading = page.getByRole('heading', {level: 1});
-  await expect(heading).toHaveText('The payment didn’t go through', {timeout: 10_000});
+  await expect(heading).toHaveText('The payment didn’t go through');
   // The bank's answer takes focus, so a screen reader reads it.
   await expect(heading).toBeFocused();
   await expect(page.locator('main')).toContainText('within 72 hours');
   expect(await scanAxe(page)).toEqual([]);
+  const paidReturn = page.waitForURL(
+    url =>
+      url.searchParams.get('payment') === 'return' && url.searchParams.get('result') === 'paid',
+    {waitUntil: 'load', timeout: 20_000}
+  );
   await page.getByRole('button', {name: 'Pay again'}).click();
-  await expect(page.locator('main h1')).toContainText('Thank you', {timeout: 10_000});
+  await paidReturn;
+  await expect(page.locator('main h1')).toContainText('Thank you');
 });
 
 test('a return link for an order this tab doesn’t hold says not to pay twice', async ({page}) => {
@@ -972,8 +994,9 @@ test('policies quote the live delivery rules', async ({page}) => {
 
 test('an unknown policy is not found', async ({page}) => {
   await openSite(page, 'policy', 'en', {id: 'nope'});
-  await expect(page.getByRole('link', {name: 'Terms of use'})).toBeVisible();
-  await expect(page.getByRole('heading', {level: 1})).not.toHaveText(/Shipping/);
+  await expect(page.getByRole('heading', {level: 1})).toHaveText(/^This page has\s*wilted\.$/);
+  const help = await openFooterGroup(page, 'Help');
+  await expect(help.getByRole('link', {name: 'Terms of use', exact: true})).toBeVisible();
 });
 
 test('sign-in links to the terms and privacy policy', async ({page}) => {
