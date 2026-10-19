@@ -58,34 +58,50 @@ import {VF_STORE} from '../store-config.js';
     const p = VF_PRODUCTS.find(x => x.id === slug);
     return p && p.apiId;
   };
+  // A quick Undo must wait for this product's removal before saving it again. Keep other
+  // products independent, and let the next action proceed even if an earlier request failed.
+  const savedWrites = new Map();
+  const writeSaved = (slug, change) => {
+    const previous = savedWrites.get(slug) || Promise.resolve();
+    const next = previous.catch(() => {}).then(change);
+    savedWrites.set(slug, next);
+    const clear = () => {
+      if (savedWrites.get(slug) === next) savedWrites.delete(slug);
+    };
+    next.then(clear, clear);
+    return next;
+  };
   // POST /api/customers/saved-items  {sellableType, sellableId, metadata}
-  A.saveItem = async slug => {
-    const id = pid(slug);
-    if (!A.live || id == null) return null;
-    const r = await request('POST', '/api/customers/saved-items', {
-      sellableType: 'product',
-      sellableId: id,
-      metadata: {
-        slug
+  A.saveItem = slug =>
+    writeSaved(slug, async () => {
+      const id = pid(slug);
+      if (!A.live || id == null) return null;
+      const r = await request('POST', '/api/customers/saved-items', {
+        sellableType: 'product',
+        sellableId: id,
+        metadata: {
+          slug
+        }
+      });
+      const m = map();
+      if (r && r.id != null) {
+        m[slug] = r.id;
+        setMap(m);
       }
+      return r;
     });
-    const m = map();
-    if (r && r.id != null) {
-      m[slug] = r.id;
-      setMap(m);
-    }
-    return r;
-  };
   // DELETE /api/customers/saved-items/{id}
-  A.unsaveItem = async slug => {
-    const m = map();
-    const sid = m[slug];
-    if (!A.live || sid == null) return null;
-    await request('DELETE', '/api/customers/saved-items/' + sid);
-    delete m[slug];
-    setMap(m);
-    return true;
-  };
+  A.unsaveItem = slug =>
+    writeSaved(slug, async () => {
+      const m = map();
+      const sid = m[slug];
+      if (!A.live || sid == null) return null;
+      await request('DELETE', '/api/customers/saved-items/' + sid);
+      const latest = map();
+      delete latest[slug];
+      setMap(latest);
+      return true;
+    });
   // GET /api/customers/wishlists -> default list's items -> product slugs
   A.loadSaved = async () => {
     if (!A.live) return null;

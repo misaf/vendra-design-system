@@ -60,6 +60,50 @@ function page(name, c, props = {}) {
   );
 }
 (async () => {
+  // Remove and immediate Undo must reach the API in that order, without overwriting another
+  // product's saved-id mapping while a delete is still pending.
+  {
+    const {c: api, storage} = environment();
+    api.VF_API.setBase('https://example.test');
+    storage.set('vendra-saved-map', JSON.stringify({'VF-8RD5WN': 701, 'VF-4CJ6ZB': 702}));
+    const calls = [];
+    let releaseDelete;
+    const deleting = new Promise(resolve => {
+      releaseDelete = resolve;
+    });
+    api.fetch = async (url, options) => {
+      const slug = options.body && JSON.parse(options.body).metadata.slug;
+      calls.push([options.method, slug || url.split('/').at(-1)]);
+      if (options.method === 'DELETE') {
+        await deleting;
+        return {ok: true, status: 204};
+      }
+      return {ok: true, status: 200, json: async () => ({id: slug === 'VF-8RD5WN' ? 801 : 802})};
+    };
+    const remove = api.VF_API.unsaveItem('VF-8RD5WN');
+    const undo = api.VF_API.saveItem('VF-8RD5WN');
+    await api.VF_API.saveItem('VF-4CJ6ZB');
+    assert.deepEqual(calls, [
+      ['DELETE', '701'],
+      ['POST', 'VF-4CJ6ZB']
+    ]);
+    releaseDelete();
+    await Promise.all([remove, undo]);
+    assert.deepEqual(calls.at(-1), ['POST', 'VF-8RD5WN']);
+    assert.deepEqual(JSON.parse(storage.get('vendra-saved-map')), {
+      'VF-8RD5WN': 801,
+      'VF-4CJ6ZB': 802
+    });
+    api.fetch = async (url, options) => {
+      if (options.method === 'DELETE') throw new Error('Temporary failure');
+      return {ok: true, status: 200, json: async () => ({id: 803})};
+    };
+    const failed = api.VF_API.unsaveItem('VF-8RD5WN');
+    const retry = api.VF_API.saveItem('VF-8RD5WN');
+    await assert.rejects(failed, /Temporary failure/);
+    await retry;
+    assert.equal(JSON.parse(storage.get('vendra-saved-map'))['VF-8RD5WN'], 803);
+  }
   const {c, timers} = environment();
   vm.runInContext("vfAccountLogin('۰۹۱۲۳۴۵۶۷۸۹','fa')", c);
   assert.equal(c.vfAccountPhone(), '09123456789');

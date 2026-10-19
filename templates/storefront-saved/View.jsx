@@ -19,9 +19,29 @@ export function View({v}) {
                 accent={v.t?.hB}
               />
             </div>
+            {v.removedMessage ? (
+              <div className="vf-saved-undo tw:mb-4">
+                <DS.Alert
+                  title={v.removedMessage}
+                  action={
+                    <DS.Button
+                      id="vf-saved-undo"
+                      data-vf-keep-focus
+                      variant="secondary"
+                      onClick={v.undoRemove}
+                    >
+                      {v.t?.undo}
+                    </DS.Button>
+                  }
+                />
+              </div>
+            ) : null}
             {v.hasItems ? (
               <>
-                <div className="vf-saved-product-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5">
+                <div
+                  data-vf-keep-focus
+                  className="vf-saved-product-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"
+                >
                   {list(v.items).map((p, $index) => (
                     <React.Fragment key={$index}>
                       <DS.ProductCard

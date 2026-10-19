@@ -1,6 +1,12 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
+import {
+  VF_PRODUCTS,
+  vfProductBadge,
+  vfProductImage,
+  vfProductSub,
+  vfTokenText
+} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -9,7 +15,8 @@ import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
-      ids: ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE']
+      ids: ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'],
+      removed: null
     };
   });
   useStorefrontPage(page);
@@ -32,7 +39,25 @@ function vals(page) {
     hasItems: items.length > 0,
     noItems: !items.length,
     countLabel: C.designCount(items.length),
-    items: items.map((p, i) => ({
+    removedMessage: page.state.removed
+      ? C.removed.replace('{name}', vfTokenText(page.state.removed))
+      : '',
+    undoRemove: () => {
+      const id = page.state.removed;
+      if (!id) return;
+      const store = page.props.store;
+      const current = store ? store.saved : page.state.ids;
+      const restored = current.includes(id) ? current : [...current, id];
+      // Add only the removed code; never replace other saved changes with an earlier snapshot.
+      if (store) {
+        if (!current.includes(id)) store.toggleSave(id);
+      } else page.setState({ids: restored});
+      const index = VF_PRODUCTS.filter(product => restored.includes(product.id)).findIndex(
+        product => product.id === id
+      );
+      page.setState({removed: null}, () => S.focusAfterRemoval('.ag-product__fav', index));
+    },
+    items: items.map(p => ({
       ...S.productLink(p.id),
       images: [vfProductImage(p, L)],
       name: p.id,
@@ -41,12 +66,12 @@ function vals(page) {
       price: S.m(p.price),
       stock: p.stock,
       remove: () => {
+        page.setState({removed: p.id}, () => document.getElementById('vf-saved-undo')?.focus());
         st
           ? st.toggleSave(p.id)
           : page.setState({
               ids: ids.filter(x => x !== p.id)
             });
-        S.focusAfterRemoval('.ag-product__fav', i);
       }
     }))
   };
