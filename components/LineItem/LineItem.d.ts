@@ -11,6 +11,8 @@ export interface LineItemProps {
   /** Pre-formatted line total */
   price: string;
   quantity?: number;
+  /** Remaining stock available for this line, including its current quantity. */
+  quantityMax?: number;
   /** lg only — shows a QuantityInput */
   onQuantityChange?: (n: number) => void;
   /** lg only */
