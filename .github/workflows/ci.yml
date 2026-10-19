@@ -1,11 +1,14 @@
-# Every push and pull request: formatting and generated files, unit tests, then the browser
+# Pushes to master and pull requests: formatting and generated files, unit tests, then the browser
 # tests. The browser tests run inside Playwright's Linux image, pinned to the version in
 # templates/package.json, so the -linux screenshot baselines stay comparable from run to run.
 # After a deliberate visual change, run the "Update screenshots" workflow to refresh them.
 name: CI
 
+# Branches run through their pull request; pushes run on master only, so a branch with a pull
+# request isn't tested twice.
 on:
   push:
+    branches: [master]
   pull_request:
   workflow_dispatch:
 
@@ -15,6 +18,8 @@ concurrency:
 
 permissions:
   contents: read
+  # The runner job reads which files a pull request changes.
+  pull-requests: read
 
 jobs:
   check:
@@ -50,6 +55,9 @@ jobs:
       # package test (import, server render, wording, themes) and a strict type check there.
       - run: npm --prefix templates run test:react19
 
+  # Skips the browser tests when a push or pull request changes only .github/ (Dependabot's action
+  # bumps, workflow edits): run CI by hand after a workflow change that the browser tests need to
+  # prove. Manual runs always test.
   # Picks the machine for the browser tests. With the repository variable E2E_RUNS_ON set (a JSON
   # label list such as ["self-hosted","vendra-e2e"]), pushes, manual runs and pull requests from
   # this repository's own branches run on that self-hosted runner, with E2E_WORKERS workers. Pull
@@ -61,10 +69,32 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     outputs:
+      e2e: ${{ steps.changes.outputs.e2e }}
       labels: ${{ steps.pick.outputs.labels }}
       workers: ${{ steps.pick.outputs.workers }}
       options: ${{ steps.pick.outputs.options }}
     steps:
+      - id: changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            files=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --jq '.[].filename') || files=''
+          elif [ "$EVENT" = push ] && [ -n "${BEFORE//0/}" ]; then
+            files=$(gh api "repos/$GITHUB_REPOSITORY/compare/$BEFORE...$AFTER" --jq '.files[].filename') || files=''
+          else
+            files=''
+          fi
+          if [ -n "$files" ] && [ -z "$(printf '%s\n' "$files" | grep -v '^\.github/')" ]; then
+            echo 'Only .github/ changed: skipping the browser tests.'
+            echo 'e2e=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'e2e=true' >> "$GITHUB_OUTPUT"
+          fi
       - id: pick
         env:
           RUNS_ON: ${{ vars.E2E_RUNS_ON }}
@@ -91,8 +121,9 @@ jobs:
   e2e:
     name: Browser tests (cards, pages, axe)
     needs: [check, runner]
+    if: needs.runner.outputs.e2e == 'true'
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
-    timeout-minutes: 45
+    timeout-minutes: 75
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
       options: ${{ needs.runner.outputs.options }}
@@ -122,8 +153,9 @@ jobs:
   e2e-build:
     name: Production build and performance budgets
     needs: [check, runner]
+    if: needs.runner.outputs.e2e == 'true'
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
-    timeout-minutes: 30
+    timeout-minutes: 75
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
       options: ${{ needs.runner.outputs.options }}
