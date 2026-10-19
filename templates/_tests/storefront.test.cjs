@@ -884,3 +884,152 @@ for (const file of [
 ])
   assert.doesNotMatch(read(file), /\b(v|S)\.(mob|desk|compactShop)\b/, file);
 console.log('Passed: no view lays out from a JavaScript breakpoint.');
+
+// Stock, delivery changes, address switching, repeat orders and the WhatsApp handoff preserve intent.
+for (const lang of ['en', 'fa']) {
+  const {logic: site, ctx: c} = loadPage('site', {lang});
+  const low = vm.runInContext("vfBagLine(vfProduct('VF-9FA2KE'), null, [], 2)", c);
+  site.renderVals().store.add(low);
+  site.renderVals().store.add(low);
+  assert.equal(
+    site.state.bag.find(line => line.id === low.id).qty,
+    2,
+    'repeated adds respect stock'
+  );
+  site.renderVals().store.setQty(low.id, 99);
+  assert.equal(site.state.bag.find(line => line.id === low.id).qty, 2, 'bag edits respect stock');
+  const variant = vm.runInContext("vfBagLine(vfProduct('VF-9FA2KE'), null, ['card'], 1)", c);
+  site.renderVals().store.add(variant);
+  assert.ok(!site.state.bag.some(line => line.id === variant.id), 'variants share product stock');
+
+  const {logic: bag, ctx: bc} = loadPage('bag', {lang});
+  bc.setTimeout = () => 0;
+  bag.setState({delivery: {...bag.state.delivery, date: '2000-01-01', slot: '08'}});
+  let values = bag.renderVals();
+  assert.equal(values.deliveryChanged, true);
+  assert.ok(values.deliverySuggestion);
+  values.next();
+  assert.equal(
+    bag.state.delivery.date,
+    '2000-01-01',
+    'continue does not silently accept a replacement'
+  );
+  values.confirmDelivery();
+  assert.equal(bag.renderVals().deliveryChanged, false);
+  assert.notEqual(bag.state.delivery.date, '2000-01-01');
+  const address = {
+    label: 'Office',
+    line: 'Another street 42',
+    recipient: 'Test',
+    phone: '09120000000',
+    zone: 'tehran'
+  };
+  bc.localStorage = {
+    getItem: key =>
+      key === 'vf-account-phone'
+        ? '09120000000'
+        : JSON.stringify({profile: {}, addresses: [address], reminders: []})
+  };
+  bag.setState({delivery: {...bag.state.delivery, location: {lat: 35.8352, lng: 50.975}}});
+  bag.renderVals().savedAddresses[0].pick();
+  assert.equal(bag.state.delivery.location, null, 'an unpinned address clears the earlier pin');
+  assert.equal(bag.state.delivery.address, address.line);
+  assert.ok(vm.runInContext('vfErrors', bc)(bag.state.delivery).location);
+
+  const existing = site.state.bag.map(line => ({...line}));
+  const old = {...low, unit: 1, qty: 1};
+  const unavailable = vm.runInContext("vfBagLine(vfProduct('VF-6MT3VY'))", c);
+  const order = {
+    id: 'VN-TEST',
+    lines: [old, unavailable],
+    delivery: {...bag.state.delivery},
+    totals: {sub: 1, total: 1, fee: 0, discount: 0},
+    status: 'received'
+  };
+  site.renderVals().store.complete(order);
+  existing.forEach(line => site.renderVals().store.add(line));
+  let next;
+  const {logic: track} = loadPage('track', {
+    lang,
+    store: site.renderVals().store,
+    go: route => (next = route)
+  });
+  const before = JSON.stringify(site.state.bag);
+  track.renderVals().reorder({button: 0, preventDefault() {}});
+  values = track.renderVals();
+  assert.equal(values.reorderOpen, true);
+  assert.equal(
+    JSON.stringify(site.state.bag),
+    before,
+    'opening repeat order keeps the current bag'
+  );
+  assert.ok(values.reorderChanges.some(message => message.includes('VF-6MT3VY')));
+  assert.ok(values.reorderChanges.some(message => message.includes('VF-9FA2KE')));
+  values.closeReorder();
+  assert.equal(JSON.stringify(site.state.bag), before, 'cancelling leaves the bag intact');
+  track.renderVals().setReorderMode('add');
+  track.renderVals().confirmReorder();
+  assert.equal(next, 'bag');
+  assert.ok(
+    site.state.bag.some(line => line.id === existing[0].id),
+    'adding retains existing products'
+  );
+  site.renderVals().store.reorder(order, 'replace');
+  assert.equal(site.state.bag.length, 1);
+  assert.equal(site.state.bag[0].unit, low.unit, 'repeat order uses the current price');
+
+  const merge = vm.runInContext('vfReorderBag', c);
+  const currentCard = {...existing[0], card: 'Keep my current message'};
+  const earlierCard = {...currentCard, card: 'Earlier order message'};
+  assert.equal(merge([earlierCard], [currentCard], 'add')[0].card, currentCard.card);
+  assert.equal(merge([earlierCard], [currentCard], 'replace')[0].card, earlierCard.card);
+  assert.equal(
+    merge([old], [{...low, qty: 99}], 'add')[0].qty,
+    99,
+    'adding a repeat order does not silently reduce an existing overstocked line'
+  );
+  let blockedRoute;
+  const stale = loadPage('checkout', {
+    lang,
+    go: route => (blockedRoute = route),
+    store: {bag: [low], delivery: {...bag.state.delivery, date: '2000-01-01'}}
+  }).logic;
+  stale.setState({last4: '1234'});
+  stale.renderVals().place();
+  assert.equal(blockedRoute.view, 'bag');
+  assert.equal(
+    blockedRoute.step,
+    'delivery',
+    'payment cannot submit a delivery choice that expired'
+  );
+
+  const d = {
+    name: 'Recipient Test',
+    phone: '09120000000',
+    sender: 'Sender Test',
+    senderPhone: '09121111111',
+    address: 'Test street 12',
+    zone: 'central',
+    date: '2026-10-20',
+    slot: '12',
+    location: {lat: 35.8352, lng: 50.975}
+  };
+  const card = vm.runInContext("vfBagLine(vfProduct('VF-7K2M4Q'), 'classic', ['card'], 1)", c);
+  card.card = 'A personal card message';
+  const message = vm.runInContext('vfOrderMessage', c)([card], d, card.unit, lang);
+  for (const detail of [
+    card.token,
+    d.name,
+    d.phone,
+    d.sender,
+    d.senderPhone,
+    d.address,
+    lang === 'fa' ? 'مهر' : 'October',
+    card.card,
+    '35.8352'
+  ])
+    assert.ok(message.includes(detail), 'WhatsApp includes ' + detail);
+}
+console.log(
+  'Passed stock limits, explicit delivery confirmation, unpinned addresses, repeat-order review and complete bilingual WhatsApp handoff.'
+);

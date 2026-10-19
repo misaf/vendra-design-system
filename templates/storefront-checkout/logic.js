@@ -4,6 +4,7 @@ import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
 import {
   vfCardMessages,
   vfLineAvailable,
+  vfLineQuantityValid,
   vfLineItems,
   vfLineToken,
   vfProductImage,
@@ -14,6 +15,7 @@ import {
   VF_DELIVERY,
   vfCheckoutRequest,
   vfDeliveryDate,
+  vfDeliveryChanged,
   vfTotals,
   vfZone
 } from '../_shared/delivery.js';
@@ -23,6 +25,7 @@ import {vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
+import {vfOrderMessage} from '../_shared/order-message.js';
 import {
   vfBalanceDiscountOn,
   vfWalletBalance,
@@ -153,6 +156,16 @@ function vals(page) {
         ? fillWallet(PW.short, balance)
         : fillWallet(vfBalanceDiscountOn(balance) ? PW.discount : PW.balance, balance);
   const done = !!order || s.placed || page.props.step === 'done';
+  const orderReady = event => {
+    const changed = vfDeliveryChanged(delivery);
+    const stockChanged = items.some(
+      line => !vfLineAvailable(line) || !vfLineQuantityValid(line, items)
+    );
+    if (!changed && !stockChanged) return true;
+    event?.preventDefault();
+    page.props.go?.({view: 'bag', step: stockChanged ? 'bag' : 'delivery'});
+    return false;
+  };
   // Below the discount line, say what topping up would save on this order: enough to reach the line
   // and to cover the discounted total.
   const rules = VF_STORE.wallet,
@@ -263,11 +276,10 @@ function vals(page) {
         failed: false
       }),
     migration: P,
-    waOrder: S.waWith(
-      items.map(l => vfLineToken(l) + ', ' + l[L][1] + ' × ' + l.qty).join('\n') +
-        '\n' +
-        m(totals.total)
-    ),
+    waOrder: S.waWith(vfOrderMessage(items, delivery, totals.total, L)),
+    openWhatsapp: event => {
+      orderReady(event);
+    },
     retry: () =>
       page.setState({
         failed: false
@@ -324,7 +336,7 @@ function vals(page) {
         err: false
       }),
     place: () => {
-      if (s.busy || done || items.some(l => !vfLineAvailable(l))) return;
+      if (s.busy || done || !orderReady()) return;
       if (!usable(method)) return;
       if (method === 'card' && s.last4.length !== 4) {
         page.setState({

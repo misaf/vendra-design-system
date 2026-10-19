@@ -97,12 +97,16 @@ export function View({v}) {
                                   note={l?.note}
                                   price={l?.price}
                                   quantity={l?.qty}
+                                  quantityMax={l?.quantityMax}
                                   onQuantityChange={l?.setQty}
                                   onRemove={l?.remove}
                                   removeLabel={v.t?.remove}
                                   quantityLabels={v.qtyLabels}
                                   formatQuantity={v.fmt}
                                 />
+                                {l.stockWarning && (
+                                  <DS.Alert tone="warning">{l.stockWarning}</DS.Alert>
+                                )}
                               </div>
                             </React.Fragment>
                           ))}
@@ -258,6 +262,22 @@ export function View({v}) {
                           >
                             <>{v.t?.when}</>
                           </h2>
+                          {v.deliveryChanged && (
+                            <div id="vf-delivery-changed" tabIndex={-1}>
+                              <DS.Alert tone="warning" title={v.t.deliveryChanged}>
+                                {v.deliverySuggestion ? (
+                                  <>
+                                    <p>{v.deliverySuggestion}</p>
+                                    <DS.Button onClick={v.confirmDelivery}>
+                                      {v.t.confirmDelivery}
+                                    </DS.Button>
+                                  </>
+                                ) : (
+                                  <p>{v.t.noDelivery}</p>
+                                )}
+                              </DS.Alert>
+                            </div>
+                          )}
                           <DS.ChoiceGroup
                             legend={v.t?.day}
                             minTileWidth={104}

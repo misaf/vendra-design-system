@@ -208,6 +208,7 @@ export function View({v}) {
                         <DS.Button
                           variant="secondary"
                           href={v.waOrder}
+                          onClick={v.openWhatsapp}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

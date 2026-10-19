@@ -167,6 +167,48 @@ export function View({v}) {
               </>
             ) : null}
           </main>
+          <DS.Dialog
+            open={v.reorderOpen}
+            onClose={v.closeReorder}
+            title={v.t.reorderTitle}
+            footer={
+              <>
+                <DS.Button variant="ghost" onClick={v.closeReorder}>
+                  {v.t.reorderCancel}
+                </DS.Button>
+                <DS.Button disabled={v.reorderEmpty} onClick={v.confirmReorder}>
+                  {v.reorderMode === 'add' ? v.t.reorderAdd : v.t.reorderReplace}
+                </DS.Button>
+              </>
+            }
+          >
+            {v.hasBag ? (
+              <DS.RadioGroup
+                legend={v.t.reorderChoose}
+                value={v.reorderMode}
+                onChange={v.setReorderMode}
+              >
+                <DS.Radio value="add" label={v.t.reorderAdd} description={v.t.reorderAddHint} />
+                <DS.Radio
+                  value="replace"
+                  label={v.t.reorderReplace}
+                  description={v.t.reorderReplaceHint}
+                />
+              </DS.RadioGroup>
+            ) : (
+              <p>{v.t.reorderIntro}</p>
+            )}
+            {v.reorderChanges.length > 0 && (
+              <DS.Alert tone="warning">
+                <ul>
+                  {v.reorderChanges.map((message, index) => (
+                    <li key={index}>{message}</li>
+                  ))}
+                </ul>
+              </DS.Alert>
+            )}
+            {v.reorderEmpty && <p>{v.t.reorderNone}</p>}
+          </DS.Dialog>
         </>
       }
       sticky={<></>}

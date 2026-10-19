@@ -86,6 +86,7 @@ const sharedFiles = [
   'translations/shell.js',
   'translations/categories.js',
   'translations/time.js',
+  'order-message.js',
   'translations/location.js',
   'account-data.js',
   'wallet.js',

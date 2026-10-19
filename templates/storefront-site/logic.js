@@ -4,14 +4,16 @@ import {
   vfLineHasCard,
   vfLineItems,
   vfLineToken,
+  vfLineQuantityMax,
+  vfLineQuantityValid,
   vfLineWithCard,
   vfLinesFromParam,
   vfProduct,
   vfProductIds,
-  vfReorderLines,
+  vfReorderBag,
   vfSampleBag
 } from '../_shared/catalog.js';
-import {VF_DELIVERY, vfErrors} from '../_shared/delivery.js';
+import {VF_DELIVERY, vfErrors, vfDeliveryChanged} from '../_shared/delivery.js';
 import {VF_STORE, vfLanguage} from '../_shared/store-config.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
@@ -23,11 +25,21 @@ const VF_SESSION = 'vendra-template:' + location.pathname;
 function vfCheckoutBlocked(state) {
   return (
     !state.order &&
-    (!state.bag.length || Object.values(vfErrors(state.delivery, state.bag)).some(Boolean))
+    (!state.bag.length ||
+      Object.values(vfErrors(state.delivery, state.bag)).some(Boolean) ||
+      vfDeliveryChanged(state.delivery) ||
+      state.bag.some(line => !vfLineQuantityValid(line, state.bag)))
   );
 }
 function vfCheckoutFallback(state, lang) {
-  return {lang, view: 'bag', step: state.bag.length ? 'delivery' : 'bag'};
+  return {
+    lang,
+    view: 'bag',
+    step:
+      state.bag.length && state.bag.every(line => vfLineQuantityValid(line, state.bag))
+        ? 'delivery'
+        : 'bag'
+  };
 }
 // The account needs a signed-in phone; signed-out customers see sign-in instead.
 function vfGuardRoute(state, r) {
@@ -293,13 +305,19 @@ function vals(page) {
           },
           order: null
         })),
-      reorder: order =>
-        page.setState({
-          order: null,
-          bag: vfReorderLines(order.lines),
-          delivery: {
-            ...order.delivery
-          }
+      reorder: (order, mode = 'replace') =>
+        page.setState(current => {
+          const bag = vfReorderBag(order.lines, current.bag, mode);
+          return {
+            order: null,
+            bag,
+            delivery:
+              mode === 'add' && current.bag.length
+                ? current.delivery
+                : {
+                    ...order.delivery
+                  }
+          };
         }),
       complete: order =>
         page.setState({
@@ -330,11 +348,13 @@ function vals(page) {
                   x.id === line.id
                     ? {
                         ...x,
-                        qty: x.qty + line.qty
+                        qty: Math.min(x.qty + line.qty, vfLineQuantityMax(line, p.bag))
                       }
                     : x
                 )
-              : [...p.bag, line]
+              : vfLineQuantityMax(line, p.bag) > 0
+                ? [...p.bag, {...line, qty: Math.min(line.qty, vfLineQuantityMax(line, p.bag))}]
+                : p.bag
           };
         }),
       setQty: (id, q) =>
@@ -344,7 +364,7 @@ function vals(page) {
             x.id === id
               ? {
                   ...x,
-                  qty: q
+                  qty: Math.max(1, Math.min(q, vfLineQuantityMax(x, p.bag)))
                 }
               : x
           )

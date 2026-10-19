@@ -1,5 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
+import {vfOrderMessage} from '../_shared/order-message.js';
 import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {
   VF_ADDONS,
@@ -8,6 +9,8 @@ import {
   vfLineHasCard,
   vfLineItems,
   vfLineToken,
+  vfLineQuantityMax,
+  vfLineQuantityValid,
   vfLineWithCard,
   vfProductImage,
   vfSampleBag,
@@ -20,6 +23,7 @@ import {
   VF_ZONES,
   vfDeliveryCutoff,
   vfDeliveryDate,
+  vfDeliveryChanged,
   vfDeliveryDays,
   vfDeliveryHint,
   vfDeliverySlot,
@@ -37,7 +41,7 @@ import {vfShell} from '../_shared/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
 import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
-import {vfDayMonth, vfDayName, vfSlotLabel} from '../_shared/translations/time.js';
+import {vfDayMonth, vfDayName, vfSlotLabel, vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -122,6 +126,8 @@ function vals(page) {
   const z = vfZone(delivery.zone);
   const date = vfDeliveryDate(delivery);
   const slot = vfDeliverySlot(delivery);
+  const deliveryChanged = vfDeliveryChanged(delivery);
+  const quantitiesValid = live.every(line => vfLineQuantityValid(line, live));
   const invalid = vfErrors(delivery, live);
   const update = patch => page._update(patch);
   const errors = C.errors;
@@ -172,18 +178,12 @@ function vals(page) {
     if (page.props.go) page.props.go({view: 'bag', step: next});
     else page.setState({step: next});
   };
-  // "Order on WhatsApp" carries the bag, so the studio knows each product by its code.
-  const waOrder = [
-    C.wa.order,
-    ...live.map(
-      l =>
-        '- ' +
-        C.wa.line
-          .replace('{name}', vfLineToken(l))
-          .replace('{detail}', l[L][1])
-          .replace('{qty}', n(l.qty))
-    )
-  ].join('\n');
+  const waOrder = vfOrderMessage(
+    live,
+    {...delivery, date: deliveryChanged ? '' : date, slot},
+    total,
+    L
+  );
   return {
     ...S,
     waHref: live.length ? S.waWith(waOrder) : S.waHref,
@@ -270,7 +270,8 @@ function vals(page) {
           phone: a.phone,
           zone: a.zone,
           address: tx(a.line),
-          ...(vfValidLocation(a.location) ? {location: a.location} : {})
+          location: vfValidLocation(a.location) ? a.location : null,
+          noMap: !!s.mapFailed
         });
       }
     })),
@@ -293,8 +294,11 @@ function vals(page) {
       }
     },
     problems: s.submitted ? problems : [],
+    deliveryChanged,
+    deliverySuggestion: date && slot != null ? vfDeliveryWhen({...delivery, date, slot}, fa) : '',
+    confirmDelivery: () => update({date, slot}),
     toDelivery: () => {
-      if (live.some(l => !vfLineAvailable(l))) return;
+      if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
       stepTo('delivery');
     },
     backToBag: e => {
@@ -304,7 +308,13 @@ function vals(page) {
     bagHref: (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag'}),
     stepClick: i => i === 0 && stepTo('bag'),
     next: () => {
-      if (live.some(l => !vfLineAvailable(l))) return;
+      if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
+      // Recheck at click time too: the customer may have left this form open past the cutoff.
+      if (vfDeliveryChanged(delivery)) {
+        page.setState({submitted: true});
+        S.focus('vf-delivery-changed');
+        return;
+      }
       page.setState({
         submitted: true
       });
@@ -375,10 +385,18 @@ function vals(page) {
           : undefined,
       price: m(l.unit * l.qty),
       qty: l.qty,
+      quantityMax: Math.max(1, vfLineQuantityMax(l, live)),
+      stockWarning: !vfLineQuantityValid(l, live) ? C.stockChanged : '',
       setQty: q =>
         st
           ? st.setQty(l.id, q)
-          : page._lines(lines => lines.map(x => (x.id === l.id ? {...x, qty: q} : x))),
+          : page._lines(lines =>
+              lines.map(x =>
+                x.id === l.id
+                  ? {...x, qty: Math.max(1, Math.min(q, vfLineQuantityMax(x, lines)))}
+                  : x
+              )
+            ),
       remove: () => {
         page.setState({removed: {line: {...l}, index: i}}, () =>
           document.getElementById('vf-bag-undo')?.focus()

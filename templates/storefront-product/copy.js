@@ -5,6 +5,7 @@ export function vfCopy(S) {
   const m = S.m;
   return {
     en: {
+      stockInBag: 'Stock already in bag',
       crumbs: 'Breadcrumb',
       cat: 'Flower boxes',
       photo: 'Product photo',
@@ -69,6 +70,7 @@ export function vfCopy(S) {
       }
     },
     fa: {
+      stockInBag: 'موجودی در سبد شماست',
       crumbs: 'مسیر صفحه',
       cat: 'باکس گل',
       photo: 'عکس محصول',

@@ -1,7 +1,14 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
 import {vfSampleOrders} from '../_shared/account-data.js';
-import {vfCardMessages, vfLineToken, vfProductImage, vfSampleBag} from '../_shared/catalog.js';
+import {
+  vfCardMessages,
+  vfLineToken,
+  vfProductImage,
+  vfSampleBag,
+  vfReorderBag,
+  vfReorderLines
+} from '../_shared/catalog.js';
 import {vfMobile, vfTotals, vfZone} from '../_shared/delivery.js';
 import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
@@ -26,7 +33,9 @@ export function usePage(props) {
       lookupPhone: '',
       lookupTried: false,
       lookupFailed: false,
-      found: null
+      found: null,
+      reorderOpen: false,
+      reorderMode: 'add'
     };
   });
   useStorefrontPage(page);
@@ -57,6 +66,28 @@ function vals(page) {
         out_for_delivery: 'onTheWay'
       }[rawStatus] || rawStatus;
   const C = vfCopy(S);
+  const currentBag = page.props.store?.bag || [];
+  const reorderLines = order ? vfReorderLines(order.lines) : [];
+  const reorderBag = vfReorderBag(order?.lines || [], currentBag, ls.reorderMode);
+  const reorderChanges = (order?.lines || []).flatMap(line => {
+    const updated = reorderLines.find(item => item.id === line.id);
+    const name = vfLineToken(line);
+    if (!updated) return [C.reorderUnavailable.replace('{name}', name)];
+    const messages = [];
+    if (updated.unit !== line.unit)
+      messages.push(
+        C.reorderPrice
+          .replace('{name}', name)
+          .replace('{old}', m(line.unit))
+          .replace('{new}', m(updated.unit))
+      );
+    const previous =
+      ls.reorderMode === 'add' ? currentBag.find(item => item.id === line.id)?.qty || 0 : 0;
+    const added = Math.max(0, (reorderBag.find(item => item.id === line.id)?.qty || 0) - previous);
+    if (added !== line.qty)
+      messages.push(C.reorderQuantity.replace('{name}', name).replace('{qty}', S.n(added)));
+    return messages;
+  });
   const sampleLines = order ? order.lines : vfSampleBag();
   const sampleTotals = order
     ? order.totals
@@ -153,13 +184,22 @@ function vals(page) {
       ? e => {
           if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
           e.preventDefault();
-          window.VF_TRACK.event('order_again', {
-            transaction_id: order.id
-          });
-          page.props.store.reorder(order);
-          page.props.go('bag');
+          page.setState({reorderOpen: true, reorderMode: currentBag.length ? 'add' : 'replace'});
         }
       : undefined,
+    reorderOpen: ls.reorderOpen,
+    reorderMode: ls.reorderMode,
+    setReorderMode: reorderMode => page.setState({reorderMode}),
+    closeReorder: () => page.setState({reorderOpen: false}),
+    reorderChanges,
+    reorderEmpty: !reorderLines.length,
+    hasBag: currentBag.length > 0,
+    confirmReorder: () => {
+      if (!order || !reorderLines.length) return;
+      window.VF_TRACK.event('order_again', {transaction_id: order.id});
+      page.props.store.reorder(order, ls.reorderMode);
+      page.props.go('bag');
+    },
     t: {
       ...S.t,
       ...C,
