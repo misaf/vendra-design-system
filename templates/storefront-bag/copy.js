@@ -29,6 +29,12 @@ export function vfCopy(S) {
       zonePending: 'Place the pin to see the zone and delivery fee.',
       zoneSet: 'Set from the pin. ',
       slotClosed: 'Closed',
+      preparationNotice:
+        'Some items need preparation. The dates below work for every item in your bag.',
+      beforeDelivery: 'Total before delivery',
+      feePending: 'Calculated after address',
+      cardAdded: 'Card added for {name}.',
+      undoCard: 'Undo adding a card for {name}',
       deliveryChanged:
         'Your chosen delivery window is no longer available. Confirm a new window before continuing.',
       confirmDelivery: 'Use this delivery window',
@@ -110,6 +116,12 @@ export function vfCopy(S) {
       }
     },
     fa: {
+      preparationNotice:
+        'بعضی کالاها به آماده‌سازی نیاز دارند. تاریخ‌های زیر برای همه کالاهای سبد شما مناسب‌اند.',
+      beforeDelivery: 'جمع پیش از ارسال',
+      feePending: 'پس از تعیین نشانی محاسبه می‌شود',
+      cardAdded: 'کارت برای {name} افزوده شد.',
+      undoCard: 'بازگردانی افزودن کارت برای {name}',
       deliveryChanged:
         'زمان ارسال انتخابی دیگر در دسترس نیست. پیش از ادامه، زمان جدید را تأیید کنید.',
       confirmDelivery: 'تأیید این زمان ارسال',

@@ -5,7 +5,7 @@
 // functions below pass this store's data to them.
 // maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
 // delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
-import {vfLineHasCard, vfLineToken} from './catalog.js';
+import {vfLineHasCard, vfLineToken, vfFindProduct, vfLineProductId} from './catalog.js';
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from './promotions.js';
 import {VF_STORE, vfFeatures} from './store-config.js';
@@ -155,7 +155,7 @@ export function vfIsoDate(date) {
 
 // The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off; from
 // tomorrow when the store doesn't deliver the same day.
-export function vfDeliveryDays(zoneId, now = new Date()) {
+export function vfDeliveryDays(zoneId, now = new Date(), lines = []) {
   const sample =
     VF_SAMPLE_SOLD_OUT_IN_DAYS == null
       ? []
@@ -174,10 +174,25 @@ export function vfDeliveryDays(zoneId, now = new Date()) {
     {
       days: VF_DELIVERY_DAYS,
       soldOutDates: [...VF_SOLD_OUT_DATES, ...sample],
-      sameDay: vfFeatures().sameDay
+      sameDay: vfFeatures().sameDay && vfBagSameDay(lines)
     },
     now
   );
+}
+
+// Every configuration in a mixed bag must be ready for same-day delivery.
+export function vfBagSameDay(lines) {
+  return lines.every(line => !!vfFindProduct(vfLineProductId(line))?.same);
+}
+
+// Until a pin (or the map-failure address) establishes a destination, fees are provisional.
+export function vfDeliveryQuoted(delivery) {
+  if (delivery.noMap)
+    return (
+      String(delivery.address || '').trim().length >= 6 &&
+      VF_ZONES.some(zone => zone.id === delivery.zone)
+    );
+  return vfValidLocation(delivery.location) && vfZoneAt(delivery.location) === delivery.zone;
 }
 
 // Whether a product can be delivered on a day in the main delivery zone: it is in stock, the day is open,
@@ -189,8 +204,8 @@ export function vfDeliverableOn(product, iso, now = new Date()) {
 }
 
 // The chosen day when it is still open, otherwise the first open day.
-export function vfDeliveryDate(delivery, now = new Date()) {
-  return commerce.openDay(vfDeliveryDays(delivery.zone, now), delivery.date);
+export function vfDeliveryDate(delivery, now = new Date(), lines = []) {
+  return commerce.openDay(vfDeliveryDays(delivery.zone, now, lines), delivery.date);
 }
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
@@ -199,14 +214,17 @@ export function vfDeliverySlots(iso, now = new Date()) {
 }
 
 // The chosen slot when it is still open on the delivery day, otherwise the first open slot.
-export function vfDeliverySlot(delivery, now = new Date()) {
-  return commerce.openSlot(vfDeliverySlots(vfDeliveryDate(delivery, now), now), delivery.slot);
+export function vfDeliverySlot(delivery, now = new Date(), lines = []) {
+  return commerce.openSlot(
+    vfDeliverySlots(vfDeliveryDate(delivery, now, lines), now),
+    delivery.slot
+  );
 }
 
 // Empty defaults can pick the first window; an explicit choice must never change unnoticed.
-export function vfDeliveryChanged(delivery, now = new Date()) {
-  const date = vfDeliveryDate(delivery, now);
-  const slot = vfDeliverySlot(delivery, now);
+export function vfDeliveryChanged(delivery, now = new Date(), lines = []) {
+  const date = vfDeliveryDate(delivery, now, lines);
+  const slot = vfDeliverySlot(delivery, now, lines);
   return (
     !date ||
     slot == null ||
@@ -262,7 +280,7 @@ export function vfCheckoutRequest(
   return commerce.checkoutRequest(lines, delivery, {
     slots: VF_API_DELIVERY_SCHEDULE.slots,
     currencyCode: VF_STORE.currency || 'IRT',
-    deliveryDate: delivery.date || vfDeliveryDate(delivery),
+    deliveryDate: delivery.date || vfDeliveryDate(delivery, new Date(), lines),
     lineToken: vfLineToken,
     method,
     last4,

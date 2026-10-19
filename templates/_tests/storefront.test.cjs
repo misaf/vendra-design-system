@@ -1033,3 +1033,114 @@ for (const lang of ['en', 'fa']) {
 console.log(
   'Passed stock limits, explicit delivery confirmation, unpinned addresses, repeat-order review and complete bilingual WhatsApp handoff.'
 );
+
+// A delivery choice and payment draft remain meaningful throughout the shopping journey.
+for (const lang of ['en', 'fa']) {
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const {logic: site, ctx: c} = loadPage('site', {lang});
+  const same = vm.runInContext("vfBagLine(vfProduct('VF-7K2M4Q'), 'petite', [], 1)", c);
+  const prepared = vm.runInContext("vfBagLine(vfProduct('VF-8RD5WN'))", c);
+  const morning = new Date(2026, 9, 5, 9);
+  const days = vm.runInContext('vfDeliveryDays', c);
+  const selected = vm.runInContext('vfDeliveryDate', c);
+  const changed = vm.runInContext('vfDeliveryChanged', c);
+  assert.equal(days('central', morning, [same])[0].iso, '2026-10-05');
+  assert.equal(days('central', morning, [same, prepared])[0].iso, '2026-10-06');
+  assert.equal(
+    selected({zone: 'central', date: '2026-10-05', slot: '12'}, morning, [same, prepared]),
+    '2026-10-06'
+  );
+  assert.equal(
+    changed({zone: 'central', date: '2026-10-05', slot: '12'}, morning, [same, prepared]),
+    true
+  );
+  assert.equal(days('central', new Date(2026, 9, 5, 19), [same])[0].pastCutoff, true);
+
+  const readRoute = vm.runInContext('vfReadRoute', c);
+  const writeRoute = vm.runInContext('vfRouteParams', c);
+  const route = readRoute(`?view=product&lang=${lang}&id=VF-7K2M4Q&date=2026-10-06`);
+  assert.equal(route.date, '2026-10-06');
+  assert.equal(readRoute(writeRoute(route)).date, route.date);
+  assert.equal(readRoute('?view=product&id=VF-7K2M4Q&date=2026-02-31').date, '');
+  const {logic: product} = loadPage('product', {
+    lang,
+    routeInfo: route,
+    store: site.renderVals().store
+  });
+  product.renderVals().add();
+  assert.equal(
+    site.state.delivery.date,
+    route.date,
+    'adding a product carries the requested delivery date'
+  );
+
+  const checkout = loadPage('checkout', {lang, store: site.renderVals().store}).logic;
+  checkout.renderVals().setMethod('cod');
+  checkout.renderVals().setLast4('۱۲۳۴');
+  checkout.renderVals().setRef('TEST-REFERENCE');
+  const draft = plain(site.state.paymentDraft);
+  assert.deepEqual(draft, {method: 'cod', last4: '1234', ref: 'TEST-REFERENCE'});
+  const returned = loadPage('checkout', {lang, store: site.renderVals().store}).logic.renderVals();
+  assert.equal(returned.method, 'cod');
+  assert.equal(returned.last4, draft.last4);
+  assert.equal(returned.ref, draft.ref);
+  assert.notEqual(returned.t.address, returned.footer.address);
+  assert.equal(returned.footer.address, vm.runInContext('VF_STORE', c).address[lang]);
+  assert.equal(returned.shellText.brand, vm.runInContext('VF_STORE', c).brand[lang]);
+  let savedSession;
+  c.sessionStorage.setItem = (key, value) => (savedSession = value);
+  site.lifecycle.didUpdate();
+  assert.deepEqual(JSON.parse(savedSession).paymentDraft, draft);
+  site.renderVals().store.clear();
+  assert.deepEqual(plain(site.state.paymentDraft), {method: null, last4: '', ref: ''});
+
+  const {logic: bag, ctx: bc} = loadPage('bag', {lang});
+  bc.setTimeout = () => 0;
+  let v = bag.renderVals();
+  assert.equal(v.freeDelivery, null, 'an unknown destination does not promise free shipping');
+  assert.equal(v.sums.at(-1).label, lang === 'fa' ? 'جمع پیش از ارسال' : 'Total before delivery');
+  assert.equal(v.sums.find(row => row.label === v.t.fee).value, v.t.feePending);
+  const studio = vm.runInContext('VF_STORE.studio', bc);
+  bag._update({location: studio});
+  v = bag.renderVals();
+  assert.equal(v.sums.find(row => row.label === v.t.fee).value, v.t.free);
+  assert.ok(v.freeDelivery);
+  assert.equal(v.zoneHint, '', 'mixed bags never promise same-day delivery in zone hints');
+  bag._update({location: {lat: 35.6961, lng: 51.4231}});
+  v = bag.renderVals();
+  assert.equal(v.freeDelivery, null, 'Tehran never inherits a Karaj free-delivery promise');
+  assert.notEqual(v.sums.find(row => row.label === v.t.fee).value, v.t.free);
+
+  const before = plain(bag.state.lines);
+  const cardLine = v.cardLines.find(line => line.noCard);
+  cardLine.add();
+  assert.ok(bag.renderVals().cardAddedMessage);
+  bag.renderVals().undoCard();
+  assert.deepEqual(
+    plain(bag.state.lines),
+    before,
+    'undo removes only the newly added card and its charge'
+  );
+
+  const addCard = vm.runInContext('vfAddCard', c);
+  const undoCard = vm.runInContext('vfUndoCardAddition', c);
+  const withCard = vm.runInContext("vfBagLine(vfProduct('VF-7K2M4Q'), 'petite', ['card'], 2)", c);
+  withCard.card = 'Keep this message';
+  const initial = [withCard, same, prepared];
+  const addition = addCard(initial, same.id);
+  addition.lines.find(line => line.id === prepared.id).qty = 3;
+  const restored = undoCard(addition.lines, addition.cardAddition);
+  assert.deepEqual(
+    plain(restored.slice(0, 2)),
+    plain(initial.slice(0, 2)),
+    'merged card additions preserve the earlier message and quantities'
+  );
+  assert.equal(
+    restored.find(line => line.id === prepared.id).qty,
+    3,
+    'undo preserves unrelated edits'
+  );
+}
+console.log(
+  'Passed mixed-bag delivery dates, date handoff, payment drafts, provisional fees, card undo and isolated shell wording.'
+);

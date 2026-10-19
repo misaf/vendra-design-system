@@ -252,14 +252,16 @@ export function vfShell(self, page) {
       label: T.policies[doc],
       current: doc === policyDoc ? 'page' : undefined
     })),
-    productLink: id => ({
+    productLink: (id, context = {}) => ({
       href:
         (props.go ? '' : '../app/') +
         vfRouteParams({
           lang: L,
           view: 'product',
           id: vfProductId(id) || id,
-          cat: (vfFindProduct(id) || {}).cat
+          cat: (vfFindProduct(id) || {}).cat,
+          date: vfPageRoute(props).date,
+          ...context
         })
     }),
     occasionLink: occasion => ({

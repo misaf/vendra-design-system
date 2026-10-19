@@ -50,6 +50,10 @@ for (const lang of ['en', 'fa']) {
   test(`changed delivery windows need explicit confirmation (${lang})`, async ({page}) => {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
+    await page.evaluate(() => {
+      const site = window.__vfSite;
+      site.setState({bag: [site.state.bag[0]]});
+    });
     await deliveryDetails(page);
     const days = page.getByRole('radiogroup', {name: fa ? 'روز ارسال' : 'Delivery day'});
     // Commit an explicit date, rather than the untouched first-visit default.
