@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {FooterLinks} from './FooterLinks.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
@@ -330,86 +331,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
                 </div>
               </div>
               <div className="vf-shell-footer-columns tw:grid tw:[grid-template-columns:repeat(auto-fit,minmax(140px,1fr))] tw:gap-x-5 tw:gap-y-7 tw:pt-7 tw:[border-top:1px_solid_var(--border-inverse)]">
-                <nav
-                  aria-labelledby="vf-footer-shop"
-                  className="tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm"
-                >
-                  <div
-                    id="vf-footer-shop"
-                    className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
-                  >
-                    <>{v.t?.footer?.shop}</>
-                  </div>
-                  {list(v.footer?.shop).map((l, $index) => (
-                    <React.Fragment key={$index}>
-                      <a
-                        href={l?.href}
-                        className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                      >
-                        <>{l?.label}</>
-                      </a>
-                    </React.Fragment>
-                  ))}
-                </nav>
-                <nav
-                  aria-labelledby="vf-footer-studio"
-                  className="tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm"
-                >
-                  <div
-                    id="vf-footer-studio"
-                    className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
-                  >
-                    <>{v.t?.footer?.studio}</>
-                  </div>
-                  {list(v.footer?.studio).map((l, $index) => (
-                    <React.Fragment key={$index}>
-                      <a
-                        href={l?.href}
-                        aria-current={l?.current}
-                        className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                      >
-                        <>{l?.label}</>
-                      </a>
-                    </React.Fragment>
-                  ))}
-                </nav>
-                <nav
-                  aria-labelledby="vf-footer-help"
-                  className="vf-shell-footer-nav tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm"
-                >
-                  <div
-                    id="vf-footer-help"
-                    className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1"
-                  >
-                    <>{v.t?.help}</>
-                  </div>
-                  <a
-                    href={v.href?.faq}
-                    aria-current={v.footer?.faqCurrent}
-                    className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                  >
-                    <>{v.t?.faq}</>
-                  </a>
-                  {list(v.policyLinks).map((p, $index) => (
-                    <React.Fragment key={$index}>
-                      <a
-                        href={p?.href}
-                        aria-current={p?.current}
-                        className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                      >
-                        <>{p?.label}</>
-                      </a>
-                    </React.Fragment>
-                  ))}
-                  <button
-                    type="button"
-                    id="vf-consent-settings"
-                    onClick={v.consent?.open}
-                    className="vf-shell-footer-link tw:p-0 tw:[border:0] tw:bg-transparent tw:text-on-inverse tw:[font:inherit] tw:text-start tw:cursor-pointer tw:hover:underline! tw:[text-underline-offset:4px]"
-                  >
-                    <>{v.t?.consent?.settings}</>
-                  </button>
-                </nav>
+                <FooterLinks v={v} />
                 <div className="vf-shell-footer-details tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm">
                   <div className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1">
                     <>{v.t?.visit}</>

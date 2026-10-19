@@ -90,6 +90,15 @@ export async function openSite(page, view, lang, extra) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+// Phone footer links live in disclosures; wider layouts expose the same navigation directly.
+export async function openFooterGroup(page, name) {
+  const footer = page.getByRole('contentinfo');
+  const trigger = footer.getByRole('button', {name, exact: true});
+  if ((await trigger.isVisible()) && (await trigger.getAttribute('aria-expanded')) === 'false')
+    await trigger.click();
+  return footer.getByRole('navigation', {name, exact: true});
+}
+
 // Before a full-page screenshot: load every declared font face (fonts.ready only covers faces
 // already requested, so a late Persian or display face can re-wrap text after it resolves),
 // load lazy images, then wait until the page height holds still for a few frames.

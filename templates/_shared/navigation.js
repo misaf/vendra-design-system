@@ -162,7 +162,7 @@ export function vfShell(self, page) {
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
-    if (reopened) focus('vf-consent-settings');
+    if (reopened) focus(self._vfConsentTrigger || 'vf-consent-settings');
   };
   const choose = value => {
     window.VF_TRACK.setConsent(value);
@@ -179,7 +179,8 @@ export function vfShell(self, page) {
       hideConsent({vfConsentDismissed: true});
     },
     policy: policyLink('privacy'),
-    open: () => {
+    open: event => {
+      self._vfConsentTrigger = event?.currentTarget?.id || 'vf-consent-settings';
       self.setState({vfConsentOpen: true});
       focus('vf-consent');
     }
