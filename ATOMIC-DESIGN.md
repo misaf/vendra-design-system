@@ -100,7 +100,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    map fallback, validation and submission remain in the View/logic.
    StorefrontWeddingsLayout now arranges hero, services, story, inquiry and feedback slots;
    weddings content, validation, submission and recovery remain in the View/logic.
-   **Next stage: extract the FAQ page layout with heading, questions and contact slots.**
+   StorefrontFaqLayout now arranges heading, questions and contact slots; FAQ content, accordion
+   controls, section labels and navigation remain in the View/logic.
+   **Next stage: extract the policy page layout with heading, document and navigation slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -695,6 +697,27 @@ hero-anchor probe exposed the existing router/focus defect described above. No s
 baselines/tolerances, package contents or generated styles changed. The full browser/device
 suites, known TV arrow-navigation failures and unrelated snapshot failures were not rerun.
 The next stage extracts the FAQ layout with heading, questions and contact slots.
+
+**Thirty-ninth checkpoint verified:** StorefrontFaqLayout is extracted under
+`templates/app/layouts/StorefrontFaqLayout/`. It receives heading, questions and contact slots
+and owns the main focus target, page header, responsive information columns, question-list
+wrapper and contact aside. The View retains grouped sections and accessible headings, Accordion
+controls/default expansion, copy, help card, contact/WhatsApp links and sample-content note.
+FAQ logic retains category/answer mapping and delivery-rule interpolation; shared page logic
+retains navigation, locale, SEO and focus. No page behavior, copy or styles changed. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+Eighteen focused browser cases pass: bilingual FAQ expansion/accessibility on phone and desktop,
+printing, package hydration and responsive first paint. Twenty-eight before/after capture pairs
+are byte-identical: initial, expanded and collapsed accordions at 390/768/1280/1920 pixels in
+English/Persian, plus print at 390/1280 pixels in both languages. Capture probes verify initial
+expansion, single-open behavior, Space/Enter toggling, contact navigation, Back-navigation heading
+focus and WhatsApp link attributes without opening the external destination. The first probe
+retry corrected a temporary main-focus assertion to the existing heading-focus contract.
+Captures use fixed time, decoded images and normalized scroll. Representative Persian phone and
+English desktop captures were visually inspected. No screenshot baselines/tolerances, package
+contents or generated styles changed. The full browser/device suites, known TV arrow-navigation
+failures and unrelated snapshot failures were not rerun. The next stage extracts the policy page
+layout with heading, document and navigation slots.
 
 ## Adding components
 
