@@ -1,6 +1,7 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
+import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -9,9 +10,9 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-form tw:mx-auto">
-            <div className="vf-form-narrow tw:flex tw:flex-col tw:gap-5 tw:max-w-form tw:mx-auto">
-              {v.isPhone ? (
+          <StorefrontSigninLayout
+            phone={
+              v.isPhone ? (
                 <>
                   <h1>
                     <>{v.t?.inA} </>
@@ -52,8 +53,10 @@ export function View({v}) {
                     <>{v.t?.terms?.after}</>
                   </p>
                 </>
-              ) : null}
-              {v.isCode ? (
+              ) : null
+            }
+            code={
+              v.isCode ? (
                 <>
                   <h1>
                     <>{v.t?.codeA} </>
@@ -88,8 +91,10 @@ export function View({v}) {
                     <>{v.t?.change}</>
                   </DS.Button>
                 </>
-              ) : null}
-              {v.isOk ? (
+              ) : null
+            }
+            feedback={
+              v.isOk ? (
                 <>
                   <DS.EmptyState
                     icon="check"
@@ -124,9 +129,9 @@ export function View({v}) {
                     ) : null}
                   </div>
                 </>
-              ) : null}
-            </div>
-          </main>
+              ) : null
+            }
+          />
         </>
       }
       sticky={<></>}
