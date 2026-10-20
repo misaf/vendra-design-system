@@ -3708,7 +3708,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/DatePicker/DatePicker.css */
+/* components/organisms/DatePicker/DatePicker.css */
 .ag-date {
   display: flex;
   flex-direction: column;

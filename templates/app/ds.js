@@ -17,7 +17,7 @@ export * from '../../components/atoms/Chip/Chip.jsx';
 export * from '../../components/atoms/ChoiceGroup/ChoiceGroup.jsx';
 export * from '../../components/atoms/ChoiceGroup/ChoiceTile.jsx';
 export * from '../../components/atoms/CodeInput/CodeInput.jsx';
-export * from '../../components/DatePicker/DatePicker.jsx';
+export * from '../../components/organisms/DatePicker/DatePicker.jsx';
 export * from '../../components/molecules/DetailList/DetailList.jsx';
 export * from '../../components/organisms/Dialog/Dialog.jsx';
 export * from '../../components/molecules/EmptyState/EmptyState.jsx';

@@ -54,7 +54,7 @@
 @import url('molecules/SectionHeader/SectionHeader.css');
 @import url('organisms/Carousel/Carousel.css');
 @import url('atoms/SkipLink/SkipLink.css');
-@import url('DatePicker/DatePicker.css');
+@import url('organisms/DatePicker/DatePicker.css');
 @import url('LocationPicker/LocationPicker.css');
 @import url('PlacesMap/PlacesMap.css');
 @import url('molecules/OrderTimeline/OrderTimeline.css');

@@ -1,5 +1,4 @@
 export * from './components/BottomTabBar/BottomTabBar.js';
-export * from './components/DatePicker/DatePicker.js';
 export * from './components/LocationPicker/LocationPicker.js';
 export * from './components/PlacesMap/PlacesMap.js';
 export * from './components/VendraProvider/VendraProvider.js';
@@ -65,6 +64,7 @@ export * from './components/molecules/Toast/Toast.js';
 export * from './components/molecules/Tooltip/Tooltip.js';
 export * from './components/molecules/TrustSeal/TrustSeal.js';
 export * from './components/organisms/Carousel/Carousel.js';
+export * from './components/organisms/DatePicker/DatePicker.js';
 export * from './components/organisms/Dialog/Dialog.js';
 export * from './components/organisms/Gallery/Gallery.js';
 export * from './components/organisms/Lightbox/Lightbox.js';
