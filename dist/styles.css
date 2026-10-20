@@ -2323,7 +2323,7 @@ a.ag-cat {
   margin-top: var(--space-5h);
 }
 
-/* components/LoadMore/LoadMore.css */
+/* components/molecules/LoadMore/LoadMore.css */
 .ag-loadmore {
   display: flex;
   flex-direction: column;
@@ -2351,7 +2351,7 @@ a.ag-cat {
   background: var(--text-accent);
 }
 
-/* components/Pagination/Pagination.css */
+/* components/molecules/Pagination/Pagination.css */
 /* Pagination: a centred row of round page buttons; the current page is filled. */
 .ag-pages__list {
   display: flex;
@@ -2789,7 +2789,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/NavLink/NavLink.css */
+/* components/molecules/NavLink/NavLink.css */
 .ag-nav {
   box-sizing: border-box;
   display: inline-flex;
@@ -2863,7 +2863,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/Breadcrumb/Breadcrumb.css */
+/* components/molecules/Breadcrumb/Breadcrumb.css */
 /* Breadcrumb: one quiet line of links with chevrons between them; the current page is plain text. */
 .ag-crumbs__list {
   display: flex;
