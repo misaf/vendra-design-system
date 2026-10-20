@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
-import {Picture} from '../Picture/Picture.jsx';
+import {Picture} from '../atoms/Picture/Picture.jsx';
 import {cx} from '../utils/cx.js';
 
 // Product photos (Picture: a URL or a photo object) in a swipeable scroll-snap track with dot buttons (React Aria); RTL scrolls the

@@ -1,4 +1,4 @@
-import type {Photo} from '../Picture/Picture.js';
+import type {Photo} from '../atoms/Picture/Picture.js';
 
 export interface GalleryProps {
   /** URLs or photo objects (see Picture); the first loads at once, the rest lazily */

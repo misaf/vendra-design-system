@@ -3,7 +3,7 @@
 import React from "react";
 import { Button, Link } from "react-aria-components";
 import { Icon } from "../atoms/Icon/Icon.js";
-import { Picture } from "../Picture/Picture.js";
+import { Picture } from "../atoms/Picture/Picture.js";
 import { cx } from "../utils/cx.js";
 // A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
 // frame="circle" is the small round version for a quick row of categories.

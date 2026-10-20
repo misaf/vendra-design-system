@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton} from '../IconButton/IconButton.jsx';
+import {IconButton} from '../atoms/IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
 import {messages} from './messages.js';

@@ -32,7 +32,10 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    fixtures and tests. Update their consumers and regenerate `dist/`. **Complete.**
 3. **Remaining primitives.** Inspect the dependency graph and migrate small batches, starting with
    non-form primitives, then Field and the accessible form controls that use it. Decide the layer
-   from the actual responsibility before moving each batch. **Next stage.**
+   from the actual responsibility before moving each batch. The non-form batch now lives under
+   `components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
+   SkipLink and LiveRegion. Together with the first batch, there are 14 migrated atoms.
+   **Next stage: Field and basic form controls.**
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
@@ -53,6 +56,15 @@ suite and production app build pass. All 27 focused atom/package/hydration brows
 core/feedback guideline screenshot comparisons pass. A broad browser run passed 38 tests before
 being stopped to keep this stage focused; the full 1,530-test browser suite is not verified.
 Proceed one verified stage per reply.
+
+**Second checkpoint verified:** the 11 non-form primitives listed above have moved with their
+types, wording, fixtures and specs; all consumers and the published package use the new paths.
+Implementation bodies and CSS rules are unchanged. Build, generated-file/format/CSS checks,
+the full unit/type/package suite and production app build pass. All 63 atom/package/hydration
+browser tests and six core/feedback/density visual checks pass. The two commerce card screenshot
+checks fail on both this stage and the preceding commit (`62ab49e`); matching screenshots from
+both versions confirm the mismatch predates this stage. No baselines or tolerances were changed.
+The full browser suite was not rerun.
 
 ## Adding components
 
@@ -83,6 +95,8 @@ npm --prefix templates run test:e2e -- --workers=2
 ```
 
 Run the migrated components' own browser specs first for fast feedback, then the broader suite.
+After moving component folders, restart an existing Vite preview before browser verification;
+its cached CSS import graph can retain paths from before the move.
 Review visual differences before changing baselines. Record the exact scope and failures; a
 focused run does not prove the complete screenshot or device suite. Never edit generated `dist/`
 or `_runtime/` files directly.
