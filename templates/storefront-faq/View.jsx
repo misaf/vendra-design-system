@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
+import {StorefrontFaqLayout} from '../app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,23 +11,25 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-info">
-            <header className="vf-info-header tw:max-w-prose tw:flex tw:flex-col tw:gap-4 tw:mb-7">
-              <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                <>{v.t?.eyebrow}</>
-              </div>
-              <h1>
-                <>{v.t?.titleA} </>
-                <em className="vf-faq-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                  <>{v.t?.titleB}</>
-                </em>
-              </h1>
-              <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                <>{v.t?.intro}</>
-              </p>
-            </header>
-            <div className="vf-info-columns tw:grid tw:[grid-template-columns:minmax(0,1fr)_320px] tw:gap-7 tw:items-start">
-              <div className="vf-info-sections tw:flex tw:flex-col tw:gap-7 tw:min-w-0">
+          <StorefrontFaqLayout
+            heading={
+              <>
+                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
+                  <>{v.t?.eyebrow}</>
+                </div>
+                <h1>
+                  <>{v.t?.titleA} </>
+                  <em className="vf-faq-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
+                    <>{v.t?.titleB}</>
+                  </em>
+                </h1>
+                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
+                  <>{v.t?.intro}</>
+                </p>
+              </>
+            }
+            questions={
+              <>
                 {list(v.groups).map((group, $index) => (
                   <React.Fragment key={$index}>
                     <section
@@ -44,8 +47,10 @@ export function View({v}) {
                     </section>
                   </React.Fragment>
                 ))}
-              </div>
-              <aside className="tw:flex tw:flex-col tw:gap-5">
+              </>
+            }
+            contact={
+              <>
                 <DS.Card padding={28}>
                   <div className="tw:flex tw:flex-col tw:gap-4">
                     <DS.Icon name="message-circle" size={28} />
@@ -76,9 +81,9 @@ export function View({v}) {
                 <p className="vf-faq-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">
                   <>{v.t?.sample}</>
                 </p>
-              </aside>
-            </div>
-          </main>
+              </>
+            }
+          />
         </>
       }
       sticky={<></>}
