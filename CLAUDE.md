@@ -21,6 +21,8 @@ language wrappers; providers and the bare presentation branch stay in Shell.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
+StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
+line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.

@@ -1,0 +1,7 @@
+# StorefrontBagLayout
+
+Bag/delivery Atomic Design template with React-node slots for notices, progress, heading, items/delivery fields, summary and empty state. The View supplies `showContents` to control the progress/heading/columns group. Notices and empty content remain outside that group so removing the final item can still expose Undo.
+
+The bag View retains conditional slot construction, controls, copy, line quantity/removal/undo, delivery inputs, validation feedback, promo/summary content and checkout callbacks. Bag logic retains persistence, stock limits, delivery rules and totals. The sticky action remains a separate Shell slot. This layout owns only the main landmark, column wrappers and sticky summary placement.
+
+Preserve the existing classes and focus target. Verify bag rows, configured-line undo, stock/quantity limits, promo and delivery totals, validation focus, checkout continuity, empty-bag recovery and hydration. Bag rows continue to offer quantity/removal only, with size/add-on choices remaining on the product page.
