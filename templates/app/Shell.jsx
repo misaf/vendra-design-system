@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {StorefrontLayout} from './layouts/StorefrontLayout/StorefrontLayout.jsx';
 import {StorefrontBottomBar} from './layouts/StorefrontBottomBar/StorefrontBottomBar.jsx';
 import {StorefrontAnnouncement} from './organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx';
 import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent.jsx';
@@ -114,24 +115,25 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
       onEvent={({event, ...params}) => window.VF_TRACK.event(event, params)}
       density={density}
     >
-      <div className="tw:bg-muted tw:min-h-screen">
-        <div
-          className="vf-shell-container tw:mx-auto tw:bg-page tw:text-body tw:font-body tw:min-h-screen tw:flex tw:flex-col vf-page tw:[container-type:inline-size] tw:[--vf-shopping-width:var(--container-max)] tw:[--vf-form-width:1088px] tw:[--vf-info-width:1088px]"
-          data-tenant={v.tenant}
-          lang={v.lang}
-          dir={v.dir}
-          data-lang={v.lang}
-        >
+      <StorefrontLayout
+        tenant={v.tenant}
+        lang={v.lang}
+        dir={v.dir}
+        skipLink={
           <DS.SkipLink href="#main" onClick={v.skipGo}>
             <>{v.shellText?.skip}</>
           </DS.SkipLink>
-          {v.standalone ? (
+        }
+        liveRegion={
+          v.standalone ? (
             <>
               <DS.LiveRegion>
                 <>{v.vfAnnouncement}</>
               </DS.LiveRegion>
             </>
-          ) : null}
+          ) : null
+        }
+        announcement={
           <StorefrontAnnouncement
             label={v.shellText?.news}
             closeLabel={v.shellText?.dismissNews}
@@ -140,6 +142,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             phoneText={v.announcementPhone}
             link={v.announcementLink}
           />
+        }
+        header={
           <StorefrontHeader
             brand={v.shellText?.brand}
             homeHref={v.href?.home}
@@ -180,6 +184,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             menuLabel={v.shellText?.menu}
             onOpenMenu={v.openMenu}
           />
+        }
+        menu={
           <StorefrontMenu
             open={v.menuOpen}
             onClose={v.closeMenu}
@@ -196,8 +202,10 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             whatsappHref={v.waHref}
             whatsappLabel={v.shellText?.waLong}
           />
-          <DS.OfflineNotice />
-          <div className="vf-shell-content tw:flex-1">{content}</div>
+        }
+        notices={<DS.OfflineNotice />}
+        content={content}
+        footer={
           <StorefrontFooter
             homeHref={v.href?.home}
             brand={v.shellText?.brand}
@@ -231,6 +239,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             consentSettingsLabel={v.shellText?.consent?.settings}
             onOpenConsent={v.consent?.open}
           />
+        }
+        bottomBar={
           <StorefrontBottomBar
             consent={
               <StorefrontConsent
@@ -250,8 +260,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             sticky={sticky}
             navigation={<DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />}
           />
-        </div>
-      </div>
+        }
+      />
     </DS.VendraProvider>
   );
 }
