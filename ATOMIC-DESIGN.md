@@ -12,7 +12,7 @@ customer state and checkout rules forward.
 | Atoms | A basic control or visual primitive: Icon, Spinner, Button | `components/atoms/<Name>/` | Foundations and atoms |
 | Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `components/molecules/<Name>/` | Foundations, atoms and molecules |
 | Organisms | A substantial reusable section: Gallery, OrderSummary | `components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |
-| Templates | Layout and slots for page sections | Start from `templates/app/Shell.jsx`; extract layouts as pages migrate | UI layers; no account, catalog or payment persistence |
+| Templates | Layout and slots for page sections | `templates/app/layouts/<Name>/`; composed by Shell and pages | UI layers; no account, catalog or payment persistence |
 | Pages | Routed screens that supply content, state and actions | `templates/storefront-*/` | Layouts, UI layers and storefront services |
 
 Classify by responsibility, not line count. Button can contain Icon and Spinner and still be a
@@ -24,6 +24,9 @@ Storefront-specific organisms live in `templates/app/organisms/<Name>/`. They co
 UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
 They do not belong in the published package or import store state and persistence. Shell and page
 logic supply their data and actions. Tailwind scans nested app JSX.
+
+Layout templates live under `templates/app/layouts/<Name>/`. They arrange React-node slots supplied
+by Shell or pages, keeping content, callbacks and state outside the layout.
 
 Store data, delivery policy, customer identity, payment recovery and API effects stay in the
 storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations remain in
@@ -70,10 +73,11 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    `templates/app/organisms/StorefrontConsent/` with visibility, content and action callbacks.
    StorefrontAnnouncement now renders the responsive news strip under
    `templates/app/organisms/StorefrontAnnouncement/` with explicit text, link and close callback.
-   **Next stage: extract the bottom-bar layout with its sticky-action slot.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
-   page names and the maintained `storefront-*` source folders.
+   page names and the maintained `storefront-*` source folders. StorefrontBottomBar is the first
+   layout under `templates/app/layouts/`, with consent, sticky-action and navigation slots.
+   **Next stage: extract the main storefront layout with header, content, footer and bottom-bar slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -375,6 +379,23 @@ byte; representative phone/tablet captures were visually inspected. Published pa
 and generated styles are unchanged; no screenshot baselines or tolerances changed. The full
 browser/device suites and known unrelated snapshot failures were not rerun. The next stage
 extracts the bottom-bar layout with its sticky-action slot.
+
+**Twenty-sixth checkpoint verified:** StorefrontBottomBar is the first layout template under
+`templates/app/layouts/StorefrontBottomBar/`. It arranges React-node slots for consent, the page's
+sticky action and navigation, without owning content, callbacks, state, routing or persistence.
+Shell composes those slots and retains sticky-height/focus measurements. Existing wrapper classes,
+slot order and CSS-controlled docking/visibility are preserved. Build, generated-file/format/CSS
+checks, the full unit/type/package suite and production app build pass. Twelve touch-enabled shell
+tier/resize checks, 12 hydration/first-paint checks, six touch tablet shopping checks and two real
+touch-phone rotation checks pass; two duplicate rotation cases are skipped by their existing
+project guard. Coverage includes product configuration retention, focused controls clearing
+consent/purchase bars, tablet sorting and short-landscape sticky measurements. Eight bottom-bar
+captures with consent shown on the product page at 390, 768, 1280 and 1920 pixels in English and
+Persian match the preceding commit (`9e57899`) byte for byte; representative phone/tablet captures
+were visually inspected. Published package contents and generated styles are unchanged; no
+screenshot baselines or tolerances changed. The full browser/device suites and known unrelated
+snapshot failures were not rerun. The next stage extracts the main storefront layout with header,
+content, footer and bottom-bar slots.
 
 ## Adding components
 
