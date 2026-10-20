@@ -19,7 +19,9 @@ StorefrontBottomBar arranges consent, sticky action and navigation; Shell owns t
 sticky-height/focus measurements. StorefrontLayout arranges the main section slots and tenant/
 language wrappers; providers and the bare presentation branch stay in Shell.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
-purchase actions, and the sticky purchase action stays in Shell. Tailwind scans nested app JSX.
+purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
+shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
+Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
 
