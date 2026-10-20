@@ -85,6 +85,7 @@ export function usePage(props) {
       failed: false,
       payment: null,
       paymentSaveError: false,
+      retryReview: false,
       ...page.props.store?.paymentDraft
     };
     page._draft = patch => {
@@ -287,6 +288,8 @@ function vals(page) {
       !busy &&
       page._draft({
         method: value,
+        paymentSaveError: false,
+        retryReview: false,
         err: false,
         failed: false
       }),
@@ -336,6 +339,18 @@ function vals(page) {
     payLabels: C.payLabels,
     copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
     paymentSaveError: s.paymentSaveError ? C.paymentSaveError : '',
+    retryReview: s.retryReview,
+    reviewRetry: () => {
+      const record = page.state.payment?.record;
+      const stockChanged =
+        !record ||
+        record.lines.some(
+          line => !vfLineAvailable(line) || !vfLineQuantityValid(line, record.lines)
+        );
+      vfKeepPayment(null, record?.customerId);
+      page.setState({payment: null, retryReview: false});
+      page.props.go?.({view: 'bag', step: stockChanged ? 'bag' : 'delivery'});
+    },
     receiptChanged,
     receiptChangeText: C.receiptChanged.replace('{amount}', m(totals.total)),
     confirmReceipt: () => page._draft({receiptAmount: totals.total}),
@@ -460,6 +475,20 @@ function vals(page) {
       supportHref: 'tel:' + VF_STORE.phone
     },
     payRetry: () => {
+      const previous = page.state.payment?.record;
+      if (
+        !previous ||
+        (previous.customerId && previous.customerId !== vfCustomerId()) ||
+        vfDeliveryChanged(previous.delivery, new Date(), previous.lines) ||
+        previous.lines.some(
+          line => !vfLineAvailable(line) || !vfLineQuantityValid(line, previous.lines)
+        )
+      ) {
+        page.setState({retryReview: true});
+        S.focus('vf-payment-review');
+        return;
+      }
+      page.setState({retryReview: false});
       const record = {...s.payment.record, attempt: (s.payment.record.attempt || 1) + 1};
       if (!vfKeepPayment(record)) {
         page.setState({paymentSaveError: true});
@@ -472,7 +501,12 @@ function vals(page) {
     payOther: () => {
       vfKeepPayment(null);
       leavePaymentUrl();
-      page._draft({payment: null, method: otherThan('online')});
+      page._draft({
+        payment: null,
+        method: otherThan('online'),
+        retryReview: false,
+        paymentSaveError: false
+      });
     },
     payCheckAgain: () =>
       s.payment.record ? vfVerifyPayment(page, 'paid', s.payment.record) : leavePaymentUrl(),

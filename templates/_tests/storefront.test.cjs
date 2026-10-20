@@ -1510,3 +1510,44 @@ for (const lang of ['en', 'fa']) {
 console.log(
   'Passed customer-isolated drafts, history, late completions, reloads and payment recovery.'
 );
+
+for (const lang of ['en', 'fa']) {
+  let destination;
+  const {logic: site, ctx: sc} = loadPage('site', {lang});
+  const d = {...site.state.delivery};
+  d.date = vm.runInContext('vfDeliveryDate', sc)(d, new Date(), site.state.bag);
+  const {logic: checkout, ctx: c} = loadPage('checkout', {
+    lang,
+    store: site.renderVals().store,
+    go: route => (destination = route)
+  });
+  c.setTimeout = () => 0;
+  const record = {
+    id: 'VN-41001',
+    totals: {total: 8450000},
+    customerId: 'guest',
+    lines: site.state.bag,
+    delivery: {...d, date: '2000-01-01'}
+  };
+  checkout.setState({payment: {status: 'failed', record}});
+  checkout.renderVals().payRetry();
+  assert.equal(checkout.state.payment.status, 'failed');
+  assert.equal(checkout.renderVals().retryReview, true);
+  checkout.renderVals().reviewRetry();
+  assert.equal(destination.step, 'delivery');
+  assert.equal(checkout.state.payment, null);
+  checkout.setState({payment: {status: 'failed', record: {...record, delivery: d}}});
+  checkout.renderVals().payRetry();
+  assert.equal(checkout.state.payment.status, 'redirecting', 'a valid window can still retry');
+  const unavailable = {
+    ...record,
+    delivery: d,
+    lines: record.lines.map(line => ({...line, qty: 9999}))
+  };
+  checkout.setState({payment: {status: 'failed', record: unavailable}});
+  checkout.renderVals().payRetry();
+  assert.equal(checkout.state.payment.status, 'failed', 'stock changes prevent payment retries');
+  checkout.renderVals().reviewRetry();
+  assert.equal(destination.step, 'bag');
+}
+console.log('Passed payment-retry delivery and stock revalidation.');
