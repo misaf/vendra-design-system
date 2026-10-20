@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link} from 'react-aria-components';
-import {ArchFrame} from '../atoms/ArchFrame/ArchFrame.jsx';
-import {Price} from '../atoms/Price/Price.jsx';
-import {cx} from '../utils/cx.js';
+import {ArchFrame} from '../../atoms/ArchFrame/ArchFrame.jsx';
+import {Price} from '../../atoms/Price/Price.jsx';
+import {cx} from '../../utils/cx.js';
 
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
 // Every amount is a Price, so totals share the product prices' digits and stay whole in RTL.

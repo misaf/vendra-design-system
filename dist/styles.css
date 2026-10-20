@@ -748,7 +748,7 @@ a.ag-iconbtn {
   background-size: cover;
 }
 
-/* components/PaymentStatus/PaymentStatus.css */
+/* components/organisms/PaymentStatus/PaymentStatus.css */
 .ag-payment-status {
   display: flex;
   flex-direction: column;
@@ -4129,7 +4129,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/OrderSummary/OrderSummary.css */
+/* components/organisms/OrderSummary/OrderSummary.css */
 .ag-osum {
   font-family: var(--font-body);
 }

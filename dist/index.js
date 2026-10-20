@@ -2,8 +2,6 @@
 export * from './components/BottomTabBar/BottomTabBar.js';
 export * from './components/DatePicker/DatePicker.js';
 export * from './components/LocationPicker/LocationPicker.js';
-export * from './components/OrderSummary/OrderSummary.js';
-export * from './components/PaymentStatus/PaymentStatus.js';
 export * from './components/PlacesMap/PlacesMap.js';
 export * from './components/VendraProvider/VendraProvider.js';
 export * from './components/atoms/ArchFrame/ArchFrame.js';
@@ -71,6 +69,8 @@ export * from './components/organisms/Carousel/Carousel.js';
 export * from './components/organisms/Dialog/Dialog.js';
 export * from './components/organisms/Gallery/Gallery.js';
 export * from './components/organisms/Lightbox/Lightbox.js';
+export * from './components/organisms/OrderSummary/OrderSummary.js';
+export * from './components/organisms/PaymentStatus/PaymentStatus.js';
 export * from './components/organisms/ToastRegion/ToastRegion.js';
 export * from './components/utils/analytics.js';
 export * from './components/utils/commerce.js';
