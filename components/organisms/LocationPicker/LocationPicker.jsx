@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {commerce} from '../utils/commerce.js';
-import {cx} from '../utils/cx.js';
-import {maps} from '../utils/maps.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {commerce} from '../../utils/commerce.js';
+import {cx} from '../../utils/cx.js';
+import {maps} from '../../utils/maps.js';
 
 // A delivery pin: the pin stays at the map's centre, and wherever the map stops is the chosen point.
 // Customers drag or tap the map, or press the arrow keys once it has focus, or use their own location.

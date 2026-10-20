@@ -1,7 +1,7 @@
 import React from 'react';
-import {commerce} from '../utils/commerce.js';
-import {cx} from '../utils/cx.js';
-import {maps} from '../utils/maps.js';
+import {commerce} from '../../utils/commerce.js';
+import {cx} from '../../utils/cx.js';
+import {maps} from '../../utils/maps.js';
 
 // A map of places to look at, not to choose: the studio on the contact page, saved addresses in the
 // account. Each place has a labelled marker that opens it (onSelect) with a pointer or with Enter and

@@ -3933,7 +3933,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/LocationPicker/LocationPicker.css */
+/* components/organisms/LocationPicker/LocationPicker.css */
 .ag-location {
   display: flex;
   flex-direction: column;
@@ -3979,7 +3979,7 @@ a.ag-tabbar__item {
   padding-block-start: var(--space-2);
 }
 
-/* components/PlacesMap/PlacesMap.css */
+/* components/organisms/PlacesMap/PlacesMap.css */
 /* A place: an accent dot with its label above. Leaflet's stylesheet loads later, hence the doubled class. */
 .leaflet-marker-icon.ag-place-marker {
   display: grid;
