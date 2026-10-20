@@ -4,6 +4,7 @@ import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 import {FooterLinks} from './FooterLinks.jsx';
+import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
@@ -154,100 +155,46 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
               </DS.AnnouncementBar>
             </>
           ) : null}
-          <header className="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
-            <div className="vf-shell-desktop-header tw:max-lg:hidden tw:mx-auto tw:flex tw:items-center tw:justify-between tw:gap-5 tw:max-w-page tw:py-0 tw:px-gutter tw:h-header">
-              <nav className="tw:flex tw:gap-1 tw:flex-wrap">
-                <DS.NavLink variant="header" href={v.href?.shop} current={v.nav?.shop}>
-                  <>{v.shellText?.shop}</>
-                </DS.NavLink>
-                {v.features?.weddings ? (
-                  <DS.NavLink variant="header" href={v.href?.weddings} current={v.nav?.weddings}>
-                    <>{v.shellText?.weddings}</>
-                  </DS.NavLink>
-                ) : null}
-                {v.features?.journal ? (
-                  <DS.NavLink variant="header" href={v.href?.journal} current={v.nav?.journal}>
-                    <>{v.shellText?.journal}</>
-                  </DS.NavLink>
-                ) : null}
-              </nav>
-              <a
-                href={v.href?.home}
-                className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
-              >
-                <>{v.shellText?.brand}</>
-              </a>
-              <div className="tw:flex tw:gap-1 tw:items-center">
-                {v.hasLang ? (
-                  <div className="vf-shell-header-lang tw:me-2">
-                    <DS.LanguageSwitch
-                      value={v.lang}
-                      onChange={v.setLang}
-                      options={v.langOpts}
-                      label={v.shellText?.langL}
-                    />
-                  </div>
-                ) : null}
-                <DS.IconButton icon="search" label={v.shellText?.search} href={v.href?.search} />
-                <DS.IconButton icon="user" label={v.shellText?.account} href={v.href?.account} />
-                <DS.IconButton
-                  icon="shopping-bag"
-                  label={v.bagLabel}
-                  href={v.href?.bag}
-                  count={v.bagCount}
-                />
-              </div>
-            </div>
-            {/* Phones and portrait tablets (below 1024px): the menu button, the brand and the
-                    shop's tools. A tablet (768px up) has room for the language switch and account. */}
-            <div className="vf-shell-mobile-header tw:lg:hidden tw:grid tw:items-center tw:gap-1 tw:h-header-mobile tw:py-0 tw:px-1 tw:[grid-template-columns:88px_minmax(0,1fr)_88px] tw:md:gap-4 tw:md:h-header tw:md:px-gutter tw:md:[grid-template-columns:minmax(0,1fr)_auto_minmax(0,1fr)]">
-              <div className="tw:flex">
-                <DS.IconButton icon="menu" label={v.shellText?.menu} onClick={v.openMenu} />
-                {v.hasLang ? (
-                  <button
-                    type="button"
-                    onClick={v.otherLang?.pick}
-                    lang={v.otherLang?.lang}
-                    aria-label={v.otherLang?.name}
-                    className="vf-shell-mobile-lang tw:md:hidden tw:min-w-tap tw:min-h-tap tw:[border:0] tw:rounded-full tw:bg-transparent tw:text-sm tw:font-medium tw:text-body tw:[font-family:inherit] tw:cursor-pointer"
-                  >
-                    <>{v.otherLang?.label}</>
-                  </button>
-                ) : null}
-              </div>
-              <a
-                href={v.href?.home}
-                className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:md:text-xl tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
-              >
-                <>{v.shellText?.brand}</>
-              </a>
-              <div className="vf-shell-mobile-tools tw:flex tw:justify-end tw:items-center tw:md:gap-1">
-                {v.hasLang ? (
-                  <div className="vf-shell-header-lang tw:max-md:hidden tw:me-2">
-                    <DS.LanguageSwitch
-                      value={v.lang}
-                      onChange={v.setLang}
-                      options={v.langOpts}
-                      label={v.shellText?.langL}
-                    />
-                  </div>
-                ) : null}
-                <DS.IconButton icon="search" label={v.shellText?.search} href={v.href?.search} />
-                <DS.IconButton
-                  icon="user"
-                  label={v.shellText?.account}
-                  href={v.href?.account}
-                  className="tw:max-md:hidden!"
-                />
-                <DS.IconButton
-                  icon="shopping-bag"
-                  label={v.bagLabel}
-                  href={v.href?.bag}
-                  count={v.bagCount}
-                />
-              </div>
-            </div>
-          </header>
+          <StorefrontHeader
+            brand={v.shellText?.brand}
+            homeHref={v.href?.home}
+            navigation={[
+              {id: 'shop', href: v.href?.shop, label: v.shellText?.shop, current: v.nav?.shop},
+              v.features?.weddings && {
+                id: 'weddings',
+                href: v.href?.weddings,
+                label: v.shellText?.weddings,
+                current: v.nav?.weddings
+              },
+              v.features?.journal && {
+                id: 'journal',
+                href: v.href?.journal,
+                label: v.shellText?.journal,
+                current: v.nav?.journal
+              }
+            ].filter(Boolean)}
+            searchHref={v.href?.search}
+            searchLabel={v.shellText?.search}
+            accountHref={v.href?.account}
+            accountLabel={v.shellText?.account}
+            bagHref={v.href?.bag}
+            bagLabel={v.bagLabel}
+            bagCount={v.bagCount}
+            language={
+              v.hasLang
+                ? {
+                    value: v.lang,
+                    options: v.langOpts,
+                    label: v.shellText?.langL,
+                    alternative: v.otherLang
+                  }
+                : undefined
+            }
+            onLanguageChange={v.setLang}
+            onPickAlternativeLanguage={v.otherLang?.pick}
+            menuLabel={v.shellText?.menu}
+            onOpenMenu={v.openMenu}
+          />
           {/* The menu drawer opens from the compact header (below 1024px). */}
           <DS.Dialog
             placement="start"
