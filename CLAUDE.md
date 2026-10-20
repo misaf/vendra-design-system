@@ -10,8 +10,9 @@ Storefront-specific organisms live under `templates/app/organisms/<Name>/` and r
 content props and callbacks from Shell or pages. StorefrontHeader owns the responsive header
 markup; StorefrontFooter owns footer markup and responsive link groups. Shell owns their data,
 menu state, desktop resize dismissal and shared layout effects. StorefrontMenu renders the compact
-menu drawer from explicit content and callbacks. Keep `vf-*` composition out
-of the published component package. Tailwind scans nested app JSX.
+menu drawer from explicit content and callbacks. StorefrontConsent renders the privacy notice;
+consent persistence, analytics gating and focus restoration remain in shared storefront logic.
+Keep `vf-*` composition out of the published component package. Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
 
