@@ -13,6 +13,9 @@ export function vfCopy(S) {
       payA: 'Card to',
       payB: 'card.',
       payP: 'Transfer the total from your banking app to the card below, then enter the last four digits of your card so we can match the payment.',
+      retryReview:
+        'Delivery or product availability has changed since this payment attempt. Review your bag before paying again.',
+      reviewRetry: 'Review delivery and bag',
       paymentSaveError:
         'Your browser couldn’t save the payment recovery details. Payment has not started. Keep this page open, allow browser storage, and try again.',
       receiptChanged:
@@ -77,6 +80,9 @@ export function vfCopy(S) {
       payA: 'کارت به',
       payB: 'کارت.',
       payP: 'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',
+      retryReview:
+        'زمان ارسال یا موجودی کالاها از زمان این تلاش پرداخت تغییر کرده است. پیش از پرداخت دوباره، سبد و ارسال را بررسی کنید.',
+      reviewRetry: 'بررسی ارسال و سبد',
       paymentSaveError:
         'مرورگر نتوانست اطلاعات بازیابی پرداخت را ذخیره کند. پرداخت آغاز نشده است. این صفحه را باز نگه دارید، ذخیره‌سازی مرورگر را فعال کنید و دوباره تلاش کنید.',
       receiptChanged:

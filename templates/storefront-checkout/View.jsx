@@ -11,6 +11,19 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-form vf-form--checkout tw:mx-auto">
+            {v.retryReview && (
+              <div id="vf-payment-review" tabIndex={-1}>
+                <DS.Alert
+                  tone="warning"
+                  title={v.t.retryReview}
+                  action={
+                    <DS.Button variant="secondary" onClick={v.reviewRetry}>
+                      {v.t.reviewRetry}
+                    </DS.Button>
+                  }
+                />
+              </div>
+            )}
             {v.paymentSaveError && <DS.Alert tone="danger" title={v.paymentSaveError} />}
             {v.paying ? (
               <>
