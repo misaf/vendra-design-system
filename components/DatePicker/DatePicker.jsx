@@ -17,7 +17,7 @@ import {
   useLocale
 } from 'react-aria-components';
 import {GregorianCalendar, PersianCalendar, parseDate, toCalendar} from '@internationalized/date';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {dates} from '../utils/dates.js';
 import {Select} from '../Select/Select.jsx';
 import {FieldMessage} from '../Field/Field.jsx';

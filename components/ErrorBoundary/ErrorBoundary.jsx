@@ -1,6 +1,6 @@
 import React from 'react';
 import {Alert} from '../Alert/Alert.jsx';
-import {Button} from '../Button/Button.jsx';
+import {Button} from '../atoms/Button/Button.jsx';
 import {usePageLocale} from '../utils/locale.js';
 import {useMessages} from '../utils/messages.js';
 import {messages} from './messages.js';

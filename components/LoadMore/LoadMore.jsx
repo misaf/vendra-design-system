@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../Button/Button.jsx';
+import {Button} from '../atoms/Button/Button.jsx';
 import {cx} from '../utils/cx.js';
 
 // "Show more" for a long list: how many of the total are showing, a progress bar, and a button that

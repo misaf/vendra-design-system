@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../Button/Button.jsx';
+import {Button} from '../atoms/Button/Button.jsx';
 import {Lightbox} from './Lightbox.jsx';
 
 const items = ['VF-1', 'VF-2', 'VF-3'].map(code => ({

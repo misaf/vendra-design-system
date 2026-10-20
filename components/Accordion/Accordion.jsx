@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Disclosure, DisclosureGroup, DisclosurePanel, Heading} from 'react-aria-components';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 const toList = value => (value == null ? [] : Array.isArray(value) ? value : [value]);

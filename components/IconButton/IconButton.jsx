@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button as AriaButton, Link} from 'react-aria-components';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 // An icon-only React Aria Button, or React Aria Link with `href`. `label` is its accessible name and tooltip;

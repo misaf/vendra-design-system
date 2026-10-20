@@ -5,7 +5,7 @@ import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {createRoot} from 'react-dom/client';
 import * as components from '../templates/app/ds.js';
-import {ICON_SVGS} from '../components/Icon/icon-svgs.js';
+import {ICON_SVGS} from '../components/atoms/Icon/icon-svgs.js';
 import {dates} from '../components/utils/dates.js';
 import {format} from '../components/utils/format.js';
 import {commerce} from '../components/utils/commerce.js';

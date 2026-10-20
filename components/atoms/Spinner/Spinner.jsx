@@ -1,6 +1,6 @@
 import React from 'react';
-import {cx} from '../utils/cx.js';
-import {useMessages} from '../utils/messages.js';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A spinning ring in the current text colour, for a wait of unknown length. On its own it is a

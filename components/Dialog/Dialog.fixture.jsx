@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../Button/Button.jsx';
+import {Button} from '../atoms/Button/Button.jsx';
 import {Input} from '../Input/Input.jsx';
 import {Dialog} from './Dialog.jsx';
 

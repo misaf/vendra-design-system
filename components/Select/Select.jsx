@@ -9,7 +9,7 @@ import {
   Select as AriaSelect,
   SelectValue
 } from 'react-aria-components';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {usePageLocale} from '../utils/locale.js';

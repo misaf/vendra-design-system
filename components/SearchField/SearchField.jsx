@@ -5,7 +5,7 @@ import {
   Label,
   SearchField as AriaSearchField
 } from 'react-aria-components';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';

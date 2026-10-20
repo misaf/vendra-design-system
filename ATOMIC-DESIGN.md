@@ -29,10 +29,10 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
 1. **Tooling and rules.** Teach the package builder, fixture host, tests and generator about nested
    component folders. Add layer checks to `npm test`. **Complete.**
 2. **First atoms.** Move Icon, Spinner and Button with their types, CSS, wording, documentation,
-   fixtures and tests. Update their consumers and regenerate `dist/`. **Next.**
+   fixtures and tests. Update their consumers and regenerate `dist/`. **Complete.**
 3. **Remaining primitives.** Inspect the dependency graph and migrate small batches, starting with
    non-form primitives, then Field and the accessible form controls that use it. Decide the layer
-   from the actual responsibility before moving each batch.
+   from the actual responsibility before moving each batch. **Next stage.**
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
@@ -47,6 +47,12 @@ Each batch gets a separate local commit after its checks. The flat component fol
 remaining migration backlog, not an alternative location for new components. Migrated components
 must not import from that backlog. Checkpoints describe completed work, not a promise that a
 folder move alone finishes a redesign.
+
+**First checkpoint verified:** build, generated-file/format/CSS checks, the full unit/type/package
+suite and production app build pass. All 27 focused atom/package/hydration browser tests and the
+core/feedback guideline screenshot comparisons pass. A broad browser run passed 38 tests before
+being stopped to keep this stage focused; the full 1,530-test browser suite is not verified.
+Proceed one verified stage per reply.
 
 ## Adding components
 
