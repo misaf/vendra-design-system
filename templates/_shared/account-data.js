@@ -12,6 +12,9 @@ export function vfAccountPhone() {
     return '';
   }
 }
+export function vfCustomerId() {
+  return vfMobile(vfAccountPhone()) || 'guest';
+}
 // Accounts are keyed by the mobile in its stored form, so 0912…, +98 912… and ۰۹۱۲… are one account.
 export function vfAccountKey(phone) {
   return 'vf-account:' + (vfMobile(phone) || vfLatin(phone).replace(/\D/g, ''));
@@ -348,7 +351,8 @@ export function vfSampleOrders() {
 
 // Session orders join the sample history without losing earlier checkouts or duplicating a number.
 export function vfKnownOrders(store) {
-  return [...(store?.orders || []), store?.lastOrder, store?.order, ...vfSampleOrders()].filter(
+  const own = !store?.customerId || store.customerId === vfCustomerId() ? store : null;
+  return [...(own?.orders || []), own?.lastOrder, own?.order, ...vfSampleOrders()].filter(
     (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
   );
 }

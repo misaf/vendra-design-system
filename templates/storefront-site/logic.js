@@ -1,5 +1,5 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
+import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/account-data.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -13,7 +13,7 @@ import {
   vfReorderBag,
   vfSampleBag
 } from '../_shared/catalog.js';
-import {VF_DELIVERY, vfErrors, vfDeliveryChanged} from '../_shared/delivery.js';
+import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../_shared/delivery.js';
 import {VF_STORE, vfLanguage} from '../_shared/store-config.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
 import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
@@ -73,11 +73,30 @@ function vfSearchReturnRoute() {
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
+const vfEmptyCustomer = () => ({
+  delivery: {...VF_DELIVERY},
+  paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
+  order: null,
+  lastOrder: null,
+  orders: []
+});
+const vfCustomerState = state => ({
+  delivery: state.delivery,
+  paymentDraft: state.paymentDraft,
+  order: state.order,
+  lastOrder: state.lastOrder,
+  orders: state.orders
+});
 function vfSiteInitial(props) {
   let saved = {};
   try {
     saved = JSON.parse(sessionStorage.getItem(VF_SESSION) || '{}') || {};
   } catch {}
+  const customerId = vfCustomerId();
+  // Unowned legacy private data may be restored only to the guest it originally belonged to.
+  const privateState =
+    saved.customers?.[customerId] ||
+    (saved.customerId === customerId || (!saved.customerId && customerId === 'guest') ? saved : {});
   let route = vfReadRoute();
   if (route.view === 'home' && !new URLSearchParams(location.search).has('view') && props.start)
     route = {...route, view: props.start};
@@ -99,6 +118,8 @@ function vfSiteInitial(props) {
       history.replaceState({}, '', vfRouteParams(route));
   }
   return {
+    customerId,
+    customers: saved.customers || {},
     route: route.view,
     routeInfo: route,
     searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
@@ -122,27 +143,27 @@ function vfSiteInitial(props) {
     ],
     delivery: {
       ...VF_DELIVERY,
-      ...saved.delivery
+      ...privateState.delivery
     },
     paymentDraft: {
-      method: saved.paymentDraft?.method || null,
-      last4: String(saved.paymentDraft?.last4 || '')
+      method: privateState.paymentDraft?.method || null,
+      last4: String(privateState.paymentDraft?.last4 || '')
         .replace(/\D/g, '')
         .slice(0, 4),
-      receiptAmount: Number.isFinite(saved.paymentDraft?.receiptAmount)
-        ? saved.paymentDraft.receiptAmount
+      receiptAmount: Number.isFinite(privateState.paymentDraft?.receiptAmount)
+        ? privateState.paymentDraft.receiptAmount
         : null,
-      ref: String(saved.paymentDraft?.ref || '')
+      ref: String(privateState.paymentDraft?.ref || '')
     },
     cardAddition: null,
     checkoutPending: false,
     checkoutNotice: null,
-    order: saved.order || null,
-    lastOrder: saved.lastOrder || saved.order || null,
+    order: privateState.order || null,
+    lastOrder: privateState.lastOrder || privateState.order || null,
     orders: [
-      ...(Array.isArray(saved.orders) ? saved.orders : []),
-      saved.lastOrder,
-      saved.order
+      ...(Array.isArray(privateState.orders) ? privateState.orders : []),
+      privateState.lastOrder,
+      privateState.order
     ].filter(
       (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
     ),
@@ -156,7 +177,58 @@ export function usePage(props) {
     page.state = vfSiteInitial(page.props);
     page._savedEdits = new Map();
     page._savedLoading = false;
+    page.syncCustomer = ({continueCheckout = false} = {}) => {
+      const customerId = vfCustomerId(),
+        current = page.state;
+      if (customerId === current.customerId) return;
+      const previous = vfCustomerState(current);
+      const customers = {...current.customers, [current.customerId]: previous};
+      let next = customers[customerId] || vfEmptyCustomer();
+      if (current.customerId === 'guest' && customerId !== 'guest') {
+        const claimed = previous.orders.filter(
+          order => vfMobile(order.delivery?.senderPhone) === customerId
+        );
+        const claimedIds = new Set(claimed.map(order => order.id));
+        next = {
+          ...next,
+          orders: [...claimed, ...next.orders].filter(
+            (order, index, all) => all.findIndex(item => item.id === order.id) === index
+          ),
+          lastOrder: claimed[0] || next.lastOrder
+        };
+        customers.guest = {
+          ...previous,
+          orders: previous.orders.filter(order => !claimedIds.has(order.id)),
+          order: claimedIds.has(previous.order?.id) ? null : previous.order,
+          lastOrder: claimedIds.has(previous.lastOrder?.id) ? null : previous.lastOrder
+        };
+        if (continueCheckout) {
+          next = {
+            ...next,
+            delivery: previous.delivery,
+            paymentDraft: previous.paymentDraft,
+            order: null
+          };
+          customers.guest = {
+            ...customers.guest,
+            delivery: {...VF_DELIVERY},
+            paymentDraft: vfEmptyCustomer().paymentDraft
+          };
+        }
+      }
+      page.setState({
+        ...next,
+        customerId,
+        customers,
+        cardAddition: null,
+        checkoutNotice: null,
+        announcement: ''
+      });
+      const guarded = vfGuardRoute(page.state, {...page.state.routeInfo, view: page.state.route});
+      if (guarded) page.navigate(guarded, true);
+    };
     page.navigate = (input, replace = false) => {
+      page.syncCustomer();
       const candidate =
         typeof input === 'string'
           ? {
@@ -235,6 +307,10 @@ export function usePage(props) {
           })
         );
       };
+      page._customerChanged = event => {
+        if (event.key === 'vf-account-phone' || event.key == null) page.syncCustomer();
+      };
+      window.addEventListener('storage', page._customerChanged);
       window.addEventListener('popstate', page._pop);
       // Plain links to another view of the site (footer, policy and terms links) switch the view in
       // place, as React Aria links do; a new tab, a download or another page loads normally.
@@ -263,11 +339,20 @@ export function usePage(props) {
       if (guarded) page.navigate(guarded, true);
     },
     didUpdate() {
+      if (page.state.customerId !== vfCustomerId()) {
+        page.syncCustomer();
+        return;
+      }
       try {
         const {bag, saved, delivery, order, lastOrder, orders, paymentDraft} = page.state;
         sessionStorage.setItem(
           VF_SESSION,
           JSON.stringify({
+            customerId: page.state.customerId,
+            customers: {
+              ...page.state.customers,
+              [page.state.customerId]: vfCustomerState(page.state)
+            },
             bag,
             saved,
             delivery,
@@ -280,6 +365,7 @@ export function usePage(props) {
       } catch {}
     },
     willUnmount() {
+      window.removeEventListener('storage', page._customerChanged);
       window.removeEventListener('popstate', page._pop);
       document.removeEventListener('click', page._click);
       if (window.__vfSite === page) delete window.__vfSite;
@@ -326,6 +412,8 @@ function vals(page) {
       : null,
     dismissCheckoutNotice: () => page.setState({checkoutNotice: null}),
     store: {
+      customerId: s.customerId,
+      syncCustomer: page.syncCustomer,
       bag: s.bag,
       saved: s.saved,
       delivery: s.delivery,
@@ -377,6 +465,21 @@ function vals(page) {
         }),
       complete: order =>
         page.setState(current => {
+          if (order.customerId && order.customerId !== current.customerId) {
+            const owner = current.customers[order.customerId] || vfEmptyCustomer();
+            if (owner.orders.some(previous => previous.id === order.id)) return null;
+            return {
+              customers: {
+                ...current.customers,
+                [order.customerId]: {
+                  ...owner,
+                  order: null,
+                  lastOrder: order,
+                  orders: [order, ...owner.orders]
+                }
+              }
+            };
+          }
           // A late response belongs to the submitted checkout, not a bag edited since then.
           if (current.orders.some(previous => previous.id === order.id)) return null;
           const unchanged =

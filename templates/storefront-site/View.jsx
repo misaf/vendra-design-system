@@ -92,6 +92,7 @@ export function View({v}) {
           {v.is?.bag ? (
             <>
               <StorefrontBag
+                key={v.store.customerId}
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
@@ -104,6 +105,7 @@ export function View({v}) {
           {v.is?.checkout ? (
             <>
               <StorefrontCheckout
+                key={v.store.customerId}
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
@@ -116,6 +118,7 @@ export function View({v}) {
           {v.is?.track ? (
             <>
               <StorefrontTrack
+                key={v.store.customerId}
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
@@ -140,6 +143,7 @@ export function View({v}) {
           {v.is?.account ? (
             <>
               <StorefrontAccount
+                key={v.store.customerId}
                 routeInfo={v.routeInfo}
                 lang={v.lang}
                 tenant={v.tenant}
