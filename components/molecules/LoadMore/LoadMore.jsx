@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
-import {cx} from '../utils/cx.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {cx} from '../../utils/cx.js';
 
 // "Show more" for a long list: how many of the total are showing, a progress bar, and a button that
 // loads the next page. `href` makes the button a real link to the next page (it works without

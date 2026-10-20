@@ -41,9 +41,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
    SearchField, PromoCodeField and ResendCode are the first batch in `components/molecules/`.
-   Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch: seven molecule
-   folders are now migrated.
-   **Next stage: navigation molecules** (NavLink, Breadcrumb, Pagination and LoadMore).
+   Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
+   Pagination and LoadMore form the navigation batch: 11 molecule folders are now migrated.
+   **Next stage: browsing and menu molecules** (FilterBar, LanguageSwitch, MenuList and SectionHeader).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -109,6 +109,16 @@ tests and both feedback visual checks pass. Coverage includes alert dismissal, f
 error isolation, retry/reset behavior and English/Persian accessibility. No baselines or tolerances
 were changed. The known commerce and validation-state snapshot failures were not rerun, and the
 full browser suite remains unverified.
+
+**Seventh checkpoint verified:** NavLink, Breadcrumb, Pagination and LoadMore moved with their
+types, wording, fixtures and specs, bringing the molecule layer to 11 folders. Consumers and the
+published package use the new paths; implementations and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 57 molecule/package/hydration browser tests, four provider integration tests and four
+navigation/wayfinding visual checks pass. Coverage includes client-side routing, current-page
+markers, pagination bounds, loading states, RTL behavior and English/Persian accessibility.
+No baselines or tolerances were changed. Known commerce and validation-state snapshot failures
+were not rerun, and the full browser suite remains unverified.
 
 ## Adding components
 
