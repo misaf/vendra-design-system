@@ -64,7 +64,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    `templates/app/organisms/StorefrontHeader/` with explicit content props and callbacks.
    StorefrontFooter and its FooterLinks now live under
    `templates/app/organisms/StorefrontFooter/` with explicit content and consent callbacks.
-   **Next stage: extract the storefront mobile menu from Shell.**
+   StorefrontMenu now composes the compact menu drawer under
+   `templates/app/organisms/StorefrontMenu/` with controlled state and explicit content/callbacks.
+   **Next stage: extract the storefront consent banner from Shell.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -318,6 +320,24 @@ the preceding commit (`8f68d28`) byte for byte; representative phone/desktop cap
 inspected. Published package contents and generated styles are unchanged. No screenshot baselines
 or tolerances changed. The full browser/device suites and known unrelated snapshot failures were
 not rerun. The next stage extracts the storefront mobile menu from Shell.
+
+**Twenty-third checkpoint verified:** StorefrontMenu is extracted under
+`templates/app/organisms/StorefrontMenu/`. Shell supplies controlled open/close state, navigation,
+optional language content and its callback, and the optional WhatsApp link. Routing, feature
+filtering, language/menu state and desktop resize dismissal remain in Shell and storefront logic.
+The organism composes the existing package Dialog, MenuList, NavLink, LanguageSwitch and Button;
+markup, start placement, classes and bilingual content are preserved. Navigation now invokes the
+close callback: previously, a link within the current route could leave the drawer open. Four
+new touch phone/tablet regression tests cover that fix, current-page markers, WhatsApp link
+attributes, focus trapping, Escape/close-button focus restoration, language context and axe.
+Twelve shell tier/resize tests and 12 hydration/first-paint tests also pass. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+Four open-menu captures at 390 and 768 pixels in English and Persian match the preceding commit
+(`fc0c3d0`) byte for byte; representative phone/tablet captures were visually inspected. A direct
+before/after browser probe confirms same-page navigation retained the old drawer and closes the
+new one in all four cases. Published package contents and generated styles are unchanged; no
+screenshot baselines or tolerances changed. The full browser/device suites and known unrelated
+snapshot failures were not rerun. The next stage extracts the storefront consent banner.
 
 ## Adding components
 
