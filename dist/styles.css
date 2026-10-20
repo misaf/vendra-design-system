@@ -2514,7 +2514,7 @@ a.ag-cat {
   }
 }
 
-/* components/Accordion/Accordion.css */
+/* components/molecules/Accordion/Accordion.css */
 .ag-acc {
   border-top: var(--border-hair) solid var(--border-subtle);
   font-family: var(--font-body);
@@ -3208,7 +3208,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/LineItem/LineItem.css */
+/* components/molecules/LineItem/LineItem.css */
 .ag-line {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;

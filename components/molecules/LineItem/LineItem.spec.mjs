@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('a bag row changes quantity and removes itself', async ({page}) => {
   await openComponent(page, 'LineItem');

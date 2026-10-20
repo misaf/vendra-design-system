@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 // The disclosure pattern: headings with buttons that show and hide their panels.
 test.beforeEach(({page}) => openComponent(page, 'Accordion'));

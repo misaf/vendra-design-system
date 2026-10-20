@@ -1,5 +1,5 @@
 // Every design-system component, for the storefront views.
-export * from '../../components/Accordion/Accordion.jsx';
+export * from '../../components/molecules/Accordion/Accordion.jsx';
 export * from '../../components/molecules/AddressCard/AddressCard.jsx';
 export * from '../../components/molecules/Alert/Alert.jsx';
 export * from '../../components/molecules/AnnouncementBar/AnnouncementBar.jsx';
@@ -31,7 +31,7 @@ export * from '../../components/atoms/IconButton/IconButton.jsx';
 export * from '../../components/atoms/Input/Input.jsx';
 export * from '../../components/molecules/LanguageSwitch/LanguageSwitch.jsx';
 export * from '../../components/Lightbox/Lightbox.jsx';
-export * from '../../components/LineItem/LineItem.jsx';
+export * from '../../components/molecules/LineItem/LineItem.jsx';
 export * from '../../components/atoms/LiveRegion/LiveRegion.jsx';
 export * from '../../components/molecules/LoadMore/LoadMore.jsx';
 export * from '../../components/LocationPicker/LocationPicker.jsx';
