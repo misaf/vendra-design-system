@@ -106,7 +106,9 @@ function vals(page) {
     });
     return data;
   };
-  const focusError = () => setTimeout(() => VF_NAV.focusFirstInvalid(), 0);
+  // Editor dialogs render in a portal outside main; scope validation focus to the open dialog.
+  const focusError = () =>
+    setTimeout(() => VF_NAV.focusFirstInvalid(document.querySelector('[role="dialog"]')), 0);
   const openAddress = a =>
     page.setState({
       errors: {},
