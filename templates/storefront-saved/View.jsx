@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
+import {StorefrontSavedLayout} from '../app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,38 +11,39 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
-            <div className="vf-saved-header tw:mb-6">
+          <StorefrontSavedLayout
+            showResults={v.hasItems}
+            showEmpty={v.noItems}
+            heading={
               <DS.SectionHeader
                 level="h1"
                 eyebrow={v.countLabel}
                 title={v.t?.hA}
                 accent={v.t?.hB}
               />
-            </div>
-            {v.removedMessage ? (
-              <div className="vf-saved-undo tw:mb-4">
-                <DS.Alert
-                  title={v.removedMessage}
-                  action={
-                    <DS.Button
-                      id="vf-saved-undo"
-                      data-vf-keep-focus
-                      variant="secondary"
-                      onClick={v.undoRemove}
-                    >
-                      {v.t?.undo}
-                    </DS.Button>
-                  }
-                />
-              </div>
-            ) : null}
-            {v.hasItems ? (
-              <>
-                <div
-                  data-vf-keep-focus
-                  className="vf-saved-product-grid vf-product-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(max(150px,calc((100%_-_72px)_/_4)),1fr))] tw:gap-y-7 tw:gap-x-5"
-                >
+            }
+            notice={
+              v.removedMessage ? (
+                <div className="vf-saved-undo tw:mb-4">
+                  <DS.Alert
+                    title={v.removedMessage}
+                    action={
+                      <DS.Button
+                        id="vf-saved-undo"
+                        data-vf-keep-focus
+                        variant="secondary"
+                        onClick={v.undoRemove}
+                      >
+                        {v.t?.undo}
+                      </DS.Button>
+                    }
+                  />
+                </div>
+              ) : null
+            }
+            results={
+              v.hasItems ? (
+                <>
                   {list(v.items).map((p, $index) => (
                     <React.Fragment key={$index}>
                       <DS.ProductCard
@@ -61,12 +63,12 @@ export function View({v}) {
                       />
                     </React.Fragment>
                   ))}
-                </div>
-              </>
-            ) : null}
-            {v.noItems ? (
-              <>
-                <div className="vf-saved-empty tw:flex tw:flex-col tw:items-center tw:gap-4h tw:py-6 tw:px-0">
+                </>
+              ) : null
+            }
+            empty={
+              v.noItems ? (
+                <>
                   <DS.EmptyState
                     icon="heart"
                     title={v.t?.emptyA}
@@ -76,10 +78,10 @@ export function View({v}) {
                   <DS.Button variant="primary" href={v.href?.shop}>
                     <>{v.t?.browse}</>
                   </DS.Button>
-                </div>
-              </>
-            ) : null}
-          </main>
+                </>
+              ) : null
+            }
+          />
         </>
       }
       sticky={<></>}
