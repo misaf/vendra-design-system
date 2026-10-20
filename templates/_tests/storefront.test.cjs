@@ -1382,3 +1382,43 @@ for (const lang of ['en', 'fa']) {
   assert.equal(read().wallet.balance, before + 1000000);
 }
 console.log('Passed account updates against newer wallet, profile, address and reminder data.');
+
+for (const lang of ['en', 'fa']) {
+  const {logic: site} = loadPage('site', {lang});
+  const {logic: checkout, ctx: c} = loadPage('checkout', {lang, store: site.renderVals().store});
+  c.setTimeout = () => 0;
+  let submitted = 0;
+  c.window.VF_API = {
+    live: true,
+    checkout: () => {
+      submitted++;
+      return Promise.resolve();
+    }
+  };
+  c.sessionStorage.setItem = () => {
+    throw new Error('Storage full');
+  };
+  checkout.renderVals().setMethod('online');
+  checkout.renderVals().place();
+  assert.equal(submitted, 0, 'a missing recovery record blocks the API submission too');
+  assert.equal(checkout.state.payment, null);
+  assert.ok(checkout.renderVals().paymentSaveError);
+  c.window.VF_API.live = false;
+  let saved;
+  c.sessionStorage.setItem = (_, value) => (saved = JSON.parse(value));
+  checkout.renderVals().place();
+  assert.equal(checkout.state.payment.status, 'redirecting');
+  assert.equal(saved.id, checkout.state.payment.record.id);
+  assert.equal(checkout.renderVals().paymentSaveError, '');
+  checkout.setState({payment: {...checkout.state.payment, status: 'failed'}});
+  c.sessionStorage.setItem = () => {
+    throw new Error('Storage full');
+  };
+  checkout.renderVals().payRetry();
+  assert.equal(
+    checkout.state.payment.status,
+    'failed',
+    'failed persistence also blocks retry redirection'
+  );
+}
+console.log('Passed pending-payment persistence failures, recovery, and retry safeguards.');

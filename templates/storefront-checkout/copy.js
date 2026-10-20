@@ -13,6 +13,8 @@ export function vfCopy(S) {
       payA: 'Card to',
       payB: 'card.',
       payP: 'Transfer the total from your banking app to the card below, then enter the last four digits of your card so we can match the payment.',
+      paymentSaveError:
+        'Your browser couldn’t save the payment recovery details. Payment has not started. Keep this page open, allow browser storage, and try again.',
       receiptChanged:
         'Your order total is now {amount}. Check your transfer covers this amount before placing the order.',
       confirmReceipt: 'I’ve checked the new total',
@@ -75,6 +77,8 @@ export function vfCopy(S) {
       payA: 'کارت به',
       payB: 'کارت.',
       payP: 'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',
+      paymentSaveError:
+        'مرورگر نتوانست اطلاعات بازیابی پرداخت را ذخیره کند. پرداخت آغاز نشده است. این صفحه را باز نگه دارید، ذخیره‌سازی مرورگر را فعال کنید و دوباره تلاش کنید.',
       receiptChanged:
         'مبلغ سفارش اکنون {amount} است. پیش از ثبت سفارش بررسی کنید که مبلغ واریزی این مبلغ را پوشش دهد.',
       confirmReceipt: 'مبلغ جدید را بررسی کردم',

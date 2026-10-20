@@ -11,6 +11,7 @@ export function View({v}) {
       content={
         <>
           <main id="main" tabIndex={-1} className="vf-form vf-form--checkout tw:mx-auto">
+            {v.paymentSaveError && <DS.Alert tone="danger" title={v.paymentSaveError} />}
             {v.paying ? (
               <>
                 <div className="vf-checkout-steps tw:mb-5h">
