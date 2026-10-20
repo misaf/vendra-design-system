@@ -6,7 +6,7 @@ import {
   SearchField as AriaSearchField
 } from 'react-aria-components';
 import {Icon} from '../atoms/Icon/Icon.jsx';
-import {useField, FieldMessage} from '../Field/Field.jsx';
+import {useField, FieldMessage} from '../atoms/Field/Field.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
 import {messages} from './messages.js';

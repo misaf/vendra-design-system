@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input} from '../Input/Input.jsx';
+import {Input} from '../atoms/Input/Input.jsx';
 import {commerce} from '../utils/commerce.js';
 
 // A phone number field: the phone keypad on touch screens, autofill, and digits kept left to right

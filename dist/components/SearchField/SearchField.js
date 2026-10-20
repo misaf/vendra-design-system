@@ -3,7 +3,7 @@
 import React from "react";
 import { Button, Input as AriaInput, Label, SearchField as AriaSearchField } from "react-aria-components";
 import { Icon } from "../atoms/Icon/Icon.js";
-import { useField, FieldMessage } from "../Field/Field.js";
+import { useField, FieldMessage } from "../atoms/Field/Field.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";

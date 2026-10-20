@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input} from '../Input/Input.jsx';
+import {Input} from '../atoms/Input/Input.jsx';
 import {commerce} from '../utils/commerce.js';
 import {cx} from '../utils/cx.js';
 
