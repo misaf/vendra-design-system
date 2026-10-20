@@ -3,7 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
-import {FooterLinks} from './FooterLinks.jsx';
+import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
 import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
@@ -243,115 +243,39 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           </DS.Dialog>
           <DS.OfflineNotice />
           <div className="vf-shell-content tw:flex-1">{content}</div>
-          <footer className="vf-shell-footer ag-on-inverse tw:bg-inverse tw:text-on-inverse tw:mt-9">
-            <div className="vf-shell-footer-content tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-6 tw:flex tw:flex-col tw:gap-7">
-              <div className="vf-shell-footer-top tw:flex tw:flex-wrap tw:justify-between tw:gap-x-9 tw:gap-y-7">
-                <div className="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-form tw:flex tw:flex-col tw:gap-4">
-                  <a
-                    href={v.href?.home}
-                    className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
-                  >
-                    <>{v.shellText?.brand}</>
-                  </a>
-                  <p className="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">
-                    <>{v.footer?.tagline}</>
-                  </p>
-                  <ul
-                    aria-label={v.shellText?.footer?.social}
-                    className="vf-shell-footer-social tw:flex tw:gap-2 tw:list-none tw:m-0 tw:p-0"
-                  >
-                    {list(v.footer?.social).map((s, $index) => (
-                      <React.Fragment key={$index}>
-                        <li>
-                          <DS.IconButton
-                            icon={s?.icon}
-                            label={s?.label}
-                            href={s?.href}
-                            target={s?.target}
-                            variant="secondary"
-                            inverse={true}
-                          />
-                        </li>
-                      </React.Fragment>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="vf-shell-footer-columns tw:grid tw:[grid-template-columns:repeat(auto-fit,minmax(140px,1fr))] tw:gap-x-5 tw:gap-y-7 tw:pt-7 tw:[border-top:1px_solid_var(--border-inverse)]">
-                <FooterLinks v={v} />
-                <div className="vf-shell-footer-details tw:flex tw:flex-col tw:gap-3 tw:items-start tw:text-sm">
-                  <div className="vf-shell-footer-label tw:text-xs tw:tracking-eyebrow tw:uppercase tw:text-inverse-quiet tw:mb-1">
-                    <>{v.shellText?.visit}</>
-                  </div>
-                  <address className="tw:not-italic tw:leading-body">
-                    <>{v.footer?.address}</>
-                  </address>
-                  {v.footer?.directions ? (
-                    <>
-                      <a
-                        href={v.footer?.directions}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
-                      >
-                        <>{v.shellText?.footer?.directions}</>
-                      </a>
-                    </>
-                  ) : null}
-                  <div className="tw:text-inverse-quiet">
-                    <>{v.shellText?.hours}</>
-                  </div>
-                  <a
-                    href={v.phoneHref}
-                    dir="ltr"
-                    className="vf-shell-footer-contact-link vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                  >
-                    <>{v.phoneLabel}</>
-                  </a>
-                  {v.footer?.email ? (
-                    <>
-                      <a
-                        href={v.footer?.emailHref}
-                        dir="ltr"
-                        className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
-                      >
-                        <>{v.footer?.email}</>
-                      </a>
-                    </>
-                  ) : null}
-                  {list(v.footer?.seals).length ? (
-                    <div className="vf-shell-footer-seals tw:flex tw:flex-wrap tw:gap-3 tw:mt-2">
-                      {list(v.footer?.seals).map((seal, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.TrustSeal kind={seal?.kind} href={seal?.href} image={seal?.image} />
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-              <div className="vf-shell-footer-bottom tw:flex tw:flex-wrap tw:justify-between tw:items-center tw:gap-x-6 tw:gap-y-2 tw:pt-5 tw:[border-top:1px_solid_var(--border-inverse)] tw:text-xs tw:text-inverse-quiet">
-                <p className="tw:m-0">
-                  <>{v.footer?.copyright}</>
-                </p>
-                {v.footer?.credit ? (
-                  <>
-                    <p className="vf-shell-footer-credit tw:m-0">
-                      <>{v.footer?.credit?.before} </>
-                      <a
-                        href={v.footer?.credit?.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="tw:text-on-inverse! tw:[text-underline-offset:4px]"
-                      >
-                        <>{v.footer?.credit?.name}</>
-                      </a>
-                    </p>
-                  </>
-                ) : null}
-              </div>
-            </div>
-          </footer>
+          <StorefrontFooter
+            homeHref={v.href?.home}
+            brand={v.shellText?.brand}
+            tagline={v.footer?.tagline}
+            socialLabel={v.shellText?.footer?.social}
+            socialLinks={list(v.footer?.social)}
+            visitLabel={v.shellText?.visit}
+            address={v.footer?.address}
+            directionsHref={v.footer?.directions}
+            directionsLabel={v.shellText?.footer?.directions}
+            hours={v.shellText?.hours}
+            phoneHref={v.phoneHref}
+            phoneLabel={v.phoneLabel}
+            emailHref={v.footer?.emailHref}
+            email={v.footer?.email}
+            seals={list(v.footer?.seals)}
+            copyright={v.footer?.copyright}
+            credit={v.footer?.credit}
+            groups={[
+              {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
+              {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
+              {
+                id: 'help',
+                title: v.shellText?.help,
+                links: [
+                  {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
+                  ...list(v.policyLinks)
+                ]
+              }
+            ]}
+            consentSettingsLabel={v.shellText?.consent?.settings}
+            onOpenConsent={v.consent?.open}
+          />
           {/* The bottom of the screen: the cookie notice (a card above the tab bar on phones, a slim
               bar from 768px), then on phones the page's sticky action and the tab bar. */}
           <div className="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">

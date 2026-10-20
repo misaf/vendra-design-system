@@ -62,7 +62,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    by BottomTabBar: **all existing package UI folders are now layered, with 11 organism folders.**
    VendraProvider remains a foundation. StorefrontHeader is extracted under
    `templates/app/organisms/StorefrontHeader/` with explicit content props and callbacks.
-   **Next stage: extract the storefront footer from Shell, including FooterLinks.**
+   StorefrontFooter and its FooterLinks now live under
+   `templates/app/organisms/StorefrontFooter/` with explicit content and consent callbacks.
+   **Next stage: extract the storefront mobile menu from Shell.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -301,6 +303,21 @@ English and Persian match the preceding commit (`8512de2`) byte for byte and wer
 inspected at representative phone/desktop sizes. No screenshot baselines or tolerances changed.
 The full browser/device suites and known unrelated snapshot failures were not rerun. Footer,
 menu composition, templates and page migration work remains.
+
+**Twenty-second checkpoint verified:** StorefrontFooter and its FooterLinks are extracted under
+`templates/app/organisms/StorefrontFooter/`. Shell supplies explicit brand, navigation, social,
+contact, seal and credit content plus the consent settings callback. Storefront routing, feature
+filtering, consent state and focus restoration stay in Shell and shared logic. Existing markup,
+classes, link attributes, disclosure state and consent trigger IDs are preserved. The component
+usage guard now scans nested storefront JSX and recognizes named imports through `ds.js`.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. Eight footer browser tests pass in English and Persian at 390, 768, 1280 and 1920 pixels,
+including touch disclosures, rotation, consent focus, links, accessibility and overflow. Twelve
+hydration/first-paint tests pass. Eight footer captures across those widths and languages match
+the preceding commit (`8f68d28`) byte for byte; representative phone/desktop captures were visually
+inspected. Published package contents and generated styles are unchanged. No screenshot baselines
+or tolerances changed. The full browser/device suites and known unrelated snapshot failures were
+not rerun. The next stage extracts the storefront mobile menu from Shell.
 
 ## Adding components
 
