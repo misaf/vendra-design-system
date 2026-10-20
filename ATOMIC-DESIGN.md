@@ -102,7 +102,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    weddings content, validation, submission and recovery remain in the View/logic.
    StorefrontFaqLayout now arranges heading, questions and contact slots; FAQ content, accordion
    controls, section labels and navigation remain in the View/logic.
-   **Next stage: extract the policy page layout with heading, document and navigation slots.**
+   StorefrontPolicyLayout now arranges heading, policy navigation, notice, contents and document
+   slots; document mapping, section anchors, localized numbering and navigation stay in the View/logic.
+   **Next stage: extract the journal page layout with heading, search, stories and pagination slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -718,6 +720,27 @@ English desktop captures were visually inspected. No screenshot baselines/tolera
 contents or generated styles changed. The full browser/device suites, known TV arrow-navigation
 failures and unrelated snapshot failures were not rerun. The next stage extracts the policy page
 layout with heading, document and navigation slots.
+
+**Fortieth checkpoint verified:** StorefrontPolicyLayout is extracted under
+`templates/app/layouts/StorefrontPolicyLayout/`. It receives heading, policy navigation, notice,
+table of contents and document slots. It owns the main focus target, page header, notice spacing,
+responsive policy columns and document wrapper. The View retains localized navigation labels,
+policy links/current state, sample notice, sticky contents navigation, section anchors and
+document headings/paragraphs/lists. Policy logic retains document selection/fallback, section
+mapping and Persian numbering; shared logic retains routing, locale, SEO, focus and sticky
+measurements. No page behavior, copy or styles changed. Build, generated-file/format/CSS checks,
+the full unit/type/package suite and production app build pass. Twenty-two focused browser cases
+pass across policy switching, accessibility, delivery-rule content, unknown routes, sign-in links,
+package hydration and responsive first paint. Twenty-eight before/after capture pairs are
+byte-identical: all five policies at 390/1280 pixels in English/Persian, shipping at 768/1920
+pixels in both languages, and shipping print at 390/1280 pixels in both languages. Capture probes
+verify one active policy link, matching contents/section headings, native section navigation
+without a document reload and retained policy selection after reloading phone routes. Captures
+use fixed time, decoded images and normalized scroll; representative Persian phone shipping and
+English desktop privacy captures were visually inspected. No screenshot baselines/tolerances,
+package contents or generated styles changed. The full browser/device suites, known TV
+arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage extracts
+the journal page layout with heading, search, stories and pagination slots.
 
 ## Adding components
 
