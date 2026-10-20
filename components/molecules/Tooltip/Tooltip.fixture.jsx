@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton} from '../atoms/IconButton/IconButton.jsx';
+import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
 import {Tooltip} from './Tooltip.jsx';
 
 export function Fixture() {

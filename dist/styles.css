@@ -1827,7 +1827,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Toast/Toast.css */
+/* components/molecules/Toast/Toast.css */
 .ag-toast {
   --focus-ring: var(--focus-ring-on-inverse);
   display: flex;
@@ -1941,7 +1941,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Tooltip/Tooltip.css */
+/* components/molecules/Tooltip/Tooltip.css */
 /* Tooltip: React Aria places the bubble (in a portal) above or below the trigger. */
 .ag-tip {
   display: inline-flex;
@@ -2474,7 +2474,7 @@ a.ag-cat {
   }
 }
 
-/* components/AnnouncementBar/AnnouncementBar.css */
+/* components/molecules/AnnouncementBar/AnnouncementBar.css */
 .ag-announce {
   --focus-ring: var(--focus-ring-on-inverse);
   position: relative;
@@ -4501,7 +4501,7 @@ a.ag-tabbar__item {
   text-decoration: underline;
 }
 
-/* components/OfflineNotice/OfflineNotice.css */
+/* components/molecules/OfflineNotice/OfflineNotice.css */
 /* OfflineNotice: a slim band under the header while offline; empty (no height) while online. */
 .ag-offline--offline,
 .ag-offline--back {

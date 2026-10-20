@@ -4,7 +4,7 @@ import {
   contrast,
   expectAccessible,
   openComponent
-} from '../../templates/_e2e/component-test.mjs';
+} from '../../../templates/_e2e/component-test.mjs';
 
 const LILAC_300 = 'rgb(169, 155, 221)';
 

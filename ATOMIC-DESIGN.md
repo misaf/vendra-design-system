@@ -46,8 +46,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard
    and OrderTimeline form the commerce display batch. ProductCard, CategoryCard and BlogCard form
    the catalog and editorial card batch. AddressCard and ReminderRow form the account batch.
-   Tabs and Stepper form the tab and step navigation batch: 27 molecule folders are now migrated.
-   **Next stage: notices and tooltip molecules** (AnnouncementBar, OfflineNotice, Toast and Tooltip).
+   Tabs and Stepper form the tab and step navigation batch. AnnouncementBar, OfflineNotice, Toast
+   and Tooltip form the notices and tooltip batch: 31 molecule folders are now migrated.
+   **Next stage: disclosure and bag-row molecules** (Accordion and LineItem).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -179,6 +180,17 @@ English/Persian arrow keys, Home/End selection, roving focus and tab-panel links
 callbacks, compact captions, Persian digits and accessibility in both languages. Normal and
 forced-color screenshots pass without baseline or tolerance changes. Known commerce, order and
 validation-state snapshot failures were not rerun, and the full browser suite remains unverified.
+
+**Thirteenth checkpoint verified:** AnnouncementBar, OfflineNotice, Toast and Tooltip moved with
+their types, wording, styles, fixtures and specs, bringing the molecule layer to 31 folders.
+ToastRegion, app exports and the published package use the new paths; component bodies and CSS
+rules are unchanged. Build, generated-file/format/CSS checks, the full unit/type/package suite and
+production app build pass. All 32 focused component/ToastRegion/package/hydration browser tests
+and four feedback/bilingual visual checks pass. Coverage includes dismissal, offline/reconnect
+transitions, toast queue integration, focus-ring contrast, tooltip hover/keyboard/Escape/touch
+behavior and English/Persian accessibility. Normal and forced-color screenshots pass without
+baseline or tolerance changes. Known commerce, order and validation-state snapshot failures were
+not rerun, and the full browser suite remains unverified.
 
 ## Adding components
 

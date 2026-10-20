@@ -1,6 +1,6 @@
 import React from 'react';
 import {Focusable, Tooltip as AriaTooltip, TooltipTrigger} from 'react-aria-components';
-import {cx} from '../utils/cx.js';
+import {cx} from '../../utils/cx.js';
 
 // A tooltip on React Aria (WCAG 1.4.13): it shows on hover and keyboard focus, describes its trigger
 // (aria-describedby) while shown, and Esc dismisses it. React Aria ignores touch, so a tap on the

@@ -1,8 +1,8 @@
 import React from 'react';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {cx} from '../utils/cx.js';
-import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {cx} from '../../utils/cx.js';
+import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A slim band while the browser is offline, then "You’re back online." for a few seconds. The band

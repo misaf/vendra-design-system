@@ -3,7 +3,7 @@ import {
   UNSTABLE_ToastQueue as AriaToastQueue,
   UNSTABLE_ToastRegion as AriaToastRegion
 } from 'react-aria-components';
-import {Toast} from '../Toast/Toast.jsx';
+import {Toast} from '../molecules/Toast/Toast.jsx';
 import {cx} from '../utils/cx.js';
 
 // The toasts a page shows: queue.add({tone, title, message, action}, {timeout}) returns a key, and
