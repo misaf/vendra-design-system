@@ -45,8 +45,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
    SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard
    and OrderTimeline form the commerce display batch. ProductCard, CategoryCard and BlogCard form
-   the catalog and editorial card batch: 23 molecule folders are now migrated.
-   **Next stage: account card and reminder molecules** (AddressCard and ReminderRow).
+   the catalog and editorial card batch. AddressCard and ReminderRow form the account batch:
+   25 molecule folders are now migrated.
+   **Next stage: tab and step navigation molecules** (Tabs and Stepper).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -157,6 +158,17 @@ fail in normal and forced-color modes on this stage and the preceding commit (`6
 actual/retry images match fresh preceding-commit captures byte for byte. No baselines or tolerances
 were changed. Known order and validation-state snapshot failures were not rerun, and the full
 browser suite remains unverified.
+
+**Eleventh checkpoint verified:** AddressCard and ReminderRow moved with their types, wording,
+styles, fixtures and specs, bringing the molecule layer to 25 folders. App exports and the
+published package use the new paths; component bodies and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 22 focused account-component/package/hydration browser tests and both account visual checks
+pass. Coverage includes address edit/delete/default callbacks, phone direction, reminder pausing,
+person-specific control names, English/Persian accessibility and narrow/wide reminder layouts in
+normal and forced-color screenshots. No baselines or tolerances were changed. Known commerce,
+order and validation-state snapshot failures were not rerun, and the full browser suite remains
+unverified.
 
 ## Adding components
 

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('controls are named after the person; pausing hides "Send flowers"', async ({page}) => {
   await openComponent(page, 'ReminderRow');

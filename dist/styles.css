@@ -4268,7 +4268,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/AddressCard/AddressCard.css */
+/* components/molecules/AddressCard/AddressCard.css */
 .ag-addr {
   padding: var(--space-4h);
   display: flex;
@@ -4318,7 +4318,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/ReminderRow/ReminderRow.css */
+/* components/molecules/ReminderRow/ReminderRow.css */
 .ag-remwrap {
   container-type: inline-size;
 }

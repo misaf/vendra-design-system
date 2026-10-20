@@ -1,11 +1,11 @@
 import React from 'react';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {Badge} from '../atoms/Badge/Badge.jsx';
-import {IconButton} from '../atoms/IconButton/IconButton.jsx';
-import {Button} from '../atoms/Button/Button.jsx';
-import {Switch} from '../atoms/Switch/Switch.jsx';
-import {cx} from '../utils/cx.js';
-import {useMessages} from '../utils/messages.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Badge} from '../../atoms/Badge/Badge.jsx';
+import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {Switch} from '../../atoms/Switch/Switch.jsx';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // One occasion reminder: arched date tile · name + meta · controls (drop below on narrow widths via container query).

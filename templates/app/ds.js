@@ -1,6 +1,6 @@
 // Every design-system component, for the storefront views.
 export * from '../../components/Accordion/Accordion.jsx';
-export * from '../../components/AddressCard/AddressCard.jsx';
+export * from '../../components/molecules/AddressCard/AddressCard.jsx';
 export * from '../../components/molecules/Alert/Alert.jsx';
 export * from '../../components/AnnouncementBar/AnnouncementBar.jsx';
 export * from '../../components/atoms/ArchFrame/ArchFrame.jsx';
@@ -55,7 +55,7 @@ export * from '../../components/atoms/QuantityInput/QuantityInput.jsx';
 export * from '../../components/atoms/Radio/Radio.jsx';
 export * from '../../components/atoms/RadioGroup/RadioGroup.jsx';
 export * from '../../components/atoms/RangeSlider/RangeSlider.jsx';
-export * from '../../components/ReminderRow/ReminderRow.jsx';
+export * from '../../components/molecules/ReminderRow/ReminderRow.jsx';
 export * from '../../components/molecules/SearchField/SearchField.jsx';
 export * from '../../components/molecules/SectionHeader/SectionHeader.jsx';
 export * from '../../components/atoms/Select/Select.jsx';
