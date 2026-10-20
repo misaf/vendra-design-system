@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../Button/Button.jsx';
+import {Button} from '../atoms/Button/Button.jsx';
 import {cx} from '../utils/cx.js';
 import {format} from '../utils/format.js';
 import {usePageLocale} from '../utils/locale.js';

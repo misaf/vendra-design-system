@@ -2,7 +2,7 @@
 // while the tab was open): an alert with a reload instead of a blank screen.
 import React from 'react';
 import {Alert} from '../../components/Alert/Alert.jsx';
-import {Button} from '../../components/Button/Button.jsx';
+import {Button} from '../../components/atoms/Button/Button.jsx';
 import {VF_STORE} from '../_shared/store-config.js';
 
 const COPY = {

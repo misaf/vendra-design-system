@@ -1,5 +1,5 @@
 import React from 'react';
-import {Icon} from '../Icon/Icon.jsx';
+import {Icon} from '../atoms/Icon/Icon.jsx';
 import {cx} from '../utils/cx.js';
 
 // An empty or finished state: icon disc, eyebrow, title (with an italic `titleAccent` line), body

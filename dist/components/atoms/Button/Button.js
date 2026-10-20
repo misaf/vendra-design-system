@@ -4,7 +4,7 @@ import React from "react";
 import { Button as AriaButton, Link } from "react-aria-components";
 import { Icon } from "../Icon/Icon.js";
 import { Spinner } from "../Spinner/Spinner.js";
-import { cx } from "../utils/cx.js";
+import { cx } from "../../utils/cx.js";
 // href → React Aria's Link (navigation; in-site links go through VendraProvider's navigate); no href
 // → React Aria's Button (action), with onClick, type, disabled and the ARIA button attributes. A
 // disabled link renders without its href, aria-disabled.

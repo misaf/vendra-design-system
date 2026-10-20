@@ -190,7 +190,7 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
     // 'use client' leads every component module so React Server Components frameworks treat them as client components.
     assert.match(
-      fs.readFileSync(path.join(repo, 'dist/components/Button/Button.js'), 'utf8'),
+      fs.readFileSync(path.join(repo, 'dist/components/atoms/Button/Button.js'), 'utf8'),
       /^'use client';\n/
     );
 

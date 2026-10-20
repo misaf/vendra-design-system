@@ -1,4 +1,4 @@
-import type {ButtonDOMProps} from '../Button/Button.js';
+import type {ButtonDOMProps} from '../atoms/Button/Button.js';
 
 export interface IconButtonProps extends ButtonDOMProps {
   icon: string;

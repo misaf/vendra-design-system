@@ -187,7 +187,7 @@ a:hover{color:var(--accent-press)}
 @layer vendra.components {
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
-/* components/Icon/Icon.css */
+/* components/atoms/Icon/Icon.css */
 /* Forced-colour modes (Windows High Contrast) replace background colours, which would erase an
    icon drawn as a mask over its background, and an inherited colour is still the authored one: draw
    it in the system colour of its context instead. !important beats the inline background; a
@@ -210,7 +210,7 @@ a:hover{color:var(--accent-press)}
   }
 }
 
-/* components/Spinner/Spinner.css */
+/* components/atoms/Spinner/Spinner.css */
 /* Spinner: a ring with one edge open, turning in the current text colour. */
 .ag-spinner {
   display: inline-flex;
@@ -250,7 +250,7 @@ a:hover{color:var(--accent-press)}
   }
 }
 
-/* components/Button/Button.css */
+/* components/atoms/Button/Button.css */
 .ag-btn {
   box-sizing: border-box;
   display: inline-flex;

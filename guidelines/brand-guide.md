@@ -77,7 +77,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Iconography
 
-- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`components/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
+- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`components/atoms/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
 - **Style:** outline only, 2px stroke, 16–22px. Ink colour by default; peony (`--text-accent`) only for small value-prop icons.
 - **Common glyphs:** flower-2, leaf, sprout, heart, shopping-bag, search, user, truck, gift, calendar, map-pin, arrow-right, chevron-down, x, plus, minus, check.
 - **No** emoji, icon fonts, PNG icons or unicode glyph icons.
