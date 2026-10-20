@@ -4,6 +4,7 @@ import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
+import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
 import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
@@ -195,52 +196,22 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             menuLabel={v.shellText?.menu}
             onOpenMenu={v.openMenu}
           />
-          {/* The menu drawer opens from the compact header (below 1024px). */}
-          <DS.Dialog
-            placement="start"
+          <StorefrontMenu
             open={v.menuOpen}
             onClose={v.closeMenu}
             title={v.shellText?.brand}
             closeLabel={v.shellText?.closeMenu}
-          >
-            <DS.MenuList label={v.shellText?.mainNav}>
-              {list(v.menuItems).map((it, $index) => (
-                <React.Fragment key={$index}>
-                  <DS.NavLink variant="menu" href={it?.href} current={it?.current}>
-                    <>{it?.label}</>
-                  </DS.NavLink>
-                </React.Fragment>
-              ))}
-            </DS.MenuList>
-            <div className="vf-shell-menu-actions tw:flex tw:flex-col tw:gap-4 tw:mt-5h">
-              {v.hasLang ? (
-                <>
-                  <div className="vf-shell-menu-language tw:flex tw:items-center tw:justify-between tw:gap-3 tw:text-sm tw:text-quiet">
-                    <span>
-                      <>{v.shellText?.langL}</>
-                    </span>
-                    <DS.LanguageSwitch
-                      value={v.lang}
-                      onChange={v.setLang}
-                      options={v.langOpts}
-                      label={v.shellText?.langL}
-                    />
-                  </div>
-                </>
-              ) : null}
-              {v.waHref ? (
-                <DS.Button
-                  variant="secondary"
-                  iconStart="message-circle"
-                  href={v.waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <>{v.shellText?.waLong}</>
-                </DS.Button>
-              ) : null}
-            </div>
-          </DS.Dialog>
+            navigationLabel={v.shellText?.mainNav}
+            navigation={list(v.menuItems)}
+            language={
+              v.hasLang
+                ? {value: v.lang, options: v.langOpts, label: v.shellText?.langL}
+                : undefined
+            }
+            onLanguageChange={v.setLang}
+            whatsappHref={v.waHref}
+            whatsappLabel={v.shellText?.waLong}
+          />
           <DS.OfflineNotice />
           <div className="vf-shell-content tw:flex-1">{content}</div>
           <StorefrontFooter
