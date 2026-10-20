@@ -74,6 +74,7 @@ export function usePage(props) {
       placed: false,
       last4: '',
       ref: '',
+      receiptAmount: null,
       err: false,
       order: null,
       method: null,
@@ -84,8 +85,8 @@ export function usePage(props) {
     };
     page._draft = patch => {
       page.setState(patch);
-      const {method, last4, ref} = page.state;
-      page.props.store?.setPaymentDraft?.({method, last4, ref});
+      const {method, last4, ref, receiptAmount} = page.state;
+      page.props.store?.setPaymentDraft?.({method, last4, ref, receiptAmount});
     };
   });
   useStorefrontPage(page);
@@ -111,6 +112,7 @@ function vals(page) {
   const C = vfCopy(S);
   const st = page.props.store;
   const order = st ? st.order : s.order;
+  const busy = s.busy || !!st?.checkoutPending;
   const delivery = order
     ? order.delivery
     : st
@@ -146,6 +148,8 @@ function vals(page) {
     : method === 'wallet'
       ? balanceTotals
       : vfTotals(items, delivery);
+  const receiptChanged =
+    method === 'card' && !!(s.last4 || s.ref) && s.receiptAmount !== totals.total;
   const slotLabel = vfDeliveryWhen(
     {...delivery, date: delivery.date || vfDeliveryDate(delivery, new Date(), items)},
     fa
@@ -255,9 +259,10 @@ function vals(page) {
     discountHint: offers('wallet') ? discountHint : '',
     topUpLabel: PW.topUp,
     topUpHref:
-      (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'account', tab: 'balance'}),
-    busy: s.busy,
-    placeDisabled: s.busy || s.failed || done || !method,
+      (page.props.go ? '' : '../app/') +
+      vfRouteParams({lang: L, view: 'account', tab: 'balance', next: 'checkout'}),
+    busy,
+    placeDisabled: busy || s.failed || done || !method,
     failed: s.failed,
     paymentNotice: P.demo,
     method,
@@ -272,10 +277,10 @@ function vals(page) {
           : option.id === 'wallet'
             ? walletNote
             : undefined,
-      disabled: s.busy || !option.available
+      disabled: busy || !option.available
     })),
     setMethod: value =>
-      !s.busy &&
+      !busy &&
       page._draft({
         method: value,
         err: false,
@@ -326,24 +331,35 @@ function vals(page) {
     caption: C.caption,
     payLabels: C.payLabels,
     copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
+    receiptChanged,
+    receiptChangeText: C.receiptChanged.replace('{amount}', m(totals.total)),
+    confirmReceipt: () => page._draft({receiptAmount: totals.total}),
     last4: s.last4,
     last4Err: s.err ? C.last4Err : undefined,
     ref: s.ref,
     setRef: value =>
       page._draft({
-        ref: value
+        method,
+        ref: value,
+        receiptAmount: !s.last4 && !s.ref ? totals.total : s.receiptAmount
       }),
     setLast4: value =>
       page._draft({
+        method,
         last4: value
           .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
           .replace(/\D/g, '')
           .slice(0, 4),
+        receiptAmount: !s.last4 && !s.ref ? totals.total : s.receiptAmount,
         err: false
       }),
     place: () => {
-      if (s.busy || done || !orderReady()) return;
+      if (busy || done || !orderReady()) return;
       if (!usable(method)) return;
+      if (receiptChanged) {
+        S.focus('vf-receipt-changed');
+        return;
+      }
       if (method === 'card' && s.last4.length !== 4) {
         page.setState({
           err: true
@@ -358,6 +374,7 @@ function vals(page) {
         payment_type: method
       });
       const record = {
+        checkoutSnapshot: st?.checkoutSnapshot,
         method,
         paymentStatus: P.statuses[method],
         preferredLocale: vfAccountLocale() || L,
@@ -380,15 +397,18 @@ function vals(page) {
       // With an API base, the order is sent as a Checkout request first; the demo goes on at once.
       const send = then => {
         if (!window.VF_API.live) return then();
+        if (st?.beginCheckout && !st.beginCheckout()) return;
         const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
         page.setState({busy: true});
-        window.VF_API.checkout(request).then(
-          () => {
-            page.setState({busy: false});
-            then();
-          },
-          () => page.setState({busy: false, failed: true})
-        );
+        window.VF_API.checkout(request)
+          .then(
+            () => {
+              page.setState({busy: false});
+              then();
+            },
+            () => page.setState({busy: false, failed: true})
+          )
+          .finally(() => st?.endCheckout?.());
       };
       // Online, the customer pays on the bank's page and comes back to this page.
       if (method === 'online')

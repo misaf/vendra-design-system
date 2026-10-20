@@ -23,7 +23,10 @@ export function vfCopy(S) {
         pay: 'Top up {amount}',
         processing: 'Processing demo payment…',
         done: '{amount} added to your balance.',
+        backToCheckout: 'Back to checkout',
         errors: {
+          storage:
+            'Your browser couldn’t save the top-up. Your balance has not changed. Try again.',
           empty: 'Enter an amount.',
           min: 'The smallest top-up is {min}.',
           max: 'The largest top-up is {max}.'
@@ -101,7 +104,10 @@ export function vfCopy(S) {
         pay: 'افزایش موجودی {amount}',
         processing: 'در حال انجام پرداخت نمونه…',
         done: '{amount} به موجودی شما اضافه شد.',
+        backToCheckout: 'بازگشت به پرداخت',
         errors: {
+          storage:
+            'مرورگر نتوانست افزایش موجودی را ذخیره کند. موجودی شما تغییر نکرده است. دوباره تلاش کنید.',
           empty: 'مبلغ را وارد کنید.',
           min: 'کمترین مبلغ افزایش موجودی {min} است.',
           max: 'بیشترین مبلغ افزایش موجودی {max} است.'
@@ -192,6 +198,8 @@ export function vfCopy(S) {
           phoneError: 'Enter a valid mobile number',
           emailError: 'Enter a valid email address',
           saved: 'Changes saved',
+          saveError:
+            'Your browser couldn’t save these changes. Your entries are still here. Try saving again.',
           deleted: 'Removed',
           empty: 'No reminders yet',
           coming: 'Coming up',
@@ -234,6 +242,8 @@ export function vfCopy(S) {
           phoneError: 'شماره موبایل معتبر وارد کنید',
           emailError: 'ایمیل معتبر وارد کنید',
           saved: 'تغییرات ذخیره شد',
+          saveError:
+            'مرورگر نتوانست تغییرات را ذخیره کند. اطلاعات واردشده حفظ شده‌اند. دوباره ذخیره کنید.',
           deleted: 'حذف شد',
           empty: 'هنوز یادآوری ندارید',
           coming: 'به‌زودی',

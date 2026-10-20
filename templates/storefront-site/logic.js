@@ -129,11 +129,23 @@ function vfSiteInitial(props) {
       last4: String(saved.paymentDraft?.last4 || '')
         .replace(/\D/g, '')
         .slice(0, 4),
+      receiptAmount: Number.isFinite(saved.paymentDraft?.receiptAmount)
+        ? saved.paymentDraft.receiptAmount
+        : null,
       ref: String(saved.paymentDraft?.ref || '')
     },
     cardAddition: null,
+    checkoutPending: false,
+    checkoutNotice: null,
     order: saved.order || null,
     lastOrder: saved.lastOrder || saved.order || null,
+    orders: [
+      ...(Array.isArray(saved.orders) ? saved.orders : []),
+      saved.lastOrder,
+      saved.order
+    ].filter(
+      (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
+    ),
     announcement: ''
   };
 }
@@ -142,6 +154,8 @@ function vfSiteInitial(props) {
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = vfSiteInitial(page.props);
+    page._savedEdits = new Map();
+    page._savedLoading = false;
     page.navigate = (input, replace = false) => {
       const candidate =
         typeof input === 'string'
@@ -185,19 +199,26 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       window.__vfSite = page;
-      if (window.VF_API.live)
+      if (window.VF_API.live) {
+        page._savedLoading = true;
         window.VF_API.loadSaved()
           .then(saved => {
-            if (saved)
-              page.setState({
-                saved
-              });
+            if (saved) {
+              const merged = new Set(saved);
+              page._savedEdits.forEach((keep, id) => (keep ? merged.add(id) : merged.delete(id)));
+              page.setState({saved: [...merged]});
+            }
           })
           .catch(() =>
             page.setState({
               integrationError: true
             })
-          );
+          )
+          .finally(() => {
+            page._savedLoading = false;
+            page._savedEdits.clear();
+          });
+      }
       page._pop = () => {
         const r = vfReadRoute();
         const guarded = vfGuardRoute(page.state, r);
@@ -243,7 +264,7 @@ export function usePage(props) {
     },
     didUpdate() {
       try {
-        const {bag, saved, delivery, order, lastOrder, paymentDraft} = page.state;
+        const {bag, saved, delivery, order, lastOrder, orders, paymentDraft} = page.state;
         sessionStorage.setItem(
           VF_SESSION,
           JSON.stringify({
@@ -252,6 +273,7 @@ export function usePage(props) {
             delivery,
             order,
             lastOrder,
+            orders,
             paymentDraft
           })
         );
@@ -292,10 +314,30 @@ function vals(page) {
         true
       ),
     announcement: s.announcement,
+    checkoutNotice: s.checkoutNotice
+      ? {
+          title:
+            s.lang === 'fa'
+              ? 'سفارش قبلی ثبت شد. تغییرات تازه سبد شما حفظ شده‌اند.'
+              : 'Your earlier order was placed. Your newer bag changes are kept.',
+          label: s.lang === 'fa' ? 'مشاهده سفارش' : 'View order',
+          href: vfRouteParams({lang: s.lang, view: 'track', id: s.checkoutNotice.id})
+        }
+      : null,
+    dismissCheckoutNotice: () => page.setState({checkoutNotice: null}),
     store: {
       bag: s.bag,
       saved: s.saved,
       delivery: s.delivery,
+      checkoutPending: s.checkoutPending,
+      beginCheckout: () => {
+        if (page.state.checkoutPending) return false;
+        page.setState({checkoutPending: true});
+        return true;
+      },
+      endCheckout: () => page.setState({checkoutPending: false}),
+      checkoutSnapshot: JSON.stringify({bag: s.bag, delivery: s.delivery}),
+      orders: s.orders,
       paymentDraft: s.paymentDraft,
       setPaymentDraft: patch =>
         page.setState(current => ({paymentDraft: {...current.paymentDraft, ...patch}})),
@@ -322,7 +364,7 @@ function vals(page) {
           const bag = vfReorderBag(order.lines, current.bag, mode);
           return {
             order: null,
-            paymentDraft: {method: null, last4: '', ref: ''},
+            paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
             cardAddition: null,
             bag,
             delivery:
@@ -334,15 +376,30 @@ function vals(page) {
           };
         }),
       complete: order =>
-        page.setState({
-          order,
-          lastOrder: order,
-          bag: [],
-          paymentDraft: {method: null, last4: '', ref: ''},
-          cardAddition: null,
-          delivery: {
-            ...VF_DELIVERY
-          }
+        page.setState(current => {
+          // A late response belongs to the submitted checkout, not a bag edited since then.
+          if (current.orders.some(previous => previous.id === order.id)) return null;
+          const unchanged =
+            !order.checkoutSnapshot ||
+            order.checkoutSnapshot ===
+              JSON.stringify({bag: current.bag, delivery: current.delivery});
+          return {
+            lastOrder: order,
+            orders: [order, ...current.orders],
+            ...(unchanged
+              ? {
+                  order,
+                  checkoutNotice: null,
+                  bag: [],
+                  paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
+                  cardAddition: null,
+                  delivery: {...VF_DELIVERY}
+                }
+              : {
+                  order: null,
+                  checkoutNotice: order
+                })
+          };
         }),
       add: (line, date) =>
         page.setState(p => {
@@ -440,18 +497,19 @@ function vals(page) {
       reset: () =>
         page.setState({
           order: null,
-          paymentDraft: {method: null, last4: '', ref: ''},
+          paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
           bag: VF_BAG0
         }),
       clear: () =>
         page.setState({
-          paymentDraft: {method: null, last4: '', ref: ''},
+          paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
           bag: []
         }),
       toggleSave: id => {
         const removing = page.state.saved.includes(id);
+        if (page._savedLoading) page._savedEdits.set(id, !removing);
         page.setState(p => ({
           saved: removing ? p.saved.filter(x => x !== id) : [...p.saved, id]
         }));
@@ -469,10 +527,14 @@ function vals(page) {
           })
         );
       },
-      setSaved: ids =>
-        page.setState({
-          saved: ids
-        })
+      setSaved: ids => {
+        if (page._savedLoading)
+          new Set([...page.state.saved, ...ids]).forEach(id => {
+            if (page.state.saved.includes(id) !== ids.includes(id))
+              page._savedEdits.set(id, ids.includes(id));
+          });
+        page.setState({saved: ids});
+      }
     },
     // replace: refine the current page (e.g. shop filters) without adding a history entry.
     go: (r, replace) => page.navigate(r, !!replace),

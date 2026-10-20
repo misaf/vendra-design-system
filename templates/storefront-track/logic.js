@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfSampleOrders} from '../_shared/account-data.js';
+import {vfKnownOrders} from '../_shared/account-data.js';
 import {
   vfCardMessages,
   vfLineToken,
@@ -18,11 +18,6 @@ import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-// Orders this browser can look up: the latest order from this session, then the sample orders.
-function vfKnownOrders(store) {
-  const own = store ? [store.lastOrder, store.order].filter(Boolean) : [];
-  return [...own, ...vfSampleOrders()];
-}
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -50,10 +45,11 @@ function vals(page) {
   const ls = page.state;
   const requested = ls.found || vfPageRoute(page.props).id;
   const snapshot = page.props.store && (page.props.store.lastOrder || page.props.store.order);
+  const known = vfKnownOrders(page.props.store);
   const order = requested
     ? snapshot && snapshot.id === requested
       ? snapshot
-      : vfSampleOrders().find(o => o.id === requested)
+      : known.find(o => o.id === requested)
     : snapshot;
   const hasOrder =
     !ls.lookup && (!page.props.store || (!!order && (!requested || requested === order.id)));

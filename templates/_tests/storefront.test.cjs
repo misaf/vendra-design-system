@@ -722,7 +722,7 @@ for (const lang of ['en', 'fa']) {
     lang,
     store: {bag: lines, delivery, complete: o => (order = o)}
   });
-  checkout.setState({last4: '1234'});
+  checkout.renderVals().setLast4('1234');
   checkout.renderVals().place();
   assert.ok(order.id.startsWith('VN-'));
   assert.equal(order.status, 'received');
@@ -1079,7 +1079,12 @@ for (const lang of ['en', 'fa']) {
   checkout.renderVals().setLast4('۱۲۳۴');
   checkout.renderVals().setRef('TEST-REFERENCE');
   const draft = plain(site.state.paymentDraft);
-  assert.deepEqual(draft, {method: 'cod', last4: '1234', ref: 'TEST-REFERENCE'});
+  assert.deepEqual(draft, {
+    method: 'cod',
+    last4: '1234',
+    ref: 'TEST-REFERENCE',
+    receiptAmount: vm.runInContext('vfTotals', c)(site.state.bag, site.state.delivery).total
+  });
   const returned = loadPage('checkout', {lang, store: site.renderVals().store}).logic.renderVals();
   assert.equal(returned.method, 'cod');
   assert.equal(returned.last4, draft.last4);
@@ -1092,7 +1097,12 @@ for (const lang of ['en', 'fa']) {
   site.lifecycle.didUpdate();
   assert.deepEqual(JSON.parse(savedSession).paymentDraft, draft);
   site.renderVals().store.clear();
-  assert.deepEqual(plain(site.state.paymentDraft), {method: null, last4: '', ref: ''});
+  assert.deepEqual(plain(site.state.paymentDraft), {
+    method: null,
+    last4: '',
+    ref: '',
+    receiptAmount: null
+  });
 
   const {logic: bag, ctx: bc} = loadPage('bag', {lang});
   bc.setTimeout = () => 0;
@@ -1144,3 +1154,190 @@ for (const lang of ['en', 'fa']) {
 console.log(
   'Passed mixed-bag delivery dates, date handoff, payment drafts, provisional fees, card undo and isolated shell wording.'
 );
+
+// Responses, receipts and storage failures must not overwrite newer customer intent.
+(async () => {
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const flush = () => new Promise(resolve => setImmediate(resolve));
+  const readyDelivery = (site, c) => {
+    const delivery = {
+      ...site.state.delivery,
+      name: 'Recipient',
+      phone: '09120000000',
+      sender: 'Sender',
+      senderPhone: '09121111111',
+      address: 'Street 12 unit 3',
+      location: {lat: 35.8352, lng: 50.975}
+    };
+    delivery.date = vm.runInContext('vfDeliveryDate', c)(delivery, new Date(), site.state.bag);
+    site.setState({delivery});
+  };
+  for (const lang of ['en', 'fa']) {
+    const {logic: site, ctx: c} = loadPage('site', {lang});
+    c.setTimeout = () => 0;
+    readyDelivery(site, c);
+    const {logic: checkout, ctx: cc} = loadPage('checkout', {lang, store: site.renderVals().store});
+    cc.setTimeout = () => 0;
+    let finish,
+      calls = 0;
+    cc.window.VF_API = {
+      live: true,
+      checkout: () => {
+        calls++;
+        return new Promise(resolve => (finish = resolve));
+      }
+    };
+    checkout.renderVals().setMethod('cod');
+    checkout.renderVals().place();
+    assert.equal(site.state.checkoutPending, true);
+    const pending = loadPage('checkout', {lang, store: site.renderVals().store}).logic;
+    assert.equal(
+      pending.renderVals().placeDisabled,
+      true,
+      'pending submission survives a page remount'
+    );
+    pending.renderVals().place();
+    assert.equal(calls, 1);
+    site.renderVals().store.setQty(site.state.bag[0].id, 2);
+    site.renderVals().store.setDelivery({address: 'Newer street 24 unit 5'});
+    site.renderVals().store.setPaymentDraft({ref: 'NEWER-DRAFT'});
+    finish(null);
+    await flush();
+    assert.equal(site.state.checkoutPending, false);
+    assert.equal(site.state.bag[0].qty, 2, 'late success keeps the new bag');
+    assert.equal(site.state.delivery.address, 'Newer street 24 unit 5');
+    assert.equal(site.state.paymentDraft.ref, 'NEWER-DRAFT');
+    assert.equal(site.state.order, null);
+    const first = plain(site.state.lastOrder);
+    assert.equal(first.lines[0].qty, 1);
+    assert.ok(site.renderVals().checkoutNotice.href.includes(first.id));
+    site.renderVals().store.complete({
+      ...first,
+      id: 'VN-20002',
+      checkoutSnapshot: site.renderVals().store.checkoutSnapshot
+    });
+    assert.equal(site.state.bag.length, 0, 'an unchanged submitted bag is cleared');
+    assert.equal(site.state.orders.length, 2);
+    site.renderVals().store.complete(first);
+    assert.equal(site.state.orders.length, 2, 'repeated completion does not duplicate history');
+    const accountOrders = loadPage('account', {
+      lang,
+      store: site.renderVals().store
+    }).logic.renderVals().orders;
+    assert.ok(accountOrders.some(order => order.id === first.id));
+    const tracked = loadPage('track', {
+      lang,
+      store: site.renderVals().store,
+      routeInfo: {view: 'track', id: first.id}
+    }).logic.renderVals();
+    assert.equal(tracked.hasOrder, true);
+    let session;
+    c.sessionStorage.setItem = (_, value) => (session = value);
+    site.lifecycle.didUpdate();
+    c.sessionStorage.getItem = () => session;
+    assert.equal(new c.Logic({lang}).state.orders.length, 2, 'history survives a reload');
+
+    const {logic: receiptSite, ctx: rc} = loadPage('site', {lang});
+    rc.setTimeout = () => 0;
+    readyDelivery(receiptSite, rc);
+    const entered = loadPage('checkout', {lang, store: receiptSite.renderVals().store}).logic;
+    entered.renderVals().setMethod('card');
+    entered.renderVals().setLast4('1234');
+    entered.renderVals().setRef('EARLIER-RECEIPT');
+    const originalAmount = receiptSite.state.paymentDraft.receiptAmount;
+    receiptSite.renderVals().store.setQty(receiptSite.state.bag[0].id, 2);
+    const changed = loadPage('checkout', {lang, store: receiptSite.renderVals().store});
+    changed.ctx.setTimeout = () => 0;
+    assert.equal(changed.logic.renderVals().receiptChanged, true);
+    changed.logic.renderVals().place();
+    assert.equal(receiptSite.state.order, null, 'a changed amount needs explicit confirmation');
+    assert.equal(changed.logic.state.ref, 'EARLIER-RECEIPT');
+    changed.logic.renderVals().setRef('UPDATED-RECEIPT');
+    assert.equal(
+      changed.logic.renderVals().receiptChanged,
+      true,
+      'editing a reference does not silently confirm a changed total'
+    );
+    changed.logic.renderVals().confirmReceipt();
+    assert.ok(receiptSite.state.paymentDraft.receiptAmount > originalAmount);
+    const confirmed = loadPage('checkout', {lang, store: receiptSite.renderVals().store}).logic;
+    assert.equal(confirmed.renderVals().receiptChanged, false, 'confirmation survives a remount');
+    confirmed.renderVals().place();
+    assert.equal(receiptSite.state.order.ref, 'UPDATED-RECEIPT');
+    assert.equal(receiptSite.state.bag.length, 0);
+
+    const {logic: saved, ctx: sc} = loadPage('site', {lang});
+    sc.window.addEventListener = () => {};
+    sc.document.addEventListener = () => {};
+    let hydrate;
+    sc.window.VF_API = {
+      live: true,
+      loadSaved: () => new Promise(resolve => (hydrate = resolve)),
+      saveItem: () => Promise.resolve(),
+      unsaveItem: () => Promise.resolve()
+    };
+    saved.lifecycle.didMount();
+    const removed = saved.state.saved[0];
+    await saved.renderVals().store.toggleSave('VF-7K2M4Q');
+    await saved.renderVals().store.toggleSave(removed);
+    hydrate([removed, 'VF-3HX9TP']);
+    await flush();
+    assert.ok(saved.state.saved.includes('VF-7K2M4Q'), 'late hydration keeps new saves');
+    assert.ok(!saved.state.saved.includes(removed), 'late hydration keeps removals');
+    assert.ok(saved.state.saved.includes('VF-3HX9TP'), 'unmodified server items still load');
+
+    const {logic: profile, ctx: pc} = loadPage('account', {lang});
+    pc.setTimeout = () => 0;
+    const storage = new Map([['vf-account-phone', '09120000000']]);
+    pc.localStorage = {
+      getItem: key => storage.get(key) || null,
+      setItem: () => {
+        throw new Error('Storage unavailable');
+      }
+    };
+    profile.renderVals().setProfile.name('Keep my input');
+    profile.renderVals().saveProfile();
+    assert.ok(profile.renderVals().saveError);
+    assert.equal(profile.state.notice, '');
+    assert.equal(profile.renderVals().profile.name, 'Keep my input');
+    assert.equal(
+      vm.runInContext("vfWalletChange('09120000000', 100000, {kind: 'topup'})", pc),
+      null,
+      'a failed wallet write cannot report success'
+    );
+    pc.localStorage.setItem = (key, value) => storage.set(key, value);
+    profile.renderVals().saveProfile();
+    assert.equal(profile.renderVals().saveError, '');
+    assert.ok(profile.state.notice);
+    assert.equal(vm.runInContext("vfAccountLoad('09120000000').profile.name", pc), 'Keep my input');
+    const route = vm.runInContext(
+      'vfReadRoute',
+      pc
+    )(`?view=account&tab=balance&next=checkout&lang=${lang}`);
+    assert.equal(route.next, 'checkout');
+    assert.ok(vm.runInContext('vfRouteParams', pc)(route).includes('next=checkout'));
+    assert.equal(
+      vm.runInContext('vfReadRoute', pc)('?view=account&tab=balance&next=https://example.com').next,
+      undefined
+    );
+    const returning = loadPage('account', {
+      lang,
+      routeInfo: route,
+      store: receiptSite.renderVals().store
+    }).logic;
+    assert.equal(
+      returning.renderVals().checkoutReturn,
+      false,
+      'an empty bag has no checkout return'
+    );
+    returning.props.store = site.renderVals().store;
+    returning.props.store.bag = [first.lines[0]];
+    assert.equal(returning.renderVals().checkoutReturn, true);
+  }
+  console.log(
+    'Passed checkout response isolation, receipt amount confirmation, order history, saved-list hydration, failed storage and top-up return routes.'
+  );
+})().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

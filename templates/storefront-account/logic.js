@@ -7,7 +7,7 @@ import {
   vfAccountSave,
   vfAccountSignOut,
   vfReminderNext,
-  vfSampleOrders
+  vfKnownOrders
 } from '../_shared/account-data.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
 import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
@@ -37,6 +37,7 @@ export function usePage(props) {
       form: null,
       errors: {},
       notice: '',
+      saveError: '',
       profile: null,
       mapFailed: false,
       placesFailed: false,
@@ -76,10 +77,7 @@ function vals(page) {
   const phone = vfAccountPhone() || '09125649438',
     account = s.account || vfAccountLoad(phone, L),
     profile = s.profile || account.profile;
-  const latest = page.props.store && (page.props.store.lastOrder || page.props.store.order);
-  const orders = [...(latest ? [latest] : []), ...vfSampleOrders()].filter(
-    (o, i, list) => list.findIndex(x => x.id === o.id) === i
-  );
+  const orders = vfKnownOrders(page.props.store);
   // The Balance tab is the account side of paying from a balance: it shows only when the store takes
   // that method (VF_STORE.paymentMethods). Reminders show when the store offers them (VF_STORE.features).
   const tabs = VF_ACCOUNT_TABS.filter(id =>
@@ -91,20 +89,26 @@ function vals(page) {
   const tab = tabs.includes(asked) ? asked : 'orders',
     tx = v => (typeof v === 'string' ? v : v[L] || v.en);
   const commit = data => {
-    vfAccountSave(phone, data);
+    if (!vfAccountSave(phone, data)) {
+      page.setState({saveError: E.saveError, notice: ''});
+      return false;
+    }
     page.setState({
       account: data,
       form: null,
       profile: null,
       errors: {},
-      notice: E.saved
+      notice: E.saved,
+      saveError: ''
     });
+    return true;
   };
   const focusError = () => setTimeout(() => VF_NAV.focusFirstInvalid(), 0);
   const openAddress = a =>
     page.setState({
       errors: {},
       locateFailed: false,
+      saveError: '',
       form: {
         kind: 'address',
         id: a && a.id,
@@ -119,6 +123,7 @@ function vals(page) {
   const openReminder = r =>
     page.setState({
       errors: {},
+      saveError: '',
       form: {
         kind: 'reminder',
         id: null,
@@ -327,6 +332,9 @@ function vals(page) {
     },
     editor: E,
     notice: s.notice,
+    saveError: s.saveError,
+    checkoutReturn: vfPageRoute(page.props).next === 'checkout' && !!page.props.store?.bag.length,
+    checkoutHref: (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'checkout'}),
     tab,
     setTab: id =>
       page.setState({
@@ -367,6 +375,10 @@ function vals(page) {
         page.setState({topUpBusy: true, topUpDone: ''});
         page._topUpTimer = setTimeout(() => {
           const next = vfWalletChange(phone, amount, {kind: 'topup'});
+          if (!next) {
+            page.setState({topUpBusy: false, topUpError: 'storage'});
+            return;
+          }
           window.VF_TRACK.event('top_up', {value: amount});
           page.setState({
             account: next,
@@ -475,11 +487,11 @@ function vals(page) {
         focusError();
         return;
       }
-      commit({
+      const saved = commit({
         ...account,
         profile
       });
-      if (page.props.setLang) page.props.setLang(profile.locale);
+      if (saved && page.props.setLang) page.props.setLang(profile.locale);
     },
     signOut: () => {
       vfAccountSignOut();
@@ -535,6 +547,7 @@ function vals(page) {
     closeForm: () =>
       page.setState({
         form: null,
+        saveError: '',
         errors: {}
       }),
     zoneOptions: VF_ZONES.map(z => ({

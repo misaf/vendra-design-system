@@ -47,7 +47,7 @@ export function vfTopUpError(amount) {
 }
 
 // Adds a top-up (positive) or an order payment (negative) to the signed-in account and returns the account;
-// null when a payment is more than the balance.
+// null when a payment is more than the balance or the change cannot be saved.
 export function vfWalletChange(phone, amount, entry) {
   const account = vfAccountLoad(phone);
   const wallet = vfWalletOf(account);
@@ -60,6 +60,5 @@ export function vfWalletChange(phone, amount, entry) {
     ...entry
   };
   const next = {...account, wallet: {balance, history: [record, ...wallet.history]}};
-  vfAccountSave(phone, next);
-  return next;
+  return vfAccountSave(phone, next) ? next : null;
 }

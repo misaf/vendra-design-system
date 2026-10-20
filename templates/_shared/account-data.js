@@ -128,7 +128,10 @@ export function vfAccountLoad(phone, lang = 'en') {
 export function vfAccountSave(phone, data) {
   try {
     localStorage.setItem(vfAccountKey(phone), JSON.stringify(data));
-  } catch {}
+    return true;
+  } catch {
+    return false;
+  }
 }
 export function vfAccountLogin(phone, lang) {
   phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
@@ -336,4 +339,11 @@ export function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
 
 export function vfSampleOrders() {
   return VF_API_ORDERS.map(order => vfOrderFromApi(order));
+}
+
+// Session orders join the sample history without losing earlier checkouts or duplicating a number.
+export function vfKnownOrders(store) {
+  return [...(store?.orders || []), store?.lastOrder, store?.order, ...vfSampleOrders()].filter(
+    (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
+  );
 }
