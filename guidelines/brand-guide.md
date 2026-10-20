@@ -177,7 +177,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.
-- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `components/ChoiceGroup/`).
+- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `components/atoms/ChoiceGroup/`).
 - **RangeSlider:** two handles (or one), swaps sides in RTL.
 - **DatePicker:** Shamsi/Gregorian toggle with year/month/day selects; shows the equivalent date in the other calendar.
 

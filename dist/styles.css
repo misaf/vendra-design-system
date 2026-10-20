@@ -1310,7 +1310,7 @@ a.ag-iconbtn {
   visibility: hidden;
 }
 
-/* components/CodeInput/CodeInput.css */
+/* components/atoms/CodeInput/CodeInput.css */
 .ag-code-input input,
 /* The code is Latin digits read left to right, so it keeps its spacing on Persian pages, where
    base.css otherwise sets letter-spacing to 0 (spacing breaks Persian letter joins); base.css
@@ -1451,7 +1451,7 @@ a.ag-iconbtn {
   gap: var(--space-3);
 }
 
-/* components/ChoiceGroup/ChoiceGroup.css */
+/* components/atoms/ChoiceGroup/ChoiceGroup.css */
 .ag-choices--error .ag-choice:not([data-selected]) {
   border-color: var(--danger);
 }
@@ -1623,7 +1623,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/QuantityInput/QuantityInput.css */
+/* components/atoms/QuantityInput/QuantityInput.css */
 .ag-qty-root {
   display: contents;
 }
@@ -2936,7 +2936,7 @@ a.ag-tabbar__item {
   color: var(--text-accent);
 }
 
-/* components/RangeSlider/RangeSlider.css */
+/* components/atoms/RangeSlider/RangeSlider.css */
 .ag-range {
   font-family: var(--font-body);
 }

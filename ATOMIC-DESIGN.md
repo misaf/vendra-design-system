@@ -35,11 +35,12 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    from the actual responsibility before moving each batch. The non-form batch now lives under
    `components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
    SkipLink and LiveRegion. The basic form batch has also moved: Field, Input, Checkbox, Radio,
-   RadioGroup, Switch and Select. There are now 21 migrated atom folders.
-   **Next stage: specialized form controls** (PhoneInput, CodeInput, QuantityInput, RangeSlider
-   and ChoiceGroup with its ChoiceTile part).
+   RadioGroup, Switch and Select. The specialized form batch has moved too: PhoneInput, CodeInput,
+   QuantityInput, RangeSlider and ChoiceGroup with its ChoiceTile part. **The planned primitive
+   batches are complete: 26 atom folders.**
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
+   **Next stage: SearchField, PromoCodeField and ResendCode.**
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -76,6 +77,15 @@ atoms, package behavior and hydration, plus six forms/density/bilingual visual c
 card screenshot checks fail on both this stage and the preceding commit (`130f6fe`), with
 byte-for-byte identical actual images in normal and forced-color modes. No baselines or tolerances
 were changed. The full browser suite was not rerun.
+
+**Fourth checkpoint verified:** PhoneInput, CodeInput, QuantityInput, RangeSlider and ChoiceGroup
+with ChoiceTile moved with their types, wording, fixtures and specs. All consumers and the
+published package use the new atom paths. Component bodies and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 102 atom/package/hydration browser tests and six forms/density/bilingual visual checks pass,
+including normal and forced-color screenshots. No baselines or tolerances were changed. The
+previously documented commerce and validation-state snapshot failures were not rerun, and the
+full browser suite remains unverified. The next stage starts the molecule layer.
 
 ## Adding components
 
