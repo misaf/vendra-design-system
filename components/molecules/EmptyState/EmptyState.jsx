@@ -1,6 +1,6 @@
 import React from 'react';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {cx} from '../utils/cx.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {cx} from '../../utils/cx.js';
 
 // An empty or finished state: icon disc, eyebrow, title (with an italic `titleAccent` line), body
 // and actions. `icon` is a Lucide name or any node.

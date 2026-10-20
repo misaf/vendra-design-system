@@ -1,8 +1,8 @@
 import React from 'react';
 import {Alert} from '../Alert/Alert.jsx';
-import {Button} from '../atoms/Button/Button.jsx';
-import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // The default stand-in: a quiet note (role="status", not an alarm: the rest of the page works) with

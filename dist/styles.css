@@ -2171,7 +2171,7 @@ a.ag-cat {
   }
 }
 
-/* components/Alert/Alert.css */
+/* components/molecules/Alert/Alert.css */
 .ag-alert {
   display: flex;
   align-items: flex-start;
@@ -2250,7 +2250,7 @@ a.ag-cat {
   }
 }
 
-/* components/EmptyState/EmptyState.css */
+/* components/molecules/EmptyState/EmptyState.css */
 .ag-empty {
   display: flex;
   flex-direction: column;
@@ -4480,7 +4480,7 @@ a.ag-tabbar__item {
   gap: var(--space-2);
 }
 
-/* components/ErrorSummary/ErrorSummary.css */
+/* components/molecules/ErrorSummary/ErrorSummary.css */
 /* ErrorSummary: a danger Alert listing the fields to fix, each a link to its field. */
 .ag-error-summary {
   border-radius: var(--radius-lg);

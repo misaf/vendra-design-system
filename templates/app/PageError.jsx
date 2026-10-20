@@ -1,7 +1,7 @@
 // Shown when a page's code fails to load (a dropped connection, or a deploy that replaced the files
 // while the tab was open): an alert with a reload instead of a blank screen.
 import React from 'react';
-import {Alert} from '../../components/Alert/Alert.jsx';
+import {Alert} from '../../components/molecules/Alert/Alert.jsx';
 import {Button} from '../../components/atoms/Button/Button.jsx';
 import {VF_STORE} from '../_shared/store-config.js';
 

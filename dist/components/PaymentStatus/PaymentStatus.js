@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "../atoms/Button/Button.js";
 import { DetailList } from "../DetailList/DetailList.js";
-import { EmptyState } from "../EmptyState/EmptyState.js";
+import { EmptyState } from "../molecules/EmptyState/EmptyState.js";
 import { Spinner } from "../atoms/Spinner/Spinner.js";
 import { cx } from "../utils/cx.js";
 import { usePageLocale } from "../utils/locale.js";
