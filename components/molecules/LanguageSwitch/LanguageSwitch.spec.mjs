@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('one pressed toggle per language, each in its own language', async ({page}) => {
   await openComponent(page, 'LanguageSwitch');

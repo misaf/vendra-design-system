@@ -1,8 +1,8 @@
 import React from 'react';
 import {ToggleButton} from 'react-aria-components';
-import {useMessages} from '../utils/messages.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
-import {useTrack} from '../utils/track.js';
+import {useTrack} from '../../utils/track.js';
 
 // The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
 // own `lang`. Choosing one reports `language_switch` (VendraProvider's onEvent).

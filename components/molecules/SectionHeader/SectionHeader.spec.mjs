@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('a real heading at its level, with the accent in it', async ({page}) => {
   await openComponent(page, 'SectionHeader');
