@@ -52,8 +52,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
    Dialog, Lightbox and ToastRegion form the first batch. Gallery and Carousel form the media
-   browsing batch. OrderSummary and PaymentStatus form the order and payment batch: seven organism
-   folders are now migrated. **Next stage: calendar organism** (DatePicker).
+   browsing batch. OrderSummary and PaymentStatus form the order and payment batch, followed by
+   DatePicker as the calendar organism: eight organism folders are now migrated.
+   **Next stage: map organisms** (LocationPicker and PlacesMap).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -242,6 +243,17 @@ still fail their stored baselines; all eight normal/forced-color actual/retry im
 previously verified captures from checkpoints nine and ten byte for byte. No baselines or
 tolerances were changed. Known validation-state snapshot failures were not rerun, and the full
 browser and device suites remain unverified.
+
+**Eighteenth checkpoint verified:** DatePicker moved with its types, wording, styles, fixture and
+spec into the organism layer, bringing it to eight folders. App exports and the published package
+use the new paths; the component body and CSS rules are unchanged. Build, generated-file/format/
+CSS checks, the full unit/type/package suite and production app build pass. All 19 focused
+DatePicker/package/hydration browser tests and four DatePicker/forms visual checks pass. Coverage
+includes keyboard day selection, Gregorian and Persian grids and digits, minimum-date restrictions,
+calendar switching while preserving the ISO date and English/Persian accessibility. Normal and
+forced-color screenshots pass without baseline or tolerance changes. Known commerce, order and
+validation-state snapshot failures were not rerun, and the full browser and device suites remain
+unverified.
 
 ## Adding components
 
