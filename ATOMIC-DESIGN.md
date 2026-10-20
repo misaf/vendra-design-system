@@ -77,7 +77,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders. StorefrontBottomBar is the first
    layout under `templates/app/layouts/`, with consent, sticky-action and navigation slots.
-   **Next stage: extract the main storefront layout with header, content, footer and bottom-bar slots.**
+   StorefrontLayout now arranges the main section slots and tenant/language wrappers.
+   **Next stage: extract the product page layout with gallery and details slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -390,12 +391,34 @@ tier/resize checks, 12 hydration/first-paint checks, six touch tablet shopping c
 touch-phone rotation checks pass; two duplicate rotation cases are skipped by their existing
 project guard. Coverage includes product configuration retention, focused controls clearing
 consent/purchase bars, tablet sorting and short-landscape sticky measurements. Eight bottom-bar
-captures with consent shown on the product page at 390, 768, 1280 and 1920 pixels in English and
-Persian match the preceding commit (`9e57899`) byte for byte; representative phone/tablet captures
+captures with consent shown at 390, 768, 1280 and 1920 pixels in English and Persian match
+the preceding commit (`9e57899`) byte for byte; the capture URL omitted the product ID and does
+not establish visual coverage of the product action slot; representative phone/tablet captures
 were visually inspected. Published package contents and generated styles are unchanged; no
 screenshot baselines or tolerances changed. The full browser/device suites and known unrelated
 snapshot failures were not rerun. The next stage extracts the main storefront layout with header,
 content, footer and bottom-bar slots.
+
+**Twenty-seventh checkpoint verified:** StorefrontLayout is extracted under
+`templates/app/layouts/StorefrontLayout/`. It owns the background, tenant/language container,
+content wrapper and section order, receiving React-node slots for skip link, live region,
+announcement, header, menu, notices, content, footer and bottom bar. Shell retains providers,
+tracking callbacks, menu resize dismissal, sticky-height/focus effects and the separate bare
+presentation branch. Build, generated-file/format/CSS checks, the full unit/type/package suite
+and production app build pass. Forty-eight focused browser checks pass: 12 shell tier/resize,
+12 hydration/first-paint, six touch tablet shopping, two touch-phone rotation, four menu, eight
+footer and four shell keyboard/language checks. Six duplicate cases are skipped by existing
+project guards. The two TV arrow-navigation checks fail in both languages; direct before/after
+probes against the preceding commit (`3aa1dcf`) reproduce identical 30-step focus sequences that
+do not reach the purchase button. These failures predate the extraction; TV navigation remains
+an unresolved check. Sixteen complete FAQ and valid-product layout comparisons at 390, 768, 1280
+and 1920 pixels in both languages meet the existing 25-pixel screenshot budget: 14 are byte-identical,
+and the two 1280px product captures differ by 23/17 control-edge pixels. Representative phone and
+desktop captures were visually inspected. The preceding checkpoint's capture description is
+corrected: its URL omitted the product ID and did not prove product-action visual coverage.
+Published package contents and generated styles are unchanged; no screenshot baselines or
+tolerances changed. The full browser/device suites and known unrelated snapshot failures were
+not rerun. The next stage extracts the product page layout with gallery and details slots.
 
 ## Adding components
 

@@ -16,7 +16,9 @@ StorefrontAnnouncement renders the responsive news strip; delivery rules and ses
 remain in shared storefront logic. Keep `vf-*` composition out of the published component package.
 Atomic Design templates live under `templates/app/layouts/<Name>/` and receive React-node slots.
 StorefrontBottomBar arranges consent, sticky action and navigation; Shell owns their content and
-sticky-height/focus measurements. Tailwind scans nested app JSX.
+sticky-height/focus measurements. StorefrontLayout arranges the main section slots and tenant/
+language wrappers; providers and the bare presentation branch stay in Shell.
+Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
 
