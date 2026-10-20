@@ -362,7 +362,7 @@ a:hover{color:var(--accent-press)}
   }
 }
 
-/* components/IconButton/IconButton.css */
+/* components/atoms/IconButton/IconButton.css */
 .ag-iconbtn:focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -476,7 +476,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Chip/Chip.css */
+/* components/atoms/Chip/Chip.css */
 .ag-chip:focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -737,7 +737,7 @@ a.ag-iconbtn {
   outline-offset: var(--focus-offset);
 }
 
-/* components/Picture/Picture.css */
+/* components/atoms/Picture/Picture.css */
 /* The <picture> wrapper takes no box of its own, so frame CSS sizes the <img> as before. */
 .ag-picture {
   display: contents;
@@ -764,7 +764,7 @@ a.ag-iconbtn {
   max-width: 28rem;
 }
 
-/* components/Price/Price.css */
+/* components/atoms/Price/Price.css */
 /* Price: tabular digits on one line; a reduced price follows the struck-through earlier one. */
 .ag-price {
   display: inline-flex;
@@ -1013,7 +1013,7 @@ a.ag-iconbtn {
   margin-block-start: var(--space-1);
 }
 
-/* components/Badge/Badge.css */
+/* components/atoms/Badge/Badge.css */
 .ag-badge {
   display: inline-flex;
   align-items: center;
@@ -1067,7 +1067,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Card/Card.css */
+/* components/atoms/Card/Card.css */
 .ag-card {
   background: var(--surface-card);
   border: var(--border-hair) solid var(--border-subtle);
@@ -2093,7 +2093,7 @@ a.ag-cat {
   border-radius: var(--radius-md);
 }
 
-/* components/Skeleton/Skeleton.css */
+/* components/atoms/Skeleton/Skeleton.css */
 .ag-skel {
   display: block;
   position: relative;
@@ -2422,7 +2422,7 @@ a.ag-cat {
   }
 }
 
-/* components/Meter/Meter.css */
+/* components/atoms/Meter/Meter.css */
 /* Meter: label and value on one line, a thin bar under them. */
 .ag-meter {
   display: flex;
@@ -3434,7 +3434,7 @@ a.ag-tabbar__item {
   min-width: var(--control-h-xs);
 }
 
-/* components/ArchFrame/ArchFrame.css */
+/* components/atoms/ArchFrame/ArchFrame.css */
 .ag-arch {
   position: relative;
   display: block;
@@ -3662,7 +3662,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/SkipLink/SkipLink.css */
+/* components/atoms/SkipLink/SkipLink.css */
 .ag-skip {
   position: fixed;
   top: 12px;

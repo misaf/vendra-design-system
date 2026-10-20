@@ -1,6 +1,6 @@
 import React from 'react';
 import {Dialog as AriaDialog, Heading, Modal, ModalOverlay} from 'react-aria-components';
-import {IconButton} from '../IconButton/IconButton.jsx';
+import {IconButton} from '../atoms/IconButton/IconButton.jsx';
 import {cx} from '../utils/cx.js';
 import {useDensity} from '../utils/density.js';
 import {useMessages} from '../utils/messages.js';

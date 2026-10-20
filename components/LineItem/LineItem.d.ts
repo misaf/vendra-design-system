@@ -1,4 +1,4 @@
-import type {Photo} from '../Picture/Picture.js';
+import type {Photo} from '../atoms/Picture/Picture.js';
 
 export interface LineItemProps {
   /** A URL or a photo object (see Picture); sized to the thumbnail */

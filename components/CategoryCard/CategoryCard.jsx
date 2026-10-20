@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Icon} from '../atoms/Icon/Icon.jsx';
-import {Picture} from '../Picture/Picture.jsx';
+import {Picture} from '../atoms/Picture/Picture.jsx';
 import {cx} from '../utils/cx.js';
 
 // A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.

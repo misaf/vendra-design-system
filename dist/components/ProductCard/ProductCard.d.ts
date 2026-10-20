@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type {Photo} from '../Picture/Picture.js';
+import type {Photo} from '../atoms/Picture/Picture.js';
 
 import type {Stock} from '../utils/commerce.js';
 
