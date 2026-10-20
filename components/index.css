@@ -19,9 +19,9 @@
 @import url('atoms/Card/Card.css');
 @import url('atoms/Field/Field.css');
 @import url('atoms/Select/Select.css');
-@import url('SearchField/SearchField.css');
+@import url('molecules/SearchField/SearchField.css');
 @import url('atoms/CodeInput/CodeInput.css');
-@import url('ResendCode/ResendCode.css');
+@import url('molecules/ResendCode/ResendCode.css');
 @import url('atoms/Checkbox/Checkbox.css');
 @import url('atoms/RadioGroup/RadioGroup.css');
 @import url('atoms/ChoiceGroup/ChoiceGroup.css');
@@ -62,7 +62,7 @@
 @import url('DetailList/DetailList.css');
 @import url('AddressCard/AddressCard.css');
 @import url('ReminderRow/ReminderRow.css');
-@import url('PromoCodeField/PromoCodeField.css');
+@import url('molecules/PromoCodeField/PromoCodeField.css');
 @import url('ErrorSummary/ErrorSummary.css');
 @import url('OfflineNotice/OfflineNotice.css');
 @import url('Lightbox/Lightbox.css');

@@ -1,11 +1,11 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
-import {cx} from '../utils/cx.js';
-import {format} from '../utils/format.js';
-import {usePageLocale} from '../utils/locale.js';
-import {localeLanguage, useMessages} from '../utils/messages.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {cx} from '../../utils/cx.js';
+import {format} from '../../utils/format.js';
+import {usePageLocale} from '../../utils/locale.js';
+import {localeLanguage, useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
-import {useTrack} from '../utils/track.js';
+import {useTrack} from '../../utils/track.js';
 
 // "Send a new code" for a one-time code, after a wait. The wait runs on the clock, not on timer
 // ticks, so it is right when the customer comes back from reading the SMS (browsers slow timers in

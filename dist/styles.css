@@ -1277,7 +1277,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/SearchField/SearchField.css */
+/* components/molecules/SearchField/SearchField.css */
 /* SearchField: Input's shell with a clear button at the end; the browser's own clear control goes. */
 .ag-search input::-webkit-search-cancel-button,
 .ag-search input::-webkit-search-decoration {
@@ -1320,7 +1320,7 @@ a.ag-iconbtn {
   letter-spacing: 0.3em;
 }
 
-/* components/ResendCode/ResendCode.css */
+/* components/molecules/ResendCode/ResendCode.css */
 .ag-resend {
   display: flex;
   flex-direction: column;
@@ -4430,7 +4430,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/PromoCodeField/PromoCodeField.css */
+/* components/molecules/PromoCodeField/PromoCodeField.css */
 /* PromoCodeField: Apply sits inside the field's end. The field and button share one grid cell so
    the button stays centred at any font height; an error message takes the next row. */
 .ag-promo {
