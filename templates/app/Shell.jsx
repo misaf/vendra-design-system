@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {StorefrontBottomBar} from './layouts/StorefrontBottomBar/StorefrontBottomBar.jsx';
 import {StorefrontAnnouncement} from './organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx';
 import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent.jsx';
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
@@ -230,27 +231,25 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             consentSettingsLabel={v.shellText?.consent?.settings}
             onOpenConsent={v.consent?.open}
           />
-          {/* The bottom of the screen: the cookie notice (a card above the tab bar on phones, a slim
-              bar from 768px), then on phones the page's sticky action and the tab bar. */}
-          <div className="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
-            <StorefrontConsent
-              shown={v.consent?.shown}
-              title={v.shellText?.consent?.title}
-              closeLabel={v.shellText?.consent?.close}
-              onClose={v.consent?.close}
-              body={v.shellText?.consent?.body}
-              policyHref={v.consent?.policy?.href}
-              policyLabel={v.shellText?.consent?.policy}
-              onAccept={v.consent?.accept}
-              acceptLabel={v.shellText?.consent?.accept}
-              onEssential={v.consent?.essential}
-              essentialLabel={v.shellText?.consent?.essential}
-            />
-            <div className="vf-shell-phone-bar tw:md:hidden">
-              {sticky}
-              <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
-            </div>
-          </div>
+          <StorefrontBottomBar
+            consent={
+              <StorefrontConsent
+                shown={v.consent?.shown}
+                title={v.shellText?.consent?.title}
+                closeLabel={v.shellText?.consent?.close}
+                onClose={v.consent?.close}
+                body={v.shellText?.consent?.body}
+                policyHref={v.consent?.policy?.href}
+                policyLabel={v.shellText?.consent?.policy}
+                onAccept={v.consent?.accept}
+                acceptLabel={v.shellText?.consent?.accept}
+                onEssential={v.consent?.essential}
+                essentialLabel={v.shellText?.consent?.essential}
+              />
+            }
+            sticky={sticky}
+            navigation={<DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />}
+          />
         </div>
       </div>
     </DS.VendraProvider>

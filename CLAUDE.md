@@ -14,7 +14,9 @@ menu drawer from explicit content and callbacks. StorefrontConsent renders the p
 consent persistence, analytics gating and focus restoration remain in shared storefront logic.
 StorefrontAnnouncement renders the responsive news strip; delivery rules and session dismissal
 remain in shared storefront logic. Keep `vf-*` composition out of the published component package.
-Tailwind scans nested app JSX.
+Atomic Design templates live under `templates/app/layouts/<Name>/` and receive React-node slots.
+StorefrontBottomBar arranges consent, sticky action and navigation; Shell owns their content and
+sticky-height/focus measurements. Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
 
