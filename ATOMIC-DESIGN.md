@@ -86,7 +86,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    summary and empty state; bag/delivery rules and actions remain in the View/logic.
    StorefrontCheckoutLayout now arranges notices, progress, heading, review, payment, summary and
    bank/success slots; payment rules and order submission stay in the View/logic.
-   **Next stage: extract the account page layout with heading, tabs and dialog slots.**
+   StorefrontAccountLayout now arranges heading, actions, notices, tabs, feedback and dialog slots;
+   account controls and mutations remain in the View/logic.
+   **Next stage: extract the sign-in page layout with phone, code and feedback slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -514,6 +516,33 @@ screenshot baselines/tolerances, production rules or test expectations changed; 
 contents and generated styles are unchanged.
 The full browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures
 were not rerun. The next stage extracts the account layout with heading, tabs and dialog slots.
+
+**Thirty-second checkpoint verified:** StorefrontAccountLayout is extracted under
+`templates/app/layouts/StorefrontAccountLayout/`. It receives heading, actions, notices, tabs,
+feedback and dialog slots. The main focus target, responsive header and heading wrappers, and
+slot order are preserved. The View retains tab controls/panels, fields, notices and the controlled
+address/reminder editor; account logic retains customer isolation, persistence, validation,
+mutations and focus restoration. An existing reminder validation focus defect was confirmed on
+both the preceding commit and the extracted layout: the shared helper defaults to main, while
+the editor is portaled outside it. Account validation now passes the open dialog as its focus
+root, retaining the main fallback for profile errors. No account data rules or copy changed. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+Fifty focused browser cases pass across linked keyboard tabs, profile/address
+save recovery, preservation of newer wallet/account data, customer switching, order history,
+saved-product synchronization, mapped addresses, editor error summaries, profile persistence and
+sign-out isolation, wallet top-up/discount checkout and hydration/first paint. Four new reminder
+regressions cover invalid-field focus, accessibility, save, opener focus return and reload
+persistence in both languages on phone/desktop; the four profile/address recovery cases were
+rerun after the focus correction. Thirty-six tab/dialog captures in both languages match the
+pre-stage commit (`8541636`) byte for byte: all six tabs and both editor dialogs at 390/1280
+pixels, plus profile at 768/1920 pixels. Dialog cancellation restores opener focus. Completed
+default-state captures were retained across the focus-only correction; the new regression cases
+separately verify the corrected error state. Captures use deterministic time/map tiles and image
+decoding waits. Representative Persian phone orders and English desktop reminder-dialog captures
+were visually inspected. No screenshot baselines/tolerances, package contents or generated styles
+changed. The full browser/device suites, known TV arrow-navigation failures and unrelated
+snapshot failures were not rerun. The next stage extracts the sign-in layout with phone, code
+and feedback slots.
 
 ## Adding components
 
