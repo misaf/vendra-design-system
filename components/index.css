@@ -20,13 +20,13 @@
 @import url('atoms/Field/Field.css');
 @import url('atoms/Select/Select.css');
 @import url('SearchField/SearchField.css');
-@import url('CodeInput/CodeInput.css');
+@import url('atoms/CodeInput/CodeInput.css');
 @import url('ResendCode/ResendCode.css');
 @import url('atoms/Checkbox/Checkbox.css');
 @import url('atoms/RadioGroup/RadioGroup.css');
-@import url('ChoiceGroup/ChoiceGroup.css');
+@import url('atoms/ChoiceGroup/ChoiceGroup.css');
 @import url('atoms/Switch/Switch.css');
-@import url('QuantityInput/QuantityInput.css');
+@import url('atoms/QuantityInput/QuantityInput.css');
 @import url('Dialog/Dialog.css');
 @import url('Toast/Toast.css');
 @import url('ToastRegion/ToastRegion.css');
@@ -45,7 +45,7 @@
 @import url('NavLink/NavLink.css');
 @import url('Breadcrumb/Breadcrumb.css');
 @import url('MenuList/MenuList.css');
-@import url('RangeSlider/RangeSlider.css');
+@import url('atoms/RangeSlider/RangeSlider.css');
 @import url('BlogCard/BlogCard.css');
 @import url('PaymentCard/PaymentCard.css');
 @import url('LineItem/LineItem.css');
