@@ -104,7 +104,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    controls, section labels and navigation remain in the View/logic.
    StorefrontPolicyLayout now arranges heading, policy navigation, notice, contents and document
    slots; document mapping, section anchors, localized numbering and navigation stay in the View/logic.
-   **Next stage: extract the journal page layout with heading, search, stories and pagination slots.**
+   StorefrontJournalLayout now arranges heading, search, feedback, featured, stories and pagination
+   slots; category/query state, matching, story mapping and pagination remain in the View/logic.
+   **Next stage: extract the post page layout with article, actions and related-story slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -741,6 +743,27 @@ English desktop privacy captures were visually inspected. No screenshot baseline
 package contents or generated styles changed. The full browser/device suites, known TV
 arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage extracts
 the journal page layout with heading, search, stories and pagination slots.
+
+**Forty-first checkpoint verified:** StorefrontJournalLayout is extracted under
+`templates/app/layouts/StorefrontJournalLayout/`. It receives heading, search, feedback, featured,
+stories and pagination slots and owns the main focus target, header/search wrappers and responsive
+article grid. The View retains category chips and focus scrolling, search controls, empty/loading
+feedback, conditional featured card, article cards and pagination controls. Journal logic retains
+category/query state, matching, page clamping, first-page resets, URL navigation, story mapping
+and localized metadata; shared page logic retains locale, SEO and focus. No page behavior, copy
+or styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite and
+production app build pass. Eighteen focused browser cases pass across pagination URLs/reloads,
+search reset, bilingual loading/accessibility, package hydration and responsive first paint.
+Twenty-eight before/after capture pairs are byte-identical: first/second pages at
+390/768/1280/1920 pixels in both languages, plus search-result, empty and loading states at
+390/1280 pixels in both languages. Capture probes verify article navigation without reloading,
+Back-navigation heading focus, page-two reloads, category reset to page one and empty-state clear
+recovery. Captures use fixed time, decoded images and normalized scroll. Representative Persian
+phone first-page and English desktop search-result captures were visually inspected. No
+screenshot baselines/tolerances, package contents or generated styles changed. The full
+browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures were
+not rerun. The next stage extracts the post page layout with article, actions and related-story
+slots.
 
 ## Adding components
 
