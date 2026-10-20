@@ -5,6 +5,7 @@ import {openSite, scanAxe} from './helpers.mjs';
 // Gallery, Toast, Dialog, Carousel, Radio and Tooltip.
 
 test('announcement bar closes for the rest of the session', async ({page}) => {
+  await page.clock.setFixedTime(new Date('2026-10-05T09:00:00+03:30'));
   await openSite(page, 'home', 'en');
   const bar = page.getByRole('region', {name: 'Store news'});
   await expect(bar).toContainText('same-day delivery in Karaj');

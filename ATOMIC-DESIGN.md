@@ -68,7 +68,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    `templates/app/organisms/StorefrontMenu/` with controlled state and explicit content/callbacks.
    StorefrontConsent now renders the privacy notice under
    `templates/app/organisms/StorefrontConsent/` with visibility, content and action callbacks.
-   **Next stage: extract the storefront announcement composition from Shell.**
+   StorefrontAnnouncement now renders the responsive news strip under
+   `templates/app/organisms/StorefrontAnnouncement/` with explicit text, link and close callback.
+   **Next stage: extract the bottom-bar layout with its sticky-action slot.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -357,6 +359,22 @@ representative phone/desktop captures were visually inspected. Published package
 generated styles are unchanged; no screenshot baselines or tolerances changed. The full browser/
 device suites and known unrelated snapshot failures were not rerun. The next stage extracts the
 storefront announcement composition from Shell.
+
+**Twenty-fifth checkpoint verified:** StorefrontAnnouncement is extracted under
+`templates/app/organisms/StorefrontAnnouncement/`. Shell supplies full/phone text, accessible
+labels, the optional action link and the dismissal callback. Delivery cut-offs, bilingual copy,
+link availability and session dismissal remain in shared storefront logic. Existing markup,
+CSS-selected text, link styling and RTL arrow behavior are preserved. The dismissal browser test
+now fixes its clock to a known morning so its same-day assertion does not depend on the run time.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. Four announcement behavior checks, 12 touch-enabled shell tier/resize checks and 12
+hydration/first-paint checks pass. Coverage includes dismissal across navigation, phone/full copy,
+same-day links and their removal after the delivery cut-off. Eight announcement captures at 390,
+768, 1280 and 1920 pixels in English and Persian match the preceding commit (`33d00bc`) byte for
+byte; representative phone/tablet captures were visually inspected. Published package contents
+and generated styles are unchanged; no screenshot baselines or tolerances changed. The full
+browser/device suites and known unrelated snapshot failures were not rerun. The next stage
+extracts the bottom-bar layout with its sticky-action slot.
 
 ## Adding components
 
