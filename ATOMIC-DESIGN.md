@@ -90,7 +90,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    account controls and mutations remain in the View/logic.
    StorefrontSigninLayout now arranges phone, code and feedback/continuation slots; authentication,
    validation, resend timing and customer synchronization stay in the View/logic.
-   **Next stage: extract the tracking page layout with lookup, order and feedback slots.**
+   StorefrontTrackLayout now arranges lookup, heading, details, summary and reorder-feedback slots;
+   order matching, status interpretation and reorder rules stay in the View/logic.
+   **Next stage: extract the saved-products page layout with heading, results and empty slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -566,6 +568,29 @@ inspected. No screenshot baselines/tolerances, package contents or generated sty
 The full browser/device suites, known TV arrow-navigation failures and unrelated snapshot
 failures were not rerun. The next stage extracts the tracking layout with lookup, order and
 feedback slots.
+
+**Thirty-fourth checkpoint verified:** StorefrontTrackLayout is extracted under
+`templates/app/layouts/StorefrontTrackLayout/`. It receives externally controlled order visibility
+and lookup, heading, details, summary and feedback slots. The main focus target, order header,
+responsive columns and sticky summary wrappers are preserved; reorder feedback remains outside
+main. The View retains conditional slot construction, lookup form semantics, validation,
+timeline/photo/details content, order summary, contact and reorder controls, and the controlled
+reorder dialog. Tracking logic retains order matching, phone normalization, status/payment
+interpretation, reorder reconciliation and bag mutations. No tracking rules, copy or callbacks
+changed. Build, generated-file/format/CSS checks, the full unit/type/package suite and production
+app build pass. Twenty-six focused browser cases pass across order lookup, failed
+match/field focus, phone normalization, tracking another order, delivered photos, pending payment,
+order history/reload, English/Persian reorder cancel/confirm with bag preservation, hydration
+and responsive first paint. Twenty-eight captures match the preceding commit (`f548001`) byte
+for byte: lookup/active/delivered/cancelled states at 390/1280 pixels in both languages, active
+orders at 768/1920 pixels, and invalid/failed lookup, pending payment and reorder review at
+390 pixels in both languages. Capture probes verify validation/failure focus, tracking another
+order and reorder-dialog cancellation focus return. Captures use fixed time, deterministic map
+tiles and image-decoding waits. Representative Persian phone lookup-failure and English desktop
+delivered-order captures were visually inspected. No screenshot baselines/tolerances, package
+contents or generated styles changed. The full browser/device suites, known TV arrow-navigation
+failures and unrelated snapshot failures were not rerun. The next stage extracts the saved-products
+layout with heading, results and empty slots.
 
 ## Adding components
 
