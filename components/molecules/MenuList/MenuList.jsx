@@ -1,5 +1,5 @@
 import React from 'react';
-import {cx} from '../utils/cx.js';
+import {cx} from '../../utils/cx.js';
 
 // A titled navigation list; each child (usually a NavLink) becomes a list item.
 export function MenuList({title, label, children, className = ''}) {

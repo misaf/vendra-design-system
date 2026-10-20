@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert} from '../molecules/Alert/Alert.jsx';
-import {FilterBar} from '../FilterBar/FilterBar.jsx';
-import {LanguageSwitch} from '../LanguageSwitch/LanguageSwitch.jsx';
+import {FilterBar} from '../molecules/FilterBar/FilterBar.jsx';
+import {LanguageSwitch} from '../molecules/LanguageSwitch/LanguageSwitch.jsx';
 import {NavLink} from '../molecules/NavLink/NavLink.jsx';
 import {VendraProvider} from './VendraProvider.jsx';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink} from '../molecules/NavLink/NavLink.jsx';
+import {NavLink} from '../NavLink/NavLink.jsx';
 import {MenuList} from './MenuList.jsx';
 
 export function Fixture() {

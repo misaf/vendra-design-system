@@ -42,8 +42,10 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
    SearchField, PromoCodeField and ResendCode are the first batch in `components/molecules/`.
    Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
-   Pagination and LoadMore form the navigation batch: 11 molecule folders are now migrated.
-   **Next stage: browsing and menu molecules** (FilterBar, LanguageSwitch, MenuList and SectionHeader).
+   Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
+   SectionHeader form the browsing and menu batch: 15 molecule folders are now migrated.
+   **Next stage: commerce display molecules** (StockStatus, TrustSeal, DetailList, PaymentCard
+   and OrderTimeline).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -119,6 +121,16 @@ navigation/wayfinding visual checks pass. Coverage includes client-side routing,
 markers, pagination bounds, loading states, RTL behavior and English/Persian accessibility.
 No baselines or tolerances were changed. Known commerce and validation-state snapshot failures
 were not rerun, and the full browser suite remains unverified.
+
+**Eighth checkpoint verified:** FilterBar, LanguageSwitch, MenuList and SectionHeader moved with
+their types, wording, fixtures and specs, bringing the molecule layer to 15 folders. Consumers and
+the published package use the new paths; implementations and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 32 focused component/provider/package/hydration browser tests and four navigation/wayfinding
+visual checks pass. Coverage includes filter-removal focus, language selection and analytics,
+menu semantics, section-arrow bounds and English/Persian accessibility. No baselines or tolerances
+were changed. Known commerce and validation-state snapshot failures were not rerun, and the full
+browser suite remains unverified.
 
 ## Adding components
 

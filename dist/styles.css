@@ -534,7 +534,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/FilterBar/FilterBar.css */
+/* components/molecules/FilterBar/FilterBar.css */
 /* FilterBar: the filters that are on, as filled chips that remove themselves, then "Clear all". */
 .ag-filterbar {
   display: flex;
@@ -642,7 +642,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/LanguageSwitch/LanguageSwitch.css */
+/* components/molecules/LanguageSwitch/LanguageSwitch.css */
 .ag-lang button:focus-visible {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -2914,7 +2914,7 @@ a.ag-tabbar__item {
   flex: none;
 }
 
-/* components/MenuList/MenuList.css */
+/* components/molecules/MenuList/MenuList.css */
 .ag-menu__list {
   list-style: none;
   margin: 0;
@@ -3525,7 +3525,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/SectionHeader/SectionHeader.css */
+/* components/molecules/SectionHeader/SectionHeader.css */
 .ag-sechead {
   container-type: inline-size;
   display: flex;
