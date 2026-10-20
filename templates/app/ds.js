@@ -1,7 +1,7 @@
 // Every design-system component, for the storefront views.
 export * from '../../components/Accordion/Accordion.jsx';
 export * from '../../components/AddressCard/AddressCard.jsx';
-export * from '../../components/Alert/Alert.jsx';
+export * from '../../components/molecules/Alert/Alert.jsx';
 export * from '../../components/AnnouncementBar/AnnouncementBar.jsx';
 export * from '../../components/atoms/ArchFrame/ArchFrame.jsx';
 export * from '../../components/atoms/Badge/Badge.jsx';
@@ -20,9 +20,9 @@ export * from '../../components/atoms/CodeInput/CodeInput.jsx';
 export * from '../../components/DatePicker/DatePicker.jsx';
 export * from '../../components/DetailList/DetailList.jsx';
 export * from '../../components/Dialog/Dialog.jsx';
-export * from '../../components/EmptyState/EmptyState.jsx';
-export * from '../../components/ErrorBoundary/ErrorBoundary.jsx';
-export * from '../../components/ErrorSummary/ErrorSummary.jsx';
+export * from '../../components/molecules/EmptyState/EmptyState.jsx';
+export * from '../../components/molecules/ErrorBoundary/ErrorBoundary.jsx';
+export * from '../../components/molecules/ErrorSummary/ErrorSummary.jsx';
 export * from '../../components/atoms/Field/Field.jsx';
 export * from '../../components/FilterBar/FilterBar.jsx';
 export * from '../../components/Gallery/Gallery.jsx';

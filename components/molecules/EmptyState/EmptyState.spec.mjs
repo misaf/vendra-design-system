@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('a heading at its level, the body and the actions; the icon is decorative', async ({page}) => {
   await openComponent(page, 'EmptyState');

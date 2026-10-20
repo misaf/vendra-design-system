@@ -33,8 +33,8 @@
 @import url('Tooltip/Tooltip.css');
 @import url('CategoryCard/CategoryCard.css');
 @import url('atoms/Skeleton/Skeleton.css');
-@import url('Alert/Alert.css');
-@import url('EmptyState/EmptyState.css');
+@import url('molecules/Alert/Alert.css');
+@import url('molecules/EmptyState/EmptyState.css');
 @import url('LoadMore/LoadMore.css');
 @import url('Pagination/Pagination.css');
 @import url('atoms/Meter/Meter.css');
@@ -63,6 +63,6 @@
 @import url('AddressCard/AddressCard.css');
 @import url('ReminderRow/ReminderRow.css');
 @import url('molecules/PromoCodeField/PromoCodeField.css');
-@import url('ErrorSummary/ErrorSummary.css');
+@import url('molecules/ErrorSummary/ErrorSummary.css');
 @import url('OfflineNotice/OfflineNotice.css');
 @import url('Lightbox/Lightbox.css');

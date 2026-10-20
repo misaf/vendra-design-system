@@ -1,8 +1,8 @@
 import React from 'react';
 import {Alert} from '../Alert/Alert.jsx';
-import {cx} from '../utils/cx.js';
-import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+import {cx} from '../../utils/cx.js';
+import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 const FOCUSABLE = 'input, select, textarea, button, [tabindex]:not([tabindex="-1"]), a[href]';
