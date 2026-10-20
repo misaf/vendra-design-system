@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type {Photo} from '../atoms/Picture/Picture.js';
+import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface CategoryCardProps {
   /** Category name, already localized */
