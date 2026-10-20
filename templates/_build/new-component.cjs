@@ -1,4 +1,4 @@
-// npm run new:component -- <Name> [--wording] [--no-css]
+// npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
 // Starts components/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
 // npm test pass from the first build: the component, its declarations, CSS (added to
 // components/index.css), README with its Usage section, fixture and spec, and with --wording its
@@ -6,31 +6,40 @@
 // re-exports the component for the storefront (app/ds.js). What it can't know is left as TODO.
 const fs = require('node:fs');
 const path = require('node:path');
+const {levels} = require('./atomic.cjs');
 
 const repo = path.resolve(__dirname, '../..');
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
 const wording = args.includes('--wording');
 const css = !args.includes('--no-css');
+const level = args[args.indexOf('--level') + 1];
 
 const fail = message => {
   console.error(message);
   process.exit(1);
 };
 if (!name || !/^[A-Z][A-Za-z0-9]+$/.test(name))
-  fail('Usage: npm run new:component -- <Name> [--wording] [--no-css]   (Name in PascalCase)');
-const folder = path.join(repo, 'components', name);
-if (fs.existsSync(folder)) fail('components/' + name + ' already exists');
+  fail(
+    'Usage: npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]'
+  );
+if (!args.includes('--level') || !levels.includes(level))
+  fail('--level is required: atoms, molecules or organisms. See ATOMIC-DESIGN.md.');
+const existing = fs.readdirSync(path.join(repo, 'components'), {recursive: true});
+if (existing.some(file => path.basename(file) === name + '.jsx'))
+  fail('A component named ' + name + ' already exists');
+const componentPath = `components/${level}/${name}`;
+const folder = path.join(repo, componentPath);
 
 const className = 'ag-' + name.replace(/(?<!^)([A-Z])/g, '-$1').toLowerCase();
 const files = {};
 
 files[name + '.jsx'] = `import React from 'react';
-import {cx} from '../utils/cx.js';
+import {cx} from '../../utils/cx.js';
 ${
   wording
-    ? `import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+    ? `import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 `
     : ''
@@ -82,7 +91,7 @@ export const messages = {
   fa: {label: 'TODO'}
 };
 `;
-  files['messages.d.ts'] = `import type {ComponentMessages} from '../utils/messages.js';
+  files['messages.d.ts'] = `import type {ComponentMessages} from '../../utils/messages.js';
 /** ${name}'s built-in wording in English and Persian. */
 export declare const messages: {en: ComponentMessages['${name}']; fa: ComponentMessages['${name}']};
 `;
@@ -115,7 +124,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -128,7 +137,7 @@ test('passes axe in English and Persian', async ({page}) => {
 });
 `;
 
-fs.mkdirSync(folder);
+fs.mkdirSync(folder, {recursive: true});
 for (const [file, text] of Object.entries(files)) fs.writeFileSync(path.join(folder, file), text);
 
 // Insert `line` into the sorted run of lines matching `pattern` in `file`.
@@ -143,12 +152,12 @@ const insertSorted = (file, pattern, line) => {
 insertSorted(
   path.join(repo, 'templates/app/ds.js'),
   /^export \* from '\.\.\/\.\.\/components\//,
-  `export * from '../../components/${name}/${name}.jsx';`
+  `export * from '../../${componentPath}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
     path.join(repo, 'components/index.css'),
-    `@import url('${name}/${name}.css');\n`
+    `@import url('${level}/${name}/${name}.css');\n`
   );
 if (wording) {
   const types = path.join(repo, 'components/utils/messages.d.ts');
@@ -172,7 +181,7 @@ require('node:child_process').execFileSync(
   {stdio: 'inherit'}
 );
 
-console.log(`Created components/${name}/ (${Object.keys(files).join(', ')}).
+console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
 Added it to templates/app/ds.js${css ? ', components/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
@@ -182,5 +191,5 @@ Next:
      component uses), and add it to a guideline card in guidelines/components/.
   2. npm --prefix templates run format && npm --prefix templates run build
   3. npm --prefix templates run check && npm --prefix templates test
-  4. npx playwright test -c templates/_e2e/playwright.config.mjs ../components/${name}
+  4. npx playwright test -c templates/_e2e/playwright.config.mjs ../${componentPath}
      then the whole test:e2e (CLAUDE.md rule 5).`);

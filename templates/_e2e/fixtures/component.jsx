@@ -4,13 +4,17 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {VendraProvider} from '../../../components/VendraProvider/VendraProvider.jsx';
 
-const fixtures = import.meta.glob('../../../components/*/*.fixture.jsx');
+const fixtures = import.meta.glob('../../../components/**/*.fixture.jsx');
 const query = new URLSearchParams(location.search);
 const name = query.get('component');
 const lang = query.get('lang') === 'fa' ? 'fa' : 'en';
 document.documentElement.lang = lang;
 document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
-const load = fixtures['../../../components/' + name + '/' + name + '.fixture.jsx'];
+const matches = Object.entries(fixtures).filter(([file]) =>
+  file.endsWith('/' + name + '/' + name + '.fixture.jsx')
+);
+if (matches.length > 1) throw new Error('Duplicate fixture for ' + name);
+const load = matches[0]?.[1];
 if (!load) throw new Error('No fixture for ' + name);
 load().then(({Fixture}) =>
   createRoot(document.getElementById('root')).render(

@@ -152,12 +152,12 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.match(wording('de-DE'), /aria-label="Dismiss"/);
     // Each component's wording (dist/components/<Name>/messages.js) has Persian for every English key.
     const wordings = fs
-      .readdirSync(path.join(repo, 'dist/components'))
+      .readdirSync(path.join(repo, 'dist/components'), {recursive: true})
       .filter(
         name =>
-          /^[A-Z]/.test(name) &&
-          fs.existsSync(path.join(repo, 'dist/components', name, 'messages.js'))
-      );
+          path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
+      )
+      .map(name => path.dirname(name));
     assert.ok(wordings.length > 20, 'components ship their own wording');
     assert.equal(ds.MESSAGES, undefined, 'no shared catalog: each component carries its own words');
     const keys = value =>
