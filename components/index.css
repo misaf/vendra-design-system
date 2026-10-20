@@ -12,8 +12,8 @@
 @import url('atoms/Picture/Picture.css');
 @import url('PaymentStatus/PaymentStatus.css');
 @import url('atoms/Price/Price.css');
-@import url('TrustSeal/TrustSeal.css');
-@import url('StockStatus/StockStatus.css');
+@import url('molecules/TrustSeal/TrustSeal.css');
+@import url('molecules/StockStatus/StockStatus.css');
 @import url('ProductCard/ProductCard.css');
 @import url('atoms/Badge/Badge.css');
 @import url('atoms/Card/Card.css');
@@ -47,7 +47,7 @@
 @import url('molecules/MenuList/MenuList.css');
 @import url('atoms/RangeSlider/RangeSlider.css');
 @import url('BlogCard/BlogCard.css');
-@import url('PaymentCard/PaymentCard.css');
+@import url('molecules/PaymentCard/PaymentCard.css');
 @import url('LineItem/LineItem.css');
 @import url('Gallery/Gallery.css');
 @import url('atoms/ArchFrame/ArchFrame.css');
@@ -57,9 +57,9 @@
 @import url('DatePicker/DatePicker.css');
 @import url('LocationPicker/LocationPicker.css');
 @import url('PlacesMap/PlacesMap.css');
-@import url('OrderTimeline/OrderTimeline.css');
+@import url('molecules/OrderTimeline/OrderTimeline.css');
 @import url('OrderSummary/OrderSummary.css');
-@import url('DetailList/DetailList.css');
+@import url('molecules/DetailList/DetailList.css');
 @import url('AddressCard/AddressCard.css');
 @import url('ReminderRow/ReminderRow.css');
 @import url('molecules/PromoCodeField/PromoCodeField.css');

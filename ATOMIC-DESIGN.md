@@ -43,9 +43,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    SearchField, PromoCodeField and ResendCode are the first batch in `components/molecules/`.
    Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
    Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
-   SectionHeader form the browsing and menu batch: 15 molecule folders are now migrated.
-   **Next stage: commerce display molecules** (StockStatus, TrustSeal, DetailList, PaymentCard
-   and OrderTimeline).
+   SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard
+   and OrderTimeline form the commerce display batch: 20 molecule folders are now migrated.
+   **Next stage: catalog and editorial card molecules** (ProductCard, CategoryCard and BlogCard).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -131,6 +131,19 @@ visual checks pass. Coverage includes filter-removal focus, language selection a
 menu semantics, section-arrow bounds and English/Persian accessibility. No baselines or tolerances
 were changed. Known commerce and validation-state snapshot failures were not rerun, and the full
 browser suite remains unverified.
+
+**Ninth checkpoint verified:** StockStatus, TrustSeal, DetailList, PaymentCard and OrderTimeline
+moved with their types, wording, fixtures and specs, bringing the molecule layer to 20 folders.
+ProductCard, PaymentStatus, app exports and the published package use the new paths; component
+bodies and CSS rules are unchanged. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. All 43 focused component/consumer/package/
+hydration browser tests and both DetailList visual checks pass. Coverage includes Persian stock
+digits and dates, seal referrer policies and image fallbacks, clipboard copying, order progress,
+payment states and English/Persian accessibility. The four commerce/order screenshot checks fail
+in normal and forced-color modes on both this stage and the preceding commit (`a1085bc`); all
+eight actual/retry images match preceding-commit captures byte for byte. No baselines or tolerances
+were changed. The known validation-state snapshot failures were not rerun, and the full browser
+suite remains unverified.
 
 ## Adding components
 

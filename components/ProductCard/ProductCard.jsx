@@ -4,7 +4,7 @@ import {Badge} from '../atoms/Badge/Badge.jsx';
 import {IconButton} from '../atoms/IconButton/IconButton.jsx';
 import {Picture} from '../atoms/Picture/Picture.jsx';
 import {Price} from '../atoms/Price/Price.jsx';
-import {StockStatus} from '../StockStatus/StockStatus.jsx';
+import {StockStatus} from '../molecules/StockStatus/StockStatus.jsx';
 import {cx} from '../utils/cx.js';
 import {useMessages} from '../utils/messages.js';
 import {messages} from './messages.js';

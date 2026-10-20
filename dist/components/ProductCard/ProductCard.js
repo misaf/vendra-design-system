@@ -6,7 +6,7 @@ import { Badge } from "../atoms/Badge/Badge.js";
 import { IconButton } from "../atoms/IconButton/IconButton.js";
 import { Picture } from "../atoms/Picture/Picture.js";
 import { Price } from "../atoms/Price/Price.js";
-import { StockStatus } from "../StockStatus/StockStatus.js";
+import { StockStatus } from "../molecules/StockStatus/StockStatus.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";
