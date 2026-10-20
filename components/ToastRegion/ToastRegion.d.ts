@@ -1,4 +1,4 @@
-import type {ToastContent} from '../Toast/Toast.js';
+import type {ToastContent} from '../molecules/Toast/Toast.js';
 /** React Aria's toast queue: add(content, {timeout}) returns a key; close(key) removes it. */
 export declare class ToastQueue {
   constructor(options?: {maxVisibleToasts?: number});

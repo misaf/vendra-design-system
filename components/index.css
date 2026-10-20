@@ -28,9 +28,9 @@
 @import url('atoms/Switch/Switch.css');
 @import url('atoms/QuantityInput/QuantityInput.css');
 @import url('Dialog/Dialog.css');
-@import url('Toast/Toast.css');
+@import url('molecules/Toast/Toast.css');
 @import url('ToastRegion/ToastRegion.css');
-@import url('Tooltip/Tooltip.css');
+@import url('molecules/Tooltip/Tooltip.css');
 @import url('molecules/CategoryCard/CategoryCard.css');
 @import url('atoms/Skeleton/Skeleton.css');
 @import url('molecules/Alert/Alert.css');
@@ -38,7 +38,7 @@
 @import url('molecules/LoadMore/LoadMore.css');
 @import url('molecules/Pagination/Pagination.css');
 @import url('atoms/Meter/Meter.css');
-@import url('AnnouncementBar/AnnouncementBar.css');
+@import url('molecules/AnnouncementBar/AnnouncementBar.css');
 @import url('Accordion/Accordion.css');
 @import url('molecules/Stepper/Stepper.css');
 @import url('BottomTabBar/BottomTabBar.css');
@@ -64,5 +64,5 @@
 @import url('molecules/ReminderRow/ReminderRow.css');
 @import url('molecules/PromoCodeField/PromoCodeField.css');
 @import url('molecules/ErrorSummary/ErrorSummary.css');
-@import url('OfflineNotice/OfflineNotice.css');
+@import url('molecules/OfflineNotice/OfflineNotice.css');
 @import url('Lightbox/Lightbox.css');

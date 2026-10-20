@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent, scanAxe} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent, scanAxe} from '../../../templates/_e2e/component-test.mjs';
 
 for (const [lang, offline, online] of [
   ['en', 'You’re offline.', 'You’re back online.'],
