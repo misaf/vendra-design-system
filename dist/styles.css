@@ -1706,7 +1706,7 @@ a.ag-iconbtn {
   min-height: var(--control-h-xs);
 }
 
-/* components/Dialog/Dialog.css */
+/* components/organisms/Dialog/Dialog.css */
 .ag-dialog__overlay {
   position: fixed;
   inset: 0;
@@ -1915,7 +1915,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/ToastRegion/ToastRegion.css */
+/* components/organisms/ToastRegion/ToastRegion.css */
 /* ToastRegion: React Aria's landmark, fixed at the bottom inline-end corner above the page. */
 .ag-toast-region {
   position: fixed;
@@ -4536,7 +4536,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/Lightbox/Lightbox.css */
+/* components/organisms/Lightbox/Lightbox.css */
 /* Lightbox: a dark full-screen stage. The photo fits inside it whole; the bar, the dots and the
    caption sit on the dark surface around it. Colours from tokens, logical sides (start/end). */
 .ag-lightbox__overlay {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
+import {Button} from '../../atoms/Button/Button.jsx';
 import {ToastQueue, ToastRegion} from './ToastRegion.jsx';
 
 const queue = new ToastQueue();

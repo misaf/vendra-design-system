@@ -27,9 +27,9 @@
 @import url('atoms/ChoiceGroup/ChoiceGroup.css');
 @import url('atoms/Switch/Switch.css');
 @import url('atoms/QuantityInput/QuantityInput.css');
-@import url('Dialog/Dialog.css');
+@import url('organisms/Dialog/Dialog.css');
 @import url('molecules/Toast/Toast.css');
-@import url('ToastRegion/ToastRegion.css');
+@import url('organisms/ToastRegion/ToastRegion.css');
 @import url('molecules/Tooltip/Tooltip.css');
 @import url('molecules/CategoryCard/CategoryCard.css');
 @import url('atoms/Skeleton/Skeleton.css');
@@ -65,4 +65,4 @@
 @import url('molecules/PromoCodeField/PromoCodeField.css');
 @import url('molecules/ErrorSummary/ErrorSummary.css');
 @import url('molecules/OfflineNotice/OfflineNotice.css');
-@import url('Lightbox/Lightbox.css');
+@import url('organisms/Lightbox/Lightbox.css');

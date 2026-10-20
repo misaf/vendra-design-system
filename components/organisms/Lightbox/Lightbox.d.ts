@@ -1,4 +1,4 @@
-import type {Photo} from '../atoms/Picture/Picture.js';
+import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface LightboxItem {
   /** A stable key for the item, e.g. the product code */

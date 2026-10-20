@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent, scanAxe} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent, scanAxe} from '../../../templates/_e2e/component-test.mjs';
 
 const open = async (page, lang = 'en') => {
   await openComponent(page, 'Lightbox', lang);
