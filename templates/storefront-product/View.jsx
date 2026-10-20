@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
+import {StorefrontProductLayout} from '../app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -11,18 +12,20 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
-            <DS.Breadcrumb
-              label={v.t?.crumbs}
-              className="tw:mb-5h"
-              items={[
-                {label: v.t?.shop, href: v.href?.shop},
-                {label: v.t?.cat, href: v.category?.href},
-                {label: v.t?.name}
-              ]}
-            />
-            <div className="vf-product-columns tw:grid tw:items-start tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))] tw:gap-8">
-              <div className="tw:flex tw:flex-col tw:gap-3">
+          <StorefrontProductLayout
+            breadcrumbs={
+              <DS.Breadcrumb
+                label={v.t?.crumbs}
+                className="tw:mb-5h"
+                items={[
+                  {label: v.t?.shop, href: v.href?.shop},
+                  {label: v.t?.cat, href: v.category?.href},
+                  {label: v.t?.name}
+                ]}
+              />
+            }
+            gallery={
+              <>
                 <DS.Gallery
                   key={v.t?.name}
                   images={v.productImages}
@@ -44,8 +47,10 @@ export function View({v}) {
                   onIndexChange={v.setPhoto}
                   onClose={v.closePhotos}
                 />
-              </div>
-              <div className="vf-product-details tw:flex tw:flex-col tw:gap-5 vf-sticky-panel">
+              </>
+            }
+            details={
+              <>
                 <div className="vf-product-heading tw:flex tw:flex-col tw:gap-2">
                   <div className="vf-product-title tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
                     <h1 id="vf-product-code">
@@ -170,92 +175,100 @@ export function View({v}) {
                   </>
                 ) : null}
                 <DS.Accordion items={v.faq} defaultValue="care" />
-              </div>
-            </div>
-            {/* Recently viewed comes from this browser's history; a bad entry mustn't take the page down. */}
-            <DS.ErrorBoundary resetKey={v.productId}>
-              {v.hasRecent ? (
-                <>
-                  <section className="vf-product-recent tw:flex tw:flex-col">
-                    <DS.SectionHeader
-                      eyebrow={v.t?.recentEb}
-                      title={v.t?.recentA}
-                      accent={v.t?.recentB}
-                    />
-                    <CollectionCarousel
-                      key={v.productId}
-                      total={list(v.recent).length}
-                      countLabel={v.t?.recentCount(list(v.recent).length)}
-                      label={v.recentLabel}
-                      perView={4}
-                      perViewMobile={1.15}
-                      itemMin="220px"
-                      gap="20px"
-                      arrows={true}
-                      prevLabel={v.t?.recentPrev}
-                      nextLabel={v.t?.recentNext}
-                    >
-                      {list(v.recent).map((p, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.ProductCard
-                            images={p?.images}
-                            sizes={
-                              v.recent.length === 1
-                                ? '(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 25vw'
-                                : '(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw'
-                            }
-                            name={p?.name}
-                            subtitle={p?.sub}
-                            price={p?.price}
-                            stock={p?.stock}
-                            frame="soft"
-                            placeholder={v.t?.photo}
-                            favLabel={v.t?.save}
-                            favorite={p?.fav}
-                            onFavorite={p?.toggleFav}
-                            href={p?.href}
-                          />
-                        </React.Fragment>
-                      ))}
-                    </CollectionCarousel>
-                  </section>
-                </>
-              ) : null}
-            </DS.ErrorBoundary>
-            <DS.Dialog
-              open={v.addedOpen}
-              onClose={v.closeAdded}
-              title={v.t?.added}
-              closeLabel={v.t?.dismiss}
-              maxWidth={440}
-            >
-              <div className="vf-product-added tw:flex tw:flex-col tw:gap-5">
-                <DS.OrderSummary lines={v.addedLines} sums={v.addedSums} />
-                <div className="tw:flex tw:flex-col tw:gap-2">
-                  <DS.Button
-                    variant="primary"
-                    size="lg"
-                    block={true}
-                    iconEnd="arrow-right"
-                    href={v.href?.bag}
-                    onClick={v.checkout}
-                    autoFocus={true}
-                    className="vf-product-added-checkout"
-                  >
-                    <>{v.t?.checkout}</>
-                  </DS.Button>
-                  <DS.Button variant="ghost" size="lg" block={true} onClick={v.closeAdded}>
-                    <>{v.t?.keepShopping}</>
-                  </DS.Button>
-                </div>
-              </div>
-            </DS.Dialog>
-            <DS.ToastRegion
-              queue={v.toasts}
-              closeLabel={v.t?.dismiss}
-              className="vf-product-toasts"
-            />
-          </main>
+              </>
+            }
+            related={
+              <>
+                {/* Recently viewed comes from this browser's history; a bad entry mustn't take the page down. */}
+                <DS.ErrorBoundary resetKey={v.productId}>
+                  {v.hasRecent ? (
+                    <>
+                      <section className="vf-product-recent tw:flex tw:flex-col">
+                        <DS.SectionHeader
+                          eyebrow={v.t?.recentEb}
+                          title={v.t?.recentA}
+                          accent={v.t?.recentB}
+                        />
+                        <CollectionCarousel
+                          key={v.productId}
+                          total={list(v.recent).length}
+                          countLabel={v.t?.recentCount(list(v.recent).length)}
+                          label={v.recentLabel}
+                          perView={4}
+                          perViewMobile={1.15}
+                          itemMin="220px"
+                          gap="20px"
+                          arrows={true}
+                          prevLabel={v.t?.recentPrev}
+                          nextLabel={v.t?.recentNext}
+                        >
+                          {list(v.recent).map((p, $index) => (
+                            <React.Fragment key={$index}>
+                              <DS.ProductCard
+                                images={p?.images}
+                                sizes={
+                                  v.recent.length === 1
+                                    ? '(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 25vw'
+                                    : '(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw'
+                                }
+                                name={p?.name}
+                                subtitle={p?.sub}
+                                price={p?.price}
+                                stock={p?.stock}
+                                frame="soft"
+                                placeholder={v.t?.photo}
+                                favLabel={v.t?.save}
+                                favorite={p?.fav}
+                                onFavorite={p?.toggleFav}
+                                href={p?.href}
+                              />
+                            </React.Fragment>
+                          ))}
+                        </CollectionCarousel>
+                      </section>
+                    </>
+                  ) : null}
+                </DS.ErrorBoundary>
+              </>
+            }
+            feedback={
+              <>
+                <DS.Dialog
+                  open={v.addedOpen}
+                  onClose={v.closeAdded}
+                  title={v.t?.added}
+                  closeLabel={v.t?.dismiss}
+                  maxWidth={440}
+                >
+                  <div className="vf-product-added tw:flex tw:flex-col tw:gap-5">
+                    <DS.OrderSummary lines={v.addedLines} sums={v.addedSums} />
+                    <div className="tw:flex tw:flex-col tw:gap-2">
+                      <DS.Button
+                        variant="primary"
+                        size="lg"
+                        block={true}
+                        iconEnd="arrow-right"
+                        href={v.href?.bag}
+                        onClick={v.checkout}
+                        autoFocus={true}
+                        className="vf-product-added-checkout"
+                      >
+                        <>{v.t?.checkout}</>
+                      </DS.Button>
+                      <DS.Button variant="ghost" size="lg" block={true} onClick={v.closeAdded}>
+                        <>{v.t?.keepShopping}</>
+                      </DS.Button>
+                    </div>
+                  </div>
+                </DS.Dialog>
+                <DS.ToastRegion
+                  queue={v.toasts}
+                  closeLabel={v.t?.dismiss}
+                  className="vf-product-toasts"
+                />
+              </>
+            }
+          />
         </>
       }
       sticky={
