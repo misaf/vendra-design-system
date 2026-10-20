@@ -133,6 +133,11 @@ export function vfAccountSave(phone, data) {
     return false;
   }
 }
+// Apply one account operation to the latest persisted record, preserving unrelated updates.
+export function vfAccountUpdate(phone, change, lang = 'en') {
+  const next = change(vfAccountLoad(phone, lang));
+  return next && vfAccountSave(phone, next) ? next : null;
+}
 export function vfAccountLogin(phone, lang) {
   phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
   try {
