@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {StorefrontAnnouncement} from './organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx';
 import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent.jsx';
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
 import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
@@ -130,33 +131,14 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
               </DS.LiveRegion>
             </>
           ) : null}
-          {v.announcement ? (
-            <>
-              <DS.AnnouncementBar
-                label={v.shellText?.news}
-                closeLabel={v.shellText?.dismissNews}
-                onClose={v.closeAnnouncement}
-              >
-                {v.announcementPhone !== v.announcement ? (
-                  <>
-                    <span className="tw:md:hidden">{v.announcementPhone}</span>
-                    <span className="tw:max-md:hidden">{v.announcement}</span>
-                  </>
-                ) : (
-                  <>{v.announcement}</>
-                )}
-                {v.announcementLink ? (
-                  <>
-                    {' '}
-                    <a href={v.announcementLink.href} className="vf-shell-announcement-link">
-                      <>{v.announcementLink.label}</>
-                      <DS.Icon name="arrow-right" size={14} className="ag-flip-rtl" />
-                    </a>
-                  </>
-                ) : null}
-              </DS.AnnouncementBar>
-            </>
-          ) : null}
+          <StorefrontAnnouncement
+            label={v.shellText?.news}
+            closeLabel={v.shellText?.dismissNews}
+            onClose={v.closeAnnouncement}
+            text={v.announcement}
+            phoneText={v.announcementPhone}
+            link={v.announcementLink}
+          />
           <StorefrontHeader
             brand={v.shellText?.brand}
             homeHref={v.href?.home}
