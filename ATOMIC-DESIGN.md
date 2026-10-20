@@ -20,6 +20,11 @@ basic action primitive. Keep tightly coupled parts in one folder (for example Ch
 ChoiceTile). Do not split a React Aria widget just to make more layers. Components in one layer
 may compose each other; avoid dependency cycles.
 
+Storefront-specific organisms live in `templates/app/organisms/<Name>/`. They compose the package
+UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
+They do not belong in the published package or import store state and persistence. Shell and page
+logic supply their data and actions. Tailwind scans nested app JSX.
+
 Store data, delivery policy, customer identity, payment recovery and API effects stay in the
 storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations remain in
 `components/utils/commerce.js`. Atomic Design organizes UI; it does not replace those boundaries.
@@ -55,8 +60,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    browsing batch. OrderSummary and PaymentStatus form the order and payment batch, followed by
    DatePicker as the calendar organism. LocationPicker and PlacesMap form the map batch, followed
    by BottomTabBar: **all existing package UI folders are now layered, with 11 organism folders.**
-   VendraProvider remains a foundation. Header/footer extraction from Shell is still pending.
-   **Next stage: extract the storefront header from Shell with explicit props and callbacks.**
+   VendraProvider remains a foundation. StorefrontHeader is extracted under
+   `templates/app/organisms/StorefrontHeader/` with explicit content props and callbacks.
+   **Next stage: extract the storefront footer from Shell, including FooterLinks.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -280,6 +286,21 @@ screenshots pass without baseline or tolerance changes. Known commerce, order an
 snapshot failures were not rerun, and the full browser and device suites remain unverified.
 The next stage extracts the storefront header from Shell; header/footer composition, templates
 and pages still need migration work.
+
+**Twenty-first checkpoint verified:** StorefrontHeader is the first storefront-specific organism,
+under `templates/app/organisms/StorefrontHeader/`. Shell passes explicit brand, navigation, tool,
+bag and language content plus callbacks. Feature availability, state, routing, the menu drawer and
+shared layout effects remain in Shell and storefront logic. Header markup keeps its existing
+classes and CSS-selected layouts. Tailwind now scans nested app JSX, and the JavaScript-breakpoint
+guard covers extracted app components. Published package contents and generated styles are
+unchanged. Build, generated-file/format/CSS checks, the full unit/type/package suite and production
+app build pass. Twelve touch-enabled responsive/menu/resize tests, three language/keyboard
+navigation tests and 12 hydration/first-paint tests pass; one duplicate mobile keyboard test is
+skipped by its existing desktop-only guard. Six header captures at 375, 768 and 1280 pixels in
+English and Persian match the preceding commit (`8512de2`) byte for byte and were visually
+inspected at representative phone/desktop sizes. No screenshot baselines or tolerances changed.
+The full browser/device suites and known unrelated snapshot failures were not rerun. Footer,
+menu composition, templates and page migration work remains.
 
 ## Adding components
 

@@ -6,6 +6,11 @@ and migration order. New UI components live in `components/atoms/`, `components/
 atoms|molecules|organisms`. Existing flat component folders migrate incrementally. References below
 to `components/<Name>/` mean the component's own folder, including its layer after migration.
 
+Storefront-specific organisms live under `templates/app/organisms/<Name>/` and receive explicit
+content props and callbacks from Shell or pages. StorefrontHeader owns the responsive header
+markup; Shell owns its data, menu drawer and shared layout effects. Keep `vf-*` composition out
+of the published component package. Tailwind scans nested app JSX.
+
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
 
 **Bag product configurations are fixed:** do not add size or add-on editors to bag rows. Keep choosing those options on the product page; bag rows may change quantity, remove an item, or undo its removal.

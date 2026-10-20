@@ -875,7 +875,10 @@ console.log('Passed recursive English/Persian copy parity, including nested labe
 // Layout never branches on a JavaScript breakpoint: the shell and every view render all their
 // structures and CSS picks one, so the first paint already matches the final layout.
 for (const file of [
-  'templates/app/Shell.jsx',
+  ...fs
+    .readdirSync(path.join(root, 'templates/app'), {recursive: true})
+    .filter(file => file.endsWith('.jsx'))
+    .map(file => 'templates/app/' + file.split(path.sep).join('/')),
   ...fs
     .readdirSync(path.join(root, 'templates'))
     .filter(folder => folder.startsWith('storefront-'))

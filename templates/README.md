@@ -17,7 +17,8 @@ for routed pages.
 | Products, sizes, add-ons | [_shared/catalog.js](_shared/catalog.js) |
 | Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
-| Header, mobile menu, footer, consent banner, page shell | `app/Shell.jsx` (values in `_shared/navigation.js`) |
+| Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
+| Mobile menu, footer, consent banner, page shell | `app/Shell.jsx` (values in `_shared/navigation.js`) |
 | Routes and URL helpers | [_shared/routing.js](_shared/routing.js) |
 | Responsive state, focus, `<head>` | `_shared/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |

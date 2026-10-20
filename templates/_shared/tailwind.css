@@ -4,7 +4,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) source(none);
 
 /* Scan maintained markup only, never generated runtimes or dependencies. */
-@source "../app/*.jsx";
+@source "../app/**/*.jsx";
 @source "../storefront-*/*.jsx";
 @source "../storefront-*/*.js";
 
