@@ -22,10 +22,13 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 
 ## A new component
 
+The component library is moving to Atomic Design in working batches. See
+[ATOMIC-DESIGN.md](ATOMIC-DESIGN.md) for the layers, dependency rules and current checkpoint.
+
 ```sh
-npm run new:component -- Name               # component, types, CSS, README, fixture and spec
-npm run new:component -- Name --wording     # plus its English and Persian wording (messages.js)
-npm run new:component -- Name --no-css      # when it only reuses other components' classes
+npm run new:component -- Name --level atoms               # component, types, CSS, README, fixture and spec
+npm run new:component -- Name --level molecules --wording # plus English and Persian wording
+npm run new:component -- Name --level organisms --no-css  # when it only reuses other components' classes
 ```
 
 The `--` matters: without it npm keeps the flags for itself. The generator adds the folder, imports its CSS in `components/index.css`, exports it to the storefront (`templates/app/ds.js`) and, with `--wording`, adds its type to `ComponentMessages`. Then:

@@ -106,7 +106,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 | Path | Contents |
 |---|---|
-| `components/<Name>/` | One folder per component: `.jsx`, `.d.ts`, `.css`, `README.md`. Helpers in `components/utils/`. |
+| `components/` | [Atomic Design migration](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component; remaining flat folders migrate in batches. Helpers in `components/utils/`. |
 | `tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
 | `templates/storefront-*` | 17 bilingual storefront pages plus `storefront-site`, the click-through router. The source of truth for the storefront. |

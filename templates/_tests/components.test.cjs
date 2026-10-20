@@ -21,7 +21,7 @@ const sources = fs
   .filter(name => name.endsWith('.jsx') && !name.endsWith('.fixture.jsx'));
 for (const file of sources) {
   const code = fs.readFileSync(path.join(root, '..', 'components', file), 'utf8');
-  for (const match of code.matchAll(/from '\.\.\/[A-Za-z]+\/([A-Za-z]+)\.jsx'/g))
+  for (const match of code.matchAll(/from '(?:\.\.?\/)+(?:[A-Za-z]+\/)*([A-Za-z]+)\.jsx'/g))
     buildingBlocks.add(match[1]);
 }
 for (const folder of fs
@@ -33,7 +33,7 @@ for (const folder of fs
     const code = fs.readFileSync(path.join(root, folder, name), 'utf8');
     for (const match of code.matchAll(/<DS\.([A-Za-z]+)/g)) used.add(match[1]);
     for (const match of code.matchAll(
-      /from '\.\.\/\.\.\/components\/[A-Za-z]+\/([A-Za-z]+)\.jsx'/g
+      /from '\.\.\/\.\.\/components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
     )) {
       if (new RegExp('<' + match[1] + '\\b').test(code)) used.add(match[1]);
     }
@@ -47,14 +47,14 @@ assert.deepEqual(
 );
 // Every component folder carries its own browser test: <Name>.spec.mjs opening <Name>.fixture.jsx
 // (run by the e2e suite's components project).
-const folders = fs
-  .readdirSync(path.join(root, '..', 'components'), {withFileTypes: true})
-  .filter(entry => entry.isDirectory() && entry.name !== 'utils')
-  .map(entry => entry.name);
+const folders = sources
+  .filter(file => path.basename(file, '.jsx') === path.basename(path.dirname(file)))
+  .map(file => path.dirname(file));
 const untested = folders.filter(folder => {
-  const base = path.join(root, '..', 'components', folder, folder);
+  const name = path.basename(folder);
+  const base = path.join(root, '..', 'components', folder, name);
   if (!fs.existsSync(base + '.spec.mjs') || !fs.existsSync(base + '.fixture.jsx')) return true;
-  return !fs.readFileSync(base + '.spec.mjs', 'utf8').includes("'" + folder + "'");
+  return !fs.readFileSync(base + '.spec.mjs', 'utf8').includes("'" + name + "'");
 });
 assert.deepEqual(untested, [], 'component folders without a spec that opens their fixture');
 console.log(

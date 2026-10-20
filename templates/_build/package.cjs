@@ -83,7 +83,7 @@ function packageFiles() {
   // A component's wording (components/<Name>/messages.js) ships beside it but isn't re-exported:
   // every one is named `messages`, and the component imports its own.
   const entries = modules
-    .filter(file => !/^components\/[A-Z]\w*\/messages\.js$/.test(file))
+    .filter(file => !/\/[A-Z]\w*\/messages\.js$/.test(file))
     .map(file => './' + file.replace(/\.jsx?$/, '.js'));
   files.set('index.js', HEADER + entries.map(entry => "export * from '" + entry + "';\n").join(''));
   files.set('index.d.ts', entries.map(entry => "export * from '" + entry + "';\n").join(''));
