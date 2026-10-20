@@ -84,7 +84,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    dialog slots; shop controls and URL/filter/sort state stay in the View/logic.
    StorefrontBagLayout now arranges bag/delivery notices, progress, heading, items/delivery fields,
    summary and empty state; bag/delivery rules and actions remain in the View/logic.
-   **Next stage: extract the checkout page layout with review and payment slots.**
+   StorefrontCheckoutLayout now arranges notices, progress, heading, review, payment, summary and
+   bank/success slots; payment rules and order submission stay in the View/logic.
+   **Next stage: extract the account page layout with heading, tabs and dialog slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -488,6 +490,30 @@ tolerances. Representative phone/desktop captures were visually inspected. No sc
 or tolerances changed; published package contents and generated styles are unchanged. The full
 browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures were
 not rerun. The next stage extracts the checkout layout with review and payment slots.
+
+**Thirty-first checkpoint verified:** StorefrontCheckoutLayout is extracted under
+`templates/app/layouts/StorefrontCheckoutLayout/`. It receives externally controlled payment
+visibility and notices, progress, heading, delivery review, payment, summary, bank-status and
+success slots. The main focus target, payment columns, sticky summary and bank/success wrappers
+are preserved. Notices remain outside the payment group. The View retains conditional slot
+construction, all controls/callbacks, receipt fields and confirmation targets; checkout logic
+retains method availability, persistence, gateway recovery and order submission. The mobile
+submission action remains a separate Shell slot. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. Forty-six focused browser cases pass:
+English/Persian delivery-edit continuity, receipt-total confirmation, delayed-response bag
+preservation, order history, wallet top-up return, recovery-storage failure, expired payment retry,
+WhatsApp details, hydration/first paint, plus phone/desktop promo carryover, card confirmation,
+online success/refusal/retry, unknown bank returns, wallet checkout/sign-in and true-touch
+short-phone receipt-field focus/accessibility. Twenty-four complete payment-entry, unconfirmed
+bank-return and card-order success captures at 390, 768, 1280 and 1920 pixels in both languages
+match the preceding commit (`6784b9a`) byte for byte. Captures wait for image decoding and use a
+deterministic clock that advances during map pin placement before freezing order timestamps;
+initial harness attempts stopped during pin placement and produced no accepted comparisons.
+Representative phone payment and desktop bank-return captures were visually inspected. No
+screenshot baselines/tolerances, production rules or test expectations changed; published package
+contents and generated styles are unchanged.
+The full browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures
+were not rerun. The next stage extracts the account layout with heading, tabs and dialog slots.
 
 ## Adding components
 
