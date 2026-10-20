@@ -145,6 +145,19 @@ export function View({v}) {
                     <p className="tw:text-sm tw:text-quiet">
                       <>{v.paymentNotice}</>
                     </p>
+                    {v.receiptChanged && (
+                      <div id="vf-receipt-changed" tabIndex={-1}>
+                        <DS.Alert
+                          tone="warning"
+                          title={v.receiptChangeText}
+                          action={
+                            <DS.Button variant="secondary" onClick={v.confirmReceipt}>
+                              {v.t.confirmReceipt}
+                            </DS.Button>
+                          }
+                        />
+                      </div>
+                    )}
                     {v.isCard ? (
                       <>
                         <DS.PaymentCard

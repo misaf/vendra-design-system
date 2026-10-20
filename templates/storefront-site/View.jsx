@@ -34,6 +34,18 @@ export function View({v}) {
       <DS.LiveRegion>
         <>{v.announcement}</>
       </DS.LiveRegion>
+      {v.checkoutNotice && (
+        <DS.Alert
+          tone="info"
+          title={v.checkoutNotice.title}
+          onClose={v.dismissCheckoutNotice}
+          action={
+            <DS.Button variant="secondary" href={v.checkoutNotice.href}>
+              {v.checkoutNotice.label}
+            </DS.Button>
+          }
+        />
+      )}
       {v.integrationError ? (
         <>
           <DS.Alert tone="danger" title={v.integrationErrorText} />

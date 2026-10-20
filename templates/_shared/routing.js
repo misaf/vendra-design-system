@@ -90,6 +90,8 @@ export function vfReadRoute(search = location.search) {
     (query.get('tab') !== 'reminders' || features.reminders)
   )
     route.tab = query.get('tab');
+  if (route.view === 'account' && route.tab === 'balance' && query.get('next') === 'checkout')
+    route.next = 'checkout';
   // Sign-in started from checkout returns there (?view=signin&next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
   // A product is addressed by its category and code (?view=product&id=VF-7K2M4Q&cat=boxes); an old slug
@@ -172,6 +174,8 @@ export function vfRouteParams(route) {
     query.set('result', route.paymentResult);
   }
   if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
+  if (route.view === 'account' && route.tab === 'balance' && route.next === 'checkout')
+    query.set('next', 'checkout');
   if (route.view === 'shop') {
     if (route.min > 0) query.set('min', route.min);
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;

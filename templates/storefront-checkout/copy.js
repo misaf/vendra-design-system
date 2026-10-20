@@ -13,6 +13,9 @@ export function vfCopy(S) {
       payA: 'Card to',
       payB: 'card.',
       payP: 'Transfer the total from your banking app to the card below, then enter the last four digits of your card so we can match the payment.',
+      receiptChanged:
+        'Your order total is now {amount}. Check your transfer covers this amount before placing the order.',
+      confirmReceipt: 'I’ve checked the new total',
       last4: 'Last 4 digits of your card',
       last4Hint: 'Only these four digits are sent.',
       sheba: 'Sheba',
@@ -72,6 +75,9 @@ export function vfCopy(S) {
       payA: 'کارت به',
       payB: 'کارت.',
       payP: 'مبلغ کل را از اپ بانکی به کارت زیر واریز کنید و چهار رقم آخر کارت خود را وارد کنید تا پرداخت را تطبیق دهیم.',
+      receiptChanged:
+        'مبلغ سفارش اکنون {amount} است. پیش از ثبت سفارش بررسی کنید که مبلغ واریزی این مبلغ را پوشش دهد.',
+      confirmReceipt: 'مبلغ جدید را بررسی کردم',
       last4: 'چهار رقم آخر کارت شما',
       last4Hint: 'فقط همین چهار رقم ارسال می‌شود.',
       sheba: 'شبا',

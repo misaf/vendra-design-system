@@ -27,6 +27,7 @@ export function View({v}) {
                 <>{v.t?.signOut}</>
               </DS.Button>
             </div>
+            {v.saveError && !v.formOpen && <DS.Alert tone="danger" title={v.saveError} />}
             <DS.Tabs
               variant="pill"
               items={v.tabItems}
@@ -158,6 +159,11 @@ export function View({v}) {
                         <>{v.t?.balance?.demo}</>
                       </p>
                     </section>
+                    {v.checkoutReturn && (
+                      <DS.Button variant="secondary" href={v.checkoutHref} iconStart="arrow-left">
+                        {v.t.balance.backToCheckout}
+                      </DS.Button>
+                    )}
                     <section
                       aria-labelledby="vf-balance-history"
                       className="tw:flex tw:flex-col tw:gap-3"
@@ -405,6 +411,7 @@ export function View({v}) {
             </p>
             <DS.Dialog open={v.formOpen} title={v.formTitle} onClose={v.closeForm}>
               <div className="tw:flex tw:flex-col tw:gap-4">
+                {v.saveError && <DS.Alert tone="danger" title={v.saveError} />}
                 <DS.ErrorSummary id="vf-editor-errors" errors={v.editorProblems} />
                 {v.isAddress ? (
                   <>
