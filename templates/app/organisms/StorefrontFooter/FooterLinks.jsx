@@ -1,10 +1,9 @@
 import React from 'react';
-import * as DS from './ds.js';
-import {list} from './runtime.js';
+import {Accordion} from '../../ds.js';
 
 // Both CSS layouts use the same link data and navigation markup. Only the phone layout adds
 // disclosures; wider screens retain their expanded columns and landmark labels.
-function FooterNavigation({v, group, compact = false}) {
+function FooterNavigation({group, compact = false, consentSettingsLabel, onOpenConsent}) {
   const headingId = 'vf-footer-' + group.id;
   return (
     <nav
@@ -34,44 +33,44 @@ function FooterNavigation({v, group, compact = false}) {
         <button
           type="button"
           id={compact ? 'vf-consent-settings-mobile' : 'vf-consent-settings'}
-          onClick={v.consent?.open}
+          onClick={onOpenConsent}
           className="vf-shell-footer-link tw:p-0 tw:[border:0] tw:bg-transparent tw:text-on-inverse tw:[font:inherit] tw:text-start tw:cursor-pointer tw:hover:underline! tw:[text-underline-offset:4px]"
         >
-          {v.shellText?.consent?.settings}
+          {consentSettingsLabel}
         </button>
       )}
     </nav>
   );
 }
 
-export function FooterLinks({v}) {
-  const groups = [
-    {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
-    {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
-    {
-      id: 'help',
-      title: v.shellText?.help,
-      links: [
-        {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
-        ...list(v.policyLinks)
-      ]
-    }
-  ];
+export function FooterLinks({groups, consentSettingsLabel, onOpenConsent}) {
   return (
     <>
       <div className="vf-shell-footer-expanded">
         {groups.map(group => (
-          <FooterNavigation key={group.id} v={v} group={group} />
+          <FooterNavigation
+            key={group.id}
+            consentSettingsLabel={consentSettingsLabel}
+            onOpenConsent={onOpenConsent}
+            group={group}
+          />
         ))}
       </div>
       <div className="vf-shell-footer-compact">
-        <DS.Accordion
+        <Accordion
           headingLevel={2}
           allowMultiple
           items={groups.map(group => ({
             id: group.id,
             title: group.title,
-            content: <FooterNavigation v={v} group={group} compact />
+            content: (
+              <FooterNavigation
+                consentSettingsLabel={consentSettingsLabel}
+                onOpenConsent={onOpenConsent}
+                group={group}
+                compact
+              />
+            )
           }))}
         />
       </div>

@@ -28,10 +28,17 @@ for (const folder of fs
   .readdirSync(root)
   .filter(name => name.startsWith('storefront-') || name === 'app' || name === '_shared')) {
   for (const name of fs
-    .readdirSync(path.join(root, folder))
+    .readdirSync(path.join(root, folder), {recursive: true})
     .filter(name => name.endsWith('.jsx'))) {
     const code = fs.readFileSync(path.join(root, folder, name), 'utf8');
     for (const match of code.matchAll(/<DS\.([A-Za-z]+)/g)) used.add(match[1]);
+    // App organisms consume named exports through the same source facade as Shell.
+    for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"](?:\.\.?\/)+ds\.js['"]/g)) {
+      for (const imported of match[1].split(',')) {
+        const [name, localName = name] = imported.trim().split(/\s+as\s+/);
+        if (new RegExp('<' + localName + '\\b').test(code)) used.add(name);
+      }
+    }
     for (const match of code.matchAll(
       /from '\.\.\/\.\.\/components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
     )) {

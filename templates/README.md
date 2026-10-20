@@ -18,7 +18,8 @@ for routed pages.
 | Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/delivery.js](_shared/delivery.js) |
 | Promo codes | [_shared/promotions.js](_shared/promotions.js) |
 | Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
-| Mobile menu, footer, consent banner, page shell | `app/Shell.jsx` (values in `_shared/navigation.js`) |
+| Footer composition | `app/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
+| Mobile menu, consent banner, page shell | `app/Shell.jsx` (values in `_shared/navigation.js`) |
 | Routes and URL helpers | [_shared/routing.js](_shared/routing.js) |
 | Responsive state, focus, `<head>` | `_shared/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |
