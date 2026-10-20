@@ -1,10 +1,10 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
-import {Picture} from '../atoms/Picture/Picture.jsx';
-import {Price} from '../atoms/Price/Price.jsx';
-import {QuantityInput} from '../atoms/QuantityInput/QuantityInput.jsx';
-import {cx} from '../utils/cx.js';
-import {useMessages} from '../utils/messages.js';
+import {Picture} from '../../atoms/Picture/Picture.jsx';
+import {Price} from '../../atoms/Price/Price.jsx';
+import {QuantityInput} from '../../atoms/QuantityInput/QuantityInput.jsx';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)

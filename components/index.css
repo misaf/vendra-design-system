@@ -39,7 +39,7 @@
 @import url('molecules/Pagination/Pagination.css');
 @import url('atoms/Meter/Meter.css');
 @import url('molecules/AnnouncementBar/AnnouncementBar.css');
-@import url('Accordion/Accordion.css');
+@import url('molecules/Accordion/Accordion.css');
 @import url('molecules/Stepper/Stepper.css');
 @import url('BottomTabBar/BottomTabBar.css');
 @import url('molecules/NavLink/NavLink.css');
@@ -48,7 +48,7 @@
 @import url('atoms/RangeSlider/RangeSlider.css');
 @import url('molecules/BlogCard/BlogCard.css');
 @import url('molecules/PaymentCard/PaymentCard.css');
-@import url('LineItem/LineItem.css');
+@import url('molecules/LineItem/LineItem.css');
 @import url('Gallery/Gallery.css');
 @import url('atoms/ArchFrame/ArchFrame.css');
 @import url('molecules/SectionHeader/SectionHeader.css');

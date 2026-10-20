@@ -47,10 +47,11 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    and OrderTimeline form the commerce display batch. ProductCard, CategoryCard and BlogCard form
    the catalog and editorial card batch. AddressCard and ReminderRow form the account batch.
    Tabs and Stepper form the tab and step navigation batch. AnnouncementBar, OfflineNotice, Toast
-   and Tooltip form the notices and tooltip batch: 31 molecule folders are now migrated.
-   **Next stage: disclosure and bag-row molecules** (Accordion and LineItem).
+   and Tooltip form the notices and tooltip batch. Accordion and LineItem form the disclosure and
+   bag-row batch: **the planned molecule batches are complete, with 33 molecule folders.**
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
+   **Next stage: overlay and notification organisms** (Dialog, Lightbox and ToastRegion).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -191,6 +192,19 @@ transitions, toast queue integration, focus-ring contrast, tooltip hover/keyboar
 behavior and English/Persian accessibility. Normal and forced-color screenshots pass without
 baseline or tolerance changes. Known commerce, order and validation-state snapshot failures were
 not rerun, and the full browser suite remains unverified.
+
+**Fourteenth checkpoint verified:** Accordion and LineItem moved with their types, wording,
+styles, fixtures and specs, completing the planned molecule batches with 33 folders. App exports
+and the published package use the new paths; component bodies and CSS rules are unchanged.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. All 22 focused component/package/hydration browser tests and both navigation visual checks
+pass. Coverage includes keyboard disclosure toggles, panel names and heading levels, multiple-open
+panels, quantity limits, removal callbacks, summary quantities, unavailable/busy states and
+English/Persian accessibility. Both commerce screenshot checks still fail their stored baselines;
+all four normal/forced-color actual/retry images match the previously verified captures from
+checkpoints nine and ten byte for byte. No baselines or tolerances were changed. Known order and
+validation-state snapshot failures were not rerun, and the full browser suite remains unverified.
+The next stage begins the organism layer.
 
 ## Adding components
 
