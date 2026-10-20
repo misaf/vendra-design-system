@@ -23,6 +23,7 @@ for routed pages.
 | Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `_shared/navigation.js`) |
 | Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
 | Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
+| Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (heading, query, close, popular, results and empty slots from search View) |
 | Saved-products layout | `app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots from saved View) |
 | Tracking layout | `app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots from tracking View) |
 | Sign-in layout | `app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |

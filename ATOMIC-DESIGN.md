@@ -94,7 +94,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    order matching, status interpretation and reorder rules stay in the View/logic.
    StorefrontSavedLayout now arranges heading, notice, results and empty slots with controlled
    visibility; saved-list state, remove/Undo and synchronization remain in the View/logic.
-   **Next stage: extract the search page layout with query, results and empty slots.**
+   StorefrontSearchLayout now arranges heading, query/close, popular, results and empty slots;
+   search matching, URL/history state and return context remain in the View/logic.
+   **Next stage: extract the contact page layout with details, form and feedback slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -615,6 +617,28 @@ English desktop empty-with-Undo captures were visually inspected. No screenshot 
 tolerances, package contents or generated styles changed. The full browser/device suites, known
 TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
 extracts the search layout with query, results and empty slots.
+
+**Thirty-sixth checkpoint verified:** StorefrontSearchLayout is extracted under
+`templates/app/layouts/StorefrontSearchLayout/`. It receives heading, query, close, popular,
+results and empty slots. The main focus target, reading-width wrapper, query/close row and input
+wrapper are preserved. The View retains conditional content construction, all controls, result
+rows/count/links and empty-state recovery. Search and shared site logic retain matching,
+URL/history changes, reporting, return context, navigation and focus. No search rules, copy or
+callbacks changed. Build, generated-file/format/CSS checks, the full unit/type/package suite and
+production app build pass. Forty focused browser cases pass across product-code
+matching, clear/Escape, English/Persian product exploration/back/forward/reload, query/language
+recovery without history churn, popular terms and close-to-filtered-shop/delivery context.
+True-touch checks at 320, 390 and 768 pixels in both languages verify readable codes/prices,
+contained rows, clear/close tap targets, result navigation/back and accessibility. Hydration
+and responsive first-paint checks also pass. Twenty-eight captures match the preceding commit
+(`7973542`) byte for byte: popular, multi-result and no-result states at 390, 768, 1280 and 1920
+pixels in both languages, plus single-code results at 390/1280 pixels in both languages. Capture
+probes verify no-result recovery focus, popular-term/clear taps and product navigation/back.
+Captures use fixed time, deterministic map tiles and image-decoding waits. Representative Persian
+tablet results and English desktop no-result captures were visually inspected. No screenshot
+baselines/tolerances, package contents or generated styles changed. The full browser/device suites,
+known TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
+extracts the contact layout with details, form and feedback slots.
 
 ## Adding components
 

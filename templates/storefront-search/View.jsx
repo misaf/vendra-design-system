@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
+import {StorefrontSearchLayout} from '../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,34 +11,32 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main
-            id="main"
-            tabIndex={-1}
-            className="vf-shopping tw:mx-auto tw:flex tw:flex-col tw:gap-5"
-          >
-            <div className="vf-reading tw:w-full tw:max-w-wide tw:mx-auto">
+          <StorefrontSearchLayout
+            heading={
               <h1 className="ag-display">
                 <>{v.t?.label}</>
               </h1>
-              <div className="vf-search-controls tw:flex tw:gap-3 tw:items-end">
-                <div className="vf-search-input tw:min-w-0 tw:flex-1">
-                  <DS.SearchField
-                    id="vf-q"
-                    label={v.t?.label}
-                    placeholder={v.t?.ph}
-                    value={v.q}
-                    onChange={v.setQ}
-                  />
-                </div>
-                <DS.IconButton
-                  icon="x"
-                  label={v.t?.close}
-                  variant="secondary"
-                  className="tw:flex-none"
-                  href={v.closeHref}
-                />
-              </div>
-              {v.empty ? (
+            }
+            query={
+              <DS.SearchField
+                id="vf-q"
+                label={v.t?.label}
+                placeholder={v.t?.ph}
+                value={v.q}
+                onChange={v.setQ}
+              />
+            }
+            close={
+              <DS.IconButton
+                icon="x"
+                label={v.t?.close}
+                variant="secondary"
+                className="tw:flex-none"
+                href={v.closeHref}
+              />
+            }
+            popular={
+              v.empty ? (
                 <>
                   <div className="tw:flex tw:flex-col tw:gap-3">
                     <div className="vf-search-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
@@ -54,8 +53,10 @@ export function View({v}) {
                     </div>
                   </div>
                 </>
-              ) : null}
-              {v.hasResults ? (
+              ) : null
+            }
+            results={
+              v.hasResults ? (
                 <>
                   <div className="vf-search-results tw:flex tw:flex-col">
                     <div
@@ -94,8 +95,10 @@ export function View({v}) {
                     ))}
                   </div>
                 </>
-              ) : null}
-              {v.noResults ? (
+              ) : null
+            }
+            empty={
+              v.noResults ? (
                 <>
                   <div role="status">
                     <>{v.countLabel}</>
@@ -117,9 +120,9 @@ export function View({v}) {
                     </div>
                   </div>
                 </>
-              ) : null}
-            </div>
-          </main>
+              ) : null
+            }
+          />
         </>
       }
       sticky={<></>}
