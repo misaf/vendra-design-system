@@ -53,8 +53,10 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    header/footer sections from Shell with explicit props and callbacks.
    Dialog, Lightbox and ToastRegion form the first batch. Gallery and Carousel form the media
    browsing batch. OrderSummary and PaymentStatus form the order and payment batch, followed by
-   DatePicker as the calendar organism. LocationPicker and PlacesMap form the map batch:
-   ten organism folders are now migrated. **Next stage: bottom navigation organism** (BottomTabBar).
+   DatePicker as the calendar organism. LocationPicker and PlacesMap form the map batch, followed
+   by BottomTabBar: **all existing package UI folders are now layered, with 11 organism folders.**
+   VendraProvider remains a foundation. Header/footer extraction from Shell is still pending.
+   **Next stage: extract the storefront header from Shell with explicit props and callbacks.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -265,6 +267,19 @@ status/error descriptions, left-to-right map canvases, keyboard pin movement, la
 pointer/Enter selection and English/Persian accessibility. Normal and forced-color screenshots
 pass without baseline or tolerance changes. Known commerce, order and validation-state snapshot
 failures were not rerun, and the full browser and device suites remain unverified.
+
+**Twentieth checkpoint verified:** BottomTabBar moved with its types, styles, fixture and spec,
+bringing the organism layer to 11 folders. All 70 existing package UI folders now live in atomic
+layers: 26 atoms, 33 molecules and 11 organisms. VendraProvider remains a foundation. App exports
+and the published package use the new path; the component body and CSS rules are unchanged.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. All 17 focused BottomTabBar/package/hydration browser tests and both navigation visual checks
+pass. Coverage includes the named navigation landmark, links and action buttons, current-page
+markers, count badges, menu callbacks and English/Persian accessibility. Normal and forced-color
+screenshots pass without baseline or tolerance changes. Known commerce, order and validation-state
+snapshot failures were not rerun, and the full browser and device suites remain unverified.
+The next stage extracts the storefront header from Shell; header/footer composition, templates
+and pages still need migration work.
 
 ## Adding components
 

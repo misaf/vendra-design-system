@@ -1,4 +1,3 @@
-export * from './components/BottomTabBar/BottomTabBar.js';
 export * from './components/VendraProvider/VendraProvider.js';
 export * from './components/atoms/ArchFrame/ArchFrame.js';
 export * from './components/atoms/Badge/Badge.js';
@@ -61,6 +60,7 @@ export * from './components/molecules/Tabs/Tabs.js';
 export * from './components/molecules/Toast/Toast.js';
 export * from './components/molecules/Tooltip/Tooltip.js';
 export * from './components/molecules/TrustSeal/TrustSeal.js';
+export * from './components/organisms/BottomTabBar/BottomTabBar.js';
 export * from './components/organisms/Carousel/Carousel.js';
 export * from './components/organisms/DatePicker/DatePicker.js';
 export * from './components/organisms/Dialog/Dialog.js';

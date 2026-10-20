@@ -6,7 +6,7 @@ export * from '../../components/molecules/AnnouncementBar/AnnouncementBar.jsx';
 export * from '../../components/atoms/ArchFrame/ArchFrame.jsx';
 export * from '../../components/atoms/Badge/Badge.jsx';
 export * from '../../components/molecules/BlogCard/BlogCard.jsx';
-export * from '../../components/BottomTabBar/BottomTabBar.jsx';
+export * from '../../components/organisms/BottomTabBar/BottomTabBar.jsx';
 export * from '../../components/molecules/Breadcrumb/Breadcrumb.jsx';
 export * from '../../components/atoms/Button/Button.jsx';
 export * from '../../components/atoms/Card/Card.jsx';

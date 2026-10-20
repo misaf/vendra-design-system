@@ -2695,7 +2695,7 @@ button.ag-steps__btn {
   }
 }
 
-/* components/BottomTabBar/BottomTabBar.css */
+/* components/organisms/BottomTabBar/BottomTabBar.css */
 .ag-tabbar {
   background: var(--surface-header);
   -webkit-backdrop-filter: blur(12px);
