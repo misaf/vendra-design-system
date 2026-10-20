@@ -92,7 +92,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    validation, resend timing and customer synchronization stay in the View/logic.
    StorefrontTrackLayout now arranges lookup, heading, details, summary and reorder-feedback slots;
    order matching, status interpretation and reorder rules stay in the View/logic.
-   **Next stage: extract the saved-products page layout with heading, results and empty slots.**
+   StorefrontSavedLayout now arranges heading, notice, results and empty slots with controlled
+   visibility; saved-list state, remove/Undo and synchronization remain in the View/logic.
+   **Next stage: extract the search page layout with query, results and empty slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -591,6 +593,28 @@ delivered-order captures were visually inspected. No screenshot baselines/tolera
 contents or generated styles changed. The full browser/device suites, known TV arrow-navigation
 failures and unrelated snapshot failures were not rerun. The next stage extracts the saved-products
 layout with heading, results and empty slots.
+
+**Thirty-fifth checkpoint verified:** StorefrontSavedLayout is extracted under
+`templates/app/layouts/StorefrontSavedLayout/`. It receives heading, notice, results and empty
+slots with externally controlled results/empty visibility. The main focus target, heading,
+responsive product grid, empty-state wrapper and `data-vf-keep-focus` are preserved. The Undo
+notice remains outside both conditional groups so removing the final product still exposes it.
+The View retains conditional slot construction, count/copy, cards, product links and remove/Undo
+controls; saved-page and shared site logic retain persistence, customer synchronization, additive
+Undo and focus restoration. No saved-list rules, copy or callbacks changed. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+Twenty-four focused browser cases pass across English/Persian removal/Undo, preservation
+of other removals, final-product empty recovery, focus restoration, reload persistence,
+account/product synchronization, late saved-list loading, accessibility, hydration and responsive
+first paint. Twenty-eight captures match the preceding commit (`7e6b322`) byte for byte:
+populated, removed and empty-with-Undo states at 390, 768, 1280 and 1920 pixels in both languages,
+plus empty lists after reload at 390/1280 pixels in both languages. Capture probes also verify
+Undo restoration/focus and phone product navigation/back continuity. Captures use fixed time,
+deterministic map tiles and image-decoding waits. Representative Persian phone removal and
+English desktop empty-with-Undo captures were visually inspected. No screenshot baselines/
+tolerances, package contents or generated styles changed. The full browser/device suites, known
+TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
+extracts the search layout with query, results and empty slots.
 
 ## Adding components
 
