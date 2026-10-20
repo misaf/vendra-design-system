@@ -96,7 +96,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    visibility; saved-list state, remove/Undo and synchronization remain in the View/logic.
    StorefrontSearchLayout now arranges heading, query/close, popular, results and empty slots;
    search matching, URL/history state and return context remain in the View/logic.
-   **Next stage: extract the contact page layout with details, form and feedback slots.**
+   StorefrontContactLayout now arranges heading, details, form and feedback slots; contact state,
+   map fallback, validation and submission remain in the View/logic.
+   **Next stage: extract the weddings page layout with details, inquiry and feedback slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -639,6 +641,30 @@ tablet results and English desktop no-result captures were visually inspected. N
 baselines/tolerances, package contents or generated styles changed. The full browser/device suites,
 known TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
 extracts the contact layout with details, form and feedback slots.
+
+**Thirty-seventh checkpoint verified:** StorefrontContactLayout is extracted under
+`templates/app/layouts/StorefrontContactLayout/`. It receives heading, details, form and feedback
+slots. The main focus target, header, responsive contact columns and detail/form wrappers are
+preserved; API feedback remains after the columns. The View retains contact actions, map/error
+boundary, directions, fields, error summary, submission controls and success/edit content.
+Contact logic retains customer prefill, reply-channel/message validation, map fallback,
+submission, busy/error state, draft retention and focus. No contact rules, copy or callbacks
+changed. Build, generated-file/format/CSS checks, the full unit/type/package suite and production
+app build pass. Twenty-two focused browser cases pass across studio map/directions,
+reply-channel validation, success focus, linked error summaries, customer/guest prefill,
+English/Persian validation accessibility, hydration and responsive first paint. Twenty-eight
+capture pairs match the preceding commit (`1005b43`) byte for byte: form, validation and success
+states at 390, 768, 1280 and 1920 pixels in both languages, plus stubbed API-error and map-failure
+states at 390 pixels in both languages. Initial desktop validation/success differences came from
+scroll-dependent sticky/fixed elements in full-page captures. Repeating those eight pairs after
+normalizing scroll to zero resolves them without changing code or tolerances; the other twenty
+completed pairs are retained. Capture probes verify summary links, success/edit draft retention,
+stubbed inquiry failure/retry and payload, and map-fallback directions. No real inquiry was sent.
+Captures use fixed time, deterministic map tiles and image-decoding waits. Representative desktop
+validation and phone form captures were visually inspected. No screenshot baselines/tolerances,
+package contents or generated styles changed. The full browser/device suites, known TV
+arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage extracts
+the weddings layout with details, inquiry and feedback slots.
 
 ## Adding components
 
