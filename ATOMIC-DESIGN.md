@@ -82,7 +82,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    feedback; product state and purchase actions stay in the View/logic.
    StorefrontShopLayout now arranges shop heading, sidebar, compact categories, results and filter
    dialog slots; shop controls and URL/filter/sort state stay in the View/logic.
-   **Next stage: extract the bag page layout with item and summary slots.**
+   StorefrontBagLayout now arranges bag/delivery notices, progress, heading, items/delivery fields,
+   summary and empty state; bag/delivery rules and actions remain in the View/logic.
+   **Next stage: extract the checkout page layout with review and payment slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -464,6 +466,28 @@ inspected. No screenshot baselines or tolerances changed. Published package cont
 styles are unchanged. The full browser/device suites, known TV arrow-navigation failures and
 unrelated snapshot failures were not rerun. The next stage extracts the bag page layout with item
 and summary slots.
+
+**Thirtieth checkpoint verified:** StorefrontBagLayout is extracted under
+`templates/app/layouts/StorefrontBagLayout/`. It receives externally controlled content visibility
+and notice, progress, heading, items/delivery, summary and empty-state slots. The main focus target,
+columns and sticky summary wrappers are preserved. Notices remain outside the populated-content
+group so Undo still works after the final line is removed. The View retains conditional slot
+construction and all controls/callbacks; bag logic retains persistence, stock limits, delivery
+validation and totals. The sticky purchase/continue action remains a separate Shell slot; no size
+or add-on editors were added to bag rows. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. Sixty focused browser cases pass across
+responsive bag rows, hydration/first paint, delivery/payment continuity, stock and address checks,
+short-phone field focus, configured-line/empty-bag Undo, step navigation, delivery timing, card
+messages, error-summary links, promos and free-delivery totals. The stale meter test now asserts
+absence before a destination is quoted, sets a real pin and returns to the bag before checking
+the meter; both phone and desktop checks pass. Sixteen complete bag/delivery captures at 390,
+768, 1280 and 1920 pixels in both languages match the preceding commit (`e41027e`) byte for byte
+after explicit image-decoding waits and deterministic map tiles. Initial delivery differences
+were unloaded/undecoded summary thumbnails; the stabilized repeat resolves them without changing
+tolerances. Representative phone/desktop captures were visually inspected. No screenshot baselines
+or tolerances changed; published package contents and generated styles are unchanged. The full
+browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures were
+not rerun. The next stage extracts the checkout layout with review and payment slots.
 
 ## Adding components
 

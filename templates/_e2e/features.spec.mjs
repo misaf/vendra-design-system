@@ -1555,6 +1555,14 @@ test('the shop lists only categories with designs, and still opens an empty one'
 test('the bag shows how far the order is from free delivery', async ({page}) => {
   await openSite(page, 'bag', 'en');
   const meter = page.getByRole('meter');
+  await expect(meter).toHaveCount(0);
+  await page
+    .getByRole('button', {name: 'Continue to delivery', exact: true})
+    .filter({visible: true})
+    .click();
+  await pinDelivery(page);
+  await page.goBack();
+  await expect(page).not.toHaveURL(/step=delivery/);
   await expect(meter).toHaveAccessibleName(
     /more for free delivery in Karaj|Free delivery in Karaj/
   );
