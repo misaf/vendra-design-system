@@ -5,10 +5,10 @@ import {
   Label,
   SearchField as AriaSearchField
 } from 'react-aria-components';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {useField, FieldMessage} from '../atoms/Field/Field.jsx';
-import {cx} from '../utils/cx.js';
-import {useMessages} from '../utils/messages.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {useField, FieldMessage} from '../../atoms/Field/Field.jsx';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A search box on React Aria's SearchField, styled like Input: a search icon, the text, and a clear

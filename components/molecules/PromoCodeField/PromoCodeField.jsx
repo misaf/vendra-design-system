@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {Input} from '../atoms/Input/Input.jsx';
-import {cx} from '../utils/cx.js';
-import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Input} from '../../atoms/Input/Input.jsx';
+import {cx} from '../../utils/cx.js';
+import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A discount code: a field with Apply inside its end, then, once the app accepts the code, a status

@@ -2,9 +2,10 @@
 
 The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `storefront-*`, wired together by `storefront-site` (the click-through router). Pages run on sample data in `_shared/`; its target shape is the Vendra API (see [API.md](API.md)). Feature map and integration boundaries: [MIGRATION.md](MIGRATION.md).
 
-The UI library is migrating to [Atomic Design](../ATOMIC-DESIGN.md). Migrated primitives live in
-`../components/atoms/`; molecules and organisms follow in separate batches. The app continues to
-import components through `app/ds.js`, and `storefront-*` remains the source for routed pages.
+The UI library is migrating to [Atomic Design](../ATOMIC-DESIGN.md). Migrated UI lives in
+`../components/atoms/` and `../components/molecules/`; organisms follow in separate batches.
+The app continues to import components through `app/ds.js`, and `storefront-*` remains the source
+for routed pages.
 
 ## Where to edit
 

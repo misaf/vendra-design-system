@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('a labelled search box: Enter submits, Esc and the clear button empty it', async ({page}) => {
   await openComponent(page, 'SearchField');

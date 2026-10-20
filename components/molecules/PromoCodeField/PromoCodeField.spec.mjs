@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 for (const [lang, label, apply, remove, refused] of [
   ['en', 'Promo code', 'Apply', 'Remove code', 'We don’t recognise that code.'],
