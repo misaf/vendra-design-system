@@ -88,7 +88,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    bank/success slots; payment rules and order submission stay in the View/logic.
    StorefrontAccountLayout now arranges heading, actions, notices, tabs, feedback and dialog slots;
    account controls and mutations remain in the View/logic.
-   **Next stage: extract the sign-in page layout with phone, code and feedback slots.**
+   StorefrontSigninLayout now arranges phone, code and feedback/continuation slots; authentication,
+   validation, resend timing and customer synchronization stay in the View/logic.
+   **Next stage: extract the tracking page layout with lookup, order and feedback slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -543,6 +545,27 @@ were visually inspected. No screenshot baselines/tolerances, package contents or
 changed. The full browser/device suites, known TV arrow-navigation failures and unrelated
 snapshot failures were not rerun. The next stage extracts the sign-in layout with phone, code
 and feedback slots.
+
+**Thirty-third checkpoint verified:** StorefrontSigninLayout is extracted under
+`templates/app/layouts/StorefrontSigninLayout/`. It receives phone, code and
+feedback/continuation slots and preserves the main focus target, narrow form wrapper and slot
+order. The View retains conditional step construction, all fields and validation summaries,
+headings, policy links, resend feedback and continuation controls. Sign-in logic retains validation,
+resend configuration, code completion, authentication, customer synchronization and checkout
+return. No sign-in rules, controls, copy or callbacks changed. Build, generated-file/format/CSS
+checks, the full unit/type/package suite and production app build pass. Thirty focused browser
+cases pass across checkout sign-in/return, resend expiry, SMS autofill,
+wallet sign-in, sign-out isolation, phone-error focus, policy links and English/Persian customer
+switching, hydration and responsive first paint. Twenty-eight captures match the preceding
+commit (`09fe852`) byte for byte: phone, code and success states at 390, 768, 1280 and 1920 pixels
+in both languages, plus phone/code error states at 390 pixels in both languages. Capture probes
+also verify invalid-field focus and returning to phone entry with its number retained. Captures
+use fixed time (including the resend countdown), deterministic map tiles and image-decoding
+waits. Representative Persian phone-entry and English desktop code-entry captures were visually
+inspected. No screenshot baselines/tolerances, package contents or generated styles changed.
+The full browser/device suites, known TV arrow-navigation failures and unrelated snapshot
+failures were not rerun. The next stage extracts the tracking layout with lookup, order and
+feedback slots.
 
 ## Adding components
 

@@ -27,6 +27,8 @@ StorefrontCheckoutLayout arranges review, payment, summary and bank/success slot
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
+StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
+validation, resend timing, authentication, customer synchronization and checkout continuation.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
