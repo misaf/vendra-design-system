@@ -66,7 +66,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    `templates/app/organisms/StorefrontFooter/` with explicit content and consent callbacks.
    StorefrontMenu now composes the compact menu drawer under
    `templates/app/organisms/StorefrontMenu/` with controlled state and explicit content/callbacks.
-   **Next stage: extract the storefront consent banner from Shell.**
+   StorefrontConsent now renders the privacy notice under
+   `templates/app/organisms/StorefrontConsent/` with visibility, content and action callbacks.
+   **Next stage: extract the storefront announcement composition from Shell.**
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -338,6 +340,23 @@ before/after browser probe confirms same-page navigation retained the old drawer
 new one in all four cases. Published package contents and generated styles are unchanged; no
 screenshot baselines or tolerances changed. The full browser/device suites and known unrelated
 snapshot failures were not rerun. The next stage extracts the storefront consent banner.
+
+**Twenty-fourth checkpoint verified:** StorefrontConsent is extracted under
+`templates/app/organisms/StorefrontConsent/`. Shell supplies visibility, bilingual content,
+the policy URL and close/accept/essential callbacks, and retains placement in the bottom bar.
+Consent persistence, session dismissal, analytics gating and footer focus restoration remain
+in the existing shared workflow. Markup, focus IDs, accessible labels, action attributes and
+responsive docking classes are preserved. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. Eight first-visit checks, eight bilingual
+footer checks, 12 hydration/first-paint checks and two real touch-phone rotation checks pass;
+four duplicate cases are skipped by their existing project guards. Coverage includes persistence,
+closing without choosing, analytics blocking before consent, accepting visit counts, essential-only
+choices, modal overlay priority and footer focus restoration. Eight consent captures at 390, 768,
+1280 and 1920 pixels in English and Persian match the preceding commit (`ddf7a03`) byte for byte;
+representative phone/desktop captures were visually inspected. Published package contents and
+generated styles are unchanged; no screenshot baselines or tolerances changed. The full browser/
+device suites and known unrelated snapshot failures were not rerun. The next stage extracts the
+storefront announcement composition from Shell.
 
 ## Adding components
 

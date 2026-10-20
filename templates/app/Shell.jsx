@@ -3,6 +3,7 @@
 import React from 'react';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
+import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent.jsx';
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
 import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
 import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
@@ -250,58 +251,19 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           {/* The bottom of the screen: the cookie notice (a card above the tab bar on phones, a slim
               bar from 768px), then on phones the page's sticky action and the tab bar. */}
           <div className="vf-shell-bottom-bar tw:sticky tw:bottom-0 tw:z-tabbar">
-            {v.consent?.shown ? (
-              <div className="vf-shell-consent-dock vf-shell-consent-bar tw:max-md:px-3 tw:max-md:pb-3">
-                <section
-                  id="vf-consent"
-                  tabIndex={-1}
-                  aria-labelledby="vf-consent-title"
-                  className="vf-shell-consent ag-on-inverse tw:flex tw:flex-col tw:gap-2 tw:p-4 tw:rounded-md tw:bg-inverse tw:text-on-inverse tw:shadow-lg tw:text-sm tw:leading-body"
-                >
-                  <div className="tw:flex tw:items-center tw:justify-between tw:gap-3">
-                    <h2
-                      id="vf-consent-title"
-                      className="tw:m-0 tw:font-display tw:font-medium tw:text-md tw:tracking-display"
-                    >
-                      <>{v.shellText?.consent?.title}</>
-                    </h2>
-                    <DS.IconButton
-                      icon="x"
-                      label={v.shellText?.consent?.close}
-                      onClick={v.consent?.close}
-                      variant="secondary"
-                      inverse={true}
-                      className="vf-shell-consent-close tw:-me-2"
-                    />
-                  </div>
-                  <p className="tw:m-0">
-                    <>{v.shellText?.consent?.body} </>
-                    <a
-                      href={v.consent?.policy?.href}
-                      className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
-                    >
-                      <>{v.shellText?.consent?.policy}</>
-                    </a>
-                  </p>
-                  <div className="tw:flex tw:flex-wrap tw:gap-2">
-                    <button
-                      type="button"
-                      onClick={v.consent?.accept}
-                      className="vf-shell-consent-accept tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-on-inverse tw:text-body tw:hover:bg-sunken"
-                    >
-                      <>{v.shellText?.consent?.accept}</>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={v.consent?.essential}
-                      className="vf-shell-consent-essential tw:flex-1 tw:whitespace-nowrap tw:min-h-tap tw:px-4 tw:rounded-full tw:[border:1px_solid_var(--text-on-inverse)] tw:[font:inherit] tw:font-medium tw:cursor-pointer tw:bg-transparent tw:text-on-inverse tw:hover:bg-[color-mix(in_srgb,var(--text-on-inverse)_12%,transparent)]"
-                    >
-                      <>{v.shellText?.consent?.essential}</>
-                    </button>
-                  </div>
-                </section>
-              </div>
-            ) : null}
+            <StorefrontConsent
+              shown={v.consent?.shown}
+              title={v.shellText?.consent?.title}
+              closeLabel={v.shellText?.consent?.close}
+              onClose={v.consent?.close}
+              body={v.shellText?.consent?.body}
+              policyHref={v.consent?.policy?.href}
+              policyLabel={v.shellText?.consent?.policy}
+              onAccept={v.consent?.accept}
+              acceptLabel={v.shellText?.consent?.accept}
+              onEssential={v.consent?.essential}
+              essentialLabel={v.shellText?.consent?.essential}
+            />
             <div className="vf-shell-phone-bar tw:md:hidden">
               {sticky}
               <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
