@@ -101,6 +101,7 @@ export function vfReadRoute(search = location.search) {
     if (product) {
       route.id = product.id;
       route.cat = product.cat;
+      route.qty = /^[1-9]\d?$/.test(query.get('qty') || '') ? +query.get('qty') : 1;
       // A counter quote opens with the same size and extras; catalog rules discard invalid choices.
       if (query.has('size') || query.has('addons')) {
         const line = vfBagLine(product, query.get('size'), (query.get('addons') || '').split(','));
@@ -164,6 +165,7 @@ export function vfRouteParams(route) {
   if (route.view === 'saved' && route.ids) query.set('ids', route.ids);
   if (route.view === 'product') {
     if (route.date) query.set('date', route.date);
+    if (route.qty > 1) query.set('qty', route.qty);
     if (route.size) query.set('size', route.size);
     if (route.addons?.length) query.set('addons', route.addons.join(','));
   }
