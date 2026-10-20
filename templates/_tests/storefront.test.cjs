@@ -1551,3 +1551,46 @@ for (const lang of ['en', 'fa']) {
   assert.equal(destination.step, 'bag');
 }
 console.log('Passed payment-retry delivery and stock revalidation.');
+
+for (const lang of ['en', 'fa']) {
+  let route;
+  const {logic: product, ctx: c} = loadPage('product', {
+    lang,
+    routeInfo: {view: 'product', id: 'VF-7K2M4Q', date: '2026-10-21'},
+    go: (next, replace) => {
+      route = next;
+      assert.equal(replace, true);
+    }
+  });
+  product.renderVals().setSize('generous');
+  product
+    .renderVals()
+    .addons.find(addon => addon.label.includes(lang === 'fa' ? 'کارت' : 'Handwritten'))
+    .toggle();
+  product.renderVals().setQty(2);
+  const encoded = vm.runInContext('vfRouteParams', c)(route);
+  const restored = vm.runInContext('vfReadRoute', c)(encoded);
+  const reload = loadPage('product', {lang, routeInfo: restored}).logic.renderVals();
+  assert.equal(reload.size, 'generous');
+  assert.equal(reload.qty, 2);
+  assert.ok(reload.addons.some(addon => addon.on));
+  assert.equal(restored.date, '2026-10-21');
+  assert.equal(vm.runInContext('vfReadRoute', c)('?view=product&id=VF-7K2M4Q&qty=-1').qty, 1);
+  assert.equal(vm.runInContext('vfReadRoute', c)('?view=product&id=VF-7K2M4Q&qty=Infinity').qty, 1);
+  const scarce = loadPage('product', {
+    lang,
+    routeInfo: {view: 'product', id: 'VF-9FA2KE', qty: 99}
+  }).logic;
+  assert.equal(scarce.renderVals().qty, 2, 'restored quantities still respect stock');
+}
+console.log('Passed product size, extras, quantity and delivery-date URL recovery.');
+{
+  const {logic: product, ctx: c} = loadPage('product', {}, '?page=product&lang=en');
+  c.history.replaceState = (_, __, search) => (c.location.search = search);
+  product.renderVals().setSize('generous');
+  product.renderVals().setQty(2);
+  assert.equal(new URLSearchParams(c.location.search).get('page'), 'product');
+  const reloaded = new c.Logic({lang: 'en'}).renderVals();
+  assert.equal(reloaded.size, 'generous');
+  assert.equal(reloaded.qty, 2, 'standalone template reloads preserve the same choices');
+}

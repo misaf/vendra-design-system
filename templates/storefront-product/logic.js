@@ -21,7 +21,7 @@ import {
 } from '../_shared/catalog.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
 import {vfFeatures} from '../_shared/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
@@ -32,11 +32,11 @@ function vfProductSelection(props) {
   const route = vfPageRoute(props);
   const product = vfFindProduct(route.id) || VF_PRODUCTS[0];
   const line = vfBagLine(product, route.size, route.addons || []);
-  return {size: line.size || VF_SIZES[0].id, addons: line.addons};
+  return {size: line.size || VF_SIZES[0].id, addons: line.addons, qty: route.qty || 1};
 }
 function vfProductRouteKey(props) {
   const route = vfPageRoute(props);
-  return JSON.stringify([route.id, route.size, route.addons]);
+  return JSON.stringify([route.id, route.size, route.addons, route.qty]);
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -45,10 +45,40 @@ export function usePage(props) {
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page.state = {
       ...vfProductSelection(props),
-      qty: 1,
       added: null,
       galleryPhoto: 0,
       photo: null
+    };
+    page._select = patch => {
+      const selected = {...page.state, ...patch};
+      const route = vfPageRoute(page.props);
+      const product = vfFindProduct(route.id) || VF_PRODUCTS[0];
+      const line = vfBagLine(product, selected.size, selected.addons);
+      const bag = page.props.store?.bag || [];
+      const remaining =
+        vfLineQuantityMax(line, bag) - (bag.find(item => item.id === line.id)?.qty || 0);
+      const qty = Math.max(1, Math.min(selected.qty, Math.max(1, remaining)));
+      const next = {
+        ...route,
+        lang: page.props.lang === 'fa' ? 'fa' : 'en',
+        view: 'product',
+        id: product.id,
+        cat: product.cat,
+        size: line.size,
+        addons: line.addons,
+        qty
+      };
+      page.setState({size: line.size || VF_SIZES[0].id, addons: line.addons, qty});
+      if (page.props.go) page.props.go(next, true);
+      else {
+        const query = new URLSearchParams(location.search),
+          canonical = new URLSearchParams(vfRouteParams(next));
+        for (const key of ['view', 'id', 'cat', 'lang', 'size', 'addons', 'qty']) {
+          if (canonical.has(key)) query.set(key, canonical.get(key));
+          else query.delete(key);
+        }
+        history.replaceState(history.state, '', '?' + query);
+      }
     };
     // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.
     page._showToast = content => {
@@ -84,7 +114,6 @@ export function usePage(props) {
         page._productRouteKey = key;
         page.setState({
           ...vfProductSelection(page.props),
-          qty: 1,
           added: null
         });
         page.toasts.clear();
@@ -211,21 +240,21 @@ function vals(page) {
       value: item.id
     })),
     size: s.size,
-    setSize: id => page.setState({size: id}),
+    setSize: id => page._select({size: id}),
     addons: availableAddons.map(addon => {
       const on = s.addons.includes(addon.id);
       return {
         label: addon.name[L] + ' · +' + m(addon.price),
         on,
         toggle: () =>
-          page.setState({
+          page._select({
             addons: on ? s.addons.filter(x => x !== addon.id) : [...s.addons, addon.id]
           })
       };
     }),
     qty: quantity,
     setQty: q =>
-      page.setState({
+      page._select({
         qty: q
       }),
     qtyLabels: {
