@@ -644,7 +644,7 @@ function vals(page) {
     // React Aria links: in-site URLs switch the view in place; anything else loads normally.
     routerNavigate: href => {
       const url = new URL(href, location.href);
-      if (url.origin !== location.origin || url.pathname !== location.pathname)
+      if (url.origin !== location.origin || url.pathname !== location.pathname || url.hash)
         return location.assign(url.href);
       page.navigate(vfReadRoute(url.search));
     }
