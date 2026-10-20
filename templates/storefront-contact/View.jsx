@@ -1,6 +1,7 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
+import {StorefrontContactLayout} from '../app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -9,23 +10,25 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-info">
-            <header className="vf-info-header tw:max-w-prose tw:flex tw:flex-col tw:gap-4 tw:mb-7">
-              <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                <>{v.t?.eb}</>
-              </div>
-              <h1>
-                <>{v.t?.hA} </>
-                <em className="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                  <>{v.t?.hB}</>
-                </em>
-              </h1>
-              <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                <>{v.t?.hP}</>
-              </p>
-            </header>
-            <div className="vf-info-columns vf-info-columns--contact tw:grid tw:[grid-template-columns:repeat(2,minmax(0,1fr))] tw:gap-7 tw:items-start">
-              <div className="vf-contact-details tw:flex tw:flex-col tw:gap-4h">
+          <StorefrontContactLayout
+            heading={
+              <>
+                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
+                  <>{v.t?.eb}</>
+                </div>
+                <h1>
+                  <>{v.t?.hA} </>
+                  <em className="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
+                    <>{v.t?.hB}</>
+                  </em>
+                </h1>
+                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
+                  <>{v.t?.hP}</>
+                </p>
+              </>
+            }
+            details={
+              <>
                 <DS.Card variant="sunken" padding={20}>
                   <DS.DetailList rows={v.rows} />
                 </DS.Card>
@@ -88,8 +91,10 @@ export function View({v}) {
                     </div>
                   </>
                 ) : null}
-              </div>
-              <div className="tw:flex tw:flex-col tw:gap-4">
+              </>
+            }
+            form={
+              <>
                 <h2>
                   <>{v.t?.fA}</>
                 </h2>
@@ -167,14 +172,16 @@ export function View({v}) {
                     </div>
                   </>
                 ) : null}
-              </div>
-            </div>
-            {v.apiError ? (
-              <>
-                <DS.Alert tone="danger" title={v.apiError} />
               </>
-            ) : null}
-          </main>
+            }
+            feedback={
+              v.apiError ? (
+                <>
+                  <DS.Alert tone="danger" title={v.apiError} />
+                </>
+              ) : null
+            }
+          />
         </>
       }
       sticky={<></>}
