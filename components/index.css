@@ -6,7 +6,7 @@
 @import url('atoms/IconButton/IconButton.css');
 @import url('atoms/Chip/Chip.css');
 @import url('molecules/FilterBar/FilterBar.css');
-@import url('Tabs/Tabs.css');
+@import url('molecules/Tabs/Tabs.css');
 @import url('molecules/LanguageSwitch/LanguageSwitch.css');
 @import url('shared.css');
 @import url('atoms/Picture/Picture.css');
@@ -40,7 +40,7 @@
 @import url('atoms/Meter/Meter.css');
 @import url('AnnouncementBar/AnnouncementBar.css');
 @import url('Accordion/Accordion.css');
-@import url('Stepper/Stepper.css');
+@import url('molecules/Stepper/Stepper.css');
 @import url('BottomTabBar/BottomTabBar.css');
 @import url('molecules/NavLink/NavLink.css');
 @import url('molecules/Breadcrumb/Breadcrumb.css');

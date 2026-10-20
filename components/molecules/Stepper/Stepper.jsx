@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button} from 'react-aria-components';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {cx} from '../utils/cx.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {cx} from '../../utils/cx.js';
 
 const defaultCaption = (number, total, label) => 'Step ' + number + ' of ' + total + ' · ' + label;
 

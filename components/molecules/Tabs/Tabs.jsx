@@ -1,7 +1,7 @@
 import React from 'react';
 import {I18nProvider, Tab, TabList, TabPanel, Tabs as AriaTabs} from 'react-aria-components';
-import {cx} from '../utils/cx.js';
-import {usePageLocale} from '../utils/locale.js';
+import {cx} from '../../utils/cx.js';
+import {usePageLocale} from '../../utils/locale.js';
 
 // Tabs on React Aria: one Tab stop on the selected tab; arrow keys (mirrored in RTL, following the
 // page's language), Home and End move and select. `children` is the selected tab's content: it
