@@ -51,7 +51,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    bag-row batch: **the planned molecule batches are complete, with 33 molecule folders.**
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
-   **Next stage: overlay and notification organisms** (Dialog, Lightbox and ToastRegion).
+   Dialog, Lightbox and ToastRegion form the first batch: three organism folders are now migrated.
+   **Next stage: gallery and carousel organisms** (Gallery and Carousel).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -205,6 +206,17 @@ all four normal/forced-color actual/retry images match the previously verified c
 checkpoints nine and ten byte for byte. No baselines or tolerances were changed. Known order and
 validation-state snapshot failures were not rerun, and the full browser suite remains unverified.
 The next stage begins the organism layer.
+
+**Fifteenth checkpoint verified:** Dialog, Lightbox and ToastRegion moved with their types,
+wording, styles, fixtures and specs into the first three organism folders. App exports and the
+published package use the new paths; component bodies and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 25 focused organism/package/hydration browser tests and four feedback/bilingual visual checks
+pass. Coverage includes modal focus trapping and restoration, Escape/close actions, photo and item
+navigation, Persian digits and mirrored arrow keys, simulated pointer swipes, queued toast
+dismissal and English/Persian accessibility. Normal and forced-color screenshots pass without
+baseline or tolerance changes. Known commerce, order and validation-state snapshot failures were
+not rerun, and the full browser and device suites remain unverified.
 
 ## Adding components
 

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent, scanAxe} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent, scanAxe} from '../../../templates/_e2e/component-test.mjs';
 
 // React Aria's modal dialog.
 test('focus moves in and stays, Esc closes, focus returns to the opener', async ({page}) => {
