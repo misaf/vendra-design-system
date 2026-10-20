@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 test('the whole card is one link, or a button without href', async ({page}) => {
   await openComponent(page, 'CategoryCard');

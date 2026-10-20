@@ -44,8 +44,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
    Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
    SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard
-   and OrderTimeline form the commerce display batch: 20 molecule folders are now migrated.
-   **Next stage: catalog and editorial card molecules** (ProductCard, CategoryCard and BlogCard).
+   and OrderTimeline form the commerce display batch. ProductCard, CategoryCard and BlogCard form
+   the catalog and editorial card batch: 23 molecule folders are now migrated.
+   **Next stage: account card and reminder molecules** (AddressCard and ReminderRow).
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
@@ -144,6 +145,18 @@ in normal and forced-color modes on both this stage and the preceding commit (`a
 eight actual/retry images match preceding-commit captures byte for byte. No baselines or tolerances
 were changed. The known validation-state snapshot failures were not rerun, and the full browser
 suite remains unverified.
+
+**Tenth checkpoint verified:** ProductCard, CategoryCard and BlogCard moved with their types,
+wording, styles, fixtures and specs, bringing the molecule layer to 23 folders. App exports and
+the published package use the new paths; ProductCard composes the StockStatus molecule directly.
+Component bodies and CSS rules are unchanged. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. All 27 focused card/package/hydration
+browser tests pass, including favorite toggles, link/button semantics, category aspect and circle
+frames, Persian arrow direction and English/Persian accessibility. Both commerce screenshot checks
+fail in normal and forced-color modes on this stage and the preceding commit (`6ddacf4`); all four
+actual/retry images match fresh preceding-commit captures byte for byte. No baselines or tolerances
+were changed. Known order and validation-state snapshot failures were not rerun, and the full
+browser suite remains unverified.
 
 ## Adding components
 

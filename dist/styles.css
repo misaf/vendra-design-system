@@ -868,7 +868,7 @@ a.ag-iconbtn {
   color: var(--text-muted);
 }
 
-/* components/ProductCard/ProductCard.css */
+/* components/molecules/ProductCard/ProductCard.css */
 /* .ag-product__media and .ag-product__ph are also used by BlogCard, CategoryCard, Gallery and LineItem. */
 .ag-product__fav.ag-iconbtn--active svg {
   fill: currentColor;
@@ -1983,7 +1983,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/CategoryCard/CategoryCard.css */
+/* components/molecules/CategoryCard/CategoryCard.css */
 .ag-cat {
   box-sizing: border-box;
   display: flex;
@@ -3028,7 +3028,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/BlogCard/BlogCard.css */
+/* components/molecules/BlogCard/BlogCard.css */
 .ag-blog {
   position: relative;
   display: flex;
