@@ -44,6 +44,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
       const chrome = '.vf-shell-header, .vf-shell-bottom-bar, .vf-shell-consent-bar';
       if (!element.getBoundingClientRect || element.closest(chrome)) return;
       requestAnimationFrame(() => {
+        // Fragment navigation may have moved focus before this frame; keep its native scroll.
+        if (document.activeElement !== element) return;
         const shown = element.offsetHeight > 2 ? element : element.closest('label') || element;
         const box = shown.getBoundingClientRect();
         const visible = list => list.filter(bar => isSticky(bar) && height(bar) > 0);
