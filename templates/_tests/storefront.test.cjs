@@ -1341,3 +1341,44 @@ console.log(
   console.error(error);
   process.exitCode = 1;
 });
+
+// Account editors apply only the requested operation to the latest stored account.
+for (const lang of ['en', 'fa']) {
+  const {logic: account, ctx: c} = loadPage('account', {lang});
+  c.setTimeout = () => 0;
+  const storage = new Map([['vf-account-phone', '09120000000']]);
+  c.localStorage = {
+    getItem: key => storage.get(key) || null,
+    setItem: (key, value) => storage.set(key, value)
+  };
+  account.renderVals().setProfile.name('First edit');
+  account.renderVals().saveProfile();
+  const read = () => vm.runInContext("vfAccountLoad('09120000000')", c);
+  const before = read().wallet.balance;
+  account.renderVals().setProfile.name('New name');
+  vm.runInContext("vfWalletChange('09120000000', 1000000, {kind: 'topup'})", c);
+  const external = read();
+  external.profile.email = 'newer@example.com';
+  external.addresses.push({...external.addresses[0], id: 'new-address', isDefault: false});
+  vm.runInContext('vfAccountSave', c)('09120000000', external);
+  account.renderVals().saveProfile();
+  assert.equal(
+    read().wallet.balance,
+    before + 1000000,
+    'profile saves preserve newer wallet writes'
+  );
+  assert.equal(read().profile.name, 'New name');
+  assert.equal(read().profile.email, 'newer@example.com', 'untouched profile fields stay current');
+  assert.ok(read().addresses.some(address => address.id === 'new-address'));
+  const reminder = account.renderVals().reminders[0];
+  const updated = read();
+  updated.reminders.push({...updated.reminders[0], id: 'new-reminder'});
+  vm.runInContext('vfAccountSave', c)('09120000000', updated);
+  reminder.toggle(false);
+  assert.ok(
+    read().reminders.some(item => item.id === 'new-reminder'),
+    'reminder edits preserve concurrent additions'
+  );
+  assert.equal(read().wallet.balance, before + 1000000);
+}
+console.log('Passed account updates against newer wallet, profile, address and reminder data.');

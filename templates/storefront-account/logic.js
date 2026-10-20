@@ -4,7 +4,7 @@ import {
   VF_OCCASIONS,
   vfAccountLoad,
   vfAccountPhone,
-  vfAccountSave,
+  vfAccountUpdate,
   vfAccountSignOut,
   vfReminderNext,
   vfKnownOrders
@@ -39,6 +39,7 @@ export function usePage(props) {
       notice: '',
       saveError: '',
       profile: null,
+      profileChanges: {},
       mapFailed: false,
       placesFailed: false,
       locateFailed: false,
@@ -88,8 +89,9 @@ function vals(page) {
   const asked = s.tab || vfPageRoute(page.props).tab || page.props.tab;
   const tab = tabs.includes(asked) ? asked : 'orders',
     tx = v => (typeof v === 'string' ? v : v[L] || v.en);
-  const commit = data => {
-    if (!vfAccountSave(phone, data)) {
+  const commit = change => {
+    const data = vfAccountUpdate(phone, change, L);
+    if (!data) {
       page.setState({saveError: E.saveError, notice: ''});
       return false;
     }
@@ -97,11 +99,12 @@ function vals(page) {
       account: data,
       form: null,
       profile: null,
+      profileChanges: {},
       errors: {},
       notice: E.saved,
       saveError: ''
     });
-    return true;
+    return data;
   };
   const focusError = () => setTimeout(() => VF_NAV.focusFirstInvalid(), 0);
   const openAddress = a =>
@@ -144,15 +147,11 @@ function vals(page) {
       }
     });
   const removeAddress = a => {
-    let rest = account.addresses.filter(x => x.id !== a.id);
-    if (a.isDefault && rest.length)
-      rest = rest.map((x, i) => ({
-        ...x,
-        isDefault: i === 0
-      }));
-    commit({
-      ...account,
-      addresses: rest
+    commit(current => {
+      let addresses = current.addresses.filter(item => item.id !== a.id);
+      if (current.addresses.find(item => item.id === a.id)?.isDefault && addresses.length)
+        addresses = addresses.map((item, index) => ({...item, isDefault: index === 0}));
+      return {...current, addresses};
     });
     S.focus('vf-add-address');
   };
@@ -176,9 +175,9 @@ function vals(page) {
         when: S.n(next.days) + ' ' + E.inDays,
         altDate: dates.dayMonth(next.date, dates.locale(L, r.cal === 'j' ? 'g' : 'j')),
         toggle: v =>
-          commit({
-            ...account,
-            reminders: account.reminders.map(x =>
+          commit(current => ({
+            ...current,
+            reminders: current.reminders.map(x =>
               x.id === r.id
                 ? {
                     ...x,
@@ -186,13 +185,13 @@ function vals(page) {
                   }
                 : x
             )
-          }),
+          })),
         edit: () => openReminder(r),
         remove: () => {
-          commit({
-            ...account,
-            reminders: account.reminders.filter(x => x.id !== r.id)
-          });
+          commit(current => ({
+            ...current,
+            reminders: current.reminders.filter(x => x.id !== r.id)
+          }));
           S.focus('vf-add-reminder');
         }
       };
@@ -247,15 +246,21 @@ function vals(page) {
     delete row.kind;
     if (isAddress) {
       if (!row.location) delete row.location;
-      row.isDefault = f.id
-        ? account.addresses.find(a => a.id === f.id).isDefault
-        : !account.addresses.length;
+
       row.label = row.label.trim() || C.addAddr;
-      commit({
-        ...account,
-        addresses: f.id
-          ? account.addresses.map(a => (a.id === f.id ? row : a))
-          : [...account.addresses, row]
+      commit(current => {
+        const updated = {
+          ...row,
+          isDefault: f.id
+            ? !!current.addresses.find(a => a.id === f.id)?.isDefault
+            : !current.addresses.length
+        };
+        return {
+          ...current,
+          addresses: f.id
+            ? current.addresses.map(a => (a.id === f.id ? updated : a))
+            : [...current.addresses, updated]
+        };
       });
     } else {
       if (!f.id)
@@ -265,12 +270,12 @@ function vals(page) {
           days_before: f.before,
           channel: f.channel
         });
-      commit({
-        ...account,
+      commit(current => ({
+        ...current,
         reminders: f.id
-          ? account.reminders.map(r => (r.id === f.id ? row : r))
-          : [...account.reminders, row]
-      });
+          ? current.reminders.map(r => (r.id === f.id ? row : r))
+          : [...current.reminders, row]
+      }));
     }
   };
   const addresses = account.addresses.map(a => ({
@@ -282,13 +287,13 @@ function vals(page) {
     edit: () => openAddress(a),
     remove: () => removeAddress(a),
     makeDefault: () =>
-      commit({
-        ...account,
-        addresses: account.addresses.map(x => ({
+      commit(current => ({
+        ...current,
+        addresses: current.addresses.map(x => ({
           ...x,
           isDefault: x.id === a.id
         }))
-      })
+      }))
   }));
   // The saved addresses on a read-only map (PlacesMap); each marker opens its address.
   const placesView = {
@@ -471,6 +476,7 @@ function vals(page) {
               ...profile,
               [k]: value
             },
+            profileChanges: {...s.profileChanges, [k]: value},
             errors: {}
           })
       ])
@@ -487,11 +493,11 @@ function vals(page) {
         focusError();
         return;
       }
-      const saved = commit({
-        ...account,
-        profile
-      });
-      if (saved && page.props.setLang) page.props.setLang(profile.locale);
+      const saved = commit(current => ({
+        ...current,
+        profile: {...current.profile, ...s.profileChanges}
+      }));
+      if (saved && page.props.setLang) page.props.setLang(saved.profile.locale);
     },
     signOut: () => {
       vfAccountSignOut();
