@@ -41,7 +41,7 @@
 @import url('molecules/AnnouncementBar/AnnouncementBar.css');
 @import url('molecules/Accordion/Accordion.css');
 @import url('molecules/Stepper/Stepper.css');
-@import url('BottomTabBar/BottomTabBar.css');
+@import url('organisms/BottomTabBar/BottomTabBar.css');
 @import url('molecules/NavLink/NavLink.css');
 @import url('molecules/Breadcrumb/Breadcrumb.css');
 @import url('molecules/MenuList/MenuList.css');

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
-import {Icon} from '../atoms/Icon/Icon.jsx';
-import {cx} from '../utils/cx.js';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {cx} from '../../utils/cx.js';
 
 // The phone tab bar. Items with `href` are React Aria links (aria-current="page" when current); the rest
 // are React Aria buttons. `count` shows a badge on the icon.
