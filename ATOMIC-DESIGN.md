@@ -78,7 +78,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    page names and the maintained `storefront-*` source folders. StorefrontBottomBar is the first
    layout under `templates/app/layouts/`, with consent, sticky-action and navigation slots.
    StorefrontLayout now arranges the main section slots and tenant/language wrappers.
-   **Next stage: extract the product page layout with gallery and details slots.**
+   StorefrontProductLayout now arranges product breadcrumbs, gallery, details, related designs and
+   feedback; product state and purchase actions stay in the View/logic.
+   **Next stage: extract the shop page layout with heading, sidebar and results slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -419,6 +421,28 @@ corrected: its URL omitted the product ID and did not prove product-action visua
 Published package contents and generated styles are unchanged; no screenshot baselines or
 tolerances changed. The full browser/device suites and known unrelated snapshot failures were
 not rerun. The next stage extracts the product page layout with gallery and details slots.
+
+**Twenty-eighth checkpoint verified:** StorefrontProductLayout is extracted under
+`templates/app/layouts/StorefrontProductLayout/`. It receives breadcrumbs, gallery, details,
+related-design and feedback slots, preserving the main focus target, responsive grid, gallery
+wrapper and sticky details wrapper. Product View/logic retain controls, gallery/lightbox state,
+recent-history ErrorBoundary, purchase feedback, configuration, totals and purchase actions;
+the sticky purchase action stays in its separate Shell slot. The skip-link unit guard now follows
+rendered named imports into app layouts, rather than requiring the main landmark in View itself.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. Fifty-two focused browser checks pass: 12 hydration/first-paint, six product-code/clipboard,
+eight orchid content, ten responsive panel, four pricing, six touch tablet, four gallery/bag-feedback
+and two real touch-phone rotation checks; two duplicate rotation cases are skipped by existing
+guards. Eight valid-product captures across 390, 768, 1280 and 1920 pixels in both languages were
+compared with the preceding commit (`c06d458`). Seven are byte-identical directly. The 768px English
+comparison and repeat each differ at 29 control-edge pixels, exceeding the existing 25-pixel budget,
+but the initial before image matches the repeat after image byte for byte, and vice versa. Both
+commits produce exactly the same two raster variants; the strict single-capture comparison remains
+variable rather than proving a layout regression. Representative phone/desktop captures were
+visually inspected. No baselines or tolerances changed. Published package contents and generated
+styles are unchanged. The full browser/device suites, known TV arrow-navigation failures and
+unrelated snapshot failures were not rerun. The next stage extracts the shop page layout with
+heading, sidebar and results slots.
 
 ## Adding components
 

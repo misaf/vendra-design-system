@@ -265,6 +265,26 @@ assert.equal(
 assert.equal(ctx.deliverable(ctx.product('ivory'), '2026-10-08', morning), false, 'sold-out day');
 assert.equal(ctx.deliverable(ctx.product('bridal'), '2026-10-09', morning), false, 'out of stock');
 assert.equal(ctx.slot({zone: 'central', date: '2026-10-07', slot: '08'}, afternoon), '08');
+// Pages may delegate their main landmark to a rendered app layout. An unused import must not
+// satisfy the skip-link contract; only follow named JSX imports that the source renders.
+function exposesMain(file, visited = new Set()) {
+  if (visited.has(file)) return false;
+  visited.add(file);
+  const code = fs.readFileSync(file, 'utf8');
+  if (/<main\s+id="main"/.test(code)) return true;
+  const layouts = path.join(root, 'templates/app/layouts') + path.sep;
+  for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"]([^'"]+\.jsx)['"]/g)) {
+    const importedFile = path.resolve(path.dirname(file), match[2]);
+    if (!importedFile.startsWith(layouts)) continue;
+    for (const imported of match[1].split(',')) {
+      const [name, localName = name] = imported.trim().split(/\s+as\s+/);
+      if (new RegExp('<' + localName + '\\b').test(code) && exposesMain(importedFile, visited))
+        return true;
+    }
+  }
+  return false;
+}
+
 let parsed = 0;
 for (const folder of fs
   .readdirSync(path.join(root, 'templates'))
@@ -272,7 +292,7 @@ for (const folder of fs
   const script = pageScript(folder);
   if (folder !== 'storefront-site')
     assert.ok(
-      /<main\s+id="main"/.test(read('templates/' + folder + '/View.jsx')),
+      exposesMain(path.join(root, 'templates', folder, 'View.jsx')),
       folder + ' must expose the skip-link destination'
     );
   const {ctx: c, history} = context();
