@@ -80,7 +80,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontLayout now arranges the main section slots and tenant/language wrappers.
    StorefrontProductLayout now arranges product breadcrumbs, gallery, details, related designs and
    feedback; product state and purchase actions stay in the View/logic.
-   **Next stage: extract the shop page layout with heading, sidebar and results slots.**
+   StorefrontShopLayout now arranges shop heading, sidebar, compact categories, results and filter
+   dialog slots; shop controls and URL/filter/sort state stay in the View/logic.
+   **Next stage: extract the bag page layout with item and summary slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -443,6 +445,25 @@ visually inspected. No baselines or tolerances changed. Published package conten
 styles are unchanged. The full browser/device suites, known TV arrow-navigation failures and
 unrelated snapshot failures were not rerun. The next stage extracts the shop page layout with
 heading, sidebar and results slots.
+
+**Twenty-ninth checkpoint verified:** StorefrontShopLayout is extracted under
+`templates/app/layouts/StorefrontShopLayout/`. It receives heading, sidebar, compact-category,
+results and filter-dialog slots, preserving the main focus target, responsive columns, sticky
+sidebar and results wrapper. Shop View/logic retain controls, labels, result states, cards,
+favorites, paging, filtering, delivery rules, sorting and URL state. The existing layout-aware
+skip-link guard validates the delegated main landmark without a shop-specific exception.
+Build, generated-file/format/CSS checks, the full unit/type/package suite and production app build
+pass. Forty-two focused browser checks pass: 12 hydration/first-paint, six touch filter-dialog,
+two portrait-tablet filtering/rotation, two touch tablet sorting/rotation, two bilingual search
+return-context and 18 phone/desktop shop flow checks. Coverage includes dialog action visibility,
+Escape/close focus restoration, paging and reload recovery, individual/all filter removal and
+focus, delivery/occasion filtering, ready-made designs, category names and empty categories.
+Eight complete shop captures at 390, 768, 1280 and 1920 pixels in English and Persian match the
+preceding commit (`b6c8280`) byte for byte; representative phone/desktop captures were visually
+inspected. No screenshot baselines or tolerances changed. Published package contents and generated
+styles are unchanged. The full browser/device suites, known TV arrow-navigation failures and
+unrelated snapshot failures were not rerun. The next stage extracts the bag page layout with item
+and summary slots.
 
 ## Adding components
 

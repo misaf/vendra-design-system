@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
+import {StorefrontShopLayout} from '../app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,19 +11,17 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main
-            id="main"
-            tabIndex={-1}
-            className="vf-shopping vf-shopping--shop tw:mx-auto tw:flex tw:flex-col tw:gap-6"
-          >
-            <DS.SectionHeader
-              level="h1"
-              eyebrow={v.t?.eyebrow}
-              title={v.t?.titleA}
-              accent={v.t?.titleB}
-            />
-            <div className="vf-shop-columns tw:flex tw:flex-wrap tw:gap-x-7 tw:gap-y-4 tw:items-start">
-              <aside className="vf-shop-sidebar tw:max-lg:hidden tw:flex tw:flex-col tw:gap-1 vf-sticky-panel tw:[flex:1_1_240px] tw:max-w-sidebar">
+          <StorefrontShopLayout
+            heading={
+              <DS.SectionHeader
+                level="h1"
+                eyebrow={v.t?.eyebrow}
+                title={v.t?.titleA}
+                accent={v.t?.titleB}
+              />
+            }
+            sidebar={
+              <>
                 <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
                   <>{v.t?.cats}</>
                 </div>
@@ -104,7 +103,9 @@ export function View({v}) {
                   </div>
                   <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
                 </div>
-              </aside>
+              </>
+            }
+            categories={
               <div
                 role="group"
                 aria-label={v.t?.cats}
@@ -126,7 +127,9 @@ export function View({v}) {
                   </React.Fragment>
                 ))}
               </div>
-              <section className="vf-shop-results tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_480px]">
+            }
+            results={
+              <>
                 <div className="vf-shop-mobile-bar tw:lg:hidden tw:flex tw:gap-3 tw:items-center">
                   <DS.Button
                     variant="secondary"
@@ -256,65 +259,67 @@ export function View({v}) {
                     </div>
                   </>
                 ) : null}
-              </section>
-            </div>
-            <DS.Dialog
-              title={v.migration?.filters}
-              open={v.filterOpen}
-              onClose={v.closeFilters}
-              footer={
-                <div className="vf-shop-dialog-actions tw:w-full tw:flex tw:flex-col tw:gap-2">
-                  <DS.Button size="lg" block={true} onClick={v.closeFilters}>
-                    <>{v.showResults}</>
-                  </DS.Button>
-                  <DS.Button variant="ghost" size="lg" block={true} onClick={v.clearFilters}>
-                    <>{v.t?.clear}</>
-                  </DS.Button>
-                </div>
-              }
-            >
-              <div className="vf-shop-filter-fields tw:flex tw:flex-col tw:gap-4">
-                <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
-                  <legend className="ag-field__label tw:p-0 tw:mb-2">
-                    <>{v.t?.occasion}</>
-                  </legend>
-                  <div className="tw:flex tw:flex-wrap tw:gap-2">
-                    {list(v.occasionOptions).map((o, $index) => (
-                      <React.Fragment key={$index}>
-                        <DS.Chip selected={o?.on} onClick={o?.pick}>
-                          <>{o?.label}</>
-                        </DS.Chip>
-                      </React.Fragment>
-                    ))}
+              </>
+            }
+            filters={
+              <DS.Dialog
+                title={v.migration?.filters}
+                open={v.filterOpen}
+                onClose={v.closeFilters}
+                footer={
+                  <div className="vf-shop-dialog-actions tw:w-full tw:flex tw:flex-col tw:gap-2">
+                    <DS.Button size="lg" block={true} onClick={v.closeFilters}>
+                      <>{v.showResults}</>
+                    </DS.Button>
+                    <DS.Button variant="ghost" size="lg" block={true} onClick={v.clearFilters}>
+                      <>{v.t?.clear}</>
+                    </DS.Button>
                   </div>
-                </fieldset>
-                <DS.Select
-                  id="vf-shop-date-dialog"
-                  label={v.t?.deliverOn}
-                  hint={v.t?.dateHint}
-                  value={v.date}
-                  options={v.dateOptions}
-                  onChange={v.setDate}
-                />
-                <div className="tw:flex tw:flex-col tw:gap-2">
-                  <span id="vf-price-label-dialog" className="ag-field__label">
-                    <>{v.migration?.price}</>
-                  </span>
-                  <DS.RangeSlider
-                    labelledBy="vf-price-label-dialog"
-                    min={0}
-                    max={v.priceMax}
-                    step={100000}
-                    value={v.price}
-                    onChange={v.setPrice}
-                    formatValue={v.formatPrice}
-                    labels={v.priceLabels}
+                }
+              >
+                <div className="vf-shop-filter-fields tw:flex tw:flex-col tw:gap-4">
+                  <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
+                    <legend className="ag-field__label tw:p-0 tw:mb-2">
+                      <>{v.t?.occasion}</>
+                    </legend>
+                    <div className="tw:flex tw:flex-wrap tw:gap-2">
+                      {list(v.occasionOptions).map((o, $index) => (
+                        <React.Fragment key={$index}>
+                          <DS.Chip selected={o?.on} onClick={o?.pick}>
+                            <>{o?.label}</>
+                          </DS.Chip>
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <DS.Select
+                    id="vf-shop-date-dialog"
+                    label={v.t?.deliverOn}
+                    hint={v.t?.dateHint}
+                    value={v.date}
+                    options={v.dateOptions}
+                    onChange={v.setDate}
                   />
+                  <div className="tw:flex tw:flex-col tw:gap-2">
+                    <span id="vf-price-label-dialog" className="ag-field__label">
+                      <>{v.migration?.price}</>
+                    </span>
+                    <DS.RangeSlider
+                      labelledBy="vf-price-label-dialog"
+                      min={0}
+                      max={v.priceMax}
+                      step={100000}
+                      value={v.price}
+                      onChange={v.setPrice}
+                      formatValue={v.formatPrice}
+                      labels={v.priceLabels}
+                    />
+                  </div>
+                  <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
                 </div>
-                <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
-              </div>
-            </DS.Dialog>
-          </main>
+              </DS.Dialog>
+            }
+          />
         </>
       }
       sticky={<></>}
