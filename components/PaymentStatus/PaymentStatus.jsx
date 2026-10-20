@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from '../atoms/Button/Button.jsx';
-import {DetailList} from '../DetailList/DetailList.jsx';
+import {DetailList} from '../molecules/DetailList/DetailList.jsx';
 import {EmptyState} from '../molecules/EmptyState/EmptyState.jsx';
 import {Spinner} from '../atoms/Spinner/Spinner.jsx';
 import {cx} from '../utils/cx.js';

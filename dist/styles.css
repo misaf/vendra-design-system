@@ -794,7 +794,7 @@ a.ag-iconbtn {
   font-weight: var(--weight-regular);
 }
 
-/* components/TrustSeal/TrustSeal.css */
+/* components/molecules/TrustSeal/TrustSeal.css */
 /* TrustSeal: the issuer's image on a light tile (the images are drawn for white), or its name. */
 .ag-seal {
   display: inline-grid;
@@ -836,7 +836,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/StockStatus/StockStatus.css */
+/* components/molecules/StockStatus/StockStatus.css */
 /* StockStatus: an icon in the status colour and the words in the text colour. */
 .ag-stock {
   display: inline-flex;
@@ -3149,7 +3149,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/PaymentCard/PaymentCard.css */
+/* components/molecules/PaymentCard/PaymentCard.css */
 .ag-pay {
   position: relative;
   display: flex;
@@ -4015,7 +4015,7 @@ a.ag-tabbar__item {
   display: none;
 }
 
-/* components/OrderTimeline/OrderTimeline.css */
+/* components/molecules/OrderTimeline/OrderTimeline.css */
 .ag-otl {
   list-style: none;
   margin: 0;
@@ -4233,7 +4233,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/DetailList/DetailList.css */
+/* components/molecules/DetailList/DetailList.css */
 .ag-dl {
   margin: 0;
   display: flex;
