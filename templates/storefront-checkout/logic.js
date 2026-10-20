@@ -49,7 +49,10 @@ function vfKeepPayment(record) {
   try {
     if (record) sessionStorage.setItem(VF_PAYMENT_KEY, JSON.stringify(record));
     else sessionStorage.removeItem(VF_PAYMENT_KEY);
-  } catch {}
+    return true;
+  } catch {
+    return false;
+  }
 }
 // Asks whether the bank took the payment. The sample store's simulated bank put its answer in the
 // return link; a live store asks the API (templates/API.md, B30). Without the order in this tab
@@ -81,6 +84,7 @@ export function usePage(props) {
       busy: false,
       failed: false,
       payment: null,
+      paymentSaveError: false,
       ...page.props.store?.paymentDraft
     };
     page._draft = patch => {
@@ -331,6 +335,7 @@ function vals(page) {
     caption: C.caption,
     payLabels: C.payLabels,
     copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
+    paymentSaveError: s.paymentSaveError ? C.paymentSaveError : '',
     receiptChanged,
     receiptChangeText: C.receiptChanged.replace('{amount}', m(totals.total)),
     confirmReceipt: () => page._draft({receiptAmount: totals.total}),
@@ -394,6 +399,12 @@ function vals(page) {
         last4: s.last4,
         ref: s.ref
       };
+      // Persist the recovery record before any submission or redirect can leave this page.
+      if (method === 'online' && !vfKeepPayment(record)) {
+        page.setState({paymentSaveError: true});
+        return;
+      }
+      page.setState({paymentSaveError: false});
       // With an API base, the order is sent as a Checkout request first; the demo goes on at once.
       const send = then => {
         if (!window.VF_API.live) return then();
@@ -413,7 +424,6 @@ function vals(page) {
       // Online, the customer pays on the bank's page and comes back to this page.
       if (method === 'online')
         send(() => {
-          vfKeepPayment(record);
           page.setState({payment: {status: 'redirecting', record}});
         });
       else send(() => completeOrder(record));
@@ -450,7 +460,11 @@ function vals(page) {
     },
     payRetry: () => {
       const record = {...s.payment.record, attempt: (s.payment.record.attempt || 1) + 1};
-      vfKeepPayment(record);
+      if (!vfKeepPayment(record)) {
+        page.setState({paymentSaveError: true});
+        return;
+      }
+      page.setState({paymentSaveError: false});
       leavePaymentUrl();
       page.setState({payment: {status: 'redirecting', record}});
     },
