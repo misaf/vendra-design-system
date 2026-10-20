@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLocale, vfAccountPhone} from '../_shared/account-data.js';
+import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/account-data.js';
 import {
   vfCardMessages,
   vfLineAvailable,
@@ -36,19 +36,19 @@ import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
-const VF_PAYMENT_KEY = 'vf-online-payment';
+const vfPaymentKey = () => 'vf-online-payment:' + vfCustomerId();
 function vfPendingPayment(id) {
   try {
-    const record = JSON.parse(sessionStorage.getItem(VF_PAYMENT_KEY) || 'null');
+    const record = JSON.parse(sessionStorage.getItem(vfPaymentKey()) || 'null');
     return record && record.id === id ? record : null;
   } catch {
     return null;
   }
 }
-function vfKeepPayment(record) {
+function vfKeepPayment(record, customerId = record?.customerId || vfCustomerId()) {
   try {
-    if (record) sessionStorage.setItem(VF_PAYMENT_KEY, JSON.stringify(record));
-    else sessionStorage.removeItem(VF_PAYMENT_KEY);
+    if (record) sessionStorage.setItem('vf-online-payment:' + customerId, JSON.stringify(record));
+    else sessionStorage.removeItem('vf-online-payment:' + customerId);
     return true;
   } catch {
     return false;
@@ -227,7 +227,7 @@ function vals(page) {
   };
   // The bank confirmed an online payment: the order is placed, with the bank's tracking number.
   page._paid = record => {
-    vfKeepPayment(null);
+    vfKeepPayment(null, record.customerId);
     leavePaymentUrl();
     page.setState({payment: null});
     completeOrder({...record, ref: record.ref || String(Date.now()).slice(-12)});
@@ -379,6 +379,7 @@ function vals(page) {
         payment_type: method
       });
       const record = {
+        customerId: st?.customerId || vfCustomerId(),
         checkoutSnapshot: st?.checkoutSnapshot,
         method,
         paymentStatus: P.statuses[method],

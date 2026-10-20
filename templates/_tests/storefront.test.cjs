@@ -1422,3 +1422,91 @@ for (const lang of ['en', 'fa']) {
   );
 }
 console.log('Passed pending-payment persistence failures, recovery, and retry safeguards.');
+
+for (const lang of ['en', 'fa']) {
+  const {logic: site, ctx: c} = loadPage('site', {lang});
+  c.setTimeout = () => 0;
+  const storage = new Map(),
+    session = new Map();
+  c.localStorage = {
+    getItem: key => storage.get(key) || null,
+    setItem: (key, value) => storage.set(key, value),
+    removeItem: key => storage.delete(key)
+  };
+  c.sessionStorage = {
+    getItem: key => session.get(key) || null,
+    setItem: (key, value) => session.set(key, value)
+  };
+  const login = phone => {
+    vm.runInContext('vfAccountLogin', c)(phone, lang);
+    site.renderVals().store.syncCustomer();
+  };
+  login('09120000000');
+  const first = {
+    id: 'VN-31001',
+    customerId: '09120000000',
+    method: 'cod',
+    status: 'received',
+    lines: site.state.bag,
+    delivery: {...site.state.delivery, name: 'Customer A', senderPhone: '09120000000'},
+    totals: {sub: 8450000, fee: 0, total: 8450000}
+  };
+  site.renderVals().store.complete(first);
+  site.renderVals().store.setDelivery({address: 'Private address A'});
+  site.renderVals().store.setPaymentDraft({last4: '1234', ref: 'PRIVATE-A'});
+  vm.runInContext('vfAccountSignOut()', c);
+  site.renderVals().store.syncCustomer();
+  assert.equal(site.state.customerId, 'guest');
+  assert.equal(site.state.orders.length, 0);
+  assert.equal(site.state.delivery.address, '');
+  assert.equal(site.state.paymentDraft.ref, '');
+  login('09121111111');
+  assert.equal(site.state.orders.length, 0, 'another customer cannot see earlier history');
+  site.renderVals().store.complete({...first, id: 'VN-31002', customerId: '09120000000'});
+  assert.equal(site.state.lastOrder, null, 'late completion stays with its original owner');
+  assert.equal(site.state.customers['09120000000'].orders.length, 2);
+  site.lifecycle.didUpdate();
+  const reloaded = new c.Logic({lang});
+  assert.equal(reloaded.state.customerId, '09121111111');
+  assert.equal(reloaded.state.orders.length, 0);
+  login('09120000000');
+  assert.equal(site.state.orders.length, 2);
+  assert.equal(site.state.delivery.address, 'Private address A');
+  assert.equal(site.state.paymentDraft.ref, 'PRIVATE-A');
+
+  const checkout = loadPage('checkout', {lang, store: site.renderVals().store});
+  checkout.ctx.localStorage = c.localStorage;
+  checkout.ctx.sessionStorage = {
+    getItem: key => session.get(key) || null,
+    setItem: (key, value) => session.set(key, value),
+    removeItem: key => session.delete(key)
+  };
+  vm.runInContext('vfKeepPayment', checkout.ctx)({...first, method: 'online'});
+  assert.equal(vm.runInContext('vfPendingPayment', checkout.ctx)(first.id).id, first.id);
+  login('09121111111');
+  assert.equal(
+    vm.runInContext('vfPendingPayment', checkout.ctx)(first.id),
+    null,
+    'pending payments are customer-scoped'
+  );
+  vm.runInContext('vfAccountSignOut()', c);
+  site.renderVals().store.syncCustomer();
+  site.renderVals().store.setDelivery({name: 'Guest recipient', senderPhone: '09123333333'});
+  site.renderVals().store.setPaymentDraft({ref: 'GUEST-CHECKOUT'});
+  const bag = site.state.bag;
+  vm.runInContext('vfAccountLogin', c)('09123333333', lang);
+  site.renderVals().store.syncCustomer({continueCheckout: true});
+  assert.equal(site.state.delivery.name, 'Guest recipient');
+  assert.equal(site.state.paymentDraft.ref, 'GUEST-CHECKOUT');
+  assert.equal(site.state.bag, bag, 'sign-in preserves the shared bag');
+  vm.runInContext('vfAccountSignOut()', c);
+  site.renderVals().store.syncCustomer();
+  assert.equal(
+    site.state.paymentDraft.ref,
+    '',
+    'claimed guest drafts do not reappear after sign-out'
+  );
+}
+console.log(
+  'Passed customer-isolated drafts, history, late completions, reloads and payment recovery.'
+);

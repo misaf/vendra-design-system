@@ -135,6 +135,7 @@ function vals(page) {
       account.profile.name = last.delivery.sender;
       vfAccountSave(s.phone, account);
     }
+    store?.syncCustomer?.({continueCheckout: fromCheckout});
     window.VF_TRACK.event('login', {method: 'sms'});
     if (page.props.setLang) page.props.setLang(account.profile.locale);
     page.setState({
