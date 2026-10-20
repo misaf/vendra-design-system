@@ -550,7 +550,7 @@ a.ag-iconbtn {
   opacity: 1;
 }
 
-/* components/Tabs/Tabs.css */
+/* components/molecules/Tabs/Tabs.css */
 .ag-tab[data-focus-visible] {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -2580,7 +2580,7 @@ a.ag-cat {
   }
 }
 
-/* components/Stepper/Stepper.css */
+/* components/molecules/Stepper/Stepper.css */
 .ag-steps {
   display: flex;
   flex-wrap: wrap;
