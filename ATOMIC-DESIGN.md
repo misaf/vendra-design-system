@@ -34,8 +34,10 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    non-form primitives, then Field and the accessible form controls that use it. Decide the layer
    from the actual responsibility before moving each batch. The non-form batch now lives under
    `components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
-   SkipLink and LiveRegion. Together with the first batch, there are 14 migrated atoms.
-   **Next stage: Field and basic form controls.**
+   SkipLink and LiveRegion. The basic form batch has also moved: Field, Input, Checkbox, Radio,
+   RadioGroup, Switch and Select. There are now 21 migrated atom folders.
+   **Next stage: specialized form controls** (PhoneInput, CodeInput, QuantityInput, RangeSlider
+   and ChoiceGroup with its ChoiceTile part).
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
@@ -65,6 +67,15 @@ browser tests and six core/feedback/density visual checks pass. The two commerce
 checks fail on both this stage and the preceding commit (`62ab49e`); matching screenshots from
 both versions confirm the mismatch predates this stage. No baselines or tolerances were changed.
 The full browser suite was not rerun.
+
+**Third checkpoint verified:** Field, Input, Checkbox, Radio, RadioGroup, Switch and Select moved
+with their declarations, fixtures and specs. Their consumers and the published package use the
+new atom paths; component bodies and CSS rules are unchanged. Build, generated-file/format/CSS
+checks, the full unit/type/package suite and production app build pass. All 86 browser tests for
+atoms, package behavior and hydration, plus six forms/density/bilingual visual checks, pass. The two validation-state
+card screenshot checks fail on both this stage and the preceding commit (`130f6fe`), with
+byte-for-byte identical actual images in normal and forced-color modes. No baselines or tolerances
+were changed. The full browser suite was not rerun.
 
 ## Adding components
 

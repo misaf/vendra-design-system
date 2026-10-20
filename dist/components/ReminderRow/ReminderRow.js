@@ -5,7 +5,7 @@ import { Icon } from "../atoms/Icon/Icon.js";
 import { Badge } from "../atoms/Badge/Badge.js";
 import { IconButton } from "../atoms/IconButton/IconButton.js";
 import { Button } from "../atoms/Button/Button.js";
-import { Switch } from "../Switch/Switch.js";
+import { Switch } from "../atoms/Switch/Switch.js";
 import { cx } from "../utils/cx.js";
 import { useMessages } from "../utils/messages.js";
 import { messages } from "./messages.js";

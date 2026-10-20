@@ -1089,7 +1089,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Field/Field.css */
+/* components/atoms/Field/Field.css */
 /* Label, hint and error around a form control (.ag-field), fieldsets, and the text-control shell (.ag-input) used by Input and Select. */
 .ag-field {
   display: flex;
@@ -1190,7 +1190,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Select/Select.css */
+/* components/atoms/Select/Select.css */
 /* Select: the trigger keeps the .ag-input field look; the list pops up under it. */
 .ag-select__trigger {
   width: 100%;
@@ -1334,7 +1334,7 @@ a.ag-iconbtn {
   font-variant-numeric: tabular-nums;
 }
 
-/* components/Checkbox/Checkbox.css */
+/* components/atoms/Checkbox/Checkbox.css */
 /* .ag-check styles Checkbox and Radio (both React Aria: state as data-* on the label). */
 .ag-check--error .ag-check__box {
   border-color: var(--danger);
@@ -1443,7 +1443,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/RadioGroup/RadioGroup.css */
+/* components/atoms/RadioGroup/RadioGroup.css */
 /* RadioGroup: radios stacked in a column. */
 .ag-radios {
   display: flex;
@@ -1540,7 +1540,7 @@ a.ag-iconbtn {
   }
 }
 
-/* components/Switch/Switch.css */
+/* components/atoms/Switch/Switch.css */
 .ag-switch[data-disabled] {
   opacity: var(--opacity-disabled);
   cursor: not-allowed;

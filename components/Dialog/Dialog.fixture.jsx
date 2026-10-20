@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from '../atoms/Button/Button.jsx';
-import {Input} from '../Input/Input.jsx';
+import {Input} from '../atoms/Input/Input.jsx';
 import {Dialog} from './Dialog.jsx';
 
 export function Fixture() {

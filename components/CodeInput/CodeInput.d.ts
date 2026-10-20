@@ -1,4 +1,4 @@
-import type {InputProps} from '../Input/Input.js';
+import type {InputProps} from '../atoms/Input/Input.js';
 export interface CodeInputProps extends Omit<
   InputProps,
   'type' | 'multiline' | 'maxLength' | 'onChange'

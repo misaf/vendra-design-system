@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "../atoms/Button/Button.js";
 import { Icon } from "../atoms/Icon/Icon.js";
-import { Input } from "../Input/Input.js";
+import { Input } from "../atoms/Input/Input.js";
 import { cx } from "../utils/cx.js";
 import { usePageLocale } from "../utils/locale.js";
 import { useMessages } from "../utils/messages.js";
