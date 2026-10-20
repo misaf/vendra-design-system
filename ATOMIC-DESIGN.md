@@ -98,7 +98,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    search matching, URL/history state and return context remain in the View/logic.
    StorefrontContactLayout now arranges heading, details, form and feedback slots; contact state,
    map fallback, validation and submission remain in the View/logic.
-   **Next stage: extract the weddings page layout with details, inquiry and feedback slots.**
+   StorefrontWeddingsLayout now arranges hero, services, story, inquiry and feedback slots;
+   weddings content, validation, submission and recovery remain in the View/logic.
+   **Next stage: extract the FAQ page layout with heading, questions and contact slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -665,6 +667,34 @@ validation and phone form captures were visually inspected. No screenshot baseli
 package contents or generated styles changed. The full browser/device suites, known TV
 arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage extracts
 the weddings layout with details, inquiry and feedback slots.
+
+**Thirty-eighth checkpoint verified:** StorefrontWeddingsLayout is extracted under
+`templates/app/layouts/StorefrontWeddingsLayout/`. It receives heading, hero media, services,
+story, inquiry introduction, inquiry and feedback slots. The main focus target, section order,
+hero/services grids and responsive inquiry section/anchor are preserved. The View retains actions,
+media, cards, gallery/process content, fields, validation, conditional form/success content and
+API feedback. Weddings logic retains field/date state, validation, submission payload, busy/error
+state, draft retention and focus. A pre-existing hero-anchor defect was confirmed on the
+pre-stage preview: the React Aria router discarded URL fragments. The router now delegates
+fragment navigation to the browser, matching the plain-link handler. The shell's queued focus
+adjustment now checks that its element remains focused, so it does not override the browser's
+fragment scroll after focus moves. A bilingual phone/desktop regression verifies reaching the
+inquiry section, retained draft values and no document reload. Inquiry validation/submission
+rules and copy are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+Thirty focused browser cases pass across linked validation summaries, English/Persian
+error accessibility, hydration, responsive first paint, fragment navigation and existing shell
+keyboard focus checks. Twenty-eight before/after capture pairs are byte-identical with zero
+changed pixels: form, validation and success at 390/768/1280/1920 pixels in both languages,
+plus stubbed API errors at 390/1280 pixels in both languages. Capture probes verify date/select
+controls, summary links, success/edit draft retention, failure/retry and the assembled payload.
+No real inquiry was sent. Captures use fixed time, image-decoding waits and normalized scroll;
+representative Persian phone validation/tablet form and English phone error/desktop success
+captures were visually inspected. Initial capture retries corrected selector assumptions; the
+hero-anchor probe exposed the existing router/focus defect described above. No screenshot
+baselines/tolerances, package contents or generated styles changed. The full browser/device
+suites, known TV arrow-navigation failures and unrelated snapshot failures were not rerun.
+The next stage extracts the FAQ layout with heading, questions and contact slots.
 
 ## Adding components
 
