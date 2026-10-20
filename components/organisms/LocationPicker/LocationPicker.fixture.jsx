@@ -1,5 +1,5 @@
 import React from 'react';
-import {loadLeaflet, TILES} from '../../templates/_e2e/fixtures/leaflet.js';
+import {loadLeaflet, TILES} from '../../../templates/_e2e/fixtures/leaflet.js';
 import {LocationPicker} from './LocationPicker.jsx';
 
 export function Fixture() {

@@ -3,7 +3,7 @@ import {
   expectAccessible,
   openComponent,
   stubMapTiles
-} from '../../templates/_e2e/component-test.mjs';
+} from '../../../templates/_e2e/component-test.mjs';
 
 test.beforeEach(({page}) => stubMapTiles(page));
 

@@ -1,4 +1,5 @@
-import type {LatLng} from '../utils/commerce.js';
+import * as React from 'react';
+import type {LatLng} from '../../utils/commerce.js';
 export interface LocationPickerProps {
   /** The map's id; the label, status and error use `${id}-label`, `-status` and `-error`. */
   id: string;
@@ -35,4 +36,4 @@ export interface LocationPickerProps {
   style?: React.CSSProperties;
 }
 /** A centre-pin map for choosing a delivery point, with "use my location". */
-export declare function LocationPicker(props: LocationPickerProps): JSX.Element;
+export declare function LocationPicker(props: LocationPickerProps): React.JSX.Element;

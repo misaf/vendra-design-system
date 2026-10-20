@@ -1,5 +1,6 @@
-import type {LatLng} from '../utils/commerce.js';
-import type {MapTiles} from '../utils/maps.js';
+import * as React from 'react';
+import type {LatLng} from '../../utils/commerce.js';
+import type {MapTiles} from '../../utils/maps.js';
 export interface Place {
   id: string;
   /** Shown above the marker, e.g. "Home" or the store name. */
@@ -32,4 +33,4 @@ export interface PlacesMapProps {
   style?: React.CSSProperties;
 }
 /** A read-only map of labelled places; each marker opens its place by pointer or keyboard. */
-export declare function PlacesMap(props: PlacesMapProps): JSX.Element;
+export declare function PlacesMap(props: PlacesMapProps): React.JSX.Element;

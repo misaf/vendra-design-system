@@ -53,8 +53,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    header/footer sections from Shell with explicit props and callbacks.
    Dialog, Lightbox and ToastRegion form the first batch. Gallery and Carousel form the media
    browsing batch. OrderSummary and PaymentStatus form the order and payment batch, followed by
-   DatePicker as the calendar organism: eight organism folders are now migrated.
-   **Next stage: map organisms** (LocationPicker and PlacesMap).
+   DatePicker as the calendar organism. LocationPicker and PlacesMap form the map batch:
+   ten organism folders are now migrated. **Next stage: bottom navigation organism** (BottomTabBar).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -254,6 +254,17 @@ calendar switching while preserving the ISO date and English/Persian accessibili
 forced-color screenshots pass without baseline or tolerance changes. Known commerce, order and
 validation-state snapshot failures were not rerun, and the full browser and device suites remain
 unverified.
+
+**Nineteenth checkpoint verified:** LocationPicker and PlacesMap moved with their types, styles,
+fixtures and specs, bringing the organism layer to ten folders. App exports and the published
+package use the new paths; component bodies and CSS rules are unchanged. Fixture imports still
+load the local Leaflet runtime and use stubbed map tiles. Build, generated-file/format/CSS checks,
+the full unit/type/package suite and production app build pass. All 21 focused map/package/
+hydration browser tests and both forms visual checks pass. Coverage includes map names and
+status/error descriptions, left-to-right map canvases, keyboard pin movement, labelled markers,
+pointer/Enter selection and English/Persian accessibility. Normal and forced-color screenshots
+pass without baseline or tolerance changes. Known commerce, order and validation-state snapshot
+failures were not rerun, and the full browser and device suites remain unverified.
 
 ## Adding components
 
