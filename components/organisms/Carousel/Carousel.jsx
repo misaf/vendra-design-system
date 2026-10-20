@@ -1,7 +1,7 @@
 import React from 'react';
-import {IconButton} from '../atoms/IconButton/IconButton.jsx';
-import {cx} from '../utils/cx.js';
-import {useMessages} from '../utils/messages.js';
+import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // Flatten fragments, nested arrays and [data-snap-group] wrappers so each repeated item gets its own snap slot.

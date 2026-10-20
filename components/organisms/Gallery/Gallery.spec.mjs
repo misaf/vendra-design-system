@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 for (const lang of ['en', 'fa'])
   test(`a named carousel of slides; dots go to a slide and mark the current one (${lang})`, async ({

@@ -3336,7 +3336,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/Gallery/Gallery.css */
+/* components/organisms/Gallery/Gallery.css */
 .ag-gallery {
   display: flex;
   flex-direction: column;
@@ -3589,7 +3589,7 @@ a.ag-tabbar__item {
   }
 }
 
-/* components/Carousel/Carousel.css */
+/* components/organisms/Carousel/Carousel.css */
 .ag-carousel {
   position: relative;
   container-type: inline-size;

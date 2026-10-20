@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
 
 for (const lang of ['en', 'fa'])
   test(`arrows page in reading direction and disable at the ends (${lang})`, async ({page}) => {
