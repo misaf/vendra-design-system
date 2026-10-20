@@ -51,8 +51,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    bag-row batch: **the planned molecule batches are complete, with 33 molecule folders.**
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
-   Dialog, Lightbox and ToastRegion form the first batch: three organism folders are now migrated.
-   **Next stage: gallery and carousel organisms** (Gallery and Carousel).
+   Dialog, Lightbox and ToastRegion form the first batch. Gallery and Carousel form the media
+   browsing batch: five organism folders are now migrated.
+   **Next stage: order and payment organisms** (OrderSummary and PaymentStatus).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -217,6 +218,18 @@ navigation, Persian digits and mirrored arrow keys, simulated pointer swipes, qu
 dismissal and English/Persian accessibility. Normal and forced-color screenshots pass without
 baseline or tolerance changes. Known commerce, order and validation-state snapshot failures were
 not rerun, and the full browser and device suites remain unverified.
+
+**Sixteenth checkpoint verified:** Gallery and Carousel moved with their types, wording, styles,
+fixtures and specs, bringing the organism layer to five folders. The shared CollectionCarousel,
+app exports and the published package use the new paths; component bodies and CSS rules are
+unchanged. Build, generated-file/format/CSS checks, the full unit/type/package suite and production
+app build pass. All 23 focused organism/package/hydration browser tests, two storefront collection
+resize tests and four navigation/bilingual visual checks pass. Coverage includes photo-dot
+selection, scroll bounds, keyboard scrolling, print layout, English/Persian accessibility and
+reading direction, plus touch navigation and keyboard reachability after narrow/wide resizing.
+Normal and forced-color screenshots pass without baseline or tolerance changes. Known commerce,
+order and validation-state snapshot failures were not rerun, and the full browser and device
+suites remain unverified.
 
 ## Adding components
 

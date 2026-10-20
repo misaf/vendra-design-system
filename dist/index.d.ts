@@ -1,7 +1,5 @@
 export * from './components/BottomTabBar/BottomTabBar.js';
-export * from './components/Carousel/Carousel.js';
 export * from './components/DatePicker/DatePicker.js';
-export * from './components/Gallery/Gallery.js';
 export * from './components/LocationPicker/LocationPicker.js';
 export * from './components/OrderSummary/OrderSummary.js';
 export * from './components/PaymentStatus/PaymentStatus.js';
@@ -68,7 +66,9 @@ export * from './components/molecules/Tabs/Tabs.js';
 export * from './components/molecules/Toast/Toast.js';
 export * from './components/molecules/Tooltip/Tooltip.js';
 export * from './components/molecules/TrustSeal/TrustSeal.js';
+export * from './components/organisms/Carousel/Carousel.js';
 export * from './components/organisms/Dialog/Dialog.js';
+export * from './components/organisms/Gallery/Gallery.js';
 export * from './components/organisms/Lightbox/Lightbox.js';
 export * from './components/organisms/ToastRegion/ToastRegion.js';
 export * from './components/utils/analytics.js';

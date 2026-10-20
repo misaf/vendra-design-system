@@ -49,10 +49,10 @@
 @import url('molecules/BlogCard/BlogCard.css');
 @import url('molecules/PaymentCard/PaymentCard.css');
 @import url('molecules/LineItem/LineItem.css');
-@import url('Gallery/Gallery.css');
+@import url('organisms/Gallery/Gallery.css');
 @import url('atoms/ArchFrame/ArchFrame.css');
 @import url('molecules/SectionHeader/SectionHeader.css');
-@import url('Carousel/Carousel.css');
+@import url('organisms/Carousel/Carousel.css');
 @import url('atoms/SkipLink/SkipLink.css');
 @import url('DatePicker/DatePicker.css');
 @import url('LocationPicker/LocationPicker.css');

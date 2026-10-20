@@ -1,5 +1,5 @@
 import React from 'react';
-import {Carousel} from '../../components/Carousel/Carousel.jsx';
+import {Carousel} from '../../components/organisms/Carousel/Carousel.jsx';
 
 // Storefront collections share measured navigation, counts and responsive card sizing.
 export function CollectionCarousel({total, countLabel, perView, label, className = '', ...props}) {
