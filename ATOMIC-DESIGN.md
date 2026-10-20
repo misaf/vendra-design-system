@@ -52,8 +52,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
 5. **Organisms.** Migrate substantial sections such as Gallery and OrderSummary. Extract shared
    header/footer sections from Shell with explicit props and callbacks.
    Dialog, Lightbox and ToastRegion form the first batch. Gallery and Carousel form the media
-   browsing batch: five organism folders are now migrated.
-   **Next stage: order and payment organisms** (OrderSummary and PaymentStatus).
+   browsing batch. OrderSummary and PaymentStatus form the order and payment batch: seven organism
+   folders are now migrated. **Next stage: calendar organism** (DatePicker).
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
    page names and the maintained `storefront-*` source folders.
@@ -230,6 +230,18 @@ reading direction, plus touch navigation and keyboard reachability after narrow/
 Normal and forced-color screenshots pass without baseline or tolerance changes. Known commerce,
 order and validation-state snapshot failures were not rerun, and the full browser and device
 suites remain unverified.
+
+**Seventeenth checkpoint verified:** OrderSummary and PaymentStatus moved with their types,
+wording, styles, fixtures and specs, bringing the organism layer to seven folders. App exports and
+the published package use the new paths; component bodies and CSS rules are unchanged. Build,
+generated-file/format/CSS checks, the full unit/type/package suite and production app build pass.
+All 24 focused organism/package/hydration browser tests pass. Coverage includes linked order lines
+and totals, gateway GET/POST redirects, automatic redirect timing, pending/failed payment actions,
+status-change focus and English/Persian accessibility. The four commerce/order screenshot checks
+still fail their stored baselines; all eight normal/forced-color actual/retry images match the
+previously verified captures from checkpoints nine and ten byte for byte. No baselines or
+tolerances were changed. Known validation-state snapshot failures were not rerun, and the full
+browser and device suites remain unverified.
 
 ## Adding components
 

@@ -1,13 +1,13 @@
 import React from 'react';
-import {Button} from '../atoms/Button/Button.jsx';
-import {DetailList} from '../molecules/DetailList/DetailList.jsx';
-import {EmptyState} from '../molecules/EmptyState/EmptyState.jsx';
-import {Spinner} from '../atoms/Spinner/Spinner.jsx';
-import {cx} from '../utils/cx.js';
-import {usePageLocale} from '../utils/locale.js';
-import {useMessages} from '../utils/messages.js';
+import {Button} from '../../atoms/Button/Button.jsx';
+import {DetailList} from '../../molecules/DetailList/DetailList.jsx';
+import {EmptyState} from '../../molecules/EmptyState/EmptyState.jsx';
+import {Spinner} from '../../atoms/Spinner/Spinner.jsx';
+import {cx} from '../../utils/cx.js';
+import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
-import {useTrack} from '../utils/track.js';
+import {useTrack} from '../../utils/track.js';
 
 const RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 const LOOK = {

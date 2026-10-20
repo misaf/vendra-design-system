@@ -1,5 +1,4 @@
-import * as React from 'react';
-import type {Photo} from '../atoms/Picture/Picture.js';
+import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface OrderSummaryLine {
   name: React.ReactNode;
@@ -31,4 +30,4 @@ export interface OrderSummaryProps {
   style?: React.CSSProperties;
 }
 /** <ul> of lines (48px ArchFrame thumb, size="thumb", tone="product") then a <dl> of totals. */
-export declare function OrderSummary(props: OrderSummaryProps): React.JSX.Element;
+export declare function OrderSummary(props: OrderSummaryProps): JSX.Element;

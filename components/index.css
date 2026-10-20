@@ -10,7 +10,7 @@
 @import url('molecules/LanguageSwitch/LanguageSwitch.css');
 @import url('shared.css');
 @import url('atoms/Picture/Picture.css');
-@import url('PaymentStatus/PaymentStatus.css');
+@import url('organisms/PaymentStatus/PaymentStatus.css');
 @import url('atoms/Price/Price.css');
 @import url('molecules/TrustSeal/TrustSeal.css');
 @import url('molecules/StockStatus/StockStatus.css');
@@ -58,7 +58,7 @@
 @import url('LocationPicker/LocationPicker.css');
 @import url('PlacesMap/PlacesMap.css');
 @import url('molecules/OrderTimeline/OrderTimeline.css');
-@import url('OrderSummary/OrderSummary.css');
+@import url('organisms/OrderSummary/OrderSummary.css');
 @import url('molecules/DetailList/DetailList.css');
 @import url('molecules/AddressCard/AddressCard.css');
 @import url('molecules/ReminderRow/ReminderRow.css');
