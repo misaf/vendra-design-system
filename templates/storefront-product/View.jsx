@@ -6,6 +6,7 @@ import {StorefrontProductLayout} from '../app/layouts/StorefrontProductLayout/St
 import {StorefrontProductGallery} from '../app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx';
 import {StorefrontProductHeading} from '../app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx';
 import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
+import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -62,49 +63,12 @@ export function View({v}) {
                   addons={list(v.addons)}
                   labels={{size: v.t?.size, extras: v.t?.extras}}
                 />
-                <div className="vf-product-selection-summary tw:flex tw:flex-col tw:gap-1">
-                  <div
-                    className="vf-product-selection-total tw:max-md:hidden tw:flex tw:flex-wrap tw:items-baseline tw:justify-between tw:gap-2"
-                    role="status"
-                    aria-atomic="true"
-                  >
-                    <span className="tw:text-sm tw:font-medium">{v.selectionTotalLabel}</span>
-                    <DS.Price value={v.totalLabel} />
-                  </div>
-                  <p className="vf-product-total-hint tw:m-0 tw:text-sm tw:text-quiet">
-                    {v.totalHint}
-                  </p>
-                </div>
-                <div className="tw:flex tw:gap-3 tw:items-center tw:flex-wrap">
-                  <DS.QuantityInput
-                    value={v.qty}
-                    min={1}
-                    max={v.qtyMax}
-                    onChange={v.setQty}
-                    labels={v.qtyLabels}
-                  />
-                  <DS.IconButton
-                    icon="heart"
-                    label={v.t?.saveDesign}
-                    variant="secondary"
-                    size="lg"
-                    active={v.fav}
-                    onClick={v.toggleSave}
-                    className="vf-product-save"
-                  />
-                  <div className="vf-product-add-button tw:max-md:hidden tw:min-w-0 vf-product-add tw:[flex:1_1_260px]">
-                    <DS.Button
-                      variant="primary"
-                      size="lg"
-                      block={true}
-                      iconStart="shopping-bag"
-                      onClick={v.add}
-                      disabled={v.unavailable}
-                    >
-                      <>{v.addLabel}</>
-                    </DS.Button>
-                  </div>
-                </div>
+                <StorefrontProductPurchase
+                  summary={{label: v.selectionTotalLabel, total: v.totalLabel, hint: v.totalHint}}
+                  quantity={{value: v.qty, max: v.qtyMax, labels: v.qtyLabels, onChange: v.setQty}}
+                  save={{label: v.t?.saveDesign, active: v.fav, onClick: v.toggleSave}}
+                  add={{label: v.addLabel, disabled: v.unavailable, onClick: v.add}}
+                />
                 <div className="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet">
                   <DS.Icon name="truck" size={18} />
                   <span>
