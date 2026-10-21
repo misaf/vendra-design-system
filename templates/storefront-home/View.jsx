@@ -6,6 +6,7 @@ import {StorefrontHomeLayout} from '../app/layouts/StorefrontHomeLayout/Storefro
 import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
 import {StorefrontHomeFeatured} from '../app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
 import {StorefrontHomeOccasions} from '../app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
+import {StorefrontHomeStudio} from '../app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -70,55 +71,24 @@ export function View({v}) {
             />
           }
           arrivals={
-            <>
-              <DS.SectionHeader
-                id="vf-home-studio-title"
-                eyebrow={v.t?.newEb}
-                title={v.t?.newA}
-                accent={v.t?.newB}
-                action={
-                  <DS.Button variant="ghost" iconEnd="arrow-right" href={v.href?.shop}>
-                    {v.t?.newAll}
-                  </DS.Button>
-                }
-              />
-              <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.newText}</p>
-              <CollectionCarousel
-                total={list(v.products).length}
-                countLabel={v.t?.designCount(list(v.products).length)}
-                className="vf-home-product-row vf-home-product-carousel vf-home-carousel"
-                label={v.t?.newLabel}
-                perView={4}
-                perViewMobile={1.15}
-                itemMin="220px"
-                gap="20px"
-                arrows={true}
-                prevLabel={v.t?.prev}
-                nextLabel={v.t?.next}
-              >
-                {list(v.products).map((p, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.ProductCard
-                      images={p?.images}
-                      sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
-                      priority={$index < 2}
-                      name={p?.name}
-                      subtitle={p?.sub}
-                      price={p?.price}
-                      stock={p?.stock}
-                      badge={p?.badge}
-                      badgeTone="accent"
-                      frame={v.frame}
-                      placeholder={v.t?.photo}
-                      favLabel={v.t?.save}
-                      favorite={p?.fav}
-                      onFavorite={p?.toggleFav}
-                      href={p?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </CollectionCarousel>
-            </>
+            <StorefrontHomeStudio
+              products={list(v.products)}
+              frame={v.frame}
+              shopHref={v.href?.shop}
+              labels={{
+                eyebrow: v.t?.newEb,
+                title: v.t?.newA,
+                accent: v.t?.newB,
+                all: v.t?.newAll,
+                description: v.t?.newText,
+                count: v.t?.designCount(list(v.products).length),
+                region: v.t?.newLabel,
+                previous: v.t?.prev,
+                next: v.t?.next,
+                photo: v.t?.photo,
+                save: v.t?.save
+              }}
+            />
           }
           weddings={
             <>

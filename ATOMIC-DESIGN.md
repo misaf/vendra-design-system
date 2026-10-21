@@ -146,7 +146,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeCategories now composes the home heading and category carousel from explicit records/labels.
    StorefrontHomeFeatured now composes featured cards, carousel and responsive view-all links.
    StorefrontHomeOccasions now composes the occasion heading, description and carousel.
-   **Next stage: extract the home studio-design section into a storefront organism.**
+   StorefrontHomeStudio now composes studio cards, carousel and explore-all navigation.
+   **Next stage: extract the home wedding-promotion section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1328,6 +1329,30 @@ Persian phone advanced and English TV initial captures were visually inspected. 
 tolerances changed. The full browser/device suites and unrelated newsletter/payment flows were
 not rerun.
 Next: extract the home studio-design section into a storefront organism.
+
+**Sixty-third checkpoint verified:** StorefrontHomeStudio is extracted under
+`templates/app/organisms/StorefrontHomeStudio/`. It receives explicit product records, localized
+labels, shop URL and frame, composing heading, explore-all link, description and ProductCard
+carousel. View retains normalization/count formatting; home/shared logic retains collection
+selection/order and small-catalog fallback, product identity, prices, stock, images, URLs and
+favorite state/actions. Layout retains section wrappers and heading association. Heading ID,
+fragments, classes, responsive image/card sizing, first-two image priority, badges and callbacks
+are preserved. No page model, new state/effects, styles, package exports or generated files changed.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile browser cases pass without retries, covering home composition and existing featured/
+ready-product flows. Bilingual before/after probes cover initial/favorite studio states at
+390/768/1280/1920 pixels and verify five ordered product-code cards, badges/counts, heading ID,
+first-two high-priority images, favorite add/reload/remove without navigation, forward/back
+carousel behavior, product detail links, unfiltered shop navigation, touch taps, TV Enter
+activation, tablet rotation, no document overflow and axe checks. The shop-navigation assertion
+was corrected to respect its existing four-product first page rather than expect all six at once.
+Fourteen of sixteen section screenshot pairs are byte-identical, verified against actual PNG bytes.
+Two 1280-pixel favorite-state captures retain tiny image-edge differences after one focused recapture:
+8 pixels up to 15/255 in English and 15 pixels up to 13/255 in Persian. Initial states and every
+phone/tablet/TV pair are exact. No baselines or tolerances changed. Representative Persian phone
+favorite and English TV initial captures were visually inspected. The full browser/device suites
+and unrelated newsletter/payment flows were not rerun.
+Next: extract the home wedding-promotion section into a storefront organism.
 
 ## Adding components
 

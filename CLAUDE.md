@@ -57,6 +57,8 @@ StorefrontHomeFeatured composes featured cards and responsive view-all links fro
 View/logic retain selection/order, product mapping, prices/stock, favorites and filter URLs.
 StorefrontHomeOccasions composes occasion navigation from explicit records, labels and frame;
 View/logic retain normalization, order, counts, images and shop-filter URLs.
+StorefrontHomeStudio composes studio cards and explore-all navigation from explicit props;
+View/logic retain collection selection/fallback, product mapping, counts, URLs and favorites.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
