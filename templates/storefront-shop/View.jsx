@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontShopLayout} from '../app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx';
+import {StorefrontShopCategories} from '../app/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -22,47 +23,7 @@ export function View({v}) {
             }
             sidebar={
               <>
-                <div className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:mb-2">
-                  <>{v.t?.cats}</>
-                </div>
-                {list(v.categories).map((c, $index) => (
-                  <React.Fragment key={$index}>
-                    {c?.on ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={c?.pick}
-                          aria-pressed="true"
-                          className="vf-shop-category-selected tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-muted tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-medium tw:text-start tw:cursor-pointer"
-                        >
-                          <span>
-                            <>{c?.label}</>
-                          </span>
-                          <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                            <>{c?.count}</>
-                          </span>
-                        </button>
-                      </>
-                    ) : null}
-                    {c?.off ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={c?.pick}
-                          aria-pressed="false"
-                          className="vf-shop-category tw:flex tw:justify-between tw:items-center tw:gap-3 tw:min-h-tap tw:py-0 tw:px-3 tw:[border:0] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-sm tw:font-normal tw:text-start tw:cursor-pointer tw:hover:bg-sunken"
-                        >
-                          <span>
-                            <>{c?.label}</>
-                          </span>
-                          <span className="vf-shop-category-count tw:text-xs tw:text-quiet">
-                            <>{c?.count}</>
-                          </span>
-                        </button>
-                      </>
-                    ) : null}
-                  </React.Fragment>
-                ))}
+                <StorefrontShopCategories categories={list(v.categories)} label={v.t?.cats} />
                 <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
                   <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
                     <legend className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">
@@ -106,27 +67,11 @@ export function View({v}) {
               </>
             }
             categories={
-              <div
-                role="group"
-                aria-label={v.t?.cats}
-                className="vf-shop-mobile-categories tw:lg:hidden tw:flex tw:gap-2 tw:w-full tw:overflow-x-auto tw:pb-1 tw:[scrollbar-width:none]"
-              >
-                {list(v.categories).map((c, $index) => (
-                  <React.Fragment key={$index}>
-                    <div className="vf-shop-category-chip tw:flex-none">
-                      <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
-                        <span className="vf-shop-category-label tw:whitespace-nowrap">
-                          <>
-                            {c?.label}
-                            {' \u00b7 '}
-                            {c?.count}
-                          </>
-                        </span>
-                      </DS.Chip>
-                    </div>
-                  </React.Fragment>
-                ))}
-              </div>
+              <StorefrontShopCategories
+                categories={list(v.categories)}
+                label={v.t?.cats}
+                compact={true}
+              />
             }
             results={
               <>

@@ -41,6 +41,8 @@ View/logic retain totals/stock/bag actions; Shell retains positioning/measuremen
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
+StorefrontShopCategories composes sidebar category buttons and compact chips from explicit records;
+View/logic retain eligibility, filtered counts, selection/tracking, URL/paging and sorting.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
