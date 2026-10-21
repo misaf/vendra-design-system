@@ -124,7 +124,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    local reveal/pointer UI state; collections, playback and failure rules stay in the View/logic.
    StorefrontPresentationViewer now composes controlled captions, options and customer actions;
    label rendering, quotes, stock, selection and order/share state stay in the View/logic.
-   **Next stage: extract the presentation send/share dialog into a storefront organism.**
+   StorefrontPresentationSend now composes the send/share dialog, QR/tag and warning/actions;
+   link construction, clipboard/print behavior and customer state stay in the View/logic.
+   **Next stage: fix the existing blank presentation tag printing, then continue with the shortlist dialog.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -996,6 +998,38 @@ inspected. No screenshot baselines/tolerances, package contents or generated sty
 The full browser/device suites, production offline checks, known storefront TV add-to-bag arrow
 failures and unrelated snapshot failures were not rerun. The next stage extracts the presentation
 send/share dialog into a storefront organism.
+
+**Fifty-first checkpoint verified:** StorefrontPresentationSend is extracted under
+`templates/app/organisms/StorefrontPresentationSend/`. It receives a nullable send descriptor,
+localized action labels and a close callback. It owns dialog/QR/tag, warning/body and share/copy/
+print composition, retaining the existing memoized shared QR encoder. View/logic retain link
+construction and quoted options, stock/customer state, length validation, clipboard capability,
+copied timing and browser printing. No page behavior, copy or styles changed. Build, generated-
+file/format/CSS checks, the full unit/type/package suite and production app build pass. Twenty-four
+focused browser cases pass across quotes, shortlist/order handoff, customer-phone sharing, hidden
+prices, live stock, handed-shortlist clearing, package hydration and responsive first paint.
+Thirty-six before/after viewport pairs cover: product sharing at 390/768/1280/1920
+pixels in both languages, plus shortlist/order sharing, copied feedback, clipboard absence,
+oversized shortlist/order warnings and print-media product dialogs at 390/1280 pixels in both languages. Thirty-five pairs are
+byte-identical; one Persian desktop oversized-order pair retains 119 differing pixels at most
+1/255 in the blurred catalog background, outside the unchanged dialog. Three initial warning
+pairs differed; two resolved on focused rechecks, retaining all other completed pairs. No
+tolerances were changed.
+Probes verify exact QR viewBox/path against each customer URL, quoted size/extra parameters,
+shortlist/order payloads, safe link attributes, copy/print callbacks, suppression of invalid handoff
+links, touch opening and close returning focus within the restored viewer. Bilingual phone/desktop
+product/shortlist/order dialogs pass axe scans. Clipboard/print use browser test doubles and
+oversized states use controlled presentation data through a test-only response hook. The pre-change
+preview is proxied through the same visible origin so QR payloads remain identical; no maintained
+source is modified by these fixtures. Captures use fixed time, decoded images, normalized scroll
+and the existing software-rendering path; representative Persian phone product sharing, Persian desktop warning and English
+print/PDF captures were visually inspected. Print verification exposed an existing defect in both
+versions: the more specific `body:has(.vf-presentation-tag) *` visibility rule overrides the tag
+visibility rule, leaving print screenshots and the rendered PDF blank. Print callbacks and parity
+are verified; successful printed tag output is not. No screenshot baselines/tolerances, package contents
+or generated styles changed. The full browser/device suites, production offline checks, known
+storefront TV add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next
+stage fixes blank tag printing before extracting the presentation shortlist dialog.
 
 ## Adding components
 
