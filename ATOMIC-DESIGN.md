@@ -106,7 +106,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    slots; document mapping, section anchors, localized numbering and navigation stay in the View/logic.
    StorefrontJournalLayout now arranges heading, search, feedback, featured, stories and pagination
    slots; category/query state, matching, story mapping and pagination remain in the View/logic.
-   **Next stage: extract the post page layout with article, actions and related-story slots.**
+   StorefrontPostLayout now arranges feedback, article, actions, recommendations and related slots
+   with controlled article visibility; content mapping, copying, sharing and links stay in the View/logic.
+   **Next stage: extract the home page layout with its storefront section slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -764,6 +766,28 @@ screenshot baselines/tolerances, package contents or generated styles changed. T
 browser/device suites, known TV arrow-navigation failures and unrelated snapshot failures were
 not rerun. The next stage extracts the post page layout with article, actions and related-story
 slots.
+
+**Forty-second checkpoint verified:** StorefrontPostLayout is extracted under
+`templates/app/layouts/StorefrontPostLayout/`. It receives feedback, article, actions,
+recommendations and related-story slots with externally controlled article visibility. It owns
+the main focus target, reading-width wrapper, article/actions wrappers and recommendation/related
+sections. The View retains loading/missing feedback, back link, headings/metadata, block/classic
+content, copy/shop actions, social links, product cards and related-story cards. Post logic
+retains article selection, block/product/related mapping, localized metadata, share URLs, copy
+state and timer cleanup; shared logic retains routing, locale, SEO and focus. No page behavior,
+copy or styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite
+and production app build pass. Twenty focused browser cases pass across bilingual post loading
+accessibility, product-code identity across collections, package hydration and responsive first
+paint. Twenty-eight before/after capture pairs are byte-identical: classic and block articles at
+390/768/1280/1920 pixels in both languages, plus a second block article, missing and loading states
+at 390/1280 pixels in both languages. Capture probes verify copy payload/feedback/reset with a
+stubbed clipboard, share URL/target attributes, shop/product/related links, heading focus and
+journal recovery; external social destinations were not opened. Captures use fixed time, decoded
+images and normalized scroll. Representative Persian phone classic and English desktop block
+captures were visually inspected. No screenshot baselines/tolerances, package contents or
+generated styles changed. The full browser/device suites, known TV arrow-navigation failures
+and unrelated snapshot failures were not rerun. The next stage extracts the home page layout
+with its storefront section slots.
 
 ## Adding components
 
