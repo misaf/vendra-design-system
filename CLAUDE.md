@@ -53,6 +53,8 @@ StorefrontPostLayout arranges feedback, article, actions, recommendations and re
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
 StorefrontHomeCategories composes the home heading and category carousel from explicit records/labels;
 View/logic retain normalization, count formatting, category order, localized names and filter URLs.
+StorefrontHomeFeatured composes featured cards and responsive view-all links from explicit props;
+View/logic retain selection/order, product mapping, prices/stock, favorites and filter URLs.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
