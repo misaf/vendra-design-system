@@ -63,6 +63,8 @@ StorefrontHomeWeddings composes the wedding promotion from explicit labels and d
 View/logic retain content mapping, feature eligibility and localized navigation.
 StorefrontHomeJournal composes journal previews from explicit posts, labels and journal URL;
 View/logic retain feature eligibility, selection/order, localized metadata and article URLs.
+StorefrontHomeNewsletter composes the controlled email form/status from explicit props/callbacks;
+View/logic retain profile prefill, validation, submission, tracking, persistence and focus.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
