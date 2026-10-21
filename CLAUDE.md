@@ -51,6 +51,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View/logic retain controls, category/query state, matching and page navigation.
 StorefrontPostLayout arranges feedback, article, actions, recommendations and related slots with
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
+StorefrontHomeCategories composes the home heading and category carousel from explicit records/labels;
+View/logic retain normalization, count formatting, category order, localized names and filter URLs.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
