@@ -32,6 +32,8 @@ StorefrontProductPurchase composes total/hint, quantity, save and responsive add
 View/logic retain quantities/URL state, totals, saved state, stock limits and bag actions.
 StorefrontProductCare composes delivery text, optional inquiry link and care/delivery accordion;
 View/logic retain delivery eligibility/wording, care fallback, localization and inquiry URLs.
+StorefrontProductRecent composes the recent heading, carousel and cards from explicit records/labels;
+View/logic retain visibility/error isolation, history, product mapping, links and favorites.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
