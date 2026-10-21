@@ -51,6 +51,8 @@ StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, jour
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
 slots; not-found View/logic retain localized content, product mapping and recovery links.
+StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain
+localized content, reload behavior, home navigation and bidi-isolated phone wording.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.

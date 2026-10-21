@@ -112,7 +112,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    collections, carousels, favorites and newsletter state/actions remain in the View/logic.
    StorefrontNotfoundLayout now arranges message, actions, recommendation heading and product
    slots; localized content, product mapping and recovery links remain in the View/logic.
-   **Next stage: extract the error page layout with message and recovery-action slots.**
+   StorefrontErrorLayout now arranges message and recovery-action slots; localized content,
+   reload behavior, home navigation and phone wording stay in the View/logic.
+   **Next stage: extract the presentation page’s outer layout and major region slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -840,6 +842,26 @@ English desktop invalid-policy captures were visually inspected. No screenshot b
 tolerances, package contents or generated styles changed. The full browser/device suites, known
 TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
 extracts the error page layout with message and recovery-action slots.
+
+**Forty-fifth checkpoint verified:** StorefrontErrorLayout is extracted under
+`templates/app/layouts/StorefrontErrorLayout/`. It receives message and recovery-action slots
+and owns the main focus target and centered message/actions wrappers. The View retains the
+localized empty state and retry/home/phone controls. Error logic retains reload behavior and
+localized phone wording with bidi isolation; shared logic retains routing, locale, SEO and
+focus. The shared lazy-page load-failure boundary remains separate. No page behavior, copy or
+styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite and
+production app build pass. Fourteen focused browser cases pass across retry, home/phone links,
+noindex metadata, package hydration and responsive first paint. Sixteen before/after capture
+pairs are byte-identical: routed pages at 390/768/1280/1920 pixels in English/Persian, standalone
+English previews at the same four widths, and print at 390/1280 pixels in both languages.
+Capture probes verify actual retry reloads with the URL retained, home recovery with the existing
+routed/standalone document behavior, phone-link attributes/bidi isolation and noindex metadata.
+Routed phone/desktop entries pass bilingual axe scans. No phone link was opened. Captures use
+fixed time, decoded images and normalized scroll; the representative Persian phone routed
+capture was visually inspected. No screenshot baselines/tolerances, package contents or generated
+styles changed. The full browser/device suites, known TV arrow-navigation failures and unrelated
+snapshot failures were not rerun. The next stage extracts the presentation page's outer layout
+and major region slots.
 
 ## Adding components
 
