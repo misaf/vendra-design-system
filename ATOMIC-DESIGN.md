@@ -122,7 +122,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    capability checks, counts, query/customer state and panel actions stay in the View/logic.
    StorefrontPresentationDisplay now composes controlled display/preload content and owns its
    local reveal/pointer UI state; collections, playback and failure rules stay in the View/logic.
-   **Next stage: extract the presentation viewer composition into a storefront organism.**
+   StorefrontPresentationViewer now composes controlled captions, options and customer actions;
+   label rendering, quotes, stock, selection and order/share state stay in the View/logic.
+   **Next stage: extract the presentation send/share dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -970,6 +972,30 @@ baselines/tolerances, package contents or generated styles changed. The full bro
 suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
 snapshot failures were not rerun. The next stage extracts the presentation viewer composition
 into a storefront organism.
+
+**Fiftieth checkpoint verified:** StorefrontPresentationViewer is extracted under
+`templates/app/organisms/StorefrontPresentationViewer/`. It receives controlled items/index,
+calm/price/options/playback flags, localized labels, a label renderer and navigation/close/options
+callbacks. It owns lightbox captions, active-quote/base-price rendering, size/extra choices and
+shortlist/order/send action composition. View/logic retain the shared label, quote calculation,
+variant selection, stock checks, customer state, sharing and playback/calm state. No page behavior,
+copy or styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite
+and production app build pass. Thirty distinct focused browser cases pass across quoting,
+shortlist/order handoff, sharing selected options, hidden prices, sold-out restrictions, live stock,
+slideshow/calm captions, scanning, package hydration and responsive first paint. The initial calm
+case needed one retry after `#main` failed to appear during page startup; its subsequent separate
+run passes with retries disabled. Thirty-two before/after viewport pairs are byte-identical:
+normal/options-open viewers at 390/768/1280/1920 pixels in both languages, plus configured quotes,
+added-to-order, sold-out and hidden-price viewers at 390/1280 pixels in both languages. Capture
+probes verify touch opening/options, selected chips, focus return and tablet rotation without
+overflow; bilingual phone/desktop options pass axe scans. Six additional bilingual phone/tablet/
+large-screen probes verify native touch swipes or keyboard navigation and close/focus return.
+Captures use fixed time, decoded images, normalized scroll and the existing software-rendering
+path; representative Persian phone options and English desktop configured captures were visually
+inspected. No screenshot baselines/tolerances, package contents or generated styles changed.
+The full browser/device suites, production offline checks, known storefront TV add-to-bag arrow
+failures and unrelated snapshot failures were not rerun. The next stage extracts the presentation
+send/share dialog into a storefront organism.
 
 ## Adding components
 
