@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontHomeLayout} from '../app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
 import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
+import {StorefrontHomeFeatured} from '../app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -31,72 +32,26 @@ export function View({v}) {
             />
           }
           featured={
-            <>
-              <DS.SectionHeader
-                eyebrow={v.t?.featEb}
-                title={v.t?.featA}
-                accent={v.t?.featB}
-                action={
-                  <>
-                    <DS.Button
-                      variant="ghost"
-                      iconEnd="arrow-right"
-                      href={v.readyHref}
-                      size="sm"
-                      className="vf-home-featured-link tw:min-h-tap tw:md:hidden!"
-                      aria-label={v.t?.featAllLabel}
-                    >
-                      <>{v.t?.featAllShort}</>
-                    </DS.Button>
-                    <DS.Button
-                      variant="ghost"
-                      iconEnd="arrow-right"
-                      href={v.readyHref}
-                      className="vf-home-featured-link tw:min-h-tap tw:max-md:hidden!"
-                    >
-                      <>{v.t?.featAll}</>
-                    </DS.Button>
-                  </>
-                }
-              />
-              <p className="tw:m-0 tw:-mt-3 tw:text-secondary tw:max-w-measure">
-                <>{v.t?.featText}</>
-              </p>
-              <CollectionCarousel
-                total={list(v.featured).length}
-                countLabel={v.t?.designCount(list(v.featured).length)}
-                className="vf-home-featured-products vf-home-product-carousel vf-home-carousel"
-                label={v.t?.featLabel}
-                perView={4}
-                perViewMobile={1.15}
-                itemMin="220px"
-                gap="20px"
-                arrows={true}
-                prevLabel={v.t?.featPrev}
-                nextLabel={v.t?.featNext}
-              >
-                {list(v.featured).map((p, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.ProductCard
-                      images={p?.images}
-                      sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
-                      name={p?.name}
-                      subtitle={p?.sub}
-                      price={p?.price}
-                      stock={p?.stock}
-                      badge={p?.badge}
-                      badgeTone="accent"
-                      frame={v.frame}
-                      placeholder={v.t?.photo}
-                      favLabel={v.t?.save}
-                      favorite={p?.fav}
-                      onFavorite={p?.toggleFav}
-                      href={p?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </CollectionCarousel>
-            </>
+            <StorefrontHomeFeatured
+              products={list(v.featured)}
+              frame={v.frame}
+              allHref={v.readyHref}
+              labels={{
+                eyebrow: v.t?.featEb,
+                title: v.t?.featA,
+                accent: v.t?.featB,
+                allAccessible: v.t?.featAllLabel,
+                allShort: v.t?.featAllShort,
+                all: v.t?.featAll,
+                description: v.t?.featText,
+                count: v.t?.designCount(list(v.featured).length),
+                region: v.t?.featLabel,
+                previous: v.t?.featPrev,
+                next: v.t?.featNext,
+                photo: v.t?.photo,
+                save: v.t?.save
+              }}
+            />
           }
           occasions={
             <>

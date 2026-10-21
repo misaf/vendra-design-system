@@ -144,7 +144,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPresentationTools now composes seller status and actions from explicit descriptors.
    StorefrontPresentationLabel now composes the shared code/sold-out label as an app molecule.
    StorefrontHomeCategories now composes the home heading and category carousel from explicit records/labels.
-   **Next stage: extract the home featured-design section into a storefront organism.**
+   StorefrontHomeFeatured now composes featured cards, carousel and responsive view-all links.
+   **Next stage: extract the home occasion-navigation section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1281,6 +1282,29 @@ The probe also corrected query-relative URL resolution to use the current page U
 Persian phone scrolled and English TV initial captures were visually inspected. The full browser/
 device suites and unrelated newsletter/product flows were not rerun.
 Next: extract the home featured-design section into a storefront organism.
+
+**Sixty-first checkpoint verified:** StorefrontHomeFeatured is extracted under
+`templates/app/organisms/StorefrontHomeFeatured/`. It receives explicit product records, localized
+labels, ready-filter URL and card frame, composing heading, responsive view-all links, description
+and ProductCard carousel. View retains normalization/count formatting; home/shared logic retains
+featured selection/order, product identity, prices, stock, images, links and favorite state/actions.
+Layout retains optional visibility and section/band wrappers. Fragments, classes, responsive link
+names/visibility, card/image sizing, badges and callbacks are preserved. No page model, new state,
+browser effects, styles, published package contents or generated files changed. Unit/type/package
+tests, production app build and generated/format/CSS checks pass. Four focused desktop/mobile
+browser cases pass without retries, covering home section order/cards and ready-filter links/badges.
+Bilingual before/after probes cover initial and favorite states at 390/768/1280/1920 pixels. They
+verify four cards/badges, product-code naming, accessible counts, exactly one responsive view-all
+link, localized ready-filter URLs, favorite add/reload/remove without navigation, carousel forward/
+back behavior where overflowing, product detail navigation, four ready-filter results, touch taps,
+TV Enter activation, tablet rotation, no document overflow and axe checks. The demo initially saves
+the first featured design; probes normalize that state through the UI before testing transitions.
+All sixteen section screenshot pairs are byte-identical, verified from actual PNG bytes. Probes
+respect hidden arrows when all cards fit; only unfinished cases resumed after that correction.
+Representative Persian phone favorite and English TV initial captures were visually inspected.
+No screenshot baselines or tolerances changed. The full browser/device suites and unrelated
+newsletter/payment flows were not rerun.
+Next: extract the home occasion-navigation section into a storefront organism.
 
 ## Adding components
 
