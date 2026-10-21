@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontProductLayout} from '../app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx';
 import {StorefrontProductGallery} from '../app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx';
 import {StorefrontProductHeading} from '../app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx';
+import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -52,35 +53,15 @@ export function View({v}) {
                   copyLabel={v.t?.copyCode}
                   onCopyCode={v.copyCode}
                 />
-                {v.hasSizes ? (
-                  <>
-                    <DS.ChoiceGroup
-                      className="vf-product-sizes"
-                      legend={v.t?.size}
-                      columns={3}
-                      value={v.size}
-                      onChange={v.setSize}
-                    >
-                      {list(v.sizes).map((z, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.ChoiceTile value={z?.value} label={z?.label} description={z?.desc} />
-                        </React.Fragment>
-                      ))}
-                    </DS.ChoiceGroup>
-                  </>
-                ) : null}
-                {v.addons?.length ? (
-                  <fieldset className="vf-product-extras tw:[border:0] tw:p-0 tw:m-0 tw:flex tw:flex-col tw:gap-3">
-                    <legend className="vf-product-extras-legend tw:text-sm tw:font-medium tw:mb-3 tw:p-0">
-                      <>{v.t?.extras}</>
-                    </legend>
-                    {list(v.addons).map((a, $index) => (
-                      <React.Fragment key={$index}>
-                        <DS.Checkbox label={a?.label} checked={a?.on} onChange={a?.toggle} />
-                      </React.Fragment>
-                    ))}
-                  </fieldset>
-                ) : null}
+                <StorefrontProductConfiguration
+                  showSizes={v.hasSizes}
+                  sizes={list(v.sizes)}
+                  size={v.size}
+                  onSizeChange={v.setSize}
+                  showAddons={!!v.addons?.length}
+                  addons={list(v.addons)}
+                  labels={{size: v.t?.size, extras: v.t?.extras}}
+                />
                 <div className="vf-product-selection-summary tw:flex tw:flex-col tw:gap-1">
                   <div
                     className="vf-product-selection-total tw:max-md:hidden tw:flex tw:flex-wrap tw:items-baseline tw:justify-between tw:gap-2"

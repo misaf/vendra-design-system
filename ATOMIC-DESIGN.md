@@ -154,7 +154,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Newsletter submit announcements now reference a label that survives conditional form removal.
    StorefrontProductGallery now composes gallery, fullscreen action and controlled lightbox.
    StorefrontProductHeading now composes code/copy action, category/badge, price/stock and description.
-   **Next stage: extract the product size/add-on configuration section into a storefront organism.**
+   StorefrontProductConfiguration now composes controlled size/add-on groups.
+   **Next stage: extract the product purchase summary/actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1503,6 +1504,33 @@ at 390/768/1280/1920 pixels and ready/low/returning/configured headings at 390/1
 bilingual. Representative Persian phone returning-stock and English desktop low-stock headings
 were visually inspected. No screenshot baselines or tolerances changed.
 Next: extract the product size/add-on configuration section into a storefront organism.
+
+**Seventieth checkpoint verified:** StorefrontProductConfiguration is extracted under
+`templates/app/organisms/StorefrontProductConfiguration/`. It receives explicit size/add-on
+visibility, size options/value/change callback, add-on records with checked/toggle values and
+localized legends. It composes ChoiceGroup/ChoiceTile and the add-on fieldset. View retains record
+normalization and visibility; product/shared logic retains eligibility, selection/URL state,
+reload, pricing, stock limits and bag configuration. Layout retains details/sticky composition.
+Fragments, group/fieldset order/classes, three-column setting, native radio/checkbox semantics,
+legends, option values and callbacks are preserved. No page model, new state/effects, browser APIs,
+styles, package exports or generated files moved into the organism. Unit/type/package tests,
+production app build and generated/format/CSS checks pass. Four focused desktop/mobile workflow
+cases and four dedicated bilingual touch-phone/tablet purchase-panel cases pass without retries.
+They cover quoted choices/reload, stock limits, readable size tiles and native touch selection.
+Bilingual before/after probes cover initial/configured options at 390/768/1280/1920 pixels plus
+no-size and restricted-add-on products at 390/1280 pixels. They verify group visibility/counts,
+radio/checkbox state, URL serialization, reload persistence, unit price versus extras-inclusive
+total, matching configured bag confirmation, reversible add-on toggles, touch/TV Space/Enter input,
+tablet rotation, no document overflow and full-page axe. Accessibility scans normalize page scroll
+after captures. Bag rows retain their existing quantity/remove behavior; configuration stays on
+the product page. Full browser/device suites and unrelated payment flows were not rerun.
+Twenty-two of 24 full details-panel screenshot pairs are byte-identical, checked against actual PNG
+bytes. After one focused recapture, Persian TV base/configured captures retain 21/13 differing
+pixels at just 1/255; an 11-pixel English desktop configured difference up to 2/255 recaptured
+exactly. No baselines/tolerances changed. The bag probe was corrected to choose the visible
+responsive purchase action rather than assume a viewport breakpoint; only unfinished cases resumed.
+Representative Persian phone configured and English desktop restricted-option captures were viewed.
+Next: extract the product purchase summary/actions into a storefront organism.
 
 ## Adding components
 
