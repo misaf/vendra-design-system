@@ -23,6 +23,7 @@ for routed pages.
 | Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `_shared/navigation.js`) |
 | Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
 | Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
+| Post layout | `app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx` (feedback, article, actions, recommendations and related slots from post View; externally controlled article visibility) |
 | Journal layout | `app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx` (heading, search, feedback, featured, stories and pagination slots from journal View) |
 | Policy layout | `app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (heading, policy navigation, notice, table of contents and document slots from policy View) |
 | FAQ layout | `app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (heading, questions and contact slots from FAQ View) |
