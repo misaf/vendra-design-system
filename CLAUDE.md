@@ -73,6 +73,8 @@ StorefrontPresentationScan composes scan instructions, video and warning from ex
 View/logic retain the video ID contract, camera/decoder lifecycle, errors and viewer navigation.
 StorefrontPresentationUnlock composes the controlled four-digit PIN dialog with Web OTP disabled;
 View/logic retain PIN comparison/storage, error/reset state, settings access and cancellation.
+StorefrontPresentationTools composes seller status and actions from explicit descriptors;
+View/logic retain offline preparation and device decisions.
 StorefrontPresentationSettings composes setup/settings controls from explicit grouped descriptors;
 View/logic retain eligibility, validation/persistence, PIN checks and browser lifecycle operations.
 Tailwind scans nested app JSX.

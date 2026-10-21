@@ -13,6 +13,7 @@ import {StorefrontPresentationOrder} from '../app/organisms/StorefrontPresentati
 import {StorefrontPresentationScan} from '../app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx';
 import {StorefrontPresentationUnlock} from '../app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
 import {StorefrontPresentationSettings} from '../app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx';
+import {StorefrontPresentationTools} from '../app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -131,91 +132,55 @@ export function View({v}) {
             }
             overlays={
               <>
-                <DS.Dialog
+                <StorefrontPresentationTools
                   open={v.toolsOpen}
                   onClose={v.closePanel}
-                  title={v.t.sellerTools}
-                  placement="start"
-                  maxWidth={440}
-                >
-                  <div className="tw:flex tw:flex-col tw:gap-3">
-                    <p
-                      className="tw:m-0 tw:text-sm"
-                      role="status"
-                      data-offline-status={offline.status}
-                    >
-                      {v.t.offlineStates[offline.status]}
-                      {offline.status === 'preparing' && offline.total
+                  labels={{
+                    title: v.t.sellerTools,
+                    offline: v.t.offlineStatus,
+                    photoIssue: v.t.photoIssue,
+                    stockIssue: v.t.stockIssue,
+                    stockUpdated: v.t.stockUpdated,
+                    retryPhotos: v.t.retryPhotos,
+                    setupIntro: v.t.setupIntro,
+                    setupTitle: v.t.setupTitle,
+                    reviewSetup: v.t.reviewSetup,
+                    deviceStatus: v.t.deviceStatus,
+                    screenStatus: v.t.screenStatus,
+                    wakeStatus: v.t.wakeStatus,
+                    stockDemo: v.t.stockDemo,
+                    gallerySample: v.t.gallerySample,
+                    browse: v.t.browse,
+                    settings: v.t.settings
+                  }}
+                  offline={{
+                    status: offline.status,
+                    label: v.t.offlineStates[offline.status],
+                    progress:
+                      offline.status === 'preparing' && offline.total
                         ? ' ' + v.n(offline.completed) + '/' + v.n(offline.total)
-                        : ''}
-                    </p>
-                    {!v.online ? <DS.Alert tone="warning" title={v.t.offlineStatus} /> : null}
-                    {v.displayIssue ? <DS.Alert tone="warning" title={v.t.photoIssue} /> : null}
-                    {v.stockIssue ? <DS.Alert tone="warning" title={v.t.stockIssue} /> : null}
-                    {v.stockUpdated ? (
-                      <p className="tw:m-0 tw:text-sm tw:text-quiet">
-                        {v.t.stockUpdated} <bdi>{v.stockUpdated}</bdi>
-                      </p>
-                    ) : null}
-                    {v.displayIssue ? (
-                      <DS.Button variant="secondary" disabled={!v.online} onClick={v.retryDisplay}>
-                        {v.t.retryPhotos}
-                      </DS.Button>
-                    ) : null}
-                    {!v.setupDone ? <p className="tw:m-0">{v.t.setupIntro}</p> : null}
-                    <DS.Button variant="secondary" onClick={v.openSetup}>
-                      {v.t.setupTitle}
-                    </DS.Button>
-                    {v.transferText ? (
-                      <DS.Button variant="secondary" onClick={v.openSettings}>
-                        {v.t.reviewSetup}
-                      </DS.Button>
-                    ) : null}
-                    <dl
-                      className="tw:m-0 tw:flex tw:flex-col tw:gap-2"
-                      aria-label={v.t.deviceStatus}
-                    >
-                      <div>
-                        <dt>{v.t.screenStatus}</dt>
-                        <dd>
-                          {v.canFullscreen
-                            ? v.fullscreen
-                              ? v.t.fullscreenActive
-                              : v.t.fullscreenInactive
-                            : v.t.unsupported}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>{v.t.wakeStatus}</dt>
-                        <dd>{v.canWake ? v.t.wakeStates[v.wakeStatus] : v.t.unsupported}</dd>
-                      </div>
-                    </dl>
-                    {!v.stockUpdated ? <p className="tw:m-0 tw:text-sm">{v.t.stockDemo}</p> : null}
-                    <p className="tw:m-0 tw:text-sm tw:text-quiet">{v.t.gallerySample}</p>
-                    <DS.Button variant="secondary" onClick={v.browse}>
-                      {v.t.browse}
-                    </DS.Button>
-                    <DS.Button variant="secondary" iconStart="star" onClick={v.openShortlist}>
-                      {v.shortlistLabel}
-                    </DS.Button>
-                    <DS.Button variant="secondary" iconStart="shopping-bag" onClick={v.openOrder}>
-                      {v.orderLabel}
-                    </DS.Button>
-                    {v.canScan ? (
-                      <DS.Button variant="secondary" iconStart="camera" onClick={v.openScan}>
-                        {v.t.scan}
-                      </DS.Button>
-                    ) : null}
-                    {v.canStartOver ? (
-                      <DS.Button variant="secondary" onClick={v.startOver}>
-                        {v.t.startOver}
-                      </DS.Button>
-                    ) : null}
-                    <DS.Button variant="secondary" iconStart="settings" onClick={v.openSettings}>
-                      {v.t.settings}
-                    </DS.Button>
-                  </div>
-                </DS.Dialog>
+                        : ''
+                  }}
+                  online={v.online}
+                  photoIssue={v.displayIssue}
+                  stock={{issue: v.stockIssue, updated: v.stockUpdated}}
+                  setup={{done: v.setupDone, canReview: !!v.transferText, onOpen: v.openSetup}}
+                  device={{
+                    screen: v.canFullscreen
+                      ? v.fullscreen
+                        ? v.t.fullscreenActive
+                        : v.t.fullscreenInactive
+                      : v.t.unsupported,
+                    wake: v.canWake ? v.t.wakeStates[v.wakeStatus] : v.t.unsupported
+                  }}
+                  shortlist={{label: v.shortlistLabel, onClick: v.openShortlist}}
+                  order={{label: v.orderLabel, onClick: v.openOrder}}
+                  scan={v.canScan ? {label: v.t.scan, onClick: v.openScan} : null}
+                  startOver={v.canStartOver ? {label: v.t.startOver, onClick: v.startOver} : null}
+                  onRetryPhotos={v.retryDisplay}
+                  onBrowse={v.browse}
+                  onSettings={v.openSettings}
+                />
                 <StorefrontPresentationViewer
                   items={list(v.viewer)}
                   index={v.open}
