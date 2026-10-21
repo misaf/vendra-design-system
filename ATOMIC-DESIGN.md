@@ -161,7 +161,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductAdded now composes the controlled bag-confirmation dialog and actions.
    StorefrontProductSticky now composes the live total and add action in Shell's sticky slot.
    StorefrontShopCategories now composes sidebar category buttons and compact chips.
-   **Next stage: extract shop sidebar filters into a storefront organism.**
+   StorefrontShopSidebarFilters now composes controlled occasion/date/price/stock fields.
+   **Next stage: extract the shop filter dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1687,6 +1688,34 @@ buttons; compact captures cover the horizontally scrolling group. No visual base
 changed or recaptures were needed. Representative Persian phone default/empty and English desktop
 filtered captures were viewed.
 Next: extract shop sidebar filters into a storefront organism.
+
+**Seventy-seventh checkpoint verified:** StorefrontShopSidebarFilters is extracted under
+`templates/app/organisms/StorefrontShopSidebarFilters/`. It receives explicit occasion, date,
+price and stock descriptors: labels, options, controlled values, price bounds/step/formatter and
+individual callbacks. It composes the occasion fieldset/Chips, Select, labelled RangeSlider and
+Switch, preserving the wrapper/classes/order, legends, field IDs and label relationships.
+View retains normalization/descriptor mapping; shop/shared logic retains delivery availability/
+cutoffs, price rules, filtering, tracking/debounce, URL/paging, sorting and results. The compact
+filter dialog remains in View. No page model, new state/effects, browser APIs, commerce rules,
+styles, exports or generated files move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Six focused
+desktop/mobile occasion, delivery-day and clear-all browser cases pass without retries. Bilingual
+before/after probes cover default/filtered controls at touch-tablet 1180, desktop 1280 and TV 1920,
+price boundary values at desktop 1280, and hidden-sidebar/compact fallback at touch widths 390/768.
+They verify selected occasion, controlled native slider values/formatted announcements, stock/date
+initial state, label/hint relationships, touch range input and stepped values, RTL keyboard input,
+one-step thumb separation and bounds, stock toggles, disabled sold-out delivery dates, date selection,
+matching results, first-page reset, filter/sort URL retention, reload persistence, compact dialog
+selection, tablet switch to sidebar, no document overflow and full-page axe before/after interactions.
+TV uses Home/End for slider bounds and Space for the stock input. Full browser/device suites and
+unrelated checkout flows were not rerun. Final element captures verify full dimensions and stock
+control containment; viewport/full-page clips were replaced because they truncated or shifted the
+sticky section. Eleven of fourteen final screenshot pairs are byte-identical, checked against
+actual PNG bytes. Default/filtered English touch-tablet captures each retain seven pixels at 1/255;
+default Persian desktop retains 47 edge pixels up to 2/255. Four additional paired probes verify
+hidden-sidebar/compact fallback. No baselines/tolerances changed. Final Persian tablet default and
+English TV filtered captures were viewed, including the complete stock control.
+Next: extract the shop filter dialog into a storefront organism.
 
 ## Adding components
 

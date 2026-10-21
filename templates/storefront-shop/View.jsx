@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontShopLayout} from '../app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx';
 import {StorefrontShopCategories} from '../app/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx';
+import {StorefrontShopSidebarFilters} from '../app/organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -24,46 +25,27 @@ export function View({v}) {
             sidebar={
               <>
                 <StorefrontShopCategories categories={list(v.categories)} label={v.t?.cats} />
-                <div className="tw:flex tw:flex-col tw:gap-4 tw:mt-4">
-                  <fieldset className="vf-shop-occasions tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
-                    <legend className="vf-shop-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet tw:p-0 tw:mb-3">
-                      <>{v.t?.occasion}</>
-                    </legend>
-                    <div className="tw:flex tw:flex-wrap tw:gap-2">
-                      {list(v.occasionOptions).map((o, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.Chip selected={o?.on} onClick={o?.pick}>
-                            <>{o?.label}</>
-                          </DS.Chip>
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </fieldset>
-                  <DS.Select
-                    id="vf-shop-date"
-                    label={v.t?.deliverOn}
-                    hint={v.t?.dateHint}
-                    value={v.date}
-                    options={v.dateOptions}
-                    onChange={v.setDate}
-                  />
-                  <div className="tw:flex tw:flex-col tw:gap-2">
-                    <span id="vf-price-label" className="ag-field__label">
-                      <>{v.migration?.price}</>
-                    </span>
-                    <DS.RangeSlider
-                      labelledBy="vf-price-label"
-                      min={0}
-                      max={v.priceMax}
-                      step={100000}
-                      value={v.price}
-                      onChange={v.setPrice}
-                      formatValue={v.formatPrice}
-                      labels={v.priceLabels}
-                    />
-                  </div>
-                  <DS.Switch label={v.migration?.stock} checked={v.inStock} onChange={v.setStock} />
-                </div>
+                <StorefrontShopSidebarFilters
+                  occasion={{label: v.t?.occasion, options: list(v.occasionOptions)}}
+                  date={{
+                    label: v.t?.deliverOn,
+                    hint: v.t?.dateHint,
+                    value: v.date,
+                    options: v.dateOptions,
+                    onChange: v.setDate
+                  }}
+                  price={{
+                    label: v.migration?.price,
+                    min: 0,
+                    max: v.priceMax,
+                    step: 100000,
+                    value: v.price,
+                    onChange: v.setPrice,
+                    formatValue: v.formatPrice,
+                    labels: v.priceLabels
+                  }}
+                  stock={{label: v.migration?.stock, checked: v.inStock, onChange: v.setStock}}
+                />
               </>
             }
             categories={
