@@ -159,7 +159,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductCare now composes delivery text, optional inquiry link and care/delivery accordion.
    StorefrontProductRecent now composes the recent heading, carousel and product cards.
    StorefrontProductAdded now composes the controlled bag-confirmation dialog and actions.
-   **Next stage: extract the product sticky purchase action into a storefront organism.**
+   StorefrontProductSticky now composes the live total and add action in Shell's sticky slot.
+   **Next stage: extract shop category navigation into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1636,6 +1637,31 @@ actual PNG bytes. Four additional paired probes verify unavailable-product closu
 baselines/tolerances changed or visual recaptures were needed. Representative Persian phone
 default and English desktop configured captures were viewed.
 Next: extract the product sticky purchase action into a storefront organism.
+
+**Seventy-fifth checkpoint verified:** StorefrontProductSticky is extracted under
+`templates/app/organisms/StorefrontProductSticky/`. It receives explicit summary label/total and
+add label/disabled/click callback. It composes the live total and purchase button in the existing
+Shell sticky slot, preserving root/child classes, order, status/atomic semantics, small price and
+button styling. Product View/logic retain formatting, configuration/quantity state, pricing,
+stock decisions, bag mutations and confirmation. Shell/layout/shared CSS retain positioning,
+responsive visibility, bottom-bar measurement and focus offsets. No page model, new state/effects,
+browser APIs, commerce rules, styles, exports or generated files move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+bilingual native-touch tablet purchase/rotation/consent/focus cases and two dedicated touch-phone
+short-landscape cases pass without retries. Bilingual before/after probes cover default/configured
+bars at touch widths 390/768/1180 and hidden bars at non-touch desktop 1280/TV 1920, plus low-stock
+and unavailable states at touch widths 390/1180. They verify live total/count semantics, quantity
+increment/decrement updates, one visible responsive purchase action, minimum tap size, viewport
+containment, measured bottom-bar height, tablet navigation hiding, matching bag confirmation,
+opener focus restoration, exhausted-stock/unavailable disabled states, no document overflow and
+full-page axe. Touch and desktop/TV inputs are verified separately. The extraction leaves product
+configuration on the product page and existing bag quantity/remove controls intact. Full browser/
+device suites and unrelated payment flows were not rerun. All twenty visible-bar screenshot
+pairs are byte-identical, verified against actual PNG bytes; eight additional paired probes
+verify desktop/TV hiding. No visual baselines/tolerances changed or recaptures were needed.
+Representative Persian phone default, English wide-tablet default and Persian wide-tablet
+unavailable captures were viewed.
+Next: extract shop category navigation into a storefront organism.
 
 ## Adding components
 
