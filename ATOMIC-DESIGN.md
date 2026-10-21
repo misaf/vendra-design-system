@@ -143,7 +143,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    validation, persistence, PIN checks and browser operations stay in the View/logic.
    StorefrontPresentationTools now composes seller status and actions from explicit descriptors.
    StorefrontPresentationLabel now composes the shared code/sold-out label as an app molecule.
-   **Next stage: extract the home category-navigation section into a storefront organism.**
+   StorefrontHomeCategories now composes the home heading and category carousel from explicit records/labels.
+   **Next stage: extract the home featured-design section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1258,6 +1259,28 @@ results. Representative Persian phone viewer and desktop/TV catalog captures wer
 No screenshot baselines or tolerances changed. The full presentation/browser/device suites and
 production offline preparation were not rerun.
 Next: extract the home category-navigation section into a storefront organism.
+
+**Sixtieth checkpoint verified:** StorefrontHomeCategories is extracted under
+`templates/app/organisms/StorefrontHomeCategories/`. It composes the home h1 and circular category
+carousel from explicit category records and heading, region, count and previous/next labels.
+View retains normalization and count formatting; home logic retains category order, localized
+names, image mapping and filter URLs. Existing CollectionCarousel retains measurement, scroll
+state, RTL behavior and resizing. Fragment/card order, responsive settings, image sizes, classes,
+heading level and labels are preserved. No page model, new state/effects, styles, package exports
+or generated files move into the organism. Unit/type/package tests, production app build and
+generated/format/CSS checks pass. Six existing desktop/mobile browser cases pass without retries,
+covering home section order, category links, adjacent occasion filters and carousel navigation.
+Bilingual before/after probes cover initial and advanced category rows at 390/768/1280/1920 pixels,
+with touch activation at narrow widths and keyboard link activation on TV. They verify all twelve
+localized links, accessible count/region, previous/next disabled states, forward/back scrolling,
+category-filter URL navigation, rendered shop products, no document overflow, tablet rotation and
+axe accessibility. All sixteen final section screenshot pairs are byte-identical, checked from actual
+PNG bytes. Three initial scrolled captures differed only over a navigation button (at most 6/255);
+focused recaptures after settling controls are exact without source, baseline or tolerance changes.
+The probe also corrected query-relative URL resolution to use the current page URL. Representative
+Persian phone scrolled and English TV initial captures were visually inspected. The full browser/
+device suites and unrelated newsletter/product flows were not rerun.
+Next: extract the home featured-design section into a storefront organism.
 
 ## Adding components
 

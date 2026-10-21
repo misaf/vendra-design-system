@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontHomeLayout} from '../app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
+import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -17,34 +18,17 @@ export function View({v}) {
           showJournal={!!v.posts?.length}
           showNewsletter={!!v.newsletter}
           top={
-            <>
-              <DS.SectionHeader level="h1" title={v.t?.title} accent={v.t?.titleAccent} />
-              <CollectionCarousel
-                total={list(v.categories).length}
-                countLabel={v.t?.categoryCount(list(v.categories).length)}
-                className="vf-home-category-circles vf-home-carousel"
-                label={v.t?.categoriesLabel}
-                perView={9}
-                perViewMobile={3.15}
-                itemMin="140px"
-                gap="20px"
-                arrows={true}
-                prevLabel={v.t?.categoriesPrev}
-                nextLabel={v.t?.categoriesNext}
-              >
-                {list(v.categories).map((c, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.CategoryCard
-                      frame="circle"
-                      label={c?.label}
-                      href={c?.href}
-                      image={c?.image}
-                      sizes="(max-width: 767px) 45vw, 140px"
-                    />
-                  </React.Fragment>
-                ))}
-              </CollectionCarousel>
-            </>
+            <StorefrontHomeCategories
+              categories={list(v.categories)}
+              labels={{
+                title: v.t?.title,
+                titleAccent: v.t?.titleAccent,
+                count: v.t?.categoryCount(list(v.categories).length),
+                region: v.t?.categoriesLabel,
+                previous: v.t?.categoriesPrev,
+                next: v.t?.categoriesNext
+              }}
+            />
           }
           featured={
             <>
