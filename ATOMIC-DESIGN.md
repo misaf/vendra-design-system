@@ -114,7 +114,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    slots; localized content, product mapping and recovery links remain in the View/logic.
    StorefrontErrorLayout now arranges message and recovery-action slots; localized content,
    reload behavior, home navigation and phone wording stay in the View/logic.
-   **Next stage: extract the presentation page’s outer layout and major region slots.**
+   StorefrontPresentationLayout now arranges heading, toolbar, catalog, display, overlays and
+   feedback slots; providers, offline effects, device state and seller workflows stay in the View/logic.
+   **Next stage: extract the presentation catalog composition into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -862,6 +864,31 @@ capture was visually inspected. No screenshot baselines/tolerances, package cont
 styles changed. The full browser/device suites, known TV arrow-navigation failures and unrelated
 snapshot failures were not rerun. The next stage extracts the presentation page's outer layout
 and major region slots.
+
+**Forty-sixth checkpoint verified:** StorefrontPresentationLayout is extracted under
+`templates/app/layouts/StorefrontPresentationLayout/`. It receives hidden heading, toolbar,
+catalog, display, overlays and feedback slots with externally controlled density and catalog
+visibility. It owns the main focus target, density attribute, hidden heading, sticky toolbar
+and catalog wrappers. The View retains the bare Shell, density provider, offline preparation
+effect, Display/Label/QR helpers, controls, catalog tiles, dialogs, viewer and toast region.
+Presentation logic retains device/display/playback state, search, collections, seller workflows,
+stock, persistence and callbacks. No page behavior, copy or styles changed. Build, generated-file/
+format/CSS checks, the full unit/type/package suite and production app build pass. Sixty-two
+focused browser cases pass: all 44 presentation cases on phone/desktop, six dedicated bilingual
+phone/tablet/TV input and responsive cases, plus package hydration/responsive first paint.
+Thirty-two before/after capture pairs are byte-identical: quiet display/catalog at
+390/768/1280/1920 pixels in both languages, paired display at 1280/1920 pixels in both languages,
+and seller tools/viewer/empty states at 390/1280 pixels in both languages. Capture probes verify
+catalog resume, seller/viewer focus restoration, empty-state clear and paired-to-portrait layout.
+One full-page viewer capture differed in an inert lazy image below the fixed modal viewport;
+repeating the four viewer pairs as viewport captures resolves it without code or tolerance
+changes. The other 28 completed pairs are retained. Captures use fixed time, decoded images,
+normalized scroll, controlled display preferences and the existing software-rendering path.
+Representative Persian TV quiet-display and English phone viewer captures were visually
+inspected. No screenshot baselines/tolerances, package contents or generated styles changed.
+The full browser/device suites, production offline/service-worker checks, known storefront TV
+add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next stage extracts
+the presentation catalog composition into a storefront organism.
 
 ## Adding components
 
