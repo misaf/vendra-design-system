@@ -59,6 +59,8 @@ StorefrontPresentationCatalog renders tiles and empty-state recovery from explic
 callbacks; presentation View/logic retain label rendering, filtering, quotes and shortlist state.
 StorefrontPresentationToolbar composes search, categories, status and customer tools from explicit
 controlled descriptors; View/logic retain capability checks, count formatting, state and actions.
+StorefrontPresentationDisplay owns quiet-display rendering, decode reporting, pointer tracking
+and control-reveal UI state; View/logic retain collections, playback, failures and seller state.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
