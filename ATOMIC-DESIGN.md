@@ -116,7 +116,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    reload behavior, home navigation and phone wording stay in the View/logic.
    StorefrontPresentationLayout now arranges heading, toolbar, catalog, display, overlays and
    feedback slots; providers, offline effects, device state and seller workflows stay in the View/logic.
-   **Next stage: extract the presentation catalog composition into a storefront organism.**
+   StorefrontPresentationCatalog now composes tile/empty states from explicit props; filtering,
+   label rendering, quotes, shortlist state and callbacks stay in the View/logic.
+   **Next stage: extract the presentation toolbar composition into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -889,6 +891,32 @@ inspected. No screenshot baselines/tolerances, package contents or generated sty
 The full browser/device suites, production offline/service-worker checks, known storefront TV
 add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next stage extracts
 the presentation catalog composition into a storefront organism.
+
+**Forty-seventh checkpoint verified:** StorefrontPresentationCatalog is extracted under
+`templates/app/organisms/StorefrontPresentationCatalog/`. It receives tile data/callbacks,
+controlled empty/price visibility, localized labels, clear callback and label renderer. It owns
+tile list/buttons, pictures, Ready badges, optional prices, shortlist controls and empty-state
+composition. The View retains the shared Label helper through the renderer, toolbar, viewer/
+dialogs, density provider and offline preparation. Presentation logic retains filtering, tile
+ordering, product-code identity, quoted prices, shortlist state, viewer actions and device
+persistence. No page behavior, copy or styles changed. Build, generated-file/format/CSS checks,
+the full unit/type/package suite and production app build pass. Forty focused browser cases
+pass across counter search/quotes/handoff, sharing, price visibility, PIN-protected search recovery,
+narrow controls, tile labels, sold-out handling, shortlist Undo, seller tools/collections,
+package hydration and responsive first paint. Thirty-two before/after capture pairs are
+byte-identical: catalog and code-filtered results at 390/768/1280/1920 pixels in both languages,
+plus empty, hidden-price, starred and viewer states at 390/1280 pixels in both languages. Capture
+probes verify native touch tile opening, viewer focus return, phone/tablet rotation without
+document overflow, shortlist toggle/restoration and empty recovery preserving protected filters.
+Catalog phone/desktop entries pass bilingual axe scans. Three initial phone pairs differed by
+88–130 pixels confined to the unchanged category toolbar; repeating those three resolves the
+differences without code or tolerance changes. The other 29 completed pairs are retained.
+Captures use fixed time, decoded images, normalized scroll and the existing software-rendering
+path; the representative Persian phone filtered capture was visually inspected. No screenshot
+baselines/tolerances, package contents or generated styles changed. The full browser/device
+suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
+snapshot failures were not rerun. The next stage extracts the presentation toolbar composition
+into a storefront organism.
 
 ## Adding components
 

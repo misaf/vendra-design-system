@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPresentationLayout} from '../app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx';
+import {StorefrontPresentationCatalog} from '../app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 import {vfQrPath} from '../_shared/qr.js';
@@ -264,57 +265,17 @@ export function View({v}) {
               </>
             }
             catalog={
-              <>
-                {v.noResults ? (
-                  <div className="tw:flex tw:flex-col tw:items-center tw:gap-4 tw:py-8">
-                    <DS.EmptyState icon="search-x" title={v.t?.none} body={v.t?.noneBody} />
-                    <DS.Button variant="secondary" onClick={v.showAll}>
-                      <>{v.t?.showAll}</>
-                    </DS.Button>
-                  </div>
-                ) : (
-                  <ul className="tw:list-none tw:m-0 tw:p-0 tw:grid tw:gap-5 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))]">
-                    {list(v.tiles).map(tile => (
-                      <li key={tile.id} className="tw:relative">
-                        <button
-                          type="button"
-                          onClick={tile.open}
-                          aria-label={tile.openLabel}
-                          className="vf-presentation-tile tw:w-full tw:p-0 tw:[border:0] tw:bg-transparent tw:text-body tw:[font:inherit] tw:text-start tw:cursor-pointer tw:flex tw:flex-col tw:gap-2"
-                        >
-                          <span className="tw:relative tw:block tw:w-full tw:[aspect-ratio:4/5] tw:rounded-md tw:overflow-hidden tw:bg-muted">
-                            <DS.Picture
-                              image={tile.image}
-                              sizes="(max-width: 767px) 100vw, 50vw"
-                              className="tw:w-full tw:h-full tw:object-cover tw:block"
-                            />
-                            {tile.ready ? (
-                              <span className="tw:absolute tw:top-3 tw:start-3">
-                                <DS.Badge tone="solid">
-                                  <>{v.t?.ready}</>
-                                </DS.Badge>
-                              </span>
-                            ) : null}
-                          </span>
-                          <span className="tw:flex tw:items-baseline tw:justify-between tw:gap-3">
-                            <Label v={v} item={tile} />
-                            {v.showPrices ? <DS.Price value={tile.price} size="md" /> : null}
-                          </span>
-                        </button>
-                        <span className="tw:absolute tw:top-2 tw:end-2">
-                          <DS.IconButton
-                            icon="star"
-                            label={tile.starLabel}
-                            variant="raised"
-                            active={tile.starred}
-                            onClick={tile.star}
-                          />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </>
+              <StorefrontPresentationCatalog
+                tiles={list(v.tiles)}
+                noResults={v.noResults}
+                showPrices={v.showPrices}
+                readyLabel={v.t?.ready}
+                emptyTitle={v.t?.none}
+                emptyBody={v.t?.noneBody}
+                clearLabel={v.t?.showAll}
+                onClear={v.showAll}
+                renderLabel={tile => <Label v={v} item={tile} />}
+              />
             }
             display={v.display ? <Display v={v} /> : null}
             overlays={
