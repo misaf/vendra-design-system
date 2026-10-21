@@ -300,3 +300,78 @@ test('automatic playback skips a failed product photo without freezing the colle
   await page.locator('.vf-display').press('Enter');
   await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`prints a visible product tag and restores the presentation (${lang})`, async ({page}) => {
+    await openSite(page, 'presentation', lang);
+    await page.locator('.vf-display').press('Enter');
+    await page
+      .getByRole('button', {name: lang === 'fa' ? 'ابزار فروشنده' : 'Seller tools', exact: true})
+      .click();
+    await page
+      .getByRole('button', {name: lang === 'fa' ? 'مرور طرح‌ها' : 'Browse designs', exact: true})
+      .click();
+    await page
+      .getByRole('button', {name: /VF-7K2M4Q/})
+      .filter({has: page.locator('img')})
+      .click();
+    await page
+      .getByRole('button', {
+        name: lang === 'fa' ? 'ارسال برای مشتری' : 'Send to customer',
+        exact: true
+      })
+      .click();
+    const dialog = page.getByRole('dialog', {
+      name: lang === 'fa' ? 'ارسال VF-7K2M4Q' : 'Send VF-7K2M4Q',
+      exact: true,
+      includeHidden: true
+    });
+    const tag = dialog.locator('.vf-presentation-tag');
+    const qr = tag.locator('svg[role=img]');
+    const path = await qr.locator('path').getAttribute('d');
+    await page.evaluate(() => {
+      window.__tagPrintCalls = 0;
+      window.print = () => window.__tagPrintCalls++;
+    });
+    await dialog
+      .getByRole('button', {name: lang === 'fa' ? 'چاپ برچسب' : 'Print a tag', exact: true})
+      .click();
+    expect(await page.evaluate(() => window.__tagPrintCalls)).toBe(1);
+    await page.emulateMedia({media: 'print'});
+    await expect(tag).toBeVisible();
+    await expect(qr).toBeVisible();
+    await expect(tag.getByText('VF-7K2M4Q', {exact: true})).toBeVisible();
+    await expect(qr.locator('path')).toHaveAttribute('d', path);
+    // Check every tag descendant: a visible wrapper alone does not prove the SVG is printable.
+    expect(
+      await tag.evaluate(element =>
+        [element, ...element.querySelectorAll('*')].every(
+          node => getComputedStyle(node).visibility === 'visible'
+        )
+      )
+    ).toBe(true);
+    const box = await tag.boundingBox();
+    expect(box.width).toBeCloseTo((6 / 2.54) * 96, 0);
+    expect(box.y).toBeCloseTo(0, 0);
+    expect(lang === 'fa' ? box.x + box.width : box.x).toBeCloseTo(
+      lang === 'fa' ? page.viewportSize().width : 0,
+      0
+    );
+    await expect(dialog.getByRole('heading')).toBeHidden();
+    await expect(dialog.getByRole('link')).toBeHidden();
+    await expect(dialog.getByRole('button').first()).toBeHidden();
+    await expect(page.locator('.vf-presentation-tile').first()).toBeHidden();
+    expect(await page.evaluate(() => document.body.scrollHeight)).toBeLessThanOrEqual(
+      page.viewportSize().height
+    );
+    await page.emulateMedia({media: 'screen'});
+    await expect(dialog.getByRole('link')).toBeVisible();
+    await expect(tag).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(
+      page.getByRole('dialog', {name: lang === 'fa' ? 'طرح‌ها' : 'Designs', exact: true})
+    ).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.vf-presentation-tile').first()).toBeVisible();
+  });
+}
