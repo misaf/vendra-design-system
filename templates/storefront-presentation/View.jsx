@@ -7,24 +7,9 @@ import {StorefrontPresentationCatalog} from '../app/organisms/StorefrontPresenta
 import {StorefrontPresentationToolbar} from '../app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx';
 import {StorefrontPresentationDisplay} from '../app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx';
 import {StorefrontPresentationViewer} from '../app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx';
+import {StorefrontPresentationSend} from '../app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
-import {vfQrPath} from '../_shared/qr.js';
-
-function Qr({text, label}) {
-  const {path, size} = React.useMemo(() => vfQrPath(text), [text]);
-  return (
-    <svg
-      role="img"
-      aria-label={label}
-      viewBox={'0 0 ' + size + ' ' + size}
-      shapeRendering="crispEdges"
-      className="vf-presentation-qr tw:block tw:w-full tw:max-w-media tw:mx-auto tw:rounded-md"
-    >
-      <path d={path} fill="currentColor" />
-    </svg>
-  );
-}
 
 // The code under a photo (and "Sold out" when it is); `large` in the full-screen view. The price
 // sits beside it. Nothing more: the presentation is about the photos.
@@ -247,59 +232,16 @@ export function View({v}) {
                   onClose={v.closeViewer}
                   onToggleOptions={v.toggleOptions}
                 />
-                <DS.Dialog
-                  open={!!v.send}
+                <StorefrontPresentationSend
+                  send={v.send}
+                  labels={{
+                    whatsapp: v.t?.whatsapp,
+                    copied: v.t?.copied,
+                    copy: v.t?.copy,
+                    printTag: v.t?.printTag
+                  }}
                   onClose={v.closeSend}
-                  title={v.send?.title}
-                  maxWidth={420}
-                >
-                  {v.send ? (
-                    <div className="tw:flex tw:flex-col tw:gap-4">
-                      {v.send.tooLong ? (
-                        <DS.Alert tone="warning" title={v.send.tooLongBody} />
-                      ) : null}
-                      <div className="vf-presentation-tag tw:flex tw:flex-col tw:items-center tw:gap-2">
-                        {v.send.tooLong ? null : <Qr text={v.send.url} label={v.send.qrLabel} />}
-                        {v.send.code ? (
-                          <span
-                            className="tw:font-display tw:text-xl tw:tracking-display"
-                            dir="ltr"
-                          >
-                            <>{v.send.code}</>
-                          </span>
-                        ) : null}
-                      </div>
-                      {v.send.tooLong ? null : (
-                        <p className="tw:m-0">
-                          <>{v.send.body}</>
-                        </p>
-                      )}
-                      <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                        {v.send.tooLong ? null : (
-                          <DS.Button
-                            variant="secondary"
-                            iconStart="message-circle"
-                            href={v.send.whatsapp}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <>{v.t?.whatsapp}</>
-                          </DS.Button>
-                        )}
-                        {v.send.canCopy && !v.send.tooLong ? (
-                          <DS.Button variant="secondary" iconStart="copy" onClick={v.send.copy}>
-                            <>{v.send.copied ? v.t?.copied : v.t?.copy}</>
-                          </DS.Button>
-                        ) : null}
-                        {v.send.tag ? (
-                          <DS.Button variant="secondary" iconStart="tag" onClick={v.send.print}>
-                            <>{v.t?.printTag}</>
-                          </DS.Button>
-                        ) : null}
-                      </div>
-                    </div>
-                  ) : null}
-                </DS.Dialog>
+                />
                 <DS.Dialog
                   open={v.shortlistOpen}
                   onClose={v.closePanel}
