@@ -24,6 +24,7 @@ for routed pages.
 | Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
 | Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
 | Presentation display | `app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
+| Presentation viewer | `app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx` (controlled lightbox, captions/options and customer actions; quotes, stock and seller state remain in View/logic) |
 | Presentation toolbar | `app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx` (controlled search, categories, status and explicit action descriptors from View) |
 | Presentation catalog | `app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx` (tile data/callbacks, controlled empty/price visibility, localized labels, clear callback and label renderer from View) |
 | Presentation outer layout | `app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx` (heading, bar, catalog, display, overlays and feedback slots; externally controlled density/catalog visibility) |

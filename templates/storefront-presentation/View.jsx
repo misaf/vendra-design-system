@@ -6,6 +6,7 @@ import {StorefrontPresentationLayout} from '../app/layouts/StorefrontPresentatio
 import {StorefrontPresentationCatalog} from '../app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';
 import {StorefrontPresentationToolbar} from '../app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx';
 import {StorefrontPresentationDisplay} from '../app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx';
+import {StorefrontPresentationViewer} from '../app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 import {vfQrPath} from '../_shared/qr.js';
@@ -225,109 +226,26 @@ export function View({v}) {
                     </DS.Button>
                   </div>
                 </DS.Dialog>
-                <DS.Lightbox
-                  label={v.t?.viewer}
-                  className={
-                    'vf-presentation-viewer' + (v.calm ? ' vf-presentation-viewer--calm' : '')
-                  }
-                  items={list(v.viewer).map((item, index) => ({
-                    id: item.id,
-                    images: item.images,
-                    caption: (
-                      <div className="tw:flex tw:flex-col tw:gap-3">
-                        <div className="tw:flex tw:items-baseline tw:gap-5 tw:flex-wrap">
-                          <Label v={v} item={item} large={true} />
-                          {v.showPrices ? (
-                            <span className="tw:text-xl">
-                              <DS.Price value={index === v.open ? item.quote : item.price} />
-                            </span>
-                          ) : null}
-                        </div>
-                        {index === v.open &&
-                        v.optionsOpen &&
-                        !v.slideshowRunning &&
-                        !item.soldOut &&
-                        (item.sizes.length || item.addons.length) ? (
-                          <div className="vf-presentation-options tw:bg-card tw:text-body tw:rounded-md tw:p-3 tw:flex tw:flex-wrap tw:items-center tw:gap-x-5 tw:gap-y-3">
-                            {item.sizes.length ? (
-                              <div
-                                role="group"
-                                aria-label={v.t?.size}
-                                className="tw:flex tw:gap-2 tw:flex-wrap"
-                              >
-                                {item.sizes.map(size => (
-                                  <DS.Chip
-                                    key={size.id}
-                                    selected={size.selected}
-                                    onClick={size.pick}
-                                  >
-                                    <>{size.label}</>
-                                  </DS.Chip>
-                                ))}
-                              </div>
-                            ) : null}
-                            {item.addons.length ? (
-                              <div
-                                role="group"
-                                aria-label={v.t?.extras}
-                                className="tw:flex tw:gap-2 tw:flex-wrap"
-                              >
-                                {item.addons.map(addon => (
-                                  <DS.Chip
-                                    key={addon.id}
-                                    selected={addon.selected}
-                                    onClick={addon.pick}
-                                  >
-                                    <>{addon.label}</>
-                                  </DS.Chip>
-                                ))}
-                              </div>
-                            ) : null}
-                          </div>
-                        ) : null}
-                      </div>
-                    )
-                  }))}
+                <StorefrontPresentationViewer
+                  items={list(v.viewer)}
                   index={v.open}
+                  calm={v.calm}
+                  showPrices={v.showPrices}
+                  optionsOpen={v.optionsOpen}
+                  slideshowRunning={v.slideshowRunning}
+                  labels={{
+                    viewer: v.t?.viewer,
+                    size: v.t?.size,
+                    extras: v.t?.extras,
+                    options: v.t?.options,
+                    added: v.t?.added,
+                    addOrder: v.t?.addOrder,
+                    send: v.t?.send
+                  }}
+                  renderLabel={item => <Label v={v} item={item} large={true} />}
                   onIndexChange={v.setOpen}
                   onClose={v.closeViewer}
-                  actions={(_, index) => {
-                    const item = v.viewer[index];
-                    return (
-                      <>
-                        <DS.IconButton
-                          icon="star"
-                          label={item.starLabel}
-                          inverse={true}
-                          active={item.starred}
-                          onClick={item.star}
-                        />
-                        {!item.soldOut && (item.sizes.length || item.addons.length) ? (
-                          <DS.IconButton
-                            icon="sliders-horizontal"
-                            label={v.t?.options}
-                            inverse={true}
-                            active={v.optionsOpen}
-                            onClick={v.toggleOptions}
-                          />
-                        ) : null}
-                        {item.soldOut ? null : (
-                          <DS.Button
-                            variant="soft"
-                            iconStart={item.added ? 'check' : 'plus'}
-                            onClick={item.addToOrder}
-                          >
-                            <>{item.added ? v.t?.added : v.t?.addOrder}</>
-                          </DS.Button>
-                        )}
-                        {item.soldOut ? null : (
-                          <DS.Button variant="primary" iconStart="send" onClick={item.sendIt}>
-                            <>{v.t?.send}</>
-                          </DS.Button>
-                        )}
-                      </>
-                    );
-                  }}
+                  onToggleOptions={v.toggleOptions}
                 />
                 <DS.Dialog
                   open={!!v.send}
