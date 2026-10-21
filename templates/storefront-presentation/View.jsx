@@ -14,31 +14,9 @@ import {StorefrontPresentationScan} from '../app/organisms/StorefrontPresentatio
 import {StorefrontPresentationUnlock} from '../app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
 import {StorefrontPresentationSettings} from '../app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx';
 import {StorefrontPresentationTools} from '../app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx';
+import {StorefrontPresentationLabel} from '../app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
-
-// The code under a photo (and "Sold out" when it is); `large` in the full-screen view. The price
-// sits beside it. Nothing more: the presentation is about the photos.
-function Label({v, item, large = false}) {
-  return (
-    <span className="tw:flex tw:flex-col">
-      <span
-        className={
-          'tw:font-display tw:tracking-display tw:whitespace-nowrap ' +
-          (large ? 'tw:text-3xl' : 'tw:text-xl')
-        }
-        dir="ltr"
-      >
-        <>{item.code}</>
-      </span>
-      {item.soldOut ? (
-        <span className={large ? 'tw:text-inverse-quiet' : 'tw:text-sm tw:text-quiet'}>
-          <>{v.t?.soldOut}</>
-        </span>
-      ) : null}
-    </span>
-  );
-}
 
 export function View({v}) {
   const [offline, setOffline] = React.useState({status: 'preparing', completed: 0, total: 0});
@@ -98,7 +76,13 @@ export function View({v}) {
                 emptyBody={v.t?.noneBody}
                 clearLabel={v.t?.showAll}
                 onClear={v.showAll}
-                renderLabel={tile => <Label v={v} item={tile} />}
+                renderLabel={tile => (
+                  <StorefrontPresentationLabel
+                    code={tile.code}
+                    soldOut={tile.soldOut}
+                    soldOutLabel={v.t?.soldOut}
+                  />
+                )}
               />
             }
             display={
@@ -197,7 +181,14 @@ export function View({v}) {
                     addOrder: v.t?.addOrder,
                     send: v.t?.send
                   }}
-                  renderLabel={item => <Label v={v} item={item} large={true} />}
+                  renderLabel={item => (
+                    <StorefrontPresentationLabel
+                      code={item.code}
+                      soldOut={item.soldOut}
+                      soldOutLabel={v.t?.soldOut}
+                      large={true}
+                    />
+                  )}
                   onIndexChange={v.setOpen}
                   onClose={v.closeViewer}
                   onToggleOptions={v.toggleOptions}
@@ -224,7 +215,13 @@ export function View({v}) {
                     show: v.t?.show,
                     remove: v.t?.remove
                   }}
-                  renderLabel={item => <Label v={v} item={item} />}
+                  renderLabel={item => (
+                    <StorefrontPresentationLabel
+                      code={item.code}
+                      soldOut={item.soldOut}
+                      soldOutLabel={v.t?.soldOut}
+                    />
+                  )}
                   onClose={v.closePanel}
                   onClear={v.clearShortlist}
                   onSend={v.sendShortlist}
