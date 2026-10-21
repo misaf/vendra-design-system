@@ -130,7 +130,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    from print layout; the visible QR/product code prints without catalog-generated extra pages.
    StorefrontPresentationShortlist now composes controlled comparison cards, empty state and
    dialog actions; membership/order, viewer mapping, clear/Undo and sharing stay in the View/logic.
-   **Next stage: extract the presentation order dialog into a storefront organism.**
+   StorefrontPresentationOrder now composes controlled rows, total, empty state and actions;
+   quantity/order mutations, stock eligibility, clear/Undo and handoff stay in the View/logic.
+   **Next stage: extract the presentation tag-scanning dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1082,6 +1084,35 @@ captures were visually inspected. No screenshot baselines/tolerances, package co
 styles changed. The full browser/device suites, production offline checks, known storefront TV
 add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next stage extracts
 the presentation order dialog into a storefront organism.
+
+**Fifty-fourth checkpoint verified:** StorefrontPresentationOrder is extracted under
+`templates/app/organisms/StorefrontPresentationOrder/`. It receives controlled open/lines/price
+visibility/total/handoff eligibility, localized labels, a quantity formatter and close/clear/handoff
+callbacks, with quantity-change/removal callbacks on each line. It owns dialog/footer, LineItem
+mapping, optional prices/total and empty-state composition. View/logic retain quoted configurations,
+quantity/order mutations, stock interpretation, available-line totals, handoff eligibility/payloads,
+clear/Undo and customer isolation. Size/extra choice remains in the viewer. No behavior, copy or
+styles changed. The full unit/type/package suite, production app build and generated-file/format/
+CSS checks pass. Fourteen focused browser cases pass across quotes/order handoff, customer-phone
+sharing, hidden prices, live stock revalidation, sold-out restrictions and next-customer reset.
+Twenty-four before/after viewport pairs cover populated orders at 390/768/1280/1920 pixels in both
+languages plus empty, hidden-price, mixed-stock and all-sold-out orders at 390/1280 pixels in both
+languages. Twenty-three pairs are byte-identical. Three initial pairs differed by 1–127 pixels at
+most 1/255 in background rendering; focused rechecks resolve both phone pairs. The empty desktop
+pair retains three pixels at most 1/255 in the blurred catalog background; an additional capture
+of the dialog itself is byte-identical. The other 21 original exact pairs are retained; no code,
+baseline or tolerance changes were made to address capture noise. Bilingual probes verify native
+touch opening/quantity/removal, expected localized totals, removal followed by the correct handoff
+payload, clear/Undo, remove-to-empty, close/focus return and tablet rotation without document
+overflow. Stock captures use controlled in-page catalog fixtures; the existing browser stock
+regression separately verifies live API refresh. Mixed-stock totals/payloads exclude unavailable
+lines; all-sold-out totals are zero and handoff is absent. Populated/empty/all-sold-out phone/desktop
+dialogs pass bilingual axe scans. Captures use fixed time, decoded images, normalized scroll and
+the existing software-rendering path; representative Persian phone populated and English desktop
+all-sold-out captures were visually inspected. No screenshot baselines/tolerances, package contents
+or generated styles changed. The full browser/device suites, production offline checks, known
+storefront TV add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next
+stage extracts the presentation tag-scanning dialog into a storefront organism.
 
 ## Adding components
 
