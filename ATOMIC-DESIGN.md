@@ -110,7 +110,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    with controlled article visibility; content mapping, copying, sharing and links stay in the View/logic.
    StorefrontHomeLayout now arranges its seven section slots and optional-section visibility;
    collections, carousels, favorites and newsletter state/actions remain in the View/logic.
-   **Next stage: extract the not-found page layout with recovery and recommendation slots.**
+   StorefrontNotfoundLayout now arranges message, actions, recommendation heading and product
+   slots; localized content, product mapping and recovery links remain in the View/logic.
+   **Next stage: extract the error page layout with message and recovery-action slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -816,6 +818,28 @@ scroll; the representative English desktop normal capture was visually inspected
 baselines/tolerances, package contents or generated styles changed. The full browser/device
 suites, known TV arrow-navigation failures and unrelated snapshot failures were not rerun.
 The next stage extracts the not-found page layout with recovery and recommendation slots.
+
+**Forty-fourth checkpoint verified:** StorefrontNotfoundLayout is extracted under
+`templates/app/layouts/StorefrontNotfoundLayout/`. It receives message, recovery actions,
+recommendation heading and recommendation slots. It owns the main focus target, centered
+message/actions wrappers, recommendation section and responsive product grid. The View retains
+localized empty-state content, home/search links, recommendation heading and product cards.
+Not-found logic retains product selection/order, product-code identity and image/price/stock
+mapping; shared logic retains invalid-route handling, routing, locale, SEO and focus. No page
+behavior, copy or styles changed. Build, generated-file/format/CSS checks, the full
+unit/type/package suite and production app build pass. Eighteen focused browser cases pass across
+invalid-policy entry, product-code identity, package hydration and responsive first paint.
+Twenty before/after capture pairs are byte-identical: direct entry at 390/768/1280/1920 pixels
+in English/Persian, plus invalid-policy, invalid-product and unknown-view entry at 390/1280 pixels
+in both languages. Capture probes verify home/search recovery, query entry, Back-navigation
+heading focus, recommendation links and navigation without document reload. Direct phone/desktop
+entries pass bilingual axe scans. The initial probe corrected a temporary search-field focus
+assumption to the existing heading-focus contract without changing app behavior. Captures use
+fixed time, decoded images and normalized scroll; representative Persian phone direct and
+English desktop invalid-policy captures were visually inspected. No screenshot baselines/
+tolerances, package contents or generated styles changed. The full browser/device suites, known
+TV arrow-navigation failures and unrelated snapshot failures were not rerun. The next stage
+extracts the error page layout with message and recovery-action slots.
 
 ## Adding components
 
