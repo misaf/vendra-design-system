@@ -9,6 +9,7 @@ import {StorefrontPresentationDisplay} from '../app/organisms/StorefrontPresenta
 import {StorefrontPresentationViewer} from '../app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx';
 import {StorefrontPresentationSend} from '../app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx';
 import {StorefrontPresentationShortlist} from '../app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx';
+import {StorefrontPresentationOrder} from '../app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -260,56 +261,24 @@ export function View({v}) {
                   onClear={v.clearShortlist}
                   onSend={v.sendShortlist}
                 />
-                <DS.Dialog
+                <StorefrontPresentationOrder
                   open={v.orderOpen}
+                  lines={v.orderLines}
+                  showPrices={v.showPrices}
+                  total={v.orderTotal}
+                  canHandOver={v.canHandOver}
+                  labels={{
+                    title: v.t?.orderTitle,
+                    empty: v.t?.orderEmpty,
+                    clear: v.t?.clear,
+                    handOver: v.t?.handOver,
+                    total: v.t?.total
+                  }}
+                  formatQuantity={v.n}
                   onClose={v.closePanel}
-                  title={v.t?.orderTitle}
-                  maxWidth={560}
-                  footer={
-                    v.orderLines.length ? (
-                      <>
-                        <DS.Button variant="secondary" onClick={v.clearOrder}>
-                          <>{v.t?.clear}</>
-                        </DS.Button>
-                        {v.canHandOver ? (
-                          <DS.Button variant="primary" iconStart="send" onClick={v.handOver}>
-                            <>{v.t?.handOver}</>
-                          </DS.Button>
-                        ) : null}
-                      </>
-                    ) : null
-                  }
-                >
-                  {v.orderLines.length ? (
-                    <div className="tw:flex tw:flex-col tw:gap-3 tw:text-body">
-                      {v.orderLines.map(line => (
-                        <DS.LineItem
-                          key={line.id}
-                          image={line.image}
-                          name={line.name}
-                          meta={line.meta}
-                          price={v.showPrices ? line.price : ''}
-                          quantity={line.quantity}
-                          onQuantityChange={line.setQuantity}
-                          onRemove={line.remove}
-                          formatQuantity={v.n}
-                        />
-                      ))}
-                      {v.showPrices ? (
-                        <div className="tw:flex tw:justify-between tw:font-medium tw:pt-2 tw:[border-top:1px_solid_var(--border-subtle)]">
-                          <span>
-                            <>{v.t?.total}</>
-                          </span>
-                          <DS.Price value={v.orderTotal} size="md" />
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : (
-                    <p className="tw:m-0">
-                      <>{v.t?.orderEmpty}</>
-                    </p>
-                  )}
-                </DS.Dialog>
+                  onClear={v.clearOrder}
+                  onHandOver={v.handOver}
+                />
                 <DS.Dialog
                   open={v.scanOpen}
                   onClose={v.closePanel}
