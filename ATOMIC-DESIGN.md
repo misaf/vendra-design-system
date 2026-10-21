@@ -156,7 +156,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductHeading now composes code/copy action, category/badge, price/stock and description.
    StorefrontProductConfiguration now composes controlled size/add-on groups.
    StorefrontProductPurchase now composes total/hint, quantity, save and responsive add controls.
-   **Next stage: extract the product delivery/care section into a storefront organism.**
+   StorefrontProductCare now composes delivery text, optional inquiry link and care/delivery accordion.
+   **Next stage: extract the recently viewed product section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1558,6 +1559,32 @@ recapture also resolves a sticky-header scroll timing difference in the configur
 No baselines/tolerances changed. Representative Persian phone configured, English TV configured
 and English desktop low-stock captures were viewed.
 Next: extract the product delivery/care section into a storefront organism.
+
+**Seventy-second checkpoint verified:** StorefrontProductCare is extracted under
+`templates/app/organisms/StorefrontProductCare/`. It receives explicit delivery text, optional
+inquiry href/label and localized accordion items. It composes the delivery message, conditional
+WhatsApp link and Accordion with `care` initially expanded. Product View/logic retain delivery
+eligibility/cutoff wording, care fallback, localization and inquiry URL generation. Accordion
+retains its existing disclosure state. Fragments, order/classes, link target/rel and default panel
+are preserved. No page model, new state/effects, browser APIs, commerce rules, styles, package
+exports or generated files moved into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+bilingual product-panel browser cases at 390/768 pixels pass with native touch enabled. Bilingual
+before/after probes cover default-care and delivery-expanded panels at 390/768/1280/1920 pixels,
+plus product-specific care and disabled-WhatsApp configuration at 390/1280 pixels. They verify
+care fallback versus custom advice, same-day versus checkout-window wording, inquiry name/code
+URL/target/rel, omission without a configured destination, default panel and exclusive
+open/close/reopen behavior, touch/TV Enter input, tablet rotation, no document overflow and
+full-page axe. The disabled-WhatsApp case intercepts the store-config module in the browser;
+no live store settings or external messages change. Full browser/device suites and unrelated
+purchase/payment flows were not rerun. Twenty-three of 24 full details-panel screenshot pairs
+are byte-identical, checked against actual PNG bytes. After one focused recapture, Persian TV
+care still has a sticky-header overlay difference at rows 197–293 (68,686 pixels, up to 229/255),
+outside the extracted section. Its bottom 500 pixels, containing delivery, inquiry and accordion,
+are pixel-identical; all other pixels outside the header band also match. This full-panel capture
+exception is retained rather than changing baselines/tolerances. Representative Persian phone
+custom-care and both Persian TV care captures were viewed.
+Next: extract the recently viewed product section into a storefront organism.
 
 ## Adding components
 
