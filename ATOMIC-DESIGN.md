@@ -160,7 +160,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductRecent now composes the recent heading, carousel and product cards.
    StorefrontProductAdded now composes the controlled bag-confirmation dialog and actions.
    StorefrontProductSticky now composes the live total and add action in Shell's sticky slot.
-   **Next stage: extract shop category navigation into a storefront organism.**
+   StorefrontShopCategories now composes sidebar category buttons and compact chips.
+   **Next stage: extract shop sidebar filters into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1662,6 +1663,30 @@ verify desktop/TV hiding. No visual baselines/tolerances changed or recaptures w
 Representative Persian phone default, English wide-tablet default and Persian wide-tablet
 unavailable captures were viewed.
 Next: extract shop category navigation into a storefront organism.
+
+**Seventy-sixth checkpoint verified:** StorefrontShopCategories is extracted under
+`templates/app/organisms/StorefrontShopCategories/`. It receives normalized category records,
+the category label and an explicit compact presentation flag. Sidebar mode composes the label
+and selected/unselected native buttons; compact mode composes the named horizontal group and
+Chips. Fragments, classes/order, button type, on/off rendering, pressed states, formatted counts,
+compact labels and individual callbacks are preserved. View retains normalization and placement;
+shop/shared logic retains eligible-category rules (including an active empty category), filtered
+counts, selection/tracking, URL updates, paging reset, sorting and results. No page model, new
+state/effects, browser APIs, commerce rules, styles, exports or generated files move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile category heading/visibility/empty-category cases and two bilingual native-touch
+tablet shop/sorting rotation cases pass without retries. Bilingual before/after probes cover
+initial/selected categories at 390/768/1280/1920 pixels plus filtered/empty categories at 390/1280.
+They verify eligible order, localized names/counts, pressed state, hidden empty-category rules,
+matching cumulative result pages, category URL and first-page reset, stock/occasion/sort retention,
+reload persistence, selecting All, compact horizontal focus, touch/TV Enter input, tablet switch
+to sidebar, no document overflow and full-page axe after interactions. Full browser/device suites
+and unrelated checkout flows were not rerun. All 24 category-region screenshot pairs are
+byte-identical, checked against actual PNG bytes. Desktop captures isolate the category label/
+buttons; compact captures cover the horizontally scrolling group. No visual baselines/tolerances
+changed or recaptures were needed. Representative Persian phone default/empty and English desktop
+filtered captures were viewed.
+Next: extract shop sidebar filters into a storefront organism.
 
 ## Adding components
 
