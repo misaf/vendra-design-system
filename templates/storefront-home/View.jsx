@@ -7,6 +7,7 @@ import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategorie
 import {StorefrontHomeFeatured} from '../app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
 import {StorefrontHomeOccasions} from '../app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
 import {StorefrontHomeStudio} from '../app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
+import {StorefrontHomeWeddings} from '../app/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -91,33 +92,18 @@ export function View({v}) {
             />
           }
           weddings={
-            <>
-              <div className="tw:[flex:1_1_320px] tw:max-w-prose tw:flex tw:flex-col tw:gap-3">
-                <div className="ag-eyebrow tw:text-inverse-quiet!">
-                  <>{v.t?.wedEb}</>
-                </div>
-                <h2
-                  id="vf-home-weddings-title"
-                  className="tw:m-0 tw:font-display tw:font-medium tw:text-2xl tw:tracking-display"
-                >
-                  <>{v.t?.wedA}</> <em className="vf-home-weddings-accent">{v.t?.wedB}</em>
-                </h2>
-                <p className="tw:m-0 tw:text-inverse-quiet tw:max-w-measure">
-                  <>{v.t?.wedText}</>
-                </p>
-              </div>
-              <div className="tw:flex tw:flex-wrap tw:items-center tw:gap-4">
-                <DS.Button variant="primary" iconEnd="arrow-right" href={v.weddings?.href}>
-                  <>{v.t?.wedCta}</>
-                </DS.Button>
-                <a
-                  className="tw:text-on-inverse! tw:underline tw:underline-offset-4 tw:min-h-tap tw:inline-flex tw:items-center"
-                  href={v.href?.contact}
-                >
-                  {v.t?.customCta}
-                </a>
-              </div>
-            </>
+            <StorefrontHomeWeddings
+              weddingHref={v.weddings?.href}
+              contactHref={v.href?.contact}
+              labels={{
+                eyebrow: v.t?.wedEb,
+                title: v.t?.wedA,
+                accent: v.t?.wedB,
+                description: v.t?.wedText,
+                wedding: v.t?.wedCta,
+                contact: v.t?.customCta
+              }}
+            />
           }
           journal={
             <>
