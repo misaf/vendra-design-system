@@ -155,7 +155,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductGallery now composes gallery, fullscreen action and controlled lightbox.
    StorefrontProductHeading now composes code/copy action, category/badge, price/stock and description.
    StorefrontProductConfiguration now composes controlled size/add-on groups.
-   **Next stage: extract the product purchase summary/actions into a storefront organism.**
+   StorefrontProductPurchase now composes total/hint, quantity, save and responsive add controls.
+   **Next stage: extract the product delivery/care section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1531,6 +1532,32 @@ exactly. No baselines/tolerances changed. The bag probe was corrected to choose 
 responsive purchase action rather than assume a viewport breakpoint; only unfinished cases resumed.
 Representative Persian phone configured and English desktop restricted-option captures were viewed.
 Next: extract the product purchase summary/actions into a storefront organism.
+
+**Seventy-first checkpoint verified:** StorefrontProductPurchase is extracted under
+`templates/app/organisms/StorefrontProductPurchase/`. It receives explicit summary label/total/hint,
+controlled quantity value/max/labels/change callback, save label/active/click callback and add
+label/disabled/click callback. View maps those records; product/shared logic retains quantities,
+URL/reload state, pricing, saved state, stock limits, bag mutations and confirmation. The sticky
+purchase action remains in its Shell slot. Fragments, markup order/classes, live-total semantics,
+quantity minimum, responsive visibility and callbacks are preserved. No page model, new state,
+effects, browser APIs, styles, package exports or generated files moved into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Six focused
+desktop/mobile browser cases cover saved designs, stock messaging/limits and quoted purchase
+configuration/reload. Bilingual before/after probes cover default/configured purchases at
+390/768/1280/1920 pixels plus low-stock/unavailable products at 390/1280 pixels. They verify
+quantity minimum/maximum, total updates, quantity URL/reload, save/unsave and persistence, matching
+configured bag confirmation, exhausted-stock/unavailable disabled actions, native touch and TV
+Space/Enter input, tablet rotation, no document overflow and full-page axe. Accessibility scans
+normalize scroll after captures. An initial ArrowUp probe did not increment the quantity field in
+the pre-change TV build; TV increment/decrement controls are verified with Enter instead. This
+existing TV keyboard limitation remains outside the extraction. Full browser/device suites and
+unrelated payment flows were not rerun. After one focused recapture, 22 of 24 full details-panel
+screenshot pairs are byte-identical, checked against actual PNG bytes. English desktop default
+retains 32 differing pixels up to 2/255; Persian TV default retains 21 pixels at 1/255. The focused
+recapture also resolves a sticky-header scroll timing difference in the configured TV capture.
+No baselines/tolerances changed. Representative Persian phone configured, English TV configured
+and English desktop low-stock captures were viewed.
+Next: extract the product delivery/care section into a storefront organism.
 
 ## Adding components
 
