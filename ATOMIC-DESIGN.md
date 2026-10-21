@@ -120,7 +120,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    label rendering, quotes, shortlist state and callbacks stay in the View/logic.
    StorefrontPresentationToolbar now composes controlled search, categories, status and actions;
    capability checks, counts, query/customer state and panel actions stay in the View/logic.
-   **Next stage: extract the presentation display composition into a storefront organism.**
+   StorefrontPresentationDisplay now composes controlled display/preload content and owns its
+   local reveal/pointer UI state; collections, playback and failure rules stay in the View/logic.
+   **Next stage: extract the presentation viewer composition into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -945,6 +947,29 @@ and English phone settings captures were visually inspected. No screenshot basel
 package contents or generated styles changed. The full browser/device suites, production offline
 checks, known storefront TV add-to-bag arrow failures and unrelated snapshot failures were not
 rerun. The next stage extracts the presentation display composition into a storefront organism.
+
+**Forty-ninth checkpoint verified:** StorefrontPresentationDisplay is extracted under
+`templates/app/organisms/StorefrontPresentationDisplay/`. It receives controlled mode/direction,
+visible/preload products, caption/price visibility, localized labels and image/navigation/tools
+callbacks. It owns display/paired/empty/fallback composition, captions, preload pictures, seller
+controls, image-decode reporting, pointer tracking and the existing four-second control-reveal
+timer with cleanup. View/logic retain collection selection, product identity, slide scheduling,
+failure interpretation/retry, persistence, device state and seller panels. No page behavior,
+copy or styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite
+and production app build pass. Sixty-two focused browser cases pass: all 44 presentation cases,
+six dedicated bilingual phone/tablet/TV input and responsive cases, plus package hydration and
+responsive first paint. Thirty-two before/after capture pairs are byte-identical: code captions
+at 390/768/1280/1920 pixels in both languages, paired display at 1280/1920 pixels in both languages,
+price/hidden-price/fallback/empty states at 390/1280 pixels in both languages, photo-only TV
+captions and revealed phone controls in both languages. Capture probes verify native touch
+navigation without revealing controls, paired-to-portrait layout, next-design callbacks and
+bilingual photo retry after controlled image failures. Captures use fixed time, decoded images,
+normalized scroll, controlled preferences and the existing software-rendering path; representative
+English desktop pair and Persian phone controls captures were visually inspected. No screenshot
+baselines/tolerances, package contents or generated styles changed. The full browser/device
+suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
+snapshot failures were not rerun. The next stage extracts the presentation viewer composition
+into a storefront organism.
 
 ## Adding components
 

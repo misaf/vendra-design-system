@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontPresentationLayout} from '../app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx';
 import {StorefrontPresentationCatalog} from '../app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';
 import {StorefrontPresentationToolbar} from '../app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx';
+import {StorefrontPresentationDisplay} from '../app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 import {vfQrPath} from '../_shared/qr.js';
@@ -44,151 +45,6 @@ function Label({v, item, large = false}) {
         </span>
       ) : null}
     </span>
-  );
-}
-
-function Display({v}) {
-  const item = v.displayProduct;
-  const loaded = (event, key) => {
-    const image = event.currentTarget;
-    Promise.resolve(image.decode ? image.decode() : undefined).then(
-      () => v.displayLoaded(key),
-      () => v.displayFailed(key)
-    );
-  };
-  const [controls, setControls] = React.useState(false);
-  const timer = React.useRef(null);
-  const pointer = React.useRef(null);
-  const reveal = () => {
-    clearTimeout(timer.current);
-    setControls(true);
-    timer.current = setTimeout(() => setControls(false), 4000);
-  };
-  React.useEffect(() => () => clearTimeout(timer.current), []);
-  return (
-    <section
-      className="vf-display ag-on-inverse"
-      aria-label={v.t.viewer}
-      tabIndex={0}
-      aria-describedby="vf-display-hint"
-      data-controls={controls}
-      data-mode={v.displayMode}
-      onKeyDown={event => {
-        if (event.target !== event.currentTarget) return;
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          if (v.displayMode === 'tv') v.openTools();
-          else reveal();
-        }
-      }}
-      onPointerDown={event => {
-        const target = /** @type {Element} */ (event.target);
-        if (target.closest('button, a, input')) return;
-        pointer.current = {x: event.clientX, y: event.clientY};
-      }}
-      onPointerCancel={() => {
-        pointer.current = null;
-      }}
-      onPointerUp={event => {
-        const start = pointer.current;
-        pointer.current = null;
-        if (!start) return;
-        const dx = event.clientX - start.x,
-          dy = event.clientY - start.y;
-        if (v.displayMode === 'tablet' && Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy)) {
-          const next = dx < 0 !== (v.dir === 'rtl');
-          (next ? v.nextDisplay : v.previousDisplay)();
-        } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12) reveal();
-      }}
-    >
-      <span id="vf-display-hint" className="ag-sr-only">
-        {v.t.displayHint}
-      </span>
-      {v.displayProducts.length ? (
-        <div
-          className={
-            'vf-display-media' + (v.displayProducts.length > 1 ? ' vf-display-media--pair' : '')
-          }
-        >
-          {v.displayProducts.map(product => (
-            <figure
-              key={product.id}
-              className={
-                'vf-display-product' +
-                (v.captionMode === 'photo' ? ' vf-display-product--photo' : '')
-              }
-            >
-              {product.unavailableImage ? (
-                <div
-                  className="vf-display-photo-fallback"
-                  role="img"
-                  aria-label={v.t.photoUnavailable}
-                >
-                  <DS.Icon name="image" size={48} />
-                </div>
-              ) : (
-                <DS.Picture
-                  image={product.image}
-                  priority
-                  sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
-                  draggable={false}
-                  onLoad={event => loaded(event, product.imageKey)}
-                  onError={() => v.displayFailed(product.imageKey)}
-                  className="vf-display-photo"
-                />
-              )}
-              {v.captionMode !== 'photo' ? (
-                <figcaption className="vf-display-caption">
-                  <span className="vf-display-code" dir="ltr">
-                    {product.code}
-                  </span>
-                  {product.soldOut ? (
-                    <span className="tw:text-inverse-quiet">{v.t.soldOut}</span>
-                  ) : null}
-                  {v.captionMode === 'price' && v.showPrices ? (
-                    <DS.Price value={product.price} />
-                  ) : null}
-                </figcaption>
-              ) : null}
-            </figure>
-          ))}
-        </div>
-      ) : (
-        <p>{v.t.displayEmpty}</p>
-      )}
-      <div className="vf-display-preload" aria-hidden="true">
-        {v.preloadProducts.map(product => (
-          <DS.Picture
-            key={product.imageKey + ':' + v.preloadVersion}
-            image={product.image}
-            alt=""
-            priority
-            sizes={v.displayProducts.length > 1 ? '50vw' : '100vw'}
-            onLoad={event => loaded(event, product.imageKey)}
-            onError={() => v.displayFailed(product.imageKey)}
-          />
-        ))}
-      </div>
-      <div className="vf-display-tools">
-        <DS.IconButton icon="settings" label={v.t.sellerTools} inverse onClick={v.openTools} />
-      </div>
-      {v.displayMode === 'tablet' && item ? (
-        <div hidden={!controls} className="vf-display-navigation">
-          <DS.IconButton
-            icon={v.dir === 'rtl' ? 'chevron-right' : 'chevron-left'}
-            label={v.t.previousDesign}
-            inverse
-            onClick={v.previousDisplay}
-          />
-          <DS.IconButton
-            icon={v.dir === 'rtl' ? 'chevron-left' : 'chevron-right'}
-            label={v.t.nextDesign}
-            inverse
-            onClick={v.nextDisplay}
-          />
-        </div>
-      ) : null}
-    </section>
   );
 }
 
@@ -253,7 +109,35 @@ export function View({v}) {
                 renderLabel={tile => <Label v={v} item={tile} />}
               />
             }
-            display={v.display ? <Display v={v} /> : null}
+            display={
+              v.display ? (
+                <StorefrontPresentationDisplay
+                  mode={v.displayMode}
+                  direction={v.dir}
+                  products={v.displayProducts}
+                  hasCurrentProduct={!!v.displayProduct}
+                  preloadProducts={v.preloadProducts}
+                  preloadVersion={v.preloadVersion}
+                  captionMode={v.captionMode}
+                  showPrices={v.showPrices}
+                  labels={{
+                    viewer: v.t.viewer,
+                    hint: v.t.displayHint,
+                    photoUnavailable: v.t.photoUnavailable,
+                    soldOut: v.t.soldOut,
+                    empty: v.t.displayEmpty,
+                    sellerTools: v.t.sellerTools,
+                    previous: v.t.previousDesign,
+                    next: v.t.nextDesign
+                  }}
+                  onLoaded={v.displayLoaded}
+                  onFailed={v.displayFailed}
+                  onNext={v.nextDisplay}
+                  onPrevious={v.previousDisplay}
+                  onOpenTools={v.openTools}
+                />
+              ) : null
+            }
             overlays={
               <>
                 <DS.Dialog
