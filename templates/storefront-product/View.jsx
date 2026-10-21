@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontProductLayout} from '../app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx';
+import {StorefrontProductGallery} from '../app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -25,29 +26,17 @@ export function View({v}) {
               />
             }
             gallery={
-              <>
-                <DS.Gallery
-                  key={v.t?.name}
-                  images={v.productImages}
-                  onIndexChange={v.setGalleryPhoto}
-                  aspect="4/5"
-                  label={v.t?.photos}
-                  slideLabel={v.t?.slide}
-                  sizes="(max-width: 767px) 100vw, 50vw"
-                />
-                <div>
-                  <DS.Button variant="secondary" size="sm" iconStart="image" onClick={v.openPhotos}>
-                    <>{v.t?.fullScreen}</>
-                  </DS.Button>
-                </div>
-                <DS.Lightbox
-                  label={v.t?.photos}
-                  items={v.photoItems}
-                  index={v.photo}
-                  onIndexChange={v.setPhoto}
-                  onClose={v.closePhotos}
-                />
-              </>
+              <StorefrontProductGallery
+                productCode={v.t?.name}
+                images={v.productImages}
+                items={v.photoItems}
+                index={v.photo}
+                labels={{photos: v.t?.photos, slide: v.t?.slide, fullScreen: v.t?.fullScreen}}
+                onGalleryIndexChange={v.setGalleryPhoto}
+                onOpen={v.openPhotos}
+                onIndexChange={v.setPhoto}
+                onClose={v.closePhotos}
+              />
             }
             details={
               <>

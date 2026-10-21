@@ -22,6 +22,8 @@ Atomic Design templates live under `templates/app/layouts/<Name>/` and receive R
 StorefrontBottomBar arranges consent, sticky action and navigation; Shell owns their content and
 sticky-height/focus measurements. StorefrontLayout arranges the main section slots and tenant/
 language wrappers; providers and the bare presentation branch stay in Shell.
+StorefrontProductGallery composes product photos, fullscreen action and controlled lightbox;
+View/logic retain photo mapping/selection, current-photo entry and product-change reset.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
