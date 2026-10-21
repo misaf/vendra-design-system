@@ -65,6 +65,8 @@ StorefrontHomeJournal composes journal previews from explicit posts, labels and 
 View/logic retain feature eligibility, selection/order, localized metadata and article URLs.
 StorefrontHomeNewsletter composes the controlled email form/status from explicit props/callbacks;
 View/logic retain profile prefill, validation, submission, tracking, persistence and focus.
+Its persistent submit-label span stays outside the conditional form so pending announcements retain
+a valid accessible name after the button unmounts.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
