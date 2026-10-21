@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontHomeLayout} from '../app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
 import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
 import {StorefrontHomeFeatured} from '../app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
+import {StorefrontHomeOccasions} from '../app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -54,37 +55,19 @@ export function View({v}) {
             />
           }
           occasions={
-            <>
-              <DS.SectionHeader id="vf-home-occasions-title" title={v.t?.catA} accent={v.t?.catB} />
-              <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.catText}</p>
-              <CollectionCarousel
-                total={list(v.occasions).length}
-                countLabel={v.t?.occasionCount(list(v.occasions).length)}
-                className="vf-home-category-row vf-home-carousel"
-                label={v.t?.catLabel}
-                perView={4}
-                perViewMobile={1.15}
-                itemMin="220px"
-                gap="20px"
-                arrows={true}
-                prevLabel={v.t?.catPrev}
-                nextLabel={v.t?.catNext}
-              >
-                {list(v.occasions).map((c, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.CategoryCard
-                      label={c?.label}
-                      count={c?.count}
-                      image={c?.image}
-                      sizes="(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw"
-                      frame={v.frame}
-                      aspect="1/1"
-                      href={c?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </CollectionCarousel>
-            </>
+            <StorefrontHomeOccasions
+              occasions={list(v.occasions)}
+              frame={v.frame}
+              labels={{
+                title: v.t?.catA,
+                accent: v.t?.catB,
+                description: v.t?.catText,
+                count: v.t?.occasionCount(list(v.occasions).length),
+                region: v.t?.catLabel,
+                previous: v.t?.catPrev,
+                next: v.t?.catNext
+              }}
+            />
           }
           arrivals={
             <>
