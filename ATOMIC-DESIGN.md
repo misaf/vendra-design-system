@@ -151,7 +151,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeJournal now composes journal previews, carousel and read-journal navigation.
    StorefrontHomeNewsletter now composes the controlled form and completion status; all seven home
    sections delegate composition to app organisms.
-   **Next stage: repair the shared pending-button announcement references exposed by newsletter completion; then resume product-gallery extraction.**
+   Newsletter submit announcements now reference a label that survives conditional form removal.
+   **Next stage: extract the product gallery section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1429,6 +1430,29 @@ actual PNG bytes: initial state at 390/768/1280/1920 pixels and invalid/pending/
 at 390/1280 pixels, all bilingual. A 62-pixel pending-control difference up to 7/255 recaptured
 exactly with no source, baseline or tolerance changes. Representative Persian phone failure and
 English desktop completion captures were visually inspected.
+
+**Sixty-seventh checkpoint verified:** Newsletter pending announcements now retain an accessible
+name after successful submission removes the form. The existing shared React Aria pending button
+queues aria-labelledby references; the previous default pointed to the button that unmounts on
+completion. StorefrontHomeNewsletter now supplies its existing button API with a persistent,
+visually hidden submit-label span outside the conditional form. The reference survives completion,
+while focus retention, pending interaction suppression, loading wording and existing form behavior
+stay with the shared button/page logic. No shared package/dependency patch, CSS or generated-file
+change is required. This fixes the newsletter call site; it does not claim all unrelated conditional
+pending-button callers are repaired. Four new English/Persian desktop/mobile regression cases fail
+before the fix with empty retained-announcement names and pass after it. They cover rejected
+submission, draft/error focus, retry, pending duplicate prevention, completion focus/form removal,
+retained announcement names before cleanup, full-page axe and reload persistence. All ten focused
+home/newsletter browser cases pass without retries. Unit/type/package tests, production app build
+and generated/format/CSS checks pass. Controlled API promises prevent external subscription calls.
+The full browser/device suites and external newsletter API integration were not rerun.
+All 24 before/after newsletter section screenshot pairs are byte-identical, verified against actual
+PNG bytes: initial at 390/768/1280/1920 pixels and invalid/pending/failure/completion at 390/1280
+pixels, all bilingual. The controlled probes additionally confirm zero full-page completion axe
+findings after the fix versus the known announcer finding before it, alongside touch/TV submission,
+rotation and feature hiding. No screenshot baselines/tolerances or shared pending implementation
+changed. Representative Persian phone failure and English desktop completion captures were viewed.
+Next: extract the product gallery section into a storefront organism.
 
 ## Adding components
 

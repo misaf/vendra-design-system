@@ -25,6 +25,10 @@ export function StorefrontHomeNewsletter({
           <>{labels.description}</>
         </p>
       </div>
+      {/* The pending announcer may retain this reference after the form unmounts. */}
+      <span id="vf-news-submit-label" className="ag-sr-only">
+        {labels.submit}
+      </span>
       {open ? (
         <form
           onSubmit={onSubmit}
@@ -49,6 +53,7 @@ export function StorefrontHomeNewsletter({
             </div>
             <DS.Button
               type="submit"
+              aria-labelledby="vf-news-submit-label"
               loading={sending}
               loadingLabel={labels.sending}
               className="tw:h-[48px]!"

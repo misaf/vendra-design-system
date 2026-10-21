@@ -1131,6 +1131,63 @@ test('the home page newsletter checks the address and confirms the sign-up', asy
   await expect(page.locator('#vf-news-email')).toHaveCount(0);
 });
 
+for (const lang of ['en', 'fa']) {
+  test(`newsletter pending announcements remain named after completion (${lang})`, async ({
+    page
+  }) => {
+    await page.addInitScript(() => {
+      let api;
+      const submission = (window.__newsletterSubmission = {calls: 0});
+      Object.defineProperty(window, 'VF_API', {
+        configurable: true,
+        get: () => api,
+        set: value => {
+          api = value;
+          api.newsletter = () => {
+            submission.calls++;
+            return new Promise((resolve, reject) => {
+              submission.resolve = resolve;
+              submission.reject = reject;
+            });
+          };
+        }
+      });
+    });
+    await openSite(page, 'home', lang);
+    const section = page.locator('.vf-home-newsletter');
+    const email = section.locator('#vf-news-email');
+    const submitName = lang === 'en' ? 'Subscribe' : 'عضویت';
+    const submit = section.getByRole('button', {name: submitName, exact: true});
+    const announcements = page.locator('[data-live-announcer] [role="img"]');
+    await email.fill('rose@example.com');
+    await submit.click();
+    await expect(announcements.first()).toBeAttached();
+    await email.press('Enter');
+    expect(await page.evaluate(() => window.__newsletterSubmission.calls)).toBe(1);
+    await page.evaluate(() =>
+      window.__newsletterSubmission.reject(new Error('Controlled failure'))
+    );
+    await expect(email).toBeFocused();
+    await expect(email).toHaveValue('rose@example.com');
+    await expect(email).toHaveAttribute('aria-invalid', 'true');
+    await submit.click();
+    expect(await page.evaluate(() => window.__newsletterSubmission.calls)).toBe(2);
+    await expect(announcements.nth(1)).toBeAttached();
+    await page.evaluate(() => window.__newsletterSubmission.resolve());
+    await expect(section.locator('#vf-news-done')).toBeFocused();
+    await expect(submit).toHaveCount(0);
+    // Inspect the retained live announcements before their seven-second cleanup.
+    expect(await announcements.count()).toBeGreaterThan(0);
+    for (const announcement of await announcements.all()) {
+      await expect(announcement).toHaveAccessibleName(submitName);
+    }
+    expect(await scanAxe(page)).toEqual([]);
+    await page.reload();
+    await expect(section.locator('#vf-news-done')).toContainText('rose@example.com');
+    await expect(email).toHaveCount(0);
+  });
+}
+
 test('the newsletter fills in a signed-in customer’s email', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');
