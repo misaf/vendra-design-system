@@ -73,6 +73,8 @@ StorefrontPresentationScan composes scan instructions, video and warning from ex
 View/logic retain the video ID contract, camera/decoder lifecycle, errors and viewer navigation.
 StorefrontPresentationUnlock composes the controlled four-digit PIN dialog with Web OTP disabled;
 View/logic retain PIN comparison/storage, error/reset state, settings access and cancellation.
+StorefrontPresentationSettings composes setup/settings controls from explicit grouped descriptors;
+View/logic retain eligibility, validation/persistence, PIN checks and browser lifecycle operations.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
