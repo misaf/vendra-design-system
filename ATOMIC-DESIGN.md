@@ -147,7 +147,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeFeatured now composes featured cards, carousel and responsive view-all links.
    StorefrontHomeOccasions now composes the occasion heading, description and carousel.
    StorefrontHomeStudio now composes studio cards, carousel and explore-all navigation.
-   **Next stage: extract the home wedding-promotion section into a storefront organism.**
+   StorefrontHomeWeddings now composes the wedding-promotion text and links.
+   **Next stage: extract the home journal-preview section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1353,6 +1354,26 @@ phone/tablet/TV pair are exact. No baselines or tolerances changed. Representati
 favorite and English TV initial captures were visually inspected. The full browser/device suites
 and unrelated newsletter/payment flows were not rerun.
 Next: extract the home wedding-promotion section into a storefront organism.
+
+**Sixty-fourth checkpoint verified:** StorefrontHomeWeddings is extracted under
+`templates/app/organisms/StorefrontHomeWeddings/`. It receives explicit localized labels and wedding/
+contact destination URLs, composing eyebrow, associated heading/accent, description and navigation
+links. View/logic retain content mapping, feature eligibility and localized URLs; layout retains
+optional visibility, section wrappers and inverse band. Heading ID, fragments, flex wrapping,
+typography/colors, primary-button icon and contact-link semantics/classes are preserved. No page
+model, new state/effects, styles, package exports or generated files changed. Unit/type/package
+tests, production app build and generated/format/CSS checks pass. Four focused desktop/mobile
+browser cases pass without retries, covering the existing home composition/wedding link and
+wedding inquiry validation/focus. Bilingual before/after probes at 390/768/1280/1920 pixels verify
+heading association, localized link names/URLs, both wedding/contact destinations and arrival
+forms, touch taps, TV Enter activation, tablet rotation, no document overflow and axe checks.
+Feature-disabled desktop probes remove weddings through a browser-only store-config response
+fixture and verify the promotion disappears while the studio section remains. Contact map tiles
+use the existing test stub; no forms are submitted. The full browser/device suites and unrelated
+payment/newsletter flows were not rerun. All eight section screenshot pairs are byte-identical,
+verified from actual PNG bytes; representative Persian phone and English TV captures were visually
+inspected. No screenshot baselines or tolerances changed.
+Next: extract the home journal-preview section into a storefront organism.
 
 ## Adding components
 
