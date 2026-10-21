@@ -152,7 +152,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeNewsletter now composes the controlled form and completion status; all seven home
    sections delegate composition to app organisms.
    Newsletter submit announcements now reference a label that survives conditional form removal.
-   **Next stage: extract the product gallery section into a storefront organism.**
+   StorefrontProductGallery now composes gallery, fullscreen action and controlled lightbox.
+   **Next stage: extract the product heading/price/stock section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1453,6 +1454,30 @@ findings after the fix versus the known announcer finding before it, alongside t
 rotation and feature hiding. No screenshot baselines/tolerances or shared pending implementation
 changed. Representative Persian phone failure and English desktop completion captures were viewed.
 Next: extract the product gallery section into a storefront organism.
+
+**Sixty-eighth checkpoint verified:** StorefrontProductGallery is extracted under
+`templates/app/organisms/StorefrontProductGallery/`. It receives explicit product code, gallery
+images, viewer items/index, localized photo/fullscreen labels and slide formatter, plus gallery/
+open/viewer/close callbacks. It composes Gallery, fullscreen action and controlled Lightbox. View
+maps props; product logic retains photo mapping, selection, current-gallery-photo entry, closing
+and route-change reset. The Gallery key remains the displayed product code. Layout retains grid
+and gallery wrapper. Fragment order, aspect/image sizes, button styling/icon and labels are
+preserved. No page model, new state/effects, styles, package exports or generated files changed.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight existing
+Gallery/Lightbox component cases and two product fullscreen browser cases pass without retries.
+They cover component dots, pointer swipe, RTL/keyboard movement, boundaries, close/focus and axe.
+Bilingual before/after probes at 390/768/1280/1920 pixels additionally verify three labelled slides,
+first-photo priority, second/third gallery-photo entry, reopening, mirrored keyboard navigation,
+previous/next disabled boundaries, Escape and close-button focus restoration, touch/TV activation,
+tablet rotation, no document overflow and full-page gallery/viewer axe checks. Desktop probes
+navigate through the shop to another product and confirm gallery reset and first-photo entry.
+The full browser/device suites and unrelated purchase/payment flows were not rerun.
+All sixteen final screenshot pairs are byte-identical, checked from actual PNG bytes: gallery
+composition and selected-photo fullscreen viewer at all four widths in both languages. Two gallery
+captures initially differed around the fullscreen-control text (40/35 pixels, at most 2/255); focused
+recaptures are exact with no source, baseline or tolerance changes. Representative Persian phone
+viewer and English TV gallery captures were visually inspected.
+Next: extract the product heading/price/stock section into a storefront organism.
 
 ## Adding components
 
