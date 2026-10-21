@@ -57,6 +57,8 @@ StorefrontPresentationLayout arranges heading, toolbar, catalog, display, overla
 slots with controlled density/catalog visibility; presentation View/logic retain device and seller flows.
 StorefrontPresentationCatalog renders tiles and empty-state recovery from explicit data/labels/
 callbacks; presentation View/logic retain label rendering, filtering, quotes and shortlist state.
+StorefrontPresentationToolbar composes search, categories, status and customer tools from explicit
+controlled descriptors; View/logic retain capability checks, count formatting, state and actions.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.

@@ -118,7 +118,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    feedback slots; providers, offline effects, device state and seller workflows stay in the View/logic.
    StorefrontPresentationCatalog now composes tile/empty states from explicit props; filtering,
    label rendering, quotes, shortlist state and callbacks stay in the View/logic.
-   **Next stage: extract the presentation toolbar composition into a storefront organism.**
+   StorefrontPresentationToolbar now composes controlled search, categories, status and actions;
+   capability checks, counts, query/customer state and panel actions stay in the View/logic.
+   **Next stage: extract the presentation display composition into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -917,6 +919,32 @@ baselines/tolerances, package contents or generated styles changed. The full bro
 suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
 snapshot failures were not rerun. The next stage extracts the presentation toolbar composition
 into a storefront organism.
+
+**Forty-eighth checkpoint verified:** StorefrontPresentationToolbar is extracted under
+`templates/app/organisms/StorefrontPresentationToolbar/`. It receives a controlled search
+descriptor, category label/items, result-count text and explicit resume/scan/shortlist/order/
+start-over/settings action descriptors. It owns search/category/status/control composition,
+existing IDs/classes, accessible labels and callback wiring. Layout sticky/density/visibility
+wrappers remain unchanged. View/logic retain query/category state, capability checks, count
+formatting, customer state, submission, panel actions and resume/reset behavior. No page behavior,
+copy or styles changed. Build, generated-file/format/CSS checks, the full unit/type/package suite
+and production app build pass. Forty-two focused browser cases pass across query/filter recovery,
+narrow controls, quotes/handoff, scanning, PIN access, shortlist/customer Undo, seller tools,
+TV keyboard controls, collections, package hydration and responsive first paint. Thirty-two
+before/after comparisons are byte-identical: normal/query toolbars at 390/768/1280/1920 pixels
+in both languages, category/customer/scan-unavailable toolbars at 390/1280 pixels in both languages,
+and settings viewports at 390/1280 pixels in both languages. Capture probes verify native touch
+settings access, focus return, rotation without overflow, query submission, category reset,
+customer reset/Undo and resume display. Normal phone/desktop entries pass bilingual axe scans;
+scan capability is controlled by a browser test double. Three initial phone pairs differed by
+1–130 pixels with channel differences at most 2/255 at edges/blurred background. Repeating those
+three with scroll normalized to zero resolves them without code or tolerance changes; matching
+geometry was confirmed and the other 29 completed pairs retained. Captures use fixed time,
+decoded images and the existing software-rendering path. Representative Persian phone normal
+and English phone settings captures were visually inspected. No screenshot baselines/tolerances,
+package contents or generated styles changed. The full browser/device suites, production offline
+checks, known storefront TV add-to-bag arrow failures and unrelated snapshot failures were not
+rerun. The next stage extracts the presentation display composition into a storefront organism.
 
 ## Adding components
 

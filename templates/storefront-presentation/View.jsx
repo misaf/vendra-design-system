@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPresentationLayout} from '../app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx';
 import {StorefrontPresentationCatalog} from '../app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';
+import {StorefrontPresentationToolbar} from '../app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 import {vfQrPath} from '../_shared/qr.js';
@@ -212,57 +213,32 @@ export function View({v}) {
             hideCatalog={v.display}
             heading={v.t?.title}
             bar={
-              <>
-                <div className="vf-presentation-search tw:min-w-0">
-                  <DS.SearchField
-                    id="vf-presentation-q"
-                    aria-label={v.t?.search}
-                    placeholder={v.t?.searchHint}
-                    value={v.q}
-                    onChange={v.setQ}
-                    onSubmit={v.submitQ}
-                  />
-                </div>
-                <div
-                  role="group"
-                  aria-label={v.t?.categories}
-                  className="vf-presentation-kinds tw:min-w-0 tw:flex tw:gap-2 tw:overflow-x-auto"
-                >
-                  {list(v.kinds).map(kind => (
-                    <DS.Chip key={kind.id} selected={kind.selected} onClick={kind.pick}>
-                      <>{kind.label}</>
-                    </DS.Chip>
-                  ))}
-                </div>
-                <div className="vf-presentation-tools tw:flex tw:items-center tw:gap-1">
-                  <DS.IconButton icon="play" label={v.t.resumeDisplay} onClick={v.resumeDisplay} />
-                  <div
-                    role="status"
-                    className="vf-presentation-count tw:text-sm tw:text-quiet tw:whitespace-nowrap tw:me-2"
-                  >
-                    <>{v.countLabel}</>
-                  </div>
-                  {v.canScan ? (
-                    <DS.IconButton icon="camera" label={v.t?.scan} onClick={v.openScan} />
-                  ) : null}
-                  <DS.IconButton
-                    icon="star"
-                    label={v.shortlistLabel}
-                    count={v.shortlistCount ? v.n(v.shortlistCount) : undefined}
-                    onClick={v.openShortlist}
-                  />
-                  <DS.IconButton
-                    icon="shopping-bag"
-                    label={v.orderLabel}
-                    count={v.orderCount ? v.n(v.orderCount) : undefined}
-                    onClick={v.openOrder}
-                  />
-                  {v.canStartOver ? (
-                    <DS.IconButton icon="rotate-ccw" label={v.t?.startOver} onClick={v.startOver} />
-                  ) : null}
-                  <DS.IconButton icon="settings" label={v.t?.settings} onClick={v.openSettings} />
-                </div>
-              </>
+              <StorefrontPresentationToolbar
+                search={{
+                  label: v.t?.search,
+                  placeholder: v.t?.searchHint,
+                  value: v.q,
+                  onChange: v.setQ,
+                  onSubmit: v.submitQ
+                }}
+                categoryLabel={v.t?.categories}
+                kinds={list(v.kinds)}
+                countLabel={v.countLabel}
+                resume={{label: v.t.resumeDisplay, onClick: v.resumeDisplay}}
+                scan={v.canScan ? {label: v.t?.scan, onClick: v.openScan} : null}
+                shortlist={{
+                  label: v.shortlistLabel,
+                  count: v.shortlistCount ? v.n(v.shortlistCount) : undefined,
+                  onClick: v.openShortlist
+                }}
+                order={{
+                  label: v.orderLabel,
+                  count: v.orderCount ? v.n(v.orderCount) : undefined,
+                  onClick: v.openOrder
+                }}
+                startOver={v.canStartOver ? {label: v.t?.startOver, onClick: v.startOver} : null}
+                settings={{label: v.t?.settings, onClick: v.openSettings}}
+              />
             }
             catalog={
               <StorefrontPresentationCatalog
