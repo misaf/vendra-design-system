@@ -7,6 +7,7 @@ import {StorefrontProductGallery} from '../app/organisms/StorefrontProductGaller
 import {StorefrontProductHeading} from '../app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx';
 import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
 import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
+import {StorefrontProductCare} from '../app/organisms/StorefrontProductCare/StorefrontProductCare.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -69,28 +70,11 @@ export function View({v}) {
                   save={{label: v.t?.saveDesign, active: v.fav, onClick: v.toggleSave}}
                   add={{label: v.addLabel, disabled: v.unavailable, onClick: v.add}}
                 />
-                <div className="vf-product-delivery tw:flex tw:items-center tw:gap-3 tw:text-sm tw:text-quiet">
-                  <DS.Icon name="truck" size={18} />
-                  <span>
-                    <>{v.t?.ship}</>
-                  </span>
-                </div>
-                {v.waHref ? (
-                  <>
-                    <a
-                      className="vf-product-ask tw:flex tw:items-center tw:in-data-[density=tv]:min-h-tap tw:gap-3 tw:text-sm tw:text-secondary tw:self-start tw:[text-underline-offset:3px]"
-                      href={v.waHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <DS.Icon name="message-circle" size={18} />
-                      <span>
-                        <>{v.t?.askWa}</>
-                      </span>
-                    </a>
-                  </>
-                ) : null}
-                <DS.Accordion items={v.faq} defaultValue="care" />
+                <StorefrontProductCare
+                  deliveryText={v.t?.ship}
+                  inquiry={{href: v.waHref, label: v.t?.askWa}}
+                  items={v.faq}
+                />
               </>
             }
             related={
