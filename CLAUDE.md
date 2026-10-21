@@ -55,6 +55,8 @@ StorefrontHomeCategories composes the home heading and category carousel from ex
 View/logic retain normalization, count formatting, category order, localized names and filter URLs.
 StorefrontHomeFeatured composes featured cards and responsive view-all links from explicit props;
 View/logic retain selection/order, product mapping, prices/stock, favorites and filter URLs.
+StorefrontHomeOccasions composes occasion navigation from explicit records, labels and frame;
+View/logic retain normalization, order, counts, images and shop-filter URLs.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product

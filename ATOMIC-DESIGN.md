@@ -145,7 +145,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPresentationLabel now composes the shared code/sold-out label as an app molecule.
    StorefrontHomeCategories now composes the home heading and category carousel from explicit records/labels.
    StorefrontHomeFeatured now composes featured cards, carousel and responsive view-all links.
-   **Next stage: extract the home occasion-navigation section into a storefront organism.**
+   StorefrontHomeOccasions now composes the occasion heading, description and carousel.
+   **Next stage: extract the home studio-design section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1305,6 +1306,28 @@ Representative Persian phone favorite and English TV initial captures were visua
 No screenshot baselines or tolerances changed. The full browser/device suites and unrelated
 newsletter/payment flows were not rerun.
 Next: extract the home occasion-navigation section into a storefront organism.
+
+**Sixty-second checkpoint verified:** StorefrontHomeOccasions is extracted under
+`templates/app/organisms/StorefrontHomeOccasions/`. It receives explicit occasion records, localized
+heading/description/count/carousel labels and frame, composing the heading, description and square
+CategoryCard carousel. View retains normalization and row-count formatting; home/shared logic
+retains occasion order, localized names, per-occasion product counts, images and filter URLs.
+Layout retains wrappers and the heading's labelled-by relationship; existing CollectionCarousel
+retains measurement, RTL scrolling and resize behavior. Heading ID, fragments, classes, responsive
+settings, image sizes, card counts/frame/aspect and callbacks are preserved. No page model, new
+state/effects, styles, published package contents or generated files changed. Unit/type/package
+tests, production app build and generated/format/CSS checks pass. Eight focused desktop/mobile
+browser cases pass without retries, covering occasion links, carousel behavior, shop filtering and
+home section order. Bilingual before/after probes verify four ordered labels/counts/filter URLs,
+localized region/count, heading association, forward/back scroll and disabled states when
+overflowing, hidden controls and no overflow when fitted, sympathy-filter navigation with two
+products, touch taps, TV Enter activation, tablet rotation, no document overflow and axe checks.
+All twelve section screenshot pairs are byte-identical, checked from actual PNG bytes: initial rows
+at 390/768/1280/1920 pixels and advanced rows at 390/768 pixels, all in English/Persian. Representative
+Persian phone advanced and English TV initial captures were visually inspected. No baselines or
+tolerances changed. The full browser/device suites and unrelated newsletter/payment flows were
+not rerun.
+Next: extract the home studio-design section into a storefront organism.
 
 ## Adding components
 
