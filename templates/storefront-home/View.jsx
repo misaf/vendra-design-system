@@ -1,6 +1,5 @@
 // StorefrontHome: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontHomeLayout} from '../app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
 import {StorefrontHomeCategories} from '../app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
@@ -9,6 +8,7 @@ import {StorefrontHomeOccasions} from '../app/organisms/StorefrontHomeOccasions/
 import {StorefrontHomeStudio} from '../app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
 import {StorefrontHomeWeddings} from '../app/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx';
 import {StorefrontHomeJournal} from '../app/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx';
+import {StorefrontHomeNewsletter} from '../app/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -123,66 +123,23 @@ export function View({v}) {
             />
           }
           newsletter={
-            <>
-              <div className="tw:[flex:1_1_280px] tw:flex tw:flex-col tw:gap-2">
-                <h2
-                  id="vf-news-title"
-                  className="tw:m-0 tw:font-display tw:font-medium tw:text-xl tw:tracking-display"
-                >
-                  <>{v.t?.newsTitle}</>
-                </h2>
-                <p className="tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure">
-                  <>{v.t?.newsBody}</>
-                </p>
-              </div>
-              {v.newsletter?.open ? (
-                <form
-                  onSubmit={v.newsletter?.submit}
-                  noValidate
-                  className="vf-home-newsletter-form tw:[flex:1_1_320px] tw:max-w-narrow tw:flex tw:flex-col tw:gap-2"
-                >
-                  <label
-                    id="vf-news-email-label"
-                    htmlFor="vf-news-email"
-                    className="ag-field__label"
-                  >
-                    <>{v.t?.newsLabel}</>
-                  </label>
-                  <div className="tw:flex tw:flex-wrap tw:items-start tw:gap-3">
-                    <div className="tw:[flex:1_1_220px]">
-                      <DS.Input
-                        id="vf-news-email"
-                        aria-labelledby="vf-news-email-label"
-                        value={v.newsletter?.draft}
-                        onChange={v.newsletter?.setDraft}
-                        error={v.newsletter?.error}
-                        type="email"
-                        dir="ltr"
-                        autoComplete="email"
-                      />
-                    </div>
-                    <DS.Button
-                      type="submit"
-                      loading={v.newsletter?.sending}
-                      loadingLabel={v.t?.newsSending}
-                      className="tw:h-[48px]!"
-                    >
-                      <>{v.t?.newsSubmit}</>
-                    </DS.Button>
-                  </div>
-                </form>
-              ) : null}
-              {v.newsletter?.done ? (
-                <p
-                  id="vf-news-done"
-                  tabIndex={-1}
-                  role="status"
-                  className="tw:m-0 tw:text-sm tw:[flex:1_1_320px] tw:max-w-narrow"
-                >
-                  <>{v.newsletter?.doneText}</>
-                </p>
-              ) : null}
-            </>
+            <StorefrontHomeNewsletter
+              open={v.newsletter?.open}
+              done={v.newsletter?.done}
+              doneText={v.newsletter?.doneText}
+              value={v.newsletter?.draft}
+              error={v.newsletter?.error}
+              sending={v.newsletter?.sending}
+              onChange={v.newsletter?.setDraft}
+              onSubmit={v.newsletter?.submit}
+              labels={{
+                title: v.t?.newsTitle,
+                description: v.t?.newsBody,
+                email: v.t?.newsLabel,
+                sending: v.t?.newsSending,
+                submit: v.t?.newsSubmit
+              }}
+            />
           }
         />
       }

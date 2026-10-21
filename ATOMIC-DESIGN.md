@@ -149,7 +149,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeStudio now composes studio cards, carousel and explore-all navigation.
    StorefrontHomeWeddings now composes the wedding-promotion text and links.
    StorefrontHomeJournal now composes journal previews, carousel and read-journal navigation.
-   **Next stage: extract the home newsletter section into a storefront organism.**
+   StorefrontHomeNewsletter now composes the controlled form and completion status; all seven home
+   sections delegate composition to app organisms.
+   **Next stage: repair the shared pending-button announcement references exposed by newsletter completion; then resume product-gallery extraction.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1399,6 +1401,34 @@ are byte-identical, verified from actual PNG bytes: initial rows at all four wid
 rows at 390/768 pixels, all bilingual. Representative Persian phone advanced and English TV initial
 captures were visually inspected. No screenshot baselines or tolerances changed.
 Next: extract the home newsletter section into a storefront organism.
+
+**Sixty-sixth checkpoint verified:** StorefrontHomeNewsletter is extracted under
+`templates/app/organisms/StorefrontHomeNewsletter/`. It receives explicit open/done/completion text,
+draft/error/pending values, localized labels and change/submit callbacks. It composes heading,
+labelled email form, pending button and focusable completion status. View maps props; home/shared
+logic retains profile prefill, validation, request deduplication, API submission, tracking,
+persistence and focus. Layout retains optional visibility, wrappers and band. IDs, noValidate,
+email type/LTR/autocomplete, error wiring, button height/pending wording and completion role/tabindex
+are preserved. All seven home sections now delegate composition to app organisms and the unused
+View DS import is removed. No page model, new state/effects, styles, package exports or generated
+files changed. Unit/type/package tests, production app build and generated/format/CSS checks pass.
+Six focused desktop/mobile browser cases pass without retries, including demo completion/reload,
+invalid-input focus and signed-in email prefill. Bilingual before/after probes exercise initial,
+invalid, pending, failure and completion states; verify no request on invalid input, no duplicate
+request while pending, failure draft/focus retention, successful retry, persistence/reload, form
+removal on completion, touch/TV submission, tablet rotation and feature-disabled hiding. API calls
+use a controlled promise stub; no external subscription is sent. Feature hiding uses a browser-only
+store-config response fixture. Whole-page axe scans pass initial/invalid/pending/failure states.
+Completion exposes an existing shared pending-button announcer defect in both pre-change and
+post-change pages: its assertive log retains role=img nodes whose aria-labelledby references the
+removed button. Newsletter-scoped completion axe checks pass; the full-page completion failure is
+recorded rather than suppressed or claimed passing. Repair this shared announcement behavior next,
+then resume product-gallery extraction. Full browser/device suites and external newsletter API
+integration were not rerun. All 24 section screenshot pairs are byte-identical, verified against
+actual PNG bytes: initial state at 390/768/1280/1920 pixels and invalid/pending/failure/completion
+at 390/1280 pixels, all bilingual. A 62-pixel pending-control difference up to 7/255 recaptured
+exactly with no source, baseline or tolerance changes. Representative Persian phone failure and
+English desktop completion captures were visually inspected.
 
 ## Adding components
 
