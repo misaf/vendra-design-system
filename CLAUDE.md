@@ -47,6 +47,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View/logic retain controls, category/query state, matching and page navigation.
 StorefrontPostLayout arranges feedback, article, actions, recommendations and related slots with
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
+StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
+slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.

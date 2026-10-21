@@ -108,7 +108,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    slots; category/query state, matching, story mapping and pagination remain in the View/logic.
    StorefrontPostLayout now arranges feedback, article, actions, recommendations and related slots
    with controlled article visibility; content mapping, copying, sharing and links stay in the View/logic.
-   **Next stage: extract the home page layout with its storefront section slots.**
+   StorefrontHomeLayout now arranges its seven section slots and optional-section visibility;
+   collections, carousels, favorites and newsletter state/actions remain in the View/logic.
+   **Next stage: extract the not-found page layout with recovery and recommendation slots.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -788,6 +790,32 @@ captures were visually inspected. No screenshot baselines/tolerances, package co
 generated styles changed. The full browser/device suites, known TV arrow-navigation failures
 and unrelated snapshot failures were not rerun. The next stage extracts the home page layout
 with its storefront section slots.
+
+**Forty-third checkpoint verified:** StorefrontHomeLayout is extracted under
+`templates/app/layouts/StorefrontHomeLayout/`. It receives top/categories, featured, occasions,
+arrivals, weddings, journal and newsletter slots with externally controlled optional visibility.
+It owns the main focus target, ordered sections, static labelled-by targets, spacing and the
+featured/wedding/newsletter bands. The View retains headings, collection carousels, controls,
+cards, favorite callbacks, wedding actions and newsletter form/feedback. Home logic retains
+collection ordering/mapping, product identity, feature availability and newsletter validation,
+submission, persistence and focus; shared logic retains navigation, locale, SEO and carousel
+behavior. No page behavior, copy or styles changed. Build, generated-file/format/CSS checks,
+the full unit/type/package suite and production app build pass. Twenty-eight focused browser
+cases pass across home collections/carousels/links, newsletter validation/persistence/prefill,
+product-code identity, package hydration and responsive first paint. Thirty-two before/after
+capture pairs are byte-identical: normal, newsletter validation and demo success at
+390/768/1280/1920 pixels in both languages, plus stubbed newsletter failure and optional sections
+disabled at 390/1280 pixels in both languages. Capture probes verify retry payload, draft/error
+focus, success persistence, favorite toggle/restoration, native touch carousel swipes and
+phone/tablet rotation without document overflow. Feature-off previews override only the served
+configuration response; source configuration is unchanged. No real subscription was sent.
+An initial probe assumed the first featured item was unsaved; correcting it to respect the demo's
+saved defaults required no app change. The eight completed failure/visibility pairs were retained
+while the remaining captures/probes reran. Captures use fixed time, decoded images and normalized
+scroll; the representative English desktop normal capture was visually inspected. No screenshot
+baselines/tolerances, package contents or generated styles changed. The full browser/device
+suites, known TV arrow-navigation failures and unrelated snapshot failures were not rerun.
+The next stage extracts the not-found page layout with recovery and recommendation slots.
 
 ## Adding components
 
