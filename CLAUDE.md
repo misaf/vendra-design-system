@@ -55,6 +55,8 @@ StorefrontErrorLayout arranges message and recovery-action slots; error View/log
 localized content, reload behavior, home navigation and bidi-isolated phone wording.
 StorefrontPresentationLayout arranges heading, toolbar, catalog, display, overlays and feedback
 slots with controlled density/catalog visibility; presentation View/logic retain device and seller flows.
+StorefrontPresentationCatalog renders tiles and empty-state recovery from explicit data/labels/
+callbacks; presentation View/logic retain label rendering, filtering, quotes and shortlist state.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
