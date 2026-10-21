@@ -9,6 +9,7 @@ import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProduct
 import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
 import {StorefrontProductCare} from '../app/organisms/StorefrontProductCare/StorefrontProductCare.jsx';
 import {StorefrontProductAdded} from '../app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx';
+import {StorefrontProductSticky} from '../app/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {StorefrontProductRecent} from '../app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx';
 
@@ -131,26 +132,10 @@ export function View({v}) {
       }
       sticky={
         <>
-          <div className="vf-product-mobile-action tw:relative tw:flex tw:flex-wrap tw:gap-3 tw:items-center tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)] tw:py-2 tw:px-4">
-            <div
-              className="vf-product-mobile-total tw:flex-1 tw:flex tw:flex-col tw:gap-1"
-              role="status"
-              aria-atomic="true"
-            >
-              <span className="vf-product-total-label tw:text-xs tw:text-quiet">
-                {v.selectionTotalLabel}
-              </span>
-              <DS.Price value={v.totalLabel} size="sm" />
-            </div>
-            <DS.Button
-              variant="primary"
-              iconStart="shopping-bag"
-              onClick={v.add}
-              disabled={v.unavailable}
-            >
-              <>{v.addLabel}</>
-            </DS.Button>
-          </div>
+          <StorefrontProductSticky
+            summary={{label: v.selectionTotalLabel, total: v.totalLabel}}
+            add={{label: v.addLabel, disabled: v.unavailable, onClick: v.add}}
+          />
         </>
       }
     />

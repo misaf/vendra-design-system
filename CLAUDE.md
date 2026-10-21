@@ -36,6 +36,8 @@ StorefrontProductRecent composes the recent heading, carousel and cards from exp
 View/logic retain visibility/error isolation, history, product mapping, links and favorites.
 StorefrontProductAdded composes the controlled bag-confirmation summary and checkout/continue actions;
 View/logic retain bag mutations, summary calculations, dialog state and checkout continuation.
+StorefrontProductSticky composes the live total and add action inside Shell's sticky slot;
+View/logic retain totals/stock/bag actions; Shell retains positioning/measurement/focus behavior.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
