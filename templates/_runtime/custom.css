@@ -751,8 +751,13 @@ html {
 /* "Print a tag" prints only the QR code and the design's code, to stand beside the design in the
    shop; the presentation's tag scanner reads it back. */
 @media print {
-  body:has(.vf-presentation-tag) * {
+  /* Keep hiding less specific than the tag reveal below. */
+  :where(body:has(.vf-presentation-tag)) * {
     visibility: hidden;
+  }
+  /* Hidden catalog content must not create extra pages behind the fixed tag. */
+  :where(body:has(.vf-presentation-tag)) > :not(.vf-presentation-tag, :has(.vf-presentation-tag)) {
+    display: none;
   }
   .vf-presentation-tag,
   .vf-presentation-tag * {
