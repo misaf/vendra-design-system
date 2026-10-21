@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontProductLayout} from '../app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx';
 import {StorefrontProductGallery} from '../app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx';
+import {StorefrontProductHeading} from '../app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
@@ -40,36 +41,17 @@ export function View({v}) {
             }
             details={
               <>
-                <div className="vf-product-heading tw:flex tw:flex-col tw:gap-2">
-                  <div className="vf-product-title tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
-                    <h1 id="vf-product-code">
-                      <>{v.t?.name}</>
-                    </h1>
-                    <DS.Button iconStart="copy" variant="ghost" onClick={v.copyCode}>
-                      <>{v.t?.copyCode}</>
-                    </DS.Button>
-                  </div>
-                  <div className="vf-product-category tw:flex tw:flex-wrap tw:gap-2 tw:items-center">
-                    <span className="vf-product-subtitle tw:text-sm tw:text-quiet">
-                      <>{v.t?.sub}</>
-                    </span>
-                    <DS.Badge tone="accent">
-                      <>{v.t?.badge}</>
-                    </DS.Badge>
-                  </div>
-                  <div className="vf-product-price-stock tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2">
-                    <div className="tw:flex tw:flex-col tw:gap-1">
-                      <span className="vf-product-unit-label tw:text-sm tw:text-quiet">
-                        {v.unitPriceLabel}
-                      </span>
-                      <DS.Price value={v.unitPrice} size="lg" className="vf-product-price" />
-                    </div>
-                    <DS.StockStatus stock={v.stock} />
-                  </div>
-                  <p className="vf-product-description tw:text-secondary tw:m-0 tw:max-w-[52ch] tw:text-base tw:leading-body tw:text-pretty">
-                    <>{v.t?.desc}</>
-                  </p>
-                </div>
+                <StorefrontProductHeading
+                  productCode={v.t?.name}
+                  subtitle={v.t?.sub}
+                  badge={v.t?.badge}
+                  unitPriceLabel={v.unitPriceLabel}
+                  unitPrice={v.unitPrice}
+                  stock={v.stock}
+                  description={v.t?.desc}
+                  copyLabel={v.t?.copyCode}
+                  onCopyCode={v.copyCode}
+                />
                 {v.hasSizes ? (
                   <>
                     <DS.ChoiceGroup

@@ -153,7 +153,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    sections delegate composition to app organisms.
    Newsletter submit announcements now reference a label that survives conditional form removal.
    StorefrontProductGallery now composes gallery, fullscreen action and controlled lightbox.
-   **Next stage: extract the product heading/price/stock section into a storefront organism.**
+   StorefrontProductHeading now composes code/copy action, category/badge, price/stock and description.
+   **Next stage: extract the product size/add-on configuration section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1478,6 +1479,30 @@ captures initially differed around the fullscreen-control text (40/35 pixels, at
 recaptures are exact with no source, baseline or tolerance changes. Representative Persian phone
 viewer and English TV gallery captures were visually inspected.
 Next: extract the product heading/price/stock section into a storefront organism.
+
+**Sixty-ninth checkpoint verified:** StorefrontProductHeading is extracted under
+`templates/app/organisms/StorefrontProductHeading/`. It receives explicit code, subtitle, badge,
+unit-price label/value, stock descriptor, description, copy label and callback, composing the
+heading/copy action, category/badge, price/availability and description. View maps props; product/
+shared logic retains identity/localization, pricing, stock interpretation, clipboard fallback and
+toast feedback. Layout retains details/sticky composition. The h1 ID, wrappers/order/classes,
+typography, copy-button icon/variant, badge tone, price sizing/class and StockStatus composition
+are preserved. No page model, new state/effects, browser APIs, styles, package exports or generated
+files moved into the organism. Unit/type/package tests, production app build and generated/format/
+CSS checks pass. Eight focused desktop/mobile browser cases pass without retries, covering product
+identity/search, category context, ready badges and low/returning-stock wording. Bilingual probes
+cover new, ready, low-stock, returning-stock and configured-price headings. They verify product-code
+h1, content, stock/date wording, size-price updates and extras excluded from unit price; copy-code
+success, rejected-clipboard legacy success/failure, code selection and toast feedback; touch/TV
+activation, tablet rotation, no document overflow and full-page axe. Clipboard and legacy copy
+commands are controlled browser stubs, leaving the real clipboard untouched. Accessibility probes
+normalize page scroll after heading captures to avoid a breadcrumb clipped under the sticky header.
+The full browser/device suites and unrelated purchase/payment flows were not rerun.
+All 24 heading screenshot pairs are byte-identical, verified against actual PNG bytes: base headings
+at 390/768/1280/1920 pixels and ready/low/returning/configured headings at 390/1280 pixels, all
+bilingual. Representative Persian phone returning-stock and English desktop low-stock headings
+were visually inspected. No screenshot baselines or tolerances changed.
+Next: extract the product size/add-on configuration section into a storefront organism.
 
 ## Adding components
 

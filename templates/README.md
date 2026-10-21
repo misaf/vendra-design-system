@@ -30,6 +30,7 @@ for routed pages.
 | Presentation order | `app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
+| Product heading/price/stock | `app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx` (explicit product text, unit price/stock, copy label and callback) |
 | Product gallery | `app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx` (explicit product code, images, viewer items/index, localized labels and callbacks) |
 | Home newsletter | `app/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx` (controlled draft/error/pending/completion, localized labels and change/submit callbacks) |
 | Home journal preview | `app/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx` (explicit post records, localized labels and journal URL) |

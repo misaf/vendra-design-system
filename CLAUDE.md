@@ -24,6 +24,8 @@ sticky-height/focus measurements. StorefrontLayout arranges the main section slo
 language wrappers; providers and the bare presentation branch stay in Shell.
 StorefrontProductGallery composes product photos, fullscreen action and controlled lightbox;
 View/logic retain photo mapping/selection, current-photo entry and product-change reset.
+StorefrontProductHeading composes the code/copy action, category/badge, unit price, stock and description;
+View/logic retain identity/localization, price/stock decisions and clipboard/toast behavior.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. StorefrontShopLayout arranges
 shop slots; filtering, sorting, paging and URL state remain in the shop View/logic.
