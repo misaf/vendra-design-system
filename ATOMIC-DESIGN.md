@@ -132,7 +132,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    dialog actions; membership/order, viewer mapping, clear/Undo and sharing stay in the View/logic.
    StorefrontPresentationOrder now composes controlled rows, total, empty state and actions;
    quantity/order mutations, stock eligibility, clear/Undo and handoff stay in the View/logic.
-   **Next stage: extract the presentation tag-scanning dialog into a storefront organism.**
+   StorefrontPresentationScan now composes controlled instructions, video and warning;
+   camera/decoder lifecycle, errors and viewer navigation stay in the View/logic.
+   **Next stage: extract the presentation PIN-unlock dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1113,6 +1115,34 @@ all-sold-out captures were visually inspected. No screenshot baselines/tolerance
 or generated styles changed. The full browser/device suites, production offline checks, known
 storefront TV add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next
 stage extracts the presentation tag-scanning dialog into a storefront organism.
+
+**Fifty-fifth checkpoint verified:** StorefrontPresentationScan is extracted under
+`templates/app/organisms/StorefrontPresentationScan/`. It receives controlled open state,
+localized title/body labels, warning text, the existing video ID and a close callback. It owns
+scan-dialog instructions, muted inline video and optional warning composition. View/logic retain
+the video ID contract, capability checks, camera acquisition/attachment/playback, QR polling and
+interpretation, viewer navigation, errors and stream/timer cleanup. No behavior, copy or styles
+changed. The full unit/type/package suite, production app build and generated-file/format/CSS
+checks pass. Ten focused browser cases pass across successful tag scanning, bilingual narrow
+customer tools and seller-dialog accessibility/focus. Sixteen before/after viewport pairs cover
+active scanning at 390/768/1280/1920 pixels in both languages plus unknown-code and blocked-camera
+warnings at 390/1280 pixels in both languages. Fifteen full viewports are byte-identical. Three
+initial desktop captures differed by 3–74 pixels at most 1/255 in blurred background rendering;
+focused recaptures resolve both Persian pairs. The English active desktop viewport retains three
+pixels at most 1/255 in the background; all three affected dialog-region comparisons are exact.
+The other 13 original exact pairs are retained without code, baseline or tolerance changes.
+Bilingual probes verify the existing video ID and muted/playsInline attributes, environment-facing
+video-only constraints, stream attachment/playback, close/focus return, stopped tracks/polling,
+fresh streams after reopening, successful scans from active/unknown/blocked states, recovery after
+camera denial, late-permission cleanup after closing, and cleanup when navigating away. Tablet
+rotation produces no document overflow; active/warning phone/desktop dialogs pass bilingual axe
+scans. Camera/decoder behavior uses canvas streams and test doubles; no hardware camera or native
+permission UI was tested. Captures use fixed time, decoded images, normalized scroll and the
+existing software-rendering path; representative Persian phone active and English desktop blocked
+captures were visually inspected. No screenshot baselines/tolerances, package contents or generated
+styles changed. The full browser/device suites, production offline checks, known storefront TV
+add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next stage extracts
+the presentation PIN-unlock dialog into a storefront organism.
 
 ## Adding components
 

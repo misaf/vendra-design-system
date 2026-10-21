@@ -10,6 +10,7 @@ import {StorefrontPresentationViewer} from '../app/organisms/StorefrontPresentat
 import {StorefrontPresentationSend} from '../app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx';
 import {StorefrontPresentationShortlist} from '../app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx';
 import {StorefrontPresentationOrder} from '../app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx';
+import {StorefrontPresentationScan} from '../app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -279,25 +280,13 @@ export function View({v}) {
                   onClear={v.clearOrder}
                   onHandOver={v.handOver}
                 />
-                <DS.Dialog
+                <StorefrontPresentationScan
                   open={v.scanOpen}
+                  labels={{title: v.t?.scanTitle, body: v.t?.scanBody}}
+                  message={v.scanMessage}
+                  videoId="vf-presentation-camera"
                   onClose={v.closePanel}
-                  title={v.t?.scanTitle}
-                  maxWidth={480}
-                >
-                  <div className="tw:flex tw:flex-col tw:gap-3">
-                    <p className="tw:m-0">
-                      <>{v.t?.scanBody}</>
-                    </p>
-                    <video
-                      id="vf-presentation-camera"
-                      muted={true}
-                      playsInline={true}
-                      className="tw:w-full tw:rounded-md tw:bg-inverse tw:[aspect-ratio:4/3] tw:object-cover"
-                    />
-                    {v.scanMessage ? <DS.Alert tone="warning" title={v.scanMessage} /> : null}
-                  </div>
-                </DS.Dialog>
+                />
                 <DS.Dialog
                   open={v.unlockOpen}
                   onClose={v.closePanel}

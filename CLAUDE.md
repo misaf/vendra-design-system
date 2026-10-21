@@ -69,6 +69,8 @@ StorefrontPresentationShortlist composes comparison cards, empty state and dialo
 View/logic retain label rendering, membership/order, viewer mapping, clear/Undo and sharing.
 StorefrontPresentationOrder composes controlled order rows, optional total, empty state and actions;
 View/logic retain quantity/order changes, stock eligibility, totals, clear/Undo and handoff.
+StorefrontPresentationScan composes scan instructions, video and warning from explicit props;
+View/logic retain the video ID contract, camera/decoder lifecycle, errors and viewer navigation.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.
