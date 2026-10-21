@@ -138,7 +138,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    PIN comparison/storage, error/reset state and settings access stay in the View/logic.
    StorefrontPresentationSettings now composes setup/settings controls from explicit descriptors;
    validation, persistence, PIN checks and browser operations stay in the View/logic.
-   **Next stage: extract the presentation seller-tools dialog into a storefront organism.**
+   StorefrontPresentationTools now composes seller status and actions from explicit descriptors.
+   **Next stage: extract the shared presentation product-label composition into a storefront molecule.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1208,6 +1209,29 @@ inspected. No screenshot baselines/tolerances, package contents or generated sty
 full browser/device suites, production offline checks, known storefront TV add-to-bag arrow failures
 and unrelated snapshot failures were not rerun. The next stage extracts the presentation seller-
 tools dialog into a storefront organism.
+
+**Fifty-eighth checkpoint verified:** StorefrontPresentationTools is extracted under
+`templates/app/organisms/StorefrontPresentationTools/`. It receives controlled open/close state,
+explicit labels, offline progress/status, online/photo/stock state, setup/device descriptors and
+seller action callbacks. Optional scan/start-over descriptors preserve conditional actions.
+Dialog structure, width/placement, live status/data attribute, alerts, stock timestamp isolation,
+retry disabled state, icons and action order are preserved. View retains offline preparation and
+localized progress/device text; logic retains capability decisions, PIN gates, stock/photo recovery,
+customer state, navigation and persistence. No state, browser effects or page-model imports move
+into the organism. Unit/type/package tests, production app build and generated/format/CSS checks
+pass, along with all 48 presentation browser cases without retries. These cover bilingual focus
+restoration and connections, photo retry, setup/settings, TV remote navigation and playback pause.
+Sixteen bilingual before/after viewport and visible-dialog pairs are byte-identical: ordinary tools
+at 390/768/1280/1920 pixels and preparing/offline states at 390/1280 pixels. All compared states pass
+axe checks; phone rotation has no document overflow and setup actions open the correct dialog.
+Offline preparation states use a browser-only helper response fixture; connection warnings use real
+browser offline mode. A synthetic offline event initially left navigator.onLine unchanged; only
+unfinished comparisons were resumed with browser offline mode, preloading fonts/images before
+disconnecting. Actual PNG bytes were checked for every comparison record. Representative Persian desktop and
+phone captures were visually inspected. No baselines, tolerances, generated styles or published
+package contents changed. The full browser/device suites and production service-worker preparation
+were not rerun. Next: extract the shared presentation product-label composition into a storefront
+molecule.
 
 ## Adding components
 
