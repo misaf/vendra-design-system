@@ -8,8 +8,8 @@ import {StorefrontHomeFeatured} from '../app/organisms/StorefrontHomeFeatured/St
 import {StorefrontHomeOccasions} from '../app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
 import {StorefrontHomeStudio} from '../app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
 import {StorefrontHomeWeddings} from '../app/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx';
+import {StorefrontHomeJournal} from '../app/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx';
 import {Shell} from '../app/Shell.jsx';
-import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
 
 export function View({v}) {
   return (
@@ -106,49 +106,21 @@ export function View({v}) {
             />
           }
           journal={
-            <>
-              <DS.SectionHeader
-                id="vf-home-journal-title"
-                eyebrow={v.t?.postEb}
-                title={v.t?.postA}
-                accent={v.t?.postB}
-                action={
-                  <DS.Button variant="ghost" iconEnd="arrow-right" href={v.href?.journal}>
-                    <>{v.t?.postAll}</>
-                  </DS.Button>
-                }
-              />
-              <p className="tw:m-0 tw:text-secondary tw:max-w-measure">{v.t?.postText}</p>
-              <CollectionCarousel
-                total={list(v.posts).length}
-                countLabel={v.t?.storyCount(list(v.posts).length)}
-                className="vf-home-journal-row vf-home-carousel"
-                label={v.t?.postLabel}
-                perView={3}
-                perViewMobile={1.15}
-                itemMin="240px"
-                gap="20px"
-                arrows={true}
-                prevLabel={v.t?.postPrev}
-                nextLabel={v.t?.postNext}
-              >
-                {list(v.posts).map((post, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.BlogCard
-                      layout="stack"
-                      frame="soft"
-                      aspect="4/3"
-                      headingLevel={3}
-                      title={post?.title}
-                      image={post?.image}
-                      excerpt={post?.excerpt}
-                      meta={post?.meta}
-                      href={post?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </CollectionCarousel>
-            </>
+            <StorefrontHomeJournal
+              posts={list(v.posts)}
+              journalHref={v.href?.journal}
+              labels={{
+                eyebrow: v.t?.postEb,
+                title: v.t?.postA,
+                accent: v.t?.postB,
+                all: v.t?.postAll,
+                description: v.t?.postText,
+                count: v.t?.storyCount(list(v.posts).length),
+                region: v.t?.postLabel,
+                previous: v.t?.postPrev,
+                next: v.t?.postNext
+              }}
+            />
           }
           newsletter={
             <>

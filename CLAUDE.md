@@ -61,6 +61,8 @@ StorefrontHomeStudio composes studio cards and explore-all navigation from expli
 View/logic retain collection selection/fallback, product mapping, counts, URLs and favorites.
 StorefrontHomeWeddings composes the wedding promotion from explicit labels and destination URLs;
 View/logic retain content mapping, feature eligibility and localized navigation.
+StorefrontHomeJournal composes journal previews from explicit posts, labels and journal URL;
+View/logic retain feature eligibility, selection/order, localized metadata and article URLs.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
