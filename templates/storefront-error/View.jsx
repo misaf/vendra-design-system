@@ -1,6 +1,7 @@
 // StorefrontError: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../app/ds.js';
+import {StorefrontErrorLayout} from '../app/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -9,17 +10,21 @@ export function View({v}) {
       v={v}
       content={
         <>
-          <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
-            <div className="vf-error-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-4h">
-              <DS.EmptyState
-                icon="flower-2"
-                eyebrow={v.t?.code}
-                title={v.t?.hA}
-                titleAccent={v.t?.hB}
-                body={v.t?.hP}
-                headingLevel={1}
-              />
-              <div className="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center">
+          <StorefrontErrorLayout
+            message={
+              <>
+                <DS.EmptyState
+                  icon="flower-2"
+                  eyebrow={v.t?.code}
+                  title={v.t?.hA}
+                  titleAccent={v.t?.hB}
+                  body={v.t?.hP}
+                  headingLevel={1}
+                />
+              </>
+            }
+            actions={
+              <>
                 <DS.Button variant="primary" iconStart="rotate-ccw" onClick={v.retry}>
                   <>{v.t?.retry}</>
                 </DS.Button>
@@ -29,9 +34,9 @@ export function View({v}) {
                 <DS.Button variant="ghost" iconStart="phone" href={v.phoneHref}>
                   <>{v.t?.call}</>
                 </DS.Button>
-              </div>
-            </div>
-          </main>
+              </>
+            }
+          />
         </>
       }
       sticky={<></>}
