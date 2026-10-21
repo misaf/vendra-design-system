@@ -9,7 +9,7 @@ import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProduct
 import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
 import {StorefrontProductCare} from '../app/organisms/StorefrontProductCare/StorefrontProductCare.jsx';
 import {Shell} from '../app/Shell.jsx';
-import {CollectionCarousel} from '../_shared/collection-carousel.jsx';
+import {StorefrontProductRecent} from '../app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx';
 
 export function View({v}) {
   return (
@@ -83,49 +83,21 @@ export function View({v}) {
                 <DS.ErrorBoundary resetKey={v.productId}>
                   {v.hasRecent ? (
                     <>
-                      <section className="vf-product-recent tw:flex tw:flex-col">
-                        <DS.SectionHeader
-                          eyebrow={v.t?.recentEb}
-                          title={v.t?.recentA}
-                          accent={v.t?.recentB}
-                        />
-                        <CollectionCarousel
-                          key={v.productId}
-                          total={list(v.recent).length}
-                          countLabel={v.t?.recentCount(list(v.recent).length)}
-                          label={v.recentLabel}
-                          perView={4}
-                          perViewMobile={1.15}
-                          itemMin="220px"
-                          gap="20px"
-                          arrows={true}
-                          prevLabel={v.t?.recentPrev}
-                          nextLabel={v.t?.recentNext}
-                        >
-                          {list(v.recent).map((p, $index) => (
-                            <React.Fragment key={$index}>
-                              <DS.ProductCard
-                                images={p?.images}
-                                sizes={
-                                  v.recent.length === 1
-                                    ? '(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 25vw'
-                                    : '(max-width: 767px) 80vw, (max-width: 1023px) 33vw, 25vw'
-                                }
-                                name={p?.name}
-                                subtitle={p?.sub}
-                                price={p?.price}
-                                stock={p?.stock}
-                                frame="soft"
-                                placeholder={v.t?.photo}
-                                favLabel={v.t?.save}
-                                favorite={p?.fav}
-                                onFavorite={p?.toggleFav}
-                                href={p?.href}
-                              />
-                            </React.Fragment>
-                          ))}
-                        </CollectionCarousel>
-                      </section>
+                      <StorefrontProductRecent
+                        products={list(v.recent)}
+                        resetKey={v.productId}
+                        labels={{
+                          eyebrow: v.t?.recentEb,
+                          title: v.t?.recentA,
+                          accent: v.t?.recentB,
+                          count: v.t?.recentCount(list(v.recent).length),
+                          region: v.recentLabel,
+                          previous: v.t?.recentPrev,
+                          next: v.t?.recentNext,
+                          photo: v.t?.photo,
+                          save: v.t?.save
+                        }}
+                      />
                     </>
                   ) : null}
                 </DS.ErrorBoundary>

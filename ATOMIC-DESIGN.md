@@ -157,7 +157,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductConfiguration now composes controlled size/add-on groups.
    StorefrontProductPurchase now composes total/hint, quantity, save and responsive add controls.
    StorefrontProductCare now composes delivery text, optional inquiry link and care/delivery accordion.
-   **Next stage: extract the recently viewed product section into a storefront organism.**
+   StorefrontProductRecent now composes the recent heading, carousel and product cards.
+   **Next stage: extract the product added-to-bag dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1585,6 +1586,32 @@ are pixel-identical; all other pixels outside the header band also match. This f
 exception is retained rather than changing baselines/tolerances. Representative Persian phone
 custom-care and both Persian TV care captures were viewed.
 Next: extract the recently viewed product section into a storefront organism.
+
+**Seventy-third checkpoint verified:** StorefrontProductRecent is extracted under
+`templates/app/organisms/StorefrontProductRecent/`. It receives normalized product records,
+localized heading/count/region/navigation/photo/save labels and an explicit carousel reset key.
+It composes SectionHeader, CollectionCarousel and ProductCards, preserving the single/multiple
+card image sizes, section/classes, ordering, four-card layout, compact peek and callbacks.
+View retains visibility, normalization/count formatting and its product-keyed ErrorBoundary.
+Product/shared logic retains browser history, current-product exclusion, deduplication, order/
+limit, product/price/stock/image/link mapping and favorites. CollectionCarousel retains measured
+overflow/navigation state and resets on product changes. No page model, new state/effects,
+persistence, product rules, styles, package exports or generated files move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. All twelve
+focused recent-products browser cases pass without retries: bilingual 258/390/768/1280/1920-pixel
+card/navigation checks and single-card cases. The spec enables native touch at narrow widths;
+these are distinct from a full device suite. Bilingual before/after probes cover one/four cards
+at 390/768/1280/1920 pixels and absent/corrupt history at 390/1280 pixels. They verify legacy ID
+normalization, duplicate/invalid/current-product exclusion, order, count/region names, responsive
+image sizes, overflow controls, reversible favorite callbacks, focused-card containment, product
+link navigation, updated recent history/carousel reset, touch/TV Enter input, tablet rotation,
+no document overflow and full-page axe. Four additional bilingual touch-phone/tablet probes
+verify carousel reset on product navigation and browser Back. Full browser/device suites and unrelated checkout flows
+were not rerun. All sixteen one/four-card section screenshot pairs are byte-identical, checked
+against actual PNG bytes. Eight additional paired probes verify section absence for empty/corrupt
+history. No visual baselines/tolerances changed or recaptures were needed. Representative Persian
+phone four-card and English desktop single-card captures were viewed.
+Next: extract the product added-to-bag dialog into a storefront organism.
 
 ## Adding components
 
