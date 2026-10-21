@@ -65,6 +65,8 @@ StorefrontPresentationViewer composes controlled lightbox captions, options and 
 View/logic retain label rendering, quotes, stock, selection, order/share state and callbacks.
 StorefrontPresentationSend composes the share dialog, QR/tag and warning/actions from a send
 descriptor; View/logic retain links, length checks, clipboard/print behavior and customer state.
+StorefrontPresentationShortlist composes comparison cards, empty state and dialog actions;
+View/logic retain label rendering, membership/order, viewer mapping, clear/Undo and sharing.
 Tailwind scans nested app JSX.
 
 **Storefront product naming is fixed:** use `Product.token` (for example, `VF-7K2M4Q`) as the displayed product name in every language and viewport. Localized product descriptions may support search, but design changes must not replace product-code names with descriptions.

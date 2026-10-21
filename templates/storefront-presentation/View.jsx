@@ -8,6 +8,7 @@ import {StorefrontPresentationToolbar} from '../app/organisms/StorefrontPresenta
 import {StorefrontPresentationDisplay} from '../app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx';
 import {StorefrontPresentationViewer} from '../app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx';
 import {StorefrontPresentationSend} from '../app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx';
+import {StorefrontPresentationShortlist} from '../app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -242,56 +243,23 @@ export function View({v}) {
                   }}
                   onClose={v.closeSend}
                 />
-                <DS.Dialog
+                <StorefrontPresentationShortlist
                   open={v.shortlistOpen}
+                  items={v.shortlist}
+                  showPrices={v.showPrices}
+                  labels={{
+                    title: v.t?.shortlist,
+                    empty: v.t?.shortlistEmpty,
+                    clear: v.t?.clear,
+                    sendShortlist: v.t?.sendShortlist,
+                    show: v.t?.show,
+                    remove: v.t?.remove
+                  }}
+                  renderLabel={item => <Label v={v} item={item} />}
                   onClose={v.closePanel}
-                  title={v.t?.shortlist}
-                  maxWidth={1100}
-                  footer={
-                    v.shortlist.length ? (
-                      <>
-                        <DS.Button variant="secondary" onClick={v.clearShortlist}>
-                          <>{v.t?.clear}</>
-                        </DS.Button>
-                        <DS.Button variant="primary" iconStart="send" onClick={v.sendShortlist}>
-                          <>{v.t?.sendShortlist}</>
-                        </DS.Button>
-                      </>
-                    ) : null
-                  }
-                >
-                  {v.shortlist.length ? (
-                    <ul className="tw:list-none tw:m-0 tw:p-0 tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]">
-                      {v.shortlist.map(item => (
-                        <li key={item.id} className="tw:flex tw:flex-col tw:gap-2 tw:text-body">
-                          <span className="tw:block tw:[aspect-ratio:4/5] tw:rounded-md tw:overflow-hidden tw:bg-muted">
-                            <DS.Picture
-                              image={item.image}
-                              sizes="(max-width: 767px) 50vw, 25vw"
-                              className="tw:w-full tw:h-full tw:object-cover tw:block"
-                            />
-                          </span>
-                          <span className="tw:flex tw:flex-col tw:gap-1">
-                            <Label v={v} item={item} />
-                            {v.showPrices ? <DS.Price value={item.price} size="md" /> : null}
-                          </span>
-                          <span className="tw:flex tw:gap-2">
-                            <DS.Button variant="secondary" size="sm" onClick={item.show}>
-                              <>{v.t?.show}</>
-                            </DS.Button>
-                            <DS.Button variant="ghost" size="sm" onClick={item.remove}>
-                              <>{v.t?.remove}</>
-                            </DS.Button>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="tw:m-0">
-                      <>{v.t?.shortlistEmpty}</>
-                    </p>
-                  )}
-                </DS.Dialog>
+                  onClear={v.clearShortlist}
+                  onSend={v.sendShortlist}
+                />
                 <DS.Dialog
                   open={v.orderOpen}
                   onClose={v.closePanel}
