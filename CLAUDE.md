@@ -6,6 +6,10 @@ and migration order. New UI components live in `components/atoms/`, `components/
 atoms|molecules|organisms`. Existing flat component folders migrate incrementally. References below
 to `components/<Name>/` mean the component's own folder, including its layer after migration.
 
+Storefront-specific molecules live under `templates/app/molecules/<Name>/` for small app-owned
+combinations. StorefrontPresentationLabel renders code/sold-out text from explicit props;
+View/logic retain product data, localization and stock decisions.
+
 Storefront-specific organisms live under `templates/app/organisms/<Name>/` and receive explicit
 content props and callbacks from Shell or pages. StorefrontHeader owns the responsive header
 markup; StorefrontFooter owns footer markup and responsive link groups. Shell owns their data,

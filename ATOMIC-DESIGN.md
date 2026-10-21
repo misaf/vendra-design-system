@@ -20,6 +20,9 @@ basic action primitive. Keep tightly coupled parts in one folder (for example Ch
 ChoiceTile). Do not split a React Aria widget just to make more layers. Components in one layer
 may compose each other; avoid dependency cycles.
 
+Storefront-specific molecules live in `templates/app/molecules/<Name>/` for small app-owned
+combinations with explicit content props. They follow the same ownership boundaries as organisms.
+
 Storefront-specific organisms live in `templates/app/organisms/<Name>/`. They compose the package
 UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
 They do not belong in the published package or import store state and persistence. Shell and page
@@ -139,7 +142,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPresentationSettings now composes setup/settings controls from explicit descriptors;
    validation, persistence, PIN checks and browser operations stay in the View/logic.
    StorefrontPresentationTools now composes seller status and actions from explicit descriptors.
-   **Next stage: extract the shared presentation product-label composition into a storefront molecule.**
+   StorefrontPresentationLabel now composes the shared code/sold-out label as an app molecule.
+   **Next stage: extract the home category-navigation section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1232,6 +1236,28 @@ phone captures were visually inspected. No baselines, tolerances, generated styl
 package contents changed. The full browser/device suites and production service-worker preparation
 were not rerun. Next: extract the shared presentation product-label composition into a storefront
 molecule.
+
+**Fifty-ninth checkpoint verified:** StorefrontPresentationLabel is extracted under
+`templates/app/molecules/StorefrontPresentationLabel/`, establishing the app molecule location for
+small storefront-owned combinations. Catalog, viewer and shortlist keep their existing renderer
+slots; View supplies only code, sold-out state, localized sold-out label and the large variant.
+The molecule preserves stacked markup, LTR/nonwrapping product code, display typography and
+compact/inverse status classes. Product selection, pricing, stock interpretation, localization and
+actions remain in View/logic and parent organisms. No page model, browser effects, package exports,
+styles or generated files changed. Unit/type/package tests, production app build and generated/
+format/CSS checks pass. Ten focused desktop/mobile browser cases pass without retries, covering
+catalog accessible names, sold-out viewer purchase restrictions, stock changes before handoff and
+shortlist clear/Undo. Bilingual before/after probes cover catalog, sold-out viewer and mixed
+available/sold-out shortlists at 390/768/1280/1920 pixels, with touch at narrow widths, LTR and
+nonwrapping code assertions, available-viewer status removal, tablet rotation and axe scans.
+All 24 label crops are byte-identical; 23 of 24 full viewport pairs are exact after a focused
+recapture of two catalog cases. The remaining Persian TV catalog capture differs at 104 image-edge
+pixels by at most 6/255; its extracted label is exact. The initial Persian desktop catalog difference
+(78 pixels, at most 6/255) recaptured exactly. All final PNG bytes were verified against the recorded
+results. Representative Persian phone viewer and desktop/TV catalog captures were visually inspected.
+No screenshot baselines or tolerances changed. The full presentation/browser/device suites and
+production offline preparation were not rerun.
+Next: extract the home category-navigation section into a storefront organism.
 
 ## Adding components
 
