@@ -148,7 +148,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontHomeOccasions now composes the occasion heading, description and carousel.
    StorefrontHomeStudio now composes studio cards, carousel and explore-all navigation.
    StorefrontHomeWeddings now composes the wedding-promotion text and links.
-   **Next stage: extract the home journal-preview section into a storefront organism.**
+   StorefrontHomeJournal now composes journal previews, carousel and read-journal navigation.
+   **Next stage: extract the home newsletter section into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1374,6 +1375,30 @@ payment/newsletter flows were not rerun. All eight section screenshot pairs are 
 verified from actual PNG bytes; representative Persian phone and English TV captures were visually
 inspected. No screenshot baselines or tolerances changed.
 Next: extract the home journal-preview section into a storefront organism.
+
+**Sixty-fifth checkpoint verified:** StorefrontHomeJournal is extracted under
+`templates/app/organisms/StorefrontHomeJournal/`. It receives explicit post records, localized
+labels and journal URL, composing heading, read-journal link, description and stacked BlogCard
+carousel. View retains normalization/count formatting; home/shared logic retains feature
+eligibility, selection/order, images, localized titles/excerpts/metadata and article destinations.
+Layout retains optional visibility, wrappers and heading association; shared CollectionCarousel
+retains measurement, RTL navigation and resizing. Heading ID, fragments/classes, responsive
+settings and BlogCard layout/frame/aspect/heading levels are preserved. The now-unused View
+carousel import is removed. No page model, new state/effects, styles, published package contents
+or generated files changed. Unit/type/package tests, production app build and generated/format/CSS
+checks pass. Four focused desktop/mobile browser cases pass without retries, covering home article
+navigation and journal pagination/search/language behavior. Bilingual before/after probes cover
+initial/advanced journal rows at 390/768/1280/1920 pixels where scrolling applies. They verify three
+ordered titles/excerpts/metadata records and localized article URLs, heading association, region/
+count, carousel scroll/disabled states, hidden arrows on fitted rows, article title on arrival,
+journal's seven-card first page, touch taps, TV Enter activation, tablet rotation, no document
+overflow and axe checks. Feature-disabled desktop probes use a browser-only store-config response
+fixture and verify the preview disappears while studio content remains. The full browser/device
+suites and unrelated newsletter/payment flows were not rerun. All twelve section screenshot pairs
+are byte-identical, verified from actual PNG bytes: initial rows at all four widths and advanced
+rows at 390/768 pixels, all bilingual. Representative Persian phone advanced and English TV initial
+captures were visually inspected. No screenshot baselines or tolerances changed.
+Next: extract the home newsletter section into a storefront organism.
 
 ## Adding components
 
