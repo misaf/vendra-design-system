@@ -134,7 +134,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    quantity/order mutations, stock eligibility, clear/Undo and handoff stay in the View/logic.
    StorefrontPresentationScan now composes controlled instructions, video and warning;
    camera/decoder lifecycle, errors and viewer navigation stay in the View/logic.
-   **Next stage: extract the presentation PIN-unlock dialog into a storefront organism.**
+   StorefrontPresentationUnlock now composes the controlled four-digit PIN dialog;
+   PIN comparison/storage, error/reset state and settings access stay in the View/logic.
+   **Next stage: extract the presentation settings dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1143,6 +1145,33 @@ captures were visually inspected. No screenshot baselines/tolerances, package co
 styles changed. The full browser/device suites, production offline checks, known storefront TV
 add-to-bag arrow failures and unrelated snapshot failures were not rerun. The next stage extracts
 the presentation PIN-unlock dialog into a storefront organism.
+
+**Fifty-sixth checkpoint verified:** StorefrontPresentationUnlock is extracted under
+`templates/app/organisms/StorefrontPresentationUnlock/`. It receives controlled open/value/error,
+localized title/hint labels and change/complete/close callbacks. It owns dialog and four-digit
+CodeInput composition, preserving the input ID, autofocus and disabled Web OTP. View/logic retain
+PIN storage/comparison, entry/error/reset state, settings access and cancellation; shared CodeInput
+retains digit normalization/completion. No behavior, copy or styles changed. The full unit/type/
+package suite, production app build and generated-file/format/CSS checks pass. Ten focused browser
+cases pass across PIN setup/wrong/correct entry, bilingual PIN-protected filter recovery and seller
+focus/accessibility. Sixteen before/after viewport pairs cover locked dialogs at 390/768/1280/1920
+pixels in both languages plus partial and wrong-PIN states at 390/1280 pixels in both languages.
+Fifteen full viewports are byte-identical. Three initial captures differed by 3–103 pixels at most
+1/255 in blurred background rendering; focused recaptures resolve partial phone and wrong desktop
+pairs. The locked English phone retains 103 pixels at most 1/255 in the background; all three
+affected dialog-region comparisons are exact. The other 13 original exact pairs are retained
+without code, baseline or tolerance changes. Bilingual probes verify autofocus, numeric/LTR/four-
+digit attributes, partial entry, Persian-digit normalization, wrong-PIN rejection and cleared entry,
+error removal on editing, correct completion, cancel/reset/focus return and repeated locking.
+Device preferences/PIN/filter data remain unchanged across cancel and unlock. A credentials test
+double verifies zero Web OTP requests, including when the API is available. Tablet rotation causes
+no document overflow; locked/partial/error phone/desktop dialogs pass bilingual axe scans. Captures
+use fixed time, decoded images, normalized scroll and the existing software-rendering path;
+representative Persian phone locked and English desktop wrong-PIN captures were visually inspected.
+No screenshot baselines/tolerances, package contents or generated styles changed. The full browser/
+device suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
+snapshot failures were not rerun. The next stage extracts the presentation settings dialog into a
+storefront organism.
 
 ## Adding components
 

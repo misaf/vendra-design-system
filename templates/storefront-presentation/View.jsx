@@ -11,6 +11,7 @@ import {StorefrontPresentationSend} from '../app/organisms/StorefrontPresentatio
 import {StorefrontPresentationShortlist} from '../app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx';
 import {StorefrontPresentationOrder} from '../app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx';
 import {StorefrontPresentationScan} from '../app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx';
+import {StorefrontPresentationUnlock} from '../app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -287,24 +288,15 @@ export function View({v}) {
                   videoId="vf-presentation-camera"
                   onClose={v.closePanel}
                 />
-                <DS.Dialog
+                <StorefrontPresentationUnlock
                   open={v.unlockOpen}
+                  value={v.pinEntry}
+                  error={v.pinError ? v.t?.wrongPin : undefined}
+                  labels={{title: v.t?.unlock, hint: v.t?.unlockHint}}
+                  onChange={v.setPinEntry}
+                  onComplete={v.checkPin}
                   onClose={v.closePanel}
-                  title={v.t?.unlock}
-                  maxWidth={400}
-                >
-                  <DS.CodeInput
-                    id="vf-presentation-unlock"
-                    label={v.t?.unlockHint}
-                    length={4}
-                    webOtp={false}
-                    autoFocus={true}
-                    value={v.pinEntry}
-                    onChange={v.setPinEntry}
-                    onComplete={v.checkPin}
-                    error={v.pinError ? v.t?.wrongPin : undefined}
-                  />
-                </DS.Dialog>
+                />
                 <DS.Dialog
                   open={v.settingsOpen}
                   onClose={v.closePanel}
