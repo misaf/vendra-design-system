@@ -136,7 +136,9 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    camera/decoder lifecycle, errors and viewer navigation stay in the View/logic.
    StorefrontPresentationUnlock now composes the controlled four-digit PIN dialog;
    PIN comparison/storage, error/reset state and settings access stay in the View/logic.
-   **Next stage: extract the presentation settings dialog into a storefront organism.**
+   StorefrontPresentationSettings now composes setup/settings controls from explicit descriptors;
+   validation, persistence, PIN checks and browser operations stay in the View/logic.
+   **Next stage: extract the presentation seller-tools dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1172,6 +1174,40 @@ No screenshot baselines/tolerances, package contents or generated styles changed
 device suites, production offline checks, known storefront TV add-to-bag arrow failures and unrelated
 snapshot failures were not rerun. The next stage extracts the presentation settings dialog into a
 storefront organism.
+
+**Fifty-seventh checkpoint verified:** StorefrontPresentationSettings is extracted under
+`templates/app/organisms/StorefrontPresentationSettings/`. It receives controlled open/setup/start
+eligibility, explicit localized labels, home link, number formatter, close/start callbacks and
+fullscreen/collection/display/toggle/transfer/PIN control descriptors. Neither the page model nor
+the stored PIN is passed. It owns dialog/footer, setup instructions, collection selection/search/
+preview/save controls, playback preferences, switches, transfer disclosure and PIN-draft/set UI.
+The View formats eligible-count text; logic retains validation, normalization, eligibility,
+persistence, shortlist application, import/export filtering, PIN checks and browser operations.
+No behavior, copy or styles changed. The full unit/type/package suite, production app build and
+generated-file/format/CSS checks pass. All 48 presentation browser cases and 14 additional focused
+PIN/filter/price/narrow-tool cases pass without retries. Twenty-four before/after viewport pairs
+are byte-identical: ordinary settings at 390/768/1280/1920 pixels in both languages, setup and empty
+collections at 390 pixels, category and saved/PIN states at 1280 pixels, and selected collections
+and invalid transfer states at 390/1280 pixels, all bilingual. Three nonidentical captures were
+independently rechecked: a one-pixel background difference at 1/255, 18 textarea-edge pixels at
+1/255 and an initially different saved-PIN viewport. Recaptured full viewports and separate visible-
+modal captures are exact without source, baseline or tolerance changes. Actual PNG bytes were
+checked against every final comparison record. Probe corrections target visible native-control
+labels and change saved selections between two collections; a resume-script mistake was stopped,
+completed records recovered from logs, and only unfinished cases resumed. The completed functional
+probes verify touch control activation, persistence/reload of presets/layout/captions/timing and all
+preference switches, fullscreen enter/exit and start-fullscreen callbacks, wake requests, setup
+completion/start, category/selected/shortlist selection and search, checkbox eligibility/empty-state
+recovery, collection save/load/delete, PIN save/remove, invalid/valid import, unchanged local PIN
+on import and exclusion of PIN/customer data from exports/share links. Web OTP makes zero requests.
+Fullscreen/wake/credentials use browser test doubles. Tablet rotation has no document overflow;
+settings/setup/selected/empty/transfer/PIN phone/desktop dialogs pass bilingual axe scans. Captures
+use fixed time, decoded images, normalized page scroll and the existing software-rendering path;
+representative Persian phone settings/transfer and English desktop saved-PIN captures were visually
+inspected. No screenshot baselines/tolerances, package contents or generated styles changed. The
+full browser/device suites, production offline checks, known storefront TV add-to-bag arrow failures
+and unrelated snapshot failures were not rerun. The next stage extracts the presentation seller-
+tools dialog into a storefront organism.
 
 ## Adding components
 

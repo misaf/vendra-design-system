@@ -12,6 +12,7 @@ import {StorefrontPresentationShortlist} from '../app/organisms/StorefrontPresen
 import {StorefrontPresentationOrder} from '../app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx';
 import {StorefrontPresentationScan} from '../app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx';
 import {StorefrontPresentationUnlock} from '../app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
+import {StorefrontPresentationSettings} from '../app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {vfKeepOffline} from '../_shared/offline.js';
 
@@ -297,268 +298,130 @@ export function View({v}) {
                   onComplete={v.checkPin}
                   onClose={v.closePanel}
                 />
-                <DS.Dialog
+                <StorefrontPresentationSettings
                   open={v.settingsOpen}
+                  isSetup={v.isSetup}
+                  homeHref={v.href?.home}
+                  formatNumber={v.n}
+                  canStartDisplay={v.canStartDisplay}
                   onClose={v.closePanel}
-                  title={v.isSetup ? v.t.setupTitle : v.t?.settings}
-                  maxWidth={640}
-                  footer={
-                    <>
-                      <DS.Button variant="secondary" href={v.href?.home}>
-                        <>{v.t?.leave}</>
-                      </DS.Button>
-                      <DS.Button variant="secondary" onClick={v.closePanel}>
-                        {v.t.done}
-                      </DS.Button>
-                      <DS.Button
-                        variant="primary"
-                        disabled={!v.canStartDisplay}
-                        onClick={v.startDisplay}
-                      >
-                        {v.t.startDisplay}
-                      </DS.Button>
-                    </>
-                  }
-                >
-                  <div className="tw:flex tw:flex-col tw:gap-4">
-                    {v.isSetup ? <p className="tw:m-0">{v.t.setupIntro}</p> : null}
-                    {v.canFullscreen ? (
-                      <DS.Switch
-                        label={v.t.startFullscreen}
-                        checked={v.setupFullscreen}
-                        onChange={v.setSetupFullscreen}
-                      />
-                    ) : null}
-                    {v.savedCollections.length ? (
-                      <div className="tw:flex tw:flex-col tw:gap-2">
-                        <DS.Select
-                          label={v.t.savedCollections}
-                          value={v.activeCollection}
-                          options={v.savedCollections}
-                          onChange={v.loadCollection}
-                        />
-                        <DS.Button
-                          variant="secondary"
-                          disabled={!v.activeCollection}
-                          onClick={v.deleteCollection}
-                        >
-                          {v.t.deleteCollection}
-                        </DS.Button>
-                      </div>
-                    ) : null}
-                    <DS.Select
-                      label={v.t.displayMode}
-                      value={v.displayMode}
-                      onChange={v.setDisplayMode}
-                      options={[
-                        {value: 'tablet', label: v.t.tablet},
-                        {value: 'tv', label: v.t.tv}
-                      ]}
-                    />
-                    <DS.Select
-                      label={v.t.displayCollection}
-                      value={v.displayCollection}
-                      onChange={v.setDisplayCollection}
-                      options={[
-                        {value: 'all', label: v.t.allDesigns},
-                        {value: 'category', label: v.t.byCategory},
-                        {value: 'selected', label: v.t.selectedDesigns}
-                      ]}
-                    />
-                    {v.displayCollection === 'category' ? (
-                      <DS.Select
-                        label={v.t.displayCategory}
-                        value={v.displayCategory}
-                        onChange={v.setDisplayCategory}
-                        options={v.displayCategories}
-                      />
-                    ) : null}
-                    {v.displayCollection === 'selected' ? (
-                      <div
-                        role="group"
-                        aria-label={v.t.selectedDesigns}
-                        className="tw:flex tw:flex-col tw:gap-2"
-                      >
-                        <DS.SearchField
-                          aria-label={v.t.collectionSearch}
-                          value={v.collectionQuery}
-                          onChange={v.setCollectionQuery}
-                        />
-                        <p className="tw:m-0" role="status">
-                          {v.t.selectionCount}: {v.n(v.selectedCount)}
-                        </p>
-                        {v.collectionProducts.map(product => (
-                          <DS.Checkbox
-                            key={product.id}
-                            label={
-                              <span className="vf-collection-product">
-                                <DS.Picture image={product.image} sizes="64px" />
-                                <span dir="ltr">{product.id}</span>
-                              </span>
-                            }
-                            checked={product.selected}
-                            onChange={product.toggle}
-                          />
-                        ))}
-                      </div>
-                    ) : null}
-                    {v.canUseShortlist ? (
-                      <DS.Button variant="secondary" onClick={v.useShortlist}>
-                        {v.t.useShortlist}
-                      </DS.Button>
-                    ) : null}
-                    <div
-                      role="group"
-                      aria-label={v.t.previewCollection}
-                      className="vf-collection-preview"
-                    >
-                      {v.previewProducts.map(product => (
-                        <figure key={product.id}>
-                          <DS.Picture image={product.image} sizes="120px" />
-                          <figcaption dir="ltr">{product.code}</figcaption>
-                        </figure>
-                      ))}
-                    </div>
-                    {!v.canStartDisplay ? (
-                      <DS.Alert tone="warning" title={v.t.emptyCollection} />
-                    ) : (
-                      <p className="tw:m-0" role="status">
-                        {v.t.count(v.eligibleCount)}
-                      </p>
-                    )}
-                    <DS.Input
-                      label={v.t.collectionName}
-                      value={v.collectionName}
-                      onChange={v.setCollectionName}
-                      maxLength={60}
-                    />
-                    <DS.Button
-                      variant="secondary"
-                      disabled={!v.canSaveCollection}
-                      onClick={v.saveCollection}
-                    >
-                      {v.t.saveCollection}
-                    </DS.Button>
-                    <DS.Select
-                      label={v.t.displayLayout}
-                      value={v.displayLayout}
-                      onChange={v.setDisplayLayout}
-                      options={[
-                        {value: 'single', label: v.t.singlePhoto},
-                        {value: 'pair', label: v.t.pairedPhotos}
-                      ]}
-                    />
-                    <DS.Select
-                      label={v.t.captions}
-                      value={v.captionMode}
-                      onChange={v.setCaptionMode}
-                      options={[
-                        {value: 'photo', label: v.t.photoOnly},
-                        {value: 'code', label: v.t.photoCode},
-                        {value: 'price', label: v.t.photoPrice}
-                      ]}
-                    />
-                    <DS.Select
-                      label={v.t.slideTiming}
-                      value={String(v.slideSeconds)}
-                      onChange={v.setSlideSeconds}
-                      options={[6, 10, 15].map(seconds => ({
-                        value: String(seconds),
-                        label: v.n(seconds) + ' ' + v.t.seconds
-                      }))}
-                    />
-                    <DS.Switch
-                      label={v.t?.showPrices}
-                      checked={v.settings?.showPrices}
-                      onChange={v.setShowPrices}
-                    />
-                    <DS.Switch
-                      label={v.t?.readyOnly}
-                      checked={v.settings?.readyOnly}
-                      onChange={v.setReadyOnly}
-                    />
-                    <DS.Switch
-                      label={v.t?.hideSoldOut}
-                      checked={v.settings?.hideSoldOut}
-                      onChange={v.setHideSoldOut}
-                    />
-                    <DS.Switch
-                      label={v.t?.keepAwake}
-                      checked={v.settings?.keepAwake}
-                      onChange={v.setKeepAwake}
-                    />
-                    {v.canFullscreen ? (
-                      <DS.Switch
-                        label={v.t?.fullscreen}
-                        checked={v.fullscreen}
-                        onChange={v.setFullscreen}
-                      />
-                    ) : null}
-                    <div className="tw:flex tw:flex-col tw:gap-1">
-                      <DS.Switch
-                        label={v.t?.slideshow}
-                        checked={v.settings?.slideshow}
-                        onChange={v.setSlideshow}
-                      />
-                      <span className="tw:text-sm tw:text-quiet">
-                        <>{v.t?.slideshowHint}</>
-                      </span>
-                    </div>
-                    <details className="vf-setup-transfer">
-                      <summary>{v.t.configuration}</summary>
-                      <p>{v.t.configurationHint}</p>
-                      <DS.Input
-                        multiline
-                        label={v.t.configurationText}
-                        value={v.transferText}
-                        onChange={v.setTransferText}
-                        error={v.transferError ? v.t.configurationError : undefined}
-                        maxLength={12000}
-                      />
-                      <div className="tw:flex tw:flex-wrap tw:gap-2 tw:mt-3">
-                        <DS.Button variant="secondary" onClick={v.exportSetup}>
-                          {v.t.exportSetup}
-                        </DS.Button>
-                        <DS.Button
-                          variant="secondary"
-                          disabled={!v.transferText.trim()}
-                          onClick={v.importSetup}
-                        >
-                          {v.t.importSetup}
-                        </DS.Button>
-                        <DS.Button
-                          variant="secondary"
-                          href={v.setupLink}
-                          target="_blank"
-                          rel="noopener"
-                        >
-                          {v.t.setupLink}
-                        </DS.Button>
-                      </div>
-                    </details>
-                    {v.hasPin ? (
-                      <div className="tw:flex tw:items-center tw:justify-between tw:gap-3">
-                        <span>
-                          <>{v.t?.pinSet}</>
-                        </span>
-                        <DS.Button variant="secondary" size="sm" onClick={v.removePin}>
-                          <>{v.t?.removePin}</>
-                        </DS.Button>
-                      </div>
-                    ) : (
-                      <DS.CodeInput
-                        id="vf-presentation-pin"
-                        label={v.t?.pin}
-                        hint={v.t?.pinHint}
-                        length={4}
-                        webOtp={false}
-                        value={v.pinDraft}
-                        onChange={v.setPinDraft}
-                        onComplete={v.savePin}
-                      />
-                    )}
-                  </div>
-                </DS.Dialog>
+                  onStartDisplay={v.startDisplay}
+                  labels={{
+                    setupTitle: v.t.setupTitle,
+                    settings: v.t?.settings,
+                    leave: v.t?.leave,
+                    done: v.t.done,
+                    startDisplay: v.t.startDisplay,
+                    setupIntro: v.t.setupIntro,
+                    startFullscreen: v.t.startFullscreen,
+                    savedCollections: v.t.savedCollections,
+                    deleteCollection: v.t.deleteCollection,
+                    displayMode: v.t.displayMode,
+                    tablet: v.t.tablet,
+                    tv: v.t.tv,
+                    displayCollection: v.t.displayCollection,
+                    allDesigns: v.t.allDesigns,
+                    byCategory: v.t.byCategory,
+                    selectedDesigns: v.t.selectedDesigns,
+                    displayCategory: v.t.displayCategory,
+                    collectionSearch: v.t.collectionSearch,
+                    selectionCount: v.t.selectionCount,
+                    useShortlist: v.t.useShortlist,
+                    previewCollection: v.t.previewCollection,
+                    emptyCollection: v.t.emptyCollection,
+                    collectionName: v.t.collectionName,
+                    saveCollection: v.t.saveCollection,
+                    displayLayout: v.t.displayLayout,
+                    singlePhoto: v.t.singlePhoto,
+                    pairedPhotos: v.t.pairedPhotos,
+                    captions: v.t.captions,
+                    photoOnly: v.t.photoOnly,
+                    photoCode: v.t.photoCode,
+                    photoPrice: v.t.photoPrice,
+                    slideTiming: v.t.slideTiming,
+                    seconds: v.t.seconds,
+                    showPrices: v.t?.showPrices,
+                    readyOnly: v.t?.readyOnly,
+                    hideSoldOut: v.t?.hideSoldOut,
+                    keepAwake: v.t?.keepAwake,
+                    fullscreen: v.t?.fullscreen,
+                    slideshow: v.t?.slideshow,
+                    slideshowHint: v.t?.slideshowHint,
+                    configuration: v.t.configuration,
+                    configurationHint: v.t.configurationHint,
+                    configurationText: v.t.configurationText,
+                    configurationError: v.t.configurationError,
+                    exportSetup: v.t.exportSetup,
+                    importSetup: v.t.importSetup,
+                    setupLink: v.t.setupLink,
+                    pinSet: v.t?.pinSet,
+                    removePin: v.t?.removePin,
+                    pin: v.t?.pin,
+                    pinHint: v.t?.pinHint
+                  }}
+                  fullscreen={{
+                    available: v.canFullscreen,
+                    startChecked: v.setupFullscreen,
+                    onStartChange: v.setSetupFullscreen,
+                    checked: v.fullscreen,
+                    onChange: v.setFullscreen
+                  }}
+                  collections={{
+                    saved: v.savedCollections,
+                    active: v.activeCollection,
+                    onLoad: v.loadCollection,
+                    onDelete: v.deleteCollection,
+                    mode: v.displayCollection,
+                    onModeChange: v.setDisplayCollection,
+                    category: v.displayCategory,
+                    onCategoryChange: v.setDisplayCategory,
+                    categories: v.displayCategories,
+                    query: v.collectionQuery,
+                    onQueryChange: v.setCollectionQuery,
+                    selectedCount: v.selectedCount,
+                    products: v.collectionProducts,
+                    canUseShortlist: v.canUseShortlist,
+                    onUseShortlist: v.useShortlist,
+                    preview: v.previewProducts,
+                    name: v.collectionName,
+                    onNameChange: v.setCollectionName,
+                    canSave: v.canSaveCollection,
+                    onSave: v.saveCollection,
+                    eligibleCountLabel: v.t.count(v.eligibleCount)
+                  }}
+                  display={{
+                    mode: v.displayMode,
+                    onModeChange: v.setDisplayMode,
+                    layout: v.displayLayout,
+                    onLayoutChange: v.setDisplayLayout,
+                    captionMode: v.captionMode,
+                    onCaptionChange: v.setCaptionMode,
+                    slideSeconds: v.slideSeconds,
+                    onSlideSecondsChange: v.setSlideSeconds
+                  }}
+                  transfer={{
+                    text: v.transferText,
+                    error: v.transferError,
+                    onChange: v.setTransferText,
+                    onExport: v.exportSetup,
+                    onImport: v.importSetup,
+                    link: v.setupLink
+                  }}
+                  pin={{
+                    isSet: v.hasPin,
+                    value: v.pinDraft,
+                    onChange: v.setPinDraft,
+                    onSave: v.savePin,
+                    onRemove: v.removePin
+                  }}
+                  toggles={{
+                    showPrices: {checked: v.settings?.showPrices, onChange: v.setShowPrices},
+                    readyOnly: {checked: v.settings?.readyOnly, onChange: v.setReadyOnly},
+                    hideSoldOut: {checked: v.settings?.hideSoldOut, onChange: v.setHideSoldOut},
+                    keepAwake: {checked: v.settings?.keepAwake, onChange: v.setKeepAwake},
+                    slideshow: {checked: v.settings?.slideshow, onChange: v.setSlideshow}
+                  }}
+                />
               </>
             }
             feedback={<DS.ToastRegion queue={v.toasts} closeLabel={v.t?.dismiss} />}
