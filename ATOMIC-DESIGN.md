@@ -158,7 +158,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductPurchase now composes total/hint, quantity, save and responsive add controls.
    StorefrontProductCare now composes delivery text, optional inquiry link and care/delivery accordion.
    StorefrontProductRecent now composes the recent heading, carousel and product cards.
-   **Next stage: extract the product added-to-bag dialog into a storefront organism.**
+   StorefrontProductAdded now composes the controlled bag-confirmation dialog and actions.
+   **Next stage: extract the product sticky purchase action into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1612,6 +1613,29 @@ against actual PNG bytes. Eight additional paired probes verify section absence 
 history. No visual baselines/tolerances changed or recaptures were needed. Representative Persian
 phone four-card and English desktop single-card captures were viewed.
 Next: extract the product added-to-bag dialog into a storefront organism.
+
+**Seventy-fourth checkpoint verified:** StorefrontProductAdded is extracted under
+`templates/app/organisms/StorefrontProductAdded/`. It receives explicit open/close, summary
+lines/sums, checkout href/callback and localized title/close/checkout/continue labels. It composes
+Dialog, OrderSummary and checkout/keep-shopping actions, preserving scaled 440px maximum width,
+classes/order, checkout autofocus and link semantics. Product View/logic retain bag mutations,
+configuration/quantity details, subtotal calculations, dialog state and checkout continuation.
+Dialog retains modal isolation, dismissal and focus management. No page model, new state/effects,
+browser APIs, persistence, commerce rules, styles, exports or generated files move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile browser cases cover bag-dialog summary, initial focus, keep-shopping restoration,
+checkout navigation and quoted size/add-on purchase. Bilingual before/after probes cover default
+and configured quantity-two dialogs at 390/768/1280/1920 pixels plus unavailable products at
+390/1280 pixels. They verify initial closure, code/configuration/quantity/line total, bag count and
+subtotal, checkout href/autofocus, Tab/Shift+Tab containment, keep-shopping/Escape/close-button
+closure and opener focus restoration, repeated opening, touch/TV Enter input, tablet rotation,
+matching bag navigation/content, unavailable-product closure, no document overflow and full-page
+axe. Full browser/device suites and unrelated payment submission were not rerun.
+All sixteen default/configured dialog screenshot pairs are byte-identical, verified against
+actual PNG bytes. Four additional paired probes verify unavailable-product closure. No visual
+baselines/tolerances changed or visual recaptures were needed. Representative Persian phone
+default and English desktop configured captures were viewed.
+Next: extract the product sticky purchase action into a storefront organism.
 
 ## Adding components
 

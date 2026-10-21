@@ -8,6 +8,7 @@ import {StorefrontProductHeading} from '../app/organisms/StorefrontProductHeadin
 import {StorefrontProductConfiguration} from '../app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
 import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
 import {StorefrontProductCare} from '../app/organisms/StorefrontProductCare/StorefrontProductCare.jsx';
+import {StorefrontProductAdded} from '../app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {StorefrontProductRecent} from '../app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx';
 
@@ -105,34 +106,19 @@ export function View({v}) {
             }
             feedback={
               <>
-                <DS.Dialog
+                <StorefrontProductAdded
                   open={v.addedOpen}
                   onClose={v.closeAdded}
-                  title={v.t?.added}
-                  closeLabel={v.t?.dismiss}
-                  maxWidth={440}
-                >
-                  <div className="vf-product-added tw:flex tw:flex-col tw:gap-5">
-                    <DS.OrderSummary lines={v.addedLines} sums={v.addedSums} />
-                    <div className="tw:flex tw:flex-col tw:gap-2">
-                      <DS.Button
-                        variant="primary"
-                        size="lg"
-                        block={true}
-                        iconEnd="arrow-right"
-                        href={v.href?.bag}
-                        onClick={v.checkout}
-                        autoFocus={true}
-                        className="vf-product-added-checkout"
-                      >
-                        <>{v.t?.checkout}</>
-                      </DS.Button>
-                      <DS.Button variant="ghost" size="lg" block={true} onClick={v.closeAdded}>
-                        <>{v.t?.keepShopping}</>
-                      </DS.Button>
-                    </div>
-                  </div>
-                </DS.Dialog>
+                  lines={v.addedLines}
+                  sums={v.addedSums}
+                  checkout={{href: v.href?.bag, onClick: v.checkout}}
+                  labels={{
+                    title: v.t?.added,
+                    close: v.t?.dismiss,
+                    checkout: v.t?.checkout,
+                    continue: v.t?.keepShopping
+                  }}
+                />
                 <DS.ToastRegion
                   queue={v.toasts}
                   closeLabel={v.t?.dismiss}
