@@ -63,6 +63,8 @@ StorefrontBagFeedback composes removal notice/Undo and empty-state recovery in s
 View/logic retain visibility, removed-line data, Undo/reset, persistence and focus restoration.
 StorefrontBagProgress composes compact/wide Steppers from explicit steps/current/labels/formatters;
 View/logic retain visibility, stage state, navigation and permitted-step callbacks.
+StorefrontBagRecipient composes recipient heading, saved-address chips and controlled name/phone fields;
+View/logic retain address mapping/selection, validation, persistence and the surrounding delivery/map flow.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
