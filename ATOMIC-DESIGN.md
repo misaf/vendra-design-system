@@ -206,7 +206,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninHeading now composes phone/code step headings and introductions.
    StorefrontSigninPhoneControls now composes the phone summary, input and send action.
    StorefrontSigninCodeControls now composes the code summary, input and verify action.
-   **Next stage: extract sign-in resend controls into a storefront organism.**
+   StorefrontSigninResend now composes countdown/action and resend status.
+   **Next stage: extract sign-in policy links into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2914,6 +2915,33 @@ channel delta 21 out of 255), with equal dimensions and markup. Actual PNG bytes
 both differing captures were viewed without a visible layout shift. English phone invalid, Persian
 phone partial, Persian tablet reset and Persian TV initial captures were also viewed.
 Next: extract sign-in resend controls into a storefront organism.
+
+**One hundred and twenty-second checkpoint verified:** StorefrontSigninResend is extracted under
+`templates/app/organisms/` with explicit seconds, resend callback and status text. It preserves the
+wrapper/classes, package ResendCode props, child order and always-mounted status paragraph.
+View retains code-step visibility and mapping; sign-in/shared logic retains wait configuration,
+code/error reset, feedback state and code-field focus. Package ResendCode retains wall-clock timing,
+visibility updates, interval cleanup, ready announcements, tracking and activation. No state,
+effects, browser APIs or sign-in rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, resend countdown,
+simulated Android SMS autofill/completion, phone validation/focus and policy links. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check initial and halfway waits with no early action, countdown expiry, ready status, resend
+code/error clearing and focus, feedback text, repeat wait/action, change-number unmount/remount reset
+and successful local demo completion. Tablet rotation, document overflow and page-top axe pass.
+Ready/feedback/ready-again markup matches after normalizing React Aria's random per-page ID prefix;
+wait timing is checked independently rather than comparing moving countdown text. Actions use touch,
+Enter or Space as appropriate; custom probes stub native credential retrieval and use local demo
+sign-in logic. Full browser/device and TV spatial-arrow navigation suites and assistive-technology
+announcement testing were not run in this stage; earlier baseline accessibility/zone-hint limitations
+remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 24 ready/feedback/ready-again screenshot pairs are byte-identical,
+verified against actual PNG bytes. English phone ready-again, Persian phone feedback, Persian tablet
+ready, English desktop feedback and Persian TV ready-again captures were viewed.
+Next: extract sign-in policy links into a storefront organism.
 
 ## Adding components
 
