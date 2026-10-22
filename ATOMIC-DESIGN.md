@@ -175,7 +175,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagSchedule now composes delivery scheduling and changed-window confirmation.
    StorefrontBagCards now composes per-item card messages/add controls and Undo feedback.
    StorefrontBagSender now composes sender heading/hint and controlled contact fields.
-   **Next stage: extract bag delivery sign-in and validation feedback into a storefront organism.**
+   StorefrontBagDeliveryIntro now composes validation feedback and the guest sign-in prompt.
+   **Next stage: extract checkout delivery review into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2034,6 +2035,28 @@ Twenty-three of 24 default/error/filled sender-section screenshot pairs are byte
 against actual PNG bytes. The Persian TV filled capture differs by four pixels at 1/255 per channel. Persian phone errors and English TV filled captures were viewed. No baselines/
 tolerances changed. Next: extract bag delivery sign-in and validation feedback into a storefront
 organism.
+
+**Ninety-first checkpoint verified:** StorefrontBagDeliveryIntro is extracted under
+`templates/app/organisms/StorefrontBagDeliveryIntro/`. It receives error records and an explicit
+sign-in descriptor with visibility, prompt/label, href and callback. It composes ErrorSummary and
+the guest prompt, preserving fragment order, `vf-errors` ID, classes, link semantics and button
+styling/icon. View retains step visibility/mapping; bag/shared logic retains problems/validation,
+guest eligibility, continuation/authentication and private draft/customer isolation. Shared
+ErrorSummary retains accessible heading/list and target-focus behavior. The bag View's now-unused
+DS import is removed after type checking identified it. No page model, new state/effects, browser
+APIs, commerce rules, styles or package exports move here.
+Final unit/type/package tests, production app build and generated/format/CSS checks pass. Eight
+focused desktop/mobile browser cases pass without retries: error-summary focus, guest sign-in
+return and bilingual customer-switch/private-data isolation. Eight bilingual paired probes at
+touch widths 390/768, desktop 1280 and TV 1920 verify initial error absence, sign-in href/route,
+guest recipient draft return, six-error summary/focus, all six target links/focus, four-error update,
+tablet rotation, overflow and full-page axe. Eight additional paired fresh signed-in probes verify
+prefilled sender phone and absence of guest prompt/initial errors. Touch uses taps; desktop/TV
+activation uses Enter. Full browser/device suites and TV spatial-arrow navigation were not rerun;
+prior baseline zone-hint failures remain documented.
+All 24 prompt/full/reduced-summary screenshot pairs are byte-identical, verified against PNG bytes.
+Persian phone full summary and English TV prompt captures were viewed. No baselines/tolerances
+changed. Next: extract checkout delivery review into a storefront organism.
 
 ## Adding components
 

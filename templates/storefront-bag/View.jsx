@@ -1,6 +1,5 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
 import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
@@ -13,6 +12,7 @@ import {StorefrontBagLocation} from '../app/organisms/StorefrontBagLocation/Stor
 import {StorefrontBagSchedule} from '../app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx';
 import {StorefrontBagCards} from '../app/organisms/StorefrontBagCards/StorefrontBagCards.jsx';
 import {StorefrontBagSender} from '../app/organisms/StorefrontBagSender/StorefrontBagSender.jsx';
+import {StorefrontBagDeliveryIntro} from '../app/organisms/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -85,25 +85,16 @@ export function View({v}) {
                   ) : null}
                   {v.onDelivery ? (
                     <>
-                      <DS.ErrorSummary id="vf-errors" errors={v.problems} />
-                      {v.guest ? (
-                        <>
-                          <div className="vf-bag-signin tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-3 tw:px-4 tw:rounded-md tw:bg-sunken tw:text-sm">
-                            <span>
-                              <>{v.t?.signinPrompt}</>
-                            </span>
-                            <DS.Button
-                              variant="secondary"
-                              size="sm"
-                              iconStart="user"
-                              href={v.signinHref}
-                              onClick={v.goSignin}
-                            >
-                              <>{v.t?.signin}</>
-                            </DS.Button>
-                          </div>
-                        </>
-                      ) : null}
+                      <StorefrontBagDeliveryIntro
+                        errors={v.problems}
+                        signin={{
+                          visible: v.guest,
+                          prompt: v.t?.signinPrompt,
+                          label: v.t?.signin,
+                          href: v.signinHref,
+                          onClick: v.goSignin
+                        }}
+                      />
                       <section
                         className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
                         aria-labelledby="vf-recipient-title"
