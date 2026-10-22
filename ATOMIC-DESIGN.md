@@ -203,7 +203,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountNotices now composes the page storage-error alert.
    StorefrontAccountBalancePanel now composes overview, top-up, checkout return and history.
    Account View now composes organisms directly without redundant single-child fragments.
-   **Next stage: extract sign-in heading into a storefront organism.**
+   StorefrontSigninHeading now composes phone/code step headings and introductions.
+   **Next stage: extract sign-in phone controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2827,6 +2828,32 @@ All eight paired probes pass. All 32 tab-strip/profile/editor-save screenshot pa
 verified against actual PNG bytes. English/Persian phone profile, English tablet address save,
 Persian tablet tabs, English desktop reminder save and Persian TV tabs captures were viewed.
 Next: extract sign-in heading into a storefront organism.
+
+**One hundred and nineteenth checkpoint verified:** StorefrontSigninHeading is extracted under
+`templates/app/organisms/` with explicit title, accent and introduction text, shared by phone and
+code steps. It preserves the single h1, title trailing space, semantic em/accent classes, intro
+paragraph/classes and direct sibling order without adding a wrapper. View retains step visibility,
+localized text mapping and code-message phone bidi isolates. Sign-in/shared logic retains validation,
+focus, resend state, authentication, customer synchronization and checkout continuation. No state,
+effects, browser APIs or sign-in rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, resend countdown,
+simulated Android SMS autofill/completion, phone validation/focus and policy links. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check exact phone/code/back heading and intro markup/text, a single main h1, semantic accent,
+direct sibling placement, phone-number bidi isolates, invalid phone/code summaries and focus,
+change-number retention, successful local demo completion and heading replacement, tablet rotation,
+document overflow and page-top axe. Actions use touch or Enter/Space activation; custom probes stub
+native credential retrieval and use the local demo sign-in logic. Full browser/device and TV
+spatial-arrow navigation suites and assistive-technology announcement testing were not run in this
+stage; earlier baseline accessibility/zone-hint limitations remain documented. No baselines or
+tolerances changed.
+
+All eight paired probes pass with identical heading/intro markup. All 24 phone/code/back heading-area
+screenshot pairs are byte-identical, verified against actual PNG bytes. English phone initial,
+Persian phone code, Persian tablet initial, English desktop code and Persian TV back captures were
+viewed. Next: extract sign-in phone controls into a storefront organism.
 
 ## Adding components
 
