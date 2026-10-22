@@ -166,7 +166,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopToolbar now composes compact filters/sort, active filters, quick chips and result count.
    StorefrontShopResults now composes product cards, paging and loading/error/empty feedback.
    StorefrontBagItems now composes editable line items and stock warnings.
-   **Next stage: extract the bag summary into a storefront organism.**
+   StorefrontBagSummary now composes totals, free-delivery progress, promo and navigation actions.
+   **Next stage: extract bag sticky actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1815,6 +1816,30 @@ Persian phone default and desktop stock-warning captures were viewed. The scratc
 focus-marker assertion was corrected to React's existing string value `true`; no source changes
 were needed for it. No baselines/tolerances changed. Full browser/device suites and TV spatial-arrow
 navigation were not rerun. Next: extract the bag summary into a storefront organism.
+
+**Eighty-second checkpoint verified:** StorefrontBagSummary is extracted under
+`templates/app/organisms/StorefrontBagSummary/`. It receives summary title/rows/sums, optional
+free-delivery descriptor, controlled promo descriptor, visible delivery/payment/back actions and
+payment note. It composes Card/OrderSummary, Meter, PromoCodeField and navigation, preserving
+fragment structure, classes/order, padding, promo ID, button variants/icons, back href and responsive
+visibility. View retains content visibility/mapping; bag/shared logic retains pricing/discounts,
+quote rules, promo validation/persistence, step state and delivery/payment validation/navigation.
+Shared components retain promo focus/accessibility; sticky actions remain in Shell. No page model,
+new state/effects, browser APIs, commerce rules, styles or package exports move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile browser cases pass without retries: promo discount continuity through checkout and
+free-delivery progress. Eight bilingual before/after probes at touch widths 390/768, desktop 1280
+and TV 1920 verify initial totals, invalid promo/error focus, normalized applied code/discount/focus,
+delivery entry, promo hiding/retention, meter cap and below-threshold amount, payment validation
+focus, back link, code removal/field focus/reload, tablet rotation, empty-summary removal, overflow
+and full-page axe. Touch actions use taps; desktop/TV uses keyboard Enter. Five summary-region
+captures per probe cover default, invalid, applied, delivery and below-threshold states.
+Thirty-nine of 40 screenshot pairs are byte-identical, verified against actual PNG bytes. The
+English tablet invalid-promo capture differs by five pixels at 1/255 per channel. No baselines/
+tolerances changed. Persian phone invalid and desktop delivery/threshold captures were viewed.
+The initial baseline map probe used a frozen clock; switching to the existing delivery test's
+moving clock allowed map animation/quoting to complete. Full browser/device suites and TV spatial
+arrow navigation were not rerun. Next: extract bag sticky actions into a storefront organism.
 
 ## Adding components
 
