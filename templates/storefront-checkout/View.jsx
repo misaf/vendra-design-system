@@ -10,6 +10,7 @@ import {StorefrontCheckoutSubmission} from '../app/organisms/StorefrontCheckoutS
 import {StorefrontCheckoutNotices} from '../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
 import {StorefrontCheckoutProgress} from '../app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
 import {StorefrontCheckoutHeading} from '../app/organisms/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
+import {StorefrontCheckoutBank} from '../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -167,26 +168,23 @@ export function View({v}) {
             }
             bank={
               v.bankTrip ? (
-                <>
-                  <StorefrontCheckoutProgress
-                    steps={v.steps}
-                    current={2}
-                    labels={{region: v.t?.steps, done: v.t?.doneStep}}
-                    formatNumber={v.fmt}
-                    captionFormat={v.caption}
-                  />
-                  <DS.PaymentStatus
-                    status={v.bankTrip?.status}
-                    amount={v.bankTrip?.amount}
-                    orderNumber={v.bankTrip?.orderNumber}
-                    redirect={v.bankTrip?.redirect}
-                    supportHref={v.bankTrip?.supportHref}
-                    onRetry={v.payRetry}
-                    onOtherMethod={v.payOther}
-                    onCheckAgain={v.payCheckAgain}
-                    headingLevel={1}
-                  />
-                </>
+                <StorefrontCheckoutBank
+                  progress={{
+                    steps: v.steps,
+                    current: 2,
+                    labels: {region: v.t?.steps, done: v.t?.doneStep},
+                    formatNumber: v.fmt,
+                    captionFormat: v.caption
+                  }}
+                  payment={{
+                    status: v.bankTrip?.status,
+                    amount: v.bankTrip?.amount,
+                    orderNumber: v.bankTrip?.orderNumber,
+                    redirect: v.bankTrip?.redirect,
+                    supportHref: v.bankTrip?.supportHref
+                  }}
+                  actions={{retry: v.payRetry, other: v.payOther, checkAgain: v.payCheckAgain}}
+                />
               ) : null
             }
             success={

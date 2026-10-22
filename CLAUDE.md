@@ -89,6 +89,8 @@ StorefrontCheckoutNotices composes independent retry-review and recovery-storage
 View/logic retain retry eligibility, storage, focus, record clearing and review navigation.
 StorefrontCheckoutProgress composes compact/wide Steppers; StorefrontCheckoutHeading composes payment h1;
 View/logic retain state visibility, current indices, labels/formatters, permitted navigation and focus.
+StorefrontCheckoutBank composes bank progress and PaymentStatus from explicit descriptors;
+View/logic retain recovery, redirect data, retry/method/check callbacks, verification and completion.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
