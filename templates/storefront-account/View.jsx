@@ -15,6 +15,7 @@ import {StorefrontAccountAddressEditor} from '../app/organisms/StorefrontAccount
 import {StorefrontAccountReminderEditor} from '../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {StorefrontAccountEditorDialog} from '../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
 import {StorefrontAccountHeading} from '../app/organisms/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
+import {StorefrontAccountTabs} from '../app/organisms/StorefrontAccountTabs/StorefrontAccountTabs.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -45,14 +46,11 @@ export function View({v}) {
             }
             tabs={
               <>
-                <DS.Tabs
-                  variant="pill"
+                <StorefrontAccountTabs
                   items={v.tabItems}
                   value={v.tab}
                   onChange={v.setTab}
                   label={v.t?.accA}
-                  listClassName="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"
-                  panelClassName="vf-account-panel"
                 >
                   {v.isOrders ? (
                     <>
@@ -195,7 +193,7 @@ export function View({v}) {
                       />
                     </>
                   ) : null}
-                </DS.Tabs>
+                </StorefrontAccountTabs>
               </>
             }
             feedback={

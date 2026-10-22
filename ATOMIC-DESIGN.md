@@ -197,7 +197,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountReminderEditor now composes controlled reminder/date fields.
    StorefrontAccountEditorDialog now composes shared editor feedback, fields and actions.
    StorefrontAccountHeading now composes the account eyebrow and h1/accent.
-   **Next stage: extract account tab controls into a storefront organism.**
+   StorefrontAccountTabs now composes controlled pill tabs and the selected panel slot.
+   **Next stage: extract account session action into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2659,6 +2660,31 @@ documented. No baselines or tolerances changed.
 All eight paired probes pass. All eight heading screenshot pairs are byte-identical, verified against
 actual PNG bytes. English/Persian phone, Persian tablet and English TV captures were viewed.
 Next: extract account tab controls into a storefront organism.
+
+**One hundred and thirteenth checkpoint verified:** StorefrontAccountTabs is extracted under
+`templates/app/organisms/` with explicit items/value/change/label and selected-panel children.
+It preserves the pill variant, scrolling list classes, panel class and child placement without
+adding a wrapper. View retains panel visibility/mapping; account/shared logic retains eligibility,
+allowed-tab selection/fallback, routing and state. Package Tabs retains ARIA links, roving focus and
+RTL keyboard behavior; shared TV navigation retains edge handoff. No state, effects, browser APIs or
+account rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass without retries: bilingual reminder validation, address editing,
+saved-product parity, profile persistence, wallet return and sign-out protection. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check selected-tab/panel ARIA linkage, one roving tab stop, mirrored arrows and Home/End, all six
+panel branches, draft continuity, direct Profile routes/reload, invalid-tab fallback, tablet rotation,
+document overflow and page-top axe. Initial unchanged-baseline TV probes assumed ordinary edge wrap
+and then selection on focus; corrected assertions explicitly select the starting tab and verify the
+existing spatial-navigation handoff at tab-row edges. No product behavior was changed to satisfy
+those assumptions. TV verification covers these tab controls and edge handoff; full browser/device
+and TV spatial-navigation suites were not rerun. Earlier baseline accessibility/zone-hint limitations
+remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 16 Orders/Profile tab-strip screenshot pairs are byte-identical,
+verified against actual PNG bytes. English/Persian phone, Persian tablet, English desktop and Persian
+TV captures were viewed. Next: extract account session action into a storefront organism.
 
 ## Adding components
 

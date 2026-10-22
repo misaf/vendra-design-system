@@ -2,7 +2,7 @@
 
 Account Atomic Design template with React-node slots for heading, actions, notices, tabs, feedback and dialog. It owns the main focus target, responsive header and heading wrappers, and slot order.
 
-The account View composes heading/actions/tab controls, notices and account organisms, maps their presentation descriptors and chooses visibility. Account logic retains tab routing, customer isolation, drafts, persistence, validation, mutations and focus restoration. This layout owns no data, callbacks, persistence or browser effects.
+The account View composes heading/actions, notices and account organisms, maps their presentation descriptors and chooses visibility. Account logic retains tab routing, customer isolation, drafts, persistence, validation, mutations and focus restoration. This layout owns no data, callbacks, persistence or browser effects.
 
 Preserve existing wrapper classes and focus targets. Verify linked tabs and keyboard navigation, profile saves and recovery, address/reminder editor validation and focus return, saved-product synchronization, wallet continuity, sign-out isolation, hydration and English/Persian responsive layouts.
 
@@ -29,3 +29,5 @@ StorefrontAccountReminderEditor composes controlled reminder/date fields. View r
 StorefrontAccountEditorDialog composes the shared controlled editor, error feedback, field slot and save/cancel actions. View retains field selection/mapping; account/shared logic retains drafts, validation/focus, mutations and persistence.
 
 StorefrontAccountHeading composes eyebrow and h1/accent from explicit text. This layout retains the heading/header wrappers; View/logic retain localization, visibility and navigation/focus.
+
+StorefrontAccountTabs composes controlled pill tabs and the selected-panel slot. View retains panel visibility/mapping; account/shared logic retains tab eligibility/fallback, routing and state. Package Tabs retains ARIA links and keyboard/focus behavior.
