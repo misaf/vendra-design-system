@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontAccountLayout} from '../app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from '../app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
 import {StorefrontAccountBalanceOverview} from '../app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx';
+import {StorefrontAccountTopUp} from '../app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -61,75 +62,26 @@ export function View({v}) {
                           amount={v.balance?.amount}
                           status={v.balance?.status}
                         />
-                        <section
-                          aria-labelledby="vf-topup-title"
-                          className="tw:flex tw:flex-col tw:gap-4 tw:max-w-narrow"
-                        >
-                          <h2 id="vf-topup-title" className="tw:m-0 tw:text-xl">
-                            <>{v.t?.balance?.topUp}</>
-                          </h2>
-                          <div
-                            role="group"
-                            aria-label={v.t?.balance?.quick}
-                            className="tw:flex tw:gap-2 tw:flex-wrap"
-                          >
-                            {list(v.balance?.presets).map((v, $index) => (
-                              <React.Fragment key={$index}>
-                                <DS.Chip
-                                  selected={v?.pressed}
-                                  aria-pressed={v?.pressed}
-                                  onClick={v?.pick}
-                                >
-                                  <>{v?.label}</>
-                                </DS.Chip>
-                              </React.Fragment>
-                            ))}
-                          </div>
-                          <DS.Input
-                            id="vf-topup-amount"
-                            label={v.t?.balance?.amount}
-                            value={v.balance?.value}
-                            onChange={v.balance?.set}
-                            hint={v.balance?.hint}
-                            error={v.balance?.error}
-                            inputMode="numeric"
-                            dir="ltr"
-                            autoComplete="off"
-                          />
-                          <div>
-                            <DS.Button
-                              variant="primary"
-                              iconStart="banknote"
-                              onClick={v.balance?.submit}
-                              loading={v.balance?.busy}
-                              disabled={v.balance?.busy}
-                            >
-                              <>{v.balance?.payLabel}</>
-                            </DS.Button>
-                          </div>
-                          {v.balance?.busy ? (
-                            <>
-                              <p role="status" className="tw:m-0 tw:text-sm">
-                                <>{v.t?.balance?.processing}</>
-                              </p>
-                            </>
-                          ) : null}
-                          {v.balance?.done ? (
-                            <>
-                              <p
-                                id="vf-topup-done"
-                                tabIndex={-1}
-                                role="status"
-                                className="tw:m-0 tw:text-sm tw:font-medium"
-                              >
-                                <>{v.balance?.done}</>
-                              </p>
-                            </>
-                          ) : null}
-                          <p className="tw:m-0 tw:text-sm tw:text-quiet">
-                            <>{v.t?.balance?.demo}</>
-                          </p>
-                        </section>
+                        <StorefrontAccountTopUp
+                          title={v.t?.balance?.topUp}
+                          quickLabel={v.t?.balance?.quick}
+                          presets={list(v.balance?.presets)}
+                          amount={{
+                            label: v.t?.balance?.amount,
+                            value: v.balance?.value,
+                            onChange: v.balance?.set,
+                            hint: v.balance?.hint,
+                            error: v.balance?.error
+                          }}
+                          payment={{
+                            label: v.balance?.payLabel,
+                            onClick: v.balance?.submit,
+                            busy: v.balance?.busy,
+                            processing: v.t?.balance?.processing,
+                            done: v.balance?.done
+                          }}
+                          demo={v.t?.balance?.demo}
+                        />
                         {v.checkoutReturn && (
                           <DS.Button
                             variant="secondary"

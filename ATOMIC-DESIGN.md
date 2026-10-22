@@ -187,7 +187,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutSummary and StorefrontCheckoutSticky now compose totals and compact submission.
    StorefrontAccountOrders now composes account order cards and tracking links.
    StorefrontAccountBalanceOverview now composes the wallet amount and eligibility status.
-   **Next stage: extract account top-up controls into a storefront organism.**
+   StorefrontAccountTopUp now composes controlled amount/preset/payment controls and feedback.
+   **Next stage: extract account balance history into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2366,6 +2367,33 @@ byte-identical. The English phone below-threshold capture differs by four pixels
 delta 1/255, verified against actual PNG bytes and viewed side by side. Persian phone topped-up,
 Persian tablet below-threshold, English desktop topped-up and Persian TV initial captures were also
 viewed. Next: extract account top-up controls into a storefront organism.
+
+**One hundred and third checkpoint verified:** StorefrontAccountTopUp is extracted under
+`templates/app/organisms/` with explicit title/quick-label/presets, amount/payment descriptors and
+demo text. It preserves the section and heading/input/completion IDs, positional preset keys,
+pressed state/callbacks, numeric LTR input props, loading/disabled primary banknote button, status
+roles and completion focus target. View retains tab visibility, list normalization and the surrounding
+checkout-return/history composition. Account/shared logic retains parsing/limits, validation/focus,
+pending timer, customer scope, wallet changes, storage errors, analytics and persistence. No state,
+effects, browser APIs or payment rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All six focused
+mobile/desktop browser tests pass without retries: bilingual top-up/checkout return and top-up followed
+by balance-discount payment. Eight paired baseline/current probes exercise English/Persian at touch
+widths 390/768, desktop 1280 and TV 1920. They check numeric/LTR/autocomplete props, empty/min/max
+validation, invalid-input focus, quick-preset pressed state, localized digits/separators, controlled
+pending/disabled feedback and repeat activation without a second timer. Blocking only account storage
+writes preserves the balance/input on failure; restoring writes and explicitly retrying adds ten
+million once, focuses completion, clears the amount and persists the resulting balance/history after
+reload. The 600ms demo timer is controlled only inside isolated probe contexts. Tablet rotation,
+document overflow and full-page axe pass. Full browser/device suites and TV spatial-arrow navigation
+were not rerun; prior baseline zone-hint failures remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. Of 48 initial/empty/selected/pending/failed/done section screenshot
+pairs, 37 are byte-identical. The other 11 differ by 2–29 pixels with maximum channel deltas 1–6/255,
+verified against actual PNG bytes. English phone failure, Persian phone pending/failure, Persian tablet
+empty validation, Persian desktop failure and Persian TV selected captures were viewed side by side.
+Next: extract account balance history into a storefront organism.
 
 ## Adding components
 
