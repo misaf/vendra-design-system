@@ -93,6 +93,8 @@ StorefrontCheckoutBank composes bank progress and PaymentStatus from explicit de
 View/logic retain recovery, redirect data, retry/method/check callbacks, verification and completion.
 StorefrontCheckoutConfirmation composes completion progress, heading, details, account offer and links;
 View/logic retain completion state, wording/formatting, customer eligibility, destinations and persistence.
+StorefrontCheckoutSummary composes summary Card/rows; StorefrontCheckoutSticky composes compact total/place;
+View/logic retain totals, visibility, validation/submission and pending/errors; Shell retains docking/focus.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain

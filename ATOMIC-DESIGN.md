@@ -184,7 +184,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutProgress and StorefrontCheckoutHeading now compose progress and payment heading.
    StorefrontCheckoutBank now composes bank progress and payment status.
    StorefrontCheckoutConfirmation now composes success details, account offer and follow-up links.
-   **Next stage: extract checkout summary and sticky action into storefront organisms.**
+   StorefrontCheckoutSummary and StorefrontCheckoutSticky now compose totals and compact submission.
+   **Next stage: extract account orders into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2282,6 +2283,34 @@ screenshot pairs are byte-identical, verified against actual PNG bytes. English 
 Persian phone account offer, Persian tablet signed-in details, English desktop actions and Persian
 TV heading captures were viewed. Next: extract checkout summary and sticky action into storefront
 organisms.
+
+**One hundredth checkpoint verified:** StorefrontCheckoutSummary and StorefrontCheckoutSticky
+are extracted under `templates/app/organisms/` with explicit title/lines/sums and summary/place
+props. Summary retains Card padding 20 and OrderSummary props. Sticky retains the total/caption/
+price classes, Price size and primary button icon/loading/disabled props. View retains visibility,
+formatting and validation/submission callbacks; logic retains totals, quote/payment rules and
+pending/error state. Layout retains the summary column/sticky panel; Shell/BottomBar retain compact
+docking, measurements and focus behavior. Checkout View now composes storefront organisms/layouts
+and no longer imports package DS components directly. No rules, state/effects or browser APIs
+moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass without retries: bilingual changed-receipt guards and late-response
+bag integrity, promo totals carried to checkout, card completion and bilingual real-touch field
+clearance above phone bars at 390x450. Paired probes exercise English/Persian at touch widths
+390/768, desktop 1280 and TV 1920. They check two summary lines, summary/sticky total agreement,
+phone-only compact visibility, invalid-receipt focus, changed-amount focus/blocking/confirmation,
+updated totals, online/card label continuity and preserved card digits. Controlled API promises
+verify pending loading/disabled controls with one request, retained summary after rejection,
+explicit retry, one completed order with the updated quantity/total, empty bag and hidden summary/
+sticky on completion. Repeat touch activation of the pending phone action does not add a request.
+Tablet rotation, initial-page axe and document overflow are covered. API mutations stay in isolated
+browser contexts. Full browser/device suites and TV spatial-arrow navigation were not rerun; prior
+baseline zone-hint failures remain documented. No baselines or tolerances changed.
+All eight paired probes pass. All 34 initial/updated/pending summary and phone card/updated/online/
+pending/failed action screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone online action, English phone pending action, Persian tablet updated summary and English
+TV pending summary captures were viewed. Next: extract account orders into a storefront organism.
 
 ## Adding components
 

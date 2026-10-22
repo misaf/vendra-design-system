@@ -1,6 +1,5 @@
 // StorefrontCheckout: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontCheckoutLayout} from '../app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx';
 import {StorefrontCheckoutDeliveryReview} from '../app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx';
@@ -12,6 +11,8 @@ import {StorefrontCheckoutProgress} from '../app/organisms/StorefrontCheckoutPro
 import {StorefrontCheckoutHeading} from '../app/organisms/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
 import {StorefrontCheckoutBank} from '../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {StorefrontCheckoutConfirmation} from '../app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
+import {StorefrontCheckoutSummary} from '../app/organisms/StorefrontCheckoutSummary/StorefrontCheckoutSummary.jsx';
+import {StorefrontCheckoutSticky} from '../app/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -161,9 +162,7 @@ export function View({v}) {
             summary={
               v.paying ? (
                 <>
-                  <DS.Card padding={20}>
-                    <DS.OrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
-                  </DS.Card>
+                  <StorefrontCheckoutSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
                 </>
               ) : null
             }
@@ -227,23 +226,15 @@ export function View({v}) {
         <>
           {v.paying ? (
             <>
-              <div className="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:py-3 tw:px-4 tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]">
-                <div className="vf-action-total">
-                  <span className="vf-action-caption tw:text-xs tw:text-quiet">
-                    <>{v.t?.total}</>
-                  </span>
-                  <DS.Price value={v.totalLabel} size="md" className="vf-price" />
-                </div>
-                <DS.Button
-                  variant="primary"
-                  iconEnd="arrow-right"
-                  onClick={v.place}
-                  loading={v.busy}
-                  disabled={v.placeDisabled}
-                >
-                  <>{v.t?.place}</>
-                </DS.Button>
-              </div>
+              <StorefrontCheckoutSticky
+                summary={{label: v.t?.total, value: v.totalLabel}}
+                place={{
+                  onClick: v.place,
+                  loading: v.busy,
+                  disabled: v.placeDisabled,
+                  label: v.t?.place
+                }}
+              />
             </>
           ) : null}
         </>
