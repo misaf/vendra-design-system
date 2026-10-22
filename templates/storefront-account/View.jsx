@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontAccountLayout} from '../app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from '../app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
+import {StorefrontAccountBalanceOverview} from '../app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -55,23 +56,11 @@ export function View({v}) {
                   {v.isBalance ? (
                     <>
                       <div className="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-wide">
-                        <DS.Card padding={24}>
-                          <div className="tw:flex tw:flex-col tw:gap-2">
-                            <span id="vf-balance-label" className="tw:text-sm tw:text-quiet">
-                              <>{v.t?.balance?.title}</>
-                            </span>
-                            <span
-                              id="vf-balance-amount"
-                              aria-labelledby="vf-balance-label vf-balance-amount"
-                              className="tw:text-2xl tw:font-medium"
-                            >
-                              <>{v.balance?.amount}</>
-                            </span>
-                            <p className="vf-account-balance-status tw:m-0 tw:text-sm tw:text-secondary tw:max-w-measure tw:text-pretty">
-                              <>{v.balance?.status}</>
-                            </p>
-                          </div>
-                        </DS.Card>
+                        <StorefrontAccountBalanceOverview
+                          title={v.t?.balance?.title}
+                          amount={v.balance?.amount}
+                          status={v.balance?.status}
+                        />
                         <section
                           aria-labelledby="vf-topup-title"
                           className="tw:flex tw:flex-col tw:gap-4 tw:max-w-narrow"

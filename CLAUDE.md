@@ -99,6 +99,8 @@ StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and e
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontAccountOrders composes order cards/tracking links from explicit presentation records;
 View/logic retain tab visibility, list normalization, history, customer isolation, formatting and routes.
+StorefrontAccountBalanceOverview composes the balance Card from explicit title/amount/status;
+View/logic retain visibility, wallet reads, discount eligibility, formatting and mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

@@ -186,7 +186,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutConfirmation now composes success details, account offer and follow-up links.
    StorefrontCheckoutSummary and StorefrontCheckoutSticky now compose totals and compact submission.
    StorefrontAccountOrders now composes account order cards and tracking links.
-   **Next stage: extract account balance overview into a storefront organism.**
+   StorefrontAccountBalanceOverview now composes the wallet amount and eligibility status.
+   **Next stage: extract account top-up controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2337,6 +2338,34 @@ The English phone sample and received cards differ by 4 and 5 pixels respectivel
 channel delta 1/255, verified against actual PNG bytes and viewed side by side. Persian phone cancelled,
 Persian tablet delivered, English desktop received and Persian TV fallback-status captures were also
 viewed. Next: extract account balance overview into a storefront organism.
+
+**One hundred and second checkpoint verified:** StorefrontAccountBalanceOverview is extracted
+under `templates/app/organisms/` with explicit title, formatted amount and status props. It preserves
+Card padding 24, the label/amount IDs and aria-labelledby relationship, amount typography, status
+classes and fragment order without adding a wrapper. View retains balance-tab visibility and the
+surrounding top-up/history composition; account/shared logic retains wallet reads, customer scope,
+discount eligibility, formatting, mutations and persistence. No state, effects, browser APIs or
+commerce rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. The 10 focused
+mobile/desktop browser tests finish with nine passing initially and one passing on retry: bilingual
+wallet top-up/checkout return, balance-discount payment and profile edits preserving newer wallet
+data. The Persian desktop profile test initially timed out waiting for #main on page load, then
+passed on retry and in an isolated rerun with retries disabled. Eight paired baseline/current probes
+exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. Initial sample balances,
+99-million below-threshold balances and 109-million topped-up balances retain identical copy and
+amounts across versions. The probes check the label relationship, invalid-input focus with unchanged
+balance, touch/keyboard top-up activation, completion focus, eligibility transition, persisted wallet
+value, reload/tab continuity, tablet rotation, document overflow and full-page axe. Sample accounts
+are initially computed without a storage write; the below-threshold fixture explicitly saves a valid
+per-phone account before reload. Full browser/device suites and TV spatial-arrow navigation were not
+rerun; prior baseline zone-hint failures remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. Of 24 initial/below-threshold/topped-up Card screenshot pairs, 23 are
+byte-identical. The English phone below-threshold capture differs by four pixels with maximum channel
+delta 1/255, verified against actual PNG bytes and viewed side by side. Persian phone topped-up,
+Persian tablet below-threshold, English desktop topped-up and Persian TV initial captures were also
+viewed. Next: extract account top-up controls into a storefront organism.
 
 ## Adding components
 

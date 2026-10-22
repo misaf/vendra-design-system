@@ -7,3 +7,5 @@ The account View retains tab controls and panels, all copy, signed-in actions, p
 Preserve existing wrapper classes and focus targets. Verify linked tabs and keyboard navigation, profile saves and recovery, address/reminder editor validation and focus return, saved-product synchronization, wallet continuity, sign-out isolation, hydration and English/Persian responsive layouts.
 
 StorefrontAccountOrders composes order cards/tracking links from normalized presentation records. View retains the surrounding tab branch; account/shared logic retains history, customer isolation, formatting and destinations.
+
+StorefrontAccountBalanceOverview composes the balance Card. View retains the balance panel, top-up/history sections and tab visibility; account/shared logic retains wallet reads, eligibility, formatting and mutations.
