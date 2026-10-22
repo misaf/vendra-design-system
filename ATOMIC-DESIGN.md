@@ -180,7 +180,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutMethods now composes payment-method choices, availability and wallet context.
    StorefrontCheckoutReceipt now composes receipt details and changed-amount confirmation.
    StorefrontCheckoutSubmission now composes submission actions and processing/failure feedback.
-   **Next stage: extract checkout status notices into a storefront organism.**
+   StorefrontCheckoutNotices now composes retry-review and recovery-storage notices.
+   **Next stage: extract checkout progress and heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2166,6 +2167,31 @@ safety notice, place/back row, WhatsApp link, processing status, failure Alert a
 Their actual PNG bytes were checked; English phone failure/retry and Persian tablet
 processing/actions captures were viewed. Next: extract checkout status notices into a storefront
 organism.
+
+**Ninety-sixth checkpoint verified:** StorefrontCheckoutNotices is extracted under
+`templates/app/organisms/` with explicit review and saveError props. Both notices retain their
+independent conditions and order, warning/danger tones, secondary review action and the
+vf-payment-review ID/tabIndex focus target. The layout keeps notices outside payment visibility,
+including bank-status transitions. View maps descriptors; checkout/shared logic retains retry
+eligibility, expiry/stock/customer checks, recovery storage, error state, focus requests, clearing
+pending records and review navigation. No rules, state/effects or browser APIs moved. Ownership
+and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass without retries: bilingual durable recovery-record blocking and
+successful recovery/reload, plus expired retry focus/blocking and return to delivery review.
+Paired probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They
+verify no notices initially, storage-error-only before redirect, warning-only after an expired
+bank retry, storage-error-only during bank status and both notices together in the original DOM
+order. Warning focus/tabIndex, no completed order, preserved method, bank visibility, action
+navigation, delivery review and removal of the pending session record are checked. Tablet rotation,
+document overflow and full-page axe are covered. Storage failure injection is restricted to
+vf-online-payment keys in isolated browser contexts and restored before review navigation.
+Full browser/device suites and TV spatial-arrow navigation were not rerun; prior baseline zone-hint
+failures remain documented. No baselines or tolerances changed.
+All 40 notice screenshot pairs are byte-identical, checked against actual PNG bytes. Persian
+phone review, English phone storage error, Persian desktop bank error and English TV combined-state
+review captures were viewed. Next: extract checkout progress and heading into a storefront organism.
 
 ## Adding components
 

@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Checkout status notices | `app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
 | Checkout submission | `app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
 | Checkout receipt details | `app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
 | Checkout payment methods | `app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
