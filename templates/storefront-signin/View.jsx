@@ -5,6 +5,7 @@ import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/Stor
 import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
 import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
 import {StorefrontSigninCodeControls} from '../app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
+import {StorefrontSigninResend} from '../app/organisms/StorefrontSigninResend/StorefrontSigninResend.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -64,12 +65,11 @@ export function View({v}) {
                     }}
                     verify={{label: v.t?.verify, onClick: v.verify}}
                   />
-                  <div className="vf-signin-resend tw:flex tw:flex-col tw:gap-2 tw:items-start">
-                    <DS.ResendCode seconds={v.resendSeconds} onResend={v.resend} />
-                    <p role="status" className="tw:m-0 tw:text-sm">
-                      <>{v.resentText}</>
-                    </p>
-                  </div>
+                  <StorefrontSigninResend
+                    seconds={v.resendSeconds}
+                    onResend={v.resend}
+                    resentText={v.resentText}
+                  />
                   <DS.Button variant="ghost" iconStart="arrow-left" onClick={v.back}>
                     <>{v.t?.change}</>
                   </DS.Button>
