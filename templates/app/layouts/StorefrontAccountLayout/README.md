@@ -33,3 +33,5 @@ StorefrontAccountHeading composes eyebrow and h1/accent from explicit text. This
 StorefrontAccountTabs composes controlled pill tabs and the selected-panel slot. View retains panel visibility/mapping; account/shared logic retains tab eligibility/fallback, routing and state. Package Tabs retains ARIA links and keyboard/focus behavior.
 
 StorefrontAccountSessionAction composes the controlled sign-out button. This layout retains header placement; View retains localized copy and account/shared logic retains session cleanup and navigation.
+
+StorefrontAccountFeedback composes the always-mounted status paragraph. This layout retains feedback placement after the tabs; account/shared logic retains localized notice transitions and persistence.
