@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
 import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
 import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
+import {StorefrontBagSticky} from '../app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -484,28 +485,11 @@ export function View({v}) {
         <>
           {v.hasItems ? (
             <>
-              <div className="vf-mobile-action tw:flex tw:items-center tw:gap-3 tw:py-3 tw:px-4 tw:bg-card tw:[border-top:1px_solid_var(--border-subtle)]">
-                <div className="vf-action-total">
-                  <span className="vf-action-caption tw:text-xs tw:text-quiet">
-                    <>{v.t?.total}</>
-                  </span>
-                  <DS.Price value={v.totalLabel} size="md" className="vf-price" />
-                </div>
-                {v.onBag ? (
-                  <>
-                    <DS.Button variant="primary" iconEnd="arrow-right" onClick={v.toDelivery}>
-                      <>{v.t?.toDelivery}</>
-                    </DS.Button>
-                  </>
-                ) : null}
-                {v.onDelivery ? (
-                  <>
-                    <DS.Button variant="primary" iconEnd="arrow-right" onClick={v.next}>
-                      <>{v.t?.next}</>
-                    </DS.Button>
-                  </>
-                ) : null}
-              </div>
+              <StorefrontBagSticky
+                summary={{label: v.t?.total, total: v.totalLabel}}
+                delivery={{visible: v.onBag, label: v.t?.toDelivery, onClick: v.toDelivery}}
+                payment={{visible: v.onDelivery, label: v.t?.next, onClick: v.next}}
+              />
             </>
           ) : null}
         </>
