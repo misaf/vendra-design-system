@@ -83,6 +83,8 @@ StorefrontCheckoutMethods composes controlled method choices, availability feedb
 View/logic retain eligibility, balances/discounts, method drafts, top-up URLs and payment notices.
 StorefrontCheckoutReceipt composes changed-amount confirmation, payment card/Sheba and receipt inputs;
 View/logic retain amount validation, clipboard callbacks, digit normalization, drafts and confirmation.
+StorefrontCheckoutSubmission composes WhatsApp, processing/failure feedback and wide place/back actions;
+View/logic retain readiness, submission/deduplication, pending/errors, retries and navigation.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
