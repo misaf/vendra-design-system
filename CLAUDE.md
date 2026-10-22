@@ -55,6 +55,8 @@ StorefrontBagLayout arranges bag/delivery slots with externally controlled conte
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 StorefrontBagItems composes editable line items and stock warnings from explicit records/labels;
 View/logic retain visibility, pricing/stock limits, quantity/remove/Undo and persistence/focus.
+StorefrontBagSummary composes summary rows, free-delivery meter, controlled promo and navigation actions;
+View/logic retain totals, promo validation/persistence, quote rules and delivery/payment validation.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;

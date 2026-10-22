@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
 import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
+import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -431,79 +432,30 @@ export function View({v}) {
             summary={
               v.hasItems ? (
                 <>
-                  <DS.Card padding={20}>
-                    <DS.OrderSummary title={v.t?.summary} lines={v.summary} sums={v.sums} />
-                    {v.freeDelivery ? (
-                      <>
-                        <DS.Meter
-                          className="tw:mt-4"
-                          label={v.freeDelivery?.label}
-                          value={v.freeDelivery?.value}
-                          maxValue={v.freeDelivery?.max}
-                          valueLabel={v.freeDelivery?.valueLabel}
-                          done={v.freeDelivery?.done}
-                        />
-                      </>
-                    ) : null}
-                  </DS.Card>
-                  {v.promoShown ? (
-                    <>
-                      <DS.PromoCodeField
-                        id="vf-promo"
-                        value={v.promoDraft}
-                        onChange={v.setPromoDraft}
-                        onApply={v.applyPromo}
-                        error={v.promoError}
-                        applied={v.promoStatus}
-                        onRemove={v.removePromo}
-                      />
-                    </>
-                  ) : null}
-                  <div className="tw:contents tw:max-md:hidden">
-                    {v.onBag ? (
-                      <>
-                        <DS.Button
-                          variant="primary"
-                          size="lg"
-                          block={true}
-                          iconEnd="arrow-right"
-                          onClick={v.toDelivery}
-                        >
-                          <>{v.t?.toDelivery}</>
-                        </DS.Button>
-                      </>
-                    ) : null}
-                    {v.onDelivery ? (
-                      <>
-                        <DS.Button
-                          variant="primary"
-                          size="lg"
-                          block={true}
-                          iconEnd="arrow-right"
-                          onClick={v.next}
-                        >
-                          <>{v.t?.next}</>
-                        </DS.Button>
-                      </>
-                    ) : null}
-                  </div>
-                  {v.onDelivery ? (
-                    <>
-                      <DS.Button
-                        variant="ghost"
-                        size="lg"
-                        block={true}
-                        iconStart="arrow-left"
-                        href={v.bagHref}
-                        onClick={v.backToBag}
-                      >
-                        <>{v.t?.backToBag}</>
-                      </DS.Button>
-                    </>
-                  ) : null}
-                  <p className="vf-bag-payment-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet tw:text-center">
-                    <>{v.t?.payNote}</>
-                  </p>
+                  <StorefrontBagSummary
+                    summary={{title: v.t?.summary, lines: v.summary, sums: v.sums}}
+                    freeDelivery={v.freeDelivery}
+                    promo={{
+                      visible: v.promoShown,
+                      value: v.promoDraft,
+                      onChange: v.setPromoDraft,
+                      onApply: v.applyPromo,
+                      error: v.promoError,
+                      applied: v.promoStatus,
+                      onRemove: v.removePromo
+                    }}
+                    actions={{
+                      delivery: {visible: v.onBag, label: v.t?.toDelivery, onClick: v.toDelivery},
+                      payment: {visible: v.onDelivery, label: v.t?.next, onClick: v.next},
+                      back: {
+                        visible: v.onDelivery,
+                        label: v.t?.backToBag,
+                        href: v.bagHref,
+                        onClick: v.backToBag
+                      }
+                    }}
+                    paymentNote={v.t?.payNote}
+                  />
                 </>
               ) : null
             }
