@@ -67,6 +67,8 @@ StorefrontBagRecipient composes recipient heading, saved-address chips and contr
 View/logic retain address mapping/selection, validation, persistence and the surrounding delivery/map flow.
 StorefrontBagLocation composes controlled map/zone status, failed-map zone selection and address input;
 View/logic retain map lifecycle callbacks, location/quote rules, fallback state, validation and persistence.
+StorefrontBagSchedule composes preparation/review feedback and controlled day/time choices;
+View/logic retain eligibility, cutoffs, date/slot state, confirmation, persistence and validation.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;

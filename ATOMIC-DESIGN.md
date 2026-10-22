@@ -172,7 +172,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagProgress now composes responsive controlled progress indicators.
    StorefrontBagRecipient now composes recipient heading, saved addresses and name/phone fields.
    StorefrontBagLocation now composes delivery map/status, fallback zone and address controls.
-   **Next stage: extract bag delivery scheduling into a storefront organism.**
+   StorefrontBagSchedule now composes delivery scheduling and changed-window confirmation.
+   **Next stage: extract bag gift-card messages into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1963,6 +1964,31 @@ Persian TV pending). Selected fallback captures differ by 13 pixels in English d
 in Persian desktop. All channel deltas
 are 1/255. Persian phone pin error and desktop fallback captures were viewed. No baselines/
 tolerances changed. Next: extract bag delivery scheduling into a storefront organism.
+
+**Eighty-eighth checkpoint verified:** StorefrontBagSchedule is extracted under
+`templates/app/organisms/StorefrontBagSchedule/`. It receives explicit title, preparation notice,
+review descriptor and controlled day/slot descriptors with normalized options. It composes the
+scheduling section/heading, preparation feedback, changed-window confirmation and ChoiceGroups,
+preserving section/heading IDs, focusable review ID, classes/order, legends, tile sizes/widths,
+descriptions and disabled states. View retains mapping; bag/shared logic retains preparation/zone/
+cutoff rules, eligibility, date/slot state, persistence, changed-window detection/suggestion and
+explicit confirmation/validation focus. No page model, new state/effects, browser APIs, commerce
+rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. All twelve
+focused desktop/mobile browser cases pass without retries: bilingual mixed-bag eligibility,
+cutoff/elapsed slots and changed-window confirmation through checkout. Eight bilingual paired
+probes at touch widths 390/768, desktop 1280 and TV 1920 verify mixed preparation state/omitted
+Today, same-day eligibility after removing the preparation item, seven days/four slots, day/time
+selection, cutoff change and focused review without silently rewriting the chosen date, explicit
+next-day confirmation, reload, tablet rotation, no document overflow and full-page axe. Touch uses
+taps; desktop/TV uses Space for radio choices and Enter for actions. The scratch probe initially
+assumed Today was disabled for mixed bags; it was corrected to the existing omission contract.
+Full browser/device suites, the no-available-delivery branch and TV spatial-arrow navigation were
+not rerun. The two prior baseline zone-hint assertion failures remain documented in stage 87.
+Thirty-one of 32 scheduling screenshot pairs are byte-identical, verified against actual PNG bytes.
+The Persian tablet selected-state capture differs by 35 pixels at 1/255 per channel. Persian phone
+changed-window and English TV confirmed captures were viewed. No baselines/tolerances changed.
+Next: extract bag gift-card messages into a storefront organism.
 
 ## Adding components
 
