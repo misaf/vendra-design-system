@@ -113,6 +113,8 @@ StorefrontAccountReminders composes add/empty/upcoming feedback and controlled r
 View/logic retain normalization, date/calendar rules, ordering, editor state, mutations and persistence.
 StorefrontAccountProfile composes controlled profile fields, error summary and save action;
 View/logic retain drafts, changed-field merging, validation/focus, locale switching and persistence.
+StorefrontAccountAddressEditor composes controlled label/zone/pin/address/recipient/phone fields;
+View/logic retain dialog/actions, drafts, map failure, validation/focus, address rules and persistence.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
