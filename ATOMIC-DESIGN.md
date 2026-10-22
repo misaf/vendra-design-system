@@ -201,7 +201,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountSessionAction now composes the controlled sign-out button.
    StorefrontAccountFeedback now composes the persistent account status region.
    StorefrontAccountNotices now composes the page storage-error alert.
-   **Next stage: extract account balance panel composition into a storefront organism.**
+   StorefrontAccountBalancePanel now composes overview, top-up, checkout return and history.
+   **Next stage: simplify account View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2766,6 +2767,39 @@ All eight paired probes pass with identical page/editor alert markup. All 16 pag
 screenshot pairs are byte-identical, verified against actual PNG bytes. English/Persian phone,
 English tablet editor, Persian tablet page, English desktop and Persian TV captures were viewed.
 Next: extract account balance panel composition into a storefront organism.
+
+**One hundred and seventeenth checkpoint verified:** StorefrontAccountBalancePanel is extracted
+under `templates/app/organisms/` with explicit overview, top-up, optional checkout-return and history
+descriptors. It preserves the balance wrapper/classes, overview/top-up/return/history order and
+secondary return link with leading arrow-left icon, reusing the three existing balance organisms.
+View retains tab visibility, localized mapping, list normalization and return eligibility; conditional
+return text is still read only when eligible. Account/shared logic retains wallet calculations,
+validation/focus, timers, customer scope, storage/history and checkout destinations. No state,
+effects, browser APIs or wallet rules moved. The now-unused package-component import is removed
+from account View. Parent/child ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: bilingual waiting-checkout return with payment
+drafts preserved, top-up followed by wallet payment/discount/history, and concurrent wallet/account
+updates preserved during profile save. Eight paired baseline/current probes exercise English/Persian
+at touch widths 390/768, desktop 1280 and TV 1920. They check exact panel markup after normalizing
+React Aria's random per-page ID prefix, empty history, invalid amount/focus, preset pressed state,
+pending disabled payment, completion focus, one persisted top-up/history entry, reload continuity,
+optional return-link presence/absence/href/variant/activation, tablet rotation, document overflow and
+page-top axe. Initial unchanged-baseline probes assumed an incomplete checkout could bypass delivery
+entry and used Space to activate a native link. Corrected probes verify the existing delivery guard
+and use Enter for links; original failures/captures are retained separately. Full waiting-checkout
+continuity is covered by the focused tests. No product behavior changed for those fixture assumptions.
+Full browser/device and TV spatial-arrow navigation suites were not rerun; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight functional paired probes pass with identical normalized markup. Of 32 initial/invalid/
+completion/return screenshot pairs, 29 are byte-identical. Persian phone initial/invalid/completion
+captures differ by 47/9/9 pixels respectively, with maximum channel deltas 2/1/1 out of 255 and equal
+dimensions; actual PNG bytes/pixels were checked and the captures inspected without a visible layout
+shift. English phone initial/completion, all three differing Persian phone states, Persian tablet
+invalid, English desktop return and Persian TV completion captures were viewed.
+Next: simplify account View composition.
 
 ## Adding components
 
