@@ -173,7 +173,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagRecipient now composes recipient heading, saved addresses and name/phone fields.
    StorefrontBagLocation now composes delivery map/status, fallback zone and address controls.
    StorefrontBagSchedule now composes delivery scheduling and changed-window confirmation.
-   **Next stage: extract bag gift-card messages into a storefront organism.**
+   StorefrontBagCards now composes per-item card messages/add controls and Undo feedback.
+   **Next stage: extract bag sender fields into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1989,6 +1990,27 @@ Thirty-one of 32 scheduling screenshot pairs are byte-identical, verified agains
 The Persian tablet selected-state capture differs by 35 pixels at 1/255 per channel. Persian phone
 changed-window and English TV confirmed captures were viewed. No baselines/tolerances changed.
 Next: extract bag gift-card messages into a storefront organism.
+
+**Eighty-ninth checkpoint verified:** StorefrontBagCards is extracted under
+`templates/app/organisms/StorefrontBagCards/`. It receives explicit labels, controlled card-addition
+notice/Undo descriptor and normalized line records. It composes the cards section/heading/hint,
+Undo Alert and per-line message/add controls, preserving section/heading/input/add IDs, labels,
+accessible names, classes/order, textarea required/maxLength/rows, hints/errors, button styling and
+independent hasCard/noCard flags. View retains visibility/mapping; bag/shared logic retains card
+eligibility/configuration, pricing, add/Undo merging, message validation/persistence and focus.
+No page model, new state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Six focused
+desktop/mobile browser cases pass without retries: purchased-message validation/card additions and
+bilingual card Undo with pricing continuity. Eight bilingual paired probes at touch widths 390/768,
+desktop 1280 and TV 1920 verify configured content, required/200-character/three-row props, add-card
+focus, two message inputs, changed totals, error-summary link/focus, corrected messages, Undo
+restoring the original second line and totals without reverting the first message, add-button focus,
+reload persistence, tablet rotation, no document overflow and full-page axe. Touch uses taps;
+desktop/TV actions use keyboard Enter. Full browser/device suites, hidden feature branch and TV
+spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain documented.
+All 32 default/added/error/filled card-section screenshot pairs are byte-identical, verified against
+actual PNG bytes. Persian phone error and English TV filled captures were viewed. No baselines/
+tolerances changed. Next: extract bag sender fields into a storefront organism.
 
 ## Adding components
 
