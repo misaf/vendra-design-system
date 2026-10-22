@@ -127,6 +127,8 @@ StorefrontAccountSessionAction composes the labelled sign-out button;
 View retains placement/copy; account/shared logic retains session cleanup and home navigation.
 StorefrontAccountFeedback composes the persistent status paragraph;
 View retains placement; account/shared logic retains localized notice transitions and persistence.
+StorefrontAccountNotices composes the page storage-error Alert;
+View retains visibility/placement; account/shared logic retains error state, persistence and retry.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
