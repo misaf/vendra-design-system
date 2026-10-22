@@ -8,6 +8,7 @@ import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/Storef
 import {StorefrontBagSticky} from '../app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx';
 import {StorefrontBagFeedback} from '../app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx';
 import {StorefrontBagProgress} from '../app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx';
+import {StorefrontBagRecipient} from '../app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -103,51 +104,26 @@ export function View({v}) {
                         className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
                         aria-labelledby="vf-recipient-title"
                       >
-                        <h2
-                          id="vf-recipient-title"
-                          className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
-                        >
-                          <>{v.t?.recipient}</>
-                        </h2>
-                        {v.hasSaved ? (
-                          <>
-                            <fieldset className="vf-bag-saved tw:[border:0] tw:p-0 tw:m-0 tw:min-w-0">
-                              <legend className="ag-field__label tw:p-0 tw:mb-2">
-                                <>{v.t?.saved}</>
-                              </legend>
-                              <div className="tw:flex tw:flex-wrap tw:gap-2">
-                                {list(v.savedAddresses).map((a, $index) => (
-                                  <React.Fragment key={$index}>
-                                    <DS.Chip selected={a?.on} onClick={a?.pick}>
-                                      <>{a?.label}</>
-                                    </DS.Chip>
-                                  </React.Fragment>
-                                ))}
-                              </div>
-                            </fieldset>
-                          </>
-                        ) : null}
-                        <div className="vf-bag-recipient-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))]">
-                          <DS.Input
-                            id="vf-name"
-                            value={v.delivery?.name}
-                            onChange={v.setName}
-                            error={v.nameError}
-                            required={true}
-                            label={v.t?.name}
-                            autoComplete="off"
-                          />
-                          <DS.PhoneInput
-                            id="vf-phone"
-                            value={v.delivery?.phone}
-                            onChange={v.setPhone}
-                            error={v.phoneError}
-                            required={true}
-                            label={v.t?.phone}
-                            autoComplete="off"
-                            placeholder="0912 000 0000"
-                          />
-                        </div>
+                        <StorefrontBagRecipient
+                          title={v.t?.recipient}
+                          saved={{
+                            visible: v.hasSaved,
+                            label: v.t?.saved,
+                            options: list(v.savedAddresses)
+                          }}
+                          name={{
+                            value: v.delivery?.name,
+                            onChange: v.setName,
+                            error: v.nameError,
+                            label: v.t?.name
+                          }}
+                          phone={{
+                            value: v.delivery?.phone,
+                            onChange: v.setPhone,
+                            error: v.phoneError,
+                            label: v.t?.phone
+                          }}
+                        />
                         <div className="vf-bag-pin tw:flex tw:flex-col tw:gap-2">
                           {v.mapOk ? (
                             <>

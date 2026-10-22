@@ -170,7 +170,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagSticky now composes total and continuation controls in Shell’s sticky slot.
    StorefrontBagFeedback now composes removal notices and empty-state recovery in separate slots.
    StorefrontBagProgress now composes responsive controlled progress indicators.
-   **Next stage: extract bag recipient fields into a storefront organism.**
+   StorefrontBagRecipient now composes recipient heading, saved addresses and name/phone fields.
+   **Next stage: extract bag delivery location into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1908,6 +1909,32 @@ navigation were not rerun.
 All 16 bag/delivery progress screenshot pairs are byte-identical, verified against actual PNG bytes.
 Persian phone delivery and English desktop delivery captures were viewed. No baselines/tolerances
 changed. Next: extract bag recipient fields into a storefront organism.
+
+**Eighty-sixth checkpoint verified:** StorefrontBagRecipient is extracted under
+`templates/app/organisms/StorefrontBagRecipient/`. It receives a title, normalized saved-address
+options/visibility/label and controlled name/phone descriptors with values, callbacks, errors and
+labels. It composes the recipient h2, optional saved-address fieldset/chips and input grid as a
+fragment inside the page-owned delivery section. Classes/order, title/input IDs, section label
+relationship, required/error props, autocomplete, phone placeholder/direction and pressed states
+are preserved. View retains mapping and surrounding delivery/map composition; bag/shared logic
+retains eligibility/selection, recipient state, validation, persistence and pin/address updates.
+No page model, new state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Ten focused
+desktop/mobile browser cases pass without retries: saved-address checkout, guest eligibility,
+validation-summary focus and bilingual unpinned-address isolation. Twelve bilingual paired probes
+cover guests at touch widths 390/768, desktop 1280 and TV 1920 plus seeded signed-in addresses at
+390/1280. They verify required/type/direction/autocomplete semantics, section naming, unique title,
+error-summary links/focus, invalid/cleared fields, typed English/Persian values and reload, tablet
+rotation, address eligibility/pressed state, selected recipient/phone/address, null unpinned location,
+no document overflow and full-page axe. Touch actions use taps; desktop/TV activation uses Enter.
+Full browser/device suites and TV spatial-arrow navigation were not rerun.
+Twenty-eight of 32 grid/saved-choice screenshot pairs are byte-identical, verified against PNG bytes.
+Filled guest captures retain four small differences: English 390 (9 pixels), Persian 768 (14),
+English 1280 (4) and English TV 1920 (18), all at 1/255 per channel. No baselines/tolerances changed.
+Persian tablet errors and English desktop selected-address captures were viewed. Scratch probes
+were corrected to scope shared classes to the recipient section and inspect native required
+semantics; no source changes were needed for those probe errors.
+Next: extract bag delivery location into a storefront organism.
 
 ## Adding components
 

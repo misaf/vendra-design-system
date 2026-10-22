@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Bag recipient fields | `app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
 | Bag progress | `app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx` (explicit steps/current, labels, formatters and step callback) |
 | Bag feedback and recovery | `app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
 | Bag sticky actions | `app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
