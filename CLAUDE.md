@@ -47,6 +47,8 @@ StorefrontShopSidebarFilters composes controlled occasion/date/price/stock contr
 View/logic retain availability, price rules, filtering/tracking, URL/paging, sorting and results.
 StorefrontShopFilterDialog composes controlled filter fields and Show/Clear footer actions;
 View/logic retain dialog state, filter rules, result labels, URL/paging and clear semantics.
+StorefrontShopToolbar composes compact filters/sort, active filters, quick chips and result count;
+View/logic retain filtering, sorting, URL/paging, tracking and focus-scroll callbacks.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout

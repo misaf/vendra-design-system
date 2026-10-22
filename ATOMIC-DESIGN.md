@@ -163,7 +163,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopCategories now composes sidebar category buttons and compact chips.
    StorefrontShopSidebarFilters now composes controlled occasion/date/price/stock fields.
    StorefrontShopFilterDialog now composes controlled compact fields and Show/Clear actions.
-   **Next stage: extract the shop results toolbar into a storefront organism.**
+   StorefrontShopToolbar now composes compact filters/sort, active filters, quick chips and result count.
+   **Next stage: extract shop product results and feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1743,6 +1744,27 @@ All 24 top/scrolled-bottom dialog screenshot pairs are byte-identical, checked a
 PNG bytes. Focus containment after date selection waits for popup focus restoration. No visual baselines/tolerances changed. Persian
 short-phone top/bottom and English tablet filtered-bottom captures were viewed.
 Next: extract the shop results toolbar into a storefront organism.
+
+**Seventy-ninth checkpoint verified:** StorefrontShopToolbar is extracted under
+`templates/app/organisms/StorefrontShopToolbar/`. It receives explicit labels, a controlled sort
+descriptor, normalized active/quick-filter records and open/clear/focus callbacks. It composes
+compact filters/sort, FilterBar, quick chips, live result count and desktop sort, preserving
+fragment structure, wrapper classes/order, pressed states and the `vf-shop-count` focus target.
+View retains record mapping and the focus-scroll browser callback; shop/shared logic retains
+filtering, sorting, tracking, dialog state, count labels, removal/clear semantics and URL/paging.
+No page model, state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Six focused
+browser cases pass without retries: desktop/mobile clear/removal focus and bilingual native-touch
+tablet sorting through rotation. Sixteen bilingual before/after probes cover default/filtered
+states at touch widths 390/768, desktop 1280 and TV 1920. They verify counts, controlled sorting,
+first-page reset, URL/reload persistence, quick-filter toggles, horizontal chip focus visibility,
+clear focus/count/sort retention, compact dialog entry/Escape/opener restoration, tablet switch
+to desktop sorting, no document overflow and full-page axe. TV controls use keyboard Enter;
+full spatial navigation and the complete browser/device suites were not rerun.
+Thirty-one of 32 toolbar-region screenshot pairs are byte-identical, checked against actual
+PNG bytes. The default English desktop toolbar differs by eight pixels at 1/255 per channel.
+No visual baselines/tolerances changed. Persian phone filtered and English desktop default
+captures were viewed. Next: extract shop product results and feedback into a storefront organism.
 
 ## Adding components
 
