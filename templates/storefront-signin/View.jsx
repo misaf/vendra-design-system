@@ -6,6 +6,7 @@ import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/
 import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
 import {StorefrontSigninCodeControls} from '../app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
 import {StorefrontSigninResend} from '../app/organisms/StorefrontSigninResend/StorefrontSigninResend.jsx';
+import {StorefrontSigninPolicies} from '../app/organisms/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -29,23 +30,13 @@ export function View({v}) {
                     }}
                     send={{label: v.t?.send, onClick: v.send}}
                   />
-                  <p className="vf-signin-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">
-                    <>{v.t?.terms?.before}</>
-                    <a
-                      href={v.termsLink?.href}
-                      className="tw:text-inherit! tw:[text-underline-offset:3px]"
-                    >
-                      <>{v.t?.terms?.terms}</>
-                    </a>
-                    <>{v.t?.terms?.and}</>
-                    <a
-                      href={v.privacyLink?.href}
-                      className="tw:text-inherit! tw:[text-underline-offset:3px]"
-                    >
-                      <>{v.t?.terms?.privacy}</>
-                    </a>
-                    <>{v.t?.terms?.after}</>
-                  </p>
+                  <StorefrontSigninPolicies
+                    before={v.t?.terms?.before}
+                    terms={{href: v.termsLink?.href, label: v.t?.terms?.terms}}
+                    between={v.t?.terms?.and}
+                    privacy={{href: v.privacyLink?.href, label: v.t?.terms?.privacy}}
+                    after={v.t?.terms?.after}
+                  />
                 </>
               ) : null
             }

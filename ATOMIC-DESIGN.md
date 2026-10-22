@@ -207,7 +207,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninPhoneControls now composes the phone summary, input and send action.
    StorefrontSigninCodeControls now composes the code summary, input and verify action.
    StorefrontSigninResend now composes countdown/action and resend status.
-   **Next stage: extract sign-in policy links into a storefront organism.**
+   StorefrontSigninPolicies now composes the localized terms/privacy note.
+   **Next stage: extract sign-in completion into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2942,6 +2943,32 @@ All eight paired probes pass. All 24 ready/feedback/ready-again screenshot pairs
 verified against actual PNG bytes. English phone ready-again, Persian phone feedback, Persian tablet
 ready, English desktop feedback and Persian TV ready-again captures were viewed.
 Next: extract sign-in policy links into a storefront organism.
+
+**One hundred and twenty-third checkpoint verified:** StorefrontSigninPolicies is extracted under
+`templates/app/organisms/` with explicit surrounding text and terms/privacy link descriptors.
+It preserves the paragraph/classes, native anchors, underline classes, fragment/text spacing and
+terms-before-privacy order without adding a wrapper. View retains phone-step visibility and localized
+mapping; sign-in/shared logic retains destinations, and the shared shell/router retains interception,
+same-document navigation, history and focus behavior. No state, effects, browser APIs, routing or
+policy rules moved. Parent/phone-control ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: policy navigation, checkout sign-in/return,
+resend countdown, simulated Android SMS autofill/completion and phone validation/focus. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check exact localized note text/markup, accessible link names/order, native links without target
+overrides, language/document destinations, Tab/ShiftTab order and touch/Enter activation for both
+policies. Both policy views navigate within the same document; history returns to the original
+sign-in checkout context. Validation retains the note, code entry hides it, change-number restores
+it and demo completion hides it. Tablet rotation, document overflow and page-top axe pass. Custom
+probes stub native credential retrieval and use local demo sign-in logic. Full browser/device and TV
+spatial-arrow navigation suites and assistive-technology testing were not run in this stage; earlier
+baseline accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass with identical policy-note markup. All 24 initial/invalid/back note
+screenshot pairs are byte-identical, verified against actual PNG bytes. English phone initial,
+Persian phone invalid, Persian tablet back, English desktop initial and Persian TV initial captures
+were viewed. Next: extract sign-in completion into a storefront organism.
 
 ## Adding components
 
