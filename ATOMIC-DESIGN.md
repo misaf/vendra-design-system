@@ -183,7 +183,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutNotices now composes retry-review and recovery-storage notices.
    StorefrontCheckoutProgress and StorefrontCheckoutHeading now compose progress and payment heading.
    StorefrontCheckoutBank now composes bank progress and payment status.
-   **Next stage: extract checkout confirmation into a storefront organism.**
+   StorefrontCheckoutConfirmation now composes success details, account offer and follow-up links.
+   **Next stage: extract checkout summary and sticky action into storefront organisms.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2253,6 +2254,34 @@ icon (x476-535/y85-113 in the 1016x973 capture). Actual PNG bytes/deltas were ch
 images were viewed. English phone missing-record, Persian phone cancelled, Persian tablet pending,
 Persian desktop missing-record and English TV failed captures were also viewed. Next: extract
 checkout confirmation into a storefront organism.
+
+**Ninety-ninth checkpoint verified:** StorefrontCheckoutConfirmation is extracted under
+`templates/app/organisms/` with explicit progress, heading, status, rows, account and links props.
+It preserves noninteractive completion progress, h1/check/accent semantics, status Badge, details,
+conditional account Card and track/shop actions in the original fragment order without adding a
+wrapper. Classes, full-width detail/account wrappers, Card padding/variant and button variants/icons
+are retained. Layout owns the success wrapper; View/logic retain completion state, copy/status,
+detail formatting, account eligibility/prefill, destinations, orders and persistence. No state,
+effects, browser APIs or commerce rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass without retries: card completion/account offer and tracking/sign-in
+prefill, online completion and bilingual order-history persistence/lookup. Paired guest and signed-in
+flows exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They check the single
+focused h1, order eyebrow, payment Badge, recipient/sender/address/phone/reference/masked-card rows,
+completion index 3 with no step buttons, guest-only account offer and sender-phone wording, tracking/
+shop URLs, reload continuity, empty bag and a single persisted order. Guest links are activated to
+tracking, shop and sign-in; the phone is prefilled without requesting a code. Tablet rotation,
+document overflow and full-page axe are covered. Each flow places a local demo card order, then
+normalizes its order/last-order/history ID together for deterministic visuals in an isolated context.
+Card is selected explicitly for both customer states. Full browser/device suites and TV spatial-arrow
+navigation were not rerun; prior baseline zone-hint failures remain documented. No baselines or
+tolerances changed.
+All guest/signed-in paired flows pass. All 48 heading/status/details/account/actions/signed-details
+screenshot pairs are byte-identical, verified against actual PNG bytes. English phone heading,
+Persian phone account offer, Persian tablet signed-in details, English desktop actions and Persian
+TV heading captures were viewed. Next: extract checkout summary and sticky action into storefront
+organisms.
 
 ## Adding components
 

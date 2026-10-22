@@ -11,6 +11,7 @@ import {StorefrontCheckoutNotices} from '../app/organisms/StorefrontCheckoutNoti
 import {StorefrontCheckoutProgress} from '../app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
 import {StorefrontCheckoutHeading} from '../app/organisms/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
 import {StorefrontCheckoutBank} from '../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
+import {StorefrontCheckoutConfirmation} from '../app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -189,59 +190,34 @@ export function View({v}) {
             }
             success={
               v.done ? (
-                <>
-                  <StorefrontCheckoutProgress
-                    steps={v.steps}
-                    current={3}
-                    labels={{region: v.t?.steps, done: v.t?.doneStep}}
-                    formatNumber={v.fmt}
-                    captionFormat={v.caption}
-                  />
-                  <DS.EmptyState
-                    icon="check"
-                    tone="accent"
-                    eyebrow={v.t?.orderNo}
-                    title={v.t?.doneA}
-                    titleAccent={v.t?.doneB}
-                    body={v.t?.doneP}
-                    headingLevel={1}
-                  />
-                  <DS.Badge tone="accent">
-                    <>{v.paymentStatus}</>
-                  </DS.Badge>
-                  <div className="tw:w-full">
-                    <DS.DetailList rows={v.doneRows} />
-                  </div>
-                  {v.offerAccount ? (
-                    <>
-                      <div className="tw:w-full">
-                        <DS.Card variant="sunken" padding={20}>
-                          <div className="vf-checkout-account tw:flex tw:items-center tw:justify-between tw:gap-4 tw:flex-wrap">
-                            <div className="tw:flex tw:flex-col tw:gap-1 tw:[flex:1_1_260px]">
-                              <h2 className="tw:m-0 tw:text-md tw:font-medium">
-                                <>{v.t?.accountTitle}</>
-                              </h2>
-                              <p className="tw:m-0 tw:text-sm tw:text-secondary">
-                                <>{v.accountBody}</>
-                              </p>
-                            </div>
-                            <DS.Button variant="secondary" iconStart="user" href={v.href?.signin}>
-                              <>{v.t?.accountCta}</>
-                            </DS.Button>
-                          </div>
-                        </DS.Card>
-                      </div>
-                    </>
-                  ) : null}
-                  <div className="tw:flex tw:gap-3 tw:flex-wrap tw:justify-center">
-                    <DS.Button variant="primary" iconStart="package-search" href={v.href?.track}>
-                      <>{v.t?.track}</>
-                    </DS.Button>
-                    <DS.Button variant="secondary" href={v.href?.shop}>
-                      <>{v.t?.keep}</>
-                    </DS.Button>
-                  </div>
-                </>
+                <StorefrontCheckoutConfirmation
+                  progress={{
+                    steps: v.steps,
+                    current: 3,
+                    labels: {region: v.t?.steps, done: v.t?.doneStep},
+                    formatNumber: v.fmt,
+                    captionFormat: v.caption
+                  }}
+                  heading={{
+                    eyebrow: v.t?.orderNo,
+                    title: v.t?.doneA,
+                    accent: v.t?.doneB,
+                    body: v.t?.doneP
+                  }}
+                  status={v.paymentStatus}
+                  rows={v.doneRows}
+                  account={{
+                    visible: v.offerAccount,
+                    title: v.t?.accountTitle,
+                    body: v.accountBody,
+                    href: v.href?.signin,
+                    label: v.t?.accountCta
+                  }}
+                  links={{
+                    track: {href: v.href?.track, label: v.t?.track},
+                    shop: {href: v.href?.shop, label: v.t?.keep}
+                  }}
+                />
               ) : null
             }
           />
