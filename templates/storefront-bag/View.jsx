@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
+import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -93,37 +94,12 @@ export function View({v}) {
                 <>
                   {v.onBag ? (
                     <>
-                      <div
-                        data-vf-keep-focus
-                        className="vf-bag-line-list tw:flex tw:flex-col tw:[border-top:1px_solid_var(--border-subtle)]"
-                      >
-                        {list(v.lines).map((l, $index) => (
-                          <React.Fragment key={$index}>
-                            <div className="vf-bag-line tw:[border-bottom:1px_solid_var(--border-subtle)] tw:py-4h tw:px-0">
-                              <DS.LineItem
-                                image={l?.image}
-                                size="lg"
-                                unavailable={l?.unavailable}
-                                unavailableLabel={l?.unavailableLabel}
-                                name={l?.name}
-                                meta={l?.meta}
-                                note={l?.note}
-                                price={l?.price}
-                                quantity={l?.qty}
-                                quantityMax={l?.quantityMax}
-                                onQuantityChange={l?.setQty}
-                                onRemove={l?.remove}
-                                removeLabel={v.t?.remove}
-                                quantityLabels={v.qtyLabels}
-                                formatQuantity={v.fmt}
-                              />
-                              {l.stockWarning && (
-                                <DS.Alert tone="warning">{l.stockWarning}</DS.Alert>
-                              )}
-                            </div>
-                          </React.Fragment>
-                        ))}
-                      </div>
+                      <StorefrontBagItems
+                        lines={list(v.lines)}
+                        removeLabel={v.t?.remove}
+                        quantityLabels={v.qtyLabels}
+                        formatQuantity={v.fmt}
+                      />
                     </>
                   ) : null}
                   {v.onDelivery ? (
