@@ -16,6 +16,7 @@ import {StorefrontAccountReminderEditor} from '../app/organisms/StorefrontAccoun
 import {StorefrontAccountEditorDialog} from '../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
 import {StorefrontAccountHeading} from '../app/organisms/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
 import {StorefrontAccountTabs} from '../app/organisms/StorefrontAccountTabs/StorefrontAccountTabs.jsx';
+import {StorefrontAccountSessionAction} from '../app/organisms/StorefrontAccountSessionAction/StorefrontAccountSessionAction.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -36,9 +37,7 @@ export function View({v}) {
             }
             actions={
               <>
-                <DS.Button variant="ghost" iconStart="log-out" onClick={v.signOut}>
-                  <>{v.t?.signOut}</>
-                </DS.Button>
+                <StorefrontAccountSessionAction label={v.t?.signOut} onSignOut={v.signOut} />
               </>
             }
             notices={

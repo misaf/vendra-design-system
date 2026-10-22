@@ -123,6 +123,8 @@ StorefrontAccountHeading composes eyebrow and h1/accent from explicit text;
 Layout retains its wrapper; View/logic retain localization, visibility and navigation/focus.
 StorefrontAccountTabs composes controlled tab items and selected-panel children;
 View/logic retain panel visibility/mapping, tab eligibility/fallback and state; package Tabs retains ARIA/keyboard behavior.
+StorefrontAccountSessionAction composes the labelled sign-out button;
+View retains placement/copy; account/shared logic retains session cleanup and home navigation.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
