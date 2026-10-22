@@ -10,6 +10,7 @@ import {StorefrontBagFeedback} from '../app/organisms/StorefrontBagFeedback/Stor
 import {StorefrontBagProgress} from '../app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx';
 import {StorefrontBagRecipient} from '../app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx';
 import {StorefrontBagLocation} from '../app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx';
+import {StorefrontBagSchedule} from '../app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -160,72 +161,30 @@ export function View({v}) {
                           }}
                         />
                       </section>
-                      <section
-                        className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
-                        aria-labelledby="vf-when-title"
-                      >
-                        <h2
-                          id="vf-when-title"
-                          className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
-                        >
-                          <>{v.t?.when}</>
-                        </h2>
-                        {v.preparationNotice && (
-                          <p className="ag-field__hint tw:m-0">{v.preparationNotice}</p>
-                        )}
-                        {v.deliveryChanged && (
-                          <div id="vf-delivery-changed" tabIndex={-1}>
-                            <DS.Alert tone="warning" title={v.t.deliveryChanged}>
-                              {v.deliverySuggestion ? (
-                                <>
-                                  <p>{v.deliverySuggestion}</p>
-                                  <DS.Button onClick={v.confirmDelivery}>
-                                    {v.t.confirmDelivery}
-                                  </DS.Button>
-                                </>
-                              ) : (
-                                <p>{v.t.noDelivery}</p>
-                              )}
-                            </DS.Alert>
-                          </div>
-                        )}
-                        <DS.ChoiceGroup
-                          legend={v.t?.day}
-                          minTileWidth={104}
-                          value={v.date}
-                          onChange={v.setDate}
-                        >
-                          {list(v.days).map((d, $index) => (
-                            <React.Fragment key={$index}>
-                              <DS.ChoiceTile
-                                size="sm"
-                                value={d?.value}
-                                label={d?.label}
-                                description={d?.desc}
-                                disabled={d?.off}
-                              />
-                            </React.Fragment>
-                          ))}
-                        </DS.ChoiceGroup>
-                        <DS.ChoiceGroup
-                          legend={v.t?.slot}
-                          minTileWidth={130}
-                          value={v.slot}
-                          onChange={v.setSlot}
-                        >
-                          {list(v.slots).map((z, $index) => (
-                            <React.Fragment key={$index}>
-                              <DS.ChoiceTile
-                                size="sm"
-                                value={z?.value}
-                                label={z?.label}
-                                description={z?.desc}
-                                disabled={z?.off}
-                              />
-                            </React.Fragment>
-                          ))}
-                        </DS.ChoiceGroup>
-                      </section>
+                      <StorefrontBagSchedule
+                        title={v.t?.when}
+                        preparationNotice={v.preparationNotice}
+                        review={{
+                          visible: v.deliveryChanged,
+                          title: v.t.deliveryChanged,
+                          suggestion: v.deliverySuggestion,
+                          onConfirm: v.confirmDelivery,
+                          confirmLabel: v.t.confirmDelivery,
+                          unavailableLabel: v.t.noDelivery
+                        }}
+                        day={{
+                          label: v.t?.day,
+                          value: v.date,
+                          onChange: v.setDate,
+                          options: list(v.days)
+                        }}
+                        slot={{
+                          label: v.t?.slot,
+                          value: v.slot,
+                          onChange: v.setSlot,
+                          options: list(v.slots)
+                        }}
+                      />
                       {v.cardsShown ? (
                         <section
                           className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
