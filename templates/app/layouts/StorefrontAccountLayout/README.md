@@ -23,3 +23,5 @@ StorefrontAccountReminders composes reminder rows, actions and feedback. View re
 StorefrontAccountProfile composes controlled profile fields and save action. View retains tab visibility/descriptor mapping; account/shared logic retains drafts, changed-field merges, validation/focus, locale switching, save feedback and persistence.
 
 StorefrontAccountAddressEditor composes controlled address fields and pin/fallback. View retains shared dialog/summary/actions; account/shared logic retains drafts, location rules, failure state, validation/focus, mutations and persistence.
+
+StorefrontAccountReminderEditor composes controlled reminder/date fields. View retains shared dialog/summary/actions; account/shared logic retains drafts, calendar/occasion rules, validation/focus, mutations and persistence.

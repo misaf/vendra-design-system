@@ -194,7 +194,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountReminders now composes reminder rows, actions and feedback.
    StorefrontAccountProfile now composes controlled profile fields and save action.
    StorefrontAccountAddressEditor now composes controlled address fields and pin/fallback.
-   **Next stage: extract account reminder editor fields into a storefront organism.**
+   StorefrontAccountReminderEditor now composes controlled reminder/date fields.
+   **Next stage: extract the shared account editor dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2573,6 +2574,38 @@ byte-identical, verified against actual PNG bytes. English phone summary/pin-err
 phone phone field, Persian tablet address, English desktop pin error and Persian TV fallback captures
 were viewed.
 Next: extract account reminder editor fields into a storefront organism.
+
+**One hundred and tenth checkpoint verified:** StorefrontAccountReminderEditor is extracted
+under `templates/app/organisms/` with explicit name/occasion/date/lead-time/channel descriptors.
+It preserves name/date IDs, field order, errors, option/value/change props and DatePicker yearly/
+language/disabled/hint/labels props. It returns a fragment so the shared dialog retains spacing.
+View retains reminder-branch visibility, dialog, storage alert, error summary and save/cancel actions;
+account/shared logic retains drafts, calendar/date rules, fixed/movable occasion dates, lead-time
+conversion, validation/focus, customer scope, mutations and persistence. DatePicker retains calendar
+interaction. No state, effects, browser APIs or reminder rules moved. Ownership and edit-location
+documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass without retries: bilingual reminder validation/save/reload/focus
+return and customer-switch isolation. Eight paired baseline/current probes exercise English/Persian
+at touch widths 390/768, desktop 1280 and TV 1920. They check name validation/focus and summary target,
+Gregorian February 28 selection and Shamsi/Gregorian round-trip month/day continuity, Nowruz's locked
+month/day controls and fixed-date hint, Mother's Day's calculated/locked date and movable-date hint,
+returning to editable anniversary dates, one-week lead time and WhatsApp channel selection. Account-
+only storage failure retains the draft for retry; saving/reopening/editing/cancelling and reload retain
+expected date/occasion/lead-time/channel values with opener focus return. The probe's initial calendar
+button lookup was corrected to the existing radio roles exposed by React Aria's single-selection group.
+Touch/keyboard activation, tablet rotation with the dialog open, document overflow and full-page axe
+for invalid/movable-date dialogs and the settled account pass. Full browser/device suites and TV
+spatial-arrow navigation were not rerun; earlier baseline accessibility/zone-hint limitations remain
+documented. No baselines or tolerances changed.
+
+All eight paired probes pass. Of 40 name-error/editable/fixed/movable/channel screenshot pairs,
+28 are byte-identical. The remaining 12 differ by 3–170 pixels with maximum channel deltas 1–4/255,
+verified against actual PNG bytes. English phone name-error/fixed, Persian phone channel, English
+tablet editable, Persian tablet fixed/movable, Persian desktop editable and English desktop fixed
+captures were viewed side by side; Persian phone and TV movable-date captures were also viewed.
+Next: extract the shared account editor dialog into a storefront organism.
 
 ## Adding components
 
