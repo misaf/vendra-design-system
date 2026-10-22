@@ -61,6 +61,8 @@ StorefrontBagSticky composes total and controlled continuation actions inside Sh
 View/logic retain visibility/totals/validation; Shell retains docking and focus measurements.
 StorefrontBagFeedback composes removal notice/Undo and empty-state recovery in separate layout slots;
 View/logic retain visibility, removed-line data, Undo/reset, persistence and focus restoration.
+StorefrontBagProgress composes compact/wide Steppers from explicit steps/current/labels/formatters;
+View/logic retain visibility, stage state, navigation and permitted-step callbacks.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
