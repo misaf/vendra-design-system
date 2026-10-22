@@ -181,7 +181,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutReceipt now composes receipt details and changed-amount confirmation.
    StorefrontCheckoutSubmission now composes submission actions and processing/failure feedback.
    StorefrontCheckoutNotices now composes retry-review and recovery-storage notices.
-   **Next stage: extract checkout progress and heading into a storefront organism.**
+   StorefrontCheckoutProgress and StorefrontCheckoutHeading now compose progress and payment heading.
+   **Next stage: extract checkout bank status into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2192,6 +2193,33 @@ failures remain documented. No baselines or tolerances changed.
 All 40 notice screenshot pairs are byte-identical, checked against actual PNG bytes. Persian
 phone review, English phone storage error, Persian desktop bank error and English TV combined-state
 review captures were viewed. Next: extract checkout progress and heading into a storefront organism.
+
+**Ninety-seventh checkpoint verified:** StorefrontCheckoutProgress and
+StorefrontCheckoutHeading are extracted under `templates/app/organisms/` with explicit
+step/current/labels/formatters/optional callback and title/accent props. Progress shares compact
+and wide Steppers across payment, bank and success, retaining breakpoint wrappers, ordered lists,
+current/completed semantics, labels and compact captions. The payment-only spacing wrapper stays
+in View; bank/success gain no wrapper and receive no navigation callback. Heading preserves the
+h1/em, whitespace, spacing and accent classes. View/logic retain state visibility, current indices,
+localized method wording, permitted navigation and focus effects. No state/effects, browser APIs
+or payment rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: bilingual receipt continuity through delivery
+edits/reload, card completion/account offer, paid bank return and declined-payment retry. Paired
+probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They check payment
+index 2, success index 3, four labeled steps, localized compact captions, two permitted payment
+step buttons and no bank/success step buttons. Both completed steps return to the correct bag or
+delivery stage, preserving address and receipt fields through continuation and restoring heading
+focus. Card accent text and online/COD/WhatsApp headings, a single h1, payment-heading absence
+during bank/success, bank-to-card recovery and completion are checked. Tablet rotation, settled
+page axe and document overflow are covered. Bank flow uses the local demo; no external payment
+or WhatsApp handoff is opened. Full browser/device suites and TV spatial-arrow navigation were
+not rerun; prior baseline zone-hint failures remain documented. No baselines or tolerances changed.
+All 56 payment-progress, card/online/COD/WhatsApp heading and bank/success progress screenshot pairs
+are byte-identical, verified against actual PNG bytes. Persian phone payment/success captions,
+English phone card heading, English desktop bank progress and Persian TV success progress were
+viewed. Next: extract checkout bank status into a storefront organism.
 
 ## Adding components
 

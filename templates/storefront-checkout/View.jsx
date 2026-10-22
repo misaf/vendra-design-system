@@ -8,6 +8,8 @@ import {StorefrontCheckoutMethods} from '../app/organisms/StorefrontCheckoutMeth
 import {StorefrontCheckoutReceipt} from '../app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx';
 import {StorefrontCheckoutSubmission} from '../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {StorefrontCheckoutNotices} from '../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
+import {StorefrontCheckoutProgress} from '../app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
+import {StorefrontCheckoutHeading} from '../app/organisms/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -33,30 +35,14 @@ export function View({v}) {
               v.paying ? (
                 <>
                   <div className="vf-checkout-steps tw:mb-5h">
-                    <div className="tw:md:hidden">
-                      <DS.Stepper
-                        label={v.t?.steps}
-                        steps={v.steps}
-                        current={2}
-                        onStepClick={v.stepClick}
-                        doneLabel={v.t?.doneStep}
-                        formatNumber={v.fmt}
-                        captionFormat={v.caption}
-
-                        compact={true}
-                      />
-                    </div>
-                    <div className="tw:max-md:hidden">
-                      <DS.Stepper
-                        label={v.t?.steps}
-                        steps={v.steps}
-                        current={2}
-                        onStepClick={v.stepClick}
-                        doneLabel={v.t?.doneStep}
-                        formatNumber={v.fmt}
-                        captionFormat={v.caption}
-                      />
-                    </div>
+                    <StorefrontCheckoutProgress
+                      steps={v.steps}
+                      current={2}
+                      onStepClick={v.stepClick}
+                      labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                      formatNumber={v.fmt}
+                      captionFormat={v.caption}
+                    />
                   </div>
                 </>
               ) : null
@@ -64,14 +50,7 @@ export function View({v}) {
             heading={
               v.paying ? (
                 <>
-                  <div className="vf-checkout-heading tw:mb-6">
-                    <h1>
-                      <>{v.t?.payA} </>
-                      <em className="vf-checkout-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                        <>{v.t?.payB}</>
-                      </em>
-                    </h1>
-                  </div>
+                  <StorefrontCheckoutHeading title={v.t?.payA} accent={v.t?.payB} />
                 </>
               ) : null
             }
@@ -189,28 +168,13 @@ export function View({v}) {
             bank={
               v.bankTrip ? (
                 <>
-                  <div className="tw:md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={2}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-
-                      compact={true}
-                    />
-                  </div>
-                  <div className="tw:max-md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={2}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-                    />
-                  </div>
+                  <StorefrontCheckoutProgress
+                    steps={v.steps}
+                    current={2}
+                    labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                    formatNumber={v.fmt}
+                    captionFormat={v.caption}
+                  />
                   <DS.PaymentStatus
                     status={v.bankTrip?.status}
                     amount={v.bankTrip?.amount}
@@ -228,28 +192,13 @@ export function View({v}) {
             success={
               v.done ? (
                 <>
-                  <div className="tw:md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={3}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-
-                      compact={true}
-                    />
-                  </div>
-                  <div className="tw:max-md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={3}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-                    />
-                  </div>
+                  <StorefrontCheckoutProgress
+                    steps={v.steps}
+                    current={3}
+                    labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                    formatNumber={v.fmt}
+                    captionFormat={v.caption}
+                  />
                   <DS.EmptyState
                     icon="check"
                     tone="accent"

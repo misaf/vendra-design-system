@@ -87,6 +87,8 @@ StorefrontCheckoutSubmission composes WhatsApp, processing/failure feedback and 
 View/logic retain readiness, submission/deduplication, pending/errors, retries and navigation.
 StorefrontCheckoutNotices composes independent retry-review and recovery-storage notices;
 View/logic retain retry eligibility, storage, focus, record clearing and review navigation.
+StorefrontCheckoutProgress composes compact/wide Steppers; StorefrontCheckoutHeading composes payment h1;
+View/logic retain state visibility, current indices, labels/formatters, permitted navigation and focus.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
