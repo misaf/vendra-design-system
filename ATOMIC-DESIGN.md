@@ -191,7 +191,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountBalanceHistory now composes empty/populated wallet history.
    StorefrontAccountSaved now composes saved product cards and empty-state recovery.
    StorefrontAccountAddresses now composes the saved-address map, cards and add action.
-   **Next stage: extract account reminders into a storefront organism.**
+   StorefrontAccountReminders now composes reminder rows, actions and feedback.
+   **Next stage: extract account profile controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2482,6 +2483,34 @@ rendered tile images to complete at full opacity; both resulting pairs are byte-
 CSS/opacity overrides. English phone map/initial/fallback, Persian phone default, English tablet empty,
 Persian tablet and English TV original/rechecked maps, and Persian TV default captures were viewed.
 Next: extract account reminders into a storefront organism.
+
+**One hundred and seventh checkpoint verified:** StorefrontAccountReminders is extracted under
+`templates/app/organisms/` with explicit add, empty/upcoming feedback, introduction, normalized
+reminder records, shop destination and labels. It preserves wrapper/intro classes, add ID/plus icon,
+neutral upcoming Alert and separator, positional keys, ReminderRow dates/occasion/channel/on/soon
+props, toggle/edit/delete callbacks and shop links. View retains tab visibility and list normalization;
+account/shared logic retains customer scope, calendar/date calculations, ordering/upcoming selection,
+localized formatting, editor state/validation/focus, mutations and persistence. No state, effects,
+browser APIs or reminder rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass without retries: bilingual reminder validation/save/reload/focus
+return and customer-switch isolation. Eight paired baseline/current probes exercise English/Persian
+at touch widths 390/768, desktop 1280 and TV 1920. They compare sample content and fixture upcoming/
+active/paused/empty/added states, activate the upcoming shop link, toggle off/on with alert changes,
+edit an existing name and retain it after reload, delete all reminders, validate an empty new name,
+and add a new reminder that survives reload/tab changes. Calendar dates, alternate dates, channel/
+occasion text, ordering and paused/send-link visibility remain equal across versions. The initial
+probe expectation for existing-edit focus was corrected to the baseline's Edit opener; editing returns
+to Edit, while deletion/addition return to Add. Touch/keyboard activation, tablet rotation, document
+overflow and full-page axe at page top pass. Full browser/device suites and TV spatial-arrow navigation
+were not rerun; earlier baseline accessibility/zone-hint limitations remain documented. No baselines
+or tolerances changed.
+
+All eight paired probes pass. All 40 upcoming/active/paused/empty/added screenshot pairs are
+byte-identical, verified against actual PNG bytes. English phone active/paused/empty, Persian phone
+upcoming, Persian tablet added, English desktop paused and Persian TV active captures were viewed.
+Next: extract account profile controls into a storefront organism.
 
 ## Adding components
 
