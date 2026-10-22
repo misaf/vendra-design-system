@@ -11,3 +11,5 @@ StorefrontAccountOrders composes order cards/tracking links from normalized pres
 StorefrontAccountBalanceOverview composes the balance Card. View retains the balance panel, top-up/history sections and tab visibility; account/shared logic retains wallet reads, eligibility, formatting and mutations.
 
 StorefrontAccountTopUp composes controlled top-up fields, presets and feedback. View retains checkout return/history; account/shared logic retains validation, focus, pending timer, wallet/storage mutations and persistence.
+
+StorefrontAccountBalanceHistory composes empty/populated wallet history. View retains balance-tab visibility and normalization; account/shared logic retains customer scope, ordering, date/amount formatting and persistence.
