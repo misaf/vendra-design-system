@@ -167,7 +167,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopResults now composes product cards, paging and loading/error/empty feedback.
    StorefrontBagItems now composes editable line items and stock warnings.
    StorefrontBagSummary now composes totals, free-delivery progress, promo and navigation actions.
-   **Next stage: extract bag sticky actions into a storefront organism.**
+   StorefrontBagSticky now composes total and continuation controls in Shell’s sticky slot.
+   **Next stage: extract bag feedback and recovery into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1840,6 +1841,30 @@ tolerances changed. Persian phone invalid and desktop delivery/threshold capture
 The initial baseline map probe used a frozen clock; switching to the existing delivery test's
 moving clock allowed map animation/quoting to complete. Full browser/device suites and TV spatial
 arrow navigation were not rerun. Next: extract bag sticky actions into a storefront organism.
+
+**Eighty-third checkpoint verified:** StorefrontBagSticky is extracted under
+`templates/app/organisms/StorefrontBagSticky/`. It receives explicit total label/value and delivery/
+payment descriptors with independent visibility, labels and callbacks. It composes the existing
+compact total/Price and continuation buttons inside Shell's sticky slot, preserving wrapper
+classes/order, price size/class, button variant/icon and labels. View retains content visibility
+and descriptor mapping; bag/shared logic retains totals/discounts, stock eligibility, step state,
+delivery/payment validation and navigation. Shell/existing CSS retain hiding/docking, height and
+focus measurements. No page model, state/effects, browser APIs, commerce rules, styles or package
+exports move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile browser cases pass without retries: promo continuity through checkout and payment
+validation summary/focus. Twelve bilingual before/after probes cover compact touch widths 320/390
+and short landscape 667x375, plus wider touch widths 768/1180 and TV 1920. They verify initial totals,
+live quantity/promo updates, one reachable action with minimum tap height, delivery/payment labels,
+validation focus, back/reload persistence, compact-breakpoint rotation, wider hiding, empty-bag bar
+removal, no document overflow and full-page axe with populated/empty bags. Compact uses touch;
+TV continuation uses keyboard Enter through the wider summary action. TV spatial-arrow navigation
+and the full browser/device suites were not rerun. The TV probe waits for navigation layout/focus
+to settle before keyboard activation; immediate activation failed on the unchanged baseline.
+All 18 default/updated/delivery bar screenshot pairs are byte-identical, verified against actual
+PNG bytes. Six additional paired probes verify wider hiding. Persian 320px updated and English
+short-landscape delivery captures were viewed. No baselines/tolerances changed.
+Next: extract bag feedback and recovery into a storefront organism.
 
 ## Adding components
 
