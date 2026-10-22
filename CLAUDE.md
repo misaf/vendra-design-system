@@ -105,6 +105,8 @@ StorefrontAccountTopUp composes controlled presets, amount, submit and payment f
 View/logic retain normalization, validation/focus, pending timer, wallet/storage changes and persistence.
 StorefrontAccountBalanceHistory composes empty/populated history from explicit records/visibility;
 View/logic retain normalization, wallet/customer scope, mapping, formatting and persistence.
+StorefrontAccountSaved composes saved cards/empty recovery from explicit items/labels/visibility;
+View/logic retain normalization, customer scope, product mapping and favorite synchronization/persistence.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
