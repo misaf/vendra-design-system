@@ -79,6 +79,8 @@ StorefrontCheckoutLayout arranges review, payment, summary and bank/success slot
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontCheckoutDeliveryReview composes delivery details and edit navigation from explicit rows/labels;
 View/logic retain delivery state, row formatting, payment drafts and edit/return navigation.
+StorefrontCheckoutMethods composes controlled method choices, availability feedback and wallet context;
+View/logic retain eligibility, balances/discounts, method drafts, top-up URLs and payment notices.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain

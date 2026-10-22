@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontCheckoutLayout} from '../app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx';
 import {StorefrontCheckoutDeliveryReview} from '../app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx';
+import {StorefrontCheckoutMethods} from '../app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -92,80 +93,31 @@ export function View({v}) {
             payment={
               v.paying ? (
                 <>
-                  <p className="vf-checkout-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{v.t?.payP}</>
-                  </p>
-                  {v.showMethods ? (
-                    <>
-                      <DS.RadioGroup
-                        className="vf-checkout-methods"
-                        legend={v.migration?.choose}
-                        name="vf-pay-method"
-                        value={v.method}
-                        onChange={v.setMethod}
-                      >
-                        {list(v.methodOptions).map((o, $index) => (
-                          <React.Fragment key={$index}>
-                            <DS.Radio
-                              value={o?.value}
-                              label={o?.label}
-                              description={o?.description}
-                              disabled={o?.disabled}
-                            />
-                          </React.Fragment>
-                        ))}
-                      </DS.RadioGroup>
-                    </>
-                  ) : null}
-                  {v.noMethod ? (
-                    <>
-                      <DS.Alert
-                        tone="warning"
-                        title={v.migration?.noMethod}
-                        action={
-                          <DS.Button
-                            size="sm"
-                            variant="secondary"
-                            iconStart="phone"
-                            href={v.phoneHref}
-                          >
-                            <>{v.phoneLabel}</>
-                          </DS.Button>
-                        }
-                      />
-                    </>
-                  ) : null}
-                  {v.discountHint ? (
-                    <>
-                      <p className="vf-checkout-wallet-hint tw:m-0 tw:text-sm">
-                        <>{v.discountHint}</>
-                      </p>
-                    </>
-                  ) : null}
-                  {v.showTopUp ? (
-                    <>
-                      <div>
-                        <DS.Button
-                          variant="secondary"
-                          size="sm"
-                          iconStart="banknote"
-                          href={v.topUpHref}
-                        >
-                          <>{v.topUpLabel}</>
-                        </DS.Button>
-                      </div>
-                    </>
-                  ) : null}
-                  {v.isWallet ? (
-                    <>
-                      <p className="vf-checkout-wallet-after tw:m-0 tw:text-sm tw:font-medium">
-                        <>{v.walletAfter}</>
-                      </p>
-                    </>
-                  ) : null}
-                  <p className="tw:text-sm tw:text-quiet">
-                    <>{v.paymentNotice}</>
-                  </p>
+                  <StorefrontCheckoutMethods
+                    intro={v.t?.payP}
+                    methods={{
+                      visible: v.showMethods,
+                      label: v.migration?.choose,
+                      value: v.method,
+                      onChange: v.setMethod,
+                      options: list(v.methodOptions)
+                    }}
+                    unavailable={{
+                      visible: v.noMethod,
+                      label: v.migration?.noMethod,
+                      href: v.phoneHref,
+                      phoneLabel: v.phoneLabel
+                    }}
+                    wallet={{
+                      hint: v.discountHint,
+                      showTopUp: v.showTopUp,
+                      topUpHref: v.topUpHref,
+                      topUpLabel: v.topUpLabel,
+                      selected: v.isWallet,
+                      after: v.walletAfter
+                    }}
+                    notice={v.paymentNotice}
+                  />
                   {v.receiptChanged && (
                     <div id="vf-receipt-changed" tabIndex={-1}>
                       <DS.Alert
