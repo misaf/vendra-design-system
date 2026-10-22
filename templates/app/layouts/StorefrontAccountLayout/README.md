@@ -8,11 +8,11 @@ Preserve existing wrapper classes and focus targets. Verify linked tabs and keyb
 
 StorefrontAccountOrders composes order cards/tracking links from normalized presentation records. View retains the surrounding tab branch; account/shared logic retains history, customer isolation, formatting and destinations.
 
-StorefrontAccountBalanceOverview composes the balance Card. View retains the balance panel, top-up/history sections and tab visibility; account/shared logic retains wallet reads, eligibility, formatting and mutations.
+StorefrontAccountBalanceOverview composes the balance Card. StorefrontAccountBalancePanel retains the balance wrapper and section order; View retains tab visibility; account/shared logic retains wallet reads, eligibility, formatting and mutations.
 
-StorefrontAccountTopUp composes controlled top-up fields, presets and feedback. View retains checkout return/history; account/shared logic retains validation, focus, pending timer, wallet/storage mutations and persistence.
+StorefrontAccountTopUp composes controlled top-up fields, presets and feedback. StorefrontAccountBalancePanel retains checkout return/history composition; account/shared logic retains validation, focus, pending timer, wallet/storage mutations and persistence.
 
-StorefrontAccountBalanceHistory composes empty/populated wallet history. View retains balance-tab visibility and normalization; account/shared logic retains customer scope, ordering, date/amount formatting and persistence.
+StorefrontAccountBalanceHistory composes empty/populated wallet history. StorefrontAccountBalancePanel retains history placement; View retains balance-tab visibility and normalization; account/shared logic retains customer scope, ordering, date/amount formatting and persistence.
 
 StorefrontAccountSaved composes saved-product cards and empty recovery. View retains tab visibility/normalization; account/shared logic retains favorite synchronization/persistence, customer scope, mapping and destinations.
 
@@ -37,3 +37,5 @@ StorefrontAccountSessionAction composes the controlled sign-out button. This lay
 StorefrontAccountFeedback composes the always-mounted status paragraph. This layout retains feedback placement after the tabs; account/shared logic retains localized notice transitions and persistence.
 
 StorefrontAccountNotices composes the page storage-error alert. View retains error/non-editor visibility; this layout retains placement before the tabs. Account/shared logic retains storage/error/retry state; StorefrontAccountEditorDialog retains editor alerts.
+
+StorefrontAccountBalancePanel composes the balance overview, top-up, optional checkout return and history. View retains tab visibility, localized descriptor mapping/list normalization and return eligibility; account/shared logic retains wallet reads, validation, timers, mutations, persistence and checkout destinations.

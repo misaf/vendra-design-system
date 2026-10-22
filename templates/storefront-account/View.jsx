@@ -1,12 +1,8 @@
 // StorefrontAccount: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontAccountLayout} from '../app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from '../app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
-import {StorefrontAccountBalanceOverview} from '../app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx';
-import {StorefrontAccountTopUp} from '../app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx';
-import {StorefrontAccountBalanceHistory} from '../app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx';
 import {StorefrontAccountSaved} from '../app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
 import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
 import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
@@ -19,6 +15,7 @@ import {StorefrontAccountTabs} from '../app/organisms/StorefrontAccountTabs/Stor
 import {StorefrontAccountSessionAction} from '../app/organisms/StorefrontAccountSessionAction/StorefrontAccountSessionAction.jsx';
 import {StorefrontAccountFeedback} from '../app/organisms/StorefrontAccountFeedback/StorefrontAccountFeedback.jsx';
 import {StorefrontAccountNotices} from '../app/organisms/StorefrontAccountNotices/StorefrontAccountNotices.jsx';
+import {StorefrontAccountBalancePanel} from '../app/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -62,49 +59,45 @@ export function View({v}) {
                   ) : null}
                   {v.isBalance ? (
                     <>
-                      <div className="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-wide">
-                        <StorefrontAccountBalanceOverview
-                          title={v.t?.balance?.title}
-                          amount={v.balance?.amount}
-                          status={v.balance?.status}
-                        />
-                        <StorefrontAccountTopUp
-                          title={v.t?.balance?.topUp}
-                          quickLabel={v.t?.balance?.quick}
-                          presets={list(v.balance?.presets)}
-                          amount={{
+                      <StorefrontAccountBalancePanel
+                        overview={{
+                          title: v.t?.balance?.title,
+                          amount: v.balance?.amount,
+                          status: v.balance?.status
+                        }}
+                        topUp={{
+                          title: v.t?.balance?.topUp,
+                          quickLabel: v.t?.balance?.quick,
+                          presets: list(v.balance?.presets),
+                          amount: {
                             label: v.t?.balance?.amount,
                             value: v.balance?.value,
                             onChange: v.balance?.set,
                             hint: v.balance?.hint,
                             error: v.balance?.error
-                          }}
-                          payment={{
+                          },
+                          payment: {
                             label: v.balance?.payLabel,
                             onClick: v.balance?.submit,
                             busy: v.balance?.busy,
                             processing: v.t?.balance?.processing,
                             done: v.balance?.done
-                          }}
-                          demo={v.t?.balance?.demo}
-                        />
-                        {v.checkoutReturn && (
-                          <DS.Button
-                            variant="secondary"
-                            href={v.checkoutHref}
-                            iconStart="arrow-left"
-                          >
-                            {v.t.balance.backToCheckout}
-                          </DS.Button>
-                        )}
-                        <StorefrontAccountBalanceHistory
-                          title={v.t?.balance?.history}
-                          showEmpty={v.balance?.noHistory}
-                          emptyText={v.t?.balance?.noHistory}
-                          showHistory={v.balance?.hasHistory}
-                          entries={list(v.balance?.history)}
-                        />
-                      </div>
+                          },
+                          demo: v.t?.balance?.demo
+                        }}
+                        checkoutReturn={
+                          v.checkoutReturn
+                            ? {href: v.checkoutHref, label: v.t.balance.backToCheckout}
+                            : null
+                        }
+                        history={{
+                          title: v.t?.balance?.history,
+                          showEmpty: v.balance?.noHistory,
+                          emptyText: v.t?.balance?.noHistory,
+                          showHistory: v.balance?.hasHistory,
+                          entries: list(v.balance?.history)
+                        }}
+                      />
                     </>
                   ) : null}
                   {v.isSaved ? (
