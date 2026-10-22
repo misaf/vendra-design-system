@@ -164,7 +164,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopSidebarFilters now composes controlled occasion/date/price/stock fields.
    StorefrontShopFilterDialog now composes controlled compact fields and Show/Clear actions.
    StorefrontShopToolbar now composes compact filters/sort, active filters, quick chips and result count.
-   **Next stage: extract shop product results and feedback into a storefront organism.**
+   StorefrontShopResults now composes product cards, paging and loading/error/empty feedback.
+   **Next stage: extract bag line items into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1765,6 +1766,31 @@ Thirty-one of 32 toolbar-region screenshot pairs are byte-identical, checked aga
 PNG bytes. The default English desktop toolbar differs by eight pixels at 1/255 per channel.
 No visual baselines/tolerances changed. Persian phone filtered and English desktop default
 captures were viewed. Next: extract shop product results and feedback into a storefront organism.
+
+**Eightieth checkpoint verified:** StorefrontShopResults is extracted under
+`templates/app/organisms/StorefrontShopResults/`. It receives normalized product records, frame,
+explicit content/paging visibility, paging data/callback, feedback flags/actions and localized
+labels. It composes loading Skeleton/status, error Alert/retry, product cards/LoadMore and empty
+feedback/clear without adding a wrapper or changing classes, card fields, first-two image priority,
+links, announcements or order. View retains mapping; shop/shared logic retains result selection,
+sorting, favorites, URL/paging, navigation/focus and retry/clear semantics. No page model, new
+state/effects, browser APIs, commerce rules, styles or package exports move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile browser cases pass without retries: cumulative paging with new-card focus/URL/
+reload and empty-category eligibility. Twenty bilingual before/after probes cover default results
+at touch widths 390/768, desktop 1280 and TV 1920, plus empty/loading/error states at 390/1280.
+They verify product order, paging links/counts, focus after pointer/touch paging, URL/reload,
+favorite toggles/persistence, product navigation/back, touch tablet rotation, empty clear and error
+retry recovery, hidden grid during feedback, loading status, no document overflow and full-page
+axe. Keyboard Enter activates favorites/product links/recovery controls. The unchanged touch
+baseline failed new-card focus after keyboard Enter on LoadMore; the normal touch/pointer path
+and existing focused tests pass. This stage preserves that existing limitation. A scratch probe
+initially used a nonexistent Skeleton class; it was corrected and unfinished cases resumed.
+All 28 result-region/loaded-grid screenshot pairs are byte-identical, verified against PNG bytes.
+Results captures include the existing toolbar and Shell overlays; no baselines/tolerances changed.
+Persian phone default and desktop error/loading captures were viewed. The full browser/device
+suite and TV spatial-arrow navigation were not rerun. Next: extract bag line items into a storefront
+organism.
 
 ## Adding components
 
