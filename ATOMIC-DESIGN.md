@@ -174,7 +174,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagLocation now composes delivery map/status, fallback zone and address controls.
    StorefrontBagSchedule now composes delivery scheduling and changed-window confirmation.
    StorefrontBagCards now composes per-item card messages/add controls and Undo feedback.
-   **Next stage: extract bag sender fields into a storefront organism.**
+   StorefrontBagSender now composes sender heading/hint and controlled contact fields.
+   **Next stage: extract bag delivery sign-in and validation feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2011,6 +2012,28 @@ spatial-arrow navigation were not rerun; prior baseline zone-hint failures remai
 All 32 default/added/error/filled card-section screenshot pairs are byte-identical, verified against
 actual PNG bytes. Persian phone error and English TV filled captures were viewed. No baselines/
 tolerances changed. Next: extract bag sender fields into a storefront organism.
+
+**Ninetieth checkpoint verified:** StorefrontBagSender is extracted under
+`templates/app/organisms/StorefrontBagSender/`. It receives explicit title/hint labels and controlled
+sender name/phone descriptors with values, callbacks, errors and labels. It composes the sender
+section/heading/hint and grid, preserving section/heading/input IDs, classes/order, required/error
+props, name autocomplete and shared PhoneInput keypad/direction/autocomplete/placeholder defaults.
+View retains visibility/mapping; bag/shared logic retains sender state, signed-in prefill,
+validation, persistence, customer isolation and error-summary focus. No page model, new state/
+effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight focused
+desktop/mobile browser cases pass without retries: sender summary-link focus, signed-in saved-
+address checkout/prefill and bilingual payment-draft persistence through delivery edits/reload.
+Eight bilingual paired probes at touch widths 390/768, desktop 1280 and TV 1920 verify unique
+heading/section naming, required/type/direction/autocomplete props, empty/error/filled fields,
+summary links/focus, corrected English/Persian inputs, reload, bag/delivery round trips with values
+retained, tablet rotation, no document overflow and full-page axe. Touch uses taps; desktop/TV
+uses keyboard Enter after navigation layout/focus settles. Full browser/device suites and TV
+spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain documented.
+Twenty-three of 24 default/error/filled sender-section screenshot pairs are byte-identical, verified
+against actual PNG bytes. The Persian TV filled capture differs by four pixels at 1/255 per channel. Persian phone errors and English TV filled captures were viewed. No baselines/
+tolerances changed. Next: extract bag delivery sign-in and validation feedback into a storefront
+organism.
 
 ## Adding components
 

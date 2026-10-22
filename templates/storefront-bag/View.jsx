@@ -12,6 +12,7 @@ import {StorefrontBagRecipient} from '../app/organisms/StorefrontBagRecipient/St
 import {StorefrontBagLocation} from '../app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx';
 import {StorefrontBagSchedule} from '../app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx';
 import {StorefrontBagCards} from '../app/organisms/StorefrontBagCards/StorefrontBagCards.jsx';
+import {StorefrontBagSender} from '../app/organisms/StorefrontBagSender/StorefrontBagSender.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -197,42 +198,21 @@ export function View({v}) {
                           lines={list(v.cardLines)}
                         />
                       ) : null}
-                      <section
-                        className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
-                        aria-labelledby="vf-you-title"
-                      >
-                        <div className="tw:flex tw:flex-col tw:gap-1">
-                          <h2
-                            id="vf-you-title"
-                            className="vf-bag-delivery-title tw:m-0 tw:font-display tw:font-medium tw:text-xl! tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]"
-                          >
-                            <>{v.t?.you}</>
-                          </h2>
-                          <p className="ag-field__hint tw:m-0">
-                            <>{v.t?.youHint}</>
-                          </p>
-                        </div>
-                        <div className="vf-bag-recipient-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))]">
-                          <DS.Input
-                            id="vf-sender"
-                            value={v.delivery?.sender}
-                            onChange={v.setSender}
-                            error={v.senderError}
-                            required={true}
-                            label={v.t?.sender}
-                            autoComplete="name"
-                          />
-                          <DS.PhoneInput
-                            id="vf-sender-phone"
-                            value={v.delivery?.senderPhone}
-                            onChange={v.setSenderPhone}
-                            error={v.senderPhoneError}
-                            required={true}
-                            label={v.t?.senderPhone}
-                            placeholder="0912 000 0000"
-                          />
-                        </div>
-                      </section>
+                      <StorefrontBagSender
+                        labels={{title: v.t?.you, hint: v.t?.youHint}}
+                        name={{
+                          value: v.delivery?.sender,
+                          onChange: v.setSender,
+                          error: v.senderError,
+                          label: v.t?.sender
+                        }}
+                        phone={{
+                          value: v.delivery?.senderPhone,
+                          onChange: v.setSenderPhone,
+                          error: v.senderPhoneError,
+                          label: v.t?.senderPhone
+                        }}
+                      />
                     </>
                   ) : null}
                 </>
