@@ -14,6 +14,7 @@ import {StorefrontAccountProfile} from '../app/organisms/StorefrontAccountProfil
 import {StorefrontAccountAddressEditor} from '../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {StorefrontAccountReminderEditor} from '../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {StorefrontAccountEditorDialog} from '../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
+import {StorefrontAccountHeading} from '../app/organisms/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -25,15 +26,11 @@ export function View({v}) {
           <StorefrontAccountLayout
             heading={
               <>
-                <div className="vf-account-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.hello}</>
-                </div>
-                <h1>
-                  <>{v.t?.accA} </>
-                  <em className="vf-account-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{v.t?.accB}</>
-                  </em>
-                </h1>
+                <StorefrontAccountHeading
+                  eyebrow={v.t?.hello}
+                  title={v.t?.accA}
+                  accent={v.t?.accB}
+                />
               </>
             }
             actions={
