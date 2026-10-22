@@ -193,7 +193,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountAddresses now composes the saved-address map, cards and add action.
    StorefrontAccountReminders now composes reminder rows, actions and feedback.
    StorefrontAccountProfile now composes controlled profile fields and save action.
-   **Next stage: extract account address editor fields into a storefront organism.**
+   StorefrontAccountAddressEditor now composes controlled address fields and pin/fallback.
+   **Next stage: extract account reminder editor fields into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2541,6 +2542,37 @@ channel delta 1/255, verified against actual PNG bytes and viewed side by side. 
 Persian tablet email error, English tablet storage feedback, English desktop phone and Persian TV
 language captures were also viewed.
 Next: extract account address editor fields into a storefront organism.
+
+**One hundred and ninth checkpoint verified:** StorefrontAccountAddressEditor is extracted under
+`templates/app/organisms/` with explicit label/zone/pin/address/recipient/phone descriptors. It preserves
+field/map IDs, compact LocationPicker props/callbacks, independent map/fallback visibility, pin wrapper/
+fallback classes, multiline address/error/autocomplete, recipient autocomplete and PhoneInput/error.
+It returns a fragment so the existing dialog retains spacing. View retains address-branch visibility,
+the shared dialog, storage alert, error summary and save/cancel actions; account/shared logic retains
+drafts, location/zone rules, map/geolocation failure state, validation/focus, customer scope, mutations
+and persistence. LocationPicker retains its map/geolocation lifecycle. No state, effects, browser APIs
+or address rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+mobile/desktop browser tests pass without retries: map/editor pin entry, complete error summary,
+bilingual storage-failure retry, saved-address delivery and unpinned-address isolation. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check blank-field validation with three focused-summary links, address-link focus, single missing-
+pin focus/description, zone selection retained with pin changes, controlled geolocation failure and
+error clearing on map movement, localized phone entry with tel/keypad/LTR/autocomplete semantics,
+filled field parity, save/reopen/edit/reload, discarded cancellation drafts and opener focus return.
+The selected zone and typed phone persist with valid coordinates. A failed Leaflet load retains typed-
+address saving without a location; that address remains unpinned after reload. Tablet rotation with
+the dialog open, document overflow and full-page axe for invalid/fallback dialogs and the settled
+account pass. Geolocation denial and map failure are controlled only in isolated probe contexts.
+Full browser/device suites and TV spatial-arrow navigation were not rerun; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 40 summary/pin-error/address/phone/fallback screenshot pairs are
+byte-identical, verified against actual PNG bytes. English phone summary/pin-error/fallback, Persian
+phone phone field, Persian tablet address, English desktop pin error and Persian TV fallback captures
+were viewed.
+Next: extract account reminder editor fields into a storefront organism.
 
 ## Adding components
 

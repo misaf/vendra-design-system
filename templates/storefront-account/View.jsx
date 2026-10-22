@@ -11,6 +11,7 @@ import {StorefrontAccountSaved} from '../app/organisms/StorefrontAccountSaved/St
 import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
 import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
 import {StorefrontAccountProfile} from '../app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
+import {StorefrontAccountAddressEditor} from '../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -213,71 +214,52 @@ export function View({v}) {
                     <DS.ErrorSummary id="vf-editor-errors" errors={v.editorProblems} />
                     {v.isAddress ? (
                       <>
-                        <DS.Input
-                          id="vf-address-label"
-                          label={v.editor?.label}
-                          value={v.form?.label}
-                          onChange={v.set?.label}
-                        />
-                        <DS.Select
-                          label={v.editor?.zone}
-                          value={v.form?.zone}
-                          options={v.zoneOptions}
-                          onChange={v.set?.zone}
-                        />
-                        <div className="vf-account-pin tw:flex tw:flex-col tw:gap-2">
-                          {v.mapOk ? (
-                            <>
-                              <DS.LocationPicker
-                                id="vf-address-map"
-                                compact={true}
-                                label={v.editor?.pin}
-                                status={v.pinStatus}
-                                error={v.pinError}
-                                value={v.form?.location}
-                                onChange={v.map?.change}
-                                loadLeaflet={v.map?.load}
-                                tiles={v.map?.tiles}
-                                center={v.map?.center}
-                                zoom={v.map?.zoom}
-                                locateLabel={v.editor?.locate}
-                                onLocateError={v.map?.locateError}
-                                onFail={v.map?.fail}
-                              />
-                            </>
-                          ) : null}
-                          {v.mapFailed ? (
-                            <>
-                              <span className="ag-field__label">
-                                <>{v.editor?.pin}</>
-                              </span>
-                              <p className="ag-field__hint tw:m-0">
-                                <>{v.editor?.mapFailed}</>
-                              </p>
-                            </>
-                          ) : null}
-                        </div>
-                        <DS.Input
-                          id="vf-address-line"
-                          label={v.editor?.address}
-                          multiline={true}
-                          value={v.form?.line}
-                          onChange={v.set?.line}
-                          error={v.errors?.line}
-                          autoComplete="street-address"
-                        />
-                        <DS.Input
-                          label={v.editor?.recipient}
-                          value={v.form?.recipient}
-                          onChange={v.set?.recipient}
-                          autoComplete="name"
-                        />
-                        <DS.PhoneInput
-                          id="vf-address-phone"
-                          label={v.editor?.phone}
-                          value={v.form?.phone}
-                          onChange={v.set?.phone}
-                          error={v.errors?.phone}
+                        <StorefrontAccountAddressEditor
+                          label={{
+                            label: v.editor?.label,
+                            value: v.form?.label,
+                            onChange: v.set?.label
+                          }}
+                          zone={{
+                            label: v.editor?.zone,
+                            value: v.form?.zone,
+                            options: v.zoneOptions,
+                            onChange: v.set?.zone
+                          }}
+                          pin={{
+                            visible: v.mapOk,
+                            failed: v.mapFailed,
+                            label: v.editor?.pin,
+                            status: v.pinStatus,
+                            error: v.pinError,
+                            value: v.form?.location,
+                            onChange: v.map?.change,
+                            loadLeaflet: v.map?.load,
+                            tiles: v.map?.tiles,
+                            center: v.map?.center,
+                            zoom: v.map?.zoom,
+                            locateLabel: v.editor?.locate,
+                            onLocateError: v.map?.locateError,
+                            onFail: v.map?.fail,
+                            failureText: v.editor?.mapFailed
+                          }}
+                          address={{
+                            label: v.editor?.address,
+                            value: v.form?.line,
+                            onChange: v.set?.line,
+                            error: v.errors?.line
+                          }}
+                          recipient={{
+                            label: v.editor?.recipient,
+                            value: v.form?.recipient,
+                            onChange: v.set?.recipient
+                          }}
+                          phone={{
+                            label: v.editor?.phone,
+                            value: v.form?.phone,
+                            onChange: v.set?.phone,
+                            error: v.errors?.phone
+                          }}
                         />
                       </>
                     ) : null}
