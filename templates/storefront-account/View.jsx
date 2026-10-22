@@ -18,6 +18,7 @@ import {StorefrontAccountHeading} from '../app/organisms/StorefrontAccountHeadin
 import {StorefrontAccountTabs} from '../app/organisms/StorefrontAccountTabs/StorefrontAccountTabs.jsx';
 import {StorefrontAccountSessionAction} from '../app/organisms/StorefrontAccountSessionAction/StorefrontAccountSessionAction.jsx';
 import {StorefrontAccountFeedback} from '../app/organisms/StorefrontAccountFeedback/StorefrontAccountFeedback.jsx';
+import {StorefrontAccountNotices} from '../app/organisms/StorefrontAccountNotices/StorefrontAccountNotices.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -42,7 +43,9 @@ export function View({v}) {
               </>
             }
             notices={
-              <>{v.saveError && !v.formOpen && <DS.Alert tone="danger" title={v.saveError} />}</>
+              <>
+                {v.saveError && !v.formOpen && <StorefrontAccountNotices saveError={v.saveError} />}
+              </>
             }
             tabs={
               <>

@@ -200,7 +200,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountTabs now composes controlled pill tabs and the selected panel slot.
    StorefrontAccountSessionAction now composes the controlled sign-out button.
    StorefrontAccountFeedback now composes the persistent account status region.
-   **Next stage: extract account notices into a storefront organism.**
+   StorefrontAccountNotices now composes the page storage-error alert.
+   **Next stage: extract account balance panel composition into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2735,6 +2736,36 @@ All eight paired probes pass with identical status markup. All 16 saved/retry st
 pairs are byte-identical, verified against actual PNG bytes. English/Persian phone, Persian tablet,
 English desktop and Persian TV captures were viewed. Next: extract account notices into a storefront
 organism.
+
+**One hundred and sixteenth checkpoint verified:** StorefrontAccountNotices is extracted under
+`templates/app/organisms/` with an explicit save error. It preserves the danger Alert and title
+without adding a wrapper. View retains the exact `saveError && !formOpen` visibility condition;
+View/layout retain notices placement before the tabs. Account/shared logic retains localized error
+state, storage mutations and retry/clearing. StorefrontAccountEditorDialog retains editor alerts;
+package Alert retains semantics and presentation. No state, effects, browser APIs or account rules
+moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All six focused
+mobile/desktop browser tests pass without retries: bilingual profile/address storage-failure retry
+and profile persistence. Eight paired baseline/current probes exercise English/Persian at touch
+widths 390/768, desktop 1280 and TV 1920. They check initial alert absence, a single danger page alert
+before the tabs on profile-save failure, localized content and exact alert markup, empty success
+status with retained drafts, successful retry/removal and persisted profile values. Editor storage
+failure shows one dialog alert and no page alert; Escape clears errors, reopening starts clean, and
+another failure/successful retry persists the changed address after reload and tab reselection.
+Tablet rotation, document overflow and page-top/error-dialog axe pass. Actions use touch or
+Enter/Space activation. Initial unchanged-baseline probes assumed immediate DOM adjacency before
+the tabs and that the selected tab survived reloading the original Profile URL. Corrected probes
+check document order across the existing inert template and explicitly reselect Addresses after
+reload. Original failures/captures are retained separately; no product behavior changed for those
+assumptions. Full browser/device and TV spatial-arrow navigation suites and assistive-technology
+announcement testing were not run in this stage; earlier baseline accessibility/zone-hint limitations
+remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass with identical page/editor alert markup. All 16 page/editor alert
+screenshot pairs are byte-identical, verified against actual PNG bytes. English/Persian phone,
+English tablet editor, Persian tablet page, English desktop and Persian TV captures were viewed.
+Next: extract account balance panel composition into a storefront organism.
 
 ## Adding components
 
