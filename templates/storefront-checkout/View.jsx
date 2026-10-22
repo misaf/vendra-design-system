@@ -7,6 +7,7 @@ import {StorefrontCheckoutDeliveryReview} from '../app/organisms/StorefrontCheck
 import {StorefrontCheckoutMethods} from '../app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx';
 import {StorefrontCheckoutReceipt} from '../app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx';
 import {StorefrontCheckoutSubmission} from '../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
+import {StorefrontCheckoutNotices} from '../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -18,22 +19,15 @@ export function View({v}) {
           <StorefrontCheckoutLayout
             showPayment={v.paying}
             notices={
-              <>
-                {v.retryReview && (
-                  <div id="vf-payment-review" tabIndex={-1}>
-                    <DS.Alert
-                      tone="warning"
-                      title={v.t.retryReview}
-                      action={
-                        <DS.Button variant="secondary" onClick={v.reviewRetry}>
-                          {v.t.reviewRetry}
-                        </DS.Button>
-                      }
-                    />
-                  </div>
-                )}
-                {v.paymentSaveError && <DS.Alert tone="danger" title={v.paymentSaveError} />}
-              </>
+              <StorefrontCheckoutNotices
+                review={{
+                  visible: v.retryReview,
+                  title: v.t.retryReview,
+                  onReview: v.reviewRetry,
+                  label: v.t.reviewRetry
+                }}
+                saveError={v.paymentSaveError}
+              />
             }
             progress={
               v.paying ? (
