@@ -101,6 +101,8 @@ StorefrontAccountOrders composes order cards/tracking links from explicit presen
 View/logic retain tab visibility, list normalization, history, customer isolation, formatting and routes.
 StorefrontAccountBalanceOverview composes the balance Card from explicit title/amount/status;
 View/logic retain visibility, wallet reads, discount eligibility, formatting and mutations.
+StorefrontAccountTopUp composes controlled presets, amount, submit and payment feedback;
+View/logic retain normalization, validation/focus, pending timer, wallet/storage changes and persistence.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

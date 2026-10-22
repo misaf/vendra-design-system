@@ -9,3 +9,5 @@ Preserve existing wrapper classes and focus targets. Verify linked tabs and keyb
 StorefrontAccountOrders composes order cards/tracking links from normalized presentation records. View retains the surrounding tab branch; account/shared logic retains history, customer isolation, formatting and destinations.
 
 StorefrontAccountBalanceOverview composes the balance Card. View retains the balance panel, top-up/history sections and tab visibility; account/shared logic retains wallet reads, eligibility, formatting and mutations.
+
+StorefrontAccountTopUp composes controlled top-up fields, presets and feedback. View retains checkout return/history; account/shared logic retains validation, focus, pending timer, wallet/storage mutations and persistence.
