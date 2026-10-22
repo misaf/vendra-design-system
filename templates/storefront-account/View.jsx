@@ -12,6 +12,7 @@ import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddr
 import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
 import {StorefrontAccountProfile} from '../app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
 import {StorefrontAccountAddressEditor} from '../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
+import {StorefrontAccountReminderEditor} from '../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -265,41 +266,40 @@ export function View({v}) {
                     ) : null}
                     {v.isReminder ? (
                       <>
-                        <DS.Input
-                          id="vf-reminder-name"
-                          label={v.editor?.reminderName}
-                          value={v.form?.name}
-                          onChange={v.set?.name}
-                          error={v.errors?.name}
-                        />
-                        <DS.Select
-                          label={v.editor?.occasion}
-                          options={v.occasionOptions}
-                          value={v.form?.occ}
-                          onChange={v.setOccasion}
-                        />
-                        <DS.DatePicker
-                          id="vf-reminder-date"
-                          yearly={true}
-                          lang={v.lang}
-                          label={v.editor?.date}
-                          value={v.dateValue}
-                          onChange={v.setDate}
-                          disabled={v.dateLocked}
-                          hint={v.dateHint}
-                          labels={v.dateLabels}
-                        />
-                        <DS.Select
-                          label={v.editor?.before}
-                          options={v.beforeOptions}
-                          value={v.form?.before}
-                          onChange={v.setBefore}
-                        />
-                        <DS.Select
-                          label={v.editor?.via}
-                          options={v.channelOptions}
-                          value={v.form?.channel}
-                          onChange={v.set?.channel}
+                        <StorefrontAccountReminderEditor
+                          name={{
+                            label: v.editor?.reminderName,
+                            value: v.form?.name,
+                            onChange: v.set?.name,
+                            error: v.errors?.name
+                          }}
+                          occasion={{
+                            label: v.editor?.occasion,
+                            options: v.occasionOptions,
+                            value: v.form?.occ,
+                            onChange: v.setOccasion
+                          }}
+                          date={{
+                            lang: v.lang,
+                            label: v.editor?.date,
+                            value: v.dateValue,
+                            onChange: v.setDate,
+                            disabled: v.dateLocked,
+                            hint: v.dateHint,
+                            labels: v.dateLabels
+                          }}
+                          before={{
+                            label: v.editor?.before,
+                            options: v.beforeOptions,
+                            value: v.form?.before,
+                            onChange: v.setBefore
+                          }}
+                          channel={{
+                            label: v.editor?.via,
+                            options: v.channelOptions,
+                            value: v.form?.channel,
+                            onChange: v.set?.channel
+                          }}
                         />
                       </>
                     ) : null}

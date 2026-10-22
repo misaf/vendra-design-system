@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Account reminder editor fields | `app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx` (explicit name/occasion/date/before/channel descriptors; calendar rules and mutations remain in logic) |
 | Account address editor fields | `app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx` (explicit label/zone/pin/address/recipient/phone descriptors; dialog and mutations remain in View/logic) |
 | Account profile controls | `app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx` (explicit problems/field/save descriptors; drafts, validation and profile merges remain in logic) |
 | Account reminders | `app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx` (explicit add/feedback/intro/records/labels/shop link; reminder rules remain in logic) |
