@@ -19,3 +19,5 @@ StorefrontAccountSaved composes saved-product cards and empty recovery. View ret
 StorefrontAccountAddresses composes the saved map, address cards and add action. View retains tab visibility/normalization; account/shared logic retains map eligibility/failure, editor state, address mutations, validation/focus and persistence.
 
 StorefrontAccountReminders composes reminder rows, actions and feedback. View retains tab visibility/normalization; account/shared logic retains date/calendar rules, ordering/upcoming selection, editor state, reminder mutations, validation/focus and persistence.
+
+StorefrontAccountProfile composes controlled profile fields and save action. View retains tab visibility/descriptor mapping; account/shared logic retains drafts, changed-field merges, validation/focus, locale switching, save feedback and persistence.
