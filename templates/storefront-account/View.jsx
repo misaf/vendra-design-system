@@ -10,6 +10,7 @@ import {StorefrontAccountBalanceHistory} from '../app/organisms/StorefrontAccoun
 import {StorefrontAccountSaved} from '../app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
 import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
 import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
+import {StorefrontAccountProfile} from '../app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -159,52 +160,39 @@ export function View({v}) {
                   ) : null}
                   {v.isProfile ? (
                     <>
-                      <div className="vf-account-profile tw:flex tw:flex-col tw:gap-4 tw:max-w-narrow">
-                        <DS.ErrorSummary id="vf-profile-errors" errors={v.profileProblems} />
-                        <DS.Input
-                          id="vf-pname"
-                          label={v.t?.name}
-                          value={v.profile?.name}
-                          onChange={v.setProfile?.name}
-                          autoComplete="name"
-                        />
-                        <DS.Input
-                          id="vf-pphone"
-                          label={v.t?.phone}
-                          value={v.profile?.phone}
-                          dir="ltr"
-                          disabled={true}
-                          hint={v.t?.phoneHint}
-                        />
-                        <DS.Input
-                          id="vf-pemail"
-                          value={v.profile?.email}
-                          onChange={v.setProfile?.email}
-                          error={v.emailError}
-                          label={v.t?.email}
-                          type="email"
-                          dir="ltr"
-                          hint={v.t?.emailHint}
-                        />
-                        <DS.Select
-                          id="vf-plang"
-                          label={v.t?.alang}
-                          hint={v.t?.alangHint}
-                          value={v.profile?.locale}
-                          onChange={v.setProfile?.locale}
-                          options={v.langOptions}
-                        />
-                        <DS.Switch
-                          label={v.t?.sms}
-                          checked={v.profile?.sms}
-                          onChange={v.setProfile?.sms}
-                        />
-                        <div>
-                          <DS.Button variant="primary" onClick={v.saveProfile}>
-                            <>{v.t?.saveP}</>
-                          </DS.Button>
-                        </div>
-                      </div>
+                      <StorefrontAccountProfile
+                        problems={v.profileProblems}
+                        name={{
+                          label: v.t?.name,
+                          value: v.profile?.name,
+                          onChange: v.setProfile?.name
+                        }}
+                        phone={{
+                          label: v.t?.phone,
+                          value: v.profile?.phone,
+                          hint: v.t?.phoneHint
+                        }}
+                        email={{
+                          label: v.t?.email,
+                          value: v.profile?.email,
+                          onChange: v.setProfile?.email,
+                          error: v.emailError,
+                          hint: v.t?.emailHint
+                        }}
+                        language={{
+                          label: v.t?.alang,
+                          hint: v.t?.alangHint,
+                          value: v.profile?.locale,
+                          onChange: v.setProfile?.locale,
+                          options: v.langOptions
+                        }}
+                        sms={{
+                          label: v.t?.sms,
+                          checked: v.profile?.sms,
+                          onChange: v.setProfile?.sms
+                        }}
+                        save={{label: v.t?.saveP, onClick: v.saveProfile}}
+                      />
                     </>
                   ) : null}
                 </DS.Tabs>

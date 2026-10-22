@@ -192,7 +192,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountSaved now composes saved product cards and empty-state recovery.
    StorefrontAccountAddresses now composes the saved-address map, cards and add action.
    StorefrontAccountReminders now composes reminder rows, actions and feedback.
-   **Next stage: extract account profile controls into a storefront organism.**
+   StorefrontAccountProfile now composes controlled profile fields and save action.
+   **Next stage: extract account address editor fields into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2511,6 +2512,35 @@ All eight paired probes pass. All 40 upcoming/active/paused/empty/added screensh
 byte-identical, verified against actual PNG bytes. English phone active/paused/empty, Persian phone
 upcoming, Persian tablet added, English desktop paused and Persian TV active captures were viewed.
 Next: extract account profile controls into a storefront organism.
+
+**One hundred and eighth checkpoint verified:** StorefrontAccountProfile is extracted under
+`templates/app/organisms/` with explicit problems and name/phone/email/language/SMS/save descriptors.
+It preserves the wrapper classes, summary/field IDs, name autocomplete, disabled LTR phone and hint,
+email type/direction/error/hint, language options/hint, SMS switch and primary save action without
+adding a wrapper. View retains tab visibility and descriptor mapping; account/shared logic retains
+customer identity/scope, drafts/changed-field tracking, validation/focus, merging against newer account
+data, save feedback, locale switching and persistence. No state, effects, browser APIs or profile
+rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+mobile/desktop browser tests pass without retries: profile persistence, bilingual storage-failure
+retry, newer-wallet/account preservation and customer-switch isolation. Eight paired baseline/current
+probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They check name
+autocomplete, disabled/unchanged LTR phone, email type/direction, invalid-email field focus and summary
+link navigation, error clearing, retained name/email/SMS drafts on storage failure, successful retry,
+saved feedback and persisted values. Language selection changes only the preference until save,
+then updates the page language and persists across reload; profile values and SMS state also survive
+tab changes. Touch/keyboard activation, tablet rotation, document overflow and full-page axe at page
+top for invalid/saved states pass. Storage blocking affects only account keys in isolated probe
+contexts. Full browser/device suites and TV spatial-arrow navigation were not rerun; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. Of 48 phone/summary/email-error/storage/saved-name/language screenshot
+pairs, 46 are byte-identical. Both phone language-field pairs differ by seven pixels each with maximum
+channel delta 1/255, verified against actual PNG bytes and viewed side by side. English phone summary,
+Persian tablet email error, English tablet storage feedback, English desktop phone and Persian TV
+language captures were also viewed.
+Next: extract account address editor fields into a storefront organism.
 
 ## Adding components
 
