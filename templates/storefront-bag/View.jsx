@@ -6,6 +6,7 @@ import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/Storefront
 import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
 import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
 import {StorefrontBagSticky} from '../app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx';
+import {StorefrontBagFeedback} from '../app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -18,21 +19,11 @@ export function View({v}) {
             showContents={v.hasItems}
             notice={
               v.removedMessage ? (
-                <div className="vf-bag-undo tw:mb-4">
-                  <DS.Alert
-                    title={v.removedMessage}
-                    action={
-                      <DS.Button
-                        id="vf-bag-undo"
-                        data-vf-keep-focus
-                        variant="secondary"
-                        onClick={v.undoRemove}
-                      >
-                        {v.t?.undo}
-                      </DS.Button>
-                    }
-                  />
-                </div>
+                <StorefrontBagFeedback
+                  variant="removed"
+                  labels={{title: v.removedMessage, action: v.t?.undo}}
+                  onAction={v.undoRemove}
+                />
               ) : null
             }
             progress={
@@ -463,18 +454,16 @@ export function View({v}) {
             empty={
               v.noItems ? (
                 <>
-                  <div className="vf-bag-empty tw:flex tw:flex-col tw:items-center tw:py-7 tw:px-0 tw:gap-4h">
-                    <DS.EmptyState
-                      icon="shopping-bag"
-                      headingLevel={1}
-                      title={v.t?.emptyA}
-                      titleAccent={v.t?.emptyB}
-                      body={v.t?.emptyP}
-                    />
-                    <DS.Button variant="primary" onClick={v.restore}>
-                      <>{v.t?.keep}</>
-                    </DS.Button>
-                  </div>
+                  <StorefrontBagFeedback
+                    variant="empty"
+                    labels={{
+                      title: v.t?.emptyA,
+                      accent: v.t?.emptyB,
+                      body: v.t?.emptyP,
+                      action: v.t?.keep
+                    }}
+                    onAction={v.restore}
+                  />
                 </>
               ) : null
             }

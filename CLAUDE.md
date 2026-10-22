@@ -59,6 +59,8 @@ StorefrontBagSummary composes summary rows, free-delivery meter, controlled prom
 View/logic retain totals, promo validation/persistence, quote rules and delivery/payment validation.
 StorefrontBagSticky composes total and controlled continuation actions inside Shell’s sticky slot;
 View/logic retain visibility/totals/validation; Shell retains docking and focus measurements.
+StorefrontBagFeedback composes removal notice/Undo and empty-state recovery in separate layout slots;
+View/logic retain visibility, removed-line data, Undo/reset, persistence and focus restoration.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
