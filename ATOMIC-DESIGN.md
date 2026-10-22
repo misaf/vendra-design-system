@@ -195,7 +195,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountProfile now composes controlled profile fields and save action.
    StorefrontAccountAddressEditor now composes controlled address fields and pin/fallback.
    StorefrontAccountReminderEditor now composes controlled reminder/date fields.
-   **Next stage: extract the shared account editor dialog into a storefront organism.**
+   StorefrontAccountEditorDialog now composes shared editor feedback, fields and actions.
+   **Next stage: extract account heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2606,6 +2607,37 @@ verified against actual PNG bytes. English phone name-error/fixed, Persian phone
 tablet editable, Persian tablet fixed/movable, Persian desktop editable and English desktop fixed
 captures were viewed side by side; Persian phone and TV movable-date captures were also viewed.
 Next: extract the shared account editor dialog into a storefront organism.
+
+**One hundred and eleventh checkpoint verified:** StorefrontAccountEditorDialog is extracted
+under `templates/app/organisms/` with explicit open/title/close, storage error, problems, save/cancel
+labels/actions and field children. It preserves Dialog props, flex/gap wrappers, conditional danger
+Alert, error-summary ID, field position and primary-save/ghost-cancel action order. It adds no wrapper
+around supplied fields. View retains address/reminder branch selection and descriptor mapping;
+account/shared logic retains drafts, validation/summary/field focus, save/error state, customer scope,
+mutations and persistence. Dialog retains portal/dismissal/focus containment/opener restoration.
+No state, effects, browser APIs or account rules moved. Current ownership/edit-location documentation
+for both field organisms and the account layout is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass without retries: bilingual reminder validation/save/reload/focus,
+address map/pin entry and error summaries, storage-failure retry and customer-switch isolation.
+Eight paired baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV 1920. Both editor branches retain labelled titles, Tab/ShiftTab containment, save/cancel
+variants, summary links/focus, storage-error feedback with retained drafts, successful retry and saved
+values after reload. Cancel, Escape and Close discard drafts and restore their Add/Edit openers;
+reopening clears old errors and uncommitted values. Tablet rotation with an open dialog retains width
+containment; document overflow and full-page axe for invalid/storage-error dialogs and settled account
+pass. One initial unchanged-baseline English tablet Close check did not restore Add focus; the same
+assertion passes on an unchanged rerun and on the extracted version, with the original failure retained
+separately. It is not claimed fixed by this extraction. Full browser/device suites and TV spatial-arrow
+navigation were not rerun; earlier baseline accessibility/zone-hint limitations remain documented.
+No baselines or tolerances changed.
+
+All eight paired probes pass after that baseline recheck. All 48 address/reminder summary/storage/
+actions screenshot pairs are byte-identical, verified against actual PNG bytes. English phone address
+storage/reminder actions, Persian phone address summary, English tablet address actions, Persian
+tablet reminder summary, Persian desktop reminder storage and Persian TV address actions were viewed.
+Next: extract account heading into a storefront organism.
 
 ## Adding components
 

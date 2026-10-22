@@ -2,7 +2,7 @@
 
 Account Atomic Design template with React-node slots for heading, actions, notices, tabs, feedback and dialog. It owns the main focus target, responsive header and heading wrappers, and slot order.
 
-The account View retains tab controls and panels, all copy, signed-in actions, profile and wallet fields, saved products, addresses, reminders and the controlled editor dialog. Account logic retains tab routing, customer isolation, persistence, validation, mutations and focus restoration. This layout owns no data, callbacks, persistence or browser effects.
+The account View composes heading/actions/tab controls, notices and account organisms, maps their presentation descriptors and chooses visibility. Account logic retains tab routing, customer isolation, drafts, persistence, validation, mutations and focus restoration. This layout owns no data, callbacks, persistence or browser effects.
 
 Preserve existing wrapper classes and focus targets. Verify linked tabs and keyboard navigation, profile saves and recovery, address/reminder editor validation and focus return, saved-product synchronization, wallet continuity, sign-out isolation, hydration and English/Persian responsive layouts.
 
@@ -22,6 +22,8 @@ StorefrontAccountReminders composes reminder rows, actions and feedback. View re
 
 StorefrontAccountProfile composes controlled profile fields and save action. View retains tab visibility/descriptor mapping; account/shared logic retains drafts, changed-field merges, validation/focus, locale switching, save feedback and persistence.
 
-StorefrontAccountAddressEditor composes controlled address fields and pin/fallback. View retains shared dialog/summary/actions; account/shared logic retains drafts, location rules, failure state, validation/focus, mutations and persistence.
+StorefrontAccountAddressEditor composes controlled address fields and pin/fallback. View retains branch visibility/descriptor mapping; StorefrontAccountEditorDialog owns shared dialog/summary/actions; account/shared logic retains drafts, location rules, failure state, validation/focus, mutations and persistence.
 
-StorefrontAccountReminderEditor composes controlled reminder/date fields. View retains shared dialog/summary/actions; account/shared logic retains drafts, calendar/occasion rules, validation/focus, mutations and persistence.
+StorefrontAccountReminderEditor composes controlled reminder/date fields. View retains branch visibility/descriptor mapping; StorefrontAccountEditorDialog owns shared dialog/summary/actions; account/shared logic retains drafts, calendar/occasion rules, validation/focus, mutations and persistence.
+
+StorefrontAccountEditorDialog composes the shared controlled editor, error feedback, field slot and save/cancel actions. View retains field selection/mapping; account/shared logic retains drafts, validation/focus, mutations and persistence.

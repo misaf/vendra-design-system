@@ -13,6 +13,7 @@ import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountRemi
 import {StorefrontAccountProfile} from '../app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
 import {StorefrontAccountAddressEditor} from '../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {StorefrontAccountReminderEditor} from '../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
+import {StorefrontAccountEditorDialog} from '../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -209,110 +210,106 @@ export function View({v}) {
             }
             dialog={
               <>
-                <DS.Dialog open={v.formOpen} title={v.formTitle} onClose={v.closeForm}>
-                  <div className="tw:flex tw:flex-col tw:gap-4">
-                    {v.saveError && <DS.Alert tone="danger" title={v.saveError} />}
-                    <DS.ErrorSummary id="vf-editor-errors" errors={v.editorProblems} />
-                    {v.isAddress ? (
-                      <>
-                        <StorefrontAccountAddressEditor
-                          label={{
-                            label: v.editor?.label,
-                            value: v.form?.label,
-                            onChange: v.set?.label
-                          }}
-                          zone={{
-                            label: v.editor?.zone,
-                            value: v.form?.zone,
-                            options: v.zoneOptions,
-                            onChange: v.set?.zone
-                          }}
-                          pin={{
-                            visible: v.mapOk,
-                            failed: v.mapFailed,
-                            label: v.editor?.pin,
-                            status: v.pinStatus,
-                            error: v.pinError,
-                            value: v.form?.location,
-                            onChange: v.map?.change,
-                            loadLeaflet: v.map?.load,
-                            tiles: v.map?.tiles,
-                            center: v.map?.center,
-                            zoom: v.map?.zoom,
-                            locateLabel: v.editor?.locate,
-                            onLocateError: v.map?.locateError,
-                            onFail: v.map?.fail,
-                            failureText: v.editor?.mapFailed
-                          }}
-                          address={{
-                            label: v.editor?.address,
-                            value: v.form?.line,
-                            onChange: v.set?.line,
-                            error: v.errors?.line
-                          }}
-                          recipient={{
-                            label: v.editor?.recipient,
-                            value: v.form?.recipient,
-                            onChange: v.set?.recipient
-                          }}
-                          phone={{
-                            label: v.editor?.phone,
-                            value: v.form?.phone,
-                            onChange: v.set?.phone,
-                            error: v.errors?.phone
-                          }}
-                        />
-                      </>
-                    ) : null}
-                    {v.isReminder ? (
-                      <>
-                        <StorefrontAccountReminderEditor
-                          name={{
-                            label: v.editor?.reminderName,
-                            value: v.form?.name,
-                            onChange: v.set?.name,
-                            error: v.errors?.name
-                          }}
-                          occasion={{
-                            label: v.editor?.occasion,
-                            options: v.occasionOptions,
-                            value: v.form?.occ,
-                            onChange: v.setOccasion
-                          }}
-                          date={{
-                            lang: v.lang,
-                            label: v.editor?.date,
-                            value: v.dateValue,
-                            onChange: v.setDate,
-                            disabled: v.dateLocked,
-                            hint: v.dateHint,
-                            labels: v.dateLabels
-                          }}
-                          before={{
-                            label: v.editor?.before,
-                            options: v.beforeOptions,
-                            value: v.form?.before,
-                            onChange: v.setBefore
-                          }}
-                          channel={{
-                            label: v.editor?.via,
-                            options: v.channelOptions,
-                            value: v.form?.channel,
-                            onChange: v.set?.channel
-                          }}
-                        />
-                      </>
-                    ) : null}
-                    <div className="tw:flex tw:gap-3">
-                      <DS.Button onClick={v.saveForm}>
-                        <>{v.editor?.save}</>
-                      </DS.Button>
-                      <DS.Button variant="ghost" onClick={v.closeForm}>
-                        <>{v.editor?.cancel}</>
-                      </DS.Button>
-                    </div>
-                  </div>
-                </DS.Dialog>
+                <StorefrontAccountEditorDialog
+                  open={v.formOpen}
+                  title={v.formTitle}
+                  onClose={v.closeForm}
+                  saveError={v.saveError}
+                  problems={v.editorProblems}
+                  save={{label: v.editor?.save, onClick: v.saveForm}}
+                  cancelLabel={v.editor?.cancel}
+                >
+                  {v.isAddress ? (
+                    <>
+                      <StorefrontAccountAddressEditor
+                        label={{
+                          label: v.editor?.label,
+                          value: v.form?.label,
+                          onChange: v.set?.label
+                        }}
+                        zone={{
+                          label: v.editor?.zone,
+                          value: v.form?.zone,
+                          options: v.zoneOptions,
+                          onChange: v.set?.zone
+                        }}
+                        pin={{
+                          visible: v.mapOk,
+                          failed: v.mapFailed,
+                          label: v.editor?.pin,
+                          status: v.pinStatus,
+                          error: v.pinError,
+                          value: v.form?.location,
+                          onChange: v.map?.change,
+                          loadLeaflet: v.map?.load,
+                          tiles: v.map?.tiles,
+                          center: v.map?.center,
+                          zoom: v.map?.zoom,
+                          locateLabel: v.editor?.locate,
+                          onLocateError: v.map?.locateError,
+                          onFail: v.map?.fail,
+                          failureText: v.editor?.mapFailed
+                        }}
+                        address={{
+                          label: v.editor?.address,
+                          value: v.form?.line,
+                          onChange: v.set?.line,
+                          error: v.errors?.line
+                        }}
+                        recipient={{
+                          label: v.editor?.recipient,
+                          value: v.form?.recipient,
+                          onChange: v.set?.recipient
+                        }}
+                        phone={{
+                          label: v.editor?.phone,
+                          value: v.form?.phone,
+                          onChange: v.set?.phone,
+                          error: v.errors?.phone
+                        }}
+                      />
+                    </>
+                  ) : null}
+                  {v.isReminder ? (
+                    <>
+                      <StorefrontAccountReminderEditor
+                        name={{
+                          label: v.editor?.reminderName,
+                          value: v.form?.name,
+                          onChange: v.set?.name,
+                          error: v.errors?.name
+                        }}
+                        occasion={{
+                          label: v.editor?.occasion,
+                          options: v.occasionOptions,
+                          value: v.form?.occ,
+                          onChange: v.setOccasion
+                        }}
+                        date={{
+                          lang: v.lang,
+                          label: v.editor?.date,
+                          value: v.dateValue,
+                          onChange: v.setDate,
+                          disabled: v.dateLocked,
+                          hint: v.dateHint,
+                          labels: v.dateLabels
+                        }}
+                        before={{
+                          label: v.editor?.before,
+                          options: v.beforeOptions,
+                          value: v.form?.before,
+                          onChange: v.setBefore
+                        }}
+                        channel={{
+                          label: v.editor?.via,
+                          options: v.channelOptions,
+                          value: v.form?.channel,
+                          onChange: v.set?.channel
+                        }}
+                      />
+                    </>
+                  ) : null}
+                </StorefrontAccountEditorDialog>
               </>
             }
           />
