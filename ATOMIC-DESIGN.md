@@ -177,7 +177,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagSender now composes sender heading/hint and controlled contact fields.
    StorefrontBagDeliveryIntro now composes validation feedback and the guest sign-in prompt.
    StorefrontCheckoutDeliveryReview now composes delivery details and edit navigation.
-   **Next stage: extract checkout payment methods into a storefront organism.**
+   StorefrontCheckoutMethods now composes payment-method choices, availability and wallet context.
+   **Next stage: extract checkout receipt details into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2077,6 +2078,31 @@ spatial-arrow navigation were not rerun; prior baseline zone-hint failures remai
 All 16 initial/edited review screenshot pairs are byte-identical, verified against actual PNG bytes.
 Persian phone edited and English TV initial captures were viewed. No baselines/tolerances changed.
 Next: extract checkout payment methods into a storefront organism.
+
+**Ninety-third checkpoint verified:** StorefrontCheckoutMethods is extracted under
+`templates/app/organisms/StorefrontCheckoutMethods/`. It receives explicit intro, controlled methods,
+unavailable/wallet descriptors and payment notice. It composes RadioGroup/options, unavailable
+contact Alert and wallet discount/top-up/remaining-balance context, preserving fragment order,
+classes, group name/legend, labels/descriptions/disabled states and link/button semantics. View
+retains mapping/normalized options; checkout/shared logic retains eligibility/zone rules, balance/
+discount calculations, selection/draft persistence and top-up URLs. Receipt controls remain separate.
+No page model, new state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight focused
+desktop/mobile browser cases pass without retries: guest wallet disabling/description, top-up
+savings hints and bilingual method/draft continuity through delivery edits/reload. Sixteen bilingual
+paired probes cover guest choices at touch widths 390/768, desktop 1280 and TV 1920, plus wallet
+and availability fixtures at 390/1280. They verify initial card selection, disabled guest wallet,
+WhatsApp selection/reload, tablet rotation, selected wallet/balance context, top-up continuation
+href, wallet/card switching, single-method chooser hiding, no-usable-method phone fallback and
+card controls after restoring a usable method, no document overflow and full-page axe. Availability
+fixtures mutate configuration only in isolated browser memory. Touch taps target radio labels;
+the scratch probe initially targeted the hidden input wrapper and was corrected. Desktop/TV uses
+Space for radios and Enter for actions. Full browser/device suites and TV spatial-arrow navigation
+were not rerun; prior baseline zone-hint failures remain documented.
+All 32 method/wallet/fallback screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone guest options, English desktop wallet hint and Persian desktop fallback captures were
+viewed. No baselines/tolerances changed. Next: extract checkout receipt details into a storefront
+organism.
 
 ## Adding components
 
