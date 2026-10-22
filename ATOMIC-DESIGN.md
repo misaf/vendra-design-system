@@ -189,7 +189,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountBalanceOverview now composes the wallet amount and eligibility status.
    StorefrontAccountTopUp now composes controlled amount/preset/payment controls and feedback.
    StorefrontAccountBalanceHistory now composes empty/populated wallet history.
-   **Next stage: extract account saved products into a storefront organism.**
+   StorefrontAccountSaved now composes saved product cards and empty-state recovery.
+   **Next stage: extract account addresses into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2422,6 +2423,32 @@ All eight paired probes pass. All 32 sample/empty/mixed/added history screenshot
 byte-identical, verified against actual PNG bytes. English phone empty/added, Persian phone mixed,
 Persian tablet added, English desktop sample and Persian TV added captures were viewed.
 Next: extract account saved products into a storefront organism.
+
+**One hundred and fifth checkpoint verified:** StorefrontAccountSaved is extracted under
+`templates/app/organisms/` with explicit populated/empty visibility flags, normalized product records,
+labels and shop destination. It preserves grid/empty classes, positional keys, ProductCard content and
+image/stock/badge props, accent badge/soft frame, favorite state/removal callbacks, product links and
+heart empty-state/browse action without adding a wrapper. View retains saved-tab visibility and list
+normalization; account/shared logic retains customer scope, favorite synchronization/persistence,
+product mapping, availability, localized wording/formatting and destinations. No state, effects,
+browser APIs or favorite/product rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+mobile/desktop browser tests pass without retries: account/saved-page synchronization, bilingual
+late saved-list hydration preserving newer actions, customer-switch isolation and saved-page
+removal/undo. Eight paired baseline/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV 1920. They compare populated/single/empty states, initial content/destinations
+and pressed favorites; activate product links to the matching detail page; remove products with focus
+moving to the next favorite; and verify persistence/tab continuity and saved-page synchronization.
+Removing the last product retains the empty state across reload, clears the saved page and allows
+browse recovery to the shop. Touch/keyboard activation, tablet rotation, document overflow and
+populated/empty full-page axe pass. Full browser/device suites and TV spatial-arrow navigation were
+not rerun; prior baseline zone-hint failures remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 24 populated/single/empty screenshot pairs are byte-identical,
+verified against actual PNG bytes. English phone populated/empty, Persian phone single, Persian tablet
+empty, English desktop populated and Persian TV single captures were viewed.
+Next: extract account addresses into a storefront organism.
 
 ## Adding components
 

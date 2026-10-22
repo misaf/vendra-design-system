@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Account saved products | `app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx` (explicit visibility/items/labels/shop destination; favorites and mapping remain in logic) |
 | Account balance history | `app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx` (explicit title/visibility/empty text/entries; wallet history mapping remains in logic) |
 | Account top-up controls | `app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx` (explicit labels/presets/amount/payment/demo; validation and wallet changes remain in logic) |
 | Account balance overview | `app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx` (explicit title/amount/status; wallet rules and persistence remain in logic) |
