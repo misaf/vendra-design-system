@@ -15,3 +15,5 @@ StorefrontAccountTopUp composes controlled top-up fields, presets and feedback. 
 StorefrontAccountBalanceHistory composes empty/populated wallet history. View retains balance-tab visibility and normalization; account/shared logic retains customer scope, ordering, date/amount formatting and persistence.
 
 StorefrontAccountSaved composes saved-product cards and empty recovery. View retains tab visibility/normalization; account/shared logic retains favorite synchronization/persistence, customer scope, mapping and destinations.
+
+StorefrontAccountAddresses composes the saved map, address cards and add action. View retains tab visibility/normalization; account/shared logic retains map eligibility/failure, editor state, address mutations, validation/focus and persistence.
