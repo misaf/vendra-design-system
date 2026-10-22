@@ -135,6 +135,8 @@ Account View composes organisms directly in slots/tab/editor branches; its visib
 descriptor mapping remain in View, and the empty sticky-slot fragment is preserved.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
+StorefrontSigninHeading composes phone/code step h1/accent and intro from explicit text;
+View retains step visibility/copy mapping; sign-in/shared logic retains validation, focus and authentication.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled

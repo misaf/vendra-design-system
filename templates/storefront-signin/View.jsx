@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
+import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,15 +15,7 @@ export function View({v}) {
             phone={
               v.isPhone ? (
                 <>
-                  <h1>
-                    <>{v.t?.inA} </>
-                    <em className="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{v.t?.inB}</>
-                    </em>
-                  </h1>
-                  <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{v.t?.inP}</>
-                  </p>
+                  <StorefrontSigninHeading title={v.t?.inA} accent={v.t?.inB} intro={v.t?.inP} />
                   <DS.ErrorSummary id="vf-signin-errors" errors={v.phoneProblems} />
                   <DS.PhoneInput
                     id="vf-phone"
@@ -58,15 +51,7 @@ export function View({v}) {
             code={
               v.isCode ? (
                 <>
-                  <h1>
-                    <>{v.t?.codeA} </>
-                    <em className="vf-signin-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{v.t?.codeB}</>
-                    </em>
-                  </h1>
-                  <p className="vf-signin-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{v.codeP}</>
-                  </p>
+                  <StorefrontSigninHeading title={v.t?.codeA} accent={v.t?.codeB} intro={v.codeP} />
                   <DS.ErrorSummary id="vf-code-errors" errors={v.codeProblems} />
                   <DS.CodeInput
                     id="vf-code"
