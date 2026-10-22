@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
 import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
+import {StorefrontSigninCodeControls} from '../app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -51,20 +52,18 @@ export function View({v}) {
               v.isCode ? (
                 <>
                   <StorefrontSigninHeading title={v.t?.codeA} accent={v.t?.codeB} intro={v.codeP} />
-                  <DS.ErrorSummary id="vf-code-errors" errors={v.codeProblems} />
-                  <DS.CodeInput
-                    id="vf-code"
-                    label={v.t?.code}
-                    value={v.code}
-                    length={5}
-                    onChange={v.setCode}
-                    onComplete={v.completeCode}
-                    error={v.codeErr}
-                    hint={v.t?.codeHint}
+                  <StorefrontSigninCodeControls
+                    problems={v.codeProblems}
+                    code={{
+                      label: v.t?.code,
+                      value: v.code,
+                      onChange: v.setCode,
+                      onComplete: v.completeCode,
+                      error: v.codeErr,
+                      hint: v.t?.codeHint
+                    }}
+                    verify={{label: v.t?.verify, onClick: v.verify}}
                   />
-                  <DS.Button variant="primary" size="lg" block={true} onClick={v.verify}>
-                    <>{v.t?.verify}</>
-                  </DS.Button>
                   <div className="vf-signin-resend tw:flex tw:flex-col tw:gap-2 tw:items-start">
                     <DS.ResendCode seconds={v.resendSeconds} onResend={v.resend} />
                     <p role="status" className="tw:m-0 tw:text-sm">
