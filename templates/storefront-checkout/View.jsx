@@ -6,6 +6,7 @@ import {StorefrontCheckoutLayout} from '../app/layouts/StorefrontCheckoutLayout/
 import {StorefrontCheckoutDeliveryReview} from '../app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx';
 import {StorefrontCheckoutMethods} from '../app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx';
 import {StorefrontCheckoutReceipt} from '../app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx';
+import {StorefrontCheckoutSubmission} from '../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -155,67 +156,30 @@ export function View({v}) {
                       hint: v.t?.refHint
                     }}
                   />
-                  {v.isWhatsapp ? (
-                    <>
-                      <DS.Button
-                        variant="secondary"
-                        href={v.waOrder}
-                        onClick={v.openWhatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <>{v.migration?.openWa}</>
-                      </DS.Button>
-                    </>
-                  ) : null}
-                  {v.busy ? (
-                    <>
-                      <p role="status">
-                        <>{v.migration?.processing}</>
-                      </p>
-                    </>
-                  ) : null}
-                  {v.failed ? (
-                    <>
-                      <DS.Alert tone="danger" title={v.migration?.failed}>
-                        <>{v.migration?.failureBody}</>
-                      </DS.Alert>
-                      <div className="tw:flex tw:gap-3">
-                        <DS.Button onClick={v.retry}>
-                          <>{v.migration?.retry}</>
-                        </DS.Button>
-                        <DS.Button variant="ghost" onClick={v.otherMethod}>
-                          <>{v.migration?.other}</>
-                        </DS.Button>
-                      </div>
-                    </>
-                  ) : null}
-                  <DS.Alert tone="neutral" icon="shield-check">
-                    <>{v.t?.safe}</>
-                  </DS.Alert>
-                  <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                    <div className="tw:contents tw:max-md:hidden">
-                      <DS.Button
-                        variant="primary"
-                        size="lg"
-                        iconEnd="arrow-right"
-                        onClick={v.place}
-                        loading={v.busy}
-                        disabled={v.placeDisabled}
-                      >
-                        <>{v.t?.place}</>
-                      </DS.Button>
-                    </div>
-                    <DS.Button
-                      variant="ghost"
-                      size="lg"
-                      iconStart="arrow-left"
-                      href={v.backHref}
-                      onClick={v.goBack}
-                    >
-                      <>{v.t?.back}</>
-                    </DS.Button>
-                  </div>
+                  <StorefrontCheckoutSubmission
+                    whatsapp={{
+                      visible: v.isWhatsapp,
+                      href: v.waOrder,
+                      onClick: v.openWhatsapp,
+                      label: v.migration?.openWa
+                    }}
+                    processing={v.migration?.processing}
+                    failure={{
+                      visible: v.failed,
+                      title: v.migration?.failed,
+                      body: v.migration?.failureBody,
+                      retry: {onClick: v.retry, label: v.migration?.retry},
+                      other: {onClick: v.otherMethod, label: v.migration?.other}
+                    }}
+                    safe={v.t?.safe}
+                    place={{
+                      onClick: v.place,
+                      loading: v.busy,
+                      disabled: v.placeDisabled,
+                      label: v.t?.place
+                    }}
+                    back={{href: v.backHref, onClick: v.goBack, label: v.t?.back}}
+                  />
                 </>
               ) : null
             }

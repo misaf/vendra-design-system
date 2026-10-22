@@ -179,7 +179,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutDeliveryReview now composes delivery details and edit navigation.
    StorefrontCheckoutMethods now composes payment-method choices, availability and wallet context.
    StorefrontCheckoutReceipt now composes receipt details and changed-amount confirmation.
-   **Next stage: extract checkout submission actions and feedback into a storefront organism.**
+   StorefrontCheckoutSubmission now composes submission actions and processing/failure feedback.
+   **Next stage: extract checkout status notices into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2130,6 +2131,41 @@ All 36 card/invalid/filled/changed/Sheba screenshot pairs are byte-identical, ve
 actual PNG bytes. Persian phone warning, English tablet filled inputs, Persian desktop Sheba and
 English TV payment-card captures were viewed. Next: extract checkout submission actions and
 feedback into a storefront organism.
+
+**Ninety-fifth checkpoint verified:** StorefrontCheckoutSubmission is extracted under
+`templates/app/organisms/` with explicit WhatsApp, processing, failure, safety and place/back
+props. Fragment order, external-link target/rel, processing status role, alert tones/icon,
+responsive classes and button variants/sizes/icons/loading/disabled props are preserved. View
+maps descriptors; checkout/shared logic retains readiness/receipt validation, submission,
+deduplication, pending/error state, retries, method selection, URLs, navigation, gateway handling
+and persistence. The compact action remains in Shell's separate sticky slot. Ownership and
+edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 18 focused
+mobile/desktop browser tests pass without retries: bilingual late-response bag integrity,
+changed-receipt confirmation and reviewed WhatsApp URLs, plus card completion/account offer,
+online bank return and declined-payment retry. Eight bilingual paired probes at touch widths
+390/768, desktop 1280 and TV 1920 pass back/return continuity, WhatsApp URL/target/rel,
+pending status/disabled controls with one request, preserved bag after rejection, explicit retry,
+other-method recovery, retained receipt fields, successful completion and cleared bag. Tablet
+rotation, settled-page axe and document overflow are checked. API promises are controlled only
+in isolated browser memory; no external WhatsApp handoff is opened. The scratch TV probe needed
+a settled delivery page before keyboard activation to avoid the existing delayed heading-focus
+move; both versions pass with that wait. Full browser/device suites and TV spatial-arrow
+navigation were not rerun; prior baseline zone-hint failures remain documented.
+
+Of 32 tall payment-pane screenshot pairs, 27 are byte-identical. The five differences are English
+phone idle/pending/failure and Persian tablet pending/failure. Inspected tall captures include
+fixed-header/skip-link overlays at differing scroll positions; the first English phone render
+also differs in text weights. CSS/font assets hash identically and a fresh English phone idle
+repeat matches exactly. Diagnostic full-page clips did not reliably cover the requested region,
+so they are excluded from visual evidence. Original comparisons remain recorded; no baselines or
+tolerances changed.
+Twelve direct element/action-row pairs for the two affected configurations are byte-identical:
+safety notice, place/back row, WhatsApp link, processing status, failure Alert and retry row.
+Their actual PNG bytes were checked; English phone failure/retry and Persian tablet
+processing/actions captures were viewed. Next: extract checkout status notices into a storefront
+organism.
 
 ## Adding components
 
