@@ -162,7 +162,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductSticky now composes the live total and add action in Shell's sticky slot.
    StorefrontShopCategories now composes sidebar category buttons and compact chips.
    StorefrontShopSidebarFilters now composes controlled occasion/date/price/stock fields.
-   **Next stage: extract the shop filter dialog into a storefront organism.**
+   StorefrontShopFilterDialog now composes controlled compact fields and Show/Clear actions.
+   **Next stage: extract the shop results toolbar into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1716,6 +1717,32 @@ default Persian desktop retains 47 edge pixels up to 2/255. Four additional pair
 hidden-sidebar/compact fallback. No baselines/tolerances changed. Final Persian tablet default and
 English TV filtered captures were viewed, including the complete stock control.
 Next: extract the shop filter dialog into a storefront organism.
+
+**Seventy-eighth checkpoint verified:** StorefrontShopFilterDialog is extracted under
+`templates/app/organisms/StorefrontShopFilterDialog/`. It receives explicit open/close/clear,
+title/show/clear labels and controlled occasion/date/price/stock descriptors. It composes Dialog,
+scrolling fields and Show/Clear footer actions, preserving classes/order, legends, dialog-specific
+IDs/label relationships, default close wording and callback semantics. View retains normalization/
+descriptor mapping; shop/shared logic retains dialog state, availability/cutoffs, price rules,
+filtering, tracking/debounce, live result labels, URL/paging, sorting and clear behavior. Dialog/
+existing CSS retain focus trapping/restoration, dismissal, scrolling and action placement. No page
+model, new state/effects, browser APIs, commerce rules, styles, exports or generated files move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. All six
+bilingual native-touch filter-dialog layout regressions pass without retries at 390x844, 390x480
+and 768x600: scrolled controls/actions, Clear/Show, Escape and opener restoration. Bilingual
+before/after probes cover default/filtered dialogs at those same sizes, with separate top and
+scrolled-bottom element captures. They verify initial values/pressed states/formatted slider
+announcements, distinct dialog field IDs, focus wrap, stationary/reachable footer actions, minimum
+tap height, stock visibility after scroll, price and occasion changes, disabled delivery dates,
+date selection, live one-result label, Clear retaining the dialog, cleared values, category/sort
+retention, first-page results, Show/Escape/close dismissal and focus restoration, reload, tablet
+switch to sidebar, no document overflow and full-page axe. Four additional paired desktop/TV
+1280/1920 probes verify the dialog stays closed, compact opener is hidden and only sidebar sliders
+are accessible. Full browser/device suites and unrelated checkout flows were not rerun.
+All 24 top/scrolled-bottom dialog screenshot pairs are byte-identical, checked against actual
+PNG bytes. Focus containment after date selection waits for popup focus restoration. No visual baselines/tolerances changed. Persian
+short-phone top/bottom and English tablet filtered-bottom captures were viewed.
+Next: extract the shop results toolbar into a storefront organism.
 
 ## Adding components
 
