@@ -176,7 +176,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagCards now composes per-item card messages/add controls and Undo feedback.
    StorefrontBagSender now composes sender heading/hint and controlled contact fields.
    StorefrontBagDeliveryIntro now composes validation feedback and the guest sign-in prompt.
-   **Next stage: extract checkout delivery review into a storefront organism.**
+   StorefrontCheckoutDeliveryReview now composes delivery details and edit navigation.
+   **Next stage: extract checkout payment methods into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2057,6 +2058,25 @@ prior baseline zone-hint failures remain documented.
 All 24 prompt/full/reduced-summary screenshot pairs are byte-identical, verified against PNG bytes.
 Persian phone full summary and English TV prompt captures were viewed. No baselines/tolerances
 changed. Next: extract checkout delivery review into a storefront organism.
+
+**Ninety-second checkpoint verified:** StorefrontCheckoutDeliveryReview is extracted under
+`templates/app/organisms/StorefrontCheckoutDeliveryReview/`. It receives explicit title/edit labels,
+edit href/callback and delivery detail rows. It composes the labelled section, Card, heading/edit
+link and DetailList, preserving section/heading ID, classes/order, padding and edit styling/icon/
+link semantics. View retains payment visibility/mapping; checkout/shared logic retains delivery
+values/row formatting, edit/return navigation, drafts and payment/order behavior. No page model,
+new state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight focused
+bilingual desktop/mobile browser cases pass without retries: delivery review edits and payment-
+draft continuity through delivery edits/reload. Eight bilingual paired probes at touch widths
+390/768, desktop 1280 and TV 1920 verify absence on the bag step, accessible review name/details,
+edit href/minimum target height, delivery round trip, updated recipient/address, unchanged schedule/
+totals, reload persistence, tablet rotation, no document overflow and full-page axe. Touch uses
+taps; desktop/TV uses keyboard Enter. Full browser/device suites, bank/success visibility and TV
+spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain documented.
+All 16 initial/edited review screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone edited and English TV initial captures were viewed. No baselines/tolerances changed.
+Next: extract checkout payment methods into a storefront organism.
 
 ## Adding components
 

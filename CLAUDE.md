@@ -77,6 +77,8 @@ StorefrontBagDeliveryIntro composes controlled validation summary and guest sign
 View/logic retain guest eligibility, problems, sign-in continuation, private drafts and validation state.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
+StorefrontCheckoutDeliveryReview composes delivery details and edit navigation from explicit rows/labels;
+View/logic retain delivery state, row formatting, payment drafts and edit/return navigation.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
