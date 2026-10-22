@@ -202,7 +202,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountFeedback now composes the persistent account status region.
    StorefrontAccountNotices now composes the page storage-error alert.
    StorefrontAccountBalancePanel now composes overview, top-up, checkout return and history.
-   **Next stage: simplify account View composition.**
+   Account View now composes organisms directly without redundant single-child fragments.
+   **Next stage: extract sign-in heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2800,6 +2801,32 @@ dimensions; actual PNG bytes/pixels were checked and the captures inspected with
 shift. English phone initial/completion, all three differing Persian phone states, Persian tablet
 invalid, English desktop return and Persian TV completion captures were viewed.
 Next: simplify account View composition.
+
+**One hundred and eighteenth checkpoint verified:** Account View now passes organisms directly
+into Shell/layout slots and tab/editor branches. Fifteen redundant single-child fragments are
+removed; the empty sticky-slot fragment remains. Existing conditions, descriptor mapping, list
+normalization, branch order, callbacks and lazy conditional evaluation are preserved. No rendered
+wrappers, state, effects, browser APIs or account rules changed. Layout ownership documentation is
+updated. A normalized JSX AST comparison confirms the before/after trees match after ignoring
+single-child fragments, formatting and source-position metadata; fragment count falls from 16 to 1.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 20 focused
+mobile/desktop browser tests pass without retries: bilingual reminder validation/save/reload/focus,
+profile/address storage-error retry, waiting-checkout wallet return, saved-product parity, mapped
+address editing, profile persistence and sign-out protection. Eight paired baseline/current probes
+exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. All six selected tab
+branches preserve normalized main markup, tab/panel ARIA linkage and a single panel. Profile drafts
+survive tab switches; address/reminder editors open and Escape restores Add focus. Tablet rotation,
+document overflow and page-top axe pass. Actions use touch or keyboard Enter. Markup normalization
+removes React Aria's random per-page ID prefix and the two local preview origins in absolute image
+URLs; the original raw-origin comparison failure and captures are retained separately. Full browser/
+device and TV spatial-arrow navigation suites were not rerun; earlier baseline accessibility/
+zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 32 tab-strip/profile/editor-save screenshot pairs are byte-identical,
+verified against actual PNG bytes. English/Persian phone profile, English tablet address save,
+Persian tablet tabs, English desktop reminder save and Persian TV tabs captures were viewed.
+Next: extract sign-in heading into a storefront organism.
 
 ## Adding components
 

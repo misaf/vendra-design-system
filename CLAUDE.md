@@ -131,6 +131,8 @@ StorefrontAccountNotices composes the page storage-error Alert;
 View retains visibility/placement; account/shared logic retains error state, persistence and retry.
 StorefrontAccountBalancePanel composes overview/top-up/checkout return/history;
 View retains visibility and descriptor mapping; account/shared logic retains wallet rules and persistence.
+Account View composes organisms directly in slots/tab/editor branches; its visibility conditions and
+descriptor mapping remain in View, and the empty sticky-slot fragment is preserved.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
