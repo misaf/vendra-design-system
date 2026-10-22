@@ -198,7 +198,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountEditorDialog now composes shared editor feedback, fields and actions.
    StorefrontAccountHeading now composes the account eyebrow and h1/accent.
    StorefrontAccountTabs now composes controlled pill tabs and the selected panel slot.
-   **Next stage: extract account session action into a storefront organism.**
+   StorefrontAccountSessionAction now composes the controlled sign-out button.
+   **Next stage: extract account feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2685,6 +2686,30 @@ remain documented. No baselines or tolerances changed.
 All eight paired probes pass. All 16 Orders/Profile tab-strip screenshot pairs are byte-identical,
 verified against actual PNG bytes. English/Persian phone, Persian tablet, English desktop and Persian
 TV captures were viewed. Next: extract account session action into a storefront organism.
+
+**One hundred and fourteenth checkpoint verified:** StorefrontAccountSessionAction is extracted
+under `templates/app/organisms/` with an explicit label and sign-out callback. It preserves the ghost
+Button, leading log-out icon, label fragment and header placement without adding a wrapper.
+View retains localized copy; account/shared logic retains session removal and home navigation.
+Package Button retains semantics, focus and activation. No state, effects, browser APIs or session
+rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All four focused
+mobile/desktop browser tests pass without retries: sign-out protects account history/direct access
+and profile changes persist. The initial browser launch failed before tests started because preview
+arguments were forwarded incorrectly; the corrected launch and test run pass.
+Eight paired baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV 1920. They verify the single localized enabled button, native type, normalized button markup,
+touch activation or focused Enter/Space activation, session removal, navigation away from account,
+protected history/direct account access and reload, tablet rotation, document overflow and page-top
+axe. Markup comparison normalizes only React Aria's random per-page ID prefix; an initial raw-ID
+comparison and its captures are retained separately. All eight normalized comparisons pass.
+Full browser/device and TV spatial-arrow navigation suites were not rerun; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight button screenshot pairs are byte-identical, verified against actual PNG bytes.
+English/Persian phone, Persian tablet, English desktop and Persian TV captures were viewed.
+Next: extract account feedback into a storefront organism.
 
 ## Adding components
 
