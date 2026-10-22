@@ -165,7 +165,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopFilterDialog now composes controlled compact fields and Show/Clear actions.
    StorefrontShopToolbar now composes compact filters/sort, active filters, quick chips and result count.
    StorefrontShopResults now composes product cards, paging and loading/error/empty feedback.
-   **Next stage: extract bag line items into a storefront organism.**
+   StorefrontBagItems now composes editable line items and stock warnings.
+   **Next stage: extract the bag summary into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1791,6 +1792,29 @@ Results captures include the existing toolbar and Shell overlays; no baselines/t
 Persian phone default and desktop error/loading captures were viewed. The full browser/device
 suite and TV spatial-arrow navigation were not rerun. Next: extract bag line items into a storefront
 organism.
+
+**Eighty-first checkpoint verified:** StorefrontBagItems is extracted under
+`templates/app/organisms/StorefrontBagItems/`. It receives normalized line records, remove/quantity
+labels and a quantity formatter. It composes large LineItems and stock-warning Alerts, preserving
+the list/row classes/order, `data-vf-keep-focus`, configured metadata/card notes, prices, images,
+unavailable state, quantity bounds and individual quantity/remove callbacks. View retains bag-step/
+content visibility and normalization; bag/shared logic retains availability/shared-stock rules,
+pricing, quantities, removal/Undo, persistence, totals and focus restoration. Undo notice and empty
+state remain outside conditional contents. No page model, new state/effects, browser APIs, commerce
+rules, styles or package exports move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight focused
+bilingual desktop/mobile browser cases pass without retries: stock bounds and configured-line Undo
+without reverting another item, persistence, final removal and recovery. Twelve bilingual paired
+before/after probes cover default lines at touch widths 390/768, desktop 1280 and TV 1920, plus
+synthetic excess-quantity/unavailable lines at 390/1280. They verify configured notes/order, focus
+marker, quantity changes, removal/Undo focus, other-line retention, persisted values, final-item
+empty-state recovery, touch-tablet rotation, stock warnings, unavailable controls and Undo,
+no document overflow and full-page axe. Touch uses taps; desktop/TV actions use keyboard Enter.
+All 20 initial/quantity list screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone default and desktop stock-warning captures were viewed. The scratch probe's initial
+focus-marker assertion was corrected to React's existing string value `true`; no source changes
+were needed for it. No baselines/tolerances changed. Full browser/device suites and TV spatial-arrow
+navigation were not rerun. Next: extract the bag summary into a storefront organism.
 
 ## Adding components
 
