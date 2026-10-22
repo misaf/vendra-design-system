@@ -185,7 +185,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutBank now composes bank progress and payment status.
    StorefrontCheckoutConfirmation now composes success details, account offer and follow-up links.
    StorefrontCheckoutSummary and StorefrontCheckoutSticky now compose totals and compact submission.
-   **Next stage: extract account orders into a storefront organism.**
+   StorefrontAccountOrders now composes account order cards and tracking links.
+   **Next stage: extract account balance overview into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2311,6 +2312,31 @@ All eight paired probes pass. All 34 initial/updated/pending summary and phone c
 pending/failed action screenshot pairs are byte-identical, verified against actual PNG bytes.
 Persian phone online action, English phone pending action, Persian tablet updated summary and English
 TV pending summary captures were viewed. Next: extract account orders into a storefront organism.
+
+**One hundred and first checkpoint verified:** StorefrontAccountOrders is extracted under
+`templates/app/organisms/` with explicit normalized order presentation records. It retains the
+orders grid/body/number/meta/total classes, positional keys, LTR order numbers, Card padding 20,
+Badge tone/text and secondary small tracking links. View retains tab visibility/list normalization;
+account/shared logic retains history selection, customer isolation, status interpretation, localized
+formatting, destinations and persistence. No state, effects, browser APIs or commerce rules moved.
+Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 10 focused
+mobile/desktop browser tests pass without retries: bilingual older-order reload/tracking, sign-out
+and guest continuation/customer-switch isolation. Eight paired baseline/current probes exercise
+English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They compare sample-only history
+and four explicit received/delivered/cancelled/unknown-status records, preserving IDs, text, order,
+LTR direction and tracking destinations. Touch/keyboard tracking activation, tab continuity, reload,
+tablet rotation, document overflow and full-page axe pass. Account logic continues to append sample
+history; an empty presentation array is still rendered as an empty grid. Full browser/device suites
+and TV spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain documented.
+No screenshot baselines or tolerances changed.
+
+All eight paired probes pass. Of 40 sample/populated card screenshot pairs, 38 are byte-identical.
+The English phone sample and received cards differ by 4 and 5 pixels respectively, each with maximum
+channel delta 1/255, verified against actual PNG bytes and viewed side by side. Persian phone cancelled,
+Persian tablet delivered, English desktop received and Persian TV fallback-status captures were also
+viewed. Next: extract account balance overview into a storefront organism.
 
 ## Adding components
 
