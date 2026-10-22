@@ -168,7 +168,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagItems now composes editable line items and stock warnings.
    StorefrontBagSummary now composes totals, free-delivery progress, promo and navigation actions.
    StorefrontBagSticky now composes total and continuation controls in Shell’s sticky slot.
-   **Next stage: extract bag feedback and recovery into a storefront organism.**
+   StorefrontBagFeedback now composes removal notices and empty-state recovery in separate slots.
+   **Next stage: extract bag progress into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1865,6 +1866,28 @@ All 18 default/updated/delivery bar screenshot pairs are byte-identical, verifie
 PNG bytes. Six additional paired probes verify wider hiding. Persian 320px updated and English
 short-landscape delivery captures were viewed. No baselines/tolerances changed.
 Next: extract bag feedback and recovery into a storefront organism.
+
+**Eighty-fourth checkpoint verified:** StorefrontBagFeedback is extracted under
+`templates/app/organisms/StorefrontBagFeedback/`. It receives an explicit removed/empty variant,
+localized labels and action callback. It composes the removal Alert/Undo or empty-state recovery,
+preserving wrapper classes, Undo ID/focus marker, button variants, empty h1/icon and content order.
+View retains visibility and mounts the variants in the existing notice/empty layout slots, outside
+conditional contents so final-item removal retains Undo. Bag/shared logic retains removed-line
+data, Undo merging, reset/recovery behavior, persistence and focus restoration. The current empty
+action restores the sample bag; this extraction forwards that callback. No page model, new state/
+effects, browser APIs, commerce rules, styles or package exports move into the organism.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+bilingual desktop/mobile Undo cases pass without retries, including configured-line restoration,
+other-item edits, persistence and final-item recovery. Eight bilingual before/after probes at touch
+widths 390/768, desktop 1280 and TV 1920 verify initial absence, configured removal, Undo focus/marker,
+retention of other edits, final-item notice plus empty h1/action, absent summary/sticky controls,
+Undo restoration/focus, persisted empty state without stale Undo, tablet rotation, reset to sample
+rows and reload persistence, no document overflow and full-page axe with empty/restored bags.
+Touch uses taps; desktop/TV uses keyboard Enter. Full browser/device suites and TV spatial-arrow
+navigation were not rerun.
+All 32 notice/empty-region screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone empty and English desktop removal captures were viewed. No baselines/tolerances
+changed. Next: extract bag progress into a storefront organism.
 
 ## Adding components
 
