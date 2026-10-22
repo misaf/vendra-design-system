@@ -169,7 +169,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagSummary now composes totals, free-delivery progress, promo and navigation actions.
    StorefrontBagSticky now composes total and continuation controls in Shell’s sticky slot.
    StorefrontBagFeedback now composes removal notices and empty-state recovery in separate slots.
-   **Next stage: extract bag progress into a storefront organism.**
+   StorefrontBagProgress now composes responsive controlled progress indicators.
+   **Next stage: extract bag recipient fields into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1888,6 +1889,25 @@ navigation were not rerun.
 All 32 notice/empty-region screenshot pairs are byte-identical, verified against actual PNG bytes.
 Persian phone empty and English desktop removal captures were viewed. No baselines/tolerances
 changed. Next: extract bag progress into a storefront organism.
+
+**Eighty-fifth checkpoint verified:** StorefrontBagProgress is extracted under
+`templates/app/organisms/StorefrontBagProgress/`. It receives explicit steps/current index,
+completed-step callback, region/done labels and number/caption formatters. It composes compact
+and wide Steppers, preserving wrappers/classes/order, CSS breakpoints and compact mode. View
+retains visibility/mapping; bag/shared logic retains stage/URL state, localization and permitted
+navigation. Shared Stepper retains ordered-list/current-step semantics and completed-step buttons.
+No page model, new state/effects, browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Four focused
+desktop/mobile transition/validation browser cases pass without retries. Eight bilingual paired
+before/after probes at touch widths 390/768, desktop 1280 and TV 1920 verify one visible four-step
+list, a single current step, no upcoming-step buttons, compact caption visibility, bag/delivery
+state, completed-step return, URL/reload recovery, unchanged bag data, tablet compact/wide rotation,
+empty-bag absence, no document overflow and full-page axe. Touch uses taps; desktop/TV navigation
+uses keyboard Enter after page layout/focus settles. Full browser/device suites and TV spatial-arrow
+navigation were not rerun.
+All 16 bag/delivery progress screenshot pairs are byte-identical, verified against actual PNG bytes.
+Persian phone delivery and English desktop delivery captures were viewed. No baselines/tolerances
+changed. Next: extract bag recipient fields into a storefront organism.
 
 ## Adding components
 

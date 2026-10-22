@@ -7,6 +7,7 @@ import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/Storefront
 import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
 import {StorefrontBagSticky} from '../app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx';
 import {StorefrontBagFeedback} from '../app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx';
+import {StorefrontBagProgress} from '../app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,32 +29,14 @@ export function View({v}) {
             }
             progress={
               v.hasItems ? (
-                <div className="vf-bag-steps tw:mb-5h">
-                  <div className="tw:md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={v.stepIndex}
-                      onStepClick={v.stepClick}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-
-                      compact={true}
-                    />
-                  </div>
-                  <div className="tw:max-md:hidden">
-                    <DS.Stepper
-                      label={v.t?.steps}
-                      steps={v.steps}
-                      current={v.stepIndex}
-                      onStepClick={v.stepClick}
-                      doneLabel={v.t?.doneStep}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-                    />
-                  </div>
-                </div>
+                <StorefrontBagProgress
+                  steps={v.steps}
+                  current={v.stepIndex}
+                  onStepClick={v.stepClick}
+                  labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                  formatNumber={v.fmt}
+                  captionFormat={v.caption}
+                />
               ) : null
             }
             heading={
