@@ -17,6 +17,7 @@ import {StorefrontAccountEditorDialog} from '../app/organisms/StorefrontAccountE
 import {StorefrontAccountHeading} from '../app/organisms/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
 import {StorefrontAccountTabs} from '../app/organisms/StorefrontAccountTabs/StorefrontAccountTabs.jsx';
 import {StorefrontAccountSessionAction} from '../app/organisms/StorefrontAccountSessionAction/StorefrontAccountSessionAction.jsx';
+import {StorefrontAccountFeedback} from '../app/organisms/StorefrontAccountFeedback/StorefrontAccountFeedback.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -197,9 +198,7 @@ export function View({v}) {
             }
             feedback={
               <>
-                <p role="status" className="tw:text-sm tw:text-secondary">
-                  <>{v.notice}</>
-                </p>
+                <StorefrontAccountFeedback notice={v.notice} />
               </>
             }
             dialog={

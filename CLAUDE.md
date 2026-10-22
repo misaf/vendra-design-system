@@ -125,6 +125,8 @@ StorefrontAccountTabs composes controlled tab items and selected-panel children;
 View/logic retain panel visibility/mapping, tab eligibility/fallback and state; package Tabs retains ARIA/keyboard behavior.
 StorefrontAccountSessionAction composes the labelled sign-out button;
 View retains placement/copy; account/shared logic retains session cleanup and home navigation.
+StorefrontAccountFeedback composes the persistent status paragraph;
+View retains placement; account/shared logic retains localized notice transitions and persistence.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

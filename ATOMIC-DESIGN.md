@@ -199,7 +199,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountHeading now composes the account eyebrow and h1/accent.
    StorefrontAccountTabs now composes controlled pill tabs and the selected panel slot.
    StorefrontAccountSessionAction now composes the controlled sign-out button.
-   **Next stage: extract account feedback into a storefront organism.**
+   StorefrontAccountFeedback now composes the persistent account status region.
+   **Next stage: extract account notices into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2710,6 +2711,30 @@ accessibility/zone-hint limitations remain documented. No baselines or tolerance
 All eight button screenshot pairs are byte-identical, verified against actual PNG bytes.
 English/Persian phone, Persian tablet, English desktop and Persian TV captures were viewed.
 Next: extract account feedback into a storefront organism.
+
+**One hundred and fifteenth checkpoint verified:** StorefrontAccountFeedback is extracted under
+`templates/app/organisms/` with an explicit notice. It preserves the always-mounted paragraph,
+status role, text classes and notice fragment without adding a wrapper. View/layout retain feedback
+placement after the tabs; account/shared logic retains localized messages, save-success feedback,
+failure clearing, persistence and customer state. Page/editor error alerts retain their separate
+owners. No state, effects, browser APIs or account rules moved. Ownership and edit-location
+documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All six focused
+mobile/desktop browser tests pass without retries: bilingual profile/address storage-failure retry
+and profile persistence. Eight paired baseline/current probes exercise English/Persian at touch
+widths 390/768, desktop 1280 and TV 1920. They check exact status markup, initial empty content,
+successful profile-save feedback, storage-failure clearing with draft retention and error alert,
+successful retry, the same mounted status element through saves and tab changes, tab continuity,
+reload reset with persisted profile values, tablet rotation, document overflow and page-top axe.
+Save/tab actions use touch or Enter/Space activation. Full browser/device and TV spatial-arrow
+navigation suites and assistive-technology announcement testing were not rerun; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass with identical status markup. All 16 saved/retry status screenshot
+pairs are byte-identical, verified against actual PNG bytes. English/Persian phone, Persian tablet,
+English desktop and Persian TV captures were viewed. Next: extract account notices into a storefront
+organism.
 
 ## Adding components
 
