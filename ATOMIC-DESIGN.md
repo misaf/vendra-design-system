@@ -196,7 +196,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountAddressEditor now composes controlled address fields and pin/fallback.
    StorefrontAccountReminderEditor now composes controlled reminder/date fields.
    StorefrontAccountEditorDialog now composes shared editor feedback, fields and actions.
-   **Next stage: extract account heading into a storefront organism.**
+   StorefrontAccountHeading now composes the account eyebrow and h1/accent.
+   **Next stage: extract account tab controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2638,6 +2639,26 @@ actions screenshot pairs are byte-identical, verified against actual PNG bytes. 
 storage/reminder actions, Persian phone address summary, English tablet address actions, Persian
 tablet reminder summary, Persian desktop reminder storage and Persian TV address actions were viewed.
 Next: extract account heading into a storefront organism.
+
+**One hundred and twelfth checkpoint verified:** StorefrontAccountHeading is extracted under
+`templates/app/organisms/` with explicit eyebrow/title/accent text. It preserves eyebrow classes,
+the title's trailing space, single h1, semantic em/accent classes and fragment order without adding
+a wrapper. StorefrontAccountLayout retains the heading/header wrappers; View/logic retain localized
+copy, visibility and navigation/focus behavior. No state, effects, browser APIs or account rules moved.
+Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass without retries: bilingual older-order reload/tracking, profile
+persistence and sign-out protection. Eight paired baseline/current probes exercise English/Persian at
+touch widths 390/768, desktop 1280 and TV 1920. They check localized h1/accent content, a single main
+h1, direct eyebrow/h1 children, exact heading markup across versions and after profile-tab activation
+and reload, tablet rotation, document overflow and full-page axe. Full browser/device suites and TV
+spatial-arrow navigation were not rerun; earlier baseline accessibility/zone-hint limitations remain
+documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All eight heading screenshot pairs are byte-identical, verified against
+actual PNG bytes. English/Persian phone, Persian tablet and English TV captures were viewed.
+Next: extract account tab controls into a storefront organism.
 
 ## Adding components
 

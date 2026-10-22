@@ -119,6 +119,8 @@ StorefrontAccountReminderEditor composes controlled name/occasion/date/lead-time
 View/logic retain field visibility/mapping, drafts, calendar rules, date locking, validation/focus and persistence.
 StorefrontAccountEditorDialog composes the controlled shared dialog, storage alert, summary and actions;
 View/logic retain field selection, drafts, validation/focus, save/error state, mutations and persistence.
+StorefrontAccountHeading composes eyebrow and h1/accent from explicit text;
+Layout retains its wrapper; View/logic retain localization, visibility and navigation/focus.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

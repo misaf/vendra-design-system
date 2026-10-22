@@ -27,3 +27,5 @@ StorefrontAccountAddressEditor composes controlled address fields and pin/fallba
 StorefrontAccountReminderEditor composes controlled reminder/date fields. View retains branch visibility/descriptor mapping; StorefrontAccountEditorDialog owns shared dialog/summary/actions; account/shared logic retains drafts, calendar/occasion rules, validation/focus, mutations and persistence.
 
 StorefrontAccountEditorDialog composes the shared controlled editor, error feedback, field slot and save/cancel actions. View retains field selection/mapping; account/shared logic retains drafts, validation/focus, mutations and persistence.
+
+StorefrontAccountHeading composes eyebrow and h1/accent from explicit text. This layout retains the heading/header wrappers; View/logic retain localization, visibility and navigation/focus.
