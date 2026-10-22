@@ -171,7 +171,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagFeedback now composes removal notices and empty-state recovery in separate slots.
    StorefrontBagProgress now composes responsive controlled progress indicators.
    StorefrontBagRecipient now composes recipient heading, saved addresses and name/phone fields.
-   **Next stage: extract bag delivery location into a storefront organism.**
+   StorefrontBagLocation now composes delivery map/status, fallback zone and address controls.
+   **Next stage: extract bag delivery scheduling into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -1935,6 +1936,33 @@ Persian tablet errors and English desktop selected-address captures were viewed.
 were corrected to scope shared classes to the recipient section and inspect native required
 semantics; no source changes were needed for those probe errors.
 Next: extract bag delivery location into a storefront organism.
+
+**Eighty-seventh checkpoint verified:** StorefrontBagLocation is extracted under
+`templates/app/organisms/StorefrontBagLocation/`. It receives explicit picker/zone/fallback/address
+descriptors and composes LocationPicker, zone status, failed-map hint/Select and address Input as a
+fragment. Classes/order, map/zone/address IDs, labels/status/errors, required/autocomplete settings
+and every map adapter/lifecycle callback are preserved. View retains mapping and surrounding
+recipient composition; bag/shared logic retains load/failure state, geolocation handling, location
+updates, quoting/zone rules, fallback selection, validation, persistence and focus. No page model,
+new state/effects, direct browser APIs, commerce rules, styles or package exports move here.
+Unit/type/package tests, production app build and generated/format/CSS checks pass. Eight of ten
+focused desktop/mobile browser cases pass: required pin/order handoff, failed-map typed-address
+checkout and bilingual unpinned saved-address isolation. Two existing zone-text cases fail because
+they expect a same-day hint for the mixed sample bag; both reproduce on the unchanged baseline at
+port 5174. Existing vfBagSameDay logic omits that hint when any line needs preparation. No test or
+business-rule changes are included in this extraction.
+Twelve bilingual paired probes cover map pending/error/pinned states at touch widths 390/768,
+desktop 1280 and TV 1920, plus load-failure fallback at 390/1280. They verify pin-error summary focus,
+touch pinning/keyboard map movement, numeric location, zone updates, cleared pin errors, full typed
+address/zone selection in fallback, address/location/zone persistence, tablet rotation, overflow
+and full-page axe. Map tiles are stubbed consistently. Full browser/device suites, live map tiles,
+geolocation permission behavior and TV spatial-arrow navigation were not rerun.
+Twenty-six of 32 pin/fallback screenshot pairs are byte-identical, verified against PNG bytes.
+Four map captures differ by one pixel each (English desktop pending; English TV pending/error;
+Persian TV pending). Selected fallback captures differ by 13 pixels in English desktop and five
+in Persian desktop. All channel deltas
+are 1/255. Persian phone pin error and desktop fallback captures were viewed. No baselines/
+tolerances changed. Next: extract bag delivery scheduling into a storefront organism.
 
 ## Adding components
 

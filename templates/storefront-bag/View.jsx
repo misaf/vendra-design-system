@@ -9,6 +9,7 @@ import {StorefrontBagSticky} from '../app/organisms/StorefrontBagSticky/Storefro
 import {StorefrontBagFeedback} from '../app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx';
 import {StorefrontBagProgress} from '../app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx';
 import {StorefrontBagRecipient} from '../app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx';
+import {StorefrontBagLocation} from '../app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -124,73 +125,39 @@ export function View({v}) {
                             label: v.t?.phone
                           }}
                         />
-                        <div className="vf-bag-pin tw:flex tw:flex-col tw:gap-2">
-                          {v.mapOk ? (
-                            <>
-                              <DS.LocationPicker
-                                id="vf-map"
-                                label={v.t?.pin}
-                                status={v.pinStatus}
-                                error={v.pinError}
-                                value={v.delivery?.location}
-                                onChange={v.map?.change}
-                                loadLeaflet={v.map?.load}
-                                tiles={v.map?.tiles}
-                                center={v.map?.center}
-                                zoom={v.map?.zoom}
-                                locateLabel={v.t?.locate}
-                                onLocateError={v.map?.locateError}
-                                onReady={v.map?.ready}
-                                onFail={v.map?.fail}
-                              />
-                              <div
-                                className="vf-bag-zone tw:flex tw:flex-col tw:gap-1 tw:pt-2"
-                                role="status"
-                              >
-                                <span className="ag-field__label">
-                                  <>{v.t?.zone}</>
-                                </span>
-                                {v.zoneText ? (
-                                  <>
-                                    <span className="tw:text-md tw:font-medium">
-                                      <>{v.zoneText}</>
-                                    </span>
-                                  </>
-                                ) : null}
-                                <span className="ag-field__hint">
-                                  <>{v.zoneStatus}</>
-                                </span>
-                              </div>
-                            </>
-                          ) : null}
-                          {v.mapFailed ? (
-                            <>
-                              <span className="ag-field__label">
-                                <>{v.t?.pin}</>
-                              </span>
-                              <p className="ag-field__hint tw:m-0">
-                                <>{v.t?.mapFailed}</>
-                              </p>
-                              <DS.Select
-                                id="vf-zone"
-                                label={v.t?.zone}
-                                hint={v.zoneHint}
-                                value={v.zone}
-                                options={v.zones}
-                                onChange={v.setZone}
-                              />
-                            </>
-                          ) : null}
-                        </div>
-                        <DS.Input
-                          id="vf-address"
-                          value={v.delivery?.address}
-                          onChange={v.setAddress}
-                          error={v.addressError}
-                          required={true}
-                          label={v.addressLabel}
-                          hint={v.addressHint}
-                          autoComplete="off"
+                        <StorefrontBagLocation
+                          picker={{
+                            visible: v.mapOk,
+                            label: v.t?.pin,
+                            status: v.pinStatus,
+                            error: v.pinError,
+                            value: v.delivery?.location,
+                            onChange: v.map?.change,
+                            loadLeaflet: v.map?.load,
+                            tiles: v.map?.tiles,
+                            center: v.map?.center,
+                            zoom: v.map?.zoom,
+                            locateLabel: v.t?.locate,
+                            onLocateError: v.map?.locateError,
+                            onReady: v.map?.ready,
+                            onFail: v.map?.fail
+                          }}
+                          zone={{label: v.t?.zone, text: v.zoneText, status: v.zoneStatus}}
+                          fallback={{
+                            visible: v.mapFailed,
+                            message: v.t?.mapFailed,
+                            hint: v.zoneHint,
+                            value: v.zone,
+                            options: v.zones,
+                            onChange: v.setZone
+                          }}
+                          address={{
+                            value: v.delivery?.address,
+                            onChange: v.setAddress,
+                            error: v.addressError,
+                            label: v.addressLabel,
+                            hint: v.addressHint
+                          }}
                         />
                       </section>
                       <section
