@@ -39,3 +39,5 @@ StorefrontAccountFeedback composes the always-mounted status paragraph. This lay
 StorefrontAccountNotices composes the page storage-error alert. View retains error/non-editor visibility; this layout retains placement before the tabs. Account/shared logic retains storage/error/retry state; StorefrontAccountEditorDialog retains editor alerts.
 
 StorefrontAccountBalancePanel composes the balance overview, top-up, optional checkout return and history. View retains tab visibility, localized descriptor mapping/list normalization and return eligibility; account/shared logic retains wallet reads, validation, timers, mutations, persistence and checkout destinations.
+
+Account View passes organisms directly into the layout slots, tab branches and editor branches, without redundant single-child fragments. It retains the empty sticky-slot fragment and all existing visibility expressions, descriptor mapping and branch order.
