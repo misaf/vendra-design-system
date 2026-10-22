@@ -71,6 +71,8 @@ StorefrontBagSchedule composes preparation/review feedback and controlled day/ti
 View/logic retain eligibility, cutoffs, date/slot state, confirmation, persistence and validation.
 StorefrontBagCards composes per-item card messages/add controls and the controlled card-addition Undo notice;
 View/logic retain eligibility, add/Undo mutations, prices, message validation/persistence and focus.
+StorefrontBagSender composes controlled sender name/phone fields and their heading/hint;
+View/logic retain signed-in prefill, validation, persistence and error-summary focus.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
