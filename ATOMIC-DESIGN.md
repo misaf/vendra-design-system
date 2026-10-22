@@ -178,7 +178,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagDeliveryIntro now composes validation feedback and the guest sign-in prompt.
    StorefrontCheckoutDeliveryReview now composes delivery details and edit navigation.
    StorefrontCheckoutMethods now composes payment-method choices, availability and wallet context.
-   **Next stage: extract checkout receipt details into a storefront organism.**
+   StorefrontCheckoutReceipt now composes receipt details and changed-amount confirmation.
+   **Next stage: extract checkout submission actions and feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2103,6 +2104,32 @@ All 32 method/wallet/fallback screenshot pairs are byte-identical, verified agai
 Persian phone guest options, English desktop wallet hint and Persian desktop fallback captures were
 viewed. No baselines/tolerances changed. Next: extract checkout receipt details into a storefront
 organism.
+
+**Ninety-fourth checkpoint verified:** StorefrontCheckoutReceipt is extracted under
+`templates/app/organisms/` with explicit change, card, Sheba, last-four and reference descriptors.
+The organism preserves warning visibility independently of card visibility, warning/input IDs and
+focus targets, PaymentCard props, optional Sheba direction/tooltip/copy, receipt grid classes,
+numeric input mode/direction, maximum length and validation props. View maps data; checkout/shared
+logic retains amount validation/confirmation, clipboard callbacks, digit normalization, errors,
+drafts/persistence and order submission. No commerce rules, state/effects or browser APIs moved.
+Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+desktop/mobile browser cases pass without retries: bilingual changed-total confirmation blocking,
+receipt-draft continuity through delivery edits/reload and English Sheba tooltip descriptions.
+Eight bilingual paired probes at touch widths 390/768, desktop 1280 and TV 1920 verify invalid and
+filled receipt fields, Persian digit normalization, changed-total focus/blocking/confirmation,
+reload persistence, method hiding/restoration, tablet rotation, no document overflow and full-page
+axe. Optional Sheba fixtures at 390/1280 verify bdi direction, tooltip descriptions and Sheba/card
+copy callbacks using an isolated test clipboard. Configuration changes stay in browser memory.
+Desktop tooltip hover stalled on the unchanged baseline in the scratch probe; explicit keyboard
+focus passes on both versions. Existing focused tooltip hover tests pass. Full browser/device
+suites and TV spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain
+documented. No baselines or tolerances changed.
+All 36 card/invalid/filled/changed/Sheba screenshot pairs are byte-identical, verified against
+actual PNG bytes. Persian phone warning, English tablet filled inputs, Persian desktop Sheba and
+English TV payment-card captures were viewed. Next: extract checkout submission actions and
+feedback into a storefront organism.
 
 ## Adding components
 

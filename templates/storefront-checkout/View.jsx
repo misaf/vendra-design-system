@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontCheckoutLayout} from '../app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx';
 import {StorefrontCheckoutDeliveryReview} from '../app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx';
 import {StorefrontCheckoutMethods} from '../app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx';
+import {StorefrontCheckoutReceipt} from '../app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -118,77 +119,42 @@ export function View({v}) {
                     }}
                     notice={v.paymentNotice}
                   />
-                  {v.receiptChanged && (
-                    <div id="vf-receipt-changed" tabIndex={-1}>
-                      <DS.Alert
-                        tone="warning"
-                        title={v.receiptChangeText}
-                        action={
-                          <DS.Button variant="secondary" onClick={v.confirmReceipt}>
-                            {v.t.confirmReceipt}
-                          </DS.Button>
-                        }
-                      />
-                    </div>
-                  )}
-                  {v.isCard ? (
-                    <>
-                      <DS.PaymentCard
-                        cardNumber={v.payment?.cardNumber}
-                        holder={v.payment?.holder}
-                        bank={v.payment?.bank}
-                        amount={v.totalLabel}
-                        labels={v.payLabels}
-                      />
-                      {v.payment?.sheba ? (
-                        <>
-                          <p className="vf-checkout-sheba tw:text-sm tw:flex tw:items-center tw:gap-1 tw:flex-wrap tw:m-0">
-                            <>
-                              {v.t?.sheba}
-                              {': '}
-                            </>
-                            <bdi dir="ltr">
-                              <>{v.payment?.sheba}</>
-                            </bdi>
-                            <DS.Tooltip content={v.t?.shebaTip}>
-                              <button
-                                type="button"
-                                className="vf-checkout-info tw:inline-grid tw:place-items-center tw:size-[44px] tw:-my-2 tw:p-0 tw:[border:0] tw:bg-transparent tw:text-quiet tw:cursor-pointer tw:rounded-full"
-                                aria-label={v.t?.shebaInfo}
-                              >
-                                <DS.Icon name="info" size={16} />
-                              </button>
-                            </DS.Tooltip>
-                          </p>
-                          <DS.Button variant="ghost" size="sm" onClick={v.copySheba}>
-                            <>{v.payLabels?.copy}</>
-                          </DS.Button>
-                        </>
-                      ) : null}
-                      <div className="vf-checkout-receipt-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))]">
-                        <DS.Input
-                          id="vf-last4"
-                          label={v.t?.last4}
-                          hint={v.t?.last4Hint}
-                          error={v.last4Err}
-                          inputMode="numeric"
-                          maxLength={4}
-                          dir="ltr"
-                          value={v.last4}
-                          onChange={v.setLast4}
-                        />
-                        <DS.Input
-                          id="vf-ref"
-                          value={v.ref}
-                          onChange={v.setRef}
-                          label={v.t?.ref}
-                          hint={v.t?.refHint}
-                          inputMode="numeric"
-                          dir="ltr"
-                        />
-                      </div>
-                    </>
-                  ) : null}
+                  <StorefrontCheckoutReceipt
+                    change={{
+                      visible: v.receiptChanged,
+                      text: v.receiptChangeText,
+                      onConfirm: v.confirmReceipt,
+                      label: v.t.confirmReceipt
+                    }}
+                    card={{
+                      visible: v.isCard,
+                      number: v.payment?.cardNumber,
+                      holder: v.payment?.holder,
+                      bank: v.payment?.bank,
+                      amount: v.totalLabel,
+                      labels: v.payLabels,
+                      sheba: v.payment?.sheba
+                    }}
+                    sheba={{
+                      label: v.t?.sheba,
+                      tip: v.t?.shebaTip,
+                      info: v.t?.shebaInfo,
+                      onCopy: v.copySheba
+                    }}
+                    last4={{
+                      label: v.t?.last4,
+                      hint: v.t?.last4Hint,
+                      error: v.last4Err,
+                      value: v.last4,
+                      onChange: v.setLast4
+                    }}
+                    reference={{
+                      value: v.ref,
+                      onChange: v.setRef,
+                      label: v.t?.ref,
+                      hint: v.t?.refHint
+                    }}
+                  />
                   {v.isWhatsapp ? (
                     <>
                       <DS.Button
