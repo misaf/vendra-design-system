@@ -17,3 +17,5 @@ StorefrontAccountBalanceHistory composes empty/populated wallet history. View re
 StorefrontAccountSaved composes saved-product cards and empty recovery. View retains tab visibility/normalization; account/shared logic retains favorite synchronization/persistence, customer scope, mapping and destinations.
 
 StorefrontAccountAddresses composes the saved map, address cards and add action. View retains tab visibility/normalization; account/shared logic retains map eligibility/failure, editor state, address mutations, validation/focus and persistence.
+
+StorefrontAccountReminders composes reminder rows, actions and feedback. View retains tab visibility/normalization; account/shared logic retains date/calendar rules, ordering/upcoming selection, editor state, reminder mutations, validation/focus and persistence.

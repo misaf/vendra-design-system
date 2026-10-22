@@ -109,6 +109,8 @@ StorefrontAccountSaved composes saved cards/empty recovery from explicit items/l
 View/logic retain normalization, customer scope, product mapping and favorite synchronization/persistence.
 StorefrontAccountAddresses composes the controlled saved map, address cards and add action;
 View/logic retain normalization, map eligibility/failure, editor state, validation/focus and mutations.
+StorefrontAccountReminders composes add/empty/upcoming feedback and controlled reminder rows;
+View/logic retain normalization, date/calendar rules, ordering, editor state, mutations and persistence.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

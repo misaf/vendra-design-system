@@ -9,6 +9,7 @@ import {StorefrontAccountTopUp} from '../app/organisms/StorefrontAccountTopUp/St
 import {StorefrontAccountBalanceHistory} from '../app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx';
 import {StorefrontAccountSaved} from '../app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
 import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
+import {StorefrontAccountReminders} from '../app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -143,56 +144,17 @@ export function View({v}) {
                   ) : null}
                   {v.isReminders ? (
                     <>
-                      <div className="vf-account-loyalty tw:flex tw:flex-col tw:gap-3 tw:max-w-wide">
-                        <div>
-                          <DS.Button id="vf-add-reminder" iconStart="plus" onClick={v.addReminder}>
-                            <>{v.editor?.addReminder}</>
-                          </DS.Button>
-                        </div>
-                        {v.noReminders ? (
-                          <>
-                            <p>
-                              <>{v.editor?.empty}</>
-                            </p>
-                          </>
-                        ) : null}
-                        {v.coming ? (
-                          <>
-                            <DS.Alert tone="neutral" title={v.editor?.coming}>
-                              <>
-                                {v.coming?.name}
-                                {' \u00b7 '}
-                                {v.coming?.when}
-                              </>
-                            </DS.Alert>
-                          </>
-                        ) : null}
-                        <p className="vf-account-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                          <>{v.t?.remP}</>
-                        </p>
-                        {list(v.reminders).map((r, $index) => (
-                          <React.Fragment key={$index}>
-                            <DS.ReminderRow
-                              name={r?.name}
-                              day={r?.day}
-                              month={r?.month}
-                              occasion={r?.occasion}
-                              occasionIcon={r?.icon}
-                              before={r?.before}
-                              channel={r?.channel}
-                              soon={r?.soon}
-                              on={r?.on}
-                              onToggle={r?.toggle}
-                              onEdit={r?.edit}
-                              onDelete={r?.remove}
-                              altDate={r?.altDate}
-                              when={r?.when}
-                              sendHref={v.href?.shop}
-                              labels={v.remLabels}
-                            />
-                          </React.Fragment>
-                        ))}
-                      </div>
+                      <StorefrontAccountReminders
+                        add={{label: v.editor?.addReminder, onClick: v.addReminder}}
+                        showEmpty={v.noReminders}
+                        emptyText={v.editor?.empty}
+                        coming={v.coming}
+                        comingTitle={v.editor?.coming}
+                        intro={v.t?.remP}
+                        reminders={list(v.reminders)}
+                        shopHref={v.href?.shop}
+                        labels={v.remLabels}
+                      />
                     </>
                   ) : null}
                   {v.isProfile ? (
