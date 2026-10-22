@@ -204,7 +204,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountBalancePanel now composes overview, top-up, checkout return and history.
    Account View now composes organisms directly without redundant single-child fragments.
    StorefrontSigninHeading now composes phone/code step headings and introductions.
-   **Next stage: extract sign-in phone controls into a storefront organism.**
+   StorefrontSigninPhoneControls now composes the phone summary, input and send action.
+   **Next stage: extract sign-in code controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2854,6 +2855,33 @@ All eight paired probes pass with identical heading/intro markup. All 24 phone/c
 screenshot pairs are byte-identical, verified against actual PNG bytes. English phone initial,
 Persian phone code, Persian tablet initial, English desktop code and Persian TV back captures were
 viewed. Next: extract sign-in phone controls into a storefront organism.
+
+**One hundred and twentieth checkpoint verified:** StorefrontSigninPhoneControls is extracted
+under `templates/app/organisms/` with explicit problems, phone and send descriptors. It preserves
+the error-summary/input IDs, placeholder, controlled label/value/change/error props and primary
+large block send button, returning a fragment without adding a wrapper. View retains phone-step
+visibility, localized mapping, heading and policy links. Sign-in/shared logic retains phone state,
+validation, summary targets/focus, code transitions, resend, authentication and checkout continuation.
+Package components retain field/error semantics and activation. No state, effects, browser APIs or
+sign-in rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, resend countdown,
+simulated Android SMS autofill/completion, phone validation/focus and policy links. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check phone type/inputmode/direction/autocomplete/placeholder, button variant/size, empty and
+invalid phone validation, error-summary links and focus, error clearing, Latin/Persian-digit entry,
+code-step focus/message, change-number retention, successful local demo completion, tablet rotation,
+document overflow and page-top axe. Full phone-step markup matches after normalizing React Aria's
+random per-page ID prefix. Actions use touch, Enter or Space as appropriate; custom probes stub
+native credential retrieval and use local demo sign-in logic. Full browser/device and TV spatial-arrow
+navigation suites and assistive-technology announcement testing were not run in this stage; earlier
+baseline accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 32 initial/invalid/typed/back phone-step screenshot pairs are
+byte-identical, verified against actual PNG bytes. English phone invalid, Persian phone typed,
+Persian tablet back, English desktop initial and Persian TV invalid captures were viewed.
+Next: extract sign-in code controls into a storefront organism.
 
 ## Adding components
 

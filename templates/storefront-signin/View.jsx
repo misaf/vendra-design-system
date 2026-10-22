@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
+import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -16,18 +17,16 @@ export function View({v}) {
               v.isPhone ? (
                 <>
                   <StorefrontSigninHeading title={v.t?.inA} accent={v.t?.inB} intro={v.t?.inP} />
-                  <DS.ErrorSummary id="vf-signin-errors" errors={v.phoneProblems} />
-                  <DS.PhoneInput
-                    id="vf-phone"
-                    label={v.t?.phone}
-                    placeholder="0912 000 0000"
-                    value={v.phone}
-                    onChange={v.setPhone}
-                    error={v.phoneErr}
+                  <StorefrontSigninPhoneControls
+                    problems={v.phoneProblems}
+                    phone={{
+                      label: v.t?.phone,
+                      value: v.phone,
+                      onChange: v.setPhone,
+                      error: v.phoneErr
+                    }}
+                    send={{label: v.t?.send, onClick: v.send}}
                   />
-                  <DS.Button variant="primary" size="lg" block={true} onClick={v.send}>
-                    <>{v.t?.send}</>
-                  </DS.Button>
                   <p className="vf-signin-note tw:m-0 tw:text-sm tw:leading-body tw:text-quiet">
                     <>{v.t?.terms?.before}</>
                     <a
