@@ -97,6 +97,8 @@ StorefrontCheckoutSummary composes summary Card/rows; StorefrontCheckoutSticky c
 View/logic retain totals, visibility, validation/submission and pending/errors; Shell retains docking/focus.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
+StorefrontAccountOrders composes order cards/tracking links from explicit presentation records;
+View/logic retain tab visibility, list normalization, history, customer isolation, formatting and routes.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking

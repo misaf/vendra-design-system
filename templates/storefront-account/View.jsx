@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontAccountLayout} from '../app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
+import {StorefrontAccountOrders} from '../app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -48,38 +49,7 @@ export function View({v}) {
                 >
                   {v.isOrders ? (
                     <>
-                      <div className="vf-account-orders-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))]">
-                        {list(v.orders).map((o, $index) => (
-                          <React.Fragment key={$index}>
-                            <DS.Card padding={20}>
-                              <div className="vf-account-order-body tw:flex tw:flex-col tw:gap-3">
-                                <div className="tw:flex tw:justify-between tw:items-center tw:gap-3">
-                                  <span
-                                    dir="ltr"
-                                    className="vf-account-order-number tw:font-medium"
-                                  >
-                                    <>{o?.id}</>
-                                  </span>
-                                  <DS.Badge tone={o?.tone}>
-                                    <>{o?.status}</>
-                                  </DS.Badge>
-                                </div>
-                                <div className="vf-account-order-meta tw:text-sm tw:text-quiet">
-                                  <>{o?.meta}</>
-                                </div>
-                                <div className="vf-account-order-total tw:font-medium">
-                                  <>{o?.total}</>
-                                </div>
-                                <div>
-                                  <DS.Button variant="secondary" size="sm" href={o?.href}>
-                                    <>{o?.cta}</>
-                                  </DS.Button>
-                                </div>
-                              </div>
-                            </DS.Card>
-                          </React.Fragment>
-                        ))}
-                      </div>
+                      <StorefrontAccountOrders orders={list(v.orders)} />
                     </>
                   ) : null}
                   {v.isBalance ? (
