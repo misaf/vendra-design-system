@@ -182,7 +182,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutSubmission now composes submission actions and processing/failure feedback.
    StorefrontCheckoutNotices now composes retry-review and recovery-storage notices.
    StorefrontCheckoutProgress and StorefrontCheckoutHeading now compose progress and payment heading.
-   **Next stage: extract checkout bank status into a storefront organism.**
+   StorefrontCheckoutBank now composes bank progress and payment status.
+   **Next stage: extract checkout confirmation into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2220,6 +2221,38 @@ All 56 payment-progress, card/online/COD/WhatsApp heading and bank/success progr
 are byte-identical, verified against actual PNG bytes. Persian phone payment/success captions,
 English phone card heading, English desktop bank progress and Persian TV success progress were
 viewed. Next: extract checkout bank status into a storefront organism.
+
+**Ninety-eighth checkpoint verified:** StorefrontCheckoutBank is extracted under
+`templates/app/organisms/` with explicit progress, payment and action descriptors. It composes
+StorefrontCheckoutProgress and PaymentStatus in the original fragment order without adding a DOM
+wrapper. Current index/formatters, status/amount/order/redirect/support props, recovery callbacks
+and headingLevel 1 are preserved. Layout retains the bank wrapper and outside notices. View/logic
+retain bank visibility, recovery records, redirect data, retry checks, method switching,
+verification/completion and persistence. PaymentStatus retains redirect forms/timers, localized
+copy, heading focus and result tracking. No rules, state/effects or browser APIs moved. Ownership
+and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+storefront browser tests pass without retries: paid bank return, declined-payment retry,
+missing-record safety and bilingual durable-recovery/expired-retry flows across mobile/desktop.
+All seven PaymentStatus component browser tests pass: POST/GET fields and automatic redirect,
+failed/cancelled actions, pending/check behavior, heading focus, Persian wording and bilingual axe.
+Paired probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920, comparing
+failed, cancelled, pending-with-record, pending-without-record and bank progress. They check
+single h1/focus, noninteractive progress, support tel links, preserved receipt fields after other
+method, cancellation retry completion, check-again verifying/aria-busy then completion, clearing
+recovery records, no duplicate-pay action for pending status and no order from an unknown return.
+Tablet rotation, document overflow and settled-page axe are covered. Recovery fixtures restore
+the actual prepayment local/tab session and use a stable numeric order ID for visual comparison.
+The original route and checkout-snapshot guards remain in use. Only local demo bank returns are
+opened. Full browser/device suites and TV spatial-arrow navigation were not rerun; prior baseline
+zone-hint failures remain documented. No baselines or tolerances changed.
+All eight paired behavior probes pass. Of 40 screenshot pairs, 39 are byte-identical. Persian TV
+pending-with-record differs by 13 pixels with maximum channel delta 1/255, confined to the clock
+icon (x476-535/y85-113 in the 1016x973 capture). Actual PNG bytes/deltas were checked and both
+images were viewed. English phone missing-record, Persian phone cancelled, Persian tablet pending,
+Persian desktop missing-record and English TV failed captures were also viewed. Next: extract
+checkout confirmation into a storefront organism.
 
 ## Adding components
 
