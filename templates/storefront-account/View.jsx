@@ -8,6 +8,7 @@ import {StorefrontAccountBalanceOverview} from '../app/organisms/StorefrontAccou
 import {StorefrontAccountTopUp} from '../app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx';
 import {StorefrontAccountBalanceHistory} from '../app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx';
 import {StorefrontAccountSaved} from '../app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
+import {StorefrontAccountAddresses} from '../app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -123,51 +124,21 @@ export function View({v}) {
                   ) : null}
                   {v.isAddresses ? (
                     <>
-                      {v.placesMap ? (
-                        <>
-                          <DS.PlacesMap
-                            id="vf-account-map"
-                            className="tw:mb-4"
-                            label={v.t?.mapL}
-                            places={v.placesView?.places}
-                            height={260}
-                            loadLeaflet={v.placesView?.load}
-                            tiles={v.placesView?.tiles}
-                            center={v.placesView?.center}
-                            zoom={v.placesView?.zoom}
-                            onFail={v.placesView?.fail}
-                          />
-                        </>
-                      ) : null}
-                      <div className="vf-account-addresses-grid tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]">
-                        {list(v.addresses).map((a, $index) => (
-                          <React.Fragment key={$index}>
-                            <DS.AddressCard
-                              label={a?.label}
-                              line={a?.line}
-                              recipient={a?.recipient}
-                              phone={a?.phone}
-                              zone={a?.zone}
-                              isDefault={a?.isDefault}
-                              onMakeDefault={a?.makeDefault}
-                              onEdit={a?.edit}
-                              onDelete={a?.remove}
-                              labels={v.addrLabels}
-                            />
-                          </React.Fragment>
-                        ))}
-                        <button
-                          id="vf-add-address"
-                          type="button"
-                          onClick={v.addAddress}
-                          className="vf-account-add-address tw:min-h-[180px] tw:[border:1.5px_dashed_var(--border-input)] tw:rounded-md tw:bg-transparent tw:text-body tw:[font-family:inherit] tw:[line-height:inherit] tw:text-base tw:flex tw:items-center tw:justify-center tw:gap-2 tw:cursor-pointer tw:hover:bg-sunken"
-                        >
-                          <>
-                            {'+ '}
-                            {v.t?.addAddr}
-                          </>
-                        </button>
-                      </div>
+                      <StorefrontAccountAddresses
+                        map={{
+                          visible: v.placesMap,
+                          label: v.t?.mapL,
+                          places: v.placesView?.places,
+                          loadLeaflet: v.placesView?.load,
+                          tiles: v.placesView?.tiles,
+                          center: v.placesView?.center,
+                          zoom: v.placesView?.zoom,
+                          onFail: v.placesView?.fail
+                        }}
+                        addresses={list(v.addresses)}
+                        labels={v.addrLabels}
+                        add={{label: v.t?.addAddr, onClick: v.addAddress}}
+                      />
                     </>
                   ) : null}
                   {v.isReminders ? (

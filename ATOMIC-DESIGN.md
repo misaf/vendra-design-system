@@ -190,7 +190,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontAccountTopUp now composes controlled amount/preset/payment controls and feedback.
    StorefrontAccountBalanceHistory now composes empty/populated wallet history.
    StorefrontAccountSaved now composes saved product cards and empty-state recovery.
-   **Next stage: extract account addresses into a storefront organism.**
+   StorefrontAccountAddresses now composes the saved-address map, cards and add action.
+   **Next stage: extract account reminders into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2449,6 +2450,38 @@ All eight paired probes pass. All 24 populated/single/empty screenshot pairs are
 verified against actual PNG bytes. English phone populated/empty, Persian phone single, Persian tablet
 empty, English desktop populated and Persian TV single captures were viewed.
 Next: extract account addresses into a storefront organism.
+
+**One hundred and sixth checkpoint verified:** StorefrontAccountAddresses is extracted under
+`templates/app/organisms/` with explicit map, normalized address records, labels and add descriptors.
+It preserves the map ID/margin/height and loader/tiles/center/zoom/marker/failure props, grid classes,
+positional keys, AddressCard content/default/edit/delete callbacks and add-button ID/type/classes.
+View retains tab visibility and list normalization; account/shared logic retains customer scope,
+location eligibility/formatting, map failure state, editor state/validation/focus, address mutations and
+persistence. PlacesMap retains its map lifecycle. No state, effects, browser APIs or address rules
+moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+mobile/desktop browser tests pass without retries: map/editor pin entry, complete error summary,
+bilingual storage-failure retry, saved-address delivery and unpinned-address isolation. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check marker-to-editor entry, making Office default, editing Home and reload persistence,
+deleting the default and promoting Home, deleting all addresses, add/cancel and focus return, hidden
+map with no locations, and failed Leaflet-loader fallback with usable cards/editor. Tab continuity,
+touch/keyboard activation, tablet rotation and document overflow pass. Full-page axe passes from the
+page-top position for populated/empty/fallback states. An initial unchanged-baseline phone audit after
+screenshot scrolling reported a target-size violation on one React Aria control; that scroll-position
+result is retained separately and is not claimed fixed by this extraction. Full browser/device suites
+and TV spatial-arrow navigation were not rerun; prior baseline zone-hint failures remain documented.
+No baselines or tolerances changed.
+
+All eight paired behavior probes pass. Of 40 map/initial/default/empty/fallback screenshot pairs,
+38 are byte-identical. The Persian tablet and English TV maps differ in tile-background paint by
+22,534 and 27,291 pixels respectively, each with maximum channel delta 14/255; actual PNG comparisons
+and side-by-side inspection retain those original results. Separate map-only rechecks wait for all
+rendered tile images to complete at full opacity; both resulting pairs are byte-identical, with no
+CSS/opacity overrides. English phone map/initial/fallback, Persian phone default, English tablet empty,
+Persian tablet and English TV original/rechecked maps, and Persian TV default captures were viewed.
+Next: extract account reminders into a storefront organism.
 
 ## Adding components
 
