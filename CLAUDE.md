@@ -139,6 +139,8 @@ StorefrontSigninHeading composes phone/code step h1/accent and intro from explic
 View retains step visibility/copy mapping; sign-in/shared logic retains validation, focus and authentication.
 StorefrontSigninPhoneControls composes controlled phone/error-summary/send controls;
 View retains visibility/mapping; sign-in/shared logic retains validation, focus and step transitions.
+StorefrontSigninCodeControls composes controlled code/error-summary/verify controls;
+View retains visibility/mapping; sign-in/shared logic retains validation, focus and verification.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
