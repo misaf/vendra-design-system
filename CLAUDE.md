@@ -69,6 +69,8 @@ StorefrontBagLocation composes controlled map/zone status, failed-map zone selec
 View/logic retain map lifecycle callbacks, location/quote rules, fallback state, validation and persistence.
 StorefrontBagSchedule composes preparation/review feedback and controlled day/time choices;
 View/logic retain eligibility, cutoffs, date/slot state, confirmation, persistence and validation.
+StorefrontBagCards composes per-item card messages/add controls and the controlled card-addition Undo notice;
+View/logic retain eligibility, add/Undo mutations, prices, message validation/persistence and focus.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
