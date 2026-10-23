@@ -7,3 +7,5 @@ The View retains conditional slot construction, product cards, copy, count, link
 Preserve wrapper classes and `data-vf-keep-focus`. Verify removal/Undo focus, final-product empty recovery, preservation of other saved changes, account/product synchronization, reload persistence, product navigation, hydration and English/Persian responsive layouts.
 
 StorefrontSavedHeading composes the package h1 SectionHeader from explicit eyebrow/title/accent props. View retains localized mapping, saved/shared logic retain count wording and list state, and this layout retains the heading wrapper.
+
+StorefrontSavedRemovalNotice composes removal feedback and Undo. View retains removed-message visibility and localized mapping; saved/shared logic retain additive restoration, persistence and focus. The notice remains outside results/empty groups for final-item recovery.

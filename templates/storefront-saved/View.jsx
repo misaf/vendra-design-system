@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontSavedLayout} from '../app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
 import {StorefrontSavedHeading} from '../app/organisms/StorefrontSavedHeading/StorefrontSavedHeading.jsx';
+import {StorefrontSavedRemovalNotice} from '../app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -20,21 +21,10 @@ export function View({v}) {
             }
             notice={
               v.removedMessage ? (
-                <div className="vf-saved-undo tw:mb-4">
-                  <DS.Alert
-                    title={v.removedMessage}
-                    action={
-                      <DS.Button
-                        id="vf-saved-undo"
-                        data-vf-keep-focus
-                        variant="secondary"
-                        onClick={v.undoRemove}
-                      >
-                        {v.t?.undo}
-                      </DS.Button>
-                    }
-                  />
-                </div>
+                <StorefrontSavedRemovalNotice
+                  message={v.removedMessage}
+                  undo={{label: v.t?.undo, onClick: v.undoRemove}}
+                />
               ) : null
             }
             results={
