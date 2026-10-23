@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontTrackLayout} from '../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
+import {StorefrontTrackHeading} from '../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
 import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
 import {Shell} from '../app/Shell.jsx';
 
@@ -46,18 +47,12 @@ export function View({v}) {
             heading={
               v.hasOrder ? (
                 <>
-                  <div className="vf-track-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                    <>{v.t?.orderNo}</>
-                  </div>
-                  <h1>
-                    <>{v.titleA} </>
-                    <em className="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                      <>{v.titleB}</>
-                    </em>
-                  </h1>
-                  <p className="vf-track-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                    <>{v.statusP}</>
-                  </p>
+                  <StorefrontTrackHeading
+                    eyebrow={v.t?.orderNo}
+                    title={v.titleA}
+                    accent={v.titleB}
+                    intro={v.statusP}
+                  />
                   {v.pending ? (
                     <>
                       <div className="tw:max-w-measure">

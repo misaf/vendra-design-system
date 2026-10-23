@@ -7,3 +7,5 @@ The View retains conditional slot construction, lookup visibility/descriptor map
 Preserve classes, form submission semantics and focus targets. Verify lookup validation/failure/success, tracking another order, delivered and cancelled states, pending payment details, reorder cancel/confirm and bag preservation, hydration and English/Persian responsive layouts.
 
 StorefrontTrackLookup composes the native lookup form, heading, warning, controlled fields and submit/browse actions. View retains lookup visibility and localized mapping; tracking/shared logic retains drafts, validation/focus, normalization, number/mobile matching, failure state and matched-order navigation.
+
+StorefrontTrackHeading composes the order eyebrow, accented title and status introduction. View retains order visibility, localized mapping and the pending-payment notice; tracking logic retains order selection and status interpretation.
