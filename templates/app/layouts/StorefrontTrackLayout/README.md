@@ -17,3 +17,5 @@ StorefrontTrackProgress composes the timeline card. View retains order visibilit
 StorefrontTrackDeliveryPhoto composes the delivered photo figure. View retains order/delivered visibility and localized mapping; tracking logic selects the order photo, and package ArchFrame/Picture retain image/loading and missing-source placeholder semantics.
 
 StorefrontTrackOrderDetails composes the sunken details card. View retains order visibility and row mapping; tracking/shared logic retain delivery/message/payment formatting, and package DetailList retains definition-list semantics and wrapping.
+
+StorefrontTrackOrderActions composes contact, repeat-order and lookup controls. View retains order/contact visibility and localized descriptors; tracking/shared logic retain order-specific URLs, repeat-order review/bag changes and lookup reset/focus.

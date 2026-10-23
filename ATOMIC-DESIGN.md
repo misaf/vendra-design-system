@@ -217,7 +217,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackProgress now composes the tracking timeline card.
    StorefrontTrackDeliveryPhoto now composes the delivered-order photo figure.
    StorefrontTrackOrderDetails now composes the tracking details card.
-   **Next stage: extract tracking order actions into a storefront organism.**
+   StorefrontTrackOrderActions now composes contact, repeat-order and lookup actions.
+   **Next stage: fix keyboard repeat-order review activation, then resume tracking summary extraction.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3218,6 +3219,36 @@ baseline; correcting it to the package's masked-span icon produced eight passing
 All 32 screenshot pairs are byte-identical; actual PNG bytes were checked. No baselines or tolerances
 changed. The full browser/device and TV spatial-navigation suites and assistive-technology testing
 were not run. Next: extract tracking order actions into a storefront organism.
+
+**One hundred and thirty-third checkpoint verified:** extracted StorefrontTrackOrderActions
+under `templates/app/organisms/` with explicit nullable contact and controlled repeat/lookup
+descriptors. It preserves the flex/wrap container, primary external contact link/icon/rel/target,
+secondary repeat-order link/icon/href/callback and ghost lookup button/icon without adding markup.
+View retains order/contact visibility and localized descriptor mapping; tracking/shared logic retain
+order-specific URLs, repeat-order review/confirmation, bag changes and lookup reset/focus. Package
+Button/shared routing retain activation/navigation behavior. No state, rules or browser effects moved.
+Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup and heading focus, bilingual
+older-order reload, pending card-payment tracking and bilingual repeat-order review/confirmation
+with bag preservation. Eight paired previous-commit/current probes exercise English/Persian at touch
+widths 390/768, desktop 1280 and TV width 1920. They check native link/button counts, variants, icons,
+bag href, external-contact target/rel and decoded order-specific WhatsApp text without opening it.
+Touch/pointer repeat-order review opens without navigation or bag changes; cancellation restores
+repeat-link focus and preserves the bag. Desktop/TV-width Tab/Shift+Tab order, keyboard cancel/lookup,
+lookup reset/focus, same-document continuity, cancelled-order actions, tablet rotation, containment
+and page-top axe match. Action/dialog markup matches after normalizing React Aria's random ID prefix.
+All 24 received/review/cancelled screenshot pairs are byte-identical; actual PNG bytes were checked.
+No baselines or tolerances changed. Full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+
+The first desktop paired probe exposed an existing keyboard limitation on the unchanged baseline:
+Enter on the repeat-order link navigates to the bag instead of opening review. This reproduces in
+both previous/current versions for both languages at desktop/TV widths; the bag is unchanged. The
+probe records that behavior, returns through history and then verifies review via pointer activation.
+This extraction preserves it. Next: fix keyboard repeat-order review activation, then resume tracking
+summary extraction.
 
 ## Adding components
 
