@@ -210,7 +210,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninPolicies now composes the localized terms/privacy note.
    StorefrontSigninCompletion now composes success feedback and continuation actions.
    StorefrontSigninChangeNumber now composes the controlled return-to-phone action.
-   **Next stage: simplify sign-in View composition.**
+   Sign-in View now passes layout/completion elements directly without redundant fragments.
+   **Next stage: extract tracking lookup into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3031,6 +3032,37 @@ All eight paired probes pass. All 24 partial/invalid/resent action screenshot pa
 verified against actual PNG bytes. English phone partial, Persian phone invalid, Persian tablet
 resent, English desktop invalid and Persian TV partial captures were viewed.
 Next: simplify sign-in View composition.
+
+**One hundred and twenty-sixth checkpoint verified:** Sign-in View now passes its layout directly
+to Shell and completion directly to the feedback slot. Two redundant single-child fragments are
+removed; multi-child phone/code fragments and the empty sticky-slot fragment remain. Conditions,
+descriptor mappings, callbacks, lazy conditional evaluation and slot/branch order are preserved.
+No rendered wrappers, state, effects, browser APIs or sign-in rules changed. Layout ownership
+documentation is updated. A normalized JSX AST comparison confirms before/after trees match after
+ignoring single-child fragments, formatting and source-position metadata; fragment count falls
+from 5 to 3.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 14 focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, bilingual guest-draft
+continuation/customer isolation, resend countdown, simulated Android SMS autofill/completion,
+phone validation/focus and policy navigation. Eight paired baseline/current probes exercise English/
+Persian at touch widths 390/768, desktop 1280 and TV 1920. They check phone entry, partial-code entry
+without premature completion, ordinary/default-name and checkout/named completion, single h1/accent,
+action counts/variants, authenticated account access, ordinary account reload and same-document
+account/checkout continuation. Tablet rotation, document overflow and page-top axe pass. Form markup
+matches after normalizing React Aria's random per-page ID prefix and moving countdown text; the wait
+is independently checked as active within the configured minute. Actions use touch, Enter or Space
+as appropriate; custom probes stub native credential retrieval and use local demo sign-in logic.
+Full browser/device and TV spatial-arrow navigation suites and assistive-technology testing were not
+run in this stage; earlier baseline accessibility/zone-hint and sign-in validation-state limitations
+remain documented. No baselines or tolerances changed.
+
+All eight functional paired probes pass. Of 32 phone/code/ordinary/checkout screenshot pairs,
+31 are byte-identical. English TV checkout differs at 15 pixels with maximum channel delta 2 out of
+255 and equal dimensions/markup. Actual PNG bytes/pixels were checked and both differing captures
+viewed without a visible layout shift. English phone entry, Persian phone code, Persian tablet
+checkout and English desktop ordinary captures were also viewed.
+Next: extract tracking lookup into a storefront organism.
 
 ## Adding components
 

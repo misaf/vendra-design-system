@@ -149,6 +149,8 @@ StorefrontSigninCompletion composes success feedback and controlled continuation
 View retains visibility/mapping; sign-in/shared logic retains naming, eligibility, authentication and checkout callback.
 StorefrontSigninChangeNumber composes the controlled change-number button;
 View retains code-step visibility/copy; sign-in/shared logic retains phone retention and code/resent reset.
+Sign-in View passes layout/completion elements directly; multi-child phone/code fragments and
+the empty sticky-slot fragment remain, with existing conditions and mappings preserved.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
