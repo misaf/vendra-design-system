@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe, choiceTile} from './helpers.mjs';
+import {openSite, scanAxe, choiceTile, settlePage} from './helpers.mjs';
 
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 async function deliveryDetails(page) {
@@ -127,7 +127,9 @@ for (const lang of ['en', 'fa']) {
       });
     });
     const before = await page.evaluate(() => window.__vfSite.state.bag);
-    await page.getByRole('link', {name: fa ? 'سفارش دوباره' : 'Order again', exact: true}).click();
+    await page
+      .getByRole('button', {name: fa ? 'سفارش دوباره' : 'Order again', exact: true})
+      .click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toContainText('VF-6MT3VY');
     await expect(dialog).toContainText('VF-7K2M4Q');
@@ -136,7 +138,9 @@ for (const lang of ['en', 'fa']) {
     await page.screenshot({path: `/tmp/vendra-repeat-review-${lang}.png`, fullPage: true});
     await dialog.getByRole('button', {name: fa ? 'انصراف' : 'Cancel', exact: true}).click();
     expect(await page.evaluate(() => window.__vfSite.state.bag)).toEqual(before);
-    await page.getByRole('link', {name: fa ? 'سفارش دوباره' : 'Order again', exact: true}).click();
+    await page
+      .getByRole('button', {name: fa ? 'سفارش دوباره' : 'Order again', exact: true})
+      .click();
     await dialog
       .getByRole('radio', {name: fa ? 'جایگزینی سبد فعلی' : 'Replace current bag', exact: true})
       .press('Space');
@@ -145,6 +149,58 @@ for (const lang of ['en', 'fa']) {
       .click();
     await expect(page.locator('.vf-bag-line')).toHaveCount(1);
     expect((await page.evaluate(() => window.__vfSite.state.bag[0])).unit).toBe(before[0].unit);
+  });
+
+  test(`keyboard repeat order requires review before changing the bag (${lang})`, async ({
+    page
+  }) => {
+    await openSite(page, 'track', lang);
+    await page.evaluate(() => {
+      const site = window.__vfSite;
+      site.setState({
+        lastOrder: {
+          id: 'VN-KEYBOARD',
+          status: 'received',
+          method: 'cod',
+          lines: [{...site.state.bag[0]}],
+          delivery: {...site.state.delivery},
+          totals: {sub: 8450000, fee: 0, total: 8450000}
+        }
+      });
+      window.__vfKeyboardRepeatDocument = 'kept';
+    });
+    await expect(page.locator('.vf-track-eyebrow')).toContainText('VN-KEYBOARD');
+    await settlePage(page);
+    const before = await page.evaluate(() => ({
+      bag: window.__vfSite.state.bag,
+      delivery: window.__vfSite.state.delivery
+    }));
+    const repeat = page.locator('.vf-track-details .ag-btn--secondary');
+    const dialog = page.getByRole('dialog');
+    await repeat.press('Enter');
+    await expect(dialog).toBeVisible();
+    await expect(page).toHaveURL(/view=track/);
+    await expect(repeat).toHaveJSProperty('tagName', 'BUTTON');
+    expect(await page.evaluate(() => window.__vfSite.state.bag)).toEqual(before.bag);
+    expect(await page.evaluate(() => window.__vfSite.state.delivery)).toEqual(before.delivery);
+    expect(await scanAxe(page)).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(repeat).toBeFocused();
+    expect(await page.evaluate(() => window.__vfSite.state.bag)).toEqual(before.bag);
+    await repeat.press('Space');
+    await expect(dialog).toBeVisible();
+    expect(await page.evaluate(() => window.__vfSite.state.bag)).toEqual(before.bag);
+    await dialog
+      .getByRole('button', {name: fa ? 'افزودن به سبد فعلی' : 'Add to current bag', exact: true})
+      .press('Enter');
+    await expect(page.locator('.vf-bag-line')).toHaveCount(before.bag.length);
+    await expect(page).toHaveURL(/view=bag/);
+    const after = await page.evaluate(() => window.__vfSite.state.bag);
+    expect(after[0].qty).toBe(before.bag[0].qty * 2);
+    expect(after.slice(1)).toEqual(before.bag.slice(1));
+    expect(await page.evaluate(() => window.__vfSite.state.delivery)).toEqual(before.delivery);
+    expect(await page.evaluate(() => window.__vfKeyboardRepeatDocument)).toBe('kept');
   });
 
   test(`WhatsApp receives the reviewed order details (${lang})`, async ({page}) => {

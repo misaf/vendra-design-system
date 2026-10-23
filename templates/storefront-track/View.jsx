@@ -89,7 +89,11 @@ export function View({v}) {
                   <StorefrontTrackOrderDetails rows={v.rows} />
                   <StorefrontTrackOrderActions
                     contact={v.waHref ? {href: v.waHref, label: v.t?.ask} : null}
-                    repeat={{href: v.href?.bag, onClick: v.reorder, label: v.t?.again}}
+                    repeat={{
+                      href: v.reorder ? undefined : v.href?.bag,
+                      onClick: v.reorder,
+                      label: v.t?.again
+                    }}
                     lookup={{onClick: v.trackAnother, label: v.t?.lookup?.another}}
                   />
                 </>

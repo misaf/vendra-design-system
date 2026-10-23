@@ -167,6 +167,7 @@ StorefrontTrackOrderDetails composes the sunken details card; View retains visib
 tracking/shared logic retain row formatting and package DetailList retains definition-list semantics.
 StorefrontTrackOrderActions composes contact/repeat/lookup controls; View retains visibility/descriptors,
 tracking/shared logic retain URLs, reorder/bag changes and lookup reset/focus.
+Known-order repeat review uses a button; standalone samples without a review callback retain the bag link.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty

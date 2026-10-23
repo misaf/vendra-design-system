@@ -218,7 +218,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackDeliveryPhoto now composes the delivered-order photo figure.
    StorefrontTrackOrderDetails now composes the tracking details card.
    StorefrontTrackOrderActions now composes contact, repeat-order and lookup actions.
-   **Next stage: fix keyboard repeat-order review activation, then resume tracking summary extraction.**
+   Known-order repeat review now uses a button for keyboard/pointer parity.
+   **Next stage: extract tracking order summary into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3249,6 +3250,39 @@ both previous/current versions for both languages at desktop/TV widths; the bag 
 probe records that behavior, returns through history and then verifies review via pointer activation.
 This extraction preserves it. Next: fix keyboard repeat-order review activation, then resume tracking
 summary extraction.
+
+**One hundred and thirty-fourth checkpoint verified:** fixed keyboard repeat-order review.
+A known-order repeat control previously combined a bag href with a click interceptor; Enter on
+React Aria's Link could navigate to the bag instead of opening review. View now omits the href when
+a review callback exists, so the existing package Button renders a native action button. Standalone
+samples without an order/review callback retain the bag link. Tracking logic now opens review
+without mouse-button/modifier/default-navigation interception. Review selection/confirmation and
+bag reconciliation remain unchanged. Component ownership documentation is updated.
+
+Added bilingual browser regressions that press Enter to open review without navigation or bag/
+delivery changes, cancel with Escape and verify trigger focus, reopen with Space, then confirm with
+Enter and verify only the repeated line's quantity changes. Same-document navigation and delivery
+preservation are checked. Existing pointer review/replacement tests now use the button role. The
+new tests reproduced the Enter failure in both languages before the fix. An initial post-fix run
+had one English desktop retry; the test now waits for the seeded order and page focus/layout to
+settle before sending keys. The final focused run with retries disabled passes all 16 mobile/desktop
+cases: keyboard and pointer reorder, guest lookup, bilingual older-order reload and pending payment.
+`npm test`, `npm run check`, the app production build and `git diff --check` pass.
+
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Current known-order triggers are buttons without href; Enter and Space both open
+review, cancellation restores focus and preserves the bag, and touch/pointer activation still works.
+Lookup reset/focus, tablet rotation, containment, same-document continuity and page-top axe pass.
+Four English standalone samples retain their anchor/bag href and Enter navigation. External contact
+links are not activated. The full browser/device and TV spatial-navigation suites and assistive-
+technology testing were not run.
+
+Of 20 action/review/sample screenshot pairs, 12 are byte-identical. Six action captures differ only
+within repeat-label glyph bounds (524–1150 pixels, maximum channel delta 229/255); two desktop dialog
+captures differ at 108 radio-outline pixels each (maximum delta 37/255). All dimensions match. Actual
+PNG bytes/pixels were checked, and representative phone action, desktop review and Persian TV-width
+action captures were viewed. No styles, screenshot baselines or tolerances changed.
+Next: extract tracking order summary into a storefront organism.
 
 ## Adding components
 

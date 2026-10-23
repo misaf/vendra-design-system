@@ -177,11 +177,7 @@ function vals(page) {
       S.focus('vf-lookup-id');
     },
     reorder: order
-      ? e => {
-          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-          e.preventDefault();
-          page.setState({reorderOpen: true, reorderMode: currentBag.length ? 'add' : 'replace'});
-        }
+      ? () => page.setState({reorderOpen: true, reorderMode: currentBag.length ? 'add' : 'replace'})
       : undefined,
     reorderOpen: ls.reorderOpen,
     reorderMode: ls.reorderMode,
