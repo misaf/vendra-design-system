@@ -172,6 +172,8 @@ StorefrontTrackOrderSummary composes the summary card; View retains visibility/m
 logic retain line/totals formatting and StorefrontTrackLayout retains the responsive sticky aside.
 StorefrontTrackReorderDialog composes controlled review choices/notices/actions; View maps descriptors,
 tracking/shared logic retain reconciliation/mode/bag changes, and package Dialog retains modal focus.
+Tracking View passes layout/lookup/pending notice/delivery photo/summary elements directly; multi-child
+heading/details and the empty sticky-slot fragments retain their existing visibility and mappings.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
