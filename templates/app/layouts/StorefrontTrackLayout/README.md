@@ -15,3 +15,5 @@ StorefrontTrackPendingNotice composes the neutral clock-icon payment alert. View
 StorefrontTrackProgress composes the timeline card. View retains order visibility and prop mapping; tracking logic retains status/step interpretation and localized steps, and package OrderTimeline retains list/current/done semantics and cancelled suppression.
 
 StorefrontTrackDeliveryPhoto composes the delivered photo figure. View retains order/delivered visibility and localized mapping; tracking logic selects the order photo, and package ArchFrame/Picture retain image/loading and missing-source placeholder semantics.
+
+StorefrontTrackOrderDetails composes the sunken details card. View retains order visibility and row mapping; tracking/shared logic retain delivery/message/payment formatting, and package DetailList retains definition-list semantics and wrapping.

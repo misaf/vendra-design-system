@@ -216,7 +216,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackPendingNotice now composes the pending-payment alert.
    StorefrontTrackProgress now composes the tracking timeline card.
    StorefrontTrackDeliveryPhoto now composes the delivered-order photo figure.
-   **Next stage: extract tracking order details into a storefront organism.**
+   StorefrontTrackOrderDetails now composes the tracking details card.
+   **Next stage: extract tracking order actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3193,6 +3194,30 @@ matches after normalizing React Aria's random per-page ID prefix. All 32 screens
 byte-identical; actual PNG bytes were checked. No baselines or tolerances changed. The full browser/
 device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract tracking order details into a storefront organism.
+
+**One hundred and thirty-second checkpoint verified:** extracted StorefrontTrackOrderDetails
+under `templates/app/organisms/` with an explicit rows prop. It preserves the sunken package Card
+with padding 20 and DetailList without adding a wrapper. View retains order visibility and row
+mapping; tracking/shared logic retain delivery, zone, schedule, recipient, gift-message and payment
+formatting/localization. Package DetailList retains definition-list semantics, decorative icons and
+wrapping. No state, rules or browser effects moved. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup and heading focus, bilingual
+older-order reload, pending card-payment tracking and bilingual repeat-order review/bag preservation.
+Eight paired previous-commit/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. They verify five ordered label/value rows, decorative icons, delivery
+address/zone, nonempty schedule, recipient name/localized phone, single/multiple per-line gift
+messages with bidi isolation, legacy order-wide message and no-message fallback. Card/default,
+online, COD, WhatsApp, wallet and unknown payment methods retain labels and last-four masking rules.
+Long unbroken addresses remain contained. Details persist through preparing/on-the-way/delivered/
+cancelled states; track-another removes the card and focuses lookup. Tablet rotation, document/card
+containment and page-top axe pass. Card markup matches after normalizing React Aria's random per-page
+ID prefix. The first custom probe stopped on an incorrect SVG icon selector on the unchanged
+baseline; correcting it to the package's masked-span icon produced eight passing paired probes.
+All 32 screenshot pairs are byte-identical; actual PNG bytes were checked. No baselines or tolerances
+changed. The full browser/device and TV spatial-navigation suites and assistive-technology testing
+were not run. Next: extract tracking order actions into a storefront organism.
 
 ## Adding components
 
