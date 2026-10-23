@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {StorefrontContactLayout} from '../app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx';
 import {StorefrontContactHeading} from '../app/organisms/StorefrontContactHeading/StorefrontContactHeading.jsx';
 import {StorefrontContactDetails} from '../app/organisms/StorefrontContactDetails/StorefrontContactDetails.jsx';
+import {StorefrontContactFormControls} from '../app/organisms/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -46,58 +47,30 @@ export function View({v}) {
                   <>{v.t?.fA}</>
                 </h2>
                 {v.notSent ? (
-                  <>
-                    <div className="tw:flex tw:flex-col tw:gap-4">
-                      <DS.ErrorSummary id="vf-contact-errors" errors={v.problems} />
-                      <DS.Input
-                        id="vf-cname"
-                        value={v.name}
-                        onChange={v.setName}
-                        label={v.t?.name}
-                        autoComplete="name"
-                      />
-                      <DS.PhoneInput
-                        id="vf-cphone"
-                        value={v.phone}
-                        onChange={v.setPhone}
-                        label={v.t?.phone}
-                        hint={v.phoneHint}
-                        error={v.phoneErr}
-                      />
-                      <DS.Input
-                        id="vf-cemail"
-                        label={v.t?.emailLabel}
-                        value={v.email}
-                        onChange={v.setEmail}
-                        error={v.emailErr}
-                        type="email"
-                        dir="ltr"
-                        autoComplete="email"
-                      />
-                      <DS.Input
-                        id="vf-cmsg"
-                        required={true}
-                        label={v.t?.msg}
-                        multiline={true}
-                        rows={5}
-                        value={v.msg}
-                        onChange={v.setMsg}
-                        error={v.msgErr}
-                      />
-                      <div>
-                        <DS.Button
-                          variant="primary"
-                          size="lg"
-                          iconEnd="send"
-                          onClick={v.send}
-                          loading={v.busy}
-                          disabled={v.busy}
-                        >
-                          <>{v.t?.send}</>
-                        </DS.Button>
-                      </div>
-                    </div>
-                  </>
+                  <StorefrontContactFormControls
+                    problems={v.problems}
+                    name={{label: v.t?.name, value: v.name, onChange: v.setName}}
+                    phone={{
+                      label: v.t?.phone,
+                      value: v.phone,
+                      onChange: v.setPhone,
+                      hint: v.phoneHint,
+                      error: v.phoneErr
+                    }}
+                    email={{
+                      label: v.t?.emailLabel,
+                      value: v.email,
+                      onChange: v.setEmail,
+                      error: v.emailErr
+                    }}
+                    message={{
+                      label: v.t?.msg,
+                      value: v.msg,
+                      onChange: v.setMsg,
+                      error: v.msgErr
+                    }}
+                    send={{label: v.t?.send, onClick: v.send, busy: v.busy}}
+                  />
                 ) : null}
                 {v.sent ? (
                   <>
