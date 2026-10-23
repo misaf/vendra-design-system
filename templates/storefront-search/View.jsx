@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontSearchLayout} from '../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
 import {StorefrontSearchHeading} from '../app/organisms/StorefrontSearchHeading/StorefrontSearchHeading.jsx';
 import {StorefrontSearchControls} from '../app/organisms/StorefrontSearchControls/StorefrontSearchControls.jsx';
+import {StorefrontSearchPopular} from '../app/organisms/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,22 +29,7 @@ export function View({v}) {
             }
             popular={
               v.empty ? (
-                <>
-                  <div className="tw:flex tw:flex-col tw:gap-3">
-                    <div className="vf-search-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                      <>{v.t?.popular}</>
-                    </div>
-                    <div className="tw:flex tw:gap-2 tw:flex-wrap">
-                      {list(v.popular).map((p, $index) => (
-                        <React.Fragment key={$index}>
-                          <DS.Chip onClick={p?.pick}>
-                            <>{p?.label}</>
-                          </DS.Chip>
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </div>
-                </>
+                <StorefrontSearchPopular title={v.t?.popular} terms={list(v.popular)} />
               ) : null
             }
             results={
