@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontContactLayout} from '../app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx';
+import {StorefrontContactHeading} from '../app/organisms/StorefrontContactHeading/StorefrontContactHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -12,20 +13,12 @@ export function View({v}) {
         <>
           <StorefrontContactLayout
             heading={
-              <>
-                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.eb}</>
-                </div>
-                <h1>
-                  <>{v.t?.hA} </>
-                  <em className="vf-contact-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{v.t?.hB}</>
-                  </em>
-                </h1>
-                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                  <>{v.t?.hP}</>
-                </p>
-              </>
+              <StorefrontContactHeading
+                eyebrow={v.t?.eb}
+                title={v.t?.hA}
+                accent={v.t?.hB}
+                intro={v.t?.hP}
+              />
             }
             details={
               <>
