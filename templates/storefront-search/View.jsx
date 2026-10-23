@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontSearchLayout} from '../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
+import {StorefrontSearchHeading} from '../app/organisms/StorefrontSearchHeading/StorefrontSearchHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -12,11 +13,7 @@ export function View({v}) {
       content={
         <>
           <StorefrontSearchLayout
-            heading={
-              <h1 className="ag-display">
-                <>{v.t?.label}</>
-              </h1>
-            }
+            heading={<StorefrontSearchHeading title={v.t?.label} />}
             query={
               <DS.SearchField
                 id="vf-q"
