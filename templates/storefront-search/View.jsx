@@ -1,12 +1,12 @@
 // StorefrontSearch: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontSearchLayout} from '../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
 import {StorefrontSearchHeading} from '../app/organisms/StorefrontSearchHeading/StorefrontSearchHeading.jsx';
 import {StorefrontSearchControls} from '../app/organisms/StorefrontSearchControls/StorefrontSearchControls.jsx';
 import {StorefrontSearchPopular} from '../app/organisms/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
 import {StorefrontSearchResults} from '../app/organisms/StorefrontSearchResults/StorefrontSearchResults.jsx';
+import {StorefrontSearchEmpty} from '../app/organisms/StorefrontSearchEmpty/StorefrontSearchEmpty.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -40,27 +40,14 @@ export function View({v}) {
             }
             empty={
               v.noResults ? (
-                <>
-                  <div role="status">
-                    <>{v.countLabel}</>
-                  </div>
-                  <div className="tw:flex tw:flex-col tw:items-center tw:gap-4">
-                    <DS.EmptyState
-                      icon="search-x"
-                      title={v.t?.noneA}
-                      titleAccent={v.t?.noneB}
-                      body={v.t?.noneP}
-                    />
-                    <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                      <DS.Button variant="primary" onClick={v.clearSearch}>
-                        <>{v.t?.tryAgain}</>
-                      </DS.Button>
-                      <DS.Button variant="secondary" href={v.href?.shop}>
-                        <>{v.t?.browse}</>
-                      </DS.Button>
-                    </div>
-                  </div>
-                </>
+                <StorefrontSearchEmpty
+                  countLabel={v.countLabel}
+                  title={v.t?.noneA}
+                  accent={v.t?.noneB}
+                  body={v.t?.noneP}
+                  retry={{label: v.t?.tryAgain, onClick: v.clearSearch}}
+                  browse={{label: v.t?.browse, href: v.href?.shop}}
+                />
               ) : null
             }
           />

@@ -231,7 +231,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSearchControls now composes the query field, close link and responsive row.
    StorefrontSearchPopular now composes the popular-term eyebrow and chips.
    StorefrontSearchResults now composes count/status and linked product rows.
-   **Next stage: extract search-page empty state into a storefront organism.**
+   StorefrontSearchEmpty now composes zero-result status, messaging and recovery actions.
+   **Next stage: simplify search-page View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3598,6 +3599,39 @@ delta 1). Actual PNG bytes and difference bounds were checked; both differing pa
 tablet multiple-result state were viewed. No styles, baselines or tolerances changed. Full
 browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page empty state into a storefront organism.
+
+**One hundred and forty-seventh checkpoint verified:** extracted StorefrontSearchEmpty under
+`templates/app/organisms/` with explicit countLabel/title/accent/body, retry (label, onClick) and
+browse (label, href) props. It preserves the zero-result status/content siblings, search-x package
+EmptyState, centered content and wrapping action row, primary retry button and secondary shop link
+without adding a DOM wrapper. View retains no-result visibility/localized mapping and no longer
+imports DS directly. Search/shared logic retain matching, counts, query/URL/history updates,
+retry clearing/focus, reporting and navigation. Package EmptyState/Button retain heading/icon/action
+semantics; layout retains slot placement. No state, mutations or browser effects moved;
+ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 26 focused
+mobile/desktop browser tests pass with retries disabled: bilingual product exploration and return
+to filtered shop, query/language recovery and clearing without history churn, closing back to
+entered delivery details, clear/Escape behavior, and readable codes/prices at touch widths 320/390/768.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check no-result visibility, localized zero-count/status, h2/accent/body,
+decorative icon, primary retry and secondary localized shop link. Retry by touch or Enter/Space
+clears the query and focuses the searchbox. Reload preserves the no-result query; shop navigation/back
+without full reload restores it. Popular terms, multiple/exact-code results, product navigation,
+tablet rotation, containment and page-top axe pass. Main markup matches after sorting attributes,
+consistently mapping generated React Aria IDs and references, and normalizing local preview origins.
+The empty screenshot is taken after query reload; transition/recovery are checked separately.
+Initial probes exposed navigation-dependent heading tabindex/focus timing outside the extracted
+content; capture setup was corrected without changing application code or stripping focus attributes.
+Images are explicitly decoded and painted before capture.
+All eight empty-state screenshot pairs are byte-identical. Across all 32 pairs, 31 are byte-identical;
+the unchanged English TV-width single-result input corner differs by five pixels (maximum channel
+delta 1), with unchanged dimensions/layout. Actual PNG bytes and difference bounds were checked;
+the differing pair and Persian tablet empty state were viewed. No styles, baselines or tolerances
+changed. Full browser/device and TV spatial-navigation suites and assistive-technology testing
+were not run.
+Next: simplify search-page View composition.
 
 ## Adding components
 
