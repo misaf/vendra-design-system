@@ -13,3 +13,5 @@ StorefrontSavedRemovalNotice composes removal feedback and Undo. View retains re
 StorefrontSavedResults composes saved-product cards from explicit products/labels without a DOM wrapper. View retains results visibility/list normalization; saved/shared logic retain product descriptors, removal and focus. This layout retains the responsive grid.
 
 StorefrontSavedEmpty composes empty messaging and the primary shop link without a DOM wrapper. View retains empty visibility/localized mapping; saved/shared logic retain membership/removal/Undo. This layout retains centered empty placement and the notice outside it for recovery.
+
+Saved View passes this layout and results/empty organisms directly without single-child fragments. Visibility, localized descriptors, list normalization, callbacks and the empty Shell sticky-slot fragment remain unchanged.

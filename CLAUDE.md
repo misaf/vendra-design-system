@@ -184,6 +184,8 @@ StorefrontSavedResults composes product cards from explicit products/labels; Vie
 normalization, saved/shared logic retain descriptors/removal, and layout retains the product grid.
 StorefrontSavedEmpty composes empty messaging/shop link; View retains visibility/localized mapping,
 saved/shared logic retain list/removal state and layout keeps empty placement and notice recovery.
+Saved View composes its layout/results/empty elements directly; visibility, descriptors, list
+normalization and the empty sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
