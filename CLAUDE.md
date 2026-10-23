@@ -188,6 +188,8 @@ Saved View composes its layout/results/empty elements directly; visibility, desc
 normalization and the empty sticky-slot fragment remain unchanged.
 StorefrontSearchHeading composes the explicit localized title as the original display h1; View maps
 copy and search/shared logic retain query, matching, reporting, navigation and focus.
+StorefrontSearchControls composes the controlled search field/close link and responsive row from
+explicit query/close descriptors; View maps copy/callbacks and search/shared logic retain behavior.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic

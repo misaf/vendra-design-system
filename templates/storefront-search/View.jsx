@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontSearchLayout} from '../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
 import {StorefrontSearchHeading} from '../app/organisms/StorefrontSearchHeading/StorefrontSearchHeading.jsx';
+import {StorefrontSearchControls} from '../app/organisms/StorefrontSearchControls/StorefrontSearchControls.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -14,22 +15,15 @@ export function View({v}) {
         <>
           <StorefrontSearchLayout
             heading={<StorefrontSearchHeading title={v.t?.label} />}
-            query={
-              <DS.SearchField
-                id="vf-q"
-                label={v.t?.label}
-                placeholder={v.t?.ph}
-                value={v.q}
-                onChange={v.setQ}
-              />
-            }
-            close={
-              <DS.IconButton
-                icon="x"
-                label={v.t?.close}
-                variant="secondary"
-                className="tw:flex-none"
-                href={v.closeHref}
+            controls={
+              <StorefrontSearchControls
+                query={{
+                  label: v.t?.label,
+                  placeholder: v.t?.ph,
+                  value: v.q,
+                  onChange: v.setQ
+                }}
+                close={{label: v.t?.close, href: v.closeHref}}
               />
             }
             popular={
