@@ -19,3 +19,5 @@ StorefrontSigninPolicies composes the localized policy note and native terms/pri
 StorefrontSigninCompletion composes success feedback and ordinary/checkout continuation actions. View retains completion visibility and localized mapping; sign-in/shared logic retains customer naming, authentication/synchronization, branch eligibility, destinations and checkout callback. This layout retains the narrow wrapper and slot order.
 
 StorefrontSigninChangeNumber composes the controlled change-number button after resend controls. View retains code-step visibility and copy mapping; sign-in/shared logic retains the phone-step return, phone retention and code/resent reset.
+
+Sign-in View passes this layout directly to Shell and completion directly to its feedback slot. Multi-child phone/code fragments and the empty sticky-slot fragment remain; visibility expressions, descriptor mapping and slot/branch order are preserved.
