@@ -233,7 +233,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSearchResults now composes count/status and linked product rows.
    StorefrontSearchEmpty now composes zero-result status, messaging and recovery actions.
    Search View now passes its layout directly without a redundant fragment.
-   **Next stage: extract contact-page heading into a storefront organism.**
+   StorefrontContactHeading now composes the contact eyebrow, accented title and introduction.
+   **Next stage: extract contact-page studio details into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3660,6 +3661,28 @@ unchanged input corner (maximum channel delta 1). Actual PNG bytes and differenc
 checked and all differing pairs viewed. No styles, baselines or tolerances changed. Full
 browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract contact-page heading into a storefront organism.
+
+**One hundred and forty-ninth checkpoint verified:** extracted StorefrontContactHeading under
+`templates/app/organisms/` with explicit eyebrow/title/accent/intro props. It preserves the original
+eyebrow, spaced accented h1 and introduction as siblings with unchanged classes and no additional
+wrapper. View retains localized mapping; contact/shared logic retain customer prefill, validation,
+submission, map fallback, navigation and focus. Layout retains header placement/wrapper. No state,
+mutations or browser effects moved; ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass with retries disabled: studio map/directions, reply-channel
+validation and demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check one localized page h1, accent, eyebrow, introduction and direct
+DIV/H1/P header children across initial, invalid, demo-complete and return-to-form states. Error
+summary and message-link focus, completion-region focus, return-to-message focus and retained
+name/email/message drafts pass with touch or Enter/Space actions. The demo API is checked before
+completion; no message is sent. Tablet rotation, containment and page-top axe pass. Header markup
+matches without normalization.
+All 32 header screenshot pairs are byte-identical; actual PNG bytes were checked and the Persian
+tablet return-to-form heading viewed. No styles, baselines or tolerances changed. Full-page visual,
+full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract contact-page studio details into a storefront organism.
 
 ## Adding components
 
