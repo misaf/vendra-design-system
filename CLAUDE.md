@@ -180,6 +180,8 @@ StorefrontSavedHeading composes the h1 SectionHeader; View maps localized props 
 retain list counts, remove/Undo, persistence and focus.
 StorefrontSavedRemovalNotice composes removal feedback/Undo; View retains message visibility/mapping,
 saved/shared logic retain additive restoration/persistence/focus, and layout preserves empty-state recovery.
+StorefrontSavedResults composes product cards from explicit products/labels; View retains visibility/list
+normalization, saved/shared logic retain descriptors/removal, and layout retains the product grid.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
