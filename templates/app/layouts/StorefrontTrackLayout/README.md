@@ -9,3 +9,5 @@ Preserve classes, form submission semantics and focus targets. Verify lookup val
 StorefrontTrackLookup composes the native lookup form, heading, warning, controlled fields and submit/browse actions. View retains lookup visibility and localized mapping; tracking/shared logic retains drafts, validation/focus, normalization, number/mobile matching, failure state and matched-order navigation.
 
 StorefrontTrackHeading composes the order eyebrow, accented title and status introduction. View retains order visibility, localized mapping and the pending-payment notice; tracking logic retains order selection and status interpretation.
+
+StorefrontTrackPendingNotice composes the neutral clock-icon payment alert. View retains order/pending visibility and localized mapping; tracking logic retains payment/status eligibility, message selection and contact formatting.

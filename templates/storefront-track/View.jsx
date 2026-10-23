@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {StorefrontTrackLayout} from '../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
 import {StorefrontTrackHeading} from '../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
 import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
+import {StorefrontTrackPendingNotice} from '../app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -55,11 +56,7 @@ export function View({v}) {
                   />
                   {v.pending ? (
                     <>
-                      <div className="tw:max-w-measure">
-                        <DS.Alert tone="neutral" icon="clock" title={v.pendingTitle}>
-                          <>{v.pendingBody}</>
-                        </DS.Alert>
-                      </div>
+                      <StorefrontTrackPendingNotice title={v.pendingTitle} body={v.pendingBody} />
                     </>
                   ) : null}
                 </>
