@@ -163,6 +163,8 @@ StorefrontTrackProgress composes the timeline card; View retains visibility/mapp
 retains status/step interpretation and localized steps, and package OrderTimeline retains semantics.
 StorefrontTrackDeliveryPhoto composes the delivered photo figure; View retains visibility/copy,
 tracking logic selects the photo, and package ArchFrame retains image/fallback semantics.
+StorefrontTrackOrderDetails composes the sunken details card; View retains visibility/mapping,
+tracking/shared logic retain row formatting and package DetailList retains definition-list semantics.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty

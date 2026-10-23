@@ -7,6 +7,7 @@ import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/Stor
 import {StorefrontTrackPendingNotice} from '../app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx';
 import {StorefrontTrackProgress} from '../app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {StorefrontTrackDeliveryPhoto} from '../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
+import {StorefrontTrackOrderDetails} from '../app/organisms/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -84,9 +85,7 @@ export function View({v}) {
                       />
                     </>
                   ) : null}
-                  <DS.Card variant="sunken" padding={20}>
-                    <DS.DetailList rows={v.rows} />
-                  </DS.Card>
+                  <StorefrontTrackOrderDetails rows={v.rows} />
                   <div className="tw:flex tw:gap-3 tw:flex-wrap">
                     {v.waHref ? (
                       <DS.Button
