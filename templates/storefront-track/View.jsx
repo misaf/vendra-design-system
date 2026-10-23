@@ -1,6 +1,5 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {StorefrontTrackLayout} from '../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
 import {StorefrontTrackHeading} from '../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
 import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
@@ -10,6 +9,7 @@ import {StorefrontTrackDeliveryPhoto} from '../app/organisms/StorefrontTrackDeli
 import {StorefrontTrackOrderDetails} from '../app/organisms/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
 import {StorefrontTrackOrderActions} from '../app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
 import {StorefrontTrackOrderSummary} from '../app/organisms/StorefrontTrackOrderSummary/StorefrontTrackOrderSummary.jsx';
+import {StorefrontTrackReorderDialog} from '../app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -108,48 +108,28 @@ export function View({v}) {
               ) : null
             }
             feedback={
-              <DS.Dialog
+              <StorefrontTrackReorderDialog
                 open={v.reorderOpen}
                 onClose={v.closeReorder}
                 title={v.t.reorderTitle}
-                footer={
-                  <>
-                    <DS.Button variant="ghost" onClick={v.closeReorder}>
-                      {v.t.reorderCancel}
-                    </DS.Button>
-                    <DS.Button disabled={v.reorderEmpty} onClick={v.confirmReorder}>
-                      {v.reorderMode === 'add' ? v.t.reorderAdd : v.t.reorderReplace}
-                    </DS.Button>
-                  </>
-                }
-              >
-                {v.hasBag ? (
-                  <DS.RadioGroup
-                    legend={v.t.reorderChoose}
-                    value={v.reorderMode}
-                    onChange={v.setReorderMode}
-                  >
-                    <DS.Radio value="add" label={v.t.reorderAdd} description={v.t.reorderAddHint} />
-                    <DS.Radio
-                      value="replace"
-                      label={v.t.reorderReplace}
-                      description={v.t.reorderReplaceHint}
-                    />
-                  </DS.RadioGroup>
-                ) : (
-                  <p>{v.t.reorderIntro}</p>
-                )}
-                {v.reorderChanges.length > 0 && (
-                  <DS.Alert tone="warning">
-                    <ul>
-                      {v.reorderChanges.map((message, index) => (
-                        <li key={index}>{message}</li>
-                      ))}
-                    </ul>
-                  </DS.Alert>
-                )}
-                {v.reorderEmpty && <p>{v.t.reorderNone}</p>}
-              </DS.Dialog>
+                cancelLabel={v.t.reorderCancel}
+                confirm={{
+                  disabled: v.reorderEmpty,
+                  onClick: v.confirmReorder,
+                  label: v.reorderMode === 'add' ? v.t.reorderAdd : v.t.reorderReplace
+                }}
+                choice={{
+                  visible: v.hasBag,
+                  legend: v.t.reorderChoose,
+                  value: v.reorderMode,
+                  onChange: v.setReorderMode,
+                  add: {label: v.t.reorderAdd, description: v.t.reorderAddHint},
+                  replace: {label: v.t.reorderReplace, description: v.t.reorderReplaceHint}
+                }}
+                intro={v.t.reorderIntro}
+                changes={v.reorderChanges}
+                empty={{visible: v.reorderEmpty, message: v.t.reorderNone}}
+              />
             }
           />
         </>

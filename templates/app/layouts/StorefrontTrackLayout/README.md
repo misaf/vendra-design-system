@@ -21,3 +21,5 @@ StorefrontTrackOrderDetails composes the sunken details card. View retains order
 StorefrontTrackOrderActions composes contact, repeat-order and lookup controls. View retains order/contact visibility and localized descriptors; tracking/shared logic retain order-specific URLs, repeat-order review/bag changes and lookup reset/focus.
 
 StorefrontTrackOrderSummary composes the summary card. View retains order visibility and localized mapping; tracking/shared logic retain line/totals formatting. This layout retains responsive aside/sticky placement.
+
+StorefrontTrackReorderDialog composes the controlled repeat-order review. View maps localized descriptors; tracking/shared logic retain availability/price/stock reconciliation, mode, bag changes and navigation. Feedback remains outside main; package Dialog retains modal/focus semantics.

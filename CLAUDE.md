@@ -170,6 +170,8 @@ tracking/shared logic retain URLs, reorder/bag changes and lookup reset/focus.
 Known-order repeat review uses a button; standalone samples without a review callback retain the bag link.
 StorefrontTrackOrderSummary composes the summary card; View retains visibility/mapping, tracking/shared
 logic retain line/totals formatting and StorefrontTrackLayout retains the responsive sticky aside.
+StorefrontTrackReorderDialog composes controlled review choices/notices/actions; View maps descriptors,
+tracking/shared logic retain reconciliation/mode/bag changes, and package Dialog retains modal focus.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty

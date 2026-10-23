@@ -220,7 +220,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackOrderActions now composes contact, repeat-order and lookup actions.
    Known-order repeat review now uses a button for keyboard/pointer parity.
    StorefrontTrackOrderSummary now composes the tracking summary card.
-   **Next stage: extract tracking repeat-order review dialog into a storefront organism.**
+   StorefrontTrackReorderDialog now composes the controlled repeat-order review.
+   **Next stage: simplify tracking View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3312,6 +3313,36 @@ discounted/tall summary screenshot pairs are byte-identical; actual PNG bytes we
 Persian phone discounted capture viewed. No baselines or tolerances changed. The full browser/device
 and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract tracking repeat-order review dialog into a storefront organism.
+
+**One hundred and thirty-sixth checkpoint verified:** extracted StorefrontTrackReorderDialog
+under `templates/app/organisms/` with explicit open/onClose/title/cancelLabel, confirm/choice,
+intro/changes/empty descriptors. It preserves the package Dialog/footer, ghost cancel and controlled
+confirmation button, add/replace RadioGroup, no-bag intro, warning list and unavailable-order message.
+View maps localized copy, visibility, selection and confirmation descriptors and no longer imports
+DS directly. Tracking/shared logic retain open/mode state, availability/price/stock reconciliation,
+warning generation, bag mutations, analytics and navigation. Package Dialog/RadioGroup retain modal,
+focus and selection semantics; layout feedback remains outside main. No state, reconciliation or
+browser effects moved. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass with retries disabled: guest lookup, bilingual older-order reload,
+pending card-payment tracking, pointer review/replacement and keyboard review/cancellation/
+confirmation with bag preservation. Eight paired previous/current probes exercise English/Persian
+at touch widths 390/768, desktop 1280 and TV width 1920. They verify modal naming, initial add mode,
+add/replace radio selection and confirmation labels, price/stock/unavailable warnings, cancellation
+without bag changes, opener focus, reset to add on reopening, no-radio empty-bag intro and explicit
+replacement confirmation with repriced available items. Fully unavailable orders show their message
+and disable confirmation; Escape, focus containment, tablet rotation, overflow and axe pass.
+Modal markup matches after normalizing React Aria's random ID prefix and local preview origin.
+The initial touch probe targeted the input covered by the radio label; it was corrected to tap the
+visible label and to use the exact maintained Persian title. No application change was needed.
+Full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+
+Of 32 changed-add/changed-replace/empty-bag/unavailable screenshot pairs, 30 are byte-identical.
+English and Persian tablet changed-replace captures differ at 107 pixels each, with maximum channel
+delta 2/255 and equal dimensions/markup. Actual PNG bytes/pixels were checked and both differing
+pairs viewed without a visible layout shift. No baselines or tolerances changed.
+Next: simplify tracking View composition.
 
 ## Adding components
 
