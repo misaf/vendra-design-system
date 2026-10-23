@@ -215,7 +215,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackHeading now composes the order eyebrow, accented title and status introduction.
    StorefrontTrackPendingNotice now composes the pending-payment alert.
    StorefrontTrackProgress now composes the tracking timeline card.
-   **Next stage: extract tracking delivery photo into a storefront organism.**
+   StorefrontTrackDeliveryPhoto now composes the delivered-order photo figure.
+   **Next stage: extract tracking order details into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3168,6 +3169,30 @@ Persian phone preparing and English TV-width on-the-way captures differ at 5 and
 with maximum channel delta 1 out of 255 and equal dimensions/markup. Actual PNG bytes/pixels were
 checked and both differing pairs viewed without a visible layout shift. No baselines or tolerances
 changed. Next: extract tracking delivery photo into a storefront organism.
+
+**One hundred and thirty-first checkpoint verified:** extracted StorefrontTrackDeliveryPhoto
+under `templates/app/organisms/` with explicit src/placeholderLabel/alt/caption props. It preserves
+the figure/frame/caption classes, semantic figcaption and package ArchFrame with 4/5 ratio, soft
+shape and product tone, without adding a wrapper. View retains order/delivered visibility and
+localized mapping; tracking logic retains status interpretation and photo selection. Package
+ArchFrame/Picture retain image loading and missing-source placeholder semantics. No state, rules or
+browser effects moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup and heading focus, bilingual
+older-order reload, pending card-payment tracking and bilingual repeat-order review/bag preservation.
+Eight paired previous-commit/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. They check missing-source placeholders, loaded URL photos, responsive
+image objects and failed images using local intercepted fixtures. Localized alt/caption, figure
+position between timeline/details cards, 4/5 soft/product frame, srcSet/dimensions, decoded images and
+failed-image behavior match. Missing sources use the labeled placeholder; failed sources retain the
+existing failed img/alt behavior and do not switch to that placeholder. The photo is absent for
+received/preparing/on-the-way/cancelled/refunded orders and after returning to lookup, which focuses
+the order-number field. Tablet rotation, document containment and page-top axe pass. Figure markup
+matches after normalizing React Aria's random per-page ID prefix. All 32 screenshot pairs are
+byte-identical; actual PNG bytes were checked. No baselines or tolerances changed. The full browser/
+device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract tracking order details into a storefront organism.
 
 ## Adding components
 

@@ -161,6 +161,8 @@ StorefrontTrackPendingNotice composes the neutral payment alert; View retains or
 and mapping, and tracking logic retains eligibility, localized messages and payment/contact formatting.
 StorefrontTrackProgress composes the timeline card; View retains visibility/mapping, tracking logic
 retains status/step interpretation and localized steps, and package OrderTimeline retains semantics.
+StorefrontTrackDeliveryPhoto composes the delivered photo figure; View retains visibility/copy,
+tracking logic selects the photo, and package ArchFrame retains image/fallback semantics.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
