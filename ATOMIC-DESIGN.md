@@ -209,7 +209,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninResend now composes countdown/action and resend status.
    StorefrontSigninPolicies now composes the localized terms/privacy note.
    StorefrontSigninCompletion now composes success feedback and continuation actions.
-   **Next stage: extract sign-in change-number action into a storefront organism.**
+   StorefrontSigninChangeNumber now composes the controlled return-to-phone action.
+   **Next stage: simplify sign-in View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3001,6 +3002,35 @@ maximum channel delta of 2 out of 255 and equal dimensions/markup. Actual PNG by
 checked and both pairs viewed without a visible layout shift. English phone ordinary, Persian phone
 checkout and Persian tablet checkout-actions captures were also viewed.
 Next: extract sign-in change-number action into a storefront organism.
+
+**One hundred and twenty-fifth checkpoint verified:** StorefrontSigninChangeNumber is extracted
+under `templates/app/organisms/` with an explicit label and callback. It preserves the ghost Button,
+leading arrow-left icon and label fragment without adding a wrapper. View retains code-step
+visibility, localized copy and placement after resend controls. Sign-in/shared logic retains the
+phone-step return, phone retention and code/resent reset; package Button retains semantics and
+activation. No state, effects, browser APIs or sign-in rules moved. The now-unused package-component
+import is removed from sign-in View. Parent/code-control ownership and edit-location documentation
+are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, resend countdown,
+simulated Android SMS autofill/completion, phone validation/focus and policy links. Eight paired
+baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920.
+They check button name/type/variant, placement after resend controls, touch/Enter/Space activation
+from partial, invalid and resent code states, Latin/Persian phone retention, code/resend-feedback
+reset and restarted wait on reentry. Both baseline and extraction preserve the existing invalid-code
+flag after changing the number and reentering code entry; editing the code clears that flag. This
+behavior is verified unchanged, not claimed fixed. Demo completion hides the action and preserves
+same-document checkout continuation. Tablet rotation, document overflow and page-top axe pass.
+Action markup matches after normalizing React Aria's random per-page ID prefix. Custom probes stub
+native credential retrieval and use local demo sign-in logic. Full browser/device and TV spatial-arrow
+navigation suites and assistive-technology testing were not run in this stage; earlier baseline
+accessibility/zone-hint limitations remain documented. No baselines or tolerances changed.
+
+All eight paired probes pass. All 24 partial/invalid/resent action screenshot pairs are byte-identical,
+verified against actual PNG bytes. English phone partial, Persian phone invalid, Persian tablet
+resent, English desktop invalid and Persian TV partial captures were viewed.
+Next: simplify sign-in View composition.
 
 ## Adding components
 
