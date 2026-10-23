@@ -196,6 +196,8 @@ StorefrontSearchResults composes count/status and product rows; View retains vis
 list normalization and search/shared logic retain matching, descriptors and navigation.
 StorefrontSearchEmpty composes zero-result status, messaging and retry/shop actions; View retains
 visibility/localized mapping and search/shared logic retain query clearing, focus and navigation.
+Search View passes its layout directly; visibility, descriptors, callbacks, list normalization and
+the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
