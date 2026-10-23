@@ -147,6 +147,8 @@ StorefrontSigninPolicies composes localized text and native policy links;
 View retains visibility/mapping; shared logic/router retains destinations, navigation and history.
 StorefrontSigninCompletion composes success feedback and controlled continuation branches;
 View retains visibility/mapping; sign-in/shared logic retains naming, eligibility, authentication and checkout callback.
+StorefrontSigninChangeNumber composes the controlled change-number button;
+View retains code-step visibility/copy; sign-in/shared logic retains phone retention and code/resent reset.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled

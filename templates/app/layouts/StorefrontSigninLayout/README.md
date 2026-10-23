@@ -10,10 +10,12 @@ StorefrontSigninHeading composes the phone/code h1/accent and introduction from 
 
 StorefrontSigninPhoneControls composes the controlled phone input, summary and send action. View retains phone-step visibility, localized descriptors and heading; StorefrontSigninPolicies retains the policy note; sign-in/shared logic retains validation, focus, phone state and code-step transitions. This layout retains the wrapper and slot order.
 
-StorefrontSigninCodeControls composes the controlled five-digit code input, summary and verify action. View retains code-step visibility, localized descriptors, heading, resend and change-number action; sign-in/shared logic retains validation, focus, verification and continuation. Package CodeInput retains digit cleaning, completion and Web OTP effects.
+StorefrontSigninCodeControls composes the controlled five-digit code input, summary and verify action. View retains code-step visibility, localized descriptors and heading; StorefrontSigninResend/StorefrontSigninChangeNumber retain their controls; sign-in/shared logic retains validation, focus, verification and continuation. Package CodeInput retains digit cleaning, completion and Web OTP effects.
 
 StorefrontSigninResend composes the countdown/action and application resend status. View retains code-step visibility and mapping; package ResendCode retains timing, visibility updates, cleanup, announcements and tracking. Sign-in/shared logic retains wait configuration, code/error reset, feedback state and code-field focus.
 
 StorefrontSigninPolicies composes the localized policy note and native terms/privacy links. View retains phone-step visibility and mapping; sign-in/shared logic retains destinations and the shared shell/router retains navigation, history and focus behavior.
 
 StorefrontSigninCompletion composes success feedback and ordinary/checkout continuation actions. View retains completion visibility and localized mapping; sign-in/shared logic retains customer naming, authentication/synchronization, branch eligibility, destinations and checkout callback. This layout retains the narrow wrapper and slot order.
+
+StorefrontSigninChangeNumber composes the controlled change-number button after resend controls. View retains code-step visibility and copy mapping; sign-in/shared logic retains the phone-step return, phone retention and code/resent reset.

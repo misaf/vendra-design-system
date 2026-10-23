@@ -1,6 +1,5 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {StorefrontSigninLayout} from '../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {StorefrontSigninHeading} from '../app/organisms/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
 import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
@@ -8,6 +7,7 @@ import {StorefrontSigninCodeControls} from '../app/organisms/StorefrontSigninCod
 import {StorefrontSigninResend} from '../app/organisms/StorefrontSigninResend/StorefrontSigninResend.jsx';
 import {StorefrontSigninPolicies} from '../app/organisms/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
 import {StorefrontSigninCompletion} from '../app/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx';
+import {StorefrontSigninChangeNumber} from '../app/organisms/StorefrontSigninChangeNumber/StorefrontSigninChangeNumber.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -62,9 +62,7 @@ export function View({v}) {
                     onResend={v.resend}
                     resentText={v.resentText}
                   />
-                  <DS.Button variant="ghost" iconStart="arrow-left" onClick={v.back}>
-                    <>{v.t?.change}</>
-                  </DS.Button>
+                  <StorefrontSigninChangeNumber label={v.t?.change} onChangeNumber={v.back} />
                 </>
               ) : null
             }
