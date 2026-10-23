@@ -145,6 +145,8 @@ StorefrontSigninResend composes the package resend control and application statu
 View retains visibility/mapping; package ResendCode retains timing and sign-in logic retains reset/focus.
 StorefrontSigninPolicies composes localized text and native policy links;
 View retains visibility/mapping; shared logic/router retains destinations, navigation and history.
+StorefrontSigninCompletion composes success feedback and controlled continuation branches;
+View retains visibility/mapping; sign-in/shared logic retains naming, eligibility, authentication and checkout callback.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
