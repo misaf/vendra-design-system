@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontSavedLayout} from '../app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
 import {StorefrontSavedHeading} from '../app/organisms/StorefrontSavedHeading/StorefrontSavedHeading.jsx';
 import {StorefrontSavedRemovalNotice} from '../app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
+import {StorefrontSavedResults} from '../app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -30,25 +31,10 @@ export function View({v}) {
             results={
               v.hasItems ? (
                 <>
-                  {list(v.items).map((p, $index) => (
-                    <React.Fragment key={$index}>
-                      <DS.ProductCard
-                        images={p?.images}
-                        name={p?.name}
-                        subtitle={p?.sub}
-                        price={p?.price}
-                        stock={p?.stock}
-                        badge={p?.badge}
-                        badgeTone="accent"
-                        frame="soft"
-                        placeholder={v.t?.photo}
-                        favLabel={v.t?.unsave}
-                        favorite={true}
-                        onFavorite={p?.remove}
-                        href={p?.href}
-                      />
-                    </React.Fragment>
-                  ))}
+                  <StorefrontSavedResults
+                    products={list(v.items)}
+                    labels={{photo: v.t?.photo, unsave: v.t?.unsave}}
+                  />
                 </>
               ) : null
             }

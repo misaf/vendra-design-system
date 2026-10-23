@@ -224,7 +224,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Tracking View now passes layout/lookup/notice/photo/summary elements directly without redundant fragments.
    StorefrontSavedHeading now composes the saved-page count and accented heading.
    StorefrontSavedRemovalNotice now composes removal feedback and Undo.
-   **Next stage: extract saved-page product results into a storefront organism.**
+   StorefrontSavedResults now composes saved-product cards within the layout grid.
+   **Next stage: extract saved-page empty state into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3421,6 +3422,30 @@ All 32 first/second/final-removal/other-change screenshot pairs are byte-identic
 were checked and the Persian phone final-removal notice viewed. No baselines or tolerances changed.
 Full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract saved-page product results into a storefront organism.
+
+**One hundred and fortieth checkpoint verified:** extracted StorefrontSavedResults under
+`templates/app/organisms/` with explicit products and photo/unsave labels. It preserves product
+order and indexed fragment keys, card images/name/subtitle/price/stock/badge, accent badge tone,
+soft frame, favorite state, removal callback and product href without adding a DOM wrapper.
+View retains results visibility, list normalization and localized mapping; saved/shared logic retain
+selection/descriptors, saved membership, pricing, remove/Undo, persistence and focus. Package
+ProductCard retains image/link/favorite semantics and layout retains the responsive grid. No state,
+mutations or browser effects moved. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass with retries disabled: bilingual additive removal/Undo and initial
+saved-list loading integrity, account/saved-page synchronization and product-to-saved-list updates.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify direct grid/card children, product ordering, soft media frames,
+subtitles/prices, accent badges, product hrefs and pressed favorite actions. Removal focuses Undo;
+restoration preserves prior removals and focuses the restored favorite. Product navigation/history,
+reload persistence, final-item empty recovery, tablet rotation, containment and page-top axe pass.
+Grid markup matches after normalizing React Aria's random ID prefix and local preview origins.
+Images are explicitly decoded and painted before capture. All 32 three/two/one/Undo grid screenshot
+pairs are byte-identical; actual PNG bytes were checked and the Persian phone two-product grid viewed.
+No baselines or tolerances changed. Full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract saved-page empty state into a storefront organism.
 
 ## Adding components
 
