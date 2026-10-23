@@ -213,7 +213,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Sign-in View now passes layout/completion elements directly without redundant fragments.
    StorefrontTrackLookup now composes the controlled order-number/mobile lookup form.
    StorefrontTrackHeading now composes the order eyebrow, accented title and status introduction.
-   **Next stage: extract tracking pending-payment notice into a storefront organism.**
+   StorefrontTrackPendingNotice now composes the pending-payment alert.
+   **Next stage: extract tracking progress timeline into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3119,6 +3120,27 @@ All eight paired functional probes pass. All 56 header screenshot pairs across f
 and two pending-payment methods are byte-identical to the previous commit. Actual PNG bytes were
 checked; no screenshot baselines or tolerances changed.
 Next: extract tracking pending-payment notice into a storefront organism.
+
+**One hundred and twenty-ninth checkpoint verified:** extracted StorefrontTrackPendingNotice
+under `templates/app/organisms/` with explicit title/body props. It preserves the measure-width
+wrapper, neutral package Alert, clock icon, status semantics and message body without adding markup.
+View retains order/pending visibility and localized mapping; tracking logic retains payment-method/
+status eligibility, localized message selection, last-four/contact formatting and bidi isolation.
+No state, rules or browser effects moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup and heading focus, bilingual
+older-order reload, pending card-payment tracking and bilingual repeat-order review/bag preservation.
+Eight paired previous-commit/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. They verify neutral status/title/body markup, card last-four and
+sender contact, recipient-phone fallback/default card method, bidi isolates, WhatsApp copy without
+card details, absence for other methods and later/cancelled/refunded statuses, and restoration on
+returning to pending WhatsApp. Track-another removes the order header and focuses the lookup field.
+Tablet rotation, document containment and page-top axe pass. Header markup matches after normalizing
+React Aria's random per-page ID prefix. All 32 card/WhatsApp/fallback/confirmed header screenshot
+pairs are byte-identical to the previous commit; actual PNG bytes were checked. No baselines or
+tolerances changed. The full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run. Next: extract tracking progress timeline into a storefront organism.
 
 ## Adding components
 

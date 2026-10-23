@@ -157,6 +157,8 @@ StorefrontTrackLookup composes controlled lookup fields, heading, failure and su
 View retains visibility/mapping; tracking/shared logic retains validation, normalization, matching and focus.
 StorefrontTrackHeading composes the tracking order eyebrow, accented title and status introduction;
 View retains visibility and mapping, and tracking logic retains status/payment interpretation.
+StorefrontTrackPendingNotice composes the neutral payment alert; View retains order/pending visibility
+and mapping, and tracking logic retains eligibility, localized messages and payment/contact formatting.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
