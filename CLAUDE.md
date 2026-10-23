@@ -192,6 +192,8 @@ StorefrontSearchControls composes the controlled search field/close link and res
 explicit query/close descriptors; View maps copy/callbacks and search/shared logic retain behavior.
 StorefrontSearchPopular composes title/term chips; View retains visibility/list normalization and
 search/shared logic retain term descriptors, query updates and reporting.
+StorefrontSearchResults composes count/status and product rows; View retains visibility/count mapping/
+list normalization and search/shared logic retain matching, descriptors and navigation.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
