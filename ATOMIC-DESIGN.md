@@ -223,7 +223,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackReorderDialog now composes the controlled repeat-order review.
    Tracking View now passes layout/lookup/notice/photo/summary elements directly without redundant fragments.
    StorefrontSavedHeading now composes the saved-page count and accented heading.
-   **Next stage: extract saved-page removal notice into a storefront organism.**
+   StorefrontSavedRemovalNotice now composes removal feedback and Undo.
+   **Next stage: extract saved-page product results into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3394,6 +3395,32 @@ screenshot pairs are byte-identical; actual PNG bytes were checked and the Persi
 capture viewed. No baselines or tolerances changed. The full browser/device and TV spatial-navigation
 suites and assistive-technology testing were not run.
 Next: extract saved-page removal notice into a storefront organism.
+
+**One hundred and thirty-ninth checkpoint verified:** extracted StorefrontSavedRemovalNotice
+under `templates/app/organisms/` with explicit message and Undo label/callback props. It preserves
+the notice wrapper, package Alert title/action slot, secondary Undo button, vf-saved-undo ID and
+keep-focus attribute without adding markup. View retains removed-message visibility and localized
+mapping; saved/shared logic retain last-removed state, additive restoration, persistence,
+synchronization and focus. Package Alert/Button retain status/action semantics; layout keeps the
+notice outside results/empty groups for final-item recovery. No state, mutations or browser effects
+moved. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass with retries disabled: bilingual additive removal/Undo and initial
+saved-list loading integrity, account/saved-page synchronization and product-to-saved-list updates.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial absence, localized notice copy including product-code bidi
+isolates, neutral status semantics, one Undo ID/keep-focus attribute, button variant and focus after
+each removal. Final-item recovery remains before the empty group. A new saved item added while Undo
+is pending survives restoration of only the last removed item; earlier removals remain removed.
+Notice clearing, restored favorite-button focus, reload persistence, same-document activation,
+tablet rotation, containment and page-top axe pass. Notice markup matches after normalizing React
+Aria's random ID prefix. The initial custom probe expected plain product codes; its expectation was
+corrected to include the existing bidi isolates, without an application change.
+All 32 first/second/final-removal/other-change screenshot pairs are byte-identical; actual PNG bytes
+were checked and the Persian phone final-removal notice viewed. No baselines or tolerances changed.
+Full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract saved-page product results into a storefront organism.
 
 ## Adding components
 
