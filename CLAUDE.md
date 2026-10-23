@@ -153,6 +153,8 @@ Sign-in View passes layout/completion elements directly; multi-child phone/code 
 the empty sticky-slot fragment remain, with existing conditions and mappings preserved.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
+StorefrontTrackLookup composes controlled lookup fields, heading, failure and submit/browse actions;
+View retains visibility/mapping; tracking/shared logic retains validation, normalization, matching and focus.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty

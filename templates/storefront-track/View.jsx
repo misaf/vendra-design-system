@@ -2,6 +2,7 @@
 import React from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontTrackLayout} from '../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
+import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -15,63 +16,30 @@ export function View({v}) {
             lookup={
               v.noOrder ? (
                 <>
-                  <form
-                    className="vf-track-lookup tw:flex tw:flex-col tw:gap-5 tw:max-w-form tw:mx-auto"
+                  <StorefrontTrackLookup
+                    heading={{
+                      title: v.t?.lookup?.titleA,
+                      accent: v.t?.lookup?.titleB,
+                      intro: v.t?.lookup?.intro
+                    }}
+                    failure={{visible: v.lookupFailed, message: v.t?.lookup?.failed}}
+                    orderId={{
+                      label: v.t?.lookup?.id,
+                      hint: v.t?.lookup?.idHint,
+                      value: v.lookupId,
+                      onChange: v.setLookupId,
+                      error: v.lookupIdError
+                    }}
+                    phone={{
+                      label: v.t?.lookup?.phone,
+                      value: v.lookupPhone,
+                      onChange: v.setLookupPhone,
+                      error: v.lookupPhoneError
+                    }}
                     onSubmit={v.findOrder}
-                    noValidate
-                  >
-                    <h1>
-                      <>{v.t?.lookup?.titleA} </>
-                      <em className="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                        <>{v.t?.lookup?.titleB}</>
-                      </em>
-                    </h1>
-                    <p className="tw:text-secondary tw:m-0 tw:text-md tw:leading-body tw:text-pretty">
-                      <>{v.t?.lookup?.intro}</>
-                    </p>
-                    {v.lookupFailed ? (
-                      <>
-                        <div id="vf-lookup-failed" tabIndex={-1}>
-                          <DS.Alert tone="warning">
-                            <>{v.t?.lookup?.failed}</>
-                          </DS.Alert>
-                        </div>
-                      </>
-                    ) : null}
-                    <DS.Input
-                      id="vf-lookup-id"
-                      label={v.t?.lookup?.id}
-                      hint={v.t?.lookup?.idHint}
-                      value={v.lookupId}
-                      onChange={v.setLookupId}
-                      error={v.lookupIdError}
-                      required={true}
-                      dir="ltr"
-                      autoComplete="off"
-                      autoCapitalize="characters"
-                    />
-                    <DS.PhoneInput
-                      id="vf-lookup-phone"
-                      label={v.t?.lookup?.phone}
-                      value={v.lookupPhone}
-                      onChange={v.setLookupPhone}
-                      error={v.lookupPhoneError}
-                      required={true}
-                      placeholder="0912 000 0000"
-                    />
-                    <DS.Button
-                      variant="primary"
-                      size="lg"
-                      block={true}
-                      type="submit"
-                      iconStart="package-search"
-                    >
-                      <>{v.t?.lookup?.submit}</>
-                    </DS.Button>
-                    <DS.Button variant="ghost" href={v.href?.shop}>
-                      <>{v.t?.browse}</>
-                    </DS.Button>
-                  </form>
+                    submitLabel={v.t?.lookup?.submit}
+                    browse={{href: v.href?.shop, label: v.t?.browse}}
+                  />
                 </>
               ) : null
             }
