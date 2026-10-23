@@ -230,7 +230,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Search heading now composes its localized h1 through StorefrontSearchHeading.
    StorefrontSearchControls now composes the query field, close link and responsive row.
    StorefrontSearchPopular now composes the popular-term eyebrow and chips.
-   **Next stage: extract search-page results into a storefront organism.**
+   StorefrontSearchResults now composes count/status and linked product rows.
+   **Next stage: extract search-page empty state into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3566,6 +3567,37 @@ All 32 screenshot pairs are byte-identical; actual PNG bytes were checked and th
 popular state viewed. No styles, baselines or tolerances changed. Full browser/device and TV
 spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page results into a storefront organism.
+
+**One hundred and forty-sixth checkpoint verified:** extracted StorefrontSearchResults under
+`templates/app/organisms/` with explicit countLabel and normalized result descriptors. It preserves
+the count/status, result order, indexed fragment keys, product hrefs, soft thumbnail frames,
+image alt/sizes, LTR product codes, localized subtitles, prices and responsive classes without
+adding a DOM wrapper. View retains results visibility, count mapping and list normalization;
+search/shared logic retain matching, image/link/subtitle/price descriptors, query and language
+URL/history state, reporting, navigation and focus. Package ArchFrame/Price retain media and price
+rendering; layout retains slot placement. No state, mutations or browser effects moved;
+ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 26 focused
+mobile/desktop browser tests pass with retries disabled: bilingual product exploration and return
+to filtered shop, query/language recovery and clearing without history churn, closing back to
+entered delivery details, clear/Escape behavior, and readable codes/prices at touch widths 320/390/768.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Popular, picked-term multiple results, exact-code single results and empty states
+preserve localized headings/searchbox names, count/status semantics, LTR codes, product hrefs,
+soft thumbnail frames/sizes, subtitles and prices. Every popular term preserves query/URL updates
+without history churn or full reload and Escape focus recovery. Product links navigate by touch or
+Enter; query recovery after reload/product history, empty recovery focus, tablet rotation,
+containment and page-top axe pass. Main markup matches after sorting attributes, consistently
+mapping generated React Aria IDs and their references, and normalizing local preview origins.
+Images are explicitly decoded and painted before capture.
+All 32 screenshot pairs preserve dimensions and layout; 30 are byte-identical. The Persian tablet
+empty state's unchanged close outline differs by 31 pixels (maximum channel delta 2), and the
+English TV-width single-result state's unchanged input corner differs by five pixels (maximum
+delta 1). Actual PNG bytes and difference bounds were checked; both differing pairs and the Persian
+tablet multiple-result state were viewed. No styles, baselines or tolerances changed. Full
+browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract search-page empty state into a storefront organism.
 
 ## Adding components
 
