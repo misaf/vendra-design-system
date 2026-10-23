@@ -2,7 +2,7 @@
 
 Sign-in Atomic Design template with React-node slots for the phone step, code step and feedback/continuation state. It owns the main focus target and narrow form wrapper, preserving the existing classes and slot order.
 
-The View conditionally constructs each step and retains continuation controls. Sign-in logic retains validation, countdown configuration, code handling, customer synchronization, authentication and checkout return. This layout owns no data, callbacks, persistence or browser effects.
+The View conditionally composes each step and maps organism descriptors. Sign-in logic retains validation, countdown configuration, code handling, customer synchronization, authentication and checkout return. This layout owns no data, callbacks, persistence or browser effects.
 
 Verify invalid phone/code focus, code completion and SMS autofill, resend timing, phone-step return, checkout continuation, customer isolation, hydration and English/Persian responsive layouts.
 
@@ -15,3 +15,5 @@ StorefrontSigninCodeControls composes the controlled five-digit code input, summ
 StorefrontSigninResend composes the countdown/action and application resend status. View retains code-step visibility and mapping; package ResendCode retains timing, visibility updates, cleanup, announcements and tracking. Sign-in/shared logic retains wait configuration, code/error reset, feedback state and code-field focus.
 
 StorefrontSigninPolicies composes the localized policy note and native terms/privacy links. View retains phone-step visibility and mapping; sign-in/shared logic retains destinations and the shared shell/router retains navigation, history and focus behavior.
+
+StorefrontSigninCompletion composes success feedback and ordinary/checkout continuation actions. View retains completion visibility and localized mapping; sign-in/shared logic retains customer naming, authentication/synchronization, branch eligibility, destinations and checkout callback. This layout retains the narrow wrapper and slot order.

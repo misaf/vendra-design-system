@@ -208,7 +208,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninCodeControls now composes the code summary, input and verify action.
    StorefrontSigninResend now composes countdown/action and resend status.
    StorefrontSigninPolicies now composes the localized terms/privacy note.
-   **Next stage: extract sign-in completion into a storefront organism.**
+   StorefrontSigninCompletion now composes success feedback and continuation actions.
+   **Next stage: extract sign-in change-number action into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -2969,6 +2970,37 @@ All eight paired probes pass with identical policy-note markup. All 24 initial/i
 screenshot pairs are byte-identical, verified against actual PNG bytes. English phone initial,
 Persian phone invalid, Persian tablet back, English desktop initial and Persian TV initial captures
 were viewed. Next: extract sign-in completion into a storefront organism.
+
+**One hundred and twenty-fourth checkpoint verified:** StorefrontSigninCompletion is extracted
+under `templates/app/organisms/` with explicit title/accent/body, independent checkout/non-checkout
+flags and checkout/account descriptors. It preserves check/accent EmptyState feedback with h1,
+the action wrapper/classes, conditional branch order, primary checkout link with trailing arrow-right,
+ghost account alternative and ordinary primary account link. It returns a fragment without adding
+a wrapper. View retains completion visibility and localized mapping; sign-in/shared logic retains
+customer naming, authentication/synchronization, eligibility, destinations and checkout callback.
+Shared shell/router and package components retain navigation/focus and semantics. No state, effects,
+browser APIs or sign-in rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All ten focused
+mobile/desktop browser tests pass without retries: checkout sign-in/return, bilingual guest-draft
+continuation/customer isolation, simulated Android SMS autofill/completion and phone validation.
+Eight paired baseline/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV 1920. Each checks ordinary/default-name and checkout/named completion, a single h1 with accent,
+check/accent icon, hidden phone/code fields, action counts/order/variants/hrefs, authenticated account
+access from both action branches, ordinary account reload and same-document account/checkout
+navigation. Tablet rotation, document overflow and page-top axe pass. Completion markup matches
+after normalizing React Aria's random per-page ID prefix. Actions use touch, Enter or Space as
+appropriate; custom probes stub native credential retrieval and use local demo sign-in logic.
+Full browser/device and TV spatial-arrow navigation suites and assistive-technology announcement
+testing were not run in this stage; earlier baseline accessibility/zone-hint limitations remain
+documented. No baselines or tolerances changed.
+
+All eight functional paired probes pass. Of 32 ordinary/checkout completion/action screenshot pairs,
+30 are byte-identical. English TV ordinary and Persian TV checkout each differ at 15 pixels with a
+maximum channel delta of 2 out of 255 and equal dimensions/markup. Actual PNG bytes/pixels were
+checked and both pairs viewed without a visible layout shift. English phone ordinary, Persian phone
+checkout and Persian tablet checkout-actions captures were also viewed.
+Next: extract sign-in change-number action into a storefront organism.
 
 ## Adding components
 

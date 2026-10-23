@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Sign-in completion | `app/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx` (explicit feedback/flags/link descriptors; eligibility and checkout continuation remain in logic) |
 | Sign-in policy links | `app/organisms/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx` (explicit text and terms/privacy descriptors; destinations and navigation retain their shared owners) |
 | Sign-in resend controls | `app/organisms/StorefrontSigninResend/StorefrontSigninResend.jsx` (explicit seconds/callback/status; package timing and sign-in reset/focus retain their owners) |
 | Sign-in code controls | `app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx` (explicit problems/code/verify descriptors; validation and verification remain in logic) |

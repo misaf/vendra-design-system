@@ -7,6 +7,7 @@ import {StorefrontSigninPhoneControls} from '../app/organisms/StorefrontSigninPh
 import {StorefrontSigninCodeControls} from '../app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
 import {StorefrontSigninResend} from '../app/organisms/StorefrontSigninResend/StorefrontSigninResend.jsx';
 import {StorefrontSigninPolicies} from '../app/organisms/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
+import {StorefrontSigninCompletion} from '../app/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -70,38 +71,19 @@ export function View({v}) {
             feedback={
               v.isOk ? (
                 <>
-                  <DS.EmptyState
-                    icon="check"
-                    tone="accent"
+                  <StorefrontSigninCompletion
                     title={v.t?.okA}
-                    titleAccent={v.okName}
+                    accent={v.okName}
                     body={v.t?.okP}
-                    headingLevel={1}
+                    fromCheckout={v.fromCheckout}
+                    notFromCheckout={v.notFromCheckout}
+                    checkout={{
+                      href: v.checkoutHref,
+                      onClick: v.backToCheckout,
+                      label: v.t?.backToCheckout
+                    }}
+                    account={{href: v.href?.account, label: v.t?.toAccount}}
                   />
-                  <div className="tw:flex tw:justify-center tw:gap-3 tw:flex-wrap">
-                    {v.fromCheckout ? (
-                      <>
-                        <DS.Button
-                          variant="primary"
-                          iconEnd="arrow-right"
-                          href={v.checkoutHref}
-                          onClick={v.backToCheckout}
-                        >
-                          <>{v.t?.backToCheckout}</>
-                        </DS.Button>
-                        <DS.Button variant="ghost" href={v.href?.account}>
-                          <>{v.t?.toAccount}</>
-                        </DS.Button>
-                      </>
-                    ) : null}
-                    {v.notFromCheckout ? (
-                      <>
-                        <DS.Button variant="primary" href={v.href?.account}>
-                          <>{v.t?.toAccount}</>
-                        </DS.Button>
-                      </>
-                    ) : null}
-                  </div>
                 </>
               ) : null
             }
