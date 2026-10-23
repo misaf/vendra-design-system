@@ -227,7 +227,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSavedResults now composes saved-product cards within the layout grid.
    StorefrontSavedEmpty now composes empty-list messaging and the shop link.
    Saved View now passes layout/results/empty elements directly without redundant fragments.
-   **Next stage: extract search-page heading into a storefront organism.**
+   Search heading now composes its localized h1 through StorefrontSearchHeading.
+   **Next stage: extract search-page query controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3490,6 +3491,30 @@ painted before capture. All 32 screenshot pairs are byte-identical; actual PNG b
 and the Persian phone empty state viewed. No styles, baselines or tolerances changed. Full
 browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page heading into a storefront organism.
+
+**One hundred and forty-third checkpoint verified:** extracted StorefrontSearchHeading under
+`templates/app/organisms/` with an explicit title prop. It preserves the display h1 and its child
+without adding a wrapper. View retains localized mapping; search/shared logic retain matching,
+query and language URL/history state, reporting, navigation and focus. Layout retains heading
+placement. Inlining the extracted heading reproduces the previous View exactly. No state,
+mutations or browser effects moved; ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 26 focused
+mobile/desktop browser tests pass with retries disabled: bilingual product exploration and return
+to filtered shop, query/language recovery and clearing without history churn, closing back to
+entered delivery details, clear/Escape behavior, and readable codes/prices at touch widths 320/390/768.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify one localized display h1 and the searchbox accessible name across
+popular, results and empty states, reload query persistence, product navigation/history without
+full reload, empty recovery focus, tablet rotation, containment and page-top axe. Main markup
+matches after sorting attributes, consistently mapping generated React Aria IDs and their references,
+and normalizing local preview origins. Initial comparison attempts exposed attribute ordering and
+generated ID-counter variability; the comparison was corrected without changing application code.
+Images are explicitly decoded and painted before capture.
+All 24 final screenshot pairs are byte-identical; actual PNG bytes were checked and the Persian
+tablet result state viewed. No styles, baselines or tolerances changed. Full browser/device and TV
+spatial-navigation suites and assistive-technology testing were not run.
+Next: extract search-page query controls into a storefront organism.
 
 ## Adding components
 
