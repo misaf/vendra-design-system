@@ -211,7 +211,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSigninCompletion now composes success feedback and continuation actions.
    StorefrontSigninChangeNumber now composes the controlled return-to-phone action.
    Sign-in View now passes layout/completion elements directly without redundant fragments.
-   **Next stage: extract tracking lookup into a storefront organism.**
+   StorefrontTrackLookup now composes the controlled order-number/mobile lookup form.
+   **Next stage: extract tracking order heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3063,6 +3064,36 @@ All eight functional paired probes pass. Of 32 phone/code/ordinary/checkout scre
 viewed without a visible layout shift. English phone entry, Persian phone code, Persian tablet
 checkout and English desktop ordinary captures were also viewed.
 Next: extract tracking lookup into a storefront organism.
+
+**One hundred and twenty-seventh checkpoint verified:** StorefrontTrackLookup is extracted under
+`templates/app/organisms/` with explicit heading, failure, order-number, phone, submit and browse
+descriptors. It preserves the native form/classes/onSubmit/noValidate, h1/accent trailing space and
+intro, warning wrapper/focus target, required field IDs/native props, primary large block submit
+with package-search icon and ghost shop link, without adding a wrapper. View retains lookup
+visibility and localized mapping; tracking/shared logic retains drafts, validation/focus, order/mobile
+normalization, number-and-mobile matching, failure clearing and matched-order navigation. No state,
+effects, browser APIs or lookup rules moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup, bilingual earlier-order reload,
+pending card-payment tracking and bilingual reorder review/bag preservation. Eight paired baseline/
+current probes exercise English/Persian at touch widths 390/768, desktop 1280 and TV 1920. They check
+form/field/submit attributes, localized single h1, empty-field errors and first-invalid focus,
+invalid-mobile focus, mismatched-order warning/focus, failure clearing, lowercase/whitespace and
+Persian-digit order normalization, international-mobile variants and native Enter submission.
+Successful lookup opens the matched order and focuses its heading; track-another clears fields/
+errors and restores order-input focus. Same-document lookup and browse navigation, tablet draft
+retention through rotation, document overflow and page-top axe pass. Form markup matches after
+normalizing React Aria's random per-page ID prefix. Actions use touch, Enter or Space as appropriate.
+Full browser/device and TV spatial-arrow navigation suites and assistive-technology testing were not
+run in this stage; earlier baseline accessibility/zone-hint and sign-in validation-state limitations
+remain documented. No baselines or tolerances changed.
+
+All eight functional paired probes pass. Of 32 initial/empty/mismatch/reset form screenshot pairs,
+29 are byte-identical. Persian tablet/desktop/TV empty-validation captures differ at 4/3/4 pixels
+respectively, with maximum channel delta 1 out of 255 and equal dimensions/markup. Actual PNG bytes/
+pixels were checked and all three differing pairs viewed without a visible layout shift. English
+phone mismatch was also viewed. Next: extract tracking order heading into a storefront organism.
 
 ## Adding components
 
