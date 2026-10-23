@@ -23,3 +23,5 @@ StorefrontTrackOrderActions composes contact, repeat-order and lookup controls. 
 StorefrontTrackOrderSummary composes the summary card. View retains order visibility and localized mapping; tracking/shared logic retain line/totals formatting. This layout retains responsive aside/sticky placement.
 
 StorefrontTrackReorderDialog composes the controlled repeat-order review. View maps localized descriptors; tracking/shared logic retain availability/price/stock reconciliation, mode, bag changes and navigation. Feedback remains outside main; package Dialog retains modal/focus semantics.
+
+Tracking View passes the layout, lookup, pending notice, delivery photo and summary elements directly without single-child fragments. Multi-child heading/details and the empty Shell sticky slot remain, with visibility, descriptors and callbacks preserved.

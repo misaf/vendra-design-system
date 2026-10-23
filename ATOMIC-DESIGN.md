@@ -221,7 +221,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Known-order repeat review now uses a button for keyboard/pointer parity.
    StorefrontTrackOrderSummary now composes the tracking summary card.
    StorefrontTrackReorderDialog now composes the controlled repeat-order review.
-   **Next stage: simplify tracking View composition.**
+   Tracking View now passes layout/lookup/notice/photo/summary elements directly without redundant fragments.
+   **Next stage: extract saved-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3343,6 +3344,33 @@ English and Persian tablet changed-replace captures differ at 107 pixels each, w
 delta 2/255 and equal dimensions/markup. Actual PNG bytes/pixels were checked and both differing
 pairs viewed without a visible layout shift. No baselines or tolerances changed.
 Next: simplify tracking View composition.
+
+**One hundred and thirty-seventh checkpoint verified:** simplified tracking View composition.
+Removed five redundant single-child fragments around layout content, lookup, pending notice,
+delivery photo and summary. Multi-child heading/details and the empty sticky-slot fragments remain
+(eight fragments become three). Visibility, descriptor values, callbacks, feedback placement and
+component order are unchanged. A normalized Babel syntax-tree comparison against HEAD before the
+change, ignoring only positions/comments/whitespace and single-child fragment wrappers, confirms
+structural equivalence before and after formatting. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass with retries disabled: guest lookup, bilingual older-order reload,
+pending payment and pointer/keyboard repeat-order review/cancellation/confirmation with bag
+preservation. Eight paired previous/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. They cover initial lookup, empty validation/focus, failed matching/
+warning focus, normalized Latin/Persian order/mobile submission, matched-order heading focus,
+pending card details, delivered photo/finished timeline, review selection/cancellation/focus return,
+lookup reset, same-document continuity and unchanged bag state. Tablet rotation, containment and
+page-top axe pass. Main/dialog markup matches after normalizing only React Aria's random ID prefix
+and local preview origins. Full browser/device and TV spatial-navigation suites and assistive-
+technology testing were not run.
+
+Of 32 initial lookup/pending/delivered/review screenshot pairs, 31 are byte-identical. The English
+tablet pending capture differed only where an off-screen orchid thumbnail had not painted (2670
+pixels). A separate repeat explicitly decoded and painted images before capture: all four tablet
+state pairs then matched byte-for-byte with matching markup, and the painted pending capture was
+viewed. Original and repeated captures remain separate. No styles, baselines or tolerances changed.
+Next: extract saved-page heading into a storefront organism.
 
 ## Adding components
 
