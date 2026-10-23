@@ -219,7 +219,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackOrderDetails now composes the tracking details card.
    StorefrontTrackOrderActions now composes contact, repeat-order and lookup actions.
    Known-order repeat review now uses a button for keyboard/pointer parity.
-   **Next stage: extract tracking order summary into a storefront organism.**
+   StorefrontTrackOrderSummary now composes the tracking summary card.
+   **Next stage: extract tracking repeat-order review dialog into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3283,6 +3284,34 @@ captures differ at 108 radio-outline pixels each (maximum delta 37/255). All dim
 PNG bytes/pixels were checked, and representative phone action, desktop review and Persian TV-width
 action captures were viewed. No styles, screenshot baselines or tolerances changed.
 Next: extract tracking order summary into a storefront organism.
+
+**One hundred and thirty-fifth checkpoint verified:** extracted StorefrontTrackOrderSummary
+under `templates/app/organisms/` with explicit title/lines/sums props. It preserves the package Card
+with padding 20 and OrderSummary without adding a wrapper. View retains order visibility and
+localized prop mapping; tracking/shared logic retain order selection, line images/tokens/configuration,
+quantities/card notes/prices and total/discount/balance formatting. Package OrderSummary retains
+heading, line and definition-list semantics. StorefrontTrackLayout retains the responsive sticky
+aside. No state, calculations or browser effects moved. Ownership/edit-location documentation is
+updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 16 focused
+mobile/desktop browser tests pass with retries disabled: guest lookup, bilingual older-order reload,
+pending card-payment tracking, pointer repeat-order review/replacement and keyboard review/
+cancellation/confirmation with bag preservation. Eight paired previous/current probes exercise
+English/Persian at touch widths 390/768, desktop 1280 and TV width 1920. They verify heading/card
+padding, line counts/quantities/prices, card notes and bidi isolates, paid/free delivery, promo and
+balance discounts, subtotal/final values and strong-total semantics. Tall six-line summaries with
+long notes disable fit-based stickiness; narrow phones keep their existing static aside, and fitting
+wider panels retain sticky positioning. Summary visibility across preparing/on-the-way/delivered/
+cancelled orders, lookup removal/focus, tablet rotation, containment and page-top axe pass.
+
+Summary-card markup matches after normalizing only React Aria's random ID prefix and the different
+local preview origins in absolute product-image URLs. Initial probe assumptions about phone sticky
+positioning and preview origins were corrected; no application change was needed. All 32 paid/free/
+discounted/tall summary screenshot pairs are byte-identical; actual PNG bytes were checked and the
+Persian phone discounted capture viewed. No baselines or tolerances changed. The full browser/device
+and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract tracking repeat-order review dialog into a storefront organism.
 
 ## Adding components
 

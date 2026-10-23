@@ -19,3 +19,5 @@ StorefrontTrackDeliveryPhoto composes the delivered photo figure. View retains o
 StorefrontTrackOrderDetails composes the sunken details card. View retains order visibility and row mapping; tracking/shared logic retain delivery/message/payment formatting, and package DetailList retains definition-list semantics and wrapping.
 
 StorefrontTrackOrderActions composes contact, repeat-order and lookup controls. View retains order/contact visibility and localized descriptors; tracking/shared logic retain order-specific URLs, repeat-order review/bag changes and lookup reset/focus.
+
+StorefrontTrackOrderSummary composes the summary card. View retains order visibility and localized mapping; tracking/shared logic retain line/totals formatting. This layout retains responsive aside/sticky placement.

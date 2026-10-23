@@ -9,6 +9,7 @@ import {StorefrontTrackProgress} from '../app/organisms/StorefrontTrackProgress/
 import {StorefrontTrackDeliveryPhoto} from '../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
 import {StorefrontTrackOrderDetails} from '../app/organisms/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
 import {StorefrontTrackOrderActions} from '../app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
+import {StorefrontTrackOrderSummary} from '../app/organisms/StorefrontTrackOrderSummary/StorefrontTrackOrderSummary.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -102,9 +103,7 @@ export function View({v}) {
             summary={
               v.hasOrder ? (
                 <>
-                  <DS.Card padding={20}>
-                    <DS.OrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
-                  </DS.Card>
+                  <StorefrontTrackOrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
                 </>
               ) : null
             }
