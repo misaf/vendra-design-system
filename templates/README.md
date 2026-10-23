@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Tracking progress | `app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
 | Tracking pending payment | `app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx` (explicit title/body; eligibility and formatting remain in logic) |
 | Tracking heading | `app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx` (explicit eyebrow/title/accent/intro; status and payment interpretation remain in logic) |
 | Tracking lookup | `app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx` (explicit heading/failure/fields/submit/browse descriptors; matching and validation remain in logic) |

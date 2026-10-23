@@ -11,3 +11,5 @@ StorefrontTrackLookup composes the native lookup form, heading, warning, control
 StorefrontTrackHeading composes the order eyebrow, accented title and status introduction. View retains order visibility, localized mapping and the pending-payment notice; tracking logic retains order selection and status interpretation.
 
 StorefrontTrackPendingNotice composes the neutral clock-icon payment alert. View retains order/pending visibility and localized mapping; tracking logic retains payment/status eligibility, message selection and contact formatting.
+
+StorefrontTrackProgress composes the timeline card. View retains order visibility and prop mapping; tracking logic retains status/step interpretation and localized steps, and package OrderTimeline retains list/current/done semantics and cancelled suppression.

@@ -214,7 +214,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontTrackLookup now composes the controlled order-number/mobile lookup form.
    StorefrontTrackHeading now composes the order eyebrow, accented title and status introduction.
    StorefrontTrackPendingNotice now composes the pending-payment alert.
-   **Next stage: extract tracking progress timeline into a storefront organism.**
+   StorefrontTrackProgress now composes the tracking timeline card.
+   **Next stage: extract tracking delivery photo into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3141,6 +3142,32 @@ React Aria's random per-page ID prefix. All 32 card/WhatsApp/fallback/confirmed 
 pairs are byte-identical to the previous commit; actual PNG bytes were checked. No baselines or
 tolerances changed. The full browser/device and TV spatial-navigation suites and assistive-technology
 testing were not run. Next: extract tracking progress timeline into a storefront organism.
+
+**One hundred and thirtieth checkpoint verified:** extracted StorefrontTrackProgress under
+`templates/app/organisms/` with explicit steps/current/status/label/doneLabel props. It preserves
+the package Card with padding 24 and OrderTimeline, including the empty card when cancelled
+progress renders nothing. View retains order visibility and mapping. Tracking logic retains status
+normalization, current step, active/done/cancelled state and localized labels/times; package
+OrderTimeline retains list/current/completed-step semantics and cancelled suppression. No state,
+rules or browser effects moved. Ownership and edit-location documentation are updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass without retries: guest lookup and heading focus, bilingual
+older-order reload, pending card-payment tracking and bilingual repeat-order review/bag preservation.
+Eight paired previous-commit/current probes exercise English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. They check received/preparing/on-the-way/delivered/cancelled progress,
+ordered-list label/five steps, current-step placement, completed/upcoming counts, localized hidden
+done announcements, absent real-order sample times and the empty cancelled card. Arranging/ready,
+out-for-delivery and refunded aliases match their canonical progress markup. Track-another removes
+the details and focuses lookup. Tablet rotation, document containment and page-top axe pass.
+Card markup matches after normalizing React Aria's random per-page ID prefix. The full browser/device
+and TV spatial-navigation suites and assistive-technology testing were not run.
+
+All eight paired functional probes pass. Of 40 progress-card screenshot pairs, 38 are byte-identical.
+Persian phone preparing and English TV-width on-the-way captures differ at 5 and 6 pixels respectively,
+with maximum channel delta 1 out of 255 and equal dimensions/markup. Actual PNG bytes/pixels were
+checked and both differing pairs viewed without a visible layout shift. No baselines or tolerances
+changed. Next: extract tracking delivery photo into a storefront organism.
 
 ## Adding components
 

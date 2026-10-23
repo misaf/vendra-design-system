@@ -5,6 +5,7 @@ import {StorefrontTrackLayout} from '../app/layouts/StorefrontTrackLayout/Storef
 import {StorefrontTrackHeading} from '../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
 import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
 import {StorefrontTrackPendingNotice} from '../app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx';
+import {StorefrontTrackProgress} from '../app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -65,15 +66,13 @@ export function View({v}) {
             details={
               v.hasOrder ? (
                 <>
-                  <DS.Card padding={24}>
-                    <DS.OrderTimeline
-                      steps={v.steps}
-                      current={v.current}
-                      status={v.tlStatus}
-                      label={v.t?.progress}
-                      doneLabel={v.t?.doneL}
-                    />
-                  </DS.Card>
+                  <StorefrontTrackProgress
+                    steps={v.steps}
+                    current={v.current}
+                    status={v.tlStatus}
+                    label={v.t?.progress}
+                    doneLabel={v.t?.doneL}
+                  />
                   {v.delivered ? (
                     <>
                       <figure className="vf-track-photo tw:m-0 tw:flex tw:flex-col tw:gap-3">
