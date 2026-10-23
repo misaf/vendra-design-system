@@ -182,6 +182,8 @@ StorefrontSavedRemovalNotice composes removal feedback/Undo; View retains messag
 saved/shared logic retain additive restoration/persistence/focus, and layout preserves empty-state recovery.
 StorefrontSavedResults composes product cards from explicit products/labels; View retains visibility/list
 normalization, saved/shared logic retain descriptors/removal, and layout retains the product grid.
+StorefrontSavedEmpty composes empty messaging/shop link; View retains visibility/localized mapping,
+saved/shared logic retain list/removal state and layout keeps empty placement and notice recovery.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic

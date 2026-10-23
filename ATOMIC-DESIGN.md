@@ -225,7 +225,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSavedHeading now composes the saved-page count and accented heading.
    StorefrontSavedRemovalNotice now composes removal feedback and Undo.
    StorefrontSavedResults now composes saved-product cards within the layout grid.
-   **Next stage: extract saved-page empty state into a storefront organism.**
+   StorefrontSavedEmpty now composes empty-list messaging and the shop link.
+   **Next stage: simplify saved-page View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3446,6 +3447,29 @@ pairs are byte-identical; actual PNG bytes were checked and the Persian phone tw
 No baselines or tolerances changed. Full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract saved-page empty state into a storefront organism.
+
+**One hundred and forty-first checkpoint verified:** extracted StorefrontSavedEmpty under
+`templates/app/organisms/` with explicit title/accent/body and browse href/label props. It preserves
+the heart package EmptyState and primary browse link as siblings without adding a DOM wrapper.
+View retains empty visibility and localized mapping and no longer imports DS directly; saved/shared
+logic retain membership, removal/Undo, persistence and navigation values. Package EmptyState/Button
+retain heading/icon/link semantics and layout retains centered placement with removal feedback
+outside the empty wrapper. No state, mutations or browser effects moved. Ownership/edit-location
+documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass with retries disabled: bilingual additive removal/Undo and initial
+saved-list loading integrity, account/saved-page synchronization and product-to-saved-list updates.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check populated-state absence, one page h1 plus the empty h2/accent/body,
+decorative icon, direct sibling structure, primary shop link and localized destination. Empty-list
+persistence after reload, shop navigation/history without full reload, final-item removal with Undo
+outside the empty wrapper, restored-item/favorite focus, tablet rotation, containment and page-top
+axe pass. Empty-wrapper markup matches after normalizing React Aria's random ID prefix. All 32
+initial/browse-return/reloaded/final-removal screenshot pairs are byte-identical; actual PNG bytes
+were checked. No baselines or tolerances changed. Full browser/device and TV spatial-navigation
+suites and assistive-technology testing were not run.
+Next: simplify saved-page View composition.
 
 ## Adding components
 

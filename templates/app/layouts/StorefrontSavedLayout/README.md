@@ -11,3 +11,5 @@ StorefrontSavedHeading composes the package h1 SectionHeader from explicit eyebr
 StorefrontSavedRemovalNotice composes removal feedback and Undo. View retains removed-message visibility and localized mapping; saved/shared logic retain additive restoration, persistence and focus. The notice remains outside results/empty groups for final-item recovery.
 
 StorefrontSavedResults composes saved-product cards from explicit products/labels without a DOM wrapper. View retains results visibility/list normalization; saved/shared logic retain product descriptors, removal and focus. This layout retains the responsive grid.
+
+StorefrontSavedEmpty composes empty messaging and the primary shop link without a DOM wrapper. View retains empty visibility/localized mapping; saved/shared logic retain membership/removal/Undo. This layout retains centered empty placement and the notice outside it for recovery.

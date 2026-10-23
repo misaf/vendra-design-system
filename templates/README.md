@@ -31,6 +31,7 @@ for routed pages.
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
 | Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Saved-page empty state | `app/organisms/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
 | Saved-page product results | `app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
 | Saved-page removal notice | `app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
 | Saved-page heading | `app/organisms/StorefrontSavedHeading/StorefrontSavedHeading.jsx` (explicit eyebrow/title/accent; count/localization remain in logic) |
