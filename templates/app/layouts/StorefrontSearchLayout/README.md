@@ -15,3 +15,5 @@ StorefrontSearchPopular composes the eyebrow and wrapping term chips. View retai
 StorefrontSearchResults composes count/status and linked product rows. View retains visibility/count mapping/list normalization; search/shared logic retain matching and product descriptors. This layout retains slot placement.
 
 StorefrontSearchEmpty composes zero-result status, messaging and recovery actions. View retains visibility/localized mapping; search/shared logic retain query clearing, focus and navigation. This layout retains slot placement.
+
+Search View passes this layout directly without a single-child fragment. Visibility, localized descriptors, callbacks, list normalization and the empty Shell sticky-slot fragment remain unchanged.

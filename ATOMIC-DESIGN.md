@@ -232,7 +232,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSearchPopular now composes the popular-term eyebrow and chips.
    StorefrontSearchResults now composes count/status and linked product rows.
    StorefrontSearchEmpty now composes zero-result status, messaging and recovery actions.
-   **Next stage: simplify search-page View composition.**
+   Search View now passes its layout directly without a redundant fragment.
+   **Next stage: extract contact-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3632,6 +3633,33 @@ the differing pair and Persian tablet empty state were viewed. No styles, baseli
 changed. Full browser/device and TV spatial-navigation suites and assistive-technology testing
 were not run.
 Next: simplify search-page View composition.
+
+**One hundred and forty-eighth checkpoint verified:** simplified search-page View composition by
+removing the redundant single-child fragment around StorefrontSearchLayout. The empty Shell
+sticky-slot fragment remains (two fragments become one). Visibility, localized descriptors,
+callbacks, list normalization and slot order remain unchanged. Normalized Babel syntax trees
+match after unwrapping only the redundant fragment, before and after formatting.
+Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 26 focused
+mobile/desktop browser tests pass with retries disabled: bilingual product exploration and return
+to filtered shop, query/language recovery and clearing without history churn, closing back to
+entered delivery details, clear/Escape behavior, and readable codes/prices at touch widths 320/390/768.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Popular, multiple-result, single-result and reloaded empty states preserve
+localized headings/searchbox names, count/status semantics, product links/media/codes/prices,
+empty h2/accent/body/icon and primary retry/secondary shop actions. Term activation by touch or
+Enter/Space preserves query/URL updates without history churn; retry clears and focuses the field.
+Reload query recovery, product/shop navigation without full reload and history return, tablet
+rotation, containment and page-top axe pass. Main markup matches after sorting attributes,
+consistently mapping generated React Aria IDs and references, and normalizing local preview origins.
+Images are explicitly decoded and painted before capture.
+All 32 screenshot pairs preserve dimensions/layout; 29 are byte-identical. The Persian tablet,
+English desktop and English TV-width single-result screenshots each differ by five pixels at an
+unchanged input corner (maximum channel delta 1). Actual PNG bytes and difference bounds were
+checked and all differing pairs viewed. No styles, baselines or tolerances changed. Full
+browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract contact-page heading into a storefront organism.
 
 ## Adding components
 
