@@ -155,6 +155,8 @@ StorefrontTrackLayout arranges lookup, order heading/details/summary and feedbac
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontTrackLookup composes controlled lookup fields, heading, failure and submit/browse actions;
 View retains visibility/mapping; tracking/shared logic retains validation, normalization, matching and focus.
+StorefrontTrackHeading composes the tracking order eyebrow, accented title and status introduction;
+View retains visibility and mapping, and tracking logic retains status/payment interpretation.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
