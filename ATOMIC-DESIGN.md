@@ -235,7 +235,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Search View now passes its layout directly without a redundant fragment.
    StorefrontContactHeading now composes the contact eyebrow, accented title and introduction.
    StorefrontContactDetails now composes studio rows, contact actions, map and directions.
-   **Next stage: extract contact-page form controls into a storefront organism.**
+   StorefrontContactFormControls now composes validation summary, fields and send action.
+   **Next stage: fix pending-submit announcement accessibility.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3716,6 +3717,43 @@ all fallback markup omits the map while retaining rows/directions. No styles, ba
 changed. Full-page visual, full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract contact-page form controls into a storefront organism.
+
+**One hundred and fifty-first checkpoint verified:** extracted StorefrontContactFormControls under
+`templates/app/organisms/` with explicit problems, name/phone/email/message descriptors and send
+(label, onClick, busy). It preserves summary/field IDs, autocomplete, email type/direction, required
+multiline message, hint/error wiring, field order, wrapper classes and large primary send button
+with loading/disabled state. View retains not-sent visibility, localized descriptor/callback mapping
+and heading/completion/feedback composition. Contact/shared logic retain prefill, reply-channel/
+message validation, API submission, busy/errors, draft retention and focus. Package components
+retain control semantics; layout retains form placement. No state, mutations or browser effects
+moved; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass with retries disabled: studio map/directions, reply-channel
+validation and demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Initial, invalid, pending, failed and return-to-form controls preserve localized
+names, field order/attributes, summary links and single phone/email validation focus. An in-browser
+API stub verifies trimmed payloads, email as the reply alternative, disabled/loading submission,
+failure draft retention, clearing feedback on edit, retry completion and retained name/email/message
+with message focus on return. No external request is sent. Tablet rotation and containment pass.
+Form-column markup matches after sorting attributes, consistently mapping generated React Aria
+IDs/references and normalizing local preview origins.
+
+Page-top axe passes in initial/invalid/pending/failed states. Returning to the form after mocked live
+completion reproduces an existing serious role-img-alt warning in both versions: two React Aria
+assertive-log announcement nodes reference the unmounted send button's ID. A five-second readiness
+check confirms this is not a brief transition. The comparison records and requires the same warning
+in both versions; it does not suppress the rule. Fix pending-submit announcement accessibility next,
+then resume contact completion extraction.
+All 40 form-column screenshot pairs preserve dimensions/layout; 34 are byte-identical. Six
+invalid/pending captures differ by 4–22 field-edge pixels (maximum channel delta 1). Actual PNG
+bytes and difference bounds were checked; representative English/Persian tablet and English TV
+pairs were viewed. Desktop/TV follow-ups move the pointer outside the form to prevent hover-state
+timing differences; original captures are retained. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: fix pending-submit announcement accessibility.
 
 ## Adding components
 
