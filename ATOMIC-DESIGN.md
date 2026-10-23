@@ -226,7 +226,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSavedRemovalNotice now composes removal feedback and Undo.
    StorefrontSavedResults now composes saved-product cards within the layout grid.
    StorefrontSavedEmpty now composes empty-list messaging and the shop link.
-   **Next stage: simplify saved-page View composition.**
+   Saved View now passes layout/results/empty elements directly without redundant fragments.
+   **Next stage: extract search-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3470,6 +3471,25 @@ initial/browse-return/reloaded/final-removal screenshot pairs are byte-identical
 were checked. No baselines or tolerances changed. Full browser/device and TV spatial-navigation
 suites and assistive-technology testing were not run.
 Next: simplify saved-page View composition.
+
+**One hundred and forty-second checkpoint verified:** simplified saved-page View composition by
+removing three redundant single-child fragments around layout, results and empty content. The
+empty sticky-slot fragment remains (four fragments become one). Visibility, descriptors, list
+normalization, callbacks and ordering remain unchanged. Normalized Babel syntax trees match after
+unwrapping only the redundant fragments; ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass with retries disabled: bilingual additive removal/Undo and initial
+saved-list loading integrity, account/saved-page synchronization and product-to-saved-list updates.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Populated, removed, empty and restored states preserve localized counts,
+removal/Undo focus and additive restoration, persistence, product navigation/history without full
+reload, tablet rotation, containment and page-top axe results. Main markup matches after normalizing
+only React Aria's random ID prefix and local preview origins. Images are explicitly decoded and
+painted before capture. All 32 screenshot pairs are byte-identical; actual PNG bytes were checked
+and the Persian phone empty state viewed. No styles, baselines or tolerances changed. Full
+browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract search-page heading into a storefront organism.
 
 ## Adding components
 

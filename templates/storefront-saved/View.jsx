@@ -13,45 +13,39 @@ export function View({v}) {
     <Shell
       v={v}
       content={
-        <>
-          <StorefrontSavedLayout
-            showResults={v.hasItems}
-            showEmpty={v.noItems}
-            heading={
-              <StorefrontSavedHeading eyebrow={v.countLabel} title={v.t?.hA} accent={v.t?.hB} />
-            }
-            notice={
-              v.removedMessage ? (
-                <StorefrontSavedRemovalNotice
-                  message={v.removedMessage}
-                  undo={{label: v.t?.undo, onClick: v.undoRemove}}
-                />
-              ) : null
-            }
-            results={
-              v.hasItems ? (
-                <>
-                  <StorefrontSavedResults
-                    products={list(v.items)}
-                    labels={{photo: v.t?.photo, unsave: v.t?.unsave}}
-                  />
-                </>
-              ) : null
-            }
-            empty={
-              v.noItems ? (
-                <>
-                  <StorefrontSavedEmpty
-                    title={v.t?.emptyA}
-                    accent={v.t?.emptyB}
-                    body={v.t?.emptyP}
-                    browse={{href: v.href?.shop, label: v.t?.browse}}
-                  />
-                </>
-              ) : null
-            }
-          />
-        </>
+        <StorefrontSavedLayout
+          showResults={v.hasItems}
+          showEmpty={v.noItems}
+          heading={
+            <StorefrontSavedHeading eyebrow={v.countLabel} title={v.t?.hA} accent={v.t?.hB} />
+          }
+          notice={
+            v.removedMessage ? (
+              <StorefrontSavedRemovalNotice
+                message={v.removedMessage}
+                undo={{label: v.t?.undo, onClick: v.undoRemove}}
+              />
+            ) : null
+          }
+          results={
+            v.hasItems ? (
+              <StorefrontSavedResults
+                products={list(v.items)}
+                labels={{photo: v.t?.photo, unsave: v.t?.unsave}}
+              />
+            ) : null
+          }
+          empty={
+            v.noItems ? (
+              <StorefrontSavedEmpty
+                title={v.t?.emptyA}
+                accent={v.t?.emptyB}
+                body={v.t?.emptyP}
+                browse={{href: v.href?.shop, label: v.t?.browse}}
+              />
+            ) : null
+          }
+        />
       }
       sticky={<></>}
     />
