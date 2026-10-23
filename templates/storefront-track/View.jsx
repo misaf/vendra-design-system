@@ -6,6 +6,7 @@ import {StorefrontTrackHeading} from '../app/organisms/StorefrontTrackHeading/St
 import {StorefrontTrackLookup} from '../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
 import {StorefrontTrackPendingNotice} from '../app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx';
 import {StorefrontTrackProgress} from '../app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
+import {StorefrontTrackDeliveryPhoto} from '../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -75,21 +76,12 @@ export function View({v}) {
                   />
                   {v.delivered ? (
                     <>
-                      <figure className="vf-track-photo tw:m-0 tw:flex tw:flex-col tw:gap-3">
-                        <div className="vf-track-photo-frame tw:max-w-media">
-                          <DS.ArchFrame
-                            src={v.photo}
-                            ratio="4/5"
-                            shape="soft"
-                            tone="product"
-                            placeholderLabel={v.t?.photoPh}
-                            alt={v.t?.photoAlt}
-                          />
-                        </div>
-                        <figcaption className="vf-track-photo-caption tw:text-sm tw:text-quiet">
-                          <>{v.t?.photoCap}</>
-                        </figcaption>
-                      </figure>
+                      <StorefrontTrackDeliveryPhoto
+                        src={v.photo}
+                        placeholderLabel={v.t?.photoPh}
+                        alt={v.t?.photoAlt}
+                        caption={v.t?.photoCap}
+                      />
                     </>
                   ) : null}
                   <DS.Card variant="sunken" padding={20}>

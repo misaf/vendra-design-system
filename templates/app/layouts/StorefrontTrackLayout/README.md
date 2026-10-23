@@ -13,3 +13,5 @@ StorefrontTrackHeading composes the order eyebrow, accented title and status int
 StorefrontTrackPendingNotice composes the neutral clock-icon payment alert. View retains order/pending visibility and localized mapping; tracking logic retains payment/status eligibility, message selection and contact formatting.
 
 StorefrontTrackProgress composes the timeline card. View retains order visibility and prop mapping; tracking logic retains status/step interpretation and localized steps, and package OrderTimeline retains list/current/done semantics and cancelled suppression.
+
+StorefrontTrackDeliveryPhoto composes the delivered photo figure. View retains order/delivered visibility and localized mapping; tracking logic selects the order photo, and package ArchFrame/Picture retain image/loading and missing-source placeholder semantics.
