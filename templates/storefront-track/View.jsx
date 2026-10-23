@@ -8,6 +8,7 @@ import {StorefrontTrackPendingNotice} from '../app/organisms/StorefrontTrackPend
 import {StorefrontTrackProgress} from '../app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {StorefrontTrackDeliveryPhoto} from '../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
 import {StorefrontTrackOrderDetails} from '../app/organisms/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
+import {StorefrontTrackOrderActions} from '../app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -86,30 +87,11 @@ export function View({v}) {
                     </>
                   ) : null}
                   <StorefrontTrackOrderDetails rows={v.rows} />
-                  <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                    {v.waHref ? (
-                      <DS.Button
-                        variant="primary"
-                        iconStart="message-circle"
-                        href={v.waHref}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        <>{v.t?.ask}</>
-                      </DS.Button>
-                    ) : null}
-                    <DS.Button
-                      variant="secondary"
-                      iconStart="rotate-ccw"
-                      href={v.href?.bag}
-                      onClick={v.reorder}
-                    >
-                      <>{v.t?.again}</>
-                    </DS.Button>
-                    <DS.Button variant="ghost" iconStart="package-search" onClick={v.trackAnother}>
-                      <>{v.t?.lookup?.another}</>
-                    </DS.Button>
-                  </div>
+                  <StorefrontTrackOrderActions
+                    contact={v.waHref ? {href: v.waHref, label: v.t?.ask} : null}
+                    repeat={{href: v.href?.bag, onClick: v.reorder, label: v.t?.again}}
+                    lookup={{onClick: v.trackAnother, label: v.t?.lookup?.another}}
+                  />
                 </>
               ) : null
             }
