@@ -122,7 +122,7 @@ for routed pages.
 | FAQ layout | `app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (heading, questions and contact slots from FAQ View) |
 | Weddings layout | `app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (heading, hero media, services, story, inquiry introduction, inquiry and feedback slots from weddings View) |
 | Contact layout | `app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (heading, details, form and feedback slots from contact View) |
-| Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (StorefrontSearchHeading, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and empty slots from search View) |
+| Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (StorefrontSearchHeading, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots from search View) |
 | Saved-products layout | `app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
 | Tracking layout | `app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |
 | Sign-in layout | `app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |
