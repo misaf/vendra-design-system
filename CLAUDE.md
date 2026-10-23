@@ -202,6 +202,8 @@ StorefrontSearchLayout arranges heading, query/close controls, popular searches,
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
 and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
+StorefrontContactDetails composes studio rows/actions and map/directions from explicit descriptors;
+View maps availability/callbacks and contact/shared logic retain studio values, map loading/fallback.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
 retain map fallback, prefill, validation, submission, draft retention and focus.
 StorefrontWeddingsLayout arranges hero, services, story, inquiry and feedback slots; weddings

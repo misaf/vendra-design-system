@@ -234,7 +234,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSearchEmpty now composes zero-result status, messaging and recovery actions.
    Search View now passes its layout directly without a redundant fragment.
    StorefrontContactHeading now composes the contact eyebrow, accented title and introduction.
-   **Next stage: extract contact-page studio details into a storefront organism.**
+   StorefrontContactDetails now composes studio rows, contact actions, map and directions.
+   **Next stage: extract contact-page form controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3683,6 +3684,38 @@ All 32 header screenshot pairs are byte-identical; actual PNG bytes were checked
 tablet return-to-form heading viewed. No styles, baselines or tolerances changed. Full-page visual,
 full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract contact-page studio details into a storefront organism.
+
+**One hundred and fiftieth checkpoint verified:** extracted StorefrontContactDetails under
+`templates/app/organisms/` with explicit rows, WhatsApp/phone/Instagram, map and directions
+descriptors. It preserves the sunken details card, action order/classes, safe external-link
+attributes, vf-contact-map target, map ErrorBoundary and original map props/callbacks without
+adding a DOM wrapper. View maps availability/localized descriptors/callbacks; contact/shared logic
+retain studio values, valid-location checks, channels, map loading/fallback and navigation.
+Package components retain rendering/interaction semantics and layout retains the details wrapper
+and responsive columns. No state, mutations or browser effects moved; ownership documentation
+is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All eight focused
+mobile/desktop browser tests pass with retries disabled: studio map/directions, reply-channel
+validation and demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920, each with a loaded map and a blocked Leaflet script. They check localized row
+labels, phone/WhatsApp/Instagram/directions destinations and external-link protections, localized map
+name/marker destination and studio tooltip. In fallback, the map disappears while address/actions/
+directions remain; reply validation still focuses the phone and retains the message draft.
+Tablet rotation, containment and page-top axe pass. Details markup matches after sorting attributes,
+consistently mapping generated React Aria IDs and references, and normalizing local preview origins.
+Map images are decoded before capture. The probe's initial marker-count and Persian tooltip
+expectations were corrected to distinguish zoom controls and localized studio wording.
+TV follow-up captures explicitly settle tile-image loading hints/decoding before markup comparison;
+the original captures are retained. All 16 screenshot pairs preserve dimensions/layout; 14 are
+byte-identical. Persian phone and desktop loaded-map captures each differ at one zoom-control-edge
+pixel (maximum channel delta 1). Actual PNG bytes/difference bounds were checked; both differing
+pairs and Persian phone fallback were viewed. All fallback screenshots are byte-identical and
+all fallback markup omits the map while retaining rows/directions. No styles, baselines or tolerances
+changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract contact-page form controls into a storefront organism.
 
 ## Adding components
 
