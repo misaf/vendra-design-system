@@ -176,6 +176,8 @@ Tracking View passes layout/lookup/pending notice/delivery photo/summary element
 heading/details and the empty sticky-slot fragments retain their existing visibility and mappings.
 StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
+StorefrontSavedHeading composes the h1 SectionHeader; View maps localized props and saved/shared logic
+retain list counts, remove/Undo, persistence and focus.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
