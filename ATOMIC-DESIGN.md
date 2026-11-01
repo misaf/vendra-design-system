@@ -247,7 +247,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsInquiryIntro now composes the localized inquiry heading and introduction.
    StorefrontWeddingsFormControls now composes validation, fields and the send action.
    StorefrontWeddingsCompletion now composes submission feedback and the return-to-form action.
-   **Next stage: extract weddings-page API feedback into a storefront organism.**
+   StorefrontWeddingsFeedback now composes API-failure messaging through the package danger Alert.
+   **Next stage: simplify weddings-page View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4045,6 +4046,29 @@ representative Persian tablet demo and English phone live captures viewed. No st
 tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract weddings-page API feedback into a storefront organism.
+
+**One hundred and sixty-third checkpoint verified:** extracted StorefrontWeddingsFeedback under
+app organisms from the weddings View feedback slot. Its explicit message prop preserves the package
+danger Alert's original semantics and markup without a new wrapper. View retains visibility/message
+mapping and no longer imports DS directly. Weddings/shared logic retain failure wording, requests,
+busy/error/completion state, drafts, retry and focus. Layout retains feedback after the inquiry
+section. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/drafts,
+validation summary/focus, date/select payloads, pending duplicate-click prevention, failed retry,
+completion accessibility and retained values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/completion absence, localized role=alert/title,
+decorative icon and direct placement after inquiry. Two failed requests retain name/phone/email/
+guests/message drafts. Email editing clears feedback; retry clears it while pending; successful
+completion and return-to-name focus keep it absent and preserve drafts. Requests are stubbed locally;
+no inquiry is sent. Touch/Enter/Space activation, tablet rotation, containment and page-top axe pass.
+Feedback markup matches without normalization. All 16 failure-alert screenshot pairs are
+byte-identical; actual PNG bytes were checked and representative Persian phone retry and English
+desktop first-failure captures viewed. No styles, baselines or tolerances changed. Full-page visual,
+full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: simplify weddings-page View composition.
 
 ## Adding components
 
