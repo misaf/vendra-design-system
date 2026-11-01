@@ -248,7 +248,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsFormControls now composes validation, fields and the send action.
    StorefrontWeddingsCompletion now composes submission feedback and the return-to-form action.
    StorefrontWeddingsFeedback now composes API-failure messaging through the package danger Alert.
-   **Next stage: simplify weddings-page View composition.**
+   Weddings View now passes layout/form/completion elements directly without redundant fragments.
+   **Next stage: extract FAQ-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4069,6 +4070,31 @@ byte-identical; actual PNG bytes were checked and representative Persian phone r
 desktop first-failure captures viewed. No styles, baselines or tolerances changed. Full-page visual,
 full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: simplify weddings-page View composition.
+
+**One hundred and sixty-fourth checkpoint verified:** simplified weddings-page View composition by
+removing redundant single-child fragments around StorefrontWeddingsLayout, StorefrontWeddingsFormControls
+and StorefrontWeddingsCompletion. Five fragments become two: the inquiry slot's multi-child fragment
+and empty Shell sticky-slot fragment remain. Localized descriptors, availability, callbacks, list
+normalization, conditional form/completion/feedback content and slot order are unchanged. Normalized
+Babel syntax trees match after unwrapping only these three fragments, before and after formatting;
+the whitespace-insensitive diff contains only their six delimiter removals. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/draft
+retention, validation summary/focus, full date/select payloads, pending duplicate-click prevention,
+failed retry, completion accessibility and retained text/select/date values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/failure absence of completion, localized demo/live
+wording, named-region/tabindex/focus, direct inquiry placement, secondary edit action and removed
+fields. Demo and failed-live retry completion return focus to name and retain name/phone/email/
+guests/message drafts. Requests are stubbed locally; no inquiry is sent. Touch/Enter/Space activation,
+tablet rotation, containment and page-top axe pass.
+Completion markup matches after sorting attributes and consistently mapping generated React Aria
+IDs. All 16 completion screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet live and English desktop demo captures viewed. No styles, baselines
+or tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract FAQ-page heading into a storefront organism.
 
 ## Adding components
 
