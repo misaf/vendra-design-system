@@ -7,6 +7,7 @@ import {StorefrontWeddingsHeading} from '../app/organisms/StorefrontWeddingsHead
 import {StorefrontWeddingsHeroMedia} from '../app/organisms/StorefrontWeddingsHeroMedia/StorefrontWeddingsHeroMedia.jsx';
 import {StorefrontWeddingsServices} from '../app/organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
 import {StorefrontWeddingsStory} from '../app/organisms/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
+import {StorefrontWeddingsInquiryIntro} from '../app/organisms/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -36,16 +37,7 @@ export function View({v}) {
                 process={list(v.process)}
               />
             }
-            inquiryIntro={
-              <>
-                <h2 className="vf-weddings-inquiry-title tw:m-0 tw:font-display tw:font-medium tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">
-                  <>{v.t?.fA}</>
-                </h2>
-                <p className="vf-weddings-inquiry-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                  <>{v.t?.fP}</>
-                </p>
-              </>
-            }
+            inquiryIntro={<StorefrontWeddingsInquiryIntro title={v.t?.fA} intro={v.t?.fP} />}
             inquiry={
               <>
                 {v.notSent ? (

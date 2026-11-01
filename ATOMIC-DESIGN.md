@@ -244,7 +244,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsHeroMedia now composes the localized hero arch placeholder.
    StorefrontWeddingsServices now composes ordered service cards from explicit records.
    StorefrontWeddingsStory now composes gallery and process content from explicit props.
-   **Next stage: extract weddings-page inquiry introduction into a storefront organism.**
+   StorefrontWeddingsInquiryIntro now composes the localized inquiry heading and introduction.
+   **Next stage: extract weddings-page form controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3969,6 +3970,26 @@ Persian tablet and English desktop captures viewed. No styles, baselines or tole
 Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
 testing were not run.
 Next: extract weddings-page inquiry introduction into a storefront organism.
+
+**One hundred and sixtieth checkpoint verified:** extracted StorefrontWeddingsInquiryIntro under
+app organisms from the weddings View inquiry-introduction slot. Explicit title/intro props preserve
+the h2, paragraph, sibling structure and classes without a new wrapper. View retains localized copy
+mapping; layout retains the inquiry anchor, introduction column and responsive placement. Weddings/
+shared logic retain form state, validation, submission, drafts, navigation and focus. Ownership/
+edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused mobile/
+desktop browser tests pass with one worker and retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify localized h2/paragraph content, direct inquiry-column children, one
+inquiry anchor, equal grid columns/element bounds, touch/Enter inquiry navigation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Introduction markup matches after sorting attributes. All eight introduction screenshot pairs are
+byte-identical; actual PNG bytes were checked and representative Persian tablet and English desktop
+captures viewed. No styles, baselines or tolerances changed. Full-page visual, full browser/device
+and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract weddings-page form controls into a storefront organism.
 
 ## Adding components
 
