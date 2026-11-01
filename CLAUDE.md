@@ -204,6 +204,8 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+StorefrontWeddingsStory composes gallery/process content; View maps titles and normalizes lists,
+logic supplies photo/step descriptors and StorefrontWeddingsLayout retains the section.
 StorefrontWeddingsServices composes service cards; View normalizes the list, logic supplies localized
 records and StorefrontWeddingsLayout retains the responsive grid.
 StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its localized label
