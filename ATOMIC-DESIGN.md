@@ -241,7 +241,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactFeedback now composes API-failure messaging through the package danger Alert.
    Contact View now passes its layout directly without a redundant fragment.
    StorefrontWeddingsHeading now composes the weddings eyebrow, title, introduction and hero actions.
-   **Next stage: extract weddings-page hero media into a storefront organism.**
+   StorefrontWeddingsHeroMedia now composes the localized hero arch placeholder.
+   **Next stage: extract weddings-page services into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3897,6 +3898,29 @@ English tablet and Persian phone captures viewed. No styles, baselines or tolera
 Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
 testing were not run.
 Next: extract weddings-page hero media into a storefront organism.
+
+**One hundred and fifty-seventh checkpoint verified:** extracted StorefrontWeddingsHeroMedia under
+app organisms from the weddings View hero-media slot. Its explicit placeholderLabel preserves the
+existing ArchFrame's 4/5 ratio, default arch appearance, empty alt text and direct hero-child
+structure without a new wrapper or photo source. View retains localized copy mapping; layout keeps
+responsive hero placement; weddings/shared logic retain configuration, navigation, inquiry state,
+validation, submission, drafts and focus. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused
+mobile/desktop browser tests pass with retries disabled: English/Persian inquiry-anchor navigation
+without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify the localized placeholder, ratio, arch classes, direct hero children,
+absence of img/image-role semantics for the empty alt placeholder, touch/Enter inquiry navigation,
+retained name/message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Hero markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+Seven of eight hero screenshot pairs are byte-identical. The Persian TV-width pair differs by
+32 arch-edge pixels (maximum channel delta 1), with equal 1016-by-673 dimensions and matching markup.
+Actual PNG bytes/bounds were checked; Persian TV baseline/current, Persian tablet and English desktop
+captures were viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page services into a storefront organism.
 
 ## Adding components
 
