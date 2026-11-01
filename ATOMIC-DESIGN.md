@@ -243,7 +243,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsHeading now composes the weddings eyebrow, title, introduction and hero actions.
    StorefrontWeddingsHeroMedia now composes the localized hero arch placeholder.
    StorefrontWeddingsServices now composes ordered service cards from explicit records.
-   **Next stage: extract weddings-page story into a storefront organism.**
+   StorefrontWeddingsStory now composes gallery and process content from explicit props.
+   **Next stage: extract weddings-page inquiry introduction into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3945,6 +3946,29 @@ representative Persian tablet and English desktop captures viewed. No styles, ba
 tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract weddings-page story into a storefront organism.
+
+**One hundred and fifty-ninth checkpoint verified:** extracted StorefrontWeddingsStory under app
+organisms from the weddings View story slot. Explicit gallery/process titles, photo records and
+steps preserve sibling structure, h2 levels, keyed fragments, image source/alt/lazy loading, ordered
+list semantics and responsive classes without a new wrapper. View retains title mapping and list
+normalization; weddings/shared logic supply photo/step descriptors and retain inquiry behavior.
+Layout retains the story section and placement. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused mobile/
+desktop browser tests pass with one worker and retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify headings, three ordered image sources/localized numbered alts, initial
+lazy-loading attributes and decoded images before capture, ordered process copy, direct section
+children, equal grid columns/element bounds, touch/Enter inquiry navigation, retained name/message
+drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Story markup matches after sorting attributes and normalizing only the local preview origin in
+image URLs; the first probe's origin-only mismatch and its captures are retained separately.
+All eight story screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+Persian tablet and English desktop captures viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page inquiry introduction into a storefront organism.
 
 ## Adding components
 
