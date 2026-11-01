@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontFaqLayout} from '../app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
+import {StorefrontFaqHeading} from '../app/organisms/StorefrontFaqHeading/StorefrontFaqHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,20 +14,12 @@ export function View({v}) {
         <>
           <StorefrontFaqLayout
             heading={
-              <>
-                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.eyebrow}</>
-                </div>
-                <h1>
-                  <>{v.t?.titleA} </>
-                  <em className="vf-faq-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{v.t?.titleB}</>
-                  </em>
-                </h1>
-                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                  <>{v.t?.intro}</>
-                </p>
-              </>
+              <StorefrontFaqHeading
+                eyebrow={v.t?.eyebrow}
+                title={v.t?.titleA}
+                accent={v.t?.titleB}
+                intro={v.t?.intro}
+              />
             }
             questions={
               <>
