@@ -238,7 +238,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactFormControls now composes validation summary, fields and send action.
    Shared Button now keeps pending announcements as text and guards activation/implicit submit.
    StorefrontContactCompletion now composes submission feedback and return-to-form action.
-   **Next stage: extract contact-page feedback into a storefront organism.**
+   StorefrontContactFeedback now composes API-failure messaging through the package danger Alert.
+   **Next stage: simplify contact-page View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3823,6 +3824,30 @@ live completion and representative English tablet edit pairs were viewed. No sty
 baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-navigation
 suites and assistive-technology testing were not run.
 Next: extract contact-page feedback into a storefront organism.
+
+**One hundred and fifty-fourth checkpoint verified:** extracted StorefrontContactFeedback under
+`templates/app/organisms/` with an explicit message prop. It preserves the package danger Alert's
+role, decorative icon, title and original markup without adding a wrapper. View retains API-error
+visibility/message mapping and no longer imports DS directly. Contact/shared logic retain localized
+failure wording, submission, busy/errors, drafts and clearing on edit/retry. Package Alert retains
+announcement semantics; layout retains feedback placement after the columns. No state, mutations
+or browser effects moved; ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop contact browser tests pass with retries disabled: pending completion/accessibility,
+return-to-form focus/drafts and failure recovery, studio map/directions, reply-channel validation,
+demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check initial/pending/success absence, localized role=alert/title, decorative
+icon, direct placement after the columns, repeated failures and retained name/email/message drafts.
+Editing clears feedback; retry clears it while pending and successful completion keeps it absent.
+Recovery completion and return-to-message focus pass with touch or Enter/Space actions. Live
+requests are stubbed in-browser; no message is sent. Tablet rotation, containment and page-top axe
+pass. Feedback markup matches without normalization.
+All 16 feedback screenshot pairs are byte-identical; actual PNG bytes were checked and the Persian
+tablet retry alert viewed. No styles, baselines or tolerances changed. Full-page visual, full
+browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: simplify contact-page View composition.
 
 ## Adding components
 
