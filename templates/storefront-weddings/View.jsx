@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontWeddingsLayout} from '../app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
 import {StorefrontWeddingsHeading} from '../app/organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
+import {StorefrontWeddingsHeroMedia} from '../app/organisms/StorefrontWeddingsHeroMedia/StorefrontWeddingsHeroMedia.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -23,11 +24,7 @@ export function View({v}) {
                 whatsapp={v.waHref ? {label: v.t?.wa, href: v.waHref} : null}
               />
             }
-            heroMedia={
-              <>
-                <DS.ArchFrame ratio="4/5" placeholderLabel={v.t?.ph} alt="" />
-              </>
-            }
+            heroMedia={<StorefrontWeddingsHeroMedia placeholderLabel={v.t?.ph} />}
             services={
               <>
                 {list(v.services).map((s, $index) => (
