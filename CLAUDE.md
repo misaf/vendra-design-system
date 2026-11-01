@@ -214,6 +214,8 @@ StorefrontContactCompletion composes the named success region, alert and edit ac
 visibility/demo-live copy and contact/shared logic retain outcomes, draft retention and focus.
 StorefrontContactFeedback composes API-failure messaging; View retains visibility/message mapping
 and contact/shared logic retain errors, draft retention and clearing on edit/retry.
+Contact View passes its layout directly; localized descriptors, availability, callbacks, form
+composition and the empty Shell sticky-slot fragment remain unchanged.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
 retain map fallback, prefill, validation, submission, draft retention and focus.
 StorefrontWeddingsLayout arranges hero, services, story, inquiry and feedback slots; weddings
