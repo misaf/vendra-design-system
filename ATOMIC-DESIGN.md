@@ -250,7 +250,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsFeedback now composes API-failure messaging through the package danger Alert.
    Weddings View now passes layout/form/completion elements directly without redundant fragments.
    StorefrontFaqHeading now composes the FAQ eyebrow, accented title and introduction.
-   **Next stage: extract FAQ-page question groups into a storefront organism.**
+   StorefrontFaqQuestions now composes labelled category sections and Accordions from explicit groups.
+   **Next stage: extract FAQ-page contact help into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4119,6 +4120,32 @@ actual PNG bytes were checked and representative Persian phone and English deskt
 No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
 navigation suites and assistive-technology testing were not run.
 Next: extract FAQ-page question groups into a storefront organism.
+
+**One hundred and sixty-sixth checkpoint verified:** extracted StorefrontFaqQuestions under app
+organisms from the FAQ View questions slot. Explicit groups preserve category order, keyed fragments,
+section classes, stable h2 IDs/aria-labelledby and Accordion items/default expansion/headingLevel=3
+without a new wrapper. View retains list normalization; FAQ logic retains category/answer mapping
+and delivery-rule interpolation. Accordion owns disclosure state and keyboard behavior; shared logic
+retains navigation/locale/SEO/focus and layout retains column placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify three labelled category sections, stable IDs, h2/h3 hierarchy, default
+delivery expansion, single expansion within each group and independent expansion across groups.
+Touch or Enter/Space toggles named region panels; desktop focus remains on the trigger. Initial and
+expanded markup, relative element bounds and screenshots match. Contact navigation preserves
+language; tablet rotation retains expansion; containment and page-top axe pass.
+Component captures temporarily use a viewport height equal to list height plus 800 pixels to avoid
+sticky-header overlap. List width/height are checked unchanged, then the original viewport is restored
+for interaction checks. Markup comparison sorts attributes and consistently maps generated React
+Aria IDs/references. All 16 initial/expanded screenshot pairs are byte-identical; actual PNG bytes
+were checked and representative Persian tablet expanded and English desktop initial captures viewed.
+No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
+navigation suites and assistive-technology testing were not run.
+Next: extract FAQ-page contact help into a storefront organism.
 
 ## Adding components
 
