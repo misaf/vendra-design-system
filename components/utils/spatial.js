@@ -58,6 +58,11 @@ export function nearestInDirection(from, boxes, direction) {
       const ahead =
         sign > 0 ? end > fromEnd && start > fromStart : start < fromStart && end < fromEnd;
       if (!ahead) return;
+      // One that has not cleared the focused box's far edge is ahead only beside it, sharing some
+      // of its cross range; one that also sits above or below it is diagonal, for the other arrow.
+      const cleared = sign > 0 ? start >= fromEnd : end <= fromStart;
+      const shared = Math.min(fromCross[1], boxCross[1]) - Math.max(fromCross[0], boxCross[0]);
+      if (!cleared && shared <= 0) return;
       const along = sign > 0 ? Math.max(0, start - fromEnd) : Math.max(0, fromStart - end);
       score = along + SIDEWAYS_WEIGHT * gap(fromCross, boxCross);
     }
