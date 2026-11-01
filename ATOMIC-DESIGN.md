@@ -239,7 +239,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Shared Button now keeps pending announcements as text and guards activation/implicit submit.
    StorefrontContactCompletion now composes submission feedback and return-to-form action.
    StorefrontContactFeedback now composes API-failure messaging through the package danger Alert.
-   **Next stage: simplify contact-page View composition.**
+   Contact View now passes its layout directly without a redundant fragment.
+   **Next stage: extract weddings-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3848,6 +3849,31 @@ All 16 feedback screenshot pairs are byte-identical; actual PNG bytes were check
 tablet retry alert viewed. No styles, baselines or tolerances changed. Full-page visual, full
 browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: simplify contact-page View composition.
+
+**One hundred and fifty-fifth checkpoint verified:** simplified contact-page View composition by
+removing the redundant single-child fragment around StorefrontContactLayout. Four fragments become
+three: the form's multi-child fragment, heading text fragment and empty Shell sticky-slot fragment
+remain. Localized descriptors, availability, callbacks, conditional form/completion/feedback content
+and slot order are unchanged. Normalized Babel syntax trees match after unwrapping only the
+redundant fragment, before and after formatting. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop contact browser tests pass with retries disabled: pending completion/accessibility,
+return-to-form focus/drafts and failure recovery, studio map/directions, reply-channel validation,
+demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check initial/pending/failed completion absence, localized demo/live success
+wording, named-region/tabindex/focus, secondary edit action, removed fields, failed retry then
+completion, retained name/email/message drafts and message focus on return. Live requests are
+stubbed in-browser; no message is sent. Tablet rotation, containment and page-top axe pass.
+Form-column markup matches after sorting attributes and consistently mapping generated React Aria
+IDs/references; pointer position is stabilized before screenshots.
+All 16 completion screenshot pairs are byte-identical. Across all 32 form-column pairs, 29 are
+byte-identical; three English edit-state captures differ by 9–23 field-edge pixels (maximum channel
+delta 1) with unchanged dimensions/layout. Actual PNG bytes and bounds were checked; representative
+English tablet edit pairs were viewed. No styles, baselines or tolerances changed. Full-page visual,
+full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract weddings-page heading into a storefront organism.
 
 ## Adding components
 

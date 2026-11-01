@@ -121,7 +121,7 @@ for routed pages.
 | Policy layout | `app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (heading, policy navigation, notice, table of contents and document slots from policy View) |
 | FAQ layout | `app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (heading, questions and contact slots from FAQ View) |
 | Weddings layout | `app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (heading, hero media, services, story, inquiry introduction, inquiry and feedback slots from weddings View) |
-| Contact layout | `app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontContactHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, StorefrontContactFeedback and form heading slots from contact View) |
+| Contact layout | `app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontContactHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, StorefrontContactFeedback and form heading slots composed directly by contact View) |
 | Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (StorefrontSearchHeading, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots composed directly by search View) |
 | Saved-products layout | `app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
 | Tracking layout | `app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |

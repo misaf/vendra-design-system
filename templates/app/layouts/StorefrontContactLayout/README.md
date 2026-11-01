@@ -15,3 +15,5 @@ StorefrontContactFormControls composes the validation summary, controlled fields
 StorefrontContactCompletion composes the named success region, alert and return-to-form action from explicit props. View retains visibility/demo-live copy mapping; contact/shared logic retain outcomes, drafts and focus. This layout retains form-column placement.
 
 StorefrontContactFeedback composes the API-error danger Alert from an explicit message. View retains visibility/message mapping; contact/shared logic retain localized errors, drafts and clearing on edit/retry. This layout retains feedback placement after the columns.
+
+Contact View passes this layout directly without a single-child fragment. Localized descriptors, availability, callbacks, the form composition fragments and empty Shell sticky-slot fragment remain unchanged.
