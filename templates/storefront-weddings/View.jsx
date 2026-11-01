@@ -6,6 +6,7 @@ import {StorefrontWeddingsLayout} from '../app/layouts/StorefrontWeddingsLayout/
 import {StorefrontWeddingsHeading} from '../app/organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
 import {StorefrontWeddingsHeroMedia} from '../app/organisms/StorefrontWeddingsHeroMedia/StorefrontWeddingsHeroMedia.jsx';
 import {StorefrontWeddingsServices} from '../app/organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
+import {StorefrontWeddingsStory} from '../app/organisms/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,35 +29,12 @@ export function View({v}) {
             heroMedia={<StorefrontWeddingsHeroMedia placeholderLabel={v.t?.ph} />}
             services={<StorefrontWeddingsServices services={list(v.services)} />}
             story={
-              <>
-                <h2>
-                  <>{v.t?.galleryTitle}</>
-                </h2>
-                <div className="tw:grid tw:grid-cols-3 tw:gap-4">
-                  {list(v.gallery).map((photo, $index) => (
-                    <React.Fragment key={$index}>
-                      <img
-                        src={photo?.src}
-                        alt={photo?.alt}
-                        loading="lazy"
-                        className="tw:w-full tw:rounded-md"
-                      />
-                    </React.Fragment>
-                  ))}
-                </div>
-                <h2 className="tw:mt-7">
-                  <>{v.t?.processTitle}</>
-                </h2>
-                <ol className="tw:grid tw:gap-5 tw:md:grid-cols-3">
-                  {list(v.process).map((step, $index) => (
-                    <React.Fragment key={$index}>
-                      <li>
-                        <>{step}</>
-                      </li>
-                    </React.Fragment>
-                  ))}
-                </ol>
-              </>
+              <StorefrontWeddingsStory
+                galleryTitle={v.t?.galleryTitle}
+                gallery={list(v.gallery)}
+                processTitle={v.t?.processTitle}
+                process={list(v.process)}
+              />
             }
             inquiryIntro={
               <>
