@@ -125,7 +125,7 @@ jobs:
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 75
     container:
-      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
       options: ${{ needs.runner.outputs.options }}
     env:
       CI: 'true'
@@ -157,7 +157,7 @@ jobs:
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 75
     container:
-      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
       options: ${{ needs.runner.outputs.options }}
     env:
       CI: 'true'
