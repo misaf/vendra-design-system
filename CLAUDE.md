@@ -204,6 +204,8 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its localized label
+and StorefrontWeddingsLayout retains responsive hero placement.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
