@@ -240,7 +240,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactCompletion now composes submission feedback and return-to-form action.
    StorefrontContactFeedback now composes API-failure messaging through the package danger Alert.
    Contact View now passes its layout directly without a redundant fragment.
-   **Next stage: extract weddings-page heading into a storefront organism.**
+   StorefrontWeddingsHeading now composes the weddings eyebrow, title, introduction and hero actions.
+   **Next stage: extract weddings-page hero media into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3874,6 +3875,28 @@ delta 1) with unchanged dimensions/layout. Actual PNG bytes and bounds were chec
 English tablet edit pairs were viewed. No styles, baselines or tolerances changed. Full-page visual,
 full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract weddings-page heading into a storefront organism.
+
+**One hundred and fifty-sixth checkpoint verified:** extracted StorefrontWeddingsHeading under app organisms
+from the weddings View heading slot. Explicit eyebrow/title/accent/intro and plan/WhatsApp descriptors
+preserve the original sibling structure, title spacing, classes, button styles and external-link
+semantics. View retains localized copy, the inquiry anchor and WhatsApp availability. Layout keeps
+hero placement; weddings/shared logic retain configuration, navigation, inquiry state, validation,
+submission, drafts and focus. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass after syncing installed
+dependencies to the lockfile (the initial run detected stale local Playwright/axe packages).
+All six focused mobile/desktop browser tests pass with retries disabled: English/Persian plan-link
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920, each with configured and absent WhatsApp. They verify one h1, localized plan link,
+anchor href, optional action count, external-link semantics, touch/Enter activation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Heading markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+All 16 heading screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+English tablet and Persian phone captures viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page hero media into a storefront organism.
 
 ## Adding components
 
