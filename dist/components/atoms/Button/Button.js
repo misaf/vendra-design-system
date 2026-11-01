@@ -11,6 +11,26 @@ import { cx } from "../../utils/cx.js";
 // loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
 // keeps focus but can't be pressed); loadingLabel is announced to screen readers.
 export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, autoFocus, ...rest }) {
+	const buttonRef = React.useRef(null);
+	React.useEffect(() => {
+		const button = buttonRef.current;
+		const form = button?.form;
+		if (!loading || type !== "submit" || !form) return;
+		// A form with one text field can submit implicitly even without a submit button.
+		const preventPendingSubmit = (event) => {
+			if (!event.submitter || event.submitter === button) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		};
+		form.addEventListener("submit", preventPendingSubmit, true);
+		return () => form.removeEventListener("submit", preventPendingSubmit, true);
+	}, [
+		loading,
+		href,
+		type,
+		rest.form
+	]);
 	const iconSize = size === "sm" ? 16 : size === "lg" ? 20 : 18;
 	const classes = cx("ag-btn", "ag-btn--" + variant, "ag-btn--" + size, block && "ag-btn--block", loading && "ag-btn--loading", className);
 	const content = /* @__PURE__ */ React.createElement(React.Fragment, null, loading ? /* @__PURE__ */ React.createElement(Spinner, {
@@ -35,11 +55,19 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 		autoFocus,
 		className: classes + (disabled || loading ? " ag-btn--disabled" : "")
 	}, content);
+	// Keep pending announcements as text in the component. React Aria's isPending announcement
+	// references this button's ID, which becomes dangling if completion unmounts the button.
+	const pendingProps = loading ? Object.fromEntries(Object.entries(rest).filter(([key]) => !key.startsWith("on") || /Focus|Blur|Hover|Pointer(Enter|Leave|Over|Out)|Mouse(Enter|Leave|Over|Out)/.test(key))) : rest;
 	return /* @__PURE__ */ React.createElement(AriaButton, {
-		...rest,
-		type,
+		...pendingProps,
+		ref: buttonRef,
+		type: loading && type === "submit" ? "button" : type,
 		isDisabled: disabled,
-		isPending: loading,
+		"aria-disabled": loading || undefined,
+		onClickCapture: loading ? (event) => {
+			event.preventDefault();
+			event.stopPropagation();
+		} : rest.onClickCapture,
 		className: classes
 	}, content);
 }

@@ -236,7 +236,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactHeading now composes the contact eyebrow, accented title and introduction.
    StorefrontContactDetails now composes studio rows, contact actions, map and directions.
    StorefrontContactFormControls now composes validation summary, fields and send action.
-   **Next stage: fix pending-submit announcement accessibility.**
+   Shared Button now keeps pending announcements as text and guards activation/implicit submit.
+   **Next stage: extract contact-page completion into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3754,6 +3755,43 @@ timing differences; original captures are retained. No styles, baselines or tole
 Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
 testing were not run.
 Next: fix pending-submit announcement accessibility.
+
+**One hundred and fifty-second checkpoint verified:** fixed pending-submit announcement accessibility
+in the shared package Button. React Aria's isPending announcements reference the originating button
+ID; removing that button after completion left unnamed role=img entries in its assertive log.
+Button now uses its inline text loadingLabel status and owns pending interaction guards instead of
+requesting ID-based pending announcements. It retains React Aria's action/link primitives, visible
+label/spinner, accessible names, focusability while pending and native explicit-disabled behavior.
+Activation callbacks are blocked while focus/hover callbacks remain available. Pending submit buttons
+use type=button; a scoped form listener also blocks implicit submission from a single text field,
+without blocking a different enabled submitter. The listener is removed on recovery/unmount.
+Pending CSS selectors now use the existing loading class, preserving visual values and disabled
+link styling. Package declarations/docs and generated dist output are updated.
+
+Two bilingual completion-announcement regression tests fail on the old implementation and pass
+afterward. Added component coverage checks pending focus, inline status, pointer/Enter/Space
+blocking, programmatic click, implicit form submission, another enabled submitter and recovery.
+Added bilingual mobile/desktop contact tests use an in-browser API stub for pending completion,
+return-to-form focus/drafts, failed retry and clean axe scans without external requests.
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 76 selected
+component interaction/accessibility tests and all 12 focused contact browser tests pass with retries
+disabled. Initial concurrent test runs shared an artifact directory and produced trace-file errors;
+final runs use isolated output folders and a list reporter.
+
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920 across initial, invalid, pending, failed and return-to-form states. They verify
+payload trimming, pending loading/disabled state, validation focus, failed-request drafts, retry
+completion, retained edit values, tablet rotation and containment. Baseline axe reproduces the two
+unnamed announcement nodes after completion/edit; current axe is clean in every captured state.
+Form markup matches after generated React Aria ID mapping, attribute sorting and removal of the
+old internal data-pending marker from the baseline comparison; pending styles now use the loading
+class. Pointer position is stabilized before capture. No screenshot baselines or tolerances change.
+All 40 form-column screenshot pairs preserve dimensions/layout; 34 are byte-identical. Six tablet/
+desktop invalid/pending/edit captures differ by 2–53 pixels (maximum channel delta 26); actual PNG
+bytes and bounds were checked, and representative Persian invalid and English pending pairs were
+viewed. No screenshot baselines or tolerances changed. Full-page visual, full browser/device and TV
+spatial-navigation suites and assistive-technology testing were not run.
+Next: extract contact-page completion into a storefront organism.
 
 ## Adding components
 

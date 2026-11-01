@@ -27,6 +27,21 @@ export function Button({
   autoFocus,
   ...rest
 }) {
+  const buttonRef = React.useRef(null);
+  React.useEffect(() => {
+    const button = buttonRef.current;
+    const form = button?.form;
+    if (!loading || type !== 'submit' || !form) return;
+    // A form with one text field can submit implicitly even without a submit button.
+    const preventPendingSubmit = event => {
+      if (!event.submitter || event.submitter === button) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    };
+    form.addEventListener('submit', preventPendingSubmit, true);
+    return () => form.removeEventListener('submit', preventPendingSubmit, true);
+  }, [loading, href, type, rest.form]);
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 20 : 18;
   const classes = cx(
     'ag-btn',
@@ -66,8 +81,34 @@ export function Button({
         {content}
       </Link>
     );
+  // Keep pending announcements as text in the component. React Aria's isPending announcement
+  // references this button's ID, which becomes dangling if completion unmounts the button.
+  const pendingProps = loading
+    ? Object.fromEntries(
+        Object.entries(rest).filter(
+          ([key]) =>
+            !key.startsWith('on') ||
+            /Focus|Blur|Hover|Pointer(Enter|Leave|Over|Out)|Mouse(Enter|Leave|Over|Out)/.test(key)
+        )
+      )
+    : rest;
   return (
-    <AriaButton {...rest} type={type} isDisabled={disabled} isPending={loading} className={classes}>
+    <AriaButton
+      {...pendingProps}
+      ref={buttonRef}
+      type={loading && type === 'submit' ? 'button' : type}
+      isDisabled={disabled}
+      aria-disabled={loading || undefined}
+      onClickCapture={
+        loading
+          ? event => {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          : rest.onClickCapture
+      }
+      className={classes}
+    >
       {content}
     </AriaButton>
   );
