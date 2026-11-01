@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontWeddingsLayout} from '../app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
 import {StorefrontWeddingsHeading} from '../app/organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
 import {StorefrontWeddingsHeroMedia} from '../app/organisms/StorefrontWeddingsHeroMedia/StorefrontWeddingsHeroMedia.jsx';
+import {StorefrontWeddingsServices} from '../app/organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -25,30 +26,7 @@ export function View({v}) {
               />
             }
             heroMedia={<StorefrontWeddingsHeroMedia placeholderLabel={v.t?.ph} />}
-            services={
-              <>
-                {list(v.services).map((s, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.Card padding={24}>
-                      <div className="tw:flex tw:flex-col tw:gap-3">
-                        <div className="vf-weddings-service-icon tw:grid tw:w-tap tw:h-tap tw:rounded-pill tw:bg-accent-soft tw:text-on-soft tw:place-items-center">
-                          <DS.Icon name={s?.icon} size={20} />
-                        </div>
-                        <div className="vf-weddings-service-title tw:text-md tw:font-medium">
-                          <>{s?.title}</>
-                        </div>
-                        <div className="vf-weddings-service-description tw:text-base tw:leading-body tw:text-quiet">
-                          <>{s?.body}</>
-                        </div>
-                        <div className="vf-weddings-service-price tw:text-sm tw:font-medium tw:text-accent">
-                          <>{s?.price}</>
-                        </div>
-                      </div>
-                    </DS.Card>
-                  </React.Fragment>
-                ))}
-              </>
-            }
+            services={<StorefrontWeddingsServices services={list(v.services)} />}
             story={
               <>
                 <h2>

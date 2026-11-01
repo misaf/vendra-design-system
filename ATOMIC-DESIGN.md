@@ -242,7 +242,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Contact View now passes its layout directly without a redundant fragment.
    StorefrontWeddingsHeading now composes the weddings eyebrow, title, introduction and hero actions.
    StorefrontWeddingsHeroMedia now composes the localized hero arch placeholder.
-   **Next stage: extract weddings-page services into a storefront organism.**
+   StorefrontWeddingsServices now composes ordered service cards from explicit records.
+   **Next stage: extract weddings-page story into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3921,6 +3922,29 @@ captures were viewed. No styles, baselines or tolerances changed.
 Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
 testing were not run.
 Next: extract weddings-page services into a storefront organism.
+
+**One hundred and fifty-eighth checkpoint verified:** extracted StorefrontWeddingsServices under
+app organisms from the weddings View services slot. Explicit service records preserve card order,
+keyed fragments, padding, decorative icons and title/description/price classes without a new wrapper.
+View retains list normalization; weddings logic supplies localized service/pricing records and keeps
+inquiry state, validation, submission, drafts and focus. Layout retains the responsive services grid.
+Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/
+desktop browser cases pass across two runs with retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility. The initial run had
+five passes and one Chrome launch timeout before the page opened; that mobile validation case
+passed in isolation. The stalled task-owned browser/worker was stopped; original logs are retained.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify card count/order/localized title/body/price, decorative icons, padding,
+direct grid children, equal grid columns/card bounds, touch/Enter inquiry navigation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Service-section markup matches after sorting attributes and consistently mapping generated React
+Aria IDs. All eight service screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet and English desktop captures viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page story into a storefront organism.
 
 ## Adding components
 
