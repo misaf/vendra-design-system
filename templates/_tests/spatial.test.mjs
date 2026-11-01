@@ -33,6 +33,14 @@ assert.equal(nearestInDirection(card, [save, next], 'down'), -1, 'the button is 
 assert.equal(nearestInDirection(save, [card, next], 'down'), 0, 'back to its card');
 assert.equal(nearestInDirection(save, [card, next], 'right'), 1, 'on to the next card');
 
+// A header link above and slightly past a tall photo is up, not right: right goes to the details
+// beside the photo, even though they are further away.
+const photo = box(100, 150, 800, 1000);
+const logo = box(880, 80, 180, 64);
+const details = box(1280, 900, 500, 50);
+assert.equal(nearestInDirection(photo, [logo, details], 'right'), 1, 'right: beside, not diagonal');
+assert.equal(nearestInDirection(photo, [logo, details], 'up'), 0, 'up: the header link');
+
 // Physical directions: in a right-to-left row the next item is on the left, and ArrowLeft finds it.
 const rtlFirst = box(300, 0, 100, 100);
 const rtlSecond = box(180, 0, 100, 100);

@@ -7,13 +7,16 @@ import {openSite} from './helpers.mjs';
 const BUDGET = {
   // Compressed JS / CSS / font bytes a page loads before the site starts preloading other pages.
   firstPageJsKb: 240,
-  firstPageCssKb: 20,
+  // One shared stylesheet for every page: 24KB since the counter presentation and the
+  // product-code and delivery-review work of October 2026.
+  firstPageCssKb: 27,
   firstPageFontKb: 110,
   // Cumulative layout shift while the web fonts arrive 1.2s late (metric-matched fallbacks).
   fontSwapCls: 0.05,
-  // Largest contentful paint on slow 4G (150ms, 1.6Mbps) with a 4x slower CPU (2.7–3.9s today).
-  // Generous: it catches large regressions, not small timing noise.
-  slowLcpMs: 5000,
+  // Largest contentful paint on slow 4G (150ms, 1.6Mbps) with a 4x slower CPU (2.7–3.9s on a
+  // Mac; the home page paints at 5.1–5.9s in CI's Linux image). Generous: it catches large
+  // regressions, not small timing noise.
+  slowLcpMs: 6500,
   // Main-thread time blocked by long tasks (the part of each past 50ms) from load until two
   // seconds after the largest paint, on the same slow phone: how long a first tap can wait. Up to
   // 370ms on a Mac and 850ms in CI's Linux image today; generous for the same reason.
