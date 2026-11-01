@@ -19,8 +19,8 @@
     "new:component": "node _build/new-component.cjs"
   },
   "devDependencies": {
-    "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.64.0",
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
     "@tailwindcss/cli": "4.3.3",
     "@types/react": "18.3.31",
     "prettier": "3.9.10",

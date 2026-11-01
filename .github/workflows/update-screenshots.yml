@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ vars.E2E_RUNS_ON && fromJSON(vars.E2E_RUNS_ON) || 'ubuntu-24.04' }}
     timeout-minutes: 75
     container:
-      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
       options: ${{ vars.E2E_RUNS_ON && format('--ipc=host --memory=5g --memory-swap=5g{0}', vars.E2E_CPUS && format(' --cpus={0}', vars.E2E_CPUS) || '') || '--ipc=host' }}
     env:
       CI: 'true'
