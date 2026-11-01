@@ -98,6 +98,21 @@ function vfBox(element) {
   return box;
 }
 
+// The part of an element's box on screen. An item taller than the room below the sticky header
+// keeps its top under the header once focused; arrows are aimed from what the viewer sees.
+function vfShownBox(element, box) {
+  const x = Math.min(Math.max((box.left + box.right) / 2, 0), innerWidth - 1);
+  const shown = y => {
+    const hit = document.elementFromPoint(x, y);
+    return !hit || element.contains(hit) || hit.contains(element);
+  };
+  let top = Math.max(box.top, 0);
+  let bottom = Math.min(box.bottom, innerHeight);
+  while (top < bottom && !shown(top + 1)) top += 4;
+  while (bottom > top && !shown(bottom - 1)) bottom -= 4;
+  return bottom > top ? {left: box.left, right: box.right, top, bottom} : box;
+}
+
 // The items the arrows can reach in `scope`, with their boxes. A focusable region around other
 // items (a carousel's scrolling track) is left out: the arrows go to the items inside it.
 function vfTargets(scope, selector = VF_FOCUSABLE) {
@@ -196,7 +211,8 @@ export function vfRemoteNavigation() {
       document.body;
     const targets = vfTargets(scope).filter(target => target.element !== focused);
     // Nothing focused yet: start from the edge of the screen the arrow points away from.
-    const from = (focused && vfBox(focused)) || {
+    const focusedBox = focused && vfBox(focused);
+    const from = (focusedBox && vfShownBox(focused, focusedBox)) || {
       left: direction === 'left' ? innerWidth : 0,
       right: direction === 'right' ? 0 : innerWidth,
       top: direction === 'up' ? innerHeight : 0,
