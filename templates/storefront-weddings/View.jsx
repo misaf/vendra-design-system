@@ -9,6 +9,7 @@ import {StorefrontWeddingsServices} from '../app/organisms/StorefrontWeddingsSer
 import {StorefrontWeddingsStory} from '../app/organisms/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
 import {StorefrontWeddingsInquiryIntro} from '../app/organisms/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
 import {StorefrontWeddingsFormControls} from '../app/organisms/StorefrontWeddingsFormControls/StorefrontWeddingsFormControls.jsx';
+import {StorefrontWeddingsCompletion} from '../app/organisms/StorefrontWeddingsCompletion/StorefrontWeddingsCompletion.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -90,22 +91,11 @@ export function View({v}) {
                 ) : null}
                 {v.sent ? (
                   <>
-                    <div
-                      id="vf-weddings-success"
-                      tabIndex={-1}
-                      role="region"
-                      aria-label={v.t?.okT}
-                      className="tw:flex tw:flex-col tw:gap-4"
-                    >
-                      <DS.Alert tone="success" title={v.t?.okT}>
-                        <>{v.t?.okP}</>
-                      </DS.Alert>
-                      <div>
-                        <DS.Button variant="secondary" onClick={v.editMessage}>
-                          <>{v.t?.editMessage}</>
-                        </DS.Button>
-                      </div>
-                    </div>
+                    <StorefrontWeddingsCompletion
+                      title={v.t?.okT}
+                      body={v.t?.okP}
+                      edit={{label: v.t?.editMessage, onClick: v.editMessage}}
+                    />
                   </>
                 ) : null}
               </>
