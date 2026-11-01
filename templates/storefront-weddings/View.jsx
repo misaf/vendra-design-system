@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontWeddingsLayout} from '../app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
+import {StorefrontWeddingsHeading} from '../app/organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,37 +14,14 @@ export function View({v}) {
         <>
           <StorefrontWeddingsLayout
             heading={
-              <>
-                <div className="vf-weddings-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.eb}</>
-                </div>
-                <h1>
-                  <>{v.t?.hA} </>
-                  <em className="vf-weddings-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                    <>{v.t?.hB}</>
-                  </em>
-                </h1>
-                <p className="vf-weddings-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty">
-                  <>{v.t?.hP}</>
-                </p>
-                <div className="tw:flex tw:gap-3 tw:flex-wrap">
-                  <DS.Button variant="primary" size="lg" href="#inquiry" iconEnd="arrow-down">
-                    <>{v.t?.plan}</>
-                  </DS.Button>
-                  {v.waHref ? (
-                    <DS.Button
-                      variant="ghost"
-                      size="lg"
-                      iconStart="message-circle"
-                      href={v.waHref}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      <>{v.t?.wa}</>
-                    </DS.Button>
-                  ) : null}
-                </div>
-              </>
+              <StorefrontWeddingsHeading
+                eyebrow={v.t?.eb}
+                title={v.t?.hA}
+                accent={v.t?.hB}
+                intro={v.t?.hP}
+                plan={{label: v.t?.plan, href: '#inquiry'}}
+                whatsapp={v.waHref ? {label: v.t?.wa, href: v.waHref} : null}
+              />
             }
             heroMedia={
               <>
