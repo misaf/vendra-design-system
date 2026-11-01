@@ -148,7 +148,9 @@ test('the delivery pin sets the zone and fee', async ({page}) => {
   await pinDelivery(page);
   // The sample bag is over the free-delivery threshold, so the zone shows Free rather than its fee.
   await expect(zone).toContainText('Karaj central · Free');
-  await expect(zone).toContainText('Set from the pin. Same day before 18:00');
+  await expect(zone).toContainText('Set from the pin.');
+  // The orchid needs preparation, so the bag promises no same-day cut-off.
+  await expect(zone).not.toContainText('Same day before');
 });
 
 test('the shop shows a page of designs, then the rest, keeping the page in the URL', async ({
@@ -1158,10 +1160,13 @@ for (const lang of ['en', 'fa']) {
     const email = section.locator('#vf-news-email');
     const submitName = lang === 'en' ? 'Subscribe' : 'عضویت';
     const submit = section.getByRole('button', {name: submitName, exact: true});
+    // Button announces its pending state with its own status text, not React Aria's announcer.
+    const pending = submit.locator('[role="status"]');
+    const pendingText = lang === 'en' ? 'Subscribing…' : 'در حال عضویت…';
     const announcements = page.locator('[data-live-announcer] [role="img"]');
     await email.fill('rose@example.com');
     await submit.click();
-    await expect(announcements.first()).toBeAttached();
+    await expect(pending).toHaveText(pendingText);
     await email.press('Enter');
     expect(await page.evaluate(() => window.__newsletterSubmission.calls)).toBe(1);
     await page.evaluate(() =>
@@ -1172,12 +1177,11 @@ for (const lang of ['en', 'fa']) {
     await expect(email).toHaveAttribute('aria-invalid', 'true');
     await submit.click();
     expect(await page.evaluate(() => window.__newsletterSubmission.calls)).toBe(2);
-    await expect(announcements.nth(1)).toBeAttached();
+    await expect(pending).toHaveText(pendingText);
     await page.evaluate(() => window.__newsletterSubmission.resolve());
     await expect(section.locator('#vf-news-done')).toBeFocused();
     await expect(submit).toHaveCount(0);
-    // Inspect the retained live announcements before their seven-second cleanup.
-    expect(await announcements.count()).toBeGreaterThan(0);
+    // Any live announcement still retained after the button unmounts must keep its name.
     for (const announcement of await announcements.all()) {
       await expect(announcement).toHaveAccessibleName(submitName);
     }
