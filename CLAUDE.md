@@ -204,6 +204,8 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+StorefrontWeddingsFormControls composes explicit validation/field/send descriptors; View retains
+visibility and copy mapping, while weddings logic retains state, payloads, dates, validation and focus.
 StorefrontWeddingsInquiryIntro composes explicit title/intro; View maps localized copy, layout
 retains the inquiry anchor/column and weddings logic retains form behavior.
 StorefrontWeddingsStory composes gallery/process content; View maps titles and normalizes lists,
