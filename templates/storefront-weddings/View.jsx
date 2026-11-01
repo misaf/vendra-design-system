@@ -8,6 +8,7 @@ import {StorefrontWeddingsHeroMedia} from '../app/organisms/StorefrontWeddingsHe
 import {StorefrontWeddingsServices} from '../app/organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
 import {StorefrontWeddingsStory} from '../app/organisms/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
 import {StorefrontWeddingsInquiryIntro} from '../app/organisms/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
+import {StorefrontWeddingsFormControls} from '../app/organisms/StorefrontWeddingsFormControls/StorefrontWeddingsFormControls.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -42,88 +43,49 @@ export function View({v}) {
               <>
                 {v.notSent ? (
                   <>
-                    <DS.Card padding={24}>
-                      <div className="tw:flex tw:flex-col tw:gap-4">
-                        <DS.ErrorSummary id="vf-wedding-errors" errors={v.problems} />
-                        <div className="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]">
-                          <DS.Input
-                            id="vf-wname"
-                            required={true}
-                            label={v.t?.name}
-                            autoComplete="name"
-                            value={v.name}
-                            onChange={v.setName}
-                            error={v.nameErr}
-                          />
-                          <DS.Input
-                            label={v.t?.emailLabel}
-                            value={v.email}
-                            onChange={v.setEmail}
-                            type="email"
-                            dir="ltr"
-                            autoComplete="email"
-                          />
-                          <DS.PhoneInput
-                            id="vf-wphone"
-                            required={true}
-                            label={v.t?.phone}
-                            value={v.phone}
-                            onChange={v.setPhone}
-                            error={v.phoneErr}
-                          />
-                        </div>
-                        <div className="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]">
-                          <DS.Select
-                            id="vf-wtype"
-                            value={v.type}
-                            onChange={v.setType}
-                            label={v.t?.type}
-                            options={v.types}
-                          />
-                        </div>
-                        <DS.Input
-                          label={v.t?.guests}
-                          inputMode="numeric"
-                          value={v.guests}
-                          onChange={v.setGuests}
-                        />
-                        <DS.DatePicker
-                          label={v.t?.date}
-                          value={v.wDate}
-                          onChange={v.setWDate}
-                          lang={v.lang}
-                          minDate={v.today}
-                        />
-                        <DS.Select
-                          id="vf-wbudget"
-                          value={v.budget}
-                          onChange={v.setBudget}
-                          label={v.t?.budget}
-                          options={v.budgets}
-                        />
-                        <DS.Input
-                          id="vf-wmsg"
-                          value={v.notes}
-                          onChange={v.setNotes}
-                          label={v.t?.msg}
-                          hint={v.t?.msgHint}
-                          multiline={true}
-                          rows={4}
-                        />
-                        <div>
-                          <DS.Button
-                            variant="primary"
-                            size="lg"
-                            iconEnd="send"
-                            onClick={v.send}
-                            loading={v.busy}
-                            disabled={v.busy}
-                          >
-                            <>{v.t?.send}</>
-                          </DS.Button>
-                        </div>
-                      </div>
-                    </DS.Card>
+                    <StorefrontWeddingsFormControls
+                      problems={v.problems}
+                      name={{
+                        label: v.t?.name,
+                        value: v.name,
+                        onChange: v.setName,
+                        error: v.nameErr
+                      }}
+                      email={{label: v.t?.emailLabel, value: v.email, onChange: v.setEmail}}
+                      phone={{
+                        label: v.t?.phone,
+                        value: v.phone,
+                        onChange: v.setPhone,
+                        error: v.phoneErr
+                      }}
+                      event={{
+                        label: v.t?.type,
+                        value: v.type,
+                        onChange: v.setType,
+                        options: v.types
+                      }}
+                      guests={{label: v.t?.guests, value: v.guests, onChange: v.setGuests}}
+                      date={{
+                        label: v.t?.date,
+                        value: v.wDate,
+                        onChange: v.setWDate,
+                        lang: v.lang,
+                        minDate: v.today
+                      }}
+                      budget={{
+                        label: v.t?.budget,
+                        value: v.budget,
+                        onChange: v.setBudget,
+                        options: v.budgets
+                      }}
+                      message={{
+                        label: v.t?.msg,
+                        hint: v.t?.msgHint,
+                        value: v.notes,
+                        onChange: v.setNotes
+                      }}
+                      send={{label: v.t?.send, onClick: v.send, busy: v.busy}}
+                    />
                   </>
                 ) : null}
                 {v.sent ? (

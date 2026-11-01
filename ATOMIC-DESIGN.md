@@ -245,7 +245,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsServices now composes ordered service cards from explicit records.
    StorefrontWeddingsStory now composes gallery and process content from explicit props.
    StorefrontWeddingsInquiryIntro now composes the localized inquiry heading and introduction.
-   **Next stage: extract weddings-page form controls into a storefront organism.**
+   StorefrontWeddingsFormControls now composes validation, fields and the send action.
+   **Next stage: extract weddings-page completion into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3990,6 +3991,35 @@ byte-identical; actual PNG bytes were checked and representative Persian tablet 
 captures viewed. No styles, baselines or tolerances changed. Full-page visual, full browser/device
 and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract weddings-page form controls into a storefront organism.
+
+**One hundred and sixty-first checkpoint verified:** extracted StorefrontWeddingsFormControls under
+app organisms from the weddings View's conditional form slot. Explicit problems and name/email/
+phone/event/guests/date/budget/message/send descriptors preserve the Card, field order, stable IDs,
+required/autocomplete/type/direction attributes, date language/minimum, options, message hint/rows
+and busy loading/disabled action. View retains descriptor mapping and form/completion visibility;
+weddings/shared logic retain field state, date constraints, validation, API payloads, busy/error/
+completion state, drafts and focus. Layout retains inquiry placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled. New bilingual regression coverage
+checks summary links/name focus, every field, event/budget selection, keyboard calendar selection,
+complete localized request payloads, pending duplicate-click prevention, failed-send feedback, retry,
+completion focus/accessibility, return-to-name focus and retained text/select/date values. Live
+requests are stubbed locally; no inquiry is sent. Existing bilingual inquiry-anchor and validation
+coverage also passes. The new test's initial exact calendar locator was corrected for the existing
+accessible name that includes its field label; initial logs are retained separately.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify field contracts, Card padding, equal grid columns/field bounds,
+touch/Enter anchor navigation, retained drafts, tablet rotation, containment and page-top axe.
+Form markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+Seven original screenshot pairs are byte-identical. The English TV pair has sticky-header overlap
+at different automatic scroll positions (48,732 differing pixels); markup and field bounds match.
+A separate 1920-by-2200 paired capture fits the tall form without header overlap and is byte-identical;
+original captures are retained. Actual PNG bytes/dimensions/bounds were checked, and Persian tablet,
+English desktop, original TV pairs and corrected TV capture viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page completion into a storefront organism.
 
 ## Adding components
 
