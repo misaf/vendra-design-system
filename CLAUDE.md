@@ -212,6 +212,8 @@ StorefrontContactFormControls composes summary, controlled fields and busy send 
 visibility/descriptors/callbacks and contact/shared logic retain validation, submission, drafts and focus.
 StorefrontContactCompletion composes the named success region, alert and edit action; View maps
 visibility/demo-live copy and contact/shared logic retain outcomes, draft retention and focus.
+StorefrontContactFeedback composes API-failure messaging; View retains visibility/message mapping
+and contact/shared logic retain errors, draft retention and clearing on edit/retry.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
 retain map fallback, prefill, validation, submission, draft retention and focus.
 StorefrontWeddingsLayout arranges hero, services, story, inquiry and feedback slots; weddings
