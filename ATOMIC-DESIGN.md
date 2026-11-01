@@ -249,7 +249,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsCompletion now composes submission feedback and the return-to-form action.
    StorefrontWeddingsFeedback now composes API-failure messaging through the package danger Alert.
    Weddings View now passes layout/form/completion elements directly without redundant fragments.
-   **Next stage: extract FAQ-page heading into a storefront organism.**
+   StorefrontFaqHeading now composes the FAQ eyebrow, accented title and introduction.
+   **Next stage: extract FAQ-page question groups into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4095,6 +4096,29 @@ representative Persian tablet live and English desktop demo captures viewed. No 
 or tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract FAQ-page heading into a storefront organism.
+
+**One hundred and sixty-fifth checkpoint verified:** extracted StorefrontFaqHeading under app
+organisms from the FAQ View heading slot. Explicit eyebrow/title/accent/intro props preserve the
+sibling structure, h1, title spacing, accent and introduction classes without a new wrapper. View
+retains localized copy mapping; layout retains the page header and responsive placement. FAQ/shared
+logic retain category/answer mapping, delivery-rule interpolation, navigation, locale, SEO and focus;
+Accordion retains expansion behavior. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: recovery navigation to FAQ, printed
+content without site chrome, and standalone desktop language switching. The suite intentionally skips
+the duplicate mobile standalone-language case.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify localized eyebrow/title/accent/intro, one h1, direct header children,
+language/direction and equal header/child bounds. Three question groups and default delivery
+expansion remain; touch or Enter/Space closes/opens panels and preserves single expansion and
+heading markup. Internal contact navigation preserves language. Tablet rotation, containment and
+initial/expanded page-top axe pass.
+Heading markup matches without normalization. All eight heading screenshot pairs are byte-identical;
+actual PNG bytes were checked and representative Persian phone and English desktop captures viewed.
+No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
+navigation suites and assistive-technology testing were not run.
+Next: extract FAQ-page question groups into a storefront organism.
 
 ## Adding components
 
