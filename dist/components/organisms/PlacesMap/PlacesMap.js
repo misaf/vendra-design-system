@@ -58,6 +58,9 @@ export function PlacesMap({ id, label, places = [], loadLeaflet, tiles, center, 
 			maxZoom: 15
 		});
 		else if (shown.length) map.setView([shown[0].location.lat, shown[0].location.lng], 15);
+		// A permanent label is centred on its pin by its width when it opens; centre it again once the
+		// web font has arrived and changed that width.
+		document.fonts?.ready.then(() => layer.eachLayer((marker) => marker.getTooltip() && marker.getTooltip().update()));
 	};
 	React.useEffect(() => {
 		let alive = true;
