@@ -337,10 +337,11 @@ export function vfShell(self, page) {
     features,
     hasLang: VF_STORE.languages.length > 1,
     setLang,
-    // Mobile headers have room for one button: it switches to the other language.
+    // Mobile headers have room for one button: it switches to the other language. Its name starts
+    // with the visible abbreviation, so voice control can activate it by what it shows.
     otherLang: {
       label: fa ? 'EN' : 'فا',
-      name: fa ? 'English' : 'فارسی',
+      name: fa ? 'EN, English' : 'فا، فارسی',
       lang: fa ? 'en' : 'fa',
       pick: () => setLang(fa ? 'en' : 'fa')
     },

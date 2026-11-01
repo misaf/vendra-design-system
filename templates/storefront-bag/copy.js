@@ -157,7 +157,7 @@ export function vfCopy(S) {
       cardFor: 'کارت برای {name}',
       cardNext: 'متن کارت را در مرحله بعد می‌نویسید.',
       addCard: 'افزودن کارت، +{price}',
-      addCardLabel: 'افزودن کارت (+{price}) برای {name}',
+      addCardLabel: 'افزودن کارت، +{price}، برای {name}',
       remove: 'حذف',
       removed: 'محصول {name} از سبد شما حذف شد.',
       undo: 'بازگردانی',
