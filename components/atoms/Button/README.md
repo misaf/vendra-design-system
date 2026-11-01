@@ -11,7 +11,7 @@ Variants: primary · secondary · soft · ghost. Sizes: sm 36 / md 46 / lg 56px.
 
 `href` (+ `target`, `rel`) renders `<a>` for navigation ("Shop now", "View all"); without it, React Aria's Button for actions (it takes `onClick` and other pointer/mouse events, `type`, `disabled`, `id`, `data-*`, `aria-label`/`-labelledby`/`-describedby` and `aria-pressed`/`-expanded`/`-controls`/`-haspopup`/`-current`; other attributes such as `title` or `tabIndex` aren't passed on). Disabled links drop the href and get `aria-disabled`. With `href` it is React Aria's Link: wrap the app in React Aria's `RouterProvider` and in-site links navigate through your router (the storefront's `storefront-site/View.jsx` does this); without one they load normally.
 
-`loading` makes the button pending: it keeps focus (so a keyboard user isn't dropped) but can't be pressed, and `loadingLabel` is announced.
+`loading` makes the button pending: it keeps focus (so a keyboard user isn't dropped) but can't be pressed, and `loadingLabel` is announced through an inline text status. The wrapper blocks activation and implicit submit while pending without creating live announcements that reference a button which completion may unmount. Pending callbacks are suppressed while focus/hover callbacks remain available. Pending styles use the existing loading class. Implicit submission is guarded while pending; another enabled submit button remains usable. Explicit `disabled` still uses native disabled semantics.
 
 ## Usage
 

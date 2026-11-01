@@ -6,6 +6,10 @@ and migration order. New UI components live in `components/atoms/`, `components/
 atoms|molecules|organisms`. Existing flat component folders migrate incrementally. References below
 to `components/<Name>/` mean the component's own folder, including its layer after migration.
 
+Package Button owns pending activation/implicit-submit guards and inline text loadingLabel status.
+Keep pending announcements independent of button IDs so completion/navigation may unmount controls.
+Explicit disabled remains native; another enabled submit button is not blocked by the pending guard.
+
 Storefront-specific molecules live under `templates/app/molecules/<Name>/` for small app-owned
 combinations. StorefrontPresentationLabel renders code/sold-out text from explicit props;
 View/logic retain product data, localization and stock decisions.

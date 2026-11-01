@@ -75,7 +75,7 @@ export interface ButtonProps extends ButtonDOMProps {
   target?: string;
   /** Defaults to "noopener noreferrer" when target="_blank" */
   rel?: string;
-  /** Shows a spinner in place of iconStart; the button stays focusable but can't be pressed (React Aria isPending). Keep the label — don't swap it for "Loading…". */
+  /** Shows a spinner in place of iconStart; the button stays focusable but can't be pressed (pending interactions are blocked). Keep the label — don't swap it for "Loading…". */
   loading?: boolean;
   /** Announced politely while loading, e.g. "Placing your order" */
   loadingLabel?: string;
