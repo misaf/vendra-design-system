@@ -5,6 +5,7 @@ import {StorefrontContactLayout} from '../app/layouts/StorefrontContactLayout/St
 import {StorefrontContactHeading} from '../app/organisms/StorefrontContactHeading/StorefrontContactHeading.jsx';
 import {StorefrontContactDetails} from '../app/organisms/StorefrontContactDetails/StorefrontContactDetails.jsx';
 import {StorefrontContactFormControls} from '../app/organisms/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
+import {StorefrontContactCompletion} from '../app/organisms/StorefrontContactCompletion/StorefrontContactCompletion.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -73,24 +74,11 @@ export function View({v}) {
                   />
                 ) : null}
                 {v.sent ? (
-                  <>
-                    <div
-                      id="vf-contact-success"
-                      tabIndex={-1}
-                      role="region"
-                      aria-label={v.t?.okT}
-                      className="tw:flex tw:flex-col tw:gap-4"
-                    >
-                      <DS.Alert tone="success" title={v.t?.okT}>
-                        <>{v.t?.okP}</>
-                      </DS.Alert>
-                      <div>
-                        <DS.Button variant="secondary" onClick={v.editMessage}>
-                          <>{v.t?.editMessage}</>
-                        </DS.Button>
-                      </div>
-                    </div>
-                  </>
+                  <StorefrontContactCompletion
+                    title={v.t?.okT}
+                    body={v.t?.okP}
+                    edit={{label: v.t?.editMessage, onClick: v.editMessage}}
+                  />
                 ) : null}
               </>
             }
