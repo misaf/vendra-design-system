@@ -237,12 +237,14 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactDetails now composes studio rows, contact actions, map and directions.
    StorefrontContactFormControls now composes validation summary, fields and send action.
    Shared Button now keeps pending announcements as text and guards activation/implicit submit.
-   **Next stage: extract contact-page completion into a storefront organism.**
+   StorefrontContactCompletion now composes submission feedback and return-to-form action.
+   **Next stage: extract contact-page feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
-Each batch gets a separate local commit after its checks. The flat component folders are the
-remaining migration backlog, not an alternative location for new components. Migrated components
+Each batch gets a separate branch, local commit and pull request after its checks. Merge only when
+requested. The flat component folders are the remaining migration backlog, not an alternative
+location for new components. Migrated components
 must not import from that backlog. Checkpoints describe completed work, not a promise that a
 folder move alone finishes a redesign.
 
@@ -3792,6 +3794,35 @@ bytes and bounds were checked, and representative Persian invalid and English pe
 viewed. No screenshot baselines or tolerances changed. Full-page visual, full browser/device and TV
 spatial-navigation suites and assistive-technology testing were not run.
 Next: extract contact-page completion into a storefront organism.
+
+**One hundred and fifty-third checkpoint verified:** extracted StorefrontContactCompletion under
+`templates/app/organisms/` with explicit title/body and edit (label, onClick) props. It preserves the
+vf-contact-success focus target, tabindex, named region, success Alert, secondary return-to-form
+button and original wrappers/classes without adding a DOM wrapper. View retains sent visibility
+and localized demo/live copy mapping; contact/shared logic retain submission outcomes, busy/errors,
+draft retention, edit transitions and focus. Package Alert/Button retain feedback/action semantics;
+layout retains form-column placement. No state, mutations or browser effects moved. Ownership
+documentation now also records a separate branch, commit and PR per verified stage, with merges
+only when requested.
+
+`npm test`, `npm run check`, the app production build and `git diff --check` pass. All 12 focused
+mobile/desktop browser tests pass with retries disabled: pending live-stub completion/accessibility,
+return-to-form focus/drafts and failure recovery, studio map/directions, reply-channel validation,
+demo completion, multi-error summary/field links, signed-in prefill and guest fields.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They check completion absence initially/pending/failed, localized demo versus
+live success title/body, named-region/tabindex/focus, secondary edit action, removed form fields,
+retained name/email/message drafts and message focus on return. Live requests are stubbed in-browser;
+no message is sent. Failed retry then completion, repeated editing, tablet rotation, containment
+and page-top axe pass. Form-column markup matches after sorting attributes and consistently mapping
+generated React Aria IDs/references; pointer position is stabilized before screenshots.
+All 16 demo/live completion screenshot pairs are byte-identical. Across all 32 form-column pairs,
+26 are byte-identical; six edit-state captures differ by 9–27 field-edge pixels (maximum channel
+delta 1) with unchanged dimensions/layout. Actual PNG bytes and bounds were checked; Persian phone
+live completion and representative English tablet edit pairs were viewed. No styles, screenshot
+baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-navigation
+suites and assistive-technology testing were not run.
+Next: extract contact-page feedback into a storefront organism.
 
 ## Adding components
 
