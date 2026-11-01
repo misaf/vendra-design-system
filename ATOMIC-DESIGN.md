@@ -246,7 +246,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontWeddingsStory now composes gallery and process content from explicit props.
    StorefrontWeddingsInquiryIntro now composes the localized inquiry heading and introduction.
    StorefrontWeddingsFormControls now composes validation, fields and the send action.
-   **Next stage: extract weddings-page completion into a storefront organism.**
+   StorefrontWeddingsCompletion now composes submission feedback and the return-to-form action.
+   **Next stage: extract weddings-page API feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4020,6 +4021,30 @@ English desktop, original TV pairs and corrected TV capture viewed. No styles, b
 tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
 assistive-technology testing were not run.
 Next: extract weddings-page completion into a storefront organism.
+
+**One hundred and sixty-second checkpoint verified:** extracted StorefrontWeddingsCompletion under
+app organisms from the weddings View's conditional completion slot. Explicit title/body/edit props
+preserve the success region's stable ID, tabindex, accessible name, classes, success Alert and
+secondary return-to-form action without a new wrapper. View retains visibility and localized demo/
+live copy mapping; weddings/shared logic retain outcomes, busy/errors, drafts, edit transitions and
+focus. Layout retains inquiry placement. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/draft
+retention, validation summary/focus, all-field date/select interaction and request payloads, pending
+duplicate-click prevention, failed retry, completion accessibility and retained values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/failure absence, localized demo/live success wording,
+named-region/tabindex/focus, direct inquiry placement, secondary edit action and absent fields during
+completion. Demo and failed-live retry completion both return focus to name and retain name/phone/
+email/guests/message drafts. Requests are stubbed locally; no inquiry is sent. Touch or Enter/Space
+activation, tablet rotation, containment and page-top axe pass.
+Completion markup matches after sorting attributes and consistently mapping generated React Aria
+IDs. All 16 completion screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet demo and English phone live captures viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page API feedback into a storefront organism.
 
 ## Adding components
 
