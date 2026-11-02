@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPolicyLayout} from '../app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
+import {StorefrontPolicyHeading} from '../app/organisms/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,20 +14,12 @@ export function View({v}) {
         <>
           <StorefrontPolicyLayout
             heading={
-              <>
-                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.eb}</>
-                </div>
-                <h1>
-                  <>{v.doc?.title}</>
-                </h1>
-                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                  <>{v.doc?.intro}</>
-                </p>
-                <div className="vf-info-meta tw:text-sm tw:text-quiet">
-                  <>{v.t?.updated}</>
-                </div>
-              </>
+              <StorefrontPolicyHeading
+                eyebrow={v.t?.eb}
+                title={v.doc?.title}
+                intro={v.doc?.intro}
+                updated={v.t?.updated}
+              />
             }
             policyNavigation={
               <>

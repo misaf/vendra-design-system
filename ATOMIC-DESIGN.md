@@ -253,7 +253,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontFaqQuestions now composes labelled category sections and Accordions from explicit groups.
    StorefrontFaqContact now composes the FAQ help card, contact actions and sample-content note.
    FAQ View now passes its layout directly without a redundant fragment.
-   **Next stage: extract policy-page heading into a storefront organism.**
+   StorefrontPolicyHeading now composes the policy eyebrow, title, introduction and update metadata.
+   **Next stage: extract policy-page navigation into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4197,6 +4198,28 @@ lost the current preview when the browser test runner shut its server down; the 
 an independently running preview. No source styles, baselines or tolerances changed. Full browser/
 device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract policy-page heading into a storefront organism.
+
+**One hundred and sixty-ninth checkpoint verified:** extracted StorefrontPolicyHeading under app
+organisms from the policy View heading slot. Explicit eyebrow/title/intro/updated props preserve
+four sibling elements, h1, introduction and update metadata classes without adding a wrapper.
+View retains localized/selected-document copy mapping; layout retains the header and responsive
+placement. Policy/shared logic retain document selection/fallback, section mapping, Persian numbering,
+routing, locale, SEO, focus and sticky measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Each opens shipping and switches through returns, privacy, terms and accessibility.
+They verify four direct header children, one h1 matching the active policy, localized eyebrow/update
+metadata, language/direction, section-anchor navigation, reload copy, tablet rotation, containment
+and page-top axe. All 40 heading markup, relative-bound and PNG comparisons match without
+normalization; actual screenshot bytes were checked and representative captures viewed.
+An initial probe incorrectly expected client-navigation focus attributes to survive a full reload;
+the corrected probe compares reload copy separately and preserves those attributes in paired markup.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
+navigation and assistive-technology suites were not run.
+Next: extract policy-page navigation into a storefront organism.
 
 ## Adding components
 
