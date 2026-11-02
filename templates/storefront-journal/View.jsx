@@ -6,6 +6,7 @@ import {StorefrontJournalLayout} from '../app/layouts/StorefrontJournalLayout/St
 import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
 import {StorefrontJournalSearch} from '../app/organisms/StorefrontJournalSearch/StorefrontJournalSearch.jsx';
 import {StorefrontJournalEmpty} from '../app/organisms/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
+import {StorefrontJournalLoading} from '../app/organisms/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -41,14 +42,7 @@ export function View({v}) {
                     onClear={v.clear}
                   />
                 ) : null}
-                {v.loading ? (
-                  <>
-                    <DS.Skeleton shape="card" />
-                    <p role="status">
-                      <>{v.migration?.loading}</>
-                    </p>
-                  </>
-                ) : null}
+                {v.loading ? <StorefrontJournalLoading message={v.migration?.loading} /> : null}
               </>
             }
             featured={
