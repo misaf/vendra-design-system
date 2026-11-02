@@ -14,36 +14,34 @@ export function View({v}) {
     <Shell
       v={v}
       content={
-        <>
-          <StorefrontPolicyLayout
-            heading={
-              <StorefrontPolicyHeading
-                eyebrow={v.t?.eb}
-                title={v.doc?.title}
-                intro={v.doc?.intro}
-                updated={v.t?.updated}
-              />
-            }
-            policyNavigation={
-              <StorefrontPolicyNavigation label={v.t?.policiesL} links={list(v.policyLinks)} />
-            }
-            notice={<StorefrontPolicyNotice title={v.t?.sampleT} body={v.t?.sampleP} />}
-            tableOfContents={
-              <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
-            }
-            document={
-              <StorefrontPolicyDocument
-                sections={list(v.doc?.sections).map(s => ({
-                  id: s?.id,
-                  title: s?.title,
-                  paras: list(s?.paras),
-                  hasItems: s?.hasItems,
-                  items: list(s?.items)
-                }))}
-              />
-            }
-          />
-        </>
+        <StorefrontPolicyLayout
+          heading={
+            <StorefrontPolicyHeading
+              eyebrow={v.t?.eb}
+              title={v.doc?.title}
+              intro={v.doc?.intro}
+              updated={v.t?.updated}
+            />
+          }
+          policyNavigation={
+            <StorefrontPolicyNavigation label={v.t?.policiesL} links={list(v.policyLinks)} />
+          }
+          notice={<StorefrontPolicyNotice title={v.t?.sampleT} body={v.t?.sampleP} />}
+          tableOfContents={
+            <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
+          }
+          document={
+            <StorefrontPolicyDocument
+              sections={list(v.doc?.sections).map(s => ({
+                id: s?.id,
+                title: s?.title,
+                paras: list(s?.paras),
+                hasItems: s?.hasItems,
+                items: list(s?.items)
+              }))}
+            />
+          }
+        />
       }
       sticky={<></>}
     />
