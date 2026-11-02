@@ -261,7 +261,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Policy View now passes its layout directly without a redundant fragment.
    StorefrontJournalHeading now composes the title and category controls from explicit props.
    StorefrontJournalSearch now composes the controlled search field from explicit props.
-   **Next stage: extract journal-page empty feedback into a storefront organism.**
+   StorefrontJournalEmpty now composes no-result feedback and the recovery action.
+   **Next stage: extract journal-page loading feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4379,6 +4380,29 @@ programmatically focusing its tabindex=-1 clear button and pressing Enter leaves
 pointer/touch clear and Escape work. That shared control is unchanged in this extraction. Full-page
 visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract journal-page empty feedback into a storefront organism.
+
+**One hundred and seventy-seventh checkpoint verified:** extracted StorefrontJournalEmpty under app
+organisms from the journal View noStories branch. Explicit title/clearLabel/onClear props preserve
+the package EmptyState h2 and sibling recovery Button without a wrapper. View retains visibility and
+localized/callback mapping; journal logic retains query/category matching and clear/reset behavior.
+Layout retains feedback placement and shared logic retains locale, SEO and focus. Loading feedback
+remains in View. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover empty/clear, categories,
+search/Escape, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial feedback absence, empty-category and unmatched-query h2/copy,
+direct EmptyState/recovery-button sibling structure, touch or Enter/Space recovery, cleared query and
+reset category, restored stories, search/Escape, article navigation, tablet rotation, containment and
+query-empty page-top axe. Feedback markup and relative bounds match; generated React Aria IDs are
+mapped consistently. All 16 category/query feedback PNG pairs are byte-identical; captures enclose
+both sibling elements, actual bytes were checked and representative images viewed. No source styles,
+baselines or tolerances changed. The stage-176 shared SearchField clear-button keyboard limitation
+remains documented and unchanged. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page loading feedback into a storefront organism.
 
 ## Adding components
 
