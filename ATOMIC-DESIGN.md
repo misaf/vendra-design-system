@@ -269,7 +269,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Journal View now passes its layout and conditional featured story directly without redundant fragments.
    StorefrontPostLoading now composes loading title, decorative skeleton and localized status.
    StorefrontPostMissing now composes missing-story feedback and the localized journal recovery link.
-   **Next stage: extract the post-page article heading into a storefront organism.**
+   StorefrontPostHeading now composes the article back link, metadata, title and introduction.
+   **Next stage: extract post-page block content into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4583,6 +4584,32 @@ is absent from normal classic/block articles; combined loading preserves its ari
 visible status and hidden article. No source styles, baselines or tolerances changed. Full browser/device,
 TV spatial-navigation and assistive-technology suites were not run.
 Next: extract the post-page article heading into a storefront organism.
+
+**One hundred and eighty-fifth checkpoint verified:** extracted StorefrontPostHeading under app
+organisms from the post View article slot. Explicit journalHref/backLabel/meta/title/intro props
+preserve the native journal link with arrow icon, metadata, h1 and introduction as siblings without
+adding a wrapper. View retains localized copy/link mapping; post logic retains article selection,
+metadata formatting and block/classic mapping. Layout retains article visibility/placement/spacing;
+shared page logic retains routing, locale, SEO and heading focus. Source comparison confirms the
+View changed only by replacing the heading block and adding its import, with extracted markup
+preserved through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic and block-based article headings match source title/intro/metadata,
+localized back-label/href, icon size, native-link semantics and sibling order. Heading markup,
+relative bounds and capture rectangles match with generated IDs/references and preview origins
+normalized consistently and attributes sorted. All 16 heading PNG pairs are byte-identical; actual
+bytes were checked and representative captures viewed. Captures use the union of the four heading
+siblings without changing source styles or viewport height. Touch or Enter article/back navigation,
+heading focus after client navigation, language preservation, browser back, reload, tablet rotation,
+containment and classic-article page-top axe pass. Heading elements are absent in loading/missing
+states. An initial probe assumed inline SVG icons; the completed probe checks the existing decorative
+CSS-mask icon and its explicit 16px size. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page block content into a storefront organism.
 
 ## Adding components
 
