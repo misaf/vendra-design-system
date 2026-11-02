@@ -270,7 +270,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostLoading now composes loading title, decorative skeleton and localized status.
    StorefrontPostMissing now composes missing-story feedback and the localized journal recovery link.
    StorefrontPostHeading now composes the article back link, metadata, title and introduction.
-   **Next stage: extract post-page block content into a storefront organism.**
+   StorefrontPostBlocks now composes ordered article blocks and normalized tip lists.
+   **Next stage: extract post-page classic content into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4610,6 +4611,37 @@ states. An initial probe assumed inline SVG icons; the completed probe checks th
 CSS-mask icon and its explicit 16px size. No source styles, baselines or tolerances changed. Full browser/
 device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract post-page block content into a storefront organism.
+
+**One hundred and eighty-sixth checkpoint verified:** extracted StorefrontPostBlocks under app
+organisms from the post View block branch. Explicit block records preserve ordered keyed paragraphs,
+h2 headings, quotes, captioned Pictures and tip lists without adding a wrapper. View retains block
+visibility, explicit descriptor mapping and outer/tip-list normalization; post logic retains article
+selection, localized body flags/content, image resolution and captions. Layout retains article
+placement/spacing and shared logic retains routing, locale, SEO and focus. Source comparison confirms
+only the View block branch/import changed; presentation is identical apart from receiving normalized
+records and tip items. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation. An initial extraction script stopped at an inner conditional and produced
+incomplete JSX; formatting/type/build checks and one browser case caught it. The complete branch was
+restored/extracted correctly and the entire focused validation set rerun successfully.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Studio and orchid-care block articles match source block type/order, paragraph/
+heading/quote text, captions, image alt/src/sizes and tip-list order. Lazy image attributes are checked
+on fresh and reloaded pages before settlePage intentionally makes images eager; no high fetch priority
+is introduced. Block markup, relative bounds and capture rectangles match with generated IDs/references
+and preview origins normalized consistently and attributes sorted. The initial phone studio capture
+had 78 image pixels differing by tiny color values despite identical markup/bounds; three repeated
+paired diagnostic captures matched exactly. The completed probe explicitly awaits image decode
+before capture. All 16 block-content PNG pairs are byte-identical; actual bytes were checked and
+representative captures viewed. Captures use the union of article body siblings at article height plus 1000 pixels, asserting unchanged article dimensions
+before restoring size. Touch or Enter journal-back navigation, language preservation, browser back,
+reload, tablet rotation, containment and studio-article page-top axe pass. Classic content remains
+visible on classic articles and article content remains absent in loading/missing states. No source
+styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
+technology suites were not run.
+Next: extract post-page classic content into a storefront organism.
 
 ## Adding components
 
