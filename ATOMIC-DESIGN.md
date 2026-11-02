@@ -263,7 +263,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalSearch now composes the controlled search field from explicit props.
    StorefrontJournalEmpty now composes no-result feedback and the recovery action.
    StorefrontJournalLoading now composes the decorative skeleton and localized status.
-   **Next stage: extract journal-page featured story into a storefront organism.**
+   StorefrontJournalFeatured now composes the featured BlogCard from explicit story props.
+   **Next stage: extract journal-page story grid into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4429,6 +4430,31 @@ dimensions are checked unchanged before restoring interaction size. No source st
 tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains documented.
 Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract journal-page featured story into a storefront organism.
+
+**One hundred and seventy-ninth checkpoint verified:** extracted StorefrontJournalFeatured under app
+organisms from the journal View featured branch. Explicit title/image/excerpt/meta/cta/href props
+preserve the featured wrapper, wide BlogCard, arch frame and priority image. View retains visibility
+and localized/story mapping; journal logic retains lead selection, filtering, image resolution,
+localized metadata, pagination and article hrefs. Layout retains slot placement and BlogCard retains
+presentation/link/image semantics. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover category/search changes,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Initial and flower-care-filtered leads match source title/excerpt/date/read-time,
+article href, CTA, wide/arch structure, eager/high-priority image and empty alt. Touch or Enter/Space
+changes the lead; article navigation preserves language. Later page, loading demo and empty category
+hide the featured card. Tablet rotation, containment and filtered-state page-top axe pass. Initial/
+filtered markup and relative bounds match; generated IDs/references and preview origins are normalized
+consistently and attributes sorted. All 16 featured PNG pairs are byte-identical; actual bytes were
+checked and representative captures viewed. Capture height temporarily equals card height plus 1000
+pixels to avoid sticky-header overlap; card dimensions are checked unchanged before restoring size.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page story grid into a storefront organism.
 
 ## Adding components
 
