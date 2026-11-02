@@ -6,6 +6,7 @@ import {StorefrontPolicyHeading} from '../app/organisms/StorefrontPolicyHeading/
 import {StorefrontPolicyNavigation} from '../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
 import {StorefrontPolicyNotice} from '../app/organisms/StorefrontPolicyNotice/StorefrontPolicyNotice.jsx';
 import {StorefrontPolicyContents} from '../app/organisms/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
+import {StorefrontPolicyDocument} from '../app/organisms/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -31,40 +32,15 @@ export function View({v}) {
               <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
             }
             document={
-              <>
-                {list(v.doc?.sections).map((s, $index) => (
-                  <React.Fragment key={$index}>
-                    <section
-                      id={s?.id}
-                      className="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"
-                    >
-                      <h2>
-                        <>{s?.title}</>
-                      </h2>
-                      {list(s?.paras).map((para, $index) => (
-                        <React.Fragment key={$index}>
-                          <p className="vf-info-copy tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                            <>{para?.text}</>
-                          </p>
-                        </React.Fragment>
-                      ))}
-                      {s?.hasItems ? (
-                        <>
-                          <ul className="vf-policy-list tw:m-0 tw:ps-5 tw:flex tw:flex-col tw:gap-2 tw:text-md tw:leading-body tw:text-secondary">
-                            {list(s?.items).map((item, $index) => (
-                              <React.Fragment key={$index}>
-                                <li>
-                                  <>{item?.text}</>
-                                </li>
-                              </React.Fragment>
-                            ))}
-                          </ul>
-                        </>
-                      ) : null}
-                    </section>
-                  </React.Fragment>
-                ))}
-              </>
+              <StorefrontPolicyDocument
+                sections={list(v.doc?.sections).map(s => ({
+                  id: s?.id,
+                  title: s?.title,
+                  paras: list(s?.paras),
+                  hasItems: s?.hasItems,
+                  items: list(s?.items)
+                }))}
+              />
             }
           />
         </>
