@@ -7,6 +7,7 @@ import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/Stor
 import {StorefrontPostMissing} from '../app/organisms/StorefrontPostMissing/StorefrontPostMissing.jsx';
 import {StorefrontPostHeading} from '../app/organisms/StorefrontPostHeading/StorefrontPostHeading.jsx';
 import {StorefrontPostBlocks} from '../app/organisms/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
+import {StorefrontPostClassic} from '../app/organisms/StorefrontPostClassic/StorefrontPostClassic.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -56,38 +57,13 @@ export function View({v}) {
                   />
                 ) : null}
                 {v.hasClassic ? (
-                  <>
-                    <DS.ArchFrame
-                      ratio="4/3"
-                      shape="soft"
-                      src={v.image}
-                      sizes="(max-width: 760px) 100vw, 720px"
-                      priority={true}
-                      alt=""
-                    />
-                    <div className="vf-post-copy tw:flex tw:flex-col tw:text-body tw:gap-4h tw:text-md tw:leading-body">
-                      {list(v.paras1).map((p, $index) => (
-                        <React.Fragment key={$index}>
-                          <p className="vf-post-paragraph tw:m-0 tw:text-pretty">
-                            <>{p}</>
-                          </p>
-                        </React.Fragment>
-                      ))}
-                      <blockquote className="vf-post-quote tw:my-3 tw:mx-0 tw:ps-4h tw:[border-inline-start:2px_solid_var(--text-accent)] tw:font-display tw:text-xl tw:leading-snug tw:text-body">
-                        <>{v.t?.quote}</>
-                      </blockquote>
-                      <h2 className="vf-post-heading tw:m-0 tw:font-display tw:font-medium tw:leading-tight tw:tracking-display tw:[text-transform:var(--display-case)]">
-                        <>{v.t?.h2}</>
-                      </h2>
-                      {list(v.paras2).map((p, $index) => (
-                        <React.Fragment key={$index}>
-                          <p className="vf-post-paragraph tw:m-0 tw:text-pretty">
-                            <>{p}</>
-                          </p>
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </>
+                  <StorefrontPostClassic
+                    image={v.image}
+                    paragraphsBefore={list(v.paras1)}
+                    quote={v.t?.quote}
+                    heading={v.t?.h2}
+                    paragraphsAfter={list(v.paras2)}
+                  />
                 ) : null}
               </>
             }
