@@ -280,6 +280,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
 feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
 page navigation.
+StorefrontPostLoading composes explicit title/message loading feedback; View retains visibility/copy
+mapping, post logic retains loading/missing state and layout retains feedback/article placement.
 StorefrontPostLayout arranges feedback, article, actions, recommendations and related slots with
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
 StorefrontHomeCategories composes the home heading and category carousel from explicit records/labels;

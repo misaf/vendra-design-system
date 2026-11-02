@@ -267,7 +267,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalStories now composes ordered story cards inside the layout-owned grid.
    StorefrontJournalPagination now composes paging controls from explicit props.
    Journal View now passes its layout and conditional featured story directly without redundant fragments.
-   **Next stage: extract post-page loading feedback into a storefront organism.**
+   StorefrontPostLoading now composes loading title, decorative skeleton and localized status.
+   **Next stage: extract post-page missing-story feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4532,6 +4533,31 @@ language preservation, tablet rotation, containment and initial page-top axe pas
 baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains
 documented. Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract post-page loading feedback into a storefront organism.
+
+**One hundred and eighty-third checkpoint verified:** extracted StorefrontPostLoading under app
+organisms from the post View loading branch. Explicit title/message props preserve the h1, decorative
+card Skeleton and localized role=status paragraph as siblings without adding a wrapper. View retains
+loading visibility and copy mapping; post logic retains article selection, loading/missing state and
+content mapping. Layout retains feedback placement and controlled article visibility, while shared
+logic retains routing, locale, SEO and focus. Source comparison confirms the View changed only by
+replacing the loading branch and adding its import; the organism preserves the extracted markup.
+Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Four existing bilingual
+post-loading state tests pass through mobile/desktop projects with one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Loading titles/status match source copy; the card skeleton remains aria-hidden,
+reduced-motion shimmer is absent and article content is hidden. Loading and combined missing/loading
+main-content markup and relative bounds match with generated IDs/references and preview origins
+normalized consistently and attributes sorted. All 16 main-content PNG pairs are byte-identical;
+actual bytes were checked and representative captures viewed. Capture height temporarily equals
+main height plus 1000 pixels, asserting unchanged main dimensions before restoring size. Missing-story
+recovery and normal article back links work by touch or Enter with language preserved; normal-route
+recovery, history back, reload, tablet rotation, containment and loading page-top axe pass. An initial
+probe used an ambiguous article selector that also matched related cards; the completed probe scopes
+the reading article. No source styles, baselines or tolerances changed. Full browser/device,
+TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page missing-story feedback into a storefront organism.
 
 ## Adding components
 
