@@ -252,7 +252,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontFaqHeading now composes the FAQ eyebrow, accented title and introduction.
    StorefrontFaqQuestions now composes labelled category sections and Accordions from explicit groups.
    StorefrontFaqContact now composes the FAQ help card, contact actions and sample-content note.
-   **Next stage: simplify FAQ View composition.**
+   FAQ View now passes its layout directly without a redundant fragment.
+   **Next stage: extract policy-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4173,6 +4174,29 @@ sticky-header overlap; aside width/height are checked unchanged before restoring
 No source styles, baselines or tolerances changed. Full-page visual, full browser/device and TV
 spatial-navigation suites and assistive-technology testing were not run.
 Next: simplify FAQ View composition.
+
+**One hundred and sixty-eighth checkpoint verified:** simplified FAQ View composition by passing
+StorefrontFaqLayout directly to Shell content. Removed only its redundant single-child fragment and
+adjusted indentation. Localized heading/contact descriptors, WhatsApp availability, list normalization,
+layout slots and the empty Shell sticky-slot fragment remain. Source comparison verifies the exact
+fragment-delimiter removal after whitespace normalization. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify one h1, three question groups, default delivery expansion, touch or
+Enter/Space single expansion, language-preserving contact navigation, tablet rotation, containment
+and expanded page-top axe. Initial/expanded main markup and relative bounds match; generated
+React Aria IDs/references are mapped consistently and attributes sorted for comparison. All 16
+initial/expanded screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. Capture height temporarily equals main height plus 800 pixels to avoid sticky-header
+overlap, with unchanged main dimensions checked before restoring interaction size. The first probe
+lost the current preview when the browser test runner shut its server down; the completed probe uses
+an independently running preview. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract policy-page heading into a storefront organism.
 
 ## Adding components
 
