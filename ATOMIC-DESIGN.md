@@ -258,7 +258,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPolicyNotice now composes the localized sample notice through the warning Alert.
    StorefrontPolicyContents now composes labelled section links from explicit props.
    StorefrontPolicyDocument now composes section headings, paragraphs and optional item lists.
-   **Next stage: simplify policy View composition.**
+   Policy View now passes its layout directly without a redundant fragment.
+   **Next stage: extract journal-page heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4309,6 +4310,26 @@ incorrectly required lists in every policy and paragraphs in every section; it n
 for those expectations. No source styles, baselines or tolerances changed. Full-page visual, full
 browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: simplify policy View composition.
+
+**One hundred and seventy-fourth checkpoint verified:** simplified policy View composition by passing
+StorefrontPolicyLayout directly to Shell content. Removed only its redundant single-child fragment
+and adjusted indentation. Localized descriptors, policy links, section/paragraph/item normalization,
+item visibility mapping and the empty Shell sticky-slot fragment remain. Source comparison verifies
+only fragment delimiters and whitespace changed; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Shipping and accessibility exercise paragraph/list and list-only content; exact
+paragraph/item copy and list counts match bilingual source. Section IDs, h2/contents text, policy
+switching, first/last anchors by touch or Enter, reload document markup, tablet rotation, containment
+and page-top axe pass. All 16 main markup, relative-bound and screenshot pairs match without
+normalization; actual PNG bytes were checked and representative captures viewed. Capture height
+temporarily equals main height plus 800 pixels to avoid sticky-header overlap; main dimensions are
+checked unchanged before restoring interaction size. No source styles, baselines or tolerances changed.
+Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page heading into a storefront organism.
 
 ## Adding components
 
