@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontJournalLayout} from '../app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
+import {StorefrontJournalSearch} from '../app/organisms/StorefrontJournalSearch/StorefrontJournalSearch.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,9 +29,7 @@ export function View({v}) {
               />
             }
             search={
-              <>
-                <DS.SearchField label={v.migration?.search} value={v.q} onChange={v.setQ} />
-              </>
+              <StorefrontJournalSearch label={v.migration?.search} value={v.q} onChange={v.setQ} />
             }
             feedback={
               <>
