@@ -276,7 +276,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostSocial now composes the share/Instagram row from explicit props.
    StorefrontPostProducts now composes the ordered product recommendation grid.
    StorefrontPostRelated now composes the related-story heading and responsive card grid.
-   **Next stage: simplify post View composition.**
+   Post View now passes its layout directly without a redundant fragment.
+   **Next stage: extract not-found page messaging into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4782,6 +4783,35 @@ back, reload, tablet rotation, containment and classic-article page-top axe pass
 remain absent in loading/missing states. No source styles, baselines or tolerances changed. Full
 browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: simplify post View composition.
+
+**One hundred and ninety-second checkpoint verified:** simplified post View composition by passing
+StorefrontPostLayout directly. Removed exactly one redundant outer fragment pair; retained the
+multi-child feedback, article and recommendation fragments plus the empty sticky slot. Source
+comparison ignoring formatting confirms all other tokens remain identical, including conditions,
+explicit props, list/descriptor normalization, copy callbacks, Instagram availability and URLs.
+State, routing and layout ownership remain unchanged; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block main-content markup and relative bounds match, with generated IDs/
+references and plain/encoded preview origins normalized consistently and attributes sorted. The 16
+main-content PNG pairs are compared exactly: 15 are byte-identical. The English 390px block article
+retains 75 differing pixels, each at most one color level, with matching selected image resources.
+An initial Persian phone block capture had 60,907 differing photo pixels (maximum channel delta 24);
+that difference did not recur. Strict full-content visual parity remains unverified. Representative
+captures were viewed. Capture height temporarily equals main height plus 1000 pixels, asserting
+unchanged main dimensions before restoring size and awaiting image decode/finite transitions after
+pointer movement.
+Loading, missing and combined feedback markup/bounds also match with article/actions/recommendations/
+related sections absent. Touch or keyboard related-story navigation, destination heading focus,
+language preservation, browser back, reload, tablet rotation, containment, product navigation and
+missing recovery pass. Copy feedback/current-URL payload/reset pass using an injected clipboard stub,
+without changing the user's clipboard. Classic-article page-top axe passes. No source styles, baselines
+or tolerances changed. Native clipboard permissions/failures, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run.
+Next: extract not-found page messaging into a storefront organism.
 
 ## Adding components
 
