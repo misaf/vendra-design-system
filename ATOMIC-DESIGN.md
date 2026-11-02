@@ -277,7 +277,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostProducts now composes the ordered product recommendation grid.
    StorefrontPostRelated now composes the related-story heading and responsive card grid.
    Post View now passes its layout directly without a redundant fragment.
-   **Next stage: extract not-found page messaging into a storefront organism.**
+   StorefrontNotfoundMessage now composes the localized 404 heading and body through EmptyState.
+   **Next stage: extract not-found page recovery actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4812,6 +4813,32 @@ without changing the user's clipboard. Classic-article page-top axe passes. No s
 or tolerances changed. Native clipboard permissions/failures, full browser/device, TV spatial-navigation
 and assistive-technology suites were not run.
 Next: extract not-found page messaging into a storefront organism.
+
+**One hundred and ninety-third checkpoint verified:** extracted StorefrontNotfoundMessage under app
+organisms from the not-found View message slot. Explicit eyebrow/title/accent/body props preserve the
+flower EmptyState, localized 404 eyebrow, level-one heading/accent and body without adding a wrapper.
+View retains localized copy mapping; shared routing/page logic retains invalid-route handling, locale,
+SEO and heading focus. Layout retains centered message/actions placement and the main focus target.
+Source comparison confirms only the message slot/import changed and EmptyState props/icon/heading
+semantics are preserved. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Direct and client-navigation invalid-policy messages match source 404/title/accent/
+body copy, decorative icon, h1 hierarchy and language/direction. Message markup and relative bounds
+match with generated IDs/references and preview origins normalized consistently and attributes sorted.
+All 16 message PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Touch or Enter home/search recovery, language preservation, invalid-product fallback,
+recommendation product-code navigation, browser back, reload, tablet rotation, containment and
+not-found page-top axe pass. Home-to-invalid-policy client navigation focuses the not-found h1.
+The initial probe expected a focus reset between two routes already rendered as not-found and failed
+on the baseline; the completed probe verifies entry from home instead. Its temporary test link is
+removed before capture. No source styles, baselines or tolerances changed. Full-page visual, full
+browser/device, TV spatial-navigation and assistive-technology suites were not run; the stage-192
+full-post screenshot residual remains documented.
+Next: extract not-found page recovery actions into a storefront organism.
 
 ## Adding components
 
