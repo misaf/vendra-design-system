@@ -265,7 +265,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalLoading now composes the decorative skeleton and localized status.
    StorefrontJournalFeatured now composes the featured BlogCard from explicit story props.
    StorefrontJournalStories now composes ordered story cards inside the layout-owned grid.
-   **Next stage: extract journal-page pagination into a storefront organism.**
+   StorefrontJournalPagination now composes paging controls from explicit props.
+   **Next stage: simplify journal View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4483,6 +4484,31 @@ No source styles, baselines or tolerances changed. The stage-176 shared SearchFi
 limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run.
 Next: extract journal-page pagination into a storefront organism.
+
+**One hundred and eighty-first checkpoint verified:** extracted StorefrontJournalPagination under app
+organisms from the journal View pagination slot. Explicit page/pageCount/href/onChange props preserve
+the package Pagination and existing class/top margin without a wrapper. View retains paging mapping;
+journal logic retains counts, clamping, slices, href generation, callbacks and first-page resets.
+Pagination retains localized controls/digits, disabled/current states and single-page visibility.
+Layout retains placement and shared logic retains routing, locale and focus. The unused View
+design-system import is removed; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify the named pagination landmark, localized digits, current-page markers,
+first/last disabled controls and real localized page hrefs. Touch or Enter changes page; reload,
+page=999 clamping, query/category first-page reset, single-result/empty/loading absence, tablet rotation,
+containment and later-page page-top axe pass. First/last markup and relative bounds match with
+generated React/React Aria IDs/references mapped consistently and attributes sorted. All 16 pagination
+PNG pairs are byte-identical; actual bytes were checked and representative captures viewed. An initial
+probe expected page=1 in hrefs; the completed probe honors the router's canonical URL without it.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: simplify journal View composition.
 
 ## Adding components
 
