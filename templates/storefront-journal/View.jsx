@@ -7,6 +7,7 @@ import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeadin
 import {StorefrontJournalSearch} from '../app/organisms/StorefrontJournalSearch/StorefrontJournalSearch.jsx';
 import {StorefrontJournalEmpty} from '../app/organisms/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
 import {StorefrontJournalLoading} from '../app/organisms/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
+import {StorefrontJournalFeatured} from '../app/organisms/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -49,19 +50,14 @@ export function View({v}) {
               <>
                 {v.hasLead ? (
                   <>
-                    <div className="vf-journal-featured tw:mb-8">
-                      <DS.BlogCard
-                        layout="wide"
-                        frame="arch"
-                        priority={true}
-                        title={v.lead?.title}
-                        image={v.lead?.image}
-                        excerpt={v.lead?.excerpt}
-                        meta={v.lead?.meta}
-                        cta={v.t?.read}
-                        href={v.lead?.href}
-                      />
-                    </div>
+                    <StorefrontJournalFeatured
+                      title={v.lead?.title}
+                      image={v.lead?.image}
+                      excerpt={v.lead?.excerpt}
+                      meta={v.lead?.meta}
+                      cta={v.t?.read}
+                      href={v.lead?.href}
+                    />
                   </>
                 ) : null}
               </>
