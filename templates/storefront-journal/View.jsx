@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontJournalLayout} from '../app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
 import {StorefrontJournalSearch} from '../app/organisms/StorefrontJournalSearch/StorefrontJournalSearch.jsx';
+import {StorefrontJournalEmpty} from '../app/organisms/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -34,12 +35,11 @@ export function View({v}) {
             feedback={
               <>
                 {v.noStories ? (
-                  <>
-                    <DS.EmptyState title={v.migration?.empty} headingLevel={2} />
-                    <DS.Button onClick={v.clear}>
-                      <>{v.migration?.clear}</>
-                    </DS.Button>
-                  </>
+                  <StorefrontJournalEmpty
+                    title={v.migration?.empty}
+                    clearLabel={v.migration?.clear}
+                    onClear={v.clear}
+                  />
                 ) : null}
                 {v.loading ? (
                   <>
