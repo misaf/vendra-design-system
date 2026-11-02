@@ -256,7 +256,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPolicyHeading now composes the policy eyebrow, title, introduction and update metadata.
    StorefrontPolicyNavigation now composes the labelled policy list and links from explicit props.
    StorefrontPolicyNotice now composes the localized sample notice through the warning Alert.
-   **Next stage: extract policy-page table of contents into a storefront organism.**
+   StorefrontPolicyContents now composes labelled section links from explicit props.
+   **Next stage: extract policy-page document sections into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4263,6 +4264,26 @@ SVG icon; it was corrected to inspect the shared Icon's actual CSS-mask span. No
 baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run.
 Next: extract policy-page table of contents into a storefront organism.
+
+**One hundred and seventy-second checkpoint verified:** extracted StorefrontPolicyContents under app
+organisms from the policy View tableOfContents slot. Explicit label/sections props preserve the named
+navigation landmark, eyebrow, keyed section links, anchors and sticky-panel classes without a wrapper.
+View retains localized label mapping/list normalization; policy logic retains section descriptors,
+ordering and Persian numbering. Layout retains responsive placement and shared logic retains routing,
+focus and sticky measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920 across shipping, returns, privacy, terms and accessibility. They verify the named
+landmark, link count/order/text against section headings, localized numbering, stable section hrefs,
+first/last anchor activation by touch or Enter, hash-preserving reload, tablet rotation, containment
+and page-top axe. Raw contents markup, relative bounds and sticky fit/position/top match. All 40
+contents screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. No source styles, baselines or tolerances changed. Full-page visual, full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract policy-page document sections into a storefront organism.
 
 ## Adding components
 

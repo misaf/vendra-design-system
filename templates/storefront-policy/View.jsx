@@ -5,6 +5,7 @@ import {StorefrontPolicyLayout} from '../app/layouts/StorefrontPolicyLayout/Stor
 import {StorefrontPolicyHeading} from '../app/organisms/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
 import {StorefrontPolicyNavigation} from '../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
 import {StorefrontPolicyNotice} from '../app/organisms/StorefrontPolicyNotice/StorefrontPolicyNotice.jsx';
+import {StorefrontPolicyContents} from '../app/organisms/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -27,26 +28,7 @@ export function View({v}) {
             }
             notice={<StorefrontPolicyNotice title={v.t?.sampleT} body={v.t?.sampleP} />}
             tableOfContents={
-              <>
-                <nav
-                  aria-label={v.t?.toc}
-                  className="vf-info-toc vf-sticky-panel tw:flex tw:flex-col tw:gap-1"
-                >
-                  <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                    <>{v.t?.toc}</>
-                  </div>
-                  {list(v.doc?.sections).map((s, $index) => (
-                    <React.Fragment key={$index}>
-                      <a
-                        href={s?.href}
-                        className="vf-policy-toc-link tw:min-h-tap tw:flex tw:items-center tw:text-sm tw:text-body! tw:no-underline! tw:hover:text-accent"
-                      >
-                        <>{s?.title}</>
-                      </a>
-                    </React.Fragment>
-                  ))}
-                </nav>
-              </>
+              <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
             }
             document={
               <>
