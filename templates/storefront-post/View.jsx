@@ -1,6 +1,5 @@
 // StorefrontPost: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPostLayout} from '../app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx';
 import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/StorefrontPostLoading.jsx';
@@ -11,6 +10,7 @@ import {StorefrontPostClassic} from '../app/organisms/StorefrontPostClassic/Stor
 import {StorefrontPostActions} from '../app/organisms/StorefrontPostActions/StorefrontPostActions.jsx';
 import {StorefrontPostSocial} from '../app/organisms/StorefrontPostSocial/StorefrontPostSocial.jsx';
 import {StorefrontPostProducts} from '../app/organisms/StorefrontPostProducts/StorefrontPostProducts.jsx';
+import {StorefrontPostRelated} from '../app/organisms/StorefrontPostRelated/StorefrontPostRelated.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -91,24 +91,11 @@ export function View({v}) {
               </>
             }
             related={
-              <>
-                <DS.SectionHeader title={v.t?.moreA} accent={v.t?.moreB} />
-                <div className="vf-post-article-grid tw:grid tw:[grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))] tw:gap-y-7 tw:gap-x-5">
-                  {list(v.related).map((r, $index) => (
-                    <React.Fragment key={$index}>
-                      <DS.BlogCard
-                        frame="soft"
-                        aspect="4/3"
-                        title={r?.title}
-                        image={r?.image}
-                        excerpt={r?.excerpt}
-                        meta={r?.meta}
-                        href={r?.href}
-                      />
-                    </React.Fragment>
-                  ))}
-                </div>
-              </>
+              <StorefrontPostRelated
+                title={v.t?.moreA}
+                accent={v.t?.moreB}
+                stories={list(v.related)}
+              />
             }
           />
         </>
