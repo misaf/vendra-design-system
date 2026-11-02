@@ -251,7 +251,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Weddings View now passes layout/form/completion elements directly without redundant fragments.
    StorefrontFaqHeading now composes the FAQ eyebrow, accented title and introduction.
    StorefrontFaqQuestions now composes labelled category sections and Accordions from explicit groups.
-   **Next stage: extract FAQ-page contact help into a storefront organism.**
+   StorefrontFaqContact now composes the FAQ help card, contact actions and sample-content note.
+   **Next stage: simplify FAQ View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4146,6 +4147,32 @@ were checked and representative Persian tablet expanded and English desktop init
 No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
 navigation suites and assistive-technology testing were not run.
 Next: extract FAQ-page contact help into a storefront organism.
+
+**One hundred and sixty-seventh checkpoint verified:** extracted StorefrontFaqContact under app
+organisms from the FAQ View contact slot. Explicit title/body/note, contact and nullable WhatsApp
+descriptors preserve Card padding, decorative icon, h2, answer text, primary/ghost actions, external
+link attributes and the sibling sample-content note without a new wrapper. View retains localized
+copy/link mapping and WhatsApp availability; layout retains aside placement/spacing. FAQ/shared
+logic retain configuration, question mapping, navigation, locale, SEO and focus. Documentation is
+updated and the unused View design-system import is removed.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Sixteen paired previous/current probes cover English/Persian, present/absent WhatsApp and touch
+widths 390/768, desktop 1280 and TV width 1920. They verify heading/link names, card/note sibling
+structure, WhatsApp availability and protected external-link attributes, language-preserving internal
+contact navigation, accordion touch or Enter/Space controls, tablet rotation, containment and
+page-top axe. Aside markup and relative bounds match without normalization. Fifteen of 16 original contact-help
+screenshot pairs are byte-identical. Persian desktop without WhatsApp differs at 58 decorative-icon
+pixels (maximum channel delta 50, equal 320×506 dimensions); the isolated repeat is byte-identical.
+Original captures are retained. Actual PNG bytes were checked and representative captures viewed.
+Component captures temporarily increase viewport height to aside height plus 1000 pixels to avoid
+sticky-header overlap; aside width/height are checked unchanged before restoring interaction size.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device and TV
+spatial-navigation suites and assistive-technology testing were not run.
+Next: simplify FAQ View composition.
 
 ## Adding components
 
