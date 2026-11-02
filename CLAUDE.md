@@ -277,7 +277,9 @@ journal logic retains query/matching/page resets and SearchField retains focus/c
 StorefrontJournalHeading composes explicit heading/category props and forwards focus/selection callbacks;
 View retains label mapping/list normalization/focus scrolling and logic retains filtering/page resets.
 StorefrontJournalLayout arranges heading, search, feedback, featured story, grid and pagination
-slots; journal View/logic retain controls, category/query state, matching and page navigation.
+slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
+feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
+page navigation.
 StorefrontPostLayout arranges feedback, article, actions, recommendations and related slots with
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
 StorefrontHomeCategories composes the home heading and category carousel from explicit records/labels;
