@@ -274,7 +274,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostClassic now composes the classic image, paragraphs, quote and section heading.
    StorefrontPostActions now composes the controlled copy button and localized shop link.
    StorefrontPostSocial now composes the share/Instagram row from explicit props.
-   **Next stage: extract post-page product recommendations into a storefront organism.**
+   StorefrontPostProducts now composes the ordered product recommendation grid.
+   **Next stage: extract post-page related stories into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4721,6 +4722,37 @@ viewed. Reload, tablet rotation, containment and classic-article page-top axe pa
 absent in loading/missing states. External service behavior, full browser/device, TV spatial-navigation
 and assistive-technology suites were not run. No source styles, baselines or tolerances changed.
 Next: extract post-page product recommendations into a storefront organism.
+
+**One hundred and ninetieth checkpoint verified:** extracted StorefrontPostProducts under app
+organisms from the post View recommendations slot. Explicit product records preserve ordered keyed
+soft-frame ProductCards, name/price/stock/images/href props and the responsive two/three-column grid,
+gap and top margin, including its empty wrapper. View retains list normalization; post logic retains
+article product selection/order, fixed product-code names, localized price/stock/image descriptors
+and product URLs. Layout retains recommendation section placement and article visibility; ProductCard
+retains presentation/link/image/stock semantics. Source comparison confirms only the View product grid/
+import changed and the extracted markup is preserved through explicit props. Ownership documentation
+is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Studio/orchid-care recommendations match source product order/codes, formatted
+prices, stock-state presentation, image src/alt, soft frames and localized product/category hrefs.
+Images remain lazy on fresh/reloaded pages before settlePage intentionally makes them eager, with no
+high fetch priority. Grid columns, product touch/Enter navigation, language preservation, browser
+back, reload, tablet rotation, containment and studio-article page-top axe pass. Grid markup and
+relative bounds match with generated IDs/references and preview origins normalized consistently and
+attributes sorted. All 16 populated-grid PNG pairs are byte-identical; actual bytes were checked and
+representative captures viewed. Captures use grid height plus 1000 pixels, asserting unchanged grid
+dimensions before restoring size and explicitly awaiting image decode. An initial desktop photo
+capture differed within the middle card despite identical markup/bounds; three repeated diagnostic
+pairs matched exactly with matching selected image resources. Desktop/TV captures additionally await
+finite transitions after pointer movement. Empty classic grids retain
+matching markup/dimensions; recommendation grids remain absent in loading/missing states. No source
+styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
+technology suites were not run.
+Next: extract post-page related stories into a storefront organism.
 
 ## Adding components
 

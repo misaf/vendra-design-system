@@ -280,6 +280,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
 feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
 page navigation.
+StorefrontPostProducts composes explicit product records and the responsive grid; View retains list
+normalization and post logic retains selection/order, product codes, price/stock/image descriptors/URLs.
 StorefrontPostSocial composes explicit labels/hrefs/showInstagram; View retains mapping/availability,
 post logic retains share-URL construction and shared navigation retains store Instagram data.
 StorefrontPostActions composes explicit copyLabel/onCopy/shopLabel/shopHref; View retains mapping,
