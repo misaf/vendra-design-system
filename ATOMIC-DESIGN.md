@@ -254,7 +254,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontFaqContact now composes the FAQ help card, contact actions and sample-content note.
    FAQ View now passes its layout directly without a redundant fragment.
    StorefrontPolicyHeading now composes the policy eyebrow, title, introduction and update metadata.
-   **Next stage: extract policy-page navigation into a storefront organism.**
+   StorefrontPolicyNavigation now composes the labelled policy list and links from explicit props.
+   **Next stage: extract policy-page sample notice into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4220,6 +4221,26 @@ the corrected probe compares reload copy separately and preserves those attribut
 No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
 navigation and assistive-technology suites were not run.
 Next: extract policy-page navigation into a storefront organism.
+
+**One hundred and seventieth checkpoint verified:** extracted StorefrontPolicyNavigation under app
+organisms from the policy View navigation slot. Explicit label/links props preserve the labelled nav,
+list structure, link order, keyed fragments, hrefs, aria-current, wrapping and classes without adding
+a wrapper. View retains localized label mapping and list normalization. Shared navigation logic
+retains link/current-state descriptors, routing, locale, SEO and focus; policy logic retains document
+selection, section mapping and Persian numbering. Layout retains placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Each opens shipping and switches through returns, privacy, terms and accessibility.
+They verify the navigation accessible name, five list items/URLs, one current link, matching h1,
+localized heading/update copy, language/direction, section anchors, reload copy, tablet rotation,
+containment and page-top axe. All 40 navigation markup, relative-bound and PNG comparisons match
+without normalization; actual screenshot bytes were checked and representative captures viewed.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
+navigation and assistive-technology suites were not run.
+Next: extract policy-page sample notice into a storefront organism.
 
 ## Adding components
 
