@@ -273,7 +273,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostBlocks now composes ordered article blocks and normalized tip lists.
    StorefrontPostClassic now composes the classic image, paragraphs, quote and section heading.
    StorefrontPostActions now composes the controlled copy button and localized shop link.
-   **Next stage: extract post-page social links into a storefront organism.**
+   StorefrontPostSocial now composes the share/Instagram row from explicit props.
+   **Next stage: extract post-page product recommendations into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4696,6 +4697,30 @@ article page-top axe pass. Actions remain absent from loading/missing states. Na
 permissions/failures, full browser/device, TV spatial-navigation and assistive-technology suites were
 not run. No source styles, baselines or tolerances changed.
 Next: extract post-page social links into a storefront organism.
+
+**One hundred and eighty-ninth checkpoint verified:** extracted StorefrontPostSocial under app
+organisms from the post View recommendations slot. Explicit WhatsApp/Instagram labels and hrefs plus
+showInstagram preserve the flex row/gap, ghost Buttons, exact brand labels and safe new-tab attributes.
+View retains brand/link mapping and Instagram availability; post logic retains current-URL share
+construction and shared navigation retains store Instagram data. Layout retains recommendation
+placement and article visibility. Source comparison confirms only the View social row/import changed;
+markup and truthiness are preserved through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block social rows retain exact brand labels, ghost-link semantics, encoded
+current-URL WhatsApp payload, configured Instagram href, target=_blank and rel=noopener noreferrer.
+Touch or Enter opens intercepted destination tabs with null window.opener; no external site is
+contacted. A browser-context-only store override removes Instagram, and client navigation confirms
+the WhatsApp-only row. Classic/block/absent-Instagram markup and relative bounds match with generated
+IDs/references and plain/encoded preview origins normalized consistently and attributes sorted.
+All 24 social-row PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Reload, tablet rotation, containment and classic-article page-top axe pass; social rows remain
+absent in loading/missing states. External service behavior, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run. No source styles, baselines or tolerances changed.
+Next: extract post-page product recommendations into a storefront organism.
 
 ## Adding components
 
