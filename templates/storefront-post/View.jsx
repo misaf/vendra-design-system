@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPostLayout} from '../app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx';
 import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/StorefrontPostLoading.jsx';
+import {StorefrontPostMissing} from '../app/organisms/StorefrontPostMissing/StorefrontPostMissing.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -20,12 +21,11 @@ export function View({v}) {
                   <StorefrontPostLoading title={v.t?.title} message={v.migration?.loading} />
                 ) : null}
                 {v.missing ? (
-                  <>
-                    <DS.EmptyState title={v.migration?.missing} headingLevel={1} />
-                    <DS.Button href={v.href?.journal}>
-                      <>{v.migration?.back}</>
-                    </DS.Button>
-                  </>
+                  <StorefrontPostMissing
+                    title={v.migration?.missing}
+                    backLabel={v.migration?.back}
+                    journalHref={v.href?.journal}
+                  />
                 ) : null}
               </>
             }
