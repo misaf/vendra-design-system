@@ -280,6 +280,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
 feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
 page navigation.
+StorefrontPostActions composes explicit copyLabel/onCopy/shopLabel/shopHref; View retains mapping,
+post logic retains clipboard/copied/reset cleanup and layout retains action placement/wrapping.
 StorefrontPostClassic composes explicit image/paragraphsBefore/quote/heading/paragraphsAfter; View
 retains visibility/copy mapping/list normalization and post logic retains eligibility/image resolution.
 StorefrontPostBlocks composes explicit block records and normalized tip items; View retains visibility/

@@ -272,7 +272,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostHeading now composes the article back link, metadata, title and introduction.
    StorefrontPostBlocks now composes ordered article blocks and normalized tip lists.
    StorefrontPostClassic now composes the classic image, paragraphs, quote and section heading.
-   **Next stage: extract post-page article actions into a storefront organism.**
+   StorefrontPostActions now composes the controlled copy button and localized shop link.
+   **Next stage: extract post-page social links into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4670,6 +4671,31 @@ axe pass. Classic content is absent from block articles, while block figures rem
 is absent in loading/missing states. No source styles, baselines or tolerances changed. Full browser/
 device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract post-page article actions into a storefront organism.
+
+**One hundred and eighty-eighth checkpoint verified:** extracted StorefrontPostActions under app
+organisms from the post View actions slot. Explicit copyLabel/onCopy/shopLabel/shopHref props
+preserve the secondary copy button, primary shop link, small sizes and link/arrow icons as siblings
+without adding a wrapper. View retains localized label/link/callback mapping; post logic retains
+clipboard behavior, copied state, reset timing and unmount cleanup. Layout retains action placement,
+wrapping, spacing and border; shared logic retains routing, locale and focus. Source comparison
+confirms only the View actions branch/import changed and the extracted markup/callbacks are preserved
+through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block article actions retain localized labels, button/link semantics,
+variants/sizes, decorative icons and real localized shop hrefs. Action markup and relative bounds
+match with generated IDs/references and preview origins normalized consistently and attributes sorted.
+All 16 action PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Touch, Enter and Space invoke copy; an injected clipboard stub records the current URL without
+changing the user's clipboard. Copied/reset feedback and desktop button focus pass. Touch or Enter shop
+navigation, language preservation, browser back, reload, tablet rotation, containment and classic-
+article page-top axe pass. Actions remain absent from loading/missing states. Native clipboard
+permissions/failures, full browser/device, TV spatial-navigation and assistive-technology suites were
+not run. No source styles, baselines or tolerances changed.
+Next: extract post-page social links into a storefront organism.
 
 ## Adding components
 
