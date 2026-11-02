@@ -262,6 +262,8 @@ StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated props; Vie
 and selected-document copy, layout retains the header and policy/shared logic retain selection and routing.
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
+StorefrontJournalSearch forwards explicit label/value/onChange to SearchField; View retains mapping,
+journal logic retains query/matching/page resets and SearchField retains focus/clear/accessibility.
 StorefrontJournalHeading composes explicit heading/category props and forwards focus/selection callbacks;
 View retains label mapping/list normalization/focus scrolling and logic retains filtering/page resets.
 StorefrontJournalLayout arranges heading, search, feedback, featured story, grid and pagination
