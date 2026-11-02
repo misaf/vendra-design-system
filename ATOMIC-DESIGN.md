@@ -264,7 +264,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalEmpty now composes no-result feedback and the recovery action.
    StorefrontJournalLoading now composes the decorative skeleton and localized status.
    StorefrontJournalFeatured now composes the featured BlogCard from explicit story props.
-   **Next stage: extract journal-page story grid into a storefront organism.**
+   StorefrontJournalStories now composes ordered story cards inside the layout-owned grid.
+   **Next stage: extract journal-page pagination into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4455,6 +4456,33 @@ No source styles, baselines or tolerances changed. The stage-176 shared SearchFi
 limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run.
 Next: extract journal-page story grid into a storefront organism.
+
+**One hundred and eightieth checkpoint verified:** extracted StorefrontJournalStories under app
+organisms from the journal View stories slot. Explicit stories preserve ordered keyed BlogCards,
+stacked layout, soft frames, 4/3 aspect and story props without adding a wrapper. View retains list
+normalization; journal logic retains filters, pagination slices, mapping, localized metadata, image
+resolution and article hrefs. Layout retains the responsive grid wrapper/placement and BlogCard
+retains presentation/link/image semantics. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. First/later-page card order, title/excerpt/read-time, article hrefs, stacked/soft
+structure, 4/3 media, empty alt and no high fetch priority match source descriptors. Lazy attributes
+are checked on fresh first-page and reloaded later-page loads before settlePage intentionally makes
+images eager. Touch or Enter changes pages/opens a story; reload, language preservation, empty/loading
+grid absence, tablet rotation, containment and later-page page-top axe pass. Initial/later markup and
+relative bounds match with generated IDs/references and preview origins normalized consistently and
+attributes sorted. All 16 grid PNG pairs are byte-identical; actual bytes were checked and representative
+captures viewed. Capture height temporarily equals grid height plus 1000 pixels to avoid sticky-header
+overlap; grid dimensions are checked unchanged before restoring size. An initial probe incorrectly
+expected lazy attributes on reused image nodes after settlePage; the completed probe checks fresh loads.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page pagination into a storefront organism.
 
 ## Adding components
 

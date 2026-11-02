@@ -8,6 +8,7 @@ import {StorefrontJournalSearch} from '../app/organisms/StorefrontJournalSearch/
 import {StorefrontJournalEmpty} from '../app/organisms/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
 import {StorefrontJournalLoading} from '../app/organisms/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
 import {StorefrontJournalFeatured} from '../app/organisms/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
+import {StorefrontJournalStories} from '../app/organisms/StorefrontJournalStories/StorefrontJournalStories.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -62,24 +63,7 @@ export function View({v}) {
                 ) : null}
               </>
             }
-            stories={
-              <>
-                {list(v.rest).map((p, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.BlogCard
-                      layout="stack"
-                      frame="soft"
-                      aspect="4/3"
-                      title={p?.title}
-                      image={p?.image}
-                      excerpt={p?.excerpt}
-                      meta={p?.meta}
-                      href={p?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </>
-            }
+            stories={<StorefrontJournalStories stories={list(v.rest)} />}
             pagination={
               <>
                 <DS.Pagination
