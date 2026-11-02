@@ -266,7 +266,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalFeatured now composes the featured BlogCard from explicit story props.
    StorefrontJournalStories now composes ordered story cards inside the layout-owned grid.
    StorefrontJournalPagination now composes paging controls from explicit props.
-   **Next stage: simplify journal View composition.**
+   Journal View now passes its layout and conditional featured story directly without redundant fragments.
+   **Next stage: extract post-page loading feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4509,6 +4510,28 @@ No source styles, baselines or tolerances changed. The stage-176 shared SearchFi
 limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run.
 Next: simplify journal View composition.
+
+**One hundred and eighty-second checkpoint verified:** simplified journal View composition by passing
+StorefrontJournalLayout and its conditional featured story directly. Removed exactly three redundant
+fragment pairs; retained the multi-child feedback fragment and empty sticky slot. Source comparison
+ignoring formatting confirms all other tokens are preserved, including conditions, explicit props,
+list normalization, paging callbacks and category focus scrolling. State, routing and layout ownership
+remain unchanged; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Initial, later-page, empty, loading and combined empty/loading main-content markup
+and relative bounds match with generated IDs/references and preview origins normalized consistently
+and attributes sorted. All 40 main-content PNG pairs are byte-identical; actual bytes were checked
+and representative captures viewed. Capture height temporarily equals main height plus 1000 pixels;
+main dimensions are checked unchanged before restoring size. Touch or keyboard pagination, reload,
+query first-page reset, Escape recovery, category focus/selection, empty recovery, article navigation,
+language preservation, tablet rotation, containment and initial page-top axe pass. No source styles,
+baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains
+documented. Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page loading feedback into a storefront organism.
 
 ## Adding components
 
