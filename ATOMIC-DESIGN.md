@@ -255,7 +255,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    FAQ View now passes its layout directly without a redundant fragment.
    StorefrontPolicyHeading now composes the policy eyebrow, title, introduction and update metadata.
    StorefrontPolicyNavigation now composes the labelled policy list and links from explicit props.
-   **Next stage: extract policy-page sample notice into a storefront organism.**
+   StorefrontPolicyNotice now composes the localized sample notice through the warning Alert.
+   **Next stage: extract policy-page table of contents into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4241,6 +4242,27 @@ without normalization; actual screenshot bytes were checked and representative c
 No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
 navigation and assistive-technology suites were not run.
 Next: extract policy-page sample notice into a storefront organism.
+
+**One hundred and seventy-first checkpoint verified:** extracted StorefrontPolicyNotice under app
+organisms from the policy View notice slot. Explicit title/body props preserve the package warning
+Alert, its alert semantics, decorative icon and localized copy without adding a wrapper. View retains
+localized mapping, layout retains notice placement/spacing and Alert retains presentation/accessibility.
+Policy/shared logic retain selection, section mapping, numbering, routing, locale, SEO, focus and
+sticky measurements. The unused View design-system import is removed; documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify exact notice title/body, one warning alert, decorative icon and no
+close action, then switch through all five policies and check unchanged notice markup. Reloads,
+section-anchor navigation, tablet rotation, containment and page-top axe pass. Initial shipping and
+changed accessibility notice markup, relative bounds and all 16 PNG pairs match without normalization;
+actual screenshot bytes were checked and representative captures viewed. An initial probe assumed an
+SVG icon; it was corrected to inspect the shared Icon's actual CSS-mask span. No source styles,
+baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract policy-page table of contents into a storefront organism.
 
 ## Adding components
 

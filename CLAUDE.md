@@ -248,6 +248,8 @@ StorefrontWeddingsLayout arranges hero, services, story, inquiry and feedback sl
 View/logic retain content, date constraints, field state, validation, submission and recovery.
 StorefrontFaqLayout arranges heading, question-list and contact slots; FAQ View/logic retain
 section labels, accordion controls, copy, delivery-rule interpolation and navigation.
+StorefrontPolicyNotice composes explicit title/body through the warning Alert; View retains localized
+copy mapping, layout retains placement and Alert retains presentation/accessibility.
 StorefrontPolicyNavigation composes explicit label/links; View retains localized mapping and list
 normalization, shared logic retains link/current-state descriptors and routing, and layout retains placement.
 StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated props; View maps localized
