@@ -204,6 +204,8 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+StorefrontFaqQuestions composes explicit question groups; View normalizes the list, FAQ logic
+retains category/answer mapping and delivery wording, and Accordion owns disclosure behavior.
 StorefrontFaqHeading composes explicit eyebrow/title/accent/intro; View maps localized copy, layout
 retains the header and FAQ/shared logic retain question mapping, navigation, locale and focus.
 Weddings View passes layout/form/completion elements directly; localized descriptors, visibility,

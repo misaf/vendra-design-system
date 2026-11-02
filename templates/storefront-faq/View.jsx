@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontFaqLayout} from '../app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
 import {StorefrontFaqHeading} from '../app/organisms/StorefrontFaqHeading/StorefrontFaqHeading.jsx';
+import {StorefrontFaqQuestions} from '../app/organisms/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -21,27 +22,7 @@ export function View({v}) {
                 intro={v.t?.intro}
               />
             }
-            questions={
-              <>
-                {list(v.groups).map((group, $index) => (
-                  <React.Fragment key={$index}>
-                    <section
-                      className="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"
-                      aria-labelledby={group?.id}
-                    >
-                      <h2 id={group?.id}>
-                        <>{group?.title}</>
-                      </h2>
-                      <DS.Accordion
-                        items={group?.items}
-                        defaultValue={group?.open}
-                        headingLevel={3}
-                      />
-                    </section>
-                  </React.Fragment>
-                ))}
-              </>
-            }
+            questions={<StorefrontFaqQuestions groups={list(v.groups)} />}
             contact={
               <>
                 <DS.Card padding={28}>
