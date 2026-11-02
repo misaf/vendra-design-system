@@ -268,7 +268,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalPagination now composes paging controls from explicit props.
    Journal View now passes its layout and conditional featured story directly without redundant fragments.
    StorefrontPostLoading now composes loading title, decorative skeleton and localized status.
-   **Next stage: extract post-page missing-story feedback into a storefront organism.**
+   StorefrontPostMissing now composes missing-story feedback and the localized journal recovery link.
+   **Next stage: extract the post-page article heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4558,6 +4559,30 @@ probe used an ambiguous article selector that also matched related cards; the co
 the reading article. No source styles, baselines or tolerances changed. Full browser/device,
 TV spatial-navigation and assistive-technology suites were not run.
 Next: extract post-page missing-story feedback into a storefront organism.
+
+**One hundred and eighty-fourth checkpoint verified:** extracted StorefrontPostMissing under app
+organisms from the post View missing branch. Explicit title/backLabel/journalHref props preserve
+the level-one EmptyState heading and package Button recovery link as siblings without adding a
+wrapper. View retains missing visibility and localized copy/link mapping; post/shared logic retains
+article selection, loading/missing state, routing and navigation/focus. Layout retains feedback
+placement and controlled article visibility. Source comparison confirms the View changed only by
+replacing the missing branch and adding its import, with extracted markup preserved through explicit
+props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Four existing bilingual
+post-loading regression tests pass through mobile/desktop projects with one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Missing heading/recovery text match localized source copy; the recovery remains a
+real link to the localized journal. Missing-only and combined missing/loading main-content markup
+and relative bounds match with generated IDs/references and preview origins normalized consistently
+and attributes sorted. All 16 main-content PNG pairs are byte-identical; actual bytes were checked
+and representative captures viewed. Capture height temporarily equals main height plus 1000 pixels,
+asserting unchanged main dimensions before restoring size. Touch or Enter recovery, locale preservation,
+history back, reload, tablet rotation, containment and missing-state page-top axe pass. Missing feedback
+is absent from normal classic/block articles; combined loading preserves its aria-hidden skeleton,
+visible status and hidden article. No source styles, baselines or tolerances changed. Full browser/device,
+TV spatial-navigation and assistive-technology suites were not run.
+Next: extract the post-page article heading into a storefront organism.
 
 ## Adding components
 
