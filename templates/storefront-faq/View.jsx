@@ -12,28 +12,26 @@ export function View({v}) {
     <Shell
       v={v}
       content={
-        <>
-          <StorefrontFaqLayout
-            heading={
-              <StorefrontFaqHeading
-                eyebrow={v.t?.eyebrow}
-                title={v.t?.titleA}
-                accent={v.t?.titleB}
-                intro={v.t?.intro}
-              />
-            }
-            questions={<StorefrontFaqQuestions groups={list(v.groups)} />}
-            contact={
-              <StorefrontFaqContact
-                title={v.t?.helpTitle}
-                body={v.t?.helpBody}
-                note={v.t?.sample}
-                whatsapp={v.waHref ? {href: v.waHref, label: v.t?.whatsapp} : null}
-                contact={{href: v.href?.contact, label: v.t?.contactUs}}
-              />
-            }
-          />
-        </>
+        <StorefrontFaqLayout
+          heading={
+            <StorefrontFaqHeading
+              eyebrow={v.t?.eyebrow}
+              title={v.t?.titleA}
+              accent={v.t?.titleB}
+              intro={v.t?.intro}
+            />
+          }
+          questions={<StorefrontFaqQuestions groups={list(v.groups)} />}
+          contact={
+            <StorefrontFaqContact
+              title={v.t?.helpTitle}
+              body={v.t?.helpBody}
+              note={v.t?.sample}
+              whatsapp={v.waHref ? {href: v.waHref, label: v.t?.whatsapp} : null}
+              contact={{href: v.href?.contact, label: v.t?.contactUs}}
+            />
+          }
+        />
       }
       sticky={<></>}
     />
