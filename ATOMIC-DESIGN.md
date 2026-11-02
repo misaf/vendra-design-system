@@ -260,7 +260,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPolicyDocument now composes section headings, paragraphs and optional item lists.
    Policy View now passes its layout directly without a redundant fragment.
    StorefrontJournalHeading now composes the title and category controls from explicit props.
-   **Next stage: extract journal-page search controls into a storefront organism.**
+   StorefrontJournalSearch now composes the controlled search field from explicit props.
+   **Next stage: extract journal-page empty feedback into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4353,6 +4354,31 @@ normalization; actual screenshot bytes were checked and representative captures 
 styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation
 and assistive-technology suites were not run.
 Next: extract journal-page search controls into a storefront organism.
+
+**One hundred and seventy-sixth checkpoint verified:** extracted StorefrontJournalSearch under app
+organisms from the journal View search slot. Explicit label/value/onChange props preserve the package
+controlled SearchField without adding a wrapper. View retains localized label/value/callback mapping;
+journal logic retains query/category state, matching, first-page resets and navigation. SearchField
+retains focus, clear/Escape behavior and accessibility; layout retains placement/spacing. Ownership
+documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search/Escape,
+empty/clear, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify one search-slot child, accessible labels, empty/filled values, live
+matching, focus retention, Escape, pointer/touch clear, no-match recovery, article navigation,
+tablet rotation, containment and filled-state page-top axe. Initial/filled markup and relative bounds
+match; generated React/React Aria IDs and references are mapped consistently and attributes sorted.
+All 16 search screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. An initial probe matched both English clear actions; the completed probe scopes
+empty-state recovery separately from the field clear button. No source styles, baselines or tolerances
+changed. A separate desktop probe confirms an existing shared SearchField limitation in both versions:
+programmatically focusing its tabindex=-1 clear button and pressing Enter leaves the query unchanged;
+pointer/touch clear and Escape work. That shared control is unchanged in this extraction. Full-page
+visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page empty feedback into a storefront organism.
 
 ## Adding components
 
