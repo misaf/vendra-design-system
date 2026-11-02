@@ -275,7 +275,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostActions now composes the controlled copy button and localized shop link.
    StorefrontPostSocial now composes the share/Instagram row from explicit props.
    StorefrontPostProducts now composes the ordered product recommendation grid.
-   **Next stage: extract post-page related stories into a storefront organism.**
+   StorefrontPostRelated now composes the related-story heading and responsive card grid.
+   **Next stage: simplify post View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4753,6 +4754,34 @@ matching markup/dimensions; recommendation grids remain absent in loading/missin
 styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
 technology suites were not run.
 Next: extract post-page related stories into a storefront organism.
+
+**One hundred and ninety-first checkpoint verified:** extracted StorefrontPostRelated under app
+organisms from the post View related slot. Explicit title/accent/stories props preserve the localized
+SectionHeader, ordered keyed soft 4/3 BlogCards, title/image/excerpt/meta/href props and responsive grid
+as siblings without adding a wrapper. View retains heading mapping and list normalization; post logic
+retains current-article exclusion, selection/order, localized metadata, image resolution and URLs.
+Layout retains related-section placement and article visibility; SectionHeader/BlogCard retain heading,
+image and link presentation. The unused View design-system import is removed. Source comparison
+confirms only the related slot/imports changed and extracted markup is preserved through explicit
+props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block related sections match source heading/accent, story exclusion/order,
+title/excerpt/category/read-time metadata, localized article hrefs, soft 4/3 frames, image src, empty
+alt and responsive sizes. Lazy attributes are checked on fresh/reloaded pages before settlePage makes
+images eager; no high fetch priority is introduced. Related markup and relative bounds match with
+generated IDs/references and preview origins normalized consistently and attributes sorted. All 16
+related-section PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Captures use related-section height plus 1000 pixels, asserting unchanged section dimensions
+before restoring size and explicitly awaiting image decode/finite transitions after pointer movement.
+Touch or Enter related-story navigation, language preservation, destination heading focus, browser
+back, reload, tablet rotation, containment and classic-article page-top axe pass. Related sections
+remain absent in loading/missing states. No source styles, baselines or tolerances changed. Full
+browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: simplify post View composition.
 
 ## Adding components
 
