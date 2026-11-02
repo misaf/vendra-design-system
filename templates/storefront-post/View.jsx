@@ -9,6 +9,7 @@ import {StorefrontPostHeading} from '../app/organisms/StorefrontPostHeading/Stor
 import {StorefrontPostBlocks} from '../app/organisms/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
 import {StorefrontPostClassic} from '../app/organisms/StorefrontPostClassic/StorefrontPostClassic.jsx';
 import {StorefrontPostActions} from '../app/organisms/StorefrontPostActions/StorefrontPostActions.jsx';
+import {StorefrontPostSocial} from '../app/organisms/StorefrontPostSocial/StorefrontPostSocial.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -78,26 +79,13 @@ export function View({v}) {
             }
             recommendations={
               <>
-                <div className="tw:flex tw:gap-3">
-                  <DS.Button
-                    variant="ghost"
-                    href={v.shareWa}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {'WhatsApp'}
-                  </DS.Button>
-                  {v.instagram ? (
-                    <DS.Button
-                      variant="ghost"
-                      href={v.instagram?.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {'Instagram'}
-                    </DS.Button>
-                  ) : null}
-                </div>
+                <StorefrontPostSocial
+                  whatsappLabel="WhatsApp"
+                  whatsappHref={v.shareWa}
+                  showInstagram={Boolean(v.instagram)}
+                  instagramLabel="Instagram"
+                  instagramHref={v.instagram?.url}
+                />
                 <div className="vf-product-grid tw:grid tw:gap-5 tw:mt-5 tw:grid-cols-2 tw:md:grid-cols-3">
                   {list(v.storyProducts).map((p, $index) => (
                     <React.Fragment key={$index}>
