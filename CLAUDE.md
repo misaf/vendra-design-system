@@ -262,6 +262,8 @@ StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated props; Vie
 and selected-document copy, layout retains the header and policy/shared logic retain selection and routing.
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
+StorefrontJournalFeatured composes explicit story props through the wide arch BlogCard; View retains
+visibility/mapping and journal logic retains lead selection, image resolution, metadata and hrefs.
 StorefrontJournalLoading composes an explicit status message and decorative Skeleton; View retains
 visibility/copy mapping, journal logic retains demo state and layout retains feedback placement.
 StorefrontJournalEmpty composes explicit title/clearLabel/onClear; View retains visibility/mapping,
