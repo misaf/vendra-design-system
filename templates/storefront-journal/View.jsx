@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontJournalLayout} from '../app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
+import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,27 +14,18 @@ export function View({v}) {
         <>
           <StorefrontJournalLayout
             heading={
-              <>
-                <DS.SectionHeader level="h1" eyebrow={v.t?.eb} title={v.t?.hA} accent={v.t?.hB} />
-                <div
-                  role="group"
-                  aria-label={v.t?.categories}
-                  className="vf-journal-categories tw:flex tw:gap-2 tw:flex-wrap"
-                  onFocus={event => {
-                    const target = /** @type {HTMLElement} */ (event.target);
-                    if (target !== event.currentTarget)
-                      target.scrollIntoView({block: 'nearest', inline: 'nearest'});
-                  }}
-                >
-                  {list(v.cats).map((c, $index) => (
-                    <React.Fragment key={$index}>
-                      <DS.Chip selected={c?.on} aria-pressed={c?.on} onClick={c?.pick}>
-                        <>{c?.label}</>
-                      </DS.Chip>
-                    </React.Fragment>
-                  ))}
-                </div>
-              </>
+              <StorefrontJournalHeading
+                eyebrow={v.t?.eb}
+                title={v.t?.hA}
+                accent={v.t?.hB}
+                categoriesLabel={v.t?.categories}
+                categories={list(v.cats)}
+                onCategoryFocus={event => {
+                  const target = /** @type {HTMLElement} */ (event.target);
+                  if (target !== event.currentTarget)
+                    target.scrollIntoView({block: 'nearest', inline: 'nearest'});
+                }}
+              />
             }
             search={
               <>

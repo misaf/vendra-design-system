@@ -259,7 +259,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPolicyContents now composes labelled section links from explicit props.
    StorefrontPolicyDocument now composes section headings, paragraphs and optional item lists.
    Policy View now passes its layout directly without a redundant fragment.
-   **Next stage: extract journal-page heading into a storefront organism.**
+   StorefrontJournalHeading now composes the title and category controls from explicit props.
+   **Next stage: extract journal-page search controls into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4330,6 +4331,28 @@ temporarily equals main height plus 800 pixels to avoid sticky-header overlap; m
 checked unchanged before restoring interaction size. No source styles, baselines or tolerances changed.
 Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract journal-page heading into a storefront organism.
+
+**One hundred and seventy-fifth checkpoint verified:** extracted StorefrontJournalHeading under app
+organisms from the journal View heading slot. Explicit eyebrow/title/accent, categoriesLabel/categories
+and onCategoryFocus props preserve SectionHeader h1, the named category group, keyed Chips,
+selection/aria-pressed and callbacks without adding a wrapper. View retains localized mapping,
+list normalization and focus-scroll behavior; journal logic retains filtering, selection callbacks,
+page resets and URL navigation. Layout retains header placement; shared logic retains locale, SEO
+and page focus. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover category focus scrolling,
+minimum touch targets, empty/clear, search/Escape, article navigation, pagination and first-page reset.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify two header siblings, one h1, named category group, eight ordered
+localized labels, initial selection, last-chip touch or Enter/Space activation, focus visibility,
+empty/clear/search recovery, article navigation, tablet rotation, containment and empty-state page-top
+axe. Initial and empty-category header markup/relative bounds and all 16 PNG pairs match without
+normalization; actual screenshot bytes were checked and representative captures viewed. No source
+styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run.
+Next: extract journal-page search controls into a storefront organism.
 
 ## Adding components
 
