@@ -1,10 +1,10 @@
 // StorefrontPolicy: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPolicyLayout} from '../app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
 import {StorefrontPolicyHeading} from '../app/organisms/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
 import {StorefrontPolicyNavigation} from '../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
+import {StorefrontPolicyNotice} from '../app/organisms/StorefrontPolicyNotice/StorefrontPolicyNotice.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -25,13 +25,7 @@ export function View({v}) {
             policyNavigation={
               <StorefrontPolicyNavigation label={v.t?.policiesL} links={list(v.policyLinks)} />
             }
-            notice={
-              <>
-                <DS.Alert tone="warning" title={v.t?.sampleT}>
-                  <>{v.t?.sampleP}</>
-                </DS.Alert>
-              </>
-            }
+            notice={<StorefrontPolicyNotice title={v.t?.sampleT} body={v.t?.sampleP} />}
             tableOfContents={
               <>
                 <nav
