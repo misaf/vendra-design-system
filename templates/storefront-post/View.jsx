@@ -6,6 +6,7 @@ import {StorefrontPostLayout} from '../app/layouts/StorefrontPostLayout/Storefro
 import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/StorefrontPostLoading.jsx';
 import {StorefrontPostMissing} from '../app/organisms/StorefrontPostMissing/StorefrontPostMissing.jsx';
 import {StorefrontPostHeading} from '../app/organisms/StorefrontPostHeading/StorefrontPostHeading.jsx';
+import {StorefrontPostBlocks} from '../app/organisms/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -40,63 +41,19 @@ export function View({v}) {
                   intro={v.t?.lede}
                 />
                 {v.hasBlocks ? (
-                  <>
-                    {list(v.blocks).map((b, $index) => (
-                      <React.Fragment key={$index}>
-                        {b?.paragraph ? (
-                          <>
-                            <p>
-                              <>{b?.value}</>
-                            </p>
-                          </>
-                        ) : null}
-                        {b?.heading ? (
-                          <>
-                            <h2>
-                              <>{b?.value}</>
-                            </h2>
-                          </>
-                        ) : null}
-                        {b?.quote ? (
-                          <>
-                            <blockquote>
-                              <>{b?.value}</>
-                            </blockquote>
-                          </>
-                        ) : null}
-                        {b?.image ? (
-                          <>
-                            <figure>
-                              <DS.Picture
-                                image={b?.photo}
-                                alt={b?.caption}
-                                sizes="(max-width: 760px) 100vw, 720px"
-                                className="tw:w-full tw:h-auto tw:rounded-md"
-                              />
-                              <figcaption className="tw:text-sm tw:text-quiet">
-                                <>{b?.caption}</>
-                              </figcaption>
-                            </figure>
-                          </>
-                        ) : null}
-                        {b?.tips ? (
-                          <>
-                            <div className="tw:bg-sunken tw:p-5 tw:rounded-md">
-                              <ul>
-                                {list(b?.value).map((tip, $index) => (
-                                  <React.Fragment key={$index}>
-                                    <li>
-                                      <>{tip}</>
-                                    </li>
-                                  </React.Fragment>
-                                ))}
-                              </ul>
-                            </div>
-                          </>
-                        ) : null}
-                      </React.Fragment>
-                    ))}
-                  </>
+                  <StorefrontPostBlocks
+                    blocks={list(v.blocks).map(block => ({
+                      paragraph: block?.paragraph,
+                      heading: block?.heading,
+                      quote: block?.quote,
+                      image: block?.image,
+                      tips: block?.tips,
+                      value: block?.value,
+                      caption: block?.caption,
+                      photo: block?.photo,
+                      tipsItems: list(block?.value)
+                    }))}
+                  />
                 ) : null}
                 {v.hasClassic ? (
                   <>
