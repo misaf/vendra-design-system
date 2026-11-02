@@ -204,6 +204,8 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+StorefrontFaqContact composes explicit help copy, contact actions and sample note; View retains
+localized/link mapping and WhatsApp availability, and layout retains aside placement.
 StorefrontFaqQuestions composes explicit question groups; View normalizes the list, FAQ logic
 retains category/answer mapping and delivery wording, and Accordion owns disclosure behavior.
 StorefrontFaqHeading composes explicit eyebrow/title/accent/intro; View maps localized copy, layout
