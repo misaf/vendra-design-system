@@ -271,7 +271,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostMissing now composes missing-story feedback and the localized journal recovery link.
    StorefrontPostHeading now composes the article back link, metadata, title and introduction.
    StorefrontPostBlocks now composes ordered article blocks and normalized tip lists.
-   **Next stage: extract post-page classic content into a storefront organism.**
+   StorefrontPostClassic now composes the classic image, paragraphs, quote and section heading.
+   **Next stage: extract post-page article actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4642,6 +4643,33 @@ visible on classic articles and article content remains absent in loading/missin
 styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
 technology suites were not run.
 Next: extract post-page classic content into a storefront organism.
+
+**One hundred and eighty-seventh checkpoint verified:** extracted StorefrontPostClassic under app
+organisms from the post View classic branch. Explicit image/paragraphsBefore/quote/heading/
+paragraphsAfter props preserve the priority soft 4/3 ArchFrame and copy wrapper with ordered keyed
+paragraphs, quote and h2 without adding a wrapper. View retains classic visibility, localized copy/
+image mapping and paragraph-list normalization; post logic retains article selection, classic/block
+eligibility, localized copy and image resolution. Layout retains article placement/spacing and shared
+logic retains routing, locale, SEO and focus. Source comparison confirms only the View classic branch/
+import changed and the extracted markup is preserved through explicit props. Ownership documentation
+is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Autumn and care classic articles match the existing page-level bilingual
+paragraphs, quote, h2 and sibling order; image src, empty alt, responsive sizes, eager loading, high
+fetch priority and soft 4/3 frame are preserved. Classic markup, relative bounds and capture rectangles match with generated IDs/
+references and preview origins normalized consistently and attributes sorted. All 16 classic-content
+PNG pairs are byte-identical; actual bytes were checked and representative captures viewed. Captures
+use the body-sibling union at article height plus 1000 pixels, asserting unchanged article dimensions
+before restoring size and explicitly awaiting image decode. Touch or Enter journal-back navigation,
+language preservation, browser back, reload, tablet rotation, containment and autumn-article page-top
+axe pass. Classic content is absent from block articles, while block figures remain; article content
+is absent in loading/missing states. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page article actions into a storefront organism.
 
 ## Adding components
 
