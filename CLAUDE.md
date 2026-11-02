@@ -280,6 +280,8 @@ StorefrontJournalLayout arranges heading, search, feedback, featured story, grid
 slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
 feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
 page navigation.
+Post View passes its layout directly; multi-child feedback/article/recommendation fragments and the
+empty sticky slot retain their conditions, mappings, normalization and callbacks.
 StorefrontPostRelated composes explicit title/accent/stories and responsive cards; View retains copy/
 list normalization and post logic retains exclusion, selection/order, metadata/images/URLs.
 StorefrontPostProducts composes explicit product records and the responsive grid; View retains list
