@@ -1,6 +1,5 @@
 // StorefrontJournal: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontJournalLayout} from '../app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from '../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
@@ -9,6 +8,7 @@ import {StorefrontJournalEmpty} from '../app/organisms/StorefrontJournalEmpty/St
 import {StorefrontJournalLoading} from '../app/organisms/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
 import {StorefrontJournalFeatured} from '../app/organisms/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
 import {StorefrontJournalStories} from '../app/organisms/StorefrontJournalStories/StorefrontJournalStories.jsx';
+import {StorefrontJournalPagination} from '../app/organisms/StorefrontJournalPagination/StorefrontJournalPagination.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -65,15 +65,12 @@ export function View({v}) {
             }
             stories={<StorefrontJournalStories stories={list(v.rest)} />}
             pagination={
-              <>
-                <DS.Pagination
-                  className="vf-journal-pagination tw:mt-8"
-                  page={v.paging?.page}
-                  pageCount={v.paging?.pageCount}
-                  href={v.paging?.href}
-                  onChange={v.paging?.onChange}
-                />
-              </>
+              <StorefrontJournalPagination
+                page={v.paging?.page}
+                pageCount={v.paging?.pageCount}
+                href={v.paging?.href}
+                onChange={v.paging?.onChange}
+              />
             }
           />
         </>
