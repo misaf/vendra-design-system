@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPostLayout} from '../app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx';
+import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/StorefrontPostLoading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -16,15 +17,7 @@ export function View({v}) {
             feedback={
               <>
                 {v.loading ? (
-                  <>
-                    <h1>
-                      <>{v.t?.title}</>
-                    </h1>
-                    <DS.Skeleton shape="card" />
-                    <p role="status">
-                      <>{v.migration?.loading}</>
-                    </p>
-                  </>
+                  <StorefrontPostLoading title={v.t?.title} message={v.migration?.loading} />
                 ) : null}
                 {v.missing ? (
                   <>
