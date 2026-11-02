@@ -262,7 +262,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontJournalHeading now composes the title and category controls from explicit props.
    StorefrontJournalSearch now composes the controlled search field from explicit props.
    StorefrontJournalEmpty now composes no-result feedback and the recovery action.
-   **Next stage: extract journal-page loading feedback into a storefront organism.**
+   StorefrontJournalLoading now composes the decorative skeleton and localized status.
+   **Next stage: extract journal-page featured story into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4403,6 +4404,31 @@ baselines or tolerances changed. The stage-176 shared SearchField clear-button k
 remains documented and unchanged. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run.
 Next: extract journal-page loading feedback into a storefront organism.
+
+**One hundred and seventy-eighth checkpoint verified:** extracted StorefrontJournalLoading under app
+organisms from the journal View loading branch. An explicit message prop preserves the package card
+Skeleton and sibling status paragraph without a wrapper. View retains visibility/localized mapping;
+journal logic retains loading demo state, story visibility and filtering. Layout retains feedback
+placement; Skeleton retains reduced-motion presentation and shared logic retains locale, SEO and focus.
+Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, empty/clear,
+search/Escape, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify a single aria-hidden card Skeleton, its following localized role=status
+paragraph, reduced-motion shimmer suppression and no stories during demo loading. Last-category
+selection creates simultaneous empty/loading feedback; touch or Enter/Space selection and recovery,
+category reset, tablet rotation, containment and combined-state page-top axe pass. Returning to the
+normal journal removes skeleton/status and restores seven stories. Loading/combined main markup,
+relative bounds and all 16 PNG pairs match; generated React/React Aria IDs/references are mapped
+consistently and attributes sorted. Actual bytes were checked and representative captures viewed.
+Capture height temporarily equals main height plus 800 pixels to avoid sticky-header overlap; main
+dimensions are checked unchanged before restoring interaction size. No source styles, baselines or
+tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains documented.
+Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page featured story into a storefront organism.
 
 ## Adding components
 
