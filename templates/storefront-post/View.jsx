@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontPostLayout} from '../app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx';
 import {StorefrontPostLoading} from '../app/organisms/StorefrontPostLoading/StorefrontPostLoading.jsx';
 import {StorefrontPostMissing} from '../app/organisms/StorefrontPostMissing/StorefrontPostMissing.jsx';
+import {StorefrontPostHeading} from '../app/organisms/StorefrontPostHeading/StorefrontPostHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -31,22 +32,13 @@ export function View({v}) {
             }
             article={
               <>
-                <a
-                  href={v.href?.journal}
-                  className="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"
-                >
-                  <DS.Icon name="arrow-left" size={16} />
-                  <>{v.t?.back}</>
-                </a>
-                <div className="vf-post-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.meta}</>
-                </div>
-                <h1>
-                  <>{v.t?.title}</>
-                </h1>
-                <p className="vf-post-intro tw:text-secondary tw:m-0 tw:text-lg tw:leading-body tw:text-pretty">
-                  <>{v.t?.lede}</>
-                </p>
+                <StorefrontPostHeading
+                  journalHref={v.href?.journal}
+                  backLabel={v.t?.back}
+                  meta={v.t?.meta}
+                  title={v.t?.title}
+                  intro={v.t?.lede}
+                />
                 {v.hasBlocks ? (
                   <>
                     {list(v.blocks).map((b, $index) => (
