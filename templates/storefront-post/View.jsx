@@ -8,6 +8,7 @@ import {StorefrontPostMissing} from '../app/organisms/StorefrontPostMissing/Stor
 import {StorefrontPostHeading} from '../app/organisms/StorefrontPostHeading/StorefrontPostHeading.jsx';
 import {StorefrontPostBlocks} from '../app/organisms/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
 import {StorefrontPostClassic} from '../app/organisms/StorefrontPostClassic/StorefrontPostClassic.jsx';
+import {StorefrontPostActions} from '../app/organisms/StorefrontPostActions/StorefrontPostActions.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -68,14 +69,12 @@ export function View({v}) {
               </>
             }
             actions={
-              <>
-                <DS.Button variant="secondary" size="sm" iconStart="link" onClick={v.copy}>
-                  <>{v.copyLabel}</>
-                </DS.Button>
-                <DS.Button variant="primary" size="sm" iconEnd="arrow-right" href={v.href?.shop}>
-                  <>{v.t?.shopIt}</>
-                </DS.Button>
-              </>
+              <StorefrontPostActions
+                copyLabel={v.copyLabel}
+                onCopy={v.copy}
+                shopLabel={v.t?.shopIt}
+                shopHref={v.href?.shop}
+              />
             }
             recommendations={
               <>
