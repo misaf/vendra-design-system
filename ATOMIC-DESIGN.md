@@ -257,7 +257,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPolicyNavigation now composes the labelled policy list and links from explicit props.
    StorefrontPolicyNotice now composes the localized sample notice through the warning Alert.
    StorefrontPolicyContents now composes labelled section links from explicit props.
-   **Next stage: extract policy-page document sections into a storefront organism.**
+   StorefrontPolicyDocument now composes section headings, paragraphs and optional item lists.
+   **Next stage: simplify policy View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4284,6 +4285,30 @@ contents screenshot pairs are byte-identical; actual PNG bytes were checked and 
 captures viewed. No source styles, baselines or tolerances changed. Full-page visual, full browser/
 device, TV spatial-navigation and assistive-technology suites were not run.
 Next: extract policy-page document sections into a storefront organism.
+
+**One hundred and seventy-third checkpoint verified:** extracted StorefrontPolicyDocument under app
+organisms from the policy View document slot. Explicit normalized section descriptors preserve IDs,
+keyed fragments, numbered h2 headings, paragraphs, optional item lists, classes and scroll margins
+without adding a wrapper. View retains section/paragraph/item list normalization and descriptor mapping;
+policy logic retains selection/fallback, localized content, numbering and item availability. Layout
+retains the document wrapper/placement; shared logic retains routing, locale, SEO, focus and sticky
+measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920 across all five policies. They compare exact paragraph/item text and list counts
+against bilingual source copy, including terms without lists and accessibility list-only sections.
+Section IDs, h2/contents text, first/last anchors by touch or Enter, reload markup, tablet rotation,
+containment and page-top axe pass. All 40 document markup, relative-bound and screenshot pairs match
+without normalization; actual PNG bytes were checked and representative captures viewed. Component
+capture height temporarily equals document height plus 800 pixels to avoid sticky-header overlap;
+document width/height are checked unchanged before restoring interaction size. An initial probe
+incorrectly required lists in every policy and paragraphs in every section; it now uses source copy
+for those expectations. No source styles, baselines or tolerances changed. Full-page visual, full
+browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: simplify policy View composition.
 
 ## Adding components
 
