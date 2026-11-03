@@ -82,4 +82,7 @@ dynamic imports in the runtime JS/JSX graph are checked for missing targets, cyc
 boundary violations. Thirty filesystem regression scenarios exercise positive and negative graphs;
 408 current modules pass. This closes the module-check gap identified in the frozen inventory,
 within the documented JS/JSX/literal-import scope; it does not prove runtime state ownership.
-Final package export/type/tree-shaking contract review is next. Device/visual acceptance remains open.
+Stage 216 records the [package contract audit](PACKAGE-CONTRACT-AUDIT.md): packed consumer root/types/
+assets/SSR and no-alias tree shaking pass. CommonJS-only RAMPS/shade and automated packed-consumer
+coverage gaps remain confirmed findings. Theme export/type parity with existing CommonJS members
+preserved is next, followed by persistent packed-consumer checks. Device/visual acceptance remains open.

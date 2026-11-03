@@ -378,5 +378,7 @@ region/boundary/loading ownership, route guards and customer keys. Stage 215 wir
 checks into `npm test`: UI layer/helper boundaries, missing literal relative targets and runtime
 JS/JSX cycles, with thirty filesystem regression scenarios. Only collection-carousel and QR are
 shared UI-helper allowances, and their own imports are constrained. See the stage-215 checkpoint
-for scope and exclusions. Final package export/type/tree-shaking contract review is next; physical
-device and assistive-technology acceptance remain open.
+for scope and exclusions. Stage 216 records the [package contract audit](../PACKAGE-CONTRACT-AUDIT.md):
+packed consumer imports/types/assets/SSR and no-alias tree shaking pass, with theme export/type
+asymmetry and persistent consumer-test gaps documented. Theme parity preserving existing CommonJS
+members is next. Physical device and assistive-technology acceptance remain open.
