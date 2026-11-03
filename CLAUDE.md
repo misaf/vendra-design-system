@@ -3,8 +3,9 @@
 **Atomic Design migration:** [ATOMIC-DESIGN.md](ATOMIC-DESIGN.md) defines the new layer boundaries
 and migration order. New UI components live in `components/atoms/`, `components/molecules/` or
 `components/organisms/`, one named folder per component; use `npm run new:component -- Name --level
-atoms|molecules|organisms`. Existing flat component folders migrate incrementally. References below
-to `components/<Name>/` mean the component's own folder, including its layer after migration.
+atoms|molecules|organisms`. All package UI folders are layered; remaining storefront composition is
+tracked in `ATOMIC-DESIGN-AUDIT.md`. References below to `components/<Name>/` mean the component's
+own folder, including its layer.
 
 Package Button owns pending activation/implicit-submit guards and inline text loadingLabel status.
 Keep pending announcements independent of button IDs so completion/navigation may unmount controls.
