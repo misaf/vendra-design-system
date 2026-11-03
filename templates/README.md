@@ -387,5 +387,7 @@ all root value types and JSX consumers, no-alias bundles including lowercase nam
 import removal. Packing is offline with scripts disabled; peers are reused without installation.
 Stage 219 records the [acceptance evidence audit](../ACCEPTANCE-EVIDENCE.md): device/TV execution,
 focused visual/axe evidence, real-sticky and project coverage limits, and hardware/screen-reader gaps.
-The Persian post metadata screenshot mismatch is next for diagnosis. Physical device and assistive-
-technology acceptance remain open.
+Stage 220 corrects two stale Darwin Persian post baselines after tracing their old raised-dot
+separators to the earlier intentional comma change. Exact metadata regressions cover classic/block
+articles and related stories. Dedicated touch/tablet route acceptance is next; physical-device and
+assistive-technology acceptance remain open.
