@@ -303,7 +303,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    The package contract audit verifies packed consumers and records theme/API and CI coverage gaps.
    Theme ESM/CommonJS exports and types now share RAMPS/shade without changing the color math.
    Packed-consumer checks now exercise public assets/types and all root export bundles without aliases.
-   **Next stage: audit remaining device, visual and accessibility acceptance evidence.**
+   The acceptance audit distinguishes current device/content checks from visual/hardware gaps.
+   **Next stage: diagnose the Persian post metadata visual mismatch.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5557,6 +5558,30 @@ within their documented scopes; finding 3 and prior loading/contact-map/visual o
 
 Next: audit remaining device, visual and accessibility acceptance evidence, distinguishing existing
 checks, reproducible gaps and hardware/assistive-technology checks that still need execution.
+
+## Stage 219 checkpoint: device, visual and accessibility evidence audit
+
+[ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) records an enumerated capability checklist, current
+coverage, fresh production device checks, focused screenshot/axe results, historical observations
+and follow-up order. The inventory has 1,569 registered tests; it is not a full-suite pass. Route
+screenshots/axe use desktop Chromium at phone/desktop widths; dedicated touch/tablet/TV projects
+exercise selected interactions. Content axe temporarily unsticks the bottom bar, so real sticky
+reachability needs separate evidence. No physical-device or screen-reader acceptance is inferred.
+
+The production touch-phone/tablet/TV device and remote suite passes 33 checks with eight planned
+skips. Focused post/not-found screenshots and post/not-found/contact/error axe yield 22 passes and
+two Persian-post screenshot failures: all sixteen axe cases and six screenshots pass. Both widths
+show 1,303 differing comparator pixels in metadata text regions; separate unchanged-source repeats
+fail identically, with matching initial/repeat actual RGBA buffers. Expected/actual dimensions match.
+Root cause remains unestablished. Existing screenshot limits (threshold 0, 25 pixels), baselines and
+source styles are retained. npm run check and the production runner's app build pass.
+
+The audit makes no runtime, style, baseline,
+screenshot-policy or test-config change. Historical post/shop/bag/checkout visual, loading/focus,
+contact-map and shared clear-control observations remain documented with their confidence limits.
+
+Next: diagnose the reproduced Persian post metadata visual mismatch before changing any
+baseline or tolerance; then extend dedicated touch/tablet route and normal-sticky acceptance checks.
 
 ## Adding components
 

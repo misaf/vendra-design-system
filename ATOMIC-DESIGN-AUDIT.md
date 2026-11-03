@@ -89,4 +89,6 @@ preserved is completed by stage 217: fifteen theme values agree and both declara
 RAMPS/shade, with parity/palette and strict consumer-type regressions. Persistent packed-consumer
 checks are completed in stage 218: package/size tests consume actual tarballs, resolve public assets,
 compile all root values and JSX consumers, and bundle all root exports without aliases. Existing
-budgets remain. Device/visual/accessibility evidence review is next; acceptance remains open.
+budgets remain. Stage 219 records the [acceptance evidence audit](ACCEPTANCE-EVIDENCE.md), including
+fresh device/TV and focused screenshot/axe evidence, project/geometry limits and open observations.
+A current Persian post metadata screenshot mismatch is next for diagnosis. Acceptance remains open.
