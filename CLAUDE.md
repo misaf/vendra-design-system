@@ -48,8 +48,9 @@ localized items, logic retains identity/category/shop URLs and layout retains pl
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell.
 StorefrontShopHeading composes the localized h1 SectionHeader from explicit eyebrow/title/accent;
-View maps copy and layout retains heading placement. StorefrontShopLayout arranges shop slots;
-filtering, sorting, paging and URL state remain in the shop View/logic.
+View maps copy and layout retains heading placement. Shop View passes StorefrontShopLayout directly
+to Shell content, preserving sidebar/results fragments and the empty sticky slot. Filtering, sorting,
+paging and URL state remain in the shop View/logic.
 StorefrontShopCategories composes sidebar category buttons and compact chips from explicit records;
 View/logic retain eligibility, filtered counts, selection/tracking, URL/paging and sorting.
 StorefrontShopSidebarFilters composes controlled occasion/date/price/stock controls from explicit descriptors;

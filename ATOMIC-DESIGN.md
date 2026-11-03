@@ -294,7 +294,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSiteIntegrationFeedback now composes the controlled sync-error Alert from an explicit message.
    StorefrontBagDeliveryLayout now owns recipient/location section placement from React-node slots.
    StorefrontCheckoutLayout now owns payment progress spacing; View retains controlled slot construction.
-   **Next stage: simplify shop View composition.**
+   Shop View now passes its layout directly while retaining sidebar/results grouping and empty sticky slot.
+   **Next stage: simplify product View composition.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5254,6 +5255,35 @@ full browser/device, TV spatial-navigation and assistive-technology suites were 
 stage-192/197 observations remain documented.
 
 Next: simplify shop View composition.
+
+**Two hundred and tenth checkpoint verified:** simplified shop View composition by passing
+StorefrontShopLayout directly to Shell content. Source comparison confirms only the redundant outer
+fragment and indentation changed; sidebar/results multi-child groups, every controlled prop/callback
+and the explicit empty sticky slot remain intact. Updated ownership, roadmap and audit progress.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual shop axe, occasion
+filtering and clearing all filters. Eight paired previous/current probes cover English/Persian at
+touch widths 390/768, desktop 1280 and TV width 1920. Direct/client-routed main markup and relative
+element bounds match with preview origins (including image URLs), generated IDs/references normalized
+consistently and attributes sorted. Probes verify source heading/h1, same-document client navigation,
+heading focus and locale, filtered URL/reload with two products, back/forward recovery, tablet
+rotation, containment and page-top axe.
+
+The first normalized strict attempt stopped at English 768 routed photos: 90,330 pixels, maximum
+channel delta 33. The full comparison completed all flows with 14/16 exact main PNG pairs; residuals
+were English 768 routed photos (58,613 pixels, maximum delta 30) and English 1920 direct fourth-photo
+capture (556,922 pixels, maximum delta 236, with the current capture showing a blank photo).
+Original captures and pixel measurements were retained. Targeted repeats for both English widths
+explicitly size the viewport to main height plus 1000 pixels, assert unchanged main dimensions,
+await image decode and require matching selected resources with positive natural widths. All four
+direct/routed repeat PNG pairs, markup and bounds are exact. This supports a capture-timing concern;
+the initial differences remain recorded. Representative captures were viewed. Initial phone captures
+include existing sticky shell chrome, and full unobscured/full-page visual acceptance is not claimed.
+No source styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and
+assistive-technology suites were not run; earlier stage-192/197 observations remain documented.
+
+Next: simplify product View composition.
 
 ## Adding components
 
