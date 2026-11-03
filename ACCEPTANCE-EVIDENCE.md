@@ -107,3 +107,16 @@ cases and sixteen axe cases. Full npm tests, checks and app build also pass. The
 checklist/results above remain a historical snapshot. Its first follow-up is
 addressed; dedicated touch/tablet routes and normal-sticky reachability are next. Older visual/map/
 loading observations and physical-device/screen-reader acceptance remain open.
+
+Stage 221 adds sixteen dedicated touch-phone/tablet core-route cases (English/Persian product,
+bag/delivery, checkout and contact). They check normal-sticky whole-control geometry, center hit
+testing and touch taps, validation focus before corrective scrolling, map entry, receipt recovery
+and tablet portrait reachability. Content axe uses the existing bottom-bar adjustment with opt-in
+cleanup; original sticky positions are verified before/after and controls rechecked. It is not an
+axe pass over every possible clipped scroll position. Exploratory target-size reports cleared when
+the affected controls were fully scrolled into view; no UI size/rule exclusions were introduced.
+The initial tablet width gets the content scan, while 768×1024 gets a geometry recheck. This begins
+the second follow-up with four core routes; browsing/recovery routes, soft-keyboard behavior and
+physical-device/assistive-technology acceptance remain open. All sixteen new cases pass in dev and production, plus sixteen legacy core-route axe checks,
+with one worker and no retries. Unit/check/build validation passes. New cases use reduced motion,
+essential consent and a fixed morning clock. The stage-219 inventory is historical.

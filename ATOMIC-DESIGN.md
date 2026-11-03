@@ -305,7 +305,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Packed-consumer checks now exercise public assets/types and all root export bundles without aliases.
    The acceptance audit distinguishes current device/content checks from visual/hardware gaps.
    The Persian post mismatch is traced to stale Darwin separator baselines, now reviewed/refreshed.
-   **Next stage: add dedicated touch-phone/tablet route acceptance checks.**
+   Dedicated touch/tablet checks now cover core shopping routes and normal-sticky reachability.
+   **Next stage: extend touch/tablet browsing and recovery route coverage.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5614,6 +5615,46 @@ Older image/map/loading/focus observations and hardware/screen-reader acceptance
 
 Next: add dedicated touch-phone/tablet route acceptance checks, including real sticky control
 reachability for product/bag/checkout/contact before claiming complete device acceptance.
+
+## Stage 221 checkpoint: dedicated touch core-route acceptance
+
+Added device-routes.spec.mjs to the dedicated touch-phone/tablet projects, preserving existing
+device/TV discovery. Sixteen bilingual cases cover product, bag/delivery validation, checkout and
+contact. They require a touch-capable context and use taps for actions/fields/map pinning. Controls
+are scrolled into view, then their entire box must fit the viewport without intersecting the shell,
+and their center must hit the control/descendant. Taps use normal actionability, without force or
+JavaScript clicks. Validation summaries and linked fields must already be focused and unobscured
+before any corrective test scroll. Tablet interactions start at 1180×820, then key controls are
+rechecked at 768×1024. Touch phone uses 390×844.
+
+Flows verify add-to-bag dialog entry, bag→delivery heading focus and required-field recovery,
+recipient/sender/map entry, checkout receipt/reference persistence through reload, reachable order
+actions without submission, and contact invalid-email/message focus. Product inquiry and contact
+map zoom targets receive explicit reachability checks. Map tiles are stubbed; invalid contact
+submissions stop at validation and no checkout order/payment is submitted.
+
+Content axe retains its established bottom-bar adjustment at the initial device viewport. A new
+opt-in restoreBottomBar flag removes that temporary style in finally, preserving legacy defaults;
+the new tests assert the original sticky positions before and after the scan and recheck controls.
+Portrait tablet coverage here is geometry/reachability, not a second axe scan. No rule is excluded.
+Exploratory scans with live bars at arbitrary scroll positions reported partially clipped targets
+on contact/product and other boundary controls. Diagnostics show the map zoom target is 30×30 but
+only 13.8px is unobscured at page top; scrolling it into view clears the finding. The inquiry link
+also passes the target-size spacing alternative when fully in view. This is why content scans and
+normal-sticky interaction geometry are explicit separate checks, rather than changing UI sizing
+to satisfy a static clipped viewport.
+
+The final sixteen new cases pass in both dev and production, with one worker and no retries.
+Sixteen existing bilingual mobile/desktop core-route axe checks also pass, confirming the legacy
+helper default. Full npm tests, npm run check, production build and diff checks pass. New cases use
+reduced motion, essential-consent storage and a fixed morning clock. Runtime UI,
+styles, baselines, generated output, package dependencies and lockfiles remain unchanged. This
+covers selected core states with Chromium touch emulation; soft-keyboard occlusion, complete route/
+state coverage, physical devices, TV and screen-reader acceptance are not established by this stage.
+Older image/map/loading observations remain documented.
+
+Next: extend dedicated touch/tablet coverage to browsing and recovery routes, retaining the
+separation between content axe, real sticky reachability and physical-device acceptance.
 
 ## Adding components
 
