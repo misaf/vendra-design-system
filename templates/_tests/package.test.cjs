@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {createRequire} = require('node:module');
+const {execFileSync} = require('node:child_process');
 
 const repo = path.resolve(__dirname, '../..');
 const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
@@ -425,6 +426,49 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
       assert.equal(commerce.mobile(typed), '', typed);
 
     // Theme API, ESM and CommonJS.
+    const commonTheme = require_(manifest.name + '/theme');
+    assert.deepEqual(
+      Object.keys(theme).sort(),
+      Object.keys(commonTheme).sort(),
+      'theme entry parity'
+    );
+    for (const key of Object.keys(theme))
+      assert.equal(
+        theme[key],
+        commonTheme[key],
+        key + ' shares the existing CommonJS implementation'
+      );
+    assert.deepEqual(theme.RAMPS, require('../_shared/tenant-theme.js').RAMPS);
+    for (const [key, ramp] of Object.entries(theme.RAMPS)) {
+      for (const [token, step] of Object.entries(ramp.steps))
+        assert.equal(
+          theme.shade(theme.VENDRA.colours[key], step),
+          theme.tokens(theme.VENDRA).ramps[token],
+          token + ' can be generated through either public theme entry'
+        );
+    }
+    assert.equal(theme.shade('#C8405F', {lightness: 0, chroma: 0}), '#000000');
+    assert.equal(theme.shade('#C8405F', {lightness: 1, chroma: 0}), '#FFFFFF');
+
+    // Compile actual public import/require consumers, including expected type errors.
+    for (const file of ['theme-consumer.mts', 'theme-consumer.cts'])
+      fs.copyFileSync(path.join(__dirname, 'fixtures', file), path.join(app, file));
+    fs.writeFileSync(
+      path.join(app, 'tsconfig.json'),
+      JSON.stringify({
+        compilerOptions: {
+          noEmit: true,
+          strict: true,
+          target: 'es2023',
+          module: 'nodenext',
+          moduleResolution: 'nodenext',
+          types: []
+        },
+        include: ['theme-consumer.mts', 'theme-consumer.cts']
+      })
+    );
+    execFileSync(path.join(repo, 'node_modules/.bin/tsc'), ['-p', app], {stdio: 'inherit'});
+
     assert.equal(
       require_(manifest.name + '/theme').tenantCss,
       require_(path.join(installed, 'dist/theme.cjs')).tenantCss

@@ -14,6 +14,22 @@ export interface TenantSpec {
   /** Hand-set generated shades, e.g. {"--peony-600": "#A0304B"}. */
   overrides?: Record<string, Hex>;
 }
+/** OKLCH shade controls; lightness overrides shift when both are supplied. */
+export interface ShadeStep {
+  lightness?: number;
+  shift?: number;
+  chroma?: number;
+  maxChroma?: number;
+}
+/** A brand colour's base token and the controls for its generated shade tokens. */
+export interface ThemeRamp {
+  base: `--${string}`;
+  steps: Record<`--${string}`, ShadeStep>;
+}
+/** The four brand ramps used by tokens() and the theme builder. */
+export declare const RAMPS: Record<keyof TenantSpec['colours'], ThemeRamp>;
+/** Generate one shade from a six-digit hex base using the theme's OKLCH controls. */
+export declare function shade(base: Hex | string, step: ShadeStep): string;
 export interface ContrastCheck {
   label: string;
   ratio: number;

@@ -85,4 +85,6 @@ within the documented JS/JSX/literal-import scope; it does not prove runtime sta
 Stage 216 records the [package contract audit](PACKAGE-CONTRACT-AUDIT.md): packed consumer root/types/
 assets/SSR and no-alias tree shaking pass. CommonJS-only RAMPS/shade and automated packed-consumer
 coverage gaps remain confirmed findings. Theme export/type parity with existing CommonJS members
-preserved is next, followed by persistent packed-consumer checks. Device/visual acceptance remains open.
+preserved is completed by stage 217: fifteen theme values agree and both declaration forms cover
+RAMPS/shade, with parity/palette and strict consumer-type regressions. Persistent packed-consumer
+checks are next. Device/visual acceptance remains open.
