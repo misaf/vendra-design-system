@@ -372,4 +372,5 @@ integration-error feedback is completed in stage 207. Stage 208 completes bag de
 placement; stage 209 completes checkout progress placement. Stage 210 simplifies shop View
 composition; stage 211 simplifies product View composition while retaining recent reset-boundary and
 toast ownership. Stage 212 simplifies bag View composition, retaining multi-child groups and
-controlled visibility. Checkout View composition is next.
+controlled visibility. Stage 213 simplifies checkout View composition, retaining payment grouping and
+all payment/bank/success guards. Site View composition is next.
