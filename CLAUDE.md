@@ -335,8 +335,9 @@ StorefrontErrorMessage composes explicit eyebrow/title/accent/body through Empty
 copy mapping, logic retains reload/phone wording and layout retains placement.
 StorefrontErrorActions composes explicit retry callback/label and home/phone labels/hrefs; View maps
 props, logic retains reload/phone wording and layout retains action placement/wrapping.
-StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain
-localized content, reload behavior, home navigation and bidi-isolated phone wording.
+StorefrontErrorLayout arranges message and recovery-action slots passed directly by error View;
+View/logic retain localized content, reload behavior, home navigation and bidi-isolated phone wording.
+The explicit empty Shell sticky slot is retained.
 StorefrontPresentationLayout arranges heading, toolbar, catalog, display, overlays and feedback
 slots with controlled density/catalog visibility; presentation View/logic retain device and seller flows.
 StorefrontPresentationCatalog renders tiles and empty-state recovery from explicit data/labels/
