@@ -240,7 +240,45 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactCompletion now composes submission feedback and return-to-form action.
    StorefrontContactFeedback now composes API-failure messaging through the package danger Alert.
    Contact View now passes its layout directly without a redundant fragment.
-   **Next stage: extract weddings-page heading into a storefront organism.**
+   StorefrontWeddingsHeading now composes the weddings eyebrow, title, introduction and hero actions.
+   StorefrontWeddingsHeroMedia now composes the localized hero arch placeholder.
+   StorefrontWeddingsServices now composes ordered service cards from explicit records.
+   StorefrontWeddingsStory now composes gallery and process content from explicit props.
+   StorefrontWeddingsInquiryIntro now composes the localized inquiry heading and introduction.
+   StorefrontWeddingsFormControls now composes validation, fields and the send action.
+   StorefrontWeddingsCompletion now composes submission feedback and the return-to-form action.
+   StorefrontWeddingsFeedback now composes API-failure messaging through the package danger Alert.
+   Weddings View now passes layout/form/completion elements directly without redundant fragments.
+   StorefrontFaqHeading now composes the FAQ eyebrow, accented title and introduction.
+   StorefrontFaqQuestions now composes labelled category sections and Accordions from explicit groups.
+   StorefrontFaqContact now composes the FAQ help card, contact actions and sample-content note.
+   FAQ View now passes its layout directly without a redundant fragment.
+   StorefrontPolicyHeading now composes the policy eyebrow, title, introduction and update metadata.
+   StorefrontPolicyNavigation now composes the labelled policy list and links from explicit props.
+   StorefrontPolicyNotice now composes the localized sample notice through the warning Alert.
+   StorefrontPolicyContents now composes labelled section links from explicit props.
+   StorefrontPolicyDocument now composes section headings, paragraphs and optional item lists.
+   Policy View now passes its layout directly without a redundant fragment.
+   StorefrontJournalHeading now composes the title and category controls from explicit props.
+   StorefrontJournalSearch now composes the controlled search field from explicit props.
+   StorefrontJournalEmpty now composes no-result feedback and the recovery action.
+   StorefrontJournalLoading now composes the decorative skeleton and localized status.
+   StorefrontJournalFeatured now composes the featured BlogCard from explicit story props.
+   StorefrontJournalStories now composes ordered story cards inside the layout-owned grid.
+   StorefrontJournalPagination now composes paging controls from explicit props.
+   Journal View now passes its layout and conditional featured story directly without redundant fragments.
+   StorefrontPostLoading now composes loading title, decorative skeleton and localized status.
+   StorefrontPostMissing now composes missing-story feedback and the localized journal recovery link.
+   StorefrontPostHeading now composes the article back link, metadata, title and introduction.
+   StorefrontPostBlocks now composes ordered article blocks and normalized tip lists.
+   StorefrontPostClassic now composes the classic image, paragraphs, quote and section heading.
+   StorefrontPostActions now composes the controlled copy button and localized shop link.
+   StorefrontPostSocial now composes the share/Instagram row from explicit props.
+   StorefrontPostProducts now composes the ordered product recommendation grid.
+   StorefrontPostRelated now composes the related-story heading and responsive card grid.
+   Post View now passes its layout directly without a redundant fragment.
+   StorefrontNotfoundMessage now composes the localized 404 heading and body through EmptyState.
+   **Next stage: extract not-found page recovery actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -3874,6 +3912,933 @@ delta 1) with unchanged dimensions/layout. Actual PNG bytes and bounds were chec
 English tablet edit pairs were viewed. No styles, baselines or tolerances changed. Full-page visual,
 full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract weddings-page heading into a storefront organism.
+
+**One hundred and fifty-sixth checkpoint verified:** extracted StorefrontWeddingsHeading under app organisms
+from the weddings View heading slot. Explicit eyebrow/title/accent/intro and plan/WhatsApp descriptors
+preserve the original sibling structure, title spacing, classes, button styles and external-link
+semantics. View retains localized copy, the inquiry anchor and WhatsApp availability. Layout keeps
+hero placement; weddings/shared logic retain configuration, navigation, inquiry state, validation,
+submission, drafts and focus. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass after syncing installed
+dependencies to the lockfile (the initial run detected stale local Playwright/axe packages).
+All six focused mobile/desktop browser tests pass with retries disabled: English/Persian plan-link
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920, each with configured and absent WhatsApp. They verify one h1, localized plan link,
+anchor href, optional action count, external-link semantics, touch/Enter activation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Heading markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+All 16 heading screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+English tablet and Persian phone captures viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page hero media into a storefront organism.
+
+**One hundred and fifty-seventh checkpoint verified:** extracted StorefrontWeddingsHeroMedia under
+app organisms from the weddings View hero-media slot. Its explicit placeholderLabel preserves the
+existing ArchFrame's 4/5 ratio, default arch appearance, empty alt text and direct hero-child
+structure without a new wrapper or photo source. View retains localized copy mapping; layout keeps
+responsive hero placement; weddings/shared logic retain configuration, navigation, inquiry state,
+validation, submission, drafts and focus. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused
+mobile/desktop browser tests pass with retries disabled: English/Persian inquiry-anchor navigation
+without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify the localized placeholder, ratio, arch classes, direct hero children,
+absence of img/image-role semantics for the empty alt placeholder, touch/Enter inquiry navigation,
+retained name/message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Hero markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+Seven of eight hero screenshot pairs are byte-identical. The Persian TV-width pair differs by
+32 arch-edge pixels (maximum channel delta 1), with equal 1016-by-673 dimensions and matching markup.
+Actual PNG bytes/bounds were checked; Persian TV baseline/current, Persian tablet and English desktop
+captures were viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page services into a storefront organism.
+
+**One hundred and fifty-eighth checkpoint verified:** extracted StorefrontWeddingsServices under
+app organisms from the weddings View services slot. Explicit service records preserve card order,
+keyed fragments, padding, decorative icons and title/description/price classes without a new wrapper.
+View retains list normalization; weddings logic supplies localized service/pricing records and keeps
+inquiry state, validation, submission, drafts and focus. Layout retains the responsive services grid.
+Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/
+desktop browser cases pass across two runs with retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility. The initial run had
+five passes and one Chrome launch timeout before the page opened; that mobile validation case
+passed in isolation. The stalled task-owned browser/worker was stopped; original logs are retained.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify card count/order/localized title/body/price, decorative icons, padding,
+direct grid children, equal grid columns/card bounds, touch/Enter inquiry navigation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Service-section markup matches after sorting attributes and consistently mapping generated React
+Aria IDs. All eight service screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet and English desktop captures viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page story into a storefront organism.
+
+**One hundred and fifty-ninth checkpoint verified:** extracted StorefrontWeddingsStory under app
+organisms from the weddings View story slot. Explicit gallery/process titles, photo records and
+steps preserve sibling structure, h2 levels, keyed fragments, image source/alt/lazy loading, ordered
+list semantics and responsive classes without a new wrapper. View retains title mapping and list
+normalization; weddings/shared logic supply photo/step descriptors and retain inquiry behavior.
+Layout retains the story section and placement. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused mobile/
+desktop browser tests pass with one worker and retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify headings, three ordered image sources/localized numbered alts, initial
+lazy-loading attributes and decoded images before capture, ordered process copy, direct section
+children, equal grid columns/element bounds, touch/Enter inquiry navigation, retained name/message
+drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Story markup matches after sorting attributes and normalizing only the local preview origin in
+image URLs; the first probe's origin-only mismatch and its captures are retained separately.
+All eight story screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+Persian tablet and English desktop captures viewed. No styles, baselines or tolerances changed.
+Full-page visual, full browser/device and TV spatial-navigation suites and assistive-technology
+testing were not run.
+Next: extract weddings-page inquiry introduction into a storefront organism.
+
+**One hundred and sixtieth checkpoint verified:** extracted StorefrontWeddingsInquiryIntro under
+app organisms from the weddings View inquiry-introduction slot. Explicit title/intro props preserve
+the h2, paragraph, sibling structure and classes without a new wrapper. View retains localized copy
+mapping; layout retains the inquiry anchor, introduction column and responsive placement. Weddings/
+shared logic retain form state, validation, submission, drafts, navigation and focus. Ownership/
+edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All six focused mobile/
+desktop browser tests pass with one worker and retries disabled: English/Persian inquiry-anchor
+navigation without draft loss, and required-field summary/focus/accessibility.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify localized h2/paragraph content, direct inquiry-column children, one
+inquiry anchor, equal grid columns/element bounds, touch/Enter inquiry navigation, retained name/
+message drafts, tablet rotation, containment and page-top axe. No inquiry is submitted.
+Introduction markup matches after sorting attributes. All eight introduction screenshot pairs are
+byte-identical; actual PNG bytes were checked and representative Persian tablet and English desktop
+captures viewed. No styles, baselines or tolerances changed. Full-page visual, full browser/device
+and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: extract weddings-page form controls into a storefront organism.
+
+**One hundred and sixty-first checkpoint verified:** extracted StorefrontWeddingsFormControls under
+app organisms from the weddings View's conditional form slot. Explicit problems and name/email/
+phone/event/guests/date/budget/message/send descriptors preserve the Card, field order, stable IDs,
+required/autocomplete/type/direction attributes, date language/minimum, options, message hint/rows
+and busy loading/disabled action. View retains descriptor mapping and form/completion visibility;
+weddings/shared logic retain field state, date constraints, validation, API payloads, busy/error/
+completion state, drafts and focus. Layout retains inquiry placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled. New bilingual regression coverage
+checks summary links/name focus, every field, event/budget selection, keyboard calendar selection,
+complete localized request payloads, pending duplicate-click prevention, failed-send feedback, retry,
+completion focus/accessibility, return-to-name focus and retained text/select/date values. Live
+requests are stubbed locally; no inquiry is sent. Existing bilingual inquiry-anchor and validation
+coverage also passes. The new test's initial exact calendar locator was corrected for the existing
+accessible name that includes its field label; initial logs are retained separately.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify field contracts, Card padding, equal grid columns/field bounds,
+touch/Enter anchor navigation, retained drafts, tablet rotation, containment and page-top axe.
+Form markup matches after sorting attributes and consistently mapping generated React Aria IDs.
+Seven original screenshot pairs are byte-identical. The English TV pair has sticky-header overlap
+at different automatic scroll positions (48,732 differing pixels); markup and field bounds match.
+A separate 1920-by-2200 paired capture fits the tall form without header overlap and is byte-identical;
+original captures are retained. Actual PNG bytes/dimensions/bounds were checked, and Persian tablet,
+English desktop, original TV pairs and corrected TV capture viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page completion into a storefront organism.
+
+**One hundred and sixty-second checkpoint verified:** extracted StorefrontWeddingsCompletion under
+app organisms from the weddings View's conditional completion slot. Explicit title/body/edit props
+preserve the success region's stable ID, tabindex, accessible name, classes, success Alert and
+secondary return-to-form action without a new wrapper. View retains visibility and localized demo/
+live copy mapping; weddings/shared logic retain outcomes, busy/errors, drafts, edit transitions and
+focus. Layout retains inquiry placement. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/draft
+retention, validation summary/focus, all-field date/select interaction and request payloads, pending
+duplicate-click prevention, failed retry, completion accessibility and retained values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/failure absence, localized demo/live success wording,
+named-region/tabindex/focus, direct inquiry placement, secondary edit action and absent fields during
+completion. Demo and failed-live retry completion both return focus to name and retain name/phone/
+email/guests/message drafts. Requests are stubbed locally; no inquiry is sent. Touch or Enter/Space
+activation, tablet rotation, containment and page-top axe pass.
+Completion markup matches after sorting attributes and consistently mapping generated React Aria
+IDs. All 16 completion screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet demo and English phone live captures viewed. No styles, baselines or
+tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract weddings-page API feedback into a storefront organism.
+
+**One hundred and sixty-third checkpoint verified:** extracted StorefrontWeddingsFeedback under
+app organisms from the weddings View feedback slot. Its explicit message prop preserves the package
+danger Alert's original semantics and markup without a new wrapper. View retains visibility/message
+mapping and no longer imports DS directly. Weddings/shared logic retain failure wording, requests,
+busy/error/completion state, drafts, retry and focus. Layout retains feedback after the inquiry
+section. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/drafts,
+validation summary/focus, date/select payloads, pending duplicate-click prevention, failed retry,
+completion accessibility and retained values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/completion absence, localized role=alert/title,
+decorative icon and direct placement after inquiry. Two failed requests retain name/phone/email/
+guests/message drafts. Email editing clears feedback; retry clears it while pending; successful
+completion and return-to-name focus keep it absent and preserve drafts. Requests are stubbed locally;
+no inquiry is sent. Touch/Enter/Space activation, tablet rotation, containment and page-top axe pass.
+Feedback markup matches without normalization. All 16 failure-alert screenshot pairs are
+byte-identical; actual PNG bytes were checked and representative Persian phone retry and English
+desktop first-failure captures viewed. No styles, baselines or tolerances changed. Full-page visual,
+full browser/device and TV spatial-navigation suites and assistive-technology testing were not run.
+Next: simplify weddings-page View composition.
+
+**One hundred and sixty-fourth checkpoint verified:** simplified weddings-page View composition by
+removing redundant single-child fragments around StorefrontWeddingsLayout, StorefrontWeddingsFormControls
+and StorefrontWeddingsCompletion. Five fragments become two: the inquiry slot's multi-child fragment
+and empty Shell sticky-slot fragment remain. Localized descriptors, availability, callbacks, list
+normalization, conditional form/completion/feedback content and slot order are unchanged. Normalized
+Babel syntax trees match after unwrapping only these three fragments, before and after formatting;
+the whitespace-insensitive diff contains only their six delimiter removals. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. All ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual inquiry-anchor/draft
+retention, validation summary/focus, full date/select payloads, pending duplicate-click prevention,
+failed retry, completion accessibility and retained text/select/date values on edit.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial/pending/failure absence of completion, localized demo/live
+wording, named-region/tabindex/focus, direct inquiry placement, secondary edit action and removed
+fields. Demo and failed-live retry completion return focus to name and retain name/phone/email/
+guests/message drafts. Requests are stubbed locally; no inquiry is sent. Touch/Enter/Space activation,
+tablet rotation, containment and page-top axe pass.
+Completion markup matches after sorting attributes and consistently mapping generated React Aria
+IDs. All 16 completion screenshot pairs are byte-identical; actual PNG bytes were checked and
+representative Persian tablet live and English desktop demo captures viewed. No styles, baselines
+or tolerances changed. Full-page visual, full browser/device and TV spatial-navigation suites and
+assistive-technology testing were not run.
+Next: extract FAQ-page heading into a storefront organism.
+
+**One hundred and sixty-fifth checkpoint verified:** extracted StorefrontFaqHeading under app
+organisms from the FAQ View heading slot. Explicit eyebrow/title/accent/intro props preserve the
+sibling structure, h1, title spacing, accent and introduction classes without a new wrapper. View
+retains localized copy mapping; layout retains the page header and responsive placement. FAQ/shared
+logic retain category/answer mapping, delivery-rule interpolation, navigation, locale, SEO and focus;
+Accordion retains expansion behavior. Ownership/edit-location documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: recovery navigation to FAQ, printed
+content without site chrome, and standalone desktop language switching. The suite intentionally skips
+the duplicate mobile standalone-language case.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify localized eyebrow/title/accent/intro, one h1, direct header children,
+language/direction and equal header/child bounds. Three question groups and default delivery
+expansion remain; touch or Enter/Space closes/opens panels and preserves single expansion and
+heading markup. Internal contact navigation preserves language. Tablet rotation, containment and
+initial/expanded page-top axe pass.
+Heading markup matches without normalization. All eight heading screenshot pairs are byte-identical;
+actual PNG bytes were checked and representative Persian phone and English desktop captures viewed.
+No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
+navigation suites and assistive-technology testing were not run.
+Next: extract FAQ-page question groups into a storefront organism.
+
+**One hundred and sixty-sixth checkpoint verified:** extracted StorefrontFaqQuestions under app
+organisms from the FAQ View questions slot. Explicit groups preserve category order, keyed fragments,
+section classes, stable h2 IDs/aria-labelledby and Accordion items/default expansion/headingLevel=3
+without a new wrapper. View retains list normalization; FAQ logic retains category/answer mapping
+and delivery-rule interpolation. Accordion owns disclosure state and keyboard behavior; shared logic
+retains navigation/locale/SEO/focus and layout retains column placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify three labelled category sections, stable IDs, h2/h3 hierarchy, default
+delivery expansion, single expansion within each group and independent expansion across groups.
+Touch or Enter/Space toggles named region panels; desktop focus remains on the trigger. Initial and
+expanded markup, relative element bounds and screenshots match. Contact navigation preserves
+language; tablet rotation retains expansion; containment and page-top axe pass.
+Component captures temporarily use a viewport height equal to list height plus 800 pixels to avoid
+sticky-header overlap. List width/height are checked unchanged, then the original viewport is restored
+for interaction checks. Markup comparison sorts attributes and consistently maps generated React
+Aria IDs/references. All 16 initial/expanded screenshot pairs are byte-identical; actual PNG bytes
+were checked and representative Persian tablet expanded and English desktop initial captures viewed.
+No styles, baselines or tolerances changed. Full-page visual, full browser/device and TV spatial-
+navigation suites and assistive-technology testing were not run.
+Next: extract FAQ-page contact help into a storefront organism.
+
+**One hundred and sixty-seventh checkpoint verified:** extracted StorefrontFaqContact under app
+organisms from the FAQ View contact slot. Explicit title/body/note, contact and nullable WhatsApp
+descriptors preserve Card padding, decorative icon, h2, answer text, primary/ghost actions, external
+link attributes and the sibling sample-content note without a new wrapper. View retains localized
+copy/link mapping and WhatsApp availability; layout retains aside placement/spacing. FAQ/shared
+logic retain configuration, question mapping, navigation, locale, SEO and focus. Documentation is
+updated and the unused View design-system import is removed.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Sixteen paired previous/current probes cover English/Persian, present/absent WhatsApp and touch
+widths 390/768, desktop 1280 and TV width 1920. They verify heading/link names, card/note sibling
+structure, WhatsApp availability and protected external-link attributes, language-preserving internal
+contact navigation, accordion touch or Enter/Space controls, tablet rotation, containment and
+page-top axe. Aside markup and relative bounds match without normalization. Fifteen of 16 original contact-help
+screenshot pairs are byte-identical. Persian desktop without WhatsApp differs at 58 decorative-icon
+pixels (maximum channel delta 50, equal 320×506 dimensions); the isolated repeat is byte-identical.
+Original captures are retained. Actual PNG bytes were checked and representative captures viewed.
+Component captures temporarily increase viewport height to aside height plus 1000 pixels to avoid
+sticky-header overlap; aside width/height are checked unchanged before restoring interaction size.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device and TV
+spatial-navigation suites and assistive-technology testing were not run.
+Next: simplify FAQ View composition.
+
+**One hundred and sixty-eighth checkpoint verified:** simplified FAQ View composition by passing
+StorefrontFaqLayout directly to Shell content. Removed only its redundant single-child fragment and
+adjusted indentation. Localized heading/contact descriptors, WhatsApp availability, list normalization,
+layout slots and the empty Shell sticky-slot fragment remain. Source comparison verifies the exact
+fragment-delimiter removal after whitespace normalization. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Five focused mobile/
+desktop browser tests pass with one worker and retries disabled: FAQ recovery navigation, printing
+without site chrome and standalone desktop language switching. The existing suite intentionally
+skips the duplicate mobile standalone-language case.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify one h1, three question groups, default delivery expansion, touch or
+Enter/Space single expansion, language-preserving contact navigation, tablet rotation, containment
+and expanded page-top axe. Initial/expanded main markup and relative bounds match; generated
+React Aria IDs/references are mapped consistently and attributes sorted for comparison. All 16
+initial/expanded screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. Capture height temporarily equals main height plus 800 pixels to avoid sticky-header
+overlap, with unchanged main dimensions checked before restoring interaction size. The first probe
+lost the current preview when the browser test runner shut its server down; the completed probe uses
+an independently running preview. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract policy-page heading into a storefront organism.
+
+**One hundred and sixty-ninth checkpoint verified:** extracted StorefrontPolicyHeading under app
+organisms from the policy View heading slot. Explicit eyebrow/title/intro/updated props preserve
+four sibling elements, h1, introduction and update metadata classes without adding a wrapper.
+View retains localized/selected-document copy mapping; layout retains the header and responsive
+placement. Policy/shared logic retain document selection/fallback, section mapping, Persian numbering,
+routing, locale, SEO, focus and sticky measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Each opens shipping and switches through returns, privacy, terms and accessibility.
+They verify four direct header children, one h1 matching the active policy, localized eyebrow/update
+metadata, language/direction, section-anchor navigation, reload copy, tablet rotation, containment
+and page-top axe. All 40 heading markup, relative-bound and PNG comparisons match without
+normalization; actual screenshot bytes were checked and representative captures viewed.
+An initial probe incorrectly expected client-navigation focus attributes to survive a full reload;
+the corrected probe compares reload copy separately and preserves those attributes in paired markup.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
+navigation and assistive-technology suites were not run.
+Next: extract policy-page navigation into a storefront organism.
+
+**One hundred and seventieth checkpoint verified:** extracted StorefrontPolicyNavigation under app
+organisms from the policy View navigation slot. Explicit label/links props preserve the labelled nav,
+list structure, link order, keyed fragments, hrefs, aria-current, wrapping and classes without adding
+a wrapper. View retains localized label mapping and list normalization. Shared navigation logic
+retains link/current-state descriptors, routing, locale, SEO and focus; policy logic retains document
+selection, section mapping and Persian numbering. Layout retains placement. Documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes exercise English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Each opens shipping and switches through returns, privacy, terms and accessibility.
+They verify the navigation accessible name, five list items/URLs, one current link, matching h1,
+localized heading/update copy, language/direction, section anchors, reload copy, tablet rotation,
+containment and page-top axe. All 40 navigation markup, relative-bound and PNG comparisons match
+without normalization; actual screenshot bytes were checked and representative captures viewed.
+No source styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-
+navigation and assistive-technology suites were not run.
+Next: extract policy-page sample notice into a storefront organism.
+
+**One hundred and seventy-first checkpoint verified:** extracted StorefrontPolicyNotice under app
+organisms from the policy View notice slot. Explicit title/body props preserve the package warning
+Alert, its alert semantics, decorative icon and localized copy without adding a wrapper. View retains
+localized mapping, layout retains notice placement/spacing and Alert retains presentation/accessibility.
+Policy/shared logic retain selection, section mapping, numbering, routing, locale, SEO, focus and
+sticky measurements. The unused View design-system import is removed; documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify exact notice title/body, one warning alert, decorative icon and no
+close action, then switch through all five policies and check unchanged notice markup. Reloads,
+section-anchor navigation, tablet rotation, containment and page-top axe pass. Initial shipping and
+changed accessibility notice markup, relative bounds and all 16 PNG pairs match without normalization;
+actual screenshot bytes were checked and representative captures viewed. An initial probe assumed an
+SVG icon; it was corrected to inspect the shared Icon's actual CSS-mask span. No source styles,
+baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract policy-page table of contents into a storefront organism.
+
+**One hundred and seventy-second checkpoint verified:** extracted StorefrontPolicyContents under app
+organisms from the policy View tableOfContents slot. Explicit label/sections props preserve the named
+navigation landmark, eyebrow, keyed section links, anchors and sticky-panel classes without a wrapper.
+View retains localized label mapping/list normalization; policy logic retains section descriptors,
+ordering and Persian numbering. Layout retains responsive placement and shared logic retains routing,
+focus and sticky measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920 across shipping, returns, privacy, terms and accessibility. They verify the named
+landmark, link count/order/text against section headings, localized numbering, stable section hrefs,
+first/last anchor activation by touch or Enter, hash-preserving reload, tablet rotation, containment
+and page-top axe. Raw contents markup, relative bounds and sticky fit/position/top match. All 40
+contents screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. No source styles, baselines or tolerances changed. Full-page visual, full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract policy-page document sections into a storefront organism.
+
+**One hundred and seventy-third checkpoint verified:** extracted StorefrontPolicyDocument under app
+organisms from the policy View document slot. Explicit normalized section descriptors preserve IDs,
+keyed fragments, numbered h2 headings, paragraphs, optional item lists, classes and scroll margins
+without adding a wrapper. View retains section/paragraph/item list normalization and descriptor mapping;
+policy logic retains selection/fallback, localized content, numbering and item availability. Layout
+retains the document wrapper/placement; shared logic retains routing, locale, SEO, focus and sticky
+measurements. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920 across all five policies. They compare exact paragraph/item text and list counts
+against bilingual source copy, including terms without lists and accessibility list-only sections.
+Section IDs, h2/contents text, first/last anchors by touch or Enter, reload markup, tablet rotation,
+containment and page-top axe pass. All 40 document markup, relative-bound and screenshot pairs match
+without normalization; actual PNG bytes were checked and representative captures viewed. Component
+capture height temporarily equals document height plus 800 pixels to avoid sticky-header overlap;
+document width/height are checked unchanged before restoring interaction size. An initial probe
+incorrectly required lists in every policy and paragraphs in every section; it now uses source copy
+for those expectations. No source styles, baselines or tolerances changed. Full-page visual, full
+browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: simplify policy View composition.
+
+**One hundred and seventy-fourth checkpoint verified:** simplified policy View composition by passing
+StorefrontPolicyLayout directly to Shell content. Removed only its redundant single-child fragment
+and adjusted indentation. Localized descriptors, policy links, section/paragraph/item normalization,
+item visibility mapping and the empty Shell sticky-slot fragment remain. Source comparison verifies
+only fragment delimiters and whitespace changed; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Ten focused mobile/
+desktop browser tests pass with one worker and retries disabled: footer/policy switching, accessibility
+statement and axe, live delivery wording, unknown policy routing and sign-in legal links.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Shipping and accessibility exercise paragraph/list and list-only content; exact
+paragraph/item copy and list counts match bilingual source. Section IDs, h2/contents text, policy
+switching, first/last anchors by touch or Enter, reload document markup, tablet rotation, containment
+and page-top axe pass. All 16 main markup, relative-bound and screenshot pairs match without
+normalization; actual PNG bytes were checked and representative captures viewed. Capture height
+temporarily equals main height plus 800 pixels to avoid sticky-header overlap; main dimensions are
+checked unchanged before restoring interaction size. No source styles, baselines or tolerances changed.
+Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page heading into a storefront organism.
+
+**One hundred and seventy-fifth checkpoint verified:** extracted StorefrontJournalHeading under app
+organisms from the journal View heading slot. Explicit eyebrow/title/accent, categoriesLabel/categories
+and onCategoryFocus props preserve SectionHeader h1, the named category group, keyed Chips,
+selection/aria-pressed and callbacks without adding a wrapper. View retains localized mapping,
+list normalization and focus-scroll behavior; journal logic retains filtering, selection callbacks,
+page resets and URL navigation. Layout retains header placement; shared logic retains locale, SEO
+and page focus. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover category focus scrolling,
+minimum touch targets, empty/clear, search/Escape, article navigation, pagination and first-page reset.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify two header siblings, one h1, named category group, eight ordered
+localized labels, initial selection, last-chip touch or Enter/Space activation, focus visibility,
+empty/clear/search recovery, article navigation, tablet rotation, containment and empty-state page-top
+axe. Initial and empty-category header markup/relative bounds and all 16 PNG pairs match without
+normalization; actual screenshot bytes were checked and representative captures viewed. No source
+styles, baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run.
+Next: extract journal-page search controls into a storefront organism.
+
+**One hundred and seventy-sixth checkpoint verified:** extracted StorefrontJournalSearch under app
+organisms from the journal View search slot. Explicit label/value/onChange props preserve the package
+controlled SearchField without adding a wrapper. View retains localized label/value/callback mapping;
+journal logic retains query/category state, matching, first-page resets and navigation. SearchField
+retains focus, clear/Escape behavior and accessibility; layout retains placement/spacing. Ownership
+documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search/Escape,
+empty/clear, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify one search-slot child, accessible labels, empty/filled values, live
+matching, focus retention, Escape, pointer/touch clear, no-match recovery, article navigation,
+tablet rotation, containment and filled-state page-top axe. Initial/filled markup and relative bounds
+match; generated React/React Aria IDs and references are mapped consistently and attributes sorted.
+All 16 search screenshot pairs are byte-identical; actual PNG bytes were checked and representative
+captures viewed. An initial probe matched both English clear actions; the completed probe scopes
+empty-state recovery separately from the field clear button. No source styles, baselines or tolerances
+changed. A separate desktop probe confirms an existing shared SearchField limitation in both versions:
+programmatically focusing its tabindex=-1 clear button and pressing Enter leaves the query unchanged;
+pointer/touch clear and Escape work. That shared control is unchanged in this extraction. Full-page
+visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page empty feedback into a storefront organism.
+
+**One hundred and seventy-seventh checkpoint verified:** extracted StorefrontJournalEmpty under app
+organisms from the journal View noStories branch. Explicit title/clearLabel/onClear props preserve
+the package EmptyState h2 and sibling recovery Button without a wrapper. View retains visibility and
+localized/callback mapping; journal logic retains query/category matching and clear/reset behavior.
+Layout retains feedback placement and shared logic retains locale, SEO and focus. Loading feedback
+remains in View. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover empty/clear, categories,
+search/Escape, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify initial feedback absence, empty-category and unmatched-query h2/copy,
+direct EmptyState/recovery-button sibling structure, touch or Enter/Space recovery, cleared query and
+reset category, restored stories, search/Escape, article navigation, tablet rotation, containment and
+query-empty page-top axe. Feedback markup and relative bounds match; generated React Aria IDs are
+mapped consistently. All 16 category/query feedback PNG pairs are byte-identical; captures enclose
+both sibling elements, actual bytes were checked and representative images viewed. No source styles,
+baselines or tolerances changed. The stage-176 shared SearchField clear-button keyboard limitation
+remains documented and unchanged. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page loading feedback into a storefront organism.
+
+**One hundred and seventy-eighth checkpoint verified:** extracted StorefrontJournalLoading under app
+organisms from the journal View loading branch. An explicit message prop preserves the package card
+Skeleton and sibling status paragraph without a wrapper. View retains visibility/localized mapping;
+journal logic retains loading demo state, story visibility and filtering. Layout retains feedback
+placement; Skeleton retains reduced-motion presentation and shared logic retains locale, SEO and focus.
+Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, empty/clear,
+search/Escape, focus scrolling, article navigation, pagination and query reset from later pages.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify a single aria-hidden card Skeleton, its following localized role=status
+paragraph, reduced-motion shimmer suppression and no stories during demo loading. Last-category
+selection creates simultaneous empty/loading feedback; touch or Enter/Space selection and recovery,
+category reset, tablet rotation, containment and combined-state page-top axe pass. Returning to the
+normal journal removes skeleton/status and restores seven stories. Loading/combined main markup,
+relative bounds and all 16 PNG pairs match; generated React/React Aria IDs/references are mapped
+consistently and attributes sorted. Actual bytes were checked and representative captures viewed.
+Capture height temporarily equals main height plus 800 pixels to avoid sticky-header overlap; main
+dimensions are checked unchanged before restoring interaction size. No source styles, baselines or
+tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains documented.
+Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract journal-page featured story into a storefront organism.
+
+**One hundred and seventy-ninth checkpoint verified:** extracted StorefrontJournalFeatured under app
+organisms from the journal View featured branch. Explicit title/image/excerpt/meta/cta/href props
+preserve the featured wrapper, wide BlogCard, arch frame and priority image. View retains visibility
+and localized/story mapping; journal logic retains lead selection, filtering, image resolution,
+localized metadata, pagination and article hrefs. Layout retains slot placement and BlogCard retains
+presentation/link/image semantics. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover category/search changes,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Initial and flower-care-filtered leads match source title/excerpt/date/read-time,
+article href, CTA, wide/arch structure, eager/high-priority image and empty alt. Touch or Enter/Space
+changes the lead; article navigation preserves language. Later page, loading demo and empty category
+hide the featured card. Tablet rotation, containment and filtered-state page-top axe pass. Initial/
+filtered markup and relative bounds match; generated IDs/references and preview origins are normalized
+consistently and attributes sorted. All 16 featured PNG pairs are byte-identical; actual bytes were
+checked and representative captures viewed. Capture height temporarily equals card height plus 1000
+pixels to avoid sticky-header overlap; card dimensions are checked unchanged before restoring size.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page story grid into a storefront organism.
+
+**One hundred and eightieth checkpoint verified:** extracted StorefrontJournalStories under app
+organisms from the journal View stories slot. Explicit stories preserve ordered keyed BlogCards,
+stacked layout, soft frames, 4/3 aspect and story props without adding a wrapper. View retains list
+normalization; journal logic retains filters, pagination slices, mapping, localized metadata, image
+resolution and article hrefs. Layout retains the responsive grid wrapper/placement and BlogCard
+retains presentation/link/image semantics. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. First/later-page card order, title/excerpt/read-time, article hrefs, stacked/soft
+structure, 4/3 media, empty alt and no high fetch priority match source descriptors. Lazy attributes
+are checked on fresh first-page and reloaded later-page loads before settlePage intentionally makes
+images eager. Touch or Enter changes pages/opens a story; reload, language preservation, empty/loading
+grid absence, tablet rotation, containment and later-page page-top axe pass. Initial/later markup and
+relative bounds match with generated IDs/references and preview origins normalized consistently and
+attributes sorted. All 16 grid PNG pairs are byte-identical; actual bytes were checked and representative
+captures viewed. Capture height temporarily equals grid height plus 1000 pixels to avoid sticky-header
+overlap; grid dimensions are checked unchanged before restoring size. An initial probe incorrectly
+expected lazy attributes on reused image nodes after settlePage; the completed probe checks fresh loads.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: extract journal-page pagination into a storefront organism.
+
+**One hundred and eighty-first checkpoint verified:** extracted StorefrontJournalPagination under app
+organisms from the journal View pagination slot. Explicit page/pageCount/href/onChange props preserve
+the package Pagination and existing class/top margin without a wrapper. View retains paging mapping;
+journal logic retains counts, clamping, slices, href generation, callbacks and first-page resets.
+Pagination retains localized controls/digits, disabled/current states and single-page visibility.
+Layout retains placement and shared logic retains routing, locale and focus. The unused View
+design-system import is removed; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled. They cover categories, search,
+empty/clear, focus scrolling, article navigation, pagination and first-page resets.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. They verify the named pagination landmark, localized digits, current-page markers,
+first/last disabled controls and real localized page hrefs. Touch or Enter changes page; reload,
+page=999 clamping, query/category first-page reset, single-result/empty/loading absence, tablet rotation,
+containment and later-page page-top axe pass. First/last markup and relative bounds match with
+generated React/React Aria IDs/references mapped consistently and attributes sorted. All 16 pagination
+PNG pairs are byte-identical; actual bytes were checked and representative captures viewed. An initial
+probe expected page=1 in hrefs; the completed probe honors the router's canonical URL without it.
+No source styles, baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear
+limitation remains documented. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run.
+Next: simplify journal View composition.
+
+**One hundred and eighty-second checkpoint verified:** simplified journal View composition by passing
+StorefrontJournalLayout and its conditional featured story directly. Removed exactly three redundant
+fragment pairs; retained the multi-child feedback fragment and empty sticky slot. Source comparison
+ignoring formatting confirms all other tokens are preserved, including conditions, explicit props,
+list normalization, paging callbacks and category focus scrolling. State, routing and layout ownership
+remain unchanged; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing bilingual
+compact-journal tests pass at 320/390/768 touch widths through the desktop project, plus two mobile/
+desktop pagination tests; all use one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Initial, later-page, empty, loading and combined empty/loading main-content markup
+and relative bounds match with generated IDs/references and preview origins normalized consistently
+and attributes sorted. All 40 main-content PNG pairs are byte-identical; actual bytes were checked
+and representative captures viewed. Capture height temporarily equals main height plus 1000 pixels;
+main dimensions are checked unchanged before restoring size. Touch or keyboard pagination, reload,
+query first-page reset, Escape recovery, category focus/selection, empty recovery, article navigation,
+language preservation, tablet rotation, containment and initial page-top axe pass. No source styles,
+baselines or tolerances changed. The stage-176 shared SearchField keyboard-clear limitation remains
+documented. Full browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page loading feedback into a storefront organism.
+
+**One hundred and eighty-third checkpoint verified:** extracted StorefrontPostLoading under app
+organisms from the post View loading branch. Explicit title/message props preserve the h1, decorative
+card Skeleton and localized role=status paragraph as siblings without adding a wrapper. View retains
+loading visibility and copy mapping; post logic retains article selection, loading/missing state and
+content mapping. Layout retains feedback placement and controlled article visibility, while shared
+logic retains routing, locale, SEO and focus. Source comparison confirms the View changed only by
+replacing the loading branch and adding its import; the organism preserves the extracted markup.
+Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Four existing bilingual
+post-loading state tests pass through mobile/desktop projects with one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Loading titles/status match source copy; the card skeleton remains aria-hidden,
+reduced-motion shimmer is absent and article content is hidden. Loading and combined missing/loading
+main-content markup and relative bounds match with generated IDs/references and preview origins
+normalized consistently and attributes sorted. All 16 main-content PNG pairs are byte-identical;
+actual bytes were checked and representative captures viewed. Capture height temporarily equals
+main height plus 1000 pixels, asserting unchanged main dimensions before restoring size. Missing-story
+recovery and normal article back links work by touch or Enter with language preserved; normal-route
+recovery, history back, reload, tablet rotation, containment and loading page-top axe pass. An initial
+probe used an ambiguous article selector that also matched related cards; the completed probe scopes
+the reading article. No source styles, baselines or tolerances changed. Full browser/device,
+TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page missing-story feedback into a storefront organism.
+
+**One hundred and eighty-fourth checkpoint verified:** extracted StorefrontPostMissing under app
+organisms from the post View missing branch. Explicit title/backLabel/journalHref props preserve
+the level-one EmptyState heading and package Button recovery link as siblings without adding a
+wrapper. View retains missing visibility and localized copy/link mapping; post/shared logic retains
+article selection, loading/missing state, routing and navigation/focus. Layout retains feedback
+placement and controlled article visibility. Source comparison confirms the View changed only by
+replacing the missing branch and adding its import, with extracted markup preserved through explicit
+props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Four existing bilingual
+post-loading regression tests pass through mobile/desktop projects with one worker and retries disabled.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Missing heading/recovery text match localized source copy; the recovery remains a
+real link to the localized journal. Missing-only and combined missing/loading main-content markup
+and relative bounds match with generated IDs/references and preview origins normalized consistently
+and attributes sorted. All 16 main-content PNG pairs are byte-identical; actual bytes were checked
+and representative captures viewed. Capture height temporarily equals main height plus 1000 pixels,
+asserting unchanged main dimensions before restoring size. Touch or Enter recovery, locale preservation,
+history back, reload, tablet rotation, containment and missing-state page-top axe pass. Missing feedback
+is absent from normal classic/block articles; combined loading preserves its aria-hidden skeleton,
+visible status and hidden article. No source styles, baselines or tolerances changed. Full browser/device,
+TV spatial-navigation and assistive-technology suites were not run.
+Next: extract the post-page article heading into a storefront organism.
+
+**One hundred and eighty-fifth checkpoint verified:** extracted StorefrontPostHeading under app
+organisms from the post View article slot. Explicit journalHref/backLabel/meta/title/intro props
+preserve the native journal link with arrow icon, metadata, h1 and introduction as siblings without
+adding a wrapper. View retains localized copy/link mapping; post logic retains article selection,
+metadata formatting and block/classic mapping. Layout retains article visibility/placement/spacing;
+shared page logic retains routing, locale, SEO and heading focus. Source comparison confirms the
+View changed only by replacing the heading block and adding its import, with extracted markup
+preserved through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic and block-based article headings match source title/intro/metadata,
+localized back-label/href, icon size, native-link semantics and sibling order. Heading markup,
+relative bounds and capture rectangles match with generated IDs/references and preview origins
+normalized consistently and attributes sorted. All 16 heading PNG pairs are byte-identical; actual
+bytes were checked and representative captures viewed. Captures use the union of the four heading
+siblings without changing source styles or viewport height. Touch or Enter article/back navigation,
+heading focus after client navigation, language preservation, browser back, reload, tablet rotation,
+containment and classic-article page-top axe pass. Heading elements are absent in loading/missing
+states. An initial probe assumed inline SVG icons; the completed probe checks the existing decorative
+CSS-mask icon and its explicit 16px size. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page block content into a storefront organism.
+
+**One hundred and eighty-sixth checkpoint verified:** extracted StorefrontPostBlocks under app
+organisms from the post View block branch. Explicit block records preserve ordered keyed paragraphs,
+h2 headings, quotes, captioned Pictures and tip lists without adding a wrapper. View retains block
+visibility, explicit descriptor mapping and outer/tip-list normalization; post logic retains article
+selection, localized body flags/content, image resolution and captions. Layout retains article
+placement/spacing and shared logic retains routing, locale, SEO and focus. Source comparison confirms
+only the View block branch/import changed; presentation is identical apart from receiving normalized
+records and tip items. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation. An initial extraction script stopped at an inner conditional and produced
+incomplete JSX; formatting/type/build checks and one browser case caught it. The complete branch was
+restored/extracted correctly and the entire focused validation set rerun successfully.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Studio and orchid-care block articles match source block type/order, paragraph/
+heading/quote text, captions, image alt/src/sizes and tip-list order. Lazy image attributes are checked
+on fresh and reloaded pages before settlePage intentionally makes images eager; no high fetch priority
+is introduced. Block markup, relative bounds and capture rectangles match with generated IDs/references
+and preview origins normalized consistently and attributes sorted. The initial phone studio capture
+had 78 image pixels differing by tiny color values despite identical markup/bounds; three repeated
+paired diagnostic captures matched exactly. The completed probe explicitly awaits image decode
+before capture. All 16 block-content PNG pairs are byte-identical; actual bytes were checked and
+representative captures viewed. Captures use the union of article body siblings at article height plus 1000 pixels, asserting unchanged article dimensions
+before restoring size. Touch or Enter journal-back navigation, language preservation, browser back,
+reload, tablet rotation, containment and studio-article page-top axe pass. Classic content remains
+visible on classic articles and article content remains absent in loading/missing states. No source
+styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
+technology suites were not run.
+Next: extract post-page classic content into a storefront organism.
+
+**One hundred and eighty-seventh checkpoint verified:** extracted StorefrontPostClassic under app
+organisms from the post View classic branch. Explicit image/paragraphsBefore/quote/heading/
+paragraphsAfter props preserve the priority soft 4/3 ArchFrame and copy wrapper with ordered keyed
+paragraphs, quote and h2 without adding a wrapper. View retains classic visibility, localized copy/
+image mapping and paragraph-list normalization; post logic retains article selection, classic/block
+eligibility, localized copy and image resolution. Layout retains article placement/spacing and shared
+logic retains routing, locale, SEO and focus. Source comparison confirms only the View classic branch/
+import changed and the extracted markup is preserved through explicit props. Ownership documentation
+is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Autumn and care classic articles match the existing page-level bilingual
+paragraphs, quote, h2 and sibling order; image src, empty alt, responsive sizes, eager loading, high
+fetch priority and soft 4/3 frame are preserved. Classic markup, relative bounds and capture rectangles match with generated IDs/
+references and preview origins normalized consistently and attributes sorted. All 16 classic-content
+PNG pairs are byte-identical; actual bytes were checked and representative captures viewed. Captures
+use the body-sibling union at article height plus 1000 pixels, asserting unchanged article dimensions
+before restoring size and explicitly awaiting image decode. Touch or Enter journal-back navigation,
+language preservation, browser back, reload, tablet rotation, containment and autumn-article page-top
+axe pass. Classic content is absent from block articles, while block figures remain; article content
+is absent in loading/missing states. No source styles, baselines or tolerances changed. Full browser/
+device, TV spatial-navigation and assistive-technology suites were not run.
+Next: extract post-page article actions into a storefront organism.
+
+**One hundred and eighty-eighth checkpoint verified:** extracted StorefrontPostActions under app
+organisms from the post View actions slot. Explicit copyLabel/onCopy/shopLabel/shopHref props
+preserve the secondary copy button, primary shop link, small sizes and link/arrow icons as siblings
+without adding a wrapper. View retains localized label/link/callback mapping; post logic retains
+clipboard behavior, copied state, reset timing and unmount cleanup. Layout retains action placement,
+wrapping, spacing and border; shared logic retains routing, locale and focus. Source comparison
+confirms only the View actions branch/import changed and the extracted markup/callbacks are preserved
+through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block article actions retain localized labels, button/link semantics,
+variants/sizes, decorative icons and real localized shop hrefs. Action markup and relative bounds
+match with generated IDs/references and preview origins normalized consistently and attributes sorted.
+All 16 action PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Touch, Enter and Space invoke copy; an injected clipboard stub records the current URL without
+changing the user's clipboard. Copied/reset feedback and desktop button focus pass. Touch or Enter shop
+navigation, language preservation, browser back, reload, tablet rotation, containment and classic-
+article page-top axe pass. Actions remain absent from loading/missing states. Native clipboard
+permissions/failures, full browser/device, TV spatial-navigation and assistive-technology suites were
+not run. No source styles, baselines or tolerances changed.
+Next: extract post-page social links into a storefront organism.
+
+**One hundred and eighty-ninth checkpoint verified:** extracted StorefrontPostSocial under app
+organisms from the post View recommendations slot. Explicit WhatsApp/Instagram labels and hrefs plus
+showInstagram preserve the flex row/gap, ghost Buttons, exact brand labels and safe new-tab attributes.
+View retains brand/link mapping and Instagram availability; post logic retains current-URL share
+construction and shared navigation retains store Instagram data. Layout retains recommendation
+placement and article visibility. Source comparison confirms only the View social row/import changed;
+markup and truthiness are preserved through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block social rows retain exact brand labels, ghost-link semantics, encoded
+current-URL WhatsApp payload, configured Instagram href, target=_blank and rel=noopener noreferrer.
+Touch or Enter opens intercepted destination tabs with null window.opener; no external site is
+contacted. A browser-context-only store override removes Instagram, and client navigation confirms
+the WhatsApp-only row. Classic/block/absent-Instagram markup and relative bounds match with generated
+IDs/references and plain/encoded preview origins normalized consistently and attributes sorted.
+All 24 social-row PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Reload, tablet rotation, containment and classic-article page-top axe pass; social rows remain
+absent in loading/missing states. External service behavior, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run. No source styles, baselines or tolerances changed.
+Next: extract post-page product recommendations into a storefront organism.
+
+**One hundred and ninetieth checkpoint verified:** extracted StorefrontPostProducts under app
+organisms from the post View recommendations slot. Explicit product records preserve ordered keyed
+soft-frame ProductCards, name/price/stock/images/href props and the responsive two/three-column grid,
+gap and top margin, including its empty wrapper. View retains list normalization; post logic retains
+article product selection/order, fixed product-code names, localized price/stock/image descriptors
+and product URLs. Layout retains recommendation section placement and article visibility; ProductCard
+retains presentation/link/image/stock semantics. Source comparison confirms only the View product grid/
+import changed and the extracted markup is preserved through explicit props. Ownership documentation
+is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Studio/orchid-care recommendations match source product order/codes, formatted
+prices, stock-state presentation, image src/alt, soft frames and localized product/category hrefs.
+Images remain lazy on fresh/reloaded pages before settlePage intentionally makes them eager, with no
+high fetch priority. Grid columns, product touch/Enter navigation, language preservation, browser
+back, reload, tablet rotation, containment and studio-article page-top axe pass. Grid markup and
+relative bounds match with generated IDs/references and preview origins normalized consistently and
+attributes sorted. All 16 populated-grid PNG pairs are byte-identical; actual bytes were checked and
+representative captures viewed. Captures use grid height plus 1000 pixels, asserting unchanged grid
+dimensions before restoring size and explicitly awaiting image decode. An initial desktop photo
+capture differed within the middle card despite identical markup/bounds; three repeated diagnostic
+pairs matched exactly with matching selected image resources. Desktop/TV captures additionally await
+finite transitions after pointer movement. Empty classic grids retain
+matching markup/dimensions; recommendation grids remain absent in loading/missing states. No source
+styles, baselines or tolerances changed. Full browser/device, TV spatial-navigation and assistive-
+technology suites were not run.
+Next: extract post-page related stories into a storefront organism.
+
+**One hundred and ninety-first checkpoint verified:** extracted StorefrontPostRelated under app
+organisms from the post View related slot. Explicit title/accent/stories props preserve the localized
+SectionHeader, ordered keyed soft 4/3 BlogCards, title/image/excerpt/meta/href props and responsive grid
+as siblings without adding a wrapper. View retains heading mapping and list normalization; post logic
+retains current-article exclusion, selection/order, localized metadata, image resolution and URLs.
+Layout retains related-section placement and article visibility; SectionHeader/BlogCard retain heading,
+image and link presentation. The unused View design-system import is removed. Source comparison
+confirms only the related slot/imports changed and extracted markup is preserved through explicit
+props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block related sections match source heading/accent, story exclusion/order,
+title/excerpt/category/read-time metadata, localized article hrefs, soft 4/3 frames, image src, empty
+alt and responsive sizes. Lazy attributes are checked on fresh/reloaded pages before settlePage makes
+images eager; no high fetch priority is introduced. Related markup and relative bounds match with
+generated IDs/references and preview origins normalized consistently and attributes sorted. All 16
+related-section PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Captures use related-section height plus 1000 pixels, asserting unchanged section dimensions
+before restoring size and explicitly awaiting image decode/finite transitions after pointer movement.
+Touch or Enter related-story navigation, language preservation, destination heading focus, browser
+back, reload, tablet rotation, containment and classic-article page-top axe pass. Related sections
+remain absent in loading/missing states. No source styles, baselines or tolerances changed. Full
+browser/device, TV spatial-navigation and assistive-technology suites were not run.
+Next: simplify post View composition.
+
+**One hundred and ninety-second checkpoint verified:** simplified post View composition by passing
+StorefrontPostLayout directly. Removed exactly one redundant outer fragment pair; retained the
+multi-child feedback, article and recommendation fragments plus the empty sticky slot. Source
+comparison ignoring formatting confirms all other tokens remain identical, including conditions,
+explicit props, list/descriptor normalization, copy callbacks, Instagram availability and URLs.
+State, routing and layout ownership remain unchanged; ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six existing mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual post-loading states and
+home-to-article navigation.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Classic/block main-content markup and relative bounds match, with generated IDs/
+references and plain/encoded preview origins normalized consistently and attributes sorted. The 16
+main-content PNG pairs are compared exactly: 15 are byte-identical. The English 390px block article
+retains 75 differing pixels, each at most one color level, with matching selected image resources.
+An initial Persian phone block capture had 60,907 differing photo pixels (maximum channel delta 24);
+that difference did not recur. Strict full-content visual parity remains unverified. Representative
+captures were viewed. Capture height temporarily equals main height plus 1000 pixels, asserting
+unchanged main dimensions before restoring size and awaiting image decode/finite transitions after
+pointer movement.
+Loading, missing and combined feedback markup/bounds also match with article/actions/recommendations/
+related sections absent. Touch or keyboard related-story navigation, destination heading focus,
+language preservation, browser back, reload, tablet rotation, containment, product navigation and
+missing recovery pass. Copy feedback/current-URL payload/reset pass using an injected clipboard stub,
+without changing the user's clipboard. Classic-article page-top axe passes. No source styles, baselines
+or tolerances changed. Native clipboard permissions/failures, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run.
+Next: extract not-found page messaging into a storefront organism.
+
+**One hundred and ninety-third checkpoint verified:** extracted StorefrontNotfoundMessage under app
+organisms from the not-found View message slot. Explicit eyebrow/title/accent/body props preserve the
+flower EmptyState, localized 404 eyebrow, level-one heading/accent and body without adding a wrapper.
+View retains localized copy mapping; shared routing/page logic retains invalid-route handling, locale,
+SEO and heading focus. Layout retains centered message/actions placement and the main focus target.
+Source comparison confirms only the message slot/import changed and EmptyState props/icon/heading
+semantics are preserved. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Direct and client-navigation invalid-policy messages match source 404/title/accent/
+body copy, decorative icon, h1 hierarchy and language/direction. Message markup and relative bounds
+match with generated IDs/references and preview origins normalized consistently and attributes sorted.
+All 16 message PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Touch or Enter home/search recovery, language preservation, invalid-product fallback,
+recommendation product-code navigation, browser back, reload, tablet rotation, containment and
+not-found page-top axe pass. Home-to-invalid-policy client navigation focuses the not-found h1.
+The initial probe expected a focus reset between two routes already rendered as not-found and failed
+on the baseline; the completed probe verifies entry from home instead. Its temporary test link is
+removed before capture. No source styles, baselines or tolerances changed. Full-page visual, full
+browser/device, TV spatial-navigation and assistive-technology suites were not run; the stage-192
+full-post screenshot residual remains documented.
+Next: extract not-found page recovery actions into a storefront organism.
 
 ## Adding components
 

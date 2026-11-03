@@ -3,6 +3,7 @@ import React from 'react';
 import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontNotfoundLayout} from '../app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
+import {StorefrontNotfoundMessage} from '../app/organisms/StorefrontNotfoundMessage/StorefrontNotfoundMessage.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -13,16 +14,12 @@ export function View({v}) {
         <>
           <StorefrontNotfoundLayout
             message={
-              <>
-                <DS.EmptyState
-                  icon="flower-2"
-                  eyebrow={v.t?.code}
-                  title={v.t?.hA}
-                  titleAccent={v.t?.hB}
-                  body={v.t?.hP}
-                  headingLevel={1}
-                />
-              </>
+              <StorefrontNotfoundMessage
+                eyebrow={v.t?.code}
+                title={v.t?.hA}
+                accent={v.t?.hB}
+                body={v.t?.hP}
+              />
             }
             actions={
               <>
