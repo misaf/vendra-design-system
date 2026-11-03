@@ -120,3 +120,15 @@ the second follow-up with four core routes; browsing/recovery routes, soft-keybo
 physical-device/assistive-technology acceptance remain open. All sixteen new cases pass in dev and production, plus sixteen legacy core-route axe checks,
 with one worker and no retries. Unit/check/build validation passes. New cases use reduced motion,
 essential consent and a fixed morning clock. The stage-219 inventory is historical.
+
+Stage 222 extends dedicated touch-phone/tablet coverage with sixteen bilingual browsing/recovery
+cases: filtered shop/search/product round-trip and no-result reload, saved latest-removal undo and
+empty-state recovery/persistence, missing-page home navigation, and error retry/home recovery.
+Shared unchanged device helpers retain stage-221 sticky hit testing, restored content axe and
+portrait geometry policy. Saved automatic focus is checked before corrective scrolling. All 32
+combined core/browsing cases pass in dev and production with one worker and no retries; unit/check/
+production-build validation passes. Touch clear is exercised; this does not resolve the historical
+programmatic-focus/Enter search-clear observation. The error route is the explicit demo recovery
+page, not a simulated backend failure. Shop/home coverage here is navigation/state recovery, not
+full catalog interaction acceptance. Customer routes, physical devices, soft keyboards, assistive
+technology and earlier visual/map/loading observations remain open. Stage-219 counts are historical.

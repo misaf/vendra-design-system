@@ -96,3 +96,9 @@ images are refreshed and exact bilingual metadata regressions added. Dedicated t
 acceptance starts in stage 221 with sixteen bilingual core-route cases, real sticky reachability,
 validation focus and restored content scans. Browsing/recovery routes are next. Earlier visual/map/
 loading and hardware/assistive-technology gaps remain open.
+
+Stage 222 adds sixteen bilingual touch-phone/tablet browsing/recovery cases with shared unchanged
+sticky/content-axe helpers: search origin restoration, saved latest-removal/empty-state undo and
+persistence, missing-page home navigation, and error retry/home recovery. All 32 combined core/
+browsing cases pass in dev and production. Customer routes are next; emulated touch acceptance
+does not establish physical-device, soft-keyboard or assistive-technology acceptance.
