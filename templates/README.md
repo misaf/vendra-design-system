@@ -394,3 +394,9 @@ articles and related stories. Stage 221 adds dedicated touch-phone/tablet core-r
 focus, receipt recovery and portrait geometry. Content axe temporarily unsticks the bottom bar,
 then restores it; it is separate from actual sticky geometry checks. Browsing/recovery routes are
 next. Physical-device, soft-keyboard and assistive-technology acceptance remain open.
+
+Stage 222 adds dedicated touch browsing/recovery acceptance: filtered shop/search/product state
+restoration, saved latest-removal and empty-state undo, missing-page home navigation and error
+retry/home recovery. Sixteen new bilingual cases reuse the stage-221 sticky reachability/content
+axe policy via device-helpers.mjs. All 32 combined cases pass in dev and production. Customer routes
+are next; physical-device, soft-keyboard and screen-reader acceptance remain open.

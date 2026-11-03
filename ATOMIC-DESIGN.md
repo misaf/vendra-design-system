@@ -5656,6 +5656,33 @@ Older image/map/loading observations remain documented.
 Next: extend dedicated touch/tablet coverage to browsing and recovery routes, retaining the
 separation between content axe, real sticky reachability and physical-device acceptance.
 
+## Stage 222 checkpoint: dedicated touch browsing and recovery
+
+Added device-browsing.spec.mjs to the touch-phone/tablet projects. Sixteen English/Persian cases
+cover filtered shop→search→product→back/reload→shop recovery, saved removal/undo including the empty
+state and reload, missing-page→home navigation, and error retry→home navigation. Search asserts query
+URL encoding, typing without history churn, touch clear with input focus, no-result persistence and
+exact restoration of the originating filters/sort. Saved checks that undo restores only the latest
+removal, moves focus to the correct control and persists the restored list. Recovery links assert
+client-navigation heading focus; error retry asserts reload, retained locale/route, noindex and a
+reachable telephone fallback without opening it. No external message, order or payment is triggered.
+
+Extracted the unchanged stage-221 geometry/tap/content-scan helpers to device-helpers.mjs so both
+suites use the same policy. Controls clear the normal sticky shell and receive center hit tests;
+saved automatic focus is checked before corrective scrolling. Content axe temporarily adjusts the
+bottom bar, restores it and rechecks sticky controls. Phone uses 390×844; tablet interactions/content
+scans use 1180×820, with key-control reachability also checked at 768×1024. That portrait check is
+geometry evidence, not a second axe scan. New tests use reduced motion, essential consent and an
+advancing morning clock. Runtime UI/styles, generated files and screenshot baselines are unchanged.
+
+Validation: the combined core/browsing suites pass all 32 cases in dev and production with one
+worker and no retries. Full npm tests, formatting/type/build checks and production build pass.
+This is selected Chromium touch-emulation coverage. Physical devices, soft keyboards, assistive
+technology, complete route/state acceptance and older visual/map/loading observations remain open.
+
+Next: extend dedicated touch/tablet acceptance to customer sign-in, account and order tracking,
+using local demo state and preserving the same explicit device/geometry evidence boundaries.
+
 ## Adding components
 
 ```sh
