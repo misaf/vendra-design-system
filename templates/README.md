@@ -370,4 +370,5 @@ stage 203 completes product breadcrumbs. Stage 204 completes controlled bag head
 form heading is completed in stage 205. Stage 206 completes the site checkout notice; site
 integration-error feedback is completed in stage 207. Stage 208 completes bag delivery-section
 placement; stage 209 completes checkout progress placement. Stage 210 simplifies shop View
-composition; product View composition is next.
+composition; stage 211 simplifies product View composition while retaining recent reset-boundary and
+toast ownership. Bag View composition is next.
