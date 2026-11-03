@@ -1,6 +1,7 @@
 // The click-through site: the routed page, the shared bag and saved items.
 import React, {Suspense, useEffect} from 'react';
 import * as DS from '../app/ds.js';
+import {StorefrontSiteCheckoutNotice} from '../app/organisms/StorefrontSiteCheckoutNotice/StorefrontSiteCheckoutNotice.jsx';
 import {PageBoundary} from '../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../app/pages.js';
 
@@ -35,15 +36,11 @@ export function View({v}) {
         <>{v.announcement}</>
       </DS.LiveRegion>
       {v.checkoutNotice && (
-        <DS.Alert
-          tone="info"
+        <StorefrontSiteCheckoutNotice
           title={v.checkoutNotice.title}
-          onClose={v.dismissCheckoutNotice}
-          action={
-            <DS.Button variant="secondary" href={v.checkoutNotice.href}>
-              {v.checkoutNotice.label}
-            </DS.Button>
-          }
+          actionLabel={v.checkoutNotice.label}
+          actionHref={v.checkoutNotice.href}
+          onDismiss={v.dismissCheckoutNotice}
         />
       )}
       {v.integrationError ? (

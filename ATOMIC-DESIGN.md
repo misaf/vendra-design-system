@@ -290,7 +290,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontProductBreadcrumbs now composes product navigation from explicit label/items props.
    StorefrontBagHeading now composes controlled bag/delivery h1 content from explicit props.
    StorefrontContactFormHeading now composes the persistent localized form h2 from an explicit title.
-   **Next stage: extract the site checkout notice into a storefront organism.**
+   StorefrontSiteCheckoutNotice now composes controlled checkout recovery messaging and its order link.
+   **Next stage: extract site integration-error feedback into a storefront organism.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5144,6 +5145,32 @@ browser/device, TV spatial-navigation and assistive-technology suites were not r
 stage-192/197 observations remain documented.
 
 Next: extract the site checkout notice into a storefront organism.
+
+**Two hundred and sixth checkpoint verified:** extracted StorefrontSiteCheckoutNotice under app
+organisms from the site View checkout-notice block. Explicit title/actionLabel/actionHref/onDismiss
+props preserve the informational Alert and secondary order link without adding a wrapper. Alert
+retains polite status semantics, decorative icon and locale-derived dismissal wording. View retains
+visibility and placement inside VendraProvider before PageBoundary; logic retains late-completion
+ownership, newer-bag preservation, localized copy, URLs and dismissal state. Source comparison confirms
+only checkout-notice block/import changed; provider, announcements, integration feedback, routing and
+boundaries remain intact. Updated ownership, roadmap and audit progress documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Four focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual late checkout after newer
+bag changes, using a stubbed checkout response. Eight paired previous/current probes cover English/
+Persian at touch widths 390/768, desktop 1280 and TV width 1920. These rendering probes seed a local
+notice for a known sample order and a newer quantity; the existing browser tests exercise the actual
+late-response flow. Shown/recovered notice markup and relative bounds match with preview origins/
+generated IDs/references normalized consistently and attributes sorted. All 16 notice PNG pairs are
+byte-identical; representative phone/tablet captures viewed. Probes verify status/title/icon, native
+localized tracking URL and secondary link, locale-derived dismissal name, touch/Enter recovery,
+same-document navigation, tracking h1 focus, back recovery, tablet rotation, containment and page-top
+axe. Touch/Enter dismissal and desktop/TV-width Space dismissal clear notice state; bag, customer
+identity and delivery descriptors remain unchanged. No source styles, baselines or tolerances changed.
+Full-page visuals, live checkout, full browser/device, TV spatial-navigation and assistive-technology
+suites were not run; earlier stage-192/197 observations remain documented.
+
+Next: extract site integration-error feedback into a storefront organism.
 
 ## Adding components
 

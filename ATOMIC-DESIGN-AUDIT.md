@@ -69,4 +69,4 @@ This audit changes no UI or business behavior.
 Stage 202 completes the shop heading extraction. The inventory above remains the stage-201 snapshot;
 stage 203 completes product breadcrumbs with reset-boundary and toast ownership preserved.
 Stage 204 completes controlled bag headings. Stage 205 completes the persistent contact form heading.
-The site checkout notice is next.
+Stage 206 completes the site checkout notice. Site integration-error feedback is next.

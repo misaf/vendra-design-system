@@ -366,4 +366,5 @@ Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the in
 The stage-201 [composition audit](../ATOMIC-DESIGN-AUDIT.md) records remaining page content, valid
 page-level infrastructure and app dependency-check gaps. Stage 202 completes the shop heading;
 stage 203 completes product breadcrumbs. Stage 204 completes controlled bag headings; the contact
-form heading is completed in stage 205. The site checkout notice is next.
+form heading is completed in stage 205. Stage 206 completes the site checkout notice; site
+integration-error feedback is next.
