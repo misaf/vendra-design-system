@@ -72,4 +72,5 @@ Stage 204 completes controlled bag headings. Stage 205 completes the persistent 
 Stage 206 completes the site checkout notice. Stage 207 completes site integration-error feedback.
 Stage 208 completes bag delivery-section placement. Stage 209 completes checkout progress placement.
 Stage 210 simplifies shop View composition. Stage 211 simplifies product View composition, retaining
-recent reset-boundary and toast ownership. Bag View composition is next.
+recent reset-boundary and toast ownership. Stage 212 simplifies bag View composition while retaining
+items/delivery multi-child grouping and visibility guards. Checkout View composition is next.
