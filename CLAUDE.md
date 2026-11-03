@@ -320,6 +320,8 @@ Its persistent submit-label span stays outside the conditional form so pending a
 a valid accessible name after the button unmounts.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
+StorefrontNotfoundMessage composes explicit eyebrow/title/accent/body through EmptyState; View maps
+localized copy, shared logic retains invalid-route handling/SEO/focus and layout retains placement.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
 slots; not-found View/logic retain localized content, product mapping and recovery links.
 StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain
