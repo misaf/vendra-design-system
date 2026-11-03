@@ -46,7 +46,9 @@ View/logic retain totals/stock/bag actions; Shell retains positioning/measuremen
 StorefrontProductBreadcrumbs composes explicit navigation label/items through Breadcrumb; View maps
 localized items, logic retains identity/category/shop URLs and layout retains placement.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
-purchase actions, and the sticky purchase action stays in Shell.
+purchase actions, and the sticky purchase action stays in Shell. Product View passes its layout,
+sticky action and conditional recent organism directly, retaining the recent reset boundary and
+required multi-child details/feedback groups.
 StorefrontShopHeading composes the localized h1 SectionHeader from explicit eyebrow/title/accent;
 View maps copy and layout retains heading placement. Shop View passes StorefrontShopLayout directly
 to Shell content, preserving sidebar/results fragments and the empty sticky slot. Filtering, sorting,

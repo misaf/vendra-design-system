@@ -295,7 +295,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagDeliveryLayout now owns recipient/location section placement from React-node slots.
    StorefrontCheckoutLayout now owns payment progress spacing; View retains controlled slot construction.
    Shop View now passes its layout directly while retaining sidebar/results grouping and empty sticky slot.
-   **Next stage: simplify product View composition.**
+   Product View now passes layout/sticky/recent elements directly, preserving boundary/reset identity.
+   **Next stage: simplify bag View composition.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5284,6 +5285,29 @@ No source styles, baselines or tolerances changed. Full browser/device, TV spati
 assistive-technology suites were not run; earlier stage-192/197 observations remain documented.
 
 Next: simplify product View composition.
+
+## Stage 211 checkpoint: product View composition
+
+Removed four redundant fragments from the product View: Shell content, Shell sticky, related slot
+and the single conditional recent organism. The details/feedback multi-child groups remain. Source
+comparison after excluding fragments, the retained comment and whitespace confirms executable props,
+callbacks, conditions and reset keys are unchanged. The recent-products ErrorBoundary and ToastRegion
+stay in View; logic retains state, totals, history and purchase actions. Updated ownership and roadmap.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: recently viewed products,
+product-to-shop breadcrumbs and English/Persian product axe scans. Paired previous/current probes
+cover English/Persian at touch widths 390/768, desktop 1280 and TV width 1920, with direct and
+client-routed product entries. Main markup (preview origins, encoded origins and generated IDs
+normalized consistently), relative element bounds and all 16 main PNG pairs match. Captures await
+image decoding with an enlarged viewport and unchanged main dimensions; representative captures
+were viewed. Probes verify breadcrumb items/links/current code, locale/direction, same-document
+navigation, heading focus, category/shop navigation, back/reload, tablet rotation, containment and
+page-top axe. This is focused evidence, not full device, gallery/purchase, TV spatial-navigation or
+assistive-technology acceptance; historical observations remain documented. No source styles,
+baselines or tolerances changed.
+
+Next: simplify bag View composition.
 
 ## Adding components
 
