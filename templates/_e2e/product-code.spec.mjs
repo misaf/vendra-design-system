@@ -26,6 +26,10 @@ for (const lang of ['en', 'fa']) {
     expect(await link.evaluate(el => getComputedStyle(el).direction)).toBe('ltr');
     await link.click();
     await expect(page.locator('#vf-product-code')).toHaveText(code);
+    // In-site navigation moves focus to the new h1 once the page settles (vfAnnounce, delayed and
+    // re-armed by each re-render). Wait for that move, or it can land between focusing the copy
+    // button and pressing Enter on a loaded machine, and Enter then goes to the heading.
+    await expect(page.locator('#vf-product-code')).toBeFocused();
     const copy = page.getByRole('button', {name: copyLabel[lang], exact: true});
     await expect(copy).toBeVisible();
     expect((await copy.boundingBox()).height).toBeGreaterThanOrEqual(44);
