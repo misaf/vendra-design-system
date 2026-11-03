@@ -389,5 +389,8 @@ Stage 219 records the [acceptance evidence audit](../ACCEPTANCE-EVIDENCE.md): de
 focused visual/axe evidence, real-sticky and project coverage limits, and hardware/screen-reader gaps.
 Stage 220 corrects two stale Darwin Persian post baselines after tracing their old raised-dot
 separators to the earlier intentional comma change. Exact metadata regressions cover classic/block
-articles and related stories. Dedicated touch/tablet route acceptance is next; physical-device and
-assistive-technology acceptance remain open.
+articles and related stories. Stage 221 adds dedicated touch-phone/tablet core-route acceptance
+(product, bag/delivery, checkout, contact): taps, normal-sticky control reachability, validation
+focus, receipt recovery and portrait geometry. Content axe temporarily unsticks the bottom bar,
+then restores it; it is separate from actual sticky geometry checks. Browsing/recovery routes are
+next. Physical-device, soft-keyboard and assistive-technology acceptance remain open.

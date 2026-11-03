@@ -93,4 +93,6 @@ budgets remain. Stage 219 records the [acceptance evidence audit](ACCEPTANCE-EVI
 fresh device/TV and focused screenshot/axe evidence, project/geometry limits and open observations.
 Stage 220 resolves its Persian post mismatch as stale Darwin separator baselines: two reviewed
 images are refreshed and exact bilingual metadata regressions added. Dedicated touch/tablet route
-acceptance is next. Earlier visual/map/loading and hardware/assistive-technology gaps remain open.
+acceptance starts in stage 221 with sixteen bilingual core-route cases, real sticky reachability,
+validation focus and restored content scans. Browsing/recovery routes are next. Earlier visual/map/
+loading and hardware/assistive-technology gaps remain open.

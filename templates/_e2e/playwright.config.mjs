@@ -80,7 +80,10 @@ export default defineConfig({
     ].map(device => ({
       name: device.name,
       // The tv project also opens the storefront in TV mode (tv.spec.mjs).
-      testMatch: device.name === 'tv' ? ['devices.spec.mjs', 'tv.spec.mjs'] : 'devices.spec.mjs',
+      testMatch:
+        device.name === 'tv'
+          ? ['devices.spec.mjs', 'tv.spec.mjs']
+          : ['devices.spec.mjs', 'device-routes.spec.mjs'],
       use: {
         ...devices['Desktop Chrome'],
         channel,
