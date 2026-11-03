@@ -1,11 +1,11 @@
 // StorefrontNotfound: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontNotfoundLayout} from '../app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
 import {StorefrontNotfoundMessage} from '../app/organisms/StorefrontNotfoundMessage/StorefrontNotfoundMessage.jsx';
 import {StorefrontNotfoundActions} from '../app/organisms/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
 import {StorefrontNotfoundRecommendationHeading} from '../app/organisms/StorefrontNotfoundRecommendationHeading/StorefrontNotfoundRecommendationHeading.jsx';
+import {StorefrontNotfoundProducts} from '../app/organisms/StorefrontNotfoundProducts/StorefrontNotfoundProducts.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -35,23 +35,11 @@ export function View({v}) {
               <StorefrontNotfoundRecommendationHeading title={v.t?.popA} accent={v.t?.popB} />
             }
             recommendations={
-              <>
-                {list(v.items).map((p, $index) => (
-                  <React.Fragment key={$index}>
-                    <DS.ProductCard
-                      images={p?.images}
-                      name={p?.name}
-                      subtitle={p?.sub}
-                      price={p?.price}
-                      stock={p?.stock}
-                      frame="soft"
-                      placeholder={v.t?.photo}
-                      favLabel={v.t?.save}
-                      href={p?.href}
-                    />
-                  </React.Fragment>
-                ))}
-              </>
+              <StorefrontNotfoundProducts
+                products={list(v.items)}
+                photoLabel={v.t?.photo}
+                saveLabel={v.t?.save}
+              />
             }
           />
         </>
