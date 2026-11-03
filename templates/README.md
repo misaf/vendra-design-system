@@ -373,4 +373,5 @@ placement; stage 209 completes checkout progress placement. Stage 210 simplifies
 composition; stage 211 simplifies product View composition while retaining recent reset-boundary and
 toast ownership. Stage 212 simplifies bag View composition, retaining multi-child groups and
 controlled visibility. Stage 213 simplifies checkout View composition, retaining payment grouping and
-all payment/bank/success guards. Site View composition is next.
+all payment/bank/success guards. Stage 214 simplifies site View composition, retaining provider/live-
+region/boundary/loading ownership, route guards and customer keys. App dependency/cycle checks are next.
