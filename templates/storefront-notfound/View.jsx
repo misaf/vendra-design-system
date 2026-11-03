@@ -5,6 +5,7 @@ import {list} from '../app/runtime.js';
 import {StorefrontNotfoundLayout} from '../app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
 import {StorefrontNotfoundMessage} from '../app/organisms/StorefrontNotfoundMessage/StorefrontNotfoundMessage.jsx';
 import {StorefrontNotfoundActions} from '../app/organisms/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
+import {StorefrontNotfoundRecommendationHeading} from '../app/organisms/StorefrontNotfoundRecommendationHeading/StorefrontNotfoundRecommendationHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -31,9 +32,7 @@ export function View({v}) {
               />
             }
             recommendationHeading={
-              <>
-                <DS.SectionHeader title={v.t?.popA} accent={v.t?.popB} />
-              </>
+              <StorefrontNotfoundRecommendationHeading title={v.t?.popA} accent={v.t?.popB} />
             }
             recommendations={
               <>
