@@ -292,7 +292,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontContactFormHeading now composes the persistent localized form h2 from an explicit title.
    StorefrontSiteCheckoutNotice now composes controlled checkout recovery messaging and its order link.
    StorefrontSiteIntegrationFeedback now composes the controlled sync-error Alert from an explicit message.
-   **Next stage: move bag delivery-section placement into its layout.**
+   StorefrontBagDeliveryLayout now owns recipient/location section placement from React-node slots.
+   **Next stage: move checkout progress placement into its layout.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5197,6 +5198,36 @@ failures, full browser/device, TV spatial-navigation and assistive-technology su
 earlier stage-192/197 observations remain documented.
 
 Next: move bag delivery-section placement into its layout.
+
+**Two hundred and eighth checkpoint verified:** moved bag recipient/location section placement into
+StorefrontBagDeliveryLayout with React-node recipient/location slots. The layout preserves the
+section classes, recipient-before-location order and aria-labelledby relationship to vf-recipient-title
+without another wrapper. It imports only React and owns no state, data, callbacks or effects. View
+retains hasItems/onDelivery guards and every recipient/saved-address/map/zone/address descriptor and
+callback; logic retains delivery behavior. Source comparison confirms wrapper/import changes only
+and preserves child props/order and all other View content. Updated ownership, roadmap and audit
+progress documentation, including recipient/location organism ownership notes.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual bag axe, bag/delivery
+steps and pin validation/payment continuation. Eight paired previous/current probes cover English/
+Persian at touch widths 390/768, desktop 1280 and TV width 1920. Initial/pinned recipient sections
+match markup/relative bounds with preview origins/generated IDs/references normalized consistently
+and attributes sorted. All 16 section PNG pairs are byte-identical; representative phone/tablet
+captures viewed. Captures temporarily use section height plus 1000 pixels and assert unchanged
+section dimensions before restoring the viewport. Probes verify bag-step absence, delivery heading
+focus, section role/tag/heading relationship, field order, required-pin validation and map focus,
+keyboard pin placement/coordinate status, error clearing, payment continuation, back/reload retained
+name/phone/address values, tablet rotation, containment and page-top axe. Map tiles are stubbed.
+
+Initial scratch probes used an overbroad section selector, then froze Date and prevented Leaflet's
+pan animation from finishing on the baseline. Correcting the selector and using the advancing clock
+from existing checkout tests completes these checks without application changes. No source styles,
+baselines or tolerances changed. Full-page visuals, live map tiles/geolocation, map-load fallback,
+saved-address selection, full browser/device, TV spatial-navigation and assistive-technology suites
+were not run; earlier stage-192/197 observations remain documented.
+
+Next: move checkout progress placement into its layout.
 
 ## Adding components
 

@@ -70,4 +70,4 @@ Stage 202 completes the shop heading extraction. The inventory above remains the
 stage 203 completes product breadcrumbs with reset-boundary and toast ownership preserved.
 Stage 204 completes controlled bag headings. Stage 205 completes the persistent contact form heading.
 Stage 206 completes the site checkout notice. Stage 207 completes site integration-error feedback.
-Bag delivery-section placement is next.
+Stage 208 completes bag delivery-section placement. Checkout progress placement is next.
