@@ -374,4 +374,9 @@ composition; stage 211 simplifies product View composition while retaining recen
 toast ownership. Stage 212 simplifies bag View composition, retaining multi-child groups and
 controlled visibility. Stage 213 simplifies checkout View composition, retaining payment grouping and
 all payment/bank/success guards. Stage 214 simplifies site View composition, retaining provider/live-
-region/boundary/loading ownership, route guards and customer keys. App dependency/cycle checks are next.
+region/boundary/loading ownership, route guards and customer keys. Stage 215 wires app dependency
+checks into `npm test`: UI layer/helper boundaries, missing literal relative targets and runtime
+JS/JSX cycles, with thirty filesystem regression scenarios. Only collection-carousel and QR are
+shared UI-helper allowances, and their own imports are constrained. See the stage-215 checkpoint
+for scope and exclusions. Final package export/type/tree-shaking contract review is next; physical
+device and assistive-technology acceptance remain open.
