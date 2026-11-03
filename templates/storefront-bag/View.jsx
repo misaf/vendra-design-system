@@ -13,6 +13,7 @@ import {StorefrontBagSchedule} from '../app/organisms/StorefrontBagSchedule/Stor
 import {StorefrontBagCards} from '../app/organisms/StorefrontBagCards/StorefrontBagCards.jsx';
 import {StorefrontBagSender} from '../app/organisms/StorefrontBagSender/StorefrontBagSender.jsx';
 import {StorefrontBagDeliveryIntro} from '../app/organisms/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx';
+import {StorefrontBagHeading} from '../app/organisms/StorefrontBagHeading/StorefrontBagHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -46,28 +47,14 @@ export function View({v}) {
             }
             heading={
               v.hasItems ? (
-                <>
-                  {v.onBag ? (
-                    <>
-                      <h1>
-                        <>{v.t?.titleA} </>
-                        <em className="vf-bag-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                          <>{v.t?.titleB}</>
-                        </em>
-                      </h1>
-                    </>
-                  ) : null}
-                  {v.onDelivery ? (
-                    <>
-                      <h1>
-                        <>{v.t?.deliveryA} </>
-                        <em className="vf-bag-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-                          <>{v.t?.deliveryB}</>
-                        </em>
-                      </h1>
-                    </>
-                  ) : null}
-                </>
+                <StorefrontBagHeading
+                  showBag={v.onBag}
+                  showDelivery={v.onDelivery}
+                  bagTitle={v.t?.titleA}
+                  bagAccent={v.t?.titleB}
+                  deliveryTitle={v.t?.deliveryA}
+                  deliveryAccent={v.t?.deliveryB}
+                />
               ) : null
             }
             items={

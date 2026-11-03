@@ -60,6 +60,8 @@ StorefrontShopToolbar composes compact filters/sort, active filters, quick chips
 View/logic retain filtering, sorting, URL/paging, tracking and focus-scroll callbacks.
 StorefrontShopResults composes product cards, paging and loading/error/empty feedback from explicit props;
 View/logic retain state/visibility, mapping, favorites, recovery and navigation/paging focus.
+StorefrontBagHeading composes explicit bag/delivery visibility and heading copy; View retains the
+hasItems guard, logic retains step state and layout retains placement.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 StorefrontBagItems composes editable line items and stock warnings from explicit records/labels;
