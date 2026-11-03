@@ -62,6 +62,8 @@ StorefrontShopResults composes product cards, paging and loading/error/empty fee
 View/logic retain state/visibility, mapping, favorites, recovery and navigation/paging focus.
 StorefrontBagHeading composes explicit bag/delivery visibility and heading copy; View retains the
 hasItems guard, logic retains step state and layout retains placement.
+StorefrontBagDeliveryLayout arranges recipient/location React-node slots in the named delivery section;
+View retains visibility and field descriptors, logic retains validation/map state and callbacks.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 StorefrontBagItems composes editable line items and stock warnings from explicit records/labels;

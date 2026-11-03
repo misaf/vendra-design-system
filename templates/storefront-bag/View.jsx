@@ -1,6 +1,7 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
 import {list} from '../app/runtime.js';
+import {StorefrontBagDeliveryLayout} from '../app/layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx';
 import {StorefrontBagLayout} from '../app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
 import {StorefrontBagItems} from '../app/organisms/StorefrontBagItems/StorefrontBagItems.jsx';
 import {StorefrontBagSummary} from '../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
@@ -82,65 +83,66 @@ export function View({v}) {
                           onClick: v.goSignin
                         }}
                       />
-                      <section
-                        className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
-                        aria-labelledby="vf-recipient-title"
-                      >
-                        <StorefrontBagRecipient
-                          title={v.t?.recipient}
-                          saved={{
-                            visible: v.hasSaved,
-                            label: v.t?.saved,
-                            options: list(v.savedAddresses)
-                          }}
-                          name={{
-                            value: v.delivery?.name,
-                            onChange: v.setName,
-                            error: v.nameError,
-                            label: v.t?.name
-                          }}
-                          phone={{
-                            value: v.delivery?.phone,
-                            onChange: v.setPhone,
-                            error: v.phoneError,
-                            label: v.t?.phone
-                          }}
-                        />
-                        <StorefrontBagLocation
-                          picker={{
-                            visible: v.mapOk,
-                            label: v.t?.pin,
-                            status: v.pinStatus,
-                            error: v.pinError,
-                            value: v.delivery?.location,
-                            onChange: v.map?.change,
-                            loadLeaflet: v.map?.load,
-                            tiles: v.map?.tiles,
-                            center: v.map?.center,
-                            zoom: v.map?.zoom,
-                            locateLabel: v.t?.locate,
-                            onLocateError: v.map?.locateError,
-                            onReady: v.map?.ready,
-                            onFail: v.map?.fail
-                          }}
-                          zone={{label: v.t?.zone, text: v.zoneText, status: v.zoneStatus}}
-                          fallback={{
-                            visible: v.mapFailed,
-                            message: v.t?.mapFailed,
-                            hint: v.zoneHint,
-                            value: v.zone,
-                            options: v.zones,
-                            onChange: v.setZone
-                          }}
-                          address={{
-                            value: v.delivery?.address,
-                            onChange: v.setAddress,
-                            error: v.addressError,
-                            label: v.addressLabel,
-                            hint: v.addressHint
-                          }}
-                        />
-                      </section>
+                      <StorefrontBagDeliveryLayout
+                        recipient={
+                          <StorefrontBagRecipient
+                            title={v.t?.recipient}
+                            saved={{
+                              visible: v.hasSaved,
+                              label: v.t?.saved,
+                              options: list(v.savedAddresses)
+                            }}
+                            name={{
+                              value: v.delivery?.name,
+                              onChange: v.setName,
+                              error: v.nameError,
+                              label: v.t?.name
+                            }}
+                            phone={{
+                              value: v.delivery?.phone,
+                              onChange: v.setPhone,
+                              error: v.phoneError,
+                              label: v.t?.phone
+                            }}
+                          />
+                        }
+                        location={
+                          <StorefrontBagLocation
+                            picker={{
+                              visible: v.mapOk,
+                              label: v.t?.pin,
+                              status: v.pinStatus,
+                              error: v.pinError,
+                              value: v.delivery?.location,
+                              onChange: v.map?.change,
+                              loadLeaflet: v.map?.load,
+                              tiles: v.map?.tiles,
+                              center: v.map?.center,
+                              zoom: v.map?.zoom,
+                              locateLabel: v.t?.locate,
+                              onLocateError: v.map?.locateError,
+                              onReady: v.map?.ready,
+                              onFail: v.map?.fail
+                            }}
+                            zone={{label: v.t?.zone, text: v.zoneText, status: v.zoneStatus}}
+                            fallback={{
+                              visible: v.mapFailed,
+                              message: v.t?.mapFailed,
+                              hint: v.zoneHint,
+                              value: v.zone,
+                              options: v.zones,
+                              onChange: v.setZone
+                            }}
+                            address={{
+                              value: v.delivery?.address,
+                              onChange: v.setAddress,
+                              error: v.addressError,
+                              label: v.addressLabel,
+                              hint: v.addressHint
+                            }}
+                          />
+                        }
+                      />
                       <StorefrontBagSchedule
                         title={v.t?.when}
                         preparationNotice={v.preparationNotice}
