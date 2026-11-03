@@ -125,7 +125,7 @@ function packageFiles() {
     'theme.js',
     HEADER +
       "import theme from './theme.cjs';\n" +
-      'export const {VENDRA, CHOICES, FONTS, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
+      'export const {VENDRA, CHOICES, FONTS, RAMPS, shade, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
   );
   files.set('theme.d.ts', read('templates/_shared/tenant-theme.d.ts'));
   files.set('theme.d.cts', read('templates/_shared/tenant-theme.d.ts'));

@@ -90,3 +90,11 @@ The normal checks can be repeated with `npm test`, `npm run check` and
 `npm --prefix templates run build:app`. The additional packed-consumer checks are a one-time audit;
 they are not yet automated by those commands. The tarball's recorded SHA-1 is
 `f716d1c803f094e71b7683275c0d829a78f99a09` (an evidence identifier, not a security assertion).
+
+## Follow-up progress
+
+Stage 217 resolves finding 1 additively: the ESM theme wrapper now exposes RAMPS/shade, and both
+declaration conditions describe them. All fifteen CommonJS members and the internal implementation
+are preserved. Package regressions verify full key/value parity, palette generation and strict
+ESM/CommonJS positive/negative type consumers. The checklist above remains the stage-216 snapshot;
+packed-consumer automation (finding 2) and the acceptance limits (finding 3) remain open.

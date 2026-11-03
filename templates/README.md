@@ -380,5 +380,6 @@ JS/JSX cycles, with thirty filesystem regression scenarios. Only collection-caro
 shared UI-helper allowances, and their own imports are constrained. See the stage-215 checkpoint
 for scope and exclusions. Stage 216 records the [package contract audit](../PACKAGE-CONTRACT-AUDIT.md):
 packed consumer imports/types/assets/SSR and no-alias tree shaking pass, with theme export/type
-asymmetry and persistent consumer-test gaps documented. Theme parity preserving existing CommonJS
-members is next. Physical device and assistive-technology acceptance remain open.
+asymmetry and persistent consumer-test gaps documented. Stage 217 resolves theme parity additively:
+RAMPS/shade are available through both entry forms and types, with runtime/type regressions.
+Packed-consumer automation is next. Physical device and assistive-technology acceptance remain open.

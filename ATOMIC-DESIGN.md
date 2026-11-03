@@ -301,7 +301,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Site View now passes lazy route elements and live text directly, preserving coordinator infrastructure.
    App dependency checks now enforce UI import boundaries and detect missing modules and cycles.
    The package contract audit verifies packed consumers and records theme/API and CI coverage gaps.
-   **Next stage: align theme export/type contracts while preserving existing CommonJS exports.**
+   Theme ESM/CommonJS exports and types now share RAMPS/shade without changing the color math.
+   **Next stage: automate packed-consumer contract checks.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5489,6 +5490,35 @@ contact-map and historical visual/device residuals remain documented; migration 
 
 Next: align theme export/type contracts while preserving existing CommonJS exports and internal
 consumers, with explicit parity/type regression coverage. Then automate the packed-consumer checks.
+
+## Stage 217 checkpoint: theme export/type parity
+
+The generated ESM theme entry now also exports RAMPS and shade, matching all fifteen existing
+CommonJS values. Both declaration forms add ShadeStep, ThemeRamp, RAMPS and shade, from the shared
+source declaration. ShadeStep describes optional numeric lightness/shift/chroma/maxChroma controls;
+ThemeRamp describes CSS custom-property base/step names for the four brand ramps. Absolute
+lightness takes precedence over shift, as the existing implementation already does. The public
+package README lists the additive exports. No CommonJS member is removed or color math changed.
+
+Package tests compare complete ESM/CommonJS key sets and value identities, verify every exposed
+ramp step against the default palette, and check zero/full lightness with zero chroma. Strict
+public-package .mts/.cts fixtures compile positive uses and expected errors for invalid controls,
+base tokens, ramp names and step keys. These run with the normal package test and are also exercised
+when that test runs in the existing React-19 job. The new parity assertion failed against the
+stage-216 output on RAMPS/shade, then passed after regeneration with the additive fix.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. An actual npm tarball
+smoke verifies fifteen identical ESM/CommonJS values, strict positive/negative public import/require
+types and byte-identical CommonJS output versus stage 216. The normal package test still covers all
+72 server-rendered components and existing wording/theme/asset behavior. Root bundle budgets remain
+unchanged (39.6 KB overall, largest LocationPicker 12.3 KB). The internal theme implementation,
+CommonJS dist module, tenant CSS/token data, component root exports and app UI are unchanged.
+No new React-19 installation, browser/device or assistive-technology acceptance is claimed.
+The stage-216 audit remains a historical snapshot; its packed-consumer CI gaps and earlier
+loading/contact-map/visual/device observations remain open.
+
+Next: automate actual packed-consumer asset/type and no-alias tree-shaking regression checks,
+including lowercase root exports, while retaining current package budgets.
 
 ## Adding components
 
