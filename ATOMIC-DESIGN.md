@@ -286,7 +286,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontErrorActions now composes retry/home/phone recovery controls from explicit props.
    Error View now passes its layout directly without a redundant fragment.
    The stage-201 [composition audit](ATOMIC-DESIGN-AUDIT.md) inventories remaining content and boundaries.
-   **Next stage: extract the shop heading into a storefront organism.**
+   StorefrontShopHeading now composes the localized shop SectionHeader from explicit props.
+   **Next stage: extract product breadcrumbs into a storefront organism.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5044,6 +5045,28 @@ type-declaration dependency graphs were outside the source-graph scan; historica
 recorded in earlier checkpoints.
 
 Next: extract the shop heading into a storefront organism.
+
+**Two hundred and second checkpoint verified:** extracted StorefrontShopHeading under app organisms
+from the shop View heading slot. Explicit eyebrow/title/accent props preserve the localized level-one
+SectionHeader without adding a wrapper. View retains copy mapping; shop logic retains filters,
+sorting, pagination, product selection and URLs; shared logic retains routing/locale/SEO/focus and
+layout retains heading placement. Removed the unused View design-system import. Source comparison
+confirms only the heading slot/imports changed; all other View content is preserved. Updated ownership
+and roadmap documentation and audit progress while retaining the stage-201 inventory snapshot.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual shop axe and occasion filtering.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280 and
+TV width 1920. Direct and client-routed heading markup/relative bounds match with generated IDs and
+references normalized consistently and attributes sorted. All 16 heading PNG pairs are byte-identical;
+representative phone/tablet captures viewed. Probes verify source eyebrow/title/accent, one h1,
+client-navigation h1 focus and same-document/language preservation, filtered entry and reload with
+occasion URL/two products, back/forward recovery, tablet rotation, containment and page-top axe.
+Temporary browser-only entry links are removed before capture. No source styles, baselines or
+tolerances changed. Full-page visuals, standalone previews, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run; earlier stage-192/197 observations remain documented.
+
+Next: extract product breadcrumbs into a storefront organism.
 
 ## Adding components
 
