@@ -285,15 +285,16 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontErrorMessage now composes the localized 500 heading and body through EmptyState.
    StorefrontErrorActions now composes retry/home/phone recovery controls from explicit props.
    Error View now passes its layout directly without a redundant fragment.
-   **Next stage: audit remaining View composition and migration boundaries.**
-7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
+   The stage-201 [composition audit](ATOMIC-DESIGN-AUDIT.md) inventories remaining content and boundaries.
+   **Next stage: extract the shop heading into a storefront organism.**
+7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
+   identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
 Each batch gets a separate branch, local commit and pull request after its checks. Merge only when
-requested. The flat component folders are the remaining migration backlog, not an alternative
-location for new components. Migrated components
-must not import from that backlog. Checkpoints describe completed work, not a promise that a
-folder move alone finishes a redesign.
+requested. New package UI belongs in the classified layers; storefront composition belongs in app
+organisms/molecules and layout templates. The remaining backlog is recorded in the composition audit.
+Checkpoints describe completed work, not a promise that a folder move alone finishes a redesign.
 
 **First checkpoint verified:** build, generated-file/format/CSS checks, the full unit/type/package
 suite and production app build pass. All 27 focused atom/package/hydration browser tests and the
@@ -5020,6 +5021,29 @@ and assistive-technology suites were not run. Earlier stage-192/197 intermittent
 observations remain documented.
 
 Next: audit remaining View composition and migration boundaries.
+
+**Two hundred and first checkpoint verified:** completed a source audit of remaining View composition
+and migration boundaries, recorded in [ATOMIC-DESIGN-AUDIT.md](ATOMIC-DESIGN-AUDIT.md). All 20 Views
+and a 400-file JS/JSX graph were inspected; no missing literal relative import targets or cycles were
+found in that scope. All package UI folders are layered. App inventory is 21 layout folders, 143
+organism folders (144 JSX files) and one molecule folder. Layouts retain placement; the seven shared
+helper import edges from app UI lead to collection-carousel presentation and pure QR generation.
+
+Remaining content candidates include shop heading, product breadcrumbs, bag headings, contact form
+heading and site notices. Provider/router/announcements, reset boundaries, toast queues and offline
+lifecycle retain valid page ownership. Bag delivery/checkout progress wrappers and branch fragments
+need focused review with state/focus checks, rather than blanket removal. Existing tests enforce
+package layer direction and delegated main landmarks, but not general app dependency/cycle rules.
+The report enumerates evidence, confidence limits and follow-up order, and corrects stale flat-folder
+backlog wording without declaring the migration complete.
+
+`npm test`, `npm run check` and diff checks pass. Only four Markdown files changed; no runtime sources,
+styles, baselines or tolerances changed. No new browser, visual, device, TV spatial-navigation or
+assistive-technology validation was performed. Computed imports/globs, external dependencies, CSS and
+type-declaration dependency graphs were outside the source-graph scan; historical observations remain
+recorded in earlier checkpoints.
+
+Next: extract the shop heading into a storefront organism.
 
 ## Adding components
 

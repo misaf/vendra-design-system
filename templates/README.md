@@ -362,3 +362,6 @@ npm --prefix templates run test:e2e:build -- devices.spec.mjs --project=touch-ph
 ```
 
 Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the intended hardware.
+
+The stage-201 [composition audit](../ATOMIC-DESIGN-AUDIT.md) records remaining page content, valid
+page-level infrastructure and app dependency-check gaps. Its next focused stage is the shop heading.
