@@ -1,0 +1,67 @@
+# Storefront composition audit
+
+Stage 201 snapshot, 3 November 2026, on top of stage 200. This is a source audit; it does not
+revalidate device behavior or certify migration completion.
+
+## Scope and confidence
+
+| Capability checked | Evidence and result | Confidence / limit |
+| --- | --- | --- |
+| Package placement | 26 atom, 33 molecule and 11 organism folders; VendraProvider and utils are foundations. No flat UI component folders remain. | Confirmed directory inventory; 72 named JSX components include VendraProvider and ChoiceTile within ChoiceGroup. |
+| Page coverage | All 20 storefront Views inspected: 19 routed screens and the site coordinator. | Confirmed JSX inventory, including intrinsic elements rather than only DS imports. |
+| App placement | 21 layout folders/JSX files; 143 organism folders containing 144 JSX files; one molecule folder/JSX file. | Snapshot counts, not a measure of completeness. |
+| Relative dependencies | Parsed 400 JS/JSX sources across package UI, app, shared helpers and top-level storefront page modules. Literal relative imports/re-exports/dynamic imports have no missing targets or graph cycles. | Does not resolve computed imports, import.meta.glob, external dependencies, CSS or type declarations. |
+| Layout ownership | All 21 layout JSX files import only React; source inspection found slot/visibility/placement composition without store access or persistence. | Confirmed current source; not an enforced app import rule. |
+| Organism/service boundary | App UI imports seven shared-helper edges: six CollectionCarousel consumers and the send dialog's QR helper. Neither helper imports business services. | Source review: carousel has local overflow UI state; QR generation is pure. These are valid UI dependencies. |
+| UI-local effects | PresentationDisplay owns reveal/pointer state, a timer with cleanup, and image-decode callbacks. CollectionCarousel owns measured overflow state. | Valid local UI ownership; playback, failure policy, offline lifecycle and business state remain outside these helpers. |
+| Enforcement | atomic.test.cjs checks package relative static import/re-export layer direction and component names; storefront.test.cjs follows rendered layout imports for the main landmark. | No general app-layer import/cycle rule. Future additions could cross the boundary without these checks catching them. |
+| Runtime and visuals | No runtime sources changed in this stage. | No new browser, screenshots, device, TV spatial-navigation or assistive-technology verification. Stage-192/197 residuals and stage-200 loading timeout remain documented. |
+
+The package's layer placement is complete. The storefront still has focused composition work;
+absence of DS imports alone does not establish that a View delegates all content markup.
+
+## View inventory
+
+| View | Remaining content or composition | Decision |
+| --- | --- | --- |
+| account | Organism/layout composition; explicit empty sticky slot. | Retain current ownership. |
+| bag | Two conditional h1/accent blocks; delivery section wraps recipient/location organisms; nested branch fragments. | Extract controlled heading first; assess section placement separately with delivery/focus checks. |
+| checkout | Progress div with spacing class and conditional single-child fragments. | Move placement only after checking the layout slot; preserve paying/retry states. |
+| contact | Form h2 remains alongside controlled form/completion children. | Extract heading while preserving its lifetime and form/completion relationship. |
+| error | Direct layout with message/actions organisms and explicit empty sticky slot. | Composition stage complete; behavior remains in logic. |
+| faq | Organism/layout composition. | Retain current ownership. |
+| home | Organism/layout composition. | Retain current ownership and collection UI helper. |
+| journal | Organism/layout composition with multi-child feedback. | Retain required grouping. |
+| notfound | Direct layout with message/actions/heading/products organisms. | Composition stage complete. |
+| policy | Organism/layout composition. | Retain current ownership. |
+| post | Organism/layout composition with multi-child sections. | Retain grouping and recorded screenshot residual. |
+| presentation | DS.VendraProvider and DS.ToastRegion; offline effect and controlled organism descriptors. | Keep provider, toast queue and offline lifecycle in View/logic; local display UI state stays in organism. |
+| product | DS.Breadcrumb content; DS.ErrorBoundary around recent content; DS.ToastRegion queue; single-child fragments. | Extract breadcrumb composition; preserve boundary resetKey and feedback ownership. |
+| saved | Organism/layout composition. | Retain current ownership. |
+| search | Organism/layout composition. | Retain current ownership and documented shared clear-control limitation. |
+| shop | DS.SectionHeader heading; outer fragment; multi-child sidebar/feedback. | Extract heading next; remove only redundant grouping in a subsequent verified stage. |
+| signin | Organism/layout composition with multi-child sections. | Retain required grouping. |
+| site | Provider, live announcement, checkout notice Alert/Button, integration Alert; lazy route branches. | Extract focused notice content later; keep router, announcements, Suspense, PageBoundary and customer keys at coordinator level. |
+| track | Organism/layout composition with multi-child sections. | Retain required grouping. |
+| weddings | Organism/layout composition with multi-child sections. | Retain required grouping. |
+
+Single-child fragment candidates remain in bag (12), checkout (7), contact (1), product (3), shop (1)
+and site (21). These AST counts include fragments around text/expressions and conditional branches;
+they are review candidates, not instructions to delete all of them. Empty sticky slots and required
+multi-child groups must retain their contracts. Review keys, reset identity, state lifetime and focus
+before removing branch wrappers.
+
+## Follow-up order
+
+1. Extract the shop heading into a storefront organism with explicit eyebrow/title/accent props.
+2. Extract product breadcrumbs with explicit labels/items, retaining boundary and toast ownership.
+3. Extract bag headings with controlled bag/delivery content; preserve h1 timing and focus.
+4. Extract the contact form heading, then assess the site checkout notice and integration feedback.
+5. Review bag delivery and checkout progress placement, then remaining single-child grouping in
+   separate verified stages; preserve multi-child groups and branch identity.
+6. Add app dependency/cycle checks with explicit allowances for UI helpers. Exercise forbidden
+   business-service imports, missing relative targets and cycles, rather than mirroring current imports.
+7. Revisit final export/type/tree-shaking and bilingual phone/tablet/TV/assistive-technology acceptance
+   evidence, including unresolved historical observations, before declaring the migration complete.
+
+Next stage: shop heading only. This audit changes no UI or business behavior.
