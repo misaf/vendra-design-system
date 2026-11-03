@@ -297,7 +297,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Shop View now passes its layout directly while retaining sidebar/results grouping and empty sticky slot.
    Product View now passes layout/sticky/recent elements directly, preserving boundary/reset identity.
    Bag View now passes layout/items/summary/empty/sticky elements directly, preserving branch guards.
-   **Next stage: simplify checkout View composition.**
+   Checkout View now passes layout and single-organism branches directly, retaining payment grouping.
+   **Next stage: simplify site View composition.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5342,6 +5343,44 @@ These are focused checks, not full saved-address, geolocation/map-fallback, prom
 or assistive-technology acceptance; historical observations remain documented.
 
 Next: simplify checkout View composition.
+
+## Stage 213 checkpoint: checkout View composition
+
+Removed seven redundant fragments around Shell content, payment progress/heading/review/summary and
+Shell sticky grouping. The multi-child payment fragment remains. Source comparison after excluding
+fragments/whitespace, the nested sticky expression and optional heading parentheses confirms all
+executable descriptors, callbacks and visibility conditions are unchanged. Checkout View/logic
+retain payment/receipt state, retry/confirmation, persistence, gateway callbacks and order submission.
+Bank/success branches and their guards remain intact; the Shell bottom-bar layout renders the sticky
+node directly, so its wrappers/navigation persist when the payment action is absent.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Fourteen focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual checkout axe and receipt
+continuity after delivery edits/reload, plus demo card confirmation/account offer and online-bank
+success/refusal/retry. Paired English/Persian probes cover touch widths 390/768, desktop 1280 and TV
+width 1920. Initial/restored main markup and relative bounds match with preview origins, encoded
+origins and generated IDs normalized consistently. Captures await image decoding and retain main
+dimensions while sizing the viewport for the capture. The initial full-main comparison has 9/16 exact PNG pairs. Residuals are English 390 initial
+(1,849 pixels, maximum channel delta 6) and restored (1,974 pixels, maximum 6), Persian 390 restored
+(63 pixels, maximum 1), English 768 initial/restored (3,948 pixels each, maximum 6), and Persian 1280
+initial/restored (3,948 pixels each, maximum 6). Differences are in product thumbnails and a few
+phone stepper pixels; original captures and pixel bounds are retained. Unchanged-source targeted repeats of all four affected language/width cases have exact markup,
+bounds and all eight initial/restored PNG pairs. This does not establish the initial differences'
+cause or repeatable full visual acceptance.
+
+Probes verify delivery-to-payment, permitted step controls, receipt/reference recovery through
+editing and reload, localized progress, heading focus, tablet rotation, containment, page-top axe
+and local demo pay-on-delivery confirmation with noninteractive completed progress. They explicitly
+require VF_API.live=false before demo submission; map tiles are stubbed. Representative phone and
+tablet captures were viewed. The initial scratch source verifier did not account for Prettier
+removing optional heading parentheses and stopped before creating its browser probe; allowing those
+parentheses made source parity pass and enabled the comparison. No app fix, source style, screenshot
+tolerance or baseline changed.
+
+These are focused checks, not full wallet/WhatsApp, duplicate-order, TV navigation or assistive-
+technology acceptance; historical observations remain documented.
+
+Next: simplify site View composition.
 
 ## Adding components
 

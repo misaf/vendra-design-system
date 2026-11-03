@@ -73,4 +73,5 @@ Stage 206 completes the site checkout notice. Stage 207 completes site integrati
 Stage 208 completes bag delivery-section placement. Stage 209 completes checkout progress placement.
 Stage 210 simplifies shop View composition. Stage 211 simplifies product View composition, retaining
 recent reset-boundary and toast ownership. Stage 212 simplifies bag View composition while retaining
-items/delivery multi-child grouping and visibility guards. Checkout View composition is next.
+items/delivery multi-child grouping and visibility guards. Stage 213 simplifies checkout View
+composition, retaining payment grouping and payment/bank/success guards. Site View composition is next.

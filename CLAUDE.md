@@ -97,6 +97,8 @@ StorefrontCheckoutLayout owns the payment-only vf-checkout-steps wrapper inside 
 retains progress visibility, controlled descriptors and callbacks. Bank/success progress is unchanged.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
+Checkout View passes its layout, single-organism payment slots and conditional sticky action directly;
+the multi-child payment group and paying/bankTrip/done visibility guards remain.
 StorefrontCheckoutDeliveryReview composes delivery details and edit navigation from explicit rows/labels;
 View/logic retain delivery state, row formatting, payment drafts and edit/return navigation.
 StorefrontCheckoutMethods composes controlled method choices, availability feedback and wallet context;
