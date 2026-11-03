@@ -288,7 +288,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    The stage-201 [composition audit](ATOMIC-DESIGN-AUDIT.md) inventories remaining content and boundaries.
    StorefrontShopHeading now composes the localized shop SectionHeader from explicit props.
    StorefrontProductBreadcrumbs now composes product navigation from explicit label/items props.
-   **Next stage: extract controlled bag headings into a storefront organism.**
+   StorefrontBagHeading now composes controlled bag/delivery h1 content from explicit props.
+   **Next stage: extract the contact form heading into a storefront organism.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5092,6 +5093,31 @@ full browser/device, TV spatial-navigation and assistive-technology suites were 
 stage-192/197 observations remain documented.
 
 Next: extract controlled bag headings into a storefront organism.
+
+**Two hundred and fourth checkpoint verified:** extracted StorefrontBagHeading under app organisms
+from the bag View heading slot. Explicit showBag/showDelivery and bagTitle/bagAccent/deliveryTitle/
+deliveryAccent props preserve independent conditional h1 branches, whitespace and accent classes
+without adding a DOM wrapper or inferring step state. View retains the hasItems guard and visibility/
+copy mapping; logic retains step/URL state, persistence, delivery validation and totals; shared logic
+retains locale/focus and layout retains placement. Source comparison confirms only heading slot/import
+changed, original branch markup is preserved and other View content remains intact. Updated ownership,
+roadmap and audit progress documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual bag axe and bag/delivery step
+navigation. Eight paired previous/current probes cover English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. Bag/delivery heading markup and relative bounds match with attributes
+sorted; all 16 heading PNG pairs are byte-identical and representative phone/tablet captures viewed.
+Probes verify source title/accent and one active h1, touch/Enter continuation, same-document and
+language preservation, step URL changes, bag/delivery h1 focus, back/forward, delivery reload/recipient
+visibility, tablet rotation, containment and delivery/bag page-top axe. Removing every line hides the
+populated heading and leaves one empty-state h1; native Undo restores one bag heading and item.
+A fixed morning clock keeps delivery eligibility consistent across previews. No source styles,
+baselines or tolerances changed. Full-page visuals, standalone previews, full browser/device,
+TV spatial-navigation and assistive-technology suites were not run; earlier stage-192/197 observations
+remain documented.
+
+Next: extract the contact form heading into a storefront organism.
 
 ## Adding components
 
