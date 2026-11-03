@@ -284,7 +284,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Not-found View now passes its layout directly without a redundant fragment.
    StorefrontErrorMessage now composes the localized 500 heading and body through EmptyState.
    StorefrontErrorActions now composes retry/home/phone recovery controls from explicit props.
-   **Next stage: simplify error View composition.**
+   Error View now passes its layout directly without a redundant fragment.
+   **Next stage: audit remaining View composition and migration boundaries.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4996,6 +4997,29 @@ full browser/device, TV spatial-navigation and assistive-technology suites were 
 stage-192/197 intermittent visual/focus observations remain documented.
 
 Next: simplify error View composition.
+
+**Two hundredth checkpoint verified:** simplified error View composition by passing
+StorefrontErrorLayout directly to Shell content. Source comparison confirms only the redundant outer
+fragment and indentation changed; all organism props, the explicit empty sticky slot and ownership
+boundaries remain intact. Updated ownership documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Focused mobile/desktop
+browser coverage includes bilingual error axe and retry/home/phone recovery. The initial run passed
+five tests; Persian desktop timed out waiting for main before axe ran. Its isolated repeat passes
+with retries disabled and no source changes. Eight paired probes cover English/Persian at touch
+widths 390/768, desktop
+1280 and TV width 1920. Direct and client-routed main markup and relative bounds match with generated
+IDs/references and preview origins normalized consistently and attributes sorted. All 16 main PNG
+pairs are byte-identical; representative phone/tablet captures viewed. Touch and desktop/TV-width
+Enter/Space retry produce real document reloads. Probes verify native control semantics, variants,
+decorative icons, source copy, noindex, home same-document recovery, locale, home/error h1 focus,
+phone target/exact bidi-isolated wording, back, tablet rotation, containment and page-top axe.
+Temporary browser-only entry links are removed before capture; no phone handler is invoked. No source
+styles, baselines or tolerances changed. Standalone previews, full browser/device, TV spatial-navigation
+and assistive-technology suites were not run. Earlier stage-192/197 intermittent visual/focus
+observations remain documented.
+
+Next: audit remaining View composition and migration boundaries.
 
 ## Adding components
 
