@@ -278,7 +278,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontPostRelated now composes the related-story heading and responsive card grid.
    Post View now passes its layout directly without a redundant fragment.
    StorefrontNotfoundMessage now composes the localized 404 heading and body through EmptyState.
-   **Next stage: extract not-found page recovery actions into a storefront organism.**
+   StorefrontNotfoundActions now composes localized home/search recovery links from explicit props.
+   **Next stage: extract the not-found recommendation heading into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4839,6 +4840,31 @@ removed before capture. No source styles, baselines or tolerances changed. Full-
 browser/device, TV spatial-navigation and assistive-technology suites were not run; the stage-192
 full-post screenshot residual remains documented.
 Next: extract not-found page recovery actions into a storefront organism.
+
+**One hundred and ninety-fourth checkpoint verified:** extracted StorefrontNotfoundActions under app
+organisms from the not-found View actions slot. Explicit homeLabel/homeHref/searchLabel/searchHref
+props preserve primary/secondary Buttons, house/search icons and sibling structure without adding
+a wrapper. View retains localized label/link mapping; shared routing/page logic retains destinations,
+locale, navigation and focus. Layout retains action placement, centering, gap and wrapping. Source
+comparison confirms only the actions slot/import changed and original link variants/icons/markup
+are preserved through explicit props. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Direct/invalid-policy recovery rows retain source labels, real localized home/search
+hrefs, native link semantics, primary/secondary variants and decorative icons. Action markup and
+relative bounds match with generated IDs/references and preview origins normalized consistently and
+attributes sorted. All 16 action PNG pairs are byte-identical; actual bytes were checked and
+representative captures viewed. Touch or Enter home/search recovery preserves the document and
+language; home navigation focuses its h1 and search opens its field. Client entry from home into an
+invalid policy focuses the not-found h1. Browser back, reload, invalid-product fallback, recommendation
+product-code navigation, tablet rotation, containment and not-found page-top axe pass. Temporary
+browser-only invalid-policy links are removed before capture. No source styles, baselines or tolerances
+changed. Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites
+were not run; the stage-192 full-post screenshot residual remains documented.
+Next: extract the not-found recommendation heading into a storefront organism.
 
 ## Adding components
 
