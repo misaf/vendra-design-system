@@ -64,4 +64,7 @@ before removing branch wrappers.
 7. Revisit final export/type/tree-shaking and bilingual phone/tablet/TV/assistive-technology acceptance
    evidence, including unresolved historical observations, before declaring the migration complete.
 
-Next stage: shop heading only. This audit changes no UI or business behavior.
+This audit changes no UI or business behavior.
+
+Stage 202 completes the shop heading extraction. The inventory above remains the stage-201 snapshot;
+next is product breadcrumbs, preserving reset-boundary and toast ownership.
