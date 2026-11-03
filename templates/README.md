@@ -382,4 +382,8 @@ for scope and exclusions. Stage 216 records the [package contract audit](../PACK
 packed consumer imports/types/assets/SSR and no-alias tree shaking pass, with theme export/type
 asymmetry and persistent consumer-test gaps documented. Stage 217 resolves theme parity additively:
 RAMPS/shade are available through both entry forms and types, with runtime/type regressions.
-Packed-consumer automation is next. Physical device and assistive-technology acceptance remain open.
+Stage 218 automates actual packed consumers in package/size tests: public assets/private subpaths,
+all root value types and JSX consumers, no-alias bundles including lowercase namespaces, and unused
+import removal. Packing is offline with scripts disabled; peers are reused without installation.
+Device/visual/accessibility evidence review is next. Physical device and assistive-technology
+acceptance remain open.

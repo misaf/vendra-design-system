@@ -87,4 +87,6 @@ assets/SSR and no-alias tree shaking pass. CommonJS-only RAMPS/shade and automat
 coverage gaps remain confirmed findings. Theme export/type parity with existing CommonJS members
 preserved is completed by stage 217: fifteen theme values agree and both declaration forms cover
 RAMPS/shade, with parity/palette and strict consumer-type regressions. Persistent packed-consumer
-checks are next. Device/visual acceptance remains open.
+checks are completed in stage 218: package/size tests consume actual tarballs, resolve public assets,
+compile all root values and JSX consumers, and bundle all root exports without aliases. Existing
+budgets remain. Device/visual/accessibility evidence review is next; acceptance remains open.

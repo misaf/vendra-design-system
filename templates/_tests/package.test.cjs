@@ -1,4 +1,4 @@
-// dist/ as an app installs it: resolved through package.json "exports", imported in plain
+// The npm tarball as an app installs it: resolved through package.json "exports", imported in plain
 // Node (no window, as on a server) and server-rendered with React.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -6,26 +6,17 @@ const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 const {createRequire} = require('node:module');
 const {execFileSync} = require('node:child_process');
+const {createPackedConsumer} = require('./packed-package.cjs');
 
 const repo = path.resolve(__dirname, '../..');
-const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
 // Inside the workspace's node_modules, so the package resolves react from there like a peer;
 // react-19.cjs points VENDRA_PACKAGE_APP at an app with React 19 instead.
 const peers = process.env.VENDRA_PACKAGE_APP || repo;
-const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'));
+const packed = createPackedConsumer(peers);
+const {app, installed, manifest, files} = packed;
 
 (async () => {
   try {
-    const installed = path.join(app, 'node_modules', manifest.name);
-    fs.mkdirSync(installed, {recursive: true});
-    fs.cpSync(path.join(repo, 'dist'), path.join(installed, 'dist'), {recursive: true});
-    fs.copyFileSync(path.join(repo, 'package.json'), path.join(installed, 'package.json'));
-    const files = new Set(
-      fs
-        .readdirSync(path.join(repo, 'dist'), {recursive: true})
-        .map(name => 'dist/' + name.split(path.sep).join('/'))
-    );
-
     // Every export target exists; only dist/ is published.
     assert.deepEqual(manifest.files, ['dist']);
     // React Aria is a peer dependency, so the app and the components share one copy (one
@@ -53,10 +44,44 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
         manifest.name +
         "';\nexport * as theme from '" +
         manifest.name +
-        "/theme';\n"
+        "/theme';\n" +
+        "export const resolvedRoot = import.meta.resolve('" +
+        manifest.name +
+        "');\n" +
+        "export const resolvedTheme = import.meta.resolve('" +
+        manifest.name +
+        "/theme');\n"
     );
-    const {ds, theme} = await import(pathToFileURL(path.join(app, 'app.mjs')).href);
+    const {ds, theme, resolvedRoot, resolvedTheme} = await import(
+      pathToFileURL(path.join(app, 'app.mjs')).href
+    );
+    assert.equal(resolvedRoot, pathToFileURL(path.join(installed, 'dist/index.js')).href);
+    assert.equal(resolvedTheme, pathToFileURL(path.join(installed, 'dist/theme.js')).href);
     const require_ = createRequire(path.join(app, 'app.cjs'));
+    let assetPaths = 0;
+    for (const [key, target] of Object.entries(manifest.exports)) {
+      if (typeof target !== 'string') continue; // Root/theme conditions are tested by imports/types.
+      const relative = target.slice(2);
+      const [prefix, suffix = ''] = relative.split('*');
+      const matches = key.includes('*')
+        ? [...files].filter(file => file.startsWith(prefix) && file.endsWith(suffix))
+        : [relative];
+      assert.ok(matches.length, key + ' has no packed assets');
+      for (const file of matches) {
+        const wildcard = file.slice(prefix.length, file.length - suffix.length);
+        const specifier = manifest.name + key.slice(1).replace('*', wildcard);
+        assert.equal(require_.resolve(specifier), path.join(installed, file), specifier);
+        assetPaths++;
+      }
+    }
+    for (const privatePath of [
+      '/dist/index.js',
+      '/components/atoms/Badge/Badge.js',
+      '/atoms/Badge'
+    ])
+      assert.throws(() => require_.resolve(manifest.name + privatePath), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+      });
     const React = require_('react');
     const {renderToString} = require_('react-dom/server');
     assert.equal(typeof globalThis.window, 'undefined');
@@ -451,8 +476,15 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     assert.equal(theme.shade('#C8405F', {lightness: 1, chroma: 0}), '#FFFFFF');
 
     // Compile actual public import/require consumers, including expected type errors.
-    for (const file of ['theme-consumer.mts', 'theme-consumer.cts'])
+    for (const file of ['theme-consumer.mts', 'theme-consumer.cts', 'package-consumer.tsx'])
       fs.copyFileSync(path.join(__dirname, 'fixtures', file), path.join(app, file));
+    const names = Object.keys(ds).sort();
+    fs.writeFileSync(
+      path.join(app, 'root-consumer.mts'),
+      `import {${names.join(',')}} from '${manifest.name}';
+export const values = [${names.join(',')}];
+`
+    );
     fs.writeFileSync(
       path.join(app, 'tsconfig.json'),
       JSON.stringify({
@@ -462,9 +494,16 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
           target: 'es2023',
           module: 'nodenext',
           moduleResolution: 'nodenext',
+          jsx: 'react-jsx',
+          lib: ['es2023', 'dom', 'dom.iterable'],
           types: []
         },
-        include: ['theme-consumer.mts', 'theme-consumer.cts']
+        include: [
+          'theme-consumer.mts',
+          'theme-consumer.cts',
+          'package-consumer.tsx',
+          'root-consumer.mts'
+        ]
       })
     );
     execFileSync(path.join(repo, 'node_modules/.bin/tsc'), ['-p', app], {stdio: 'inherit'});
@@ -511,12 +550,16 @@ const app = fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-package-test-'
     console.log(
       'package tests passed (' +
         components.length +
-        ' components server-rendered, React ' +
+        ' components server-rendered, ' +
+        names.length +
+        ' typed root values, ' +
+        assetPaths +
+        ' public asset paths, React ' +
         React.version +
         ')'
     );
   } finally {
-    fs.rmSync(app, {recursive: true, force: true});
+    packed.cleanup();
   }
 })().catch(error => {
   console.error(error);

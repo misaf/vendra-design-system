@@ -5,12 +5,12 @@
 // "sideEffects" and its module layout honest.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import {rolldown} from 'rolldown';
+import {pathToFileURL} from 'node:url';
+import {createPackedConsumer} from './packed-package.cjs';
 
-const repo = path.resolve(import.meta.dirname, '../..');
 const PEERS = [
   /^react($|\/)/,
   /^react-dom($|\/)/,
@@ -30,37 +30,48 @@ const BUDGET = {
 };
 const SMALL = ['Badge', 'Card', 'Chip', 'Skeleton', 'Switch', 'VendraProvider', 'MenuList'];
 
-const ds = await import(path.join(repo, 'dist/index.js'));
-const exports = Object.keys(ds).filter(name => /^[A-Z]/.test(name));
-const dir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-size-')));
+const packed = createPackedConsumer();
+const {app: dir, installed} = packed;
 const gzipped = async source => {
   const input = path.join(dir, 'app.js');
   fs.writeFileSync(input, source);
   const bundle = await rolldown({
     input,
     external: PEERS,
-    resolve: {alias: {'@vendra/design-system': path.join(repo, 'dist/index.js')}},
     logLevel: 'silent'
   });
-  const {output} = await bundle.generate({format: 'es', minify: true});
-  await bundle.close();
+  let output;
+  try {
+    ({output} = await bundle.generate({format: 'es', minify: true}));
+  } finally {
+    await bundle.close();
+  }
   const chunks = output.filter(file => file.type === 'chunk');
   // Only the package's own files go in; anything else must be a peer the app provides.
   for (const id of chunks.flatMap(chunk => chunk.moduleIds))
     assert.ok(
-      id === input || id.startsWith(path.join(repo, 'dist') + path.sep),
+      id === input || id.startsWith(path.join(installed, 'dist') + path.sep),
       id + ' got bundled'
     );
-  return zlib.gzipSync(chunks.map(chunk => chunk.code).join('')).length;
+  return {
+    bytes: zlib.gzipSync(chunks.map(chunk => chunk.code).join('')).length,
+    modules: chunks.flatMap(chunk => chunk.moduleIds).filter(id => id !== input)
+  };
 };
 
 try {
+  const entry = path.join(dir, 'entry.mjs');
+  fs.writeFileSync(entry, "export * from '@vendra/design-system';\n");
+  const ds = await import(pathToFileURL(entry).href);
+  const exports = Object.keys(ds); // Include lowercase helper namespaces too.
   const sizes = {};
   for (const name of exports)
-    sizes[name] = await gzipped(
-      `import {${name}} from '@vendra/design-system';\nexport default ${name};\n`
-    );
-  const everything = await gzipped(`export * from '@vendra/design-system';\n`);
+    sizes[name] = (
+      await gzipped(`import {${name}} from '@vendra/design-system';\nexport default ${name};\n`)
+    ).bytes;
+  const everything = (await gzipped(`export * from '@vendra/design-system';\n`)).bytes;
+  const unused = await gzipped(`import '@vendra/design-system'; export const sentinel = 1;`);
+  assert.deepEqual(unused.modules, [], 'unused root import retains package modules');
   const kb = bytes => (bytes / 1024).toFixed(1) + ' KB';
   const table = Object.entries(sizes)
     .sort((a, b) => b[1] - a[1])
@@ -86,8 +97,10 @@ try {
         .sort((a, b) => b[1] - a[1])[0]
         .join(' at ')
         .replace(/\d+$/, n => kb(+n)) +
-      ', and small components bundle alone.'
+      ', across ' +
+      exports.length +
+      ' packed public exports; small components bundle alone and unused imports drop out.'
   );
 } finally {
-  fs.rmSync(dir, {recursive: true, force: true});
+  packed.cleanup();
 }

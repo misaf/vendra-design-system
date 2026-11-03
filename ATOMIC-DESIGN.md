@@ -302,7 +302,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    App dependency checks now enforce UI import boundaries and detect missing modules and cycles.
    The package contract audit verifies packed consumers and records theme/API and CI coverage gaps.
    Theme ESM/CommonJS exports and types now share RAMPS/shade without changing the color math.
-   **Next stage: automate packed-consumer contract checks.**
+   Packed-consumer checks now exercise public assets/types and all root export bundles without aliases.
+   **Next stage: audit remaining device, visual and accessibility acceptance evidence.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5519,6 +5520,43 @@ loading/contact-map/visual/device observations remain open.
 
 Next: automate actual packed-consumer asset/type and no-alias tree-shaking regression checks,
 including lowercase root exports, while retaining current package budgets.
+
+## Stage 218 checkpoint: automated packed-consumer contracts
+
+Package and size tests now use a shared disposable consumer extracted from an actual npm tarball,
+created offline with lifecycle scripts disabled and a temporary npm cache. The helper checks that
+all dist files are included, all payload bytes match the checkout and no source/tooling leaks into
+the payload (apart from npm's package/README/license metadata). Consumers have their own package
+scope and use installed workspace peers; both consumer and tar/cache directories are removed on
+success or failure. The React-19 job's peer-app override remains supported.
+
+The package test verifies root/theme ESM resolution points into the extracted package, resolves
+all concrete public string/wildcard asset paths, rejects representative private subpaths, imports
+and server-renders the package, and compiles every runtime root value plus a representative Persian
+JSX consumer through public exports. Expected errors protect invalid variants and private layer
+imports. Stage-217 strict import/require theme fixtures remain in the same compiler run. The size
+test drops its dist alias, bundles all root exports including lowercase namespaces through the
+packed exports map, checks module provenance, retains the existing budgets and requires an unused
+root import to retain no package modules.
+
+The first no-alias size run detected workspace self-resolution from a consumer without its own
+package manifest. Giving the consumer a distinct package scope corrected the harness; explicit
+root/theme resolution and bundled-module provenance assertions now guard against that fallback.
+No product fix or budget increase was used to make the checks pass.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. The full test command
+reports 72 server-rendered components, 93 typed root values and 16 public asset paths. All 93 root
+exports bundle without aliases, the full package stays at 39.6 KB gzip under 40 KB, LocationPicker
+remains largest at 12.3 KB under 15 KB, the seven small-component budgets pass and unused root imports
+retain no package modules. The runtime graph and thirty dependency guard scenarios also pass.
+Runtime/package/generated sources,
+public exports, dependencies and lockfiles are unchanged. This is an offline packed-consumer test,
+not a fresh registry/peer installation. No new React-19/minimum-peer, browser/device, TV navigation
+or assistive-technology execution is claimed. Stage-216 findings 1/2 are addressed by stages 217/218
+within their documented scopes; finding 3 and prior loading/contact-map/visual observations remain.
+
+Next: audit remaining device, visual and accessibility acceptance evidence, distinguishing existing
+checks, reproducible gaps and hardware/assistive-technology checks that still need execution.
 
 ## Adding components
 

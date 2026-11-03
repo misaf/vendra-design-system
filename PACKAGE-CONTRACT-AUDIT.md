@@ -98,3 +98,10 @@ declaration conditions describe them. All fifteen CommonJS members and the inter
 are preserved. Package regressions verify full key/value parity, palette generation and strict
 ESM/CommonJS positive/negative type consumers. The checklist above remains the stage-216 snapshot;
 packed-consumer automation (finding 2) and the acceptance limits (finding 3) remain open.
+
+Stage 218 addresses finding 2 with permanent npm-test coverage: actual offline tarball consumers,
+all payload bytes/files, public asset and private-subpath resolution, all root value types plus
+JSX/negative consumers, and no-alias bundles for every root export including helper namespaces.
+Explicit consumer package scopes, ESM resolution and module-provenance assertions prevent accidental
+workspace self-resolution. Existing budgets and peer-app support remain. The historical checklist
+above is not rewritten; registry/peer-version/hardware/assistive-technology limits remain open.
