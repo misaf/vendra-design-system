@@ -88,6 +88,8 @@ StorefrontBagSender composes controlled sender name/phone fields and their headi
 View/logic retain signed-in prefill, validation, persistence and error-summary focus.
 StorefrontBagDeliveryIntro composes controlled validation summary and guest sign-in prompt;
 View/logic retain guest eligibility, problems, sign-in continuation, private drafts and validation state.
+StorefrontCheckoutLayout owns the payment-only vf-checkout-steps wrapper inside showPayment; View
+retains progress visibility, controlled descriptors and callbacks. Bank/success progress is unchanged.
 StorefrontCheckoutLayout arranges review, payment, summary and bank/success slots; checkout
 View/logic retain payment controls, receipt confirmation, persistence and order submission.
 StorefrontCheckoutDeliveryReview composes delivery details and edit navigation from explicit rows/labels;

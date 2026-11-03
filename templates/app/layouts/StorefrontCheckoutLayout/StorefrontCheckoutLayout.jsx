@@ -16,7 +16,7 @@ export function StorefrontCheckoutLayout({
       {notices}
       {showPayment ? (
         <>
-          {progress}
+          <div className="vf-checkout-steps tw:mb-5h">{progress}</div>
           {heading}
           <div className="vf-checkout-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
             <div className="vf-checkout-payment tw:min-w-0 tw:flex tw:flex-col tw:gap-5 tw:[flex:999_1_440px]">

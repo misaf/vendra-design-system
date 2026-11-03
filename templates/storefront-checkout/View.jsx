@@ -37,16 +37,14 @@ export function View({v}) {
             progress={
               v.paying ? (
                 <>
-                  <div className="vf-checkout-steps tw:mb-5h">
-                    <StorefrontCheckoutProgress
-                      steps={v.steps}
-                      current={2}
-                      onStepClick={v.stepClick}
-                      labels={{region: v.t?.steps, done: v.t?.doneStep}}
-                      formatNumber={v.fmt}
-                      captionFormat={v.caption}
-                    />
-                  </div>
+                  <StorefrontCheckoutProgress
+                    steps={v.steps}
+                    current={2}
+                    onStepClick={v.stepClick}
+                    labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                    formatNumber={v.fmt}
+                    captionFormat={v.caption}
+                  />
                 </>
               ) : null
             }
