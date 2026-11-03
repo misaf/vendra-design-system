@@ -280,7 +280,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontNotfoundMessage now composes the localized 404 heading and body through EmptyState.
    StorefrontNotfoundActions now composes localized home/search recovery links from explicit props.
    StorefrontNotfoundRecommendationHeading now composes the localized recommendation SectionHeader.
-   **Next stage: extract not-found product recommendations into a storefront organism.**
+   StorefrontNotfoundProducts now composes ordered product cards inside the layout-owned grid.
+   **Next stage: simplify not-found View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4890,6 +4891,35 @@ pass. Temporary browser-only invalid-policy links are removed before capture. No
 baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation and
 assistive-technology suites were not run; the stage-192 full-post screenshot residual remains documented.
 Next: extract not-found product recommendations into a storefront organism.
+
+**One hundred and ninety-sixth checkpoint verified:** extracted StorefrontNotfoundProducts under app
+organisms from the not-found View recommendations slot. Explicit products/photoLabel/saveLabel props
+preserve ordered keyed soft-frame ProductCards, images/name/subtitle/price/stock/href and placeholder/
+favorite-label props without adding a wrapper. View retains list normalization and label mapping;
+not-found logic retains product selection/order, fixed product-code names, category/price/stock/image
+descriptors and URLs. Layout retains section placement and the responsive grid; ProductCard retains
+presentation/image/stock/link semantics. The unused View design-system import is removed. Source
+comparison confirms only the recommendations slot/imports changed and card props/order are preserved.
+Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Direct/invalid-policy grids match all four source product codes/order, left-to-right
+code direction, categories, formatted prices, stock-state presentation, image src/alt, soft frames and
+localized product/category hrefs. Lazy attributes are checked on fresh/reloaded pages before settlePage
+makes images eager; no high fetch priority is introduced. Grid markup and relative bounds match with
+generated IDs/references and preview origins normalized consistently and attributes sorted. All 16 grid
+PNG pairs are byte-identical; actual bytes were checked and representative captures viewed. Captures
+use grid height plus 1000 pixels, asserting unchanged grid dimensions before restoring size and waiting
+for image decode/finite transitions after pointer movement. Touch or Enter home/search/product recovery,
+document/language preservation, home/invalid-policy h1 focus, search-field visibility, invalid-product
+fallback, browser back, reload, tablet rotation, containment and not-found page-top axe pass. Temporary
+browser-only invalid-policy links are removed before capture. No source styles, baselines or tolerances
+changed. Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites
+were not run; the stage-192 full-post screenshot residual remains documented.
+Next: simplify not-found View composition.
 
 ## Adding components
 
