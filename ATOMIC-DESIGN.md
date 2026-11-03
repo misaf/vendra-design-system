@@ -279,7 +279,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Post View now passes its layout directly without a redundant fragment.
    StorefrontNotfoundMessage now composes the localized 404 heading and body through EmptyState.
    StorefrontNotfoundActions now composes localized home/search recovery links from explicit props.
-   **Next stage: extract the not-found recommendation heading into a storefront organism.**
+   StorefrontNotfoundRecommendationHeading now composes the localized recommendation SectionHeader.
+   **Next stage: extract not-found product recommendations into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4865,6 +4866,30 @@ browser-only invalid-policy links are removed before capture. No source styles, 
 changed. Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites
 were not run; the stage-192 full-post screenshot residual remains documented.
 Next: extract the not-found recommendation heading into a storefront organism.
+
+**One hundred and ninety-fifth checkpoint verified:** extracted
+StorefrontNotfoundRecommendationHeading under app organisms from the not-found View recommendation
+heading slot. Explicit title/accent props preserve the level-two SectionHeader, accent emphasis and
+package markup without adding a wrapper. View retains localized copy mapping; layout retains section
+placement, spacing and product grid. Not-found/shared logic retains product selection/descriptors,
+routing, locale, SEO and focus. Source comparison confirms only the heading slot/import changed and
+SectionHeader props/mapping are preserved. Ownership documentation is updated.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests.
+Eight paired previous/current probes cover English/Persian at touch widths 390/768, desktop 1280
+and TV width 1920. Direct/invalid-policy recommendation headings retain source title/accent, h2
+hierarchy/emphasis and the four-card recommendation grid. Heading markup and relative bounds match
+with generated IDs/references and preview origins normalized consistently and attributes sorted.
+All 16 heading PNG pairs are byte-identical; actual bytes were checked and representative captures
+viewed. Touch or Enter home/search recovery preserves the document and language; home h1 focus,
+search-field visibility, home-to-invalid-policy h1 focus, invalid-product fallback, recommendation
+product-code navigation, browser back, reload, tablet rotation, containment and not-found page-top axe
+pass. Temporary browser-only invalid-policy links are removed before capture. No source styles,
+baselines or tolerances changed. Full-page visual, full browser/device, TV spatial-navigation and
+assistive-technology suites were not run; the stage-192 full-post screenshot residual remains documented.
+Next: extract not-found product recommendations into a storefront organism.
 
 ## Adding components
 
