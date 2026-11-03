@@ -299,7 +299,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Bag View now passes layout/items/summary/empty/sticky elements directly, preserving branch guards.
    Checkout View now passes layout and single-organism branches directly, retaining payment grouping.
    Site View now passes lazy route elements and live text directly, preserving coordinator infrastructure.
-   **Next stage: add app dependency/cycle checks with explicit UI-helper allowances.**
+   App dependency checks now enforce UI import boundaries and detect missing modules and cycles.
+   **Next stage: audit final package export/type/tree-shaking contracts.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5424,6 +5425,46 @@ initial loading failures remain observations; their cause and repeatability are 
 Next: add app dependency/cycle checks with explicit allowances for valid UI helpers, including
 negative cases for business-service imports, missing relative targets and cycles.
 
+## Stage 215 checkpoint: app dependency and cycle enforcement
+
+Added `templates/_build/app-dependencies.cjs` and its filesystem-based regression suite, wired into
+`npm test` immediately after the package Atomic Design tests. The checker parses runtime JS/JSX
+under components, app, shared helpers and storefront page folders (excluding fixtures/specs), then
+follows literal relative JS/JSX dependencies, including referenced generated data. The current graph
+contains 408 modules, with no missing targets, import cycles or boundary violations.
+
+App layouts may import React and other layouts, retaining React-node slot composition. App molecules
+may import React, the DS bridge, other molecules and the two reviewed UI helpers; app organisms may
+also import other organisms. Molecules/organisms cannot import layouts; all app UI rejects page
+coordinators, shared business modules and undeclared external packages. The DS bridge may target only classified
+package sources. The collection-carousel helper may import React and the package Carousel; the QR
+helper may import qrcode-generator. These helper dependencies are checked themselves, preventing
+service imports from being hidden behind the allowances. Existing package layer rules also run on
+relative edges in the graph. Computed imports fail in protected UI/bridge/helper sources.
+
+Static imports, named/star re-exports and nested literal dynamic imports contribute graph edges.
+Relative targets must be files, with exact, .js/.jsx and index.js/index.jsx resolution. Parse errors,
+missing targets and cycles fail with source paths; cycle diagnostics include the dependency chain.
+Thirty disposable-graph scenarios cover valid helpers/layers/resolution, direct/re-export/dynamic
+service imports, helper/bridge/package bypasses, upward UI dependencies, external/absolute/bare
+specifier bypasses, computed UI imports, missing modules, directory targets, generated/transitive
+modules, malformed syntax, self/multi-module/UI cycles and an acyclic diamond. The first repository
+run identified a referenced generated tenant-slugs module outside the seed folders; following
+relative runtime dependencies now checks it too, with a regression for generated-module cycles.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. The full test command
+executes the new checker alongside types, package layers, logic, exports/server rendering, bundle
+budgets and existing contracts. Runtime code, styles, exports, dependencies and lockfiles are unchanged. This stage adds no browser or device acceptance evidence;
+stage-214 loading/contact-map observations and historical visual/device residuals remain open.
+
+The graph does not expand import.meta.glob, computed imports outside protected sources, CommonJS
+require, aliases/absolute/external module bodies, CSS dependencies or type declarations. It checks
+module dependencies, not runtime globals, state ownership or component props. The valid router glob
+remains in the site coordinator, outside the protected app UI folders.
+
+Next: audit final package export/type/tree-shaking contracts; device and assistive-technology
+acceptance gaps remain a separate completion requirement.
+
 ## Adding components
 
 ```sh
@@ -5439,8 +5480,9 @@ through `templates/app/ds.js`; package consumers still import named exports from
 
 The generator requires a layer and rejects duplicate component names. `npm test` checks that
 foundations never depend on UI, lower layers never import higher layers or unmigrated components,
-and migrated components do not import storefront code. Browser fixture lookup and package wording
-checks discover nested components.
+and migrated components do not import storefront code. App dependency checks also enforce UI/helper
+boundaries and missing-module/cycle checks for the runtime graph. Browser fixture lookup and package
+wording checks discover nested components.
 
 ## Validating a batch
 

@@ -248,6 +248,12 @@ StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its lo
 and StorefrontWeddingsLayout retains responsive hero placement.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
+`npm test` runs `_build/app-dependencies.cjs` through filesystem regression tests. App layouts use
+React/layouts; molecules and organisms use the DS bridge, same/lower app UI layers and the explicit
+collection-carousel/QR helper allowances. Keep business modules and page coordinators out of app
+UI. The helpers and DS bridge are checked too; missing relative modules and runtime JS/JSX cycles
+fail. Update this documented policy deliberately when adding a new UI helper, rather than broadly
+allowing `_shared`. The checker does not expand router globs or inspect runtime globals/state.
 Site View renders lazy route elements and live-announcement text directly. Keep VendraProvider,
 LiveRegion, PageBoundary and Suspense at coordinator level; retain each route guard and all four
 customer keys (bag, checkout, track and account). Site/shared logic owns routing and customer state.

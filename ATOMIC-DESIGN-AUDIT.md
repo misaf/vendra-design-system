@@ -76,4 +76,10 @@ recent reset-boundary and toast ownership. Stage 212 simplifies bag View composi
 items/delivery multi-child grouping and visibility guards. Stage 213 simplifies checkout View
 composition, retaining payment grouping and payment/bank/success guards. Stage 214 simplifies site View
 composition, retaining provider/live-region/boundary/loading ownership, route guards and customer keys.
-App dependency/cycle enforcement with explicit UI-helper allowances is next.
+Stage 215 adds app dependency/cycle enforcement to npm test, with explicit collection-carousel/QR
+allowances and checks on those helpers and the DS bridge. Static imports, re-exports and literal
+dynamic imports in the runtime JS/JSX graph are checked for missing targets, cycles and protected UI
+boundary violations. Thirty filesystem regression scenarios exercise positive and negative graphs;
+408 current modules pass. This closes the module-check gap identified in the frozen inventory,
+within the documented JS/JSX/literal-import scope; it does not prove runtime state ownership.
+Final package export/type/tree-shaking contract review is next. Device/visual acceptance remains open.
