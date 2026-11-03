@@ -67,4 +67,5 @@ before removing branch wrappers.
 This audit changes no UI or business behavior.
 
 Stage 202 completes the shop heading extraction. The inventory above remains the stage-201 snapshot;
-next is product breadcrumbs, preserving reset-boundary and toast ownership.
+stage 203 completes product breadcrumbs with reset-boundary and toast ownership preserved. Controlled
+bag headings are next.

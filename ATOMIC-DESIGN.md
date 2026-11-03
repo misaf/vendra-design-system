@@ -287,7 +287,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Error View now passes its layout directly without a redundant fragment.
    The stage-201 [composition audit](ATOMIC-DESIGN-AUDIT.md) inventories remaining content and boundaries.
    StorefrontShopHeading now composes the localized shop SectionHeader from explicit props.
-   **Next stage: extract product breadcrumbs into a storefront organism.**
+   StorefrontProductBreadcrumbs now composes product navigation from explicit label/items props.
+   **Next stage: extract controlled bag headings into a storefront organism.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5067,6 +5068,30 @@ tolerances changed. Full-page visuals, standalone previews, full browser/device,
 and assistive-technology suites were not run; earlier stage-192/197 observations remain documented.
 
 Next: extract product breadcrumbs into a storefront organism.
+
+**Two hundred and third checkpoint verified:** extracted StorefrontProductBreadcrumbs under app
+organisms from the product View breadcrumb slot. Explicit label/items props preserve the localized
+shop/category/current-product sequence and existing bottom spacing through Breadcrumb without adding
+a wrapper. View retains item/label mapping; product/shared logic retains identity, category/shop URLs,
+locale, navigation and focus; layout retains placement. Source comparison confirms only breadcrumb
+slot/import changed; all other View content, recently viewed reset boundary and toast queue remain
+intact. Updated ownership, roadmap and audit progress documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual product axe and breadcrumb
+semantics. Eight paired previous/current probes cover English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. Direct first-product and client-routed second-product breadcrumbs
+match markup/relative bounds with preview origins/generated IDs/references normalized consistently
+and attributes sorted. All 16 breadcrumb PNG pairs are byte-identical; representative phone/tablet
+captures viewed. Probes verify source category/shop labels, ordered list/items, current product code
+with aria-current and no href, native shop/category URLs, decorative separators, localized touch/Enter
+navigation, same-document shop recovery, shop/product h1 focus, back/reload, second-product identity,
+tablet rotation, containment and page-top axe. Temporary browser-only entry links are removed before
+capture. No source styles, baselines or tolerances changed. Full-page visuals, standalone previews,
+full browser/device, TV spatial-navigation and assistive-technology suites were not run; earlier
+stage-192/197 observations remain documented.
+
+Next: extract controlled bag headings into a storefront organism.
 
 ## Adding components
 

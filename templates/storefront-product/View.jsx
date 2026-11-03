@@ -10,6 +10,7 @@ import {StorefrontProductPurchase} from '../app/organisms/StorefrontProductPurch
 import {StorefrontProductCare} from '../app/organisms/StorefrontProductCare/StorefrontProductCare.jsx';
 import {StorefrontProductAdded} from '../app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx';
 import {StorefrontProductSticky} from '../app/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx';
+import {StorefrontProductBreadcrumbs} from '../app/organisms/StorefrontProductBreadcrumbs/StorefrontProductBreadcrumbs.jsx';
 import {Shell} from '../app/Shell.jsx';
 import {StorefrontProductRecent} from '../app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx';
 
@@ -21,9 +22,8 @@ export function View({v}) {
         <>
           <StorefrontProductLayout
             breadcrumbs={
-              <DS.Breadcrumb
+              <StorefrontProductBreadcrumbs
                 label={v.t?.crumbs}
-                className="tw:mb-5h"
                 items={[
                   {label: v.t?.shop, href: v.href?.shop},
                   {label: v.t?.cat, href: v.category?.href},
