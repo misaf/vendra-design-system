@@ -332,7 +332,9 @@ StorefrontNotfoundLayout arranges message, recovery actions, recommendation head
 slots passed directly by not-found View; View/logic retain localized content, product mapping and
 recovery links. The explicit empty Shell sticky slot is retained.
 StorefrontErrorMessage composes explicit eyebrow/title/accent/body through EmptyState; View retains
-copy mapping and recovery controls, logic retains reload/phone wording and layout retains placement.
+copy mapping, logic retains reload/phone wording and layout retains placement.
+StorefrontErrorActions composes explicit retry callback/label and home/phone labels/hrefs; View maps
+props, logic retains reload/phone wording and layout retains action placement/wrapping.
 StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain
 localized content, reload behavior, home navigation and bidi-isolated phone wording.
 StorefrontPresentationLayout arranges heading, toolbar, catalog, display, overlays and feedback
