@@ -300,7 +300,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Checkout View now passes layout and single-organism branches directly, retaining payment grouping.
    Site View now passes lazy route elements and live text directly, preserving coordinator infrastructure.
    App dependency checks now enforce UI import boundaries and detect missing modules and cycles.
-   **Next stage: audit final package export/type/tree-shaking contracts.**
+   The package contract audit verifies packed consumers and records theme/API and CI coverage gaps.
+   **Next stage: align theme export/type contracts while preserving existing CommonJS exports.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5464,6 +5465,30 @@ remains in the site coordinator, outside the protected app UI folders.
 
 Next: audit final package export/type/tree-shaking contracts; device and assistive-technology
 acceptance gaps remain a separate completion requirement.
+
+## Stage 216 checkpoint: package contract audit
+
+[PACKAGE-CONTRACT-AUDIT.md](PACKAGE-CONTRACT-AUDIT.md) records an enumerated checklist, evidence,
+confidence limits and follow-up order. An actual 255-file npm tarball has the checked dist bytes;
+a disposable packed consumer imports 93 root values, server-renders 72 components and compiles
+strict public root/ESM-theme/CommonJS-theme consumers. Sixteen concrete public asset paths resolve,
+and representative private paths are rejected. No-alias bundles cover all root values: full package
+40,515 gzip bytes (40,960 budget), largest LocationPicker 12,566, all seven small components below
+1,024, and an unused root import retains no package modules. Normal tests, checks and app build pass.
+
+A confirmed theme contract asymmetry remains: CommonJS exposes RAMPS and shade, while ESM and both
+declaration forms omit them. The thirteen declared theme values remain available through both
+runtime forms. Removing existing CommonJS members could break external consumers; the internal
+theme builder also consumes RAMPS. Automated tests additionally bypass actual packing, complete
+public wildcard resolution and no-alias/lowercase-export bundle consumers. One-time packed checks
+pass but do not close those persistent CI coverage gaps.
+
+No runtime/package/declaration/generated outputs change in this stage. No new browser/device,
+React-19/minimum-peer, registry-install or assistive-technology acceptance is claimed. Prior loading,
+contact-map and historical visual/device residuals remain documented; migration completion is open.
+
+Next: align theme export/type contracts while preserving existing CommonJS exports and internal
+consumers, with explicit parity/type regression coverage. Then automate the packed-consumer checks.
 
 ## Adding components
 
