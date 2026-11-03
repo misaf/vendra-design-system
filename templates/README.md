@@ -129,7 +129,7 @@ for routed pages.
 | Account layout | `app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx` (heading, actions, notices, tabs, feedback and dialog slots from account View) |
 | Checkout layout | `app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx` (payment visibility, notices, progress, heading, review, payment, summary and bank/success slots from checkout View) |
 | Bag/delivery layout | `app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx` (visibility and notice, progress, heading, items/delivery, summary and empty slots from bag View) |
-| Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (heading, sidebar, compact categories, results and filter-dialog slots from shop View) |
+| Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (StorefrontShopHeading, sidebar, compact categories, results and filter-dialog slots from shop View) |
 | Product-page layout | `app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (breadcrumbs, gallery, details, related designs and feedback slots from product View) |
 | Main storefront layout | `app/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
 | Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `_shared/navigation.js`) |
@@ -364,4 +364,5 @@ npm --prefix templates run test:e2e:build -- devices.spec.mjs --project=touch-ph
 Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the intended hardware.
 
 The stage-201 [composition audit](../ATOMIC-DESIGN-AUDIT.md) records remaining page content, valid
-page-level infrastructure and app dependency-check gaps. Its next focused stage is the shop heading.
+page-level infrastructure and app dependency-check gaps. Stage 202 completes the shop heading;
+product breadcrumbs are next.
