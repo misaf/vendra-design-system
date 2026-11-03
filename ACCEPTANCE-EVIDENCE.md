@@ -92,3 +92,18 @@ an accepted scope decision for the remaining items; no such acceptance is assume
 Logs and failure evidence use `/tmp/vendra-stage219-*` paths locally. They are temporary artifacts,
 not durable CI evidence. The existing preview on port 5173 is retained; the production runner owns
 and tears down its own preview. No external order, payment, message or live API action is needed.
+
+## Follow-up progress
+
+Stage 220 diagnoses the stage-219 Persian post mismatch as stale Darwin metadata punctuation.
+The Darwin images predate the intentional vfSeparator change from raised dots to Persian commas
+(commit 646e5ab); Linux images were updated after it and already contain commas. Only the two
+Darwin Persian post baselines are refreshed, retaining the existing screenshot policy. Updated
+RGBA buffers match the stable stage-219 actuals; restoring old separators in disposable pages
+clears every originally differing pixel, although those diagnostic captures also have separate
+photo differences. Exact bilingual metadata checks now cover classic/block articles and related
+cards. A final update-disabled run passes all 32 selected checks: eight screenshots, eight metadata
+cases and sixteen axe cases. Full npm tests, checks and app build also pass. The stage-219
+checklist/results above remain a historical snapshot. Its first follow-up is
+addressed; dedicated touch/tablet routes and normal-sticky reachability are next. Older visual/map/
+loading observations and physical-device/screen-reader acceptance remain open.

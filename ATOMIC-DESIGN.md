@@ -304,7 +304,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Theme ESM/CommonJS exports and types now share RAMPS/shade without changing the color math.
    Packed-consumer checks now exercise public assets/types and all root export bundles without aliases.
    The acceptance audit distinguishes current device/content checks from visual/hardware gaps.
-   **Next stage: diagnose the Persian post metadata visual mismatch.**
+   The Persian post mismatch is traced to stale Darwin separator baselines, now reviewed/refreshed.
+   **Next stage: add dedicated touch-phone/tablet route acceptance checks.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5582,6 +5583,37 @@ contact-map and shared clear-control observations remain documented with their c
 
 Next: diagnose the reproduced Persian post metadata visual mismatch before changing any
 baseline or tolerance; then extend dedicated touch/tablet route and normal-sticky acceptance checks.
+
+## Stage 220 checkpoint: Persian post metadata baseline correction
+
+The stage-219 mismatch is a stale Darwin expectation, not a new rendering change. Darwin post
+baselines last changed in bd7f880 at 2026-10-19 14:33 +03:30. Commit 646e5ab at 15:46 deliberately
+changed Persian metadata from a raised dot to the Persian comma, because the dot beside Persian
+digits can read as zero. The Linux baselines were updated afterward in de9203f and already show
+commas. Source history and reviewed expected/actual crops establish the intended copy; the shared
+formatter and post logic remain intact.
+
+Only page-post-fa-mobile-darwin.png and page-post-fa-desktop-darwin.png are regenerated. Their RGBA
+buffers exactly match the stable stage-219 actual captures. In disposable browser pages, replacing
+only the four metadata commas with the former separators clears all 2,332 originally differing raw
+pixels at each width. Whole diagnostic captures also differed in photographs; the experiment
+supports the metadata cause without establishing new full-content image determinism. The initial
+scratch attempt hit Node's default binary child-output buffer limit; increasing the scratch buffer
+completed the comparison. No app change or screenshot-tolerance adjustment was needed.
+
+A new browser regression checks exact English/Persian article and related-card metadata for both
+classic autumn and block studio articles. Its eight mobile/desktop cases pass initially. The final
+one-worker, no-retry run with updates disabled passes all 32 checks: eight post/not-found screenshots,
+eight exact metadata cases and sixteen post/not-found/contact/error axe cases across both languages
+and widths. Full npm tests,
+formatting/CSS/generated-output checks and app production build pass. Linux/English baselines,
+runtime sources, styles, generated output and dependencies are unchanged.
+
+The stage-219 audit remains a historical snapshot with follow-up resolution recorded separately.
+Older image/map/loading/focus observations and hardware/screen-reader acceptance remain open.
+
+Next: add dedicated touch-phone/tablet route acceptance checks, including real sticky control
+reachability for product/bag/checkout/contact before claiming complete device acceptance.
 
 ## Adding components
 

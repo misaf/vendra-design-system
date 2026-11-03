@@ -91,4 +91,6 @@ checks are completed in stage 218: package/size tests consume actual tarballs, r
 compile all root values and JSX consumers, and bundle all root exports without aliases. Existing
 budgets remain. Stage 219 records the [acceptance evidence audit](ACCEPTANCE-EVIDENCE.md), including
 fresh device/TV and focused screenshot/axe evidence, project/geometry limits and open observations.
-A current Persian post metadata screenshot mismatch is next for diagnosis. Acceptance remains open.
+Stage 220 resolves its Persian post mismatch as stale Darwin separator baselines: two reviewed
+images are refreshed and exact bilingual metadata regressions added. Dedicated touch/tablet route
+acceptance is next. Earlier visual/map/loading and hardware/assistive-technology gaps remain open.
