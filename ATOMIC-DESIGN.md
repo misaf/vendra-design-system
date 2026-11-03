@@ -291,7 +291,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontBagHeading now composes controlled bag/delivery h1 content from explicit props.
    StorefrontContactFormHeading now composes the persistent localized form h2 from an explicit title.
    StorefrontSiteCheckoutNotice now composes controlled checkout recovery messaging and its order link.
-   **Next stage: extract site integration-error feedback into a storefront organism.**
+   StorefrontSiteIntegrationFeedback now composes the controlled sync-error Alert from an explicit message.
+   **Next stage: move bag delivery-section placement into its layout.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5171,6 +5172,31 @@ Full-page visuals, live checkout, full browser/device, TV spatial-navigation and
 suites were not run; earlier stage-192/197 observations remain documented.
 
 Next: extract site integration-error feedback into a storefront organism.
+
+**Two hundred and seventh checkpoint verified:** extracted StorefrontSiteIntegrationFeedback under
+app organisms from the site View integration-error block. An explicit message prop preserves the
+danger Alert, interruptive role and decorative icon without a wrapper, action or dismissal control.
+View retains visibility and placement inside VendraProvider before PageBoundary; logic retains
+failure state, localized wording, announcements and local data. Source comparison confirms only
+integration-feedback block/import changed; checkout notice, provider, announcements, routing and
+boundaries remain intact. Updated ownership, roadmap and audit progress documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual product axe and initial
+saved-list loading with newer customer actions. Eight paired previous/current probes cover English/
+Persian at touch widths 390/768, desktop 1280 and TV width 1920. Stubbed saved-list load rejection
+shows the Alert; stubbed save rejection preserves the optimistic local saved item and localized
+announcement. Product save-button focus is preserved across both failures. A locally seeded checkout
+notice verifies sibling order/coexistence; clearing integration-error state hides only the error.
+Bag, customer identity and delivery descriptors remain unchanged. Failed/coexisting Alert markup and
+relative bounds match with preview origins/generated IDs/references normalized consistently and
+attributes sorted. All 16 Alert PNG pairs are byte-identical; representative phone/tablet captures
+viewed. Probes also verify localized role/title/icon, no actions, tablet rotation, containment and
+page-top axe. No source styles, baselines or tolerances changed. Full-page visuals, live server
+failures, full browser/device, TV spatial-navigation and assistive-technology suites were not run;
+earlier stage-192/197 observations remain documented.
+
+Next: move bag delivery-section placement into its layout.
 
 ## Adding components
 

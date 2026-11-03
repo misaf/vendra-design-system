@@ -237,6 +237,8 @@ StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its lo
 and StorefrontWeddingsLayout retains responsive hero placement.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
+StorefrontSiteIntegrationFeedback composes an explicit message through danger Alert; site View retains
+visibility/provider placement and logic retains failure state, copy, announcements and local data.
 StorefrontSiteCheckoutNotice composes explicit title/action label/href and dismissal callback; site View
 retains visibility/provider placement, logic retains late-completion ownership, bag preservation and URLs.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy

@@ -2,6 +2,7 @@
 import React, {Suspense, useEffect} from 'react';
 import * as DS from '../app/ds.js';
 import {StorefrontSiteCheckoutNotice} from '../app/organisms/StorefrontSiteCheckoutNotice/StorefrontSiteCheckoutNotice.jsx';
+import {StorefrontSiteIntegrationFeedback} from '../app/organisms/StorefrontSiteIntegrationFeedback/StorefrontSiteIntegrationFeedback.jsx';
 import {PageBoundary} from '../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../app/pages.js';
 
@@ -44,9 +45,7 @@ export function View({v}) {
         />
       )}
       {v.integrationError ? (
-        <>
-          <DS.Alert tone="danger" title={v.integrationErrorText} />
-        </>
+        <StorefrontSiteIntegrationFeedback message={v.integrationErrorText} />
       ) : null}
       <PageBoundary view={v.routeInfo?.view}>
         <Suspense fallback={null}>
