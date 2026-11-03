@@ -282,7 +282,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontNotfoundRecommendationHeading now composes the localized recommendation SectionHeader.
    StorefrontNotfoundProducts now composes ordered product cards inside the layout-owned grid.
    Not-found View now passes its layout directly without a redundant fragment.
-   **Next stage: extract error-page messaging into a storefront organism.**
+   StorefrontErrorMessage now composes the localized 500 heading and body through EmptyState.
+   **Next stage: extract error-page recovery actions into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4946,6 +4947,29 @@ Full browser/device, TV spatial-navigation and assistive-technology suites were 
 full-post screenshot residual remains documented.
 
 Next: extract error-page messaging into a storefront organism.
+
+**One hundred and ninety-eighth checkpoint verified:** extracted StorefrontErrorMessage under app
+organisms from the error View message slot. Explicit eyebrow/title/accent/body props preserve the
+flower EmptyState, localized 500 code, level-one heading/accent and body without adding a wrapper.
+View retains copy mapping and recovery controls; error logic retains reload and bidi-isolated phone
+wording; shared logic retains routing/locale/SEO/focus and layout retains message/actions placement.
+Source comparison confirms only the message slot/import changed and EmptyState composition is
+preserved. Updated ownership documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual error axe and retry/home/phone
+recovery tests. Eight paired previous/current probes cover English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. Direct and client-routed main markup and relative bounds match with
+generated IDs/references and preview origins normalized consistently and attributes sorted. All 16
+main PNG pairs are byte-identical; representative phone/tablet captures viewed. Probes verify source
+copy, heading/accent/body, decorative icon, noindex, real retry document reload, home same-document
+recovery, language preservation, home/error h1 focus, phone target and exact bidi-isolated wording,
+back navigation, tablet rotation, containment and page-top axe. Temporary browser-only entry links
+are removed before capture. No phone handler is invoked. No source styles, baselines or tolerances
+changed. Standalone previews, full browser/device, TV spatial-navigation and assistive-technology
+suites were not run. Earlier stage-192/197 intermittent visual/focus observations remain documented.
+
+Next: extract error-page recovery actions into a storefront organism.
 
 ## Adding components
 
