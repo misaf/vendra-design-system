@@ -329,7 +329,8 @@ logic retains destinations/navigation/locale/focus and layout retains placement/
 StorefrontNotfoundMessage composes explicit eyebrow/title/accent/body through EmptyState; View maps
 localized copy, shared logic retains invalid-route handling/SEO/focus and layout retains placement.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
-slots; not-found View/logic retain localized content, product mapping and recovery links.
+slots passed directly by not-found View; View/logic retain localized content, product mapping and
+recovery links. The explicit empty Shell sticky slot is retained.
 StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain
 localized content, reload behavior, home navigation and bidi-isolated phone wording.
 StorefrontPresentationLayout arranges heading, toolbar, catalog, display, overlays and feedback

@@ -13,36 +13,34 @@ export function View({v}) {
     <Shell
       v={v}
       content={
-        <>
-          <StorefrontNotfoundLayout
-            message={
-              <StorefrontNotfoundMessage
-                eyebrow={v.t?.code}
-                title={v.t?.hA}
-                accent={v.t?.hB}
-                body={v.t?.hP}
-              />
-            }
-            actions={
-              <StorefrontNotfoundActions
-                homeLabel={v.t?.home}
-                homeHref={v.href?.home}
-                searchLabel={v.t?.search}
-                searchHref={v.href?.search}
-              />
-            }
-            recommendationHeading={
-              <StorefrontNotfoundRecommendationHeading title={v.t?.popA} accent={v.t?.popB} />
-            }
-            recommendations={
-              <StorefrontNotfoundProducts
-                products={list(v.items)}
-                photoLabel={v.t?.photo}
-                saveLabel={v.t?.save}
-              />
-            }
-          />
-        </>
+        <StorefrontNotfoundLayout
+          message={
+            <StorefrontNotfoundMessage
+              eyebrow={v.t?.code}
+              title={v.t?.hA}
+              accent={v.t?.hB}
+              body={v.t?.hP}
+            />
+          }
+          actions={
+            <StorefrontNotfoundActions
+              homeLabel={v.t?.home}
+              homeHref={v.href?.home}
+              searchLabel={v.t?.search}
+              searchHref={v.href?.search}
+            />
+          }
+          recommendationHeading={
+            <StorefrontNotfoundRecommendationHeading title={v.t?.popA} accent={v.t?.popB} />
+          }
+          recommendations={
+            <StorefrontNotfoundProducts
+              products={list(v.items)}
+              photoLabel={v.t?.photo}
+              saveLabel={v.t?.save}
+            />
+          }
+        />
       }
       sticky={<></>}
     />

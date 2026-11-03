@@ -281,7 +281,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontNotfoundActions now composes localized home/search recovery links from explicit props.
    StorefrontNotfoundRecommendationHeading now composes the localized recommendation SectionHeader.
    StorefrontNotfoundProducts now composes ordered product cards inside the layout-owned grid.
-   **Next stage: simplify not-found View composition.**
+   Not-found View now passes its layout directly without a redundant fragment.
+   **Next stage: extract error-page messaging into a storefront organism.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4920,6 +4921,31 @@ browser-only invalid-policy links are removed before capture. No source styles, 
 changed. Full-page visual, full browser/device, TV spatial-navigation and assistive-technology suites
 were not run; the stage-192 full-post screenshot residual remains documented.
 Next: simplify not-found View composition.
+
+**One hundred and ninety-seventh checkpoint verified:** simplified not-found View composition by
+passing StorefrontNotfoundLayout directly to Shell content. Source comparison confirms that only the
+redundant outer fragment and indentation changed; the explicit empty sticky slot, organism props,
+list normalization and all ownership boundaries remain intact. Updated ownership documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual not-found axe and invalid-policy
+entry tests. Eight paired previous/current probes cover English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. Direct and invalid-policy main markup and relative element bounds
+match with generated IDs/references and preview origins normalized consistently and attributes sorted.
+The completed comparisons produce 16 byte-identical main PNG pairs; representative captures viewed.
+Product identity/order/descriptors, home/search/product recovery, same-document navigation, language,
+home/invalid-policy h1 focus, search-field visibility, invalid-product fallback, back, reload, tablet
+rotation, containment and page-top axe pass in the completed probes.
+
+Initial probes stopped once on a loading timeout and once on desktop invalid-policy heading focus;
+the desktop repeat passes without source changes. A strict screenshot attempt also differed in the
+English 390 direct third-product photograph: 14,306 pixels, maximum channel delta 18; that case is
+exact in the completion run. These intermittent observations remain recorded, so repeatable strict
+full-content visual/focus parity is not established. No source styles, baselines or tolerances changed.
+Full browser/device, TV spatial-navigation and assistive-technology suites were not run; the stage-192
+full-post screenshot residual remains documented.
+
+Next: extract error-page messaging into a storefront organism.
 
 ## Adding components
 
