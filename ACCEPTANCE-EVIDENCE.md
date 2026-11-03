@@ -132,3 +132,14 @@ programmatic-focus/Enter search-clear observation. The error route is the explic
 page, not a simulated backend failure. Shop/home coverage here is navigation/state recovery, not
 full catalog interaction acceptance. Customer routes, physical devices, soft keyboards, assistive
 technology and earlier visual/map/loading observations remain open. Stage-219 counts are historical.
+
+Stage 223 adds twelve bilingual touch-phone/tablet customer-route cases: phone/code validation and
+demo sign-in, profile invalid-email recovery/save/reload/sign-out/history guard, and order lookup
+mismatch/normalized-phone retry/reload/return. Automatic focus targets must already be unobscured;
+profile deliberately focuses its single invalid email field, with a separately tested summary link.
+The initial four profile failures were incorrect new summary-focus expectations, corrected without
+runtime changes. All twelve final cases pass in dev and production with one worker and no retries;
+full npm test/check and production build pass. Existing device helpers/content-axe/portrait policy
+is unchanged. This covers local demo identity/orders, not real SMS/WebOTP, backend authentication
+or authorization. Editorial/help routes, deeper account/order states, physical devices, soft keyboards,
+assistive technology and older visual/map/loading observations remain open.
