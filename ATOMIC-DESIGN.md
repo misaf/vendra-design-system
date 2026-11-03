@@ -298,7 +298,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    Product View now passes layout/sticky/recent elements directly, preserving boundary/reset identity.
    Bag View now passes layout/items/summary/empty/sticky elements directly, preserving branch guards.
    Checkout View now passes layout and single-organism branches directly, retaining payment grouping.
-   **Next stage: simplify site View composition.**
+   Site View now passes lazy route elements and live text directly, preserving coordinator infrastructure.
+   **Next stage: add app dependency/cycle checks with explicit UI-helper allowances.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5381,6 +5382,47 @@ These are focused checks, not full wallet/WhatsApp, duplicate-order, TV navigati
 technology acceptance; historical observations remain documented.
 
 Next: simplify site View composition.
+
+## Stage 214 checkpoint: site View composition
+
+Removed twenty redundant fragments: nineteen single-page route branches and the live-announcement
+text. The provider, LiveRegion, PageBoundary and Suspense remain mounted at the coordinator level.
+All lazy page declarations, route guards, routeInfo/store/locale/navigation props, customer keys and
+feedback placement remain unchanged. Source comparison excluding only fragments and whitespace
+confirms parity. Site View/logic retain routing, loading/error recovery, announcements, customer
+identity and shared customer state; page content remains delegated to page Views and organisms.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Paired probes compare
+English/Persian at touch widths 390/768, desktop 1280 and TV width 1920. All 48 PNG pairs and their
+normalized markup/relative bounds match: sixteen full-main FAQ/policy route captures, sixteen
+checkout-notice shown/recovered captures and sixteen integration-error failed/coexisting captures.
+The route probe verifies initial focus, touch/keyboard client navigation, routed heading focus,
+live-announcement updates, history, reload, shared-data preservation, tablet rotation, containment
+and page-top axe. Notice probes also verify dismissal and recovery without losing newer bag data;
+integration probes verify local saved state survives stubbed API failure. Representative phone and
+Persian tablet captures were viewed. Map tiles and integration failures are stubbed; no external
+order, payment or message is sent.
+
+The initial full-main FAQ/contact comparison completed both phone languages with four exact PNG
+pairs, then stopped on English 768 contact markup: an extra empty Leaflet zoom tile container was
+present on only the baseline side. A scratch wait requiring every document tile container to have
+children timed out on its first case; it did not establish stabilization. Initial captures/logs are
+retained, and the contact-map comparison remains unresolved. The completed FAQ/policy comparison
+is a separate route-composition check, not a resolution of the map observation. No app source style,
+screenshot tolerance or baseline changed. These checks do not establish full map, TV navigation,
+physical-device or assistive-technology acceptance; prior stage residuals remain documented.
+
+The browser sweep selected 96 tests, using one worker and no retries: 92 passed, one mobile
+invocation of a desktop-only focus test was skipped, and English mobile shop/checkout/account each
+timed out waiting five seconds for the initial main landmark (before axe). All three passed on a
+separate unchanged-source repeat after the paired probes ended. This yields 95 distinct passing
+checks across the initial run and repeat, including every route's bilingual mobile/desktop axe,
+customer isolation, delayed checkout/saved-state ownership, failed lazy-load recovery, background
+preload failure, keeping the current page during loading and desktop initial/routed focus. The
+initial loading failures remain observations; their cause and repeatability are not established.
+
+Next: add app dependency/cycle checks with explicit allowances for valid UI helpers, including
+negative cases for business-service imports, missing relative targets and cycles.
 
 ## Adding components
 

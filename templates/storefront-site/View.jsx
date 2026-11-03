@@ -33,9 +33,7 @@ export function View({v}) {
   return (
     // In-site links (Button href, NavLink, ProductCard, ...) navigate through the site's router.
     <DS.VendraProvider locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'} navigate={v.routerNavigate}>
-      <DS.LiveRegion>
-        <>{v.announcement}</>
-      </DS.LiveRegion>
+      <DS.LiveRegion>{v.announcement}</DS.LiveRegion>
       {v.checkoutNotice && (
         <StorefrontSiteCheckoutNotice
           title={v.checkoutNotice.title}
@@ -50,236 +48,198 @@ export function View({v}) {
       <PageBoundary view={v.routeInfo?.view}>
         <Suspense fallback={null}>
           {v.is?.home ? (
-            <>
-              <StorefrontHome
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontHome
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.shop ? (
-            <>
-              <StorefrontShop
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontShop
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.product ? (
-            <>
-              <StorefrontProduct
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontProduct
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.bag ? (
-            <>
-              <StorefrontBag
-                key={v.store.customerId}
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontBag
+              key={v.store.customerId}
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.checkout ? (
-            <>
-              <StorefrontCheckout
-                key={v.store.customerId}
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontCheckout
+              key={v.store.customerId}
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.track ? (
-            <>
-              <StorefrontTrack
-                key={v.store.customerId}
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontTrack
+              key={v.store.customerId}
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.signin ? (
-            <>
-              <StorefrontSignin
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontSignin
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.account ? (
-            <>
-              <StorefrontAccount
-                key={v.store.customerId}
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontAccount
+              key={v.store.customerId}
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.weddings ? (
-            <>
-              <StorefrontWeddings
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontWeddings
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.contact ? (
-            <>
-              <StorefrontContact
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontContact
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.journal ? (
-            <>
-              <StorefrontJournal
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontJournal
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.post ? (
-            <>
-              <StorefrontPost
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontPost
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.presentation ? (
-            <>
-              <StorefrontPresentation
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontPresentation
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.search ? (
-            <>
-              <StorefrontSearch
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontSearch
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.saved ? (
-            <>
-              <StorefrontSaved
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontSaved
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.policy ? (
-            <>
-              <StorefrontPolicy
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontPolicy
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.faq ? (
-            <>
-              <StorefrontFaq
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontFaq
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.notfound ? (
-            <>
-              <StorefrontNotfound
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontNotfound
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
           {v.is?.error ? (
-            <>
-              <StorefrontError
-                routeInfo={v.routeInfo}
-                lang={v.lang}
-                tenant={v.tenant}
-                go={v.go}
-                store={v.store}
-                setLang={v.setLang}
-              />
-            </>
+            <StorefrontError
+              routeInfo={v.routeInfo}
+              lang={v.lang}
+              tenant={v.tenant}
+              go={v.go}
+              store={v.store}
+              setLang={v.setLang}
+            />
           ) : null}
         </Suspense>
       </PageBoundary>
