@@ -6,6 +6,7 @@ import {StorefrontContactDetails} from '../app/organisms/StorefrontContactDetail
 import {StorefrontContactFormControls} from '../app/organisms/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
 import {StorefrontContactCompletion} from '../app/organisms/StorefrontContactCompletion/StorefrontContactCompletion.jsx';
 import {StorefrontContactFeedback} from '../app/organisms/StorefrontContactFeedback/StorefrontContactFeedback.jsx';
+import {StorefrontContactFormHeading} from '../app/organisms/StorefrontContactFormHeading/StorefrontContactFormHeading.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -43,9 +44,7 @@ export function View({v}) {
           }
           form={
             <>
-              <h2>
-                <>{v.t?.fA}</>
-              </h2>
+              <StorefrontContactFormHeading title={v.t?.fA} />
               {v.notSent ? (
                 <StorefrontContactFormControls
                   problems={v.problems}

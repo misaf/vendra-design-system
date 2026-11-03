@@ -241,6 +241,8 @@ StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps
 and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
 StorefrontContactDetails composes studio rows/actions and map/directions from explicit descriptors;
 View maps availability/callbacks and contact/shared logic retain studio values, map loading/fallback.
+StorefrontContactFormHeading composes an explicit title as h2; View keeps it outside form/completion
+branches. Contact logic retains drafts, validation, submission and focus; layout retains placement.
 StorefrontContactFormControls composes summary, controlled fields and busy send action; View maps
 visibility/descriptors/callbacks and contact/shared logic retain validation, submission, drafts and focus.
 StorefrontContactCompletion composes the named success region, alert and edit action; View maps

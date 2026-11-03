@@ -289,7 +289,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontShopHeading now composes the localized shop SectionHeader from explicit props.
    StorefrontProductBreadcrumbs now composes product navigation from explicit label/items props.
    StorefrontBagHeading now composes controlled bag/delivery h1 content from explicit props.
-   **Next stage: extract the contact form heading into a storefront organism.**
+   StorefrontContactFormHeading now composes the persistent localized form h2 from an explicit title.
+   **Next stage: extract the site checkout notice into a storefront organism.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5118,6 +5119,31 @@ TV spatial-navigation and assistive-technology suites were not run; earlier stag
 remain documented.
 
 Next: extract the contact form heading into a storefront organism.
+
+**Two hundred and fifth checkpoint verified:** extracted StorefrontContactFormHeading under app
+organisms from the contact View form slot. An explicit title prop preserves the h2 and its child
+fragment without adding a wrapper. View maps localized copy and keeps the heading outside form/
+completion branches; contact logic retains validation, drafts, submission, busy/errors and focus;
+layout retains form-column placement. Source comparison confirms only form heading/import changed;
+visibility branches, controls, completion, feedback and callbacks are preserved. Updated ownership,
+roadmap and audit progress documentation. This stage starts from synchronized master after stage 204
+and its dependencies were merged.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual contact axe, reply-channel/
+demo completion and validation-summary focus. Eight paired previous/current probes cover English/
+Persian at touch widths 390/768, desktop 1280 and TV width 1920. Form/completion/edit heading markup
+and relative bounds match; all 24 heading PNG pairs are byte-identical and representative phone/tablet
+captures viewed. The same h2 DOM node survives validation, completion and return-to-form. Probes
+verify localized copy, one page h1, validation-summary focus, completion-region focus/name, hidden
+form controls after completion, edit-to-message focus and retained name/email/message values, tablet
+rotation, containment and completion/edit page-top axe. Probes assert demo mode, intercept inquiry
+requests and observe zero such requests; no external message is sent. No source styles, baselines or
+tolerances changed. Full-page visuals, live API submission/error flows, standalone previews, full
+browser/device, TV spatial-navigation and assistive-technology suites were not run; earlier
+stage-192/197 observations remain documented.
+
+Next: extract the site checkout notice into a storefront organism.
 
 ## Adding components
 
