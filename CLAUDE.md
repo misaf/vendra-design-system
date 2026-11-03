@@ -320,6 +320,8 @@ Its persistent submit-label span stays outside the conditional form so pending a
 a valid accessible name after the button unmounts.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
+StorefrontNotfoundProducts composes explicit products/photoLabel/saveLabel; View retains normalization/
+copy mapping, logic retains product selection/descriptors/URLs and layout retains the responsive grid.
 StorefrontNotfoundRecommendationHeading composes explicit title/accent through SectionHeader; View
 maps localized copy and layout retains recommendation placement/spacing/grid.
 StorefrontNotfoundActions composes explicit home/search labels/hrefs; View retains mapping, shared
