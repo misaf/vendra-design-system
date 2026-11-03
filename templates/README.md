@@ -385,5 +385,7 @@ RAMPS/shade are available through both entry forms and types, with runtime/type 
 Stage 218 automates actual packed consumers in package/size tests: public assets/private subpaths,
 all root value types and JSX consumers, no-alias bundles including lowercase namespaces, and unused
 import removal. Packing is offline with scripts disabled; peers are reused without installation.
-Device/visual/accessibility evidence review is next. Physical device and assistive-technology
-acceptance remain open.
+Stage 219 records the [acceptance evidence audit](../ACCEPTANCE-EVIDENCE.md): device/TV execution,
+focused visual/axe evidence, real-sticky and project coverage limits, and hardware/screen-reader gaps.
+The Persian post metadata screenshot mismatch is next for diagnosis. Physical device and assistive-
+technology acceptance remain open.
