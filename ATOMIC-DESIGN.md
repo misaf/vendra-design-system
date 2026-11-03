@@ -283,7 +283,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontNotfoundProducts now composes ordered product cards inside the layout-owned grid.
    Not-found View now passes its layout directly without a redundant fragment.
    StorefrontErrorMessage now composes the localized 500 heading and body through EmptyState.
-   **Next stage: extract error-page recovery actions into a storefront organism.**
+   StorefrontErrorActions now composes retry/home/phone recovery controls from explicit props.
+   **Next stage: simplify error View composition.**
 7. **Finish.** Remove the remaining flat UI folders and obsolete glue. Check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
 
@@ -4970,6 +4971,31 @@ changed. Standalone previews, full browser/device, TV spatial-navigation and ass
 suites were not run. Earlier stage-192/197 intermittent visual/focus observations remain documented.
 
 Next: extract error-page recovery actions into a storefront organism.
+
+**One hundred and ninety-ninth checkpoint verified:** extracted StorefrontErrorActions under app
+organisms from the error View actions slot. Explicit retryLabel/onRetry, homeLabel/homeHref and
+phoneLabel/phoneHref props preserve the primary rotate retry button, secondary home link and ghost
+phone link in order without adding a wrapper. View retains localized label/callback/URL mapping;
+error logic retains reload and bidi-isolated phone wording; shared logic retains navigation/locale/
+focus and layout retains action placement/wrapping. Removed the unused View design-system import.
+Source comparison confirms only actions/imports changed and control props/order/children are preserved.
+Updated ownership documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Six focused mobile/desktop
+browser tests pass with one worker and retries disabled: bilingual error axe and retry/home/phone
+recovery tests. Eight paired previous/current probes cover English/Persian at touch widths 390/768,
+desktop 1280 and TV width 1920. Direct and client-routed main markup and relative bounds match with
+generated IDs/references and preview origins normalized consistently and attributes sorted. All 16
+main PNG pairs are byte-identical; representative phone/tablet captures viewed. Touch retry and
+Enter/Space retry at desktop/TV widths produce real document reloads. Probes verify button/link
+semantics, variants, decorative icons, source copy, noindex, home same-document recovery, language,
+home/error h1 focus, native phone target and exact bidi-isolated wording, back, tablet rotation,
+containment and page-top axe. Temporary browser-only entry links are removed before capture. No
+phone handler is invoked. No source styles, baselines or tolerances changed. Standalone previews,
+full browser/device, TV spatial-navigation and assistive-technology suites were not run. Earlier
+stage-192/197 intermittent visual/focus observations remain documented.
+
+Next: simplify error View composition.
 
 ## Adding components
 
