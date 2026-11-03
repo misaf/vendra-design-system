@@ -4,6 +4,7 @@ import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontNotfoundLayout} from '../app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
 import {StorefrontNotfoundMessage} from '../app/organisms/StorefrontNotfoundMessage/StorefrontNotfoundMessage.jsx';
+import {StorefrontNotfoundActions} from '../app/organisms/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -22,14 +23,12 @@ export function View({v}) {
               />
             }
             actions={
-              <>
-                <DS.Button variant="primary" iconStart="house" href={v.href?.home}>
-                  <>{v.t?.home}</>
-                </DS.Button>
-                <DS.Button variant="secondary" iconStart="search" href={v.href?.search}>
-                  <>{v.t?.search}</>
-                </DS.Button>
-              </>
+              <StorefrontNotfoundActions
+                homeLabel={v.t?.home}
+                homeHref={v.href?.home}
+                searchLabel={v.t?.search}
+                searchHref={v.href?.search}
+              />
             }
             recommendationHeading={
               <>
