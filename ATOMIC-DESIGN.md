@@ -293,7 +293,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontSiteCheckoutNotice now composes controlled checkout recovery messaging and its order link.
    StorefrontSiteIntegrationFeedback now composes the controlled sync-error Alert from an explicit message.
    StorefrontBagDeliveryLayout now owns recipient/location section placement from React-node slots.
-   **Next stage: move checkout progress placement into its layout.**
+   StorefrontCheckoutLayout now owns payment progress spacing; View retains controlled slot construction.
+   **Next stage: simplify shop View composition.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5228,6 +5229,31 @@ saved-address selection, full browser/device, TV spatial-navigation and assistiv
 were not run; earlier stage-192/197 observations remain documented.
 
 Next: move checkout progress placement into its layout.
+
+**Two hundred and ninth checkpoint verified:** moved the payment-only vf-checkout-steps spacing
+wrapper from checkout View into StorefrontCheckoutLayout's showPayment branch. View retains the
+paying guard, controlled steps/current/labels/formatters and navigation callback. Layout owns spacing
+and placement; bank/success progress remains in its existing organisms. Source comparison confirms
+only wrapper placement/indentation changed and all other View/layout content remains intact. Updated
+layout/progress ownership, roadmap and audit progress documentation.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Twelve focused mobile/
+desktop browser tests pass with one worker and retries disabled: bilingual checkout axe and payment
+draft continuity, plus English bank-return and card-confirmation flows. Eight paired previous/current
+probes cover English/Persian at touch widths 390/768, desktop 1280 and TV width 1920. Initial/restored
+payment progress markup and relative bounds match with preview origins/generated IDs/references
+normalized consistently and attributes sorted. All 16 progress PNG pairs are byte-identical;
+representative phone/tablet captures viewed. Probes verify the wrapper sits directly in main only
+during payment, compact/wide ordered lists, four steps/current payment index, two permitted completed
+step buttons, delivery-step navigation/focus, preserved address and receipt last4/reference after
+return/reload, tablet rotation, containment and payment page-top axe. A local demo pay-on-delivery
+confirmation hides the payment wrapper and retains noninteractive success Steppers at index three.
+Map tiles are stubbed and an advancing morning clock keeps delivery/map timing consistent.
+No source styles, baselines or tolerances changed. Full-page visuals, live payment gateways,
+full browser/device, TV spatial-navigation and assistive-technology suites were not run; earlier
+stage-192/197 observations remain documented.
+
+Next: simplify shop View composition.
 
 ## Adding components
 
