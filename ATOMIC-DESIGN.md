@@ -296,7 +296,8 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
    StorefrontCheckoutLayout now owns payment progress spacing; View retains controlled slot construction.
    Shop View now passes its layout directly while retaining sidebar/results grouping and empty sticky slot.
    Product View now passes layout/sticky/recent elements directly, preserving boundary/reset identity.
-   **Next stage: simplify bag View composition.**
+   Bag View now passes layout/items/summary/empty/sticky elements directly, preserving branch guards.
+   **Next stage: simplify checkout View composition.**
 7. **Finish.** Package UI folders are all layered. Resolve remaining composition and obsolete glue
    identified in the audit, then check package exports,
    tree shaking, types, English/Persian accessibility, screenshots and phone/tablet/TV flows.
@@ -5308,6 +5309,39 @@ assistive-technology acceptance; historical observations remain documented. No s
 baselines or tolerances changed.
 
 Next: simplify bag View composition.
+
+## Stage 212 checkpoint: bag View composition
+
+Removed six redundant fragments around Shell content, the bag-items branch, summary, empty feedback
+and Shell sticky grouping. The items slot and multi-child delivery branch retain their fragments.
+Source comparison after excluding fragments/whitespace and the now-redundant nested sticky expression
+container confirms all executable descriptors, callbacks and visibility conditions are unchanged.
+Shell forwards sticky content into StorefrontBottomBar, which renders it directly without testing
+node truthiness; empty-bag bottom-bar wrappers/navigation retain their ownership. Bag View/logic
+retain line changes/undo, delivery inputs/validation, promo, totals and checkout actions.
+
+`npm test`, `npm run check`, the app production build and diff checks pass. Eight focused mobile/
+desktop browser tests pass with one worker and retries disabled: bag/delivery step separation,
+required delivery pin/order continuity and bilingual bag axe. Paired English/Persian probes cover
+touch widths 390/768, desktop 1280 and TV width 1920. Main markup/bounds match after consistent origin/generated-ID normalization and image decoding.
+The initial full-main comparison has 14/16 exact bag/delivery PNG pairs. Persian 1280 bag differs
+in 8,223 pixels (maximum channel delta 9, bounds 335/265 to 1063/380); delivery differs in 2,099
+pixels (maximum delta 6, bounds 335/321 to 382/380), in product thumbnails. Original captures and
+pixel measurements are retained. An unchanged-source targeted Persian desktop repeat has exact
+bag/delivery PNGs, markup and bounds; this does not establish the cause of the initial differences
+or repeatable full visual acceptance. Another
+16 initial/pinned recipient/location-section PNG pairs, markup and bounds match. Probes verify
+same-document step changes, heading focus, back/forward/reload, removing every item and Undo,
+validation focus on the missing pin, keyboard pinning, checkout continuation, recipient/address
+recovery, tablet rotation, containment and page-top axe. Map tiles are stubbed; no order is submitted
+by the paired probes. Representative captures were viewed. The first scratch bag probe did not run
+because its generated JavaScript marker contained a hyphen; correcting the marker allowed the probe
+to execute. No product fix, screenshot tolerance or source style change was needed.
+
+These are focused checks, not full saved-address, geolocation/map-fallback, promo/stock, TV navigation
+or assistive-technology acceptance; historical observations remain documented.
+
+Next: simplify checkout View composition.
 
 ## Adding components
 
