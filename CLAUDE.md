@@ -204,6 +204,32 @@ Search View passes its layout directly; visibility, descriptors, callbacks, list
 the empty Shell sticky-slot fragment remain unchanged.
 StorefrontSearchLayout arranges heading, query/close controls, popular searches, results and empty
 feedback; search View/logic retain matching, URL/history state, navigation, reporting and focus.
+FAQ View passes its layout directly; localized descriptors, WhatsApp availability, list normalization
+and the empty Shell sticky-slot fragment remain unchanged.
+StorefrontFaqContact composes explicit help copy, contact actions and sample note; View retains
+localized/link mapping and WhatsApp availability, and layout retains aside placement.
+StorefrontFaqQuestions composes explicit question groups; View normalizes the list, FAQ logic
+retains category/answer mapping and delivery wording, and Accordion owns disclosure behavior.
+StorefrontFaqHeading composes explicit eyebrow/title/accent/intro; View maps localized copy, layout
+retains the header and FAQ/shared logic retain question mapping, navigation, locale and focus.
+Weddings View passes layout/form/completion elements directly; localized descriptors, visibility,
+callbacks, list normalization, the multi-child inquiry fragment and empty Shell sticky slot remain.
+StorefrontWeddingsFeedback composes an explicit API-failure message; View retains visibility,
+weddings logic retains failures/retry/drafts and layout keeps feedback after the inquiry section.
+StorefrontWeddingsCompletion composes explicit title/body/edit feedback; View retains visibility
+and demo/live copy mapping, while weddings logic retains outcomes, drafts, edit transitions and focus.
+StorefrontWeddingsFormControls composes explicit validation/field/send descriptors; View retains
+visibility and copy mapping, while weddings logic retains state, payloads, dates, validation and focus.
+StorefrontWeddingsInquiryIntro composes explicit title/intro; View maps localized copy, layout
+retains the inquiry anchor/column and weddings logic retains form behavior.
+StorefrontWeddingsStory composes gallery/process content; View maps titles and normalizes lists,
+logic supplies photo/step descriptors and StorefrontWeddingsLayout retains the section.
+StorefrontWeddingsServices composes service cards; View normalizes the list, logic supplies localized
+records and StorefrontWeddingsLayout retains the responsive grid.
+StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its localized label
+and StorefrontWeddingsLayout retains responsive hero placement.
+StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
+View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
 and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
 StorefrontContactDetails composes studio rows/actions and map/directions from explicit descriptors;
@@ -222,10 +248,58 @@ StorefrontWeddingsLayout arranges hero, services, story, inquiry and feedback sl
 View/logic retain content, date constraints, field state, validation, submission and recovery.
 StorefrontFaqLayout arranges heading, question-list and contact slots; FAQ View/logic retain
 section labels, accordion controls, copy, delivery-rule interpolation and navigation.
+Policy View passes its layout directly; localized descriptors, nested list normalization and the
+empty Shell sticky-slot fragment remain unchanged.
+StorefrontPolicyDocument composes normalized section descriptors; View retains nested list normalization,
+policy logic retains selection/content/numbering/list visibility and layout retains document placement.
+StorefrontPolicyContents composes explicit label/sections; View retains label mapping/list normalization,
+policy logic retains section descriptors/numbering and shared logic retains focus/sticky measurements.
+StorefrontPolicyNotice composes explicit title/body through the warning Alert; View retains localized
+copy mapping, layout retains placement and Alert retains presentation/accessibility.
+StorefrontPolicyNavigation composes explicit label/links; View retains localized mapping and list
+normalization, shared logic retains link/current-state descriptors and routing, and layout retains placement.
+StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated props; View maps localized
+and selected-document copy, layout retains the header and policy/shared logic retain selection and routing.
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
+StorefrontJournalPagination forwards explicit paging props; View retains mapping, journal logic retains
+clamping/slices/hrefs/resets and Pagination retains localized controls and single-page visibility.
+StorefrontJournalStories composes explicit story records; View retains list normalization, journal
+logic retains filtering/pagination/mapping and layout retains the responsive grid wrapper.
+StorefrontJournalFeatured composes explicit story props through the wide arch BlogCard; View retains
+visibility/mapping and journal logic retains lead selection, image resolution, metadata and hrefs.
+StorefrontJournalLoading composes an explicit status message and decorative Skeleton; View retains
+visibility/copy mapping, journal logic retains demo state and layout retains feedback placement.
+StorefrontJournalEmpty composes explicit title/clearLabel/onClear; View retains visibility/mapping,
+journal logic retains query/category matching and clear/reset behavior and layout retains placement.
+StorefrontJournalSearch forwards explicit label/value/onChange to SearchField; View retains mapping,
+journal logic retains query/matching/page resets and SearchField retains focus/clear/accessibility.
+StorefrontJournalHeading composes explicit heading/category props and forwards focus/selection callbacks;
+View retains label mapping/list normalization/focus scrolling and logic retains filtering/page resets.
 StorefrontJournalLayout arranges heading, search, feedback, featured story, grid and pagination
-slots; journal View/logic retain controls, category/query state, matching and page navigation.
+slots; journal View passes the layout and conditional featured story directly, retaining the multi-child
+feedback and empty sticky fragments. View/logic retain controls, category/query state, matching and
+page navigation.
+Post View passes its layout directly; multi-child feedback/article/recommendation fragments and the
+empty sticky slot retain their conditions, mappings, normalization and callbacks.
+StorefrontPostRelated composes explicit title/accent/stories and responsive cards; View retains copy/
+list normalization and post logic retains exclusion, selection/order, metadata/images/URLs.
+StorefrontPostProducts composes explicit product records and the responsive grid; View retains list
+normalization and post logic retains selection/order, product codes, price/stock/image descriptors/URLs.
+StorefrontPostSocial composes explicit labels/hrefs/showInstagram; View retains mapping/availability,
+post logic retains share-URL construction and shared navigation retains store Instagram data.
+StorefrontPostActions composes explicit copyLabel/onCopy/shopLabel/shopHref; View retains mapping,
+post logic retains clipboard/copied/reset cleanup and layout retains action placement/wrapping.
+StorefrontPostClassic composes explicit image/paragraphsBefore/quote/heading/paragraphsAfter; View
+retains visibility/copy mapping/list normalization and post logic retains eligibility/image resolution.
+StorefrontPostBlocks composes explicit block records and normalized tip items; View retains visibility/
+descriptor mapping/list normalization and post logic retains body flags, copy and image resolution.
+StorefrontPostHeading composes explicit journalHref/backLabel/meta/title/intro; View retains copy/link
+mapping, post logic retains selection/metadata and shared page logic retains navigation/SEO/focus.
+StorefrontPostMissing composes explicit title/backLabel/journalHref feedback; View retains missing
+visibility/copy/link mapping and post/shared logic retains selection, routing and navigation/focus.
+StorefrontPostLoading composes explicit title/message loading feedback; View retains visibility/copy
+mapping, post logic retains loading/missing state and layout retains feedback/article placement.
 StorefrontPostLayout arranges feedback, article, actions, recommendations and related slots with
 controlled article visibility; post View/logic retain content mapping, copying, sharing and links.
 StorefrontHomeCategories composes the home heading and category carousel from explicit records/labels;
@@ -246,6 +320,8 @@ Its persistent submit-label span stays outside the conditional form so pending a
 a valid accessible name after the button unmounts.
 StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, journal and newsletter
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
+StorefrontNotfoundMessage composes explicit eyebrow/title/accent/body through EmptyState; View maps
+localized copy, shared logic retains invalid-route handling/SEO/focus and layout retains placement.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
 slots; not-found View/logic retain localized content, product mapping and recovery links.
 StorefrontErrorLayout arranges message and recovery-action slots; error View/logic retain

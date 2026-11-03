@@ -1,8 +1,12 @@
 // StorefrontPolicy: the page inside the storefront shell.
 import React from 'react';
-import * as DS from '../app/ds.js';
 import {list} from '../app/runtime.js';
 import {StorefrontPolicyLayout} from '../app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
+import {StorefrontPolicyHeading} from '../app/organisms/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
+import {StorefrontPolicyNavigation} from '../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
+import {StorefrontPolicyNotice} from '../app/organisms/StorefrontPolicyNotice/StorefrontPolicyNotice.jsx';
+import {StorefrontPolicyContents} from '../app/organisms/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
+import {StorefrontPolicyDocument} from '../app/organisms/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';
 import {Shell} from '../app/Shell.jsx';
 
 export function View({v}) {
@@ -10,112 +14,34 @@ export function View({v}) {
     <Shell
       v={v}
       content={
-        <>
-          <StorefrontPolicyLayout
-            heading={
-              <>
-                <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                  <>{v.t?.eb}</>
-                </div>
-                <h1>
-                  <>{v.doc?.title}</>
-                </h1>
-                <p className="vf-info-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                  <>{v.doc?.intro}</>
-                </p>
-                <div className="vf-info-meta tw:text-sm tw:text-quiet">
-                  <>{v.t?.updated}</>
-                </div>
-              </>
-            }
-            policyNavigation={
-              <>
-                <nav aria-label={v.t?.policiesL} className="vf-policy-switch tw:mb-7">
-                  <ul className="tw:flex tw:flex-wrap tw:gap-2 tw:m-0 tw:p-0 tw:list-none">
-                    {list(v.policyLinks).map((p, $index) => (
-                      <React.Fragment key={$index}>
-                        <li>
-                          <a
-                            href={p?.href}
-                            aria-current={p?.current}
-                            className="vf-policy-switch-link tw:min-h-tap tw:whitespace-nowrap tw:inline-flex tw:items-center tw:px-4 tw:rounded-full tw:border tw:border-solid tw:border-input tw:text-sm tw:text-body! tw:no-underline! tw:hover:border-body tw:aria-[current=page]:bg-inverse tw:aria-[current=page]:border-inverse tw:aria-[current=page]:text-on-inverse!"
-                          >
-                            <>{p?.label}</>
-                          </a>
-                        </li>
-                      </React.Fragment>
-                    ))}
-                  </ul>
-                </nav>
-              </>
-            }
-            notice={
-              <>
-                <DS.Alert tone="warning" title={v.t?.sampleT}>
-                  <>{v.t?.sampleP}</>
-                </DS.Alert>
-              </>
-            }
-            tableOfContents={
-              <>
-                <nav
-                  aria-label={v.t?.toc}
-                  className="vf-info-toc vf-sticky-panel tw:flex tw:flex-col tw:gap-1"
-                >
-                  <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
-                    <>{v.t?.toc}</>
-                  </div>
-                  {list(v.doc?.sections).map((s, $index) => (
-                    <React.Fragment key={$index}>
-                      <a
-                        href={s?.href}
-                        className="vf-policy-toc-link tw:min-h-tap tw:flex tw:items-center tw:text-sm tw:text-body! tw:no-underline! tw:hover:text-accent"
-                      >
-                        <>{s?.title}</>
-                      </a>
-                    </React.Fragment>
-                  ))}
-                </nav>
-              </>
-            }
-            document={
-              <>
-                {list(v.doc?.sections).map((s, $index) => (
-                  <React.Fragment key={$index}>
-                    <section
-                      id={s?.id}
-                      className="vf-info-section tw:flex tw:flex-col tw:gap-4 tw:[scroll-margin-top:96px]"
-                    >
-                      <h2>
-                        <>{s?.title}</>
-                      </h2>
-                      {list(s?.paras).map((para, $index) => (
-                        <React.Fragment key={$index}>
-                          <p className="vf-info-copy tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty">
-                            <>{para?.text}</>
-                          </p>
-                        </React.Fragment>
-                      ))}
-                      {s?.hasItems ? (
-                        <>
-                          <ul className="vf-policy-list tw:m-0 tw:ps-5 tw:flex tw:flex-col tw:gap-2 tw:text-md tw:leading-body tw:text-secondary">
-                            {list(s?.items).map((item, $index) => (
-                              <React.Fragment key={$index}>
-                                <li>
-                                  <>{item?.text}</>
-                                </li>
-                              </React.Fragment>
-                            ))}
-                          </ul>
-                        </>
-                      ) : null}
-                    </section>
-                  </React.Fragment>
-                ))}
-              </>
-            }
-          />
-        </>
+        <StorefrontPolicyLayout
+          heading={
+            <StorefrontPolicyHeading
+              eyebrow={v.t?.eb}
+              title={v.doc?.title}
+              intro={v.doc?.intro}
+              updated={v.t?.updated}
+            />
+          }
+          policyNavigation={
+            <StorefrontPolicyNavigation label={v.t?.policiesL} links={list(v.policyLinks)} />
+          }
+          notice={<StorefrontPolicyNotice title={v.t?.sampleT} body={v.t?.sampleP} />}
+          tableOfContents={
+            <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
+          }
+          document={
+            <StorefrontPolicyDocument
+              sections={list(v.doc?.sections).map(s => ({
+                id: s?.id,
+                title: s?.title,
+                paras: list(s?.paras),
+                hasItems: s?.hasItems,
+                items: list(s?.items)
+              }))}
+            />
+          }
+        />
       }
       sticky={<></>}
     />
