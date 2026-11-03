@@ -5683,6 +5683,37 @@ technology, complete route/state acceptance and older visual/map/loading observa
 Next: extend dedicated touch/tablet acceptance to customer sign-in, account and order tracking,
 using local demo state and preserving the same explicit device/geometry evidence boundaries.
 
+## Stage 223 checkpoint: dedicated touch customer-route acceptance
+
+Added device-customer.spec.mjs to touch-phone/tablet discovery. Twelve bilingual cases cover
+sign-in, account profile and order tracking using local demo identity/orders. Sign-in checks empty
+phone and incomplete-code errors, focus/reachability before corrective scrolling, change-number
+retention with code reset, demo-code completion and account navigation with heading focus. Profile
+checks invalid-email recovery, summary-link touch navigation, saved name/email persistence across
+reload, sign-out, guarded history return and signed-out reload. Order lookup checks required-field
+focus, mismatched-phone failure focus, retained order input, normalized international phone retry,
+resolved order/heading focus, reload and return to lookup.
+
+The shared stage-221/222 helper policy remains unchanged: real touch taps, full control geometry
+and center hit testing with normal sticky bars, content axe with temporary bottom-bar adjustment
+and restoration, and tablet portrait control reachability. Phone uses 390×844; tablet starts at
+1180×820 and rechecks selected controls at 768×1024. Content scans cover incomplete sign-in code,
+saved profile and resolved tracking at the initial viewport; portrait remains geometry evidence.
+The initial exploratory run passed eight cases and failed four profile cases because the new test
+incorrectly expected summary focus. Existing single-error profile policy focuses the email input;
+the assertion now verifies that contract plus unobscured automatic focus before scrolling. No
+runtime change was needed.
+
+All twelve final cases pass in dev and production with one worker and no retries. Full npm tests,
+formatting/generated-output/CSS checks and production build pass. Runtime UI, shared helpers,
+styles, dependencies and screenshot baselines are unchanged. The demo accepts five digits locally;
+these checks establish neither real SMS/WebOTP nor backend authentication/authorization. Account
+editors, wallet, complete order states, physical-device/soft-keyboard/assistive-technology acceptance
+and older visual/map/loading observations remain outside this stage.
+
+Next: extend dedicated touch/tablet acceptance to editorial and help routes (journal/post, FAQ and
+policy), preserving explicit content-scan, sticky reachability and physical-device evidence limits.
+
 ## Adding components
 
 ```sh

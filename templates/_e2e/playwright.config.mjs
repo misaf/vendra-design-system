@@ -83,7 +83,12 @@ export default defineConfig({
       testMatch:
         device.name === 'tv'
           ? ['devices.spec.mjs', 'tv.spec.mjs']
-          : ['devices.spec.mjs', 'device-routes.spec.mjs', 'device-browsing.spec.mjs'],
+          : [
+              'devices.spec.mjs',
+              'device-routes.spec.mjs',
+              'device-browsing.spec.mjs',
+              'device-customer.spec.mjs'
+            ],
       use: {
         ...devices['Desktop Chrome'],
         channel,

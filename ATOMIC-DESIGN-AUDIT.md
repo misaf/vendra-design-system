@@ -102,3 +102,10 @@ sticky/content-axe helpers: search origin restoration, saved latest-removal/empt
 persistence, missing-page home navigation, and error retry/home recovery. All 32 combined core/
 browsing cases pass in dev and production. Customer routes are next; emulated touch acceptance
 does not establish physical-device, soft-keyboard or assistive-technology acceptance.
+
+Stage 223 adds twelve bilingual dedicated touch-phone/tablet sign-in, profile and order-lookup
+cases, covering validation/focus, demo login, profile persistence/sign-out/history protection and
+lookup mismatch/normalized-phone recovery. All twelve pass in dev and production using unchanged
+shared sticky/content-axe/portrait helpers. Single profile errors intentionally focus the email
+input. Real SMS/backend identity, deeper account/order states and physical-device/AT acceptance
+remain unverified. Editorial/help-route touch coverage is next.

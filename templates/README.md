@@ -400,3 +400,10 @@ restoration, saved latest-removal and empty-state undo, missing-page home naviga
 retry/home recovery. Sixteen new bilingual cases reuse the stage-221 sticky reachability/content
 axe policy via device-helpers.mjs. All 32 combined cases pass in dev and production. Customer routes
 are next; physical-device, soft-keyboard and screen-reader acceptance remain open.
+
+Stage 223 adds dedicated touch customer-route acceptance: bilingual phone/code validation and demo
+sign-in, profile email recovery/save/reload/sign-out/history guard, and order lookup failure/retry/
+reload/return. All twelve cases pass in dev and production with unchanged shared device helpers.
+Automatic field focus is checked before corrective scrolling; content axe and portrait geometry
+remain distinct evidence. Real SMS/WebOTP/backend identity and physical-device/soft-keyboard/AT
+acceptance are unverified. Editorial/help-route touch coverage is next.
