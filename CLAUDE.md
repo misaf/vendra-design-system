@@ -43,6 +43,8 @@ StorefrontProductAdded composes the controlled bag-confirmation summary and chec
 View/logic retain bag mutations, summary calculations, dialog state and checkout continuation.
 StorefrontProductSticky composes the live total and add action inside Shell's sticky slot;
 View/logic retain totals/stock/bag actions; Shell retains positioning/measurement/focus behavior.
+StorefrontProductBreadcrumbs composes explicit navigation label/items through Breadcrumb; View maps
+localized items, logic retains identity/category/shop URLs and layout retains placement.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell.
 StorefrontShopHeading composes the localized h1 SectionHeader from explicit eyebrow/title/accent;
