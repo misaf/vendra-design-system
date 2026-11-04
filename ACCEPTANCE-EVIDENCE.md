@@ -186,3 +186,11 @@ without runtime changes. No UI/styles/generated files/dependencies/baselines cha
 coverage now reaches all registered routes across stages 221–226, not every state or combination.
 The next stage refreshes the inventory and open-gap checklist. Physical-device/soft-keyboard/AT,
 price-range gestures, complete combinations and earlier visual/map/loading observations remain open.
+
+Stage 228 scopes the old contact-map observation in [CONTACT-MAP-EVIDENCE.md](CONTACT-MAP-EVIDENCE.md).
+The original three retained routed PNG pairs (EN390, FA390, EN768) are exactly equal as RGBA; the
+extra empty outgoing Leaflet level is reproduced beside a loaded active level and can legitimately
+persist. Four permanent bilingual phone/tablet lifecycle regressions pass in dev/production using
+active-level/animation/marker and unload/remount checks rather than requiring every container to
+have children. No runtime or baseline change is needed. The exact original scheduling asymmetry,
+full visual/map/network/heap/device/AT acceptance and other observations remain separate limits.
