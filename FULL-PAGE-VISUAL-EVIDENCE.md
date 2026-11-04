@@ -141,3 +141,11 @@ review, including the separate product total literal, and corrects those ten exp
 the retained stage-235 dev captures. Darwin dev and production each pass all 76 default page comparisons, with two workers,
 zero skips/retries and snapshot updates explicitly disabled.
 This follow-up does not rewrite the original 304 outcomes above or explain the Linux dev failures.
+
+## Stage 237 follow-up
+
+[Linux diagnostics](LINUX-CAPTURE-DIAGNOSTICS.md) reproduce the contact label pixels and record a
+stale tooltip width during a transient tiny-viewport/font-loading phase. Post gate controls rule
+out the four unfinished background modules as required dependencies of the active article.
+No runtime or baseline correction is made here; original failures and post scheduling uncertainty
+remain retained. A subsequent-font-load tooltip correction is the next experiment.
