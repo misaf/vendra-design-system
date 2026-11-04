@@ -6062,6 +6062,19 @@ unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory
 No baseline or screenshot-policy changes. The post readiness deadline and tiny-viewport attribution
 remain separate. Next: isolate active post load/evaluation timing; retain broader acceptance gates.
 
+## Stage 239 checkpoint: post evaluation readiness
+
+Stage 239 [separates post HTTP completion from evaluation readiness](POST-EVALUATION-READINESS.md).
+Four new bilingual default-project cases hold real post module evaluation after HTTP200, assert
+the original helper's five-second missing-main deadline, then verify article/locale and first-load
+focus recovery on release. The source module is changed only by test interception.
+All 64 route lifecycle cases pass on Darwin/Linux dev/production, with one worker, no skips/retries
+and snapshot updates disabled. Check/build, unchanged baseline hashes and discovery pass; inventory
+is 1,790 dev / 1,391 production.
+No runtime/policy/baseline changes. This establishes the waiting/recovery contract, not the original
+unobserved scheduling cause. Next: explicit state/integrity acceptance mapping; retain old latency
+and other acceptance residuals without adding speculative waits.
+
 ## Adding components
 
 ```sh

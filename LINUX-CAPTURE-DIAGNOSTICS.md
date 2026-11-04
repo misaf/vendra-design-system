@@ -162,3 +162,11 @@ post gate paths are enumerated above so the active/background distinction can be
 regressions for later font cycles and cleanup. The original CPU4 probe now automatically corrects
 the temporary width before its first/second PNG; each differs by only one low-amplitude control
 pixel. Original observations above are preserved, including the separate post timeout uncertainty.
+
+## Stage 239 post readiness follow-up
+
+[Post evaluation controls](POST-EVALUATION-READINESS.md) return HTTP200 for the real module, then
+hold evaluation past the existing helper deadline and verify correct recovery on release. This
+strengthens the active/background distinction without assigning the old trace's exact scheduling
+cause or introducing a runtime change. The bounded contract is verified; state/integrity acceptance
+mapping is next, with the historical latency observation retained separately.
