@@ -348,3 +348,13 @@ Darwin/Linux dev/production with zero skips/retries; focused storefront unit/che
 All 258 baselines remain unchanged; inventory increases to 1,804 dev / 1,405 production.
 This is not a persistent queue or a backend exactly-once guarantee.
 Next: saved-item offline write/reconnect controls.
+
+Stage 246 [verifies saved-item offline writes and explicit recovery](SAVED-OFFLINE-RECOVERY-EVIDENCE.md).
+Real browser-offline POST/DELETE failures preserve local intent and unrelated saved data. Two
+reconnects do not replay; explicit save toggles or Undo send a controlled successful POST, update
+only the target handle and survive a local reload. No runtime or baseline changes.
+All 56 selected cases pass across Darwin/Linux dev/production with zero skips/retries; focused
+migration/storefront unit, check and fresh production builds pass. All 258 baselines are unchanged;
+inventory is 1,812 dev / 1,413 production. Shared sync-error state remains set after successful recovery;
+initial handover data loss across full navigation is retained as a separate observation.
+Next: reproduce initial shortlist-handover persistence, then scoped saved-sync error recovery.
