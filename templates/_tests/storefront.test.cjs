@@ -436,6 +436,41 @@ function loadPage(name, props = {}, search = '') {
   vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
+// Mount must persist a consumed handover before the visitor makes any state edit.
+for (const lang of ['en', 'fa']) {
+  for (const [view, handover] of [
+    ['saved', 'ids=VF-3HX9TP'],
+    ['bag', 'lines=VF-8RD5WN...2']
+  ]) {
+    const {logic: site, ctx: c} = loadPage(
+      'site',
+      {lang},
+      `?lang=${lang}&view=${view}&${handover}`
+    );
+    let stored;
+    c.sessionStorage.setItem = (_, value) => {
+      stored = value;
+    };
+    c.sessionStorage.getItem = () => stored || null;
+    c.window.VF_API = {live: false};
+    c.window.addEventListener = c.document.addEventListener = () => {};
+    site.lifecycle.didMount();
+    assert.ok(stored, 'initial handover is saved on mount without an edit');
+    c.location.search = `?lang=${lang}&view=${view}`;
+    const restored = new c.Logic({lang});
+    const plain = value => JSON.parse(JSON.stringify(value));
+    assert.deepEqual(plain(restored.state.saved), plain(site.state.saved));
+    assert.deepEqual(plain(restored.state.bag), plain(site.state.bag));
+    c.sessionStorage.setItem = () => {
+      throw new Error('Storage full');
+    };
+    assert.doesNotThrow(
+      () => site.lifecycle.didMount(),
+      'blocked session storage does not crash mount'
+    );
+  }
+}
+console.log('Passed initial shortlist/bag handover persistence and blocked-storage mount.');
 // Search queries round-trip independently of page state; their Close destination belongs to the
 // history entry, not a single global "last page" that product exploration could overwrite.
 for (const lang of ['en', 'fa']) {

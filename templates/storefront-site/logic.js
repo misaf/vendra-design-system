@@ -87,6 +87,29 @@ const vfCustomerState = state => ({
   lastOrder: state.lastOrder,
   orders: state.orders
 });
+// Persist after mount as well as updates: consumed handover links have already left the URL.
+function vfPersistSession(state) {
+  try {
+    const {bag, saved, delivery, order, lastOrder, orders, paymentDraft} = state;
+    sessionStorage.setItem(
+      VF_SESSION,
+      JSON.stringify({
+        customerId: state.customerId,
+        customers: {
+          ...state.customers,
+          [state.customerId]: vfCustomerState(state)
+        },
+        bag,
+        saved,
+        delivery,
+        order,
+        lastOrder,
+        orders,
+        paymentDraft
+      })
+    );
+  } catch {}
+}
 function vfSiteInitial(props) {
   let saved = {};
   try {
@@ -271,6 +294,8 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       window.__vfSite = page;
+      page.syncCustomer();
+      vfPersistSession(page.state);
       if (window.VF_API.live) {
         page._savedLoading = true;
         window.VF_API.loadSaved()
@@ -343,26 +368,7 @@ export function usePage(props) {
         page.syncCustomer();
         return;
       }
-      try {
-        const {bag, saved, delivery, order, lastOrder, orders, paymentDraft} = page.state;
-        sessionStorage.setItem(
-          VF_SESSION,
-          JSON.stringify({
-            customerId: page.state.customerId,
-            customers: {
-              ...page.state.customers,
-              [page.state.customerId]: vfCustomerState(page.state)
-            },
-            bag,
-            saved,
-            delivery,
-            order,
-            lastOrder,
-            orders,
-            paymentDraft
-          })
-        );
-      } catch {}
+      vfPersistSession(page.state);
     },
     willUnmount() {
       window.removeEventListener('storage', page._customerChanged);
