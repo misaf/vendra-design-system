@@ -31,37 +31,142 @@ async function blockStorage(page, block) {
 }
 for (const lang of ['en', 'fa']) {
   const fa = lang === 'fa';
-  test(`late checkout responses keep newer bag changes (${lang})`, async ({page}) => {
+  test(`late checkout responses survive repeated submission and remount (${lang})`, async ({
+    page
+  }, info) => {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
-    await page.evaluate(() => {
-      window.VF_API.setBase('/__test-api');
-      window.__vfCheckoutCalls = 0;
-      window.VF_API.checkout = () => {
-        window.__vfCheckoutCalls++;
-        return new Promise(resolve => (window.__vfFinishCheckout = resolve));
-      };
+    let release;
+    const held = new Promise(resolve => (release = resolve));
+    const requests = [];
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.route('**/__pending-checkout-api/**', async route => {
+      if (
+        route.request().method() === 'POST' &&
+        new URL(route.request().url()).pathname.endsWith('/api/sales/checkout')
+      ) {
+        requests.push(route.request().postDataJSON());
+        await held;
+        await route.fulfill({json: null});
+      } else await route.fulfill({json: {}});
     });
-    await page
-      .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-      .press('Space');
-    await visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order').click();
-    await expect.poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending)).toBe(true);
-    await page
-      .getByRole('link', {name: fa ? 'ویرایش اطلاعات ارسال' : 'Edit delivery details', exact: true})
-      .click();
-    await page.getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true}).click();
-    await page
-      .locator('.vf-bag-line')
-      .first()
-      .getByRole('button', {name: fa ? 'بیشتر' : 'More', exact: true})
-      .click();
-    await page.evaluate(() => window.__vfFinishCheckout(null));
-    await expect.poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending)).toBe(false);
-    expect(await page.evaluate(() => window.__vfSite.state.bag[0].qty)).toBe(2);
-    expect(await page.evaluate(() => window.__vfSite.state.lastOrder.lines[0].qty)).toBe(1);
-    expect(await page.evaluate(() => window.__vfCheckoutCalls)).toBe(1);
+    await page.evaluate(() => {
+      window.VF_API.setBase('/__pending-checkout-api');
+      window.__pendingSite = window.__vfSite;
+      window.__pendingInput = [];
+      for (const type of ['pointerdown', 'pointerup', 'click']) {
+        document.addEventListener(
+          type,
+          event => {
+            const button = event.target.closest?.('button');
+            if (button)
+              window.__pendingInput.push({
+                type,
+                trusted: event.isTrusted,
+                label: button.textContent,
+                disabled: button.disabled,
+                pending: window.__vfSite.state.checkoutPending
+              });
+          },
+          true
+        );
+      }
+    });
+    const place = () => visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order');
+    const attemptAgain = async () => {
+      await expect(place()).toBeDisabled();
+      await place().scrollIntoViewIfNeeded();
+      const box = await place().boundingBox();
+      expect(box).not.toBeNull();
+      // Native pointer input at the visible control: no forced locator click or private handler.
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, {clickCount: 2});
+      await expect(place()).toBeDisabled();
+      expect(requests).toHaveLength(1);
+      expect(await page.evaluate(() => window.__vfSite.state.order)).toBeNull();
+    };
+    try {
+      await page
+        .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
+        .press('Space');
+      const firstButton = await place().elementHandle();
+      await place().click();
+      await expect.poll(() => requests.length).toBe(1);
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(true);
+      await attemptAgain();
+      await page
+        .getByRole('link', {
+          name: fa ? 'ویرایش اطلاعات ارسال' : 'Edit delivery details',
+          exact: true
+        })
+        .click();
+      expect(await firstButton.evaluate(button => button.isConnected)).toBe(false);
+      await page
+        .getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true})
+        .click();
+      await page
+        .locator('.vf-bag-line')
+        .first()
+        .getByRole('button', {name: fa ? 'بیشتر' : 'More', exact: true})
+        .click();
+      await visibleButton(page, fa ? 'ادامه و ارسال' : 'Continue to delivery').click();
+      await visibleButton(page, fa ? 'ادامه و پرداخت' : 'Continue to payment').click();
+      await expect(page.locator('.vf-checkout-summary')).toBeVisible();
+      expect(await page.evaluate(() => window.__pendingSite === window.__vfSite)).toBe(true);
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(true);
+      await attemptAgain();
+      const current = await page.evaluate(() => ({
+        bag: window.__vfSite.state.bag,
+        delivery: window.__vfSite.state.delivery,
+        paymentDraft: window.__vfSite.state.paymentDraft,
+        customerId: window.__vfSite.state.customerId
+      }));
+      expect(current.bag[0].qty).toBe(2);
+      release();
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(false);
+      await expect(place()).toBeEnabled();
+      await page.clock.runFor(100);
+      await expect(place()).toBeEnabled();
+      expect(
+        await page.evaluate(() => ({
+          bag: window.__vfSite.state.bag,
+          delivery: window.__vfSite.state.delivery,
+          paymentDraft: window.__vfSite.state.paymentDraft,
+          customerId: window.__vfSite.state.customerId
+        }))
+      ).toEqual(current);
+      const orders = await page.evaluate(() => window.__vfSite.state.orders);
+      expect(orders).toHaveLength(1);
+      expect(orders[0].lines[0].qty).toBe(1);
+      expect(orders[0].customerId).toBe(current.customerId);
+      expect(await page.evaluate(() => window.__vfSite.state.lastOrder.id)).toBe(orders[0].id);
+      expect(requests).toHaveLength(1);
+      expect(errors).toEqual([]);
+      await info.attach('pending-checkout-remount', {
+        body: JSON.stringify({
+          lang,
+          requestCount: requests.length,
+          remounted: true,
+          currentQuantity: current.bag[0].qty,
+          orderQuantity: orders[0].lines[0].qty,
+          orderIds: orders.map(order => order.id)
+        }),
+        contentType: 'application/json'
+      });
+    } finally {
+      release();
+      await info.attach('pending-input-events', {
+        body: JSON.stringify({requests, events: await page.evaluate(() => window.__pendingInput)}),
+        contentType: 'application/json'
+      });
+    }
     const notice = page
       .getByRole('status')
       .filter({has: page.getByRole('link')})

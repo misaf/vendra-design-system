@@ -63,6 +63,12 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 		ref: buttonRef,
 		type: loading && type === "submit" ? "button" : type,
 		isDisabled: disabled,
+		onPointerDownCapture: disabled || loading ? (event) => {
+			// Do not start React Aria's delayed click fallback on an unavailable control.
+			// Otherwise a gesture begun while disabled can replay after recovery enables it.
+			event.preventDefault();
+			event.stopPropagation();
+		} : rest.onPointerDownCapture,
 		"aria-disabled": loading || undefined,
 		onClickCapture: loading ? (event) => {
 			event.preventDefault();

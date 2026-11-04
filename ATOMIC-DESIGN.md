@@ -6159,3 +6159,17 @@ its cached CSS import graph can retain paths from before the move.
 Review visual differences before changing baselines. Record the exact scope and failures; a
 focused run does not prove the complete screenshot or device suite. Never edit generated `dist/`
 or `_runtime/` files directly.
+
+## Stage 244 checkpoint: pending checkout pointer replay
+
+Stage 244 [prevents pending pointer replay across checkout remount](PENDING-CHECKOUT-REMOUNT-EVIDENCE.md).
+The extended bilingual flow exposed a delayed synthetic click after disabled confirmation became
+available, producing a second POST. Button now blocks pointer starts while loading/disabled.
+A held real-adapter request, repeated native clicks before/after remount, original order quantity,
+newer current state and one POST are checked together. Existing initial failures and readiness
+residuals are retained separately in the evidence document. All 80 selected cases pass across
+Darwin/Linux dev/production with zero skips/retries, plus full root unit/check and fresh builds.
+All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. Restoring the old
+Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
+No CSS or baseline changes; client guarding does not establish backend exactly-once behavior.
+Next: offline mutation/reconnect controls.
