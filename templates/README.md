@@ -584,3 +584,15 @@ with no skips/retries or snapshot updates. Focused feature unit/check/build and 
 pass; all 258 baselines are unchanged. Inventory is 1,800 dev / 1,401 production.
 No runtime/baseline changes. The result covers visible sample totals, not backend discount authority.
 Next: repeated-submit/remount UI coverage, followed by offline-write/reconnect controls.
+
+Stage 244 [prevents pending pointer replay across checkout remount](../PENDING-CHECKOUT-REMOUNT-EVIDENCE.md).
+The extended bilingual flow exposed a delayed synthetic click after disabled confirmation became
+available, producing a second POST. Button now blocks pointer starts while loading/disabled.
+A held real-adapter request, repeated native clicks before/after remount, original order quantity,
+newer current state and one POST are checked together. Existing initial failures and readiness
+residuals are retained separately in the evidence document. All 80 selected cases pass across
+Darwin/Linux dev/production with zero skips/retries, plus full root unit/check and fresh builds.
+All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. Restoring the old
+Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
+No CSS or baseline changes; client guarding does not establish backend exactly-once behavior.
+Next: offline mutation/reconnect controls.
