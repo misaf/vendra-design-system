@@ -30,6 +30,10 @@ export function PlacesMap({
     pinned.map(place => [place.id, place.label, place.title, place.location])
   );
 
+  const updateLabels = () => {
+    view.current?.layer.eachLayer(marker => marker.getTooltip()?.update());
+  };
+
   const draw = () => {
     const current = view.current;
     if (!current) return;
@@ -75,13 +79,14 @@ export function PlacesMap({
     else if (shown.length) map.setView([shown[0].location.lat, shown[0].location.lng], 15);
     // A permanent label is centred on its pin by its width when it opens; centre it again once the
     // web font has arrived and changed that width.
-    document.fonts?.ready.then(() =>
-      layer.eachLayer(marker => marker.getTooltip() && marker.getTooltip().update())
-    );
+    document.fonts?.ready.then(updateLabels);
   };
 
   React.useEffect(() => {
     let alive = true;
+    // Resizing or loading another font can change label widths after the initial ready promise.
+    const fonts = document.fonts;
+    fonts?.addEventListener('loadingdone', updateLabels);
     Promise.resolve()
       .then(() => loadLeaflet())
       .then(Leaflet => {
@@ -95,6 +100,7 @@ export function PlacesMap({
       });
     return () => {
       alive = false;
+      fonts?.removeEventListener('loadingdone', updateLabels);
       if (view.current) {
         view.current.stop();
         view.current.map.remove();

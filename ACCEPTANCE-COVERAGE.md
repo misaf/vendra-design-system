@@ -1,12 +1,14 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-237 diagnostics](LINUX-CAPTURE-DIAGNOSTICS.md)
-reproduce Linux map label displacement and identify a stale width measured during a capture-time
-font-loading cycle. A focused correction is still pending. Post controls distinguish active route
-readiness from four unfinished background modules; the original timeout's scheduling cause remains open.
-Stage 236 passes all 76 Darwin default comparisons in dev/production; stage 235 Linux production
-passes 76/76. These separate results do not erase stage 235's original Linux dev failures.
+**Atomic Design migration acceptance remains incomplete.** The [stage-238 correction](MAP-FONT-LOAD-EVIDENCE.md)
+recenters permanent map labels after later font loads, with listener cleanup and real-font regressions.
+The reproduced Linux capture displacement is corrected without new baselines or policy changes.
+All 68 targeted browser cases pass across Darwin/Linux dev/production, with no retries/skips;
+unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory is 1,786 dev /
+1,387 production. Contact/lifecycle comparisons use snapshot updates disabled.
+The original post readiness timeout and tiny-viewport attribution remain separate open observations.
+Stage 236's full Darwin and stage 235's Linux production page sweeps remain historical results.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -20,8 +22,8 @@ stage-219 audit. Counts below are fresh registration discovery; execution is lab
 | touch-phone | 51 | 51 | Touch emulation, normally 390×844; 42 dedicated route/map cases and nine original device registrations. |
 | tablet | 51 | 51 | Touch emulation, normally 1180×820; 42 dedicated route/map cases and nine original device registrations. |
 | tv | 23 | 23 | Chromium keyboard, 1920×1080; original device/TV cases. |
-| components | 256 | excluded | Component fixture host, including two added SearchField keyboard cases. |
-| **Total / files** | **1,783 / 125** | **1,387 / 51** | Registrations include conditional skips; they are not pass counts. |
+| components | 259 | excluded | Component fixture host, including three added map font-readiness cases. |
+| **Total / files** | **1,786 / 125** | **1,387 / 51** | Registrations include conditional skips; they are not pass counts. |
 
 Production excludes component fixtures, cards, package and hydration specs. Hydration registers
 24 dev invocations, with 12 desktop executions and 12 intentional mobile skips. The six dedicated
@@ -147,7 +149,7 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Linux contact tooltip retains an offset measured during a later font-loading cycle in the reproduced capture. Original post scheduling and older latency/focus observations remain open. | Test lifecycle-safe repositioning after subsequent font loads; verify capture/viewport regressions and cleanup before a narrow correction. Keep post active-load/evaluation timing separate. See [stage 237](LINUX-CAPTURE-DIAGNOSTICS.md); retain the original 73/76 first run and separate repeats. |
+| **1 — next stage** | Original post scheduling/evaluation and older latency/focus observations remain open. Stage 238 corrects the reproduced map font-width mechanism. | Observe active post readiness/evaluation at the original deadline with independent background module controls; retain original failure and separate repeats. Do not increase global waits from later passes. Keep transient capture viewport attribution separate. See [stage 238](MAP-FONT-LOAD-EVIDENCE.md). |
 | **2** | Full visual acceptance includes more than the default page suite. | Stage 236 corrects the scoped Darwin expectations; stage 235 Linux production passes 76/76. Verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
 | **3** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
@@ -200,3 +202,16 @@ Six post controls show the four unfinished background modules can remain held wh
 renders; an active-post hold produces the old missing-main signature and recovers after release.
 No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
 Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.
+
+## Stage 238 follow-up: map font readiness correction
+
+Stage 238 [corrects map labels after later font loads](MAP-FONT-LOAD-EVIDENCE.md).
+PlacesMap refreshes current tooltips on FontFaceSet loading completion and removes the listener
+on unmount. Three new component regressions fail before the correction and pass afterward.
+The Linux CPU4 capture again measures temporary narrow widths, then automatically recenters labels;
+first/second PNGs differ from old baselines by only one low-amplitude zoom-control pixel each.
+All 68 targeted browser cases pass across Darwin/Linux dev/production, with no retries/skips;
+unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory is 1,786 dev /
+1,387 production. Contact/lifecycle comparisons use snapshot updates disabled.
+No baseline or screenshot-policy changes. The post readiness deadline and tiny-viewport attribution
+remain separate. Next: isolate active post load/evaluation timing; retain broader acceptance gates.

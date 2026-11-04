@@ -155,3 +155,10 @@ Local evidence under `/tmp/vendra-stage237*` includes the read-only source archi
 scripts. These are temporary local artifacts, not remote CI links. Reproduce the map experiment
 with the three-phase recipe above; retain failed originals before trying any intervention. The
 post gate paths are enumerated above so the active/background distinction can be repeated.
+
+## Stage 238 correction
+
+[Map font readiness](MAP-FONT-LOAD-EVIDENCE.md) adds a mounted font-loading completion listener and
+regressions for later font cycles and cleanup. The original CPU4 probe now automatically corrects
+the temporary width before its first/second PNG; each differs by only one low-amplitude control
+pixel. Original observations above are preserved, including the separate post timeout uncertainty.

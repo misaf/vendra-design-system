@@ -22,6 +22,7 @@ A map of places to look at, not to choose: the studio on the contact page, the c
 ```
 
 - Markers are in the tab order and open their place with Enter or Space, as well as a click: Leaflet gives markers `role="button"` but only clicks them with a pointer.
+- Permanent labels recenter after initial and later web-font loads. The font listener is released on unmount; pending initial font readiness only updates a still-mounted map.
 - Places without a valid location are left off. New, moved or renamed places redraw the markers.
 - Like LocationPicker, Leaflet is the app's to load (`loadLeaflet`) and the map is created only in the browser. If it can't load, `onFail` runs: hide the map, the places are still listed on the page.
 
