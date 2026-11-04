@@ -14,6 +14,7 @@ export function StorefrontPresentationLabel({code, soldOut, soldOutLabel, large 
       >
         <>{code}</>
       </span>
+      {soldOut && ' '}
       {soldOut ? (
         <span className={large ? 'tw:text-inverse-quiet' : 'tw:text-sm tw:text-quiet'}>
           <>{soldOutLabel}</>

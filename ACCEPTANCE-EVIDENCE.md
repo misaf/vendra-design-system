@@ -158,3 +158,16 @@ verified. Generated custom.css is rebuilt from the source. Full npm test/check a
 Device helper/content-scan/portrait policy is unchanged. Selected editorial/help states do not
 establish complete content coverage, physical-device, soft-keyboard or assistive-technology
 acceptance. Weddings/presentation touch flows and older visual/map/loading observations remain open.
+
+Stage 225 adds eight bilingual dedicated touch-phone/tablet weddings/presentation cases: wedding
+validation and draft-preserving inquiry anchors, seller-tools drawer/focus return, catalog entry,
+shortlist removal and clear/undo. Presentation has its own sticky toolbar and no storefront bars;
+its geometry is checked separately using the unchanged reachability helper. Initial presentation
+axe failures revealed independently composed tile names that mismatched visible caption words.
+Native caption names, decorative control photos, explicit word separators and separate full-screen
+action descriptions remove that duplicate naming source. Every tile's name is checked against its
+visible text, ignoring CSS uppercase. All eight final cases pass in dev/production, plus ten existing
+presentation interaction cases at mobile/desktop sizes. Full npm test/check and production build
+pass. No baselines or axe rules change. These checks do not activate valid inquiry submission,
+sharing or order handoff. Home/shop discovery/filter coverage, deeper specialist states, physical
+devices/soft keyboards/AT and older visual/map/loading observations remain open.

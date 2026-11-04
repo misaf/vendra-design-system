@@ -88,7 +88,8 @@ export default defineConfig({
               'device-routes.spec.mjs',
               'device-browsing.spec.mjs',
               'device-customer.spec.mjs',
-              'device-editorial.spec.mjs'
+              'device-editorial.spec.mjs',
+              'device-specialist.spec.mjs'
             ],
       use: {
         ...devices['Desktop Chrome'],

@@ -28,12 +28,13 @@ export function StorefrontPresentationCatalog({
               <button
                 type="button"
                 onClick={tile.open}
-                aria-label={tile.openLabel}
+                aria-description={tile.openDescription}
                 className="vf-presentation-tile tw:w-full tw:p-0 tw:[border:0] tw:bg-transparent tw:text-body tw:[font:inherit] tw:text-start tw:cursor-pointer tw:flex tw:flex-col tw:gap-2"
               >
                 <span className="tw:relative tw:block tw:w-full tw:[aspect-ratio:4/5] tw:rounded-md tw:overflow-hidden tw:bg-muted">
                   <DS.Picture
                     image={tile.image}
+                    alt=""
                     sizes="(max-width: 767px) 100vw, 50vw"
                     className="tw:w-full tw:h-full tw:object-cover tw:block"
                   />
@@ -45,8 +46,9 @@ export function StorefrontPresentationCatalog({
                     </span>
                   ) : null}
                 </span>
+                {/* Flex gaps need text separators too, so speech labels match visible words. */}{' '}
                 <span className="tw:flex tw:items-baseline tw:justify-between tw:gap-3">
-                  {renderLabel(tile)}
+                  {renderLabel(tile)}{' '}
                   {showPrices ? <DS.Price value={tile.price} size="md" /> : null}
                 </span>
               </button>

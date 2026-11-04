@@ -1742,7 +1742,7 @@ test('presentation sharing preserves the quoted size and extras on the customerâ
   page
 }) => {
   await openCounter(page, 'en');
-  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  await page.getByRole('button', {name: /^VF-7K2M4Q /}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await viewer.getByRole('button', {name: 'Size and extras'}).click();
   await viewer.getByRole('button', {name: /Classic/}).click();
@@ -1953,14 +1953,14 @@ test('untouched, the presentation plays its designs; a touch keeps the one on sc
 
 test('presentation tiles are named with their price and Ready', async ({page}) => {
   await openCounter(page, 'en');
-  await expect(
-    page.getByRole('button', {name: 'Show VF-3HX9TP full screen, 2,800,000 Toman, Ready'})
-  ).toBeVisible();
+  const tile = page.getByRole('button', {name: 'Ready VF-3HX9TP 2,800,000 Toman'});
+  await expect(tile).toBeVisible();
+  await expect(tile).toHaveAccessibleDescription('Show VF-3HX9TP full screen');
 });
 
 test('a sold-out design is shown and starred, but not offered for sale', async ({page}) => {
   await openCounter(page, 'en');
-  await page.getByRole('button', {name: /Show VF-6MT3VY full screen, .*, Sold out/}).click();
+  await page.getByRole('button', {name: /^VF-6MT3VY Sold out /}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('Sold out')).toBeVisible();
   await expect(viewer.getByRole('button', {name: 'Add VF-6MT3VY to the shortlist'})).toBeVisible();
@@ -1992,18 +1992,16 @@ test('a design that sells out after it was ordered is not handed over', async ({
   });
   await page.clock.install();
   await openCounter(page, 'en');
-  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  await page.getByRole('button', {name: /^VF-7K2M4Q /}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await viewer.getByRole('button', {name: 'Add to the order'}).click();
   await page.keyboard.press('Escape');
-  await page.getByRole('button', {name: /Show VF-8RD5WN full screen/}).click();
+  await page.getByRole('button', {name: /^Ready VF-8RD5WN /}).click();
   await viewer.getByRole('button', {name: 'Add to the order'}).click();
   await page.keyboard.press('Escape');
   soldOut = true;
   await page.clock.runFor(121_000);
-  await expect(
-    page.getByRole('button', {name: /Show VF-7K2M4Q full screen, .*Sold out/})
-  ).toBeVisible();
+  await expect(page.getByRole('button', {name: /^VF-7K2M4Q Sold out /})).toBeVisible();
   await page.getByRole('button', {name: 'Order, 2'}).click();
   const order = page.getByRole('dialog', {name: 'The customerâ€™s order'});
   await expect(order.getByText(/Sold out/)).toBeVisible();
@@ -2078,7 +2076,7 @@ test('the slideshow shows each design at its own price', async ({page}) => {
 test('untouched, the full-screen view leaves only the photo, code and price', async ({page}) => {
   await page.clock.install();
   await openCounter(page, 'en');
-  await page.getByRole('button', {name: /Show VF-7K2M4Q full screen/}).click();
+  await page.getByRole('button', {name: /^VF-7K2M4Q /}).click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('1 of 6')).toBeVisible();
   await page.clock.runFor(4_500);
