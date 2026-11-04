@@ -246,3 +246,14 @@ no skips/retries or snapshot updates. Fresh unit/check/build and unchanged basel
 checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
 No runtime/test/baseline changes. True cross-tab concurrency, server idempotency and offline writes
 remain unproved. Next: repair F01's payment-state setup and assert the intended state before axe.
+
+Stage 241 [corrects the failed-payment state fixture](PAYMENT-STATE-FIXTURE-EVIDENCE.md).
+Four pre-fix assertions fail because the old setup reaches delivery. The corrected fixture fills
+valid delivery, exercises the local failed bank return and requires its heading/focus/retry state
+before axe. Nearby payment step/errors/completion also gain explicit state assertions.
+All 120 selected state/return-flow cases pass on Darwin/Linux dev/production with one worker,
+no skips/retries and snapshot updates disabled. Check/build and consistency checks pass; all 258
+baseline PNGs and 1,790 dev / 1,391 production registrations remain unchanged.
+No application/baseline/policy changes or new registrations. F01 is closed for this fixture;
+true two-tab behavior, repeated-submit UI, offline writes and other acceptance gaps remain open.
+Next: shared-origin two-tab customer switch/pending-response coverage.

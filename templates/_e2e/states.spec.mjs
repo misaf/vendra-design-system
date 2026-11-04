@@ -22,7 +22,13 @@ const L = {
     next: 'Continue to payment',
     remove: 'Remove',
     place: 'I’ve paid — place order',
-    verify: 'Sign in'
+    verify: 'Sign in',
+    online: 'Online card demo',
+    bank: 'Continue to the bank',
+    failedHeading: 'The payment didn’t go through',
+    retry: 'Pay again',
+    card: 'Card-to-card transfer',
+    done: 'Thank you'
   },
   fa: {
     menu: 'منو',
@@ -41,9 +47,17 @@ const L = {
     next: 'ادامه و پرداخت',
     remove: 'حذف',
     place: 'پرداخت کردم — ثبت سفارش',
-    verify: 'ورود'
+    verify: 'ورود',
+    online: 'نمونه پرداخت آنلاین',
+    bank: 'رفتن به درگاه بانک',
+    failedHeading: 'پرداخت انجام نشد',
+    retry: 'پرداخت دوباره',
+    card: 'کارت به کارت',
+    done: 'سپاس'
   }
 };
+
+const MORNING = new Date('2026-10-05T09:00:00+03:30');
 
 const main = page => page.locator('main');
 const button = (page, name) => page.getByRole('button', {name, exact: true});
@@ -85,7 +99,18 @@ async function toPayment(page, t) {
   await page.fill('#vf-sender', 'Sara Karimi');
   await page.fill('#vf-sender-phone', '09121112233');
   await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
+  await expect(page).toHaveURL(/view=checkout/);
+  await expect(page.getByRole('radio', {name: t.card, exact: true})).toBeChecked();
   await expect(page.locator('#vf-last4')).toBeVisible();
+}
+
+async function expectPaymentFailure(page, t) {
+  await expect(page).toHaveURL(/view=checkout/);
+  const heading = main(page).getByRole('heading', {level: 1});
+  await expect(heading).toHaveText(t.failedHeading);
+  await expect(heading).toBeFocused();
+  await expect(button(page, t.retry)).toBeVisible();
+  await expect(button(page, t.retry)).toBeEnabled();
 }
 
 // Any five digits are accepted in the demo; this stops at the code screen.
@@ -118,7 +143,27 @@ const STATES = [
   {name: 'shop error', view: 'shop', extra: {demo: 'error'}},
   {name: 'journal loading', view: 'journal', extra: {demo: 'loading'}},
   {name: 'post loading', view: 'post', extra: {demo: 'loading'}},
-  {name: 'checkout payment failed', view: 'checkout', extra: {demo: 'error'}},
+  {
+    name: 'checkout payment failed',
+    view: 'bag',
+    extra: {step: 'delivery'},
+    time: MORNING,
+    act: async (page, t) => {
+      await toPayment(page, t);
+      // Use the same local bank-return flow as the payment integration tests.
+      await page.evaluate(() => window.__vfSite.navigate({view: 'checkout', demo: 'error'}));
+      await page.getByRole('radio', {name: t.online, exact: true}).press('Space');
+      const returned = page.waitForURL(
+        url =>
+          url.searchParams.get('payment') === 'return' &&
+          url.searchParams.get('result') === 'failed',
+        {waitUntil: 'load', timeout: 20000}
+      );
+      await button(page, t.bank).filter({visible: true}).click();
+      await returned;
+      await expectPaymentFailure(page, t);
+    }
+  },
   {
     name: 'account balance',
     view: 'account',
@@ -247,6 +292,7 @@ const STATES = [
       await toPayment(page, t);
       await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();
       await expectDescribedErrors(page);
+      await expect(page.locator('#vf-last4')).toHaveAttribute('aria-invalid', 'true');
     }
   },
   {
@@ -257,6 +303,7 @@ const STATES = [
       await toPayment(page, t);
       await page.fill('#vf-last4', '6037');
       await page.getByRole('button', {name: t.place}).locator('visible=true').first().click();
+      await expect(main(page).getByRole('heading', {level: 1})).toContainText(t.done);
       await expect(page.locator('#vf-last4')).toBeHidden();
       await expect(page.locator('main h1')).toBeFocused();
     }
@@ -285,6 +332,7 @@ for (const lang of LANGS) {
   for (const state of STATES) {
     test(`state: ${state.name} (${lang})`, async ({page}, info) => {
       test.skip(state.only && info.project.name !== state.only, `${state.only} only`);
+      if (state.time) await page.clock.setSystemTime(state.time);
       await openSite(page, state.view, lang, state.extra);
       if (state.act) await state.act(page, L[lang]);
       await waitForQuiet(page);

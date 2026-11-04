@@ -127,3 +127,11 @@ No complete migration acceptance follows from this subset.
 Local logs/JSON/results, exact selection script, unit/check logs and the four-case F01 probe are
 retained under `/tmp/vendra-stage240*`. Temporary local artifacts are not remote CI links. The
 checklist, assertions and explicit gaps above are the durable review artifact.
+
+## Stage 241 F01 correction
+
+[Payment state evidence](PAYMENT-STATE-FIXTURE-EVIDENCE.md) replaces the incorrect direct-checkout
+setup with valid delivery and an observed local failed-bank return. Positive failure/focus/retry
+assertions and strengthened adjacent payment-state checks run before axe. The stage240 findings
+above remain historical evidence; F01 is now corrected for that fixture. Other rows' cross-tab,
+idempotency, offline-write and numeric promo-removal limitations remain separate.
