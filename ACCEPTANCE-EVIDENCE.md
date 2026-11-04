@@ -1,5 +1,9 @@
 # Storefront acceptance evidence — stage 219
 
+For the refreshed route matrix, current registration counts and combined production results, see
+[Acceptance coverage — stage 227](ACCEPTANCE-COVERAGE.md). The original sections below remain a
+historical checkpoint; later fixes and focused results are recorded in Follow-up progress.
+
 Reviewed 2026-11-04 against stage-218 commit
 `72db689e8b4ff5e3080a4eeeeeab7df4e1690a69`. This records current executable coverage, fresh
 results and remaining acceptance work. The migration is not declared complete. Source inspection

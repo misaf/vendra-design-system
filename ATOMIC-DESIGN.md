@@ -5813,6 +5813,34 @@ historical visual/map/loading observations remain open.
 Next: refresh the acceptance coverage inventory and remaining-gap checklist across stages 221–226,
 separating selected route coverage from complete flow, visual and physical-device acceptance.
 
+## Stage 227 checkpoint: refreshed acceptance coverage inventory
+
+Added [ACCEPTANCE-COVERAGE.md](ACCEPTANCE-COVERAGE.md), a current inventory and 19-route flow matrix
+against stage-226 commit 15eb969. The frozen stage-219 audit and staged results remain intact and
+link to this refresh. Discovery registers 1,737 invocations in 120 files: mobile/desktop 681 each,
+touch-phone/tablet 49 each, TV 23, components 254. The six route suites contain 20 scenarios × two
+languages × two dedicated touch projects = 80 executable cases. Their mobile/desktop registrations
+skip by design; registration is not an executed pass count. Original device and hydration skips
+remain explicit.
+
+The matrix separates selected route/state assertions, content axe scans, sticky-control
+geometry and tablet portrait rechecks. It records the bare presentation toolbar, programmatic
+scrolling/text fill, essential consent, demo API/identity, stubbed maps and external-action limits.
+All registered routes have selected coverage; this is not every initial route's axe result or
+complete route/state/device acceptance. Visual inventory remains 152 page PNGs and 258 total PNGs;
+no fresh full visual, hydration, original device/TV/offline or physical-device/AT result is inferred.
+Historical image/map/loading/keyboard observations remain open rather than becoming current defects
+or being declared resolved by later repeats.
+
+Fresh combined production execution passes all 80 cases (40 per touch project), with two workers,
+no skips, failures or retries; production build and npm run check pass. Combined dev/per-stage unit
+results are prior evidence, not freshly rerun here. Only documentation changes; runtime, tests,
+configuration, styles, generated files, dependencies and baselines remain unchanged.
+
+Next: reproduce and scope the historical contact-map lifecycle/markup observation with focused
+instrumentation before changing rendering, waits or baselines; retain the remaining visual,
+hydration, platform and assistive-technology acceptance gates.
+
 ## Adding components
 
 ```sh

@@ -433,3 +433,11 @@ content axe and portrait control geometry use unchanged helpers. No runtime UI o
 change. Every registered route now has selected touch coverage; a refreshed acceptance inventory
 and remaining-gap checklist are next. Full combinations, gestures and hardware/soft-keyboard/AT
 acceptance remain unverified.
+
+Stage 227 refreshes the [acceptance coverage inventory](../ACCEPTANCE-COVERAGE.md), separating
+1,737 registered invocations from executable/conditional coverage and mapping selected assertions
+and exclusions for all 19 routes. All 80 combined dedicated touch-route cases pass freshly against
+production (two workers, no retries/skips). Content axe, normal sticky reachability and portrait
+geometry remain separate evidence. Full visuals/hydration, original device/offline/TV refresh,
+physical devices, soft keyboards, AT and deeper state combinations are not implied complete. The
+historical contact-map lifecycle/markup observation is next for focused diagnosis.
