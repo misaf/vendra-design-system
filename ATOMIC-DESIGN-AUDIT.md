@@ -124,3 +124,9 @@ visible caption name and a separate full-screen action description, with word se
 redundant photo alt removed. All eight pass in dev/production, plus ten existing presentation
 interaction cases. No external inquiry/handoff is activated by new cases. Home/shop touch discovery
 and filters are next; physical-device/AT and historical observations remain open.
+
+Stage 226 adds twelve bilingual dedicated touch-phone/tablet home/shop discovery, sorting,
+load-more/reload and stock/quick-filter recovery cases. All twelve pass in dev/production with
+unchanged shared sticky/content-axe/portrait helpers and no runtime UI changes. Each registered
+route now has selected touch coverage; complete state/device acceptance is not implied. Refreshing
+the coverage inventory and remaining gaps is next.

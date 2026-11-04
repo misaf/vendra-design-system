@@ -5783,6 +5783,36 @@ order handoff, reload persistence, full device/state coverage and older observat
 Next: dedicated touch/tablet home/shop discovery and catalog filter/sort acceptance, preserving
 explicit limits around physical-device, keyboard and assistive-technology evidence.
 
+## Stage 226 checkpoint: dedicated touch home/shop catalog acceptance
+
+Added device-catalog.spec.mjs to touch-phone/tablet discovery. Twelve bilingual cases cover home
+category→shop→product→Back navigation, low/high price sorting, load-more with new-product focus,
+reload persistence and first-page reset on sorting, and stock/quick-filter application/recovery.
+The home path checks category/product identity and client-navigation heading focus. Sorting checks
+actual displayed numeric prices in each locale and reload-preserved product order. Filters use the
+phone dialog and landscape-tablet sidebar, check the five-design stock count, restore it on reload,
+clear back to the focused result count, and toggle the two-design under-3M quick filter without
+adding history entries. Phone dialog close restores focus to its opener; automatic focus targets
+must be unobscured before any corrective test scrolling.
+
+The unchanged shared helpers retain normal sticky-shell geometry, whole-control bounds/center
+hit testing and touch taps. Content axe scans the home page and final shop states with the existing
+temporary bottom-bar adjustment and restoration. Phone uses 390×844; tablet starts at 1180×820 and
+rechecks selected controls at 768×1024. The sorting locator follows the visible desktop/compact
+control across that resize. Portrait evidence is control geometry, not a second content scan.
+An exploratory filter failure was an incorrectly scoped test has-locator, corrected without a UI
+change. All twelve final cases pass in dev and production with one worker and no retries; full
+npm tests, generated-output/formatting/CSS checks and production build pass. Runtime UI, shared
+helpers, styles, dependencies, generated files and screenshot baselines are unchanged.
+
+Together with stages 221–225, every registered route now has selected dedicated bilingual touch
+coverage. This does not establish complete route/state/device acceptance: price-range gestures,
+all category/filter combinations, physical devices, soft keyboards, assistive technology and
+historical visual/map/loading observations remain open.
+
+Next: refresh the acceptance coverage inventory and remaining-gap checklist across stages 221–226,
+separating selected route coverage from complete flow, visual and physical-device acceptance.
+
 ## Adding components
 
 ```sh

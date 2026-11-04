@@ -89,7 +89,8 @@ export default defineConfig({
               'device-browsing.spec.mjs',
               'device-customer.spec.mjs',
               'device-editorial.spec.mjs',
-              'device-specialist.spec.mjs'
+              'device-specialist.spec.mjs',
+              'device-catalog.spec.mjs'
             ],
       use: {
         ...devices['Desktop Chrome'],
