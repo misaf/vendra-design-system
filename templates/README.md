@@ -425,3 +425,11 @@ caption names with separate full-screen descriptions and decorative photos, reso
 name mismatch. Presentation's bare sticky toolbar gets explicit geometry checks. No styles or
 baselines change and new cases activate no valid inquiry/share/order handoff. Home/shop discovery
 and filter/sort touch acceptance are next; physical-device/soft-keyboard/AT limits remain.
+
+Stage 226 covers home category/product round-trips and shop price sorting, load-more/reload,
+stock filters and quick-filter recovery with twelve bilingual dedicated touch-phone/tablet cases.
+All twelve pass in dev and production. Normal sticky reachability, automatic focus, restored
+content axe and portrait control geometry use unchanged helpers. No runtime UI or baselines
+change. Every registered route now has selected touch coverage; a refreshed acceptance inventory
+and remaining-gap checklist are next. Full combinations, gestures and hardware/soft-keyboard/AT
+acceptance remain unverified.

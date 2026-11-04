@@ -171,3 +171,14 @@ presentation interaction cases at mobile/desktop sizes. Full npm test/check and 
 pass. No baselines or axe rules change. These checks do not activate valid inquiry submission,
 sharing or order handoff. Home/shop discovery/filter coverage, deeper specialist states, physical
 devices/soft keyboards/AT and older visual/map/loading observations remain open.
+
+Stage 226 adds twelve bilingual dedicated touch-phone/tablet home/shop cases: category/product
+round-trip identity and focus, displayed low/high price order, load-more focus, reload persistence,
+sort pagination reset, stock filter/dialog-or-sidebar interaction, clear recovery and quick-filter
+history behavior. The existing sticky hit-testing/content-axe/portrait policy is unchanged. All
+twelve final cases pass in dev and production with one worker and no retries; full npm test/check
+and production build pass. An exploratory failure was a wrongly scoped test locator, corrected
+without runtime changes. No UI/styles/generated files/dependencies/baselines change. Selected
+coverage now reaches all registered routes across stages 221–226, not every state or combination.
+The next stage refreshes the inventory and open-gap checklist. Physical-device/soft-keyboard/AT,
+price-range gestures, complete combinations and earlier visual/map/loading observations remain open.
