@@ -6004,6 +6004,25 @@ No new registrations: the stage-233 1,783 dev/1,387 production inventory remains
 original latency/focus, deeper state, physical/AT and backend gates remain separate.
 Next: update-disabled full-page comparisons on the reviewed head and explicit residual review.
 
+## Stage 235 checkpoint: full-page comparison audit
+
+[FULL-PAGE-VISUAL-EVIDENCE.md](FULL-PAGE-VISUAL-EVIDENCE.md) records 304 first-run comparisons of
+all 76 default pages on Darwin/Linux in dev/production. Darwin has 66 pass/10 screenshot fail in
+each target; Linux dev has 73 pass/two contact screenshot fail/one pre-capture readiness fail;
+Linux production passes 76/76. Two workers, zero skips/retries; this is not an all-green result.
+
+Three failed Linux dev cases pass separate serial reruns with snapshot updates disabled, without
+erasing first-run failures or explaining their causes. Ten Darwin cases persist across targets.
+Inspected text differs in cancelled order code and Persian separators; source commit `646e5ab`
+intentionally changed those after all ten expectations' `bd7f880` capture. Full counterfactual/
+image review is the next focused stage, not an automatic baseline refresh in this audit.
+
+All 258 snapshot PNGs remain unchanged. No runtime/test/config/tolerance changes; builds/check and
+baseline/document/inventory consistency pass. Discovery remains 1,783 dev/1,387 production. Linux
+native task volumes are removed and VM restored. Default screenshots do not close historical block
+articles, all payment states, touch/TV, real maps, backend or physical/AT acceptance.
+Next: isolate/review the ten stale-text Darwin expectations and correct only supported baselines.
+
 ## Adding components
 
 ```sh
