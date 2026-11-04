@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe, siteUrl} from './helpers.mjs';
 
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 const visibleButton = (page, name) =>
@@ -243,4 +243,174 @@ for (const lang of ['en', 'fa']) {
       .poll(() => page.evaluate(() => window.__vfSite.state.saved.includes('VF-3HX9TP')))
       .toBe(true);
   });
+}
+
+// Separate tabs share localStorage identity but retain their own session checkout histories.
+async function switchCustomer(tab, lang, phone) {
+  // openSite('account') seeds its own demo sign-in; preserve the tab's actual shared identity.
+  await tab.goto(siteUrl('account', lang));
+  await visibleButton(tab, lang === 'fa' ? 'خروج' : 'Sign out').click();
+  await tab.goto(siteUrl('signin', lang));
+  await tab.locator('#vf-phone').fill(phone);
+  await visibleButton(tab, lang === 'fa' ? 'ارسال کد' : 'Send code').click();
+  await tab.locator('#vf-code').fill('12345');
+  await expect.poll(() => tab.evaluate(() => localStorage.getItem('vf-account-phone'))).toBe(phone);
+}
+
+for (const lang of ['en', 'fa']) {
+  for (const outcome of ['success', 'failure']) {
+    test(`two-tab customer switch isolates pending checkout ${outcome} (${lang})`, async ({
+      page,
+      context
+    }, info) => {
+      const owner = '09120000000',
+        other = '09121111111',
+        fa = lang === 'fa';
+      await page.clock.install({time: MORNING});
+      await page.addInitScript(owner => {
+        if (!localStorage.getItem('vf-cross-tab-seeded')) {
+          localStorage.setItem('vf-cross-tab-seeded', '1');
+          localStorage.setItem('vf-account-phone', owner);
+        }
+        window.__identityStorageEvents = [];
+        window.addEventListener('storage', event => {
+          if (event.key === 'vf-account-phone')
+            window.__identityStorageEvents.push({
+              oldValue: event.oldValue,
+              newValue: event.newValue,
+              trusted: event.isTrusted
+            });
+        });
+      }, owner);
+      await openSite(page, 'bag', lang, {step: 'delivery'});
+      await delivery(page, fa);
+      let release, requested;
+      const held = new Promise(resolve => {
+        release = resolve;
+      });
+      const submitted = new Promise(resolve => {
+        requested = resolve;
+      });
+      const requests = [],
+        errors = [];
+      page.on('pageerror', error => errors.push(error.message));
+      await page.route('**/__cross-tab-api/**', async route => {
+        if (
+          route.request().method() === 'POST' &&
+          new URL(route.request().url()).pathname.endsWith('/api/sales/checkout')
+        ) {
+          requests.push(route.request().postDataJSON());
+          requested();
+          await held;
+          await route.fulfill({
+            status: outcome === 'success' ? 200 : 503,
+            json: outcome === 'success' ? null : {message: 'Controlled checkout failure'}
+          });
+        } else await route.fulfill({json: {}});
+      });
+      await page.evaluate(() => window.VF_API.setBase('/__cross-tab-api'));
+      const tab = await context.newPage();
+      try {
+        await openSite(tab, 'home', lang);
+        await page
+          .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
+          .press('Space');
+        await visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order').click();
+        await submitted;
+        await expect
+          .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+          .toBe(true);
+        expect(requests).toHaveLength(1);
+        await switchCustomer(tab, lang, other);
+        await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(other);
+        await expect(page.locator('#vf-address')).toHaveValue('');
+        await expect(page.locator('#vf-name')).toHaveValue('');
+        await page.locator('#vf-name').fill('Customer B recipient');
+        await page.locator('#vf-address').fill('Customer B private street');
+        const before = await page.evaluate(() => ({
+          bag: window.__vfSite.state.bag,
+          delivery: window.__vfSite.state.delivery,
+          paymentDraft: window.__vfSite.state.paymentDraft,
+          orders: window.__vfSite.state.orders
+        }));
+        expect(before.orders).toEqual([]);
+        expect(before.paymentDraft.ref).toBe('');
+        const switched = await page.evaluate(() => window.__identityStorageEvents);
+        expect(switched).toEqual(
+          expect.arrayContaining([
+            {oldValue: owner, newValue: null, trusted: true},
+            {oldValue: null, newValue: other, trusted: true}
+          ])
+        );
+        release();
+        await expect
+          .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+          .toBe(false);
+        expect(requests).toHaveLength(1);
+        const after = await page.evaluate(owner => {
+          const s = window.__vfSite.state;
+          return {
+            customerId: s.customerId,
+            bag: s.bag,
+            delivery: s.delivery,
+            paymentDraft: s.paymentDraft,
+            orders: s.orders,
+            order: s.order,
+            lastOrder: s.lastOrder,
+            notice: s.checkoutNotice,
+            ownerOrders: s.customers[owner]?.orders || []
+          };
+        }, owner);
+        expect(after).toMatchObject({
+          customerId: other,
+          ...before,
+          order: null,
+          lastOrder: null,
+          notice: null
+        });
+        expect(after.ownerOrders).toHaveLength(outcome === 'success' ? 1 : 0);
+        const placed = after.ownerOrders[0];
+        if (placed) {
+          expect(placed.customerId).toBe(owner);
+          expect(placed.delivery.address).toBe('Test street 12, unit 3');
+          await expect(page.locator('main')).not.toContainText(placed.id);
+        }
+        await expect(page.locator('#vf-address')).toHaveValue('Customer B private street');
+        await expect(page.locator('#vf-name')).toHaveValue('Customer B recipient');
+        await switchCustomer(tab, lang, owner);
+        await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(owner);
+        await page.evaluate(() => window.__vfSite.navigate({view: 'account'}));
+        await expect(page).toHaveURL(/view=account/);
+        if (placed) await expect(page.locator('main')).toContainText(placed.id);
+        await page.reload();
+        await expect.poll(() => page.evaluate(() => window.__vfSite?.state.customerId)).toBe(owner);
+        const restored = await page.evaluate(() => ({
+          orders: window.__vfSite.state.orders,
+          delivery: window.__vfSite.state.delivery
+        }));
+        expect(restored.orders).toHaveLength(outcome === 'success' ? 1 : 0);
+        expect(restored.delivery.address).toBe('Test street 12, unit 3');
+        if (placed) await expect(page.locator('main')).toContainText(placed.id);
+        expect(errors).toEqual([]);
+        await info.attach('two-tab-response-ownership', {
+          body: JSON.stringify(
+            {
+              outcome,
+              events: switched,
+              requestCount: requests.length,
+              currentCustomer: after.customerId,
+              ownerOrderIds: after.ownerOrders.map(order => order.id),
+              restoredOrderIds: restored.orders.map(order => order.id)
+            },
+            null,
+            2
+          ),
+          contentType: 'application/json'
+        });
+      } finally {
+        release();
+        await tab.close();
+      }
+    });
+  }
 }
