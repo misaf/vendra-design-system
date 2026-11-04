@@ -212,15 +212,36 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   await expect(page.locator('main')).toContainText('Discount · ROSES15');
 });
 
-test('removing the code restores the total', async ({page}) => {
-  await openSite(page, 'bag', 'fa');
-  await page.getByRole('textbox', {name: 'کد تخفیف'}).fill('WELCOME۱۰');
-  await page.getByRole('button', {name: 'اعمال'}).click();
-  await expect(page.locator('main aside')).toContainText('تخفیف · WELCOME10');
-  await page.getByRole('button', {name: 'حذف کد'}).click();
-  await expect(page.locator('main aside')).not.toContainText('WELCOME10');
-  await expect(page.getByRole('textbox', {name: 'کد تخفیف'})).toBeFocused();
-});
+for (const lang of ['en', 'fa']) {
+  test(`removing the code restores the total (${lang})`, async ({page}, info) => {
+    const fa = lang === 'fa';
+    await openSite(page, 'bag', lang);
+    const summary = page.locator('main aside');
+    const total = summary.locator('.ag-osum__sum--strong dd .ag-price__now');
+    const code = page.getByRole('textbox', {name: fa ? 'کد تخفیف' : 'Promo code'});
+    // Independent expected amounts for the sample bag and WELCOME10's ten-percent discount.
+    const original = fa ? '۸٬۴۵۰٬۰۰۰ تومان' : '8,450,000 Toman';
+    const discounted = fa ? '۷٬۶۰۵٬۰۰۰ تومان' : '7,605,000 Toman';
+    await expect(total).toHaveCount(1);
+    await expect(total).toHaveText(original);
+    await code.fill(fa ? 'WELCOME۱۰' : 'welcome 10');
+    await page.getByRole('button', {name: fa ? 'اعمال' : 'Apply', exact: true}).click();
+    await expect(summary).toContainText(fa ? 'تخفیف · WELCOME10' : 'Discount · WELCOME10');
+    await expect(total).toHaveText(discounted);
+    await page.getByRole('button', {name: fa ? 'حذف کد' : 'Remove code', exact: true}).click();
+    await expect(summary).not.toContainText('WELCOME10');
+    await expect(total).toHaveText(original);
+    await expect(code).toBeFocused();
+    await info.attach('promo-total-restoration', {
+      body: JSON.stringify(
+        {lang, original, discounted, restored: await total.innerText()},
+        null,
+        2
+      ),
+      contentType: 'application/json'
+    });
+  });
+}
 
 test('home occasions open the shop filtered', async ({page}) => {
   await openSite(page, 'home', 'en');
