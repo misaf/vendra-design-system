@@ -1,12 +1,12 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-236 Darwin correction](DARWIN-CONTENT-VISUAL-EVIDENCE.md)
-resolves ten stale content expectations after counterfactual review. Darwin dev and production each pass all 76 default page comparisons, with two workers,
-zero skips/retries and snapshot updates explicitly disabled.
-The [stage-235 audit](FULL-PAGE-VISUAL-EVIDENCE.md) retains Linux dev's three initial failures and
-separate serial passes; their causes remain open. Linux production's 76/76 result is historical
-stage-235 evidence, not a fresh Linux execution in this stage.
+**Atomic Design migration acceptance remains incomplete.** The [stage-237 diagnostics](LINUX-CAPTURE-DIAGNOSTICS.md)
+reproduce Linux map label displacement and identify a stale width measured during a capture-time
+font-loading cycle. A focused correction is still pending. Post controls distinguish active route
+readiness from four unfinished background modules; the original timeout's scheduling cause remains open.
+Stage 236 passes all 76 Darwin default comparisons in dev/production; stage 235 Linux production
+passes 76/76. These separate results do not erase stage 235's original Linux dev failures.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -147,7 +147,7 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Linux dev readiness/contact capture failures and older latency/focus observations have unresolved causes. | Preserve the 73/76 first run and three serial passes separately. Trace defined cache/CPU/module/clock/map states; do not infer a cause or refresh baselines from later passes. |
+| **1 — next stage** | Linux contact tooltip retains an offset measured during a later font-loading cycle in the reproduced capture. Original post scheduling and older latency/focus observations remain open. | Test lifecycle-safe repositioning after subsequent font loads; verify capture/viewport regressions and cleanup before a narrow correction. Keep post active-load/evaluation timing separate. See [stage 237](LINUX-CAPTURE-DIAGNOSTICS.md); retain the original 73/76 first run and separate repeats. |
 | **2** | Full visual acceptance includes more than the default page suite. | Stage 236 corrects the scoped Darwin expectations; stage 235 Linux production passes 76/76. Verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
 | **3** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
@@ -189,3 +189,14 @@ zero skips/retries and snapshot updates explicitly disabled.
 All other 248 PNG hashes remain unchanged. No runtime/test/configuration/tolerance changes; root
 check and production build pass. Temporary test removed; discovery remains 1,783 dev/1,387 production.
 Next: controlled Linux dev readiness/map diagnosis, with earlier failures retained independently.
+
+## Stage 237 follow-up: Linux capture/readiness diagnosis
+
+Stage 237 [diagnoses Linux capture/readiness symptoms](LINUX-CAPTURE-DIAGNOSTICS.md).
+Fixed-clock CPU4 map probes reproduce the EN failure exactly and FA within one raw pixel; public
+tooltip update restores both baselines exactly. FA callback instrumentation records a transient
+1×1 viewport/font-loading phase measuring width98 instead of101, leaving the observed offset.
+Six post controls show the four unfinished background modules can remain held while the post
+renders; an active-post hold produces the old missing-main signature and recovers after release.
+No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
+Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.

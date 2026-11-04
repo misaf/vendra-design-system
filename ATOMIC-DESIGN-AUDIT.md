@@ -205,3 +205,12 @@ verified separately from the shared Persian separator. Adopted images are retain
 captures; all other 248 snapshots remain unchanged. Darwin dev and production each pass all 76 default page comparisons, with two workers,
 zero skips/retries and snapshot updates explicitly disabled.
 Linux development readiness/map causes and deeper state/platform/backend acceptance remain open.
+
+Stage 237 [diagnoses Linux capture/readiness symptoms](LINUX-CAPTURE-DIAGNOSTICS.md).
+Fixed-clock CPU4 map probes reproduce the EN failure exactly and FA within one raw pixel; public
+tooltip update restores both baselines exactly. FA callback instrumentation records a transient
+1×1 viewport/font-loading phase measuring width98 instead of101, leaving the observed offset.
+Six post controls show the four unfinished background modules can remain held while the post
+renders; an active-post hold produces the old missing-main signature and recovers after release.
+No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
+Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.

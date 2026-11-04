@@ -6038,6 +6038,17 @@ registrations remain 1,783 dev/1,387 production. Linux first-run failures are no
 Next: controlled Linux development readiness/contact-map diagnosis; preserve remaining historical,
 state, physical/AT and backend gates.
 
+## Stage 237 checkpoint: Linux capture/readiness diagnosis
+
+Stage 237 [diagnoses Linux capture/readiness symptoms](LINUX-CAPTURE-DIAGNOSTICS.md).
+Fixed-clock CPU4 map probes reproduce the EN failure exactly and FA within one raw pixel; public
+tooltip update restores both baselines exactly. FA callback instrumentation records a transient
+1×1 viewport/font-loading phase measuring width98 instead of101, leaving the observed offset.
+Six post controls show the four unfinished background modules can remain held while the post
+renders; an active-post hold produces the old missing-main signature and recovers after release.
+No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
+Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.
+
 ## Adding components
 
 ```sh
