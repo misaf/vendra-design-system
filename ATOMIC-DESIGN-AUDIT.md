@@ -214,3 +214,14 @@ Six post controls show the four unfinished background modules can remain held wh
 renders; an active-post hold produces the old missing-main signature and recovers after release.
 No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
 Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.
+
+Stage 238 [corrects map labels after later font loads](MAP-FONT-LOAD-EVIDENCE.md).
+PlacesMap refreshes current tooltips on FontFaceSet loading completion and removes the listener
+on unmount. Three new component regressions fail before the correction and pass afterward.
+The Linux CPU4 capture again measures temporary narrow widths, then automatically recenters labels;
+first/second PNGs differ from old baselines by only one low-amplitude zoom-control pixel each.
+All 68 targeted browser cases pass across Darwin/Linux dev/production, with no retries/skips;
+unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory is 1,786 dev /
+1,387 production. Contact/lifecycle comparisons use snapshot updates disabled.
+No baseline or screenshot-policy changes. The post readiness deadline and tiny-viewport attribution
+remain separate. Next: isolate active post load/evaluation timing; retain broader acceptance gates.
