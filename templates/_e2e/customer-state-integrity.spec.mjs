@@ -453,6 +453,177 @@ for (const lang of ['en', 'fa']) {
     expect(await scanAxe(page)).toEqual([]);
   });
 
+  for (const action of ['save', 'remove']) {
+    test(`offline saved ${action} keeps local intent and reconnect does not replay (${lang})`, async ({
+      page,
+      context
+    }, info) => {
+      const target = 'VF-7K2M4Q',
+        other = 'VF-3HX9TP';
+      await page.clock.install({time: MORNING});
+      await page.addInitScript(
+        ({target, other, action}) => {
+          const key = 'vendra-template:' + location.pathname;
+          if (!sessionStorage.getItem(key))
+            sessionStorage.setItem(
+              key,
+              JSON.stringify({
+                saved: action === 'save' ? [other] : [target, other]
+              })
+            );
+        },
+        {target, other, action}
+      );
+      await openSite(
+        page,
+        action === 'save' ? 'product' : 'saved',
+        lang,
+        action === 'save' ? {id: target} : {}
+      );
+      const initialMap = action === 'save' ? {[other]: 702} : {[other]: 702, [target]: 701};
+      await page.evaluate(initialMap => {
+        localStorage.setItem('vendra-saved-map', JSON.stringify(initialMap));
+        window.VF_API.setBase('/__offline-saved-api');
+      }, initialMap);
+      const privateState = () =>
+        page.evaluate(() => ({
+          bag: window.__vfSite.state.bag,
+          delivery: window.__vfSite.state.delivery,
+          paymentDraft: window.__vfSite.state.paymentDraft,
+          customerId: window.__vfSite.state.customerId,
+          orders: window.__vfSite.state.orders
+        }));
+      const before = await privateState();
+      const saved = () => page.evaluate(() => window.__vfSite.state.saved);
+      const mapping = () =>
+        page.evaluate(() => JSON.parse(localStorage.getItem('vendra-saved-map')));
+      const save = () => visibleButton(page, fa ? 'ذخیره این طرح' : 'Save this design');
+      const card = () =>
+        page
+          .locator('main .ag-product')
+          .filter({has: page.locator('.ag-product__name').filter({hasText: target})});
+      const requests = [],
+        failures = [],
+        errors = [];
+      const isWrite = request =>
+        ['POST', 'DELETE'].includes(request.method()) &&
+        new URL(request.url()).pathname.startsWith(
+          '/__offline-saved-api/api/customers/saved-items'
+        );
+      page.on('request', request => {
+        if (isWrite(request))
+          requests.push({
+            method: request.method(),
+            path: new URL(request.url()).pathname,
+            body: request.method() === 'POST' ? request.postDataJSON() : null
+          });
+      });
+      page.on('requestfailed', request => {
+        if (isWrite(request)) failures.push(request.failure()?.errorText);
+      });
+      page.on('pageerror', error => errors.push(error.message));
+      const feedback = page.getByRole('alert').filter({
+        hasText: fa
+          ? 'همگام‌سازی انجام نشد؛ اطلاعات محلی حفظ شده است.'
+          : 'Server sync failed; your local data is kept.'
+      });
+      const band = page.locator('.ag-offline');
+      let release;
+      const held = new Promise(resolve => (release = resolve));
+      try {
+        await context.setOffline(true);
+        await expect(band).toContainText(fa ? 'اتصال اینترنت شما قطع است.' : 'You’re offline.');
+        // No route exists for the first write: require a genuine browser network failure.
+        if (action === 'save') await save().click();
+        else
+          await card()
+            .getByRole('button', {name: fa ? 'حذف از ذخیره‌ها' : 'Remove from saved', exact: true})
+            .click();
+        await expect(feedback).toBeVisible();
+        await expect.poll(() => failures.length).toBe(1);
+        expect(failures[0]).toContain('ERR_INTERNET_DISCONNECTED');
+        expect(requests).toHaveLength(1);
+        expect(requests[0].method).toBe(action === 'save' ? 'POST' : 'DELETE');
+        if (action === 'remove') {
+          expect(requests[0].path).toBe('/__offline-saved-api/api/customers/saved-items/701');
+          await expect(page.locator('#vf-saved-undo')).toBeFocused();
+          await expect(card()).toHaveCount(0);
+        } else await expect(save()).toHaveAttribute('aria-pressed', 'true');
+        const offlineSaved = await saved();
+        expect(offlineSaved.includes(target)).toBe(action === 'save');
+        expect(offlineSaved).toContain(other);
+        expect(await mapping()).toEqual(initialMap);
+        expect(await privateState()).toEqual(before);
+        await page.route('**/__offline-saved-api/**', async route => {
+          if (route.request().method() === 'POST') {
+            await held;
+            await route.fulfill({json: {id: 803}});
+          } else await route.fulfill({status: 204});
+        });
+        for (let reconnect = 0; reconnect < 2; reconnect++) {
+          if (reconnect) await context.setOffline(true);
+          if (reconnect)
+            await expect(band).toContainText(fa ? 'اتصال اینترنت شما قطع است.' : 'You’re offline.');
+          await context.setOffline(false);
+          await expect(band).toHaveText(fa ? 'دوباره آنلاین هستید.' : 'You’re back online.');
+          await page.clock.runFor(1000);
+          expect(requests).toHaveLength(1);
+          expect(await saved()).toEqual(offlineSaved);
+          expect(await mapping()).toEqual(initialMap);
+        }
+        if (action === 'save') {
+          // The failed POST left no server ID: toggling off is local, then on explicitly retries.
+          await save().click();
+          await expect(save()).toHaveAttribute('aria-pressed', 'false');
+          expect(requests).toHaveLength(1);
+          await save().click();
+        } else await page.locator('#vf-saved-undo').click();
+        await expect.poll(() => requests.length).toBe(2);
+        expect(requests[1]).toEqual({
+          method: 'POST',
+          path: '/__offline-saved-api/api/customers/saved-items',
+          body: {sellableType: 'product', sellableId: 101, metadata: {slug: target}}
+        });
+        expect(await saved()).toContain(target);
+        expect(await mapping()).toEqual(initialMap);
+        release();
+        await expect.poll(mapping).toEqual({[other]: 702, [target]: 803});
+        expect((await saved()).filter(id => id === target)).toHaveLength(1);
+        expect(await saved()).toContain(other);
+        expect(await privateState()).toEqual(before);
+        expect(requests).toHaveLength(2);
+        expect(failures).toHaveLength(1);
+        // Observe recovery feedback without blessing stale shared-error state as a contract.
+        const integrationErrorAfterSuccess = await page.evaluate(
+          () => !!window.__vfSite.state.integrationError
+        );
+        await page.goto(siteUrl('saved', lang));
+        await expect(card()).toHaveCount(1);
+        await expect(page.locator('main .ag-product__name')).toContainText([target, other]);
+        expect(await mapping()).toEqual({[other]: 702, [target]: 803});
+        expect(await privateState()).toEqual(before);
+        expect(errors).toEqual([]);
+        expect(await scanAxe(page)).toEqual([]);
+        await info.attach('offline-saved-recovery', {
+          body: JSON.stringify({
+            lang,
+            action,
+            requests,
+            failures,
+            reconnectsWithoutReplay: 2,
+            savedAfterReload: await saved(),
+            mappingAfterReload: await mapping(),
+            integrationErrorAfterSuccess
+          }),
+          contentType: 'application/json'
+        });
+      } finally {
+        release();
+        await context.setOffline(false);
+      }
+    });
+  }
+
   test(`initial saved-list loading keeps newer customer actions (${lang})`, async ({page}) => {
     await page.addInitScript(() => {
       window.VF_API = {
