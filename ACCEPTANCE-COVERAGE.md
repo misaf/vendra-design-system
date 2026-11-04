@@ -1,14 +1,14 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-239 post controls](POST-EVALUATION-READINESS.md)
-verify the successful-HTTP/unfinished-evaluation boundary and recovery at the existing helper deadline.
-All 64 route lifecycle cases pass on Darwin/Linux dev/production, with one worker, no skips/retries
-and snapshot updates disabled. Check/build, unchanged baseline hashes and discovery pass; inventory
-is 1,790 dev / 1,391 production.
-The original scheduling cause remains unproved. Stage238's map correction and earlier page sweeps
-retain their separate evidence. The next bounded stage maps required state/integrity scenarios;
-no broader acceptance follows from these selected route contracts.
+**Atomic Design migration acceptance remains incomplete.** The [stage-240 state checklist](STATE-INTEGRITY-ACCEPTANCE.md)
+links sixteen required frontend invariants to actual assertions, fresh selected execution and gaps.
+All 96 selected browser cases pass on Darwin dev/production, including distinct TV controls, with
+no skips/retries or snapshot updates. Fresh unit/check/build and unchanged baseline/inventory
+checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
+A confirmed coverage defect redirects the named payment-failure fixture to delivery while axe passes.
+Client duplicate guards and same-page newer-storage tests are not server idempotency or real two-tab
+concurrency evidence. State setup, concurrency, offline writes and backend boundaries remain open.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -149,9 +149,9 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
-| **2** | Full visual acceptance includes more than the default page suite. | Verify required article variants/payment states and current-head broad CI; retain other historical residuals separately from stage238's scoped map correction and earlier default-page sweeps. |
-| **3** | Original post scheduling and older latency/focus observations remain unproved. | Stage239 verifies HTTP-complete/evaluation-pending waiting and recovery. Preserve original traces; reproduce actual workload with evaluation/commit observations before assigning cause or changing global waits. Tiny capture viewport attribution remains separate. |
+| **1 — next stage** | F01: the named failed-payment state fixture does not exercise that state. | Give it valid failure setup and assert heading/status/retry state before axe; review nearby guarded checkout fixtures. See [state checklist](STATE-INTEGRITY-ACCEPTANCE.md). |
+| **2** | Client state integrity has bounded coverage. | Add true same-origin two-tab customer/pending-response checks, a repeated-submit/remount UI scenario and offline-write/reconnect recovery. Keep server reservation/idempotency/payment transactions in their actual service environment. |
+| **3** | Full visual acceptance and historical readiness are separate gates. | Verify required article/payment variants and current-head broad CI; retain original latency/focus traces and stage239's bounded evaluation contract without assuming an unproved cause. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
 This ordering is an evidence-based work sequence, not a declaration that every historical
@@ -228,3 +228,15 @@ is 1,790 dev / 1,391 production.
 No runtime/policy/baseline changes. This establishes the waiting/recovery contract, not the original
 unobserved scheduling cause. Next: explicit state/integrity acceptance mapping; retain old latency
 and other acceptance residuals without adding speculative waits.
+
+## Stage 240 follow-up: state/integrity acceptance
+
+Stage 240 [maps the state/integrity acceptance subset](STATE-INTEGRITY-ACCEPTANCE.md).
+Sixteen explicit frontend invariants are linked to actual browser/unit assertions and residuals.
+A four-case dev probe confirms F01: the named payment-failure axe fixture is redirected to delivery
+and still passes axe. This is a coverage defect, separate from the working refused-payment path.
+All 96 selected browser cases pass on Darwin dev/production, including distinct TV controls, with
+no skips/retries or snapshot updates. Fresh unit/check/build and unchanged baseline/inventory
+checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
+No runtime/test/baseline changes. True cross-tab concurrency, server idempotency and offline writes
+remain unproved. Next: repair F01's payment-state setup and assert the intended state before axe.
