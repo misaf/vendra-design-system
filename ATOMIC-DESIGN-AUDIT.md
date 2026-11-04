@@ -131,7 +131,7 @@ unchanged shared sticky/content-axe/portrait helpers and no runtime UI changes. 
 route now has selected touch coverage; complete state/device acceptance is not implied. Refreshing
 the coverage inventory and remaining gaps is next.
 
-Stage 227 publishes the [current acceptance inventory](ACCEPTANCE-COVERAGE.md): 1,737 registrations
+Stage 227 publishes the [stage-227 acceptance inventory](ACCEPTANCE-COVERAGE-HISTORY.md): 1,737 registrations
 in 120 files, with deliberate skip boundaries, a 19-route flow/state/exclusion matrix and remaining
 visual/hydration/device/AT gates. Fresh combined production execution passes 80 dedicated bilingual
 touch cases, with two workers and no retries/skips. This is selected route evidence, not complete
@@ -175,3 +175,11 @@ stage-197 focus race remain unproven. Twelve controlled module-delay/latest-navi
 cases pass in dev, followed by 16 existing route axe cases; all 28 pass together in production,
 with one worker and no retries. Full tests/check/build pass. No runtime, timeout, baseline or policy
 changes. Discovery is 1,783/125 files. Acceptance matrix/prioritized-gap refresh is next.
+
+Stage 233 publishes the refreshed [current acceptance matrix](ACCEPTANCE-COVERAGE.md), preserving
+[prior coverage history](ACCEPTANCE-COVERAGE-HISTORY.md). Discovery is 1,783 dev/1,387 production
+registrations. All 84 combined dedicated route/map production cases pass without retries/skips.
+Completed prior-head Linux CI has two policy mobile screenshot failures in both broad jobs; unit/
+React 19 pass, and logs establish 76 route axe/74 page screenshot passes per job plus 12 desktop
+hydration passes in dev. Linux artifact diagnosis is the next priority; acceptance remains incomplete.
+No runtime/test/config/baseline changes; npm check and inventory/document-link consistency pass.

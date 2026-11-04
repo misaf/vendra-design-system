@@ -194,6 +194,10 @@ npm --prefix templates run preview -- --base /vendra-design-system/
 
 ## Browser tests
 
+The [current acceptance matrix](../ACCEPTANCE-COVERAGE.md) separates registration, execution,
+known CI blockers and platform/state gaps; [coverage history](../ACCEPTANCE-COVERAGE-HISTORY.md)
+preserves the earlier snapshot and staged follow-ups.
+
 `_e2e/` runs on the installed Google Chrome at 390px and 1280px, reusing a running dev server, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 - **`storefront`, `states`:** axe (WCAG 2.2 AA) on every view and on hidden states (menus, dialogs, validation, `?demo=loading|error`).
@@ -479,3 +483,10 @@ stage-197 focus race remain unproven. Twelve controlled module-delay/latest-navi
 cases pass in dev, followed by 16 existing route axe cases; all 28 pass together in production,
 with one worker and no retries. Full tests/check/build pass. No runtime, timeout, baseline or policy
 changes. Discovery is 1,783/125 files. Acceptance matrix/prioritized-gap refresh is next.
+
+Stage 233 refreshes the [acceptance matrix](../ACCEPTANCE-COVERAGE.md): 1,783 dev/1,387 production
+registrations, with all 84 combined dedicated route/map production cases freshly passing. Completed
+prior-head Linux CI remains red for EN/FA mobile policy screenshots in both broad jobs, despite
+passing unit/React 19, route axe, hydration and other page comparisons. Expected/actual/diff artifact
+diagnosis is next; no baseline refresh is assumed. Historical causes and hardware/backend acceptance
+remain open. This stage changes documentation only and preserves [history](../ACCEPTANCE-COVERAGE-HISTORY.md).

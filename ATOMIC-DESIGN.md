@@ -5963,6 +5963,29 @@ and broad performance/platform gates remain open despite successful controlled c
 Next: refresh the acceptance matrix and prioritized remaining gaps using stages 228–232, retaining
 historical observations and explicit evidence boundaries.
 
+## Stage 233 checkpoint: acceptance matrix and priorities
+
+The refreshed [current acceptance matrix](ACCEPTANCE-COVERAGE.md) reconciles stages 228–232 and
+preserves the old snapshot/follow-ups in [coverage history](ACCEPTANCE-COVERAGE-HISTORY.md). Fresh
+registration discovery is 1,783 dev invocations/125 files and 1,387 production/51 files; skips remain
+explicit. The 19-route matrix separates supported flow assertions, historical explanations,
+unresolved causes and physical/backend/platform exclusions.
+
+A fresh combined production run passes all 84 dedicated touch-route/map cases (42 phone/42 tablet,
+21 EN/21 FA per project), two workers and no retries/skips. npm run check and inventory/link checks
+pass. Other per-stage local results remain prior evidence; no fresh full local browser/visual or
+combined-dev acceptance is implied. Runtime/test/config/baseline sources are unchanged.
+
+Reviewed-head PR #88 Linux CI is now completed and failed: browser 1,508 pass/273 skip/2 fail;
+production 1,188 pass/197 skip/2 fail. Both jobs fail only EN/FA mobile policy screenshots, including
+retry. Logs show 76 route axe passes per job, 74 page screenshot passes per job, and 12 dev desktop
+hydration passes. Unit and React 19 jobs pass. This is evidence on `592448d`, not a claim that this
+stage's PR CI has completed. Original loading/focus causes and other residuals remain open.
+
+Next: diagnose the Linux mobile policy expected/actual/diff artifacts and isolate layout versus
+raster/baseline cause. Baselines/tolerances are not preapproved for refresh. Then proceed through
+the matrix's visual, latency/focus, deeper-state and physical/integration priorities.
+
 ## Adding components
 
 ```sh

@@ -1,7 +1,7 @@
 # Storefront acceptance evidence — stage 219
 
 For the refreshed route matrix, current registration counts and combined production results, see
-[Acceptance coverage — stage 227](ACCEPTANCE-COVERAGE.md). The original sections below remain a
+[Acceptance coverage — stage 233](ACCEPTANCE-COVERAGE.md). The original sections below remain a
 historical checkpoint; later fixes and focused results are recorded in Follow-up progress.
 
 Reviewed 2026-11-04 against stage-218 commit
@@ -224,3 +224,11 @@ stage-197 focus race remain unproven. Twelve controlled module-delay/latest-navi
 cases pass in dev, followed by 16 existing route axe cases; all 28 pass together in production,
 with one worker and no retries. Full tests/check/build pass. No runtime, timeout, baseline or policy
 changes. Discovery is 1,783/125 files. Acceptance matrix/prioritized-gap refresh is next.
+
+Stage 233 replaces the current [acceptance matrix](ACCEPTANCE-COVERAGE.md) and preserves the prior
+snapshot/follow-ups in [coverage history](ACCEPTANCE-COVERAGE-HISTORY.md). Fresh discovery is
+1,783 dev/1,387 production registrations; the combined 84-case dedicated touch-route/map production
+set passes without retries. Prior-head Linux CI ran broadly but fails EN/FA mobile policy screenshots
+in both browser jobs. Those artifacts, not a speculative baseline refresh, are the next priority.
+Other historical causes and physical/platform/state acceptance remain explicitly open. Docs/checks
+only; no runtime, tests, baselines, tolerances or CI configuration changes.
