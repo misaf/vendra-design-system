@@ -194,3 +194,10 @@ persist. Four permanent bilingual phone/tablet lifecycle regressions pass in dev
 active-level/animation/marker and unload/remount checks rather than requiring every container to
 have children. No runtime or baseline change is needed. The exact original scheduling asymmetry,
 full visual/map/network/heap/device/AT acceptance and other observations remain separate limits.
+
+Stage 229 [scopes the shop photo capture observation](SHOP-IMAGE-EVIDENCE.md). Retained
+residuals are confirmed; all four historical decoded repeats are exact, but the original cause is
+not isolated. Four bilingual 768/1920 diagnostics pass in dev/production across direct, reload and
+routed entry, attaching image readiness and repeated main captures. No runtime or visual-policy/
+baseline changes. Discovery is 1,753/122 files; historical configurations are not dedicated device
+acceptance. Bag/checkout thumbnail observations and broader visual/platform gates remain open.

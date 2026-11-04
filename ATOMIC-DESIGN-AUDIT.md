@@ -145,3 +145,10 @@ loaded tiles, marker, zoom completion, resize and routed unload/remount/history/
 or baseline change. Discovery is now 1,745/121 files; stage-227 inventory is labeled a snapshot.
 Original scheduling asymmetry and broader map/visual/network/heap/platform acceptance remain open.
 Shop photo/decode capture diagnostics are next.
+
+Stage 229 [scopes the shop photo capture observation](SHOP-IMAGE-EVIDENCE.md). Retained
+residuals are confirmed; all four historical decoded repeats are exact, but the original cause is
+not isolated. Four bilingual 768/1920 diagnostics pass in dev/production across direct, reload and
+routed entry, attaching image readiness and repeated main captures. No runtime or visual-policy/
+baseline changes. Discovery is 1,753/122 files; historical configurations are not dedicated device
+acceptance. Bag/checkout thumbnail observations and broader visual/platform gates remain open.
