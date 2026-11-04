@@ -291,3 +291,15 @@ All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. 
 Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
 No CSS or baseline changes; client guarding does not establish backend exactly-once behavior.
 Next: offline mutation/reconnect controls.
+
+## Stage 245 follow-up: offline checkout recovery
+
+Stage 245 [verifies offline checkout and explicit reconnect recovery](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md).
+Actual browser-offline fetch failure must preserve bag, delivery, payment draft and order state.
+Two reconnects send nothing; Try again only re-enables confirmation. Explicit confirmation sends
+one controlled successful retry with the same payload and produces one local order. The application
+already passes this behavior; no runtime or baseline changes. All 40 selected cases pass across
+Darwin/Linux dev/production with zero skips/retries; focused storefront unit/check/build pass.
+All 258 baselines remain unchanged; inventory increases to 1,804 dev / 1,405 production.
+This is not a persistent queue or a backend exactly-once guarantee.
+Next: saved-item offline write/reconnect controls.

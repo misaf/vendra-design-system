@@ -31,6 +31,132 @@ async function blockStorage(page, block) {
 }
 for (const lang of ['en', 'fa']) {
   const fa = lang === 'fa';
+  test(`offline checkout preserves intent and reconnect waits for explicit retry (${lang})`, async ({
+    page,
+    context
+  }, info) => {
+    await page.clock.install({time: MORNING});
+    await openSite(page, 'bag', lang, {step: 'delivery'});
+    await delivery(page, fa);
+    await page.evaluate(() => window.VF_API.setBase('/__offline-checkout-api'));
+    await page
+      .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
+      .press('Space');
+    const requests = [],
+      failures = [],
+      errors = [];
+    const isCheckout = request =>
+      request.method() === 'POST' &&
+      new URL(request.url()).pathname === '/__offline-checkout-api/api/sales/checkout';
+    page.on('request', request => {
+      if (isCheckout(request)) requests.push(request.postDataJSON());
+    });
+    page.on('requestfailed', request => {
+      if (isCheckout(request)) failures.push(request.failure()?.errorText);
+    });
+    page.on('pageerror', error => errors.push(error.message));
+    const snapshot = () =>
+      page.evaluate(() => ({
+        bag: window.__vfSite.state.bag,
+        delivery: window.__vfSite.state.delivery,
+        paymentDraft: window.__vfSite.state.paymentDraft,
+        customerId: window.__vfSite.state.customerId,
+        orders: window.__vfSite.state.orders,
+        order: window.__vfSite.state.order,
+        lastOrder: window.__vfSite.state.lastOrder
+      }));
+    const before = await snapshot();
+    const place = () => visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order');
+    const failure = page
+      .getByRole('alert')
+      .filter({hasText: fa ? 'سفارش شما ثبت نشد' : 'Your order couldn’t be sent'});
+    const band = page.locator('.ag-offline');
+    let release;
+    const held = new Promise(resolve => (release = resolve));
+    try {
+      await context.setOffline(true);
+      await expect(band).toContainText(fa ? 'اتصال اینترنت شما قطع است.' : 'You’re offline.');
+      // No route exists yet: the browser must reject the real fetch while offline.
+      await place().click();
+      await expect(failure).toBeVisible();
+      await expect.poll(() => failures.length).toBe(1);
+      expect(failures[0]).toContain('ERR_INTERNET_DISCONNECTED');
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(false);
+      await expect(place()).toBeDisabled();
+      expect(requests).toHaveLength(1);
+      expect(await snapshot()).toEqual(before);
+      expect(before.orders).toHaveLength(0);
+      expect(before.order).toBeNull();
+      await page.route('**/__offline-checkout-api/**', async route => {
+        if (isCheckout(route.request())) {
+          await held;
+          await route.fulfill({json: null});
+        } else await route.fulfill({json: {}});
+      });
+      // Observe two reconnects without a retry. This is bounded client observation, not a queue.
+      for (let reconnect = 0; reconnect < 2; reconnect++) {
+        if (reconnect) {
+          await context.setOffline(true);
+          await expect(band).toContainText(fa ? 'اتصال اینترنت شما قطع است.' : 'You’re offline.');
+        }
+        await context.setOffline(false);
+        await expect(band).toHaveText(fa ? 'دوباره آنلاین هستید.' : 'You’re back online.');
+        await page.clock.runFor(1000);
+        await expect(failure).toBeVisible();
+        await expect(place()).toBeDisabled();
+        expect(requests).toHaveLength(1);
+        expect(await snapshot()).toEqual(before);
+      }
+      await visibleButton(page, fa ? 'تلاش دوباره' : 'Try again').click();
+      await expect(failure).toHaveCount(0);
+      await expect(place()).toBeEnabled();
+      expect(requests).toHaveLength(1);
+      expect(await snapshot()).toEqual(before);
+      await place().click();
+      await expect.poll(() => requests.length).toBe(2);
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(true);
+      await expect(place()).toBeDisabled();
+      expect(await snapshot()).toEqual(before);
+      expect(requests[1]).toEqual(requests[0]);
+      expect(requests[1].gateway).toBe('cod');
+      release();
+      await expect
+        .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
+        .toBe(false);
+      await expect(page.getByRole('heading', {level: 1})).toContainText(fa ? 'سپاس' : 'Thank you');
+      const after = await snapshot();
+      expect(after.bag).toEqual([]);
+      expect(after.orders).toHaveLength(1);
+      expect(after.order.id).toBe(after.orders[0].id);
+      expect(after.lastOrder.id).toBe(after.order.id);
+      expect(after.order.customerId).toBe(before.customerId);
+      expect(after.order.lines.map(line => line.qty)).toEqual(before.bag.map(line => line.qty));
+      expect(after.order.delivery.address).toBe(before.delivery.address);
+      expect(requests).toHaveLength(2);
+      expect(failures).toHaveLength(1);
+      expect(errors).toEqual([]);
+      expect(await scanAxe(page)).toEqual([]);
+      await info.attach('offline-checkout-recovery', {
+        body: JSON.stringify({
+          lang,
+          requests,
+          failures,
+          reconnectsWithoutReplay: 2,
+          orderIds: after.orders.map(order => order.id),
+          preservedBeforeRetry: true
+        }),
+        contentType: 'application/json'
+      });
+    } finally {
+      release();
+      await context.setOffline(false);
+    }
+  });
+
   test(`late checkout responses survive repeated submission and remount (${lang})`, async ({
     page
   }, info) => {
