@@ -198,3 +198,18 @@ components 256. Prior inventories and test runs remain snapshots. The historical
 is accounted for in its forced-focus path; normal keyboard clear is now directly verified. This
 does not establish screen-reader activation, IME, real soft keyboards or all-browser acceptance.
 Other gates remain open. Next: historical route loading/focus timeout lifecycle diagnostics.
+
+## Stage 232 follow-up: route readiness/focus
+
+[ROUTE-LIFECYCLE-EVIDENCE.md](ROUTE-LIFECYCLE-EVIDENCE.md) shows unfinished app modules at retained
+stage-200/214 readiness assertion failures, before axe. The load-latency cause and stage-197 scratch
+inactive-heading failure remain unresolved. Twelve new default-mobile/desktop cases gate module
+loading, initial focus, latest navigation ownership, history and invalid-policy final-heading focus.
+They pass in dev with a separate 16-case existing route axe run; all 28 pass together in production,
+one worker and no retries. These are controlled non-touch Chromium paths, not latency or complete
+platform acceptance. No runtime, global timeout/retry, baseline or visual-policy changes.
+
+Discovery is 1,783 invocations/125 files: mobile/desktop 701 each, phone/tablet 51 each, TV 23,
+components 256. The new file adds six executions per default project. Prior counts/results remain
+snapshots. Next: refresh the acceptance matrix/prioritized gaps using stages 228–232. Historical
+residuals, performance and other platform/state gates remain open.

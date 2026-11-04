@@ -168,3 +168,10 @@ cases check filtering and recovery. All 13 dev/eight production cases and full t
 pass without retries. README callback-focus wording is corrected; no runtime or baseline changes.
 Discovery is 1,771/124 files. AT/IME/soft-keyboard acceptance remains separate. Historical route
 loading/focus timeout diagnostics are next.
+
+Stage 232 [scopes historical loading/focus failures](ROUTE-LIFECYCLE-EVIDENCE.md). Retained
+readiness failures have unfinished modules before axe; their slow-load cause and the original
+stage-197 focus race remain unproven. Twelve controlled module-delay/latest-navigation/final-focus
+cases pass in dev, followed by 16 existing route axe cases; all 28 pass together in production,
+with one worker and no retries. Full tests/check/build pass. No runtime, timeout, baseline or policy
+changes. Discovery is 1,783/125 files. Acceptance matrix/prioritized-gap refresh is next.
