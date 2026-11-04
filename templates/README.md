@@ -407,3 +407,13 @@ reload/return. All twelve cases pass in dev and production with unchanged shared
 Automatic field focus is checked before corrective scrolling; content axe and portrait geometry
 remain distinct evidence. Real SMS/WebOTP/backend identity and physical-device/soft-keyboard/AT
 acceptance are unverified. Editorial/help-route touch coverage is next.
+
+Stage 224 adds touch-phone/tablet editorial/help acceptance for journal filtering/pagination,
+article return navigation, FAQ disclosures/contact navigation and policy switches/anchors. It
+fixes phone contents-panel overlap by strengthening the existing compact static-position rule;
+landscape-tablet side contents stay sticky. All sixteen bilingual cases pass in dev/production,
+plus four policy screenshots and four policy axe checks. Two reviewed Darwin phone baselines are
+refreshed for rasterization changes; the old-sticky counterfactual matches their original images
+exactly. custom.css is regenerated; shared helpers and desktop/Linux baselines are unchanged.
+Weddings/presentation touch flows are next; hardware/soft-keyboard/AT
+acceptance and older observations remain unverified.

@@ -233,7 +233,8 @@ html {
   .vf-info-notice {
     margin-block-end: var(--space-6);
   }
-  .vf-info-toc {
+  /* Outrank the shared fit-based sticky rule once contents stack above the document. */
+  .vf-page .vf-info-toc.vf-sticky-panel {
     position: static;
   }
 }

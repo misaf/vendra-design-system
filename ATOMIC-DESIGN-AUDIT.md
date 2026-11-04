@@ -109,3 +109,11 @@ lookup mismatch/normalized-phone recovery. All twelve pass in dev and production
 shared sticky/content-axe/portrait helpers. Single profile errors intentionally focus the email
 input. Real SMS/backend identity, deeper account/order states and physical-device/AT acceptance
 remain unverified. Editorial/help-route touch coverage is next.
+
+Stage 224 adds sixteen bilingual touch-phone/tablet editorial/help cases (journal, post, FAQ,
+policy). It fixes the confirmed phone policy-anchor overlap by making the existing compact static
+contents rule outrank the shared fit-based sticky rule. Normal anchor landing is checked without
+corrective scrolling; wider side panels remain sticky. All sixteen pass in dev/production, plus
+four policy screenshots and four policy axe checks. Two Darwin phone images are refreshed after
+reviewed rasterization changes; old-sticky counterfactuals exactly match their original baselines. Weddings/presentation touch coverage
+is next; physical-device/AT and earlier visual/map/loading gaps remain open.

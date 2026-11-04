@@ -5714,6 +5714,40 @@ and older visual/map/loading observations remain outside this stage.
 Next: extend dedicated touch/tablet acceptance to editorial and help routes (journal/post, FAQ and
 policy), preserving explicit content-scan, sticky reachability and physical-device evidence limits.
 
+## Stage 224 checkpoint: touch editorial/help routes and phone policy anchors
+
+Added device-editorial.spec.mjs to touch-phone/tablet discovery. Sixteen bilingual cases cover
+journal pagination/reload/search reset, touch clear, empty-category recovery, article entry/reload/
+return, FAQ disclosure open/close in each group with contact navigation, and policy switching,
+contents anchors and reload. The unchanged shared device helpers check sticky-shell geometry,
+center hit testing, content axe with bottom-bar restoration, and tablet portrait reachability.
+Phone uses 390×844; tablet uses 1180×820 for interactions/content scans and 768×1024 for selected
+control geometry. No WhatsApp action is activated. Selected articles use the journal featured story;
+this does not cover every classic/block article, filter or FAQ answer.
+
+Initial execution passed fourteen cases and failed the two phone policy cases: the contents link
+updated the fragment, but its heading was obscured. After awaiting route-heading focus, a diagnostic
+found the target heading at y=165px while elementFromPoint hit the sticky contents link above it.
+The existing phone .vf-info-toc static rule lost to the shared .vf-sticky-panel[data-vf-fits] rule.
+Strengthened only the compact-layout selector in information-pages.css so the contents panel stays
+in document flow below 768px. Tablet/desktop side-by-side contents remain sticky when they fit.
+Regression checks assert static phone/sticky landscape-tablet contents and require the destination
+heading to be unobscured immediately after the anchor tap, without corrective test scrolling.
+
+All sixteen final cases pass in dev and production with one worker and no retries. Four
+policy screenshots and four policy axe checks pass at mobile/desktop sizes with baseline updates
+disabled after two reviewed Darwin phone images are refreshed. Their original failures were 54
+English/71 Persian comparator pixels; reapplying the old sticky positioning in disposable pages
+reproduces both original baselines exactly. The fixed rendering changes small antialiasing details,
+not content or layout dimensions. Desktop/Linux baselines are untouched; Linux was not run locally.
+Full npm tests, generated-output/formatting/CSS checks and production build pass.
+The CSS build regenerates custom.css; shared helpers and dependencies are unchanged. Physical
+devices, soft keyboards, assistive technology, complete route/state acceptance and historical
+visual/map/loading observations remain outside this stage.
+
+Next: dedicated touch/tablet acceptance for weddings and presentation inquiry/shortlist flows,
+without activating external inquiry or order actions; retain the documented evidence limits.
+
 ## Adding components
 
 ```sh

@@ -143,3 +143,18 @@ full npm test/check and production build pass. Existing device helpers/content-a
 is unchanged. This covers local demo identity/orders, not real SMS/WebOTP, backend authentication
 or authorization. Editorial/help routes, deeper account/order states, physical devices, soft keyboards,
 assistive technology and older visual/map/loading observations remain open.
+
+Stage 224 adds sixteen bilingual dedicated touch-phone/tablet editorial/help cases: journal
+pagination/filter/empty recovery, article entry/reload/return, FAQ disclosures/contact navigation,
+and policy switching/anchors/reload. The first run passed fourteen and failed two phone policy
+anchors: the contents panel remained sticky over the target because its generic fit rule outranked
+the existing compact static rule. A stronger compact selector restores document flow; tests assert
+phone static/tablet sticky positions and unobscured anchor headings before corrective scrolling.
+All sixteen final cases pass in dev and production; four existing policy screenshots and four
+policy axe checks pass with updates disabled after refreshing only the two reviewed Darwin phone
+policy baselines (54/71 comparator-pixel changes). A disposable old-sticky counterfactual matches
+both original baselines exactly. Desktop/Linux baselines are untouched; Linux is not locally
+verified. Generated custom.css is rebuilt from the source. Full npm test/check and production build pass.
+Device helper/content-scan/portrait policy is unchanged. Selected editorial/help states do not
+establish complete content coverage, physical-device, soft-keyboard or assistive-technology
+acceptance. Weddings/presentation touch flows and older visual/map/loading observations remain open.
