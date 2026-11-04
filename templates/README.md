@@ -449,3 +449,10 @@ map-lifecycle cases pass in dev/production without runtime or baseline changes. 
 current tiles, centered marker, completed zoom, resize, routed unload/remount/history and reload.
 Discovery now registers 1,745 invocations in 121 files; the stage-227 inventory remains a snapshot.
 Full map/network/heap/visual/platform acceptance is not implied. Shop image/decode diagnostics are next.
+
+Stage 229 [scopes the shop photo capture observation](../SHOP-IMAGE-EVIDENCE.md). Retained
+residuals are confirmed; all four historical decoded repeats are exact, but the original cause is
+not isolated. Four bilingual 768/1920 diagnostics pass in dev/production across direct, reload and
+routed entry, attaching image readiness and repeated main captures. No runtime or visual-policy/
+baseline changes. Discovery is 1,753/122 files; historical configurations are not dedicated device
+acceptance. Bag/checkout thumbnail observations and broader visual/platform gates remain open.

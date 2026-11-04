@@ -153,3 +153,17 @@ components 254. Counts above remain the stage-227 snapshot; its 80-case combined
 is prior evidence, and this stage freshly executes only the four added cases in each target.
 The precise historical scheduling difference, full map/visual/device/AT acceptance and other older
 observations are not declared resolved. Shop photo/decode capture diagnostics are the next stage.
+
+## Stage 229 follow-up: shop image capture
+
+[SHOP-IMAGE-EVIDENCE.md](SHOP-IMAGE-EVIDENCE.md) confirms the retained photo residuals and exact
+historical decoded repeats without declaring the original cause resolved. Four new desktop-project
+diagnostics (English/Persian × 768/1920, touch at 768, TV mode at 1920) pass in dev/production,
+one worker and no retries. Direct/reload/routed entry each record settled/decoded image state and
+exact consecutive main captures; this is current same-page repeatability, not cross-commit parity.
+No baseline, shared settling helper or tolerance changes. No new axe/device acceptance claim.
+
+Discovery is now 1,753 invocations/122 files: mobile/desktop 687 each, phone/tablet 51 each, TV 23,
+components 254. The new file adds four deliberate mobile skips and four desktop executions. Prior
+stage-227/228 counts remain snapshots; earlier route/map suites were not rerun. Next: historical
+bag/checkout thumbnail capture diagnostics. Other listed acceptance gates remain open.

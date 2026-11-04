@@ -5870,6 +5870,28 @@ hardware/keyboard/AT acceptance remain unverified by these tests.
 Next: diagnose historical shop photo/decode capture variation with targeted image instrumentation
 and unchanged visual policy; retain the other acceptance gates and their evidence boundaries.
 
+## Stage 229 checkpoint: shop image capture diagnosis
+
+[SHOP-IMAGE-EVIDENCE.md](SHOP-IMAGE-EVIDENCE.md) records fresh RGBA verification of retained
+stage-210 residuals and four exact historical decoded repeats. The wide original visibly contains
+a blank fourth photo. Original failing captures lack selected-resource/decode/paint state, and the
+repeat changed viewport preparation and decoding together, so the precise cause remains unproven.
+No runtime correction or screenshot-policy/baseline change is justified by this evidence.
+
+Four permanent English/Persian × 768/1920 capture diagnostics pass in dev and production, one worker
+and no retries, covering direct entry, reload and real same-document home-to-shop navigation.
+They attach ordinary-settled/explicitly-decoded image state plus consecutive exact main PNGs,
+check positive natural/rendered dimensions, no placeholder, full opacity and unchanged main size,
+and restore the viewport. These historical configurations run in desktop with touch at 768 and
+TV mode at 1920; they are not a dedicated device acceptance sweep. Full npm test/check/build pass.
+An exploratory hidden-header locator timeout was corrected to the visible studio shop action.
+
+Discovery is 1,753 invocations/122 files (mobile/desktop 687 each, phone/tablet 51 each, TV 23,
+components 254), including four new intentional mobile skips and four desktop executions. Earlier
+route/map suites were not rerun. Historical residuals and broader visual/platform gates remain open.
+Next: scope historical bag/checkout thumbnail capture differences with retained evidence and
+unchanged visual policy.
+
 ## Adding components
 
 ```sh
