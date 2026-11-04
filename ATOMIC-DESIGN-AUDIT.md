@@ -130,3 +130,10 @@ load-more/reload and stock/quick-filter recovery cases. All twelve pass in dev/p
 unchanged shared sticky/content-axe/portrait helpers and no runtime UI changes. Each registered
 route now has selected touch coverage; complete state/device acceptance is not implied. Refreshing
 the coverage inventory and remaining gaps is next.
+
+Stage 227 publishes the [current acceptance inventory](ACCEPTANCE-COVERAGE.md): 1,737 registrations
+in 120 files, with deliberate skip boundaries, a 19-route flow/state/exclusion matrix and remaining
+visual/hydration/device/AT gates. Fresh combined production execution passes 80 dedicated bilingual
+touch cases, with two workers and no retries/skips. This is selected route evidence, not complete
+state/platform acceptance. Only documentation changes; older observations remain historical/open.
+The contact-map lifecycle/markup observation is the next focused diagnosis.
