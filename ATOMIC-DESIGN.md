@@ -5916,6 +5916,30 @@ components 254). These historical configurations are not dedicated device or ful
 Next: audit stage-176 SearchField keyboard-clear behavior using actual keyboard reachability and
 the intended clear/Escape contract. Other visual/platform gates and original residuals remain open.
 
+## Stage 231 checkpoint: SearchField keyboard contract
+
+[SEARCH-KEYBOARD-EVIDENCE.md](SEARCH-KEYBOARD-EVIDENCE.md) reproduces and explains stage-176's
+forced-focus/Enter symptom: inherited press-start handling focuses the input before button keyup,
+so that off-Tab button press does not complete. The documented keyboard path uses Escape in the
+input. Runtime behavior and React Aria context are preserved; no extra Tab stop is introduced.
+
+Two bilingual component cases verify actual Tab/Shift+Tab order, one Enter submit, nonempty/empty
+Escape callback counts, pointer-clear callback counts and input focus. Eight journal/search route
+cases exercise keyboard entry/navigation, live filtering, Enter continuity, Tab past clear and
+Escape recovery from matched/empty-result queries at default mobile/desktop widths. The 390px
+project is non-touch; this is not soft-keyboard or physical-device evidence. Fixture counters are
+test-only. The component README corrects the callback/focus-order statement.
+
+All 13 final development cases (eight route/five component, including bilingual axe) and eight
+production route cases pass, one worker and no retries. Full npm test/check/build pass. Exploratory
+wrong-result-selector/server-ownership setup failures are recorded separately. No runtime, style,
+generated, dependency, baseline or visual-policy changes. Discovery is 1,771/124 files: mobile/
+desktop 695 each, phone/tablet 51 each, TV 23, components 256. Older suites were not rerun.
+
+The historical symptom is scoped to its forced-focus path. Supported keyboard clearing is verified;
+AT activation, IME, physical/soft keyboards, other browsers and broader acceptance remain separate.
+Next: investigate historical route loading/focus timeouts with explicit lifecycle diagnostics.
+
 ## Adding components
 
 ```sh
