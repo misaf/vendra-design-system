@@ -1,15 +1,15 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-241 fixture correction](PAYMENT-STATE-FIXTURE-EVIDENCE.md)
-closes F01: failed payment now uses valid delivery and an observed demo-bank failure, requiring the
-intended heading, focus and retry control before axe. Adjacent payment states also assert identity.
-All 120 selected state/return-flow cases pass on Darwin/Linux dev/production with one worker,
-no skips/retries and snapshot updates disabled. Check/build and consistency checks pass; all 258
-baseline PNGs and 1,790 dev / 1,391 production registrations remain unchanged.
-The [state checklist](STATE-INTEGRITY-ACCEPTANCE.md) retains cross-tab, UI duplicate submission,
-offline-write and backend boundaries. Other named states and real payment guarantees are not
-inferred from these scoped results.
+**Atomic Design migration acceptance remains incomplete.** The [stage-242 two-tab controls](CROSS-TAB-RESPONSE-EVIDENCE.md)
+verify native identity storage events and late checkout success/failure across customers, preserving
+current private state and owner history on return/reload. The existing runtime passes this path.
+All 96 selected cases pass on Darwin/Linux dev/production, including 32 two-tab executions, with
+one worker and no skips/retries or snapshot updates. Check/build, unchanged baseline hashes and
+input checks pass. Inventory increases by eight cases per target to 1,798 dev / 1,399 production.
+Same-account write atomicity, other request races and backend transactions remain separate gaps.
+The [state checklist](STATE-INTEGRITY-ACCEPTANCE.md) retains those limits and the remaining numeric
+promo, repeated UI submission and offline-write assertions.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -18,13 +18,13 @@ stage-219 audit. Counts below are fresh registration discovery; execution is lab
 
 | Project | Dev registered | Production registered | Input / scope |
 | --- | ---: | ---: | --- |
-| mobile | 703 | 633 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
-| desktop | 703 | 633 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
+| mobile | 707 | 637 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
+| desktop | 707 | 637 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
 | touch-phone | 51 | 51 | Touch emulation, normally 390×844; 42 dedicated route/map cases and nine original device registrations. |
 | tablet | 51 | 51 | Touch emulation, normally 1180×820; 42 dedicated route/map cases and nine original device registrations. |
 | tv | 23 | 23 | Chromium keyboard, 1920×1080; original device/TV cases. |
 | components | 259 | excluded | Component fixture host, including three added map font-readiness cases. |
-| **Total / files** | **1,790 / 125** | **1,391 / 51** | Registrations include conditional skips; they are not pass counts. |
+| **Total / files** | **1,798 / 125** | **1,399 / 51** | Registrations include conditional skips; they are not pass counts. |
 
 Production excludes component fixtures, cards, package and hydration specs. Hydration registers
 24 dev invocations, with 12 desktop executions and 12 intentional mobile skips. The six dedicated
@@ -150,8 +150,8 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | True cross-tab customer/response behavior remains unverified. | Add a shared-origin two-tab customer switch with an outstanding response. Assert private-state isolation and response ownership; distinguish localStorage transaction limits from reproduced failures. |
-| **2** | Other client state assertions remain bounded. | Add a numeric promo-removal amount assertion, repeated-submit/remount UI scenario and offline-write/reconnect recovery. Other named state fixtures need their own identity checks. F01 is corrected by stage241. |
+| **1 — next stage** | Promo removal lacks a numeric restored-total assertion. | Extend the existing removal flow with a before/after amount comparison; keep normalization, currency and focus behavior explicit. See the state checklist. |
+| **2** | Client mutation and concurrency guarantees remain bounded. | Add repeated-submit/remount UI and offline-write/reconnect recovery. Stage242 verifies one pending checkout across identity changes; same-account storage writes, other pending responses and actual backend transaction guarantees need separate controls. |
 | **3** | Full visual acceptance and historical readiness are separate gates. | Verify required article/payment variants and current-head broad CI; retain original latency/focus traces and stage239's bounded evaluation contract without assuming an unproved cause. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify server reservation/idempotency/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
@@ -254,3 +254,16 @@ baseline PNGs and 1,790 dev / 1,391 production registrations remain unchanged.
 No application/baseline/policy changes or new registrations. F01 is closed for this fixture;
 true two-tab behavior, repeated-submit UI, offline writes and other acceptance gaps remain open.
 Next: shared-origin two-tab customer switch/pending-response coverage.
+
+## Stage 242 follow-up: native two-tab identity/response controls
+
+Stage 242 [verifies two-tab customer/response ownership](CROSS-TAB-RESPONSE-EVIDENCE.md).
+Real shared-origin tabs switch customer identity through the demo UI while a checkout POST waits.
+Trusted storage events change the submitting tab to B; old success belongs to A, failure creates no
+order, and B's newer private/current state survives. Returning to A and reloading retains its history.
+All 96 selected cases pass on Darwin/Linux dev/production, including 32 two-tab executions, with
+one worker and no skips/retries or snapshot updates. Check/build, unchanged baseline hashes and
+input checks pass. Inventory increases by eight cases per target to 1,798 dev / 1,399 production.
+Existing runtime passes these controls; no application/baseline changes. This does not establish
+same-account write atomicity or backend guarantees. Next: numeric promo-removal amount assertion,
+then repeated-submit/remount and offline-write controls.

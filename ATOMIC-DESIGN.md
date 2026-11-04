@@ -6100,6 +6100,19 @@ No application/baseline/policy changes or new registrations. F01 is closed for t
 true two-tab behavior, repeated-submit UI, offline writes and other acceptance gaps remain open.
 Next: shared-origin two-tab customer switch/pending-response coverage.
 
+## Stage 242 checkpoint: two-tab response ownership
+
+Stage 242 [verifies two-tab customer/response ownership](CROSS-TAB-RESPONSE-EVIDENCE.md).
+Real shared-origin tabs switch customer identity through the demo UI while a checkout POST waits.
+Trusted storage events change the submitting tab to B; old success belongs to A, failure creates no
+order, and B's newer private/current state survives. Returning to A and reloading retains its history.
+All 96 selected cases pass on Darwin/Linux dev/production, including 32 two-tab executions, with
+one worker and no skips/retries or snapshot updates. Check/build, unchanged baseline hashes and
+input checks pass. Inventory increases by eight cases per target to 1,798 dev / 1,399 production.
+Existing runtime passes these controls; no application/baseline changes. This does not establish
+same-account write atomicity or backend guarantees. Next: numeric promo-removal amount assertion,
+then repeated-submit/remount and offline-write controls.
+
 ## Adding components
 
 ```sh

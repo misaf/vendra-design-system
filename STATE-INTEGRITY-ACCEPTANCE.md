@@ -135,3 +135,11 @@ setup with valid delivery and an observed local failed-bank return. Positive fai
 assertions and strengthened adjacent payment-state checks run before axe. The stage240 findings
 above remain historical evidence; F01 is now corrected for that fixture. Other rows' cross-tab,
 idempotency, offline-write and numeric promo-removal limitations remain separate.
+
+## Stage 242 cross-tab ownership coverage
+
+[Two-tab evidence](CROSS-TAB-RESPONSE-EVIDENCE.md) adds native storage-event identity changes while
+a real adapter POST is held. Successful/failed responses preserve B's edits and history; successful
+local orders remain with A and survive A's return/reload. This fills the specific I12 pending
+checkout/identity scenario. I11 same-account read-modify-write concurrency and other rows' real
+backend, offline-write, duplicate UI and numeric promo-removal limits remain open.
