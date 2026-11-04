@@ -575,3 +575,12 @@ input checks pass. Inventory increases by eight cases per target to 1,798 dev / 
 Existing runtime passes these controls; no application/baseline changes. This does not establish
 same-account write atomicity or backend guarantees. Next: numeric promo-removal amount assertion,
 then repeated-submit/remount and offline-write controls.
+
+Stage 243 [asserts numeric promo total restoration](../PROMO-TOTAL-RESTORATION-EVIDENCE.md).
+The existing removal flow now runs EN/FA and requires 8,450,000 → 7,605,000 → 8,450,000 Toman in
+the strong total row, with localized digits/currency, code normalization and restored input focus.
+All 24 selected cases pass across Darwin/Linux dev/production, including 16 removal executions,
+with no skips/retries or snapshot updates. Focused feature unit/check/build and consistency checks
+pass; all 258 baselines are unchanged. Inventory is 1,800 dev / 1,401 production.
+No runtime/baseline changes. The result covers visible sample totals, not backend discount authority.
+Next: repeated-submit/remount UI coverage, followed by offline-write/reconnect controls.

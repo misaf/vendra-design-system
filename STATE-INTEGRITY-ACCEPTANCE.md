@@ -143,3 +143,11 @@ a real adapter POST is held. Successful/failed responses preserve B's edits and 
 local orders remain with A and survive A's return/reload. This fills the specific I12 pending
 checkout/identity scenario. I11 same-account read-modify-write concurrency and other rows' real
 backend, offline-write, duplicate UI and numeric promo-removal limits remain open.
+
+## Stage 243 numeric promo-removal coverage
+
+[Promo restoration evidence](PROMO-TOTAL-RESTORATION-EVIDENCE.md) extends the prior FA removal case
+to both languages and asserts original, discounted and restored localized Toman amounts in the
+actual total row. The missing numeric UI assertion described in I03 is now covered for this sample
+bag/percentage and default widths. Other promo combinations, backend authority and other rows'
+submission/offline/concurrency limits remain separate.

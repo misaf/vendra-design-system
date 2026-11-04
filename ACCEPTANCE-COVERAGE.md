@@ -1,15 +1,14 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-242 two-tab controls](CROSS-TAB-RESPONSE-EVIDENCE.md)
-verify native identity storage events and late checkout success/failure across customers, preserving
-current private state and owner history on return/reload. The existing runtime passes this path.
-All 96 selected cases pass on Darwin/Linux dev/production, including 32 two-tab executions, with
-one worker and no skips/retries or snapshot updates. Check/build, unchanged baseline hashes and
-input checks pass. Inventory increases by eight cases per target to 1,798 dev / 1,399 production.
-Same-account write atomicity, other request races and backend transactions remain separate gaps.
-The [state checklist](STATE-INTEGRITY-ACCEPTANCE.md) retains those limits and the remaining numeric
-promo, repeated UI submission and offline-write assertions.
+**Atomic Design migration acceptance remains incomplete.** The [stage-243 promo checks](PROMO-TOTAL-RESTORATION-EVIDENCE.md)
+require exact original/discounted/restored visible totals and currency in both languages, closing
+the numeric removal assertion gap for this sample. The current runtime passes without changes.
+All 24 selected cases pass across Darwin/Linux dev/production, including 16 removal executions,
+with no skips/retries or snapshot updates. Focused feature unit/check/build and consistency checks
+pass; all 258 baselines are unchanged. Inventory is 1,800 dev / 1,401 production.
+Other payment/quantity/promo combinations, repeated UI submission, offline writes, same-account
+storage races and actual backend transaction authority remain separate acceptance gates.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -18,13 +17,13 @@ stage-219 audit. Counts below are fresh registration discovery; execution is lab
 
 | Project | Dev registered | Production registered | Input / scope |
 | --- | ---: | ---: | --- |
-| mobile | 707 | 637 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
-| desktop | 707 | 637 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
+| mobile | 708 | 638 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
+| desktop | 708 | 638 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
 | touch-phone | 51 | 51 | Touch emulation, normally 390×844; 42 dedicated route/map cases and nine original device registrations. |
 | tablet | 51 | 51 | Touch emulation, normally 1180×820; 42 dedicated route/map cases and nine original device registrations. |
 | tv | 23 | 23 | Chromium keyboard, 1920×1080; original device/TV cases. |
 | components | 259 | excluded | Component fixture host, including three added map font-readiness cases. |
-| **Total / files** | **1,798 / 125** | **1,399 / 51** | Registrations include conditional skips; they are not pass counts. |
+| **Total / files** | **1,800 / 125** | **1,401 / 51** | Registrations include conditional skips; they are not pass counts. |
 
 Production excludes component fixtures, cards, package and hydration specs. Hydration registers
 24 dev invocations, with 12 desktop executions and 12 intentional mobile skips. The six dedicated
@@ -150,8 +149,8 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Promo removal lacks a numeric restored-total assertion. | Extend the existing removal flow with a before/after amount comparison; keep normalization, currency and focus behavior explicit. See the state checklist. |
-| **2** | Client mutation and concurrency guarantees remain bounded. | Add repeated-submit/remount UI and offline-write/reconnect recovery. Stage242 verifies one pending checkout across identity changes; same-account storage writes, other pending responses and actual backend transaction guarantees need separate controls. |
+| **1 — next stage** | Pending checkout needs repeated-submit/remount UI coverage. | Extend the existing request-held UI path with repeated submission attempts and a checkout remount. Assert one request and preservation of the right customer's current state; keep server idempotency separate. |
+| **2** | Client recovery and concurrency guarantees remain bounded. | Add offline-write/reconnect recovery. Stage242 verifies one pending checkout across identity changes; same-account storage writes, other pending responses and actual backend transaction guarantees need separate controls. Stage243 covers the sample promo-removal amount assertion. |
 | **3** | Full visual acceptance and historical readiness are separate gates. | Verify required article/payment variants and current-head broad CI; retain original latency/focus traces and stage239's bounded evaluation contract without assuming an unproved cause. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify server reservation/idempotency/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
@@ -267,3 +266,14 @@ input checks pass. Inventory increases by eight cases per target to 1,798 dev / 
 Existing runtime passes these controls; no application/baseline changes. This does not establish
 same-account write atomicity or backend guarantees. Next: numeric promo-removal amount assertion,
 then repeated-submit/remount and offline-write controls.
+
+## Stage 243 follow-up: numeric promo restoration
+
+Stage 243 [asserts numeric promo total restoration](PROMO-TOTAL-RESTORATION-EVIDENCE.md).
+The existing removal flow now runs EN/FA and requires 8,450,000 → 7,605,000 → 8,450,000 Toman in
+the strong total row, with localized digits/currency, code normalization and restored input focus.
+All 24 selected cases pass across Darwin/Linux dev/production, including 16 removal executions,
+with no skips/retries or snapshot updates. Focused feature unit/check/build and consistency checks
+pass; all 258 baselines are unchanged. Inventory is 1,800 dev / 1,401 production.
+No runtime/baseline changes. The result covers visible sample totals, not backend discount authority.
+Next: repeated-submit/remount UI coverage, followed by offline-write/reconnect controls.
