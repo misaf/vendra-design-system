@@ -209,3 +209,11 @@ through bag/delivery/payment navigation/reload; all four shop cases also pass af
 extraction, in dev/production without retries. Full tests/check/build pass. Exploratory two/three
 phone-bag text pixels/max 1 remain documented; order full-main exactness is not claimed. No runtime,
 baseline or policy changes. Discovery is 1,761/123 files. SearchField keyboard-clear audit is next.
+
+Stage 231 [scopes SearchField keyboard behavior](SEARCH-KEYBOARD-EVIDENCE.md): forced-focus
+Enter follows inherited focus/press semantics, while actual Tab/Enter/Escape clearing works as
+documented. Two new component cases check callback counts/focus; eight journal/search keyboard
+cases check filtering and recovery. All 13 dev/eight production cases and full tests/check/build
+pass without retries. README callback-focus wording is corrected; no runtime or baseline changes.
+Discovery is 1,771/124 files. AT/IME/soft-keyboard acceptance remains separate. Historical route
+loading/focus timeout diagnostics are next.

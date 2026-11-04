@@ -182,3 +182,19 @@ Discovery is 1,761 invocations/123 files: mobile/desktop 691 each, phone/tablet 
 components 254. The new file adds four deliberate mobile skips and four desktop executions. Prior
 inventories remain snapshots; earlier route/map suites were not rerun. Next: stage-176 SearchField
 keyboard-clear audit using actual keyboard reachability. Other acceptance gates remain open.
+
+## Stage 231 follow-up: search keyboard contract
+
+[SEARCH-KEYBOARD-EVIDENCE.md](SEARCH-KEYBOARD-EVIDENCE.md) reproduces the forced-focus Enter
+sequence and accounts for it through React Aria's press-start/input-focus behavior. The documented
+keyboard path uses Escape in the focused input. Two new component cases verify Tab order, submit/
+clear counts and focus; eight journal/search route cases verify keyboard filtering and matched/
+empty-result recovery at default mobile/desktop widths. All 13 final dev cases (including existing
+component axe) and eight production route cases pass, one worker and no retries. README callback/
+focus-order wording is corrected without runtime or visual-policy changes.
+
+Discovery is 1,771 invocations/124 files: mobile/desktop 695 each, phone/tablet 51 each, TV 23,
+components 256. Prior inventories and test runs remain snapshots. The historical stage-176 symptom
+is accounted for in its forced-focus path; normal keyboard clear is now directly verified. This
+does not establish screen-reader activation, IME, real soft keyboards or all-browser acceptance.
+Other gates remain open. Next: historical route loading/focus timeout lifecycle diagnostics.

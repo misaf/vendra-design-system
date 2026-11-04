@@ -29,3 +29,40 @@ test('the clear button is named in the page language; an error marks it invalid'
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'SearchField');
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`keyboard tab order, submit and clear callbacks (${lang})`, async ({page}) => {
+    await openComponent(page, 'SearchField', lang);
+    const box = page.getByRole('searchbox', {name: 'Search the shop'});
+    const orders = page.getByRole('searchbox', {name: 'Search orders'});
+    const clear = page.locator('.ag-search__clear').first();
+    const output = name => page.locator(`output[data-test="${name}"]`);
+    await page.keyboard.press('Tab');
+    await expect(box).toBeFocused();
+    await expect(clear).toHaveAttribute('tabindex', '-1');
+    await page.keyboard.press('Tab');
+    await expect(orders).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(box).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(output('submitted')).toHaveText('peony');
+    await expect(output('submissions')).toHaveText('1');
+    await expect(output('clears')).toHaveText('0');
+    await expect(box).toHaveValue('peony');
+    await page.keyboard.press('Escape');
+    await expect(box).toHaveValue('');
+    await expect(box).toBeFocused();
+    await expect(clear).toBeHidden();
+    await expect(output('clears')).toHaveText('1');
+    await expect(output('focused-on-clear')).toHaveText('true');
+    await page.keyboard.press('Escape');
+    await expect(output('clears')).toHaveText('1');
+    await page.keyboard.type('rose');
+    await clear.click();
+    await expect(box).toHaveValue('');
+    await expect(box).toBeFocused();
+    await expect(output('clears')).toHaveText('2');
+    await expect(output('submissions')).toHaveText('1');
+    await expect(output('focused-on-clear')).toHaveText('true');
+  });
+}
