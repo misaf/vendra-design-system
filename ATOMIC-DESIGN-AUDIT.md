@@ -236,3 +236,13 @@ is 1,790 dev / 1,391 production.
 No runtime/policy/baseline changes. This establishes the waiting/recovery contract, not the original
 unobserved scheduling cause. Next: explicit state/integrity acceptance mapping; retain old latency
 and other acceptance residuals without adding speculative waits.
+
+Stage 240 [maps the state/integrity acceptance subset](STATE-INTEGRITY-ACCEPTANCE.md).
+Sixteen explicit frontend invariants are linked to actual browser/unit assertions and residuals.
+A four-case dev probe confirms F01: the named payment-failure axe fixture is redirected to delivery
+and still passes axe. This is a coverage defect, separate from the working refused-payment path.
+All 96 selected browser cases pass on Darwin dev/production, including distinct TV controls, with
+no skips/retries or snapshot updates. Fresh unit/check/build and unchanged baseline/inventory
+checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
+No runtime/test/baseline changes. True cross-tab concurrency, server idempotency and offline writes
+remain unproved. Next: repair F01's payment-state setup and assert the intended state before axe.
