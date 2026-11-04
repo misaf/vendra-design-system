@@ -1,8 +1,9 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-232 `592448db743ccd3c9de9528bcbf9d487ee232287`.
-**Atomic Design migration acceptance remains incomplete.** The current blocking CI evidence is two
-Linux mobile policy screenshot mismatches. Selected flows, content accessibility, visual parity,
+**Atomic Design migration acceptance remains incomplete.** The reviewed-head blocking CI evidence
+is two Linux mobile policy screenshot mismatches; [stage 234](POLICY-LINUX-VISUAL-EVIDENCE.md)
+corrects their stale expectations with focused platform verification, pending fresh broad CI. Selected flows, content accessibility, visual parity,
 performance and physical-device/assistive-technology evidence remain distinct.
 
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
@@ -65,7 +66,7 @@ initial state was scanned by the dedicated cases or that every listed gap has no
 | journal | Paging/reload, touch clear/category recovery; sequential keyboard filtering/Enter/Escape. | Every page/query/category, missing content and real IME/AT behavior. |
 | post | Featured entry, title focus/reload/journal return; stage-220 FA punctuation diagnosis. | All article/media states, older Darwin pixel observation and full visuals. |
 | faq | First disclosure in each group, contact handoff; final heading/history ownership during stale shop completion. | Every answer, external contact and AT announcements. |
-| policy | Terms/returns, current navigation/anchor landing/reload; static phone/sticky tablet contents. | **Current Linux EN/FA mobile screenshot failures**, all documents/anchors, print and AT reading. |
+| policy | Terms/returns, current navigation/anchor landing/reload; static phone/sticky tablet contents. | Reviewed-head Linux EN/FA mobile failures have a stage-234 baseline correction pending broad CI; all documents/anchors, print and AT reading. |
 | notfound | Home recovery; delayed invalid-policy module/final-heading focus and same-document recovery. | Original stage-197 inactive-heading cause and every invalid route/input. |
 | error | Demo retry/reload/noindex, reachable call fallback and home recovery; current initial-route axe. | Backend/offline outage, external telephone and cold-load performance. |
 | weddings | Required-field summary/link focus and anchor-preserved draft. | Valid inquiry/retry/completion, selects/calendar and live studio contact. |
@@ -145,12 +146,23 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Linux policy screenshots currently block both broad CI jobs. | Download expected/actual/diff artifacts for EN/FA mobile, compare with source/baseline history and isolate layout vs raster/baseline cause. Fix only what is proven; review before any baseline refresh; rerun update-disabled cases and CI. |
-| **2** | Full visual parity remains incomplete despite 74 passing Linux page cases. | After the blocker is scoped, run update-disabled current-head page comparisons on intended platforms; retain original article/photo/progress residuals and measure differences explicitly. |
+| **1 — targeted correction verified** | Reviewed-head Linux policy screenshots block both broad CI jobs; stage-234 corrected baselines await fresh broad CI. | Review [stage-234 reproduction and focused platform results](POLICY-LINUX-VISUAL-EVIDENCE.md), then verify fresh broad CI on the correction. The old rule reproduces both old expectations exactly; only two Linux mobile PNGs change. |
+| **2 — next stage** | Full visual parity remains incomplete despite 74 passing Linux page cases. | After the blocker is scoped, run update-disabled current-head page comparisons on intended platforms; retain original article/photo/progress residuals and measure differences explicitly. |
 | **3** | Cold-load performance and original focus failure have unresolved causes. | Capture route/module timings and focus events under defined cache/CPU/network conditions; distinguish late readiness from lost focus. No blanket timeout increase. |
 | **4** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
 | **5** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
 This ordering is an evidence-based work sequence, not a declaration that every historical
-observation is a product defect. The next stage is the **Linux mobile policy screenshot diagnosis**;
-merging, baseline refresh and completion acceptance are not implied by this report.
+observation is a product defect. The stage-233 next step was Linux policy diagnosis. Stage 234 below records the supported
+correction; full visual and other completion gates remain open.
+
+## Stage 234 follow-up: Linux policy expectations
+
+[Linux policy evidence](POLICY-LINUX-VISUAL-EVIDENCE.md) reproduces both old expectations exactly
+by restoring only the former phone sticky rule in the CI-matched Linux AMD64 image. Restoring the
+current static rule matches the common CI actuals exactly. Two Linux mobile baselines are refreshed;
+no source behavior or tolerance changes. Eight focused screenshot/axe cases pass in each dev and
+production target on Linux and Darwin, without retries or snapshot updates. Check/build pass.
+The original CI run remains red; the new PR's broad CI result is separate and not claimed complete.
+Registration counts are unchanged. Next: update-disabled full-page visual comparisons and remaining
+residual review; other latency/focus, state, physical/AT and backend gates remain open.

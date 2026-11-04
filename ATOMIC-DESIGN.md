@@ -5986,6 +5986,24 @@ Next: diagnose the Linux mobile policy expected/actual/diff artifacts and isolat
 raster/baseline cause. Baselines/tolerances are not preapproved for refresh. Then proceed through
 the matrix's visual, latency/focus, deeper-state and physical/integration priorities.
 
+## Stage 234 checkpoint: Linux phone policy visual parity
+
+[POLICY-LINUX-VISUAL-EVIDENCE.md](POLICY-LINUX-VISUAL-EVIDENCE.md) reviews both prior CI artifacts
+and confirms that Linux expected images still represent the pre-stage-224 sticky-phone contents
+rule. In the exact Linux AMD64 Playwright image, injecting only that old rule reproduces both
+expected PNGs with zero raw pixel differences; removing it matches the common CI actuals exactly.
+
+Refresh only the two Linux mobile policy baselines. No runtime/CSS/generated/test/config/dependency,
+mask, threshold or retry changes; Darwin/desktop/other baselines remain intact. Eight focused
+policy screenshot/axe cases pass per dev/production target on Linux and Darwin, one worker and no
+retries or snapshot-update flag. Builds/check and source/baseline/document consistency pass.
+The original CI run remains historical red; fresh broad PR CI is not implied by local results.
+
+The Linux test VM is restored to its original stopped state/memory after isolated verification.
+No new registrations: the stage-233 1,783 dev/1,387 production inventory remains valid. Full visual,
+original latency/focus, deeper state, physical/AT and backend gates remain separate.
+Next: update-disabled full-page comparisons on the reviewed head and explicit residual review.
+
 ## Adding components
 
 ```sh
