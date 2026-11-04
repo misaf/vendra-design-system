@@ -417,3 +417,11 @@ refreshed for rasterization changes; the old-sticky counterfactual matches their
 exactly. custom.css is regenerated; shared helpers and desktop/Linux baselines are unchanged.
 Weddings/presentation touch flows are next; hardware/soft-keyboard/AT
 acceptance and older observations remain unverified.
+
+Stage 225 covers touch weddings validation/draft-preserving anchors and presentation seller tools,
+shortlist removal/clear/undo and focus return. Eight bilingual phone/tablet cases pass in dev and
+production; ten existing presentation cases also pass. Catalog buttons now use native visible-
+caption names with separate full-screen descriptions and decorative photos, resolving axe label/
+name mismatch. Presentation's bare sticky toolbar gets explicit geometry checks. No styles or
+baselines change and new cases activate no valid inquiry/share/order handoff. Home/shop discovery
+and filter/sort touch acceptance are next; physical-device/soft-keyboard/AT limits remain.

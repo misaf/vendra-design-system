@@ -5748,6 +5748,41 @@ visual/map/loading observations remain outside this stage.
 Next: dedicated touch/tablet acceptance for weddings and presentation inquiry/shortlist flows,
 without activating external inquiry or order actions; retain the documented evidence limits.
 
+## Stage 225 checkpoint: touch weddings/presentation and native catalog names
+
+Added device-specialist.spec.mjs to touch-phone/tablet discovery. Eight bilingual cases cover
+wedding required-field summary/link focus, draft-preserving inquiry-anchor navigation and field
+reachability without valid inquiry submission; and presentation seller-tools entry/close/focus
+return, catalog entry/search focus, two-item shortlist comparison, removal, clear/undo and return
+focus. Shortlists remain local customer-session state; no send/order handoff is activated.
+
+The presentation is intentionally bare: its own sticky toolbar, one main, locale/direction and
+horizontal overflow are checked instead of requiring storefront header/bottom bars. Existing
+whole-control geometry and center hit tests are reused. Content axe scans the completed wedding
+draft and restored presentation catalog at the initial viewport; controls are rechecked in tablet
+portrait. Phone is 390×844, tablet starts at 1180×820 and rechecks at 768×1024. Physical touch,
+soft keyboards, TV and assistive-technology acceptance are not established.
+
+The initial exploratory run passed the four wedding cases but reported catalog label/name
+mismatches in all four presentation cases. Tile aria-label strings duplicated caption state and
+interrupted/reordered the visible code, price and Ready/Sold out words; flex spacing also lacked
+text separators. Buttons now take their native name from the visible caption. The redundant photo
+has empty alt text within that captioned control, and the full-screen action is exposed separately
+through aria-description. Explicit text separators preserve word boundaries without changing flex
+layout. State/selection ownership stays in logic, with openDescription passed to the catalog.
+New cases compare every tile name to its visible text (case-insensitive for CSS-uppercase badges),
+and existing name-based interaction checks are updated for the native names. No axe rule is excluded.
+
+All eight final touch cases pass in dev and production with one worker and no retries. Ten existing
+mobile/desktop presentation checks pass: sharing options, Ready/price naming, sold-out behavior,
+stock refresh and quiet viewer behavior. Full npm tests, generated-output/formatting/CSS checks and
+production build pass. Styles, generated files, package contracts, dependencies and screenshot
+baselines are unchanged. Wedding valid submission/calendar/select coverage, presentation sharing/
+order handoff, reload persistence, full device/state coverage and older observations are not closed.
+
+Next: dedicated touch/tablet home/shop discovery and catalog filter/sort acceptance, preserving
+explicit limits around physical-device, keyboard and assistive-technology evidence.
+
 ## Adding components
 
 ```sh

@@ -117,3 +117,10 @@ corrective scrolling; wider side panels remain sticky. All sixteen pass in dev/p
 four policy screenshots and four policy axe checks. Two Darwin phone images are refreshed after
 reviewed rasterization changes; old-sticky counterfactuals exactly match their original baselines. Weddings/presentation touch coverage
 is next; physical-device/AT and earlier visual/map/loading gaps remain open.
+
+Stage 225 adds eight bilingual touch-phone/tablet weddings/presentation cases with explicit bare-
+presentation toolbar geometry. It fixes catalog accessible-name mismatch by using the native
+visible caption name and a separate full-screen action description, with word separators and
+redundant photo alt removed. All eight pass in dev/production, plus ten existing presentation
+interaction cases. No external inquiry/handoff is activated by new cases. Home/shop touch discovery
+and filters are next; physical-device/AT and historical observations remain open.
