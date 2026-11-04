@@ -1,14 +1,15 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-240 state checklist](STATE-INTEGRITY-ACCEPTANCE.md)
-links sixteen required frontend invariants to actual assertions, fresh selected execution and gaps.
-All 96 selected browser cases pass on Darwin dev/production, including distinct TV controls, with
-no skips/retries or snapshot updates. Fresh unit/check/build and unchanged baseline/inventory
-checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
-A confirmed coverage defect redirects the named payment-failure fixture to delivery while axe passes.
-Client duplicate guards and same-page newer-storage tests are not server idempotency or real two-tab
-concurrency evidence. State setup, concurrency, offline writes and backend boundaries remain open.
+**Atomic Design migration acceptance remains incomplete.** The [stage-241 fixture correction](PAYMENT-STATE-FIXTURE-EVIDENCE.md)
+closes F01: failed payment now uses valid delivery and an observed demo-bank failure, requiring the
+intended heading, focus and retry control before axe. Adjacent payment states also assert identity.
+All 120 selected state/return-flow cases pass on Darwin/Linux dev/production with one worker,
+no skips/retries and snapshot updates disabled. Check/build and consistency checks pass; all 258
+baseline PNGs and 1,790 dev / 1,391 production registrations remain unchanged.
+The [state checklist](STATE-INTEGRITY-ACCEPTANCE.md) retains cross-tab, UI duplicate submission,
+offline-write and backend boundaries. Other named states and real payment guarantees are not
+inferred from these scoped results.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -149,10 +150,10 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | F01: the named failed-payment state fixture does not exercise that state. | Give it valid failure setup and assert heading/status/retry state before axe; review nearby guarded checkout fixtures. See [state checklist](STATE-INTEGRITY-ACCEPTANCE.md). |
-| **2** | Client state integrity has bounded coverage. | Add true same-origin two-tab customer/pending-response checks, a repeated-submit/remount UI scenario and offline-write/reconnect recovery. Keep server reservation/idempotency/payment transactions in their actual service environment. |
+| **1 — next stage** | True cross-tab customer/response behavior remains unverified. | Add a shared-origin two-tab customer switch with an outstanding response. Assert private-state isolation and response ownership; distinguish localStorage transaction limits from reproduced failures. |
+| **2** | Other client state assertions remain bounded. | Add a numeric promo-removal amount assertion, repeated-submit/remount UI scenario and offline-write/reconnect recovery. Other named state fixtures need their own identity checks. F01 is corrected by stage241. |
 | **3** | Full visual acceptance and historical readiness are separate gates. | Verify required article/payment variants and current-head broad CI; retain original latency/focus traces and stage239's bounded evaluation contract without assuming an unproved cause. |
-| **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
+| **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify server reservation/idempotency/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
 This ordering is an evidence-based work sequence, not a declaration that every historical
 observation is a product defect. The stage-233 next step was Linux policy diagnosis. Stage 234 below records the supported
@@ -240,3 +241,16 @@ no skips/retries or snapshot updates. Fresh unit/check/build and unchanged basel
 checks pass. The four F01 observations are separate diagnostics, not added to the 96 cases.
 No runtime/test/baseline changes. True cross-tab concurrency, server idempotency and offline writes
 remain unproved. Next: repair F01's payment-state setup and assert the intended state before axe.
+
+## Stage 241 follow-up: asserted payment states
+
+Stage 241 [corrects the failed-payment state fixture](PAYMENT-STATE-FIXTURE-EVIDENCE.md).
+Four pre-fix assertions fail because the old setup reaches delivery. The corrected fixture fills
+valid delivery, exercises the local failed bank return and requires its heading/focus/retry state
+before axe. Nearby payment step/errors/completion also gain explicit state assertions.
+All 120 selected state/return-flow cases pass on Darwin/Linux dev/production with one worker,
+no skips/retries and snapshot updates disabled. Check/build and consistency checks pass; all 258
+baseline PNGs and 1,790 dev / 1,391 production registrations remain unchanged.
+No application/baseline/policy changes or new registrations. F01 is closed for this fixture;
+true two-tab behavior, repeated-submit UI, offline writes and other acceptance gaps remain open.
+Next: shared-origin two-tab customer switch/pending-response coverage.
