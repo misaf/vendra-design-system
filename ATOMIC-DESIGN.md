@@ -6023,6 +6023,21 @@ native task volumes are removed and VM restored. Default screenshots do not clos
 articles, all payment states, touch/TV, real maps, backend or physical/AT acceptance.
 Next: isolate/review the ten stale-text Darwin expectations and correct only supported baselines.
 
+## Stage 236 checkpoint: Darwin content expectations
+
+[DARWIN-CONTENT-VISUAL-EVIDENCE.md](DARWIN-CONTENT-VISUAL-EVIDENCE.md) isolates all ten stale
+expectations. Old-content counterfactuals pass 10/10 against old baselines: cancelled order code,
+Persian detail/blog separators, and the product total's separately changed literal. Complete
+expected/current page pairs and decoded differences are reviewed. Only the ten Darwin PNGs change,
+using retained stage-235 dev captures rather than adopting extra raster variation from new probes.
+
+Darwin dev and production each pass all 76 default page comparisons, with two workers,
+zero skips/retries and snapshot updates explicitly disabled.
+No runtime/test/config/dependency/tolerance changes. The scratch counterfactual spec is removed;
+registrations remain 1,783 dev/1,387 production. Linux first-run failures are not erased or rerun.
+Next: controlled Linux development readiness/contact-map diagnosis; preserve remaining historical,
+state, physical/AT and backend gates.
+
 ## Adding components
 
 ```sh

@@ -1,11 +1,12 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-235 full-page audit](FULL-PAGE-VISUAL-EVIDENCE.md)
-finds ten persistent Darwin expectations with stale text, plus three Linux dev failures that pass
-separate serial reruns. Linux production passes all 76 default page comparisons. Stages 233/234's
-historical Linux policy blocker and correction remain recorded below; no broad all-green claim
-follows from these selected results.
+**Atomic Design migration acceptance remains incomplete.** The [stage-236 Darwin correction](DARWIN-CONTENT-VISUAL-EVIDENCE.md)
+resolves ten stale content expectations after counterfactual review. Darwin dev and production each pass all 76 default page comparisons, with two workers,
+zero skips/retries and snapshot updates explicitly disabled.
+The [stage-235 audit](FULL-PAGE-VISUAL-EVIDENCE.md) retains Linux dev's three initial failures and
+separate serial passes; their causes remain open. Linux production's 76/76 result is historical
+stage-235 evidence, not a fresh Linux execution in this stage.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -146,11 +147,10 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Ten Darwin expectations fail persistently in dev/production; sampled text predates intentional content changes. | Isolate the October 19 order-code/separator differences, review all ten complete images, correct only proven stale expectations and rerun without snapshot updates. See [stage 235](FULL-PAGE-VISUAL-EVIDENCE.md). |
-| **2** | Linux dev readiness/contact capture failures and older latency/focus observations have unresolved causes. | Preserve the 73/76 first run and three serial passes separately. Trace defined cache/CPU/module/clock/map states; do not infer a cause or refresh baselines from later passes. |
-| **3** | Full visual acceptance includes more than the default page suite. | Linux production now passes 76/76, but Darwin remains blocked. After those expectations are scoped, verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
-| **4** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
-| **5** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
+| **1 — next stage** | Linux dev readiness/contact capture failures and older latency/focus observations have unresolved causes. | Preserve the 73/76 first run and three serial passes separately. Trace defined cache/CPU/module/clock/map states; do not infer a cause or refresh baselines from later passes. |
+| **2** | Full visual acceptance includes more than the default page suite. | Stage 236 corrects the scoped Darwin expectations; stage 235 Linux production passes 76/76. Verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
+| **3** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
+| **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
 This ordering is an evidence-based work sequence, not a declaration that every historical
 observation is a product defect. The stage-233 next step was Linux policy diagnosis. Stage 234 below records the supported
@@ -180,3 +180,12 @@ All 258 baseline PNGs remain unchanged. No runtime/test/timeout/tolerance change
 baseline/document/inventory consistency pass; fresh discovery remains 1,783 dev/1,387 production.
 This is a docs-only audit with open visual gates, not complete migration acceptance. Other physical,
 state, backend and historical article/payment variants remain outside default screenshots.
+
+## Stage 236 follow-up: Darwin content expectations
+
+[Darwin content evidence](DARWIN-CONTENT-VISUAL-EVIDENCE.md) records 10/10 passing old-content
+counterfactuals and ten narrowly selected Darwin baseline corrections. Darwin dev and production each pass all 76 default page comparisons, with two workers,
+zero skips/retries and snapshot updates explicitly disabled.
+All other 248 PNG hashes remain unchanged. No runtime/test/configuration/tolerance changes; root
+check and production build pass. Temporary test removed; discovery remains 1,783 dev/1,387 production.
+Next: controlled Linux dev readiness/map diagnosis, with earlier failures retained independently.
