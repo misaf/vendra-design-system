@@ -358,3 +358,16 @@ migration/storefront unit, check and fresh production builds pass. All 258 basel
 inventory is 1,812 dev / 1,413 production. Shared sync-error state remains set after successful recovery;
 initial handover data loss across full navigation is retained as a separate observation.
 Next: reproduce initial shortlist-handover persistence, then scoped saved-sync error recovery.
+
+
+## Stage 247 checkpoint: initial handover durability
+
+Stage 247 [persists initial handovers before any customer edit](INITIAL-HANDOVER-PERSISTENCE-EVIDENCE.md).
+A confirmed bilingual reload regression replaced a consumed shortlist with the demo defaults.
+The site now uses the same session serializer on mount and subsequent updates, preserving customer
+partitions. Browser coverage checks fresh and existing visitor lists, duplicate/invalid handover IDs,
+reload and full product navigation without an edit; focused unit coverage also checks bag handovers
+and blocked-storage mounts. All 48 selected Darwin/Linux dev/production cases, full root unit and
+check pass; all 258 baselines are unchanged. This requires available sessionStorage and does not establish server
+persistence or same-account cross-tab atomicity. See the evidence document for final validation scope.
+Next: scoped saved-sync error ownership and recovery.

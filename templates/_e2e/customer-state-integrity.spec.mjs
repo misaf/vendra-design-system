@@ -31,6 +31,84 @@ async function blockStorage(page, block) {
 }
 for (const lang of ['en', 'fa']) {
   const fa = lang === 'fa';
+  for (const existing of [false, true]) {
+    test(`initial handover survives reload and full navigation (${lang}, ${existing ? 'existing' : 'fresh'})`, async ({
+      page
+    }, info) => {
+      const errors = [];
+      page.on('pageerror', error => errors.push(error.message));
+      if (existing)
+        await page.addInitScript(() => {
+          const key = 'vendra-template:' + location.pathname;
+          if (!sessionStorage.getItem(key))
+            sessionStorage.setItem(
+              key,
+              JSON.stringify({
+                bag: [],
+                saved: ['VF-7K2M4Q'],
+                customerId: 'guest',
+                delivery: {address: 'Existing guest address'},
+                customers: {
+                  '09121111111': {delivery: {address: 'Other customer address'}, orders: []}
+                }
+              })
+            );
+        });
+      await openSite(page, 'saved', lang, {
+        ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'
+      });
+      const snapshot = () =>
+        page.evaluate(() => {
+          const {
+            bag,
+            saved,
+            delivery,
+            paymentDraft,
+            customerId,
+            customers,
+            order,
+            lastOrder,
+            orders
+          } = window.__vfSite.state;
+          return {
+            bag,
+            saved,
+            delivery,
+            paymentDraft,
+            customerId,
+            customers,
+            order,
+            lastOrder,
+            orders
+          };
+        });
+      const initial = await snapshot();
+      expect(initial.saved).toEqual(existing ? ['VF-7K2M4Q', 'VF-3HX9TP'] : ['VF-3HX9TP']);
+      expect(new URL(page.url()).searchParams.has('ids')).toBe(false);
+      expect(new URL(page.url()).searchParams.has('lines')).toBe(false);
+      // No UI edit before either full document load: initialization itself must be durable.
+      await page.reload();
+      await expect(page.locator('#main')).toBeVisible();
+      await expect.poll(snapshot).toMatchObject(initial);
+      await page.goto(siteUrl('product', lang, {id: 'VF-7K2M4Q'}));
+      await expect(page.locator('#main')).toBeVisible();
+      await expect.poll(snapshot).toMatchObject(initial);
+      const persisted = await page.evaluate(() =>
+        JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname))
+      );
+      expect(persisted.saved).toEqual(initial.saved);
+      expect(persisted.bag).toEqual(initial.bag);
+      expect(persisted.customers.guest.delivery).toEqual(initial.delivery);
+      if (existing)
+        expect(persisted.customers['09121111111'].delivery.address).toBe('Other customer address');
+      expect(errors).toEqual([]);
+      expect(await scanAxe(page)).toEqual([]);
+      await info.attach('initial-handover-persistence', {
+        body: JSON.stringify({lang, existing, initial, persisted}),
+        contentType: 'application/json'
+      });
+    });
+  }
   test(`offline checkout preserves intent and reconnect waits for explicit retry (${lang})`, async ({
     page,
     context
