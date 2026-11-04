@@ -1,14 +1,14 @@
 # Storefront acceptance coverage — stage 233
 
 Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
-**Atomic Design migration acceptance remains incomplete.** The [stage-238 correction](MAP-FONT-LOAD-EVIDENCE.md)
-recenters permanent map labels after later font loads, with listener cleanup and real-font regressions.
-The reproduced Linux capture displacement is corrected without new baselines or policy changes.
-All 68 targeted browser cases pass across Darwin/Linux dev/production, with no retries/skips;
-unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory is 1,786 dev /
-1,387 production. Contact/lifecycle comparisons use snapshot updates disabled.
-The original post readiness timeout and tiny-viewport attribution remain separate open observations.
-Stage 236's full Darwin and stage 235's Linux production page sweeps remain historical results.
+**Atomic Design migration acceptance remains incomplete.** The [stage-239 post controls](POST-EVALUATION-READINESS.md)
+verify the successful-HTTP/unfinished-evaluation boundary and recovery at the existing helper deadline.
+All 64 route lifecycle cases pass on Darwin/Linux dev/production, with one worker, no skips/retries
+and snapshot updates disabled. Check/build, unchanged baseline hashes and discovery pass; inventory
+is 1,790 dev / 1,391 production.
+The original scheduling cause remains unproved. Stage238's map correction and earlier page sweeps
+retain their separate evidence. The next bounded stage maps required state/integrity scenarios;
+no broader acceptance follows from these selected route contracts.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -17,13 +17,13 @@ stage-219 audit. Counts below are fresh registration discovery; execution is lab
 
 | Project | Dev registered | Production registered | Input / scope |
 | --- | ---: | ---: | --- |
-| mobile | 701 | 631 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
-| desktop | 701 | 631 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
+| mobile | 703 | 633 | Non-touch Chromium, normally 390×844; broad route/visual specs and intentional skips. |
+| desktop | 703 | 633 | Chromium, normally 1280×900; broad specs plus explicit historical-width diagnostics. |
 | touch-phone | 51 | 51 | Touch emulation, normally 390×844; 42 dedicated route/map cases and nine original device registrations. |
 | tablet | 51 | 51 | Touch emulation, normally 1180×820; 42 dedicated route/map cases and nine original device registrations. |
 | tv | 23 | 23 | Chromium keyboard, 1920×1080; original device/TV cases. |
 | components | 259 | excluded | Component fixture host, including three added map font-readiness cases. |
-| **Total / files** | **1,786 / 125** | **1,387 / 51** | Registrations include conditional skips; they are not pass counts. |
+| **Total / files** | **1,790 / 125** | **1,391 / 51** | Registrations include conditional skips; they are not pass counts. |
 
 Production excludes component fixtures, cards, package and hydration specs. Hydration registers
 24 dev invocations, with 12 desktop executions and 12 intentional mobile skips. The six dedicated
@@ -149,9 +149,9 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — next stage** | Original post scheduling/evaluation and older latency/focus observations remain open. Stage 238 corrects the reproduced map font-width mechanism. | Observe active post readiness/evaluation at the original deadline with independent background module controls; retain original failure and separate repeats. Do not increase global waits from later passes. Keep transient capture viewport attribution separate. See [stage 238](MAP-FONT-LOAD-EVIDENCE.md). |
-| **2** | Full visual acceptance includes more than the default page suite. | Stage 236 corrects the scoped Darwin expectations; stage 235 Linux production passes 76/76. Verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
-| **3** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
+| **1 — next stage** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
+| **2** | Full visual acceptance includes more than the default page suite. | Verify required article variants/payment states and current-head broad CI; retain other historical residuals separately from stage238's scoped map correction and earlier default-page sweeps. |
+| **3** | Original post scheduling and older latency/focus observations remain unproved. | Stage239 verifies HTTP-complete/evaluation-pending waiting and recovery. Preserve original traces; reproduce actual workload with evaluation/commit observations before assigning cause or changing global waits. Tiny capture viewport attribution remains separate. |
 | **4** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
 This ordering is an evidence-based work sequence, not a declaration that every historical
@@ -215,3 +215,16 @@ unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory
 1,387 production. Contact/lifecycle comparisons use snapshot updates disabled.
 No baseline or screenshot-policy changes. The post readiness deadline and tiny-viewport attribution
 remain separate. Next: isolate active post load/evaluation timing; retain broader acceptance gates.
+
+## Stage 239 follow-up: post evaluation readiness
+
+Stage 239 [separates post HTTP completion from evaluation readiness](POST-EVALUATION-READINESS.md).
+Four new bilingual default-project cases hold real post module evaluation after HTTP200, assert
+the original helper's five-second missing-main deadline, then verify article/locale and first-load
+focus recovery on release. The source module is changed only by test interception.
+All 64 route lifecycle cases pass on Darwin/Linux dev/production, with one worker, no skips/retries
+and snapshot updates disabled. Check/build, unchanged baseline hashes and discovery pass; inventory
+is 1,790 dev / 1,391 production.
+No runtime/policy/baseline changes. This establishes the waiting/recovery contract, not the original
+unobserved scheduling cause. Next: explicit state/integrity acceptance mapping; retain old latency
+and other acceptance residuals without adding speculative waits.

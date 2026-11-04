@@ -2,6 +2,7 @@ import {test, expect} from '@playwright/test';
 import {openSite, openFooterGroup, siteUrl} from './helpers.mjs';
 
 const SITE_CODE = /storefront-site\/Page\.jsx|\/page-site-[\w-]+\.js/;
+const POST_CODE = /storefront-post\/Page\.jsx|\/page-post-[\w-]+\.js/;
 const SHOP_CODE = /storefront-shop\/Page\.jsx|\/page-shop-[\w-]+\.js/;
 const NOTFOUND_CODE = /storefront-notfound\/Page\.jsx|\/page-notfound-[\w-]+\.js/;
 test.use({reducedMotion: 'reduce'});
@@ -67,6 +68,92 @@ async function focusedHeading(page, lang) {
 }
 
 for (const lang of ['en', 'fa']) {
+  test(`post waits for evaluation after its successful HTTP response (${lang})`, async ({
+    page
+  }, info) => {
+    const pending = new Set();
+    const completed = [];
+    const errors = [];
+    page.on('request', request => pending.add(new URL(request.url()).pathname));
+    page.on('requestfinished', request => {
+      pending.delete(new URL(request.url()).pathname);
+      if (POST_CODE.test(request.url()))
+        completed.push({path: new URL(request.url()).pathname, at: performance.now()});
+    });
+    page.on('requestfailed', request => pending.delete(new URL(request.url()).pathname));
+    page.on('pageerror', error => errors.push(error.message));
+    await page.clock.setFixedTime(new Date('2026-10-05T09:00:00+03:30'));
+    await page.addInitScript(() => {
+      window.__postEvaluationGate = new Promise(resolve => {
+        window.__releasePostEvaluation = resolve;
+      });
+      window.__postEvaluationStarted = false;
+      window.__postEvaluationFinished = false;
+    });
+    await page.route(POST_CODE, async route => {
+      const response = await route.fetch();
+      expect(response.status()).toBe(200);
+      // Keep the real imports/exports. HTTP completes, but ESM evaluation must still wait.
+      const body =
+        (await response.text()) +
+        `
+window.__postEvaluationStarted = true;
+await window.__postEvaluationGate;
+window.__postEvaluationFinished = true;
+`;
+      await route.fulfill({response, body});
+    });
+    const response = page.waitForResponse(response => POST_CODE.test(response.url()));
+    try {
+      let failure;
+      try {
+        await openSite(page, 'post', lang);
+      } catch (error) {
+        failure = error;
+      }
+      const deadlineAt = performance.now();
+      expect(failure?.message).toContain("locator('#main')");
+      expect(failure?.message).toContain('Timeout: 5000ms');
+      const loaded = await response;
+      expect(loaded.status()).toBe(200);
+      expect(await loaded.finished()).toBeNull();
+      expect(completed).toHaveLength(1);
+      expect(completed[0].at).toBeLessThan(deadlineAt);
+      const deadline = await page.evaluate(() => ({
+        at: performance.now(),
+        main: document.querySelectorAll('#main').length,
+        lang: document.documentElement.lang,
+        started: window.__postEvaluationStarted,
+        finished: window.__postEvaluationFinished,
+        statusCount: document.querySelectorAll('[role=status]').length
+      }));
+      expect(deadline).toMatchObject({main: 0, lang: 'en', started: true, finished: false});
+      await info.attach('post-evaluation-deadline', {
+        body: JSON.stringify(
+          {deadline, completed, pending: [...pending], helperFailure: failure.message},
+          null,
+          2
+        ),
+        contentType: 'application/json'
+      });
+      await page.evaluate(() => window.__releasePostEvaluation());
+      await expect(page.locator('#main')).toBeVisible();
+      await expect(page.locator('main h1')).toHaveText(
+        lang === 'fa' ? 'یک صبح پشت میز کار وندرا' : 'A morning at the Vendra workbench'
+      );
+      await expect(page.locator('html')).toHaveAttribute('lang', lang);
+      expect(await page.evaluate(() => window.__postEvaluationFinished)).toBe(true);
+      await expect.poll(() => page.evaluate(() => window.VF_VIEWED)).toBe(true);
+      await expect(page.locator('main h1')).not.toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(page.locator('.ag-skip')).toBeFocused();
+      expect(errors).toEqual([]);
+      await record(page, info, 'post-evaluation-released');
+    } finally {
+      await page.evaluate(() => window.__releasePostEvaluation?.()).catch(() => {});
+    }
+  });
+
   test(`initial module readiness preserves first-load focus (${lang})`, async ({page}, info) => {
     const gate = await hold(page, SITE_CODE);
     try {
