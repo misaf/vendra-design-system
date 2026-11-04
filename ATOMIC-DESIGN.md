@@ -5892,6 +5892,30 @@ route/map suites were not rerun. Historical residuals and broader visual/platfor
 Next: scope historical bag/checkout thumbnail capture differences with retained evidence and
 unchanged visual policy.
 
+## Stage 230 checkpoint: bag/checkout thumbnail capture diagnosis
+
+[ORDER-THUMBNAIL-EVIDENCE.md](ORDER-THUMBNAIL-EVIDENCE.md) confirms the retained stage-212/213
+pixel counts and ten exact historical targeted-repeat pairs. EN390 restored payment separates
+125 progress-indicator pixels/max 1 from 1,849 thumbnail pixels/max 6; FA390 restored varies only in
+63 progress-indicator pixels/max 1. Original captures already awaited decode, so a missing decode wait
+is not an explanation. The specific original raster/resource state remains unproven.
+
+Four new affected-combination cases (EN390, FA390, EN768, FA1280) check exact thumbnail captures
+through bag, delivery, initial/restored payment and reload, with persisted address/receipt, real
+step controls and same-document/focus checks. Shared capture code is extracted from the shop test;
+its four exact full-main cases are retained. All eight final cases pass in dev/production, one
+worker and no retries; full npm test/check/build pass. There are no runtime/baseline/policy changes.
+
+An exploratory whole-main check found two/three phone-bag text pixels/max 1; those failures remain
+recorded. Final order regressions isolate the requested thumbnails and do not claim full-main
+exactness. Their 20 state captures contain 48 exact thumbnail pairs per target. Shop contributes
+12 state captures/12 exact main pairs. Other route/map suites are not rerun.
+
+Discovery is 1,761 invocations/123 files (mobile/desktop 691 each, phone/tablet 51 each, TV 23,
+components 254). These historical configurations are not dedicated device or full state acceptance.
+Next: audit stage-176 SearchField keyboard-clear behavior using actual keyboard reachability and
+the intended clear/Escape contract. Other visual/platform gates and original residuals remain open.
+
 ## Adding components
 
 ```sh
