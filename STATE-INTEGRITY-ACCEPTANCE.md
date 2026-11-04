@@ -27,7 +27,7 @@ Unit tests use the repository's hook/VM stand-ins, not real concurrent browser e
 | I11 — Profile edits preserve unrelated newer account fields. | `profile edits preserve newer wallet and account data` in integrity-recovery-followups; [account-data](templates/_shared/account-data.js) `vfAccountUpdate` reads latest persisted record before changing/saving. | B + U. The test writes newer wallet/email values in the same page before save. It does not run two simultaneous tabs or verify interleaved read-modify-write safety. True cross-tab concurrency is G. |
 | I12 — Customer switches isolate private state. | `guest continuation and customer switches isolate private data` in integrity-recovery-followups; site storage listener/syncCustomer. | B + U. Same-page guest continuation, sign-out, customer B reload, then customer A history restoration. Real storage events from another tab and a pending response crossing an identity change remain G. This is not server authentication/authorization evidence. |
 | I13 — Late saved-list hydration preserves later actions. | `initial saved-list loading keeps newer customer actions` in customer-state-integrity; site saved-edit merge and corresponding unit assertions. | B + U. Controlled promise merges initial saved IDs with a newer save. All add/remove orderings and customer changes during hydration are not proved by this one case. |
-| I14 — Offline status and recovery are usable. | `the site says when the connection drops and when it is back` in features; [offline helper](templates/_shared/offline.js). | B, FA at both widths. It checks band text after context offline/online changes and axe. Offline checkout/save failure, retained writes, retry and reconnect deduplication are G; this is not an offline queue test. |
+| I14 — Offline status and recovery are usable. | `the site says when the connection drops and when it is back` in features; [offline helper](templates/_shared/offline.js). | B, FA at both widths. It checks band text after context offline/online changes and axe. After [stage 245](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md), bilingual checkout failure preserves state, two reconnects do not resend, and explicit retry creates one local order. Other offline writes, persistent queues and backend replay guarantees remain G. |
 | I15 — TV input can change a bag and escape map focus. | `the arrow keys reach add to bag` and `a remote places the delivery pin and leaves the map` in [tv spec](templates/_e2e/tv.spec.mjs). | B, EN/FA on the dedicated 1920×1080 TV project. Arrow/Enter adds exactly one badge count; map arrows change coordinates and Escape returns focus. No physical remote or complete TV payment/stock/promo matrix is proved. |
 | I16 — State fixtures must demonstrate the state they name. | [states spec](templates/_e2e/states.spec.mjs) sets up states then runs axe; see confirmed F01 below. | G: at least the named payment-failure fixture exercises a different route. An axe pass cannot stand in for the missing state assertion. |
 
@@ -163,3 +163,13 @@ All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. 
 Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
 No CSS or baseline changes; client guarding does not establish backend exactly-once behavior.
 Next: offline mutation/reconnect controls.
+
+Stage 245 [verifies offline checkout and explicit reconnect recovery](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md).
+Actual browser-offline fetch failure must preserve bag, delivery, payment draft and order state.
+Two reconnects send nothing; Try again only re-enables confirmation. Explicit confirmation sends
+one controlled successful retry with the same payload and produces one local order. The application
+already passes this behavior; no runtime or baseline changes. All 40 selected cases pass across
+Darwin/Linux dev/production with zero skips/retries; focused storefront unit/check/build pass.
+All 258 baselines remain unchanged; inventory increases to 1,804 dev / 1,405 production.
+This is not a persistent queue or a backend exactly-once guarantee.
+Next: saved-item offline write/reconnect controls.
