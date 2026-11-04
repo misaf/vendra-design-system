@@ -1,11 +1,11 @@
 # Storefront acceptance coverage — stage 233
 
-Reviewed 2026-11-04 against stage-232 `592448db743ccd3c9de9528bcbf9d487ee232287`.
-**Atomic Design migration acceptance remains incomplete.** The reviewed-head blocking CI evidence
-is two Linux mobile policy screenshot mismatches; [stage 234](POLICY-LINUX-VISUAL-EVIDENCE.md)
-corrects their stale expectations with focused platform verification, pending fresh broad CI. Selected flows, content accessibility, visual parity,
-performance and physical-device/assistive-technology evidence remain distinct.
-
+Reviewed 2026-11-04 against stage-234 `68df0d8e341a6714424f1421c60c84d4e2cd1652`.
+**Atomic Design migration acceptance remains incomplete.** The [stage-235 full-page audit](FULL-PAGE-VISUAL-EVIDENCE.md)
+finds ten persistent Darwin expectations with stale text, plus three Linux dev failures that pass
+separate serial reruns. Linux production passes all 76 default page comparisons. Stages 233/234's
+historical Linux policy blocker and correction remain recorded below; no broad all-green claim
+follows from these selected results.
 The [stage-227 snapshot and stage-228–232 follow-ups](ACCEPTANCE-COVERAGE-HISTORY.md) are preserved
 without rewriting their results. [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the earlier
 stage-219 audit. Counts below are fresh registration discovery; execution is labeled separately.
@@ -89,10 +89,10 @@ mask, wait, timeout, retry or tolerance change is justified merely by this inven
 
 ## Execution and CI evidence
 
-A fresh local production run on the reviewed runtime head passes **84/84 dedicated route/map cases**,
+Stage 233's local production run on its reviewed runtime head passes **84/84 dedicated route/map cases**,
 zero skips/failures/flaky outcomes, two workers and no retries: 42 phone and 42 tablet. This reruns
 the six stage-227 route suites together with stage-228 map lifecycle, rather than adding separate
-historical results. The runner builds/owns/tears down its preview. This docs-only stage also passes
+historical results. The runner builds/owns/tears down its preview. That stage also passes
 `npm run check` and document-link/inventory consistency checks. No fresh combined dev set or full
 local visual/hydration/device/browser run is claimed.
 
@@ -146,9 +146,9 @@ and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 | Order | Gate / why it matters | Concrete next verification / completion evidence |
 | --- | --- | --- |
-| **1 — targeted correction verified** | Reviewed-head Linux policy screenshots block both broad CI jobs; stage-234 corrected baselines await fresh broad CI. | Review [stage-234 reproduction and focused platform results](POLICY-LINUX-VISUAL-EVIDENCE.md), then verify fresh broad CI on the correction. The old rule reproduces both old expectations exactly; only two Linux mobile PNGs change. |
-| **2 — next stage** | Full visual parity remains incomplete despite 74 passing Linux page cases. | After the blocker is scoped, run update-disabled current-head page comparisons on intended platforms; retain original article/photo/progress residuals and measure differences explicitly. |
-| **3** | Cold-load performance and original focus failure have unresolved causes. | Capture route/module timings and focus events under defined cache/CPU/network conditions; distinguish late readiness from lost focus. No blanket timeout increase. |
+| **1 — next stage** | Ten Darwin expectations fail persistently in dev/production; sampled text predates intentional content changes. | Isolate the October 19 order-code/separator differences, review all ten complete images, correct only proven stale expectations and rerun without snapshot updates. See [stage 235](FULL-PAGE-VISUAL-EVIDENCE.md). |
+| **2** | Linux dev readiness/contact capture failures and older latency/focus observations have unresolved causes. | Preserve the 73/76 first run and three serial passes separately. Trace defined cache/CPU/module/clock/map states; do not infer a cause or refresh baselines from later passes. |
+| **3** | Full visual acceptance includes more than the default page suite. | Linux production now passes 76/76, but Darwin remains blocked. After those expectations are scoped, verify required article variants/payment states and current-head broad CI; retain other historical residuals. |
 | **4** | Selected routes are not complete state or integrity acceptance. | Map existing stock/promo/quantity, payment retry/duplicate submission, customer concurrency and offline/TV specs to an explicit required state subset; fill proven gaps rather than duplicate existing tests. |
 | **5** | Physical devices, AT and real backend/external actions need separate evidence. | Execute agreed EN/FA phone/tablet/TV, soft-keyboard/IME and screen-reader scenarios in their actual environments; verify controlled backend/security/payment integration separately. Chromium/axe/demo success cannot close these gates. |
 
@@ -166,3 +166,17 @@ production target on Linux and Darwin, without retries or snapshot updates. Chec
 The original CI run remains red; the new PR's broad CI result is separate and not claimed complete.
 Registration counts are unchanged. Next: update-disabled full-page visual comparisons and remaining
 residual review; other latency/focus, state, physical/AT and backend gates remain open.
+
+## Stage 235 follow-up: full-page comparison matrix
+
+[Full-page evidence](FULL-PAGE-VISUAL-EVIDENCE.md) executes all 76 default cases in four targets:
+Darwin dev/production each 66 pass/10 screenshot fail; Linux dev 73 pass/two screenshot fail/one
+readiness fail; Linux production 76 pass. No skips or retries. These are 304 first-run invocations,
+not 304 passes. Three failed Linux dev cases pass separate one-worker reruns; initial failures and
+unknown causes remain retained. The ten Darwin cases persist across targets; inspected metadata/
+order-code text and source history support a focused stale-expectation review next.
+
+All 258 baseline PNGs remain unchanged. No runtime/test/timeout/tolerance changes. Check/build and
+baseline/document/inventory consistency pass; fresh discovery remains 1,783 dev/1,387 production.
+This is a docs-only audit with open visual gates, not complete migration acceptance. Other physical,
+state, backend and historical article/payment variants remain outside default screenshots.

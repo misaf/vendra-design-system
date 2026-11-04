@@ -498,3 +498,10 @@ Eight policy screenshot/axe cases pass per dev/production target on Linux and Da
 retries or snapshot updates; check/build pass. No runtime/tolerance changes. Original CI remains
 historical red, with broad fresh PR CI separate. Full-page visual comparisons/residual review are
 next; other state/platform/backend gates remain open.
+
+Stage 235 [audits the full default page matrix](../FULL-PAGE-VISUAL-EVIDENCE.md): 304 first-run
+invocations; Darwin dev/production each 66 pass/10 screenshot fail, Linux dev 73 pass/three fail
+(two screenshots/one readiness), Linux production 76 pass. Three Linux serial repeats pass, with
+original failures/unknown causes retained. Ten Darwin stale-text expectations persist across both
+targets; source/history and inspected crops support focused review next. All baseline PNGs remain
+unchanged. Docs/check/build only; full visual/migration acceptance remains open.
