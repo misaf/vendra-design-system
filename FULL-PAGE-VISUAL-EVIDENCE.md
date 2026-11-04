@@ -133,3 +133,11 @@ Keep Linux readiness/map capture causes and other gates in
 [ACCEPTANCE-COVERAGE.md](ACCEPTANCE-COVERAGE.md) open. These default screenshots do not cover the
 historical block-article variant, every payment/progress state, real cartography/network, physical
 input/soft keyboards, AT or backend/external actions.
+
+## Stage 236 follow-up
+
+[Darwin content evidence](DARWIN-CONTENT-VISUAL-EVIDENCE.md) completes the ten-case counterfactual
+review, including the separate product total literal, and corrects those ten expectations using
+the retained stage-235 dev captures. Darwin dev and production each pass all 76 default page comparisons, with two workers,
+zero skips/retries and snapshot updates explicitly disabled.
+This follow-up does not rewrite the original 304 outcomes above or explain the Linux dev failures.

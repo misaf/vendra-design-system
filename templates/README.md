@@ -505,3 +505,10 @@ invocations; Darwin dev/production each 66 pass/10 screenshot fail, Linux dev 73
 original failures/unknown causes retained. Ten Darwin stale-text expectations persist across both
 targets; source/history and inspected crops support focused review next. All baseline PNGs remain
 unchanged. Docs/check/build only; full visual/migration acceptance remains open.
+
+Stage 236 [corrects ten stale Darwin content expectations](../DARWIN-CONTENT-VISUAL-EVIDENCE.md).
+All ten old-content counterfactuals pass the original policy. The product total's removed dot is
+verified separately from the shared Persian separator. Adopted images are retained stage-235 dev
+captures; all other 248 snapshots remain unchanged. Darwin dev and production each pass all 76 default page comparisons, with two workers,
+zero skips/retries and snapshot updates explicitly disabled.
+Linux development readiness/map causes and deeper state/platform/backend acceptance remain open.
