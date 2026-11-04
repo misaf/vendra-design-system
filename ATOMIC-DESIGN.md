@@ -5940,6 +5940,29 @@ The historical symptom is scoped to its forced-focus path. Supported keyboard cl
 AT activation, IME, physical/soft keyboards, other browsers and broader acceptance remain separate.
 Next: investigate historical route loading/focus timeouts with explicit lifecycle diagnostics.
 
+## Stage 232 checkpoint: route readiness and focus diagnostics
+
+[ROUTE-LIFECYCLE-EVIDENCE.md](ROUTE-LIFECYCLE-EVIDENCE.md) inspects retained stage-200/214 traces:
+`#main` is absent before axe, with 19–50 app-module requests unfinished when the failed assertion
+completes. This substantiates module-readiness overruns without establishing why loading was slow.
+The stage-197 scratch inactive-heading failure lacks a retained focus trace and remains unproven.
+
+Twelve bilingual default-mobile/desktop cases gate actual site/shop/notfound modules. They verify
+initial readiness/first Tab, retained home while shop loads, latest FAQ navigation ownership after
+stale shop completion, history heading focus, and delayed invalid-policy final-heading recovery.
+Module release awaits ESM evaluation; no global timeout/retry or runtime behavior changes. JSON
+state snapshots are retained. These are non-touch Chromium diagnostics, not latency/device proof.
+
+All 12 new dev cases and a separate 16-case existing initial-route axe selection pass; a combined
+28-case production selection passes, one worker and no retries. Full npm test/check/build pass.
+No runtime/style/generated/dependency/baseline/visual-policy changes. Discovery is 1,783/125 files:
+mobile/desktop 701 each, phone/tablet 51 each, TV 23, components 256. Earlier inventories remain
+snapshots; other dedicated route/map/capture suites were not rerun. Original slow-load/focus causes
+and broad performance/platform gates remain open despite successful controlled cases.
+
+Next: refresh the acceptance matrix and prioritized remaining gaps using stages 228–232, retaining
+historical observations and explicit evidence boundaries.
+
 ## Adding components
 
 ```sh
