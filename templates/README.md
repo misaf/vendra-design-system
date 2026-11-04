@@ -441,3 +441,11 @@ production (two workers, no retries/skips). Content axe, normal sticky reachabil
 geometry remain separate evidence. Full visuals/hydration, original device/offline/TV refresh,
 physical devices, soft keyboards, AT and deeper state combinations are not implied complete. The
 historical contact-map lifecycle/markup observation is next for focused diagnosis.
+
+Stage 228 [diagnoses the contact-map markup observation](../CONTACT-MAP-EVIDENCE.md). Three retained
+original routed PNG pairs are pixel-exact; the extra empty outgoing tile level is reproduced as
+Leaflet lifecycle DOM, not a demonstrated visual defect. Four dedicated bilingual phone/tablet
+map-lifecycle cases pass in dev/production without runtime or baseline changes. Tests check loaded
+current tiles, centered marker, completed zoom, resize, routed unload/remount/history and reload.
+Discovery now registers 1,745 invocations in 121 files; the stage-227 inventory remains a snapshot.
+Full map/network/heap/visual/platform acceptance is not implied. Shop image/decode diagnostics are next.

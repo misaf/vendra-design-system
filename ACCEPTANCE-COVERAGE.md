@@ -1,12 +1,13 @@
 # Storefront acceptance coverage — stage 227
 
 Reviewed 2026-11-04 against stage-226 commit
-`15eb9699988cefb026301e7607cf79aebe5cd9c0`. This is the current coverage inventory;
+`15eb9699988cefb026301e7607cf79aebe5cd9c0`. This is the stage-227 coverage snapshot,
+with subsequent progress below;
 [ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) retains the frozen stage-219 audit and staged
 follow-ups. Atomic Design migration acceptance is **not complete**. Route reach, state coverage,
 content accessibility, visuals and physical-device/assistive-technology evidence remain distinct.
 
-## Registered inventory
+## Registered inventory at stage 227
 
 Fresh Playwright discovery registers **1,737 invocations in 120 files**. Registration includes
 conditional skips and is not an executed pass count.
@@ -133,7 +134,22 @@ markup; and the stage-176 programmatic-focus/Enter search-clear observation. Lat
 repeats or touch clear tests do not establish their original cause or resolve the keyboard contract.
 They are historical observations, not all newly reproduced defects.
 
-Next: reproduce and scope the contact-map lifecycle/markup observation with focused instrumentation
-before changing rendering, waits or visual baselines. Continue remaining visual/hydration/platform
-verification only with explicit results or an accepted scope decision. No completion acceptance is
-assumed from the route matrix.
+Stage 227 prioritized reproducing the contact-map lifecycle/markup observation before changing
+rendering, waits or baselines; its follow-up is below. Remaining visual/hydration/platform
+verification still requires explicit results or an accepted scope decision. No completion
+acceptance is assumed from the route matrix.
+
+## Stage 228 follow-up: contact-map lifecycle
+
+[Contact map evidence](CONTACT-MAP-EVIDENCE.md) scopes the historical empty Leaflet level as internal
+DOM variation: three retained original routed PNG pairs, including EN768, have zero RGBA differences.
+Current traces reproduce the empty zoom-13 level beside loaded zoom-15 tiles; an all-levels-nonempty
+wait is not a valid readiness predicate. Four new bilingual phone/tablet regressions check active
+map/tile/marker state, resize, completed zoom, routed unload/remount, history and reload, passing in
+dev and production with one worker and no retries. No runtime or baseline changes are needed.
+
+Discovery is now 1,745 invocations in 121 files: mobile/desktop 683 each, phone/tablet 51 each, TV 23,
+components 254. Counts above remain the stage-227 snapshot; its 80-case combined production result
+is prior evidence, and this stage freshly executes only the four added cases in each target.
+The precise historical scheduling difference, full map/visual/device/AT acceptance and other older
+observations are not declared resolved. Shop photo/decode capture diagnostics are the next stage.

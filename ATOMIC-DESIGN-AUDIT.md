@@ -137,3 +137,11 @@ visual/hydration/device/AT gates. Fresh combined production execution passes 80 
 touch cases, with two workers and no retries/skips. This is selected route evidence, not complete
 state/platform acceptance. Only documentation changes; older observations remain historical/open.
 The contact-map lifecycle/markup observation is the next focused diagnosis.
+
+Stage 228 [scopes the contact-map observation](CONTACT-MAP-EVIDENCE.md): retained original routed
+PNG pairs are exact, while the reproduced extra empty outgoing tile level is legitimate Leaflet
+lifecycle DOM. Four bilingual dedicated lifecycle tests pass in dev/production, checking current
+loaded tiles, marker, zoom completion, resize and routed unload/remount/history/reload. No runtime
+or baseline change. Discovery is now 1,745/121 files; stage-227 inventory is labeled a snapshot.
+Original scheduling asymmetry and broader map/visual/network/heap/platform acceptance remain open.
+Shop photo/decode capture diagnostics are next.

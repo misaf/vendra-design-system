@@ -90,7 +90,8 @@ export default defineConfig({
               'device-customer.spec.mjs',
               'device-editorial.spec.mjs',
               'device-specialist.spec.mjs',
-              'device-catalog.spec.mjs'
+              'device-catalog.spec.mjs',
+              'contact-map-lifecycle.spec.mjs'
             ],
       use: {
         ...devices['Desktop Chrome'],

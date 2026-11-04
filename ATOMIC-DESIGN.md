@@ -5841,6 +5841,35 @@ Next: reproduce and scope the historical contact-map lifecycle/markup observatio
 instrumentation before changing rendering, waits or baselines; retain the remaining visual,
 hydration, platform and assistive-technology acceptance gates.
 
+## Stage 228 checkpoint: contact-map lifecycle diagnosis
+
+Added [CONTACT-MAP-EVIDENCE.md](CONTACT-MAP-EVIDENCE.md) and a focused lifecycle regression. Original
+stage-214 routed PNG pairs at EN390/FA390/EN768 decode exactly equal (zero pixel/channel differences),
+including the EN768 pair that failed strict markup equality. Current bilingual direct/routed traces
+at 768×1000 reproduce the same childless zoom-13 level/scale(4) transform beside loaded zoom-15 tiles.
+Vendored Leaflet prunes tiles separately from empty levels; those levels can persist until a later
+level update. Requiring every tile container to have children is therefore not a readiness contract.
+No PlacesMap/maps/loader source changed across the original stage-214 refactor. The exact scheduling
+that made only one old side retain the level is not reconstructed; the sampled observation is scoped
+as internal DOM variation with identical retained pixels, not a proven visual/component defect.
+
+Four new dedicated phone/tablet bilingual cases check one live map/marker/control/tooltip, active
+current-level tile readiness, completed zoom animation, centered marker, viewport enlargement and
+rotation, zoom in/out, repeated client navigation/unload/remount, history and reload. Public Leaflet
+hooks observe lifetime; tests do not constrain outgoing empty levels. Initial test-only zoom/focus
+races are synchronized to observable animation and heading/paint completion without fixed sleeps.
+All four final cases pass in dev/production with one worker and no retries; full npm tests, checks
+and production build pass. No runtime/component/vendor/style/generated/dependency/baseline changes.
+
+Discovery now registers 1,745 invocations in 121 files (mobile/desktop 683 each, phone/tablet 51 each,
+TV 23, components 254). Stage-227 counts/results are explicitly preserved as a snapshot; this stage
+adds four dedicated cases rather than claiming a freshly executed combined 84-case sweep. Real tile
+network/error behavior, heap/observer leakage, every map state, full visual repeatability and
+hardware/keyboard/AT acceptance remain unverified by these tests.
+
+Next: diagnose historical shop photo/decode capture variation with targeted image instrumentation
+and unchanged visual policy; retain the other acceptance gates and their evidence boundaries.
+
 ## Adding components
 
 ```sh
