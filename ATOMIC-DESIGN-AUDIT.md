@@ -152,3 +152,11 @@ not isolated. Four bilingual 768/1920 diagnostics pass in dev/production across 
 routed entry, attaching image readiness and repeated main captures. No runtime or visual-policy/
 baseline changes. Discovery is 1,753/122 files; historical configurations are not dedicated device
 acceptance. Bag/checkout thumbnail observations and broader visual/platform gates remain open.
+
+Stage 230 [scopes bag/checkout thumbnail observations](ORDER-THUMBNAIL-EVIDENCE.md). Retained
+residuals and ten exact historical repeats are verified; original captures already decoded images,
+and the cause remains unproven. Four new affected-combination regressions check exact thumbnails
+through bag/delivery/payment navigation/reload; all four shop cases also pass after shared-helper
+extraction, in dev/production without retries. Full tests/check/build pass. Exploratory two/three
+phone-bag text pixels/max 1 remain documented; order full-main exactness is not claimed. No runtime,
+baseline or policy changes. Discovery is 1,761/123 files. SearchField keyboard-clear audit is next.

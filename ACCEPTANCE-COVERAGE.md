@@ -167,3 +167,18 @@ Discovery is now 1,753 invocations/122 files: mobile/desktop 687 each, phone/tab
 components 254. The new file adds four deliberate mobile skips and four desktop executions. Prior
 stage-227/228 counts remain snapshots; earlier route/map suites were not rerun. Next: historical
 bag/checkout thumbnail capture diagnostics. Other listed acceptance gates remain open.
+
+## Stage 230 follow-up: order thumbnails
+
+[ORDER-THUMBNAIL-EVIDENCE.md](ORDER-THUMBNAIL-EVIDENCE.md) separates retained thumbnail residuals
+from phone progress-indicator pixels. Original captures already awaited decode; ten historical repeats
+are exact but do not establish the original cause. Four new historical configurations (EN390,
+FA390, EN768, FA1280; desktop project with touch through 768) pass exact thumbnail capture checks
+across bag, delivery, payment navigation and reload. All four shop cases also pass after shared capture
+helper extraction, in dev/production with one worker and no retries. Order full-main exactness is
+not claimed: exploratory two/three text pixels/max 1 are retained. No visual-policy/baseline changes.
+
+Discovery is 1,761 invocations/123 files: mobile/desktop 691 each, phone/tablet 51 each, TV 23,
+components 254. The new file adds four deliberate mobile skips and four desktop executions. Prior
+inventories remain snapshots; earlier route/map suites were not rerun. Next: stage-176 SearchField
+keyboard-clear audit using actual keyboard reachability. Other acceptance gates remain open.
