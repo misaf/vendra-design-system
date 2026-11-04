@@ -183,3 +183,11 @@ Completed prior-head Linux CI has two policy mobile screenshot failures in both 
 React 19 pass, and logs establish 76 route axe/74 page screenshot passes per job plus 12 desktop
 hydration passes in dev. Linux artifact diagnosis is the next priority; acceptance remains incomplete.
 No runtime/test/config/baseline changes; npm check and inventory/document-link consistency pass.
+
+Stage 234 [corrects stale Linux phone policy expectations](POLICY-LINUX-VISUAL-EVIDENCE.md).
+The old sticky-rule counterfactual reproduces both old PNGs exactly in the CI-matched Linux image;
+restoring static contents matches the common CI actuals exactly. Only two Linux mobile PNGs change.
+Eight policy screenshot/axe cases pass per dev/production target on Linux and Darwin without
+retries or snapshot updates; check/build pass. No runtime/tolerance changes. Original CI remains
+historical red, with broad fresh PR CI separate. Full-page visual comparisons/residual review are
+next; other state/platform/backend gates remain open.

@@ -232,3 +232,11 @@ set passes without retries. Prior-head Linux CI ran broadly but fails EN/FA mobi
 in both browser jobs. Those artifacts, not a speculative baseline refresh, are the next priority.
 Other historical causes and physical/platform/state acceptance remain explicitly open. Docs/checks
 only; no runtime, tests, baselines, tolerances or CI configuration changes.
+
+Stage 234 [corrects stale Linux phone policy expectations](POLICY-LINUX-VISUAL-EVIDENCE.md).
+The old sticky-rule counterfactual reproduces both old PNGs exactly in the CI-matched Linux image;
+restoring static contents matches the common CI actuals exactly. Only two Linux mobile PNGs change.
+Eight policy screenshot/axe cases pass per dev/production target on Linux and Darwin without
+retries or snapshot updates; check/build pass. No runtime/tolerance changes. Original CI remains
+historical red, with broad fresh PR CI separate. Full-page visual comparisons/residual review are
+next; other state/platform/backend gates remain open.

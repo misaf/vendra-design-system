@@ -490,3 +490,11 @@ prior-head Linux CI remains red for EN/FA mobile policy screenshots in both broa
 passing unit/React 19, route axe, hydration and other page comparisons. Expected/actual/diff artifact
 diagnosis is next; no baseline refresh is assumed. Historical causes and hardware/backend acceptance
 remain open. This stage changes documentation only and preserves [history](../ACCEPTANCE-COVERAGE-HISTORY.md).
+
+Stage 234 [corrects stale Linux phone policy expectations](../POLICY-LINUX-VISUAL-EVIDENCE.md).
+The old sticky-rule counterfactual reproduces both old PNGs exactly in the CI-matched Linux image;
+restoring static contents matches the common CI actuals exactly. Only two Linux mobile PNGs change.
+Eight policy screenshot/axe cases pass per dev/production target on Linux and Darwin without
+retries or snapshot updates; check/build pass. No runtime/tolerance changes. Original CI remains
+historical red, with broad fresh PR CI separate. Full-page visual comparisons/residual review are
+next; other state/platform/backend gates remain open.
