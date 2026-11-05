@@ -523,6 +523,27 @@ test('a gift’s recipient sees its progress but not what it cost or what the ca
   await expect(main.getByRole('button', {name: 'Order again'})).toBeVisible();
 });
 
+test('a signed-in recipient sees the whole order after a lookup with the sender’s mobile', async ({
+  page
+}) => {
+  await page.addInitScript(() => localStorage.setItem('vf-account-phone', '09121230000'));
+  await openSite(page, 'track', 'en', {id: 'VN-10522'});
+  await expect(page.locator('main h1')).toHaveText('On its way.');
+  await expect(page.locator('.vf-track-summary')).toHaveCount(0);
+  await page.getByRole('button', {name: 'Track another order'}).click();
+  await page.fill('#vf-lookup-id', 'VN-10522');
+  await page.fill('#vf-lookup-phone', '09125649438');
+  await page.getByRole('button', {name: 'Find my order'}).click();
+  await expect(page.locator('.vf-track-summary')).toContainText('Total');
+  await expect(page.locator('main')).toContainText('Happy birthday, Shirin.');
+});
+
+test('the standalone track page shows its whole sample order', async ({page}) => {
+  await page.goto('/templates/app/?page=track&lang=en');
+  await expect(page.locator('.vf-track-summary')).toContainText('Total');
+  await expect(page.locator('main').getByRole('link', {name: 'Order again'})).toBeVisible();
+});
+
 test('a card-to-card order says its payment is being confirmed, and offers an account', async ({
   page
 }) => {
