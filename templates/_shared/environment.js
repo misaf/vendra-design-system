@@ -52,12 +52,16 @@ export function vfLocation() {
 }
 
 // An absolute URL for `url` (read against the page's address), for canonical and preview links. On
-// the server without a known origin it stays a path from the site root.
+// the server without a known origin, the store's own URLs stay paths from the site root; a URL on
+// another host (an image CDN) keeps its origin.
 export function vfAbsoluteUrl(url) {
   if (!url) return undefined;
   try {
-    const target = new URL(url, vfLocation());
-    return vfServerState && !vfServerState.origin ? target.pathname + target.search : target.href;
+    const here = vfLocation();
+    const target = new URL(url, here);
+    return vfServerState && !vfServerState.origin && target.origin === here.origin
+      ? target.pathname + target.search
+      : target.href;
   } catch {
     return undefined;
   }
