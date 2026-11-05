@@ -55,6 +55,9 @@ export const VF_STORE = {
     mobile: {en: '{delivery}', fa: '{delivery}'}
   },
   brand: {en: 'Vendra Florist', fa: 'گل‌فروشی وندرا'},
+  // Optional asset overrides for this deployment; see guidelines/tenant-onboarding.md.
+  /** @type {import('./brand.js').BrandAssets} */
+  brandAssets: {},
   // One or two sentences under the brand in the footer.
   tagline: {
     en: 'Hand-tied flowers from our Karaj studio, delivered across Karaj and Tehran.',

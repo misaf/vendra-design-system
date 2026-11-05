@@ -131,6 +131,8 @@ A store turns on only the parts it runs, the way it picks its payment methods. N
 
 ## Storefront release checklist
 
+- [ ] Tenant logos (header, compact and inverse footer), app icons, bilingual manifests and localized share images use approved brand assets. Check EN/FA and phone/desktop; see [tenant onboarding](tenant-onboarding.md).
+
 - [ ] Product pages show price and availability. Paid add-ons are never pre-selected.
 - [ ] Every navigation is a real `<a href>` using the URL scheme above; back/forward, reload and deep links restore the screen.
 - [ ] Unknown or invalid URLs show the 404 screen with `noindex, follow`; noindex screens are excluded from the sitemap.

@@ -17,6 +17,15 @@ async function delivery(page, fa) {
   await visibleButton(page, fa ? 'ادامه و پرداخت' : 'Continue to payment').click();
   await expect(page.locator('.vf-checkout-summary')).toBeVisible();
 }
+// The payment step can still be mounting and render its default method again, so the choice is
+// retried until it holds.
+async function chooseMethod(page, name) {
+  const method = page.getByRole('radio', {name, exact: true});
+  await expect(async () => {
+    await method.press('Space', {timeout: 2_000});
+    await expect(method).toBeChecked({timeout: 1_000});
+  }).toPass({timeout: 15_000});
+}
 async function blockStorage(page, block) {
   await page.evaluate(block => {
     window.__vfStorageSet ||= Storage.prototype.setItem;
@@ -117,9 +126,7 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
     await page.evaluate(() => window.VF_API.setBase('/__offline-checkout-api'));
-    await page
-      .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-      .press('Space');
+    await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
     const requests = [],
       failures = [],
       errors = [];
@@ -291,9 +298,7 @@ for (const lang of ['en', 'fa']) {
       expect(await page.evaluate(() => window.__vfSite.state.order)).toBeNull();
     };
     try {
-      await page
-        .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-        .press('Space');
+      await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
       const firstButton = await place().elementHandle();
       await place().click();
       await expect.poll(() => requests.length).toBe(1);
@@ -502,9 +507,7 @@ for (const lang of ['en', 'fa']) {
     }, lang);
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
-    await page
-      .getByRole('radio', {name: fa ? 'کارت به کارت' : 'Card-to-card transfer', exact: true})
-      .press('Space');
+    await chooseMethod(page, fa ? 'کارت به کارت' : 'Card-to-card transfer');
     await page.locator('#vf-last4').fill('1234');
     await page.locator('#vf-ref').fill('567890');
     await page
@@ -796,9 +799,7 @@ for (const lang of ['en', 'fa']) {
       const tab = await context.newPage();
       try {
         await openSite(tab, 'home', lang);
-        await page
-          .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-          .press('Space');
+        await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
         await visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order').click();
         await submitted;
         await expect

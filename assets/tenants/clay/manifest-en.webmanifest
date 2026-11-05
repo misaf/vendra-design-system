@@ -1,0 +1,28 @@
+{
+  "name": "Clay Florist",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "../../../templates/app/?lang=en&tenant=clay",
+  "scope": "../../../templates/app/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "../../../assets/tenants/clay/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../../../assets/tenants/clay/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../../../assets/tenants/clay/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
