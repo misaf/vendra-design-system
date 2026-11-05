@@ -3,7 +3,7 @@
 import {vfAccountLocale} from '../account-data.js';
 import {VF_PRODUCTS, vfProductId} from '../catalog.js';
 import {VF_STORE} from '../store-config.js';
-import {commerce} from '../../../components/utils/commerce.js';
+import {vfCheckoutResultFromApi, vfGatewayRedirect, vfPaymentFromApi} from '../payment-api.js';
 (() => {
   const KEY = 'vendra-saved-map';
   if (window.VF_API) return;
@@ -144,10 +144,10 @@ import {commerce} from '../../../components/utils/commerce.js';
     );
   };
   // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
-  // -> the created order: {number, totals, redirect} (commerce.checkoutResultFromApi; API.md B3, B30).
+  // -> the created order: {number, totals, redirect} (vfCheckoutResultFromApi; API.md B3, B30).
   A.checkout = async body => {
     if (!A.live) return null;
-    return commerce.checkoutResultFromApi(await request('POST', '/api/sales/checkout', body));
+    return vfCheckoutResultFromApi(await request('POST', '/api/sales/checkout', body));
   };
   // GET /api/sales/orders?number=… -> the order's online payment {status, reference, amount}, asked
   // after the bank sends the customer back, in any tab (API.md B30). null in demo mode or when the
@@ -157,14 +157,14 @@ import {commerce} from '../../../components/utils/commerce.js';
     const r = await request('GET', '/api/sales/orders?number=' + encodeURIComponent(number));
     const orders = (r && (r['hydra:member'] || r.member || r.data)) || (r && r.number ? [r] : []);
     const order = orders.find(item => item && item.number === number);
-    return order ? commerce.paymentFromApi(order) : null;
+    return order ? vfPaymentFromApi(order) : null;
   };
   // POST /api/sales/payments {orderNumber} -> a new attempt for the same order after a failed or
   // cancelled payment: where to send the browser (API.md B30, "Pay again"). Never a second order.
   A.payAgain = async number => {
     if (!A.live || !number) return null;
     const r = await request('POST', '/api/sales/payments', {orderNumber: number});
-    return commerce.gatewayRedirect(r && (r.payment || r));
+    return vfGatewayRedirect(r && (r.payment || r));
   };
   // POST /api/support/inquiries {name,email,message,phone,occasion,preferredLocale} -> 204 (throttled)
   A.inquiry = async body => {
