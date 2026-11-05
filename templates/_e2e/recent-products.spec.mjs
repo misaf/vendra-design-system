@@ -75,7 +75,7 @@ for (const lang of ['en', 'fa']) {
     await expect(section.locator('.vf-collection-count')).toBeHidden();
     expect((await section.locator('.ag-product').boundingBox()).width).toBeGreaterThanOrEqual(350);
     await section.locator('.ag-product__link').click();
-    await expect(page).toHaveURL(/id=VF-8RD5WN/);
+    await expect(page).toHaveURL(/\/product\/VF-8RD5WN\//);
     await expect(page.getByRole('heading', {level: 1})).toHaveText('VF-8RD5WN');
   });
 }

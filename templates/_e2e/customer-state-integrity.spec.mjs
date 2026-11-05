@@ -39,7 +39,7 @@ for (const lang of ['en', 'fa']) {
       page.on('pageerror', error => errors.push(error.message));
       if (existing)
         await page.addInitScript(() => {
-          const key = 'vendra-template:' + location.pathname;
+          const key = 'vendra-template:/templates/app/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,
@@ -94,7 +94,7 @@ for (const lang of ['en', 'fa']) {
       await expect(page.locator('#main')).toBeVisible();
       await expect.poll(snapshot).toMatchObject(initial);
       const persisted = await page.evaluate(() =>
-        JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname))
+        JSON.parse(sessionStorage.getItem('vendra-template:/templates/app/'))
       );
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
@@ -377,7 +377,7 @@ for (const lang of ['en', 'fa']) {
       .filter({hasText: fa ? 'تغییرات تازه سبد' : 'newer bag changes'});
     await expect(notice).toBeVisible();
     await notice.getByRole('link', {name: fa ? 'مشاهده سفارش' : 'View order'}).click();
-    await expect(page).toHaveURL(/view=track/);
+    await expect(page).toHaveURL(/\/track\//);
     // Pending-button announcements expire after navigation; audit the settled page.
     await expect(page.locator('[data-live-announcer] [role="img"]')).toHaveCount(0, {
       timeout: 10000
@@ -449,9 +449,9 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('main')).toContainText('VN-20001');
     await expect(page.locator('main')).toContainText('VN-20002');
     await page.reload();
-    await page.locator('main a[href*="id=VN-20001"]').click();
+    await page.locator('main a[href*="/track/VN-20001/"]').click();
     await expect(page.locator('main')).toContainText('VN-20001');
-    await expect(page).toHaveURL(/id=VN-20001/);
+    await expect(page).toHaveURL(/\/track\/VN-20001\//);
     expect(await scanAxe(page)).toEqual([]);
   });
 
@@ -541,7 +541,7 @@ for (const lang of ['en', 'fa']) {
       await page.clock.install({time: MORNING});
       await page.addInitScript(
         ({target, other, action}) => {
-          const key = 'vendra-template:' + location.pathname;
+          const key = 'vendra-template:/templates/app/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,
@@ -864,7 +864,7 @@ for (const lang of ['en', 'fa']) {
         await switchCustomer(tab, lang, owner);
         await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(owner);
         await page.evaluate(() => window.__vfSite.navigate({view: 'account'}));
-        await expect(page).toHaveURL(/view=account/);
+        await expect(page).toHaveURL(/\/account\//);
         if (placed) await expect(page.locator('main')).toContainText(placed.id);
         await page.reload();
         await expect.poll(() => page.evaluate(() => window.__vfSite?.state.customerId)).toBe(owner);

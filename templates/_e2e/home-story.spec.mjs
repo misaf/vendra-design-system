@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe, routeOf} from './helpers.mjs';
 
 for (const device of [
   {name: 'phone', width: 390, height: 844, hasTouch: true},
@@ -48,7 +48,7 @@ for (const device of [
           const box = await link.boundingBox();
           expect(box.height).toBeGreaterThanOrEqual(44);
           await link.click();
-          await expect(page).toHaveURL(new RegExp(`[?&]view=${view}(?:&|$)`));
+          await expect.poll(() => routeOf(page.url()).view).toBe(view);
           if (filter) expect(new URL(page.url()).searchParams.get(filter)).toBeTruthy();
           await expect(page.locator('#main')).toBeVisible();
           await openSite(page, 'home', lang, extra);

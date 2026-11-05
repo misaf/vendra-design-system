@@ -77,7 +77,7 @@ for (const lang of ['en', 'fa']) {
   test(`a shop delivery date follows the product into the bag (${lang})`, async ({page}) => {
     await page.clock.install({time: MORNING});
     await openSite(page, 'shop', lang, {date: '2026-10-06'});
-    const product = page.locator('main a[href*="view=product"][href*="id=VF-7K2M4Q"]').first();
+    const product = page.locator('main a[href*="/product/VF-7K2M4Q/"]').first();
     await expect(product).toHaveAttribute('href', /date=2026-10-06/);
     await product.click();
     await expect(page).toHaveURL(/date=2026-10-06/);

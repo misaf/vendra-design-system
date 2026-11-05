@@ -183,7 +183,7 @@ window.__postEvaluationFinished = true;
       });
       const original = page.url();
       const heading = await page.locator('main h1').textContent();
-      await page.locator('.vf-home-arrivals .ag-sechead a[href*="view=shop"]').click();
+      await page.locator('.vf-home-arrivals .ag-sechead a[href*="/shop/"]').click();
       await gate.requested;
       await expect(page).toHaveURL(original);
       await expect(page.locator('main h1')).toHaveText(heading);
@@ -192,7 +192,7 @@ window.__postEvaluationFinished = true;
       await footer
         .getByRole('link', {name: lang === 'fa' ? 'پرسش‌های متداول' : 'FAQ', exact: true})
         .click();
-      await expect(page).toHaveURL(/view=faq/);
+      await expect(page).toHaveURL(/\/faq\//);
       await focusedHeading(page, lang);
       const faq = page.url();
       await gate.complete();

@@ -21,7 +21,7 @@ import {
 } from '../_shared/catalog.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {vfFeatures} from '../_shared/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
@@ -71,13 +71,15 @@ export function usePage(props) {
       page.setState({size: line.size || VF_SIZES[0].id, addons: line.addons, qty});
       if (page.props.go) page.props.go(next, true);
       else {
+        // A page on its own keeps its other parameters (?page=product, ?tenant=…).
         const query = new URLSearchParams(location.search),
-          canonical = new URLSearchParams(vfRouteParams(next));
-        for (const key of ['view', 'id', 'cat', 'lang', 'size', 'addons', 'qty']) {
-          if (canonical.has(key)) query.set(key, canonical.get(key));
+          canonical = new URL(vfRouteUrl(next), location.href);
+        for (const key of ['size', 'addons', 'qty']) {
+          if (canonical.searchParams.has(key)) query.set(key, canonical.searchParams.get(key));
           else query.delete(key);
         }
-        history.replaceState(history.state, '', '?' + query);
+        const search = query.toString();
+        history.replaceState(history.state, '', canonical.pathname + (search ? '?' + search : ''));
       }
     };
     // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.

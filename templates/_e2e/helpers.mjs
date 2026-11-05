@@ -42,14 +42,39 @@ export const VIEWS = {
   error: {}
 };
 
+// The screen's one path segment after its name (en/product/VF-7K2M4Q/), as _shared/seo.js writes it.
+const SEGMENT = {product: 'id', post: 'post', track: 'id', shop: 'cat', policy: 'id'};
+
+// A view's address: SITE + <lang>/<view>/<id>/, with anything else as the query.
 export function siteUrl(view, lang, extra = {}) {
-  const q = new URLSearchParams({
-    lang,
-    ...(view === 'home' ? {} : {view}),
-    ...VIEWS[view],
-    ...extra
-  });
-  return SITE + '?' + q;
+  const values = {...VIEWS[view], ...extra};
+  let path = SITE + lang + '/';
+  if (view !== 'home') {
+    path += (view === 'post' ? 'journal' : view) + '/';
+    const key = SEGMENT[view];
+    if (key && values[key] != null) path += values[key] + '/';
+    delete values[key];
+    if (view === 'product') delete values.cat;
+  }
+  const query = new URLSearchParams(values).toString();
+  return query ? path + '?' + query : path;
+}
+
+// An address read back as a route: lang, view and the view's id from the path, plus the query.
+export function routeOf(url) {
+  const address = new URL(url, 'http://localhost');
+  const at = address.pathname.indexOf(SITE);
+  const parts = address.pathname
+    .slice(at < 0 ? 0 : at + SITE.length)
+    .split('/')
+    .filter(Boolean);
+  const route = Object.fromEntries(address.searchParams);
+  if (LANGS.includes(parts[0])) route.lang = parts.shift();
+  route.view = parts.shift() || 'home';
+  if (route.view === 'journal' && parts.length) route.view = 'post';
+  const key = SEGMENT[route.view];
+  if (key && parts.length) route[key] = decodeURIComponent(parts.shift());
+  return route;
 }
 
 // Waits until the page has requested nothing new for half a second (the browser's resource list
