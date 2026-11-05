@@ -17,7 +17,7 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 2. `npm --prefix apps/storefront run format`, then `npm run build`.
 3. `npm run check`: generated files match their sources, Prettier, and the CSS lint (colours only from tokens, start/end instead of left/right).
 4. `npm test`: types, storefront logic, copy parity, the package's server render, its size budget and the API contract.
-5. After a change to a component, its CSS, tokens or `styles.css`: `npm run test:e2e`. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm --prefix apps/storefront run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
+5. After a change to a component, its CSS, tokens or `styles.css`: `npm run test:e2e`. Storefront tests run against a fresh production build, then source fixtures and component tests run on the development server. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm --prefix apps/storefront run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
 6. Commit to `master` with `dist/` included.
 
 ## Demo deployment

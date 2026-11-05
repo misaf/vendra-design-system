@@ -66,8 +66,10 @@ for (const lang of ['en', 'fa']) {
       await openSite(page, 'saved', lang, {
         ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'
       });
-      const snapshot = () =>
-        page.evaluate(() => {
+      const snapshot = async () => {
+        // Full navigations can show prerendered content before the site's state has mounted.
+        await page.waitForFunction(() => window.__vfSite?.state);
+        return page.evaluate(() => {
           const {
             bag,
             saved,
@@ -91,6 +93,7 @@ for (const lang of ['en', 'fa']) {
             orders
           };
         });
+      };
       const initial = await snapshot();
       expect(initial.saved).toEqual(existing ? ['VF-7K2M4Q', 'VF-3HX9TP'] : ['VF-3HX9TP']);
       expect(new URL(page.url()).searchParams.has('ids')).toBe(false);
