@@ -23,7 +23,7 @@ import {
   vfWalletOf
 } from '../_shared/wallet.js';
 import {VF_NAV} from '../_shared/page-focus.js';
-import {vfAmountToInput} from '../_shared/formatting.js';
+import {vfAmountInputMode, vfAmountToInput} from '../_shared/formatting.js';
 import {dates} from '../../components/utils/dates.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -45,6 +45,9 @@ export function usePage(props) {
       placesFailed: false,
       locateFailed: false,
       topUp: '',
+      // The preset last picked, in Toman: kept exact, since its display in a currency with
+      // decimals is rounded and would not read back as the same amount.
+      topUpPreset: null,
       topUpError: '',
       topUpBusy: false,
       topUpDone: ''
@@ -318,7 +321,10 @@ function vals(page) {
   const W = C.balance,
     rules = VF_STORE.wallet,
     wallet = vfWalletOf(account);
-  const amount = vfTopUpAmount(s.topUp);
+  const amount =
+    s.topUpPreset != null && s.topUp === vfAmountToInput(s.topUpPreset)
+      ? s.topUpPreset
+      : vfTopUpAmount(s.topUp);
   const fill = text =>
     text
       .replace('{percent}', S.n(rules.discountPercent))
@@ -365,9 +371,16 @@ function vals(page) {
       presets: rules.topUps.map(value => ({
         label: S.m(value),
         pressed: amount === value,
-        pick: () => page.setState({topUp: vfAmountToInput(value), topUpError: '', topUpDone: ''})
+        pick: () =>
+          page.setState({
+            topUp: vfAmountToInput(value),
+            topUpPreset: value,
+            topUpError: '',
+            topUpDone: ''
+          })
       })),
       value: s.topUp,
+      inputMode: vfAmountInputMode(),
       set: value => page.setState({topUp: value, topUpError: '', topUpDone: ''}),
       hint: fill(W.amountHint),
       error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
@@ -394,6 +407,7 @@ function vals(page) {
           page.setState({
             account: next,
             topUp: '',
+            topUpPreset: null,
             topUpBusy: false,
             topUpDone: W.done.replace('{amount}', S.m(amount))
           });

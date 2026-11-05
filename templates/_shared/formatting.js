@@ -24,6 +24,8 @@ export function vfAmountFromInput(text) {
     : typed.replace(/\D/g, '');
   return value && value !== '.' ? Math.round(+value / currency.rate) : '';
 }
+// The keyboard for an amount field: one with a decimal point when the active currency has decimals.
+export const vfAmountInputMode = () => (vfCurrency().decimals ? 'decimal' : 'numeric');
 // A Toman amount written for an input in the active currency (the reverse of vfAmountFromInput).
 export const vfAmountToInput = toman => {
   const currency = vfCurrency();
