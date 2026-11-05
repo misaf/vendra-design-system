@@ -1,11 +1,11 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe, routeOf} from './helpers.mjs';
 
 const headerSearch = page =>
-  page.locator('.vf-shell-header a[href*="view=search"]').locator('visible=true').first();
+  page.locator('.vf-shell-header a[href*="/search/"]').locator('visible=true').first();
 const closeSearch = (page, fa) =>
   page.getByRole('link', {name: fa ? 'بستن جستجو' : 'Close search', exact: true});
-const params = page => Object.fromEntries(new URL(page.url()).searchParams);
+const params = page => routeOf(page.url());
 
 for (const lang of ['en', 'fa']) {
   test(`search survives product exploration and closes to the filtered shop (${lang})`, async ({

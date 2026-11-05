@@ -1,7 +1,9 @@
+import {vfAssetBase} from './environment.js';
+
 // Responsive sample journal photos. Relative paths also work under GitHub Pages' repo path.
 export function vfJournalImage(asset) {
   if (!asset) return undefined;
-  const base = (typeof window !== 'undefined' && window.VF_ASSET_BASE) || '../../';
+  const base = vfAssetBase();
   const src = /^(https?:|data:|\/)/.test(asset) ? asset : base + asset;
   if (asset.startsWith('assets/journal/') && asset.endsWith('.webp'))
     return {

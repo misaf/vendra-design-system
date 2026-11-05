@@ -101,7 +101,7 @@ async function leave(page, fa, removed) {
       .getByRole('navigation', {name: help, exact: true})
       .getByRole('link', {name: fa ? 'پرسش‌های متداول' : 'FAQ', exact: true})
   );
-  await expect(page).toHaveURL(/view=faq/);
+  await expect(page).toHaveURL(/\/faq\//);
   await expect(page.locator('#vf-contact-map')).toHaveCount(0);
   await routeFocus(page);
   await expect
@@ -145,13 +145,13 @@ for (const lang of ['en', 'fa']) {
           .getByRole('main')
           .getByRole('link', {name: fa ? 'تماس با ما' : 'Contact us', exact: true})
       );
-      await expect(page).toHaveURL(/view=contact/);
+      await expect(page).toHaveURL(/\/contact\//);
       await routeFocus(page);
       await ready(page, 15, created);
       await leave(page, fa, created);
     }
     await page.goBack();
-    await expect(page).toHaveURL(/view=contact/);
+    await expect(page).toHaveURL(/\/contact\//);
     await routeFocus(page);
     await ready(page, 15, 4);
     await page.reload();

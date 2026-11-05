@@ -31,7 +31,7 @@ for (const width of [768, 1920]) {
         await page.evaluate(() => {
           window.__shopCaptureDocument = true;
         });
-        const entry = page.locator('.vf-home-arrivals .ag-sechead a[href*="view=shop"]').first();
+        const entry = page.locator('.vf-home-arrivals .ag-sechead a[href*="/shop/"]').first();
         await entry.scrollIntoViewIfNeeded();
         if (width === 768) await entry.tap();
         else await entry.click();

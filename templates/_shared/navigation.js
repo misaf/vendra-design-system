@@ -10,13 +10,14 @@ import {
 import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
 import {vfDirectionsUrl} from './location.js';
 import {vfPageTenant} from './page-lifecycle.js';
-import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
+import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
 import {VF_STORE, vfFeatures} from './store-config.js';
 import {VF_CATEGORY_COPY} from './translations/categories.js';
 import {VF_SHELL} from './translations/shell.js';
 import {vfDayMonth, vfDayName} from './translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
+import {vfNow, vfOnServer} from './environment.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.
@@ -86,15 +87,13 @@ export function vfShell(self, page) {
           : '';
   const href = {};
   VF_ROUTES.forEach(r => {
-    href[r] =
-      (props.go ? '' : '../app/') +
-      VF_SEO.hrefFor(
-        {
-          lang: L
-        },
-        r,
-        VF_ROUTE_EXTRA[r]
-      );
+    href[r] = VF_SEO.hrefFor(
+      {
+        lang: L
+      },
+      r,
+      VF_ROUTE_EXTRA[r]
+    );
   });
   const close = () =>
     self.setState({
@@ -131,16 +130,19 @@ export function vfShell(self, page) {
       close
     }));
   const policyLink = doc => ({
-    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'policy', id: doc})
+    href: vfRouteUrl({lang: L, view: 'policy', id: doc})
   });
   const policyDoc = page === 'policy' ? (props.doc ?? vfPageRoute(props).id ?? VF_POLICIES[0]) : '';
   // The click-through site switches in place; a standalone page opens itself in the site in that language.
   const setLang =
     props.setLang ||
     (lang => {
-      location.href =
-        (props.go ? '' : '../app/') +
-        vfRouteParams({...VF_ROUTE_EXTRA[page], ...vfPageRoute(props), view: page, lang});
+      location.href = vfRouteUrl({
+        ...VF_ROUTE_EXTRA[page],
+        ...vfPageRoute(props),
+        view: page,
+        lang
+      });
     });
   // Focuses an element by id, waiting a few frames for one that this update is about to render.
   const focus = (id, tries = 10) =>
@@ -159,7 +161,8 @@ export function vfShell(self, page) {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch {}
   const consentShown =
-    (!(st.vfConsent ?? window.VF_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
+    (!(st.vfConsent ?? (vfOnServer() ? '' : window.VF_TRACK.consent())) && !dismissed) ||
+    !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
@@ -187,7 +190,7 @@ export function vfShell(self, page) {
     }
   };
   const shopLink = cat => ({
-    href: (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat})
+    href: vfRouteUrl({lang: L, view: 'shop', cat})
   });
   // Footer link columns, social links, contact lines and the bottom line.
   const F = T.footer;
@@ -234,8 +237,8 @@ export function vfShell(self, page) {
     copyright:
       '© ' +
       (fa
-        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date())
-        : new Date().getFullYear()) +
+        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(vfNow())
+        : vfNow().getFullYear()) +
       ' ' +
       T.brand +
       '. ' +
@@ -255,20 +258,17 @@ export function vfShell(self, page) {
       current: doc === policyDoc ? 'page' : undefined
     })),
     productLink: (id, context = {}) => ({
-      href:
-        (props.go ? '' : '../app/') +
-        vfRouteParams({
-          lang: L,
-          view: 'product',
-          id: vfProductId(id) || id,
-          cat: (vfFindProduct(id) || {}).cat,
-          date: vfPageRoute(props).date,
-          ...context
-        })
+      href: vfRouteUrl({
+        lang: L,
+        view: 'product',
+        id: vfProductId(id) || id,
+        cat: (vfFindProduct(id) || {}).cat,
+        date: vfPageRoute(props).date,
+        ...context
+      })
     }),
     occasionLink: occasion => ({
-      href:
-        (props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'shop', cat: 'all', occasion})
+      href: vfRouteUrl({lang: L, view: 'shop', cat: 'all', occasion})
     }),
     shopLink,
     lang: L,
@@ -300,9 +300,7 @@ export function vfShell(self, page) {
       vfAnnouncementSource(L).includes('{delivery}') && vfNextDelivery(L).sameDay
         ? {
             label: T.shopSameDay,
-            href:
-              href.shop.split('?')[0] +
-              vfRouteParams({view: 'shop', lang: L, cat: 'all', filters: ['same']})
+            href: vfRouteUrl({view: 'shop', lang: L, cat: 'all', filters: ['same']})
           }
         : null,
     closeAnnouncement: () => {

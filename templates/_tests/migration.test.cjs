@@ -277,7 +277,7 @@ function page(name, c, props = {}) {
   assert.equal(normalized.d, 14);
   const next = c.vfReminderNext({occ: 'valentine', cal: 'j', m: 1, d: 1}, new Date(2026, 1, 13));
   assert.equal(next.days, 1);
-  const route = c.vfReadRoute('?lang=fa&view=shop&min=NaN&max=-5&stock=1');
+  const route = c.vfReadRoute('/templates/app/fa/shop/?min=NaN&max=-5&stock=1');
   assert.equal(route.min, 0);
   assert.equal(route.max, 0);
   assert.equal(route.stock, true);
@@ -301,9 +301,10 @@ function page(name, c, props = {}) {
   let payment = checkout.renderVals().bankTrip;
   assert.equal(payment.status, 'redirecting');
   assert.equal(payment.redirect.method, 'GET');
+  assert.match(payment.redirect.url, /\/checkout\/$/);
   assert.deepEqual(
-    [payment.redirect.fields.view, payment.redirect.fields.payment, payment.redirect.fields.result],
-    ['checkout', 'return', 'failed']
+    [payment.redirect.fields.payment, payment.redirect.fields.result],
+    ['return', 'failed']
   );
   assert.equal(checkout.state.order, null);
   const orderNumber = payment.orderNumber;
@@ -614,11 +615,11 @@ function page(name, c, props = {}) {
     assert.deepEqual(json(home.tabs.map(tab => tab.id)), ['home', 'shop', 'bag']);
     // Routes: its pages are gone, English opens in Persian, the same-day filter is dropped.
     const route = search => json(store.vfReadRoute(search));
-    assert.equal(route('?view=weddings').view, 'notfound');
-    assert.equal(route('?view=journal').view, 'notfound');
-    assert.equal(route('?view=post&post=morning-at-the-studio').view, 'notfound');
-    assert.equal(route('?lang=en&view=faq').lang, 'fa');
-    assert.deepEqual(route('?view=shop&filters=same,roses').filters, ['roses']);
+    assert.equal(route('/templates/app/weddings/').view, 'notfound');
+    assert.equal(route('/templates/app/journal/').view, 'notfound');
+    assert.equal(route('/templates/app/journal/morning-at-the-studio/').view, 'notfound');
+    assert.equal(route('/templates/app/en/faq/').lang, 'fa');
+    assert.deepEqual(route('/templates/app/shop/?filters=same,roses').filters, ['roses']);
     // No same-day delivery: the first day is tomorrow, and nothing says "same day".
     assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
     assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');

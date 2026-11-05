@@ -22,7 +22,7 @@ import {
 import {VF_FA_DIGITS, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
 import {vfOrderMessage} from '../_shared/order-message.js';
@@ -33,10 +33,18 @@ import {
   vfWalletOf
 } from '../_shared/wallet.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
 const vfPaymentKey = () => 'vf-online-payment:' + vfCustomerId();
+
+// The sample store's simulated bank: a GET form back to this page's path, carrying the return
+// link's query as fields (a GET form replaces the action's own query).
+function vfSimulatedBank(href) {
+  const url = new URL(href, location.href);
+  return {url: url.pathname, method: 'GET', fields: Object.fromEntries(url.searchParams)};
+}
 function vfPendingPayment(id) {
   try {
     const record = JSON.parse(sessionStorage.getItem(vfPaymentKey()) || 'null');
@@ -194,7 +202,7 @@ function vals(page) {
   const receiptChanged =
     method === 'card' && !!(s.last4 || s.ref) && s.receiptAmount !== totals.total;
   const slotLabel = vfDeliveryWhen(
-    {...delivery, date: delivery.date || vfDeliveryDate(delivery, new Date(), items)},
+    {...delivery, date: delivery.date || vfDeliveryDate(delivery, vfNow(), items)},
     fa
   );
   const fillWallet = (text, amount) =>
@@ -235,7 +243,7 @@ function vals(page) {
   // The checkout link without the bank's return parameters, so a reload doesn't verify again.
   const leavePaymentUrl = () => {
     if (vfPageRoute(page.props).paymentOrder)
-      history.replaceState(history.state, '', vfRouteParams({lang: L, view: 'checkout'}));
+      history.replaceState(history.state, '', vfRouteUrl({lang: L, view: 'checkout'}));
   };
   const completeOrder = record => {
     // Paying from the balance takes the total out of it now; a failed deduction stops the order.
@@ -310,9 +318,7 @@ function vals(page) {
       !done,
     discountHint: offers('wallet') ? discountHint : '',
     topUpLabel: PW.topUp,
-    topUpHref:
-      (page.props.go ? '' : '../app/') +
-      vfRouteParams({lang: L, view: 'account', tab: 'balance', next: 'checkout'}),
+    topUpHref: vfRouteUrl({lang: L, view: 'account', tab: 'balance', next: 'checkout'}),
     busy,
     placeDisabled: busy || s.failed || done || !method,
     failed: s.failed,
@@ -372,8 +378,7 @@ function vals(page) {
       page.props.go &&
       i < 2 &&
       page.props.go(i === 0 ? 'bag' : {view: 'bag', step: 'delivery'}),
-    backHref:
-      (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag', step: 'delivery'}),
+    backHref: vfRouteUrl({lang: L, view: 'bag', step: 'delivery'}),
     goBack: e => {
       if (!page.props.go) return;
       e && e.preventDefault && e.preventDefault();
@@ -536,25 +541,19 @@ function vals(page) {
           ? undefined
           : vfLiveStore()
             ? s.payment.redirect || undefined
-            : {
-                url: location.pathname,
-                method: 'GET',
-                fields: Object.fromEntries(
-                  new URLSearchParams(
-                    vfRouteParams({
-                      lang: L,
-                      view: 'checkout',
-                      paymentOrder: s.payment.record.id,
-                      paymentResult:
-                        vfPageRoute(page.props).demo === 'error'
-                          ? 'failed'
-                          : s.payment.record.attempt > 1
-                            ? 'paid'
-                            : VF_STORE.paymentDemo.online
-                    })
-                  )
-                )
-              },
+            : vfSimulatedBank(
+                vfRouteUrl({
+                  lang: L,
+                  view: 'checkout',
+                  paymentOrder: s.payment.record.id,
+                  paymentResult:
+                    vfPageRoute(page.props).demo === 'error'
+                      ? 'failed'
+                      : s.payment.record.attempt > 1
+                        ? 'paid'
+                        : VF_STORE.paymentDemo.online
+                })
+              ),
       supportHref: 'tel:' + VF_STORE.phone
     },
     payRetry: () => {

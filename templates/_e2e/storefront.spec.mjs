@@ -61,7 +61,7 @@ test.describe('shell', () => {
       await page.keyboard.press('Tab');
     await expect(shop).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(/view=shop/);
+    await expect(page).toHaveURL(/\/shop\//);
     await expect(page.locator('main h1')).toBeFocused();
   });
 

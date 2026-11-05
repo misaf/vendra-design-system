@@ -42,13 +42,14 @@ import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel, vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-// Two checkout steps share this page: the bag (?view=bag) and delivery details (&step=delivery).
+// Two checkout steps share this page: the bag (bag/) and delivery details (bag/?step=delivery).
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -128,9 +129,9 @@ function vals(page) {
   const totals = vfTotals(live.filter(vfLineAvailable), delivery);
   const {sub, total} = totals;
   const z = vfZone(delivery.zone);
-  const date = vfDeliveryDate(delivery, new Date(), live);
-  const slot = vfDeliverySlot(delivery, new Date(), live);
-  const deliveryChanged = vfDeliveryChanged(delivery, new Date(), live);
+  const date = vfDeliveryDate(delivery, vfNow(), live);
+  const slot = vfDeliverySlot(delivery, vfNow(), live);
+  const deliveryChanged = vfDeliveryChanged(delivery, vfNow(), live);
   const quoted = vfDeliveryQuoted(delivery);
   const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
   const displayedTotal = quoted ? total : total - totals.fee;
@@ -261,8 +262,7 @@ function vals(page) {
     hasSaved: saved.length > 0,
     // Guests can sign in to use saved addresses, then come back to this step.
     guest: !phone,
-    signinHref:
-      (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'signin', next: 'delivery'}),
+    signinHref: vfRouteUrl({lang: L, view: 'signin', next: 'delivery'}),
     goSignin: e => {
       if (!page.props.go) return;
       e && e.preventDefault && e.preventDefault();
@@ -316,7 +316,7 @@ function vals(page) {
       e && e.preventDefault && e.preventDefault();
       stepTo('bag');
     },
-    bagHref: (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag'}),
+    bagHref: vfRouteUrl({lang: L, view: 'bag'}),
     stepClick: i => i === 0 && stepTo('bag'),
     next: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
@@ -470,7 +470,7 @@ function vals(page) {
       value: zone.id,
       label: zoneLabel(zone)
     })),
-    days: vfDeliveryDays(delivery.zone, new Date(), live).map(day => {
+    days: vfDeliveryDays(delivery.zone, vfNow(), live).map(day => {
       const off = day.soldOut || day.pastCutoff;
       return {
         label: vfDayName(day, fa),

@@ -4,7 +4,7 @@ import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_sha
 import {VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {vfShell, vfStored} from '../_shared/navigation.js';
-import {vfRouteParams} from '../_shared/routing.js';
+import {vfRouteUrl} from '../_shared/routing.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
@@ -13,7 +13,7 @@ import {
 import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
 import {vfCategoryImage} from '../_shared/category-images.js';
 import {vfJournalImage} from '../_shared/journal-images.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -30,7 +30,6 @@ function vals(page) {
   const L = fa ? 'fa' : 'en';
   const S = vfShell(page, 'home');
   const C = vfCopy(S);
-  const shop = S.href.shop.split('?')[0];
   const inStock = VF_PRODUCTS.filter(p => p.inStock !== false);
   const featured = VF_STORE.featuredProducts
     .map(id => inStock.find(p => p.id === id))
@@ -72,7 +71,7 @@ function vals(page) {
     // The studio's ready-made designs, in its order; the studio collection leaves them
     // out while at least four other designs remain (a small catalogue shows them all).
     featured: featured.map(card),
-    readyHref: shop + vfRouteParams({view: 'shop', lang: L, cat: 'all', filters: ['ready']}),
+    readyHref: vfRouteUrl({view: 'shop', lang: L, cat: 'all', filters: ['ready']}),
     products: (others.length >= 4 ? others : inStock).map(card),
     weddings: S.features.weddings ? {href: S.href.weddings} : null,
     // The latest journal posts, newest first as the journal lists them.
@@ -80,7 +79,7 @@ function vals(page) {
       ? VF_POSTS.slice(0, VF_STORE.homePosts).map(post => {
           const category = VF_JCATS.find(item => item[0] === post.cat);
           return {
-            href: S.href.post.split('?')[0] + vfRouteParams({view: 'post', post: post.id, lang: L}),
+            href: vfRouteUrl({view: 'post', post: post.id, lang: L}),
             title: post[L][0],
             image: vfJournalImage(post.image),
             excerpt: post[L][1],
@@ -102,7 +101,7 @@ function newsletter(page, S, C, L) {
   return {
     open: !signedUp,
     done: !!signedUp,
-    doneText: (window.VF_API.live ? C.newsDone : C.newsDemo).replace(
+    doneText: (vfLiveStore() ? C.newsDone : C.newsDemo).replace(
       '{email}',
       '\u2066' + signedUp + '\u2069'
     ),

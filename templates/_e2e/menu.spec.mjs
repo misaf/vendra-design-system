@@ -61,7 +61,7 @@ for (const lang of ['en', 'fa']) {
         await expect(trigger).toBeFocused();
         await trigger.tap();
         await navigation.getByRole('link', {name: text.shop, exact: true}).tap();
-        await expect(page).toHaveURL(/view=shop/);
+        await expect(page).toHaveURL(/\/shop\//);
         await expect(dialog).toHaveCount(0);
         await openSite(page, 'shop', lang, {cat: 'orchids'});
         await trigger.tap();
@@ -70,8 +70,8 @@ for (const lang of ['en', 'fa']) {
           .getByRole('button', {name: lang === 'en' ? 'فا' : 'EN', exact: true})
           .tap();
         await expect(page.locator('html')).toHaveAttribute('lang', lang === 'en' ? 'fa' : 'en');
-        await expect(page).toHaveURL(/cat=orchids/);
-        await expect(page).toHaveURL(/view=shop/);
+        await expect(page).toHaveURL(/\/shop\/orchids\//);
+        await expect(page).toHaveURL(/\/shop\//);
       });
     });
   }

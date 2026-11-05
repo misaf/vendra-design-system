@@ -9,6 +9,12 @@ const {generate} = require('../_build/generate.cjs');
 const {sharedLogic} = require('./page-script.cjs');
 const {pageScript} = require('./page-script.cjs');
 generate(true);
+// Sets the test page's address: a path under the app, with its query.
+function setAddress(ctx, url) {
+  const address = new URL(url, 'http://localhost/templates/app/');
+  ctx.location.pathname = address.pathname;
+  ctx.location.search = address.search;
+}
 function context() {
   const history = [];
   const ctx = {
@@ -312,7 +318,7 @@ for (const folder of fs
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();
-      hc.location.search = '?lang=en&view=bag&lines=VF-8RD5WN...2';
+      setAddress(hc, '/templates/app/en/bag/?lines=VF-8RD5WN...2');
       vm.runInContext(sharedLogic, hc);
       vm.runInContext(script + '\nthis.Logic=Component;', hc);
       const handed = new hc.Logic({lang: 'en', tenant: 'default'});
@@ -323,20 +329,20 @@ for (const folder of fs
       );
       assert.deepEqual(
         [...handHistory.at(-1)],
-        ['replace', '?lang=en&view=bag'],
+        ['replace', '/templates/app/en/bag/'],
         'the link is dropped'
       );
-      hc.location.search = '?lang=en&view=saved&ids=VF-3HX9TP,VF-NOPE00';
+      setAddress(hc, '/templates/app/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
       const shortlisted = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
     }
     logic.navigate('faq');
     assert.equal(logic.state.route, 'faq');
-    assert.ok(history.at(-1)[1].includes('view=faq'));
+    assert.ok(history.at(-1)[1].endsWith('/en/faq/'));
     history.length = 0;
     logic.navigate('shop');
     assert.equal(logic.state.route, 'shop');
-    assert.deepEqual(history[0], ['push', '?lang=en&view=shop']);
+    assert.deepEqual(history[0], ['push', '/templates/app/en/shop/']);
     logic.navigate({view: 'product', id: 'ivory-classic', lang: 'fa'});
     assert.equal(logic.state.route, 'product');
     assert.equal(
@@ -409,7 +415,7 @@ for (const folder of fs
   } else {
     // Phone, tablet and desktop layouts come from CSS breakpoints, not a JavaScript flag.
     assert.ok(!('mob' in values) && !('desk' in values), 'no JavaScript layout breakpoint');
-    assert.ok(values.href.shop.includes('view=shop'));
+    assert.ok(values.href.shop.endsWith('/shop/'));
   }
   if (folder === 'storefront-faq') {
     const fa = new c.Logic({lang: 'fa', tenant: 'clay'}).renderVals();
@@ -431,7 +437,7 @@ console.log(
 // Exercise catalog navigation, URL restoration and the completed-order tracking snapshot.
 function loadPage(name, props = {}, search = '') {
   const {ctx: c, history} = context();
-  c.location.search = search;
+  setAddress(c, search);
   vm.runInContext(sharedLogic, c);
   vm.runInContext(pageScript('storefront-' + name) + '\nthis.Logic=Component;', c);
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
@@ -445,7 +451,7 @@ for (const lang of ['en', 'fa']) {
     const {logic: site, ctx: c} = loadPage(
       'site',
       {lang},
-      `?lang=${lang}&view=${view}&${handover}`
+      `/templates/app/${lang}/${view}/?${handover}`
     );
     let stored;
     c.sessionStorage.setItem = (_, value) => {
@@ -456,7 +462,7 @@ for (const lang of ['en', 'fa']) {
     c.window.addEventListener = c.document.addEventListener = () => {};
     site.lifecycle.didMount();
     assert.ok(stored, 'initial handover is saved on mount without an edit');
-    c.location.search = `?lang=${lang}&view=${view}`;
+    setAddress(c, `/templates/app/${lang}/${view}/`);
     const restored = new c.Logic({lang});
     const plain = value => JSON.parse(JSON.stringify(value));
     assert.deepEqual(plain(restored.state.saved), plain(site.state.saved));
@@ -477,18 +483,18 @@ for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage(
     'site',
     {lang},
-    '?lang=' + lang + '&view=shop&cat=bouquets&filters=roses&sort=low'
+    '/templates/app/' + lang + '/shop/bouquets/?filters=roses&sort=low'
   );
   const entries = [];
   for (const method of ['pushState', 'replaceState'])
     c.history[method] = (state, title, url) => {
       entries.push([method, url]);
       c.history.state = state;
-      c.location.search = url;
+      setAddress(c, url);
     };
   site.navigate('search');
   const origin = c.history.state.vfSearchReturn;
-  assert.ok(origin.includes('cat=bouquets'));
+  assert.ok(origin.includes('/shop/bouquets/'));
   assert.ok(origin.includes('filters=roses'));
   const query = lang === 'fa' ? ' ارکیده & + ' : ' Orchid & + ';
   site.navigate({view: 'search', lang, q: query}, true);
@@ -502,7 +508,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(reloaded.renderVals().store.searchReturn.sort, 'low');
   c.history.state = {vfSearchReturn: 'https://example.com/'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
-  c.history.state = {vfSearchReturn: '?view=search&q=loop'};
+  c.history.state = {vfSearchReturn: '/templates/app/search/?q=loop'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
 
   const calls = [];
@@ -514,10 +520,9 @@ for (const lang of ['en', 'fa']) {
   });
   sc.setTimeout = () => 0;
   assert.equal(search.renderVals().q, query);
-  const close = new URLSearchParams(search.renderVals().closeHref);
-  assert.equal(close.get('view'), 'shop');
-  assert.equal(close.get('filters'), 'roses');
-  assert.equal(close.get('lang'), lang);
+  const close = new URL(search.renderVals().closeHref, 'http://localhost');
+  assert.equal(close.pathname, '/templates/app/' + lang + '/shop/bouquets/');
+  assert.equal(close.searchParams.get('filters'), 'roses');
   search.renderVals().setQ('VF-8RD5WN');
   assert.equal(calls.at(-1)[0].q, 'VF-8RD5WN');
   assert.equal(calls.at(-1)[1], true);
@@ -638,17 +643,17 @@ for (const lang of ['en', 'fa']) {
 // subsequent links to the same product. Invalid choices use the catalog's normal fallback rules.
 {
   const {ctx: c} = context();
-  vm.runInContext(sharedLogic + '\nthis.read=vfReadRoute;this.params=vfRouteParams;', c);
-  const route = c.read('?lang=en&view=product&id=VF-7K2M4Q&size=classic&addons=vase,card,vase');
+  vm.runInContext(sharedLogic + '\nthis.read=vfReadRoute;this.params=vfRouteUrl;', c);
+  const route = c.read('/templates/app/en/product/VF-7K2M4Q/?size=classic&addons=vase,card,vase');
   assert.equal(route.size, 'classic');
   assert.deepEqual(Array.from(route.addons), ['card', 'vase']);
   const restored = c.read(c.params(route));
   assert.equal(restored.size, route.size);
   assert.deepEqual(Array.from(restored.addons), ['card', 'vase']);
-  const invalid = c.read('?view=product&id=VF-8RD5WN&size=huge&addons=vase,unknown');
+  const invalid = c.read('/templates/app/product/VF-8RD5WN/?size=huge&addons=vase,unknown');
   assert.equal(invalid.size, null);
   assert.deepEqual(Array.from(invalid.addons), []);
-  const badSize = c.read('?view=product&id=VF-7K2M4Q&size=huge&addons=unknown');
+  const badSize = c.read('/templates/app/product/VF-7K2M4Q/?size=huge&addons=unknown');
   assert.equal(badSize.size, 'petite');
   assert.deepEqual(Array.from(badSize.addons), []);
   const {logic} = loadPage('product', {routeInfo: route});
@@ -733,11 +738,11 @@ for (const lang of ['en', 'fa']) {
   const {logic: shop} = loadPage(
     'shop',
     {lang, go: r => (next = r)},
-    '?view=shop&cat=bouquets&sort=low&filters=under3,same'
+    '/templates/app/shop/bouquets/?sort=low&filters=under3,same'
   );
   let v = shop.renderVals();
   assert.equal(v.items.length, 2);
-  assert.ok(v.items[0].href.includes('id=VF-9FA2KE&cat=bouquets'));
+  assert.ok(v.items[0].href.includes('/product/VF-9FA2KE/'));
   assert.equal(v.items[0].name, 'VF-9FA2KE');
   // Ready to send, Under 3M, Same day, Roses.
   v.chips[2].toggle();
@@ -828,7 +833,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(unknown.renderVals().noOrder, true);
   const {logic: saved} = loadPage('saved', {lang, store: {saved: []}});
   assert.equal(saved.renderVals().noItems, true);
-  assert.ok(saved.renderVals().href.shop.includes('view=shop'));
+  assert.ok(saved.renderVals().href.shop.endsWith('/shop/'));
   assert.equal(saved.renderVals().restore, undefined);
   const {logic: search} = loadPage('search', {lang});
   search.state.q = 'no-such-flower';
@@ -1115,11 +1120,11 @@ for (const lang of ['en', 'fa']) {
   assert.equal(days('central', new Date('2026-10-05T19:00:00+03:30'), [same])[0].pastCutoff, true);
 
   const readRoute = vm.runInContext('vfReadRoute', c);
-  const writeRoute = vm.runInContext('vfRouteParams', c);
-  const route = readRoute(`?view=product&lang=${lang}&id=VF-7K2M4Q&date=2026-10-06`);
+  const writeRoute = vm.runInContext('vfRouteUrl', c);
+  const route = readRoute(`/templates/app/${lang}/product/VF-7K2M4Q/?date=2026-10-06`);
   assert.equal(route.date, '2026-10-06');
   assert.equal(readRoute(writeRoute(route)).date, route.date);
-  assert.equal(readRoute('?view=product&id=VF-7K2M4Q&date=2026-02-31').date, '');
+  assert.equal(readRoute('/templates/app/product/VF-7K2M4Q/?date=2026-02-31').date, '');
   const {logic: product} = loadPage('product', {
     lang,
     routeInfo: route,
@@ -1490,11 +1495,14 @@ console.log(
     const route = vm.runInContext(
       'vfReadRoute',
       pc
-    )(`?view=account&tab=balance&next=checkout&lang=${lang}`);
+    )(`/templates/app/${lang}/account/?tab=balance&next=checkout`);
     assert.equal(route.next, 'checkout');
-    assert.ok(vm.runInContext('vfRouteParams', pc)(route).includes('next=checkout'));
+    assert.ok(vm.runInContext('vfRouteUrl', pc)(route).includes('next=checkout'));
     assert.equal(
-      vm.runInContext('vfReadRoute', pc)('?view=account&tab=balance&next=https://example.com').next,
+      vm.runInContext(
+        'vfReadRoute',
+        pc
+      )('/templates/app/account/?tab=balance&next=https://example.com').next,
       undefined
     );
     const returning = loadPage('account', {
@@ -1747,15 +1755,21 @@ for (const lang of ['en', 'fa']) {
     .addons.find(addon => addon.label.includes(lang === 'fa' ? 'کارت' : 'Handwritten'))
     .toggle();
   product.renderVals().setQty(2);
-  const encoded = vm.runInContext('vfRouteParams', c)(route);
+  const encoded = vm.runInContext('vfRouteUrl', c)(route);
   const restored = vm.runInContext('vfReadRoute', c)(encoded);
   const reload = loadPage('product', {lang, routeInfo: restored}).logic.renderVals();
   assert.equal(reload.size, 'generous');
   assert.equal(reload.qty, 2);
   assert.ok(reload.addons.some(addon => addon.on));
   assert.equal(restored.date, '2026-10-21');
-  assert.equal(vm.runInContext('vfReadRoute', c)('?view=product&id=VF-7K2M4Q&qty=-1').qty, 1);
-  assert.equal(vm.runInContext('vfReadRoute', c)('?view=product&id=VF-7K2M4Q&qty=Infinity').qty, 1);
+  assert.equal(
+    vm.runInContext('vfReadRoute', c)('/templates/app/product/VF-7K2M4Q/?qty=-1').qty,
+    1
+  );
+  assert.equal(
+    vm.runInContext('vfReadRoute', c)('/templates/app/product/VF-7K2M4Q/?qty=Infinity').qty,
+    1
+  );
   const scarce = loadPage('product', {
     lang,
     routeInfo: {view: 'product', id: 'VF-9FA2KE', qty: 99}
@@ -1764,8 +1778,8 @@ for (const lang of ['en', 'fa']) {
 }
 console.log('Passed product size, extras, quantity and delivery-date URL recovery.');
 {
-  const {logic: product, ctx: c} = loadPage('product', {}, '?page=product&lang=en');
-  c.history.replaceState = (_, __, search) => (c.location.search = search);
+  const {logic: product, ctx: c} = loadPage('product', {}, '/templates/app/en/?page=product');
+  c.history.replaceState = (_, __, url) => setAddress(c, url);
   product.renderVals().setSize('generous');
   product.renderVals().setQty(2);
   assert.equal(new URLSearchParams(c.location.search).get('page'), 'product');
@@ -1773,3 +1787,12 @@ console.log('Passed product size, extras, quantity and delivery-date URL recover
   assert.equal(reloaded.size, 'generous');
   assert.equal(reloaded.qty, 2, 'standalone template reloads preserve the same choices');
 }
+// The sample sitemap lists every indexed address the build writes a page for.
+import('../_build/routes.mjs').then(({storefrontSitemap}) => {
+  assert.equal(
+    read('templates/deployment/sitemap.xml'),
+    storefrontSitemap('https://example.test'),
+    'deployment/sitemap.xml is stale: regenerate it from _build/routes.mjs'
+  );
+  console.log('Passed the sitemap sample against the storefront routes.');
+});

@@ -16,7 +16,7 @@ Components (apps import them from the `@vendra/design-system` package in `dist/`
 
 Rules (details in guidelines/brand-guide.md → Links vs buttons, Routing & URLs, Accessibility, Payments, Storefront release checklist):
 - Navigation is always `<a href>`; actions are `<button>`. Never a clickable `<div>`. `Button`, `IconButton`, `CategoryCard`, `BottomTabBar` items and `ProductCard` take `href`.
-- URLs: `?lang=en|fa&view=<screen>&id=&cat=&post=&m=`, validated with `/^[\w:-]{1,40}$/`; unknown view → notfound. Use pushState for screen changes, replaceState for language changes, and handle popstate. noindex: bag, checkout, confirm, account, track, saved, search, notfound.
+- URLs: paths `<lang>/<screen>/<id>/` under the app's path (query only for page state), each segment validated with `/^[\w:-]{1,40}$/`; unknown screen → notfound. Use pushState for screen changes, replaceState for language changes, and handle popstate. noindex: bag, checkout, confirm, account, track, saved, search, notfound.
 - On a screen or step change, focus the h1. On a failed submit, focus the first invalid field. Hints and errors sit outside the `<label>`, linked with `aria-describedby="{id}-hint"` (+ `aria-invalid`, `aria-errormessage`). Use SkipLink → `#main` and one LiveRegion. Dialog traps focus, closes on Esc, returns focus and locks scroll.
 - `--text-subtle` is decorative or disabled only. Check the Contrast card (Colors), with `data-tenant` set for a tenant.
 - PCI DSS doesn't apply (card-to-card; no card data touches the storefront).

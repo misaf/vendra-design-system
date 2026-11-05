@@ -1,3 +1,5 @@
+import {vfAssetBase} from './environment.js';
+
 // Locally stored demonstration category photography, independent of product stock.
 const VF_CATEGORY_IMAGES = [
   'bouquets',
@@ -16,7 +18,7 @@ const VF_CATEGORY_IMAGES = [
 
 export function vfCategoryImage(slug) {
   if (!VF_CATEGORY_IMAGES.includes(slug)) return undefined;
-  const base = (typeof window !== 'undefined' && window.VF_ASSET_BASE) || '../../';
+  const base = vfAssetBase();
   const path = base + 'assets/categories/' + slug;
   return {
     src: path + '.webp',

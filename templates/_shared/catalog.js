@@ -11,6 +11,7 @@ import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './translations/categories.js';
 import {commerce} from '../../components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
 import {vfSeparator} from './formatting.js';
+import {vfAssetBase} from './environment.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
@@ -349,9 +350,7 @@ export function vfProductImage(
   index = 0
 ) {
   const photo = typeof asset === 'string' ? {src: asset} : asset;
-  const src = /^(https?:|data:|\/)/.test(photo.src)
-    ? photo.src
-    : (window.VF_ASSET_BASE || '../../') + photo.src;
+  const src = /^(https?:|data:|\/)/.test(photo.src) ? photo.src : vfAssetBase() + photo.src;
   const name = VF_CATEGORY_ITEM[lang][product.cat] + ' ' + vfTokenText(product.id);
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   const alts = product[lang] && product[lang].alts;
@@ -364,7 +363,7 @@ export function vfProductImage(
       .map(candidate => {
         const [url, descriptor] = candidate.trim().split(/\s+/);
         return (
-          (/^(https?:|data:|\/)/.test(url) ? url : (window.VF_ASSET_BASE || '../../') + url) +
+          (/^(https?:|data:|\/)/.test(url) ? url : vfAssetBase() + url) +
           (descriptor ? ' ' + descriptor : '')
         );
       })
@@ -502,11 +501,11 @@ export function vfBagLine(product, sizeId = null, addonIds = [], qty = 1) {
   };
 }
 
-// Bag lines in a link (?view=bag&lines=…), so a bag made at the shop counter opens on the customer's
+// Bag lines in a link (bag/?lines=…), so a bag made at the shop counter opens on the customer's
 // phone: each line is code.size.extra+extra.quantity, lines separated by commas, e.g.
 // VF-7K2M4Q.classic.card.1,VF-8RD5WN...2. Prices are not in the link; they come from the catalog.
 export const VF_LINES_PATTERN = /^[\w.+,-]{1,600}$/;
-// Saved designs in a link (?view=saved&ids=…), as handed over from the shop counter.
+// Saved designs in a link (saved/?ids=…), as handed over from the shop counter.
 export const VF_SAVED_IDS_PATTERN = /^[\w,-]{1,400}$/;
 export function vfLinesParam(lines) {
   return lines

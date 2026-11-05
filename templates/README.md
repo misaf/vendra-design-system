@@ -158,7 +158,7 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm ci                                   # first setup, at the repo root (templates is a workspace)
-npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/ (?lang=fa, ?page=<name> for one page)
+npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/en/ (fa/ for Persian, ?page=<name> for one page)
 npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
 npm --prefix templates run check         # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm --prefix templates test              # typecheck, storefront logic, generation, copy parity, package
@@ -169,7 +169,7 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 npm --prefix templates run test:e2e:remote # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
-- **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
+- **One page on its own:** `/templates/app/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
@@ -181,15 +181,52 @@ from Actions. Repository Settings → Pages → Source must be **GitHub Actions*
 and tenant themes use the repository path. The uploaded artifact is `templates/_app-build/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
-`https://misaf.github.io/vendra-design-system/templates/app/?view=presentation&lang=en`.
-This hosts the sample-data demo; live API services need their own backend.
+`https://misaf.github.io/vendra-design-system/templates/app/en/presentation/`. This hosts the
+sample-data demo; live API services need their own backend.
+
+**Prerendered pages.** The build writes the app's page at every public address
+(`templates/_build/routes.mjs`: each view, category, product, journal post and policy, in each
+language) already rendered (`_build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
+tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
+in the source, so search engines and WhatsApp/Telegram link previews read them without running
+scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
+Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
+`VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/page-lifecycle.js`: the page's h1,
+its address, its alternates and a preview image — the product's or post's photo, otherwise the
+logo). Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
+and preview URLs; without it they start at the site root. CI's Pages build sets it.
+
+Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
+customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
+is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`
+key in storage. Otherwise (a returning visitor, a query, the 404 page) it renders the page in its
+place as before (`createRoot`; `window.VF_RENDERED` says which). Either way the prerendered page
+stays in view while the app loads but is `inert` (and, when it will be replaced, its controls are
+disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
+does not have yet. The app does not set `inert` without scripts, so links keep working then.
+Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
+`_shared/environment.js`), and the page renders again at the real time once it has mounted, so
+delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
+from `_shared/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
+import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
+QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
+hidden while it loads.
+
+The site's `404.html` is the prerendered not-found page: a static host serves it for every address
+without a file (an order to track, a mistyped link). It stays hidden (at most 3s) until the app has
+read the address and rendered that address's page (not-found or another). A host that can rewrite
+addresses can instead serve `templates/app/index.html` (the plain shell, which also serves the
+`?page=<name>` previews) for every path under `templates/app/`. `_tests/prerender.test.mjs` checks
+the source of a product, a shop category, a journal post and the Persian home page, and
+`_e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
+on any hydration error.
 
 To verify the same paths locally:
 
 ```sh
 npm --prefix templates run build:app -- --base /vendra-design-system/
 npm --prefix templates run preview -- --base /vendra-design-system/
-# http://127.0.0.1:4173/vendra-design-system/templates/app/?view=presentation&lang=en
+# http://127.0.0.1:4173/vendra-design-system/templates/app/en/presentation/
 ```
 
 ## Browser tests
@@ -207,7 +244,7 @@ preserves the earlier snapshot and staged follow-ups.
 
 The combined command routes `--project` filters to the suites that define them. For example, `npm run test:e2e -- --project=components` runs only development component tests; `--project=tv` runs only production TV tests. Repeated flags, multiple names and `*` wildcards are supported.
 
-`openSite()` waits for the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
+`openSite()` waits for the app to take control of prerendered content, then checks the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
 
 Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
@@ -260,10 +297,10 @@ Every folder in `components/` has its own browser test beside the component: `<N
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** only the root element and the app module, `app/main.jsx`.
+- **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
 - **`app/pages.js`:** each `storefront-*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` (the build's base path) and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
+- **Build:** `build:app` prerenders every public address (`_build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `templates` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 
@@ -314,9 +351,9 @@ and pressing Add to bag.
 
 ## Demo behavior
 
-- **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `?view=product&id=VF-7K2M4Q&cat=boxes`. Old slugs resolve through `legacy`.
-- **Shop URLs** keep `cat`, `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (4 in the sample); a new filter or sort starts again from page 1.
-- **Counter presentation** (`?view=presentation`, noindex and not linked from the site): it fills the screen without the site's header or footer, so a seller can show a walk-in customer designs large on the shop's tablet.
+- **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `en/product/VF-7K2M4Q/`. Old slugs resolve through `legacy`.
+- **Shop URLs** keep the category (`en/shop/boxes/`), `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (4 in the sample); a new filter or sort starts again from page 1.
+- **Counter presentation** (`en/presentation/`, noindex and not linked from the site): it fills the screen without the site's header or footer, so a seller can show a walk-in customer designs large on the shop's tablet.
   - **Display presets:** starts on a full-screen product. Tablet keeps browsing manual; TV plays immediately, pauses while seller dialogs are open or the tab is hidden, and remembers its preset on this device. Seller tools opens a focus-trapped side drawer; Browse designs opens the existing counter workflow; Return to display restores the product view.
   - **Product layout:** photos fit whole inside the screen with a separate caption row. An optional two-product layout uses wide landscape screens and falls back to one product in portrait; navigation advances by the number displayed.
   - **Collections:** save all designs, a category, or selected product codes on the device. A seller can also copy the current shortlist into the display collection. Subsequent customer searches and shortlist edits do not alter it; Ready/stock settings still apply.
@@ -325,7 +362,7 @@ and pressing Add to bag.
   - **Quiet navigation:** swipe or use arrow keys to change products without revealing controls (mirrored in Persian). Tap or press Enter to reveal controls for four seconds. Keyboard focus keeps the seller control visible.
   - **Finding a design:** by code, flower or kind (the same search as the search page), or by scanning the QR code on its printed tag with the camera, where the browser can read QR codes (`BarcodeDetector`).
   - **Full screen (`Lightbox`):** the design shows its sizes and extras with the price they come to. "Send to customer" includes those choices in the product link (`size`, `addons`), so the customer's phone opens the same configuration; unsupported choices are discarded by the catalog rules.
-  - **Shortlist and order:** designs can be starred into a shortlist to compare side by side, or added to an order. The shortlist goes to the customer's phone as a QR code or WhatsApp link to `?view=saved&ids=…`; the order goes as one to `?view=bag&lines=…`. The site adds them to the visitor's own saved list or bag once, then drops them from the address.
+  - **Shortlist and order:** designs can be starred into a shortlist to compare side by side, or added to an order. The shortlist goes to the customer's phone as a QR code or WhatsApp link to `saved/?ids=…`; the order goes as one to `bag/?lines=…`. The site adds them to the visitor's own saved list or bag once, then drops them from the address.
   - **Settings:** show prices (including order lines and totals), Ready designs only, hide sold-out designs, keep the screen on, full screen, a slideshow after a minute untouched, and a PIN in front of the settings. They are kept on the device under `vf-presentation`. Clearing a search/category preserves these device settings. A rejected screen wake lock is retried only on a visibility change or a setting toggle.
   - **Quiet operation:** offline/reconnect notices, stock refresh failures and photo warnings stay in Seller tools while displaying products. A failed first photo uses a neutral placeholder; later failures retain the current product. The seller can retry photos from the drawer.
   - **Offline and stock:** in a production build the page registers `app/sw.js`, so the tablet keeps working when the Wi-Fi drops. With a live API it refreshes stock every two minutes.

@@ -25,6 +25,8 @@ for (const lang of ['en', 'fa']) {
       // The image stays pending until the assertions finish: waiting for load/network quiet
       // would prevent openSite from returning despite the storefront already being usable.
       await openSite(page, 'product', lang);
+      expect(await page.evaluate(() => window.VF_RENDERED)).toBeTruthy();
+      expect(await page.locator('#root').evaluate(root => root.inert)).toBe(false);
       expect(requested).toBe(true);
       expect(await page.evaluate(() => document.readyState)).not.toBe('complete');
       const care = page.getByRole('button', {

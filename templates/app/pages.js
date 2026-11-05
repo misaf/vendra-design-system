@@ -5,6 +5,8 @@ import React from 'react';
 const modules = import.meta.glob('../storefront-*/Page.jsx');
 const loaded = {};
 const ready = new Set();
+// Each loaded page module by name, so a page whose code is in renders without suspending.
+const modulesByName = {};
 // Pages being loaded to show them now (not background preloads).
 const showing = new Set();
 // Set when Vite reports a file this tab expects is gone (a deploy replaced them).
@@ -20,6 +22,7 @@ export function loadPage(name, show = true) {
   const load = (loaded[name] ||= modules[key]().then(module => {
     // Vite resolves a failed load with nothing once its preload error has been handled.
     if (!module) throw new Error('The ' + name + ' page did not load.');
+    modulesByName[name] = module;
     ready.add(name);
     return module;
   }));
@@ -51,9 +54,15 @@ export function pageReady(name) {
   return ready.has(name);
 }
 
-// A page as a lazy component; render it inside <Suspense> and a PageBoundary.
+// A page as a lazy component; render it inside <Suspense> and a PageBoundary. A page whose code is
+// already in renders at once: the build's prerender and the browser's hydration (app/main.jsx loads
+// the address's page first) then render the same markup, without suspending.
 export function lazyPage(name) {
-  return React.lazy(() => loadPage(name));
+  const Lazy = React.lazy(() => loadPage(name));
+  return function LazyPage(props) {
+    const [Page] = React.useState(() => modulesByName[name]?.default || Lazy);
+    return React.createElement(Page, props);
+  };
 }
 
 // Fetches every page in the background (a failure here is retried when the page is shown).

@@ -3,6 +3,7 @@
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from './formatting.js';
 import {commerce} from '../../components/utils/commerce.js';
+import {vfAssetBase} from './environment.js';
 
 export function vfValidLocation(location) {
   return commerce.validLocation(location);
@@ -31,7 +32,7 @@ export function vfDirectionsUrl(location) {
 export function vfLoadLeaflet() {
   if (window.L && window.L.map) return Promise.resolve(window.L);
   if (window.vfLeafletLoading) return window.vfLeafletLoading;
-  const base = (window.VF_ASSET_BASE || '../../') + 'templates/_vendor/leaflet/';
+  const base = vfAssetBase() + 'templates/_vendor/leaflet/';
   // Leaflet's stylesheet goes in the package's vendra.components layer, with the components that
   // restyle it (PlacesMap, LocationPicker); unlayered, it would override them outright.
   if (!document.getElementById('vf-leaflet-css')) {

@@ -9,11 +9,13 @@ import '../../styles.css';
 import '../_runtime/custom.css';
 
 // Product images, map scripts and tenant themes sit under this root (the build copies them).
-// The dev server serves the repo root and the build keeps the same paths, both at the base URL.
-window.VF_ASSET_BASE = new URL(import.meta.env.BASE_URL, location.href).href;
+// The dev server serves the repo root and the build keeps the same paths, both at the base path,
+// which the build's prerender also writes (a path, so its markup matches the browser's).
+window.VF_ASSET_BASE = import.meta.env.BASE_URL;
 
 // Loads only this tenant's stylesheet (page code calls it with ?tenant= or store-config.js). The page
-// stays hidden until the theme arrives so another brand's colours never flash, for at most 2s.
+// stays hidden until the theme arrives so another brand's colours never flash, for at most 2s. The
+// build links the store's own theme in every prerendered page, so those never wait for it.
 window.VF_USE_TENANT = tenant => {
   let link = /** @type {HTMLLinkElement & {vfTimer?: number}} */ (
     document.getElementById('vf-tenant-css')
@@ -22,7 +24,8 @@ window.VF_USE_TENANT = tenant => {
     if (link) link.remove();
     return;
   }
-  const href = window.VF_ASSET_BASE + 'tokens/tenants/' + tenant + '.css';
+  const href = new URL(window.VF_ASSET_BASE + 'tokens/tenants/' + tenant + '.css', location.href)
+    .href;
   if (link && link.href === href) return;
   const root = document.documentElement;
   if (!document.getElementById('vf-tenant-wait')) {
