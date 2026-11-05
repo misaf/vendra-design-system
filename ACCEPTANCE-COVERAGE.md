@@ -339,3 +339,16 @@ Owned stale live announcements clear after recovery while unrelated announcement
 All 48 selected Darwin/Linux dev/production cases, full root unit and check pass; 258 baselines
 are unchanged. See the evidence document for validation and remaining boundaries.
 Next: browser coverage for independent product and initial-load failure ownership.
+
+## Stage 249 checkpoint: browser saved-error ownership
+
+Stage 249 [checks unresolved saved-error ownership through the real browser client](SAVED-ERROR-OWNERSHIP-EVIDENCE.md).
+Independent product failures, a failed initial read followed by a successful write, and a successful
+late read following a failed write retain the unresolved alert. A fresh successful read clears
+transient feedback without replaying writes. Controlled read-back can restore failed removals;
+it is not a permanent local-intent or backend reconciliation guarantee.
+This coverage branches directly from master and complements the recovery-clearing fix in PR #169.
+All 64 selected master-based Darwin/Linux dev/production cases, root unit and check pass;
+258 baselines remain unchanged. All 12 compatibility cases pass on PR #169 runtime; all three
+blanket-clear negative controls fail as expected. Original master runtime is restored.
+Next: review the pending saved-state PRs, then initial-load retry UX.
