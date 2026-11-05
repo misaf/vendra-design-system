@@ -200,6 +200,7 @@ export function vfShell(self, page) {
   });
   const footer = {
     address: VF_STORE.address[L],
+    findUs: VF_STORE.findUs ? VF_STORE.findUs[L] : '',
     tagline: VF_STORE.tagline ? VF_STORE.tagline[L] : '',
     faqCurrent: isCurrent.faq ? 'page' : undefined,
     shop: [

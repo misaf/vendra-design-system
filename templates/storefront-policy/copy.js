@@ -10,6 +10,7 @@ import {
   vfDeliveryCutoff,
   vfZone
 } from '../_shared/delivery.js';
+import {vfHoursText} from '../_shared/store-hours.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {VF_SHELL} from '../_shared/translations/shell.js';
@@ -63,7 +64,7 @@ export function vfCopy(S) {
     .replace(/(.*)(، |, )/, fa ? '$1 یا ' : '$1 or ');
   const brand = VF_STORE.brand[L],
     address = VF_STORE.address[L],
-    hours = VF_STORE.hours[L];
+    hours = vfHoursText(L);
   // LRI keeps the + in front of the number inside Persian sentences.
   const phone = '\u2066' + VF_STORE.phoneLabel + '\u2069';
   const T = VF_SHELL[L].policies;

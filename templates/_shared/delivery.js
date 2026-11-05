@@ -95,7 +95,7 @@ export const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => ({
   end: slot.endsAt.slice(0, 2)
 }));
 // Store IANA time zone, also used for delivery dates and same-day cut-offs.
-export const VF_DELIVERY_TIME_ZONE = 'Asia/Tehran';
+export const VF_DELIVERY_TIME_ZONE = VF_STORE.timeZone;
 // A slot today stops taking orders this many minutes before it ends.
 export const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.

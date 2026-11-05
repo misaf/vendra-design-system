@@ -5,7 +5,9 @@ import {vfMobile} from '../_shared/delivery.js';
 import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
-import {usePageLogic} from '../_shared/page-state.js';
+import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../_shared/store-hours.js';
+import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
@@ -49,6 +51,15 @@ export function usePage(props) {
     };
   });
   useStorefrontPage(page);
+  // The open/closed line follows the clock: re-render each minute while the page is open.
+  useLifecycle(page, {
+    didMount() {
+      page._clockTimer = setInterval(() => page.setState({clock: Date.now()}), 60_000);
+    },
+    willUnmount() {
+      clearInterval(page._clockTimer);
+    }
+  });
   return vals(page);
 }
 
@@ -58,6 +69,7 @@ function vals(page) {
   const C = vfCopy(S);
   const invalid = page._invalid();
   const studio = VF_STORE.studio;
+  const now = vfNow();
   const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
   const places = directions
     ? [
@@ -91,14 +103,25 @@ function vals(page) {
       editMessage: C.labels.returnToForm
     },
     // The channels the store has (VF_STORE): WhatsApp and Instagram rows go when they are null.
+    // The address with how to find the door; the weekly hours with today's status and any special
+    // hours in the next two weeks, all on the store's clock.
     rows: [
-      ['map-pin', S.t.address],
-      ['clock', S.t.hours],
+      ['map-pin', S.t.address, {details: VF_STORE.findUs ? [VF_STORE.findUs[S.lang]] : []}],
+      [
+        'clock',
+        vfHoursText(S.lang),
+        {status: vfOpeningStatus(S.lang, now), details: vfHoursNotices(S.lang, now)}
+      ],
       ['phone', '⁨' + S.phoneLabel + '⁩'],
       ['message-circle', S.waHref && '⁨' + S.phoneLabel + '⁩'],
       ['instagram', S.instagram && '⁨' + S.instagram.label + '⁩']
     ]
-      .map(([icon, value], i) => ({icon, label: C.rowLabels[i], value}))
+      .map(([icon, value, extra], i) => ({
+        icon,
+        label: C.rowLabels[i],
+        value,
+        .../** @type {{status?: {open: boolean, text: string}, details?: string[]}} */ (extra || {})
+      }))
       .filter(row => row.value),
     studioMap: !!directions && !s.mapFailed,
     hasDirections: !!directions,

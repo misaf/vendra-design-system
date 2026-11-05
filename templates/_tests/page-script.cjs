@@ -77,6 +77,7 @@ function pageScript(folder) {
 const sharedFiles = [
   'store-config.js',
   'delivery.js',
+  'store-hours.js',
   'location.js',
   'promotions.js',
   'product-categories.js',
