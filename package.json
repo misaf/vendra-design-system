@@ -40,7 +40,7 @@
     "dist"
   ],
   "workspaces": [
-    "templates"
+    "apps/storefront"
   ],
   "peerDependencies": {
     "@internationalized/date": "^3.12.4",
@@ -49,12 +49,12 @@
     "react-dom": ">=18.2.0"
   },
   "scripts": {
-    "dev": "npm --prefix templates run dev",
-    "build": "npm --prefix templates run build",
-    "check": "npm --prefix templates run check",
-    "test": "npm --prefix templates test",
-    "test:e2e": "npm --prefix templates run test:e2e",
-    "new:component": "npm --prefix templates run new:component --"
+    "dev": "npm --prefix apps/storefront run dev",
+    "build": "npm --prefix apps/storefront run build",
+    "check": "npm --prefix apps/storefront run check",
+    "test": "npm --prefix apps/storefront test",
+    "test:e2e": "npm --prefix apps/storefront run test:e2e",
+    "new:component": "npm --prefix apps/storefront run new:component --"
   },
   "devDependencies": {
     "@internationalized/date": "3.12.4",

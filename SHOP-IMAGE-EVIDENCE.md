@@ -19,7 +19,7 @@ control remain. The tablet differences are confined to photo regions. An earlier
 recorded 90,330 differing pixels with maximum delta 33; that is a separate attempt, not the completed
 probe's result. Original historical residuals remain recorded in [ATOMIC-DESIGN.md](ATOMIC-DESIGN.md).
 
-The original scratch capture called [settlePage](templates/_e2e/helpers.mjs), waited for finite
+The original scratch capture called [settlePage](apps/storefront/_e2e/helpers.mjs), waited for finite
 animations and two frames, then took a main locator screenshot. `settlePage` makes images eager,
 waits for load/error and stable document height, but does not call `HTMLImageElement.decode()` or
 check positive natural dimensions. A complete image alone is not evidence of successful decode.
@@ -38,7 +38,7 @@ browser cause is proven, and the exact original mismatch has not been reproduced
 
 ## Permanent diagnostic
 
-[shop-image-capture.spec.mjs](templates/_e2e/shop-image-capture.spec.mjs) runs four English/Persian ×
+[shop-image-capture.spec.mjs](apps/storefront/_e2e/shop-image-capture.spec.mjs) runs four English/Persian ×
 768/1920 cases in the desktop project, with touch enabled at 768 and TV mode at 1920. These are
 historical capture configurations, not additional dedicated tablet or TV interaction coverage.
 The mobile project registers the same four cases but deliberately skips them.
@@ -79,8 +79,8 @@ build pass. Initial list-only successful runs discarded attachments; final JSON-
 retain them for review. Production owns its preview; the pre-existing development preview is preserved.
 
 ```sh
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage229-final-dev.json E2E_WORKERS=1 npm --prefix templates run test:e2e -- shop-image-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage229-final-dev-results --reporter=list,json
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage229-final-production.json E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- shop-image-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage229-final-production-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage229-final-dev.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- shop-image-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage229-final-dev-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage229-final-production.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- shop-image-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage229-final-production-results --reporter=list,json
 ```
 
 Discovery now registers 1,753 invocations in 122 files: mobile/desktop 687 each, dedicated

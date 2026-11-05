@@ -1,11 +1,11 @@
 # Generated, vendored or third-party files.
 dist/
 **/node_modules/
-templates/_runtime/
-templates/_vendor/
-templates/_e2e/__screenshots__/
-templates/_e2e/test-results/
-templates/_e2e/playwright-report/
+apps/storefront/_runtime/
+apps/storefront/_vendor/
+apps/storefront/_e2e/__screenshots__/
+apps/storefront/_e2e/test-results/
+apps/storefront/_e2e/playwright-report/
 tokens/tenants/*.css
 tokens/tenants.css
 **/package-lock.json
@@ -13,4 +13,4 @@ tokens/tenants.css
 # writes marked regions into the storefront pages.
 *.html
 *.md
-templates/_app-build/
+apps/storefront/_app-build/

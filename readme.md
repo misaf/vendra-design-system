@@ -43,7 +43,7 @@ if (css) {
 
 A server-rendered app does the same in its document template: put the CSS in a `<style>` element and set `lang`, `dir` and `data-tenant` on `<html>`.
 
-`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `templates/_shared/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
+`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `apps/storefront/_shared/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
 
 Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
@@ -64,7 +64,7 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 ## Tenant themes
 
 - **Tokens only.** Components read semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant overrides them under `[data-tenant="<slug>"]`; never fork component CSS.
-- **One JSON per tenant.** `tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `templates/_shared/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
+- **One JSON per tenant.** `tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `apps/storefront/_shared/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
 - **It overrides:** the palette ramps (`--petal/peony/ink/stem-*`), the semantic aliases, and the character tokens in `tokens/character.css` (display font, case, tracking, control and frame radii). Spacing, type scale, motion, focus ring, status colours and RTL rules are fixed.
 - **Contrast:** `--accent` 4.5:1 with white text, `--text-accent` 4.5:1 on the page, `--border-input` 3:1, `--focus-ring-on-inverse` 3:1 on the inverse surface.
 - **Samples:** `clay` (terracotta, squared controls, uppercase Jost) and `fern` (teal, pill controls, deliberately near the contrast limits). Preview with `?tenant=<slug>`.
@@ -109,11 +109,11 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `components/` | [Atomic Design migration](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component; remaining flat folders migrate in batches. Helpers in `components/utils/`. |
 | `tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
-| `templates/storefront-*` | 17 bilingual storefront pages plus `storefront-site`, the click-through router. The source of truth for the storefront. |
-| `templates/_shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
-| `templates/communications/`, `previews/`, `deployment/` | Email/SMS/WhatsApp examples, theme previews, robots and sitemap samples. |
-| `templates/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
-| `templates/_runtime/`, `dist/` | Generated: never edit. |
+| `apps/storefront/storefront-*` | 17 bilingual storefront pages plus `storefront-site`, the click-through router. The source of truth for the storefront. |
+| `apps/storefront/_shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
+| `apps/storefront/communications/`, `previews/`, `deployment/` | Email/SMS/WhatsApp examples, theme previews, robots and sitemap samples. |
+| `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
+| `apps/storefront/_runtime/`, `dist/` | Generated: never edit. |
 | `assets/` | Logos, social images, app icons, fonts, placeholders. |
 | `uploads/` | Storefront OpenAPI spec. |
 | `styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
@@ -121,13 +121,13 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 ## Commands
 
 ```sh
-npm ci                                   # first setup, at the repo root (templates is a workspace)
-npm --prefix templates run dev           # Vite preview at http://127.0.0.1:5173/ with rebuilds
-npm --prefix templates run build         # components, dist/, Tailwind, tenant CSS, generated template sections
-npm --prefix templates run format        # Prettier
-npm --prefix templates run check         # generated files current + formatting
-npm --prefix templates test              # typecheck and unit tests
-npm --prefix templates run test:e2e      # screenshot + axe checks of every card and storefront view
+npm ci                                   # first setup, at the repo root (apps/storefront is a workspace)
+npm --prefix apps/storefront run dev     # Vite preview at http://127.0.0.1:5173/ with rebuilds
+npm --prefix apps/storefront run build   # components, dist/, Tailwind, tenant CSS, generated template sections
+npm --prefix apps/storefront run format  # Prettier
+npm --prefix apps/storefront run check   # generated files current + formatting
+npm --prefix apps/storefront test        # typecheck and unit tests
+npm --prefix apps/storefront run test:e2e  # screenshot + axe checks of every card and storefront view
 ```
 
-Where to edit storefront pages, Tailwind conventions and preview URLs: [templates/README.md](templates/README.md). Ownership and integration boundaries: [templates/MIGRATION.md](templates/MIGRATION.md). Working rules: [CLAUDE.md](CLAUDE.md).
+Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Ownership and integration boundaries: [apps/storefront/MIGRATION.md](apps/storefront/MIGRATION.md). Working rules: [CLAUDE.md](CLAUDE.md).

@@ -26,10 +26,10 @@ Persian 768px paired result from that stopped run to generalize to.
 
 - [maps.create](components/utils/maps.js) creates the map at the store-configured zoom **13**, then
   adds the tile layer. [PlacesMap.draw](components/organisms/PlacesMap/PlacesMap.jsx) centers a single
-  studio place at zoom **15**. The [contact adapter](templates/storefront-contact/logic.js) supplies
+  studio place at zoom **15**. The [contact adapter](apps/storefront/storefront-contact/logic.js) supplies
   the studio place and configured defaults. The shared resize observer invalidates size and restores
   the current center/zoom; tiny pixel-rounding changes are possible.
-- Vendored [Leaflet 1.9.4](templates/_vendor/leaflet/leaflet.js) creates a DOM level per tile zoom.
+- Vendored [Leaflet 1.9.4](apps/storefront/_vendor/leaflet/leaflet.js) creates a DOM level per tile zoom.
   `_pruneTiles` removes tile elements, while `_updateLevels` removes empty noncurrent levels on a
   later level update. A level can therefore become empty after the update and remain after loading
   has finished. It need not gain children again to be a ready map.
@@ -50,7 +50,7 @@ this observation.
 
 ## Permanent regression
 
-[contact-map-lifecycle.spec.mjs](templates/_e2e/contact-map-lifecycle.spec.mjs) adds four executable
+[contact-map-lifecycle.spec.mjs](apps/storefront/_e2e/contact-map-lifecycle.spec.mjs) adds four executable
 English/Persian × touch-phone/tablet cases. Tablet starts at the historical 768×1000; phone starts
 at 390×844. Both enlarge to the full-main capture height, resize to 1024×768 and restore their
 initial viewport before using actual zoom controls. Existing blank-tile stubbing is retained.
@@ -78,8 +78,8 @@ existing development preview is preserved. No application/component/vendor/style
 package dependency, screenshot policy or baseline changes are made.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage228-final-dev-results --reporter=list
-E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage228-production-results --reporter=list
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage228-final-dev-results --reporter=list
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage228-production-results --reporter=list
 ```
 
 Fresh discovery registers **1,745 invocations in 121 files**: mobile/desktop 683 each, dedicated
