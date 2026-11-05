@@ -119,7 +119,7 @@ jobs:
           fi
 
   e2e:
-    name: Browser tests (cards, pages, axe)
+    name: Development fixtures and components
     needs: [check, runner]
     if: needs.runner.outputs.e2e == 'true'
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
@@ -140,7 +140,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm --prefix apps/storefront run test:e2e
+      - run: npm --prefix apps/storefront run test:e2e:dev
       - name: Keep the report and failing screenshots
         if: failure()
         uses: actions/upload-artifact@v7
@@ -157,7 +157,7 @@ jobs:
         run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"
 
   e2e-build:
-    name: Production build and performance budgets
+    name: Production storefront, visuals and performance
     needs: [check, runner]
     if: needs.runner.outputs.e2e == 'true'
     runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}

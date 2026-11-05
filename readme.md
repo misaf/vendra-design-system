@@ -127,7 +127,9 @@ npm --prefix apps/storefront run build   # components, dist/, Tailwind, tenant C
 npm --prefix apps/storefront run format  # Prettier
 npm --prefix apps/storefront run check   # generated files current + formatting
 npm --prefix apps/storefront test        # typecheck and unit tests
-npm --prefix apps/storefront run test:e2e  # screenshot + axe checks of every card and storefront view
+npm --prefix apps/storefront run test:e2e  # production storefront, then development fixtures/components
+npm --prefix apps/storefront run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
+npm --prefix apps/storefront run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
 
 Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Ownership and integration boundaries: [apps/storefront/MIGRATION.md](apps/storefront/MIGRATION.md). Working rules: [CLAUDE.md](CLAUDE.md).
