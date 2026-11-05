@@ -494,7 +494,7 @@ test('a gift’s recipient sees its progress but not what it cost or what the ca
   await openSite(page, 'track', 'en', {id: 'VN-10522'});
   await page.fill('#vf-lookup-phone', '09121230000');
   await page.getByRole('button', {name: 'Find my order'}).click();
-  await expect(page).toHaveURL(/view=track&id=VN-10522/);
+  await expect(page).toHaveURL(/\/track\/VN-10522\//);
   await expect(page.locator('main h1')).toHaveText('On its way.');
   const main = page.locator('main');
   await expect(main.getByRole('list', {name: 'Order progress'})).toBeVisible();
