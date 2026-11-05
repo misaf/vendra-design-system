@@ -107,12 +107,17 @@ export async function openSite(page, view, lang, extra) {
       sessionStorage.setItem('vf-e2e-signed-in', '1');
       localStorage.setItem('vf-account-phone', '09125649438');
     });
-  await page.goto(siteUrl(view, lang, extra));
-  await expect(page.locator('#main')).toBeVisible();
+  // Interaction tests need the routed content, not every image, font or background preload.
+  // Playwright waits for each control's actionability; visual tests call settlePage separately.
+  await page.goto(siteUrl(view, lang, extra), {waitUntil: 'domcontentloaded'});
+  // Prerendered content is already visible before React takes control. Wait for the app
+  // and its mount effects to release the inert preview, without waiting on background loads.
+  await page.waitForFunction(() => window.VF_RENDERED && !document.getElementById('root')?.inert);
+  // Slow-network performance tests can render after the default 5s assertion timeout.
+  // Keep the usual 30s navigation allowance for the routed content itself.
+  await expect(page.locator('#main')).toBeVisible({timeout: 30000});
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
-  await waitForQuiet(page);
   await expectNoViteError(page);
-  await page.evaluate(() => document.fonts.ready);
 }
 
 // Phone footer links live in disclosures; wider layouts expose the same navigation directly.
