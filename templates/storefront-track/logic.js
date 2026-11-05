@@ -43,18 +43,21 @@ export function usePage(props) {
 // progress and delivery, null nothing (the visitor has to look it up first). The storefront
 // matches locally; the tracking API must make the same split (templates/API.md, 16).
 function vfTrackViewer(store, order, foundViewer) {
-  if (!order) return null;
-  // A single page without the site shows its sample order.
+  // A single page without the site shows its sample order, with or without a looked-up one.
   if (!store) return foundViewer || 'buyer';
+  if (!order) return null;
   // This customer's own checkouts in this session.
   if ([store.order, store.lastOrder, ...(store.orders || [])].some(own => own?.id === order.id))
     return 'buyer';
+  const tracked = store.tracked?.[order.id] || null;
+  // A lookup with the sender's mobile opens the whole order, even for a signed-in recipient.
+  if (tracked === 'buyer') return 'buyer';
   const customer = store.customerId && store.customerId !== 'guest' ? store.customerId : '';
   if (customer && store.customerId === vfCustomerId()) {
     if (vfMobile(order.delivery?.senderPhone) === customer) return 'buyer';
     if (vfMobile(order.delivery?.phone) === customer) return 'recipient';
   }
-  return store.tracked?.[order.id] || null;
+  return tracked;
 }
 
 function vals(page) {
