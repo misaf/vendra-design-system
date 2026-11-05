@@ -1,6 +1,6 @@
 # StorefrontTrackLayout
 
-Tracking Atomic Design template with React-node slots for lookup, heading, details, summary and feedback, plus externally controlled order visibility. It owns the main focus target, order header, responsive columns and sticky summary. The feedback slot holds the reorder dialog outside main, preserving its original position.
+Tracking Atomic Design template with React-node slots for lookup, heading, details, summary and feedback, plus externally controlled order visibility. It owns the main focus target, order header, responsive columns and sticky summary; an empty summary slot (the recipient view) renders no aside. The feedback slot holds the reorder dialog outside main, preserving its original position.
 
 The View retains conditional slot construction, lookup visibility/descriptor mapping, timeline, delivered photo, details, summary, contact/reorder controls and the controlled reorder dialog. Tracking logic retains order matching, phone normalization, status/payment interpretation, reorder reconciliation, bag mutations and focus. This layout owns no data, callbacks, persistence or browser effects.
 

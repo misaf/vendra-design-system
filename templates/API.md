@@ -38,7 +38,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 ### Delivery
 5. **Zone rules:** same-day cut-off time per zone, the point distances are measured from, free-delivery threshold and the zones it applies to, product restrictions (for example plants only).
-6. **Schedule:** store IANA time zone (`VF_DELIVERY_TIME_ZONE`, e.g. `Asia/Tehran`), sold-out dates, the lead time before a slot closes, and whether availability differs per zone.
+6. **Schedule:** store IANA time zone (`VF_STORE.timeZone`, e.g. `Asia/Tehran`; also used for opening hours), sold-out dates, the lead time before a slot closes, and whether availability differs per zone.
 
 ### Catalogue
 7. **Product code:** confirmed — `token` is the customer-facing code. Add a `token` lookup that also works for codes typed with spaces, lower case or Persian digits (the storefront normalises them).
@@ -54,11 +54,11 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 15. **Balance:** current balance and history.
 
 ### Orders
-16. **Track by order number:** filter `GET /api/sales/orders` by `number` (the track page uses `?id=VN-10522`).
+16. **Track by order number and mobile:** a guest lookup takes the order `number` and a mobile, and answers only when the mobile is the order's sender or recipient (the track page uses `<lang>/track/VN-10522/`, and a link alone must not open an order). Answer the sender (or the signed-in customer who placed it) with the whole order. Answer a mobile that matches only the recipient with a recipient view: status and timeline, delivery window and address, the delivery photo and whether a card is included — no prices, totals, payment method or card ending, card message or sender details. Rate-limit lookups per IP and per mobile, and make order numbers hard to guess (non-sequential, or with a check suffix such as `VN-10522-K7`). The storefront's local matching (`storefront-track/logic.js`) is only a demo of this split.
 17. **Order detail:** document the `status` values above, with timestamps per step for the timeline, delivery date/slot/address, discount and balance amounts, delivery photo, cancellation.
 
 ### Store settings
-18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), address and map pin, opening hours, active currency, announcement, theme spec (for `tenantCss`), and the payment methods the store offers, in its order, each with its settings: the card for card-to-card (number, holder, bank, Sheba), the zones pay on delivery reaches, and whether online, balance and WhatsApp orders are on. The storefront has the shape as `VF_STORE.paymentMethods` (`commerce.PaymentMethod`). Also the optional parts the store runs, as a list of `commerce.STORE_FEATURES` ids (`promoCodes`, `sameDay`, `weddings`, `journal`, `reminders`, `newsletter`; `VF_STORE.features`), its languages with the default first (`VF_STORE.languages`), and which contact channels it has (WhatsApp, Instagram and email each optional).
+18. **One endpoint for the tenant's settings:** store name, contact (phone, WhatsApp, Instagram), full street address, a short "how to find us" line (landmark, entrance or parking) and map pin, opening hours as structured data rather than text (`VF_STORE.hours`, `commerce.OpeningHours`: weekly `{days, opens, closes}` runs on the store's clock plus dated exceptions for holidays, each `closed` or with its own hours and an optional localized label), active currency, announcement, theme spec (for `tenantCss`), and the payment methods the store offers, in its order, each with its settings: the card for card-to-card (number, holder, bank, Sheba), the zones pay on delivery reaches, and whether online, balance and WhatsApp orders are on. The storefront has the shape as `VF_STORE.paymentMethods` (`commerce.PaymentMethod`). Also the optional parts the store runs, as a list of `commerce.STORE_FEATURES` ids (`promoCodes`, `sameDay`, `weddings`, `journal`, `reminders`, `newsletter`; `VF_STORE.features`), its languages with the default first (`VF_STORE.languages`), and which contact channels it has (WhatsApp, Instagram and email each optional).
 
 ### Marketing
 19. **Promo codes:** validate a code against a cart and return the discount.

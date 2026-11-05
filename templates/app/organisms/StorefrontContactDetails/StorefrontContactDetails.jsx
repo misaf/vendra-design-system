@@ -5,7 +5,33 @@ export function StorefrontContactDetails({rows, whatsapp, phone, instagram, map,
   return (
     <>
       <DS.Card variant="sunken" padding={20}>
-        <DS.DetailList rows={rows} />
+        <DS.DetailList
+          rows={rows.map(({icon, label, value, status, details}) => ({
+            icon,
+            label,
+            value:
+              status || details?.length ? (
+                <>
+                  <span className="tw:block">{value}</span>
+                  {status ? (
+                    <span
+                      className="vf-contact-status tw:block tw:font-medium"
+                      data-open={status.open ? 'true' : 'false'}
+                    >
+                      <>{status.text}</>
+                    </span>
+                  ) : null}
+                  {(details || []).map((detail, index) => (
+                    <span key={index} className="tw:block tw:text-sm tw:text-secondary">
+                      <>{detail}</>
+                    </span>
+                  ))}
+                </>
+              ) : (
+                value
+              )
+          }))}
+        />
       </DS.Card>
       <div className="tw:flex tw:gap-3 tw:flex-wrap">
         {whatsapp?.href ? (

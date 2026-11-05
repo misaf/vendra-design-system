@@ -190,6 +190,10 @@ tracking/shared logic retain row formatting and package DetailList retains defin
 StorefrontTrackOrderActions composes contact/repeat/lookup controls; View retains visibility/descriptors,
 tracking/shared logic retain URLs, reorder/bag changes and lookup reset/focus.
 Known-order repeat review uses a button; standalone samples without a review callback retain the bag link.
+Tracking shows an order only to its viewer: the buyer (session checkout, signed-in sender or a lookup
+matching the sender's mobile) sees everything; a recipient (lookup or sign-in matching only the
+recipient's mobile) sees progress, delivery, photo and contact, never prices, payment, card words or
+repeat. Links to unverified orders open the lookup. Verified lookups persist per customer as `tracked`.
 StorefrontTrackOrderSummary composes the summary card; View retains visibility/mapping, tracking/shared
 logic retain line/totals formatting and StorefrontTrackLayout retains the responsive sticky aside.
 StorefrontTrackReorderDialog composes controlled review choices/notices/actions; View maps descriptors,
@@ -263,8 +267,9 @@ StorefrontSiteCheckoutNotice composes explicit title/action label/href and dismi
 retains visibility/provider placement, logic retains late-completion ownership, bag preservation and URLs.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
 and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
-StorefrontContactDetails composes studio rows/actions and map/directions from explicit descriptors;
-View maps availability/callbacks and contact/shared logic retain studio values, map loading/fallback.
+StorefrontContactDetails composes studio rows (with optional opening status/detail lines), actions and
+map/directions from explicit descriptors; View maps availability/callbacks and contact/shared logic
+retain studio values, opening-hours wording on the store clock (`_shared/store-hours.js`), map loading/fallback.
 StorefrontContactFormHeading composes an explicit title as h2; View keeps it outside form/completion
 branches. Contact logic retains drafts, validation, submission and focus; layout retains placement.
 StorefrontContactFormControls composes summary, controlled fields and busy send action; View maps
