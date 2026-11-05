@@ -81,11 +81,19 @@ export function vfOpeningStatus(lang, now = new Date(), hours = VF_STORE.hours) 
         (next ? ' · تا ' + when : '') +
         (label ? ' (ساعت کاری ' + label + ')' : '')
       : 'Open now' + (next ? ' · closes ' + when : '') + (label ? ' (' + label + ' hours)' : '');
-  else
+  else {
+    // "Closed today" only when the exception closes the whole day; shortened holiday hours are
+    // closed for now, with the holiday named as the reason for the different hours.
+    const closedAllDay = !!status.exception && (status.exception.closed || !status.exception.opens);
     text = fa
-      ? (label ? 'امروز به مناسبت ' + label + ' تعطیل است' : 'اکنون بسته است') +
+      ? (label && closedAllDay
+          ? 'امروز به مناسبت ' + label + ' تعطیل است'
+          : 'اکنون بسته است' + (label ? ' (ساعت کاری ' + label + ')' : '')) +
         (next ? ' · بازگشایی ' + when : '')
-      : (label ? 'Closed today for ' + label : 'Closed') + (next ? ' · opens ' + when : '');
+      : (label && closedAllDay
+          ? 'Closed today for ' + label
+          : 'Closed' + (label ? ' (' + label + ' hours)' : '')) + (next ? ' · opens ' + when : '');
+  }
   return {open: status.open, text};
 }
 
