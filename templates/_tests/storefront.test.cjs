@@ -1196,6 +1196,125 @@ console.log(
     site.setState({delivery});
   };
   for (const lang of ['en', 'fa']) {
+    const setup = (live = false) => {
+      const {logic: site, ctx: c} = loadPage('site', {lang});
+      const writes = [];
+      let hydrate, rejectHydration;
+      const write = id => new Promise((resolve, reject) => writes.push({id, resolve, reject}));
+      c.window.VF_API = {
+        live,
+        saveItem: write,
+        unsaveItem: write,
+        loadSaved: () =>
+          new Promise((resolve, reject) => {
+            hydrate = resolve;
+            rejectHydration = reject;
+          })
+      };
+      c.window.addEventListener = c.document.addEventListener = () => {};
+      site.lifecycle.didMount();
+      const change = id => {
+        const promise = site.renderVals().store.toggleSave(id);
+        return {...writes.at(-1), promise};
+      };
+      return {site, change, hydrate, rejectHydration};
+    };
+    const a = 'VF-7K2M4Q',
+      b = 'VF-3HX9TP';
+    const {site, change} = setup();
+    const fail = async id => {
+      const action = change(id);
+      action.reject(new Error('Offline'));
+      await action.promise;
+    };
+    const succeed = async (id, result) => {
+      const action = change(id);
+      action.resolve(result);
+      await action.promise;
+    };
+    await fail(a);
+    await fail(b);
+    assert.equal(site.renderVals().integrationError, true);
+    await succeed(a, null);
+    assert.equal(site.renderVals().integrationError, true, 'a local no-op is not server recovery');
+    await succeed(a, {id: 803});
+    assert.equal(
+      site.renderVals().integrationError,
+      true,
+      'one product success keeps another product failure'
+    );
+    const last = change(b);
+    assert.equal(site.renderVals().integrationError, true, 'pending retry keeps feedback');
+    last.resolve(true);
+    await last.promise;
+    assert.equal(
+      site.renderVals().integrationError,
+      false,
+      'last confirmed recovery clears feedback'
+    );
+    assert.equal(site.state.announcement, '', 'owned stale live announcement clears with recovery');
+    // Even out-of-order adapter completions cannot replace feedback for newer intent.
+    const oldFailure = change(a),
+      newerSuccess = change(a);
+    newerSuccess.resolve(true);
+    await newerSuccess.promise;
+    oldFailure.reject(new Error('Older failure'));
+    await oldFailure.promise;
+    assert.equal(site.renderVals().integrationError, false, 'stale failure cannot revive feedback');
+    const oldSuccess = change(a),
+      newerFailure = change(a);
+    newerFailure.reject(new Error('Latest failure'));
+    await newerFailure.promise;
+    oldSuccess.resolve({id: 804});
+    await oldSuccess.promise;
+    assert.equal(
+      site.renderVals().integrationError,
+      true,
+      'stale success cannot hide latest failure'
+    );
+    site.setState({announcement: 'Unrelated new announcement'});
+    await succeed(a, true);
+    assert.equal(site.renderVals().integrationError, false);
+    assert.equal(site.state.announcement, 'Unrelated new announcement');
+    const pendingFailure = change(a),
+      localOnly = change(a);
+    localOnly.resolve(null);
+    await localOnly.promise;
+    pendingFailure.reject(new Error('Earlier request failed'));
+    await pendingFailure.promise;
+    assert.equal(
+      site.renderVals().integrationError,
+      true,
+      'newer no-op cannot suppress an older unresolved failure'
+    );
+    await succeed(a, true);
+    const loading = setup(true);
+    loading.rejectHydration(new Error('Initial load failed'));
+    await flush();
+    const recovery = loading.change(a);
+    recovery.resolve({id: 805});
+    await recovery.promise;
+    assert.equal(
+      loading.site.renderVals().integrationError,
+      true,
+      'write success cannot clear initial-load failure'
+    );
+    const pendingLoad = setup(true);
+    const failedWrite = pendingLoad.change(a);
+    failedWrite.reject(new Error('Write failed'));
+    await failedWrite.promise;
+    pendingLoad.hydrate([]);
+    await flush();
+    assert.equal(
+      pendingLoad.site.renderVals().integrationError,
+      true,
+      'load success cannot clear a write failure'
+    );
+  }
+  console.log(
+    'Passed scoped saved-sync recovery, pending/no-op controls and stale response ownership.'
+  );
+  for (const lang of ['en', 'fa']) {
     const {logic: site, ctx: c} = loadPage('site', {lang});
     c.setTimeout = () => 0;
     readyDelivery(site, c);

@@ -576,6 +576,7 @@ for (const lang of ['en', 'fa']) {
           await save().click();
           await expect(save()).toHaveAttribute('aria-pressed', 'false');
           expect(requests).toHaveLength(1);
+          await expect(feedback).toBeVisible();
           await save().click();
         } else await page.locator('#vf-saved-undo').click();
         await expect.poll(() => requests.length).toBe(2);
@@ -586,17 +587,20 @@ for (const lang of ['en', 'fa']) {
         });
         expect(await saved()).toContain(target);
         expect(await mapping()).toEqual(initialMap);
+        await expect(feedback).toBeVisible();
         release();
         await expect.poll(mapping).toEqual({[other]: 702, [target]: 803});
+        await expect(feedback).toHaveCount(0);
         expect((await saved()).filter(id => id === target)).toHaveLength(1);
         expect(await saved()).toContain(other);
         expect(await privateState()).toEqual(before);
         expect(requests).toHaveLength(2);
         expect(failures).toHaveLength(1);
-        // Observe recovery feedback without blessing stale shared-error state as a contract.
+        // Successful recovery clears this product's failure; a local no-op must not clear it.
         const integrationErrorAfterSuccess = await page.evaluate(
           () => !!window.__vfSite.state.integrationError
         );
+        expect(integrationErrorAfterSuccess).toBe(false);
         await page.goto(siteUrl('saved', lang));
         await expect(card()).toHaveCount(1);
         await expect(page.locator('main .ag-product__name')).toContainText([target, other]);

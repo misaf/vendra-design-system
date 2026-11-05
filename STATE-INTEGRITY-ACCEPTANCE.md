@@ -27,7 +27,7 @@ Unit tests use the repository's hook/VM stand-ins, not real concurrent browser e
 | I11 — Profile edits preserve unrelated newer account fields. | `profile edits preserve newer wallet and account data` in integrity-recovery-followups; [account-data](templates/_shared/account-data.js) `vfAccountUpdate` reads latest persisted record before changing/saving. | B + U. The test writes newer wallet/email values in the same page before save. It does not run two simultaneous tabs or verify interleaved read-modify-write safety. True cross-tab concurrency is G. |
 | I12 — Customer switches isolate private state. | `guest continuation and customer switches isolate private data` in integrity-recovery-followups; site storage listener/syncCustomer. | B + U. Same-page guest continuation, sign-out, customer B reload, then customer A history restoration. Real storage events from another tab and a pending response crossing an identity change remain G. This is not server authentication/authorization evidence. |
 | I13 — Late saved-list hydration preserves later actions. | `initial saved-list loading keeps newer customer actions` in customer-state-integrity; site saved-edit merge and corresponding unit assertions. | B + U. Controlled promise merges initial saved IDs with a newer save. All add/remove orderings and customer changes during hydration are not proved by this one case. |
-| I14 — Offline status and recovery are usable. | `the site says when the connection drops and when it is back` in features; [offline helper](templates/_shared/offline.js). | B, FA at both widths. It checks band text after context offline/online changes and axe. After [stage 245](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md), bilingual checkout failure preserves state, two reconnects do not resend, and explicit retry creates one local order. After [stage 246](SAVED-OFFLINE-RECOVERY-EVIDENCE.md), real offline saved POST/DELETE failures also preserve local intent, with explicit recovery and local reload. Shared error-state recovery and initial handover durability remain follow-ups; other write families, persistent queues and backend replay guarantees remain G. |
+| I14 — Offline status and recovery are usable. | `the site says when the connection drops and when it is back` in features; [offline helper](templates/_shared/offline.js). | B, FA at both widths. It checks band text after context offline/online changes and axe. After [stage 245](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md), bilingual checkout failure preserves state, two reconnects do not resend, and explicit retry creates one local order. After [stage 246](SAVED-OFFLINE-RECOVERY-EVIDENCE.md), real offline saved POST/DELETE failures also preserve local intent, with explicit recovery and local reload. [Stage 248](SAVED-SYNC-RECOVERY-EVIDENCE.md) adds scoped saved-sync recovery; initial handover durability is tracked separately in pending stage 247; other write families, persistent queues and backend replay guarantees remain G. |
 | I15 — TV input can change a bag and escape map focus. | `the arrow keys reach add to bag` and `a remote places the delivery pin and leaves the map` in [tv spec](templates/_e2e/tv.spec.mjs). | B, EN/FA on the dedicated 1920×1080 TV project. Arrow/Enter adds exactly one badge count; map arrows change coordinates and Escape returns focus. No physical remote or complete TV payment/stock/promo matrix is proved. |
 | I16 — State fixtures must demonstrate the state they name. | [states spec](templates/_e2e/states.spec.mjs) sets up states then runs axe; see confirmed F01 below. | G: at least the named payment-failure fixture exercises a different route. An axe pass cannot stand in for the missing state assertion. |
 
@@ -183,3 +183,15 @@ migration/storefront unit, check and fresh production builds pass. All 258 basel
 inventory is 1,812 dev / 1,413 production. Shared sync-error state remains set after successful recovery;
 initial handover data loss across full navigation is retained as a separate observation.
 Next: reproduce initial shortlist-handover persistence, then scoped saved-sync error recovery.
+
+
+## Stage 248 checkpoint: scoped saved-sync recovery
+
+Stage 248 [clears recovered saved-item errors without hiding unresolved failures](SAVED-SYNC-RECOVERY-EVIDENCE.md).
+Initial list-load failures and individual product failures have separate ownership. A confirmed
+write clears only its product; pending retries, local no-ops and other unresolved failures keep
+feedback visible. Versioned outcomes prevent stale responses from hiding or reviving newer errors.
+Owned stale live announcements clear after recovery while unrelated announcements are preserved.
+All 48 selected Darwin/Linux dev/production cases, full root unit and check pass; 258 baselines
+are unchanged. See the evidence document for validation and remaining boundaries.
+Next: browser coverage for independent product and initial-load failure ownership.
