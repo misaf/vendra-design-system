@@ -1,6 +1,7 @@
 // Asset paths are relative to the deployment root, including deployments in a subdirectory.
 import {VF_TENANT_BRANDS} from '../_runtime/tenant-slugs.js';
 import {VF_STORE} from './store-config.js';
+import {vfAssetBase} from './environment.js';
 
 /** @typedef {{src: string, width: number, height: number, alt?: {en: string, fa: string}}} BrandImage */
 /** @typedef {{logo?: BrandImage, logoMark?: BrandImage, logoOnDark?: BrandImage, icons?: {favicon: string, apple: string, app192: string, app512: string, maskable: string}, ogImage?: {en: string, fa: string}}} BrandAssets */
@@ -8,8 +9,10 @@ import {VF_STORE} from './store-config.js';
 export function vfBrand(tenant) {
   return {...VF_TENANT_BRANDS[tenant], ...(tenant === VF_STORE.tenant ? VF_STORE.brandAssets : {})};
 }
+// A relative asset path starts at the deployment's asset base (environment.js), the same path on the
+// server and in the browser, so prerendered logos hydrate unchanged.
 export function vfBrandUrl(src) {
-  return new URL(src, window.VF_ASSET_BASE || new URL('../../', location.href)).href;
+  return /^([a-z][\w+.-]*:|\/)/i.test(src) ? src : vfAssetBase() + src;
 }
 
 // Replace existing links too: switching tenants must never leave the previous florist's icons.

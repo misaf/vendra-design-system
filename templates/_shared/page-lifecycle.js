@@ -1,6 +1,6 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
-import {vfBrand, vfBrandHead} from './brand.js';
+import {vfBrand, vfBrandHead, vfBrandUrl} from './brand.js';
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
@@ -9,7 +9,7 @@ import {VF_SHELL} from './translations/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
-import {vfAssetBase, vfHoldClock, vfLocation, vfOnServer, vfServerPage} from './environment.js';
+import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from './environment.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {
@@ -101,17 +101,18 @@ function vfAnnounce(page) {
 
 // A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
 // one, the page in each of the store's languages, and a preview image (`page.head.image`, set by
-// pages with a photo of their own, otherwise the tenant's social image). The browser applies it once the page
+// pages with a photo of their own, otherwise the tenant's preview image). The browser applies it once the page
 // has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
 export function vfPageHead(page, heading) {
   const lang = page.props.lang === 'fa' ? 'fa' : 'en';
-  const head = page.head || {};
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
-  const preview = vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`;
+  const head = page.head || {};
   return {
     title: heading + ' · ' + VF_SHELL[lang].brand,
     description: head.description || heading,
-    image: head.image || (/^[a-z][a-z0-9+.-]*:/i.test(preview) ? preview : vfAssetBase() + preview),
+    image:
+      head.image ||
+      vfBrandUrl(vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`),
     url: vfLocation().href,
     locale: lang,
     type: head.type || 'website',
