@@ -35,7 +35,8 @@ async function liveStore(page, api) {
       calls.payments.push(request.postDataJSON());
       return route.fulfill({
         status: 201,
-        json: {payment: {url: BANK, method: 'GET', fields: {token: 'T-124'}}}
+        // A StartPay-style link: the token is in the URL, not in `fields`.
+        json: {payment: {url: BANK + '?token=T-124', method: 'GET'}}
       });
     }
     return route.fulfill({json: {}});
