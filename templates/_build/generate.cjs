@@ -10,6 +10,15 @@ const tenantSlugsModule =
   '// GENERATED from tokens/tenants/*.json by _build/generate.cjs — do not edit. Run npm --prefix templates run build.\n' +
   'export const VF_TENANT_SLUGS = ' +
   JSON.stringify(tenantSlugs) +
+  ';\nexport const VF_TENANT_BRANDS = ' +
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(require('./tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
+        slug,
+        spec.brand || {}
+      ])
+    )
+  ) +
   ';\n';
 
 function outputs() {

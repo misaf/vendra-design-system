@@ -1,9 +1,12 @@
 import React from 'react';
+import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
 import {IconButton, LanguageSwitch, NavLink} from '../../ds.js';
 
 // Storefront header composition. Shell supplies content and actions; CSS selects the layout.
 export function StorefrontHeader({
   brand,
+  brandAssets,
+  lang,
   homeHref,
   navigation,
   searchHref,
@@ -33,7 +36,10 @@ export function StorefrontHeader({
           href={homeHref}
           className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
         >
-          <>{brand}</>
+          <BrandLogo
+            image={brandAssets?.logo}
+            name={brandAssets?.logo?.alt?.[lang] || brandAssets?.logo?.alt?.[lang] || brand}
+          />
         </a>
         <div className="tw:flex tw:gap-1 tw:items-center">
           {language ? (
@@ -72,7 +78,14 @@ export function StorefrontHeader({
           href={homeHref}
           className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:md:text-xl tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
         >
-          <>{brand}</>
+          <BrandLogo
+            image={brandAssets?.logoMark || brandAssets?.logo}
+            name={
+              (brandAssets?.logoMark || brandAssets?.logo)?.alt?.[lang] ||
+              brandAssets?.logo?.alt?.[lang] ||
+              brand
+            }
+          />
         </a>
         <div className="vf-shell-mobile-tools tw:flex tw:justify-end tw:items-center tw:md:gap-1">
           {language ? (

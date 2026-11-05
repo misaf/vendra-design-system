@@ -14,7 +14,7 @@ function App(){
   const colour=k=>e=>{const overrides={...s.overrides};OWN[k].forEach(n=>delete overrides[n]);setS({...s,colours:{...s.colours,[k]:e.target.value.toUpperCase()},overrides});};
   const pick=k=>e=>setS({...s,character:{...s.character,[k]:e.target.value}});
   const t=T.tokens(s);const cs=T.checks(s);const fails=cs.filter(c=>!c.pass).length;const kept=Object.keys(s.overrides).length;
-  const json=()=>{const {description,overrides,colours,character}=s;return JSON.stringify({description,colours,character,overrides},null,2)+'\n';};
+  const json=()=>{const {description,overrides,colours,character,brand}=s;return JSON.stringify({description,colours,character,overrides,...(brand?{brand}:{})},null,2)+'\n';};
   const copy=()=>{navigator.clipboard&&navigator.clipboard.writeText(json());setCopied(true);setTimeout(()=>setCopied(false),1400);};
   return <div className="tb">
     <div className="tb-c">
