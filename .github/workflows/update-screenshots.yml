@@ -24,6 +24,12 @@ jobs:
       E2E_WORKERS: ${{ vars.E2E_RUNS_ON && vars.E2E_WORKERS || '' }}
     steps:
       - uses: actions/checkout@v7
+      # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
+      # image's Node, the dev server aborted in V8 while sending the 8 MB react-aria-components
+      # pre-bundle, failing every later test.)
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - run: npm ci
       # Rewrites the screenshots that differ or are missing; the other tests still have to pass.
       - run: npm --prefix templates run test:e2e:update
