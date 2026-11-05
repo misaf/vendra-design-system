@@ -6,4 +6,4 @@ View retains order/contact visibility, review-button versus sample-link mapping 
 
 Verify bilingual destinations/labels, native link/button behavior, repeat-order review and cancellation without bag changes, confirmation, lookup reset/focus, wrapping and responsive markup against the previous version. Inspect external contact destinations without sending messages.
 
-Known-order repeat actions are buttons: Enter and Space open review without navigation or bag changes. Cancellation restores trigger focus; only explicit review confirmation changes the bag. Standalone samples keep the bag link when no review callback exists.
+Known-order repeat actions are buttons: Enter and Space open review without navigation or bag changes. Cancellation restores trigger focus; only explicit review confirmation changes the bag. Standalone samples keep the bag link when no review callback exists. A null `repeat` (the recipient view) renders no repeat control.
