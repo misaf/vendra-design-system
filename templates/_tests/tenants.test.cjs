@@ -141,7 +141,8 @@ const brandContext = {
       ogImage: {en: 'assets/social/og-default-en.png', fa: 'assets/social/og-default-fa.png'}
     }
   },
-  window: {VF_ASSET_BASE: 'https://example.com/store/'},
+  // environment.js: the deployment's asset base.
+  vfAssetBase: () => 'https://example.com/store/',
   URL,
   document: {
     head: {
