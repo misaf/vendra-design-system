@@ -28,7 +28,7 @@ The Atomic Design migration is not declared complete.
 
 ### 1. Confirmed theme export/type asymmetry
 
-`templates/_shared/tenant-theme.js` returns RAMPS and shade for its internal/browser/CommonJS
+`templates/_shared/domain/tenant-theme.js` returns RAMPS and shade for its internal/browser/CommonJS
 interface. `templates/_build/package.cjs` copies that entire implementation to dist/theme.cjs,
 while its ESM wrapper lists thirteen exports and excludes those two. Both declaration files are
 copied from tenant-theme.d.ts, which also excludes them.

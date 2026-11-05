@@ -122,7 +122,7 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
     });
     assert.throws(() => commerce.openingStatus(daily, new Date(), 'Invalid/Zone'), RangeError);
     // "Closed today" only on an all-day closure; shortened holiday hours say closed for now.
-    const {vfOpeningStatus} = await import('../_shared/store-hours.js');
+    const {vfOpeningStatus} = await import('../_shared/domain/store-hours.js');
     const wording = (lang, date, time) => vfOpeningStatus(lang, tehran(date, time), nowruz).text;
     assert.equal(
       wording('en', '2027-03-21', '10:00'),

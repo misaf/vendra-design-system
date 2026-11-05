@@ -1,12 +1,12 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCT_PLACEHOLDER} from '../_shared/catalog.js';
-import {vfMobile} from '../_shared/delivery.js';
-import {vfShell} from '../_shared/navigation.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {vfAssetBase, vfNow} from '../_shared/environment.js';
-import {vfLiveStore} from '../_shared/store-config.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {VF_PRODUCT_PLACEHOLDER} from '../_shared/domain/catalog.js';
+import {vfMobile} from '../_shared/domain/delivery.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {vfAssetBase, vfNow} from '../_shared/platform/environment.js';
+import {vfLiveStore} from '../_shared/domain/store-config.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

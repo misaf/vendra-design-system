@@ -18,9 +18,9 @@ The last item was not covered by stage 235's initial separator hypothesis. Sourc
 is retained. The old content is restored only in intercepted development module responses:
 
 ```js
-// /templates/_shared/formatting.js
+// /templates/_shared/domain/formatting.js
 body = body.replace("lang === true || lang === 'fa' ? '، ' : ' · '", "' · '");
-// /templates/_shared/account-data.js
+// /templates/_shared/domain/account-data.js
 body = body.replace("'VN-10187'", "'VB-TEST-1'");
 // /templates/storefront-product/copy.js — old literals from the same source commit
 body = body

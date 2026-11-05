@@ -16,7 +16,7 @@ import {StorefrontPresentationSettings} from '../app/organisms/StorefrontPresent
 import {StorefrontPresentationTools} from '../app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx';
 import {StorefrontPresentationLabel} from '../app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx';
 import {Shell} from '../app/Shell.jsx';
-import {vfKeepOffline} from '../_shared/offline.js';
+import {vfKeepOffline} from '../_shared/services/offline.js';
 
 export function View({v}) {
   const [offline, setOffline] = React.useState({status: 'preparing', completed: 0, total: 0});
