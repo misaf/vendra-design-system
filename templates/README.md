@@ -229,6 +229,17 @@ npm --prefix templates run preview -- --base /vendra-design-system/
 # http://127.0.0.1:4173/vendra-design-system/templates/app/en/presentation/
 ```
 
+**Compression and caching.** The build ends by writing a Brotli (`.br`) and a gzip (`.gz`) copy
+beside every page, script, stylesheet and data file of 1 KB or more (`_build/compress.mjs`), so a
+host can send them without compressing per request. Vite's content-hashed files go in their own
+folder, `assets/hashed/` (`build.assetsDir`), apart from the repository's `assets/` copied in under
+their own names, so exactly those can be cached forever. `deployment/nginx.conf` is the reference
+server: precompressed files (`brotli_static`, `gzip_static`); `assets/hashed/` for a year,
+`immutable`, with CORS for its fonts; `assets/fonts/` for 30 days with CORS; other fixed-name
+photos, icons and map files for a day; pages, `404.html`, `sw.js`, tenant themes and the offline
+manifest `no-cache`. Other hosts should apply the same rules; security headers belong in the same
+file. GitHub Pages ignores both (it compresses on the fly and caches for 10 minutes).
+
 ## Browser tests
 
 The [current acceptance matrix](../ACCEPTANCE-COVERAGE.md) separates registration, execution,
