@@ -20,6 +20,17 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 5. After a change to a component, its CSS, tokens or `styles.css`: `npm run test:e2e`. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm --prefix templates run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
 6. Commit to `master` with `dist/` included.
 
+## Demo deployment
+
+The **CI** workflow publishes the GitHub Pages demo after a push to `master` only when
+the unit tests, React 19 checks, browser tests, and production build/performance budgets all
+succeed. Failed, cancelled, or skipped checks prevent deployment. Pull requests do not deploy.
+
+Changes confined to `.github/` skip the browser tests on push, so they also skip deployment.
+To deploy those changes or manually redeploy, open **Actions → CI → Run workflow**, select
+`master`, and run it. This runs every check before building and deploying the same commit.
+Manual CI runs on other branches do not deploy. Pages deployments run one at a time.
+
 ## A new component
 
 The component library is moving to Atomic Design in working batches. See
