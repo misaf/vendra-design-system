@@ -22,7 +22,8 @@ for (const lang of ['en', 'fa'])
               if (source.node?.matches?.(SHELL_BOXES))
                 window.__shellShifts.push(source.node.className);
         }).observe({type: 'layout-shift', buffered: true});
-        // The shell as the browser first lays it out, read as soon as the header exists.
+        // The complete shell's initial layout. Prerendered HTML can expose the header while
+        // the parser is still reading the content and bottom bar that follow it.
         window.__shellLayout = () => {
           const header = document.querySelector('.vf-shell-header');
           const bar = document.querySelector('.vf-shell-bottom-bar');
@@ -34,11 +35,20 @@ for (const lang of ['en', 'fa'])
             tabs: !!bar?.querySelector('.ag-tabbar')?.offsetHeight
           };
         };
-        new MutationObserver((_, observer) => {
-          if (!document.querySelector('.vf-shell-header')) return;
+        const recordFirstLayout = () => {
+          if (
+            document.readyState === 'loading' ||
+            !document.querySelector('.vf-shell-header') ||
+            !document.querySelector('.vf-shell-bottom-bar')
+          )
+            return;
           observer.disconnect();
+          document.removeEventListener('DOMContentLoaded', recordFirstLayout);
           window.__firstLayout = window.__shellLayout();
-        }).observe(document, {childList: true, subtree: true});
+        };
+        const observer = new MutationObserver(recordFirstLayout);
+        observer.observe(document, {childList: true, subtree: true});
+        document.addEventListener('DOMContentLoaded', recordFirstLayout, {once: true});
       }, SHELL_BOXES);
       await page.setViewportSize({width, height: 900});
       await openSite(page, 'home', lang);
