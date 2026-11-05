@@ -7,6 +7,7 @@ import {PageError} from './PageError.jsx';
 import {loadPage, reloadOnStaleFiles} from './pages.js';
 import {vfAccountPhone} from '../_shared/account-data.js';
 import {vfHoldClock} from '../_shared/environment.js';
+import {vfTenant} from '../_shared/page-lifecycle.js';
 import {vfReadRoute} from '../_shared/routing.js';
 import {vfApplyTvMode} from '../_shared/tv.js';
 
@@ -42,6 +43,10 @@ const prerendered =
 // app has it (page-lifecycle.js lifts this once the page has mounted): what is typed into a page
 // that is about to be replaced, or before React listens, would be lost. Controls in a page that
 // will be replaced are disabled as well, since some tools type into inert fields.
+// Markup prerendered in another theme than this preview's (?tenant=) goes at once: its colours
+// would show before the app re-renders it in this one.
+if (!prerendered && container.querySelector('[data-tenant]')?.dataset.tenant !== vfTenant())
+  container.replaceChildren();
 if (container.firstChild) {
   container.inert = true;
   if (!prerendered)
