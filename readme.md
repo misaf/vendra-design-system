@@ -127,7 +127,9 @@ npm --prefix templates run build         # components, dist/, Tailwind, tenant C
 npm --prefix templates run format        # Prettier
 npm --prefix templates run check         # generated files current + formatting
 npm --prefix templates test              # typecheck and unit tests
-npm --prefix templates run test:e2e      # screenshot + axe checks of every card and storefront view
+npm --prefix templates run test:e2e       # production storefront, then development fixtures/components
+npm --prefix templates run test:e2e:build # build once, then storefront/visual/accessibility/performance tests
+npm --prefix templates run test:e2e:dev   # source fixtures, components, guidelines and gateway tests
 ```
 
 Where to edit storefront pages, Tailwind conventions and preview URLs: [templates/README.md](templates/README.md). Ownership and integration boundaries: [templates/MIGRATION.md](templates/MIGRATION.md). Working rules: [CLAUDE.md](CLAUDE.md).
