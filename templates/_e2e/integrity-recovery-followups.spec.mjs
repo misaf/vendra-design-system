@@ -202,6 +202,8 @@ for (const lang of ['en', 'fa']) {
       .locator('main')
       .getByRole('link', {name: fa ? 'فروشگاه' : 'Shop', exact: true})
       .click();
+    // The site moves to the shop once its code has loaded; only then is there an entry to go back from.
+    await expect(page).toHaveURL(/\/shop\//);
     await page.goBack();
     await expect(page.getByRole('radio', {name: fa ? /^بزرگ/ : /^Generous/})).toBeChecked();
     await expect(page).toHaveURL(/qty=2/);
