@@ -121,6 +121,17 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
       time: '08:00'
     });
     assert.throws(() => commerce.openingStatus(daily, new Date(), 'Invalid/Zone'), RangeError);
+    // "Closed today" only on an all-day closure; shortened holiday hours say closed for now.
+    const {vfOpeningStatus} = await import('../_shared/store-hours.js');
+    const wording = (lang, date, time) => vfOpeningStatus(lang, tehran(date, time), nowruz).text;
+    assert.equal(
+      wording('en', '2027-03-21', '10:00'),
+      'Closed today for Nowruz · opens 12:00 tomorrow'
+    );
+    assert.equal(wording('en', '2027-03-22', '10:00'), 'Closed (Nowruz hours) · opens 12:00');
+    assert.equal(wording('en', '2027-03-22', '13:00'), 'Open now · closes 20:00 (Nowruz hours)');
+    assert.ok(!wording('fa', '2027-03-22', '10:00').includes('تعطیل'));
+    assert.ok(wording('fa', '2027-03-21', '10:00').includes('تعطیل'));
   })().catch(error => {
     console.error(error);
     process.exitCode = 1;
