@@ -13,7 +13,7 @@ import {
 import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
 import {vfCategoryImage} from '../_shared/category-images.js';
 import {vfJournalImage} from '../_shared/journal-images.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -101,7 +101,7 @@ function newsletter(page, S, C, L) {
   return {
     open: !signedUp,
     done: !!signedUp,
-    doneText: (window.VF_API.live ? C.newsDone : C.newsDemo).replace(
+    doneText: (vfLiveStore() ? C.newsDone : C.newsDemo).replace(
       '{email}',
       '\u2066' + signedUp + '\u2069'
     ),

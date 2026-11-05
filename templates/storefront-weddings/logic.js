@@ -4,6 +4,8 @@ import {VF_PRODUCT_PLACEHOLDER} from '../_shared/catalog.js';
 import {vfMobile} from '../_shared/delivery.js';
 import {vfShell} from '../_shared/navigation.js';
 import {usePageLogic} from '../_shared/page-state.js';
+import {vfAssetBase, vfNow} from '../_shared/environment.js';
+import {vfLiveStore} from '../_shared/store-config.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -38,11 +40,11 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
-      ...(!window.VF_API.live ? {okT: C.demoTitle, okP: C.demoBody} : {}),
+      ...(!vfLiveStore() ? {okT: C.demoTitle, okP: C.demoBody} : {}),
       editMessage: C.labels.returnToForm
     },
     gallery: [1, 2, 3].map(n => ({
-      src: (window.VF_ASSET_BASE || '../../') + VF_PRODUCT_PLACEHOLDER,
+      src: vfAssetBase() + VF_PRODUCT_PLACEHOLDER,
       alt: C.galleryTitle + ' ' + S.n(n)
     })),
     process: C.steps,
@@ -57,7 +59,7 @@ function vals(page) {
         wDate: v
       }),
     today: (() => {
-      const d = new Date();
+      const d = vfNow();
       return (
         d.getFullYear() +
         '-' +

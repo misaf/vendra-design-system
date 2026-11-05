@@ -17,6 +17,7 @@ import {VF_SHELL} from './translations/shell.js';
 import {vfDayMonth, vfDayName} from './translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
+import {vfNow, vfOnServer} from './environment.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.
@@ -160,7 +161,8 @@ export function vfShell(self, page) {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch {}
   const consentShown =
-    (!(st.vfConsent ?? window.VF_TRACK.consent()) && !dismissed) || !!st.vfConsentOpen;
+    (!(st.vfConsent ?? (vfOnServer() ? '' : window.VF_TRACK.consent())) && !dismissed) ||
+    !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
     self.setState({...patch, vfConsentOpen: false});
@@ -235,8 +237,8 @@ export function vfShell(self, page) {
     copyright:
       '© ' +
       (fa
-        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(new Date())
-        : new Date().getFullYear()) +
+        ? new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year: 'numeric'}).format(vfNow())
+        : vfNow().getFullYear()) +
       ' ' +
       T.brand +
       '. ' +
