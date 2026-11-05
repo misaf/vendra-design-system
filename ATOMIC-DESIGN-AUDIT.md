@@ -309,3 +309,15 @@ migration/storefront unit, check and fresh production builds pass. All 258 basel
 inventory is 1,812 dev / 1,413 production. Shared sync-error state remains set after successful recovery;
 initial handover data loss across full navigation is retained as a separate observation.
 Next: reproduce initial shortlist-handover persistence, then scoped saved-sync error recovery.
+
+
+## Stage 248 checkpoint: scoped saved-sync recovery
+
+Stage 248 [clears recovered saved-item errors without hiding unresolved failures](SAVED-SYNC-RECOVERY-EVIDENCE.md).
+Initial list-load failures and individual product failures have separate ownership. A confirmed
+write clears only its product; pending retries, local no-ops and other unresolved failures keep
+feedback visible. Versioned outcomes prevent stale responses from hiding or reviving newer errors.
+Owned stale live announcements clear after recovery while unrelated announcements are preserved.
+All 48 selected Darwin/Linux dev/production cases, full root unit and check pass; 258 baselines
+are unchanged. See the evidence document for validation and remaining boundaries.
+Next: browser coverage for independent product and initial-load failure ownership.
