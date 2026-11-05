@@ -190,6 +190,10 @@ tracking/shared logic retain row formatting and package DetailList retains defin
 StorefrontTrackOrderActions composes contact/repeat/lookup controls; View retains visibility/descriptors,
 tracking/shared logic retain URLs, reorder/bag changes and lookup reset/focus.
 Known-order repeat review uses a button; standalone samples without a review callback retain the bag link.
+Tracking shows an order only to its viewer: the buyer (session checkout, signed-in sender or a lookup
+matching the sender's mobile) sees everything; a recipient (lookup or sign-in matching only the
+recipient's mobile) sees progress, delivery, photo and contact, never prices, payment, card words or
+repeat. Links to unverified orders open the lookup. Verified lookups persist per customer as `tracked`.
 StorefrontTrackOrderSummary composes the summary card; View retains visibility/mapping, tracking/shared
 logic retain line/totals formatting and StorefrontTrackLayout retains the responsive sticky aside.
 StorefrontTrackReorderDialog composes controlled review choices/notices/actions; View maps descriptors,
