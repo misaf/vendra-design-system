@@ -141,8 +141,8 @@ const brandContext = {
       ogImage: {en: 'assets/social/og-default-en.png', fa: 'assets/social/og-default-fa.png'}
     }
   },
-  window: {VF_ASSET_BASE: 'https://example.com/store/'},
-  location: {href: 'https://example.com/store/templates/app/en/product/VF-7K2M4Q/'},
+  // environment.js: the deployment's asset base.
+  vfAssetBase: () => 'https://example.com/store/',
   URL,
   document: {
     head: {
@@ -184,12 +184,10 @@ assert.equal(
   links.get('link[rel="manifest"]').href,
   'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
 );
-// Prerendered builds set an origin-relative asset base, including subdirectory deployments.
+
+// Prerendered builds use origin-relative bases at the root and under a deployment prefix.
 for (const base of ['/', '/store/']) {
-  brandContext.window.VF_ASSET_BASE = base;
+  brandContext.vfAssetBase = () => base;
   vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
-  assert.equal(
-    links.get('link[rel="icon"]').href,
-    'https://example.com' + base + 'assets/tenants/clay/favicon-32.png'
-  );
+  assert.equal(links.get('link[rel="icon"]').href, base + 'assets/tenants/clay/favicon-32.png');
 }
