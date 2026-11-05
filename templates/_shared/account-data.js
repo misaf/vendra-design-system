@@ -315,9 +315,10 @@ export const VF_API_ORDERS = VF_SAMPLE_ORDER_ROWS.map(([id, number, status, plac
 export const VF_SAMPLE_ORDER_EXTRAS = {
   method: 'card',
   preferredLocale: 'fa',
+  // A gift: the recipient's mobile differs from the sender's, so tracking shows both views.
   delivery: {
-    name: 'Shirin Ahmadi',
-    phone: '09125649438',
+    name: 'Mina Karimi',
+    phone: '09121230000',
     sender: 'Shirin Ahmadi',
     senderPhone: '09125649438',
     address: '12 Golha St, Azimiyeh'
