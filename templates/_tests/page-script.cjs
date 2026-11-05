@@ -91,6 +91,7 @@ const sharedFiles = [
   'account-data.js',
   'wallet.js',
   'payments.js',
+  'payment-api.js',
   'integrations/api.js',
   'integrations/analytics.js',
   'formatting.js',

@@ -1,6 +1,6 @@
 # StorefrontCheckoutSubmission
 
-Composes the optional WhatsApp handoff, processing status, failure/retry/other-method feedback, safety notice and wide place/back actions from explicit descriptors. Preserves fragment order, link target/rel, status role, alert tones/icons, responsive classes, button variants/sizes/icons, loading and disabled props. The compact submission action remains in Shell's separate sticky slot.
+Composes the optional WhatsApp handoff, processing status, failure/retry feedback with an optional other-method action (omitted while an order is unconfirmed), safety notice and wide place/back actions from explicit descriptors. Preserves fragment order, link target/rel, status role, alert tones/icons, responsive classes, button variants/sizes/icons, loading and disabled props. The compact submission action remains in Shell's separate sticky slot.
 
 View retains descriptor mapping and payment visibility. Checkout/shared logic retains readiness and receipt checks, submission/deduplication, pending/error state, retry/method selection, WhatsApp URLs/validation, navigation, gateway handling and persistence. No page model, state/effects, browser APIs or commerce rules belong here.
 
