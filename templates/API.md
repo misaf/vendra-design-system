@@ -38,7 +38,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 ### Delivery
 5. **Zone rules:** same-day cut-off time per zone, the point distances are measured from, free-delivery threshold and the zones it applies to, product restrictions (for example plants only).
-6. **Schedule:** sold-out dates, the lead time before a slot closes, and whether availability differs per zone.
+6. **Schedule:** store IANA time zone (`VF_DELIVERY_TIME_ZONE`, e.g. `Asia/Tehran`), sold-out dates, the lead time before a slot closes, and whether availability differs per zone.
 
 ### Catalogue
 7. **Product code:** confirmed — `token` is the customer-facing code. Add a `token` lookup that also works for codes typed with spaces, lower case or Persian digits (the storefront normalises them).
