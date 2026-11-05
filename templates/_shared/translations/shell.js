@@ -1,5 +1,6 @@
 // Shared bilingual navigation labels. Store identity stays in store-config.js.
 import {VF_STORE} from '../store-config.js';
+import {vfHoursText} from '../store-hours.js';
 export const VF_SHELL = {
   en: {
     brand: VF_STORE.brand.en,
@@ -17,7 +18,7 @@ export const VF_SHELL = {
     mainNav: 'Main',
     visit: 'Visit',
     address: VF_STORE.address.en,
-    hours: VF_STORE.hours.en,
+    hours: vfHoursText('en'),
     contact: 'Contact',
     photo: 'Bouquet photo',
     save: 'Save',
@@ -80,7 +81,7 @@ export const VF_SHELL = {
     mainNav: 'منوی اصلی',
     visit: 'آدرس',
     address: VF_STORE.address.fa,
-    hours: VF_STORE.hours.fa,
+    hours: vfHoursText('fa'),
     contact: 'تماس',
     photo: 'عکس دسته‌گل',
     save: 'ذخیره',

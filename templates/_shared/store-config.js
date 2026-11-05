@@ -60,9 +60,31 @@ export const VF_STORE = {
     en: 'Hand-tied flowers from our Karaj studio, delivered across Karaj and Tehran.',
     fa: 'گل‌های دست‌بسته از استودیوی ما در کرج، با ارسال در کرج و تهران.'
   },
-  address: {en: 'Azimiyeh, Karaj, Alborz', fa: 'ایران، استان البرز، کرج، عظیمیه'},
+  // The studio's full street address, and a short line on finding the door (a landmark, the
+  // entrance or parking; null hides it). SAMPLE values: a real store writes its own.
+  address: {
+    en: '24 Golestan Blvd, Azimiyeh, Karaj, Alborz',
+    fa: 'البرز، کرج، عظیمیه، بلوار گلستان، پلاک ۲۴'
+  },
+  findUs: {
+    en: 'Ground-floor shop beside the pharmacy. Free parking in the side street.',
+    fa: 'مغازهٔ همکف، کنار داروخانه. پارک رایگان در کوچهٔ کناری.'
+  },
   studio: {lat: 35.8352, lng: 50.975}, // The shop's front door, shown on the contact map and used for directions.
-  hours: {en: 'Daily 08:00–22:00', fa: 'همه‌روزه \u2068۰۸:۰۰\u2069 تا \u2068۲۲:۰۰\u2069'},
+  // The store's IANA time zone: opening hours, delivery dates and same-day cut-offs follow its clock,
+  // wherever the customer is.
+  timeZone: 'Asia/Tehran',
+  // Opening hours on the store's clock (commerce OpeningHours). `week` lists runs of weekdays
+  // (0 Sunday … 6 Saturday) with "HH:MM" times; a closing time at or before the opening time runs
+  // past midnight. `exceptions` replace one date's hours (holidays): `closed: true` or their own
+  // opens/closes, with an optional label. The Nowruz dates are SAMPLES.
+  hours: {
+    week: [{days: [0, 1, 2, 3, 4, 5, 6], opens: '08:00', closes: '22:00'}],
+    exceptions: [
+      {date: '2027-03-21', closed: true, label: {en: 'Nowruz', fa: 'نوروز'}},
+      {date: '2027-03-22', opens: '12:00', closes: '20:00', label: {en: 'Nowruz', fa: 'نوروز'}}
+    ]
+  },
   phone: '+989129333034',
   phoneLabel: '+98 912 933 3034',
   // Contact channels: null hides one (the phone is required). Without WhatsApp, its links, the tab

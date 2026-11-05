@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfKnownOrders} from '../_shared/account-data.js';
+import {vfCustomerId, vfKnownOrders} from '../_shared/account-data.js';
 import {
   vfCardMessages,
   vfLineToken,
@@ -24,17 +24,40 @@ export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
       lookup: false,
-      lookupId: '',
+      // A link to an order this visitor hasn't verified opens the lookup with its number filled in.
+      lookupId: vfPageRoute(page.props).id || '',
       lookupPhone: '',
       lookupTried: false,
       lookupFailed: false,
       found: null,
+      foundViewer: null,
       reorderOpen: false,
       reorderMode: 'add'
     };
   });
   useStorefrontPage(page);
   return vals(page);
+}
+
+// Who may see an order, and how much of it: 'buyer' sees everything, 'recipient' only its
+// progress and delivery, null nothing (the visitor has to look it up first). The storefront
+// matches locally; the tracking API must make the same split (templates/API.md, 16).
+function vfTrackViewer(store, order, foundViewer) {
+  // A single page without the site shows its sample order, with or without a looked-up one.
+  if (!store) return foundViewer || 'buyer';
+  if (!order) return null;
+  // This customer's own checkouts in this session.
+  if ([store.order, store.lastOrder, ...(store.orders || [])].some(own => own?.id === order.id))
+    return 'buyer';
+  const tracked = store.tracked?.[order.id] || null;
+  // A lookup with the sender's mobile opens the whole order, even for a signed-in recipient.
+  if (tracked === 'buyer') return 'buyer';
+  const customer = store.customerId && store.customerId !== 'guest' ? store.customerId : '';
+  if (customer && store.customerId === vfCustomerId()) {
+    if (vfMobile(order.delivery?.senderPhone) === customer) return 'buyer';
+    if (vfMobile(order.delivery?.phone) === customer) return 'recipient';
+  }
+  return tracked;
 }
 
 function vals(page) {
@@ -51,8 +74,11 @@ function vals(page) {
       ? snapshot
       : known.find(o => o.id === requested)
     : snapshot;
+  const viewer = vfTrackViewer(page.props.store, order, ls.foundViewer);
+  const buyer = viewer === 'buyer';
   const hasOrder =
-    !ls.lookup && (!page.props.store || (!!order && (!requested || requested === order.id)));
+    !ls.lookup &&
+    (!page.props.store || (!!order && !!viewer && (!requested || requested === order.id)));
   const rawStatus = order ? order.status || 'received' : (page.props.status ?? 'onTheWay');
   const st = /cancel|refund/.test(rawStatus)
     ? 'cancelled'
@@ -102,19 +128,26 @@ function vals(page) {
         C.labels.recipient,
         d.name + vfSeparator(L) + (fa ? VF_FA_DIGITS(d.phone) : d.phone)
       ],
-      ['quote', C.labels.cardMessage, vfCardMessages(order.lines, d, L) || C.labels.noMessage],
-      [
-        'banknote',
-        C.labels.payment,
-        (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) +
-          (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))
-      ]
-    ];
+      buyer
+        ? ['quote', C.labels.cardMessage, vfCardMessages(order.lines, d, L) || C.labels.noMessage]
+        : // The recipient learns there is a card, not what it says.
+          vfCardMessages(order.lines, d, L)
+          ? ['quote', C.labels.cardMessage, C.labels.cardWaiting]
+          : null,
+      buyer
+        ? [
+            'banknote',
+            C.labels.payment,
+            (C.paymentMethods[order.method || 'card'] || C.labels.cardToCard) +
+              (order.method && order.method !== 'card' ? '' : ' · •••• ' + S.n(order.last4 || ''))
+          ]
+        : null
+    ].filter(Boolean);
     C.times = ['', '', '', '', ''];
   }
   // A card-to-card or WhatsApp order waits for the studio to confirm payment before it is arranged.
   const method = order ? order.method || 'card' : 'card';
-  const pending = !!order && st === 'received' && ['card', 'whatsapp'].includes(method);
+  const pending = !!order && buyer && st === 'received' && ['card', 'whatsapp'].includes(method);
   const contact = order ? order.delivery.senderPhone || order.delivery.phone : '';
   const lookupErrors = {
     id: ls.lookupTried && !ls.lookupId.trim() ? C.lookup.idErr : undefined,
@@ -127,10 +160,12 @@ function vals(page) {
     delivered: 4,
     cancelled: 1
   }[st];
-  const h = C.h[st] || C.h.received;
+  const h = (!buyer && C.hRecipient[st]) || C.h[st] || C.h.received;
   return {
     ...S,
     hasOrder,
+    // Prices, payment and the card's words are the buyer's: a recipient sees none of them.
+    showSummary: buyer,
     waHref: order ? S.waWith((fa ? 'درباره سفارش ' : 'About order ') + order.id) : S.waHref,
     noOrder: !hasOrder,
     pending,
@@ -168,17 +203,22 @@ function vals(page) {
         S.focus('vf-lookup-failed');
         return;
       }
+      // The sender's mobile opens the whole order; the recipient's only its progress.
+      const matchedViewer = vfMobile(match.delivery.senderPhone) === phone ? 'buyer' : 'recipient';
       page.setState({lookup: false, lookupTried: false, lookupId: '', lookupPhone: ''});
+      if (page.props.store?.trackOrder) page.props.store.trackOrder(match.id, matchedViewer);
       if (page.props.go) page.props.go({view: 'track', id: match.id});
-      else page.setState({found: match.id});
+      else page.setState({found: match.id, foundViewer: matchedViewer});
     },
     trackAnother: () => {
-      page.setState({lookup: true, lookupFailed: false});
+      page.setState({lookup: true, lookupFailed: false, lookupId: '', lookupPhone: ''});
       S.focus('vf-lookup-id');
     },
-    reorder: order
-      ? () => page.setState({reorderOpen: true, reorderMode: currentBag.length ? 'add' : 'replace'})
-      : undefined,
+    reorder:
+      order && buyer
+        ? () =>
+            page.setState({reorderOpen: true, reorderMode: currentBag.length ? 'add' : 'replace'})
+        : undefined,
     reorderOpen: ls.reorderOpen,
     reorderMode: ls.reorderMode,
     setReorderMode: reorderMode => page.setState({reorderMode}),
@@ -187,7 +227,7 @@ function vals(page) {
     reorderEmpty: !reorderLines.length,
     hasBag: currentBag.length > 0,
     confirmReorder: () => {
-      if (!order || !reorderLines.length) return;
+      if (!order || !buyer || !reorderLines.length) return;
       window.VF_TRACK.event('order_again', {transaction_id: order.id});
       page.props.store.reorder(order, ls.reorderMode);
       page.props.go('bag');

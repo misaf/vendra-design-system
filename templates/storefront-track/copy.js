@@ -55,6 +55,19 @@ export function vfCopy(S) {
           'Your refund was sent to the card you paid from. It can take up to three working days.'
         ]
       },
+      // A recipient who looked the order up with their own mobile: nothing about paying for it.
+      hRecipient: {
+        received: [
+          'Order',
+          'received.',
+          'The studio has the order and will start arranging it soon.'
+        ],
+        cancelled: [
+          'Delivery',
+          'cancelled.',
+          'This delivery won’t go ahead. Ask us if you have questions.'
+        ]
+      },
       rows: [
         ['map-pin', 'Deliver to', 'Mina · 12 Golha St, Azimiyeh · Karaj central'],
         ['calendar', 'Delivery', 'Fri 9 Oct, 12:00–16:00'],
@@ -69,6 +82,7 @@ export function vfCopy(S) {
         recipient: 'Recipient',
         cardMessage: 'Card message',
         noMessage: 'No message',
+        cardWaiting: 'There’s a card with your flowers.',
         payment: 'Payment',
         cardToCard: 'Card to card',
         browseTheShop: 'Browse the shop',
@@ -148,6 +162,10 @@ export function vfCopy(S) {
           'مبلغ به کارتی که از آن پرداخت کردید برگشت داده شد. ممکن است تا سه روز کاری طول بکشد.'
         ]
       },
+      hRecipient: {
+        received: ['سفارش', 'ثبت شد.', 'سفارش به استودیو رسیده و به‌زودی چیدن گل‌ها شروع می‌شود.'],
+        cancelled: ['ارسال', 'لغو شد.', 'این ارسال انجام نمی‌شود. اگر پرسشی دارید از ما بپرسید.']
+      },
       rows: [
         ['map-pin', 'تحویل به', 'مینا، عظیمیه، خیابان گل‌ها، پلاک ۱۲، مرکز کرج'],
         ['calendar', 'زمان ارسال', 'جمعه ۱۷ مهر، \u2068۱۲:۰۰\u2069 تا \u2068۱۶:۰۰\u2069'],
@@ -162,6 +180,7 @@ export function vfCopy(S) {
         recipient: 'گیرنده',
         cardMessage: 'متن کارت',
         noMessage: 'بدون پیام',
+        cardWaiting: 'همراه گل‌هایتان کارتی هست.',
         payment: 'پرداخت',
         cardToCard: 'کارت به کارت',
         browseTheShop: 'رفتن به فروشگاه',

@@ -82,24 +82,35 @@ function vfSearchReturnRoute() {
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
+// Orders this customer opened with the tracking lookup, keyed by order number: 'buyer' when the
+// mobile matched the sender's, 'recipient' when it matched only the recipient's.
+function vfTrackedOrders(value) {
+  return Object.fromEntries(
+    Object.entries(value && typeof value === 'object' ? value : {}).filter(
+      ([, viewer]) => viewer === 'buyer' || viewer === 'recipient'
+    )
+  );
+}
 const vfEmptyCustomer = () => ({
   delivery: {...VF_DELIVERY},
   paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
   order: null,
   lastOrder: null,
-  orders: []
+  orders: [],
+  tracked: {}
 });
 const vfCustomerState = state => ({
   delivery: state.delivery,
   paymentDraft: state.paymentDraft,
   order: state.order,
   lastOrder: state.lastOrder,
-  orders: state.orders
+  orders: state.orders,
+  tracked: state.tracked
 });
 // Persist after mount as well as updates: consumed handover links have already left the URL.
 function vfPersistSession(state) {
   try {
-    const {bag, saved, delivery, order, lastOrder, orders, paymentDraft} = state;
+    const {bag, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} = state;
     sessionStorage.setItem(
       VF_SESSION,
       JSON.stringify({
@@ -114,7 +125,8 @@ function vfPersistSession(state) {
         order,
         lastOrder,
         orders,
-        paymentDraft
+        paymentDraft,
+        tracked
       })
     );
   } catch {}
@@ -197,6 +209,7 @@ function vfSiteInitial(props) {
     ].filter(
       (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
     ),
+    tracked: vfTrackedOrders(privateState.tracked),
     announcement: ''
   };
 }
@@ -271,6 +284,8 @@ export function usePage(props) {
       }
       page.setState({
         ...next,
+        // Older saved customers have no lookups; never keep the previous customer's.
+        tracked: vfTrackedOrders(next.tracked),
         customerId,
         customers,
         cardAddition: null,
@@ -463,6 +478,9 @@ function vals(page) {
         page.setState(current => ({paymentDraft: {...current.paymentDraft, ...patch}})),
       order: s.order,
       lastOrder: s.lastOrder,
+      tracked: s.tracked,
+      trackOrder: (id, viewer) =>
+        page.setState(current => ({tracked: {...current.tracked, [id]: viewer}})),
       searchReturn: s.searchReturn,
       count: s.bag.reduce((a, l) => a + l.qty, 0),
       announce: title => {

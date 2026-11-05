@@ -10,6 +10,7 @@ export function StorefrontFooter({
   socialLinks,
   visitLabel,
   address,
+  findUs,
   directionsHref,
   directionsLabel,
   hours,
@@ -72,6 +73,11 @@ export function StorefrontFooter({
             <address className="tw:not-italic tw:leading-body">
               <>{address}</>
             </address>
+            {findUs ? (
+              <p className="vf-shell-footer-find-us tw:m-0 tw:leading-body tw:text-inverse-quiet">
+                <>{findUs}</>
+              </p>
+            ) : null}
             {directionsHref ? (
               <>
                 <a
