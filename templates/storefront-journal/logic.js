@@ -4,7 +4,7 @@ import {vfJournalImage} from '../_shared/journal-images.js';
 import {vfSeparator} from '../_shared/formatting.js';
 import {vfCopy} from './copy.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -35,13 +35,11 @@ function vals(page) {
   ).map(p => {
     const c = VF_JCATS.find(x => x[0] === p.cat);
     return {
-      href:
-        S.href.post.split('?')[0] +
-        vfRouteParams({
-          view: 'post',
-          post: p.id,
-          lang: L
-        }),
+      href: vfRouteUrl({
+        view: 'post',
+        post: p.id,
+        lang: L
+      }),
       title: p[L][0],
       image: vfJournalImage(p.image),
       excerpt: p[L][1],
@@ -53,8 +51,7 @@ function vals(page) {
   const pageCount = Math.max(1, Math.ceil(all.length / size));
   const current = Math.min(route.page || 1, pageCount);
   const list = all.slice((current - 1) * size, current * size);
-  const pageHref = number =>
-    S.href.journal.split('?')[0] + vfRouteParams({view: 'journal', lang: L, page: number});
+  const pageHref = number => vfRouteUrl({view: 'journal', lang: L, page: number});
   // A new filter or search starts again from the first page, replacing the history entry.
   const firstPage = () => {
     if (current > 1 && page.props.go) page.props.go({view: 'journal', lang: L}, true);

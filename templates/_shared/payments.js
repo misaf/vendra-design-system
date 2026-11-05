@@ -78,5 +78,5 @@ import {VF_STORE} from './store-config.js';
       cardValid: D.luhn(n)
     });
   };
-  window.VF_PAYMENT = D;
+  if (typeof window !== 'undefined') window.VF_PAYMENT = D;
 })();

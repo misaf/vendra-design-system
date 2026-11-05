@@ -28,16 +28,16 @@ No duplicate storefront application remains.
 ## Previewing states
 
 Run `npm --prefix templates run dev` from the project root. Open
-`http://localhost:5173/templates/app/` (or `npm --prefix templates run build:app` and `preview` for the production build).
-Use `?lang=en` or `?lang=fa`; add `&tenant=clay` (any tenant in `tokens/tenants/`) to preview another theme.
+`http://localhost:5173/templates/app/en/` (or `npm --prefix templates run build:app` and `preview` for the production build).
+Use `en/` or `fa/` after `templates/app/`; add `?tenant=clay` (any tenant in `tokens/tenants/`) to preview another theme.
 
 Useful route examples:
 
-- `?lang=en&view=shop&min=2000000&max=4000000&stock=1`
-- `?lang=fa&view=shop&demo=loading` or `&demo=error` (Retry restores results)
-- `?lang=en&view=journal&demo=loading`
-- `?lang=fa&view=post&post=missing-story`
-- `?lang=en&view=track&id=VB-TEST-1` (cancelled sample)
+- `en/shop/?min=2000000&max=4000000&stock=1`
+- `fa/shop/?demo=loading` or `?demo=error` (Retry restores results)
+- `en/journal/?demo=loading`
+- `fa/journal/missing-story/`
+- `en/track/VB-TEST-1/` (cancelled sample)
 
 The checkout page supports `demo=error` for its online payment simulation. In the
 click-through site, fill the bag delivery form before opening checkout. An empty

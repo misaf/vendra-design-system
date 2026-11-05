@@ -3,6 +3,7 @@
 // Persian times use Persian digits, isolated so they stay left to right inside a sentence.
 import {commerce} from '../../components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
+import {vfNow} from './environment.js';
 
 const hoursDigits = value => String(value).replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]);
 const hoursIsolate = text => '⁨' + text + '⁩';
@@ -54,7 +55,7 @@ export function vfHoursText(lang, hours = VF_STORE.hours) {
 
 // Whether the studio is open now, in words: {open, text}. "Open now · closes 22:00",
 // "Closed · opens 08:00 tomorrow", "Closed today for Nowruz · opens 12:00 tomorrow".
-export function vfOpeningStatus(lang, now = new Date(), hours = VF_STORE.hours) {
+export function vfOpeningStatus(lang, now = vfNow(), hours = VF_STORE.hours) {
   const fa = lang === 'fa';
   const status = commerce.openingStatus(hours, now, VF_STORE.timeZone);
   const label = status.exception?.label?.[fa ? 'fa' : 'en'] || '';
@@ -98,7 +99,7 @@ export function vfOpeningStatus(lang, now = new Date(), hours = VF_STORE.hours) 
 }
 
 // Special hours coming up within `days` days, one line each: "Nowruz, Sun 21 March: closed".
-export function vfHoursNotices(lang, now = new Date(), days = 14, hours = VF_STORE.hours) {
+export function vfHoursNotices(lang, now = vfNow(), days = 14, hours = VF_STORE.hours) {
   const fa = lang === 'fa';
   return commerce.hoursExceptions(hours, days, now, VF_STORE.timeZone).map(item => {
     const label = item.label?.[fa ? 'fa' : 'en'];

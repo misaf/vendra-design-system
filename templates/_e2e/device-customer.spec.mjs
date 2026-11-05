@@ -45,7 +45,7 @@ for (const lang of ['en', 'fa']) {
     await expect(account).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem('vf-account-phone'))).toBe('09125649438');
     await tap(account);
-    await expect(page).toHaveURL(/view=account/);
+    await expect(page).toHaveURL(/\/account\//);
     await expect(page.locator('main h1')).toBeFocused();
     await shell(page, lang);
   });
@@ -83,12 +83,12 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('.vf-shopping--home')).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem('vf-account-phone'))).toBeNull();
     await page.goBack();
-    await expect(page).toHaveURL(/view=signin/);
+    await expect(page).toHaveURL(/\/signin\//);
     await expect(page.locator('#vf-phone')).toBeVisible();
     await shell(page, lang);
     await reachable(page.locator('#vf-phone'));
     await page.reload();
-    await expect(page).toHaveURL(/view=signin/);
+    await expect(page).toHaveURL(/\/signin\//);
     expect(await page.evaluate(() => localStorage.getItem('vf-account-phone'))).toBeNull();
   });
 
@@ -108,7 +108,7 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('#vf-lookup-id')).toHaveValue('vn-10522');
     await fill(page, '#vf-lookup-phone', '+98 912 564 9438');
     await tap(find);
-    await expect(page).toHaveURL(/view=track&id=VN-10522/);
+    await expect(page).toHaveURL(/\/track\/VN-10522\//);
     await expect(page.locator('main h1')).toHaveText(fa ? 'سفارش در راه است.' : 'On its way.');
     await expect(page.locator('main h1')).toBeFocused();
     await page.reload();

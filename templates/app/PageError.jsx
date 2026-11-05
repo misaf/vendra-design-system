@@ -3,6 +3,8 @@
 import React from 'react';
 import {Alert} from '../../components/molecules/Alert/Alert.jsx';
 import {Button} from '../../components/atoms/Button/Button.jsx';
+import {vfLocation} from '../_shared/environment.js';
+import {vfAppBase} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 
 const COPY = {
@@ -19,7 +21,8 @@ const COPY = {
 };
 
 export function PageError() {
-  const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
+  // The language is the first segment after the app's path (templates/app/fa/…).
+  const lang = vfLocation().pathname.startsWith(vfAppBase() + 'fa/') ? 'fa' : 'en';
   const copy = COPY[lang];
   React.useEffect(() => {
     document.title = copy.title + ' · ' + VF_STORE.brand[lang];

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite} from './helpers.mjs';
+import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, shell, finish} from './device-helpers.mjs';
 import {vfCopy} from '../storefront-shop/copy.js';
 
@@ -10,7 +10,7 @@ test.beforeEach(async ({page}, info) => {
   expect(await page.evaluate(() => navigator.maxTouchPoints)).toBeGreaterThan(0);
 });
 
-const params = page => new URL(page.url()).searchParams;
+const params = page => new Map(Object.entries(routeOf(page.url())));
 const sortControl = page =>
   page
     .locator(
@@ -33,7 +33,7 @@ for (const lang of ['en', 'fa']) {
   test(`touch home categories lead to a product and back (${lang})`, async ({page}, info) => {
     await openSite(page, 'home', lang);
     const category = page.locator('.vf-home-category-circles').getByRole('link').first();
-    const cat = new URL(await category.getAttribute('href'), page.url()).searchParams.get('cat');
+    const cat = routeOf(await category.getAttribute('href')).cat;
     expect(cat).toBeTruthy();
     await finish(page, lang, info, category);
     await tap(category);
@@ -41,12 +41,12 @@ for (const lang of ['en', 'fa']) {
     expect(params(page).get('cat')).toBe(cat);
     await expect(page.locator('main h1')).toBeFocused();
     const product = page.locator('.vf-shop-product-grid .ag-product__link').first();
-    const id = new URL(await product.getAttribute('href'), page.url()).searchParams.get('id');
+    const id = routeOf(await product.getAttribute('href')).id;
     expect(id).toMatch(/^VF-[A-Z0-9]{6}$/);
     await tap(product);
     await expect(page.locator('main h1')).toHaveText(id);
     await expect(page.locator('main h1')).toBeFocused();
-    expect(params(page).get('cat')).toBe(cat);
+    expect(params(page).get('id')).toBe(id);
     await page.goBack();
     await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
     expect(params(page).get('cat')).toBe(cat);

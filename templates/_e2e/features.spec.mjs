@@ -314,7 +314,7 @@ test('the delivery pin is required and travels with the order', async ({page}) =
   await expect(page.locator('#vf-last4')).toBeVisible();
   const location = await page.evaluate(
     () =>
-      JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname) || '{}').delivery
+      JSON.parse(sessionStorage.getItem('vendra-template:/templates/app/') || '{}').delivery
         ?.location
   );
   expect(location).toEqual({lat: expect.any(Number), lng: expect.any(Number)});
@@ -406,7 +406,7 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
 test('a guest can sign in from checkout and come back to it', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await page.locator('.vf-bag-signin').getByRole('link', {name: 'Sign in'}).click();
-  await expect(page).toHaveURL(/view=signin&next=delivery/);
+  await expect(page).toHaveURL(/\/signin\/\?next=delivery/);
   await page.fill('#vf-phone', '09125649438');
   await page.locator('main').getByRole('button', {name: 'Send code'}).click();
   // The code is checked as soon as it is complete.
@@ -468,7 +468,7 @@ test('a guest finds an order with its number and mobile', async ({page}) => {
   // The phone on the order can be typed another way, such as with +98.
   await page.fill('#vf-lookup-phone', '+98 912 564 9438');
   await page.getByRole('button', {name: 'Find my order'}).click();
-  await expect(page).toHaveURL(/view=track&id=VN-10522/);
+  await expect(page).toHaveURL(/\/track\/VN-10522\//);
   await expect(page.locator('main h1')).toHaveText('On its way.');
   // The new view moves focus to its heading first; wait so that doesn't race the next click.
   await expect(page.locator('main h1')).toBeFocused();
@@ -494,7 +494,7 @@ test('a gift’s recipient sees its progress but not what it cost or what the ca
   await openSite(page, 'track', 'en', {id: 'VN-10522'});
   await page.fill('#vf-lookup-phone', '09121230000');
   await page.getByRole('button', {name: 'Find my order'}).click();
-  await expect(page).toHaveURL(/view=track&id=VN-10522/);
+  await expect(page).toHaveURL(/\/track\/VN-10522\//);
   await expect(page.locator('main h1')).toHaveText('On its way.');
   const main = page.locator('main');
   await expect(main.getByRole('list', {name: 'Order progress'})).toBeVisible();
@@ -573,7 +573,7 @@ test('a card-to-card order says its payment is being confirmed, and offers an ac
   await expect(pending).toContainText('09121112233');
   expect(await scanAxe(page)).toEqual([]);
   // Signing in from there fills the mobile the order used.
-  await page.goto(page.url().replace(/view=track.*/, 'view=signin'));
+  await page.goto(page.url().replace(/\/track\/.*/, '/signin/'));
   await expect(page.locator('#vf-phone')).toHaveValue('09121112233');
 });
 
@@ -759,7 +759,7 @@ test('products are known by their code, and the code finds them', async ({page})
   );
   // An old link by name opens the product, and the address is rewritten with its category and code.
   await openSite(page, 'product', 'en', {id: 'orchid'});
-  await expect(page).toHaveURL(/view=product&id=VF-8RD5WN&cat=orchids/);
+  await expect(page).toHaveURL(/\/product\/VF-8RD5WN\//);
   // The bag and the order are titled by code.
   await openSite(page, 'bag', 'en');
   await expect(page.locator('.ag-line__name').first()).toHaveText('VF-7K2M4Q');
@@ -769,7 +769,7 @@ test('products are known by their code, and the code finds them', async ({page})
   await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveCount(1);
   await expect(page.getByRole('main').getByRole('link', {name: /VF-8RD5WN/})).toHaveAttribute(
     'href',
-    /id=VF-8RD5WN&cat=orchids/
+    /\/product\/VF-8RD5WN\//
   );
 });
 
@@ -883,14 +883,14 @@ test('a balance below the discount line says what a top-up would save', async ({
 test('signing out leaves the account behind it', async ({page}) => {
   await openSite(page, 'account', 'en');
   await page.getByRole('button', {name: 'Sign out'}).click();
-  await expect(page).toHaveURL(/^(?!.*view=account)/);
+  await expect(page).toHaveURL(/^(?!.*\/account\/)/);
   expect(await page.evaluate(() => localStorage.getItem('vf-account-phone'))).toBeNull();
   // Back to the account, by link or by history, asks the customer to sign in again.
   await page.goBack();
-  await expect(page).toHaveURL(/view=signin/);
+  await expect(page).toHaveURL(/\/signin\//);
   await expect(page.locator('#vf-phone')).toBeVisible();
-  await page.goto(page.url().replace('view=signin', 'view=account'));
-  await expect(page).toHaveURL(/view=signin/);
+  await page.goto(page.url().replace('/signin/', '/account/'));
+  await expect(page).toHaveURL(/\/signin\//);
   await expect(page.locator('#vf-phone')).toBeVisible();
 });
 
@@ -1063,7 +1063,7 @@ test('the footer opens each policy and the policy page switches between them', a
   ])
     await expect(help.getByRole('link', {name})).toBeVisible();
   await help.getByRole('link', {name: 'شرایط استفاده'}).click();
-  await expect(page).toHaveURL(/view=policy&id=terms/);
+  await expect(page).toHaveURL(/\/policy\/terms\//);
   await expect(page.getByRole('heading', {level: 1})).toHaveText('شرایط استفاده');
   const switcher = page.getByRole('navigation', {name: 'قوانین'});
   await expect(switcher.getByRole('link', {name: 'شرایط استفاده'})).toHaveAttribute(
@@ -1192,14 +1192,14 @@ test('the home page shows the categories, ready-made designs, weddings and the l
   await expect(categories.getByRole('link').first()).toHaveAccessibleName('Bouquets');
   await expect(categories.getByRole('link', {name: 'Plants'})).toHaveAttribute(
     'href',
-    /cat=plants/
+    /\/shop\/plants\//
   );
   await expect(
     page.locator('.vf-home-weddings').getByRole('link', {name: 'Plan your wedding flowers'})
-  ).toHaveAttribute('href', /view=weddings/);
+  ).toHaveAttribute('href', /\/weddings\//);
   expect(await scanAxe(page)).toEqual([]);
   await journal.getByRole('link', {name: /Five ways to keep a bouquet fresh/}).click();
-  await expect(page).toHaveURL(/view=post&post=care/);
+  await expect(page).toHaveURL(/\/journal\/care\//);
 });
 
 test('the home page newsletter checks the address and confirms the sign-up', async ({page}) => {
@@ -1306,7 +1306,7 @@ test.describe('a first visit', () => {
     await expect(banner).toBeVisible();
     await expect(banner.getByRole('link', {name: 'Privacy policy'})).toHaveAttribute(
       'href',
-      /view=policy&id=privacy/
+      /\/policy\/privacy\//
     );
     expect(await scanAxe(page)).toEqual([]);
     await banner.getByRole('button', {name: 'Essential only'}).click();
@@ -1418,7 +1418,7 @@ test('the footer lists shop and studio links, social links, contact details and 
   const footer = page.getByRole('contentinfo');
   await openFooterGroup(page, 'Shop');
   await footer.getByRole('navigation', {name: 'Shop'}).getByRole('link', {name: 'Orchids'}).click();
-  await expect(page).toHaveURL(/view=shop&cat=orchids/);
+  await expect(page).toHaveURL(/\/shop\/orchids\//);
   await openFooterGroup(page, 'The studio');
   await expect(
     footer.getByRole('navigation', {name: 'The studio'}).getByRole('link', {name: 'Journal'})
@@ -1477,7 +1477,7 @@ test('a page that fails to load offers a reload', async ({page}) => {
 
 test('a standalone page that fails to load offers a reload', async ({page}) => {
   await page.route(SHOP_CODE, route => route.abort());
-  await page.goto('/templates/app/?page=shop&lang=fa');
+  await page.goto('/templates/app/fa/?page=shop');
   await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
   await expect(page).toHaveTitle('این صفحه بارگذاری نشد. · گل‌فروشی وندرا');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
@@ -1516,7 +1516,7 @@ test('while a page’s code loads, the current page stays on screen', async ({pa
   expect(page.url()).toBe(url);
   release();
   await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
-  expect(page.url()).toMatch(/view=shop/);
+  expect(page.url()).toMatch(/\/shop\//);
 });
 
 // Printed, a page is its content: no header, footer, tab bar or cookie notice.
@@ -1616,7 +1616,7 @@ test('the journal splits its stories across pages, keeping the page in the URL',
     'true'
   );
   await pages.getByRole('link', {name: 'Page 2'}).click();
-  await expect(page).toHaveURL(/view=journal.*page=2/);
+  await expect(page).toHaveURL(/\/journal\/\?.*page=2/);
   await expect(stories).toHaveCount(3);
   await expect(pages.getByRole('link', {name: 'Page 2'})).toHaveAttribute('aria-current', 'page');
   await page.reload();
@@ -1650,10 +1650,10 @@ test('the product page shows where it sits in the shop', async ({page}) => {
   await openSite(page, 'product', 'en', {id: 'VF-7K2M4Q'});
   const crumbs = page.getByRole('navigation', {name: 'Breadcrumb'});
   await expect(crumbs.getByRole('listitem')).toHaveCount(3);
-  await expect(crumbs.getByRole('link', {name: 'Shop'})).toHaveAttribute('href', /view=shop/);
+  await expect(crumbs.getByRole('link', {name: 'Shop'})).toHaveAttribute('href', /\/shop\//);
   await expect(crumbs.getByRole('link', {name: 'Flower boxes'})).toHaveAttribute(
     'href',
-    /cat=boxes/
+    /\/shop\/boxes\//
   );
   await expect(crumbs.locator('[aria-current="page"]')).toHaveText('VF-7K2M4Q');
 });
@@ -1663,7 +1663,7 @@ test('ready-made designs: a shop filter, the Ready badge everywhere and a link f
 }) => {
   await openSite(page, 'home', 'en');
   await page.locator('.vf-home-featured').getByRole('link', {name: 'All ready to send'}).click();
-  await expect(page).toHaveURL(/view=shop.*filters=ready/);
+  await expect(page).toHaveURL(/\/shop\/\?.*filters=ready/);
   const main = page.getByRole('main');
   await expect(
     main.getByRole('button', {name: 'Ready to send', pressed: true}).locator('visible=true')
@@ -1765,7 +1765,7 @@ test('the announcement says when an order placed now arrives, on every page', as
     );
   await expect(bar.getByRole('link', {name: 'Shop same-day'})).toHaveAttribute(
     'href',
-    /view=shop.*filters=same/
+    /\/shop\/\?.*filters=same/
   );
   // The home page opens on its heading and the categories.
   const main = page.getByRole('main');
@@ -1810,7 +1810,7 @@ test('the counter presentation finds, quotes, shortlists and hands over an order
   await expect(page.getByRole('dialog', {name: 'The customer’s shortlist'})).toBeVisible();
   await expect(page.getByRole('link', {name: 'Share on WhatsApp'})).toHaveAttribute(
     'href',
-    /view%3Dsaved%26ids%3DVF-7K2M4Q%252CVF-8RD5WN/
+    /%2Fsaved%2F%3Fids%3DVF-7K2M4Q%252CVF-8RD5WN/
   );
   await page.keyboard.press('Escape');
   // The order opens in the customer's own bag.
@@ -1821,7 +1821,7 @@ test('the counter presentation finds, quotes, shortlists and hands over an order
   expect(handed.searchParams.get('lines')).toBe('VF-7K2M4Q.classic.vase.1');
   const phone = await page.context().newPage();
   await phone.goto(handed.pathname + handed.search);
-  await expect(phone).toHaveURL(/view=bag$/);
+  await expect(phone).toHaveURL(/\/bag\/$/);
   await expect(phone.getByText('VF-7K2M4Q').first()).toBeVisible();
   await expect(phone.getByText(/Classic · 20 stems · Glass vase/).first()).toBeVisible();
 });
@@ -1859,7 +1859,7 @@ test('presentation sharing preserves the quoted size and extras on the customer�
       .first()
   ).toBeVisible();
   // The same product opens with the quote's choices in Persian too.
-  shared.searchParams.set('lang', 'fa');
+  shared.pathname = shared.pathname.replace('/en/', '/fa/');
   await phone.goto(shared.href);
   await expect(phone.locator('html')).toHaveAttribute('lang', 'fa');
   await expect(phone.getByRole('radio', {name: /کلاسیک/})).toBeChecked();
@@ -2186,7 +2186,7 @@ test('scanning a design’s tag opens it full screen', async ({page}) => {
     // @ts-ignore
     window.BarcodeDetector = class {
       async detect() {
-        return [{rawValue: location.origin + '/templates/app/?view=product&id=VF-8RD5WN'}];
+        return [{rawValue: location.origin + '/templates/app/en/product/VF-8RD5WN/'}];
       }
     };
   });

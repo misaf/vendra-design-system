@@ -142,6 +142,7 @@ const brandContext = {
     }
   },
   window: {VF_ASSET_BASE: 'https://example.com/store/'},
+  location: {href: 'https://example.com/store/templates/app/en/product/VF-7K2M4Q/'},
   URL,
   document: {
     head: {
@@ -183,3 +184,12 @@ assert.equal(
   links.get('link[rel="manifest"]').href,
   'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
 );
+// Prerendered builds set an origin-relative asset base, including subdirectory deployments.
+for (const base of ['/', '/store/']) {
+  brandContext.window.VF_ASSET_BASE = base;
+  vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
+  assert.equal(
+    links.get('link[rel="icon"]').href,
+    'https://example.com' + base + 'assets/tenants/clay/favicon-32.png'
+  );
+}

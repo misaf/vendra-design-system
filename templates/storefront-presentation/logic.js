@@ -21,9 +21,10 @@ import {
 } from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSeparator} from '../_shared/formatting.js';
-import {vfRouteParams} from '../_shared/routing.js';
+import {vfReadRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfLocation} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 
 // The counter settings, kept on this device (the shop's tablet). The PIN only keeps a curious
@@ -387,8 +388,8 @@ function vfRestartCalm(page) {
 // The QR code on a design's tag holds its product page's address (or just its code).
 function vfScannedProduct(text) {
   try {
-    const id = new URL(text).searchParams.get('id');
-    if (id) return vfFindProduct(id);
+    const route = vfReadRoute(new URL(text).href);
+    if (route.view === 'product') return vfFindProduct(route.id);
   } catch {}
   return vfFindProduct(text.trim());
 }
@@ -534,6 +535,9 @@ export function usePage(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
+      // What this browser can do (wake lock, clipboard, QR scanning) and its own address are read
+      // from here on: the build's prerender knows neither, and hydration renders as it did.
+      page.setState({mounted: true});
       page._displayMedia = window.matchMedia('(min-width: 768px) and (min-aspect-ratio: 4/3)');
       page._onDisplayMedia = () => page.setState({displayLandscape: page._displayMedia.matches});
       page._displayMedia.addEventListener('change', page._onDisplayMedia);
@@ -700,7 +704,6 @@ function vals(page) {
     vfSyncDisplay(page);
   };
   const absolute = href => new URL(href, location.href).href;
-  const prefix = page.props.go ? '' : '../app/';
   const inShortlist = id => st.shortlist.includes(id);
   // From the latest state, so quick taps on several stars all count.
   const toggleShortlist = id => {
@@ -749,15 +752,14 @@ function vals(page) {
         qrLabel: C.qr.replace('{code}', product.id),
         code: product.id,
         url: absolute(
-          prefix +
-            vfRouteParams({
-              lang: L,
-              view: 'product',
-              id: product.id,
-              cat: product.cat,
-              size: st.send.size,
-              addons: st.send.addons
-            })
+          vfRouteUrl({
+            lang: L,
+            view: 'product',
+            id: product.id,
+            cat: product.cat,
+            size: st.send.size,
+            addons: st.send.addons
+          })
         ),
         tag: true
       };
@@ -768,9 +770,7 @@ function vals(page) {
         body: C.shortlistBody,
         qrLabel: C.qr.replace('{code}', C.shortlist),
         code: '',
-        url: absolute(
-          prefix + vfRouteParams({lang: L, view: 'saved', ids: st.shortlist.join(',')})
-        ),
+        url: absolute(vfRouteUrl({lang: L, view: 'saved', ids: st.shortlist.join(',')})),
         // Longer than a link may carry, the customer's phone would open an empty list.
         tooLong: !VF_SAVED_IDS_PATTERN.test(st.shortlist.join(',')),
         tooLongBody: C.shortlistTooLong
@@ -780,7 +780,7 @@ function vals(page) {
       body: C.handOverBody,
       qrLabel: C.qr.replace('{code}', C.order),
       code: '',
-      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(available)})),
+      url: absolute(vfRouteUrl({lang: L, view: 'bag', lines: vfLinesParam(available)})),
       tooLong: !VF_LINES_PATTERN.test(vfLinesParam(available)),
       tooLongBody: C.orderTooLong
     };
@@ -817,7 +817,7 @@ function vals(page) {
     },
     canStartDisplay: !!displayPool.length,
     wakeStatus: st.wakeStatus,
-    canWake: typeof navigator !== 'undefined' && 'wakeLock' in navigator,
+    canWake: !!st.mounted && 'wakeLock' in navigator,
     collectionName: st.collectionName,
     setCollectionName: value => page.setState({collectionName: value.slice(0, 60)}),
     savedCollections: st.collections.map(item => ({value: item.name, label: item.name})),
@@ -876,9 +876,7 @@ function vals(page) {
         })
       }),
     setupLink: (() => {
-      const url = new URL(
-        typeof location !== 'undefined' ? location.href : 'http://localhost/templates/app/'
-      );
+      const url = new URL(st.mounted ? location.href : 'http://localhost' + vfLocation().pathname);
       url.search = new URLSearchParams({
         view: 'presentation',
         lang: L,
@@ -1129,7 +1127,7 @@ function vals(page) {
             encodeURIComponent((sendInfo.code ? sendInfo.code + '\n' : '') + sendInfo.url),
           copied: st.copied,
           // The clipboard is there only on a secure (https) page.
-          canCopy: typeof navigator !== 'undefined' && !!navigator.clipboard,
+          canCopy: !!st.mounted && !!navigator.clipboard,
           copy: () =>
             navigator.clipboard?.writeText(sendInfo.url).then(
               () => {
@@ -1234,7 +1232,7 @@ function vals(page) {
       if (request) request.catch(() => {});
     },
     // Scanning a design's tag (where the browser can read QR codes from the camera).
-    canScan: typeof window !== 'undefined' && 'BarcodeDetector' in window,
+    canScan: !!st.mounted && 'BarcodeDetector' in window,
     scanOpen: st.panel === 'scan',
     openScan: () => page.setState({panel: 'scan', scanError: ''}, () => vfStartCamera(page)),
     scanMessage:

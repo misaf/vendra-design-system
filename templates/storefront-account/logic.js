@@ -13,7 +13,7 @@ import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_sha
 import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
-import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures, vfLiveStore} from '../_shared/store-config.js';
 import {
   vfBalanceDiscountOn,
@@ -341,7 +341,7 @@ function vals(page) {
     notice: s.notice,
     saveError: s.saveError,
     checkoutReturn: vfPageRoute(page.props).next === 'checkout' && !!page.props.store?.bag.length,
-    checkoutHref: (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'checkout'}),
+    checkoutHref: vfRouteUrl({lang: L, view: 'checkout'}),
     tab,
     setTab: id =>
       page.setState({
@@ -415,13 +415,11 @@ function vals(page) {
     isReminders: tab === 'reminders',
     isProfile: tab === 'profile',
     orders: orders.map(o => ({
-      href:
-        S.href.track.split('?')[0] +
-        vfRouteParams({
-          view: 'track',
-          id: o.id,
-          lang: L
-        }),
+      href: vfRouteUrl({
+        view: 'track',
+        id: o.id,
+        lang: L
+      }),
       id: o.id,
       status: (C.status[o.status] || [
         o.status === 'cancelled'

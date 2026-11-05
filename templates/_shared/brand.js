@@ -9,7 +9,7 @@ export function vfBrand(tenant) {
   return {...VF_TENANT_BRANDS[tenant], ...(tenant === VF_STORE.tenant ? VF_STORE.brandAssets : {})};
 }
 export function vfBrandUrl(src) {
-  return new URL(src, window.VF_ASSET_BASE || new URL('../../', location.href)).href;
+  return new URL(src, new URL(window.VF_ASSET_BASE || '../../', location.href)).href;
 }
 
 // Replace existing links too: switching tenants must never leave the previous florist's icons.

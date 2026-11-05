@@ -4,6 +4,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
+import {prerender} from './prerender.mjs';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '..');
@@ -22,9 +23,19 @@ function storefrontPreview() {
       await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url, 'http://localhost');
-        if (url.pathname !== '/') return next();
-        res.writeHead(302, {Location: storefront + (url.search || '?lang=en')});
-        res.end();
+        if (url.pathname === '/') {
+          res.writeHead(302, {Location: storefront + 'en/' + url.search});
+          res.end();
+          return;
+        }
+        // Every address under the app (en/shop/boxes/) is the app's page, as the build writes it.
+        if (
+          url.pathname.startsWith(storefront) &&
+          url.pathname !== storefront &&
+          !/\.\w+$/.test(url.pathname)
+        )
+          req.url = storefront + 'index.html' + url.search;
+        next();
       });
       const refresh = async () => {
         if (running) {
@@ -97,11 +108,12 @@ function storefrontAssets() {
       outDir = config.build.outDir;
       base = config.base;
     },
-    closeBundle() {
+    async closeBundle() {
       for (const folder of ['assets', 'templates/_vendor/leaflet'])
         fs.cpSync(path.join(root, folder), path.join(outDir, folder), {recursive: true});
       // The service worker sits beside the app's page, so it can serve the whole app.
       fs.copyFileSync(path.join(templates, 'app/sw.js'), path.join(outDir, 'templates/app/sw.js'));
+      await prerender(outDir, base);
       const tenants = path.join(root, 'tokens/tenants');
       fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
@@ -130,15 +142,36 @@ function storefrontAssets() {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vendra demo</title>
 <script>
-const target = new URL('templates/app/', location.href);
-target.search = location.search || '?lang=en';
+const target = new URL('templates/app/en/', location.href);
+target.search = location.search;
 target.hash = location.hash;
 location.replace(target.href);
 </script>
-<a href="templates/app/?lang=en">Open the Vendra demo</a>
+<a href="templates/app/en/">Open the Vendra demo</a>
 </html>
 `
       );
+    }
+  };
+}
+
+// `npm run preview` answers like GitHub Pages: an address under the app with no page of its own (an
+// order to track, a mistyped link) gets the build's 404.html, which the app shows as not found.
+function storefrontNotFound() {
+  return {
+    name: 'vendra-storefront-not-found',
+    configurePreviewServer(server) {
+      const outDir = server.config.build.outDir;
+      const app = server.config.base + 'templates/app/';
+      server.middlewares.use((req, res, next) => {
+        const url = new URL(req.url, 'http://localhost');
+        if (!url.pathname.startsWith(app) || /\.\w+$/.test(url.pathname)) return next();
+        const relative = decodeURIComponent(url.pathname.slice(server.config.base.length));
+        if (fs.existsSync(path.join(outDir, relative, 'index.html'))) return next();
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.end(fs.readFileSync(path.join(outDir, '404.html')));
+      });
     }
   };
 }
@@ -148,7 +181,7 @@ export default defineConfig({
   publicDir: false,
   appType: 'mpa',
   cacheDir: path.join(root, 'node_modules/.vite'),
-  plugins: [storefrontPreview(), storefrontAssets()],
+  plugins: [storefrontPreview(), storefrontAssets(), storefrontNotFound()],
   // npm run build:app → templates/_app-build/templates/app/index.html, served by npm run preview at
   // the same path as in development.
   build: {

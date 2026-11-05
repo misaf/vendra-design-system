@@ -55,6 +55,9 @@ for (const lang of ['en', 'fa']) {
             .wallet.balance
       )
     ).toBe(balance);
+    // A reload keeps the scroll position (the prerendered page is there to scroll); judge the page
+    // from the top, where nothing sits under the sticky header.
+    await page.evaluate(() => window.scrollTo(0, 0));
     expect(await scanAxe(page)).toEqual([]);
   });
 
@@ -199,9 +202,13 @@ for (const lang of ['en', 'fa']) {
       .locator('main')
       .getByRole('link', {name: fa ? 'فروشگاه' : 'Shop', exact: true})
       .click();
+    // The site moves to the shop once its code has loaded; only then is there an entry to go back from.
+    await expect(page).toHaveURL(/\/shop\//);
     await page.goBack();
     await expect(page.getByRole('radio', {name: fa ? /^بزرگ/ : /^Generous/})).toBeChecked();
     await expect(page).toHaveURL(/qty=2/);
+    // The reload kept the scroll position, and Back restores it; judge the page from the top.
+    await page.evaluate(() => window.scrollTo(0, 0));
     expect(await scanAxe(page)).toEqual([]);
   });
 }

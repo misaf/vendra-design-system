@@ -94,14 +94,14 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 `templates/_shared/seo.js` → `VF_SEO`, an ES module the storefront imports (not part of the package).
 
-- Scheme: `?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>`. Home omits `view`.
+- Scheme: paths under the app's path, `<lang>/<screen>/<id>/` — `en/`, `fa/shop/boxes/`, `en/product/VF-7K2M4Q/`, `en/journal/<postId>/`, `fa/policy/shipping/`, `en/track/<order>/`, `en/moment/<momentId>/`. Home has no screen segment; every path ends in `/`, so a static host serves each from its own `index.html`. The path says which page it is; the query only carries state on it (`?sort=low`, `?step=delivery`, `?q=…`), and pages with query state are noindex or canonicalize to the bare path.
 - Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
-- Every value read from the URL must match `/^[\w:-]{1,40}$/`; numeric ids (`m` by default, see `seo.setNumeric`) must be digits only. Anything else is dropped. An unknown view, or a product/post/moment with no valid id, becomes `notfound`.
-- `routeParams(state)`, `readRoute(search)`, `hrefFor(state, screen, extra)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
+- Every segment read from the URL must match `/^[\w:-]{1,40}$/`; numeric ids (`m` by default, see `seo.setNumeric`) must be digits only. An unknown screen, an invalid or extra segment, or a product/post/moment with no valid id becomes `notfound` (the language is kept).
+- `routePath(state)`, `readRoute(url)`, `hrefFor(state, screen, extra)`, `appBase()`, `inApp(url)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
-- `syncHead({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` sets `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default, and robots.
+- `headTags({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` returns `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default and robots as data; `syncHead(…)` applies them to the document and `headHtml(…)` writes them as HTML, which the build puts in every prerendered page.
 - **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound, error.
-- **track** takes an optional `id` = order number (`?view=track&id=VN-10522`, SAFE pattern). With a known id it shows the order page (`templates/storefront-track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
+- **track** takes an optional `id` = order number (`en/track/VN-10522/`, SAFE pattern). With a known id it shows the order page (`templates/storefront-track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
 
 ## Accessibility (WCAG 2.2 AA)
 

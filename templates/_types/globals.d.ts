@@ -19,6 +19,9 @@ interface Window {
   // Page state shared between templates in one document.
   VF_TENANT?: string;
   VF_VIEWED?: boolean;
+  // How app/main.jsx showed the page: 'hydrated' (adopted the build's prerendered markup) or
+  // 'rendered' (rendered it in the browser), for tests.
+  VF_RENDERED?: 'hydrated' | 'rendered';
   // The click-through site's page object (storefront-site/logic.js), for tests.
   __vfSite?: any;
   // Leaflet, loaded on demand by _shared/location.js.

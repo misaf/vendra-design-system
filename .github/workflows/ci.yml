@@ -133,6 +133,12 @@ jobs:
       E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
+      # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
+      # image's Node, the dev server aborted in V8 while sending the 8 MB react-aria-components
+      # pre-bundle, failing every later test.)
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - run: npm ci
       - run: npm --prefix templates run test:e2e:dev
       - name: Keep the report and failing screenshots
@@ -165,6 +171,12 @@ jobs:
       E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
+      # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
+      # image's Node, the dev server aborted in V8 while sending the 8 MB react-aria-components
+      # pre-bundle, failing every later test.)
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - run: npm ci
       - run: npm --prefix templates run test:e2e:build
       - name: Keep the report
@@ -200,7 +212,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm --prefix templates run check
+      # Prerendered pages name their absolute address (canonical, og:url, og:image).
       - run: npm --prefix templates run build:app -- --base "/${{ github.event.repository.name }}/"
+        env:
+          VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
           path: templates/_app-build

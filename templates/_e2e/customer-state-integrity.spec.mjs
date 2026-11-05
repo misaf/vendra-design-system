@@ -17,6 +17,15 @@ async function delivery(page, fa) {
   await visibleButton(page, fa ? 'ادامه و پرداخت' : 'Continue to payment').click();
   await expect(page.locator('.vf-checkout-summary')).toBeVisible();
 }
+// The payment step can still be mounting and render its default method again, so the choice is
+// retried until it holds.
+async function chooseMethod(page, name) {
+  const method = page.getByRole('radio', {name, exact: true});
+  await expect(async () => {
+    await method.press('Space', {timeout: 2_000});
+    await expect(method).toBeChecked({timeout: 1_000});
+  }).toPass({timeout: 15_000});
+}
 async function blockStorage(page, block) {
   await page.evaluate(block => {
     window.__vfStorageSet ||= Storage.prototype.setItem;
@@ -39,7 +48,7 @@ for (const lang of ['en', 'fa']) {
       page.on('pageerror', error => errors.push(error.message));
       if (existing)
         await page.addInitScript(() => {
-          const key = 'vendra-template:' + location.pathname;
+          const key = 'vendra-template:/templates/app/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,
@@ -94,7 +103,7 @@ for (const lang of ['en', 'fa']) {
       await expect(page.locator('#main')).toBeVisible();
       await expect.poll(snapshot).toMatchObject(initial);
       const persisted = await page.evaluate(() =>
-        JSON.parse(sessionStorage.getItem('vendra-template:' + location.pathname))
+        JSON.parse(sessionStorage.getItem('vendra-template:/templates/app/'))
       );
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
@@ -117,9 +126,7 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
     await page.evaluate(() => window.VF_API.setBase('/__offline-checkout-api'));
-    await page
-      .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-      .press('Space');
+    await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
     const requests = [],
       failures = [],
       errors = [];
@@ -291,9 +298,7 @@ for (const lang of ['en', 'fa']) {
       expect(await page.evaluate(() => window.__vfSite.state.order)).toBeNull();
     };
     try {
-      await page
-        .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-        .press('Space');
+      await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
       const firstButton = await place().elementHandle();
       await place().click();
       await expect.poll(() => requests.length).toBe(1);
@@ -377,7 +382,7 @@ for (const lang of ['en', 'fa']) {
       .filter({hasText: fa ? 'تغییرات تازه سبد' : 'newer bag changes'});
     await expect(notice).toBeVisible();
     await notice.getByRole('link', {name: fa ? 'مشاهده سفارش' : 'View order'}).click();
-    await expect(page).toHaveURL(/view=track/);
+    await expect(page).toHaveURL(/\/track\//);
     // Pending-button announcements expire after navigation; audit the settled page.
     await expect(page.locator('[data-live-announcer] [role="img"]')).toHaveCount(0, {
       timeout: 10000
@@ -449,9 +454,9 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('main')).toContainText('VN-20001');
     await expect(page.locator('main')).toContainText('VN-20002');
     await page.reload();
-    await page.locator('main a[href*="id=VN-20001"]').click();
+    await page.locator('main a[href*="/track/VN-20001/"]').click();
     await expect(page.locator('main')).toContainText('VN-20001');
-    await expect(page).toHaveURL(/id=VN-20001/);
+    await expect(page).toHaveURL(/\/track\/VN-20001\//);
     expect(await scanAxe(page)).toEqual([]);
   });
 
@@ -502,9 +507,7 @@ for (const lang of ['en', 'fa']) {
     }, lang);
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
-    await page
-      .getByRole('radio', {name: fa ? 'کارت به کارت' : 'Card-to-card transfer', exact: true})
-      .press('Space');
+    await chooseMethod(page, fa ? 'کارت به کارت' : 'Card-to-card transfer');
     await page.locator('#vf-last4').fill('1234');
     await page.locator('#vf-ref').fill('567890');
     await page
@@ -541,7 +544,7 @@ for (const lang of ['en', 'fa']) {
       await page.clock.install({time: MORNING});
       await page.addInitScript(
         ({target, other, action}) => {
-          const key = 'vendra-template:' + location.pathname;
+          const key = 'vendra-template:/templates/app/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,
@@ -796,9 +799,7 @@ for (const lang of ['en', 'fa']) {
       const tab = await context.newPage();
       try {
         await openSite(tab, 'home', lang);
-        await page
-          .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-          .press('Space');
+        await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
         await visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order').click();
         await submitted;
         await expect
@@ -864,7 +865,7 @@ for (const lang of ['en', 'fa']) {
         await switchCustomer(tab, lang, owner);
         await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(owner);
         await page.evaluate(() => window.__vfSite.navigate({view: 'account'}));
-        await expect(page).toHaveURL(/view=account/);
+        await expect(page).toHaveURL(/\/account\//);
         if (placed) await expect(page.locator('main')).toContainText(placed.id);
         await page.reload();
         await expect.poll(() => page.evaluate(() => window.__vfSite?.state.customerId)).toBe(owner);

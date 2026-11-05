@@ -10,6 +10,7 @@ import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
 import {VF_CATEGORY_SLUGS} from './product-categories.js';
+import {vfLocation} from './environment.js';
 
 // The shop's quick filters (?filters=), in the order the shop shows them.
 export const VF_SHOP_FILTERS = ['ready', 'under3', 'same', 'roses'];
@@ -34,7 +35,7 @@ export const VF_ROUTES = [
   'track',
   'weddings'
 ];
-// Policy documents, opened as ?view=policy&id=<doc>; no id shows the first.
+// Policy documents, opened as policy/<doc>/; no id shows the first.
 export const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms', 'accessibility'];
 // Account tabs, in the order they appear.
 export const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
@@ -50,11 +51,17 @@ export const VF_ROUTE_EXTRA = {
 // What the sample store's simulated bank answers: paid, cancelled at the bank, refused, or not
 // confirmed yet.
 export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
-// Keep template-only shopping parameters out of the core design-system router.
-export function vfReadRoute(search = location.search) {
+// The path the storefront app is served at, and whether a URL is one of its pages.
+export const vfAppBase = () => VF_SEO.appBase();
+export const vfInApp = url => VF_SEO.inApp(url);
+// This page's address as routes are written: path and query.
+export const vfCurrentUrl = () => vfLocation().pathname + vfLocation().search;
+// Keep template-only shopping parameters out of the core design-system router. `url` is any URL
+// (absolute, or a path), read against this page's address; the default is this page.
+export function vfReadRoute(url = vfCurrentUrl()) {
   VF_SEO.register(...VF_ROUTES);
-  const route = VF_SEO.readRoute(search),
-    query = new URLSearchParams(search),
+  const route = VF_SEO.readRoute(url),
+    query = new URL(url, vfLocation()).searchParams,
     features = vfFeatures();
   // A language the store doesn't offer opens in its default one.
   if (route.lang) route.lang = vfLanguage(route.lang);
@@ -67,7 +74,7 @@ export function vfReadRoute(search = location.search) {
   route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
   // Preserve the exact typed query, including trailing spaces while the customer is typing.
   if (route.view === 'search') route.q = query.get('q') || '';
-  // The bag is two checkout steps: the bag itself, then delivery details (?view=bag&step=delivery).
+  // The bag is two checkout steps: the bag itself, then delivery details (bag/?step=delivery).
   if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
   // A bag or a shortlist handed over from the shop counter (the presentation's QR code): the site adds
   // it to this visitor's bag or saved list once, then drops it from the address.
@@ -75,7 +82,7 @@ export function vfReadRoute(search = location.search) {
     route.lines = query.get('lines');
   if (route.view === 'saved' && VF_SAVED_IDS_PATTERN.test(query.get('ids') || ''))
     route.ids = query.get('ids');
-  // Back from the bank's payment page (?view=checkout&payment=return&order=<number>, API.md B30). The
+  // Back from the bank's payment page (checkout/?payment=return&order=<number>, API.md B30). The
   // order is the server's number (letters, digits and dashes). The sample store's simulated bank adds
   // its answer as `result`; a live store ignores it and asks the API for the payment instead.
   if (route.view === 'checkout' && query.get('payment') === 'return') {
@@ -86,7 +93,7 @@ export function vfReadRoute(search = location.search) {
       ? query.get('result')
       : 'pending';
   }
-  // An account tab can be linked to (?view=account&tab=balance).
+  // An account tab can be linked to (account/?tab=balance).
   if (
     route.view === 'account' &&
     VF_ACCOUNT_TABS.includes(query.get('tab')) &&
@@ -95,10 +102,10 @@ export function vfReadRoute(search = location.search) {
     route.tab = query.get('tab');
   if (route.view === 'account' && route.tab === 'balance' && query.get('next') === 'checkout')
     route.next = 'checkout';
-  // Sign-in started from checkout returns there (?view=signin&next=delivery).
+  // Sign-in started from checkout returns there (signin/?next=delivery).
   if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
-  // A product is addressed by its category and code (?view=product&id=VF-7K2M4Q&cat=boxes); an old slug
-  // (?id=ivory) or a code typed in another case still opens it, and the link is written back in full.
+  // A product is addressed by its code (product/VF-7K2M4Q/); an old slug (product/ivory/) or a code
+  // typed in another case still opens it, and the link is written back with the code.
   if (route.view === 'product') {
     const product = vfFindProduct(route.id);
     if (product) {
@@ -128,8 +135,11 @@ export function vfReadRoute(search = location.search) {
         ? value
         : '';
   }
+  // A category is part of the shop's path (shop/boxes/); one the shop doesn't have doesn't exist.
+  if (route.view === 'shop' && route.cat && !VF_CATEGORY_SLUGS.includes(route.cat))
+    route.view = 'notfound';
   if (route.view === 'shop') {
-    route.cat = VF_CATEGORY_SLUGS.includes(route.cat) ? route.cat : 'all';
+    route.cat = route.cat || 'all';
     route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
     const max = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     const number = (key, fallback) => {
@@ -154,13 +164,19 @@ export function vfReadRoute(search = location.search) {
     // How many "Show more" pages are open (?page=2 shows the first two pages).
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
-  // A journal page (?view=journal&page=2).
+  // A journal page (journal/?page=2).
   if (route.view === 'journal')
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   return route;
 }
-export function vfRouteParams(route) {
-  const query = new URLSearchParams(VF_SEO.routeParams(route));
+// Route → "<app base><lang>/<screen>/<id>/?<state>", the page's address. The query is left out when
+// the page has no state to carry.
+export function vfRouteUrl(route) {
+  const path = VF_SEO.routePath({
+    ...route,
+    cat: route.view === 'shop' && route.cat !== 'all' ? route.cat : undefined
+  });
+  const query = new URLSearchParams();
   if (route.demo) query.set('demo', route.demo);
   if (route.view === 'search' && route.q) query.set('q', route.q);
   if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
@@ -186,7 +202,6 @@ export function vfRouteParams(route) {
     const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
     if (route.max != null && route.max < priceMax) query.set('max', route.max);
     if (route.stock) query.set('stock', '1');
-    if (route.cat === 'all') query.delete('cat');
     if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => VF_SHOP_FILTERS.includes(id));
     if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
@@ -195,7 +210,8 @@ export function vfRouteParams(route) {
     if (route.page > 1) query.set('page', route.page);
   }
   if (route.view === 'journal' && route.page > 1) query.set('page', route.page);
-  return '?' + query.toString();
+  const search = query.toString();
+  return search ? path + '?' + search : path;
 }
 export function vfPageRoute(props) {
   return props.routeInfo || vfReadRoute();
