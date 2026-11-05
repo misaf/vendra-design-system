@@ -1,6 +1,9 @@
 // Bilingual weddings copy. Edit here, then run npm --prefix templates run build.
-// Formatting helpers keep delivery fees and tenant-specific store details current.
+// Formatting helpers keep delivery fees and tenant-specific store details current. Amounts are in
+// Toman and shown in the store's active currency.
+import {VF_MONEY} from '../_shared/formatting.js';
 export function vfCopy(S) {
+  const m = v => VF_MONEY(v, S.lang === 'fa');
   return {
     en: {
       demoTitle: 'Demo preview complete',
@@ -36,32 +39,37 @@ export function vfCopy(S) {
           'gem',
           'Bridal bouquet',
           'Hand-tied to your dress and season, with a matching buttonhole.',
-          'From 6,500,000 Toman'
+          'From ' + m(6500000)
         ],
         [
           'car',
           'Wedding car',
           'Bonnet and door arrangements that hold at speed.',
-          'From 9,000,000 Toman'
+          'From ' + m(9000000)
         ],
         [
           'flower-2',
           'Ceremony stands',
           'Floor-standing arrangements for the aisle and backdrop.',
-          'From 12,000,000 Toman'
+          'From ' + m(12000000)
         ],
         [
           'sprout',
           'Table flowers',
           'Low centrepieces so guests can see each other.',
-          'From 1,800,000 Toman a table'
+          'From ' + m(1800000) + ' a table'
         ]
       ],
       labels: {
         returnToForm: 'Return to form'
       },
       types: ['Wedding ceremony', 'Wedding reception', 'Engagement', 'Birthday', 'Corporate event'],
-      budgets: ['Under 20M Toman', '20–50M Toman', 'Over 50M Toman', 'Not sure yet']
+      budgets: [
+        'Under ' + m(20000000),
+        m(20000000) + ' to ' + m(50000000),
+        'Over ' + m(50000000),
+        'Not sure yet'
+      ]
     },
     fa: {
       demoTitle: 'پیش‌نمایش آزمایشی کامل شد',
@@ -94,36 +102,31 @@ export function vfCopy(S) {
       okT: 'ممنون — درخواست رسید.',
       okP: 'ظرف یک روز کاری تماس می‌گیریم. برای کارهای فوری در واتساپ پیام دهید.',
       sv: [
-        [
-          'gem',
-          'دسته‌گل عروس',
-          'هماهنگ با لباس و فصل، همراه با گل کت داماد.',
-          'از ۶٬۵۰۰٬۰۰۰ تومان'
-        ],
+        ['gem', 'دسته‌گل عروس', 'هماهنگ با لباس و فصل، همراه با گل کت داماد.', 'از ' + m(6500000)],
         [
           'car',
           'گل‌آرایی ماشین',
           'گل‌آرایی کاپوت و درها که در حرکت محکم می‌ماند.',
-          'از ۹٬۰۰۰٬۰۰۰ تومان'
+          'از ' + m(9000000)
         ],
-        [
-          'flower-2',
-          'استند مراسم',
-          'گل‌آرایی ایستاده برای مسیر و پس‌زمینه.',
-          'از ۱۲٬۰۰۰٬۰۰۰ تومان'
-        ],
+        ['flower-2', 'استند مراسم', 'گل‌آرایی ایستاده برای مسیر و پس‌زمینه.', 'از ' + m(12000000)],
         [
           'sprout',
           'گل میز',
           'گل‌آرایی کوتاه تا مهمان‌ها همدیگر را ببینند.',
-          'از ۱٬۸۰۰٬۰۰۰ تومان هر میز'
+          'از ' + m(1800000) + ' هر میز'
         ]
       ],
       labels: {
         returnToForm: 'بازگشت به فرم'
       },
       types: ['عقد', 'عروسی', 'نامزدی', 'تولد', 'مراسم شرکتی'],
-      budgets: ['کمتر از ۲۰ میلیون', '۲۰ تا ۵۰ میلیون', 'بیش از ۵۰ میلیون', 'هنوز نمی‌دانم']
+      budgets: [
+        'کمتر از ' + m(20000000),
+        m(20000000) + ' تا ' + m(50000000),
+        'بیش از ' + m(50000000),
+        'هنوز نمی‌دانم'
+      ]
     }
   }[S.lang];
 }

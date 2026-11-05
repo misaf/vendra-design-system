@@ -11,7 +11,7 @@ import {
   vfZone
 } from '../_shared/delivery.js';
 import {vfHoursText} from '../_shared/store-hours.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
+import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {VF_SHELL} from '../_shared/translations/shell.js';
 import {vfSlotLabel} from '../_shared/translations/time.js';
@@ -331,7 +331,9 @@ export function vfCopy(S) {
             {
               title: 'Prices and payment',
               paras: [
-                'Prices are in Toman and include everything except delivery, which is shown at checkout before you pay. You can pay ' +
+                'Prices are in ' +
+                  VF_CURRENCY_NAME(false) +
+                  ' and include everything except delivery, which is shown at checkout before you pay. You can pay ' +
                   payWays +
                   '.'
               ]
@@ -651,7 +653,9 @@ export function vfCopy(S) {
             {
               title: 'قیمت و پرداخت',
               paras: [
-                'قیمت‌ها به تومان است و همه‌چیز جز هزینه ارسال را شامل می‌شود؛ هزینه ارسال پیش از پرداخت نمایش داده می‌شود. می‌توانید ' +
+                'قیمت‌ها به ' +
+                  VF_CURRENCY_NAME(true) +
+                  ' است و همه‌چیز جز هزینه ارسال را شامل می‌شود؛ هزینه ارسال پیش از پرداخت نمایش داده می‌شود. می‌توانید ' +
                   payWays +
                   ' پرداخت کنید.'
               ]
