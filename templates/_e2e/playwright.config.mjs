@@ -20,58 +20,9 @@ const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
 const channel = ci ? undefined : 'chrome';
 
-export default defineConfig({
-  testDir: '.',
-  testMatch: build ? '*.spec.mjs' : devSpecs,
-  testIgnore: build ? devSpecs : [],
-  outputDir: build ? './test-results/build' : './test-results/dev',
-  // One screenshot folder for every project, whatever its testDir.
-  snapshotDir: './__screenshots__',
-  snapshotPathTemplate: '{snapshotDir}/{arg}-{platform}{ext}',
-  fullyParallel: true,
-  // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
-  timeout: 60000,
-  forbidOnly: ci,
-  // One Vite dev server serves every page; more workers than this starts timing out.
-  // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
-  workers: Number(process.env.E2E_WORKERS) || 2,
-  // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
-  retries: 1,
-  reporter: [
-    ['list'],
-    [
-      'html',
-      {outputFolder: build ? './playwright-report/build' : './playwright-report/dev', open: 'never'}
-    ]
-  ],
-  // Exact colours, with a few pixels of slack for anti-aliasing. The default
-  // per-pixel threshold (0.2) hid an 8,500-pixel shadow change. Capturing a long page
-  // under load can take longer than the default 5s; screenshot.css hides native select text.
-  expect: {
-    toHaveScreenshot: {
-      animations: 'disabled',
-      threshold: 0,
-      maxDiffPixels: 25,
-      timeout: 15000,
-      stylePath: fileURLToPath(new URL('./screenshot.css', import.meta.url))
-    }
-  },
-  use: {
-    baseURL: origin,
-    // Every test starts with the cookie choice made, so the consent banner stays out of
-    // screenshots and clicks. Consent tests opt out with test.use({storageState: NO_CONSENT}).
-    storageState: {
-      cookies: [],
-      origins: [{origin, localStorage: [{name: 'vf-consent', value: 'essential'}]}]
-    },
-    channel,
-    // The store is in Karaj: delivery days and cut-offs read the clock in Tehran time, whatever
-    // the machine's own zone (CI runs in UTC).
-    timezoneId: 'Asia/Tehran',
-    locale: 'en-US',
-    trace: 'retain-on-failure'
-  },
-  projects: [
+// The combined runner uses the same project definitions when routing CLI filters.
+export function projectsForTarget(build) {
+  return [
     {
       name: 'mobile',
       use: {
@@ -126,7 +77,61 @@ export default defineConfig({
             use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
           }
         ])
+  ];
+}
+
+export default defineConfig({
+  testDir: '.',
+  testMatch: build ? '*.spec.mjs' : devSpecs,
+  testIgnore: build ? devSpecs : [],
+  outputDir: build ? './test-results/build' : './test-results/dev',
+  // One screenshot folder for every project, whatever its testDir.
+  snapshotDir: './__screenshots__',
+  snapshotPathTemplate: '{snapshotDir}/{arg}-{platform}{ext}',
+  fullyParallel: true,
+  // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
+  timeout: 60000,
+  forbidOnly: ci,
+  // One Vite dev server serves every page; more workers than this starts timing out.
+  // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
+  workers: Number(process.env.E2E_WORKERS) || 2,
+  // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
+  retries: 1,
+  reporter: [
+    ['list'],
+    [
+      'html',
+      {outputFolder: build ? './playwright-report/build' : './playwright-report/dev', open: 'never'}
+    ]
   ],
+  // Exact colours, with a few pixels of slack for anti-aliasing. The default
+  // per-pixel threshold (0.2) hid an 8,500-pixel shadow change. Capturing a long page
+  // under load can take longer than the default 5s; screenshot.css hides native select text.
+  expect: {
+    toHaveScreenshot: {
+      animations: 'disabled',
+      threshold: 0,
+      maxDiffPixels: 25,
+      timeout: 15000,
+      stylePath: fileURLToPath(new URL('./screenshot.css', import.meta.url))
+    }
+  },
+  use: {
+    baseURL: origin,
+    // Every test starts with the cookie choice made, so the consent banner stays out of
+    // screenshots and clicks. Consent tests opt out with test.use({storageState: NO_CONSENT}).
+    storageState: {
+      cookies: [],
+      origins: [{origin, localStorage: [{name: 'vf-consent', value: 'essential'}]}]
+    },
+    channel,
+    // The store is in Karaj: delivery days and cut-offs read the clock in Tehran time, whatever
+    // the machine's own zone (CI runs in UTC).
+    timezoneId: 'Asia/Tehran',
+    locale: 'en-US',
+    trace: 'retain-on-failure'
+  },
+  projects: projectsForTarget(build),
   webServer: build
     ? {
         command: 'npm run build:app && npm run preview',
