@@ -36,7 +36,8 @@ for (const lang of ['en', 'fa']) {
       'content',
       new RegExp(`/clay/og-${lang}.png$`)
     );
-    const manifestUrl = await page.locator('link[rel=manifest]').getAttribute('href');
+    // The link's href is a path from the asset base; read it resolved against the page.
+    const manifestUrl = await page.locator('link[rel=manifest]').evaluate(link => link.href);
     const manifest = await (await page.request.get(manifestUrl)).json();
     expect(manifest.lang).toBe(lang);
     for (const icon of manifest.icons)
