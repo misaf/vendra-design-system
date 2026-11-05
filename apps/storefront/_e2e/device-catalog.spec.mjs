@@ -2,6 +2,7 @@ import {test, expect} from '@playwright/test';
 import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, shell, finish} from './device-helpers.mjs';
 import {vfCopy} from '../storefront-shop/copy.js';
+import {VF_MONEY} from '../_shared/formatting.js';
 
 test.use({reducedMotion: 'reduce'});
 test.beforeEach(async ({page}, info) => {
@@ -128,9 +129,10 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('#vf-shop-count')).toBeFocused();
     await reachable(page.locator('#vf-shop-count'), {scroll: false});
     expect(params(page).has('stock')).toBe(false);
-    const under = page
-      .locator('.vf-shop-quick-filters')
-      .getByRole('button', {name: copy.chipLabels.under3, exact: true});
+    const under = page.locator('.vf-shop-quick-filters').getByRole('button', {
+      name: copy.chipLabels.under3.replace('{price}', VF_MONEY(3000000, fa)),
+      exact: true
+    });
     await tap(under);
     await expect(under).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('.vf-shop-product-grid .ag-product')).toHaveCount(2);

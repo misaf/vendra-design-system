@@ -2,7 +2,7 @@
 // Demo only: the balance is kept in this browser with the signed-in account. A real store must keep it on its
 // server and change it only after a confirmed top-up payment or a placed order.
 import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
-import {vfLatin} from './formatting.js';
+import {vfAmountFromInput} from './formatting.js';
 import {VF_STORE} from './store-config.js';
 import {commerce} from '../../../components/utils/commerce.js';
 
@@ -31,10 +31,9 @@ export function vfBalanceDiscount(balance, products) {
   return commerce.balanceDiscount(balance, products, VF_STORE.wallet);
 }
 
-// A top-up amount, typed with any digits and separators; '' when nothing is typed.
+// A top-up amount typed in the store's active currency, as Toman; '' when nothing is typed.
 export function vfTopUpAmount(text) {
-  const digits = vfLatin(text || '').replace(/\D/g, '');
-  return digits ? +digits : '';
+  return vfAmountFromInput(text);
 }
 
 // 'empty' | 'min' | 'max' when a top-up can't go ahead, otherwise ''.
