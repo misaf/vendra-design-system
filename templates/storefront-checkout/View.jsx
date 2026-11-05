@@ -131,10 +131,12 @@ export function View({v}) {
                   processing={v.migration?.processing}
                   failure={{
                     visible: v.failed,
-                    title: v.migration?.failed,
-                    body: v.migration?.failureBody,
+                    title: v.unconfirmed ? v.migration?.unconfirmed : v.migration?.failed,
+                    body: v.unconfirmed ? v.migration?.unconfirmedBody : v.migration?.failureBody,
                     retry: {onClick: v.retry, label: v.migration?.retry},
-                    other: {onClick: v.otherMethod, label: v.migration?.other}
+                    other: v.unconfirmed
+                      ? null
+                      : {onClick: v.otherMethod, label: v.migration?.other}
                   }}
                   safe={v.t?.safe}
                   place={{

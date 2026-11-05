@@ -83,6 +83,7 @@ export function usePage(props) {
       method: null,
       busy: false,
       failed: false,
+      unconfirmed: false,
       payment: null,
       paymentSaveError: false,
       retryReview: false,
@@ -269,6 +270,9 @@ function vals(page) {
     busy,
     placeDisabled: busy || s.failed || done || !method,
     failed: s.failed,
+    // No answer came back (a timeout or a lost connection): the order may exist, so say so, and keep
+    // the request unchanged so a retry reuses its idempotency key.
+    unconfirmed: s.failed && s.unconfirmed,
     paymentNotice: P.demo,
     method,
     // With one method there is nothing to choose: its own heading and steps show.
@@ -291,7 +295,8 @@ function vals(page) {
         paymentSaveError: false,
         retryReview: false,
         err: false,
-        failed: false
+        failed: false,
+        unconfirmed: false
       }),
     migration: P,
     waOrder: S.waWith(vfOrderMessage(items, delivery, totals.total, L)),
@@ -300,11 +305,13 @@ function vals(page) {
     },
     retry: () =>
       page.setState({
-        failed: false
+        failed: false,
+        unconfirmed: false
       }),
     otherMethod: () =>
       page._draft({
         failed: false,
+        unconfirmed: false,
         method: otherThan(method)
       }),
     paymentStatus: P.statuses[method],
@@ -433,7 +440,12 @@ function vals(page) {
               page.setState({busy: false});
               then();
             },
-            () => page.setState({busy: false, failed: true})
+            error =>
+              page.setState({
+                busy: false,
+                failed: true,
+                unconfirmed: error?.kind === 'timeout' || error?.kind === 'network'
+              })
           )
           .finally(() => st?.endCheckout?.());
       };

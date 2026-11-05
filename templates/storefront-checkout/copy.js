@@ -180,6 +180,9 @@ export function vfCopy(S) {
         processing: 'Sending your order…',
         failed: 'Your order couldn’t be sent',
         failureBody: 'Your bag is preserved. Retry or choose another payment method.',
+        unconfirmed: 'We couldn’t confirm your order',
+        unconfirmedBody:
+          'Check your messages before trying again: if the order went through, its confirmation is there. Your bag is preserved.',
         retry: 'Try again',
         other: 'Choose another method',
         openWa: 'Open order in WhatsApp',
@@ -230,6 +233,9 @@ export function vfCopy(S) {
         processing: 'در حال ثبت سفارش…',
         failed: 'سفارش شما ثبت نشد',
         failureBody: 'سبد شما حفظ شده است. دوباره تلاش یا روش دیگری انتخاب کنید.',
+        unconfirmed: 'ثبت سفارش شما تأیید نشد',
+        unconfirmedBody:
+          'پیش از تلاش دوباره پیام‌هایتان را بررسی کنید: اگر سفارش ثبت شده باشد، تأیید آن را آنجا می‌بینید. سبد شما حفظ شده است.',
         retry: 'تلاش دوباره',
         other: 'انتخاب روش دیگر',
         openWa: 'باز کردن سفارش در واتس‌اپ',

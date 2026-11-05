@@ -33,9 +33,11 @@ export function StorefrontCheckoutSubmission({whatsapp, processing, failure, saf
             <DS.Button onClick={failure.retry.onClick}>
               <>{failure.retry.label}</>
             </DS.Button>
-            <DS.Button variant="ghost" onClick={failure.other.onClick}>
-              <>{failure.other.label}</>
-            </DS.Button>
+            {failure.other ? (
+              <DS.Button variant="ghost" onClick={failure.other.onClick}>
+                <>{failure.other.label}</>
+              </DS.Button>
+            ) : null}
           </div>
         </>
       ) : null}
