@@ -185,6 +185,22 @@ html {
   }
 }
 
+/* Brand art stays inside the existing shell dimensions, including narrow phones. */
+.vf-brand-logo {
+  display: block;
+  width: auto;
+  height: var(--brand-logo-height, 36px);
+  max-width: min(100%, var(--brand-logo-width, 220px));
+  object-fit: contain;
+}
+.vf-shell-mobile-brand .vf-brand-logo {
+  height: var(--brand-logo-mobile-height, 28px);
+  margin-inline: auto;
+}
+.vf-shell-footer-brand .vf-brand-logo {
+  height: var(--brand-logo-footer-height, 56px);
+}
+
 
 /* Source: _shared/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */

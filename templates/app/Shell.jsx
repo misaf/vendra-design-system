@@ -1,6 +1,7 @@
 // The storefront shell around every page: header, mobile menu, footer, consent and tab bar; `bare`
 // keeps only the provider, skip link and notices.
 import React from 'react';
+import {vfBrandUrl} from '../_shared/brand.js';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 import {StorefrontLayout} from './layouts/StorefrontLayout/StorefrontLayout.jsx';
@@ -13,6 +14,11 @@ import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.js
 import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
+  const brandAssets = {...v.brandAssets};
+  for (const key of ['logo', 'logoMark', 'logoOnDark']) {
+    if (brandAssets[key])
+      brandAssets[key] = {...brandAssets[key], src: vfBrandUrl(brandAssets[key].src)};
+  }
   // --vf-top-bar / --vf-bottom-bar: the heights of the sticky header and of the sticky bars at the
   // bottom of the screen, so fixed layers (toasts) sit above them and the page scrolls a focused or
   // linked element clear of them (scroll-padding in shell.css; WCAG 2.4.11).
@@ -148,6 +154,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
         header={
           <StorefrontHeader
             brand={v.shellText?.brand}
+            brandAssets={brandAssets}
+            lang={v.lang}
             homeHref={v.href?.home}
             navigation={[
               {id: 'shop', href: v.href?.shop, label: v.shellText?.shop, current: v.nav?.shop},
@@ -211,6 +219,8 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
           <StorefrontFooter
             homeHref={v.href?.home}
             brand={v.shellText?.brand}
+            brandAssets={brandAssets}
+            lang={v.lang}
             tagline={v.footer?.tagline}
             socialLabel={v.shellText?.footer?.social}
             socialLinks={list(v.footer?.social)}
