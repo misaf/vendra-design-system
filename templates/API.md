@@ -54,7 +54,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 15. **Balance:** current balance and history.
 
 ### Orders
-16. **Track by order number:** filter `GET /api/sales/orders` by `number` (the track page uses `?id=VN-10522`).
+16. **Track by order number and mobile:** a guest lookup takes the order `number` and a mobile, and answers only when the mobile is the order's sender or recipient (the track page uses `?id=VN-10522`, and a link alone must not open an order). Answer the sender (or the signed-in customer who placed it) with the whole order. Answer a mobile that matches only the recipient with a recipient view: status and timeline, delivery window and address, the delivery photo and whether a card is included — no prices, totals, payment method or card ending, card message or sender details. Rate-limit lookups per IP and per mobile, and make order numbers hard to guess (non-sequential, or with a check suffix such as `VN-10522-K7`). The storefront's local matching (`storefront-track/logic.js`) is only a demo of this split.
 17. **Order detail:** document the `status` values above, with timestamps per step for the timeline, delivery date/slot/address, discount and balance amounts, delivery photo, cancellation.
 
 ### Store settings

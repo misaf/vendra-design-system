@@ -12,9 +12,11 @@ export function StorefrontTrackLayout({lookup, showOrder, heading, details, summ
               <div className="vf-track-details tw:min-w-0 tw:flex tw:flex-col tw:gap-6 tw:[flex:999_1_440px]">
                 {details}
               </div>
-              <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-form vf-sticky-panel">
-                {summary}
-              </aside>
+              {summary ? (
+                <aside className="vf-track-summary tw:[flex:1_1_360px] tw:max-w-form vf-sticky-panel">
+                  {summary}
+                </aside>
+              ) : null}
             </div>
           </>
         ) : null}

@@ -83,18 +83,22 @@ export function View({v}) {
                 <StorefrontTrackOrderDetails rows={v.rows} />
                 <StorefrontTrackOrderActions
                   contact={v.waHref ? {href: v.waHref, label: v.t?.ask} : null}
-                  repeat={{
-                    href: v.reorder ? undefined : v.href?.bag,
-                    onClick: v.reorder,
-                    label: v.t?.again
-                  }}
+                  repeat={
+                    v.showSummary
+                      ? {
+                          href: v.reorder ? undefined : v.href?.bag,
+                          onClick: v.reorder,
+                          label: v.t?.again
+                        }
+                      : null
+                  }
                   lookup={{onClick: v.trackAnother, label: v.t?.lookup?.another}}
                 />
               </>
             ) : null
           }
           summary={
-            v.hasOrder ? (
+            v.hasOrder && v.showSummary ? (
               <StorefrontTrackOrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
             ) : null
           }
