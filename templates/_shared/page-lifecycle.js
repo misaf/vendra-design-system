@@ -1,5 +1,6 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
+import {vfBrand, vfBrandHead} from './brand.js';
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
@@ -73,10 +74,13 @@ function vfAnnounce(page) {
     document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.documentElement.dataset.lang = lang;
     const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
+    const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
+    vfBrandHead(tenant, lang);
     if (!h) return;
     const title = h.innerText.replace(/\s+/g, ' ').trim();
-    if (title === page._vfTitle) return;
-    page._vfTitle = title;
+    const identity = title + lang + tenant;
+    if (identity === page._vfTitle) return;
+    page._vfTitle = identity;
     // On the first view of a document, leave focus at the top so Tab reaches the
     // skip link and header; the browser already reads the new page. Only later
     // views (in-site navigation, a replaced h1) move focus and announce.
@@ -97,17 +101,17 @@ function vfAnnounce(page) {
 
 // A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
 // one, the page in each of the store's languages, and a preview image (`page.head.image`, set by
-// pages with a photo of their own, otherwise the store's logo). The browser applies it once the page
+// pages with a photo of their own, otherwise the tenant's social image). The browser applies it once the page
 // has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
 export function vfPageHead(page, heading) {
   const lang = page.props.lang === 'fa' ? 'fa' : 'en';
   const head = page.head || {};
+  const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
+  const preview = vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`;
   return {
     title: heading + ' · ' + VF_SHELL[lang].brand,
     description: head.description || heading,
-    image:
-      head.image ||
-      vfAssetBase() + (lang === 'fa' ? 'assets/logo-stacked-fa.png' : 'assets/logo-stacked.png'),
+    image: head.image || (/^[a-z][a-z0-9+.-]*:/i.test(preview) ? preview : vfAssetBase() + preview),
     url: vfLocation().href,
     locale: lang,
     type: head.type || 'website',

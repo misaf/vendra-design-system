@@ -1,0 +1,28 @@
+{
+  "name": "Vendra Florist",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "../../../templates/app/?lang=en",
+  "scope": "../../../templates/app/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "../../../assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../../../assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../../../assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

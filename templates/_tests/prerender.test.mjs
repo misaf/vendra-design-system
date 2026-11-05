@@ -45,7 +45,7 @@ try {
       address: 'en/shop/boxes/',
       lang: 'en',
       heading: 'The shop.',
-      image: /\/assets\/logo-stacked\.png$/,
+      image: /\/assets\/social\/og-default-en\.png$/,
       alternate: ['fa', 'fa/shop/boxes/']
     },
     {
@@ -59,7 +59,7 @@ try {
       address: 'fa/',
       lang: 'fa',
       heading: 'خرید بر اساس دسته‌بندی.',
-      image: /\/assets\/logo-stacked-fa\.png$/,
+      image: /\/assets\/social\/og-default-fa\.png$/,
       alternate: ['en', 'en/']
     }
   ];

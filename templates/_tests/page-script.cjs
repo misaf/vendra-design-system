@@ -76,6 +76,7 @@ function pageScript(folder) {
 // globals, as page logic expects them in a vm context.
 const sharedFiles = [
   'store-config.js',
+  'brand.js',
   'delivery.js',
   'store-hours.js',
   'location.js',
@@ -113,6 +114,16 @@ const sharedLogic =
   strip(read('_shared/environment.js')) +
   scoped('VF_SEO', '_shared/seo.js') +
   scoped('VF_NAV', '_shared/page-focus.js') +
+  'const VF_TENANT_BRANDS = ' +
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(require('../_build/tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
+        slug,
+        spec.brand || {}
+      ])
+    )
+  ) +
+  ';\n' +
   'const VF_TENANT_SLUGS = ' +
   JSON.stringify(require('../_build/tenants.cjs').tenantSlugs()) +
   ';\n\n' +
