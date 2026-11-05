@@ -232,7 +232,7 @@ assert.equal(ctx.zoneAt({lat: 35.7, lng: 51.4}), 'tehran');
 assert.equal(ctx.zoneAt({lat: 36.05, lng: 50.6}), 'alborz');
 assert.equal(ctx.zoneAt(null), null);
 // Today's slots close two hours before they end; the chosen slot falls forward to the next open one.
-const afternoon = new Date(2026, 9, 6, 14, 30),
+const afternoon = new Date('2026-10-06T14:30:00+03:30'),
   iso = '2026-10-06';
 assert.equal(
   ctx
@@ -252,8 +252,8 @@ assert.equal(
 assert.equal(ctx.slot({zone: 'central', date: iso, slot: '08'}, afternoon), '16');
 // The shop's delivery-day filter: same-day designs from today, the rest from tomorrow, never sold out or out of stock.
 vm.runInContext('this.deliverable=vfDeliverableOn;this.product=vfProduct;', ctx);
-const morning = new Date(2026, 9, 6, 9, 0),
-  evening = new Date(2026, 9, 6, 19, 0);
+const morning = new Date('2026-10-06T09:00:00+03:30'),
+  evening = new Date('2026-10-06T19:00:00+03:30');
 assert.equal(ctx.deliverable(ctx.product('ivory'), '2026-10-06', morning), true);
 assert.equal(ctx.deliverable(ctx.product('orchid'), '2026-10-06', morning), false);
 assert.equal(ctx.deliverable(ctx.product('orchid'), '2026-10-07', morning), true);
@@ -1098,7 +1098,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage('site', {lang});
   const same = vm.runInContext("vfBagLine(vfProduct('VF-7K2M4Q'), 'petite', [], 1)", c);
   const prepared = vm.runInContext("vfBagLine(vfProduct('VF-8RD5WN'))", c);
-  const morning = new Date(2026, 9, 5, 9);
+  const morning = new Date('2026-10-05T09:00:00+03:30');
   const days = vm.runInContext('vfDeliveryDays', c);
   const selected = vm.runInContext('vfDeliveryDate', c);
   const changed = vm.runInContext('vfDeliveryChanged', c);
@@ -1112,7 +1112,7 @@ for (const lang of ['en', 'fa']) {
     changed({zone: 'central', date: '2026-10-05', slot: '12'}, morning, [same, prepared]),
     true
   );
-  assert.equal(days('central', new Date(2026, 9, 5, 19), [same])[0].pastCutoff, true);
+  assert.equal(days('central', new Date('2026-10-05T19:00:00+03:30'), [same])[0].pastCutoff, true);
 
   const readRoute = vm.runInContext('vfReadRoute', c);
   const writeRoute = vm.runInContext('vfRouteParams', c);

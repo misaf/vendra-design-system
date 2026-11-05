@@ -43,8 +43,8 @@ assert.equal(ctx.vfPhone('(۰۹۱۲) ۳۴۵-۶۷۸۹'), '09123456789');
 assert.equal(ctx.vfNormalizeToken('vf-۷k2m ۴q'), 'VF7K2M4Q');
 
 // Delivery days: seven from today, the sample sold-out day, and today closing at the zone cut-off.
-const morning = new Date(2026, 9, 5, 9, 0),
-  evening = new Date(2026, 9, 5, 19, 0);
+const morning = new Date('2026-10-05T09:00:00+03:30'),
+  evening = new Date('2026-10-05T19:00:00+03:30');
 const days = ctx.vfDeliveryDays('central', morning);
 assert.equal(days.length, 7);
 assert.equal(days[0].iso, '2026-10-05');
@@ -52,7 +52,7 @@ assert.equal(days[2].soldOut, true);
 assert.equal(days[0].pastCutoff, false);
 assert.equal(ctx.vfDeliveryDays('central', evening)[0].pastCutoff, true);
 assert.equal(
-  ctx.vfDeliveryDays('tehran', new Date(2026, 9, 5, 13, 0))[0].pastCutoff,
+  ctx.vfDeliveryDays('tehran', new Date('2026-10-05T13:00:00+03:30'))[0].pastCutoff,
   true,
   'Tehran closes at 12:00'
 );
