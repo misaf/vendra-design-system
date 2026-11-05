@@ -58,7 +58,7 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page);
     await tap(button(page, fa ? 'ادامه و پرداخت' : 'Continue to payment'));
-    await expect(page).toHaveURL(/view=checkout/);
+    await expect(page).toHaveURL(/\/checkout\//);
     await expect(page.locator('main h1')).toBeFocused();
     await fill(page, '#vf-last4', '1234');
     await fill(page, '#vf-ref', '567890');

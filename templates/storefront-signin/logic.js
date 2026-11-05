@@ -3,7 +3,7 @@ import {vfCopy} from './copy.js';
 import {vfAccountLogin, vfAccountSave} from '../_shared/account-data.js';
 import {vfMobile} from '../_shared/delivery.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // Seconds before another code can be requested (ResendCode keeps the time).
@@ -77,9 +77,7 @@ function vals(page) {
       e && e.preventDefault && e.preventDefault();
       page.props.go({view: 'bag', step: 'delivery'});
     },
-    checkoutHref:
-      (page.props.go ? '' : '../app/') +
-      vfRouteParams({lang: S.lang, view: 'bag', step: 'delivery'}),
+    checkoutHref: vfRouteUrl({lang: S.lang, view: 'bag', step: 'delivery'}),
     code: s.code,
     // CodeInput hands over the cleaned code: Latin digits, at most five.
     setCode: code =>

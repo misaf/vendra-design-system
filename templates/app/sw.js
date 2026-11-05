@@ -5,11 +5,11 @@
 // kept: other API reads (a signed-in customer's lists, orders, account) always go to the network.
 // Other sites (map tiles, WhatsApp) are left alone. Copied next to the built app by the Vite config.
 const sw = /** @type {any} */ (self);
-// Pages are kept one per path (the app is one page whatever its query); files and photos up to
-// FILES_MAX, the oldest let go first, so a tablet that runs for months doesn't fill up.
+// Every address under the app serves the same page, so one copy of it answers them all offline;
+// files and photos are kept up to FILES_MAX, the oldest let go first, so a tablet that runs for months doesn't fill up.
 const SCOPE = new URL(sw.registration.scope).pathname;
 const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
-const PAGES = CACHE_PREFIX + '-pages-v3';
+const PAGES = CACHE_PREFIX + '-pages-v4';
 const FILES = CACHE_PREFIX + '-files-v3';
 const FILES_MAX = 400;
 let protectedFiles = new Set();
@@ -66,7 +66,12 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== location.origin) return;
   if (request.mode === 'navigate')
-    event.respondWith(fromNetwork(request, url.origin + url.pathname));
+    event.respondWith(
+      fromNetwork(
+        request,
+        url.pathname.startsWith(SCOPE) ? url.origin + SCOPE : url.origin + url.pathname
+      )
+    );
   else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
   else if (url.pathname.startsWith('/api/')) return;
   else if (/\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))

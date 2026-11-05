@@ -158,7 +158,7 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm ci                                   # first setup, at the repo root (templates is a workspace)
-npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/ (?lang=fa, ?page=<name> for one page)
+npm --prefix templates run dev           # Vite at http://127.0.0.1:5173/ → /templates/app/en/ (fa/ for Persian, ?page=<name> for one page)
 npm --prefix templates run build         # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
 npm --prefix templates run check         # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm --prefix templates test              # typecheck, storefront logic, generation, copy parity, package
@@ -169,7 +169,7 @@ npm --prefix templates run test:e2e:build  # the storefront specs against the pr
 npm --prefix templates run test:e2e:remote # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
-- **One page on its own:** `/templates/app/?page=checkout` renders that page with its default props.
+- **One page on its own:** `/templates/app/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
@@ -181,7 +181,11 @@ from Actions. Repository Settings → Pages → Source must be **GitHub Actions*
 and tenant themes use the repository path. The uploaded artifact is `templates/_app-build/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
-`https://misaf.github.io/vendra-design-system/templates/app/?view=presentation&lang=en`.
+`https://misaf.github.io/vendra-design-system/templates/app/en/presentation/`. The build writes the
+app's page at every public address (`templates/_build/routes.mjs`: each view, category, product,
+journal post and policy, in each language) and as the site's `404.html`, which serves the rest (an
+order to track, a mistyped link) with the app's own not-found page. A host that can rewrite
+addresses can instead serve `templates/app/index.html` for every path under `templates/app/`.
 This hosts the sample-data demo; live API services need their own backend.
 
 To verify the same paths locally:
@@ -189,7 +193,7 @@ To verify the same paths locally:
 ```sh
 npm --prefix templates run build:app -- --base /vendra-design-system/
 npm --prefix templates run preview -- --base /vendra-design-system/
-# http://127.0.0.1:4173/vendra-design-system/templates/app/?view=presentation&lang=en
+# http://127.0.0.1:4173/vendra-design-system/templates/app/en/presentation/
 ```
 
 ## Browser tests
@@ -310,9 +314,9 @@ and pressing Add to bag.
 
 ## Demo behavior
 
-- **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `?view=product&id=VF-7K2M4Q&cat=boxes`. Old slugs resolve through `legacy`.
-- **Shop URLs** keep `cat`, `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (4 in the sample); a new filter or sort starts again from page 1.
-- **Counter presentation** (`?view=presentation`, noindex and not linked from the site): it fills the screen without the site's header or footer, so a seller can show a walk-in customer designs large on the shop's tablet.
+- **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `en/product/VF-7K2M4Q/`. Old slugs resolve through `legacy`.
+- **Shop URLs** keep the category (`en/shop/boxes/`), `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (4 in the sample); a new filter or sort starts again from page 1.
+- **Counter presentation** (`en/presentation/`, noindex and not linked from the site): it fills the screen without the site's header or footer, so a seller can show a walk-in customer designs large on the shop's tablet.
   - **Display presets:** starts on a full-screen product. Tablet keeps browsing manual; TV plays immediately, pauses while seller dialogs are open or the tab is hidden, and remembers its preset on this device. Seller tools opens a focus-trapped side drawer; Browse designs opens the existing counter workflow; Return to display restores the product view.
   - **Product layout:** photos fit whole inside the screen with a separate caption row. An optional two-product layout uses wide landscape screens and falls back to one product in portrait; navigation advances by the number displayed.
   - **Collections:** save all designs, a category, or selected product codes on the device. A seller can also copy the current shortlist into the display collection. Subsequent customer searches and shortlist edits do not alter it; Ready/stock settings still apply.
@@ -321,7 +325,7 @@ and pressing Add to bag.
   - **Quiet navigation:** swipe or use arrow keys to change products without revealing controls (mirrored in Persian). Tap or press Enter to reveal controls for four seconds. Keyboard focus keeps the seller control visible.
   - **Finding a design:** by code, flower or kind (the same search as the search page), or by scanning the QR code on its printed tag with the camera, where the browser can read QR codes (`BarcodeDetector`).
   - **Full screen (`Lightbox`):** the design shows its sizes and extras with the price they come to. "Send to customer" includes those choices in the product link (`size`, `addons`), so the customer's phone opens the same configuration; unsupported choices are discarded by the catalog rules.
-  - **Shortlist and order:** designs can be starred into a shortlist to compare side by side, or added to an order. The shortlist goes to the customer's phone as a QR code or WhatsApp link to `?view=saved&ids=…`; the order goes as one to `?view=bag&lines=…`. The site adds them to the visitor's own saved list or bag once, then drops them from the address.
+  - **Shortlist and order:** designs can be starred into a shortlist to compare side by side, or added to an order. The shortlist goes to the customer's phone as a QR code or WhatsApp link to `saved/?ids=…`; the order goes as one to `bag/?lines=…`. The site adds them to the visitor's own saved list or bag once, then drops them from the address.
   - **Settings:** show prices (including order lines and totals), Ready designs only, hide sold-out designs, keep the screen on, full screen, a slideshow after a minute untouched, and a PIN in front of the settings. They are kept on the device under `vf-presentation`. Clearing a search/category preserves these device settings. A rejected screen wake lock is retried only on a visibility change or a setting toggle.
   - **Quiet operation:** offline/reconnect notices, stock refresh failures and photo warnings stay in Seller tools while displaying products. A failed first photo uses a neutral placeholder; later failures retain the current product. The seller can retry photos from the drawer.
   - **Offline and stock:** in a production build the page registers `app/sw.js`, so the tablet keeps working when the Wi-Fi drops. With a live API it refreshes stock every two minutes.

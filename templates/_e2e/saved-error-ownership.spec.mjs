@@ -27,7 +27,7 @@ for (const lang of ['en', 'fa']) {
               client.setBase(base);
             }
           });
-          const key = 'vendra-template:' + location.pathname;
+          const key = 'vendra-template:/templates/app/';
           if (!sessionStorage.getItem(key)) {
             sessionStorage.setItem(
               key,
