@@ -133,6 +133,12 @@ jobs:
       E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
+      # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
+      # image's Node, the dev server aborted in V8 while sending the 8 MB react-aria-components
+      # pre-bundle, failing every later test.)
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - run: npm ci
       - run: npm --prefix templates run test:e2e
       - name: Keep the report and failing screenshots
@@ -165,6 +171,12 @@ jobs:
       E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
+      # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
+      # image's Node, the dev server aborted in V8 while sending the 8 MB react-aria-components
+      # pre-bundle, failing every later test.)
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
       - run: npm ci
       - run: npm --prefix templates run test:e2e:build
       - name: Keep the report
