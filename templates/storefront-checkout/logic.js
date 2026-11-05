@@ -114,6 +114,7 @@ export function usePage(props) {
       method: null,
       busy: false,
       failed: false,
+      unconfirmed: false,
       payment: null,
       paymentSaveError: false,
       retryReview: false,
@@ -150,6 +151,11 @@ function vals(page) {
   const st = page.props.store;
   const order = st ? st.order : s.order;
   const busy = s.busy || !!st?.checkoutPending;
+  // Once an attempt got no answer the order may exist, so the method stays as sent until an attempt
+  // is answered: another method would be a different request under a new idempotency key, and so
+  // a second order. Retrying keeps this lock; only the warning is dismissed.
+  const methodLocked = !!s.unconfirmed;
+  const unconfirmed = s.failed && methodLocked;
   const delivery = order
     ? order.delivery
     : st
@@ -310,6 +316,9 @@ function vals(page) {
     busy,
     placeDisabled: busy || s.failed || done || !method,
     failed: s.failed,
+    // No answer came back (a timeout or a lost connection): the order may exist, so say so, and keep
+    // the request unchanged so a retry reuses its idempotency key.
+    unconfirmed,
     paymentNotice: P.demo,
     method,
     // With one method there is nothing to choose: its own heading and steps show.
@@ -323,16 +332,18 @@ function vals(page) {
           : option.id === 'wallet'
             ? walletNote
             : undefined,
-      disabled: busy || !option.available
+      disabled: busy || methodLocked || !option.available
     })),
     setMethod: value =>
       !busy &&
+      !methodLocked &&
       page._draft({
         method: value,
         paymentSaveError: false,
         retryReview: false,
         err: false,
-        failed: false
+        failed: false,
+        unconfirmed: false
       }),
     migration: P,
     waOrder: S.waWith(vfOrderMessage(items, delivery, totals.total, L)),
@@ -346,6 +357,7 @@ function vals(page) {
     otherMethod: () =>
       page._draft({
         failed: false,
+        unconfirmed: false,
         method: otherThan(method)
       }),
     paymentStatus: P.statuses[method],
@@ -472,7 +484,7 @@ function vals(page) {
         window.VF_API.checkout(request)
           .then(
             result => {
-              page.setState({busy: false});
+              page.setState({busy: false, unconfirmed: false});
               const placed = {
                 ...record,
                 id: result?.number || record.id,
@@ -482,7 +494,16 @@ function vals(page) {
               };
               then(placed, result?.redirect || null);
             },
-            () => page.setState({busy: false, failed: true})
+            error =>
+              page.setState({
+                busy: false,
+                failed: true,
+                // 409: the first request with this key is still running on the server.
+                unconfirmed:
+                  error?.kind === 'timeout' ||
+                  error?.kind === 'network' ||
+                  (error?.kind === 'http' && error.status === 409)
+              })
           )
           .finally(() => st?.endCheckout?.());
       };
