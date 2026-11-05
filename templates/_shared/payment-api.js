@@ -13,11 +13,14 @@ export const vfGatewayRedirect = value => {
             .map(([name, field]) => [name, String(field)])
         )
       : {};
-  return {
-    url: value.url,
-    method: String(value.method || 'GET').toUpperCase() === 'POST' ? 'POST' : 'GET',
-    fields
-  };
+  const method = String(value.method || 'GET').toUpperCase() === 'POST' ? 'POST' : 'GET';
+  if (method === 'POST') return {url: value.url, method, fields};
+  // A GET form replaces its action's query with its fields, so a token in the URL's query (a
+  // Zarinpal StartPay link) becomes a field too.
+  const url = new URL(value.url);
+  const query = Object.fromEntries(url.searchParams);
+  url.search = '';
+  return {url: url.href, method, fields: {...query, ...fields}};
 };
 
 // The created order from a Checkout result (POST /api/sales/checkout): its `number`, its totals as

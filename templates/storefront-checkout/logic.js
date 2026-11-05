@@ -476,7 +476,9 @@ function vals(page) {
               const placed = {
                 ...record,
                 id: result?.number || record.id,
-                totals: result?.totals ? {...record.totals, ...result.totals} : record.totals
+                // The server's totals replace the browser's whole: its discount already includes any
+                // balance discount, which would otherwise show twice.
+                totals: result?.totals || record.totals
               };
               then(placed, result?.redirect || null);
             },
