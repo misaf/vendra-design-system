@@ -6,7 +6,7 @@
 // VENDRA_E2E_HOST  ssh destination (required; an alias from ~/.ssh/config works)
 // VENDRA_E2E_DIR   checkout folder on the server (default: vendra-e2e in the remote home)
 // E2E_WORKERS      Playwright workers on the server (default: 8)
-// E2E_TARGET=build runs test:e2e:build instead.
+// E2E_TARGET=build or dev runs only that suite; the default runs both.
 //
 // The checkout is synced with rsync (ignored files stay local), node_modules lives in a Docker
 // volume and is reinstalled only when package-lock.json changes. Afterwards the report,
@@ -19,7 +19,9 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const host = process.env.VENDRA_E2E_HOST;
 const remoteDir = process.env.VENDRA_E2E_DIR || 'vendra-e2e';
 const workers = process.env.E2E_WORKERS || '8';
-const target = process.env.E2E_TARGET === 'build' ? 'test:e2e:build' : 'test:e2e';
+const target = ['build', 'dev'].includes(process.env.E2E_TARGET)
+  ? `test:e2e:${process.env.E2E_TARGET}`
+  : 'test:e2e';
 const playwrightVersion = JSON.parse(
   readFileSync(new URL('../../node_modules/@playwright/test/package.json', import.meta.url))
 ).version;
@@ -81,5 +83,5 @@ download(`${e2eDir}/__screenshots__/`, `${e2eDir}/__screenshots__/`, [
 ]);
 download(`${e2eDir}/playwright-report/`, `${e2eDir}/playwright-report/`, ['--delete']);
 download(`${e2eDir}/test-results/`, `${e2eDir}/test-results/`, ['--delete']);
-console.log(`\nReport: ${e2eDir}/playwright-report/index.html (exit ${status})`);
+console.log(`\nReports: ${e2eDir}/playwright-report/{build,dev}/index.html (exit ${status})`);
 process.exit(status);
