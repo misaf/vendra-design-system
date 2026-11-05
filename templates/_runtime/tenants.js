@@ -15,7 +15,39 @@ window.VF_TENANTS = {
       "controls": "square",
       "frame": "square"
     },
-    "overrides": {}
+    "overrides": {},
+    "brand": {
+      "logo": {
+        "src": "assets/tenants/clay/logo.svg",
+        "width": 240,
+        "height": 56,
+        "alt": {
+          "en": "Clay Florist",
+          "fa": "گل‌فروشی کلی"
+        }
+      },
+      "logoMark": {
+        "src": "assets/tenants/clay/mark.svg",
+        "width": 512,
+        "height": 512
+      },
+      "logoOnDark": {
+        "src": "assets/tenants/clay/logo-on-dark.svg",
+        "width": 240,
+        "height": 56
+      },
+      "icons": {
+        "favicon": "assets/tenants/clay/favicon-32.png",
+        "apple": "assets/tenants/clay/apple-touch-icon.png",
+        "app192": "assets/tenants/clay/icon-192.png",
+        "app512": "assets/tenants/clay/icon-512.png",
+        "maskable": "assets/tenants/clay/icon-maskable-512.png"
+      },
+      "ogImage": {
+        "en": "assets/tenants/clay/og-en.png",
+        "fa": "assets/tenants/clay/og-fa.png"
+      }
+    }
   },
   "fern": {
     "description": "Sample tenant theme \"Fern\": deep teal accent, cool grey-green neutrals, navy ink and a plum footer; Vazirmatn headings, upright accent words, pill controls and soft-topped image frames. Sits near the muted-text and input-edge contrast limits on purpose.",

@@ -19,17 +19,22 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - Own font? That needs a new `headings` choice in `templates/_shared/tenant-theme.js` (the generator) with its `@font-face` in `tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
 
 ## 2. Brand assets (florist supplies · designer prepares)
-Never ship a tenant with Vendra Florist's logo. Until the real files arrive, the store name renders in `--font-display` (the kit already does this when `data-tenant` is set).
+Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
 
-| File | Size / format | Used in |
+| Field | Format / size | Use |
 |---|---|---|
-| Horizontal logo, EN + FA | PNG/SVG, transparent, ≥ 112 px tall | Emails (light background) |
-| Horizontal logo, light version | Same | Footer on the inverse colour |
-| Mark / monogram | Square, ≥ 512 px | Favicon, app icon, sign-in |
-| Social share image, EN + FA | 1200 × 630 | `og:image` |
-| App icons | 16, 32, 180, 192, 512, maskable 512 | `assets/icons/` |
+| `logo` | `{src, width, height, alt: {en, fa}}`; SVG preferred, or transparent PNG at least 112 px tall | Header; localized alt defaults to the store name |
+| `logoMark` | Optional square image with the same fields, at least 512 × 512 | Compact header; falls back to `logo` |
+| `logoOnDark` | Optional light artwork with the same fields | Dark footer; falls back to `logo`, then text |
+| `icons` | `favicon` (32 × 32 PNG), `apple` (180 × 180 PNG), `app192` (192 × 192 PNG), `app512` (512 × 512 PNG), `maskable` (512 × 512 PNG) | Browser tab and installed app; supply the complete set |
+| `ogImage` | `{en, fa}` paths to 1200 × 630 PNG/JPEG images | Localized social previews |
 
-- [ ] Regenerate the social images and icons from `assets/brand-export-source.html` with the tenant's logo and colours.
+For a deployment-specific override, set `VF_STORE.brandAssets` in `templates/_shared/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
+
+- [ ] Prepare approved logo, compact mark and light footer artwork. Check contrast against the actual header and footer colours in both languages; transparent artwork must remain readable. Keep essential maskable artwork inside the central 80% circle.
+- [ ] Export PNG icons in the sizes above (the build accepts prepared files; it does not resize them). `assets/brand-export-source.html` is a starting point. Supply localized social images.
+- [ ] Run `npm run build`. The build checks asset references and logo dimensions, and generates `assets/tenants/<slug>/manifest-en.webmanifest` and `manifest-fa.webmanifest`. Never edit these manifests by hand. Omitted icons and social images use the shared defaults, so replace both before launch.
+- [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)
 The storefront reads all of this as data (`templates/_shared/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
