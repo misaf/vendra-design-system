@@ -1,10 +1,13 @@
 import React from 'react';
+import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
 import {IconButton, TrustSeal} from '../../ds.js';
 import {FooterLinks} from './FooterLinks.jsx';
 
 export function StorefrontFooter({
   homeHref,
   brand,
+  brandAssets,
+  lang,
   tagline,
   socialLabel,
   socialLinks,
@@ -34,7 +37,14 @@ export function StorefrontFooter({
               href={homeHref}
               className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
             >
-              <>{brand}</>
+              <BrandLogo
+                image={brandAssets?.logoOnDark || brandAssets?.logo}
+                name={
+                  (brandAssets?.logoOnDark || brandAssets?.logo)?.alt?.[lang] ||
+                  brandAssets?.logo?.alt?.[lang] ||
+                  brand
+                }
+              />
             </a>
             <p className="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">
               <>{tagline}</>

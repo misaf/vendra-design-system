@@ -1,5 +1,6 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
+import {vfBrand, vfBrandHead, vfBrandUrl} from './brand.js';
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
@@ -65,10 +66,13 @@ function vfAnnounce(page) {
     document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.documentElement.dataset.lang = lang;
     const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
+    const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
+    vfBrandHead(tenant, lang);
     if (!h) return;
     const title = h.innerText.replace(/\s+/g, ' ').trim();
-    if (title === page._vfTitle) return;
-    page._vfTitle = title;
+    const identity = title + lang + tenant;
+    if (identity === page._vfTitle) return;
+    page._vfTitle = identity;
     // On the first view of a document, leave focus at the top so Tab reaches the
     // skip link and header; the browser already reads the new page. Only later
     // views (in-site navigation, a replaced h1) move focus and announce.
@@ -87,6 +91,7 @@ function vfAnnounce(page) {
     VF_SEO.syncHead({
       title: title + ' · ' + VF_SHELL[lang].brand,
       description: title,
+      image: vfBrandUrl(vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`),
       url,
       locale: lang,
       noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',

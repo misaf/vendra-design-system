@@ -1,4 +1,5 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
+import {vfBrand} from './brand.js';
 import {vfFindProduct, vfProductId} from './catalog.js';
 import {
   VF_FREE_DELIVERY_THRESHOLD,
@@ -274,6 +275,7 @@ export function vfShell(self, page) {
     fa,
     dir: fa ? 'rtl' : 'ltr',
     tenant: vfPageTenant(props),
+    brandAssets: vfBrand(vfPageTenant(props)),
     nav: {
       shop: isCurrent.shop,
       weddings: isCurrent.weddings,

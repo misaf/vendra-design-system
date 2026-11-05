@@ -22,6 +22,7 @@ function tenantSpecs() {
     } catch (error) {
       throw new Error(label + ': ' + error.message);
     }
+    require('./brand.cjs').validateBrand(spec.brand, label + '.brand');
     specs[slug] = theme.validate(spec, label);
     const failing = theme.checks(spec).filter(check => !check.pass);
     if (failing.length)

@@ -101,3 +101,85 @@ for (const key of ['btnRadius', 'btnCase', 'btnTrack', 'cardRadius', 'dispCase']
 assert.equal(emailThemes.default.disp, disp);
 
 console.log('Passed: tenant theme generator and email palettes');
+
+// Tenant branding fails the build for broken references or unusable image geometry.
+const {validateBrand, brandOutputs} = require('../_build/brand.cjs');
+assert.throws(
+  () => validateBrand({logo: {src: 'assets/no-logo.svg', width: 10, height: 10}}),
+  /missing or invalid/
+);
+assert.throws(() => validateBrand({logo: {...clay.brand.logo, width: 0}}), /positive width/);
+assert.throws(() => validateBrand({logoMark: {...clay.brand.logoMark, height: 20}}), /square/);
+assert.throws(() => validateBrand({icons: {favicon: clay.brand.icons.favicon}}), /invalid asset/);
+assert.throws(
+  () => validateBrand({ogImage: {en: '../outside.png', fa: '../outside.png'}}),
+  /invalid asset/
+);
+for (const [file, source] of brandOutputs(tenantSpecs())) {
+  const manifest = JSON.parse(source);
+  const fa = file.endsWith('manifest-fa.webmanifest');
+  assert.equal(manifest.lang, fa ? 'fa' : 'en');
+  assert.equal(manifest.dir, fa ? 'rtl' : 'ltr');
+  assert.equal(manifest.icons.length, 3);
+  const base = new URL('https://example.com/shop/' + path.relative(root, file));
+  for (const icon of manifest.icons) {
+    const url = new URL(icon.src, base);
+    assert.ok(url.pathname.startsWith('/shop/assets/'));
+    assert.ok(fs.existsSync(path.join(root, url.pathname.slice('/shop/'.length))));
+  }
+  assert.ok(new URL(manifest.start_url, base).pathname.startsWith('/shop/templates/app/'));
+  if (file.includes('/clay/')) assert.match(manifest.start_url, /tenant=clay/);
+}
+
+// Deployment overrides stay scoped to their tenant, and a live head update replaces old assets.
+const links = new Map();
+const brandContext = {
+  VF_TENANT_BRANDS: {clay: clay.brand, fern: {}},
+  VF_STORE: {
+    tenant: 'clay',
+    brandAssets: {
+      ogImage: {en: 'assets/social/og-default-en.png', fa: 'assets/social/og-default-fa.png'}
+    }
+  },
+  window: {VF_ASSET_BASE: 'https://example.com/store/'},
+  URL,
+  document: {
+    head: {
+      querySelector: selector => links.get(selector),
+      append: link => links.set(`link[rel="${link.rel}"]`, link)
+    },
+    createElement: () => ({
+      setAttribute(key, value) {
+        this[key] = value;
+      }
+    })
+  }
+};
+vm.createContext(brandContext);
+vm.runInContext(
+  fs
+    .readFileSync(path.join(root, 'templates/_shared/brand.js'), 'utf8')
+    .replace(/^import .*;\n/gm, '')
+    .replace(/^export /gm, ''),
+  brandContext
+);
+assert.equal(
+  vm.runInContext("vfBrand('clay').ogImage.en", brandContext),
+  'assets/social/og-default-en.png'
+);
+assert.equal(vm.runInContext("vfBrand('fern').ogImage", brandContext), undefined);
+vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
+assert.equal(
+  links.get('link[rel="icon"]').href,
+  'https://example.com/store/assets/tenants/clay/favicon-32.png'
+);
+vm.runInContext("vfBrandHead('fern', 'fa')", brandContext);
+assert.equal(links.size, 3);
+assert.equal(
+  links.get('link[rel="icon"]').href,
+  'https://example.com/store/assets/icons/favicon-32.png'
+);
+assert.equal(
+  links.get('link[rel="manifest"]').href,
+  'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
+);
