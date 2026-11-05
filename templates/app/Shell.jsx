@@ -216,6 +216,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             socialLinks={list(v.footer?.social)}
             visitLabel={v.shellText?.visit}
             address={v.footer?.address}
+            findUs={v.footer?.findUs}
             directionsHref={v.footer?.directions}
             directionsLabel={v.shellText?.footer?.directions}
             hours={v.shellText?.hours}

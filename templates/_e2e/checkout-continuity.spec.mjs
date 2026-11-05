@@ -55,7 +55,7 @@ for (const lang of ['en', 'fa']) {
     await expect(page.locator('#vf-last4')).toHaveValue('1234');
     await expect(page.locator('#vf-ref')).toHaveValue('567890');
     await expect(page.getByRole('contentinfo')).toContainText(
-      fa ? 'ایران، استان البرز، کرج، عظیمیه' : 'Azimiyeh, Karaj, Alborz'
+      fa ? 'البرز، کرج، عظیمیه، بلوار گلستان، پلاک ۲۴' : '24 Golestan Blvd, Azimiyeh, Karaj, Alborz'
     );
     const whatsapp = page.getByRole('radio', {
       name: fa ? 'تأیید در واتس‌اپ' : 'Confirm on WhatsApp',
