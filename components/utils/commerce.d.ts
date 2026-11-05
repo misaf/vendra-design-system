@@ -195,8 +195,9 @@ export interface Commerce {
   cutoffText(cutoff: string, persian: boolean): string;
   deliveryDays(
     cutoff: string,
-    /** sameDay: false starts the days tomorrow */
-    options: {days: number; soldOutDates?: string[]; sameDay?: boolean},
+    /** sameDay: false starts tomorrow. timeZone is the store IANA zone (omitted: device zone).
+     * Invalid zones throw RangeError. Dates are local-noon label carriers, not timestamps. */
+    options: {days: number; soldOutDates?: string[]; sameDay?: boolean; timeZone?: string},
     now?: Date
   ): DeliveryDay[];
   /** The chosen day when open, otherwise the first open day. */
@@ -205,7 +206,9 @@ export interface Commerce {
     iso: string,
     slots: SlotHours[],
     leadMinutes: number,
-    now?: Date
+    now?: Date,
+    /** Store IANA time zone; omitted uses the device zone. Invalid zones throw RangeError. */
+    timeZone?: string
   ): DeliverySlotState[];
   /** The chosen slot's start when open, otherwise the first open slot's. */
   openSlot(slots: DeliverySlotState[], chosen: string): string;

@@ -1,4 +1,4 @@
-// Sample storefront delivery rules. Amounts are in Toman; cut-offs use local time.
+// Sample storefront delivery rules. Amounts are in Toman; cut-offs use the store's time zone.
 // VF_API_DELIVERY_ZONES and VF_API_DELIVERY_SCHEDULE are sample responses shaped like the Vendra API
 // (DeliveryZone, DeliverySchedule); a live store replaces them with API data.
 // The rules themselves are in components/utils/commerce.js (also exported by the package); the vf*
@@ -93,6 +93,8 @@ export const VF_SLOTS = VF_API_DELIVERY_SCHEDULE.slots.map(slot => ({
   start: slot.startsAt.slice(0, 2),
   end: slot.endsAt.slice(0, 2)
 }));
+// Store IANA time zone, also used for delivery dates and same-day cut-offs.
+export const VF_DELIVERY_TIME_ZONE = 'Asia/Tehran';
 // A slot today stops taking orders this many minutes before it ends.
 export const VF_SLOT_LEAD_MINUTES = 120;
 // Delivery days offered, counting today. Today drops off after the zone's cut-off.
@@ -156,28 +158,21 @@ export function vfIsoDate(date) {
 // The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off; from
 // tomorrow when the store doesn't deliver the same day.
 export function vfDeliveryDays(zoneId, now = new Date(), lines = []) {
-  const sample =
-    VF_SAMPLE_SOLD_OUT_IN_DAYS == null
-      ? []
-      : [
-          vfIsoDate(
-            new Date(
-              now.getFullYear(),
-              now.getMonth(),
-              now.getDate() + VF_SAMPLE_SOLD_OUT_IN_DAYS,
-              12
-            )
-          )
-        ];
-  return commerce.deliveryDays(
-    vfZone(zoneId).cutoff,
-    {
-      days: VF_DELIVERY_DAYS,
-      soldOutDates: [...VF_SOLD_OUT_DATES, ...sample],
-      sameDay: vfFeatures().sameDay && vfBagSameDay(lines)
-    },
-    now
-  );
+  return commerce
+    .deliveryDays(
+      vfZone(zoneId).cutoff,
+      {
+        days: VF_DELIVERY_DAYS,
+        timeZone: VF_DELIVERY_TIME_ZONE,
+        soldOutDates: VF_SOLD_OUT_DATES,
+        sameDay: vfFeatures().sameDay && vfBagSameDay(lines)
+      },
+      now
+    )
+    .map(day => ({
+      ...day,
+      soldOut: day.soldOut || day.offset === VF_SAMPLE_SOLD_OUT_IN_DAYS
+    }));
 }
 
 // Every configuration in a mixed bag must be ready for same-day delivery.
@@ -210,7 +205,7 @@ export function vfDeliveryDate(delivery, now = new Date(), lines = []) {
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 export function vfDeliverySlots(iso, now = new Date()) {
-  return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now);
+  return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now, VF_DELIVERY_TIME_ZONE);
 }
 
 // The chosen slot when it is still open on the delivery day, otherwise the first open slot.

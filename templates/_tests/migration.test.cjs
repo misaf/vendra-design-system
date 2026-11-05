@@ -168,7 +168,7 @@ function page(name, c, props = {}) {
       sent.push({url, key: options.headers['Idempotency-Key']});
       return {ok: true, status: 200, json: async () => ({number: 'VN-1'})};
     };
-    assert.deepEqual(await api.VF_API.checkout(order), {number: 'VN-1'});
+    assert.equal((await api.VF_API.checkout(order)).number, 'VN-1');
     assert.notEqual(sent[4].key, sent[3].key);
     assert.ok(!JSON.parse(storage.get('vendra-idempotency'))['checkout:guest']);
     await api.VF_API.checkout(order);

@@ -39,7 +39,13 @@ export const VF_STORE = {
   analyticsUrl: null,
   occasionDates: {mothers: []}, // Published ISO dates; otherwise dates helpers estimate.
   // The simulated bank's answer to an online payment: paid, cancelled, failed or pending (VF_PAYMENT_RESULTS).
+  // Demo mode only: with an apiBase the API answers (templates/API.md B30).
   paymentDemo: {online: 'paid'},
+  // The payment gateway the backend sends online payments to, named for the customer, e.g.
+  // {en: 'Zarinpal', fa: 'زرین‌پال'}. null: none is connected yet, so a live store (apiBase set)
+  // hides online payment, since it would only reach the simulated bank (templates/API.md B30).
+  /** @type {{en: string, fa: string} | null} */
+  gateway: null,
   // Site-wide message above the header; null hides it. {delivery} becomes when an order placed now
   // arrives (with a link to the same-day designs while that's today); {freeDelivery} the free-delivery
   // threshold. `mobile` is an optional shorter version for phones, where the bar has less room.
@@ -118,7 +124,16 @@ export function vfFeatures() {
 export function vfLanguage(lang) {
   return VF_STORE.languages.includes(lang) ? lang : VF_STORE.languages[0];
 }
-// The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp.
+// Whether orders go to the store's API (VF_STORE.apiBase or VF_API.setBase), not the local demo.
+export function vfLiveStore() {
+  return typeof window !== 'undefined' && !!window.VF_API?.live;
+}
+// The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp, and
+// a live store takes online payments only through a connected gateway (VF_STORE.gateway).
 export function vfPaymentMethods() {
-  return VF_STORE.paymentMethods.filter(method => method.id !== 'whatsapp' || !!VF_STORE.whatsapp);
+  return VF_STORE.paymentMethods.filter(
+    method =>
+      (method.id !== 'whatsapp' || !!VF_STORE.whatsapp) &&
+      (method.id !== 'online' || !!VF_STORE.gateway || !vfLiveStore())
+  );
 }
