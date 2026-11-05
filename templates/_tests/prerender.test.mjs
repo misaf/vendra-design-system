@@ -8,6 +8,8 @@ import {fileURLToPath} from 'node:url';
 import {buildServer, prerenderedPage} from '../_build/prerender.mjs';
 import {storefrontRoutes} from '../_build/routes.mjs';
 import {VF_POSTS} from '../_shared/translations/journal-content.js';
+import {vfAbsoluteUrl, vfServerRender} from '../_shared/environment.js';
+import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Inside the repository, so the built entry finds React in node_modules.
@@ -121,6 +123,25 @@ try {
     missing.includes('data-vf-routing'),
     'the 404 page waits for the app to read the address'
   );
+
+  // Without VF_ORIGIN the store's own URLs start at the site root; an image on another host keeps
+  // its origin. On the server a configured apiBase makes the store live, as in the browser.
+  vfServerRender({url: '/templates/app/en/'});
+  try {
+    assert.equal(vfAbsoluteUrl('/assets/products/rose.webp'), '/assets/products/rose.webp');
+    assert.equal(
+      vfAbsoluteUrl('https://cdn.example.com/products/rose.webp'),
+      'https://cdn.example.com/products/rose.webp',
+      'external preview images keep their host'
+    );
+  } finally {
+    vfServerRender(null);
+  }
+  const apiBase = VF_STORE.apiBase;
+  VF_STORE.apiBase = 'https://api.example.com';
+  assert.equal(vfLiveStore(), true, 'the prerender sees a configured API as live');
+  VF_STORE.apiBase = apiBase;
+  assert.equal(vfLiveStore(), false);
 
   // Every route renders on the server with its heading.
   for (const route of storefrontRoutes()) await page(route.path);
