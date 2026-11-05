@@ -263,8 +263,9 @@ StorefrontSiteCheckoutNotice composes explicit title/action label/href and dismi
 retains visibility/provider placement, logic retains late-completion ownership, bag preservation and URLs.
 StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
 and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
-StorefrontContactDetails composes studio rows/actions and map/directions from explicit descriptors;
-View maps availability/callbacks and contact/shared logic retain studio values, map loading/fallback.
+StorefrontContactDetails composes studio rows (with optional opening status/detail lines), actions and
+map/directions from explicit descriptors; View maps availability/callbacks and contact/shared logic
+retain studio values, opening-hours wording on the store clock (`_shared/store-hours.js`), map loading/fallback.
 StorefrontContactFormHeading composes an explicit title as h2; View keeps it outside form/completion
 branches. Contact logic retains drafts, validation, submission and focus; layout retains placement.
 StorefrontContactFormControls composes summary, controlled fields and busy send action; View maps
