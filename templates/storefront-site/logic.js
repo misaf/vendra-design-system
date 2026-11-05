@@ -163,7 +163,7 @@ function vfSiteInitial(props) {
     route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
     if (vfReadRoute().view === 'account') replaceUrl(vfRouteUrl(route));
   }
-  return {
+  const initial = {
     customerId,
     customers: saved.customers || {},
     route: route.view,
@@ -216,6 +216,15 @@ function vfSiteInitial(props) {
     tracked: vfTrackedOrders(privateState.tracked),
     announcement: ''
   };
+  // Checkout without a bag or delivery details opens the step the customer needs straight away, as
+  // the account opens sign-in (the build's prerendered checkout is that step for a first visit).
+  const guarded = route.view === 'checkout' && vfGuardRoute(initial, route);
+  if (guarded) {
+    route = vfReadRoute(vfRouteUrl(guarded));
+    replaceUrl(vfRouteUrl(route));
+    Object.assign(initial, {route: route.view, routeInfo: route});
+  }
+  return initial;
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.

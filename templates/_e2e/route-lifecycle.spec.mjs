@@ -105,15 +105,10 @@ window.__postEvaluationFinished = true;
     });
     const response = page.waitForResponse(response => POST_CODE.test(response.url()));
     try {
-      let failure;
-      try {
-        await openSite(page, 'post', lang);
-      } catch (error) {
-        failure = error;
-      }
+      await page.goto(siteUrl('post', lang));
+      await expect.poll(() => page.evaluate(() => window.__postEvaluationStarted)).toBe(true);
+      await page.waitForTimeout(500);
       const deadlineAt = performance.now();
-      expect(failure?.message).toContain("locator('#main')");
-      expect(failure?.message).toContain('Timeout: 5000ms');
       const loaded = await response;
       expect(loaded.status()).toBe(200);
       expect(await loaded.finished()).toBeNull();
@@ -127,13 +122,17 @@ window.__postEvaluationFinished = true;
         finished: window.__postEvaluationFinished,
         statusCount: document.querySelectorAll('[role=status]').length
       }));
-      expect(deadline).toMatchObject({main: 0, lang: 'en', started: true, finished: false});
+      // In the production build the prerendered post stays in view (inert) with its language; the
+      // dev server's plain page is empty and English until the post renders.
+      const build = process.env.E2E_TARGET === 'build';
+      expect(deadline).toMatchObject({
+        main: build ? 1 : 0,
+        lang: build ? lang : 'en',
+        started: true,
+        finished: false
+      });
       await info.attach('post-evaluation-deadline', {
-        body: JSON.stringify(
-          {deadline, completed, pending: [...pending], helperFailure: failure.message},
-          null,
-          2
-        ),
+        body: JSON.stringify({deadline, completed, pending: [...pending]}, null, 2),
         contentType: 'application/json'
       });
       await page.evaluate(() => window.__releasePostEvaluation());
@@ -159,7 +158,11 @@ window.__postEvaluationFinished = true;
     try {
       await page.goto(siteUrl('shop', lang), {waitUntil: 'domcontentloaded'});
       await gate.requested;
-      await expect(page.locator('#main')).toHaveCount(0);
+      if (process.env.E2E_TARGET === 'build') {
+        // The prerendered page stays in view, taking no input until the app has it.
+        await expect(page.locator('#main')).toHaveCount(1);
+        await expect(page.locator('#root')).toHaveAttribute('inert', '');
+      } else await expect(page.locator('#main')).toHaveCount(0);
       await record(page, info, 'initial-module-held');
       await gate.complete();
       await expect(page.locator('.vf-shop-product-grid')).toBeVisible();

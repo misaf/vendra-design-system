@@ -199,9 +199,11 @@ and preview URLs; without it they start at the site root. CI's Pages build sets 
 Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
 customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
 is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`
-key in storage. Otherwise (a returning visitor, a query, the 404 page) it removes that markup at
-once and renders the page as before (`createRoot`; `window.VF_RENDERED` says which), so nothing
-types into a form that is about to be replaced.
+key in storage. Otherwise (a returning visitor, a query, the 404 page) it renders the page in its
+place as before (`createRoot`; `window.VF_RENDERED` says which). Either way the prerendered page
+stays in view while the app loads but is `inert` (and, when it will be replaced, its controls are
+disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
+does not have yet. The app does not set `inert` without scripts, so links keep working then.
 Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
 `_shared/environment.js`), and the page renders again at the real time once it has mounted, so
 delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock

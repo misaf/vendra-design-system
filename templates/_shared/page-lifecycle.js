@@ -41,6 +41,8 @@ export function useStorefrontPage(page) {
       // Hydrated at the moment the build rendered this page: render again at the real time, so
       // delivery days and cut-offs are the visitor's (environment.js vfNow).
       if (vfHoldClock(null)) page.setState({});
+      // The app has the page: it takes clicks and typing again (app/main.jsx).
+      document.getElementById('root')?.removeAttribute('inert');
       const route = vfPageRoute(page.props);
       const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
         page._vfPage
