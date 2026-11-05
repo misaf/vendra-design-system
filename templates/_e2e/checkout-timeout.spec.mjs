@@ -18,9 +18,16 @@ async function delivery(page, fa) {
   await expect(page.locator('.vf-checkout-summary')).toBeVisible();
 }
 
-for (const lang of ['en', 'fa']) {
+// 'stall': the first checkout never answers and times out. 'pending': the server answers 409,
+// meaning the first request with this key is still running there.
+for (const [lang, first] of [
+  ['en', 'stall'],
+  ['fa', 'stall'],
+  ['en', 'pending'],
+  ['fa', 'pending']
+]) {
   const fa = lang === 'fa';
-  test(`a stalled checkout times out unconfirmed and the retry reuses its key (${lang})`, async ({
+  test(`an unanswered checkout (${first}) stays unconfirmed and the retry reuses its key (${lang})`, async ({
     page
   }) => {
     await page.clock.install({time: MORNING});
@@ -37,6 +44,8 @@ for (const lang of ['en', 'fa']) {
       if (request.method() !== 'POST' || !new URL(request.url()).pathname.endsWith('/checkout'))
         return route.fulfill({json: {}});
       requests.push({key: request.headers()['idempotency-key'], body: request.postDataJSON()});
+      if (requests.length === 1 && first === 'pending')
+        return route.fulfill({status: 409, json: {detail: 'In progress'}});
       if (requests.length === 1) {
         await held;
         return route.fulfill({json: null}).catch(() => {});
@@ -45,18 +54,22 @@ for (const lang of ['en', 'fa']) {
     });
     await page.evaluate(() => window.VF_API.setBase('/__slow-checkout-api'));
     try {
-      await page
-        .getByRole('radio', {name: fa ? 'پرداخت در محل' : 'Pay on delivery', exact: true})
-        .press('Space');
+      const cod = page.getByRole('radio', {
+        name: fa ? 'پرداخت در محل' : 'Pay on delivery',
+        exact: true
+      });
+      await cod.press('Space');
       const place = () => visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order');
       await place().click();
       await expect.poll(() => requests.length).toBe(1);
       expect(requests[0].key).toMatch(/^[0-9a-f-]{36}$/);
-      await expect(place()).toBeDisabled();
-      // Just before the write timeout nothing has changed; at it, the page stops waiting.
-      await page.clock.runFor(19000);
-      await expect(place()).toBeDisabled();
-      await page.clock.runFor(1500);
+      if (first === 'stall') {
+        await expect(place()).toBeDisabled();
+        // Just before the write timeout nothing has changed; at it, the page stops waiting.
+        await page.clock.runFor(19000);
+        await expect(place()).toBeDisabled();
+        await page.clock.runFor(1500);
+      }
       const unconfirmed = page
         .getByRole('alert')
         .filter({hasText: fa ? 'ثبت سفارش شما تأیید نشد' : 'We couldn’t confirm your order'});
@@ -68,6 +81,8 @@ for (const lang of ['en', 'fa']) {
       await expect(
         visibleButton(page, fa ? 'انتخاب روش دیگر' : 'Choose another method')
       ).toHaveCount(0);
+      const methods = page.getByRole('radiogroup').filter({has: cod}).getByRole('radio');
+      for (const radio of await methods.all()) await expect(radio).toBeDisabled();
       await expect
         .poll(() => page.evaluate(() => window.__vfSite.state.checkoutPending))
         .toBe(false);
@@ -75,6 +90,9 @@ for (const lang of ['en', 'fa']) {
       expect(await scanAxe(page)).toEqual([]);
       await visibleButton(page, fa ? 'تلاش دوباره' : 'Try again').click();
       await expect(unconfirmed).toHaveCount(0);
+      // Retrying keeps the method as sent until an attempt is answered.
+      await expect(cod).toBeChecked();
+      await expect(cod).toBeDisabled();
       await place().click();
       await expect.poll(() => requests.length).toBe(2);
       expect(requests[1].key).toBe(requests[0].key);

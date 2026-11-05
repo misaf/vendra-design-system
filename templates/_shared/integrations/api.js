@@ -100,8 +100,12 @@ import {VF_STORE} from '../store-config.js';
     const x = [...b].map(v => v.toString(16).padStart(2, '0')).join('');
     return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20)}`;
   };
+  // This page's keys, the source of truth whenever the last write to storage failed (for example a
+  // full quota), so a retry on this page still reuses its key.
   const memoryKeys = {};
+  let stored = true;
   const readKeys = () => {
+    if (!stored) return {...memoryKeys};
     try {
       return JSON.parse(localStorage.getItem(KEYS) || '{}') || {};
     } catch {
@@ -113,7 +117,10 @@ import {VF_STORE} from '../store-config.js';
     Object.assign(memoryKeys, keys);
     try {
       localStorage.setItem(KEYS, JSON.stringify(keys));
-    } catch {}
+      stored = true;
+    } catch {
+      stored = false;
+    }
   };
   A.idempotencyKey = (scope, body) => {
     const fingerprint = hash(JSON.stringify(body ?? null));
