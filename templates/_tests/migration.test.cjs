@@ -173,6 +173,26 @@ function page(name, c, props = {}) {
     assert.ok(!JSON.parse(storage.get('vendra-idempotency'))['checkout:guest']);
     await api.VF_API.checkout(order);
     assert.notEqual(sent[5].key, sent[4].key);
+    // A full storage quota: the write fails while reads still work, so this page keeps its own key.
+    {
+      const setItem = api.localStorage.setItem,
+        confirming = api.fetch;
+      api.localStorage.setItem = (k, v) => {
+        if (k === 'vendra-idempotency') throw new Error('QuotaExceededError');
+        return setItem(k, v);
+      };
+      api.fetch = async (url, options) => {
+        sent.push({url, key: options.headers['Idempotency-Key']});
+        throw new TypeError('Failed to fetch');
+      };
+      const full = {...order, paymentReference: '9999 01'};
+      await assert.rejects(api.VF_API.checkout(full));
+      await assert.rejects(api.VF_API.checkout(full));
+      assert.equal(sent.at(-1).key, sent.at(-2).key);
+      api.localStorage.setItem = setItem;
+      api.fetch = confirming;
+      sent.splice(-2);
+    }
     // Inquiries are keyed as well; reads are not, and use the shorter read timeout.
     await api.VF_API.inquiry({name: 'Shirin', message: 'Hello'});
     assert.match(sent[6].url, /\/api\/support\/inquiries$/);
