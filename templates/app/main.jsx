@@ -45,7 +45,10 @@ const prerendered =
 // will be replaced are disabled as well, since some tools type into inert fields.
 // Markup prerendered in another theme than this preview's (?tenant=) goes at once: its colours
 // would show before the app re-renders it in this one.
-if (!prerendered && container.querySelector('[data-tenant]')?.dataset.tenant !== vfTenant())
+if (
+  !prerendered &&
+  container.querySelector('[data-tenant]')?.getAttribute('data-tenant') !== vfTenant()
+)
   container.replaceChildren();
 if (container.firstChild) {
   container.inert = true;
