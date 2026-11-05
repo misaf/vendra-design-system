@@ -14,7 +14,7 @@ import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteParams} from '../_shared/routing.js';
-import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
+import {VF_STORE, vfFeatures, vfLiveStore} from '../_shared/store-config.js';
 import {
   vfBalanceDiscountOn,
   vfTopUpAmount,
@@ -358,6 +358,9 @@ function vals(page) {
       amount: S.m(wallet.balance),
       eligible: vfBalanceDiscountOn(wallet.balance),
       status: fill(vfBalanceDiscountOn(wallet.balance) ? W.eligible : W.progress),
+      // The balance is kept in this browser (wallet.js), so a live store can't take top-ups until
+      // its server keeps the balance and confirms each top-up with the gateway (templates/API.md B30).
+      canTopUp: !vfLiveStore(),
       presets: rules.topUps.map(value => ({
         label: S.m(value),
         pressed: amount === value,
@@ -371,7 +374,7 @@ function vals(page) {
       payLabel: amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
       done: s.topUpDone,
       submit: () => {
-        if (s.topUpBusy) return;
+        if (s.topUpBusy || vfLiveStore()) return;
         const error = vfTopUpError(amount);
         if (error) {
           page.setState({topUpError: error, topUpDone: ''});

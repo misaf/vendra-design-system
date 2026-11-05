@@ -1,6 +1,6 @@
 # StorefrontCheckoutBank
 
-Composes noninteractive checkout progress and PaymentStatus from explicit progress, payment and action descriptors. Preserves fragment order with no added DOM wrapper, current index/formatters, status/amount/order/redirect/support props, retry/other/check-again callbacks and headingLevel 1. The layout retains the bank wrapper; retry-review/storage notices remain outside it.
+Composes noninteractive checkout progress and PaymentStatus from explicit progress, payment and action descriptors. Preserves fragment order with no added DOM wrapper, current index/formatters, status/amount/order/reference/gateway/redirect/support props, retry/other/check-again callbacks and headingLevel 1. The layout retains the bank wrapper; retry-review/storage notices remain outside it.
 
 View/logic retain bank visibility, status interpretation, recovery records, redirect data, retry eligibility, method switching, verification, completion and persistence. PaymentStatus retains its existing redirect form/timer, status heading focus, localized copy, support link and result tracking. No page model, state/effects, browser APIs or payment rules belong here.
 

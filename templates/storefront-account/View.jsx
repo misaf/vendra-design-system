@@ -46,26 +46,30 @@ export function View({v}) {
                     amount: v.balance?.amount,
                     status: v.balance?.status
                   }}
-                  topUp={{
-                    title: v.t?.balance?.topUp,
-                    quickLabel: v.t?.balance?.quick,
-                    presets: list(v.balance?.presets),
-                    amount: {
-                      label: v.t?.balance?.amount,
-                      value: v.balance?.value,
-                      onChange: v.balance?.set,
-                      hint: v.balance?.hint,
-                      error: v.balance?.error
-                    },
-                    payment: {
-                      label: v.balance?.payLabel,
-                      onClick: v.balance?.submit,
-                      busy: v.balance?.busy,
-                      processing: v.t?.balance?.processing,
-                      done: v.balance?.done
-                    },
-                    demo: v.t?.balance?.demo
-                  }}
+                  topUp={
+                    v.balance?.canTopUp
+                      ? {
+                          title: v.t?.balance?.topUp,
+                          quickLabel: v.t?.balance?.quick,
+                          presets: list(v.balance?.presets),
+                          amount: {
+                            label: v.t?.balance?.amount,
+                            value: v.balance?.value,
+                            onChange: v.balance?.set,
+                            hint: v.balance?.hint,
+                            error: v.balance?.error
+                          },
+                          payment: {
+                            label: v.balance?.payLabel,
+                            onClick: v.balance?.submit,
+                            busy: v.balance?.busy,
+                            processing: v.t?.balance?.processing,
+                            done: v.balance?.done
+                          },
+                          demo: v.t?.balance?.demo
+                        }
+                      : null
+                  }
                   checkoutReturn={
                     v.checkoutReturn
                       ? {href: v.checkoutHref, label: v.t.balance.backToCheckout}

@@ -8,7 +8,7 @@ export function StorefrontAccountBalancePanel({overview, topUp, checkoutReturn, 
   return (
     <div className="vf-account-balance tw:flex tw:flex-col tw:gap-6 tw:max-w-wide">
       <StorefrontAccountBalanceOverview {...overview} />
-      <StorefrontAccountTopUp {...topUp} />
+      {topUp && <StorefrontAccountTopUp {...topUp} />}
       {checkoutReturn && (
         <DS.Button variant="secondary" href={checkoutReturn.href} iconStart="arrow-left">
           {checkoutReturn.label}

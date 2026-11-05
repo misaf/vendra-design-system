@@ -315,6 +315,54 @@ const orderFromApi = (order, { line, delivery, method, preferredLocale }) => ({
 	last4: order.paymentReference,
 	preferredLocale
 });
+// Where a payment gateway expects the browser, as the backend gives it: {url, method, fields}, with
+// `method` GET or POST (Shaparak gateways take a POSTed form). null unless `url` is an http(s) address.
+const gatewayRedirect = (value) => {
+	if (!value || typeof value.url !== "string" || !/^https?:\/\//i.test(value.url)) return null;
+	const fields = value.fields && typeof value.fields === "object" && !Array.isArray(value.fields) ? Object.fromEntries(Object.entries(value.fields).filter(([, field]) => field != null).map(([name, field]) => [name, String(field)])) : {};
+	return {
+		url: value.url,
+		method: String(value.method || "GET").toUpperCase() === "POST" ? "POST" : "GET",
+		fields
+	};
+};
+// The created order from a Checkout result (POST /api/sales/checkout): its `number`, its totals as
+// the storefront shows them and, for an online payment, where to send the browser (`payment`). The
+// order may be the result itself or its `order`; parts the result doesn't carry are null.
+const checkoutResultFromApi = (result) => {
+	const order = result && typeof result === "object" && (result.order || result) || {};
+	const amounts = [
+		order.itemsAmount,
+		order.deliveryAmount,
+		order.totalAmount
+	];
+	return {
+		number: typeof order.number === "string" && order.number ? order.number : null,
+		totals: amounts.every(Number.isFinite) ? {
+			sub: order.itemsAmount,
+			fee: order.deliveryAmount,
+			discount: order.itemsAmount + order.deliveryAmount - order.totalAmount,
+			total: order.totalAmount
+		} : null,
+		redirect: gatewayRedirect(result && (result.payment || result.order && result.order.payment))
+	};
+};
+// Order.paymentStatus under PaymentStatus's states. `awaiting` and `unconfirmed` (money taken but
+// not verified with the bank yet) are both `pending`: the customer is told not to pay again.
+const PAYMENT_STATUS = {
+	awaiting: "pending",
+	unconfirmed: "pending",
+	paid: "paid",
+	cancelled: "cancelled",
+	failed: "failed"
+};
+// An order's online payment as the backend reports it: {status, reference (the bank's tracking code),
+// amount (paid)}. An unknown or missing status is `pending`, never `paid`.
+const paymentFromApi = (order) => ({
+	status: order && PAYMENT_STATUS[order.paymentStatus] || "pending",
+	reference: order && typeof order.paymentTrackingCode === "string" && order.paymentTrackingCode ? order.paymentTrackingCode : null,
+	amount: order && Number.isFinite(order.paidAmount) ? order.paidAmount : null
+});
 // The optional parts of a storefront; like its payment methods, a store turns each on by listing it:
 // - promoCodes: the bag's promo-code field and its discount.
 // - sameDay: delivery today, until each zone's cut-off (off: the first day is tomorrow).
@@ -426,6 +474,10 @@ export const commerce = {
 	lineFromApi,
 	ORDER_STATUS,
 	orderFromApi,
+	gatewayRedirect,
+	checkoutResultFromApi,
+	PAYMENT_STATUS,
+	paymentFromApi,
 	STORE_FEATURES,
 	storeFeatures,
 	PAYMENT_METHODS,
