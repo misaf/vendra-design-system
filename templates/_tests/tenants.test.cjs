@@ -184,3 +184,10 @@ assert.equal(
   links.get('link[rel="manifest"]').href,
   'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
 );
+
+// Prerendered builds use origin-relative bases at the root and under a deployment prefix.
+for (const base of ['/', '/store/']) {
+  brandContext.vfAssetBase = () => base;
+  vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
+  assert.equal(links.get('link[rel="icon"]').href, base + 'assets/tenants/clay/favicon-32.png');
+}

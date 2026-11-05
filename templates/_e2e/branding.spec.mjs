@@ -36,7 +36,6 @@ for (const lang of ['en', 'fa']) {
       'content',
       new RegExp(`/clay/og-${lang}.png$`)
     );
-    // The manifest link follows the asset base, so it may be relative to the page.
     const manifestUrl = new URL(
       await page.locator('link[rel=manifest]').getAttribute('href'),
       page.url()
