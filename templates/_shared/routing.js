@@ -75,10 +75,13 @@ export function vfReadRoute(search = location.search) {
     route.lines = query.get('lines');
   if (route.view === 'saved' && VF_SAVED_IDS_PATTERN.test(query.get('ids') || ''))
     route.ids = query.get('ids');
-  // Back from the bank's payment page (?view=checkout&payment=return&order=VN-…). The sample store's
-  // simulated bank adds its answer as `result`; a live store asks the API for the payment instead.
+  // Back from the bank's payment page (?view=checkout&payment=return&order=<number>, API.md B30). The
+  // order is the server's number (letters, digits and dashes). The sample store's simulated bank adds
+  // its answer as `result`; a live store ignores it and asks the API for the payment instead.
   if (route.view === 'checkout' && query.get('payment') === 'return') {
-    route.paymentOrder = /^VN-\d{1,16}$/.test(query.get('order') || '') ? query.get('order') : '';
+    route.paymentOrder = /^[A-Za-z0-9][A-Za-z0-9-]{0,39}$/.test(query.get('order') || '')
+      ? query.get('order')
+      : '';
     route.paymentResult = VF_PAYMENT_RESULTS.includes(query.get('result'))
       ? query.get('result')
       : 'pending';
