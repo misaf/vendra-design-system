@@ -200,6 +200,29 @@ export function usePage(props) {
     page.state = vfSiteInitial(page.props);
     page._savedEdits = new Map();
     page._savedLoading = false;
+    // Load failures and individual product failures have independent recovery ownership.
+    page._savedSyncErrors = new Set();
+    page._savedWriteVersions = new Map();
+    page._savedWriteSettled = new Map();
+    page.savedSyncError = (key, failed, announce = false) => {
+      if (failed) page._savedSyncErrors.add(key);
+      else page._savedSyncErrors.delete(key);
+      const patch = {integrationError: page._savedSyncErrors.size > 0};
+      if (failed && announce) {
+        page._savedErrorAnnouncement =
+          page.state.lang === 'fa'
+            ? 'ذخیره در سرور انجام نشد؛ فهرست محلی حفظ شد.'
+            : 'Server sync failed; your local saved list is kept.';
+        patch.announcement = page._savedErrorAnnouncement;
+      } else if (
+        !patch.integrationError &&
+        page.state.announcement === page._savedErrorAnnouncement
+      ) {
+        patch.announcement = '';
+      }
+      page.setState(patch);
+    };
+
     page.syncCustomer = ({continueCheckout = false} = {}) => {
       const customerId = vfCustomerId(),
         current = page.state;
@@ -304,13 +327,10 @@ export function usePage(props) {
               const merged = new Set(saved);
               page._savedEdits.forEach((keep, id) => (keep ? merged.add(id) : merged.delete(id)));
               page.setState({saved: [...merged]});
+              page.savedSyncError(null, false);
             }
           })
-          .catch(() =>
-            page.setState({
-              integrationError: true
-            })
-          )
+          .catch(() => page.savedSyncError(null, true))
           .finally(() => {
             page._savedLoading = false;
             page._savedEdits.clear();
@@ -626,14 +646,19 @@ function vals(page) {
           window.VF_TRACK.event('add_to_wishlist', {
             items: [window.VF_TRACK.item(vfProduct(id))]
           });
-        return (removing ? window.VF_API.unsaveItem(id) : window.VF_API.saveItem(id)).catch(() =>
-          page.setState({
-            integrationError: true,
-            announcement:
-              page.state.lang === 'fa'
-                ? 'ذخیره در سرور انجام نشد؛ فهرست محلی حفظ شد.'
-                : 'Server sync failed; your local saved list is kept.'
-          })
+        const version = (page._savedWriteVersions.get(id) || 0) + 1;
+        page._savedWriteVersions.set(id, version);
+        const settle = failed => {
+          if (version < (page._savedWriteSettled.get(id) || 0)) return;
+          page._savedWriteSettled.set(id, version);
+          page.savedSyncError(id, failed, failed);
+        };
+        return (removing ? window.VF_API.unsaveItem(id) : window.VF_API.saveItem(id)).then(
+          result => {
+            // Demo mode, a missing server handle, or an empty response is not confirmed recovery.
+            if (result != null) settle(false);
+          },
+          () => settle(true)
         );
       },
       setSaved: ids => {
