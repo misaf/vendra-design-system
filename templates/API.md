@@ -92,3 +92,12 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 34. **Large photos for the counter presentation.** The presentation page (`?view=presentation`) shows one product photo across a whole tablet or TV screen, which is larger than the 1600 px top width in 9. Add a 2400 px width (the original format plus AVIF and WebP) to each product photo's candidates, so the full-screen photos stay sharp on high-density screens and the cards still load the small ones.
 35. **Stock for screens that stay open.** The counter presentation asks `GET /api/catalog/products?itemsPerPage=200` every two minutes for each product's `inStock` (`VF_API.loadStock`), so a design that sells out during the day shows as sold out. A filter for products changed since a time (for example `updatedAt[after]`) would let it ask for the changes only. A server-sent event or webhook for stock changes would make the request unnecessary.
 36. **A bag handed over from the counter.** The presentation hands the customer's order to their phone as a link carrying the lines (`?view=bag&lines=VF-7K2M4Q.classic.card.1`); prices come from the catalog when it opens. That needs nothing from the API. A server-side cart that the seller fills and the customer opens by a short token (for example `POST /api/sales/carts` returning `cartToken`, which checkout already takes) would let the seller see the order arrive and keep the link short.
+
+### Repeated requests
+37. **Idempotency keys.** `POST /api/sales/checkout` and `POST /api/support/inquiries` carry an `Idempotency-Key` header (a UUID). The storefront reuses the key when it resends the same body (after a timeout, a lost connection, a reload or from another tab) and makes a new one when the body changes or the server has confirmed. The backend should:
+    - store the key with the result for at least 24 hours, per endpoint (and per customer when signed in);
+    - return the stored status and body for a repeated key with the same body, without creating a second order or inquiry, charging or sending messages again;
+    - answer `409` while the first request with that key is still running, and `422` when the key comes with a different body;
+    - list `Idempotency-Key` in `Access-Control-Allow-Headers` (the requests already need a CORS preflight for their JSON body).
+
+    The client gives up after 10 s for reads and 20 s for writes (`VF_API.timeouts`). After a timeout or a lost connection, checkout says the order couldn't be confirmed and to check messages before trying again; the retry sends the same key.

@@ -21,6 +21,8 @@ function environment() {
       return timers.length;
     },
     clearTimeout() {},
+    AbortController,
+    crypto: globalThis.crypto,
     localStorage: {
       getItem: k => storage.get(k) || null,
       setItem: (k, v) => storage.set(k, v),
@@ -103,6 +105,94 @@ function page(name, c, props = {}) {
     await assert.rejects(failed, /Temporary failure/);
     await retry;
     assert.equal(JSON.parse(storage.get('vendra-saved-map'))['VF-8RD5WN'], 803);
+  }
+  // A stalled request gives up with a distinct timeout, and resending the same order reuses its
+  // Idempotency-Key until the server confirms it, so a lost answer never places it twice.
+  {
+    const {c: api, storage, timers} = environment();
+    api.VF_API.setBase('https://example.test');
+    const order = {cartToken: '', gateway: 'card', paymentReference: '1234 77'};
+    const sent = [];
+    api.fetch = (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return new Promise((resolve, reject) =>
+        options.signal.addEventListener('abort', () =>
+          reject(new Error('The operation was aborted'))
+        )
+      );
+    };
+    const stalled = api.VF_API.checkout(order);
+    assert.equal(timers.length, 1, 'the request sets its timeout at once');
+    timers.at(-1)();
+    await assert.rejects(stalled, error => error.kind === 'timeout');
+    assert.match(
+      sent[0].key,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    );
+    assert.ok(
+      !storage.get('vendra-idempotency').includes('1234'),
+      'only a hash of the body is kept'
+    );
+    // A reload or another tab reads the same stored key; a network failure keeps it too.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      throw new TypeError('Failed to fetch');
+    };
+    await assert.rejects(api.VF_API.checkout({...order}), error => error.kind === 'network');
+    assert.equal(sent[1].key, sent[0].key);
+    // Offline before sending: nothing reached the server, and the failure says so.
+    api.navigator = {onLine: false};
+    await assert.rejects(api.VF_API.checkout(order), error => error.kind === 'offline');
+    delete api.navigator;
+    sent.pop();
+    // The server's error answer keeps the key too, and says what it was.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: false, status: 503, json: async () => ({detail: 'busy'})};
+    };
+    await assert.rejects(
+      api.VF_API.checkout(order),
+      error => error.kind === 'http' && error.status === 503 && error.body.detail === 'busy'
+    );
+    assert.equal(sent[2].key, sent[0].key);
+    // A different order (another payment reference) is a new request with a new key.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: false, status: 500, json: async () => null};
+    };
+    await assert.rejects(api.VF_API.checkout({...order, paymentReference: '1234 78'}));
+    assert.notEqual(sent[3].key, sent[0].key);
+    // Back to the first order: once the server confirms it, the key is dropped, so placing the same
+    // bag again later is a new order.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: true, status: 200, json: async () => ({number: 'VN-1'})};
+    };
+    assert.deepEqual(await api.VF_API.checkout(order), {number: 'VN-1'});
+    assert.notEqual(sent[4].key, sent[3].key);
+    assert.ok(!JSON.parse(storage.get('vendra-idempotency'))['checkout:guest']);
+    await api.VF_API.checkout(order);
+    assert.notEqual(sent[5].key, sent[4].key);
+    // Inquiries are keyed as well; reads are not, and use the shorter read timeout.
+    await api.VF_API.inquiry({name: 'Shirin', message: 'Hello'});
+    assert.match(sent[6].url, /\/api\/support\/inquiries$/);
+    assert.ok(sent[6].key);
+    const before = timers.length;
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: true, status: 200, json: async () => ({member: []})};
+    };
+    let delay;
+    const setTimeoutBefore = api.setTimeout;
+    api.setTimeout = (callback, ms) => {
+      delay = ms;
+      return setTimeoutBefore(callback, ms);
+    };
+    await api.VF_API.loadStock();
+    api.setTimeout = setTimeoutBefore;
+    assert.equal(sent.at(-1).key, undefined);
+    assert.equal(delay, api.VF_API.timeouts.read);
+    assert.equal(timers.length, before + 1);
   }
   const {c, timers} = environment();
   vm.runInContext("vfAccountLogin('۰۹۱۲۳۴۵۶۷۸۹','fa')", c);
