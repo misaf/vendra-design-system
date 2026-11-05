@@ -1,4 +1,5 @@
 // Bilingual account copy.
+import {VF_CURRENCY_NAME} from '../_shared/formatting.js';
 import {VF_PIN_COPY} from '../_shared/translations/location.js';
 export function vfCopy(S) {
   const n = S.n;
@@ -18,7 +19,7 @@ export function vfCopy(S) {
           'Keep a balance of {from} or more and get {percent}% off products when you pay from it. {left} to go.',
         topUp: 'Top up',
         quick: 'Quick amounts',
-        amount: 'Amount (Toman)',
+        amount: 'Amount (' + VF_CURRENCY_NAME(false) + ')',
         amountHint: 'From {min} to {max}.',
         pay: 'Top up {amount}',
         processing: 'Processing demo payment…',
@@ -99,7 +100,7 @@ export function vfCopy(S) {
           'با موجودی {from} یا بیشتر، هنگام پرداخت از کیف پول {percent}٪ تخفیف محصولات بگیرید. {left} مانده است.',
         topUp: 'افزایش موجودی',
         quick: 'مبلغ‌های آماده',
-        amount: 'مبلغ (تومان)',
+        amount: 'مبلغ (' + VF_CURRENCY_NAME(true) + ')',
         amountHint: 'از {min} تا {max}.',
         pay: 'افزایش موجودی {amount}',
         processing: 'در حال انجام پرداخت نمونه…',

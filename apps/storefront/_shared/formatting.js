@@ -10,6 +10,27 @@ export const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷
 export function vfLatin(value) {
   return commerce.latin(value);
 }
+// The active currency's entry in the store's table ({rate, decimals, symbol, en, fa}).
+const vfCurrency = () => VF_STORE.currencies[VF_STORE.currency];
+// The active currency's name, for text that names the unit without an amount ("Amount (Toman)").
+export const VF_CURRENCY_NAME = fa => vfCurrency()[fa ? 'fa' : 'en'];
+// An amount typed in the active currency (any digits; a decimal point only when it has decimals), as
+// whole Toman for storage; '' when nothing is typed.
+export function vfAmountFromInput(text) {
+  const currency = vfCurrency();
+  const typed = vfLatin(text || '').replace(/٫/g, '.');
+  const value = currency.decimals
+    ? typed.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '')
+    : typed.replace(/\D/g, '');
+  return value && value !== '.' ? Math.round(+value / currency.rate) : '';
+}
+// The keyboard for an amount field: one with a decimal point when the active currency has decimals.
+export const vfAmountInputMode = () => (vfCurrency().decimals ? 'decimal' : 'numeric');
+// A Toman amount written for an input in the active currency (the reverse of vfAmountFromInput).
+export const vfAmountToInput = toman => {
+  const currency = vfCurrency();
+  return String(+(toman * currency.rate).toFixed(currency.decimals));
+};
 export const VF_MONEY = (n, fa) =>
   format.money(n, {
     lang: fa ? 'fa' : 'en',

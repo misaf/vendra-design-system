@@ -26,7 +26,7 @@ export function StorefrontAccountTopUp({title, quickLabel, presets, amount, paym
         onChange={amount.onChange}
         hint={amount.hint}
         error={amount.error}
-        inputMode="numeric"
+        inputMode={amount.inputMode || 'numeric'}
         dir="ltr"
         autoComplete="off"
       />

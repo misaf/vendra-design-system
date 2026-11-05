@@ -23,10 +23,12 @@ import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
+// The "under" quick filter's price limit, in Toman.
+const VF_UNDER_PRICE = 3000000;
 /** @type {[string, (product: any) => boolean][]} */
 const VF_CHIPS = [
   ['ready', p => vfReady(p)],
-  ['under3', p => p.price < 3000000],
+  ['under3', p => p.price < VF_UNDER_PRICE],
   ['same', p => p.same],
   ['roses', p => p.roses]
 ];
@@ -306,7 +308,7 @@ function vals(page) {
     chips: VF_CHIPS.filter(([id]) => id !== 'same' || vfFeatures().sameDay).map(([id]) => {
       const on = s.chips.includes(id);
       return {
-        label: C.chipLabels[id],
+        label: C.chipLabels[id].replace('{price}', S.m(VF_UNDER_PRICE)),
         on,
         toggle: () => {
           filterUsed(id, undefined, !on);

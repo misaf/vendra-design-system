@@ -55,6 +55,7 @@ export function View({v}) {
                           amount: {
                             label: v.t?.balance?.amount,
                             value: v.balance?.value,
+                            inputMode: v.balance?.inputMode,
                             onChange: v.balance?.set,
                             hint: v.balance?.hint,
                             error: v.balance?.error
