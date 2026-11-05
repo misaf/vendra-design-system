@@ -33,6 +33,7 @@ import {
   vfWalletOf
 } from '../_shared/wallet.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
@@ -201,7 +202,7 @@ function vals(page) {
   const receiptChanged =
     method === 'card' && !!(s.last4 || s.ref) && s.receiptAmount !== totals.total;
   const slotLabel = vfDeliveryWhen(
-    {...delivery, date: delivery.date || vfDeliveryDate(delivery, new Date(), items)},
+    {...delivery, date: delivery.date || vfDeliveryDate(delivery, vfNow(), items)},
     fa
   );
   const fillWallet = (text, amount) =>

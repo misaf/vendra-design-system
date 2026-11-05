@@ -152,6 +152,11 @@ function vals(page) {
   const quantity = Math.min(s.qty, Math.max(1, remaining));
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
+  // Link previews show the product's photo and its description (page-lifecycle.js vfPageHead).
+  page.head = {
+    image: vfProductImage(product, L).src,
+    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0]
+  };
   return {
     ...S,
     t: {

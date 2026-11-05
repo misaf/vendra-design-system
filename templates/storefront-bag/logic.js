@@ -47,6 +47,7 @@ import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js
 import {vfDayMonth, vfDayName, vfSlotLabel, vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // Two checkout steps share this page: the bag (bag/) and delivery details (bag/?step=delivery).
 // The page: its state (applied at once, as the logic reads it back), effects and the values
@@ -128,9 +129,9 @@ function vals(page) {
   const totals = vfTotals(live.filter(vfLineAvailable), delivery);
   const {sub, total} = totals;
   const z = vfZone(delivery.zone);
-  const date = vfDeliveryDate(delivery, new Date(), live);
-  const slot = vfDeliverySlot(delivery, new Date(), live);
-  const deliveryChanged = vfDeliveryChanged(delivery, new Date(), live);
+  const date = vfDeliveryDate(delivery, vfNow(), live);
+  const slot = vfDeliverySlot(delivery, vfNow(), live);
+  const deliveryChanged = vfDeliveryChanged(delivery, vfNow(), live);
   const quoted = vfDeliveryQuoted(delivery);
   const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
   const displayedTotal = quoted ? total : total - totals.fee;
@@ -469,7 +470,7 @@ function vals(page) {
       value: zone.id,
       label: zoneLabel(zone)
     })),
-    days: vfDeliveryDays(delivery.zone, new Date(), live).map(day => {
+    days: vfDeliveryDays(delivery.zone, vfNow(), live).map(day => {
       const off = day.soldOut || day.pastCutoff;
       return {
         label: vfDayName(day, fa),

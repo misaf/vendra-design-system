@@ -109,6 +109,7 @@ const sharedLogic =
   scoped('analytics', '../components/utils/analytics.js') +
   scoped('dates', '../components/utils/dates.js') +
   scoped('format', '../components/utils/format.js') +
+  strip(read('_shared/environment.js')) +
   scoped('VF_SEO', '_shared/seo.js') +
   scoped('VF_NAV', '_shared/page-focus.js') +
   'const VF_TENANT_SLUGS = ' +

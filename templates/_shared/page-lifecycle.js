@@ -8,10 +8,11 @@ import {VF_SHELL} from './translations/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
+import {vfAssetBase, vfHoldClock, vfLocation, vfOnServer, vfServerPage} from './environment.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {
-  const asked = new URLSearchParams(location.search).get('tenant');
+  const asked = vfLocation().searchParams.get('tenant');
   if (VF_TENANT_SLUGS.includes(asked)) return asked;
   return VF_TENANT_SLUGS.includes(VF_STORE.tenant) ? VF_STORE.tenant : 'default';
 }
@@ -24,17 +25,22 @@ export function vfPageTenant(props) {
 }
 
 // Asks app/theme.js to load this tenant's stylesheet, and only that one. The loader
-// arrives asynchronously, so whichever of the two runs second does the loading.
+// arrives asynchronously, so whichever of the two runs second does the loading. The build's prerender
+// links the store's own theme in the page instead.
 export function vfApplyTenant(tenant) {
-  if (window.VF_TENANT === tenant) return;
+  if (vfOnServer() || window.VF_TENANT === tenant) return;
   window.VF_TENANT = tenant;
   if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
 }
 // What every storefront page does around its own logic: send the page-view analytics event, and once each render settles set the document language and
 // direction, move focus to a new heading and announce it, and update <head> (title, alternates).
 export function useStorefrontPage(page) {
+  vfServerPage(page);
   useLifecycle(page, {
     didMount() {
+      // Hydrated at the moment the build rendered this page: render again at the real time, so
+      // delivery days and cut-offs are the visitor's (environment.js vfNow).
+      if (vfHoldClock(null)) page.setState({});
       const route = vfPageRoute(page.props);
       const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
         page._vfPage
@@ -83,24 +89,37 @@ function vfAnnounce(page) {
         });
     }
     window.VF_VIEWED = true;
-    const url = location.href;
-    VF_SEO.syncHead({
-      title: title + ' · ' + VF_SHELL[lang].brand,
-      description: title,
-      url,
-      locale: lang,
-      noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',
-      alternates: Object.fromEntries(
-        VF_STORE.languages.map(lang => [
-          lang,
-          vfRouteUrl({
-            ...VF_ROUTE_EXTRA[page._vfPage],
-            ...vfPageRoute(page.props),
-            view: page._vfPage,
-            lang
-          })
-        ])
-      )
-    });
+    VF_SEO.syncHead(vfPageHead(page, title));
   }, 40);
+}
+
+// A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
+// one, the page in each of the store's languages, and a preview image (`page.head.image`, set by
+// pages with a photo of their own, otherwise the store's logo). The browser applies it once the page
+// has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
+export function vfPageHead(page, heading) {
+  const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+  const head = page.head || {};
+  return {
+    title: heading + ' · ' + VF_SHELL[lang].brand,
+    description: head.description || heading,
+    image:
+      head.image ||
+      vfAssetBase() + (lang === 'fa' ? 'assets/logo-stacked-fa.png' : 'assets/logo-stacked.png'),
+    url: vfLocation().href,
+    locale: lang,
+    type: head.type || 'website',
+    noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',
+    alternates: Object.fromEntries(
+      VF_STORE.languages.map(lang => [
+        lang,
+        vfRouteUrl({
+          ...VF_ROUTE_EXTRA[page._vfPage],
+          ...vfPageRoute(page.props),
+          view: page._vfPage,
+          lang
+        })
+      ])
+    )
+  };
 }

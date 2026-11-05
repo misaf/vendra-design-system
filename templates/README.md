@@ -181,12 +181,43 @@ from Actions. Repository Settings → Pages → Source must be **GitHub Actions*
 and tenant themes use the repository path. The uploaded artifact is `templates/_app-build/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
-`https://misaf.github.io/vendra-design-system/templates/app/en/presentation/`. The build writes the
-app's page at every public address (`templates/_build/routes.mjs`: each view, category, product,
-journal post and policy, in each language) and as the site's `404.html`, which serves the rest (an
-order to track, a mistyped link) with the app's own not-found page. A host that can rewrite
-addresses can instead serve `templates/app/index.html` for every path under `templates/app/`.
-This hosts the sample-data demo; live API services need their own backend.
+`https://misaf.github.io/vendra-design-system/templates/app/en/presentation/`. This hosts the
+sample-data demo; live API services need their own backend.
+
+**Prerendered pages.** The build writes the app's page at every public address
+(`templates/_build/routes.mjs`: each view, category, product, journal post and policy, in each
+language) already rendered (`_build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
+tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
+in the source, so search engines and WhatsApp/Telegram link previews read them without running
+scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
+Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
+`VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/page-lifecycle.js`: the page's h1,
+its address, its alternates and a preview image — the product's or post's photo, otherwise the
+logo). Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
+and preview URLs; without it they start at the site root. CI's Pages build sets it.
+
+Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
+customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
+is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`
+key in storage. Otherwise (a returning visitor, a query, the 404 page) it removes that markup at
+once and renders the page as before (`createRoot`; `window.VF_RENDERED` says which), so nothing
+types into a form that is about to be replaced.
+Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
+`_shared/environment.js`), and the page renders again at the real time once it has mounted, so
+delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
+from `_shared/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
+import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
+QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
+hidden while it loads.
+
+The site's `404.html` is the prerendered not-found page: a static host serves it for every address
+without a file (an order to track, a mistyped link). It stays hidden (at most 3s) until the app has
+read the address and rendered that address's page (not-found or another). A host that can rewrite
+addresses can instead serve `templates/app/index.html` (the plain shell, which also serves the
+`?page=<name>` previews) for every path under `templates/app/`. `_tests/prerender.test.mjs` checks
+the source of a product, a shop category, a journal post and the Persian home page, and
+`_e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
+on any hydration error.
 
 To verify the same paths locally:
 
@@ -260,10 +291,10 @@ Every folder in `components/` has its own browser test beside the component: `<N
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** only the root element and the app module, `app/main.jsx`.
+- **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
 - **`app/pages.js`:** each `storefront-*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s). The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` (the build's base path) and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
+- **Build:** `build:app` prerenders every public address (`_build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `templates` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 

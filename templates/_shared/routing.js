@@ -10,6 +10,7 @@ import {VF_SHOP_OCCASIONS} from './translations/categories.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from './store-config.js';
 import {VF_CATEGORY_SLUGS} from './product-categories.js';
+import {vfLocation} from './environment.js';
 
 // The shop's quick filters (?filters=), in the order the shop shows them.
 export const VF_SHOP_FILTERS = ['ready', 'under3', 'same', 'roses'];
@@ -54,13 +55,13 @@ export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 export const vfAppBase = () => VF_SEO.appBase();
 export const vfInApp = url => VF_SEO.inApp(url);
 // This page's address as routes are written: path and query.
-export const vfCurrentUrl = () => location.pathname + location.search;
+export const vfCurrentUrl = () => vfLocation().pathname + vfLocation().search;
 // Keep template-only shopping parameters out of the core design-system router. `url` is any URL
 // (absolute, or a path), read against this page's address; the default is this page.
 export function vfReadRoute(url = vfCurrentUrl()) {
   VF_SEO.register(...VF_ROUTES);
   const route = VF_SEO.readRoute(url),
-    query = new URL(url, location.href).searchParams,
+    query = new URL(url, vfLocation()).searchParams,
     features = vfFeatures();
   // A language the store doesn't offer opens in its default one.
   if (route.lang) route.lang = vfLanguage(route.lang);

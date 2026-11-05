@@ -4,6 +4,7 @@ import {VF_DELIVERY, vfMobile} from './delivery.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
 import {commerce} from '../../components/utils/commerce.js';
+import {vfNow} from './environment.js';
 import {dates} from '../../components/utils/dates.js';
 export function vfAccountPhone() {
   try {
@@ -232,7 +233,7 @@ export function vfNormalizeReminder(r) {
   }
   return r;
 }
-export function vfReminderNext(r, today = new Date()) {
+export function vfReminderNext(r, today = vfNow()) {
   r = vfNormalizeReminder(r);
   const D = dates,
     occasion = VF_OCCASIONS.find(o => o.id === r.occ);
