@@ -23,6 +23,7 @@ import {
   vfWalletOf
 } from '../_shared/wallet.js';
 import {VF_NAV} from '../_shared/page-focus.js';
+import {vfAmountToInput} from '../_shared/formatting.js';
 import {dates} from '../../components/utils/dates.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -364,7 +365,7 @@ function vals(page) {
       presets: rules.topUps.map(value => ({
         label: S.m(value),
         pressed: amount === value,
-        pick: () => page.setState({topUp: String(value), topUpError: '', topUpDone: ''})
+        pick: () => page.setState({topUp: vfAmountToInput(value), topUpError: '', topUpDone: ''})
       })),
       value: s.topUp,
       set: value => page.setState({topUp: value, topUpError: '', topUpDone: ''}),
