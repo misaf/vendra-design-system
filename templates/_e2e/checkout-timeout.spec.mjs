@@ -58,7 +58,12 @@ for (const [lang, first] of [
         name: fa ? 'پرداخت در محل' : 'Pay on delivery',
         exact: true
       });
-      await cod.press('Space');
+      // The payment step can still be mounting and render its default method again, so the
+      // choice is retried until it holds.
+      await expect(async () => {
+        await cod.press('Space', {timeout: 2_000});
+        await expect(cod).toBeChecked({timeout: 1_000});
+      }).toPass({timeout: 15_000});
       const place = () => visibleButton(page, fa ? 'تأیید سفارش نمونه' : 'Confirm demo order');
       await place().click();
       await expect.poll(() => requests.length).toBe(1);
