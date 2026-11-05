@@ -152,23 +152,6 @@ export interface CheckoutRequest {
   deliveryDate: string | null;
   deliverySlotId: number | null;
 }
-export interface GatewayRedirect {
-  url: string;
-  method: 'GET' | 'POST';
-  fields: Record<string, string>;
-}
-export interface CheckoutResult {
-  number: string | null;
-  totals: Totals | null;
-  redirect: GatewayRedirect | null;
-}
-export type OrderPaymentState = 'paid' | 'cancelled' | 'failed' | 'pending';
-export interface OrderPayment {
-  status: OrderPaymentState;
-  /** The bank's tracking code (RRN), once it has one. */
-  reference: string | null;
-  amount: number | null;
-}
 export interface Commerce {
   /** Every payment method the package knows, in its default order. */
   STORE_FEATURES: StoreFeature[];
@@ -310,14 +293,6 @@ export interface Commerce {
       preferredLocale: 'en' | 'fa';
     }
   ): Record<string, any>;
-  /** Where a gateway expects the browser; null unless `url` is an http(s) address. */
-  gatewayRedirect(value: unknown): GatewayRedirect | null;
-  /** The created order's number, totals and (online) gateway redirect from a Checkout result. */
-  checkoutResultFromApi(result: unknown): CheckoutResult;
-  /** Order.paymentStatus → PaymentStatus state; awaiting and unconfirmed are pending. */
-  PAYMENT_STATUS: Record<string, OrderPaymentState>;
-  /** An order's online payment: unknown or missing statuses are pending, never paid. */
-  paymentFromApi(order: ApiRecord | null | undefined): OrderPayment;
   checkoutRequest(
     lines: Record<string, any>[],
     delivery: Record<string, any>,
