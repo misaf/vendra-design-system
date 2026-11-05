@@ -46,17 +46,48 @@ const zoneAt = (location, zones, origin) => {
 	return reach.length ? reach.reduce((a, b) => b.km < a.km ? b : a).id : null;
 };
 const isoDate = (date) => date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+// Calendar fields and wall-clock minutes at the store. Omitting the zone preserves local-time
+// behavior for existing callers; an invalid IANA zone throws rather than accepting unsafe orders.
+const deliveryClock = (now, timeZone) => {
+	if (!timeZone) return {
+		year: now.getFullYear(),
+		month: now.getMonth() + 1,
+		day: now.getDate(),
+		minutes: now.getHours() * 60 + now.getMinutes()
+	};
+	const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+		timeZone,
+		calendar: "gregory",
+		numberingSystem: "latn",
+		year: "numeric",
+		month: "numeric",
+		day: "numeric",
+		hour: "numeric",
+		minute: "numeric",
+		hourCycle: "h23"
+	}).formatToParts(now).map(({ type, value }) => [type, value]));
+	return {
+		year: Number(parts.year),
+		month: Number(parts.month),
+		day: Number(parts.day),
+		minutes: Number(parts.hour) * 60 + Number(parts.minute)
+	};
+};
 // A cut-off time ("18:00") for a sentence; Persian digits, isolated so it stays left to right.
 const cutoffText = (cutoff, persian) => persian ? "⁨" + persianDigits(cutoff) + "⁩" : cutoff;
 // The next `days` days for a zone's cut-off, each marked sold out or past today's cut-off. Without
 // `sameDay` the days start tomorrow.
-const deliveryDays = (cutoff, { days, soldOutDates = [], sameDay = true }, now = new Date()) => {
+const deliveryDays = (cutoff, { days, soldOutDates = [], sameDay = true, timeZone }, now = new Date()) => {
+	const clock = deliveryClock(now, timeZone);
 	const [hour, minute] = cutoff.split(":").map(Number);
-	const pastCutoff = now.getHours() * 60 + now.getMinutes() >= hour * 60 + minute;
+	const pastCutoff = clock.minutes >= hour * 60 + minute;
 	return Array.from({ length: days }, (_, index) => {
 		const offset = sameDay ? index : index + 1;
-		const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset, 12);
-		const iso = isoDate(date);
+		// Advance Gregorian calendar days in UTC so the device's DST cannot alter the sequence.
+		const calendar = new Date(Date.UTC(clock.year, clock.month - 1, clock.day + offset, 12));
+		const iso = calendar.toISOString().slice(0, 10);
+		// A local-noon carrier for existing date-label formatters, not a delivery timestamp.
+		const date = new Date(calendar.getUTCFullYear(), calendar.getUTCMonth(), calendar.getUTCDate(), 12);
 		return {
 			iso,
 			date,
@@ -73,8 +104,9 @@ const openDay = (days, chosen) => {
 };
 // Every slot ({start, end} hours) on a day, each marked closed when it is today and fewer than
 // `leadMinutes` remain before it ends.
-const deliverySlots = (iso, slots, leadMinutes, now = new Date()) => {
-	const today = iso === isoDate(now), minutes = now.getHours() * 60 + now.getMinutes();
+const deliverySlots = (iso, slots, leadMinutes, now = new Date(), timeZone) => {
+	const clock = deliveryClock(now, timeZone);
+	const today = iso === new Date(Date.UTC(clock.year, clock.month - 1, clock.day, 12)).toISOString().slice(0, 10), minutes = clock.minutes;
 	return slots.map(({ start, end }) => ({
 		start,
 		end,
