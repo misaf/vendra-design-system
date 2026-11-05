@@ -15,14 +15,16 @@ export function StorefrontTrackOrderActions({contact, repeat, lookup}) {
           <>{contact.label}</>
         </DS.Button>
       ) : null}
-      <DS.Button
-        variant="secondary"
-        iconStart="rotate-ccw"
-        href={repeat.href}
-        onClick={repeat.onClick}
-      >
-        <>{repeat.label}</>
-      </DS.Button>
+      {repeat ? (
+        <DS.Button
+          variant="secondary"
+          iconStart="rotate-ccw"
+          href={repeat.href}
+          onClick={repeat.onClick}
+        >
+          <>{repeat.label}</>
+        </DS.Button>
+      ) : null}
       <DS.Button variant="ghost" iconStart="package-search" onClick={lookup.onClick}>
         <>{lookup.label}</>
       </DS.Button>
