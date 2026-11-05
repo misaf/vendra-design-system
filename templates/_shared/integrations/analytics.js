@@ -9,7 +9,8 @@ import {analytics} from '../../../components/utils/analytics.js';
 import {VF_STORE} from '../store-config.js';
 import {VF_CATEGORY_ITEM} from '../translations/categories.js';
 (() => {
-  if (window.VF_TRACK) return;
+  // Browser only: the build's prerender (app/entry-server.jsx) records and sends nothing.
+  if (typeof window === 'undefined' || window.VF_TRACK) return;
   const EVENTS = analytics.EVENTS;
   // The visitor's choice from the consent banner: 'all', 'essential', or '' before they choose.
   const KEY = 'vf-consent';

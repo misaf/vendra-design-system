@@ -8,6 +8,7 @@ import {vfShell} from '../_shared/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfAbsoluteUrl} from '../_shared/environment.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -18,6 +19,10 @@ export function usePage(props) {
   });
   useStorefrontPage(page);
   useLifecycle(page, {
+    didMount() {
+      // The share link needs this site's origin, which the build's prerender doesn't know.
+      page.setState({mounted: true});
+    },
     willUnmount() {
       clearTimeout(page._t);
     }
@@ -34,6 +39,10 @@ function vals(page) {
     post = VF_POSTS.find(p => p.id === id),
     missing = id !== 'morning-at-the-studio' && !post,
     loading = vfPageRoute(page.props).demo === 'loading';
+  // Link previews show the post's photo and its standfirst (page-lifecycle.js vfPageHead).
+  page.head = post
+    ? {image: vfJournalImage(post.image)?.src, description: post[L][1], type: 'article'}
+    : null;
   if (post) {
     C.title = post[L][0];
     C.lede = post[L][1];
@@ -73,7 +82,13 @@ function vals(page) {
         images: [vfProductImage(p, L)]
       };
     }),
-    shareWa: 'https://wa.me/?text=' + encodeURIComponent(location.href),
+    shareWa:
+      'https://wa.me/?text=' +
+      encodeURIComponent(
+        page.state.mounted
+          ? vfAbsoluteUrl(vfRouteUrl({lang: L, view: 'post', post: id}))
+          : vfRouteUrl({lang: L, view: 'post', post: id})
+      ),
     paras1: C.p1,
     paras2: C.p2,
     copyLabel: page.state.copied ? C.copied : C.copy,

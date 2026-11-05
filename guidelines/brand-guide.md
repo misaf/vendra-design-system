@@ -99,7 +99,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - Every segment read from the URL must match `/^[\w:-]{1,40}$/`; numeric ids (`m` by default, see `seo.setNumeric`) must be digits only. An unknown screen, an invalid or extra segment, or a product/post/moment with no valid id becomes `notfound` (the language is kept).
 - `routePath(state)`, `readRoute(url)`, `hrefFor(state, screen, extra)`, `appBase()`, `inApp(url)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
-- `syncHead({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` sets `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default, and robots.
+- `headTags({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` returns `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default and robots as data; `syncHead(…)` applies them to the document and `headHtml(…)` writes them as HTML, which the build puts in every prerendered page.
 - **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound, error.
 - **track** takes an optional `id` = order number (`en/track/VN-10522/`, SAFE pattern). With a known id it shows the order page (`templates/storefront-track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
 

@@ -4,7 +4,7 @@ import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {vfMobile} from '../_shared/delivery.js';
 import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
 import {usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
@@ -86,7 +86,7 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
-      ...(!window.VF_API.live ? {okT: C.demoTitle, okP: C.demoBody} : {}),
+      ...(!vfLiveStore() ? {okT: C.demoTitle, okP: C.demoBody} : {}),
       instagram: C.labels.instagram,
       editMessage: C.labels.returnToForm
     },
