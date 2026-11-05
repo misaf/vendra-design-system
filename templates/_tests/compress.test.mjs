@@ -78,6 +78,8 @@ for (const location of [
   '/'
 ])
   assert.match(block(location), /Cache-Control "no-cache"/, location + ' is revalidated');
+// The not-found page is served with status 404, which add_header skips without `always`.
+assert.match(block('= /404.html'), /Cache-Control "no-cache" always;/);
 // Only the hashed folder is immutable.
 assert.equal(nginx.match(/immutable"/g).length, 1);
 console.log('Passed the precompressed build files and the reference cache headers.');
