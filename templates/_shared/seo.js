@@ -3,6 +3,8 @@
 // /templates/app/fa/shop/boxes/ or /templates/app/en/journal/<postId>/. Every path ends in a slash,
 // so a static host serves each one from its own index.html. The path says which page it is; the
 // query only carries state on that page (filters, sorting, steps), added by routing.js.
+import {vfAbsoluteUrl, vfAssetBase, vfLocation} from './environment.js';
+
 export const VF_SEO = (() => {
   const SCREENS = new Set([
     'home',
@@ -57,21 +59,20 @@ export const VF_SEO = (() => {
     keys.forEach(k => NUMERIC.add(k));
   };
   const valid = (k, v) => SAFE.test(v) && (!NUMERIC.has(k) || DIGITS.test(v));
-  // The path the storefront app is served at: templates/app/ under the build's base URL
-  // (app/theme.js sets VF_ASSET_BASE), or under the site root where that is not set.
+  // The path the storefront app is served at: templates/app/ under the build's base path
+  // (environment.js), or under the site root where that is not set (a relative asset base).
   const appBase = () => {
-    try {
-      return new URL('templates/app/', window.VF_ASSET_BASE).pathname;
-    } catch {
-      return '/templates/app/';
-    }
+    const base = vfAssetBase();
+    if (!/^(\/|\w+:)/.test(base)) return '/templates/app/';
+    return new URL('templates/app/', new URL(base, vfLocation())).pathname;
   };
   // Whether a URL is a page of the storefront app (not a file next to it, or another site).
   const inApp = url => {
     try {
-      const target = new URL(url, location.href);
+      const here = vfLocation();
+      const target = new URL(url, here);
       return (
-        target.origin === location.origin &&
+        target.origin === here.origin &&
         target.pathname.startsWith(appBase()) &&
         !/\.\w+$/.test(target.pathname)
       );
@@ -82,11 +83,11 @@ export const VF_SEO = (() => {
 
   // Parse a URL's path (default: this page's). Invalid or extra segments, an unknown screen, or a
   // screen missing its required id make the route "notfound"; the language is kept either way.
-  const readRoute = (url = location.pathname + location.search) => {
+  const readRoute = (url = vfLocation().pathname + vfLocation().search) => {
     const r = {view: 'notfound'};
     let path;
     try {
-      path = new URL(url, location.href).pathname;
+      path = new URL(url, vfLocation()).pathname;
     } catch {
       return r;
     }
@@ -130,34 +131,14 @@ export const VF_SEO = (() => {
     routePath({lang: state.lang, view: screen, ...extra});
   const isNoindex = view => NOINDEX.has(view);
 
-  const abs = u => {
-    try {
-      return u ? new URL(u, location.href).href : undefined;
-    } catch {
-      return undefined;
-    }
-  };
-  const upsert = (sel, tag, attrs) => {
-    let element = document.head.querySelector(sel);
-    if (!element) {
-      element = document.createElement(tag);
-      element.setAttribute('data-ag-seo', '');
-      document.head.appendChild(element);
-    }
-    for (const k in attrs) element.setAttribute(k, attrs[k]);
-    return element;
-  };
-  const drop = sel => document.head.querySelectorAll(sel).forEach(element => element.remove());
-  const meta = (key, name, content) =>
-    content == null || content === ''
-      ? drop('meta[' + key + '="' + name + '"]')
-      : upsert('meta[' + key + '="' + name + '"]', 'meta', {[key]: name, content});
   const LOCALE = {en: 'en_US', fa: 'fa_IR'};
-  // Sets <title>, description, og:*, twitter:*, canonical, hreflang en/fa/x-default and robots.
+  // The head tags for a page: <title>, description, og:*, twitter:*, canonical, hreflang en/fa/
+  // x-default and robots, as {title, meta: [{key, name, content}], links: [{rel, hreflang?, href}]}.
+  // Pure: the browser applies them (syncHead) and the build writes them into each page (headHtml).
   // `alternates` holds the page in each language the store offers; x-default is the English one, or
-  // the only one.
+  // the only one. URLs are read against the page's address.
   /** @param {{title?: string, description?: string, image?: string, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean}} [head] */
-  const syncHead = ({
+  const headTags = ({
     title,
     description,
     image,
@@ -167,35 +148,103 @@ export const VF_SEO = (() => {
     alternates = {},
     noindex = false
   } = {}) => {
-    if (title) document.title = title;
-    const img = abs(image),
-      href = abs(url);
-    meta('name', 'description', description);
-    meta('property', 'og:title', title);
-    meta('property', 'og:description', description);
-    meta('property', 'og:image', img);
-    meta('property', 'og:url', href);
-    meta('property', 'og:type', type);
-    meta('property', 'og:locale', LOCALE[locale] || locale);
+    const img = vfAbsoluteUrl(image),
+      href = vfAbsoluteUrl(url);
     const other = locale === 'fa' ? 'en' : 'fa';
-    meta('property', 'og:locale:alternate', alternates[other] ? LOCALE[other] : null);
-    meta('name', 'twitter:card', img ? 'summary_large_image' : 'summary');
-    meta('name', 'twitter:title', title);
-    meta('name', 'twitter:description', description);
-    meta('name', 'twitter:image', img);
-    if (href) upsert('link[rel="canonical"]', 'link', {rel: 'canonical', href});
-    else drop('link[rel="canonical"]');
-    for (const h of ['en', 'fa', 'x-default']) {
-      const u = abs(
-        h === 'x-default'
+    const meta = [
+      ['name', 'description', description],
+      ['property', 'og:title', title],
+      ['property', 'og:description', description],
+      ['property', 'og:image', img],
+      ['property', 'og:url', href],
+      ['property', 'og:type', type],
+      ['property', 'og:locale', LOCALE[locale] || locale],
+      ['property', 'og:locale:alternate', alternates[other] ? LOCALE[other] : null],
+      ['name', 'twitter:card', img ? 'summary_large_image' : 'summary'],
+      ['name', 'twitter:title', title],
+      ['name', 'twitter:description', description],
+      ['name', 'twitter:image', img],
+      ['name', 'robots', noindex ? 'noindex, follow' : null]
+    ].map(([key, name, content]) => ({key, name, content}));
+    const links = [];
+    if (href) links.push({rel: 'canonical', href});
+    for (const hreflang of ['en', 'fa', 'x-default']) {
+      const alternate = vfAbsoluteUrl(
+        hreflang === 'x-default'
           ? alternates['x-default'] || alternates.en || alternates.fa
-          : alternates[h]
+          : alternates[hreflang]
       );
-      const sel = 'link[rel="alternate"][hreflang="' + h + '"]';
-      if (u && !noindex) upsert(sel, 'link', {rel: 'alternate', hreflang: h, href: u});
-      else drop(sel);
+      if (alternate && !noindex) links.push({rel: 'alternate', hreflang, href: alternate});
     }
-    meta('name', 'robots', noindex ? 'noindex, follow' : null);
+    return {title, meta, links};
+  };
+
+  const escape = value =>
+    String(value).replace(
+      /[&<>"]/g,
+      character => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[character]
+    );
+  // headTags as HTML, for the build's static pages. Each tag carries data-ag-seo, as syncHead's do.
+  /** @param {Parameters<typeof headTags>[0]} [head] */
+  const headHtml = head => {
+    const tags = headTags(head);
+    return [
+      ...(tags.title ? ['<title>' + escape(tags.title) + '</title>'] : []),
+      ...tags.meta
+        .filter(tag => tag.content != null && tag.content !== '')
+        .map(
+          tag =>
+            '<meta ' +
+            tag.key +
+            '="' +
+            escape(tag.name) +
+            '" content="' +
+            escape(tag.content) +
+            '" data-ag-seo>'
+        ),
+      ...tags.links.map(
+        link =>
+          '<link rel="' +
+          link.rel +
+          '"' +
+          (link.hreflang ? ' hreflang="' + link.hreflang + '"' : '') +
+          ' href="' +
+          escape(link.href) +
+          '" data-ag-seo>'
+      )
+    ].join('\n');
+  };
+
+  // Applies headTags to this document: sets each tag, and removes the ones this page has none of.
+  /** @param {Parameters<typeof headTags>[0]} [head] */
+  const syncHead = head => {
+    const tags = headTags(head);
+    if (tags.title) document.title = tags.title;
+    const upsert = (selector, tag, attributes) => {
+      let element = document.head.querySelector(selector);
+      if (!element) {
+        element = document.createElement(tag);
+        element.setAttribute('data-ag-seo', '');
+        document.head.appendChild(element);
+      }
+      for (const key in attributes) element.setAttribute(key, attributes[key]);
+    };
+    const drop = selector =>
+      document.head.querySelectorAll(selector).forEach(element => element.remove());
+    for (const {key, name, content} of tags.meta) {
+      const selector = 'meta[' + key + '="' + name + '"]';
+      if (content == null || content === '') drop(selector);
+      else upsert(selector, 'meta', {[key]: name, content});
+    }
+    const canonical = tags.links.find(link => link.rel === 'canonical');
+    if (canonical) upsert('link[rel="canonical"]', 'link', canonical);
+    else drop('link[rel="canonical"]');
+    for (const hreflang of ['en', 'fa', 'x-default']) {
+      const selector = 'link[rel="alternate"][hreflang="' + hreflang + '"]';
+      const alternate = tags.links.find(link => link.hreflang === hreflang);
+      if (alternate) upsert(selector, 'link', alternate);
+      else drop(selector);
+    }
   };
   const S = {
     SCREENS,
@@ -209,6 +258,8 @@ export const VF_SEO = (() => {
     routePath,
     hrefFor,
     isNoindex,
+    headTags,
+    headHtml,
     syncHead
   };
   return S;

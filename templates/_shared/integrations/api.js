@@ -6,7 +6,8 @@ import {VF_STORE} from '../store-config.js';
 import {vfCheckoutResultFromApi, vfGatewayRedirect, vfPaymentFromApi} from '../payment-api.js';
 (() => {
   const KEY = 'vendra-saved-map';
-  if (window.VF_API) return;
+  // Browser only: the build's prerender (app/entry-server.jsx) calls no API.
+  if (typeof window === 'undefined' || window.VF_API) return;
   const A = {
     base: VF_STORE.apiBase || '',
     setBase(b) {

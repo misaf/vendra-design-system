@@ -26,6 +26,7 @@ import {
   vfRouteUrl
 } from '../_shared/routing.js';
 import {loadPage, pageReady} from '../app/pages.js';
+import {vfOnServer} from '../_shared/environment.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
@@ -77,6 +78,7 @@ function vfJoinLines(bag, lines) {
 // The return page belongs to this search history entry, so Back/Forward and reloads keep its
 // original context. Only an internal, validated route can be used as the close destination.
 function vfSearchReturnRoute() {
+  if (vfOnServer()) return null;
   const value = history.state?.vfSearchReturn;
   if (typeof value !== 'string' || !value.startsWith(vfAppBase())) return null;
   const route = vfReadRoute(value);
@@ -143,23 +145,25 @@ function vfSiteInitial(props) {
     (saved.customerId === customerId || (!saved.customerId && customerId === 'guest') ? saved : {});
   let route = vfReadRoute();
   if (route.view === 'home' && props.start) route = {...route, view: props.start};
+  // The build's prerender only renders; the address stays as it is.
+  const replaceUrl = url => !vfOnServer() && history.replaceState({}, '', url);
   // An old product link (product/ivory/) is rewritten with the product's code.
   if (route.view === 'product' && vfRouteUrl(route) !== vfCurrentUrl())
-    history.replaceState({}, '', vfRouteUrl(route));
+    replaceUrl(vfRouteUrl(route));
   // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
   // are replaced, and the link is dropped from the address so a reload doesn't add them again.
   const handedLines = route.lines ? vfLinesFromParam(route.lines) : [];
   const handedIds = route.ids ? vfProductIds(route.ids.split(',')) : [];
   if (route.lines || route.ids) {
     route = {...route, lines: undefined, ids: undefined};
-    history.replaceState({}, '', vfRouteUrl(route));
+    replaceUrl(vfRouteUrl(route));
   }
   // Open sign-in straight away rather than flashing the account first.
   if (route.view === 'account' && !vfAccountPhone()) {
     route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
-    if (vfReadRoute().view === 'account') history.replaceState({}, '', vfRouteUrl(route));
+    if (vfReadRoute().view === 'account') replaceUrl(vfRouteUrl(route));
   }
-  return {
+  const initial = {
     customerId,
     customers: saved.customers || {},
     route: route.view,
@@ -212,6 +216,15 @@ function vfSiteInitial(props) {
     tracked: vfTrackedOrders(privateState.tracked),
     announcement: ''
   };
+  // Checkout without a bag or delivery details opens the step the customer needs straight away, as
+  // the account opens sign-in (the build's prerendered checkout is that step for a first visit).
+  const guarded = route.view === 'checkout' && vfGuardRoute(initial, route);
+  if (guarded) {
+    route = vfReadRoute(vfRouteUrl(guarded));
+    replaceUrl(vfRouteUrl(route));
+    Object.assign(initial, {route: route.view, routeInfo: route});
+  }
+  return initial;
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.

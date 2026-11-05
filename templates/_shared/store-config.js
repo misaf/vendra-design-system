@@ -149,9 +149,11 @@ export function vfFeatures() {
 export function vfLanguage(lang) {
   return VF_STORE.languages.includes(lang) ? lang : VF_STORE.languages[0];
 }
-// Whether orders go to the store's API (VF_STORE.apiBase or VF_API.setBase), not the local demo.
+// Whether orders go to the store's API (VF_STORE.apiBase or VF_API.setBase), not the local demo. The
+// build's prerender has no VF_API: there the configured apiBase decides, as it does on first load.
 export function vfLiveStore() {
-  return typeof window !== 'undefined' && !!window.VF_API?.live;
+  if (typeof window === 'undefined') return !!VF_STORE.apiBase;
+  return !!window.VF_API?.live;
 }
 // The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp, and
 // a live store takes online payments only through a connected gateway (VF_STORE.gateway).

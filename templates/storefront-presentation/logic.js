@@ -24,6 +24,7 @@ import {vfSeparator} from '../_shared/formatting.js';
 import {vfReadRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfLocation} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 
 // The counter settings, kept on this device (the shop's tablet). The PIN only keeps a curious
@@ -534,6 +535,9 @@ export function usePage(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
+      // What this browser can do (wake lock, clipboard, QR scanning) and its own address are read
+      // from here on: the build's prerender knows neither, and hydration renders as it did.
+      page.setState({mounted: true});
       page._displayMedia = window.matchMedia('(min-width: 768px) and (min-aspect-ratio: 4/3)');
       page._onDisplayMedia = () => page.setState({displayLandscape: page._displayMedia.matches});
       page._displayMedia.addEventListener('change', page._onDisplayMedia);
@@ -813,7 +817,7 @@ function vals(page) {
     },
     canStartDisplay: !!displayPool.length,
     wakeStatus: st.wakeStatus,
-    canWake: typeof navigator !== 'undefined' && 'wakeLock' in navigator,
+    canWake: !!st.mounted && 'wakeLock' in navigator,
     collectionName: st.collectionName,
     setCollectionName: value => page.setState({collectionName: value.slice(0, 60)}),
     savedCollections: st.collections.map(item => ({value: item.name, label: item.name})),
@@ -872,9 +876,7 @@ function vals(page) {
         })
       }),
     setupLink: (() => {
-      const url = new URL(
-        typeof location !== 'undefined' ? location.href : 'http://localhost/templates/app/'
-      );
+      const url = new URL(st.mounted ? location.href : 'http://localhost' + vfLocation().pathname);
       url.search = new URLSearchParams({
         view: 'presentation',
         lang: L,
@@ -1125,7 +1127,7 @@ function vals(page) {
             encodeURIComponent((sendInfo.code ? sendInfo.code + '\n' : '') + sendInfo.url),
           copied: st.copied,
           // The clipboard is there only on a secure (https) page.
-          canCopy: typeof navigator !== 'undefined' && !!navigator.clipboard,
+          canCopy: !!st.mounted && !!navigator.clipboard,
           copy: () =>
             navigator.clipboard?.writeText(sendInfo.url).then(
               () => {
@@ -1230,7 +1232,7 @@ function vals(page) {
       if (request) request.catch(() => {});
     },
     // Scanning a design's tag (where the browser can read QR codes from the camera).
-    canScan: typeof window !== 'undefined' && 'BarcodeDetector' in window,
+    canScan: !!st.mounted && 'BarcodeDetector' in window,
     scanOpen: st.panel === 'scan',
     openScan: () => page.setState({panel: 'scan', scanError: ''}, () => vfStartCamera(page)),
     scanMessage:

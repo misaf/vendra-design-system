@@ -4,7 +4,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
-import {storefrontRoutes} from './routes.mjs';
+import {prerender} from './prerender.mjs';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '..');
@@ -108,21 +108,12 @@ function storefrontAssets() {
       outDir = config.build.outDir;
       base = config.base;
     },
-    closeBundle() {
+    async closeBundle() {
       for (const folder of ['assets', 'templates/_vendor/leaflet'])
         fs.cpSync(path.join(root, folder), path.join(outDir, folder), {recursive: true});
       // The service worker sits beside the app's page, so it can serve the whole app.
       fs.copyFileSync(path.join(templates, 'app/sw.js'), path.join(outDir, 'templates/app/sw.js'));
-      // The app's page at each of its addresses (templates/app/en/shop/boxes/index.html), so a static
-      // host serves every link directly, and as the host's 404 page for addresses no file has (an
-      // order number to track, a mistyped link), which the app shows as its own not-found page.
-      const app = path.join(outDir, 'templates/app');
-      const page = fs.readFileSync(path.join(app, 'index.html'));
-      for (const route of storefrontRoutes()) {
-        fs.mkdirSync(path.join(app, route.path), {recursive: true});
-        fs.writeFileSync(path.join(app, route.path, 'index.html'), page);
-      }
-      fs.writeFileSync(path.join(outDir, '404.html'), page);
+      await prerender(outDir, base);
       const tenants = path.join(root, 'tokens/tenants');
       fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))

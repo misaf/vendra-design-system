@@ -4,9 +4,10 @@ import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
 import {vfMobile} from '../_shared/delivery.js';
 import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
 import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../_shared/store-hours.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfNow} from '../_shared/environment.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
@@ -68,7 +69,7 @@ function vals(page) {
   const C = vfCopy(S);
   const invalid = page._invalid();
   const studio = VF_STORE.studio;
-  const now = new Date();
+  const now = vfNow();
   const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
   const places = directions
     ? [
@@ -97,7 +98,7 @@ function vals(page) {
     t: {
       ...S.t,
       ...C,
-      ...(!window.VF_API.live ? {okT: C.demoTitle, okP: C.demoBody} : {}),
+      ...(!vfLiveStore() ? {okT: C.demoTitle, okP: C.demoBody} : {}),
       instagram: C.labels.instagram,
       editMessage: C.labels.returnToForm
     },

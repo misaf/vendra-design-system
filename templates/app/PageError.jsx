@@ -3,6 +3,8 @@
 import React from 'react';
 import {Alert} from '../../components/molecules/Alert/Alert.jsx';
 import {Button} from '../../components/atoms/Button/Button.jsx';
+import {vfLocation} from '../_shared/environment.js';
+import {vfAppBase} from '../_shared/routing.js';
 import {VF_STORE} from '../_shared/store-config.js';
 
 const COPY = {
@@ -20,8 +22,7 @@ const COPY = {
 
 export function PageError() {
   // The language is the first segment after the app's path (templates/app/fa/…).
-  const app = import.meta.env.BASE_URL + 'templates/app/';
-  const lang = location.pathname.startsWith(app + 'fa/') ? 'fa' : 'en';
+  const lang = vfLocation().pathname.startsWith(vfAppBase() + 'fa/') ? 'fa' : 'en';
   const copy = COPY[lang];
   React.useEffect(() => {
     document.title = copy.title + ' · ' + VF_STORE.brand[lang];
