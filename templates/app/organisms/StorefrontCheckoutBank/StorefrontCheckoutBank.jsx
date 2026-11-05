@@ -16,6 +16,8 @@ export function StorefrontCheckoutBank({progress, payment, actions}) {
         status={payment.status}
         amount={payment.amount}
         orderNumber={payment.orderNumber}
+        reference={payment.reference}
+        gateway={payment.gateway}
         redirect={payment.redirect}
         supportHref={payment.supportHref}
         onRetry={actions.retry}

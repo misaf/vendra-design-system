@@ -167,6 +167,8 @@ export function View({v}) {
                   status: v.bankTrip?.status,
                   amount: v.bankTrip?.amount,
                   orderNumber: v.bankTrip?.orderNumber,
+                  reference: v.bankTrip?.reference,
+                  gateway: v.bankTrip?.gateway,
                   redirect: v.bankTrip?.redirect,
                   supportHref: v.bankTrip?.supportHref
                 }}

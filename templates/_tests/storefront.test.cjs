@@ -1572,6 +1572,8 @@ for (const lang of ['en', 'fa']) {
       return Promise.resolve();
     }
   };
+  // A live store offers online payment only through a connected gateway.
+  vm.runInContext('VF_STORE', c).gateway = {en: 'Test Bank', fa: 'بانک آزمایشی'};
   c.sessionStorage.setItem = () => {
     throw new Error('Storage full');
   };
