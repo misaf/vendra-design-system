@@ -13,6 +13,7 @@ import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {storefrontRoutes} from './routes.mjs';
 import {VF_STORE} from '../_shared/store-config.js';
+import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '..');
@@ -74,6 +75,19 @@ export async function prerenderedPage(
       '</head>',
       () =>
         `<link id="vf-tenant-css" rel="stylesheet" href="${base}tokens/tenants/${tenant}.css">\n</head>`
+    );
+  // A preview of another tenant (?tenant=clay) hides the page before its first paint, until
+  // app/theme.js has loaded that theme (at most 2s), so the store's colours never flash.
+  const others = VF_TENANT_SLUGS.filter(slug => slug !== tenant);
+  if (others.length)
+    html = html.replace(
+      '</head>',
+      () =>
+        '<style id="vf-tenant-wait">html[data-vf-tenant-loading] body{visibility:hidden}</style>\n' +
+        '<script>(() => {const root = document.documentElement;' +
+        `if (${JSON.stringify(others)}.includes(new URLSearchParams(location.search).get('tenant'))) {` +
+        "root.setAttribute('data-vf-tenant-loading', '');" +
+        "setTimeout(() => root.removeAttribute('data-vf-tenant-loading'), 2000);}})();</script>\n</head>"
     );
   if (notFound)
     html = html.replace(
