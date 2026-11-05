@@ -1,5 +1,5 @@
 // Bilingual account copy.
-import {VF_CURRENCY_NAME} from '../_shared/formatting.js';
+import {VF_CURRENCY_NAME} from '../_shared/domain/formatting.js';
 import {VF_PIN_COPY} from '../_shared/translations/location.js';
 export function vfCopy(S) {
   const n = S.n;

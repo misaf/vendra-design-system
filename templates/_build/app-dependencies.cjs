@@ -4,45 +4,76 @@ const path = require('node:path');
 const {parseSync} = require('rolldown/experimental');
 const {layer, dependencyViolation} = require('./atomic.cjs');
 
-// These are UI-local helpers, not a blanket allowance for _shared business modules.
-// Their own imports are constrained too, so they cannot become service back doors.
-const helperDependencies = {
-  'templates/_shared/collection-carousel.jsx': new Set([
-    'react',
-    'components/organisms/Carousel/Carousel.jsx'
-  ]),
-  'templates/_shared/qr.js': new Set(['qrcode-generator'])
+// templates/_shared/ is split by role, and each folder may import only the folders listed here
+// (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
+// _shared/ itself, or in a folder not listed, fails: place it by what it does.
+//   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
+//   domain/    pure store rules and sample data
+//   services/  browser services: routing, SEO, focus/lifecycle, page state, offline, API, analytics
+//   ui/        storefront UI helpers the app UI layers may use; never services or persistence
+//   styles/    the storefront's CSS entry points (no modules)
+const sharedRules = {
+  platform: {folders: ['platform'], packages: []},
+  domain: {folders: ['domain', 'translations', 'platform'], packages: [], runtime: true},
+  translations: {folders: ['domain', 'translations', 'platform'], packages: []},
+  services: {
+    folders: ['services', 'domain', 'translations', 'platform'],
+    packages: ['react', 'react-aria-components'],
+    runtime: true
+  },
+  ui: {folders: ['ui', 'domain', 'translations'], packages: ['react', 'qrcode-generator']},
+  styles: {folders: [], packages: []}
 };
+const sharedFolder = file => {
+  const folder = /^templates\/_shared\/([^/]+)\//.exec(file)?.[1];
+  return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
+};
+const isShared = file => file.startsWith('templates/_shared/');
 const uiLayer = file => /^templates\/app\/(layouts|organisms|molecules)\//.exec(file)?.[1];
-const protectedSource = file =>
-  uiLayer(file) || file === 'templates/app/ds.js' || Object.hasOwn(helperDependencies, file);
+const protectedSource = file => uiLayer(file) || file === 'templates/app/ds.js' || isShared(file);
+
+const misplacedShared = file =>
+  `${file}: shared module outside the ${Object.keys(sharedRules).join('/, ')}/ folders`;
+
+function sharedDependencyViolation(source, target, relative) {
+  const from = sharedFolder(source);
+  if (!from) return misplacedShared(source);
+  const rules = sharedRules[from];
+  let allowed;
+  if (!relative) allowed = rules.packages.includes(target);
+  else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
+  // Domain and services use the package's pure helpers; UI helpers may compose its components.
+  else if (target.startsWith('components/'))
+    allowed = from === 'ui' || (from !== 'styles' && target.startsWith('components/utils/'));
+  // Generated data (tenant slugs) the build writes for the store's rules.
+  else allowed = !!rules.runtime && target.startsWith('templates/_runtime/');
+  return allowed
+    ? null
+    : `${source}: forbidden ${from === 'ui' ? 'UI' : from} dependency ${target}`;
+}
 
 function appDependencyViolation(source, target, relative) {
   if (!protectedSource(source)) return null;
+  if (isShared(source)) return sharedDependencyViolation(source, target, relative);
   if (!relative) {
-    const allowed =
-      source === 'templates/_shared/qr.js'
-        ? target === 'qrcode-generator'
-        : source !== 'templates/app/ds.js' && target === 'react';
+    const allowed = source !== 'templates/app/ds.js' && target === 'react';
     return allowed ? null : `${source}: forbidden UI dependency ${target}`;
   }
   const from = uiLayer(source);
   let allowed;
-  if (Object.hasOwn(helperDependencies, source)) {
-    allowed = helperDependencies[source].has(target);
-  } else if (source === 'templates/app/ds.js') {
+  if (source === 'templates/app/ds.js') {
     allowed = !!layer(target);
-  } else if (from) {
+  } else {
     const to = uiLayer(target);
     allowed =
       target === 'react' ||
       (from === 'layouts'
         ? to === 'layouts'
         : target === 'templates/app/ds.js' ||
-          Object.hasOwn(helperDependencies, target) ||
+          sharedFolder(target) === 'ui' ||
           to === 'molecules' ||
           (from === 'organisms' && to === 'organisms'));
-  } else return null;
+  }
   return allowed ? null : `${source}: forbidden UI dependency ${target}`;
 }
 
@@ -85,6 +116,7 @@ function checkDependencies(root) {
   const graph = new Map(files.map(file => [file, new Set()]));
   const violations = [];
   for (const [source] of graph) {
+    if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));
     if (errors.length) {
       violations.push(...errors.map(error => `${source}: parse error: ${error.message}`));

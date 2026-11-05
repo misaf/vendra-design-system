@@ -1,6 +1,6 @@
 // Shared category names; product IDs and filter behavior stay in page logic.
 // Category names come from the ProductCategory records (product-categories.js), keyed by English slug.
-import {VF_API_PRODUCT_CATEGORIES} from '../product-categories.js';
+import {VF_API_PRODUCT_CATEGORIES} from '../domain/product-categories.js';
 export const vfCategoryNames = lang =>
   Object.fromEntries(
     VF_API_PRODUCT_CATEGORIES.map(category => [category.slug.en, category.name[lang]])

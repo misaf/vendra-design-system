@@ -39,7 +39,7 @@ execute; it is excluded from production configuration. The frozen stage-219 coun
 
 ## Route-to-flow checklist
 
-All 19 entries of [`VF_ROUTES`](templates/_shared/routing.js) have selected dedicated bilingual touch coverage. These are user-flow
+All 19 entries of [`VF_ROUTES`](templates/_shared/services/routing.js) have selected dedicated bilingual touch coverage. These are user-flow
 assertions, not a promise of a fresh content axe scan at each route's initial state. For example,
 the bag case scans delivery validation, and sign-in scans incomplete-code validation.
 

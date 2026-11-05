@@ -1,7 +1,7 @@
 // The storefront shell around every page: header, mobile menu, footer, consent and tab bar; `bare`
 // keeps only the provider, skip link and notices.
 import React from 'react';
-import {vfBrandUrl} from '../_shared/brand.js';
+import {vfBrandUrl} from '../_shared/domain/brand.js';
 import * as DS from './ds.js';
 import {list} from './runtime.js';
 import {StorefrontLayout} from './layouts/StorefrontLayout/StorefrontLayout.jsx';
@@ -11,7 +11,7 @@ import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
 import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
 import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
-import {useVfDensity, useVfRemoteNavigation} from '../_shared/tv.js';
+import {useVfDensity, useVfRemoteNavigation} from '../_shared/services/tv.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
   const brandAssets = {...v.brandAssets};

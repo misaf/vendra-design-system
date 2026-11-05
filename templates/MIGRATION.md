@@ -7,16 +7,16 @@ copy and styling; design-system components continue to live in `components/`.
 | --- | --- |
 | Desktop, mobile and Clay previews | `previews/preview.html`, `mobile.html`, `preview-clay.html` |
 | Emails, SMS and WhatsApp wording | `communications/` (standalone previews and rendering helpers) |
-| Account addresses, profile and yearly reminders | `storefront-account/` and `_shared/account-data.js` |
-| Per-phone local demo persistence and preferred language | `_shared/account-data.js`, `storefront-signin/` |
-| Order detail, cancelled state and reorder at current prices | `storefront-track/`, `_shared/catalog.js` |
+| Account addresses, profile and yearly reminders | `storefront-account/` and `_shared/domain/account-data.js` |
+| Per-phone local demo persistence and preferred language | `_shared/domain/account-data.js`, `storefront-signin/` |
+| Order detail, cancelled state and reorder at current prices | `storefront-track/`, `_shared/domain/catalog.js` |
 | Price range, availability, mobile filters and loading/failure states | `storefront-shop/` |
 | Four payment methods, processing, failure and recovery | `storefront-checkout/` |
-| Card configuration, bank prefix examples and Luhn checking | `_shared/payments.js` and `_shared/store-config.js` |
+| Card configuration, bank prefix examples and Luhn checking | `_shared/domain/payments.js` and `_shared/domain/store-config.js` |
 | Searchable journal, missing story, article blocks and related stories | `storefront-journal/`, `storefront-post/`, `_shared/translations/journal-content.js` |
 | Wedding gallery, process and consultation fields | `storefront-weddings/` |
-| Optional saved-item and inquiry API client | `_shared/integrations/api.js` |
-| Optional analytics event wrapper | `_shared/integrations/analytics.js` |
+| Optional saved-item and inquiry API client | `_shared/services/integrations/api.js` |
+| Optional analytics event wrapper | `_shared/services/integrations/analytics.js` |
 | Launch manifest, robots and sitemap examples | `deployment/` |
 | Formatting, dates, routing, navigation and responsive helpers | `../components/utils/` |
 
@@ -45,7 +45,7 @@ bag redirects to the bag page. The payment methods the store offers
 (`paymentMethods`: their order, the card/holder/Sheba, the pay-on-delivery zones), the optional
 parts it runs (`features`: promo codes, same-day delivery, weddings, journal, reminders, newsletter),
 its languages (`languages`), its contact channels (`whatsapp`, `instagram`, `email`: null hides one), the online
-payment demo result, currency and API base live in `_shared/store-config.js`.
+payment demo result, currency and API base live in `_shared/domain/store-config.js`.
 After changing configuration, run `npm --prefix templates run build`.
 
 `VF_PAYMENT.setPayCard({cardNumber, holderEn, holderFa, sheba})` normalizes digits,

@@ -13,14 +13,14 @@ for routed pages.
 | --- | --- |
 | Page markup | `storefront-<page>/View.jsx` (JSX inside the shared `Shell`) |
 | Page behavior / copy / styles | `storefront-<page>/logic.js` / `copy.js` / `styles.css` |
-| Store name, contact, hours, currency, map, payment, balance, announcement | [_shared/store-config.js](_shared/store-config.js) |
-| Products, sizes, add-ons | [_shared/catalog.js](_shared/catalog.js) |
-| Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/delivery.js](_shared/delivery.js) |
-| Promo codes | [_shared/promotions.js](_shared/promotions.js) |
+| Store name, contact, hours, currency, map, payment, balance, announcement | [_shared/domain/store-config.js](_shared/domain/store-config.js) |
+| Products, sizes, add-ons | [_shared/domain/catalog.js](_shared/domain/catalog.js) |
+| Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/domain/delivery.js](_shared/domain/delivery.js) |
+| Promo codes | [_shared/domain/promotions.js](_shared/domain/promotions.js) |
 | Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
 | Footer composition | `app/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
 | Mobile menu composition | `app/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
-| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `_shared/navigation.js`) |
+| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `_shared/services/navigation.js`) |
 | Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
 | Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
 | Presentation display | `app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
@@ -133,24 +133,37 @@ for routed pages.
 | Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (StorefrontShopHeading, sidebar, compact categories, results and filter-dialog slots from shop View) |
 | Product-page layout | `app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (StorefrontProductBreadcrumbs, gallery, details, related designs and feedback slots from product View) |
 | Main storefront layout | `app/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
-| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `_shared/navigation.js`) |
-| Routes and URL helpers | [_shared/routing.js](_shared/routing.js) |
-| Responsive state, focus, `<head>` | `_shared/page-lifecycle.js`, `page-focus.js`, `seo.js` |
+| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `_shared/services/navigation.js`) |
+| Routes and URL helpers | [_shared/services/routing.js](_shared/services/routing.js) |
+| Responsive state, focus, `<head>` | `_shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |
-| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../components/`; Leaflet loading and location text in `_shared/location.js` |
-| Shared CSS: shell, page families, information pages | `_shared/shell.css`, `page-layouts.css`, `information-pages.css` |
-| Tailwind entry and token aliases | [_shared/tailwind.css](_shared/tailwind.css) |
+| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../components/`; Leaflet loading and location text in `_shared/domain/location.js` |
+| Shared CSS: shell, page families, information pages | `_shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
+| Tailwind entry and token aliases | [_shared/styles/tailwind.css](_shared/styles/tailwind.css) |
 | Tokens and tenant themes | `../tokens/`, `../tokens/tenants/<slug>.json` |
-| Number, currency and date formatting | `../components/utils/` (wrapped by `_shared/formatting.js`) |
-| Delivery, totals, discount and API-adapter rules | `../components/utils/commerce.js` (wrapped by `_shared/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
+| Number, currency and date formatting | `../components/utils/` (wrapped by `_shared/domain/formatting.js`) |
+| Delivery, totals, discount and API-adapter rules | `../components/utils/commerce.js` (wrapped by `_shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 
-Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`_shared/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`_shared/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `_shared/` are ES modules that import what they use; the integrations (`VF_API`, `VF_TRACK`, `VF_PAYMENT`) attach to `window`, imported once by `app/runtime.js`. `_shared/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
+Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`_shared/services/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`_shared/services/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `_shared/` are ES modules that import what they use; the integrations (`VF_API`, `VF_TRACK`, `VF_PAYMENT`) attach to `window`, imported once by `app/runtime.js`. `_shared/domain/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `_shared/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/custom.css`, and the `lazyPage('<name>')` constant and route in `storefront-site/View.jsx`.
+**Shared code layout:** `_shared/` is split by role, and `npm test` (`_build/app-dependencies.cjs`) enforces which folder may import which:
+
+| Folder | Holds | May import |
+| --- | --- | --- |
+| `platform/` | `environment.js`: the page's address, asset base and clock, in the browser and the prerender | nothing |
+| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `translations/`, `platform/`, `../components/utils/`, `_runtime/` |
+| `translations/` | genuinely shared bilingual copy | same as `domain/` |
+| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `translations/`, `platform/`, `../components/utils/`, `_runtime/`, React, React Aria |
+| `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `../components/`, React, `qrcode-generator` |
+| `styles/` | the Tailwind entry and the custom CSS entry with shared page CSS | CSS only |
+
+A JS module loose in `_shared/` or in any other folder fails the check: place a new module by what it does.
+
+**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `_shared/services/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/styles/custom.css`, and the `lazyPage('<name>')` constant and route in `storefront-site/View.jsx`.
 
 ## Commands
 
@@ -191,7 +204,7 @@ tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and 
 in the source, so search engines and WhatsApp/Telegram link previews read them without running
 scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
 Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
-`VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/page-lifecycle.js`: the page's h1,
+`VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/services/page-lifecycle.js`: the page's h1,
 its address, its alternates and a preview image — the product's or post's photo, otherwise the
 logo). Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
 and preview URLs; without it they start at the site root. CI's Pages build sets it.
@@ -205,9 +218,9 @@ stays in view while the app loads but is `inert` (and, when it will be replaced,
 disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
 does not have yet. The app does not set `inert` without scripts, so links keep working then.
 Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
-`_shared/environment.js`), and the page renders again at the real time once it has mounted, so
+`_shared/platform/environment.js`), and the page renders again at the real time once it has mounted, so
 delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
-from `_shared/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
+from `_shared/platform/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
 import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
 QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
 hidden while it loads.
@@ -311,7 +324,7 @@ Every folder in `components/` has its own browser test beside the component: `<N
 
 - **Tailwind 4.3.3, local build, `tw:` prefix:** spacing numbers follow Vendra's scale (`tw:gap-5` = `--space-5`). Use the named layout utilities (`max-w-page`, `px-gutter`, `h-tap`, `z-header`, `rounded-control`…) and the semantic colours (`bg-page`, `text-body`).
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
-- **Custom CSS** is for contextual selectors and component internals, in `_shared/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
+- **Custom CSS** is for contextual selectors and component internals, in `_shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
 - **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
@@ -321,7 +334,7 @@ Every folder in `components/` has its own browser test beside the component: `<N
 ## TV mode
 
 The storefront runs on a television, read from about 3 metres and driven by a remote's arrows and OK
-(Enter). `main.jsx` decides before the first render (`_shared/tv.js` → `vfApplyTvMode`) and sets
+(Enter). `main.jsx` decides before the first render (`_shared/services/tv.js` → `vfApplyTvMode`) and sets
 `data-density="tv"` on `<html>`; the Shell passes the same density to `VendraProvider` for the overlays.
 First match wins:
 
@@ -372,7 +385,7 @@ and pressing Add to bag.
 - **Checkout** stores the finished order in session storage. Track shows it, and Order again refills the bag.
 - **Account balance:** top-ups are simulated. Paying from a balance of at least `wallet.discountFrom` takes `discountPercent` off the products. A real store keeps the balance on its server.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
-- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `_shared/integrations/api.js` talks to the backend, and only when `apiBase` is set.
+- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `_shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
 
 
