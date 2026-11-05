@@ -26,9 +26,9 @@ export default defineConfig({
   // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
   timeout: 60000,
   forbidOnly: ci,
-  // One Vite dev server serves every page; more workers than this starts timing out. CI's
-  // runners have fewer cores. E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
-  workers: Number(process.env.E2E_WORKERS) || (ci ? 2 : 4),
+  // One Vite dev server serves every page; more workers than this starts timing out.
+  // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
+  workers: Number(process.env.E2E_WORKERS) || 2,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
   reporter: [['list'], ['html', {outputFolder: './playwright-report', open: 'never'}]],
