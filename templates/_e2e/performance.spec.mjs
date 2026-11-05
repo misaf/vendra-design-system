@@ -50,6 +50,9 @@ test.describe('performance budgets', () => {
   for (const [view, lang] of PAGES) {
     test(`${view} (${lang}) loads within its byte budget`, async ({page}) => {
       await openSite(page, view, lang);
+      // This measurement needs completed resource sizes, beyond interaction readiness.
+      await page.waitForLoadState('load');
+      await page.evaluate(() => document.fonts.ready);
       const used = await page.evaluate(() => {
         const mark = performance.getEntriesByName('vf-preload-pages')[0];
         const first = performance
@@ -81,6 +84,7 @@ test.describe('performance budgets', () => {
         }).observe({type: 'layout-shift', buffered: true});
       });
       await openSite(page, view, lang);
+      await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(1500);
       expect(await page.evaluate(() => window.__vfShift)).toBeLessThanOrEqual(BUDGET.fontSwapCls);
     });
@@ -110,6 +114,8 @@ test.describe('performance budgets', () => {
         }).observe({type: 'longtask', buffered: true});
       });
       await openSite(page, view, lang);
+      await page.waitForLoadState('load');
+      await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(2000);
       const {lcp, blocking} = await page.evaluate(() => ({
         lcp: window.__vfLcp,
