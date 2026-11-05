@@ -14,7 +14,7 @@ fields, and allows B to edit the recipient/address. Releasing A's old response m
 current state. On success, the local order belongs to A and is available when A returns and reloads;
 on failure, neither customer gets a completed order.
 
-[customer-state-integrity.spec.mjs](templates/_e2e/customer-state-integrity.spec.mjs) adds success
+[customer-state-integrity.spec.mjs](apps/storefront/_e2e/customer-state-integrity.spec.mjs) adds success
 and failure cases in both languages and default projects (eight new registrations per target):
 
 | Phase | Required observation |
@@ -42,7 +42,7 @@ local demo data, not proof of server-issued ownership or transaction commit.
 
 ## Existing runtime ownership
 
-[Site logic](templates/storefront-site/logic.js) listens for identity-key storage changes and
+[Site logic](apps/storefront/storefront-site/logic.js) listens for identity-key storage changes and
 partitions delivery/payment/order state by customer. Its checkout completion path already stores
 a mismatched-owner order in that owner's partition instead of replacing the current customer's
 state. Pending request cleanup remains handled by the existing checkout send/finally path.
@@ -71,7 +71,7 @@ disabled and default non-touch 390×844 / 1280×900 projects. No tablet, touch-p
 made from these browser widths.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs integrity-recovery-followups.spec.mjs --project=mobile --project=desktop --grep 'two-tab|late checkout responses|failed profile and address saves|initial saved-list loading|guest continuation and customer switches' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs integrity-recovery-followups.spec.mjs --project=mobile --project=desktop --grep 'two-tab|late checkout responses|failed profile and address saves|initial saved-list loading|guest continuation and customer switches' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
 ```
 

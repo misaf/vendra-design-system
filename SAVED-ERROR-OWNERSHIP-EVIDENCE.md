@@ -8,7 +8,7 @@ This PR targets master and contains no implementation from pending
 ## Purpose and scenarios
 
 The recovery fix's ownership guards were previously unit-tested. This stage adds
-[saved-error-ownership.spec.mjs](templates/_e2e/saved-error-ownership.spec.mjs), covering the browser
+[saved-error-ownership.spec.mjs](apps/storefront/_e2e/saved-error-ownership.spec.mjs), covering the browser
 boundary with real client methods/fetch and controlled HTTP responses. Each scenario runs in EN/FA
 at mobile and desktop widths. API initialization is observed with a test-only window property setter,
 which calls the installed client's public setBase before mount. Client methods, fetch, and application
@@ -71,7 +71,7 @@ PNGs are byte-identical. Discovery increases by 12 registrations in one spec fil
 The task native volume is removed and VM restored to stopped / 3814 MiB.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- saved-error-ownership.spec.mjs customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'saved error ownership|initial saved-list loading' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- saved-error-ownership.spec.mjs customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'saved error ownership|initial saved-list loading' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
 npm test
 npm run check

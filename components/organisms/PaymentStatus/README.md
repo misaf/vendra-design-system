@@ -39,7 +39,7 @@ The trip to a bank's payment page and back. Iranian card payments leave the stor
 - When the status changes, focus moves to the new heading, so screen readers hear the answer; the first status (a page that just loaded) leaves focus to the page.
 - `amount`, `orderNumber` and `reference` (the bank's tracking code) appear under the message. The app formats the amount (`format.money`).
 - The wording comes from `messages.js` (`PaymentStatus`) in English and Persian; `{gateway}` is filled with `gateway` or "the bank".
-- The storefront's checkout shows the whole trip with a simulated bank: choose **Online card demo** (`VF_STORE.paymentDemo.online` sets the bank's first answer). `templates/API.md` B30 lists what the backend needs for a real gateway.
+- The storefront's checkout shows the whole trip with a simulated bank: choose **Online card demo** (`VF_STORE.paymentDemo.online` sets the bank's first answer). `apps/storefront/API.md` B30 lists what the backend needs for a real gateway.
 
 ## Usage
 

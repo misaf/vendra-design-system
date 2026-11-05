@@ -28,8 +28,8 @@ The Atomic Design migration is not declared complete.
 
 ### 1. Confirmed theme export/type asymmetry
 
-`templates/_shared/tenant-theme.js` returns RAMPS and shade for its internal/browser/CommonJS
-interface. `templates/_build/package.cjs` copies that entire implementation to dist/theme.cjs,
+`apps/storefront/_shared/tenant-theme.js` returns RAMPS and shade for its internal/browser/CommonJS
+interface. `apps/storefront/_build/package.cjs` copies that entire implementation to dist/theme.cjs,
 while its ESM wrapper lists thirteen exports and excludes those two. Both declaration files are
 copied from tenant-theme.d.ts, which also excludes them.
 
@@ -87,7 +87,7 @@ These are temporary local evidence, not durable CI artifacts. The parity-stop lo
 `/tmp/vendra-stage216-initial-theme-shape.log`.
 
 The normal checks can be repeated with `npm test`, `npm run check` and
-`npm --prefix templates run build:app`. The additional packed-consumer checks are a one-time audit;
+`npm --prefix apps/storefront run build:app`. The additional packed-consumer checks are a one-time audit;
 they are not yet automated by those commands. The tarball's recorded SHA-1 is
 `f716d1c803f094e71b7683275c0d829a78f99a09` (an evidence identifier, not a security assertion).
 

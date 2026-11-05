@@ -35,13 +35,13 @@ project conditionals; 51 registrations do not mean 51 executions in every config
 
 | Dedicated suite | Scenarios | EN/FA × phone/tablet | Scope |
 | --- | ---: | ---: | --- |
-| [device-routes](templates/_e2e/device-routes.spec.mjs) | 4 | 16 | Product, bag/delivery, checkout and contact. |
-| [device-browsing](templates/_e2e/device-browsing.spec.mjs) | 4 | 16 | Search context, saved undo and missing/error recovery. |
-| [device-customer](templates/_e2e/device-customer.spec.mjs) | 3 | 12 | Demo sign-in, profile/sign-out and guest lookup. |
-| [device-editorial](templates/_e2e/device-editorial.spec.mjs) | 4 | 16 | Journal, article, FAQ and policy. |
-| [device-specialist](templates/_e2e/device-specialist.spec.mjs) | 2 | 8 | Wedding draft/validation and presentation tools. |
-| [device-catalog](templates/_e2e/device-catalog.spec.mjs) | 3 | 12 | Home discovery, shop sorting/paging/filters. |
-| [contact-map-lifecycle](templates/_e2e/contact-map-lifecycle.spec.mjs) | 1 | 4 | Loaded active tiles/marker, zoom, resize and routed unload/remount/history/reload. |
+| [device-routes](apps/storefront/_e2e/device-routes.spec.mjs) | 4 | 16 | Product, bag/delivery, checkout and contact. |
+| [device-browsing](apps/storefront/_e2e/device-browsing.spec.mjs) | 4 | 16 | Search context, saved undo and missing/error recovery. |
+| [device-customer](apps/storefront/_e2e/device-customer.spec.mjs) | 3 | 12 | Demo sign-in, profile/sign-out and guest lookup. |
+| [device-editorial](apps/storefront/_e2e/device-editorial.spec.mjs) | 4 | 16 | Journal, article, FAQ and policy. |
+| [device-specialist](apps/storefront/_e2e/device-specialist.spec.mjs) | 2 | 8 | Wedding draft/validation and presentation tools. |
+| [device-catalog](apps/storefront/_e2e/device-catalog.spec.mjs) | 3 | 12 | Home discovery, shop sorting/paging/filters. |
+| [contact-map-lifecycle](apps/storefront/_e2e/contact-map-lifecycle.spec.mjs) | 1 | 4 | Loaded active tiles/marker, zoom, resize and routed unload/remount/history/reload. |
 
 Map tablet cases explicitly start at 768×1000; selected route helpers recheck portrait geometry at
 768×1024. Historical capture tests override the desktop viewport/input explicitly. None of these
@@ -49,7 +49,7 @@ names or overrides establishes a physical phone, tablet or television result.
 
 ## Route-to-flow checklist
 
-All 19 [`VF_ROUTES`](templates/_shared/routing.js) have selected dedicated bilingual touch coverage.
+All 19 [`VF_ROUTES`](apps/storefront/_shared/routing.js) have selected dedicated bilingual touch coverage.
 The following supplements that flow coverage with stages 228–232. It does not claim every route's
 initial state was scanned by the dedicated cases or that every listed gap has no older test.
 
@@ -100,7 +100,7 @@ historical results. The runner builds/owns/tears down its preview. That stage al
 local visual/hydration/device/browser run is claimed.
 
 ```sh
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage233-production.json E2E_WORKERS=2 npm --prefix templates run test:e2e:build -- device-routes.spec.mjs device-browsing.spec.mjs device-customer.spec.mjs device-editorial.spec.mjs device-specialist.spec.mjs device-catalog.spec.mjs contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage233-production-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage233-production.json E2E_WORKERS=2 npm --prefix apps/storefront run test:e2e:build -- device-routes.spec.mjs device-browsing.spec.mjs device-customer.spec.mjs device-editorial.spec.mjs device-specialist.spec.mjs device-catalog.spec.mjs contact-map-lifecycle.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage233-production-results --reporter=list,json
 ```
 
 The completed [PR #88 CI run](https://github.com/misaf/vendra-design-system/actions/runs/41810373432)
@@ -128,8 +128,8 @@ within its hosting/retention constraints. No current-head all-green claim is mad
 
 ## Geometry and visual contract
 
-[Project configuration](templates/_e2e/playwright.config.mjs), [touch helpers](templates/_e2e/device-helpers.mjs),
-[content/visual helpers](templates/_e2e/helpers.mjs), [visual browser](templates/_e2e/visual-browser.mjs)
+[Project configuration](apps/storefront/_e2e/playwright.config.mjs), [touch helpers](apps/storefront/_e2e/device-helpers.mjs),
+[content/visual helpers](apps/storefront/_e2e/helpers.mjs), [visual browser](apps/storefront/_e2e/visual-browser.mjs)
 and [CI workflow](.github/workflows/ci.yml) retain these boundaries:
 
 - Selected touch controls fit the viewport, avoid sticky header/bottom bars and receive center hit

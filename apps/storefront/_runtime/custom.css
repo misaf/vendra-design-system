@@ -1,0 +1,1618 @@
+@layer vendra.components {
+/* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
+
+/* Source: _shared/shell.css */
+/* Template document defaults. */
+body {
+  margin: 0;
+}
+a {
+  color: var(--text-accent);
+}
+@media (hover: hover) {
+  a:hover {
+    color: var(--accent-hover);
+  }
+}
+.vf-page,
+.vf-page * {
+  box-sizing: border-box;
+}
+.vf-page main {
+  width: 100%;
+  min-width: 0;
+}
+.vf-page main > * {
+  min-width: 0;
+}
+@media (width < 768px) {
+  .vf-page main {
+    padding-inline: 16px !important;
+  }
+  .vf-page aside {
+    width: 100%;
+    min-width: 0;
+  }
+}
+/* From 768px the consent notice is one slim bar along the bottom (title, text, choices, close), so it
+   never covers filters or products. On phones the same markup stays a stacked card above the tab bar. */
+@media (width >= 768px) {
+  .vf-shell-consent-bar .vf-shell-consent {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: var(--space-5);
+    border-radius: 0;
+    box-shadow: none;
+    padding: var(--space-3) var(--space-6);
+  }
+  .vf-shell-consent-bar .vf-shell-consent > div:first-child {
+    display: contents;
+  }
+  .vf-shell-consent-bar .vf-shell-consent > p {
+    order: 1;
+  }
+  .vf-shell-consent-bar .vf-shell-consent > div:last-child {
+    order: 2;
+    flex-wrap: nowrap;
+  }
+  .vf-shell-consent-bar .vf-shell-consent-close {
+    order: 3;
+  }
+}
+
+/* Keyboard focus, in-page links and scrollIntoView stop clear of the sticky header and bottom
+   bars (heights measured by Shell), so a focused element is never hidden under them (WCAG 2.4.11). */
+html {
+  scroll-padding-block: calc(var(--vf-top-bar, 0px) + var(--space-2))
+    calc(var(--vf-bottom-bar, 0px) + var(--space-2));
+}
+
+/* Print: the page's content only (an order, a quote, a policy), without the site's navigation,
+   footer, sticky bars or the cookie notice. */
+@media print {
+  .vf-shell-header,
+  .vf-shell-footer,
+  .vf-shell-bottom-bar,
+  .vf-shell-consent-bar,
+  .vf-shell-consent-dock {
+    display: none !important;
+  }
+  .vf-shell-container {
+    min-height: 0 !important;
+  }
+}
+/* The announcement's link: underlined, with an arrow that follows the reading direction. */
+.vf-shell-announcement-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-underline-offset: 3px;
+}
+/* Touch: the announcement link reaches the bar's full tap height without growing the bar, and footer
+   links are full-height rows rather than bare lines of text. */
+@media (any-pointer: coarse) {
+  .vf-shell-announcement-link {
+    padding-block: calc((var(--tap-min) - 1lh) / 2);
+    margin-block: calc((1lh - var(--tap-min)) / 2);
+  }
+  .vf-shell-footer-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+}
+/* TV: every text link in the shell is a full control a remote can land on. */
+[data-density='tv']
+  :is(
+    .vf-shell-footer-link,
+    .vf-shell-announcement-link,
+    .vf-shell-consent-link,
+    .vf-shell-footer-credit a
+  ) {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
+  min-width: var(--control-h-xs);
+}
+
+/* Short landscape screens need their height for the product. Keep the header, consent and
+   purchase/navigation bars in normal flow, with every control still reachable by scrolling. */
+@media (height < 480px) and (orientation: landscape) {
+  .vf-shell-header,
+  .vf-shell-bottom-bar {
+    position: static;
+  }
+}
+
+/* Phone footer: one compact navigation stack, with contact details always available. The shared
+   accordion handles keyboard and screen-reader state; CSS alone selects the responsive layout. */
+.vf-shell-footer-expanded {
+  display: contents;
+}
+.vf-shell-footer-compact {
+  display: none;
+}
+@media (width < 768px) {
+  :where(html:not([data-density='tv'])) .vf-shell-footer-expanded {
+    display: none;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact {
+    display: block;
+    --text-body: var(--text-on-inverse);
+    --text-secondary: var(--text-on-inverse);
+    --text-muted: var(--text-inverse-muted);
+    --border-subtle: var(--border-inverse);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-content {
+    padding-block-start: var(--space-5);
+    padding-block-end: var(--space-4h);
+    gap: var(--space-4h);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-columns {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-5);
+    padding-block-start: 0;
+    border-block-start: 0;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .ag-acc__btn {
+    min-block-size: var(--control-h-lg);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .ag-acc__content {
+    padding-block-end: var(--space-3);
+    white-space: normal;
+  }
+  /* A closing panel stays mounted for its height transition. Remove its links from the Tab
+     order immediately, so a quick Tab cannot land on a link that is disappearing. */
+  :where(html:not([data-density='tv']))
+    .vf-shell-footer-compact
+    .ag-acc__item:not(.ag-acc__item--open)
+    .ag-acc__panel {
+    visibility: hidden;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .vf-shell-footer-nav {
+    gap: 0;
+    align-items: stretch;
+  }
+  :where(html:not([data-density='tv'])) .vf-shell-footer-compact .vf-shell-footer-link {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--tap-min);
+  }
+}
+
+/* Brand art stays inside the existing shell dimensions, including narrow phones. */
+.vf-brand-logo {
+  display: block;
+  width: auto;
+  height: var(--brand-logo-height, 36px);
+  max-width: min(100%, var(--brand-logo-width, 220px));
+  object-fit: contain;
+}
+.vf-shell-mobile-brand .vf-brand-logo {
+  height: var(--brand-logo-mobile-height, 28px);
+  margin-inline: auto;
+}
+.vf-shell-footer-brand .vf-brand-logo {
+  height: var(--brand-logo-footer-height, 56px);
+}
+
+
+/* Source: _shared/information-pages.css */
+/* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
+.vf-page .vf-info {
+  max-width: 1088px;
+  margin-inline: auto;
+  padding-top: var(--space-7);
+  padding-inline: var(--space-5);
+  padding-bottom: 0;
+}
+
+.vf-info h1,
+.vf-info h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--display-case);
+  text-wrap: balance;
+}
+.vf-info h1 {
+  font-size: clamp(40px, 5cqi, 64px);
+}
+.vf-info h2 {
+  font-size: clamp(28px, 3.5cqi, 36px);
+}
+
+.vf-info-toc .vf-info-eyebrow {
+  margin-block-end: var(--space-2);
+}
+@media (width < 768px) {
+  .vf-page .vf-info {
+    padding-block-start: var(--space-6);
+  }
+  .vf-info-header {
+    margin-block-end: var(--space-6);
+  }
+  .vf-info-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .vf-info-sections {
+    gap: var(--space-6);
+  }
+  .vf-info-notice {
+    margin-block-end: var(--space-6);
+  }
+  /* Outrank the shared fit-based sticky rule once contents stack above the document. */
+  .vf-page .vf-info-toc.vf-sticky-panel {
+    position: static;
+  }
+}
+
+
+/* Source: _shared/page-layouts.css */
+/* Three storefront page families. Exceptions are named and kept here. */
+
+/* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
+.vf-page .ag-product__name {
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+.vf-page .ag-product__link {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.vf-page .vf-shopping,
+.vf-page .vf-form,
+.vf-page .vf-info {
+  margin-inline: auto;
+  padding: var(--space-7) var(--space-5) 0;
+}
+.vf-page .vf-shopping {
+  max-width: var(--vf-shopping-width);
+}
+.vf-page .vf-form {
+  max-width: var(--vf-form-width);
+}
+.vf-page .vf-info {
+  max-width: var(--vf-info-width);
+}
+.vf-page main h1,
+.vf-page main h2 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  text-transform: var(--display-case);
+  text-wrap: balance;
+}
+.vf-page main h1 {
+  margin: 0;
+  font-size: clamp(40px, 5cqi, 64px);
+}
+.vf-page .vf-form h1 {
+  font-size: clamp(36px, 4.5cqi, 56px);
+}
+.vf-page main h2 {
+  font-size: clamp(28px, 3.5cqi, 36px);
+}
+.vf-page main > h1 {
+  margin-block-end: var(--space-6);
+}
+.vf-page .vf-shopping--home {
+  max-width: none;
+  padding: 0;
+}
+
+.vf-page main > aside {
+  min-width: 0;
+}
+
+/* Share row heights without truncating names or subtitles: photo, name, subtitle, price and the
+   stock note ("Only 2 left"), which most cards leave empty. */
+.vf-product-grid .ag-product {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 5;
+  min-width: 0;
+  row-gap: 14px;
+}
+.vf-product-grid .ag-product > div:last-child {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
+  row-gap: 4px;
+}
+.vf-product-grid .ag-product__meta {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 2;
+  row-gap: 4px;
+}
+.vf-page .ag-product__price,
+.vf-page .ag-line__price {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+/* Keep the amount readable: narrow cards can put the currency on the next line. */
+.vf-page .ag-product__price {
+  white-space: normal;
+}
+.vf-page .ag-product__price .ag-price__now {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.vf-page .ag-line__price {
+  white-space: nowrap;
+}
+.vf-page .ag-line__thumb {
+  border-radius: var(--radius-md);
+}
+
+/* At TV text sizes, a sidebar cannot fit the photo, identifier and price on one line. Keep
+   identifiers intact by giving the amount a separate row in narrow summary cards. */
+[data-density='tv'] .vf-page .ag-osum {
+  container: vf-tv-summary / inline-size;
+}
+@container vf-tv-summary (width < 480px) {
+  .ag-osum__line {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .ag-osum__total {
+    grid-column: 2;
+    justify-content: start;
+  }
+}
+
+.vf-mobile-action .vf-action-total {
+  flex: none;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.vf-mobile-action .ag-btn {
+  height: auto;
+  min-height: var(--control-h-input);
+  white-space: normal;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Persian copy gets its own rhythm, including editorial text. */
+.vf-page[data-lang='fa'] main p {
+  line-height: var(--lh-body);
+}
+.vf-page[data-lang='fa'] main blockquote {
+  line-height: var(--lh-snug);
+}
+@media (width < 768px) {
+  .vf-page .vf-shopping,
+  .vf-page .vf-form,
+  .vf-page .vf-info {
+    padding-block-start: var(--space-6);
+  }
+  .vf-page .vf-shopping--home {
+    padding: 0 !important;
+  }
+  /* Phone heading sizes come from headings.css, on the type scale; Persian needs the taller line. */
+  .vf-page[data-lang='fa'] main h1 {
+    line-height: 1.5;
+  }
+  .vf-page .vf-form aside,
+  .vf-page .vf-shopping aside {
+    position: static !important;
+  }
+  .vf-page .vf-product-grid {
+    column-gap: var(--space-4) !important;
+  }
+}
+@container (width < 360px) {
+  .vf-page .vf-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Sticky side panels (filters, order summaries, contents) stick below the header only while they
+   fit between it and the sticky bottom bars (Shell sets data-vf-fits); a taller panel scrolls with
+   the page, so keyboard focus can always reach its last control (WCAG 2.4.11). */
+.vf-sticky-panel[data-vf-fits] {
+  position: sticky;
+  top: 6rem;
+}
+
+/* Give form fields a visible ring. (Keyboard targets stay clear of the sticky header and bottom
+   bars through scroll-padding in shell.css.) */
+.vf-page :is(input, textarea, select):focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 1.5);
+}
+
+@media (height < 480px) and (orientation: landscape) {
+  .vf-page .vf-shopping,
+  .vf-page .vf-form,
+  .vf-page .vf-info {
+    padding-block-start: var(--space-4);
+  }
+  .vf-page .vf-shopping--home {
+    padding-block-start: 0;
+  }
+}
+
+
+/* Source: _shared/collection-carousel.css */
+/* Every collection keeps explicit navigation on touch screens and a glimpse of the next card. */
+.vf-collection-carousel .ag-carousel__nav {
+  display: flex;
+}
+.vf-collection-carousel .ag-carousel__nav .ag-iconbtn {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+/* The scroll viewport clips outward outlines; keep product and track focus rings inside it. */
+.vf-collection-carousel .ag-product--link:focus-within,
+.vf-collection-carousel .ag-cat:focus-visible,
+.vf-collection-carousel .ag-blog__link:focus-visible::after,
+.vf-collection-carousel .ag-carousel__track:focus-visible {
+  outline-offset: calc(-1 * var(--focus-width));
+}
+/* Desktop keeps each collection's configured count; tablets keep comfortably sized cards. */
+@media screen and (width >= 1024px) {
+  .vf-collection-carousel .ag-carousel__track {
+    --carousel-item-min: 0px;
+  }
+}
+
+/* Counts occupy the unused start of the navigation row; the shared arrows stay at the end. */
+.vf-collection {
+  position: relative;
+  min-inline-size: 0;
+}
+.vf-collection-count {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tap-min);
+  max-inline-size: calc(100% - var(--tap-min) * 2 - var(--space-3));
+  font-size: var(--text-sm);
+  line-height: var(--lh-snug);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+/* No empty row of disabled arrows when a collection fits. Measured state handles resizing and
+   small collections; the data-only defaults below prevent a first-paint jump for full rows. */
+.vf-collection[data-overflow='false'] .ag-carousel__nav,
+.vf-collection[data-overflow='false'] .vf-collection-count,
+.vf-collection[data-items='1'] .ag-carousel__nav,
+.vf-collection[data-items='1'] .vf-collection-count {
+  display: none;
+}
+@media screen and (width >= 1024px) {
+  .vf-collection[data-fits-row='true']:not([data-overflow='true']) .ag-carousel__nav,
+  .vf-collection[data-fits-row='true']:not([data-overflow='true']) .vf-collection-count {
+    display: none;
+  }
+}
+
+
+/* Source: storefront-account/styles.css */
+/* Custom styles for the account page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-bag/styles.css */
+/* Custom styles for the bag page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* Let the actual row width decide: a narrow bag column also occurs beside a tablet summary. */
+@container (max-width: 480px) {
+  .vf-bag-line .ag-line--lg {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+  }
+  .vf-bag-line .ag-line__main {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+  .vf-bag-line .ag-line__end {
+    grid-column: 2;
+    grid-row: 2;
+    align-items: flex-start;
+    text-align: start;
+    margin-block-start: 0;
+  }
+}
+
+
+/* Source: storefront-checkout/styles.css */
+/* Custom styles for the checkout page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-contact/styles.css */
+/* Custom styles for the contact page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-error/styles.css */
+/* Custom styles for the server-error page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-faq/styles.css */
+/* Custom styles for the faq page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-home/styles.css */
+/* Custom styles for the home page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
+   pink is too dark to read there). */
+.vf-home-weddings-accent {
+  font-style: var(--accent-font-style);
+  font-weight: var(--accent-font-weight);
+}
+:lang(fa) .vf-home-weddings-accent {
+  font-style: normal;
+}
+/* Quiet decorative layers stay behind the copy and controls. The sprig sits at the outer
+   end of the wedding band and mirrors with the reading direction. */
+.vf-home-weddings-band,
+.vf-home-featured-band,
+.vf-home-newsletter-band {
+  position: relative;
+  isolation: isolate;
+}
+.vf-home-weddings-band,
+.vf-home-newsletter-band,
+.vf-home-featured-band {
+  overflow: clip;
+}
+.vf-home-weddings-band::before,
+.vf-home-featured-band::before,
+.vf-home-newsletter-band::before,
+.vf-home-featured-band::after,
+.vf-home-newsletter-band::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.vf-home-weddings-band::before {
+  inset-block-start: -3rem;
+  inset-inline-end: -5rem;
+  width: 24rem;
+  height: 24rem;
+  background-color: var(--text-inverse-muted);
+  mask: url('../../../assets/patterns/botanical-sprig.svg') center / contain no-repeat;
+  opacity: 0.16;
+  transform: rotate(-14deg);
+}
+.vf-home-weddings-band:dir(rtl)::before {
+  transform: scaleX(-1) rotate(-14deg);
+}
+.vf-home-newsletter-band::before,
+.vf-home-featured-band::before {
+  inset: 0;
+  border-radius: inherit;
+  background: url('../../../assets/patterns/paper-grain.svg') repeat;
+  opacity: 0.045;
+}
+.vf-home-newsletter-band::after {
+  inset-block-end: -3rem;
+  inset-inline-end: -4rem;
+  width: 18rem;
+  height: 18rem;
+  background-color: var(--text-muted);
+  mask: url('../../../assets/patterns/botanical-sprig.svg') center / contain no-repeat;
+  opacity: 0.24;
+  transform: rotate(-25deg);
+}
+.vf-home-newsletter-band:dir(rtl)::after {
+  transform: scaleX(-1) rotate(-25deg);
+}
+.vf-home-featured-band::after {
+  inset: 11rem 0 0;
+  background-color: var(--text-accent);
+  mask:
+    url('../../../assets/patterns/floral-outline.svg') left -12rem top / 18rem 18rem repeat-y,
+    url('../../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem repeat-y;
+  opacity: 0.16;
+}
+@media (width < 768px) {
+  .vf-home-weddings-band::before {
+    inset-block-start: -2.5rem;
+    inset-inline-end: -3rem;
+    width: 11rem;
+    height: 11rem;
+    opacity: 0.12;
+  }
+  .vf-home-newsletter-band::after {
+    inset-block-end: auto;
+    inset-block-start: -3rem;
+    inset-inline-end: -6rem;
+    width: 15rem;
+    height: 15rem;
+    opacity: 0.18;
+  }
+  .vf-home-featured-band::after {
+    mask:
+      url('../../../assets/patterns/floral-outline.svg') left -12.5rem top / 15rem 15rem repeat-y,
+      url('../../../assets/patterns/floral-outline.svg') right -12.5rem top 7.5rem / 15rem 15rem
+        repeat-y;
+    opacity: 0.12;
+  }
+}
+@media (forced-colors: active) {
+  .vf-home-weddings-band::before,
+  .vf-home-featured-band::before,
+  .vf-home-newsletter-band::before,
+  .vf-home-featured-band::after,
+  .vf-home-newsletter-band::after {
+    display: none;
+  }
+}
+/* The newsletter field and its button share one 48px row. */
+.vf-home-newsletter-form .ag-input {
+  box-sizing: border-box;
+  height: var(--control-h-input);
+  min-height: 0;
+}
+.vf-home-newsletter-form .ag-input input {
+  padding-block: 0;
+  align-self: stretch;
+}
+.vf-home-newsletter-form .ag-input input:focus-visible {
+  outline: none;
+}
+.vf-home-newsletter-form .ag-input:has(input:focus-visible) {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * 1.5);
+}
+
+/* Very narrow windows retain two category choices rather than squeezing their labels. */
+@container (width < 300px) {
+  .vf-home-category-circles .ag-carousel__track {
+    --carousel-per-view-mobile: 2.15;
+  }
+}
+
+
+/* Source: storefront-journal/styles.css */
+/* Keep browsing controls compact while preserving readable stories and full tap targets. */
+@media (width < 1024px) {
+  :where(html:not([data-density='tv'])) .vf-journal-header {
+    gap: var(--space-3);
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-journal h1.ag-sechead__title {
+    font-size: clamp(1.875rem, 4cqi, 2.25rem);
+    line-height: var(--lh-snug);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-header .ag-sechead__text {
+    gap: var(--space-1);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-categories .ag-chip {
+    flex: none;
+    white-space: nowrap;
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-search {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured {
+    margin-block-end: var(--space-6);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__body {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__title {
+    font-size: var(--text-xl);
+    line-height: var(--lh-snug);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-featured .ag-blog__excerpt {
+    font-size: var(--text-base);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-article-grid {
+    row-gap: var(--space-6);
+  }
+  :where(html:not([data-density='tv'])) .vf-journal-pagination {
+    margin-block-start: var(--space-6);
+  }
+}
+
+
+/* Source: storefront-notfound/styles.css */
+/* Custom styles for the notfound page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-policy/styles.css */
+/* Custom styles for the policy page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-post/styles.css */
+/* Custom styles for the post page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-presentation/styles.css */
+/* Custom styles for the counter presentation. */
+/* The page uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+/* The QR code stays dark on white whatever the tenant's colours, so every phone camera reads it. */
+.vf-presentation-qr {
+  background: var(--white);
+  color: var(--ink-900);
+}
+
+/* "Print a tag" prints only the QR code and the design's code, to stand beside the design in the
+   shop; the presentation's tag scanner reads it back. */
+@media print {
+  /* Keep hiding less specific than the tag reveal below. */
+  :where(body:has(.vf-presentation-tag)) * {
+    visibility: hidden;
+  }
+  /* Hidden catalog content must not create extra pages behind the fixed tag. */
+  :where(body:has(.vf-presentation-tag)) > :not(.vf-presentation-tag, :has(.vf-presentation-tag)) {
+    display: none;
+  }
+  .vf-presentation-tag,
+  .vf-presentation-tag * {
+    visibility: visible;
+  }
+  .vf-presentation-tag {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 6cm;
+  }
+}
+
+/* The compact bar: search, kinds and tools on one row on a TV or a landscape tablet; narrower, the
+   kinds take a row of their own under the search and tools. On phones the search takes its own
+   full row too. The kinds scroll sideways rather than wrap onto more rows. */
+.vf-presentation-bar-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 340px) minmax(0, 1fr) auto;
+  grid-template-areas: 'search kinds tools';
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.vf-presentation-search {
+  grid-area: search;
+}
+.vf-presentation-kinds {
+  grid-area: kinds;
+}
+.vf-presentation-tools {
+  grid-area: tools;
+}
+@media (width < 1024px) {
+  .vf-presentation-bar-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'search tools'
+      'kinds kinds';
+  }
+}
+/* On a phone the count makes way for the tools; it is still announced. */
+@container (width < 640px) {
+  .vf-presentation-bar-row {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'search'
+      'tools'
+      'kinds';
+  }
+  .vf-presentation-tools {
+    justify-content: flex-end;
+  }
+  .vf-presentation-count {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+/* A finger swipes the kinds sideways; a mouse needs a scrollbar to reach the ones past the edge. */
+.vf-presentation-kinds {
+  scrollbar-width: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vf-presentation-kinds {
+    scrollbar-width: thin;
+  }
+}
+.vf-presentation-kinds > * {
+  flex: none;
+}
+
+/* The calm full-screen view: untouched, the bar, arrows, dots and buttons step aside so the photo
+   fills the screen, with the code and the price in a small tag in the corner. A touch or a key
+   brings them back; so does keyboard focus on any of them. */
+/* (The viewer itself takes focus as it opens; only focus on one of its controls counts.) */
+.vf-presentation-viewer--calm:not(:has(:focus-visible:not(.ag-lightbox__frame))) {
+  & .ag-lightbox__bar,
+  & .ag-lightbox__step,
+  & .ag-lightbox__dots,
+  & .ag-lightbox__actions {
+    display: none;
+  }
+  & .ag-lightbox__stage {
+    padding-block: var(--space-3);
+  }
+  & .ag-lightbox__caption {
+    position: absolute;
+    inset-block-end: var(--space-5);
+    inset-inline-start: var(--space-5);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--surface-inverse) 88%, transparent);
+  }
+}
+
+/* The display starts on the product rather than the seller's catalog. */
+.vf-display {
+  position: relative;
+  height: 100dvh;
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+}
+.vf-display-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+.vf-display-product > .ag-picture {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.vf-display-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(16px, 3vmin, 64px);
+  gap: var(--space-5);
+  box-sizing: border-box;
+}
+.vf-display-media--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.vf-display-product {
+  margin: 0;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+}
+.vf-display-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: baseline;
+  justify-content: center;
+}
+.vf-display-tools {
+  position: absolute;
+  inset-block-start: var(--space-3);
+  inset-inline-end: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+}
+.vf-display-navigation {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+}
+.vf-presentation [hidden] {
+  display: none;
+}
+
+/* Controls fade out without removing the keyboard's route to the seller drawer. */
+.vf-display {
+  touch-action: pan-y;
+}
+.vf-display:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring-on-inverse);
+  outline-offset: -4px;
+}
+.vf-display-tools {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.vf-display[data-controls='true'] .vf-display-tools,
+.vf-display-tools:has(:focus-visible) {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-display-tools {
+    transition: none;
+  }
+}
+
+.vf-display-product--photo {
+  grid-template-rows: minmax(0, 1fr);
+}
+.vf-display-code {
+  font-family: var(--font-code);
+  font-size: clamp(24px, 3vw, 44px);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  direction: ltr;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+}
+.vf-display-caption .ag-price {
+  font-size: clamp(18px, 1.5vw, 24px);
+}
+.vf-display[data-mode='tv'] .vf-display-media {
+  padding: clamp(24px, 4vmin, 80px);
+}
+.vf-display[data-mode='tv'] .vf-display-code {
+  font-size: clamp(28px, 3vw, 64px);
+}
+.vf-display[data-mode='tv'] .vf-display-caption .ag-price {
+  font-size: clamp(20px, 2vw, 40px);
+}
+
+/* Decode the next photos off stage; only complete replacements enter the presentation. */
+.vf-display-preload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.vf-display-product {
+  animation: vf-display-enter var(--dur-base) var(--ease-out);
+}
+@keyframes vf-display-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-display-product {
+    animation: none;
+  }
+}
+
+.vf-display-photo-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  color: var(--text-inverse-muted);
+}
+@container (width < 640px) {
+  .vf-presentation-tools {
+    flex-wrap: wrap;
+  }
+}
+
+.vf-collection-product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.vf-collection-product img {
+  width: 64px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+.vf-collection-preview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.vf-collection-preview figure {
+  margin: 0;
+  min-width: 0;
+  font-size: var(--text-xs);
+}
+.vf-collection-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: contain;
+}
+.vf-setup-transfer summary {
+  cursor: pointer;
+  padding-block: var(--space-3);
+}
+.vf-display-tools {
+  inset-block-start: max(var(--space-3), env(safe-area-inset-top));
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-right));
+}
+
+body:has(.vf-presentation) .ag-dialog__foot {
+  flex-wrap: wrap;
+}
+
+[dir='rtl'] .vf-display-tools {
+  inset-inline-end: max(var(--space-3), env(safe-area-inset-left));
+}
+
+
+/* Source: storefront-product/styles.css */
+/* Custom styles for the product page. */
+.vf-product-recent {
+  gap: var(--space-5);
+  margin-block-start: var(--space-9);
+}
+.vf-product-recent .vf-collection[data-items='1'] .ag-carousel__track {
+  --carousel-per-view-mobile: 1;
+}
+@media (width >= 1024px) {
+  .vf-product-recent .ag-sechead__title {
+    font-size: var(--text-2xl);
+    line-height: var(--lh-snug);
+  }
+}
+.vf-product-columns > *,
+.vf-product-details > * {
+  min-inline-size: 0;
+}
+.vf-product-heading {
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--border-subtle);
+}
+.vf-product-price-stock {
+  margin-block-start: var(--space-2);
+}
+.vf-product-heading .vf-product-price {
+  font-weight: var(--weight-semibold);
+}
+.vf-product-heading .vf-product-description {
+  margin-block-start: var(--space-1);
+}
+.vf-product-selection-total .ag-price {
+  font-weight: var(--weight-semibold);
+}
+.vf-product-title .ag-btn {
+  min-block-size: var(--tap-min);
+  height: auto;
+  white-space: normal;
+  text-align: start;
+}
+/* Let the purchase bar wrap when the amount and translated action cannot share a row. */
+.vf-product-mobile-action > .ag-btn {
+  flex: 1 1 auto;
+  min-block-size: var(--tap-min);
+}
+.vf-page .vf-product-details .vf-product-title h1 {
+  font-family: var(--font-code);
+  font-size: clamp(1.375rem, 3vw, 2rem);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  line-height: 1.3;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.vf-product-add .ag-btn {
+  white-space: normal;
+  height: auto;
+  min-height: 52px;
+}
+/* Save and copy confirmations sit above the sticky bottom bars (the mobile action and tab bars, or
+   the desktop consent bar); the shell keeps --vf-bottom-bar at their height. */
+.vf-product-toasts {
+  inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-6));
+}
+@media (width < 768px) {
+  .vf-product-toasts {
+    inset-inline: var(--space-4);
+    inset-block-end: calc(var(--vf-bottom-bar, 0px) + var(--space-3));
+    max-width: none;
+  }
+}
+
+/* Portrait tablets have room for a compact photo and purchase details side by side. */
+@media (768px <= width < 1024px) {
+  .vf-product-columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .vf-product-columns .ag-gallery__track {
+    max-height: 65dvh;
+  }
+}
+
+/* A narrow purchase panel reads each size and its surcharge on one row, rather than squeezing
+   three prices into tiny tiles. The panel width also covers phones and portrait tablets. */
+.vf-product-details {
+  container-type: inline-size;
+}
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-product-recent {
+    gap: var(--space-3);
+    margin-block-start: var(--space-7);
+  }
+  :where(html:not([data-density='tv'])) .vf-product-details {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-product-extras {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-product-extras-legend {
+    margin-block-end: var(--space-2);
+  }
+}
+@container (width < 420px) {
+  .vf-product-sizes .ag-choices {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .vf-product-sizes .ag-choice {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .vf-product-sizes .ag-choice__desc {
+    text-align: end;
+  }
+}
+[data-density='tv'] .vf-product-details .vf-product-title h1 {
+  font-size: var(--text-xl);
+}
+
+/* Landscape phones have the width for two compact columns, but little height for a tall photo. */
+@media (height < 480px) and (orientation: landscape) {
+  @container (width >= 600px) {
+    .vf-product-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5);
+    }
+    .vf-product-columns .ag-gallery__track {
+      max-height: 70dvh;
+    }
+    .vf-product-columns .ag-gallery__slide img {
+      object-fit: contain;
+    }
+  }
+}
+
+/* Touch tablets need the configured total and action while the purchase panel scrolls. Reuse
+   the phone action; keep the phone navigation hidden and let Shell measure the bar for focus. */
+@media (768px <= width < 1024px), (1024px <= width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-shell-phone-bar:has(.vf-product-mobile-action) {
+    display: block;
+  }
+  :where(html:not([data-density='tv']))
+    .vf-shell-phone-bar:has(.vf-product-mobile-action)
+    .ag-tabbar,
+  :where(html:not([data-density='tv'])) .vf-product-add-button,
+  :where(html:not([data-density='tv'])) .vf-product-selection-total {
+    display: none;
+  }
+  :where(html:not([data-density='tv'])) .vf-product-mobile-action {
+    padding-inline: var(--space-5);
+  }
+}
+
+
+/* Source: storefront-saved/styles.css */
+/* Custom styles for the saved page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-search/styles.css */
+/* Result layout follows available reading space, including narrow embedded views. */
+.vf-search-results {
+  container: vf-search-results / inline-size;
+}
+.vf-search-name {
+  align-self: flex-start;
+  font-family: var(--font-code);
+  font-variant-numeric: slashed-zero tabular-nums;
+  letter-spacing: 0.025em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.vf-search-subtitle {
+  overflow-wrap: anywhere;
+}
+@container vf-search-results (width < 560px) {
+  .vf-search-row {
+    grid-template-columns: 48px minmax(0, 1fr);
+    column-gap: var(--space-3);
+    row-gap: var(--space-1);
+    align-items: start;
+  }
+  .vf-search-thumbnail {
+    grid-row: 1 / span 2;
+  }
+  .vf-search-row .vf-price {
+    grid-column: 2;
+    font-size: var(--text-sm);
+  }
+}
+
+
+/* Source: storefront-shop/styles.css */
+/* Custom styles for the shop page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+/* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
+@media (width < 1024px) {
+  .vf-shop-product-grid {
+    row-gap: var(--space-6);
+  }
+  .vf-shop-product-grid .ag-product {
+    display: flex;
+    grid-row: auto;
+    gap: var(--space-3);
+  }
+  .vf-shop-product-grid .ag-product > div:last-child,
+  .vf-shop-product-grid .ag-product__meta {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: var(--space-1);
+  }
+}
+@media (width < 768px) {
+  .vf-shop-product-grid {
+    column-gap: var(--space-3);
+  }
+  .vf-shop-results {
+    gap: var(--space-4);
+  }
+  .vf-shop-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+  .vf-shop-quick-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  .vf-shop-toolbar > div:last-child {
+    justify-content: flex-end;
+  }
+}
+@container (width < 320px) {
+  .vf-page .vf-shop-product-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Keep the shop's actions outside the scrolling options, including on short touch screens. */
+@media (width < 1024px) {
+  .ag-dialog__overlay:has(.vf-shop-filter-fields) {
+    padding: var(--space-4);
+  }
+  .ag-dialog:has(.vf-shop-filter-fields),
+  .ag-dialog__frame:has(.vf-shop-filter-fields) {
+    max-block-size: calc(100dvh - 2 * var(--space-4));
+    overflow: hidden;
+  }
+  .ag-dialog__frame:has(.vf-shop-filter-fields) {
+    display: flex;
+    flex-direction: column;
+  }
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__head,
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__foot {
+    flex-shrink: 0;
+    padding: var(--space-4);
+  }
+  .ag-dialog:has(.vf-shop-filter-fields) .ag-dialog__body {
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+  .vf-shop-filter-fields {
+    gap: var(--space-3);
+  }
+}
+
+/* Tablet controls share the row without stretching the three-option sort across the page. */
+@media (768px <= width < 1024px) {
+  .vf-shop-columns,
+  .vf-shop-results {
+    row-gap: var(--space-3);
+  }
+  .vf-shop-mobile-bar {
+    justify-content: space-between;
+  }
+  .vf-shop-mobile-bar > div {
+    flex: 0 1 280px;
+  }
+  .vf-shop-toolbar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .vf-shop-quick-filters {
+    flex: 1;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+    overflow-x: auto;
+    padding: var(--space-1);
+    scroll-padding-inline: var(--space-1);
+    scrollbar-width: thin;
+  }
+  .vf-shop-quick-filters .ag-chip,
+  .vf-shop-toolbar > div:last-child {
+    flex: none;
+  }
+}
+
+
+/* Source: storefront-signin/styles.css */
+/* Custom styles for the signin page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-track/styles.css */
+/* Custom styles for the track page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: storefront-weddings/styles.css */
+/* Custom styles for the weddings page. */
+/* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
+
+
+/* Source: _shared/responsive-spacing.css */
+/* Compact spacing for phones and tablets. Layout gaps and card text stacks get tighter;
+   body type and control dimensions keep their normal readable, touch-friendly sizes. */
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-page {
+    --space-6: 1.5rem;
+    --space-7: 1.75rem;
+    --space-8: 2rem;
+    --space-9: 2.5rem;
+    --space-10: 3rem;
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--home > section {
+    padding-block-start: var(--space-5);
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--home > .vf-home-top {
+    padding-block-start: var(--space-6);
+  }
+  :where(html:not([data-density='tv'])) .vf-home-featured-band {
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-collection-carousel .ag-carousel__nav {
+    margin-block-end: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-home-featured-band > p {
+    margin-block-start: calc(-1 * var(--space-1));
+  }
+  :where(html:not([data-density='tv'])) .vf-home-weddings-band,
+  :where(html:not([data-density='tv'])) .vf-home-newsletter-band {
+    padding: var(--space-4h);
+    gap: var(--space-4);
+  }
+  /* Keep photo geometry, prices and stock messages intact. Compact the text stack rather than
+     shrinking type or reserving an empty stock row on every card in a catalogue grid. */
+  :where(html:not([data-density='tv'])) .vf-page .ag-product {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-product-grid {
+    row-gap: var(--space-5);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-product-grid .ag-product {
+    display: flex;
+    grid-row: auto;
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product > div:last-child,
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__meta {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: calc(var(--space-1) / 2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__name {
+    line-height: 1.25;
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__sub,
+  :where(html:not([data-density='tv'])) .vf-page .ag-product__price {
+    line-height: var(--lh-snug);
+  }
+  /* Stacked stories need a tighter caption rhythm; long-form article text keeps its leading. */
+  :where(html:not([data-density='tv'])) .vf-page .ag-blog:not(.ag-blog--wide) {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .ag-blog:not(.ag-blog--wide) .ag-blog__body {
+    gap: var(--space-1);
+  }
+}
+
+
+/* Source: _shared/commerce-spacing.css */
+/* Compact shopping and checkout rhythm. Keep type, photos, fields and controls at their
+   existing sizes; remove space between groups and the bag's duplicated row padding. */
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-shopping--shop {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-columns {
+    row-gap: var(--space-3);
+    column-gap: var(--space-5);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-results {
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-shop-toolbar {
+    gap: var(--space-2);
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--shop .ag-loadmore {
+    margin-block-start: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-steps, .vf-checkout-steps),
+  :where(html:not([data-density='tv'])) .vf-checkout-heading {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) .vf-page .vf-form--bag > h1 {
+    margin-block-end: var(--space-4);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-columns, .vf-checkout-columns, .vf-bag-items) {
+    gap: var(--space-4h);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-delivery, .vf-checkout-payment) {
+    gap: var(--space-4);
+  }
+  :where(html:not([data-density='tv']))
+    :is(.vf-bag-recipient-grid, .vf-checkout-receipt-grid, .vf-bag-summary) {
+    gap: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) .vf-bag-line {
+    padding-block: 0;
+  }
+  :where(html:not([data-density='tv'])) .vf-bag-line .ag-line {
+    padding-block: var(--space-3);
+  }
+  :where(html:not([data-density='tv'])) :is(.vf-bag-summary, .vf-checkout-summary) .ag-osum__line {
+    padding-block: var(--space-2);
+  }
+}
+
+
+/* Source: _shared/headings.css */
+/* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
+   Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
+.vf-page .ag-sechead__title {
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+  max-inline-size: 32ch;
+}
+.vf-page:lang(fa) .ag-sechead__title {
+  line-height: var(--lh-snug);
+  letter-spacing: 0;
+}
+/* Home is a collection index. Its page title leads; every collection uses the same h2 scale. */
+.vf-shopping--home .ag-sechead--h1 .ag-sechead__title {
+  font-size: var(--text-3xl);
+}
+.vf-shopping--home h2.ag-sechead__title,
+.vf-shopping--home .vf-home-weddings h2 {
+  font-size: var(--text-2xl);
+  line-height: var(--lh-snug);
+  text-wrap: pretty;
+}
+/* The header itself supplies the query width. Children share one grid, so the action never
+   reduces a narrow title to a sliver. Logical grid columns follow the language direction. */
+.vf-shopping--home .ag-sechead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+}
+.vf-shopping--home .ag-sechead__text {
+  display: contents;
+}
+.vf-shopping--home .ag-sechead__eyebrow {
+  grid-area: 1 / 1;
+}
+.vf-shopping--home .ag-sechead__title {
+  grid-area: 1 / 1;
+}
+.vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__title {
+  grid-row: 2;
+}
+.vf-shopping--home .ag-sechead__actions {
+  grid-area: 1 / 2;
+  min-inline-size: 0;
+}
+.vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__actions {
+  grid-row: 2;
+}
+.vf-shopping--home .ag-sechead__actions .ag-btn {
+  min-block-size: var(--tap-min);
+  block-size: auto;
+  white-space: normal;
+  text-align: start;
+}
+@container (width < 640px) {
+  .vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__actions {
+    grid-row: 1;
+    max-inline-size: 55cqi;
+  }
+  .vf-shopping--home .ag-sechead:has(.ag-sechead__eyebrow) .ag-sechead__title {
+    grid-column: 1 / -1;
+  }
+  .vf-shopping--home .ag-sechead__actions .ag-btn {
+    padding-inline: 0;
+    font-size: var(--text-sm);
+  }
+}
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-page main h1:where(:not(#vf-product-code)),
+  :where(html:not([data-density='tv'])) .vf-page .vf-form h1,
+  :where(html:not([data-density='tv']))
+    .vf-page[data-lang='fa']
+    main
+    h1:where(:not(#vf-product-code)),
+  :where(html:not([data-density='tv'])) .vf-page[data-lang='fa'] .vf-form h1 {
+    font-size: clamp(1.875rem, 4cqi, 2.5rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-page main h2 {
+    font-size: clamp(1.5rem, 3.5cqi, 1.875rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-home-top .ag-sechead--h1 .ag-sechead__title {
+    font-size: clamp(1.875rem, 4cqi, 2.25rem);
+  }
+  :where(html:not([data-density='tv']))
+    .vf-shopping--home
+    .ag-sechead:not(.ag-sechead--h1)
+    .ag-sechead__title {
+    font-size: clamp(1.5rem, 3.5cqi, 1.75rem);
+  }
+  :where(html:not([data-density='tv'])) .vf-shopping--home .vf-home-weddings h2 {
+    font-size: clamp(1.5rem, 3.5cqi, 1.75rem);
+  }
+}
+
+
+}

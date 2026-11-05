@@ -6,7 +6,7 @@ failures and follow-ups; **full visual acceptance is not complete**.
 
 ## Scope and fixed policy
 
-[pages.spec.mjs](templates/_e2e/pages.spec.mjs) registers 19 default views × English/Persian ×
+[pages.spec.mjs](apps/storefront/_e2e/pages.spec.mjs) registers 19 default views × English/Persian ×
 mobile/desktop = **76 cases per target**. Mobile is non-touch 390×844; desktop is 1280×900.
 The suite uses software rasterization, the fixed morning clock, font/image/height settling,
 threshold 0 and maxDiffPixels 25. Existing map stubs and demo/guard behavior remain unchanged.
@@ -69,8 +69,8 @@ home FA, product FA and journal FA. The inspected differences include **visible 
 Commit `646e5ab038f3fd12feddad6b25f5815eb71e97fb` intentionally changed both the cancelled demo-order
 code and Persian separators at **2026-10-19 15:46 Iran time**. The relevant Darwin expectations were
 captured by `bd7f880118e696bd28c2d5afb750fdbb7dbb2597` at **14:33 that day**. Current
-[formatting.js](templates/_shared/formatting.js), [catalog.js](templates/_shared/catalog.js) and
-[account-data.js](templates/_shared/account-data.js) retain that intended content. Linux account
+[formatting.js](apps/storefront/_shared/formatting.js), [catalog.js](apps/storefront/_shared/catalog.js) and
+[account-data.js](apps/storefront/_shared/account-data.js) retain that intended content. Linux account
 expectations were subsequently refreshed in `de9203f`; current Linux production passes these views.
 Stage 220 already reviewed the separate Persian post expectations, not all these other views.
 
@@ -109,10 +109,10 @@ Each full target uses this selection with its platform's configured browser; pro
 `test:e2e:build`. JSON reporting retains result/error details and image/trace paths.
 
 ```sh
-E2E_WORKERS=2 PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage235-darwin-dev.json npm --prefix templates run test:e2e -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage235-darwin-dev-results --reporter=list,json
+E2E_WORKERS=2 PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage235-darwin-dev.json npm --prefix apps/storefront run test:e2e -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage235-darwin-dev-results --reporter=list,json
 # Linux serial repeats (inside the same image/native filesystem):
-CI=true E2E_WORKERS=1 npm --prefix templates run test:e2e -- pages.spec.mjs --project=mobile --grep 'page: post \(fa\)' --update-snapshots=none --retries=0
-CI=true E2E_WORKERS=1 npm --prefix templates run test:e2e -- pages.spec.mjs --project=desktop --grep 'page: contact' --update-snapshots=none --retries=0
+CI=true E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- pages.spec.mjs --project=mobile --grep 'page: post \(fa\)' --update-snapshots=none --retries=0
+CI=true E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- pages.spec.mjs --project=desktop --grep 'page: contact' --update-snapshots=none --retries=0
 ```
 
 The builds, root `npm run check`, baseline-hash and local document-link checks pass. Full screenshot

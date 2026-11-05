@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 // React Aria's Select: a button and a listbox.
 test('keyboard opens, skips disabled options, chooses and returns focus', async ({page}) => {

@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 test('an image with its alt, or a placeholder named by alt', async ({page}) => {
   await openComponent(page, 'ArchFrame');

@@ -1,4 +1,4 @@
-/* GENERATED from tokens/tenants/fern.json by npm --prefix templates run build. Edit the JSON, not this file.
+/* GENERATED from tokens/tenants/fern.json by npm --prefix apps/storefront run build. Edit the JSON, not this file.
    Sample tenant theme "Fern": deep teal accent, cool grey-green neutrals, navy ink and a plum footer; Vazirmatn headings, upright accent words, pill controls and soft-topped image frames. Sits near the muted-text and input-edge contrast limits on purpose.
    Apply with data-tenant="fern" on <html> (or any wrapper). */
 [data-tenant="fern"]{
