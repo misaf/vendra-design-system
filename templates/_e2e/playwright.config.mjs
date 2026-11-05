@@ -5,20 +5,26 @@ import {fileURLToPath} from 'node:url';
 // installed Google Chrome (channel: 'chrome') because the Playwright browser CDN
 // is not reachable from every region. CI runs them inside Playwright's Linux image
 // (.github/workflows/ci.yml), on the Chromium it ships, against the -linux screenshots.
-// Vite serves the repo root, so cards and fixtures load from their real paths.
-// E2E_TARGET=build runs the storefront specs against the production build (npm run build:app, served
-// by vite preview); the cards, the component specs and the package and hydration fixtures need
-// the dev server and are skipped.
-const build = process.env.E2E_TARGET === 'build';
+// The development server serves the repo root for guideline and component fixtures.
+// Storefront tests run against a production build. Only source fixtures and the gateway
+// tests that mutate a source module need the development server (E2E_TARGET=dev).
+const build = process.env.E2E_TARGET !== 'dev';
+const devSpecs = [
+  'cards.spec.mjs',
+  'package.spec.mjs',
+  'hydration.spec.mjs',
+  'tenant-fixtures.spec.mjs',
+  'payment-live.spec.mjs'
+];
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
 const channel = ci ? undefined : 'chrome';
 
 export default defineConfig({
   testDir: '.',
-  testMatch: '*.spec.mjs',
-  testIgnore: build ? ['cards.spec.mjs', 'package.spec.mjs', 'hydration.spec.mjs'] : [],
-  outputDir: './test-results',
+  testMatch: build ? '*.spec.mjs' : devSpecs,
+  testIgnore: build ? devSpecs : [],
+  outputDir: build ? './test-results/build' : './test-results/dev',
   // One screenshot folder for every project, whatever its testDir.
   snapshotDir: './__screenshots__',
   snapshotPathTemplate: '{snapshotDir}/{arg}-{platform}{ext}',
@@ -31,7 +37,13 @@ export default defineConfig({
   workers: Number(process.env.E2E_WORKERS) || 2,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
-  reporter: [['list'], ['html', {outputFolder: './playwright-report', open: 'never'}]],
+  reporter: [
+    ['list'],
+    [
+      'html',
+      {outputFolder: build ? './playwright-report/build' : './playwright-report/dev', open: 'never'}
+    ]
+  ],
   // Exact colours, with a few pixels of slack for anti-aliasing. The default
   // per-pixel threshold (0.2) hid an 8,500-pixel shadow change. Capturing a long page
   // under load can take longer than the default 5s; screenshot.css hides native select text.
@@ -73,33 +85,35 @@ export default defineConfig({
       name: 'desktop',
       use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
     },
-    ...[
-      {name: 'touch-phone', viewport: {width: 390, height: 844}, hasTouch: true},
-      {name: 'tablet', viewport: {width: 1180, height: 820}, hasTouch: true},
-      {name: 'tv', viewport: {width: 1920, height: 1080}, hasTouch: false}
-    ].map(device => ({
-      name: device.name,
-      // The tv project also opens the storefront in TV mode (tv.spec.mjs).
-      testMatch:
-        device.name === 'tv'
-          ? ['devices.spec.mjs', 'tv.spec.mjs']
-          : [
-              'devices.spec.mjs',
-              'device-routes.spec.mjs',
-              'device-browsing.spec.mjs',
-              'device-customer.spec.mjs',
-              'device-editorial.spec.mjs',
-              'device-specialist.spec.mjs',
-              'device-catalog.spec.mjs',
-              'contact-map-lifecycle.spec.mjs'
-            ],
-      use: {
-        ...devices['Desktop Chrome'],
-        channel,
-        viewport: device.viewport,
-        hasTouch: device.hasTouch
-      }
-    })),
+    ...(build
+      ? [
+          {name: 'touch-phone', viewport: {width: 390, height: 844}, hasTouch: true},
+          {name: 'tablet', viewport: {width: 1180, height: 820}, hasTouch: true},
+          {name: 'tv', viewport: {width: 1920, height: 1080}, hasTouch: false}
+        ].map(device => ({
+          name: device.name,
+          // The tv project also opens the storefront in TV mode (tv.spec.mjs).
+          testMatch:
+            device.name === 'tv'
+              ? ['devices.spec.mjs', 'tv.spec.mjs']
+              : [
+                  'devices.spec.mjs',
+                  'device-routes.spec.mjs',
+                  'device-browsing.spec.mjs',
+                  'device-customer.spec.mjs',
+                  'device-editorial.spec.mjs',
+                  'device-specialist.spec.mjs',
+                  'device-catalog.spec.mjs',
+                  'contact-map-lifecycle.spec.mjs'
+                ],
+          use: {
+            ...devices['Desktop Chrome'],
+            channel,
+            viewport: device.viewport,
+            hasTouch: device.hasTouch
+          }
+        }))
+      : []),
     // Each component's own spec, beside it (components/<Name>/<Name>.spec.mjs), on the fixture
     // host page the dev server serves; a spec sets another viewport where it matters.
     ...(build
@@ -108,6 +122,7 @@ export default defineConfig({
           {
             name: 'components',
             testDir: '../../components',
+            testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
           }
         ])
@@ -117,14 +132,14 @@ export default defineConfig({
         command: 'npm run build:app && npm run preview',
         cwd: '..',
         url: origin + '/templates/app/',
-        reuseExistingServer: !ci,
+        reuseExistingServer: false,
         timeout: 180000
       }
     : {
         command: 'npm run dev',
         cwd: '..',
         url: origin + '/templates/app/',
-        reuseExistingServer: !ci,
+        reuseExistingServer: false,
         timeout: 120000
       }
 });
