@@ -1,6 +1,6 @@
 // Browsing and recovery with actual touch taps inside the normal sticky shell.
 import {test, expect} from '@playwright/test';
-import {openSite} from './helpers.mjs';
+import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, shell, finish} from './device-helpers.mjs';
 
 test.use({reducedMotion: 'reduce'});
@@ -10,7 +10,7 @@ test.beforeEach(async ({page}, info) => {
   expect(await page.evaluate(() => navigator.maxTouchPoints)).toBeGreaterThan(0);
 });
 
-const params = page => Object.fromEntries(new URL(page.url()).searchParams);
+const params = page => routeOf(page.url());
 const homeLink = (page, fa) =>
   page.getByRole('main').getByRole('link', {name: fa ? 'صفحه اصلی' : 'Back home', exact: true});
 
@@ -20,7 +20,7 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'shop', lang, {cat: 'bouquets', filters: 'roses', sort: 'low'});
     const origin = params(page);
     await shell(page, lang);
-    await tap(page.locator('.vf-shell-header a[href*="view=search"]:visible').first());
+    await tap(page.locator('.vf-shell-header a[href*="/search/"]:visible').first());
     const field = page.getByRole('searchbox');
     await tap(field);
     await expect(field).toBeFocused();

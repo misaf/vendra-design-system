@@ -54,7 +54,7 @@ test('saving a design shows a toast that waits while the pointer is on it', asyn
   await page.getByRole('button', {name: 'Save this design'}).click();
   const toast = page.getByRole('alertdialog', {name: 'Saved to your list'});
   await expect(toast).toBeVisible();
-  await expect(toast.getByRole('link', {name: 'View saved'})).toHaveAttribute('href', /view=saved/);
+  await expect(toast.getByRole('link', {name: 'View saved'})).toHaveAttribute('href', /\/saved\//);
   // The toast stays clear of the mobile action bar.
   if (info.project.name === 'mobile') {
     const bar = await page.locator('.vf-product-mobile-action').boundingBox();
@@ -142,7 +142,7 @@ test('the header switches language and keeps the page', async ({page}, info) => 
   }
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await expect(page).toHaveURL(/cat=orchids/);
+  await expect(page).toHaveURL(/\/shop\/orchids\//);
   expect(await scanAxe(page)).toEqual([]);
 });
 
@@ -155,7 +155,7 @@ test('a standalone page opens itself in the other language', async ({page}, info
     .getByRole('group', {name: 'Language'})
     .getByRole('button', {name: 'فا'})
     .click();
-  await expect(page).toHaveURL(/templates\/app\/\?.*lang=fa/);
-  await expect(page).toHaveURL(/view=faq/);
+  await expect(page).toHaveURL(/templates\/app\/fa\//);
+  await expect(page).toHaveURL(/\/faq\//);
   await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
 });

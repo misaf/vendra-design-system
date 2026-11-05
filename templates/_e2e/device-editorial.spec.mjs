@@ -53,7 +53,7 @@ for (const lang of ['en', 'fa']) {
     await tap(story);
     await expect(page.locator('main h1')).toHaveText(title);
     await expect(page.locator('main h1')).toBeFocused();
-    await expect(page).toHaveURL(/view=post/);
+    await expect(page).toHaveURL(/\/journal\/[\w-]+\//);
     await page.reload();
     await expect(page.locator('main h1')).toHaveText(title);
     const back = page
@@ -61,7 +61,7 @@ for (const lang of ['en', 'fa']) {
       .getByRole('link', {name: fa ? 'دفترچه' : 'Journal', exact: true});
     await finish(page, lang, info, back);
     await tap(back);
-    await expect(page).toHaveURL(/view=journal/);
+    await expect(page).toHaveURL(/\/journal\//);
     await expect(page.locator('main .ag-blog')).toHaveCount(7);
     await expect(page.locator('main h1')).toBeFocused();
     await shell(page, lang);
@@ -89,7 +89,7 @@ for (const lang of ['en', 'fa']) {
       .getByRole('link', {name: fa ? 'تماس با ما' : 'Contact us', exact: true});
     await finish(page, lang, info, contact);
     await tap(contact);
-    await expect(page).toHaveURL(/view=contact/);
+    await expect(page).toHaveURL(/\/contact\//);
     await expect(page.locator('main h1')).toBeFocused();
     await shell(page, lang);
     // The WhatsApp action is not activated.
@@ -105,7 +105,7 @@ for (const lang of ['en', 'fa']) {
       exact: true
     });
     await tap(returns);
-    await expect(page).toHaveURL(/id=returns/);
+    await expect(page).toHaveURL(/\/policy\/returns\//);
     await expect(returns).toHaveAttribute('aria-current', 'page');
     await expect(page.locator('main h1')).toBeFocused();
     const contents = page.getByRole('navigation', {

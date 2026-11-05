@@ -21,7 +21,7 @@ import {
 } from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
 import {vfSeparator} from '../_shared/formatting.js';
-import {vfRouteParams} from '../_shared/routing.js';
+import {vfReadRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
@@ -387,8 +387,8 @@ function vfRestartCalm(page) {
 // The QR code on a design's tag holds its product page's address (or just its code).
 function vfScannedProduct(text) {
   try {
-    const id = new URL(text).searchParams.get('id');
-    if (id) return vfFindProduct(id);
+    const route = vfReadRoute(new URL(text).href);
+    if (route.view === 'product') return vfFindProduct(route.id);
   } catch {}
   return vfFindProduct(text.trim());
 }
@@ -700,7 +700,6 @@ function vals(page) {
     vfSyncDisplay(page);
   };
   const absolute = href => new URL(href, location.href).href;
-  const prefix = page.props.go ? '' : '../app/';
   const inShortlist = id => st.shortlist.includes(id);
   // From the latest state, so quick taps on several stars all count.
   const toggleShortlist = id => {
@@ -749,15 +748,14 @@ function vals(page) {
         qrLabel: C.qr.replace('{code}', product.id),
         code: product.id,
         url: absolute(
-          prefix +
-            vfRouteParams({
-              lang: L,
-              view: 'product',
-              id: product.id,
-              cat: product.cat,
-              size: st.send.size,
-              addons: st.send.addons
-            })
+          vfRouteUrl({
+            lang: L,
+            view: 'product',
+            id: product.id,
+            cat: product.cat,
+            size: st.send.size,
+            addons: st.send.addons
+          })
         ),
         tag: true
       };
@@ -768,9 +766,7 @@ function vals(page) {
         body: C.shortlistBody,
         qrLabel: C.qr.replace('{code}', C.shortlist),
         code: '',
-        url: absolute(
-          prefix + vfRouteParams({lang: L, view: 'saved', ids: st.shortlist.join(',')})
-        ),
+        url: absolute(vfRouteUrl({lang: L, view: 'saved', ids: st.shortlist.join(',')})),
         // Longer than a link may carry, the customer's phone would open an empty list.
         tooLong: !VF_SAVED_IDS_PATTERN.test(st.shortlist.join(',')),
         tooLongBody: C.shortlistTooLong
@@ -780,7 +776,7 @@ function vals(page) {
       body: C.handOverBody,
       qrLabel: C.qr.replace('{code}', C.order),
       code: '',
-      url: absolute(prefix + vfRouteParams({lang: L, view: 'bag', lines: vfLinesParam(available)})),
+      url: absolute(vfRouteUrl({lang: L, view: 'bag', lines: vfLinesParam(available)})),
       tooLong: !VF_LINES_PATTERN.test(vfLinesParam(available)),
       tooLongBody: C.orderTooLong
     };

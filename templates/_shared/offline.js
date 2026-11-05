@@ -1,3 +1,5 @@
+import {vfAppBase} from './routing.js';
+
 // Prepare the built app shell and this display's photos on the very first visit.
 export function vfKeepOffline(
   urls = [],
@@ -22,7 +24,8 @@ export function vfKeepOffline(
     }
     report({status: 'preparing', completed: 0, total: 0});
     try {
-      await navigator.serviceWorker.register(new URL('sw.js', location.href).pathname, {
+      // The worker sits at the app's path, whichever page registers it, so it serves every page.
+      await navigator.serviceWorker.register(vfAppBase() + 'sw.js', {
         updateViaCache: 'none'
       });
       const registration = await navigator.serviceWorker.ready;

@@ -42,13 +42,13 @@ import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
 import {vfShell} from '../_shared/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel, vfDeliveryWhen} from '../_shared/translations/time.js';
 import {VF_NAV} from '../_shared/page-focus.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-// Two checkout steps share this page: the bag (?view=bag) and delivery details (&step=delivery).
+// Two checkout steps share this page: the bag (bag/) and delivery details (bag/?step=delivery).
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -261,8 +261,7 @@ function vals(page) {
     hasSaved: saved.length > 0,
     // Guests can sign in to use saved addresses, then come back to this step.
     guest: !phone,
-    signinHref:
-      (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'signin', next: 'delivery'}),
+    signinHref: vfRouteUrl({lang: L, view: 'signin', next: 'delivery'}),
     goSignin: e => {
       if (!page.props.go) return;
       e && e.preventDefault && e.preventDefault();
@@ -316,7 +315,7 @@ function vals(page) {
       e && e.preventDefault && e.preventDefault();
       stepTo('bag');
     },
-    bagHref: (page.props.go ? '' : '../app/') + vfRouteParams({lang: L, view: 'bag'}),
+    bagHref: vfRouteUrl({lang: L, view: 'bag'}),
     stepClick: i => i === 0 && stepTo('bag'),
     next: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;

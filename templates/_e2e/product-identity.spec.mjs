@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite} from './helpers.mjs';
+import {openSite, routeOf} from './helpers.mjs';
 
 // Product.token is the customer-facing name in every storefront collection.
 // Localized descriptions remain searchable, but must never replace this identity.
@@ -20,7 +20,7 @@ for (const lang of ['en', 'fa']) {
       await expect(cards.first(), view).toBeAttached();
       for (const card of await cards.all()) {
         const link = card.locator('.ag-product__link');
-        const code = new URL(await link.getAttribute('href'), page.url()).searchParams.get('id');
+        const code = routeOf(await link.getAttribute('href')).id;
         expect(code, view).toMatch(/^VF-[A-Z0-9]+$/);
         await expect(card.locator('.ag-product__name'), view).toHaveText(code);
         await expect(link, view).toHaveAccessibleName(new RegExp(`^${code}(?: —|$)`));

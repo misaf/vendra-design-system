@@ -99,13 +99,13 @@ async function toPayment(page, t) {
   await page.fill('#vf-sender', 'Sara Karimi');
   await page.fill('#vf-sender-phone', '09121112233');
   await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
-  await expect(page).toHaveURL(/view=checkout/);
+  await expect(page).toHaveURL(/\/checkout\//);
   await expect(page.getByRole('radio', {name: t.card, exact: true})).toBeChecked();
   await expect(page.locator('#vf-last4')).toBeVisible();
 }
 
 async function expectPaymentFailure(page, t) {
-  await expect(page).toHaveURL(/view=checkout/);
+  await expect(page).toHaveURL(/\/checkout\//);
   const heading = main(page).getByRole('heading', {level: 1});
   await expect(heading).toHaveText(t.failedHeading);
   await expect(heading).toBeFocused();

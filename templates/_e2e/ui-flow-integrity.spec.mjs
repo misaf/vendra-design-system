@@ -179,7 +179,7 @@ for (const lang of ['en', 'fa']) {
     const dialog = page.getByRole('dialog');
     await repeat.press('Enter');
     await expect(dialog).toBeVisible();
-    await expect(page).toHaveURL(/view=track/);
+    await expect(page).toHaveURL(/\/track\//);
     await expect(repeat).toHaveJSProperty('tagName', 'BUTTON');
     expect(await page.evaluate(() => window.__vfSite.state.bag)).toEqual(before.bag);
     expect(await page.evaluate(() => window.__vfSite.state.delivery)).toEqual(before.delivery);
@@ -195,7 +195,7 @@ for (const lang of ['en', 'fa']) {
       .getByRole('button', {name: fa ? 'افزودن به سبد فعلی' : 'Add to current bag', exact: true})
       .press('Enter');
     await expect(page.locator('.vf-bag-line')).toHaveCount(before.bag.length);
-    await expect(page).toHaveURL(/view=bag/);
+    await expect(page).toHaveURL(/\/bag\//);
     const after = await page.evaluate(() => window.__vfSite.state.bag);
     expect(after[0].qty).toBe(before.bag[0].qty * 2);
     expect(after.slice(1)).toEqual(before.bag.slice(1));

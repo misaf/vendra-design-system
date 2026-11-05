@@ -2,7 +2,7 @@
 // Shared lifecycle for standalone templates and pages inside the click-through site.
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
-import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteParams} from './routing.js';
+import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
 import {VF_STORE} from './store-config.js';
 import {VF_SHELL} from './translations/shell.js';
 import {VF_SEO} from './seo.js';
@@ -93,13 +93,12 @@ function vfAnnounce(page) {
       alternates: Object.fromEntries(
         VF_STORE.languages.map(lang => [
           lang,
-          (page.props.go ? '' : '../app/') +
-            vfRouteParams({
-              ...VF_ROUTE_EXTRA[page._vfPage],
-              ...vfPageRoute(page.props),
-              view: page._vfPage,
-              lang
-            })
+          vfRouteUrl({
+            ...VF_ROUTE_EXTRA[page._vfPage],
+            ...vfPageRoute(page.props),
+            view: page._vfPage,
+            lang
+          })
         ])
       )
     });

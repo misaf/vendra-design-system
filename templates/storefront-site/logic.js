@@ -16,11 +16,20 @@ import {
 import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../_shared/delivery.js';
 import {VF_STORE, vfLanguage} from '../_shared/store-config.js';
 import {vfPageTenant} from '../_shared/page-lifecycle.js';
-import {VF_ROUTES, VF_ROUTE_EXTRA, vfReadRoute, vfRouteParams} from '../_shared/routing.js';
+import {
+  VF_ROUTES,
+  VF_ROUTE_EXTRA,
+  vfAppBase,
+  vfCurrentUrl,
+  vfInApp,
+  vfReadRoute,
+  vfRouteUrl
+} from '../_shared/routing.js';
 import {loadPage, pageReady} from '../app/pages.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 const VF_BAG0 = vfSampleBag();
-const VF_SESSION = 'vendra-template:' + location.pathname;
+// One session for the whole site, whichever page it was opened on.
+const VF_SESSION = 'vendra-template:' + vfAppBase();
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.
 function vfCheckoutBlocked(state) {
   return (
@@ -69,7 +78,7 @@ function vfJoinLines(bag, lines) {
 // original context. Only an internal, validated route can be used as the close destination.
 function vfSearchReturnRoute() {
   const value = history.state?.vfSearchReturn;
-  if (typeof value !== 'string' || !value.startsWith('?')) return null;
+  if (typeof value !== 'string' || !value.startsWith(vfAppBase())) return null;
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
@@ -121,24 +130,22 @@ function vfSiteInitial(props) {
     saved.customers?.[customerId] ||
     (saved.customerId === customerId || (!saved.customerId && customerId === 'guest') ? saved : {});
   let route = vfReadRoute();
-  if (route.view === 'home' && !new URLSearchParams(location.search).has('view') && props.start)
-    route = {...route, view: props.start};
-  // An old product link (?id=ivory) is rewritten with the product's category and code.
-  if (route.view === 'product' && vfRouteParams(route) !== location.search)
-    history.replaceState({}, '', vfRouteParams(route));
+  if (route.view === 'home' && props.start) route = {...route, view: props.start};
+  // An old product link (product/ivory/) is rewritten with the product's code.
+  if (route.view === 'product' && vfRouteUrl(route) !== vfCurrentUrl())
+    history.replaceState({}, '', vfRouteUrl(route));
   // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
   // are replaced, and the link is dropped from the address so a reload doesn't add them again.
   const handedLines = route.lines ? vfLinesFromParam(route.lines) : [];
   const handedIds = route.ids ? vfProductIds(route.ids.split(',')) : [];
   if (route.lines || route.ids) {
     route = {...route, lines: undefined, ids: undefined};
-    history.replaceState({}, '', vfRouteParams(route));
+    history.replaceState({}, '', vfRouteUrl(route));
   }
   // Open sign-in straight away rather than flashing the account first.
   if (route.view === 'account' && !vfAccountPhone()) {
-    route = vfReadRoute(vfRouteParams({lang: route.lang, view: 'signin'}));
-    if (new URLSearchParams(location.search).has('view'))
-      history.replaceState({}, '', vfRouteParams(route));
+    route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
+    if (vfReadRoute().view === 'account') history.replaceState({}, '', vfRouteUrl(route));
   }
   return {
     customerId,
@@ -146,7 +153,7 @@ function vfSiteInitial(props) {
     route: route.view,
     routeInfo: route,
     searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
-    lang: new URLSearchParams(location.search).has('lang')
+    lang: route.lang
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
     // The demo's sample bag and saved items stand in only when nothing was handed over.
@@ -286,10 +293,10 @@ export function usePage(props) {
               lang: page.state.lang,
               ...input
             };
-      let r = vfReadRoute(vfRouteParams(candidate));
+      let r = vfReadRoute(vfRouteUrl(candidate));
       const guarded = vfGuardRoute(page.state, r);
-      if (guarded) r = vfReadRoute(vfRouteParams(guarded));
-      const url = vfRouteParams(r);
+      if (guarded) r = vfReadRoute(vfRouteUrl(guarded));
+      const url = vfRouteUrl(r);
       vfShowRoute(page, r.view, () => {
         const refiningSearch = replace && r.view === 'search' && page.state.route === 'search';
         const searchReturn =
@@ -298,9 +305,9 @@ export function usePage(props) {
             : page.state.route === 'search'
               ? page.state.searchReturn
               : {...page.state.routeInfo, view: page.state.route, lang: page.state.lang};
-        if (url !== location.search)
+        if (url !== vfCurrentUrl())
           history[replace ? 'replaceState' : 'pushState'](
-            searchReturn ? {vfSearchReturn: vfRouteParams(searchReturn)} : {},
+            searchReturn ? {vfSearchReturn: vfRouteUrl(searchReturn)} : {},
             '',
             url
           );
@@ -370,10 +377,9 @@ export function usePage(props) {
         if (!link || link.hasAttribute('download')) return;
         if (link.target && link.target !== '_self') return;
         const url = new URL(link.href, location.href);
-        if (url.origin !== location.origin || url.pathname !== location.pathname || url.hash)
-          return;
+        if (!vfInApp(url) || url.hash) return;
         event.preventDefault();
-        page.navigate(vfReadRoute(url.search));
+        page.navigate(vfReadRoute(url.href));
       };
       document.addEventListener('click', page._click);
       const guarded = vfGuardRoute(page.state, {
@@ -433,7 +439,7 @@ function vals(page) {
               ? 'سفارش قبلی ثبت شد. تغییرات تازه سبد شما حفظ شده‌اند.'
               : 'Your earlier order was placed. Your newer bag changes are kept.',
           label: s.lang === 'fa' ? 'مشاهده سفارش' : 'View order',
-          href: vfRouteParams({lang: s.lang, view: 'track', id: s.checkoutNotice.id})
+          href: vfRouteUrl({lang: s.lang, view: 'track', id: s.checkoutNotice.id})
         }
       : null,
     dismissCheckoutNotice: () => page.setState({checkoutNotice: null}),
@@ -675,9 +681,8 @@ function vals(page) {
     // React Aria links: in-site URLs switch the view in place; anything else loads normally.
     routerNavigate: href => {
       const url = new URL(href, location.href);
-      if (url.origin !== location.origin || url.pathname !== location.pathname || url.hash)
-        return location.assign(url.href);
-      page.navigate(vfReadRoute(url.search));
+      if (!vfInApp(url) || url.hash) return location.assign(url.href);
+      page.navigate(vfReadRoute(url.href));
     }
   };
 }
