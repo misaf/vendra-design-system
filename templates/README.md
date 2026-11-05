@@ -196,6 +196,12 @@ its address, its alternates and a preview image — the product's or post's phot
 logo). Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
 and preview URLs; without it they start at the site root. CI's Pages build sets it.
 
+**Sitemap.** `storefrontSitemap(origin)` in `_build/routes.mjs` lists every indexed address of those
+routes, each with the same page in every store language as `xhtml:link` hreflang alternates
+(x-default English, as in the page's head) and a `lastmod` where the data has one: an article's
+`publishedAt`, and the journal's newest post. `deployment/sitemap.xml` is its `example.test` sample;
+`npm test` fails when it is stale.
+
 Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
 customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
 is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`

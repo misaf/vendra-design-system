@@ -1796,3 +1796,45 @@ import('../_build/routes.mjs').then(({storefrontSitemap}) => {
   );
   console.log('Passed the sitemap sample against the storefront routes.');
 });
+// Each sitemap entry names the same page in every language (hreflang, x-default English) and
+// articles carry their publication date as lastmod, which matches the date each article shows.
+Promise.all([
+  import('../_build/routes.mjs'),
+  import('../_shared/translations/journal-content.js')
+]).then(([{storefrontSitemap}, {VF_POSTS}]) => {
+  const sitemap = storefrontSitemap('https://shop.example');
+  const entries = sitemap.match(/<url>[\s\S]*?<\/url>/g);
+  for (const entry of entries) {
+    const loc = entry.match(/<loc>([^<]+)<\/loc>/)[1];
+    const alternates = Object.fromEntries(
+      [...entry.matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(match => match.slice(1))
+    );
+    assert.deepEqual(Object.keys(alternates), ['en', 'fa', 'x-default'], loc + ' alternates');
+    assert.ok(Object.values(alternates).includes(loc), loc + ' lists itself as an alternate');
+    assert.equal(alternates['x-default'], alternates.en, loc + ' x-default is English');
+    assert.equal(alternates.fa, alternates.en.replace('/app/en/', '/app/fa/'));
+  }
+  const months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
+  for (const post of VF_POSTS) {
+    const [day, month, year] = post.en[3].split(' ');
+    assert.equal(
+      post.publishedAt,
+      year + '-' + String(months.indexOf(month) + 1).padStart(2, '0') + '-' + day.padStart(2, '0'),
+      post.id + ' publishedAt matches its shown date'
+    );
+    for (const lang of ['en', 'fa'])
+      assert.ok(
+        sitemap.includes(
+          '<loc>https://shop.example/templates/app/' +
+            lang +
+            '/journal/' +
+            post.id +
+            '/</loc>\n  <lastmod>' +
+            post.publishedAt +
+            '</lastmod>'
+        ),
+        post.id + ' has its lastmod in ' + lang
+      );
+  }
+  console.log('Passed sitemap hreflang alternates and article lastmod.');
+});
