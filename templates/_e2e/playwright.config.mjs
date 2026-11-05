@@ -1,10 +1,9 @@
 import {defineConfig, devices} from '@playwright/test';
 import {fileURLToPath} from 'node:url';
 
-// Browser tests for the storefront and the design-system cards. Locally they run on the
-// installed Google Chrome (channel: 'chrome') because the Playwright browser CDN
-// is not reachable from every region. CI runs them inside Playwright's Linux image
-// (.github/workflows/ci.yml), on the Chromium it ships, against the -linux screenshots.
+// Browser tests use Playwright's bundled Chromium locally and in CI.
+// Install it locally with `npm exec --workspace templates -- playwright install chromium`.
+// CI runs inside Playwright's Linux image against the -linux screenshots.
 // The development server serves the repo root for guideline and component fixtures.
 // Storefront tests run against a production build. Only source fixtures and the gateway
 // tests that mutate a source module need the development server (E2E_TARGET=dev).
@@ -18,7 +17,6 @@ const devSpecs = [
 ];
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
-const channel = ci ? undefined : 'chrome';
 
 // The combined runner uses the same project definitions when routing CLI filters.
 export function projectsForTarget(build) {
@@ -27,14 +25,13 @@ export function projectsForTarget(build) {
       name: 'mobile',
       use: {
         ...devices['Desktop Chrome'],
-        channel,
         viewport: {width: 390, height: 844},
         hasTouch: false
       }
     },
     {
       name: 'desktop',
-      use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
+      use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
     },
     ...(build
       ? [
@@ -59,7 +56,6 @@ export function projectsForTarget(build) {
                 ],
           use: {
             ...devices['Desktop Chrome'],
-            channel,
             viewport: device.viewport,
             hasTouch: device.hasTouch
           }
@@ -74,7 +70,7 @@ export function projectsForTarget(build) {
             name: 'components',
             testDir: '../../components',
             testMatch: '*.spec.mjs',
-            use: {...devices['Desktop Chrome'], channel, viewport: {width: 1280, height: 900}}
+            use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           }
         ])
   ];
@@ -124,7 +120,6 @@ export default defineConfig({
       cookies: [],
       origins: [{origin, localStorage: [{name: 'vf-consent', value: 'essential'}]}]
     },
-    channel,
     // The store is in Karaj: delivery days and cut-offs read the clock in Tehran time, whatever
     // the machine's own zone (CI runs in UTC).
     timezoneId: 'Asia/Tehran',
