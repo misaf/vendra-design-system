@@ -37,9 +37,10 @@ export function vfCopy(S) {
           label: 'Price: high to low'
         }
       ],
+      // {price} is the quick filter's price limit, in the store's currency.
       chipLabels: {
         ready: 'Ready to send',
-        under3: 'Under 3M',
+        under3: 'Under {price}',
         same: 'Same day',
         roses: 'Roses'
       },
@@ -86,7 +87,7 @@ export function vfCopy(S) {
       ],
       chipLabels: {
         ready: 'آماده ارسال',
-        under3: 'زیر ۳ میلیون',
+        under3: 'زیر {price}',
         same: 'ارسال همان روز',
         roses: 'رز'
       },
