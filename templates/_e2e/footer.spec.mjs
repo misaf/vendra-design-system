@@ -68,7 +68,7 @@ for (const lang of ['en', 'fa']) {
         await footer.screenshot({path: `/tmp/vendra-footer-${lang}-${width}.png`});
         const navigation = await openFooterGroup(page, shop);
         await navigation.getByRole('link', {name: fa ? 'ارکیده' : 'Orchids', exact: true}).click();
-        await expect(page).toHaveURL(/view=shop&cat=orchids/);
+        await expect(page).toHaveURL(/\/shop\/orchids\//);
       });
     });
   }

@@ -10,7 +10,7 @@ import {
 import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
 import {
   VF_CATEGORY_COPY,
@@ -95,7 +95,7 @@ function vals(page) {
     };
     // Filters refine this page, so they replace the history entry instead of adding one per tap.
     if (page.props.go) page.props.go(next, true);
-    else location.href = S.href.shop.split('?')[0] + vfRouteParams(next);
+    else location.href = vfRouteUrl(next);
   };
   const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
   const price = [route.min || 0, route.max ?? priceMax],
@@ -328,9 +328,7 @@ function vals(page) {
       total: paged.total,
       status: C.showing(paged.shown, paged.total),
       label: C.showMore,
-      href:
-        S.href.shop.split('?')[0] +
-        vfRouteParams({...route, view: 'shop', lang: L, page: paged.page + 1}),
+      href: vfRouteUrl({...route, view: 'shop', lang: L, page: paged.page + 1}),
       // Loads the next page in place, then moves focus to its first product.
       onClick: event => {
         if (!page.props.go) return;

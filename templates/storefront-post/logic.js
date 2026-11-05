@@ -5,7 +5,7 @@ import {vfSeparator} from '../_shared/formatting.js';
 import {vfCopy} from './copy.js';
 import {vfProduct, vfProductImage} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
@@ -98,13 +98,11 @@ function vals(page) {
       .map(p => {
         const c = VF_JCATS.find(x => x[0] === p.cat);
         return {
-          href:
-            S.href.post.split('?')[0] +
-            vfRouteParams({
-              view: 'post',
-              post: p.id,
-              lang: L
-            }),
+          href: vfRouteUrl({
+            view: 'post',
+            post: p.id,
+            lang: L
+          }),
           title: p[L][0],
           image: vfJournalImage(p.image),
           excerpt: p[L][1],

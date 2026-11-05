@@ -2,7 +2,7 @@
 import {vfCopy} from './copy.js';
 import {vfProductImage, vfProductSub, vfSearchProducts} from '../_shared/catalog.js';
 import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteParams} from '../_shared/routing.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
 import {useStorefrontPage} from '../_shared/page-lifecycle.js';
 // Results update as the customer types; a search is reported once the typing settles.
@@ -62,13 +62,11 @@ function vals(page) {
       change('');
       S.focus('vf-q');
     },
-    closeHref:
-      (page.props.go ? '' : '../app/') +
-      vfRouteParams({
-        ...page.props.store?.searchReturn,
-        view: page.props.store?.searchReturn?.view || 'home',
-        lang: L
-      }),
+    closeHref: vfRouteUrl({
+      ...page.props.store?.searchReturn,
+      view: page.props.store?.searchReturn?.view || 'home',
+      lang: L
+    }),
     q: query,
     setQ: change,
     empty: !q,

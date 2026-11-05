@@ -19,7 +19,9 @@ const COPY = {
 };
 
 export function PageError() {
-  const lang = new URLSearchParams(location.search).get('lang') === 'fa' ? 'fa' : 'en';
+  // The language is the first segment after the app's path (templates/app/fa/…).
+  const app = import.meta.env.BASE_URL + 'templates/app/';
+  const lang = location.pathname.startsWith(app + 'fa/') ? 'fa' : 'en';
   const copy = COPY[lang];
   React.useEffect(() => {
     document.title = copy.title + ' · ' + VF_STORE.brand[lang];

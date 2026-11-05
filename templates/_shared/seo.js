@@ -1,5 +1,8 @@
 // Routing and <head> helpers for the storefront (VF_SEO).
-// URL scheme: ?lang=en|fa&view=<screen>&id=<productId>&cat=<category>&post=<postId>&m=<momentId>
+// URL scheme: <app base><lang>/<screen>/<id>/ — for example /templates/app/en/product/VF-7K2M4Q/,
+// /templates/app/fa/shop/boxes/ or /templates/app/en/journal/<postId>/. Every path ends in a slash,
+// so a static host serves each one from its own index.html. The path says which page it is; the
+// query only carries state on that page (filters, sorting, steps), added by routing.js.
 export const VF_SEO = (() => {
   const SCREENS = new Set([
     'home',
@@ -32,10 +35,20 @@ export const VF_SEO = (() => {
     'error',
     'presentation'
   ]);
-  const PARAMS = ['id', 'cat', 'post', 'm'];
-  const NUMERIC = new Set(['m']); // params whose ids are numeric → digits only
-  const REQUIRED = {product: 'id', post: 'post', moment: 'm'}; // screen → param it can't render without
-  const OPTIONAL = {track: 'id'}; // track: optional order number (?view=track&id=VB-10491), SAFE pattern; no id → order lookup / not-found state. Stays noindex.
+  const LANGUAGES = ['en', 'fa'];
+  // The screen's one path segment after its name, and the route key it fills.
+  const SEGMENT = {
+    product: 'id',
+    post: 'post',
+    moment: 'm',
+    track: 'id',
+    shop: 'cat',
+    policy: 'id'
+  };
+  // Screens whose path name differs from the screen: a journal post sits under the journal.
+  const PATH_NAME = {post: 'journal'};
+  const NUMERIC = new Set(['m']); // keys whose ids are numeric → digits only
+  const REQUIRED = {product: 'id', post: 'post', moment: 'm'}; // screen → key it can't render without
   const SAFE = /^[\w:-]{1,40}$/,
     DIGITS = /^\d{1,40}$/;
   const register = (...names) => names.forEach(n => SAFE.test(n) && SCREENS.add(n));
@@ -44,36 +57,77 @@ export const VF_SEO = (() => {
     keys.forEach(k => NUMERIC.add(k));
   };
   const valid = (k, v) => SAFE.test(v) && (!NUMERIC.has(k) || DIGITS.test(v));
+  // The path the storefront app is served at: templates/app/ under the build's base URL
+  // (app/theme.js sets VF_ASSET_BASE), or under the site root where that is not set.
+  const appBase = () => {
+    try {
+      return new URL('templates/app/', window.VF_ASSET_BASE).pathname;
+    } catch {
+      return '/templates/app/';
+    }
+  };
+  // Whether a URL is a page of the storefront app (not a file next to it, or another site).
+  const inApp = url => {
+    try {
+      const target = new URL(url, location.href);
+      return (
+        target.origin === location.origin &&
+        target.pathname.startsWith(appBase()) &&
+        !/\.\w+$/.test(target.pathname)
+      );
+    } catch {
+      return false;
+    }
+  };
 
-  // Parse location.search. Invalid values are dropped; an unknown view — or a view missing its required id — becomes "notfound".
-  const readRoute = (search = location.search) => {
-    const q = new URLSearchParams(search);
-    const r = {};
-    const l = q.get('lang');
-    if (l === 'en' || l === 'fa') r.lang = l;
-    const v = q.get('view');
-    r.view = v == null || v === '' ? 'home' : SAFE.test(v) && SCREENS.has(v) ? v : 'notfound';
-    for (const k of PARAMS) {
-      const x = q.get(k);
-      if (x != null && x !== '' && valid(k, x)) r[k] = x;
+  // Parse a URL's path (default: this page's). Invalid or extra segments, an unknown screen, or a
+  // screen missing its required id make the route "notfound"; the language is kept either way.
+  const readRoute = (url = location.pathname + location.search) => {
+    const r = {view: 'notfound'};
+    let path;
+    try {
+      path = new URL(url, location.href).pathname;
+    } catch {
+      return r;
+    }
+    const root = appBase();
+    if (!path.startsWith(root)) return r;
+    let parts;
+    try {
+      parts = path.slice(root.length).split('/').filter(Boolean).map(decodeURIComponent);
+    } catch {
+      return r;
+    }
+    if (parts[0] === 'index.html') parts.shift();
+    if (LANGUAGES.includes(parts[0])) r.lang = parts.shift();
+    const name = parts.shift();
+    if (name == null) r.view = 'home';
+    else if (name === 'journal' && parts.length) r.view = 'post';
+    else if (SAFE.test(name) && SCREENS.has(name) && !PATH_NAME[name]) r.view = name;
+    else return r;
+    const key = SEGMENT[r.view];
+    if (parts.length) {
+      const value = parts.shift();
+      if (!key || !valid(key, value) || parts.length) return {...r, view: 'notfound'};
+      r[key] = value;
     }
     if (REQUIRED[r.view] && !r[REQUIRED[r.view]]) r.view = 'notfound';
     return r;
   };
-  // State → "?lang=…&view=…". Home omits view; unknown keys and invalid values are ignored.
-  const routeParams = (state = {}) => {
-    const q = new URLSearchParams();
-    if (state.lang === 'en' || state.lang === 'fa') q.set('lang', state.lang);
-    if (state.view && state.view !== 'home' && SAFE.test(state.view)) q.set('view', state.view);
-    for (const k of PARAMS) {
-      const x = state[k];
-      if (x != null && x !== '' && valid(k, String(x))) q.set(k, String(x));
+  // State → "<app base><lang>/<screen>/<id>/". Home has no screen segment; invalid values are left out.
+  const routePath = (state = {}) => {
+    const parts = [];
+    if (LANGUAGES.includes(state.lang)) parts.push(state.lang);
+    if (state.view && state.view !== 'home' && SAFE.test(state.view)) {
+      parts.push(PATH_NAME[state.view] || state.view);
+      const key = SEGMENT[state.view],
+        value = key == null ? null : state[key];
+      if (value != null && value !== '' && valid(key, String(value))) parts.push(String(value));
     }
-    const s = q.toString();
-    return s ? '?' + s : '?';
+    return appBase() + parts.map(part => encodeURIComponent(part) + '/').join('');
   };
   const hrefFor = (state = {}, screen = 'home', extra = {}) =>
-    routeParams({lang: state.lang, view: screen, ...extra});
+    routePath({lang: state.lang, view: screen, ...extra});
   const isNoindex = view => NOINDEX.has(view);
 
   const abs = u => {
@@ -146,12 +200,13 @@ export const VF_SEO = (() => {
   const S = {
     SCREENS,
     NOINDEX,
-    OPTIONAL,
     REQUIRED,
     register,
     setNumeric,
+    appBase,
+    inApp,
     readRoute,
-    routeParams,
+    routePath,
     hrefFor,
     isNoindex,
     syncHead

@@ -31,7 +31,7 @@ ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(
   sharedLogic +
-    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteParams, vfRecentlyViewed, vfRememberViewed});',
+    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed});',
   ctx
 );
 
@@ -136,24 +136,87 @@ assert.equal(
   '\u2068۳۵٫۸۳۲۷۰، ۵۰٫۹۶۵۴۰\u2069'
 );
 
+// Each page has a path of its own: language, screen and the screen's one id, ending in a slash.
+const paths = {
+  '/templates/app/': {view: 'home'},
+  '/templates/app/fa/': {view: 'home', lang: 'fa'},
+  '/templates/app/en/shop/': {view: 'shop', lang: 'en', cat: 'all'},
+  '/templates/app/fa/shop/boxes/': {view: 'shop', lang: 'fa', cat: 'boxes'},
+  '/templates/app/en/product/VF-7K2M4Q/': {view: 'product', lang: 'en', id: 'VF-7K2M4Q'},
+  '/templates/app/en/journal/': {view: 'journal', lang: 'en'},
+  '/templates/app/en/journal/morning-at-the-studio/': {view: 'post', post: 'morning-at-the-studio'},
+  '/templates/app/en/policy/privacy/': {view: 'policy', id: 'privacy'},
+  '/templates/app/en/track/VB-10491/': {view: 'track', id: 'VB-10491'},
+  '/templates/app/en/faq': {view: 'faq', lang: 'en'}
+};
+for (const [url, expected] of Object.entries(paths)) {
+  const route = ctx.vfReadRoute(url);
+  for (const [key, value] of Object.entries(expected))
+    assert.equal(route[key], value, url + ' ' + key);
+}
+// Unknown screens, ids that don't exist, extra segments, a post addressed as its own screen and
+// paths outside the app are not found; the language stays.
+for (const url of [
+  '/templates/app/en/nowhere/',
+  '/templates/app/en/shop/boxes/extra/',
+  '/templates/app/en/shop/not-a-category/',
+  '/templates/app/en/product/',
+  '/templates/app/en/product/VF-NOPE00/',
+  '/templates/app/en/post/morning-at-the-studio/',
+  '/templates/app/en/faq/extra/',
+  '/templates/app/en/policy/nothing/',
+  '/templates/app/en/product/%3Cscript%3E/',
+  '/elsewhere/en/shop/'
+])
+  assert.equal(ctx.vfReadRoute(url).view, 'notfound', url);
+assert.equal(ctx.vfReadRoute('/templates/app/fa/nowhere/').lang, 'fa');
+// Writing a route gives the same path back, with only page state in the query.
+for (const route of [
+  {view: 'home', lang: 'en'},
+  {view: 'shop', lang: 'fa', cat: 'all'},
+  {view: 'shop', lang: 'en', cat: 'boxes', sort: 'low'},
+  {view: 'product', lang: 'en', id: 'VF-7K2M4Q', cat: 'boxes', qty: 2},
+  {view: 'post', lang: 'fa', post: 'morning-at-the-studio'},
+  {view: 'bag', lang: 'en', step: 'delivery'}
+])
+  assert.equal(
+    ctx.vfRouteUrl(ctx.vfReadRoute(ctx.vfRouteUrl(route))),
+    ctx.vfRouteUrl(route),
+    route.view
+  );
+assert.equal(ctx.vfRouteUrl({view: 'home', lang: 'en'}), '/templates/app/en/');
+assert.equal(ctx.vfRouteUrl({view: 'shop', lang: 'fa', cat: 'all'}), '/templates/app/fa/shop/');
+assert.equal(
+  ctx.vfRouteUrl({view: 'product', lang: 'en', id: 'VF-7K2M4Q', cat: 'boxes'}),
+  '/templates/app/en/product/VF-7K2M4Q/'
+);
+assert.equal(
+  ctx.vfRouteUrl({view: 'post', lang: 'en', post: 'morning-at-the-studio'}),
+  '/templates/app/en/journal/morning-at-the-studio/'
+);
+assert.equal(
+  ctx.vfRouteUrl({view: 'bag', lang: 'en', step: 'delivery'}),
+  '/templates/app/en/bag/?step=delivery'
+);
+
 // Shop occasions round-trip through the URL; unknown ones fall back to all.
-assert.equal(ctx.vfReadRoute('?view=shop&occasion=sympathy').occasion, 'sympathy');
-assert.equal(ctx.vfReadRoute('?view=shop&occasion=halloween').occasion, 'all');
+assert.equal(ctx.vfReadRoute('/templates/app/shop/?occasion=sympathy').occasion, 'sympathy');
+assert.equal(ctx.vfReadRoute('/templates/app/shop/?occasion=halloween').occasion, 'all');
 assert.match(
-  ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'birthday'}),
+  ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', occasion: 'birthday'}),
   /occasion=birthday/
 );
 assert.doesNotMatch(
-  ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', occasion: 'all'}),
+  ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', occasion: 'all'}),
   /occasion/
 );
 
 // "Show more" pages round-trip through the URL; anything but a small positive number is page 1.
-assert.equal(ctx.vfReadRoute('?view=shop&page=2').page, 2);
+assert.equal(ctx.vfReadRoute('/templates/app/shop/?page=2').page, 2);
 for (const bad of ['0', '-1', '2.5', 'two', '1000'])
-  assert.equal(ctx.vfReadRoute('?view=shop&page=' + bad).page, 1);
-assert.match(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 3}), /page=3/);
-assert.doesNotMatch(ctx.vfRouteParams({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
+  assert.equal(ctx.vfReadRoute('/templates/app/shop/?page=' + bad).page, 1);
+assert.match(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 3}), /page=3/);
+assert.doesNotMatch(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
 
 // Analytics: events stay in the local log until the visitor allows visit counts.
 const track = ctx.window.VF_TRACK;

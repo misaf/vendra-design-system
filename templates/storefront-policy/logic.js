@@ -16,7 +16,7 @@ export function usePage(props) {
 function vals(page) {
   const S = vfShell(page, 'policy');
   const L = S.lang;
-  // A standalone page can be given props.doc; the site opens ?view=policy&id=<doc>.
+  // A standalone page can be given props.doc; the site opens policy/<doc>/.
   const id = page.props.doc ?? vfPageRoute(page.props).id ?? VF_POLICIES[0];
   const C = vfCopy(S);
   const d = C.docs[id] || C.docs[VF_POLICIES[0]];
