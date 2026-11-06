@@ -12,16 +12,32 @@ import { messages } from "./messages.js";
 // line ("ROSES15 · 15% off") with Remove. The app checks the code (onApply gets it trimmed) and says
 // why it was refused in `error`. No <form> of its own, so it can sit inside a checkout form: Enter
 // in the field applies. Focus follows: to the field when a code is refused or removed, to Remove
-// once one is applied (the status line is announced).
-export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, error, applied, onRemove, busy = false, label, applyLabel, removeLabel, className, style }) {
+// once one is applied (the status line is announced). `collapsible` tucks the field behind a
+// "Have a promo code?" disclosure button that opens it and moves focus into it; it opens by itself
+// once there is a code (typed, prefilled from a link or campaign, refused or applied).
+export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, error, applied, onRemove, busy = false, collapsible = false, defaultOpen = false, label, applyLabel, removeLabel, revealLabel, className, style }) {
 	const { locale, ref } = usePageLocale();
 	const text = useMessages("PromoCodeField", messages, {
 		label,
 		apply: applyLabel,
-		remove: removeLabel
+		remove: removeLabel,
+		reveal: revealLabel
 	}, locale);
 	const [draft, setDraft] = React.useState("");
 	const code = value ?? draft;
+	const hasCode = Boolean(code || error || applied);
+	const [open, setOpen] = React.useState(defaultOpen || hasCode);
+	const expanded = !collapsible || open;
+	const focusOnOpen = React.useRef(false);
+	// A code that arrives later (a campaign link, a refused or applied code) opens the field.
+	React.useEffect(() => {
+		if (hasCode) setOpen(true);
+	}, [hasCode]);
+	React.useEffect(() => {
+		if (!open || !focusOnOpen.current) return;
+		focusOnOpen.current = false;
+		document.getElementById(id)?.focus();
+	}, [open, id]);
 	const appliedRef = React.useRef(null);
 	const before = React.useRef({
 		applied,
@@ -62,9 +78,24 @@ export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, erro
 		variant: "ghost",
 		size: "sm",
 		onClick: onRemove
-	}, text.remove)) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("label", {
+	}, text.remove)) : /* @__PURE__ */ React.createElement(React.Fragment, null, collapsible ? /* @__PURE__ */ React.createElement(Button, {
+		variant: "ghost",
+		size: "sm",
+		iconEnd: "chevron-down",
+		className: "ag-promo__toggle",
+		"aria-expanded": expanded,
+		"aria-controls": id + "-panel",
+		onClick: () => {
+			focusOnOpen.current = !open;
+			setOpen(!open);
+		}
+	}, text.reveal) : null, /* @__PURE__ */ React.createElement("div", {
+		id: id + "-panel",
+		className: "ag-promo__panel",
+		hidden: !expanded
+	}, /* @__PURE__ */ React.createElement("label", {
 		id: id + "-label",
-		className: "ag-field__label",
+		className: collapsible ? "ag-sr-only" : "ag-field__label",
 		htmlFor: id
 	}, text.label), /* @__PURE__ */ React.createElement("div", { className: "ag-promo__row" }, /* @__PURE__ */ React.createElement(Input, {
 		id,
@@ -86,5 +117,5 @@ export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, erro
 		size: "sm",
 		loading: busy,
 		onClick: apply
-	}, text.apply)))));
+	}, text.apply))))));
 }
