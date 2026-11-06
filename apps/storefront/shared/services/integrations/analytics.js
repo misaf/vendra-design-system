@@ -1,6 +1,6 @@
 // Analytics: one wrapper for every tracked event, on the package's event contract
 // (components/utils/analytics.js, `analytics.EVENTS`). VF_TRACK.event(name, params) keeps only that
-// event's parameters, adds language and currency, keeps the last 50 in VF_TRACK.log for QA, and
+// event's parameters, adds language and an ISO currency (Toman amounts are reported as Rial), keeps the last 50 in VF_TRACK.log for QA, and
 // hands each event to the VF_TRACK.subscribe(listener) listeners only after the visitor accepts
 // analytics in the consent banner (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a
 // store subscribes a sender to its own backend. Components report their events through
@@ -33,10 +33,7 @@ import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
     listeners.push(listener);
     return () => listeners.splice(listeners.indexOf(listener), 1);
   };
-  const context = () => ({
-    language: document.documentElement?.lang || 'en',
-    currency: VF_STORE.currency || 'IRT'
-  });
+  const context = () => ({language: document.documentElement?.lang || 'en'});
   const item = (p, qty = 1, unit) =>
     p
       ? {
@@ -50,7 +47,12 @@ import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
       : null;
   const event = (name, params = {}) => {
     const dropped = [];
-    const built = analytics.event(name, {...context(), ...params}, dropped);
+    const money = {currency: VF_STORE.currency, currencies: VF_STORE.currencies};
+    const built = analytics.event(
+      name,
+      analytics.inCurrency(name, {...context(), ...params}, money),
+      dropped
+    );
     if (!built) {
       console.warn('VF_TRACK: unknown event', name);
       return;

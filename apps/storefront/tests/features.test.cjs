@@ -31,7 +31,7 @@ ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(
   sharedLogic +
-    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem});',
+    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem, analytics});',
   ctx
 );
 
@@ -256,13 +256,52 @@ track.event('purchase', {
 assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
   event: 'purchase',
   language: 'en',
-  currency: 'IRT',
+  currency: 'IRR',
   transaction_id: 'VN-1',
-  value: 2400000,
+  value: 24000000,
   payment_type: 'online',
-  items: [{item_id: 'VF-7K2M4Q', price: 2400000, quantity: 1}]
+  items: [{item_id: 'VF-7K2M4Q', price: 24000000, quantity: 1}]
 });
 assert.deepEqual(warnings, ['VF_TRACK: purchase left out phone']);
+// Toman isn't an ISO 4217 code (issue #241): reports carry Rial, 10 to the Toman, and only amounts
+// change (a filter's value is its own).
+track.event('filter', {filter_id: 'price', value: 500000, action: 'add'});
+assert.equal(track.log.at(-1).value, 500000, 'a filter value is not an amount');
+assert.equal(track.log.at(-1).currency, 'IRR');
+track.event('order_placed', {
+  transaction_id: 'VN-2',
+  value: 1200000,
+  payment_type: 'card',
+  payment_status: 'pending',
+  items: [{item_id: 'VF-7K2M4Q', price: 1200000, quantity: 1}]
+});
+assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
+  event: 'order_placed',
+  language: 'en',
+  currency: 'IRR',
+  transaction_id: 'VN-2',
+  value: 12000000,
+  payment_type: 'card',
+  payment_status: 'pending',
+  items: [{item_id: 'VF-7K2M4Q', price: 12000000, quantity: 1}]
+});
+const {analytics} = ctx;
+const usd = {currency: 'USD', currencies: ctx.VF_STORE.currencies};
+assert.deepEqual(
+  JSON.parse(
+    JSON.stringify(
+      analytics.inCurrency('purchase', {value: 2400000, items: [{price: 1250000}]}, usd)
+    )
+  ),
+  {currency: 'USD', value: 24, items: [{price: 12.5}]},
+  'another currency uses the tenant rate and decimals'
+);
+assert.equal(
+  analytics.inCurrency('top_up', {value: 1000}, {currency: 'GBP', currencies: {}}).currency,
+  'IRR',
+  'a currency without a rate falls back to Rial'
+);
+assert.equal(analytics.inCurrency('top_up', {value: 1000}, {currency: 'IRR'}).value, 10000);
 track.event('search', {search_term: '۰۹۱۲ ۱۲۳ ۴۵۶۷'});
 assert.equal(track.log.at(-1).search_term, '(personal data)');
 track.event('signed_up');
@@ -281,7 +320,7 @@ track.event('page_view', {page_type: 'shop', page_path: '/shop/', q: '0912123456
 assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
   event: 'page_view',
   language: 'en',
-  currency: 'IRT',
+  currency: 'IRR',
   page_type: 'shop',
   page_path: '/shop/'
 });
@@ -313,12 +352,16 @@ assert.deepEqual(
   {
     event: 'view_item_list',
     language: 'en',
-    currency: 'IRT',
+    currency: 'IRR',
     item_list_id: 'shop',
     item_list_name: 'Shop results',
-    items: [track.item(first), track.item(second)].map((item, index) => ({...item, index}))
+    items: [track.item(first), track.item(second)].map((item, index) => ({
+      ...item,
+      price: item.price * 10,
+      index
+    }))
   },
-  'items are product codes with their place in the list'
+  'items are product codes with their place in the list, priced in Rial'
 );
 assert.equal(lists().at(-1).items[0].item_id, first.id);
 ctx.vfShowList(listPage, 'shop', [first, second]);
@@ -344,10 +387,10 @@ ctx.vfSelectItem('recent', second, 3)();
 assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
   event: 'select_item',
   language: 'en',
-  currency: 'IRT',
+  currency: 'IRR',
   item_list_id: 'recent',
   item_list_name: 'Recently viewed',
-  items: [{...track.item(second), index: 3}]
+  items: [{...track.item(second), price: second.price * 10, index: 3}]
 });
 
 // Recently viewed: newest first, no repeats, at most eight, unknown ids dropped.
