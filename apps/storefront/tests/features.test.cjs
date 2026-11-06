@@ -31,7 +31,7 @@ ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(
   sharedLogic +
-    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed});',
+    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem});',
   ctx
 );
 
@@ -270,6 +270,85 @@ assert.equal(warnings.at(-1), 'VF_TRACK: unknown event signed_up');
 console.warn = warn;
 store['vf-consent'] = 'maybe';
 assert.equal(track.consent(), '', 'an unknown stored choice asks again');
+
+// The ecommerce funnel events (issue #115): each keeps only its own parameters, items keep their
+// position in a list, and a page view carries the path without its query.
+for (const name of ['page_view', 'view_item_list', 'select_item', 'add_shipping_info'])
+  assert.ok(track.EVENTS[name], name + ' is in the contract');
+const funnelWarnings = [];
+console.warn = (...args) => funnelWarnings.push(args.join(' '));
+track.event('page_view', {page_type: 'shop', page_path: '/shop/', q: '09121234567'});
+assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
+  event: 'page_view',
+  language: 'en',
+  currency: 'IRT',
+  page_type: 'shop',
+  page_path: '/shop/'
+});
+track.event('add_shipping_info', {
+  items: [{item_id: 'VF-7K2M4Q', price: 2400000, quantity: 1}],
+  value: 2400000,
+  shipping_tier: 'central',
+  address: 'Valiasr St'
+});
+assert.equal(track.log.at(-1).shipping_tier, 'central');
+assert.equal(track.log.at(-1).address, undefined, 'no address leaves with the delivery step');
+assert.deepEqual(funnelWarnings, [
+  'VF_TRACK: page_view left out q',
+  'VF_TRACK: add_shipping_info left out address'
+]);
+console.warn = warn;
+
+// Product lists: reported after the render that showed them, once per set of products; a list
+// that grew ("Show more") reports only what it added; a card reports where it was opened from.
+const [first, second, third] = ctx.VF_PRODUCTS;
+const listPage = {};
+const lists = () => track.log.filter(e => e.event === 'view_item_list');
+const listCount = lists().length;
+ctx.vfShowList(listPage, 'shop', [first, second]);
+ctx.vfReportLists(listPage);
+assert.equal(lists().length, listCount + 1);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(lists().at(-1))),
+  {
+    event: 'view_item_list',
+    language: 'en',
+    currency: 'IRT',
+    item_list_id: 'shop',
+    item_list_name: 'Shop results',
+    items: [track.item(first), track.item(second)].map((item, index) => ({...item, index}))
+  },
+  'items are product codes with their place in the list'
+);
+assert.equal(lists().at(-1).items[0].item_id, first.id);
+ctx.vfShowList(listPage, 'shop', [first, second]);
+ctx.vfReportLists(listPage);
+assert.equal(lists().length, listCount + 1, 'a re-render of the same list sends nothing');
+ctx.vfShowList(listPage, 'shop', [first, second, third]);
+ctx.vfReportLists(listPage);
+assert.deepEqual(
+  lists()
+    .at(-1)
+    .items.map(item => [item.item_id, item.index]),
+  [[third.id, 2]],
+  '"Show more" reports only the added products'
+);
+ctx.vfShowList(listPage, 'shop', [third, first]);
+ctx.vfReportLists(listPage);
+assert.equal(lists().at(-1).items.length, 2, 'a new order (sort, filter) reports the whole list');
+ctx.vfReportLists(listPage);
+ctx.vfShowList(listPage, 'shop', [third, first]);
+ctx.vfReportLists(listPage);
+assert.equal(lists().length, listCount + 4, 'a list that left the page counts when it comes back');
+ctx.vfSelectItem('recent', second, 3)();
+assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {
+  event: 'select_item',
+  language: 'en',
+  currency: 'IRT',
+  item_list_id: 'recent',
+  item_list_name: 'Recently viewed',
+  items: [{...track.item(second), index: 3}]
+});
 
 // Recently viewed: newest first, no repeats, at most eight, unknown ids dropped.
 ['VF-7K2M4Q', 'VF-8RD5WN', 'ivory'].forEach(ctx.vfRememberViewed);

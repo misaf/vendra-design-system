@@ -26,6 +26,7 @@ import {vfFeatures} from '../../shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
 import {
   vfBreadcrumbData,
   vfOfferPrice,
@@ -157,6 +158,11 @@ function vals(page) {
   const quantity = Math.min(s.qty, Math.max(1, remaining));
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
+  const recent = vfRecentlyViewed()
+    .filter(x => x !== product.id)
+    .slice(0, 4)
+    .map(vfProduct);
+  vfShowList(page, 'recent', recent);
   // Link previews show the product's photo (its largest size, with its description as alt text),
   // its description and its price (page-lifecycle.js vfPageHead); search engines also read its
   // price, stock and breadcrumb trail (structured-data.js).
@@ -359,20 +365,17 @@ function vals(page) {
         added: null
       }),
     toasts: page.toasts,
-    recent: vfRecentlyViewed()
-      .filter(x => x !== product.id)
-      .slice(0, 4)
-      .map(vfProduct)
-      .map(p => ({
-        ...S.productLink(p.id),
-        images: [vfProductImage(p, L)],
-        name: p.id,
-        sub: vfProductSub(p, L),
-        price: m(p.price),
-        stock: p.stock,
-        fav: S.isFav(p.id, []),
-        toggleFav: S.toggleFav(p.id, [])
-      })),
+    recent: recent.map((p, index) => ({
+      ...S.productLink(p.id),
+      images: [vfProductImage(p, L)],
+      name: p.id,
+      sub: vfProductSub(p, L),
+      price: m(p.price),
+      stock: p.stock,
+      fav: S.isFav(p.id, []),
+      toggleFav: S.toggleFav(p.id, []),
+      select: vfSelectItem('recent', p, index)
+    })),
     faq: [
       {
         id: 'care',

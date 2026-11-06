@@ -65,6 +65,7 @@ export function StorefrontHomeFeatured({products, labels, allHref, frame}) {
               favorite={p?.fav}
               onFavorite={p?.toggleFav}
               href={p?.href}
+              onClick={p?.select}
             />
           </React.Fragment>
         ))}

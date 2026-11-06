@@ -8,6 +8,18 @@ const latin = (value) => String(value ?? "").replace(/[۰-۹]/g, (digit) => Stri
 const persianDigits = (value) => String(value).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[digit]);
 // A product code typed any way: case, spaces, dashes and digit scripts don't matter.
 const normalizeCode = (text) => latin(text || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+// Text for searching, typed or indexed: Arabic letters as their Persian forms (ي ى → ی, ك → ک,
+// ة ۀ → ه, أ إ آ → ا, ؤ → و, ئ → ی), no diacritics or stretching (ـ), half-spaces, zero-width
+// characters and punctuation as spaces, Latin digits, lower case, one space between words.
+const normalizeSearchText = (text) => latin(String(text ?? "").normalize("NFKC")).replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/[ةۀ]/g, "ه").replace(/[أإآٱ]/g, "ا").replace(/ؤ/g, "و").replace(/ئ/g, "ی").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+// Searchable text as an index for matchesSearch: normalized, with its spaces removed so a query word
+// may span them (دستهگل finds دسته‌گل). Build it once per product or post, not on every keystroke.
+const searchIndex = (text) => normalizeSearchText(text).replace(/ /g, "");
+// Whether an index (searchIndex) holds every word of a query, in any order; an empty query matches nothing.
+const matchesSearch = (index, query) => {
+	const words = normalizeSearchText(query).split(" ").filter(Boolean);
+	return words.length > 0 && words.every((word) => index.includes(word));
+};
 // A promo code as entered: case, spaces and digit scripts don't matter.
 const promoCode = (value) => latin(value || "").replace(/\s/g, "").toUpperCase();
 const phone = (value) => latin(value || "").replace(/[\s()-]/g, "");
@@ -555,6 +567,9 @@ const checkoutRequest = (lines, delivery, { slots, currencyCode = "IRT", deliver
 export const commerce = {
 	latin,
 	normalizeCode,
+	normalizeSearchText,
+	searchIndex,
+	matchesSearch,
 	promoCode,
 	phone,
 	mobile,

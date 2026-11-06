@@ -386,18 +386,40 @@ export function vfProductImages(product, lang = 'en') {
   );
 }
 
+// Each product's search index (commerce.searchIndex of its kind, description and category in both
+// languages), built once per product rather than on every keystroke.
+const vfProductSearchIndexes = new WeakMap();
+function vfProductSearchIndex(product) {
+  let index = vfProductSearchIndexes.get(product);
+  if (index === undefined) {
+    index = commerce.searchIndex(
+      ['en', 'fa']
+        .map(
+          lang =>
+            vfProductSub(product, lang) +
+            ' ' +
+            product[lang].sub +
+            ' ' +
+            VF_CATEGORY_COPY[lang][product.cat]
+        )
+        .join(' ')
+    );
+    vfProductSearchIndexes.set(product, index);
+  }
+  return index;
+}
+
 // The products a search finds (the search page and the counter presentation). A product code, typed
-// whole or in part (3 or more characters), finds its product; so do its kind and description.
+// whole or in part (3 or more characters), finds its product; so do its kind and description, with
+// every word of the query in any order, however Persian is typed (Arabic ي/ك, half-spaces, diacritics,
+// digits: commerce.normalizeSearchText).
 export function vfSearchProducts(text, products = VF_PRODUCTS) {
-  const q = text.trim().toLowerCase();
+  const q = String(text || '').trim();
   const code = vfNormalizeToken(q);
   const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
-  const words = p =>
-    ['en', 'fa']
-      .map(l => vfProductSub(p, l) + ' ' + p[l].sub + ' ' + VF_CATEGORY_COPY[l][p.cat])
-      .join(' ')
-      .toLowerCase();
-  return q ? products.filter(p => byCode(p) || words(p).includes(q)) : [];
+  return q
+    ? products.filter(p => byCode(p) || commerce.matchesSearch(vfProductSearchIndex(p), q))
+    : [];
 }
 
 // Lines added from the product page list their product, size and extras; older lines carry them in the id.
