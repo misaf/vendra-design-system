@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/e2e/component-test.mjs';
 
 test('queued toasts appear in a named region and close', async ({page}) => {
   await openComponent(page, 'ToastRegion');

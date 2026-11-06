@@ -15,5 +15,5 @@
     "noUnusedLocals": true,
     "skipLibCheck": true
   },
-  "include": ["_shared/**/*.js", "_types/*.d.ts", "app/**/*", "storefront-*/**/*"]
+  "include": ["shared/**/*.js", "types/*.d.ts", "app/**/*", "pages/**/*"]
 }

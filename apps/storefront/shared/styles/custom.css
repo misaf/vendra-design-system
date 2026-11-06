@@ -1,0 +1,27 @@
+/* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
+@import './shell.css';
+@import './information-pages.css';
+@import './page-layouts.css';
+@import '../ui/collection-carousel.css';
+@import '../../pages/account/styles.css';
+@import '../../pages/bag/styles.css';
+@import '../../pages/checkout/styles.css';
+@import '../../pages/contact/styles.css';
+@import '../../pages/error/styles.css';
+@import '../../pages/faq/styles.css';
+@import '../../pages/home/styles.css';
+@import '../../pages/journal/styles.css';
+@import '../../pages/notfound/styles.css';
+@import '../../pages/policy/styles.css';
+@import '../../pages/post/styles.css';
+@import '../../pages/presentation/styles.css';
+@import '../../pages/product/styles.css';
+@import '../../pages/saved/styles.css';
+@import '../../pages/search/styles.css';
+@import '../../pages/shop/styles.css';
+@import '../../pages/signin/styles.css';
+@import '../../pages/track/styles.css';
+@import '../../pages/weddings/styles.css';
+@import './responsive-spacing.css';
+@import './commerce-spacing.css';
+@import './headings.css';

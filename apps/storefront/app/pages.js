@@ -2,7 +2,7 @@
 // click-through site fetches the rest once the browser is idle so moving between pages stays instant.
 import React from 'react';
 
-const modules = import.meta.glob('../storefront-*/Page.jsx');
+const modules = import.meta.glob('../pages/*/Page.jsx');
 const loaded = {};
 const ready = new Set();
 // Each loaded page module by name, so a page whose code is in renders without suspending.
@@ -12,11 +12,11 @@ const showing = new Set();
 // Set when Vite reports a file this tab expects is gone (a deploy replaced them).
 let staleFiles = false;
 
-// Loads a page module (storefront-<name>/Page.jsx), once; a failed load is forgotten so the next
+// Loads a page module (pages/<name>/Page.jsx), once; a failed load is forgotten so the next
 // attempt fetches it again. `show` says the page is wanted on screen now: if its files were replaced
 // by a deploy, the tab reloads to get the new ones.
 export function loadPage(name, show = true) {
-  const key = '../storefront-' + name + '/Page.jsx';
+  const key = '../pages/' + name + '/Page.jsx';
   if (!modules[key]) return null;
   if (show && !ready.has(name)) showing.add(name);
   const load = (loaded[name] ||= modules[key]().then(module => {

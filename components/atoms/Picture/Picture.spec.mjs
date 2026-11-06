@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/e2e/component-test.mjs';
 
 // A 1×1 PNG for every photo request; `held` waits until the test releases it.
 const PNG = Buffer.from(

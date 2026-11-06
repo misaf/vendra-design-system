@@ -147,8 +147,8 @@ jobs:
         with:
           name: e2e-report
           path: |
-            apps/storefront/_e2e/playwright-report
-            apps/storefront/_e2e/test-results
+            apps/storefront/e2e/playwright-report
+            apps/storefront/e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
@@ -185,8 +185,8 @@ jobs:
         with:
           name: e2e-build-report
           path: |
-            apps/storefront/_e2e/playwright-report
-            apps/storefront/_e2e/test-results
+            apps/storefront/e2e/playwright-report
+            apps/storefront/e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
