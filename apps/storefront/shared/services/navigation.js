@@ -8,7 +8,7 @@ import {
   vfDeliveryDays
 } from '../domain/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
-import {vfDirectionsUrl} from '../domain/location.js';
+import {vfDirections} from '../domain/location.js';
 import {vfPageTenant} from './page-lifecycle.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
 import {VF_STORE, vfFeatures} from '../domain/store-config.js';
@@ -230,7 +230,7 @@ export function vfShell(self, page) {
         : []),
       {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
     ],
-    directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
+    directions: vfDirections(VF_STORE.studio, L),
     email: VF_STORE.email || '',
     emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
     seals: VF_STORE.trustSeals || [],

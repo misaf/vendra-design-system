@@ -2,7 +2,7 @@
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../../shared/domain/account-data.js';
 import {vfMobile} from '../../shared/domain/delivery.js';
-import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../../shared/domain/location.js';
+import {vfDirections, vfLoadLeaflet} from '../../shared/domain/location.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {VF_STORE, vfLiveStore} from '../../shared/domain/store-config.js';
 import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../../shared/domain/store-hours.js';
@@ -73,15 +73,16 @@ function vals(page) {
   const invalid = page._invalid();
   const studio = VF_STORE.studio;
   const now = vfNow();
-  const directions = vfValidLocation(studio) ? vfDirectionsUrl(studio) : '';
-  const places = directions
+  // Neshan, Balad and Google Maps, in the order the page's language prefers; the map pin opens the first.
+  const directions = vfDirections(studio, S.lang);
+  const places = directions.length
     ? [
         {
           id: 'studio',
           label: VF_STORE.brand[S.lang],
           title: C.directionsTo,
           location: studio,
-          onSelect: () => window.open(directions, '_blank', 'noopener')
+          onSelect: () => window.open(directions[0].href, '_blank', 'noopener')
         }
       ]
     : [];
@@ -126,8 +127,8 @@ function vals(page) {
         .../** @type {{status?: {open: boolean, text: string}, details?: string[]}} */ (extra || {})
       }))
       .filter(row => row.value),
-    studioMap: !!directions && !s.mapFailed,
-    hasDirections: !!directions,
+    studioMap: directions.length > 0 && !s.mapFailed,
+    hasDirections: directions.length > 0,
     directions,
     apiError: s.apiError,
     busy: s.busy,
