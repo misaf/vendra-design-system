@@ -20,7 +20,9 @@ export function View({v}) {
               eyebrow={v.t?.eb}
               title={v.doc?.title}
               intro={v.doc?.intro}
-              updated={v.t?.updated}
+              updatedLabel={v.t?.updatedL}
+              updatedDate={v.doc?.updatedText}
+              updatedIso={v.doc?.updatedIso}
             />
           }
           policyNavigation={
