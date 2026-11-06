@@ -627,6 +627,15 @@ for (const lang of ['en', 'fa']) {
   saved.renderVals().undoAdd();
   assert.deepEqual(calls.at(-1), ['setQty', 'VF-3HX9TP', 1]);
   assert.equal(bag.find(item => item.id === 'VF-3HX9TP').qty, 1);
+
+  // Another customer signing in closes the confirmation; its Undo never touches their bag.
+  byName()['VF-8RD5WN'].action.onAdd();
+  store.customerId = 'someone-else';
+  const count = calls.length;
+  v = saved.renderVals();
+  assert.equal(v.addedOpen, false);
+  v.undoAdd();
+  assert.equal(calls.length, count);
 }
 
 // Delayed page announcements respect focus received after they were scheduled.
