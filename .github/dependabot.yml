@@ -4,6 +4,9 @@
 #   major, so React's own majors are left for a deliberate upgrade.
 # - @playwright/test must match the Playwright image in .github/workflows/*.yml (assets.test.cjs
 #   fails otherwise): on its pull request, bump the image tag too, then run "Update screenshots".
+# - packages/design-system and apps/storefront both pin React and React Aria. This one root entry
+#   updates every workspace manifest in the same pull request; tests/dependencies.test.cjs fails if
+#   their versions differ or the lockfile installs a second copy.
 version: 2
 updates:
   - package-ecosystem: npm
