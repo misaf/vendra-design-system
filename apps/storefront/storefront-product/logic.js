@@ -26,6 +26,7 @@ import {vfFeatures} from '../_shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
+import {vfBreadcrumbData, vfProductData} from '../_shared/services/structured-data.js';
 
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {
@@ -152,10 +153,27 @@ function vals(page) {
   const quantity = Math.min(s.qty, Math.max(1, remaining));
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
-  // Link previews show the product's photo and its description (page-lifecycle.js vfPageHead).
+  // Link previews show the product's photo and its description (page-lifecycle.js vfPageHead);
+  // search engines also read its price, stock and breadcrumb trail (structured-data.js).
+  const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
   page.head = {
     image: vfProductImage(product, L).src,
-    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0]
+    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
+    structuredData: [
+      vfProductData({
+        product,
+        lang: L,
+        url,
+        images: vfProductImages(product, L).map(image => image.src),
+        description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
+        category: VF_CATEGORY_COPY[L][product.cat]
+      }),
+      vfBreadcrumbData([
+        {name: S.t.shop, url: S.href.shop},
+        {name: VF_CATEGORY_COPY[L][product.cat], url: S.shopLink(product.cat).href},
+        {name: product.id, url}
+      ])
+    ]
   };
   return {
     ...S,

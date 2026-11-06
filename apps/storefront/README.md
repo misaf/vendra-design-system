@@ -206,7 +206,11 @@ scripts. The server entry `app/entry-server.jsx` renders the click-through site 
 Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
 `VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/services/page-lifecycle.js`: the page's h1,
 its address, its alternates and a preview image — the product's or post's photo, otherwise the
-logo). Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
+logo). The same head carries the page's schema.org structured data as one JSON-LD script
+(`_shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
+in ISO 4217, Toman as Rial) and `BreadcrumbList` on product pages, the studio as a `Florist` (address,
+map point, phone, opening hours and holidays) on the home and contact pages, `FAQPage` on the FAQ and
+`Article` on journal posts; noindex pages have none. Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
 and preview URLs; without it they start at the site root. CI's Pages build sets it.
 
 **Sitemap.** `storefrontSitemap(origin)` in `_build/routes.mjs` lists every indexed address of those
