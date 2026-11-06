@@ -31,7 +31,12 @@ for (const lang of ['en', 'fa']) {
       body: await footer.screenshot(),
       contentType: 'image/png'
     });
-    await expect(page.locator('link[rel=icon]')).toHaveAttribute('href', /clay\/favicon-32.png$/);
+    await expect(page.locator('link[rel=icon][sizes="32x32"]')).toHaveAttribute(
+      'href',
+      /clay\/favicon-32.png$/
+    );
+    // Clay has no 16 px icon: the shared one is removed rather than shown for Clay.
+    await expect(page.locator('link[rel=icon][sizes="16x16"]')).toHaveCount(0);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
       new RegExp(`/clay/og-${lang}.png$`)
@@ -48,9 +53,13 @@ for (const lang of ['en', 'fa']) {
     await openSite(page, 'home', lang, {tenant: 'fern'});
     await expect(header.locator('img')).toHaveCount(0);
     await expect(header).toHaveText(lang === 'fa' ? 'گل‌فروشی وندرا' : 'Vendra Florist');
-    await expect(page.locator('link[rel=icon]')).toHaveAttribute(
+    await expect(page.locator('link[rel=icon][sizes="32x32"]')).toHaveAttribute(
       'href',
       /assets\/icons\/favicon-32.png$/
+    );
+    await expect(page.locator('link[rel=icon][sizes="16x16"]')).toHaveAttribute(
+      'href',
+      /assets\/icons\/favicon-16.png$/
     );
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',

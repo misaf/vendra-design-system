@@ -1,10 +1,13 @@
 {
   "name": "گل‌فروشی وندرا",
+  "short_name": "گل‌فروشی وندرا",
   "lang": "fa",
   "dir": "rtl",
   "start_url": "../../../apps/storefront/app/?lang=fa&tenant=fern",
   "scope": "../../../apps/storefront/app/",
   "display": "standalone",
+  "theme_color": "#F4F7F6",
+  "background_color": "#F4F7F6",
   "icons": [
     {
       "src": "../../../assets/icons/icon-192.png",

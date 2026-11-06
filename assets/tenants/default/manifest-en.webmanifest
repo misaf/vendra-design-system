@@ -1,10 +1,13 @@
 {
   "name": "Vendra Florist",
+  "short_name": "Vendra Florist",
   "lang": "en",
   "dir": "ltr",
   "start_url": "../../../apps/storefront/app/?lang=en",
   "scope": "../../../apps/storefront/app/",
   "display": "standalone",
+  "theme_color": "#FEFAF8",
+  "background_color": "#FEFAF8",
   "icons": [
     {
       "src": "../../../assets/icons/icon-192.png",
