@@ -5,8 +5,17 @@
 // number, address or card message can't reach a report by accident. No imports.
 
 // Product codes, not names: a product is known by its code in reports, as in the studio.
-// `index` is the product's position in a list (view_item_list, select_item), counted from 0.
-const ITEM_KEYS = ['item_id', 'item_name', 'item_category', 'price', 'quantity', 'index'];
+// item_list_name names the list an item was picked from (e.g. 'saved'); `index` is its position in
+// a list (view_item_list, select_item), counted from 0.
+const ITEM_KEYS = [
+  'item_id',
+  'item_name',
+  'item_category',
+  'item_list_name',
+  'price',
+  'quantity',
+  'index'
+];
 const COMMON = ['language', 'currency'];
 
 const EVENTS = {
