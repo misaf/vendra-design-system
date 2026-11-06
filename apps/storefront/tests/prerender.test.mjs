@@ -222,6 +222,22 @@ try {
   const home = await page('en/');
   assert.equal(attribute(home, 'og:image:width'), '1200', 'the default preview image width');
   assert.equal(attribute(home, 'og:image:height'), '630', 'the default preview image height');
+  // Browser-tab and home-screen icons and the manifest are in the static page, before the app runs (#216).
+  for (const [address, lang] of [
+    ['en/', 'en'],
+    ['fa/', 'fa']
+  ]) {
+    const html = lang === 'en' ? home : await page(address);
+    for (const pattern of [
+      /<link rel="icon" sizes="16x16" type="image\/png" href="[^"]*assets\/icons\/favicon-16\.png">/,
+      /<link rel="icon" sizes="32x32" type="image\/png" href="[^"]*assets\/icons\/favicon-32\.png">/,
+      /<link rel="apple-touch-icon" sizes="180x180" href="[^"]*assets\/icons\/apple-touch-icon\.png">/,
+      new RegExp(
+        `<link rel="manifest" href="[^"]*assets/tenants/default/manifest-${lang}\\.webmanifest">`
+      )
+    ])
+      assert.match(html.slice(0, html.indexOf('</head>')), pattern, address + ' ' + pattern);
+  }
 
   console.log(
     'Passed: prerendered pages carry their heading, title, preview tags, canonical, alternates and structured data (' +

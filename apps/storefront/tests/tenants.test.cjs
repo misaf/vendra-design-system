@@ -117,12 +117,30 @@ assert.throws(
   () => validateBrand({ogImage: {en: '../outside.png', fa: '../outside.png'}}),
   /invalid asset/
 );
-for (const [file, source] of brandOutputs(tenantSpecs())) {
+assert.throws(
+  () => validateBrand({icons: {...clay.brand.icons, favicon16: clay.brand.icons.favicon}}),
+  /favicon16 must be a 16px/
+);
+assert.throws(() => validateBrand({icons: {...clay.brand.icons, tab: 'x'}}), /unknown field/);
+assert.throws(
+  () => validateBrand({shortName: {en: 'Clay Florist Studio', fa: 'کلی'}}),
+  /shortName.en/
+);
+assert.doesNotThrow(() =>
+  validateBrand({icons: {...clay.brand.icons, favicon16: 'assets/icons/favicon-16.png'}})
+);
+const manifests = brandOutputs(tenantSpecs());
+for (const [file, source] of manifests) {
   const manifest = JSON.parse(source);
   const fa = file.endsWith('manifest-fa.webmanifest');
   assert.equal(manifest.lang, fa ? 'fa' : 'en');
   assert.equal(manifest.dir, fa ? 'rtl' : 'ltr');
+  assert.equal(manifest.display, 'standalone');
+  assert.ok(manifest.name && manifest.short_name, file + ' names');
+  assert.match(manifest.theme_color, /^#[0-9A-F]{6}$/i, file + ' theme_color');
+  assert.equal(manifest.background_color, manifest.theme_color, file + ' background_color');
   assert.equal(manifest.icons.length, 3);
+  assert.ok(manifest.icons.some(icon => icon.purpose === 'maskable'));
   const base = new URL('https://example.com/shop/' + path.relative(root, file));
   for (const icon of manifest.icons) {
     const url = new URL(icon.src, base);
@@ -130,11 +148,18 @@ for (const [file, source] of brandOutputs(tenantSpecs())) {
     assert.ok(fs.existsSync(path.join(root, url.pathname.slice('/shop/'.length))));
   }
   assert.ok(new URL(manifest.start_url, base).pathname.startsWith('/shop/apps/storefront/app/'));
-  if (file.includes('/clay/')) assert.match(manifest.start_url, /tenant=clay/);
+  if (file.includes('/clay/')) {
+    assert.match(manifest.start_url, /tenant=clay/);
+    assert.equal(manifest.short_name, fa ? 'کلی' : 'Clay');
+    // The tenant's own page colour, not Vendra's.
+    assert.equal(manifest.theme_color, theme.email(clay).bg);
+  }
 }
 
 // Deployment overrides stay scoped to their tenant, and a live head update replaces old assets.
 const links = new Map();
+const linkKey = link =>
+  `link[rel="${link.rel}"]` + (link.rel === 'icon' ? `[sizes="${link.sizes}"]` : '');
 const brandContext = {
   VF_TENANT_BRANDS: {clay: clay.brand, fern: {}},
   VF_STORE: {
@@ -149,11 +174,14 @@ const brandContext = {
   document: {
     head: {
       querySelector: selector => links.get(selector),
-      append: link => links.set(`link[rel="${link.rel}"]`, link)
+      append: link => links.set(linkKey(link), link)
     },
     createElement: () => ({
       setAttribute(key, value) {
         this[key] = value;
+      },
+      remove() {
+        links.delete(linkKey(this));
       }
     })
   }
@@ -166,30 +194,67 @@ vm.runInContext(
     .replace(/^export /gm, ''),
   brandContext
 );
+const icon = size => links.get(`link[rel="icon"][sizes="${size}"]`);
 assert.equal(
   vm.runInContext("vfBrand('clay').ogImage.en", brandContext),
   'assets/social/og-default-en.png'
 );
 assert.equal(vm.runInContext("vfBrand('fern').ogImage", brandContext), undefined);
-vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
-assert.equal(
-  links.get('link[rel="icon"]').href,
-  'https://example.com/store/assets/tenants/clay/favicon-32.png'
-);
 vm.runInContext("vfBrandHead('fern', 'fa')", brandContext);
-assert.equal(links.size, 3);
-assert.equal(
-  links.get('link[rel="icon"]').href,
-  'https://example.com/store/assets/icons/favicon-32.png'
-);
+assert.equal(links.size, 4);
+assert.equal(icon('16x16').href, 'https://example.com/store/assets/icons/favicon-16.png');
+assert.equal(icon('32x32').href, 'https://example.com/store/assets/icons/favicon-32.png');
 assert.equal(
   links.get('link[rel="manifest"]').href,
   'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
+);
+// Clay has its own icons and no 16 px one: the shared 16 px favicon goes, never shown for Clay.
+vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
+assert.equal(links.size, 3);
+assert.equal(icon('16x16'), undefined);
+assert.equal(icon('32x32').href, 'https://example.com/store/assets/tenants/clay/favicon-32.png');
+assert.equal(
+  links.get('link[rel="apple-touch-icon"]').href,
+  'https://example.com/store/assets/tenants/clay/apple-touch-icon.png'
 );
 
 // Prerendered builds use origin-relative bases at the root and under a deployment prefix.
 for (const base of ['/', '/store/']) {
   brandContext.vfAssetBase = () => base;
   vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
-  assert.equal(links.get('link[rel="icon"]').href, base + 'assets/tenants/clay/favicon-32.png');
+  assert.equal(icon('32x32').href, base + 'assets/tenants/clay/favicon-32.png');
+  assert.match(
+    vm.runInContext("vfBrandHtml('fern', 'en')", brandContext),
+    new RegExp(
+      `<link rel="icon" sizes="16x16" type="image/png" href="${base}assets/icons/favicon-16.png">`
+    )
+  );
 }
+
+// Every shared icon and social image is used: by the default tenant's head links, its manifests or
+// the default preview image (page-lifecycle.js).
+brandContext.vfAssetBase = () => '';
+const used = new Set();
+for (const lang of ['en', 'fa']) {
+  for (const link of vm.runInContext(`vfBrandLinks('fern', '${lang}')`, brandContext))
+    used.add(link.href);
+  const manifest = JSON.parse(
+    manifests.get(path.join(root, `assets/tenants/default/manifest-${lang}.webmanifest`))
+  );
+  for (const {src} of manifest.icons)
+    used.add(path.posix.normalize('assets/tenants/default/' + src));
+}
+const lifecycle = fs.readFileSync(
+  path.join(root, 'apps/storefront/shared/services/page-lifecycle.js'),
+  'utf8'
+);
+assert.match(lifecycle, /`assets\/social\/og-default-\$\{lang\}\.png`/);
+for (const lang of ['en', 'fa']) used.add(`assets/social/og-default-${lang}.png`);
+for (const folder of ['assets/icons', 'assets/social'])
+  for (const name of fs.readdirSync(path.join(root, folder)))
+    assert.ok(
+      used.has(folder + '/' + name),
+      folder + '/' + name + ' is not used by the storefront'
+    );
+
+console.log('Passed: tenant branding, icons and manifests');
