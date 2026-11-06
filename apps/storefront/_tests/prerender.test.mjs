@@ -195,7 +195,33 @@ try {
     'text in the data cannot close the script element'
   );
 
-  for (const route of storefrontRoutes()) await page(route.path);
+  // Every route renders on the server with its heading, and every indexed one has an absolute
+  // preview image with its alt text and size, so a shared link shows a picture (#150).
+  const attribute = (html, name) =>
+    (html.match(new RegExp('<meta (?:property|name)="' + name + '" content="([^"]*)"')) || [])[1];
+  for (const route of storefrontRoutes()) {
+    const html = await page(route.path);
+    if (!route.indexed) continue;
+    const where = route.path + ': ';
+    assert.match(attribute(html, 'og:image') || '', /^https:\/\/\S+$/, where + 'absolute og:image');
+    assert.ok(attribute(html, 'og:image:alt'), where + 'og:image:alt');
+    assert.match(attribute(html, 'og:image:width') || '', /^\d+$/, where + 'og:image:width');
+    assert.match(attribute(html, 'og:image:height') || '', /^\d+$/, where + 'og:image:height');
+    assert.equal(attribute(html, 'twitter:card'), 'summary_large_image', where + 'twitter:card');
+    const isProduct = route.page.startsWith('product/');
+    assert.equal(attribute(html, 'og:type') === 'product', isProduct, where + 'og:type');
+    if (isProduct) {
+      assert.match(attribute(html, 'product:price:amount') || '', /^\d+(\.\d+)?$/, where + 'price');
+      assert.equal(attribute(html, 'product:price:currency'), 'IRR', where + 'price currency');
+    } else assert.ok(!html.includes('product:price'), where + 'no price');
+  }
+  const productHtml = await page('en/product/VF-7K2M4Q/');
+  assert.equal(attribute(productHtml, 'og:image:width'), '1120', 'the product photo’s own width');
+  assert.equal(attribute(productHtml, 'og:image:height'), '1400', 'the product photo’s own height');
+  assert.notEqual(attribute(productHtml, 'og:image:alt'), 'VF-7K2M4Q', 'the photo is described');
+  const home = await page('en/');
+  assert.equal(attribute(home, 'og:image:width'), '1200', 'the default preview image width');
+  assert.equal(attribute(home, 'og:image:height'), '630', 'the default preview image height');
 
   console.log(
     'Passed: prerendered pages carry their heading, title, preview tags, canonical, alternates and structured data (' +
