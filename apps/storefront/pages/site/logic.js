@@ -60,6 +60,20 @@ function vfGuardRoute(state, r) {
   if (r.view === 'account' && !vfAccountPhone()) return {lang: r.lang, view: 'signin'};
   return null;
 }
+// page_view for the shown route, once per address: the site changes routes in place, so a
+// collector never sees these navigations. The path only (no query), so a search term, phone number
+// or order code in the query never leaves; filters and steps within a page don't count again.
+function vfReportPageView(page) {
+  const key = page.state.route + ' ' + location.pathname;
+  if (page._vfPageView === key) return;
+  page._vfPageView = key;
+  // The page's own language: <html lang> follows only once the new page has rendered.
+  window.VF_TRACK.event('page_view', {
+    language: page.state.lang,
+    page_type: page.state.route,
+    page_path: location.pathname
+  });
+}
 // Shows a route at once when its page has loaded (page code may focus what it just rendered);
 // otherwise once its code arrives, so the current page stays as it is (URL, scroll and all) in the
 // meantime. Only the latest navigation is shown; a failed load shows the page's error.
@@ -147,8 +161,9 @@ function vfSiteInitial(props) {
   if (route.view === 'home' && props.start) route = {...route, view: props.start};
   // The build's prerender only renders; the address stays as it is.
   const replaceUrl = url => !vfOnServer() && history.replaceState({}, '', url);
-  // An old product link (product/ivory/) is rewritten with the product's code.
-  if (route.view === 'product' && vfRouteUrl(route) !== vfCurrentUrl())
+  // An old product link (product/ivory/) is rewritten with the product's code, and a retired
+  // article's (journal/care/) with the post that replaced it.
+  if (['product', 'post'].includes(route.view) && vfRouteUrl(route) !== vfCurrentUrl())
     replaceUrl(vfRouteUrl(route));
   // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
   // are replaced, and the link is dropped from the address so a reload doesn't add them again.
@@ -416,8 +431,10 @@ export function usePage(props) {
         lang: page.state.lang
       });
       if (guarded) page.navigate(guarded, true);
+      vfReportPageView(page);
     },
     didUpdate() {
+      vfReportPageView(page);
       if (page.state.customerId !== vfCustomerId()) {
         page.syncCustomer();
         return;

@@ -38,6 +38,7 @@ export function StorefrontProductRecent({products, labels, resetKey}) {
               favorite={p?.fav}
               onFavorite={p?.toggleFav}
               href={p?.href}
+              onClick={p?.select}
             />
           </React.Fragment>
         ))}

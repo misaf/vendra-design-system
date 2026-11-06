@@ -1967,3 +1967,63 @@ Promise.all([
   }
   console.log('Passed sitemap hreflang alternates and article lastmod.');
 });
+// Every listed article carries its own text (#197): no post borrows another's words or the post
+// page's copy, and retired articles redirect, in the router and on the server, to listed posts.
+Promise.all([
+  import('../shared/translations/journal-content.js'),
+  import('../shared/translations/journal-moved.js'),
+  import('../shared/services/routing.js')
+]).then(([{VF_POSTS}, {VF_POST_MOVED}, {vfReadRoute}]) => {
+  const ids = VF_POSTS.map(post => post.id);
+  assert.equal(new Set(ids).size, ids.length, 'post ids are unique');
+  for (const lang of ['en', 'fa']) {
+    const seen = new Map();
+    for (const post of VF_POSTS) {
+      const classic = post.classic?.[lang];
+      const texts = post.body
+        ? post.body[lang]
+            .filter(([type]) => type !== 'img')
+            .flatMap(([, value]) => (Array.isArray(value) ? value : [value]))
+        : classic
+          ? [...classic.before, classic.quote, classic.heading, ...classic.after]
+          : [];
+      assert.ok(texts.length, post.id + ' has its own article text in ' + lang);
+      for (const text of texts) {
+        assert.ok(typeof text === 'string' && text.trim(), post.id + ' text is not empty');
+        if (text.length > 30)
+          assert.ok(
+            !seen.has(text),
+            post.id + ' shares text with ' + seen.get(text) + ' in ' + lang + ': ' + text
+          );
+        seen.set(text, post.id);
+      }
+      const title = post[lang][0];
+      assert.equal(
+        VF_POSTS.filter(other => other[lang][0] === title).length,
+        1,
+        post.id + ' has its own title in ' + lang
+      );
+    }
+  }
+  const copy = read('apps/storefront/pages/post/copy.js');
+  for (const word of ['autumn', 'October', 'پاییز', 'مهر'])
+    assert.ok(!copy.includes(word), 'the post page copy carries no article text: ' + word);
+  const nginx = read('apps/storefront/deployment/nginx.conf');
+  for (const [old, next] of Object.entries(VF_POST_MOVED)) {
+    assert.ok(!ids.includes(old), old + ' is retired from the journal list');
+    assert.ok(ids.includes(next), old + ' moves to a listed post');
+    for (const lang of ['en', 'fa'])
+      assert.equal(
+        vfReadRoute(`/apps/storefront/app/${lang}/journal/${old}/`).post,
+        next,
+        old + ' opens ' + next + ' in ' + lang
+      );
+    assert.ok(
+      nginx.includes(
+        `rewrite ^/apps/storefront/app/(en|fa)/journal/${old}/?$ /apps/storefront/app/$1/journal/${next}/ permanent;`
+      ),
+      'nginx redirects ' + old + ' to ' + next
+    );
+  }
+  console.log('Passed journal articles: own text, no duplicates, retired posts redirect.');
+});

@@ -205,8 +205,12 @@ in the source, so search engines and WhatsApp/Telegram link previews read them w
 scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
 Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
 `VF_SEO.headTags` the browser applies (`vfPageHead` in `shared/services/page-lifecycle.js`: the page's h1,
-its address, its alternates and a preview image — the product's or post's photo, otherwise the
-logo). The same head carries the page's schema.org structured data as one JSON-LD script
+its canonical address, its alternates and a preview image — the product's or post's photo, otherwise the
+logo). The canonical address is `vfCanonicalRoute` (`shared/services/routing.js`): always with its
+language and its path id, plus only a shop occasion or a journal page in the query, in one order —
+never sorting, price, stock, quick filters, the delivery day, the shop's "Show more" page or product
+choices. The hreflang alternates are that same address with only the language changed, and sorted or
+filtered shop views (`vfRouteRefined`) are `noindex, follow` (`tests/seo-canonical.test.mjs`). The same head carries the page's schema.org structured data as one JSON-LD script
 (`shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
 in ISO 4217, Toman as Rial) and `BreadcrumbList` on product pages, the studio as a `Florist` (address,
 map point, phone, opening hours and holidays) on the home and contact pages, `FAQPage` on the FAQ and
@@ -298,7 +302,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out (the React 19 job covers the next one), and a Playwright bump must also move the image tag in the workflows, which `assets.test.cjs` checks.
 
-A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
+A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on a non-default branch (Actions → Update screenshots → Run workflow → select your branch); it commits the changed `-linux.png` files to that branch. Runs on the repository's default branch (currently `master`) or a tag fail before the screenshot job starts. Review both sets of baselines in a pull request before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
 
 ### On a remote server (optional)
 

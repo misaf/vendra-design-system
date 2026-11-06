@@ -697,9 +697,14 @@ test('the storefront reports the contract’s events, and nothing personal', asy
     if (message.text().startsWith('VF_TRACK')) warnings.push(message.text());
   });
   const names = () => page.evaluate(() => window.VF_TRACK.log.map(event => event.event));
+  // The latest event of one kind: page views and product lists follow renders, so other
+  // events may come after it.
+  const last = name =>
+    page.evaluate(name => window.VF_TRACK.log.findLast(event => event.event === name), name);
   await openSite(page, 'product', 'en');
-  const viewed = await page.evaluate(() => window.VF_TRACK.log.at(-1));
-  expect(viewed).toMatchObject({event: 'view_item', items: [{item_id: 'VF-7K2M4Q'}]});
+  expect(await last('view_item')).toMatchObject({items: [{item_id: 'VF-7K2M4Q'}]});
+  // The site changes routes in place, so it reports each page itself: the path, no query.
+  expect(await last('page_view')).toMatchObject({language: 'en', page_type: 'product'});
   await page
     .getByRole('button', {name: /^Add to bag/})
     .locator('visible=true')
@@ -715,22 +720,36 @@ test('the storefront reports the contract’s events, and nothing personal', asy
     .poll(() => page.evaluate(() => window.VF_TRACK.log.find(event => event.event === 'search')))
     .toMatchObject({search_term: 'orchid', results: 1});
   await page.getByRole('searchbox').fill('09121234567');
-  await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'search', search_term: '(personal data)'});
+  await expect.poll(() => last('search')).toMatchObject({search_term: '(personal data)'});
+  // The settled search's results, as a list of product codes.
+  expect(await last('view_item_list')).toMatchObject({
+    item_list_id: 'search',
+    items: [{item_id: 'VF-8RD5WN', index: 0}]
+  });
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  await expect.poll(() => last('page_view')).toMatchObject({page_type: 'shop'});
+  await expect
+    .poll(async () => {
+      const list = await last('view_item_list');
+      return [list?.item_list_id, list?.items.map(item => item.index)];
+    })
+    .toEqual(['shop', [0, 1, 2, 3]]);
   await page
     .locator('.ag-switch', {hasText: 'In stock only'})
     .locator('visible=true')
     .first()
     .click();
-  await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'add'});
+  await expect.poll(() => last('filter')).toMatchObject({filter_id: 'stock', action: 'add'});
   await page.getByRole('button', {name: 'Remove In stock only'}).click();
+  await expect.poll(() => last('filter')).toMatchObject({filter_id: 'stock', action: 'remove'});
+  // Opening a card says which list it came from and where in it.
+  const opened = await page.locator('.vf-shop-product-grid .ag-product__link').nth(1);
+  const code = (await opened.textContent()).trim();
+  await opened.click();
   await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'remove'});
+    .poll(() => last('select_item'))
+    .toMatchObject({item_list_id: 'shop', items: [{item_id: code, index: 1}]});
+  await expect.poll(() => last('page_view')).toMatchObject({page_type: 'product'});
   expect(warnings).toEqual([]);
 });
 
@@ -1014,6 +1033,25 @@ test('the site says when the connection drops and when it is back', async ({page
   await expect(band).toHaveText('دوباره آنلاین هستید.');
 });
 
+// A sorted shop is noindex; clearing the sort in place (same h1) makes it indexable again, with its
+// canonical address and alternates (issue 151).
+test('shop head follows sorting changes made in place', async ({page}, info) => {
+  test.skip(info.project.name !== 'desktop', 'desktop only');
+  await openSite(page, 'shop', 'en', {sort: 'low'});
+  const robots = page.locator('meta[name=robots]');
+  await expect(robots).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.locator('link[rel=alternate]')).toHaveCount(0);
+  await page.locator('.vf-shop-sorting:visible .ag-select button').first().click();
+  await page.getByRole('option', {name: 'Featured', exact: true}).click();
+  await expect(page).not.toHaveURL(/sort=/);
+  await expect(robots).toHaveCount(0);
+  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\/app\/en\/shop\/$/);
+  await expect(page.locator('link[rel=alternate][hreflang=fa]')).toHaveAttribute(
+    'href',
+    /\/app\/fa\/shop\/$/
+  );
+});
+
 test('the server-error page offers a retry, the way home and the phone', async ({page}) => {
   await openSite(page, 'error', 'en');
   const main = page.getByRole('main');
@@ -1211,8 +1249,8 @@ test('the home page shows the categories, ready-made designs, weddings and the l
   const journal = page.locator('.vf-home-journal');
   await expect(journal.getByRole('heading', {level: 3})).toHaveText([
     'What’s in season this autumn',
-    'Five ways to keep a bouquet fresh',
-    'Choosing your bridal bouquet'
+    'A morning at the Vendra workbench',
+    'Flowers aren’t only for special days'
   ]);
   // Every category, in the store's order, as a row of circles; each opens its shop filter.
   const categories = page.getByRole('region', {name: /^Categories/});
@@ -1226,8 +1264,8 @@ test('the home page shows the categories, ready-made designs, weddings and the l
     page.locator('.vf-home-weddings').getByRole('link', {name: 'Plan your wedding flowers'})
   ).toHaveAttribute('href', /\/weddings\//);
   expect(await scanAxe(page)).toEqual([]);
-  await journal.getByRole('link', {name: /Five ways to keep a bouquet fresh/}).click();
-  await expect(page).toHaveURL(/\/journal\/care\//);
+  await journal.getByRole('link', {name: /A morning at the Vendra workbench/}).click();
+  await expect(page).toHaveURL(/\/journal\/morning-at-the-studio\//);
 });
 
 test('the home page newsletter checks the address and confirms the sign-up', async ({page}) => {
@@ -1639,7 +1677,7 @@ test('the journal splits its stories across pages, keeping the page in the URL',
   await openSite(page, 'journal', 'en');
   const stories = page.locator('main .ag-blog');
   const pages = page.getByRole('navigation', {name: 'Pages'});
-  await expect(stories).toHaveCount(7);
+  await expect(stories).toHaveCount(4);
   await expect(pages.getByRole('link', {name: 'Page 1'})).toHaveAttribute('aria-current', 'page');
   await expect(pages.getByRole('link', {name: 'Previous page'})).toHaveAttribute(
     'aria-disabled',

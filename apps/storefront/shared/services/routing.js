@@ -7,6 +7,7 @@ import {
   vfFindProduct
 } from '../domain/catalog.js';
 import {VF_SHOP_OCCASIONS} from '../translations/categories.js';
+import {VF_POST_MOVED} from '../translations/journal-moved.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from '../domain/store-config.js';
 import {VF_CATEGORY_SLUGS} from '../domain/product-categories.js';
@@ -141,7 +142,7 @@ export function vfReadRoute(url = vfCurrentUrl()) {
   if (route.view === 'shop') {
     route.cat = route.cat || 'all';
     route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    const max = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
+    const max = vfShopPriceMax();
     const number = (key, fallback) => {
       const v = query.get(key);
       return v !== null && Number.isFinite(+v) ? Math.max(0, Math.min(max, +v)) : fallback;
@@ -164,6 +165,9 @@ export function vfReadRoute(url = vfCurrentUrl()) {
     // How many "Show more" pages are open (?page=2 shows the first two pages).
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
+  // A retired article opens the newer post that replaced it, and the link is written back with it.
+  if (route.view === 'post' && Object.hasOwn(VF_POST_MOVED, route.post))
+    route.post = VF_POST_MOVED[route.post];
   // A journal page (journal/?page=2).
   if (route.view === 'journal')
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
@@ -199,8 +203,7 @@ export function vfRouteUrl(route) {
     query.set('next', 'checkout');
   if (route.view === 'shop') {
     if (route.min > 0) query.set('min', route.min);
-    const priceMax = Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
-    if (route.max != null && route.max < priceMax) query.set('max', route.max);
+    if (route.max != null && route.max < vfShopPriceMax()) query.set('max', route.max);
     if (route.stock) query.set('stock', '1');
     if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
     const filters = (route.filters || []).filter(id => VF_SHOP_FILTERS.includes(id));
@@ -212,6 +215,42 @@ export function vfRouteUrl(route) {
   if (route.view === 'journal' && route.page > 1) query.set('page', route.page);
   const search = query.toString();
   return search ? path + '?' + search : path;
+}
+// The top of the shop's price filter: the dearest product, rounded up to the next 100,000.
+function vfShopPriceMax() {
+  return Math.ceil(Math.max(...VF_PRODUCTS.map(p => p.price)) / 100000) * 100000;
+}
+// The one address search engines should know a route by (its canonical URL, and with only `lang`
+// changed its hreflang alternates): the language, the page and its id from the path, plus the query
+// that changes what the page is about — a shop occasion and a journal page. Sorting, price, stock,
+// quick filters, the delivery day, the shop's cumulative "Show more" pages, product choices, demos
+// and every step or hand-over parameter are left out, and vfRouteUrl writes the rest in one order.
+export function vfCanonicalRoute(route) {
+  const canonical = {view: route.view, lang: route.lang};
+  if (['product', 'policy', 'track'].includes(route.view) && route.id) canonical.id = route.id;
+  if (route.view === 'post') canonical.post = route.post;
+  if (route.view === 'shop') {
+    canonical.cat = route.cat;
+    canonical.occasion = route.occasion;
+  }
+  if (route.view === 'journal' && route.page > 1) canonical.page = route.page;
+  return canonical;
+}
+// Whether a route is a refinement of an indexed page that search engines should not list (robots
+// noindex, follow): a demo state, or a shop sorted, filtered by price, stock, quick filters or a
+// delivery day, or narrowed by both a category and an occasion.
+export function vfRouteRefined(route) {
+  if (route.demo) return true;
+  if (route.view !== 'shop') return false;
+  return Boolean(
+    ['low', 'high'].includes(route.sort) ||
+    route.min > 0 ||
+    (route.max != null && route.max < vfShopPriceMax()) ||
+    route.stock ||
+    route.filters?.length ||
+    route.date ||
+    (route.cat && route.cat !== 'all' && VF_SHOP_OCCASIONS.includes(route.occasion))
+  );
 }
 export function vfPageRoute(props) {
   return props.routeInfo || vfReadRoute();
