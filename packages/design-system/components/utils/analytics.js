@@ -5,7 +5,8 @@
 // number, address or card message can't reach a report by accident. No imports.
 
 // Product codes, not names: a product is known by its code in reports, as in the studio.
-const ITEM_KEYS = ['item_id', 'item_name', 'item_category', 'price', 'quantity'];
+// item_list_name names the list an item was picked from (e.g. 'saved').
+const ITEM_KEYS = ['item_id', 'item_name', 'item_category', 'item_list_name', 'price', 'quantity'];
 const COMMON = ['language', 'currency'];
 
 const EVENTS = {

@@ -5,10 +5,12 @@
 // Each event keeps only its listed parameters (plus `language` and `currency`), so a name, phone
 // number, address or card message can't reach a report by accident. No imports.
 // Product codes, not names: a product is known by its code in reports, as in the studio.
+// item_list_name names the list an item was picked from (e.g. 'saved').
 const ITEM_KEYS = [
 	"item_id",
 	"item_name",
 	"item_category",
+	"item_list_name",
 	"price",
 	"quantity"
 ];
