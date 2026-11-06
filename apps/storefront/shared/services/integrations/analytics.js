@@ -5,7 +5,7 @@
 // analytics in the consent banner (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a
 // store subscribes a sender to its own backend. Components report their events through
 // VendraProvider's onEvent, which the shell points here.
-import {analytics} from '../../../../../components/utils/analytics.js';
+import {analytics} from '../../../../../packages/design-system/components/utils/analytics.js';
 import {VF_STORE} from '../../domain/store-config.js';
 import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
 (() => {

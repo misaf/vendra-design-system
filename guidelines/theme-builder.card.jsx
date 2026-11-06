@@ -33,7 +33,7 @@ function App(){
       <Row label="Image frame"><select value={s.character.frame} onChange={pick('frame')}><option value="arch">Arch</option><option value="soft">Soft top</option><option value="square">Square</option></select></Row>
       <div className="tb-k">Export</div>
       <Row label="Slug"><input value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,''))} style={{font:'inherit',fontSize:12,height:26,width:110,border:'1px solid var(--border-input)',borderRadius:4,padding:'0 6px'}}/></Row>
-      <button onClick={copy} title={'Save as tokens/tenants/'+slug+'.json, then run npm --prefix apps/storefront run build'} style={{font:'inherit',height:32,borderRadius:4,border:0,background:'var(--ink-900)',color:'var(--petal-50)',cursor:'pointer'}}>{copied?'Copied':'Copy '+slug+'.json'}</button>
+      <button onClick={copy} title={'Save as packages/design-system/tokens/tenants/'+slug+'.json, then run npm --prefix apps/storefront run build'} style={{font:'inherit',height:32,borderRadius:4,border:0,background:'var(--ink-900)',color:'var(--petal-50)',cursor:'pointer'}}>{copied?'Copied':'Copy '+slug+'.json'}</button>
     </div>
     <div className="tb-p" style={t.all}>
       <h2 className="tb-h">Wild things, <em>gathered.</em></h2>

@@ -9,6 +9,7 @@ const {execFileSync} = require('node:child_process');
 const {createPackedConsumer} = require('./packed-package.cjs');
 
 const repo = path.resolve(__dirname, '../../..');
+const pkg = path.join(repo, 'packages/design-system');
 // Inside the workspace's node_modules, so the package resolves react from there like a peer;
 // react-19.cjs points VENDRA_PACKAGE_APP at an app with React 19 instead.
 const peers = process.env.VENDRA_PACKAGE_APP || repo;
@@ -120,14 +121,14 @@ const {app, installed, manifest, files} = packed;
       console.warn = warn;
     }
     // The package CSS sits in vendra.* cascade layers, so an app's own CSS overrides it predictably.
-    const packageCss = fs.readFileSync(path.join(repo, 'dist/styles.css'), 'utf8');
+    const packageCss = fs.readFileSync(path.join(pkg, 'dist/styles.css'), 'utf8');
     assert.match(packageCss, /^@layer vendra\.tokens, vendra\.base, vendra\.components;$/m);
     assert.match(packageCss, /@layer vendra\.components \{[\s\S]*\.ag-btn\b/);
 
     // Design tokens for other platforms: W3C DTCG JSON whose aliases all resolve (a tenant's file
     // over the base one), and the runtime designTokens gives the same as the build.
     const baseTokens = JSON.parse(
-      fs.readFileSync(path.join(repo, 'dist/tokens/tokens.json'), 'utf8')
+      fs.readFileSync(path.join(pkg, 'dist/tokens/tokens.json'), 'utf8')
     );
     const lookup = (tree, ref) => ref.split('.').reduce((node, key) => node && node[key], tree);
     const aliases = (tree, found = []) => {
@@ -145,16 +146,16 @@ const {app, installed, manifest, files} = packed;
     assert.equal(lookup(baseTokens, 'shadow.md').$value.offsetY, '8px');
     for (const ref of aliases(baseTokens))
       assert.ok(lookup(baseTokens, ref), 'tokens.json alias {' + ref + '} resolves');
-    for (const name of fs.readdirSync(path.join(repo, 'dist/tokens/tenants'))) {
+    for (const name of fs.readdirSync(path.join(pkg, 'dist/tokens/tenants'))) {
       const tenant = JSON.parse(
-        fs.readFileSync(path.join(repo, 'dist/tokens/tenants', name), 'utf8')
+        fs.readFileSync(path.join(pkg, 'dist/tokens/tenants', name), 'utf8')
       );
       const merged = {...baseTokens};
       for (const [group, entries] of Object.entries(tenant))
         merged[group] = {...merged[group], ...entries};
       for (const ref of aliases(tenant))
         assert.ok(lookup(merged, ref), name + ' alias {' + ref + '} resolves over tokens.json');
-      const spec = JSON.parse(fs.readFileSync(path.join(repo, 'tokens/tenants', name), 'utf8'));
+      const spec = JSON.parse(fs.readFileSync(path.join(pkg, 'tokens/tenants', name), 'utf8'));
       assert.deepEqual(
         theme.designTokens(theme.tokens(spec).all),
         tenant,
@@ -178,7 +179,7 @@ const {app, installed, manifest, files} = packed;
     assert.match(wording('de-DE'), /aria-label="Dismiss"/);
     // Each component's wording (dist/components/<Name>/messages.js) has Persian for every English key.
     const wordings = fs
-      .readdirSync(path.join(repo, 'dist/components'), {recursive: true})
+      .readdirSync(path.join(pkg, 'dist/components'), {recursive: true})
       .filter(
         name =>
           path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
@@ -194,7 +195,7 @@ const {app, installed, manifest, files} = packed;
         .sort();
     for (const name of wordings) {
       const {messages} = await import(
-        pathToFileURL(path.join(repo, 'dist/components', name, 'messages.js')).href
+        pathToFileURL(path.join(pkg, 'dist/components', name, 'messages.js')).href
       );
       assert.deepEqual(
         keys(messages.fa),
@@ -216,7 +217,7 @@ const {app, installed, manifest, files} = packed;
     assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
     // 'use client' leads every component module so React Server Components frameworks treat them as client components.
     assert.match(
-      fs.readFileSync(path.join(repo, 'dist/components/atoms/Button/Button.js'), 'utf8'),
+      fs.readFileSync(path.join(pkg, 'dist/components/atoms/Button/Button.js'), 'utf8'),
       /^'use client';\n/
     );
 
@@ -512,12 +513,12 @@ export const values = [${names.join(',')}];
       require_(manifest.name + '/theme').tenantCss,
       require_(path.join(installed, 'dist/theme.cjs')).tenantCss
     );
-    const fern = JSON.parse(fs.readFileSync(path.join(repo, 'tokens/tenants/fern.json'), 'utf8'));
+    const fern = JSON.parse(fs.readFileSync(path.join(pkg, 'tokens/tenants/fern.json'), 'utf8'));
     const css = theme.tenantCss('fern', fern);
     assert.equal(
       css.replace(/\n {3}Sample tenant[^\n]*/, ''),
       fs
-        .readFileSync(path.join(repo, 'tokens/tenants/fern.css'), 'utf8')
+        .readFileSync(path.join(pkg, 'tokens/tenants/fern.css'), 'utf8')
         .replace(/\n {3}Sample tenant[^\n]*/, '')
     );
     assert.doesNotMatch(
@@ -535,7 +536,7 @@ export const values = [${names.join(',')}];
     assert.equal(theme.checks(theme.VENDRA).filter(c => !c.pass).length, 0);
 
     // Styles: one file, fonts beside it, tenant files as published paths.
-    const styles = fs.readFileSync(path.join(repo, 'dist/styles.css'), 'utf8');
+    const styles = fs.readFileSync(path.join(pkg, 'dist/styles.css'), 'utf8');
     // (Comments may mention @import, e.g. how to load Leaflet's CSS into a layer.)
     assert.doesNotMatch(styles.replace(/\/\*[\s\S]*?\*\//g, ''), /@import|\.\.\/assets/);
     for (const [, font] of styles.matchAll(/url\('\.\/(fonts\/[^']+)'\)/g))
@@ -543,7 +544,7 @@ export const values = [${names.join(',')}];
     for (const token of ['--accent:', '--control-h-md:', '.ag-btn {', '.ag-input {'])
       assert.ok(styles.includes(token), 'styles.css lacks ' + token);
     for (const name of fs
-      .readdirSync(path.join(repo, 'tokens/tenants'))
+      .readdirSync(path.join(pkg, 'tokens/tenants'))
       .filter(n => n.endsWith('.css')))
       assert.ok(files.has('dist/tenants/' + name));
 

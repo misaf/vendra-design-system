@@ -1,10 +1,11 @@
-// Generate tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
+// Generate the package's tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 const fs = require('node:fs');
 const path = require('node:path');
 const theme = require('../apps/storefront/shared/domain/tenant-theme.js');
 const root = path.resolve(__dirname, '../apps/storefront');
-const folder = path.resolve(root, '../../tokens/tenants');
+const {packageRoot, packageFolder} = require('./paths.cjs');
+const folder = path.join(packageRoot, 'tokens/tenants');
 
 function tenantSpecs() {
   const specs = {};
@@ -15,7 +16,7 @@ function tenantSpecs() {
     const slug = file.slice(0, -5);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
       throw new Error('Tenant file names must be lowercase slugs: ' + file);
-    const label = 'tokens/tenants/' + file;
+    const label = packageFolder + '/tokens/tenants/' + file;
     let spec;
     try {
       spec = JSON.parse(fs.readFileSync(path.join(folder, file), 'utf8'));
@@ -47,7 +48,12 @@ function tenantOutputs() {
     .readdirSync(folder)
     .filter(name => name.endsWith('.css') && !specs[name.slice(0, -4)]);
   if (orphans.length)
-    throw new Error('Tenant CSS without a JSON source (tokens/tenants/): ' + orphans.join(', '));
+    throw new Error(
+      'Tenant CSS without a JSON source (' +
+        packageFolder +
+        '/tokens/tenants/): ' +
+        orphans.join(', ')
+    );
   // Storefronts load only their own tenant file; cards that compare tenants load them all.
   result.set(
     path.resolve(folder, '../tenants.css'),

@@ -8,7 +8,10 @@
 //   a TV browser: its user agent names a TV platform, or a wide screen reports no pointer at all.
 import React from 'react';
 import {setInteractionModality} from 'react-aria-components';
-import {arrowDirection, nearestInDirection} from '../../../../components/utils/spatial.js';
+import {
+  arrowDirection,
+  nearestInDirection
+} from '../../../../packages/design-system/components/utils/spatial.js';
 
 const VF_TV_KEY = 'vf-tv';
 const VF_TV_AGENTS =

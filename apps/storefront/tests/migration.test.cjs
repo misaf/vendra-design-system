@@ -490,7 +490,7 @@ function page(name, c, props = {}) {
             ? [dir + '/' + e.name]
             : []
       );
-  const cards = ['components', 'guidelines', 'apps/storefront']
+  const cards = ['packages/design-system/components', 'guidelines', 'apps/storefront']
     .flatMap(htmlFiles)
     .filter(f => read(f).startsWith('<!-- @dsCard'));
   assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');

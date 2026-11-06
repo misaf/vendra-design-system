@@ -12,5 +12,8 @@
     // The React types the workspace installs at the repo root.
     "paths": {"react": ["../../node_modules/@types/react/index.d.ts"]}
   },
-  "include": ["../../dist/**/*.d.ts", "../../dist/**/*.d.cts"]
+  "include": [
+    "../../packages/design-system/dist/**/*.d.ts",
+    "../../packages/design-system/dist/**/*.d.cts"
+  ]
 }

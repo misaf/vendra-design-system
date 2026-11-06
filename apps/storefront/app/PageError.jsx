@@ -1,8 +1,8 @@
 // Shown when a page's code fails to load (a dropped connection, or a deploy that replaced the files
 // while the tab was open): an alert with a reload instead of a blank screen.
 import React from 'react';
-import {Alert} from '../../../components/molecules/Alert/Alert.jsx';
-import {Button} from '../../../components/atoms/Button/Button.jsx';
+import {Alert} from '../../../packages/design-system/components/molecules/Alert/Alert.jsx';
+import {Button} from '../../../packages/design-system/components/atoms/Button/Button.jsx';
 import {vfLocation} from '../shared/platform/environment.js';
 import {vfAppBase} from '../shared/services/routing.js';
 import {VF_STORE} from '../shared/domain/store-config.js';
