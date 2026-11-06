@@ -450,7 +450,8 @@ test('on Android the code fills itself from the SMS and signs in', async ({page}
   await openSite(page, 'signin', 'en');
   await page.fill('#vf-phone', '۰۹۱۲۵۶۴۹۴۳۸');
   await page.locator('main').getByRole('button', {name: 'Send code'}).click();
-  await expect(page.locator('main h1')).toContainText('Welcome back');
+  // A fresh device has no stored account for this mobile, so it is a first sign-in.
+  await expect(page.locator('main h1')).toContainText('signed in.');
   expect(await page.evaluate(() => window.__otpAsked)).toEqual(['sms']);
 });
 
