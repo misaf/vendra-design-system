@@ -6,8 +6,17 @@ import {vfCopy} from './copy.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_STORE} from '../../shared/domain/store-config.js';
+import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+// Each post's search index per language (commerce.searchIndex of its text), built once rather than
+// on every keystroke.
+const vfPostSearchIndexes = {en: new WeakMap(), fa: new WeakMap()};
+function vfPostSearchIndex(post, lang) {
+  const indexes = vfPostSearchIndexes[lang];
+  if (!indexes.has(post)) indexes.set(post, commerce.searchIndex(post[lang].join(' ')));
+  return indexes.get(post);
+}
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -31,7 +40,7 @@ function vals(page) {
   const all = VF_POSTS.filter(
     p =>
       (s.cat === 'all' || p.cat === s.cat) &&
-      (!s.q || p[L].join(' ').toLowerCase().includes(s.q.toLowerCase()))
+      (!s.q.trim() || commerce.matchesSearch(vfPostSearchIndex(p, L), s.q))
   ).map(p => {
     const c = VF_JCATS.find(x => x[0] === p.cat);
     return {
