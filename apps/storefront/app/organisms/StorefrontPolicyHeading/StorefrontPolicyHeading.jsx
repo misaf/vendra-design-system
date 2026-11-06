@@ -1,6 +1,13 @@
 import React from 'react';
 
-export function StorefrontPolicyHeading({eyebrow, title, intro, updated}) {
+export function StorefrontPolicyHeading({
+  eyebrow,
+  title,
+  intro,
+  updatedLabel,
+  updatedDate,
+  updatedIso
+}) {
   return (
     <>
       <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
@@ -13,7 +20,7 @@ export function StorefrontPolicyHeading({eyebrow, title, intro, updated}) {
         <>{intro}</>
       </p>
       <div className="vf-info-meta tw:text-sm tw:text-quiet">
-        <>{updated}</>
+        <>{updatedLabel}</> <time dateTime={updatedIso}>{updatedDate}</time>
       </div>
     </>
   );

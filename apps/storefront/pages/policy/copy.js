@@ -1,6 +1,7 @@
 // Bilingual policy copy. Edit here, then run npm --prefix apps/storefront run build.
 // Fees, cut-offs, time slots and store details come from the shared config, so the policies stay current.
 // Each document is {title, intro, sections: [{title, paras: [...], items?: [...]}]}.
+// Each document's date is its own (VF_POLICY_UPDATED), so one change never re-dates the others.
 import {
   VF_DELIVERY_DAYS,
   VF_FREE_DELIVERY_THRESHOLD,
@@ -15,6 +16,15 @@ import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../../shared/domain/form
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../shared/domain/store-config.js';
 import {VF_SHELL} from '../../shared/translations/shell.js';
 import {vfSlotLabel} from '../../shared/translations/time.js';
+// When each policy last changed, as an ISO date (YYYY-MM-DD). Change only the edited document's date:
+// terms and privacy dates record which version a customer agreed to.
+export const VF_POLICY_UPDATED = {
+  shipping: '2026-10-01',
+  returns: '2026-09-14',
+  privacy: '2026-08-20',
+  terms: '2026-10-01',
+  accessibility: '2026-07-05'
+};
 export function vfCopy(S) {
   const fa = S.fa;
   const L = fa ? 'fa' : 'en';
@@ -72,7 +82,7 @@ export function vfCopy(S) {
     en: {
       eb: 'Policies',
       policiesL: 'Policies',
-      updated: 'Last updated 1 October 2026',
+      updatedL: 'Last updated',
       toc: 'On this page',
       sampleT: 'Sample text',
       sampleP: 'Replace with the florist’s own policies, checked by a lawyer, before launch.',
@@ -395,7 +405,7 @@ export function vfCopy(S) {
     fa: {
       eb: 'قوانین',
       policiesL: 'قوانین',
-      updated: 'آخرین به‌روزرسانی ۹ مهر ۱۴۰۵',
+      updatedL: 'آخرین به‌روزرسانی',
       toc: 'در این صفحه',
       sampleT: 'متن نمونه',
       sampleP: 'پیش از راه‌اندازی، قوانین خود گل‌فروشی را که وکیل بررسی کرده جایگزین کنید.',
