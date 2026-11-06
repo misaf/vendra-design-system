@@ -21,7 +21,7 @@ function storefrontPreview() {
     name: 'vendra-storefront-preview',
     apply: 'serve',
     async configureServer(server) {
-      await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
+      await run(process.execPath, [path.join(root, 'tools/build.cjs')]);
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url, 'http://localhost');
         if (url.pathname === '/') {
@@ -45,7 +45,7 @@ function storefrontPreview() {
         }
         running = true;
         try {
-          await run(process.execPath, [path.join(templates, '_build/build.cjs')]);
+          await run(process.execPath, [path.join(root, 'tools/build.cjs')]);
           server.ws.send({type: 'full-reload', path: '*'});
           server.config.logger.info('Rebuilt components, storefront templates and Tailwind.');
         } catch (error) {

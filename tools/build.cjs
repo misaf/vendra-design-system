@@ -3,12 +3,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const {spawnSync} = require('node:child_process');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/storefront');
 const check = process.argv.includes('--check');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-tailwind-'));
 async function main() {
   try {
-    require('./generate.cjs').generate(check);
+    require('../apps/storefront/_build/generate.cjs').generate(check);
     // Tenant themes are generated from JSON before anything reads them.
     for (const [target, content] of require('./tenants.cjs').tenantOutputs()) {
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
@@ -19,7 +19,7 @@ async function main() {
         );
       if (!check && content !== current) fs.writeFileSync(target, content);
     }
-    const {VF_STORE} = await import('../_shared/domain/store-config.js');
+    const {VF_STORE} = await import('../apps/storefront/_shared/domain/store-config.js');
     const specs = {default: {}, ...require('./tenants.cjs').tenantSpecs()};
     if (!specs[VF_STORE.tenant]) throw new Error('Unknown store tenant: ' + VF_STORE.tenant);
     specs[VF_STORE.tenant] = {
@@ -46,7 +46,7 @@ async function main() {
     );
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error('Tailwind compilation failed');
-    const custom = require('./custom-css.cjs').customCss(root);
+    const custom = require('../apps/storefront/_build/custom-css.cjs').customCss(root);
     for (const [file, css] of [
       ['tailwind.css', fs.readFileSync(output, 'utf8')],
       ['custom.css', custom]
