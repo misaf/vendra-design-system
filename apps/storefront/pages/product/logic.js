@@ -88,10 +88,11 @@ export function usePage(props) {
         history.replaceState(history.state, '', canonical.pathname + (search ? '?' + search : ''));
       }
     };
-    // One confirmation at a time; React Aria's region keeps it while the pointer or focus is on it.
+    // One confirmation at a time, for 10 s (longer while the pointer or focus is on it). One with an
+    // action (View saved) stays until it is used or dismissed: ToastQueue ignores its timeout.
     page._showToast = content => {
       page.toasts.clear();
-      page.toasts.add(content, {timeout: 6000});
+      page.toasts.add(content, {timeout: 10_000});
     };
     page._rememberProduct = () => {
       const id = vfPageRoute(page.props).id || VF_PRODUCTS[0].id;
