@@ -8,7 +8,7 @@ runtime change.
 
 ## Asserted visible amounts
 
-[features.spec.mjs](templates/_e2e/features.spec.mjs) scopes the check to the one strong total row
+[features.spec.mjs](apps/storefront/_e2e/features.spec.mjs) scopes the check to the one strong total row
 in the bag's OrderSummary. Independent expected sample amounts are written directly in the test;
 it does not call the production formatter or pricing function to manufacture its expected result.
 
@@ -46,9 +46,9 @@ This is not the full promo/quantity/delivery/wallet/currency cross-product. All 
 worker, zero skips/retries and snapshot updates disabled. Production targets build fresh previews.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- features.spec.mjs --project=mobile --project=desktop --grep 'promo code discounts|removing the code restores' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- features.spec.mjs --project=mobile --project=desktop --grep 'promo code discounts|removing the code restores' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
-node templates/_tests/features.test.cjs
+node apps/storefront/_tests/features.test.cjs
 ```
 
 Darwin uses installed Chrome. Linux uses the cached AMD64 Playwright 1.64.1 Noble image, fresh npm ci

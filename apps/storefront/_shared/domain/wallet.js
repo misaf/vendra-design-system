@@ -1,0 +1,63 @@
+// Account balance rules and history. The limits and discount live in VF_STORE.wallet (store-config.js).
+// Demo only: the balance is kept in this browser with the signed-in account. A real store must keep it on its
+// server and change it only after a confirmed top-up payment or a placed order.
+import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
+import {vfAmountFromInput} from './formatting.js';
+import {VF_STORE} from './store-config.js';
+import {commerce} from '../../../../components/utils/commerce.js';
+
+// {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
+export function vfWalletOf(account) {
+  const wallet = account && account.wallet;
+  return {
+    balance: Math.max(0, Math.round(+(wallet && wallet.balance) || 0)),
+    history: Array.isArray(wallet && wallet.history) ? wallet.history : []
+  };
+}
+
+// The signed-in customer's balance, or null for a guest.
+export function vfWalletBalance() {
+  const phone = vfAccountPhone();
+  return phone ? vfWalletOf(vfAccountLoad(phone)).balance : null;
+}
+
+// Paying from a balance of at least discountFrom earns the balance discount.
+export function vfBalanceDiscountOn(balance) {
+  return commerce.balanceDiscountOn(balance, VF_STORE.wallet);
+}
+
+// discountPercent of the products' price (after any promo code) when the balance earns it.
+export function vfBalanceDiscount(balance, products) {
+  return commerce.balanceDiscount(balance, products, VF_STORE.wallet);
+}
+
+// A top-up amount typed in the store's active currency, as Toman; '' when nothing is typed.
+export function vfTopUpAmount(text) {
+  return vfAmountFromInput(text);
+}
+
+// 'empty' | 'min' | 'max' when a top-up can't go ahead, otherwise ''.
+export function vfTopUpError(amount) {
+  const rules = VF_STORE.wallet;
+  if (!amount) return 'empty';
+  if (amount < rules.minTopUp) return 'min';
+  if (amount > rules.maxTopUp) return 'max';
+  return '';
+}
+
+// Adds a top-up (positive) or an order payment (negative) to the signed-in account and returns the account;
+// null when a payment is more than the balance or the change cannot be saved.
+export function vfWalletChange(phone, amount, entry) {
+  const account = vfAccountLoad(phone);
+  const wallet = vfWalletOf(account);
+  const balance = wallet.balance + amount;
+  if (balance < 0) return null;
+  const record = {
+    id: 'W' + Date.now().toString(36).toUpperCase(),
+    amount,
+    at: new Date().toISOString(),
+    ...entry
+  };
+  const next = {...account, wallet: {balance, history: [record, ...wallet.history]}};
+  return vfAccountSave(phone, next) ? next : null;
+}

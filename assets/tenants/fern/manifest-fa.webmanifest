@@ -2,8 +2,8 @@
   "name": "گل‌فروشی وندرا",
   "lang": "fa",
   "dir": "rtl",
-  "start_url": "../../../templates/app/?lang=fa&tenant=fern",
-  "scope": "../../../templates/app/",
+  "start_url": "../../../apps/storefront/app/?lang=fa&tenant=fern",
+  "scope": "../../../apps/storefront/app/",
   "display": "standalone",
   "icons": [
     {

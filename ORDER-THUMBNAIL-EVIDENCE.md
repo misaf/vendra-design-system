@@ -45,7 +45,7 @@ from the retained PNGs. No runtime defect or particular browser cause is establi
 
 ## Current regression and scope
 
-[order-thumbnail-capture.spec.mjs](templates/_e2e/order-thumbnail-capture.spec.mjs) adds the four
+[order-thumbnail-capture.spec.mjs](apps/storefront/_e2e/order-thumbnail-capture.spec.mjs) adds the four
 historically affected combinations: EN390, FA390, EN768 and FA1280. They execute in the desktop
 project with touch enabled through 768px, at height 1000. The mobile project registers and skips
 the same four cases. This is not a dedicated phone/tablet/TV or full bilingual-width matrix.
@@ -56,7 +56,7 @@ real step controls, same-document continuity, heading focus after route changes,
 and receipt/reference, and no page errors. No order is submitted. Existing local map-tile stubbing
 and the advancing morning clock are retained; the delivery pin helper uses keyboard pin placement.
 
-The [shared capture helper](templates/_e2e/image-capture-helpers.mjs), extracted from stage 229:
+The [shared capture helper](apps/storefront/_e2e/image-capture-helpers.mjs), extracted from stage 229:
 
 - Records ordinary-settled and explicitly decoded image source/completion/natural/rendered dimensions,
   loading/decoding attributes, placeholder state and opacity.
@@ -88,8 +88,8 @@ change during capture preparation; a current Persian desktop summary thumbnail w
 List-only reporting would discard successful buffer attachments.
 
 ```sh
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage230-verified-dev.json E2E_WORKERS=1 npm --prefix templates run test:e2e -- shop-image-capture.spec.mjs order-thumbnail-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage230-verified-dev-results --reporter=list,json
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage230-production.json E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- shop-image-capture.spec.mjs order-thumbnail-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage230-production-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage230-verified-dev.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- shop-image-capture.spec.mjs order-thumbnail-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage230-verified-dev-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage230-production.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- shop-image-capture.spec.mjs order-thumbnail-capture.spec.mjs --project=desktop --retries=0 --output=/tmp/vendra-stage230-production-results --reporter=list,json
 ```
 
 Discovery is 1,761 invocations in 123 files: mobile/desktop 691 each, dedicated phone/tablet 51 each,

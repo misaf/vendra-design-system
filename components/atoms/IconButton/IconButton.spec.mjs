@@ -4,7 +4,7 @@ import {
   contrast,
   expectAccessible,
   openComponent
-} from '../../../templates/_e2e/component-test.mjs';
+} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 test.beforeEach(({page}) => openComponent(page, 'IconButton'));
 
