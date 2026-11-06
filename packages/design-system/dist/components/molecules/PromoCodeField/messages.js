@@ -4,11 +4,13 @@ export const messages = {
 	en: {
 		label: "Promo code",
 		apply: "Apply",
-		remove: "Remove code"
+		remove: "Remove code",
+		reveal: "Have a promo code?"
 	},
 	fa: {
 		label: "کد تخفیف",
 		apply: "اعمال",
-		remove: "حذف کد"
+		remove: "حذف کد",
+		reveal: "کد تخفیف دارید؟"
 	}
 };

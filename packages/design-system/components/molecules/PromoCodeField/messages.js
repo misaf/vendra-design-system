@@ -1,5 +1,5 @@
 // PromoCodeField's built-in wording (accessible names and small labels), read with useMessages.
 export const messages = {
-  en: {label: 'Promo code', apply: 'Apply', remove: 'Remove code'},
-  fa: {label: 'کد تخفیف', apply: 'اعمال', remove: 'حذف کد'}
+  en: {label: 'Promo code', apply: 'Apply', remove: 'Remove code', reveal: 'Have a promo code?'},
+  fa: {label: 'کد تخفیف', apply: 'اعمال', remove: 'حذف کد', reveal: 'کد تخفیف دارید؟'}
 };

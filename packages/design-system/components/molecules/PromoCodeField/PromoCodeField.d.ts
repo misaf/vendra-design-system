@@ -13,10 +13,16 @@ export interface PromoCodeFieldProps {
   onRemove?: () => void;
   /** While the app checks the code with the server: Apply shows a spinner */
   busy?: boolean;
-  /** Defaults: built-in "Promo code" / "Apply" / "Remove code" in the page's language */
+  /** Tuck the field behind a "Have a promo code?" disclosure button (aria-expanded) that opens it and
+   * focuses it. It opens by itself whenever there is a code: `value`, `error` or `applied`. */
+  collapsible?: boolean;
+  /** With `collapsible`: start open even without a code */
+  defaultOpen?: boolean;
+  /** Defaults: built-in "Promo code" / "Apply" / "Remove code" / "Have a promo code?" in the page's language */
   label?: string;
   applyLabel?: string;
   removeLabel?: string;
+  revealLabel?: string;
   className?: string;
   style?: React.CSSProperties;
 }

@@ -16,7 +16,7 @@ export interface ComponentMessages {
   };
   OfflineNotice: {offline: string; online: string};
   ErrorBoundary: {title: string; retry: string};
-  PromoCodeField: {label: string; apply: string; remove: string};
+  PromoCodeField: {label: string; apply: string; remove: string; reveal: string};
   /** {count} in the page's digits */
   ErrorSummary: {one: string; other: string};
   AddressCard: {edit: string; delete: string; default: string; makeDefault: string};

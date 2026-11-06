@@ -29,6 +29,7 @@ export function StorefrontBagSummary({summary, freeDelivery, promo, actions, pay
             error={promo.error}
             applied={promo.applied}
             onRemove={promo.onRemove}
+            collapsible={true}
           />
         </>
       ) : null}
