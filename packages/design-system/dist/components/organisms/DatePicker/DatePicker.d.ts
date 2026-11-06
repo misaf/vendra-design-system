@@ -38,8 +38,8 @@ export interface DatePickerProps {
   hint?: string;
   /** Rendered in #{id}-hint; the date segments (or, yearly, the day Select) are marked invalid */
   error?: string;
-  /** Labels, digits and the preferred calendar. Defaults to VendraProvider's language (else en). */
-  lang?: 'en' | 'fa';
+  /** Labels, digits and the preferred calendar (its `locales` entry's calendar). A language VendraProvider offers; defaults to VendraProvider's language (else en). */
+  lang?: string;
   labels?: DatePickerLabels;
   /** "That’s {fullDate in the other calendar}", aria-live="polite". Default true */
   showEquivalent?: boolean;

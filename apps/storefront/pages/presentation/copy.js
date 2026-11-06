@@ -1,4 +1,5 @@
 // Bilingual copy for the counter presentation. Edit here, then run npm --prefix apps/storefront run build.
+import {vfPlural} from '../../shared/domain/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   return {
@@ -111,7 +112,7 @@ export function vfCopy(S) {
       whatsapp: 'Share on WhatsApp',
       copy: 'Copy link',
       copied: 'Link copied',
-      count: value => (value === 1 ? '1 design' : n(value) + ' designs'),
+      count: value => n(value) + vfPlural(value, {one: ' design', other: ' designs'}),
       none: 'No designs match',
       noneBody:
         'Try part of the code, a flower or a kind. Ready and availability settings still apply.',

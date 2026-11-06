@@ -8,7 +8,8 @@ import { dates } from "../../utils/dates.js";
 import { Select } from "../../atoms/Select/Select.js";
 import { FieldMessage } from "../../atoms/Field/Field.js";
 import { cx } from "../../utils/cx.js";
-import { localeLanguage, useMessages } from "../../utils/messages.js";
+import { useMessages } from "../../utils/messages.js";
+import { useLocaleConfig } from "../../utils/locale.js";
 import { useDensity } from "../../utils/density.js";
 import { messages } from "./messages.js";
 const GREGORIAN = new GregorianCalendar();
@@ -48,7 +49,9 @@ const GREGORIAN_MAX_DAYS = [
 // with no year, picked from month and day Selects. Under it, the same date in the other calendar.
 export function DatePicker({ label, value, onChange, calendar, onCalendarChange, calendars = ["j", "g"], yearly = false, years = 3, minDate, hint, error, lang: langProp, labels, showEquivalent = true, disabled, id, className = "", style }) {
 	// Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
-	const lang = langProp || (localeLanguage(useLocale().locale) === "fa" ? "fa" : "en");
+	const appLocale = useLocale().locale;
+	const config = useLocaleConfig(langProp || appLocale);
+	const lang = config.code;
 	const text = useMessages("DatePicker", messages, labels, lang);
 	const density = useDensity();
 	const generatedId = React.useId();
@@ -56,7 +59,7 @@ export function DatePicker({ label, value, onChange, calendar, onCalendarChange,
 	const messageId = fieldId + "-hint";
 	const labelId = fieldId + "-label";
 	const message = error || hint;
-	const preferredCalendar = lang === "fa" ? "j" : "g";
+	const preferredCalendar = config.calendar === "persian" ? "j" : "g";
 	const [uncontrolledCalendar, setUncontrolledCalendar] = React.useState(() => yearly && value && value.cal || (calendars.includes(preferredCalendar) ? preferredCalendar : calendars[0]));
 	React.useEffect(() => {
 		if (yearly && !calendar && value && value.cal && value.cal !== uncontrolledCalendar) setUncontrolledCalendar(value.cal);
