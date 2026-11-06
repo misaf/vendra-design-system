@@ -1022,6 +1022,25 @@ test('the site says when the connection drops and when it is back', async ({page
   await expect(band).toHaveText('دوباره آنلاین هستید.');
 });
 
+// A sorted shop is noindex; clearing the sort in place (same h1) makes it indexable again, with its
+// canonical address and alternates (issue 151).
+test('shop head follows sorting changes made in place', async ({page}, info) => {
+  test.skip(info.project.name !== 'desktop', 'desktop only');
+  await openSite(page, 'shop', 'en', {sort: 'low'});
+  const robots = page.locator('meta[name=robots]');
+  await expect(robots).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.locator('link[rel=alternate]')).toHaveCount(0);
+  await page.locator('.vf-shop-sorting:visible .ag-select button').first().click();
+  await page.getByRole('option', {name: 'Featured', exact: true}).click();
+  await expect(page).not.toHaveURL(/sort=/);
+  await expect(robots).toHaveCount(0);
+  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\/app\/en\/shop\/$/);
+  await expect(page.locator('link[rel=alternate][hreflang=fa]')).toHaveAttribute(
+    'href',
+    /\/app\/fa\/shop\/$/
+  );
+});
+
 test('the server-error page offers a retry, the way home and the phone', async ({page}) => {
   await openSite(page, 'error', 'en');
   const main = page.getByRole('main');
