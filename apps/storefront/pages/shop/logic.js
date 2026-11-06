@@ -21,6 +21,7 @@ import {vfDayMonth, vfDayName} from '../../shared/translations/time.js';
 import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
 import {VF_CATEGORY_SLUGS} from '../../shared/domain/product-categories.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
 // The "under" quick filter's price limit, in Toman.
@@ -116,6 +117,7 @@ function vals(page) {
   if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
   if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
   const paged = commerce.page(list, route.page, VF_STORE.shopPageSize);
+  vfShowList(page, 'shop', demo ? [] : paged.items);
   const activeFilters = [
     ...(s.occasion !== 'all'
       ? [
@@ -347,7 +349,7 @@ function vals(page) {
     hasItems: !demo && list.length > 0,
     noItems: !demo && list.length === 0,
     clear,
-    items: paged.items.map(p => {
+    items: paged.items.map((p, index) => {
       const fav = S.isFav(p.id, ['VF-8RD5WN']);
       return {
         ...S.productLink(p.id, {date}),
@@ -358,7 +360,8 @@ function vals(page) {
         price: VF_MONEY(p.price, fa),
         stock: p.stock,
         fav,
-        toggleFav: S.toggleFav(p.id, ['VF-8RD5WN'])
+        toggleFav: S.toggleFav(p.id, ['VF-8RD5WN']),
+        select: vfSelectItem('shop', p, index)
       };
     })
   };
