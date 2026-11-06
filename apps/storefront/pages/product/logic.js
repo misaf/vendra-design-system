@@ -32,6 +32,7 @@ import {
   vfOfferPrice,
   vfProductData
 } from '../../shared/services/structured-data.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {
@@ -98,8 +99,8 @@ export function usePage(props) {
       const id = vfPageRoute(page.props).id || VF_PRODUCTS[0].id;
       vfRememberViewed(id);
       const product = vfProduct(id);
-      window.VF_TRACK.event('view_item', {
-        items: [window.VF_TRACK.item(product)],
+      vfRuntime.track.event('view_item', {
+        items: [vfRuntime.track.item(product)],
         value: product.price
       });
     };

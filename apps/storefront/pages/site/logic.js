@@ -33,6 +33,7 @@ import {
 import {loadPage, pageReady} from '../../app/pages.js';
 import {vfOnServer} from '../../shared/platform/environment.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
 const VF_SESSION = 'vendra-template:' + vfAppBase();
@@ -73,7 +74,7 @@ function vfReportPageView(page) {
   if (page._vfPageView === key) return;
   page._vfPageView = key;
   // The page's own language: <html lang> follows only once the new page has rendered.
-  window.VF_TRACK.event('page_view', {
+  vfRuntime.track.event('page_view', {
     language: page.state.lang,
     page_type: page.state.route,
     page_path: location.pathname
@@ -386,9 +387,10 @@ export function usePage(props) {
       if (page.state.customerId === 'guest') vfClearPrivateSession();
       page.syncCustomer();
       vfPersistSession(page.state);
-      if (window.VF_API.live) {
+      if (vfRuntime.api.live) {
         page._savedLoading = true;
-        window.VF_API.loadSaved()
+        vfRuntime.api
+          .loadSaved()
           .then(saved => {
             if (saved) {
               const merged = new Set(saved);
@@ -430,7 +432,7 @@ export function usePage(props) {
         // Any way of opening the store's WhatsApp chat counts, wherever the link is.
         const chat = event.target.closest?.('a[href]');
         if (chat && VF_STORE.whatsapp && chat.href.startsWith(VF_STORE.whatsapp))
-          window.VF_TRACK.event('contact_whatsapp');
+          vfRuntime.track.event('contact_whatsapp');
         if (event.defaultPrevented || event.button !== 0) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         const link = event.target.closest?.('a[href]');
@@ -608,7 +610,7 @@ function vals(page) {
       // listName names the list the line was added from (e.g. 'saved') for analytics.
       add: (line, date, listName) =>
         page.setState(p => {
-          window.VF_TRACK.event('add_to_cart', {
+          vfRuntime.track.event('add_to_cart', {
             items: [
               {
                 // Analytics and the studio's reports know a product by its code.
@@ -678,7 +680,7 @@ function vals(page) {
         page.setState(p => {
           const line = p.bag.find(x => x.id === id);
           if (line)
-            window.VF_TRACK.event('remove_from_cart', {
+            vfRuntime.track.event('remove_from_cart', {
               items: vfLineItems([line]),
               value: line.unit * line.qty
             });
@@ -691,7 +693,7 @@ function vals(page) {
       restoreLine: (line, index) =>
         page.setState(p => {
           if (p.bag.some(item => item.id === line.id)) return null;
-          window.VF_TRACK.event('add_to_cart', {
+          vfRuntime.track.event('add_to_cart', {
             items: vfLineItems([line]),
             value: line.unit * line.qty
           });
@@ -720,8 +722,8 @@ function vals(page) {
           saved: removing ? p.saved.filter(x => x !== id) : [...p.saved, id]
         }));
         if (!removing)
-          window.VF_TRACK.event('add_to_wishlist', {
-            items: [window.VF_TRACK.item(vfProduct(id))]
+          vfRuntime.track.event('add_to_wishlist', {
+            items: [vfRuntime.track.item(vfProduct(id))]
           });
         const version = (page._savedWriteVersions.get(id) || 0) + 1;
         page._savedWriteVersions.set(id, version);
@@ -730,7 +732,7 @@ function vals(page) {
           page._savedWriteSettled.set(id, version);
           page.savedSyncError(id, failed, failed);
         };
-        return (removing ? window.VF_API.unsaveItem(id) : window.VF_API.saveItem(id)).then(
+        return (removing ? vfRuntime.api.unsaveItem(id) : vfRuntime.api.saveItem(id)).then(
           result => {
             // Demo mode, a missing server handle, or an empty response is not confirmed recovery.
             if (result != null) settle(false);

@@ -52,7 +52,7 @@ for (const [lang, first] of [
       }
       return route.fulfill({json: {number: 'VN-TEST'}});
     });
-    await page.evaluate(() => window.VF_API.setBase('/__slow-checkout-api'));
+    await page.evaluate(() => window.__vfRuntime.api.setBase('/__slow-checkout-api'));
     try {
       const cod = page.getByRole('radio', {
         name: fa ? 'پرداخت در محل' : 'Pay on delivery',

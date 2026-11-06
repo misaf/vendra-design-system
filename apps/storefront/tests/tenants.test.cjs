@@ -290,12 +290,18 @@ for (const [file, content] of tenantOutputs()) {
 
 // 6. Emails carry each tenant's palette, generated from the same spec.
 const vm = require('node:vm');
-const context = {window: {}};
+const {strip} = require('./page-script.cjs');
+const communication = file =>
+  strip(fs.readFileSync(path.join(__dirname, '../communications', file), 'utf8'));
+const context = {};
 vm.runInNewContext(
-  fs.readFileSync(path.join(__dirname, '../communications/email-templates.js'), 'utf8'),
+  communication('notifications.js') +
+    '\n' +
+    communication('email-templates.js') +
+    '\nthis.VF_EMAIL = VF_EMAIL;',
   context
 );
-const emailThemes = context.window.VF_EMAIL.themes;
+const emailThemes = context.VF_EMAIL.themes;
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
   assert.deepEqual(
     {...emailThemes[slug]},

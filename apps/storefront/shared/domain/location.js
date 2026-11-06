@@ -29,9 +29,12 @@ export function vfDirectionsUrl(location) {
 }
 
 // Loads Leaflet once (from apps/storefront/_vendor/leaflet) and resolves with window.L.
+// The pending load, shared by every caller until it settles (cleared when it fails, for a retry).
+let vfLeafletLoading = null;
+
 export function vfLoadLeaflet() {
   if (window.L && window.L.map) return Promise.resolve(window.L);
-  if (window.vfLeafletLoading) return window.vfLeafletLoading;
+  if (vfLeafletLoading) return vfLeafletLoading;
   const base = vfAssetBase() + 'apps/storefront/_vendor/leaflet/';
   // Leaflet's stylesheet goes in the package's vendra.components layer, with the components that
   // restyle it (PlacesMap, LocationPicker); unlayered, it would override them outright.
@@ -41,15 +44,15 @@ export function vfLoadLeaflet() {
     style.textContent = "@import url('" + base + "leaflet.css') layer(vendra.components);";
     document.head.appendChild(style);
   }
-  window.vfLeafletLoading = new Promise((resolve, reject) => {
+  vfLeafletLoading = new Promise((resolve, reject) => {
     const script = document.createElement('script');
     script.src = base + 'leaflet.js';
     script.onload = () => resolve(window.L);
     script.onerror = () => {
-      window.vfLeafletLoading = null;
+      vfLeafletLoading = null;
       reject(new Error('Leaflet failed to load'));
     };
     document.head.appendChild(script);
   });
-  return window.vfLeafletLoading;
+  return vfLeafletLoading;
 }

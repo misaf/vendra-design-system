@@ -76,8 +76,10 @@ async function visit({url, referrer = '', consent = '', session = storage()}) {
     localStorage: local,
     sessionStorage: session
   });
-  await import('../shared/services/integrations/analytics.js?visit=' + ++loads);
-  const track = globalThis.window.VF_TRACK;
+  const {vfCreateTracker} = await import(
+    '../shared/services/integrations/analytics.js?visit=' + ++loads
+  );
+  const track = vfCreateTracker();
   const sent = [];
   track.subscribe(built => sent.push(built));
   return {track, sent, session};

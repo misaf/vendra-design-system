@@ -128,7 +128,7 @@ for (const lang of ['en', 'fa']) {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
-    await page.evaluate(() => window.VF_API.setBase('/__offline-checkout-api'));
+    await page.evaluate(() => window.__vfRuntime.api.setBase('/__offline-checkout-api'));
     await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
     const requests = [],
       failures = [],
@@ -267,7 +267,7 @@ for (const lang of ['en', 'fa']) {
       } else await route.fulfill({json: {}});
     });
     await page.evaluate(() => {
-      window.VF_API.setBase('/__pending-checkout-api');
+      window.__vfRuntime.api.setBase('/__pending-checkout-api');
       window.__pendingSite = window.__vfSite;
       window.__pendingInput = [];
       for (const type of ['pointerdown', 'pointerup', 'click']) {
@@ -567,7 +567,7 @@ for (const lang of ['en', 'fa']) {
       const initialMap = action === 'save' ? {[other]: 702} : {[other]: 702, [target]: 701};
       await page.evaluate(initialMap => {
         localStorage.setItem('vendra-saved-map', JSON.stringify(initialMap));
-        window.VF_API.setBase('/__offline-saved-api');
+        window.__vfRuntime.api.setBase('/__offline-saved-api');
       }, initialMap);
       const privateState = () =>
         page.evaluate(() => ({
@@ -714,12 +714,21 @@ for (const lang of ['en', 'fa']) {
 
   test(`initial saved-list loading keeps newer customer actions (${lang})`, async ({page}) => {
     await page.addInitScript(() => {
-      window.VF_API = {
-        live: true,
-        loadSaved: () => new Promise(resolve => (window.__vfHydrateSaved = resolve)),
-        saveItem: () => Promise.resolve(),
-        unsaveItem: () => Promise.resolve()
-      };
+      // Swap in this client when app/runtime.js exposes the runtime, before the site mounts.
+      let runtime;
+      Object.defineProperty(window, '__vfRuntime', {
+        configurable: true,
+        get: () => runtime,
+        set: value => {
+          runtime = value;
+          runtime.api = {
+            live: true,
+            loadSaved: () => new Promise(resolve => (window.__vfHydrateSaved = resolve)),
+            saveItem: () => Promise.resolve(),
+            unsaveItem: () => Promise.resolve()
+          };
+        }
+      });
     });
     await openSite(page, 'product', lang, {id: 'VF-7K2M4Q'});
     await page
@@ -798,7 +807,7 @@ for (const lang of ['en', 'fa']) {
           });
         } else await route.fulfill({json: {}});
       });
-      await page.evaluate(() => window.VF_API.setBase('/__cross-tab-api'));
+      await page.evaluate(() => window.__vfRuntime.api.setBase('/__cross-tab-api'));
       const tab = await context.newPage();
       try {
         await openSite(tab, 'home', lang);

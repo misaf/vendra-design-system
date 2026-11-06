@@ -35,6 +35,7 @@ import {
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
 const vfPaymentKey = () => 'vf-online-payment:' + vfCustomerId();
@@ -75,7 +76,7 @@ function vfVerifyPayment(page, number, demoResult) {
       return;
     }
     page.setState({payment: {status: 'verifying', record, number}});
-    const check = (page._paymentCheck = window.VF_API.orderPayment(number).then(
+    const check = (page._paymentCheck = vfRuntime.api.orderPayment(number).then(
       payment => {
         if (page._paymentCheck !== check) return;
         const status = payment ? payment.status : 'pending';
@@ -245,7 +246,7 @@ function vals(page) {
     if (vfPageRoute(page.props).paymentOrder)
       history.replaceState(history.state, '', vfRouteUrl({lang: L, view: 'checkout'}));
   };
-  // An order's analytics parameters (amounts in Toman; VF_TRACK reports them in an ISO currency).
+  // An order's analytics parameters (amounts in Toman; vfRuntime.track reports them in an ISO currency).
   const orderParams = record => ({
     transaction_id: record.id,
     value: record.totals.total,
@@ -278,11 +279,11 @@ function vals(page) {
     // online order was reported as placed when checkout created it, before the bank trip.
     const params = orderParams(record);
     if (record.method === 'wallet')
-      window.VF_TRACK.event('order_placed', {...params, payment_status: 'paid'});
+      vfRuntime.track.event('order_placed', {...params, payment_status: 'paid'});
     else if (record.method !== 'online')
-      window.VF_TRACK.event('order_placed', {...params, payment_status: 'pending'});
+      vfRuntime.track.event('order_placed', {...params, payment_status: 'pending'});
     if (record.method === 'online' || record.method === 'wallet')
-      window.VF_TRACK.event('purchase', params);
+      vfRuntime.track.event('purchase', params);
   };
   // The bank confirmed an online payment: the order is placed, with the bank's tracking number. A
   // live store shows the one the API reported; the simulated bank makes one up.
@@ -460,7 +461,7 @@ function vals(page) {
         }, 0);
         return;
       }
-      window.VF_TRACK.event('add_payment_info', {
+      vfRuntime.track.event('add_payment_info', {
         payment_type: method
       });
       const record = {
@@ -498,7 +499,8 @@ function vals(page) {
         if (st?.beginCheckout && !st.beginCheckout()) return;
         const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
         page.setState({busy: true});
-        window.VF_API.checkout(request)
+        vfRuntime.api
+          .checkout(request)
           .then(
             result => {
               page.setState({busy: false, unconfirmed: false});
@@ -531,7 +533,7 @@ function vals(page) {
         send((placed, redirect) => {
           // Placed now, paid only once the bank confirms: a cancelled, failed or abandoned payment
           // still counts as a placed order, never as a purchase.
-          window.VF_TRACK.event('order_placed', {
+          vfRuntime.track.event('order_placed', {
             ...orderParams(placed),
             payment_status: 'pending'
           });
@@ -581,7 +583,7 @@ function vals(page) {
         const payment = {...s.payment, status: 'verifying'};
         page.setState({payment, retryReview: false});
         leavePaymentUrl();
-        const check = (page._paymentCheck = window.VF_API.payAgain(number).then(
+        const check = (page._paymentCheck = vfRuntime.api.payAgain(number).then(
           redirect => {
             if (page._paymentCheck !== check) return;
             page.setState({
