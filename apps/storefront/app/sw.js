@@ -1,4 +1,4 @@
-// The storefront's service worker, registered by the counter presentation (_shared/services/offline.js) so
+// The storefront's service worker, registered by the counter presentation (shared/services/offline.js) so
 // the shop's tablet keeps working when the Wi-Fi drops: pages and the public catalog reads come from
 // the network first and from the cache when it is out; the app's files and photos come from the
 // cache first (their names change with their content) and are fetched once. Nothing personal is

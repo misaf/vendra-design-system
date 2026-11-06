@@ -5,11 +5,11 @@ import './theme.js';
 import './runtime.js';
 import {PageError} from './PageError.jsx';
 import {loadPage, reloadOnStaleFiles} from './pages.js';
-import {vfAccountPhone} from '../_shared/domain/account-data.js';
-import {vfHoldClock} from '../_shared/platform/environment.js';
-import {vfTenant} from '../_shared/services/page-lifecycle.js';
-import {vfReadRoute} from '../_shared/services/routing.js';
-import {vfApplyTvMode} from '../_shared/services/tv.js';
+import {vfAccountPhone} from '../shared/domain/account-data.js';
+import {vfHoldClock} from '../shared/platform/environment.js';
+import {vfTenant} from '../shared/services/page-lifecycle.js';
+import {vfReadRoute} from '../shared/services/routing.js';
+import {vfApplyTvMode} from '../shared/services/tv.js';
 
 reloadOnStaleFiles();
 vfApplyTvMode();
@@ -75,7 +75,7 @@ function show(element) {
 // The page the site opens at this address loads first, so it renders at once: hydration renders
 // what the prerender did, and the prerendered page stays until the app's replaces it. The account
 // opens sign-in for a visitor who isn't signed in, and checkout the bag until it has what it needs
-// (storefront-site/logic.js), which a first-time visitor's prerendered page shows; otherwise the
+// (pages/site/logic.js), which a first-time visitor's prerendered page shows; otherwise the
 // site loads what it decides on. A failure here is the site's to show.
 function addressPage() {
   const view = vfReadRoute().view;

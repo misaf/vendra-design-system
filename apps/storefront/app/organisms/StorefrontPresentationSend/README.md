@@ -6,4 +6,4 @@ Owns dialog, memoized QR rendering, tag/code, warning/body and share/copy/print 
 
 Preserve classes, dialog width, safe external-link attributes, QR viewBox/path and oversized-link suppression. Verify product/shortlist/order links, selected options, copy feedback, clipboard absence, printable tags, oversized warnings, close/focus return, bilingual accessibility and responsive/touch rendering.
 
-Print-only page styles remain in `storefront-presentation/styles.css`: keep the hiding selector less specific than the tag reveal and remove non-tag page roots from print layout to avoid blank or repeated pages. Screen dialogs must restore after print media ends.
+Print-only page styles remain in `pages/presentation/styles.css`: keep the hiding selector less specific than the tag reveal and remove non-tag page roots from print layout to avoid blank or repeated pages. Screen dialogs must restore after print media ends.

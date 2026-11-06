@@ -3,7 +3,7 @@ import {
   expectAccessible,
   openComponent,
   scanAxe
-} from '../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../apps/storefront/e2e/component-test.mjs';
 
 // React Aria's modal dialog.
 test('focus moves in and stays, Esc closes, focus returns to the opener', async ({page}) => {

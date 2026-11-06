@@ -1,7 +1,7 @@
 @layer vendra.components {
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 
-/* Source: _shared/styles/shell.css */
+/* Source: shared/styles/shell.css */
 /* Template document defaults. */
 body {
   margin: 0;
@@ -202,7 +202,7 @@ html {
 }
 
 
-/* Source: _shared/styles/information-pages.css */
+/* Source: shared/styles/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
 .vf-page .vf-info {
   max-width: 1088px;
@@ -256,7 +256,7 @@ html {
 }
 
 
-/* Source: _shared/styles/page-layouts.css */
+/* Source: shared/styles/page-layouts.css */
 /* Three storefront page families. Exceptions are named and kept here. */
 
 /* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
@@ -448,7 +448,7 @@ html {
 }
 
 
-/* Source: _shared/ui/collection-carousel.css */
+/* Source: shared/ui/collection-carousel.css */
 /* Every collection keeps explicit navigation on touch screens and a glimpse of the next card. */
 .vf-collection-carousel .ag-carousel__nav {
   display: flex;
@@ -506,12 +506,12 @@ html {
 }
 
 
-/* Source: storefront-account/styles.css */
+/* Source: pages/account/styles.css */
 /* Custom styles for the account page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-bag/styles.css */
+/* Source: pages/bag/styles.css */
 /* Custom styles for the bag page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Let the actual row width decide: a narrow bag column also occurs beside a tablet summary. */
@@ -535,27 +535,27 @@ html {
 }
 
 
-/* Source: storefront-checkout/styles.css */
+/* Source: pages/checkout/styles.css */
 /* Custom styles for the checkout page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-contact/styles.css */
+/* Source: pages/contact/styles.css */
 /* Custom styles for the contact page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-error/styles.css */
+/* Source: pages/error/styles.css */
 /* Custom styles for the server-error page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-faq/styles.css */
+/* Source: pages/faq/styles.css */
 /* Custom styles for the faq page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-home/styles.css */
+/* Source: pages/home/styles.css */
 /* Custom styles for the home page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
@@ -628,7 +628,8 @@ html {
   background-color: var(--text-accent);
   mask:
     url('../../../assets/patterns/floral-outline.svg') left -12rem top / 18rem 18rem repeat-y,
-    url('../../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem repeat-y;
+    url('../../../assets/patterns/floral-outline.svg') right -12rem top 9rem / 18rem 18rem
+      repeat-y;
   opacity: 0.16;
 }
 @media (width < 768px) {
@@ -690,7 +691,7 @@ html {
 }
 
 
-/* Source: storefront-journal/styles.css */
+/* Source: pages/journal/styles.css */
 /* Keep browsing controls compact while preserving readable stories and full tap targets. */
 @media (width < 1024px) {
   :where(html:not([data-density='tv'])) .vf-journal-header {
@@ -740,22 +741,22 @@ html {
 }
 
 
-/* Source: storefront-notfound/styles.css */
+/* Source: pages/notfound/styles.css */
 /* Custom styles for the notfound page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-policy/styles.css */
+/* Source: pages/policy/styles.css */
 /* Custom styles for the policy page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-post/styles.css */
+/* Source: pages/post/styles.css */
 /* Custom styles for the post page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-presentation/styles.css */
+/* Source: pages/presentation/styles.css */
 /* Custom styles for the counter presentation. */
 /* The page uses Tailwind utilities in the template; add only contextual exceptions here. */
 
@@ -1076,7 +1077,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: storefront-product/styles.css */
+/* Source: pages/product/styles.css */
 /* Custom styles for the product page. */
 .vf-product-recent {
   gap: var(--space-5);
@@ -1234,12 +1235,12 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: storefront-saved/styles.css */
+/* Source: pages/saved/styles.css */
 /* Custom styles for the saved page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-search/styles.css */
+/* Source: pages/search/styles.css */
 /* Result layout follows available reading space, including narrow embedded views. */
 .vf-search-results {
   container: vf-search-results / inline-size;
@@ -1272,7 +1273,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: storefront-shop/styles.css */
+/* Source: pages/shop/styles.css */
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
@@ -1387,22 +1388,22 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: storefront-signin/styles.css */
+/* Source: pages/signin/styles.css */
 /* Custom styles for the signin page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-track/styles.css */
+/* Source: pages/track/styles.css */
 /* Custom styles for the track page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: storefront-weddings/styles.css */
+/* Source: pages/weddings/styles.css */
 /* Custom styles for the weddings page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: _shared/styles/responsive-spacing.css */
+/* Source: shared/styles/responsive-spacing.css */
 /* Compact spacing for phones and tablets. Layout gaps and card text stacks get tighter;
    body type and control dimensions keep their normal readable, touch-friendly sizes. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
@@ -1470,7 +1471,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: _shared/styles/commerce-spacing.css */
+/* Source: shared/styles/commerce-spacing.css */
 /* Compact shopping and checkout rhythm. Keep type, photos, fields and controls at their
    existing sizes; remove space between groups and the bag's duplicated row padding. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
@@ -1519,7 +1520,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: _shared/styles/headings.css */
+/* Source: shared/styles/headings.css */
 /* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
    Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
 .vf-page .ag-sechead__title {

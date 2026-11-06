@@ -3,9 +3,9 @@
 import React from 'react';
 import {Alert} from '../../../components/molecules/Alert/Alert.jsx';
 import {Button} from '../../../components/atoms/Button/Button.jsx';
-import {vfLocation} from '../_shared/platform/environment.js';
-import {vfAppBase} from '../_shared/services/routing.js';
-import {VF_STORE} from '../_shared/domain/store-config.js';
+import {vfLocation} from '../shared/platform/environment.js';
+import {vfAppBase} from '../shared/services/routing.js';
+import {VF_STORE} from '../shared/domain/store-config.js';
 
 const COPY = {
   en: {

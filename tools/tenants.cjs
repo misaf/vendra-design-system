@@ -2,7 +2,7 @@
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 const fs = require('node:fs');
 const path = require('node:path');
-const theme = require('../apps/storefront/_shared/domain/tenant-theme.js');
+const theme = require('../apps/storefront/shared/domain/tenant-theme.js');
 const root = path.resolve(__dirname, '../apps/storefront');
 const folder = path.resolve(root, '../../tokens/tenants');
 
