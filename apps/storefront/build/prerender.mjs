@@ -74,7 +74,7 @@ export async function prerenderedPage(
     html = html.replace(
       '</head>',
       () =>
-        `<link id="vf-tenant-css" rel="stylesheet" href="${base}tokens/tenants/${tenant}.css">\n</head>`
+        `<link id="vf-tenant-css" rel="stylesheet" href="${base}packages/design-system/tokens/tenants/${tenant}.css">\n</head>`
     );
   // A preview of another tenant (?tenant=clay) hides the page before its first paint, until
   // app/theme.js has loaded that theme (at most 2s), so the store's colours never flash.

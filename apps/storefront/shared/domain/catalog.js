@@ -8,7 +8,7 @@
 // Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../translations/categories.js';
-import {commerce} from '../../../../components/utils/commerce.js';
+import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
 import {vfSeparator} from './formatting.js';
 import {vfAssetBase} from '../platform/environment.js';

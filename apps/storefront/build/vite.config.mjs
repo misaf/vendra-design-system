@@ -67,13 +67,13 @@ function storefrontPreview() {
         const relative = path.relative(root, file).replaceAll(path.sep, '/');
         const isSource =
           relative.startsWith('apps/storefront/shared/') ||
-          /^components\/.+\.jsx?$/.test(relative) ||
-          /^tokens\/tenants\/[^/]+\.json$/.test(relative) ||
+          /^packages\/design-system\/components\/.+\.jsx?$/.test(relative) ||
+          /^packages\/design-system\/tokens\/tenants\/[^/]+\.json$/.test(relative) ||
           /^apps\/storefront\/pages\/[^/]+\/styles\.css$/.test(relative);
         const isAsset =
-          /^(tokens|assets)\//.test(relative) ||
-          relative === 'styles.css' ||
-          /^components\/.+\.css$/.test(relative) ||
+          /^(packages\/design-system\/(tokens|assets)|assets)\//.test(relative) ||
+          relative === 'packages/design-system/styles.css' ||
+          /^packages\/design-system\/components\/.+\.css$/.test(relative) ||
           relative.startsWith('apps/storefront/_runtime/');
         if (!isSource && !isAsset) return;
         // Generated CSS writes follow a source rebuild; they need no extra rebuild.
@@ -110,7 +110,11 @@ function storefrontAssets() {
       base = config.base;
     },
     async closeBundle() {
-      for (const folder of ['assets', 'apps/storefront/_vendor/leaflet'])
+      for (const folder of [
+        'assets',
+        'packages/design-system/assets/fonts',
+        'apps/storefront/_vendor/leaflet'
+      ])
         fs.cpSync(path.join(root, folder), path.join(outDir, folder), {recursive: true});
       // The service worker sits beside the app's page, so it can serve the whole app.
       fs.copyFileSync(
@@ -118,10 +122,11 @@ function storefrontAssets() {
         path.join(outDir, 'apps/storefront/app/sw.js')
       );
       await prerender(outDir, base);
-      const tenants = path.join(root, 'tokens/tenants');
-      fs.mkdirSync(path.join(outDir, 'tokens/tenants'), {recursive: true});
+      const tenantsFolder = 'packages/design-system/tokens/tenants';
+      const tenants = path.join(root, tenantsFolder);
+      fs.mkdirSync(path.join(outDir, tenantsFolder), {recursive: true});
       for (const name of fs.readdirSync(tenants).filter(name => name.endsWith('.css')))
-        fs.copyFileSync(path.join(tenants, name), path.join(outDir, 'tokens/tenants', name));
+        fs.copyFileSync(path.join(tenants, name), path.join(outDir, tenantsFolder, name));
       const files = fs
         .readdirSync(outDir, {recursive: true})
         .map(String)

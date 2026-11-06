@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {parseSync} = require('rolldown/experimental');
 const {layer, dependencyViolation} = require('./atomic.cjs');
+const {componentsFolder} = require('./paths.cjs');
 
 // apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
@@ -44,8 +45,9 @@ function sharedDependencyViolation(source, target, relative) {
   if (!relative) allowed = rules.packages.includes(target);
   else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
   // Domain and services use the package's pure helpers; UI helpers may compose its components.
-  else if (target.startsWith('components/'))
-    allowed = from === 'ui' || (from !== 'styles' && target.startsWith('components/utils/'));
+  else if (target.startsWith(componentsFolder + '/'))
+    allowed =
+      from === 'ui' || (from !== 'styles' && target.startsWith(componentsFolder + '/utils/'));
   // Generated data (tenant slugs) the build writes for the store's rules.
   else allowed = !!rules.runtime && target.startsWith('apps/storefront/_runtime/');
   return allowed
@@ -87,8 +89,8 @@ function walk(directory) {
 }
 
 function runtimeSources(root) {
-  const files = ['components', 'apps/storefront/app', 'apps/storefront/shared'].flatMap(folder =>
-    walk(path.join(root, folder))
+  const files = [componentsFolder, 'apps/storefront/app', 'apps/storefront/shared'].flatMap(
+    folder => walk(path.join(root, folder))
   );
   const pages = path.join(root, 'apps/storefront/pages');
   if (fs.existsSync(pages)) files.push(...walk(pages));

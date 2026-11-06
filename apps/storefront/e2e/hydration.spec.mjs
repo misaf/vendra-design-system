@@ -17,7 +17,9 @@ test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'viewpo
 
 for (const lang of ['en', 'fa'])
   test(`every component hydrates its server HTML (${lang})`, async ({page}) => {
-    const ds = await import(pathToFileURL(path.join(ROOT, 'dist/index.js')).href);
+    const ds = await import(
+      pathToFileURL(path.join(ROOT, 'packages/design-system/dist/index.js')).href
+    );
     const html = renderToString(componentSamples(ds, React, lang));
     for (const name of componentNames(ds)) expect(html).toContain(`data-component="${name}"`);
     await page.goto(FIXTURE);

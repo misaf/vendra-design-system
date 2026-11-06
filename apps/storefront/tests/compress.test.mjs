@@ -67,12 +67,12 @@ assert.match(nginx, /^\s*brotli_static on;/m);
 assert.match(nginx, /^\s*gzip_static on;/m);
 assert.match(block('^~ /assets/hashed/'), /Cache-Control "public, max-age=31536000, immutable"/);
 assert.match(block('^~ /assets/hashed/'), /Access-Control-Allow-Origin/);
-assert.match(block('^~ /assets/fonts/'), /Access-Control-Allow-Origin/);
-assert.doesNotMatch(block('^~ /assets/fonts/'), /immutable/);
+assert.match(block('^~ /packages/design-system/assets/fonts/'), /Access-Control-Allow-Origin/);
+assert.doesNotMatch(block('^~ /packages/design-system/assets/fonts/'), /immutable/);
 assert.doesNotMatch(block('~ ^/(assets|apps/storefront/_vendor)/'), /immutable/);
 for (const location of [
   '= /apps/storefront/app/sw.js',
-  '^~ /tokens/tenants/',
+  '^~ /packages/design-system/tokens/tenants/',
   '/apps/storefront/app/',
   '= /404.html',
   '/'

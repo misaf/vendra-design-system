@@ -10,7 +10,7 @@ const service = 'apps/storefront/shared/services/integrations/api.js';
 const bridge = 'apps/storefront/app/ds.js';
 const carousel = 'apps/storefront/shared/ui/collection-carousel.jsx';
 const qr = 'apps/storefront/shared/ui/qr.js';
-const component = 'components/organisms/Carousel/Carousel.jsx';
+const component = 'packages/design-system/components/organisms/Carousel/Carousel.jsx';
 const cases = [];
 function check(name, sources, expected) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-app-dependencies-'));
@@ -37,9 +37,9 @@ const allowed = {
     import {CollectionCarousel} from '../../../shared/ui/collection-carousel.jsx';
     import {vfQrPath} from '../../../shared/ui/qr.js';
     import {Label} from '../../molecules/Label';`,
-  [bridge]: `export {Carousel} from '../../../components/organisms/Carousel/Carousel.jsx';`,
+  [bridge]: `export {Carousel} from '../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
   [component]: 'export const Carousel = () => null;',
-  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../../../components/organisms/Carousel/Carousel.jsx';`,
+  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
   [qr]: `import qrcode from 'qrcode-generator'; export const vfQrPath = qrcode;`,
   'apps/storefront/app/molecules/Label/index.jsx': `export const Label = () => null;`,
   'apps/storefront/app/layouts/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
@@ -73,7 +73,7 @@ check(
   'package cannot import storefront services',
   {
     ...allowed,
-    [component]: `import '../../../apps/storefront/shared/services/integrations/api.js';`,
+    [component]: `import '../../../../../apps/storefront/shared/services/integrations/api.js';`,
     [service]: ''
   },
   /outside the migrated design system/
@@ -199,9 +199,9 @@ const environment = 'apps/storefront/shared/platform/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
   [domain]: `import '../platform/environment.js'; import '../translations/shell.js';
-    import '../../../../components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
+    import '../../../../packages/design-system/components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
   'apps/storefront/shared/translations/shell.js': '',
-  'components/utils/commerce.js': '',
+  'packages/design-system/components/utils/commerce.js': '',
   'apps/storefront/_runtime/tenant-slugs.js': '',
   [service]: `import React from 'react'; import '../../domain/catalog.js';`,
   [qr]: `import qrcode from 'qrcode-generator'; import '../domain/catalog.js';`
@@ -224,7 +224,10 @@ for (const [name, sources, expected] of [
   ],
   [
     'domain cannot import package components',
-    {[domain]: `import '../../../../components/organisms/Carousel/Carousel.jsx';`, [component]: ''},
+    {
+      [domain]: `import '../../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
+      [component]: ''
+    },
     /forbidden domain dependency/
   ],
   [

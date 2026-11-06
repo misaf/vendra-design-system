@@ -108,10 +108,10 @@ const scoped = (name, file) =>
   'const ' + name + ' = (() => {\n' + strip(read(file)) + '\nreturn ' + name + ';\n})();\n';
 const sharedLogic =
   hooksHarness +
-  scoped('commerce', '../../components/utils/commerce.js') +
-  scoped('analytics', '../../components/utils/analytics.js') +
-  scoped('dates', '../../components/utils/dates.js') +
-  scoped('format', '../../components/utils/format.js') +
+  scoped('commerce', '../../packages/design-system/components/utils/commerce.js') +
+  scoped('analytics', '../../packages/design-system/components/utils/analytics.js') +
+  scoped('dates', '../../packages/design-system/components/utils/dates.js') +
+  scoped('format', '../../packages/design-system/components/utils/format.js') +
   strip(read('shared/platform/environment.js')) +
   scoped('VF_SEO', 'shared/services/seo.js') +
   scoped('VF_NAV', 'shared/services/page-focus.js') +

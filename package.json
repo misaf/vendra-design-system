@@ -1,53 +1,12 @@
 {
-  "name": "@vendra/design-system",
-  "version": "0.1.0",
-  "description": "Vendra design system for multi-tenant florist storefronts: React components, tokens, bilingual (English/Persian, RTL) styles and per-tenant themes.",
+  "name": "vendra-design-system-workspace",
+  "private": true,
+  "description": "Workspace root: the @vendra/design-system package (packages/design-system) and the sample storefront (apps/storefront).",
   "license": "UNLICENSED",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/misaf/vendra-design-system.git"
-  },
-  "type": "module",
-  "sideEffects": [
-    "*.css"
-  ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./styles.css": "./dist/styles.css",
-    "./tenants.css": "./dist/tenants.css",
-    "./tenants/*.css": "./dist/tenants/*.css",
-    "./tokens.json": "./dist/tokens/tokens.json",
-    "./tokens/tenants/*.json": "./dist/tokens/tenants/*.json",
-    "./fonts/*": "./dist/fonts/*",
-    "./theme": {
-      "import": {
-        "types": "./dist/theme.d.ts",
-        "default": "./dist/theme.js"
-      },
-      "require": {
-        "types": "./dist/theme.d.cts",
-        "default": "./dist/theme.cjs"
-      }
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist"
-  ],
   "workspaces": [
-    "apps/storefront"
+    "packages/*",
+    "apps/*"
   ],
-  "peerDependencies": {
-    "@internationalized/date": "^3.12.4",
-    "react": ">=18.2.0",
-    "react-aria-components": "^1.22.1",
-    "react-dom": ">=18.2.0"
-  },
   "scripts": {
     "dev": "npm --prefix apps/storefront run dev",
     "build": "npm --prefix apps/storefront run build",
@@ -55,13 +14,6 @@
     "test": "npm --prefix apps/storefront test",
     "test:e2e": "npm --prefix apps/storefront run test:e2e --",
     "new:component": "npm --prefix apps/storefront run new:component --"
-  },
-  "devDependencies": {
-    "@internationalized/date": "3.12.4",
-    "@types/react": "18.3.31",
-    "react": "18.3.1",
-    "react-aria-components": "1.22.1",
-    "react-dom": "18.3.1"
   },
   "overrides": {
     "@parcel/watcher": "2.6.0"
