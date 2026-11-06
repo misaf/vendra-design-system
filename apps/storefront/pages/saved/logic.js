@@ -34,7 +34,12 @@ function vals(page) {
   const st = page.props.store;
   const ids = st ? st.saved : page.state.ids;
   const bag = st?.bag || [];
-  const added = page.state.added;
+  // The confirmation and its Undo belong to the customer who added; another sign-in (e.g. in
+  // another tab) replaces the bag, so it closes rather than undo in someone else's bag.
+  const added =
+    page.state.added && page.state.added.customerId === (st?.customerId ?? null)
+      ? page.state.added
+      : null;
   const C = vfCopy(S);
   const items = VF_PRODUCTS.filter(p => ids.includes(p.id));
   // A card's bag action: sold-out designs can't be added, designs with sizes choose one on the
@@ -61,6 +66,7 @@ function vals(page) {
         if (st) st.add(line, vfPageRoute(page.props).date, 'saved');
         page.setState({
           added: {
+            customerId: st?.customerId ?? null,
             id: line.id,
             previousQty,
             line: {
