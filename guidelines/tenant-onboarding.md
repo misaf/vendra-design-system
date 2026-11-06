@@ -32,14 +32,15 @@ Until approved artwork arrives, omit the logo fields to show the localized store
 | `logo` | `{src, width, height, alt: {en, fa}}`; SVG preferred, or transparent PNG at least 112 px tall | Header; localized alt defaults to the store name |
 | `logoMark` | Optional square image with the same fields, at least 512 × 512 | Compact header; falls back to `logo` |
 | `logoOnDark` | Optional light artwork with the same fields | Dark footer; falls back to `logo`, then text |
-| `icons` | `favicon` (32 × 32 PNG), `apple` (180 × 180 PNG), `app192` (192 × 192 PNG), `app512` (512 × 512 PNG), `maskable` (512 × 512 PNG) | Browser tab and installed app; supply the complete set |
+| `shortName` | Optional `{en, fa}`, at most 12 characters each | Name under the installed app's icon; falls back to the full store name |
+| `icons` | `favicon` (32 × 32 PNG), `apple` (180 × 180 PNG), `app192` (192 × 192 PNG), `app512` (512 × 512 PNG), `maskable` (512 × 512 PNG) plus an optional `favicon16` (16 × 16 PNG) | Browser tab and installed app; supply the complete set (without `favicon16`, browsers scale the 32 px icon) |
 | `ogImage` | `{en, fa}` paths to 1200 × 630 PNG/JPEG images | Localized social previews |
 
 For a deployment-specific override, set `VF_STORE.brandAssets` in `apps/storefront/shared/domain/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
 
 - [ ] Prepare approved logo, compact mark and light footer artwork. Check contrast against the actual header and footer colours in both languages; transparent artwork must remain readable. Keep essential maskable artwork inside the central 80% circle.
 - [ ] Export PNG icons in the sizes above (the build accepts prepared files; it does not resize them). `assets/brand-export-source.html` is a starting point. Supply localized social images.
-- [ ] Run `npm run build`. The build checks asset references and logo dimensions, and generates `assets/tenants/<slug>/manifest-en.webmanifest` and `manifest-fa.webmanifest`. Never edit these manifests by hand. Omitted icons and social images use the shared defaults, so replace both before launch.
+- [ ] Run `npm run build`. The build checks asset references and logo dimensions, and generates `assets/tenants/<slug>/manifest-en.webmanifest` and `manifest-fa.webmanifest` (name, short name, the theme's page colour as `theme_color` and `background_color`, and the app icons). Never edit these manifests by hand. Omitted icons and social images use the shared defaults, so replace both before launch.
 - [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)

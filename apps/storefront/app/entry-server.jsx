@@ -4,7 +4,7 @@
 import React from 'react';
 import {renderToPipeableStream} from 'react-dom/server';
 import {vfServerPage, vfServerRender} from '../shared/platform/environment.js';
-import {vfPageHead} from '../shared/services/page-lifecycle.js';
+import {vfPageBrandHtml, vfPageHead} from '../shared/services/page-lifecycle.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
 import {loadPage} from './pages.js';
@@ -72,7 +72,7 @@ export async function render(url, {base = '/', origin = '', time = Date.now()} =
     const lang = page.props.lang === 'fa' ? 'fa' : 'en';
     return {
       html,
-      head: VF_SEO.headHtml(vfPageHead(page, mainHeading(html))),
+      head: VF_SEO.headHtml(vfPageHead(page, mainHeading(html))) + '\n' + vfPageBrandHtml(page),
       lang,
       dir: lang === 'fa' ? 'rtl' : 'ltr',
       view: page._vfPage

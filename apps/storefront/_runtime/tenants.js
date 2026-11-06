@@ -17,6 +17,10 @@ window.VF_TENANTS = {
     },
     "overrides": {},
     "brand": {
+      "shortName": {
+        "en": "Clay",
+        "fa": "کلی"
+      },
       "logo": {
         "src": "assets/tenants/clay/logo.svg",
         "width": 240,
