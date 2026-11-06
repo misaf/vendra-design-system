@@ -43,6 +43,11 @@ export declare const CHOICES: {[K in keyof TenantSpec['character']]: TenantSpec[
 export declare const FONTS: Record<TenantSpec['character']['headings'], string>;
 /** Throws on an invalid spec; returns it otherwise. */
 export declare function validate(spec: unknown, label?: string): TenantSpec;
+/**
+ * validate()'s rules as a JSON Schema (draft 2020-12), also published as
+ * @vendra/design-system/theme.schema.json. Contrast is not covered: use checks().
+ */
+export declare function schema(): Record<string, unknown>;
 /** The seven contrast checks every tenant must pass. */
 export declare function checks(spec: TenantSpec): ContrastCheck[];
 /** Every custom property the theme sets, grouped like the CSS. */
