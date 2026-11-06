@@ -15,3 +15,9 @@ export const VF_PIN_COPY = {
     locateFailed: 'موقعیت شما پیدا نشد؛ نقشه را جابه‌جا کنید.'
   }
 };
+
+// The maps apps a "Get directions" link can open, by their own names.
+export const VF_MAPS_APPS = {
+  en: {neshan: 'Neshan', balad: 'Balad', google: 'Google Maps'},
+  fa: {neshan: 'نشان', balad: 'بلد', google: 'گوگل‌مپ'}
+};

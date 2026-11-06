@@ -14,7 +14,7 @@ export function StorefrontFooter({
   visitLabel,
   address,
   findUs,
-  directionsHref,
+  directionsLinks,
   directionsLabel,
   hours,
   phoneHref,
@@ -88,17 +88,30 @@ export function StorefrontFooter({
                 <>{findUs}</>
               </p>
             ) : null}
-            {directionsHref ? (
-              <>
-                <a
-                  href={directionsHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
-                >
+            {directionsLinks?.length ? (
+              <div className="vf-shell-footer-directions tw:flex tw:flex-wrap tw:items-baseline tw:gap-x-3 tw:gap-y-1">
+                <span id="vf-footer-directions" className="tw:text-inverse-quiet">
                   <>{directionsLabel}</>
-                </a>
-              </>
+                </span>
+                {/* Neshan, Balad and Google Maps, in the order the page's language prefers. */}
+                <ul
+                  aria-labelledby="vf-footer-directions"
+                  className="tw:flex tw:flex-wrap tw:gap-x-3 tw:gap-y-1 tw:m-0 tw:p-0 tw:list-none"
+                >
+                  {directionsLinks.map(link => (
+                    <li key={link.app}>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
+                      >
+                        <>{link.label}</>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ) : null}
             <div className="tw:text-inverse-quiet">
               <>{hours}</>

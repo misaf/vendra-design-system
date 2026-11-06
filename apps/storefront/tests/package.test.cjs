@@ -321,6 +321,18 @@ const {app, installed, manifest, files} = packed;
     const studio = {lat: 35.7, lng: 51.4};
     assert.equal(commerce.zoneAt({lat: 35.71, lng: 51.41}, zones, studio), 'centre');
     assert.equal(commerce.zoneAt({lat: 36.5, lng: 51.4}, zones, studio), null);
+    // Directions: Neshan and Balad lead in Persian, Google Maps elsewhere; nothing without a point.
+    assert.deepEqual(commerce.directionsLinks(studio, 'fa'), [
+      {app: 'neshan', href: 'https://nshn.ir/?lat=35.7&lng=51.4'},
+      {app: 'balad', href: 'https://balad.ir/location?latitude=35.7&longitude=51.4&zoom=17'},
+      {app: 'google', href: 'https://www.google.com/maps/dir/?api=1&destination=35.7,51.4'}
+    ]);
+    assert.deepEqual(
+      commerce.directionsLinks(studio, 'en').map(link => link.app),
+      ['google', 'neshan', 'balad']
+    );
+    assert.deepEqual(commerce.directionsLinks(null, 'fa'), []);
+    assert.deepEqual(commerce.directionsLinks({lat: 120, lng: 0}, 'en'), []);
     const rules = {
       freeDelivery: {threshold: 1_000_000, zones: ['centre']},
       promos: [{code: 'SPRING', percent: 20, min: 0}],

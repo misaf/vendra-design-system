@@ -227,7 +227,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
             visitLabel={v.shellText?.visit}
             address={v.footer?.address}
             findUs={v.footer?.findUs}
-            directionsHref={v.footer?.directions}
+            directionsLinks={v.footer?.directions}
             directionsLabel={v.shellText?.footer?.directions}
             hours={v.shellText?.hours}
             phoneHref={v.phoneHref}
