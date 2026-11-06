@@ -1,5 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../shared/domain/account-data.js';
+import {
+  vfAccountLocale,
+  vfAccountPhone,
+  vfClearPrivateSession,
+  vfCustomerId
+} from '../../shared/domain/account-data.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -115,6 +120,9 @@ const vfEmptyCustomer = () => ({
   orders: [],
   tracked: {}
 });
+// Signed out, the session keeps only the guest's own drafts and history: every signed-in
+// customer's delivery details, payment drafts, orders and lookups leave with the account.
+const vfGuestCustomers = customers => (customers?.guest ? {guest: customers.guest} : {});
 const vfCustomerState = state => ({
   delivery: state.delivery,
   paymentDraft: state.paymentDraft,
@@ -180,7 +188,7 @@ function vfSiteInitial(props) {
   }
   const initial = {
     customerId,
-    customers: saved.customers || {},
+    customers: customerId === 'guest' ? vfGuestCustomers(saved.customers) : saved.customers || {},
     route: route.view,
     routeInfo: route,
     searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
@@ -246,6 +254,8 @@ function vfSiteInitial(props) {
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = vfSiteInitial(page.props);
+    // Customers who signed out while this page was open.
+    page._signedOut = new Set();
     page._savedEdits = new Map();
     page._savedLoading = false;
     // Load failures and individual product failures have independent recovery ownership.
@@ -276,7 +286,13 @@ export function usePage(props) {
         current = page.state;
       if (customerId === current.customerId) return;
       const previous = vfCustomerState(current);
-      const customers = {...current.customers, [current.customerId]: previous};
+      let customers = {...current.customers, [current.customerId]: previous};
+      if (customerId === 'guest') {
+        // Checkouts these customers submitted may still answer; their completions are dropped.
+        Object.keys(customers).forEach(id => id !== 'guest' && page._signedOut.add(id));
+        customers = vfGuestCustomers(customers);
+        vfClearPrivateSession();
+      } else page._signedOut.delete(customerId);
       let next = customers[customerId] || vfEmptyCustomer();
       if (current.customerId === 'guest' && customerId !== 'guest') {
         const claimed = previous.orders.filter(
@@ -367,6 +383,7 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       window.__vfSite = page;
+      if (page.state.customerId === 'guest') vfClearPrivateSession();
       page.syncCustomer();
       vfPersistSession(page.state);
       if (window.VF_API.live) {
@@ -546,6 +563,10 @@ function vals(page) {
       complete: order =>
         page.setState(current => {
           if (order.customerId && order.customerId !== current.customerId) {
+            // After sign-out nothing of that customer stays here, even once someone else signs
+            // in; the order is the server's.
+            if (current.customerId === 'guest' || page._signedOut.has(order.customerId))
+              return null;
             const owner = current.customers[order.customerId] || vfEmptyCustomer();
             if (owner.orders.some(previous => previous.id === order.id)) return null;
             return {

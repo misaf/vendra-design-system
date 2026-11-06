@@ -48,6 +48,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 ### Customers and accounts
 11. **Authentication.** The spec defines no security scheme, so orders, carts and wishlists are open to anyone. The storefront signs in with phone number + one-time code and needs a session. The code SMS should end with a line `@<the storefront's domain> #<code>` (e.g. `@shop.example #12345`) so Chrome on Android fills the code itself (Web OTP); the storefront waits 60 seconds before offering a new code, and a new code should replace the last one.
+    Personal data is the server's: a storefront loads the profile, addresses (with recipients' names and mobiles), reminders and balance per session and keeps them in memory, or in `sessionStorage` at most, never in `localStorage`. Sign-out ends the server session and clears whatever the browser holds (the sample store's `vfAccountSignOut` shows what to remove).
 12. **Profile:** `GET`/`PATCH /api/customers/me` (name, email, preferred language, SMS opt-in).
 13. **Addresses:** CRUD. `Checkout.addressId` refers to addresses no endpoint returns.
 14. **Reminders:** CRUD for yearly occasion reminders.
