@@ -26,8 +26,11 @@ export function vfCopy(S) {
       change: 'Change number',
       resent: 'We sent a new code. It replaces the last one.',
       backToCheckout: 'Back to checkout',
-      okA: 'Welcome back,',
-      okB: 'Shirin.',
+      // Completion greeting: [title, accent], with or without the customer's first name.
+      okBack: name => (name ? ['Welcome back,', name + '.'] : ['Welcome', 'back.']),
+      okNew: name => (name ? ['Welcome,', name + '.'] : ['You’re', 'signed in.']),
+      okNameHint: 'Add your name so we can greet you properly.',
+      okNameLink: 'Add your name',
       okP: vfFeatures().reminders
         ? 'Your orders, addresses and reminders are waiting.'
         : 'Your orders and addresses are waiting.',
@@ -58,8 +61,10 @@ export function vfCopy(S) {
       change: 'تغییر شماره',
       resent: 'کد تازه فرستادیم؛ کد قبلی دیگر کار نمی‌کند.',
       backToCheckout: 'بازگشت به ادامه خرید',
-      okA: 'خوش برگشتید،',
-      okB: 'شیرین.',
+      okBack: name => (name ? ['خوش برگشتید،', name + '.'] : ['خوش', 'برگشتید.']),
+      okNew: name => (name ? ['خوش آمدید،', name + '.'] : ['وارد', 'شدید.']),
+      okNameHint: 'نام خود را اضافه کنید تا شما را به نام صدا کنیم.',
+      okNameLink: 'افزودن نام',
       okP: vfFeatures().reminders
         ? 'سفارش‌ها، آدرس‌ها و یادآورهای شما آماده‌اند.'
         : 'سفارش‌ها و آدرس‌های شما آماده‌اند.',
