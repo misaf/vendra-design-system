@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   expectAccessible,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 test('buttons change the page; the current page is marked; ends are disabled', async ({page}) => {
   await openComponent(page, 'Pagination');

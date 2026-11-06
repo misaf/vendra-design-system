@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   expectAccessible,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 test('the name is the one link, named with the price; the whole card is its target', async ({
   page

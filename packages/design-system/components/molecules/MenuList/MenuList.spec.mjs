@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   expectAccessible,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 test('a navigation landmark named by its title, one list item per child', async ({page}) => {
   await openComponent(page, 'MenuList');

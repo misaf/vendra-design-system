@@ -3,7 +3,7 @@ import {
   expectAccessible,
   openComponent,
   scanAxe
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 for (const [lang, offline, online] of [
   ['en', 'You’re offline.', 'You’re back online.'],

@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   expectAccessible,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 test('a named navigation of links; the last item is the current page', async ({page}) => {
   await openComponent(page, 'Breadcrumb');
