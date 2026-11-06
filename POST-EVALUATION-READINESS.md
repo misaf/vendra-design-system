@@ -13,7 +13,7 @@ at the deadline. Four unfinished background modules were not individually requir
 post: stage 237 held all four while the article rendered. Successful fetches do not prove that
 an ESM module finished evaluating or that React committed its route.
 
-Existing [route-lifecycle.spec.mjs](templates/_e2e/route-lifecycle.spec.mjs) covers held site/page
+Existing [route-lifecycle.spec.mjs](apps/storefront/_e2e/route-lifecycle.spec.mjs) covers held site/page
 requests, stale navigation completion and invalid-route focus recovery. Its new bilingual case
 fulfils the real active post module's HTTP 200 response, retaining its imports/exports and appending
 only a test-controlled top-level await. A promise installed before navigation blocks evaluation
@@ -53,8 +53,8 @@ sample at exactly 5000ms.
 assert a caught helper timeout before release; there are no unexpected suite failures.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
-E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
 ```
 
 Each target runs all 16 route lifecycle cases: four new post cases (EN/FA × non-touch 390px mobile /

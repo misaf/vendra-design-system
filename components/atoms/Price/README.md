@@ -14,7 +14,7 @@ const money = n => format.money(n, {lang, currency, currencies});
 - Screen readers don't announce strikethrough, so a reduced price reads "Was 560,000 Toman Now 490,000 Toman" («قیمت قبلی … قیمت فعلی …»). The words come from `messages.js` (`Price.was`, `Price.now`).
 - `size`: `sm`, `md` (1rem) or `lg` (the product page). Without it the size follows the surrounding text, as in LineItem.
 - ProductCard (`price`, `compareAt`), LineItem (`price`) and OrderSummary (every amount) render it; use it directly wherever else a price or total appears, like a sticky bar's total.
-- The API has no earlier price yet (`templates/API.md` item 28), so the storefront doesn't show reductions until it does.
+- The API has no earlier price yet (`apps/storefront/API.md` item 28), so the storefront doesn't show reductions until it does.
 
 ## Usage
 

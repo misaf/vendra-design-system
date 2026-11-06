@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 test('phone keypad, left-to-right digits and a normalised mobile number', async ({page}) => {
   await openComponent(page, 'PhoneInput');

@@ -1,4 +1,4 @@
-/* GENERATED from styles.css by npm --prefix templates run build: tokens, base styles and every ag-* component class. */
+/* GENERATED from styles.css by npm --prefix apps/storefront run build: tokens, base styles and every ag-* component class. */
 /* Cascade layers: the package's tokens, base styles and component classes sit in vendra.* layers,
    so an app's own CSS wins predictably — anything unlayered (app styles, tenant themes) and any
    layer declared after vendra (e.g. Tailwind's utilities) overrides a component without

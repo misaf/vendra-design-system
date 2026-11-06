@@ -6,7 +6,7 @@ Pop-up list on React Aria's Select, styled like Input; use for delivery slot, si
 <Select label="Delivery window" options={['9–12', '12–15', '15–18']} />
 ```
 
-Same field pattern as Input: a visible label naming the trigger, hint/error in `#{id}-hint` linked by `aria-describedby`; `error` marks the field invalid (`data-invalid`, danger border) and links the message; a form's "focus the first invalid field" should include `[data-invalid] > [aria-haspopup="listbox"]` (see `templates/_shared/services/page-focus.js`).
+Same field pattern as Input: a visible label naming the trigger, hint/error in `#{id}-hint` linked by `aria-describedby`; `error` marks the field invalid (`data-invalid`, danger border) and links the message; a form's "focus the first invalid field" should include `[data-invalid] > [aria-haspopup="listbox"]` (see `apps/storefront/_shared/services/page-focus.js`).
 
 
 ## Usage

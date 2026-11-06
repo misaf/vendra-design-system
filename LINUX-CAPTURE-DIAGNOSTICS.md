@@ -12,10 +12,10 @@ expectation starts at 145319.503 and fails at 150370.918 with the configured 500
 The final DOM has an empty live status inside `#root`, no `#main`, and `html lang=en`. There is no
 recorded page-console error. There are 423 network records, four unfinished (`status=-1`):
 
-- `templates/app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx`
-- `templates/app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx`
-- `templates/_shared/ui/collection-carousel.jsx`
-- `templates/_shared/ui/qr.js`
+- `apps/storefront/app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx`
+- `apps/storefront/app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx`
+- `apps/storefront/_shared/ui/collection-carousel.jsx`
+- `apps/storefront/_shared/ui/qr.js`
 
 These are unfinished observations, not HTTP errors. No completed network record ends after the
 failed expectation. Post Page/logic/View/copy responses are recorded as 200, but HTTP completion
