@@ -3,6 +3,9 @@
 // the app passes each event to its own backend, after the visitor's consent.
 // Each event keeps only its listed parameters (plus `language` and `currency`), so a name, phone
 // number, address or card message can't reach a report by accident. No imports.
+// Amounts are stored in Toman, which is a local unit and not an ISO 4217 code: inCurrency() turns an
+// event's amounts into an ISO currency (Toman becomes Rial, IRR, 10 to the Toman) before it leaves,
+// so analytics and ad tools read the revenue right. Customers still see Toman everywhere.
 
 // Product codes, not names: a product is known by its code in reports, as in the studio.
 // item_list_name names the list an item was picked from (e.g. 'saved'); `index` is its position in
@@ -41,11 +44,20 @@ const EVENTS = {
   },
   begin_checkout: {about: 'From the bag to the payment step', params: ['items', 'value']},
   add_payment_info: {about: 'Pay or place order pressed', params: ['payment_type', 'value']},
+  order_placed: {
+    about:
+      'Order created, paid or not (online before the bank answers, card-to-card, pay on delivery, WhatsApp)',
+    params: ['transaction_id', 'value', 'payment_type', 'payment_status', 'items']
+  },
   payment_result: {
     about: 'The bank answered an online payment (PaymentStatus)',
     params: ['transaction_id', 'status']
   },
-  purchase: {about: 'Order placed', params: ['transaction_id', 'value', 'payment_type', 'items']},
+  purchase: {
+    about:
+      'Order paid: a verified online payment or the balance. Other methods report it once paid',
+    params: ['transaction_id', 'value', 'payment_type', 'items']
+  },
   search: {about: 'A search, once the typing settles', params: ['search_term', 'results']},
   filter: {
     about: 'A list filter added, removed or cleared (FilterBar)',
@@ -63,6 +75,54 @@ const EVENTS = {
   order_again: {about: '"Order again" pressed', params: ['transaction_id']},
   contact_whatsapp: {about: 'WhatsApp link opened', params: []},
   generate_lead: {about: 'Newsletter sign-up', params: ['lead_source']}
+};
+
+// The events whose `value` is an amount (a filter's `value` is the filter's own value).
+const AMOUNT_EVENTS = [
+  'view_item',
+  'add_to_cart',
+  'remove_from_cart',
+  'view_cart',
+  'add_shipping_info',
+  'begin_checkout',
+  'add_payment_info',
+  'order_placed',
+  'purchase',
+  'top_up'
+];
+// Toman is reported as Rial, its ISO 4217 code, at the fixed 10 Rial to the Toman.
+const ISO_CODES = {IRT: 'IRR'};
+const RIAL = {rate: 10, decimals: 0};
+
+// The ISO currency reports use for `currency` (a key in `currencies`, rate = units per 1 Toman), and
+// how to turn a Toman amount into it. A currency without a usable rate is reported in Rial, which is
+// always right for an amount in Toman.
+const reportCurrency = (currency = 'IRT', currencies = {}) => {
+  const code = ISO_CODES[currency] || currency;
+  const spec = code === 'IRR' ? RIAL : currencies[code];
+  if (!spec || !(spec.rate > 0)) return reportCurrency('IRT');
+  const digits = spec.decimals ?? 2;
+  return {
+    code,
+    amount: toman =>
+      typeof toman === 'number' && Number.isFinite(toman)
+        ? Number((toman * spec.rate).toFixed(digits))
+        : toman
+  };
+};
+
+// The event's parameters with `currency` set to an ISO code and its amounts (`value` where it is an
+// amount, and each item's `price`) turned from Toman into that currency.
+const inCurrency = (name, params = {}, {currency, currencies} = {}) => {
+  const report = reportCurrency(currency, currencies);
+  const result = {...params, currency: report.code};
+  if (AMOUNT_EVENTS.includes(name) && params.value !== undefined)
+    result.value = report.amount(params.value);
+  if (Array.isArray(params.items))
+    result.items = params.items.map(item =>
+      item && item.price !== undefined ? {...item, price: report.amount(item.price)} : item
+    );
+  return result;
 };
 
 // A typed search can be a phone number or an email address; those never leave as they are.
@@ -96,4 +156,4 @@ const event = (name, params = {}, dropped) => {
   return result;
 };
 
-export const analytics = {EVENTS, ITEM_KEYS, event};
+export const analytics = {EVENTS, ITEM_KEYS, AMOUNT_EVENTS, event, reportCurrency, inCurrency};

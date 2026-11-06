@@ -246,6 +246,13 @@ function vals(page) {
     if (vfPageRoute(page.props).paymentOrder)
       history.replaceState(history.state, '', vfRouteUrl({lang: L, view: 'checkout'}));
   };
+  // An order's analytics parameters (amounts in Toman; vfRuntime.track reports them in an ISO currency).
+  const orderParams = record => ({
+    transaction_id: record.id,
+    value: record.totals.total,
+    payment_type: record.method,
+    items: vfLineItems(record.lines)
+  });
   const completeOrder = record => {
     // Paying from the balance takes the total out of it now; a failed deduction stops the order.
     if (record.method === 'wallet') {
@@ -266,12 +273,17 @@ function vals(page) {
         placed: true,
         order: record
       });
-    vfRuntime.track.event('purchase', {
-      transaction_id: record.id,
-      value: record.totals.total,
-      payment_type: record.method,
-      items: vfLineItems(record.lines)
-    });
+    // Every order counts as placed; only a payment already verified here (the bank confirmed it, or
+    // the balance paid it) counts as a purchase. Card-to-card, pay on delivery and WhatsApp orders
+    // wait for payment: the store reports their purchase once it confirms the money arrived. An
+    // online order was reported as placed when checkout created it, before the bank trip.
+    const params = orderParams(record);
+    if (record.method === 'wallet')
+      vfRuntime.track.event('order_placed', {...params, payment_status: 'paid'});
+    else if (record.method !== 'online')
+      vfRuntime.track.event('order_placed', {...params, payment_status: 'pending'});
+    if (record.method === 'online' || record.method === 'wallet')
+      vfRuntime.track.event('purchase', params);
   };
   // The bank confirmed an online payment: the order is placed, with the bank's tracking number. A
   // live store shows the one the API reported; the simulated bank makes one up.
@@ -519,6 +531,12 @@ function vals(page) {
       // here, so the customer is told not to pay twice and to call (never the simulated bank).
       if (method === 'online')
         send((placed, redirect) => {
+          // Placed now, paid only once the bank confirms: a cancelled, failed or abandoned payment
+          // still counts as a placed order, never as a purchase.
+          vfRuntime.track.event('order_placed', {
+            ...orderParams(placed),
+            payment_status: 'pending'
+          });
           if (placed !== record) vfKeepPayment(placed);
           if (vfLiveStore() && !redirect)
             page.setState({payment: {status: 'pending', record: placed, number: placed.id}});
