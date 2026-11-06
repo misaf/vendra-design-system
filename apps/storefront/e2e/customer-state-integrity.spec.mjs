@@ -877,7 +877,8 @@ for (const lang of ['en', 'fa']) {
           delivery: window.__vfSite.state.delivery
         }));
         expect(restored.orders).toHaveLength(outcome === 'success' ? 1 : 0);
-        expect(restored.delivery.address).toBe('Test street 12, unit 3');
+        // switchCustomer signs out first, and sign-out keeps no private delivery draft.
+        expect(restored.delivery.address).toBe('');
         if (placed) await expect(page.locator('main')).toContainText(placed.id);
         expect(errors).toEqual([]);
         await info.attach('two-tab-response-ownership', {

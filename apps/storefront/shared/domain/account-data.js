@@ -159,9 +159,34 @@ export function vfAccountLogin(phone, lang) {
   vfAccountSave(phone, data);
   return data;
 }
+// Every key a storage area holds; a storage that can't be listed yields none.
+function vfStorageKeys(storage) {
+  const keys = [];
+  for (let index = 0; index < (storage.length || 0); index++) keys.push(storage.key(index));
+  return keys;
+}
+// Personal data that sign-out removes from this browser, so a shared or family device keeps
+// nothing of the customer or their recipients: every stored account (profile, addresses with
+// recipients' names and mobiles, reminders, wallet), the signed-in customers' payment recovery
+// records, the saved-items id cache and the newsletter email. A guest's own records stay.
+export const VF_PRIVATE_LOCAL_KEYS = ['vf-account-phone', 'vf-newsletter', 'vendra-saved-map'];
+export function vfPrivateLocalKey(key) {
+  return VF_PRIVATE_LOCAL_KEYS.includes(key) || key.startsWith('vf-account:');
+}
+export function vfPrivateSessionKey(key) {
+  return key.startsWith('vf-online-payment:') && key !== 'vf-online-payment:guest';
+}
 export function vfAccountSignOut() {
+  const phone = vfAccountPhone();
   try {
-    localStorage.removeItem('vf-account-phone');
+    const keys = [...VF_PRIVATE_LOCAL_KEYS, ...vfStorageKeys(localStorage)];
+    if (phone) keys.push(vfAccountKey(phone));
+    keys.filter(vfPrivateLocalKey).forEach(key => localStorage.removeItem(key));
+  } catch {}
+  try {
+    const keys = vfStorageKeys(sessionStorage);
+    if (phone) keys.push('vf-online-payment:' + (vfMobile(phone) || phone));
+    keys.filter(vfPrivateSessionKey).forEach(key => sessionStorage.removeItem(key));
   } catch {}
 }
 export function vfAccountLocale() {

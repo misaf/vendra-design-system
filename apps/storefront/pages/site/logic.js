@@ -115,6 +115,9 @@ const vfEmptyCustomer = () => ({
   orders: [],
   tracked: {}
 });
+// Signed out, the session keeps only the guest's own drafts and history: every signed-in
+// customer's delivery details, payment drafts, orders and lookups leave with the account.
+const vfGuestCustomers = customers => (customers?.guest ? {guest: customers.guest} : {});
 const vfCustomerState = state => ({
   delivery: state.delivery,
   paymentDraft: state.paymentDraft,
@@ -179,7 +182,7 @@ function vfSiteInitial(props) {
   }
   const initial = {
     customerId,
-    customers: saved.customers || {},
+    customers: customerId === 'guest' ? vfGuestCustomers(saved.customers) : saved.customers || {},
     route: route.view,
     routeInfo: route,
     searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
@@ -275,7 +278,8 @@ export function usePage(props) {
         current = page.state;
       if (customerId === current.customerId) return;
       const previous = vfCustomerState(current);
-      const customers = {...current.customers, [current.customerId]: previous};
+      let customers = {...current.customers, [current.customerId]: previous};
+      if (customerId === 'guest') customers = vfGuestCustomers(customers);
       let next = customers[customerId] || vfEmptyCustomer();
       if (current.customerId === 'guest' && customerId !== 'guest') {
         const claimed = previous.orders.filter(
@@ -545,6 +549,8 @@ function vals(page) {
       complete: order =>
         page.setState(current => {
           if (order.customerId && order.customerId !== current.customerId) {
+            // After sign-out nothing of that customer stays here; the order is the server's.
+            if (current.customerId === 'guest') return null;
             const owner = current.customers[order.customerId] || vfEmptyCustomer();
             if (owner.orders.some(previous => previous.id === order.id)) return null;
             return {
