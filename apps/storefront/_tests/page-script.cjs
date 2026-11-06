@@ -117,7 +117,7 @@ const sharedLogic =
   'const VF_TENANT_BRANDS = ' +
   JSON.stringify(
     Object.fromEntries(
-      Object.entries(require('../_build/tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
+      Object.entries(require('../../../tools/tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
         slug,
         spec.brand || {}
       ])
@@ -125,7 +125,7 @@ const sharedLogic =
   ) +
   ';\n' +
   'const VF_TENANT_SLUGS = ' +
-  JSON.stringify(require('../_build/tenants.cjs').tenantSlugs()) +
+  JSON.stringify(require('../../../tools/tenants.cjs').tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read('_shared/' + file))).join('\n\n') +
   '\n';

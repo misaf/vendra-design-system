@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname, '../../..');
+const root = path.resolve(__dirname, '..');
 
 // Only repository assets are accepted: all referenced files ship under the deployment's base URL.
 function validateBrand(brand = {}, label = 'brand') {

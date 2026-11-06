@@ -4,16 +4,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 
-const tenantSlugs = require('./tenants.cjs').tenantSlugs();
+const tenantSlugs = require('../../../tools/tenants.cjs').tenantSlugs();
 const tenantSlugsFile = path.join(root, '_runtime', 'tenant-slugs.js');
 const tenantSlugsModule =
-  '// GENERATED from tokens/tenants/*.json by _build/generate.cjs — do not edit. Run npm --prefix apps/storefront run build.\n' +
+  '// GENERATED from tokens/tenants/*.json by apps/storefront/_build/generate.cjs — do not edit. Run npm --prefix apps/storefront run build.\n' +
   'export const VF_TENANT_SLUGS = ' +
   JSON.stringify(tenantSlugs) +
   ';\nexport const VF_TENANT_BRANDS = ' +
   JSON.stringify(
     Object.fromEntries(
-      Object.entries(require('./tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
+      Object.entries(require('../../../tools/tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
         slug,
         spec.brand || {}
       ])
