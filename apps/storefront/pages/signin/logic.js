@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLogin, vfAccountSave} from '../../shared/domain/account-data.js';
+import {vfAccountExists, vfAccountLogin, vfAccountSave} from '../../shared/domain/account-data.js';
 import {vfMobile} from '../../shared/domain/delivery.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
@@ -50,8 +50,9 @@ function vals(page) {
     isPhone: s.step === 'phone',
     isCode: s.step === 'code',
     isOk: s.step === 'ok',
-    // Greets the customer by first name when the account has one.
-    okName: s.name ? s.name.trim().split(/\s+/)[0] + '.' : C.okB,
+    // Greets the customer by first name when the account has one, never with a sample name;
+    // a first sign-in is a welcome, not a welcome back.
+    ...greeting(),
     phone,
     setPhone: value =>
       page.setState({
@@ -114,6 +115,22 @@ function vals(page) {
       });
     }
   };
+  function greeting() {
+    const first = (s.name || '').trim().split(/\s+/)[0];
+    const [okTitle, okAccent] = (s.isNew ? C.okNew : C.okBack)(first);
+    return {
+      okTitle,
+      okAccent,
+      // Without a name, a link to the profile tab invites the customer to add one.
+      namePrompt: first
+        ? null
+        : {
+            text: C.okNameHint,
+            label: C.okNameLink,
+            href: vfRouteUrl({lang: S.lang, view: 'account', tab: 'profile'})
+          }
+    };
+  }
   function verifyCode(code) {
     if (code.length !== 5) {
       page.setState({
@@ -122,6 +139,7 @@ function vals(page) {
       focus('vf-code');
       return;
     }
+    const isNew = !vfAccountExists(s.phone);
     const account = vfAccountLogin(s.phone, S.lang);
     // The name given at checkout becomes the profile name when the account has none.
     if (
@@ -138,7 +156,8 @@ function vals(page) {
     if (page.props.setLang) page.props.setLang(account.profile.locale);
     page.setState({
       step: 'ok',
-      name: account.profile.name
+      name: account.profile.name,
+      isNew
     });
   }
 }

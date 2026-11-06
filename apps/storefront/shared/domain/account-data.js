@@ -142,6 +142,14 @@ export function vfAccountUpdate(phone, change, lang = 'en') {
   const next = change(vfAccountLoad(phone, lang));
   return next && vfAccountSave(phone, next) ? next : null;
 }
+// Whether a mobile already has a stored account (a returning customer) before signing in.
+export function vfAccountExists(phone) {
+  try {
+    return !!localStorage.getItem(vfAccountKey(phone));
+  } catch {
+    return false;
+  }
+}
 export function vfAccountLogin(phone, lang) {
   phone = vfMobile(phone) || vfLatin(phone).replace(/\D/g, '');
   try {
