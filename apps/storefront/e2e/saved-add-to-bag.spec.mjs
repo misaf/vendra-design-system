@@ -18,7 +18,7 @@ for (const lang of ['en', 'fa']) {
     // Sizes: a link to the product page.
     const choose = card('VF-7K2M4Q').getByRole('link', {
       // The code is bidi-isolated (U+2066…U+2069) so it reads correctly in Persian.
-      name: `\u2066VF-7K2M4Q\u2069: ${fa ? 'انتخاب اندازه' : 'choose a size'}`
+      name: `\u2066VF-7K2M4Q\u2069: ${fa ? 'انتخاب اندازه' : 'choose size'}`
     });
     await expect(choose).toHaveAttribute('href', /\/product\/VF-7K2M4Q\//);
 
