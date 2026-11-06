@@ -136,8 +136,9 @@ export const VF_SEO = (() => {
   // x-default and robots, as {title, meta: [{key, name, content}], links: [{rel, hreflang?, href}]}.
   // Pure: the browser applies them (syncHead) and the build writes them into each page (headHtml).
   // `alternates` holds the page in each language the store offers; x-default is the English one, or
-  // the only one. URLs are read against the page's address.
-  /** @param {{title?: string, description?: string, image?: string, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean}} [head] */
+  // the only one. URLs are read against the page's address. `structuredData` lists the page's
+  // schema.org objects (structured-data.js); they come back as one JSON-LD @graph, or null.
+  /** @param {{title?: string, description?: string, image?: string, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean, structuredData?: object[]}} [head] */
   const headTags = ({
     title,
     description,
@@ -146,7 +147,8 @@ export const VF_SEO = (() => {
     locale = 'en',
     type = 'website',
     alternates = {},
-    noindex = false
+    noindex = false,
+    structuredData = []
   } = {}) => {
     const img = vfAbsoluteUrl(image),
       href = vfAbsoluteUrl(url);
@@ -176,7 +178,12 @@ export const VF_SEO = (() => {
       );
       if (alternate && !noindex) links.push({rel: 'alternate', hreflang, href: alternate});
     }
-    return {title, meta, links};
+    const graph = noindex ? [] : structuredData.filter(Boolean);
+    const jsonLd = graph.length
+      ? // Inside <script>: "<" is escaped, so no text in the data can close the element.
+        JSON.stringify({'@context': 'https://schema.org', '@graph': graph}).replace(/</g, '\\u003c')
+      : null;
+    return {title, meta, links, jsonLd};
   };
 
   const escape = value =>
@@ -211,7 +218,10 @@ export const VF_SEO = (() => {
           ' href="' +
           escape(link.href) +
           '" data-ag-seo>'
-      )
+      ),
+      ...(tags.jsonLd
+        ? ['<script type="application/ld+json" data-ag-seo>' + tags.jsonLd + '</script>']
+        : [])
     ].join('\n');
   };
 
@@ -245,6 +255,12 @@ export const VF_SEO = (() => {
       if (alternate) upsert(selector, 'link', alternate);
       else drop(selector);
     }
+    const jsonLd = 'script[type="application/ld+json"][data-ag-seo]';
+    if (tags.jsonLd) {
+      upsert(jsonLd, 'script', {type: 'application/ld+json'});
+      const script = document.head.querySelector(jsonLd);
+      if (script.textContent !== tags.jsonLd) script.textContent = tags.jsonLd;
+    } else drop(jsonLd);
   };
   const S = {
     SCREENS,
