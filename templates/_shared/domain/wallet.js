@@ -4,7 +4,7 @@
 import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
 import {vfAmountFromInput} from './formatting.js';
 import {VF_STORE} from './store-config.js';
-import {commerce} from '../../components/utils/commerce.js';
+import {commerce} from '../../../components/utils/commerce.js';
 
 // {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
 export function vfWalletOf(account) {

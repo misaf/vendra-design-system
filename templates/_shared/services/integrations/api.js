@@ -1,9 +1,13 @@
 // Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
 // base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
-import {vfAccountLocale, vfCustomerId} from '../account-data.js';
-import {VF_PRODUCTS, vfProductId} from '../catalog.js';
-import {VF_STORE} from '../store-config.js';
-import {vfCheckoutResultFromApi, vfGatewayRedirect, vfPaymentFromApi} from '../payment-api.js';
+import {vfAccountLocale, vfCustomerId} from '../../domain/account-data.js';
+import {VF_PRODUCTS, vfProductId} from '../../domain/catalog.js';
+import {VF_STORE} from '../../domain/store-config.js';
+import {
+  vfCheckoutResultFromApi,
+  vfGatewayRedirect,
+  vfPaymentFromApi
+} from '../../domain/payment-api.js';
 (() => {
   const KEY = 'vendra-saved-map';
   // Browser only: the build's prerender (app/entry-server.jsx) calls no API.

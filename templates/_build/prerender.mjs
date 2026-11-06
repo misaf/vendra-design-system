@@ -12,7 +12,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {storefrontRoutes} from './routes.mjs';
-import {VF_STORE} from '../_shared/store-config.js';
+import {VF_STORE} from '../_shared/domain/store-config.js';
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
