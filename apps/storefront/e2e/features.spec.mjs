@@ -153,29 +153,6 @@ test('the delivery pin sets the zone and fee', async ({page}) => {
   await expect(zone).not.toContainText('Same day before');
 });
 
-test('the shop shows a page of designs, then the rest, keeping the page in the URL', async ({
-  page
-}) => {
-  await openSite(page, 'shop', 'en');
-  const grid = page.locator('.vf-shop-product-grid .ag-product__link');
-  await expect(grid).toHaveCount(4);
-  await expect(page.getByText('Showing 4 of 6 designs')).toBeVisible();
-  const more = page.getByRole('link', {name: 'Show more'});
-  await expect(more).toHaveAttribute('href', /page=2/);
-  await more.click();
-  await expect(grid).toHaveCount(6);
-  await expect(page.getByText('Showing all 6 designs')).toBeVisible();
-  await expect(page.getByRole('link', {name: 'Show more'})).toHaveCount(0);
-  // Focus moves to the first design that was just loaded.
-  await expect(grid.nth(4)).toBeFocused();
-  expect(page.url()).toMatch(/page=2/);
-  await page.reload();
-  await expect(grid).toHaveCount(6);
-  // A new filter starts again from the first page.
-  await page.getByRole('button', {name: 'Same day'}).first().click();
-  expect(page.url()).not.toMatch(/page=/);
-});
-
 test('a promo code discounts the bag and carries to checkout', async ({page}) => {
   // Time keeps running from 09:00: the map's pan animation needs a moving clock.
   await page.clock.setSystemTime(MORNING);
@@ -733,7 +710,7 @@ test('the storefront reports the contract’s events, and nothing personal', asy
       const list = await last('view_item_list');
       return [list?.item_list_id, list?.items.map(item => item.index)];
     })
-    .toEqual(['shop', [0, 1, 2, 3]]);
+    .toEqual(['shop', [0, 1, 2, 3, 4, 5]]);
   await page
     .locator('.ag-switch', {hasText: 'In stock only'})
     .locator('visible=true')
@@ -778,9 +755,10 @@ test('the shop filters by delivery day', async ({page}, info) => {
     .getByRole('button', {name: /Delivers Today/})
     .first()
     .click();
-  // Every design again: the first page of four, out of six.
-  await expect(page.locator('main .ag-product')).toHaveCount(4);
-  await expect(page.getByText('Showing 4 of 6 designs')).toBeVisible();
+  // Every design again: all six fit on the first page, so there is nothing to show more of.
+  await expect(page.locator('main .ag-product')).toHaveCount(6);
+  await expect(page.locator('#vf-shop-count')).toContainText('6 designs');
+  await expect(page.getByRole('link', {name: 'Show more'})).toHaveCount(0);
   // Filters replace the history entry, so Back leaves the shop instead of undoing each one.
   expect(await page.evaluate(() => history.length)).toBeLessThanOrEqual(2);
 });
@@ -1184,9 +1162,10 @@ test('the shop clears every filter at once', async ({page}, info) => {
   await expect(page.locator('main .ag-product__name')).toHaveText(['VF-4CJ6ZB', 'VF-9FA2KE']);
   await page.getByRole('button', {name: 'Clear all'}).click();
   await expect(page).not.toHaveURL(/occasion=|stock=/);
-  // Every design again: the first page of four, out of six.
-  await expect(page.locator('main .ag-product')).toHaveCount(4);
-  await expect(page.getByText('Showing 4 of 6 designs')).toBeVisible();
+  // Every design again: all six fit on the first page, so there is nothing to show more of.
+  await expect(page.locator('main .ag-product')).toHaveCount(6);
+  await expect(page.locator('#vf-shop-count')).toContainText('6 designs');
+  await expect(page.getByRole('link', {name: 'Show more'})).toHaveCount(0);
   await expect(page.locator('#vf-shop-count')).toBeFocused();
 });
 
@@ -1788,7 +1767,6 @@ test('products say when few are left or when they come back', async ({page}) => 
   await expect(main.locator('.vf-product-details .ag-stock')).toHaveText('موجود از ۲۰ مهر');
   // Cards call out only the products that need attention.
   await openSite(page, 'shop', 'en');
-  await page.getByRole('link', {name: 'Show more'}).click();
   await expect(page.locator('.vf-shop-product-grid .ag-stock')).toHaveText([
     'Only 2 left',
     'Back on 12 October'
