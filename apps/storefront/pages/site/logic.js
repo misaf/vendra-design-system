@@ -567,7 +567,8 @@ function vals(page) {
                 })
           };
         }),
-      add: (line, date) =>
+      // listName names the list the line was added from (e.g. 'saved') for analytics.
+      add: (line, date, listName) =>
         page.setState(p => {
           window.VF_TRACK.event('add_to_cart', {
             items: [
@@ -575,7 +576,8 @@ function vals(page) {
                 // Analytics and the studio's reports know a product by its code.
                 item_id: vfLineToken(line) || line.id,
                 price: line.unit,
-                quantity: line.qty
+                quantity: line.qty,
+                ...(listName ? {item_list_name: listName} : {})
               }
             ]
           });

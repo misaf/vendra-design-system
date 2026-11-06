@@ -575,6 +575,60 @@ for (const lang of ['en', 'fa']) {
   assert.equal(ids.filter(id => id === 'VF-7K2M4Q').length, 1);
 }
 
+// Saved cards add straight to the bag (tracked as the saved list), send designs with sizes to the
+// product page, keep sold-out designs disabled, and Undo returns the bag line to its earlier state.
+for (const lang of ['en', 'fa']) {
+  let bag = [{id: 'VF-3HX9TP', qty: 1, unit: 1}];
+  const calls = [];
+  const store = {
+    saved: ['VF-7K2M4Q', 'VF-3HX9TP', 'VF-6MT3VY', 'VF-8RD5WN'],
+    get bag() {
+      return bag;
+    },
+    add(line, date, listName) {
+      calls.push(['add', line.id, listName]);
+      const existing = bag.find(item => item.id === line.id);
+      bag = existing
+        ? bag.map(item => (item.id === line.id ? {...item, qty: item.qty + line.qty} : item))
+        : [...bag, line];
+    },
+    setQty(id, qty) {
+      calls.push(['setQty', id, qty]);
+      bag = bag.map(item => (item.id === id ? {...item, qty} : item));
+    },
+    remove(id) {
+      calls.push(['remove', id]);
+      bag = bag.filter(item => item.id !== id);
+    }
+  };
+  const {logic: saved} = loadPage('saved', {lang, store});
+  const byName = () => Object.fromEntries(saved.renderVals().items.map(item => [item.name, item]));
+  let items = byName();
+  assert.equal(items['VF-7K2M4Q'].action.kind, 'size');
+  assert.ok(items['VF-7K2M4Q'].action.href.includes('VF-7K2M4Q'));
+  assert.equal(items['VF-6MT3VY'].action.kind, 'unavailable');
+  assert.equal(items['VF-6MT3VY'].action.label, lang === 'fa' ? 'ناموجود' : 'Sold out');
+  assert.equal(items['VF-8RD5WN'].action.kind, 'add');
+  assert.ok(items['VF-8RD5WN'].action.ariaLabel.includes('VF-8RD5WN'));
+
+  items['VF-8RD5WN'].action.onAdd();
+  assert.deepEqual(calls.at(-1), ['add', 'VF-8RD5WN', 'saved']);
+  let v = saved.renderVals();
+  assert.equal(v.addedOpen, true);
+  assert.equal(v.addedLines[0].name, 'VF-8RD5WN');
+  assert.equal(v.addedSums.length, 1);
+  v.undoAdd();
+  assert.deepEqual(calls.at(-1), ['remove', 'VF-8RD5WN']);
+  assert.equal(saved.renderVals().addedOpen, false);
+
+  // A design already in the bag goes back to its earlier quantity, not out of the bag.
+  byName()['VF-3HX9TP'].action.onAdd();
+  assert.equal(bag.find(item => item.id === 'VF-3HX9TP').qty, 2);
+  saved.renderVals().undoAdd();
+  assert.deepEqual(calls.at(-1), ['setQty', 'VF-3HX9TP', 1]);
+  assert.equal(bag.find(item => item.id === 'VF-3HX9TP').qty, 1);
+}
+
 // Delayed page announcements respect focus received after they were scheduled.
 {
   const {ctx: c} = context();

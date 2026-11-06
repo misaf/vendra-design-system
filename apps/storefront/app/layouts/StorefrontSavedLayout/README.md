@@ -1,6 +1,6 @@
 # StorefrontSavedLayout
 
-Saved-products Atomic Design template with heading, notice, results and empty-state React-node slots, plus externally controlled results/empty visibility. It owns the main focus target, heading wrapper, responsive product grid and empty-state wrapper. Notices remain outside both conditional groups so removing the final product can still expose Undo.
+Saved-products Atomic Design template with heading, notice, results, empty-state and added-to-bag dialog React-node slots, plus externally controlled results/empty visibility. It owns the main focus target, heading wrapper, responsive product grid and empty-state wrapper. Notices remain outside both conditional groups so removing the final product can still expose Undo.
 
 The View retains conditional slot construction, product cards, copy, count, links and remove/Undo controls. Saved-page and shared site logic retain saved-list state, persistence, customer synchronization, additive Undo and focus restoration. This layout owns no data, callbacks, persistence or browser effects.
 

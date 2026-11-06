@@ -6,6 +6,7 @@ import {StorefrontSavedHeading} from '../../app/organisms/StorefrontSavedHeading
 import {StorefrontSavedRemovalNotice} from '../../app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
 import {StorefrontSavedResults} from '../../app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx';
 import {StorefrontSavedEmpty} from '../../app/organisms/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx';
+import {StorefrontProductAdded} from '../../app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -34,6 +35,22 @@ export function View({v}) {
                 labels={{photo: v.t?.photo, unsave: v.t?.unsave}}
               />
             ) : null
+          }
+          added={
+            <StorefrontProductAdded
+              open={v.addedOpen}
+              onClose={v.closeAdded}
+              lines={v.addedLines}
+              sums={v.addedSums}
+              checkout={{href: v.href?.bag, onClick: v.closeAdded}}
+              undo={{label: v.t?.undoAdd, onClick: v.undoAdd}}
+              labels={{
+                title: v.t?.added,
+                close: v.t?.dismiss,
+                checkout: v.t?.checkout,
+                continue: v.t?.keepShopping
+              }}
+            />
           }
           empty={
             v.noItems ? (
