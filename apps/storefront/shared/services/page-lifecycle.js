@@ -1,6 +1,6 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
-import {vfBrand, vfBrandHead, vfBrandUrl} from '../domain/brand.js';
+import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandUrl} from '../domain/brand.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from '../domain/catalog.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
@@ -97,6 +97,14 @@ function vfAnnounce(page) {
     window.VF_VIEWED = true;
     VF_SEO.syncHead(vfPageHead(page, title));
   }, 40);
+}
+
+// The page's tenant icons and manifest as HTML, for the build's static pages (app/entry-server.jsx);
+// vfBrandHead keeps them current in the browser.
+export function vfPageBrandHtml(page) {
+  const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+  const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
+  return vfBrandHtml(tenant, lang);
 }
 
 // A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical

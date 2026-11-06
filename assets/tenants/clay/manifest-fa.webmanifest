@@ -1,10 +1,13 @@
 {
   "name": "گل‌فروشی کلی",
+  "short_name": "کلی",
   "lang": "fa",
   "dir": "rtl",
   "start_url": "../../../apps/storefront/app/?lang=fa&tenant=clay",
   "scope": "../../../apps/storefront/app/",
   "display": "standalone",
+  "theme_color": "#F6F2EA",
+  "background_color": "#F6F2EA",
   "icons": [
     {
       "src": "../../../assets/tenants/clay/icon-192.png",
