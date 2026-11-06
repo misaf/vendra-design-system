@@ -19,7 +19,7 @@ import {
   vfRememberViewed,
   vfTokenText
 } from '../_shared/domain/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
+import {VF_FA_DIGITS, VF_MONEY, vfPriceTag, vfSeparator} from '../_shared/domain/formatting.js';
 import {vfShell} from '../_shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
 import {vfFeatures} from '../_shared/domain/store-config.js';
@@ -152,10 +152,14 @@ function vals(page) {
   const quantity = Math.min(s.qty, Math.max(1, remaining));
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
-  // Link previews show the product's photo and its description (page-lifecycle.js vfPageHead).
+  // Link previews show the product's photo (its largest size, with its description as alt text),
+  // its description and its starting price (page-lifecycle.js vfPageHead).
+  const photo = vfProductImage(product, L);
   page.head = {
-    image: vfProductImage(product, L).src,
-    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0]
+    image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
+    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
+    type: 'product',
+    price: vfPriceTag(base + (hasSizes ? Math.min(...VF_SIZES.map(item => item.price)) : 0))
   };
   return {
     ...S,
