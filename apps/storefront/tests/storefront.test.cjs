@@ -1803,6 +1803,13 @@ for (const lang of ['en', 'fa']) {
   site.lifecycle.didUpdate();
   assert.doesNotMatch([...session.values()].join('\n'), /Private address A|PRIVATE-A|VN-3100/);
   assert.deepEqual(Object.keys(new c.Logic({lang}).state.customers), ['guest']);
+  login('09121111111');
+  site.renderVals().store.complete({...first, id: 'VN-31004', customerId: '09120000000'});
+  assert.equal(
+    site.state.customers['09120000000'],
+    undefined,
+    'a signed-out customer stays out after another customer signs in'
+  );
   login('09120000000');
   assert.equal(site.state.orders.length, 0, 'signing in again restores no session history');
   assert.equal(site.state.delivery.address, '');

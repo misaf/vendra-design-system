@@ -183,6 +183,11 @@ export function vfAccountSignOut() {
     if (phone) keys.push(vfAccountKey(phone));
     keys.filter(vfPrivateLocalKey).forEach(key => localStorage.removeItem(key));
   } catch {}
+  vfClearPrivateSession(phone);
+}
+// This tab's signed-in payment recovery records. Each open tab runs it when it sees the sign-out,
+// since session storage belongs to one tab.
+export function vfClearPrivateSession(phone = '') {
   try {
     const keys = vfStorageKeys(sessionStorage);
     if (phone) keys.push('vf-online-payment:' + (vfMobile(phone) || phone));
