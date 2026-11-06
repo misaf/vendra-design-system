@@ -213,6 +213,52 @@ function page(name, c, props = {}) {
     assert.equal(sent.at(-1).key, undefined);
     assert.equal(delay, api.vfRuntime.api.timeouts.read);
     assert.equal(timers.length, before + 1);
+    // Stock follows the collection's next page, so products past the first page are refreshed
+    // too; a full next URL is read as a path, and a repeated link ends the walk.
+    {
+      const pages = {
+        '/api/catalog/products?itemsPerPage=200': {
+          'hydra:member': [{token: 'VF-AAAAAA', inStock: true, quantity: 3}, {name: 'no token'}],
+          'hydra:view': {'hydra:next': '/api/catalog/products?itemsPerPage=200&page=2'}
+        },
+        '/api/catalog/products?itemsPerPage=200&page=2': {
+          member: [{token: 'VF-BBBBBB', inStock: false}],
+          view: {next: 'https://api.example.test/api/catalog/products?itemsPerPage=200&page=3'}
+        },
+        '/api/catalog/products?itemsPerPage=200&page=3': {
+          'hydra:member': [{token: 'VF-CCCCCC', quantity: 0}],
+          'hydra:view': {'hydra:next': '/api/catalog/products?itemsPerPage=200&page=3'}
+        }
+      };
+      const asked = [];
+      api.fetch = async url => {
+        const path = url.slice(api.vfRuntime.api.base.length);
+        asked.push(path);
+        return {ok: true, status: 200, json: async () => pages[path]};
+      };
+      const stock = await api.vfRuntime.api.loadStock();
+      assert.deepEqual(asked, Object.keys(pages));
+      assert.deepEqual(JSON.parse(JSON.stringify(stock)), {
+        'VF-AAAAAA': {inStock: true, quantity: 3},
+        'VF-BBBBBB': {inStock: false, quantity: null},
+        'VF-CCCCCC': {inStock: true, quantity: 0}
+      });
+      // A next link on every page stops at the page cap.
+      asked.length = 0;
+      api.fetch = async url => {
+        asked.push(url);
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            member: [],
+            view: {next: '/api/catalog/products?page=' + asked.length}
+          })
+        };
+      };
+      await api.vfRuntime.api.loadStock();
+      assert.equal(asked.length, 50);
+    }
   }
   const {c, timers} = environment();
   vm.runInContext("vfAccountLogin('۰۹۱۲۳۴۵۶۷۸۹','fa')", c);

@@ -44,13 +44,13 @@ for (const lang of ['en', 'fa']) {
       await page
         .getByRole('button', {name: fa ? 'پاک کردن جست‌وجو' : 'Clear search', exact: true})
         .click();
-      await expect(page.locator('main .ag-blog')).toHaveCount(7);
+      await expect(page.locator('main .ag-blog')).toHaveCount(4);
       await expect(chips.first()).toHaveAttribute('aria-pressed', 'true');
       const search = page.getByRole('searchbox', {name: fa ? 'جست‌وجوی مطالب' : 'Search stories'});
       await search.fill(fa ? 'پاییز' : 'autumn');
       await expect(page.locator('main .ag-blog')).toHaveCount(1);
       await search.press('Escape');
-      await expect(page.locator('main .ag-blog')).toHaveCount(7);
+      await expect(page.locator('main .ag-blog')).toHaveCount(4);
       // Return the category scroller to its first control before visual review.
       await chips.first().focus();
       await expect(chips.first()).toBeInViewport({ratio: 1});
