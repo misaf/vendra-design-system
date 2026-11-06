@@ -985,17 +985,25 @@ for (const name of [
   'weddings'
 ]) {
   const {ctx: c} = loadPage(name);
+  // Every configured language (VF_LOCALES), not only English and Persian, needs the full copy.
+  const languages = vm.runInContext('Object.keys(VF_LOCALES)', c);
+  assert.ok(languages.length >= 2, 'VF_LOCALES lists the storefront languages');
   const copies = vm.runInContext(
-    "['en','fa'].map(lang=>vfCopy({lang,fa:lang==='fa',m:value=>String(value),n:value=>String(value),t:{brand:'Demo',address:'Demo'}}))",
+    "Object.keys(VF_LOCALES).map(lang=>vfCopy({lang,fa:lang==='fa',m:value=>String(value),n:value=>String(value),t:{brand:'Demo',address:'Demo'}}))",
     c
   );
-  assert.deepEqual(
-    copyShape(copies[0]),
-    copyShape(copies[1]),
-    name + ' copy must have matching English and Persian structure'
-  );
+  copies.forEach((copy, index) => {
+    assert.ok(copy, name + ' copy covers ' + languages[index]);
+    assert.deepEqual(
+      copyShape(copy),
+      copyShape(copies[languages.indexOf('en')]),
+      name + ' ' + languages[index] + ' copy must match the English structure'
+    );
+  });
 }
-console.log('Passed recursive English/Persian copy parity, including nested labels and lists.');
+console.log(
+  'Passed recursive copy parity for every configured language, including nested labels and lists.'
+);
 // The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
 // Layout never branches on a JavaScript breakpoint: the shell and every view render all their
 // structures and CSS picks one, so the first paint already matches the final layout.

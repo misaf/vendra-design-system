@@ -11,7 +11,7 @@ import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
 import {vfDirections} from '../domain/location.js';
 import {vfPageTenant} from './page-lifecycle.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
-import {VF_STORE, vfFeatures} from '../domain/store-config.js';
+import {VF_STORE, vfFeatures, vfLocale} from '../domain/store-config.js';
 import {VF_CATEGORY_COPY} from '../translations/categories.js';
 import {VF_SHELL} from '../translations/shell.js';
 import {vfDayMonth, vfDayName} from '../translations/time.js';
@@ -274,7 +274,7 @@ export function vfShell(self, page) {
     shopLink,
     lang: L,
     fa,
-    dir: fa ? 'rtl' : 'ltr',
+    dir: vfLocale(L).dir,
     tenant: vfPageTenant(props),
     brandAssets: vfBrand(vfPageTenant(props)),
     nav: {
