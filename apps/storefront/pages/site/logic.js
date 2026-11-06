@@ -67,7 +67,12 @@ function vfReportPageView(page) {
   const key = page.state.route + ' ' + location.pathname;
   if (page._vfPageView === key) return;
   page._vfPageView = key;
-  window.VF_TRACK.event('page_view', {page_type: page.state.route, page_path: location.pathname});
+  // The page's own language: <html lang> follows only once the new page has rendered.
+  window.VF_TRACK.event('page_view', {
+    language: page.state.lang,
+    page_type: page.state.route,
+    page_path: location.pathname
+  });
 }
 // Shows a route at once when its page has loaded (page code may focus what it just rendered);
 // otherwise once its code arrives, so the current page stays as it is (URL, scroll and all) in the
