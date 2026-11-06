@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const theme = require('../_shared/domain/tenant-theme.js');
-const {tenantSpecs, tenantOutputs} = require('../_build/tenants.cjs');
+const {tenantSpecs, tenantOutputs} = require('../../../tools/tenants.cjs');
 const root = path.resolve(__dirname, '../../..');
 
 // OKLab distance; 0.02 is about the smallest difference people notice.
@@ -103,7 +103,7 @@ assert.equal(emailThemes.default.disp, disp);
 console.log('Passed: tenant theme generator and email palettes');
 
 // Tenant branding fails the build for broken references or unusable image geometry.
-const {validateBrand, brandOutputs} = require('../_build/brand.cjs');
+const {validateBrand, brandOutputs} = require('../../../tools/brand.cjs');
 assert.throws(
   () => validateBrand({logo: {src: 'assets/no-logo.svg', width: 10, height: 10}}),
   /missing or invalid/

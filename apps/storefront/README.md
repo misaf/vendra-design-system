@@ -150,7 +150,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Shared code layout:** `_shared/` is split by role, and `npm test` (`_build/app-dependencies.cjs`) enforces which folder may import which:
+**Shared code layout:** `_shared/` is split by role, and `npm test` (`tools/app-dependencies.cjs` at the repo root) enforces which folder may import which:
 
 | Folder | Holds | May import |
 | --- | --- | --- |

@@ -5,7 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const {spawnSync} = require('node:child_process');
 const {parseSync} = require('rolldown/experimental');
-const {levels, layer, dependencyViolation} = require('../_build/atomic.cjs');
+const {levels, layer, dependencyViolation} = require('../../../tools/atomic.cjs');
 const repo = path.resolve(__dirname, '../../..');
 
 assert.equal(
@@ -78,8 +78,8 @@ const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-atomic-'));
 try {
   for (const file of [
     '.prettierrc.json',
-    'apps/storefront/_build/new-component.cjs',
-    'apps/storefront/_build/atomic.cjs',
+    'tools/new-component.cjs',
+    'tools/atomic.cjs',
     'apps/storefront/app/ds.js',
     'components/index.css',
     'components/utils/messages.d.ts'
@@ -90,11 +90,9 @@ try {
   }
   fs.symlinkSync(path.join(repo, 'node_modules'), path.join(temporary, 'node_modules'), 'dir');
   const generate = (...args) =>
-    spawnSync(
-      process.execPath,
-      [path.join(temporary, 'apps/storefront/_build/new-component.cjs'), ...args],
-      {encoding: 'utf8'}
-    );
+    spawnSync(process.execPath, [path.join(temporary, 'tools/new-component.cjs'), ...args], {
+      encoding: 'utf8'
+    });
   assert.notEqual(generate('Sample').status, 0, 'a layer is required');
   assert.notEqual(generate('Sample', '--level', 'pages').status, 0, 'unknown layer is rejected');
   for (const level of levels) {
