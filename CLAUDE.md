@@ -252,7 +252,7 @@ StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its lo
 and StorefrontWeddingsLayout retains responsive hero placement.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
-`npm test` runs `_build/app-dependencies.cjs` through filesystem regression tests. App layouts use
+`npm test` runs `tools/app-dependencies.cjs` through filesystem regression tests. App layouts use
 React/layouts; molecules and organisms use the DS bridge, same/lower app UI layers and
 `_shared/ui/`. Keep business modules and page coordinators out of app UI. `_shared/` is split by
 role and the checker enforces its folder directions: `platform/` (environment: address, asset base,

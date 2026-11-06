@@ -8,7 +8,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {levels} = require('./atomic.cjs');
 
-const repo = path.resolve(__dirname, '../../..');
+const repo = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
 const wording = args.includes('--wording');
