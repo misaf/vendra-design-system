@@ -24,6 +24,8 @@ export interface AnalyticsItem {
   item_id: string;
   item_name?: string;
   item_category?: string;
+  /** The list the item was picked from, e.g. "saved" */
+  item_list_name?: string;
   price?: number;
   quantity?: number;
 }
