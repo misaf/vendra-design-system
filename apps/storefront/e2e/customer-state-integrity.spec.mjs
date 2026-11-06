@@ -856,30 +856,24 @@ for (const lang of ['en', 'fa']) {
           lastOrder: null,
           notice: null
         });
-        expect(after.ownerOrders).toHaveLength(outcome === 'success' ? 1 : 0);
-        const placed = after.ownerOrders[0];
-        if (placed) {
-          expect(placed.customerId).toBe(owner);
-          expect(placed.delivery.address).toBe('Test street 12, unit 3');
-          await expect(page.locator('main')).not.toContainText(placed.id);
-        }
+        // The owner signed out before the response, so even a successful order keeps nothing
+        // of theirs in this tab (it is the server's); B's drafts are untouched.
+        expect(after.ownerOrders).toEqual([]);
         await expect(page.locator('#vf-address')).toHaveValue('Customer B private street');
         await expect(page.locator('#vf-name')).toHaveValue('Customer B recipient');
         await switchCustomer(tab, lang, owner);
         await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(owner);
         await page.evaluate(() => window.__vfSite.navigate({view: 'account'}));
         await expect(page).toHaveURL(/\/account\//);
-        if (placed) await expect(page.locator('main')).toContainText(placed.id);
         await page.reload();
         await expect.poll(() => page.evaluate(() => window.__vfSite?.state.customerId)).toBe(owner);
         const restored = await page.evaluate(() => ({
           orders: window.__vfSite.state.orders,
           delivery: window.__vfSite.state.delivery
         }));
-        expect(restored.orders).toHaveLength(outcome === 'success' ? 1 : 0);
-        // switchCustomer signs out first, and sign-out keeps no private delivery draft.
+        // switchCustomer signs out first, and sign-out keeps no private history or delivery draft.
+        expect(restored.orders).toEqual([]);
         expect(restored.delivery.address).toBe('');
-        if (placed) await expect(page.locator('main')).toContainText(placed.id);
         expect(errors).toEqual([]);
         await info.attach('two-tab-response-ownership', {
           body: JSON.stringify(
