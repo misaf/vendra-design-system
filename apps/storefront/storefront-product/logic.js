@@ -26,7 +26,11 @@ import {vfFeatures} from '../_shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
-import {vfBreadcrumbData, vfProductData} from '../_shared/services/structured-data.js';
+import {
+  vfBreadcrumbData,
+  vfOfferPrice,
+  vfProductData
+} from '../_shared/services/structured-data.js';
 
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {
@@ -153,12 +157,16 @@ function vals(page) {
   const quantity = Math.min(s.qty, Math.max(1, remaining));
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
-  // Link previews show the product's photo and its description (page-lifecycle.js vfPageHead);
-  // search engines also read its price, stock and breadcrumb trail (structured-data.js).
+  // Link previews show the product's photo (its largest size, with its description as alt text),
+  // its description and its price (page-lifecycle.js vfPageHead); search engines also read its
+  // price, stock and breadcrumb trail (structured-data.js).
   const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
+  const photo = vfProductImage(product, L);
   page.head = {
-    image: vfProductImage(product, L).src,
+    image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
     description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
+    type: 'product',
+    price: vfOfferPrice(product.price),
     structuredData: [
       vfProductData({
         product,

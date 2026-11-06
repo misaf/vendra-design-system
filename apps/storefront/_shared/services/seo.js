@@ -136,13 +136,19 @@ export const VF_SEO = (() => {
   // x-default and robots, as {title, meta: [{key, name, content}], links: [{rel, hreflang?, href}]}.
   // Pure: the browser applies them (syncHead) and the build writes them into each page (headHtml).
   // `alternates` holds the page in each language the store offers; x-default is the English one, or
-  // the only one. URLs are read against the page's address. `structuredData` lists the page's
-  // schema.org objects (structured-data.js); they come back as one JSON-LD @graph, or null.
-  /** @param {{title?: string, description?: string, image?: string, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean, structuredData?: object[]}} [head] */
+  // the only one. URLs are read against the page's address. `imageAlt`, `imageWidth` and
+  // `imageHeight` describe the preview image; `price` ({price, priceCurrency}, ISO 4217, as
+  // structured-data.js vfOfferPrice) adds a product's product:price:* tags. `structuredData` lists the
+  // page's schema.org objects (structured-data.js); they come back as one JSON-LD @graph, or null.
+  /** @param {{title?: string, description?: string, image?: string, imageAlt?: string, imageWidth?: number, imageHeight?: number, price?: {price: string, priceCurrency: string}, url?: string, locale?: string, type?: string, alternates?: Record<string, string>, noindex?: boolean, structuredData?: object[]}} [head] */
   const headTags = ({
     title,
     description,
     image,
+    imageAlt,
+    imageWidth,
+    imageHeight,
+    price,
     url,
     locale = 'en',
     type = 'website',
@@ -158,6 +164,9 @@ export const VF_SEO = (() => {
       ['property', 'og:title', title],
       ['property', 'og:description', description],
       ['property', 'og:image', img],
+      ['property', 'og:image:alt', img ? imageAlt : null],
+      ['property', 'og:image:width', img && imageWidth ? String(imageWidth) : null],
+      ['property', 'og:image:height', img && imageHeight ? String(imageHeight) : null],
       ['property', 'og:url', href],
       ['property', 'og:type', type],
       ['property', 'og:locale', LOCALE[locale] || locale],
@@ -166,6 +175,9 @@ export const VF_SEO = (() => {
       ['name', 'twitter:title', title],
       ['name', 'twitter:description', description],
       ['name', 'twitter:image', img],
+      ['name', 'twitter:image:alt', img ? imageAlt : null],
+      ['property', 'product:price:amount', price ? price.price : null],
+      ['property', 'product:price:currency', price ? price.priceCurrency : null],
       ['name', 'robots', noindex ? 'noindex, follow' : null]
     ].map(([key, name, content]) => ({key, name, content}));
     const links = [];

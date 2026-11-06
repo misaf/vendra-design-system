@@ -41,16 +41,17 @@ function vals(page) {
     missing = id !== 'morning-at-the-studio' && !post,
     loading = vfPageRoute(page.props).demo === 'loading';
   // Link previews show the post's photo and its standfirst (page-lifecycle.js vfPageHead).
+  const cover = post && vfJournalImage(post.image);
   page.head = post
     ? {
-        image: vfJournalImage(post.image)?.src,
+        image: cover && {src: cover.src, alt: post[L][0], width: cover.width, height: cover.height},
         description: post[L][1],
         type: 'article',
         structuredData: [
           vfArticleData({
             headline: post[L][0],
             description: post[L][1],
-            image: vfJournalImage(post.image)?.src,
+            image: cover?.src,
             published: post.publishedAt,
             url: vfRouteUrl({lang: L, view: 'post', post: post.id}),
             lang: L
