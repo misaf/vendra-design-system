@@ -1,5 +1,5 @@
 import React from 'react';
-import {loadLeaflet, TILES} from '../../../apps/storefront/_e2e/fixtures/leaflet.js';
+import {loadLeaflet, TILES} from '../../../apps/storefront/e2e/fixtures/leaflet.js';
 import {PlacesMap} from './PlacesMap.jsx';
 
 export function Fixture({lang = 'en'}) {

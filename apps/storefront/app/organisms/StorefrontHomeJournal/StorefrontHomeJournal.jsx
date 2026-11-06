@@ -1,6 +1,6 @@
 import React from 'react';
 import * as DS from '../../ds.js';
-import {CollectionCarousel} from '../../../_shared/ui/collection-carousel.jsx';
+import {CollectionCarousel} from '../../../shared/ui/collection-carousel.jsx';
 
 export function StorefrontHomeJournal({posts, labels, journalHref}) {
   return (

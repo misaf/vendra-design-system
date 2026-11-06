@@ -1,26 +1,26 @@
 # Storefront templates
 
-The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `storefront-*`, wired together by `storefront-site` (the click-through router). Pages run on sample data in `_shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
+The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `pages/*`, wired together by `pages/site` (the click-through router). Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
 `../../components/atoms/` and `../../components/molecules/`; organisms follow in separate batches.
-The app continues to import components through `app/ds.js`, and `storefront-*` remains the source
+The app continues to import components through `app/ds.js`, and `pages/*` remains the source
 for routed pages.
 
 ## Where to edit
 
 | Change | File |
 | --- | --- |
-| Page markup | `storefront-<page>/View.jsx` (JSX inside the shared `Shell`) |
-| Page behavior / copy / styles | `storefront-<page>/logic.js` / `copy.js` / `styles.css` |
-| Store name, contact, hours, currency, map, payment, balance, announcement | [_shared/domain/store-config.js](_shared/domain/store-config.js) |
-| Products, sizes, add-ons | [_shared/domain/catalog.js](_shared/domain/catalog.js) |
-| Delivery zones, fees, cut-offs, days, slots, free delivery | [_shared/domain/delivery.js](_shared/domain/delivery.js) |
-| Promo codes | [_shared/domain/promotions.js](_shared/domain/promotions.js) |
+| Page markup | `pages/<page>/View.jsx` (JSX inside the shared `Shell`) |
+| Page behavior / copy / styles | `pages/<page>/logic.js` / `copy.js` / `styles.css` |
+| Store name, contact, hours, currency, map, payment, balance, announcement | [shared/domain/store-config.js](shared/domain/store-config.js) |
+| Products, sizes, add-ons | [shared/domain/catalog.js](shared/domain/catalog.js) |
+| Delivery zones, fees, cut-offs, days, slots, free delivery | [shared/domain/delivery.js](shared/domain/delivery.js) |
+| Promo codes | [shared/domain/promotions.js](shared/domain/promotions.js) |
 | Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
 | Footer composition | `app/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
 | Mobile menu composition | `app/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
-| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `_shared/services/navigation.js`) |
+| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `shared/services/navigation.js`) |
 | Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
 | Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
 | Presentation display | `app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
@@ -133,24 +133,24 @@ for routed pages.
 | Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (StorefrontShopHeading, sidebar, compact categories, results and filter-dialog slots from shop View) |
 | Product-page layout | `app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (StorefrontProductBreadcrumbs, gallery, details, related designs and feedback slots from product View) |
 | Main storefront layout | `app/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
-| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `_shared/services/navigation.js`) |
-| Routes and URL helpers | [_shared/services/routing.js](_shared/services/routing.js) |
-| Responsive state, focus, `<head>` | `_shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
-| Shared translations | `_shared/translations/` |
-| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../../components/`; Leaflet loading and location text in `_shared/domain/location.js` |
-| Shared CSS: shell, page families, information pages | `_shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
-| Tailwind entry and token aliases | [_shared/styles/tailwind.css](_shared/styles/tailwind.css) |
+| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `shared/services/navigation.js`) |
+| Routes and URL helpers | [shared/services/routing.js](shared/services/routing.js) |
+| Responsive state, focus, `<head>` | `shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
+| Shared translations | `shared/translations/` |
+| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../../components/`; Leaflet loading and location text in `shared/domain/location.js` |
+| Shared CSS: shell, page families, information pages | `shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
+| Tailwind entry and token aliases | [shared/styles/tailwind.css](shared/styles/tailwind.css) |
 | Tokens and tenant themes | `../../tokens/`, `../../tokens/tenants/<slug>.json` |
-| Number, currency and date formatting | `../../components/utils/` (wrapped by `_shared/domain/formatting.js`) |
-| Delivery, totals, discount and API-adapter rules | `../../components/utils/commerce.js` (wrapped by `_shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
+| Number, currency and date formatting | `../../components/utils/` (wrapped by `shared/domain/formatting.js`) |
+| Delivery, totals, discount and API-adapter rules | `../../components/utils/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 
-Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`_shared/services/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`_shared/services/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `_shared/` are ES modules that import what they use; the integrations (`VF_API`, `VF_TRACK`, `VF_PAYMENT`) attach to `window`, imported once by `app/runtime.js`. `_shared/domain/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
+Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`shared/services/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`shared/services/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `shared/` are ES modules that import what they use; the integrations (`VF_API`, `VF_TRACK`, `VF_PAYMENT`) attach to `window`, imported once by `app/runtime.js`. `shared/domain/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Shared code layout:** `_shared/` is split by role, and `npm test` (`tools/app-dependencies.cjs` at the repo root) enforces which folder may import which:
+**Shared code layout:** `shared/` is split by role, and `npm test` (`tools/app-dependencies.cjs` at the repo root) enforces which folder may import which:
 
 | Folder | Holds | May import |
 | --- | --- | --- |
@@ -161,9 +161,9 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 | `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `../../components/`, React, `qrcode-generator` |
 | `styles/` | the Tailwind entry and the custom CSS entry with shared page CSS | CSS only |
 
-A JS module loose in `_shared/` or in any other folder fails the check: place a new module by what it does.
+A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `_shared/services/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `_shared/styles/custom.css`, and the `lazyPage('<name>')` constant and route in `storefront-site/View.jsx`.
+**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `shared/services/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `shared/styles/custom.css`, and the `lazyPage('<name>')` constant and route in `pages/site/View.jsx`.
 
 ## Commands
 
@@ -183,7 +183,7 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
+- **Tenant list only:** `node build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
 ## GitHub Pages demo
@@ -198,22 +198,22 @@ The repository's Pages root opens the storefront; direct links can select a view
 sample-data demo; live API services need their own backend.
 
 **Prerendered pages.** The build writes the app's page at every public address
-(`apps/storefront/_build/routes.mjs`: each view, category, product, journal post and policy, in each
-language) already rendered (`_build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
+(`apps/storefront/build/routes.mjs`: each view, category, product, journal post and policy, in each
+language) already rendered (`build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
 tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
 in the source, so search engines and WhatsApp/Telegram link previews read them without running
 scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
 Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
-`VF_SEO.headTags` the browser applies (`vfPageHead` in `_shared/services/page-lifecycle.js`: the page's h1,
+`VF_SEO.headTags` the browser applies (`vfPageHead` in `shared/services/page-lifecycle.js`: the page's h1,
 its address, its alternates and a preview image — the product's or post's photo, otherwise the
 logo). The same head carries the page's schema.org structured data as one JSON-LD script
-(`_shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
+(`shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
 in ISO 4217, Toman as Rial) and `BreadcrumbList` on product pages, the studio as a `Florist` (address,
 map point, phone, opening hours and holidays) on the home and contact pages, `FAQPage` on the FAQ and
 `Article` on journal posts; noindex pages have none. Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
 and preview URLs; without it they start at the site root. CI's Pages build sets it.
 
-**Sitemap.** `storefrontSitemap(origin)` in `_build/routes.mjs` lists every indexed address of those
+**Sitemap.** `storefrontSitemap(origin)` in `build/routes.mjs` lists every indexed address of those
 routes, each with the same page in every store language as `xhtml:link` hreflang alternates
 (x-default English, as in the page's head) and a `lastmod` where the data has one: an article's
 `publishedAt`, and the journal's newest post. `deployment/sitemap.xml` is its `example.test` sample;
@@ -228,9 +228,9 @@ stays in view while the app loads but is `inert` (and, when it will be replaced,
 disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
 does not have yet. The app does not set `inert` without scripts, so links keep working then.
 Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
-`_shared/platform/environment.js`), and the page renders again at the real time once it has mounted, so
+`shared/platform/environment.js`), and the page renders again at the real time once it has mounted, so
 delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
-from `_shared/platform/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
+from `shared/platform/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
 import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
 QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
 hidden while it loads.
@@ -239,9 +239,9 @@ The site's `404.html` is the prerendered not-found page: a static host serves it
 without a file (an order to track, a mistyped link). It stays hidden (at most 3s) until the app has
 read the address and rendered that address's page (not-found or another). A host that can rewrite
 addresses can instead serve `apps/storefront/app/index.html` (the plain shell, which also serves the
-`?page=<name>` previews) for every path under `apps/storefront/app/`. `_tests/prerender.test.mjs` checks
+`?page=<name>` previews) for every path under `apps/storefront/app/`. `tests/prerender.test.mjs` checks
 the source of a product, a shop category, a journal post and the Persian home page, and
-`_e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
+`e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
 on any hydration error.
 
 To verify the same paths locally:
@@ -253,7 +253,7 @@ npm --prefix apps/storefront run preview -- --base /vendra-design-system/
 ```
 
 **Compression and caching.** The build ends by writing a Brotli (`.br`) and a gzip (`.gz`) copy
-beside every page, script, stylesheet and data file of 1 KB or more (`_build/compress.mjs`), so a
+beside every page, script, stylesheet and data file of 1 KB or more (`build/compress.mjs`), so a
 host can send them without compressing per request. Vite's content-hashed files go in their own
 folder, `assets/hashed/` (`build.assetsDir`), apart from the repository's `assets/` copied in under
 their own names, so exactly those can be cached forever. `deployment/nginx.conf` is the reference
@@ -265,7 +265,7 @@ file. GitHub Pages ignores both (it compresses on the fly and caches for 10 minu
 
 ## Browser tests
 
-`test:e2e` builds the app once and runs storefront tests against Vite preview, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `_e2e/playwright-report/build/` and `_e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
+`test:e2e` builds the app once and runs storefront tests against Vite preview, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 Install the browser after `npm ci` (and after upgrading Playwright), then run the tests:
 
@@ -283,15 +283,15 @@ The combined command routes `--project` filters to the suites that define them. 
 
 `openSite()` waits for the app to take control of prerendered content, then checks the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
 
-Performance budgets (`_e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
+Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
-Screenshot comparison specs use software rasterization (`--disable-gpu`) so decoded WebP photos have repeatable colors across browser processes. This does not change storefront rendering in customers’ browsers. Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `_e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `_e2e/playwright-report/`, then run `test:e2e:update`.
+Screenshot comparison specs use software rasterization (`--disable-gpu`) so decoded WebP photos have repeatable colors across browser processes. This does not change storefront rendering in customers’ browsers. Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `e2e/playwright-report/`, then run `test:e2e:update`.
 
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs on pushes to `master`, on pull requests (a branch is tested through its pull request) and by hand. A push or pull request that changes only `.github/` skips the browser tests (3 and 4); after a workflow change those tests should prove, run CI by hand (Actions → CI → Run workflow). The browser jobs stop after 75 minutes:
 
-1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`_tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
+1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Package on React 19:** `test:react19` installs React 19 and its types in a scratch app, runs the package test there (import, server render, wording, themes) and type-checks `dist/`'s declarations strictly. The workspace itself stays on React 18.3.1.
 3. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch.
 4. **Production storefront, visuals and performance:** `test:e2e:build` builds once and runs all storefront flows, page screenshots, accessibility, responsive/device tests and performance budgets in the same image. Storefront first-paint checks live in `first-paint.spec.mjs`; source hydration fixtures remain in the development suite.
@@ -325,9 +325,9 @@ The jobs still run in the pinned Playwright image, so the `-linux.png` baselines
 
 Every folder in `components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
 
-- **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `_e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
-- **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `_e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Name things as a customer would see them; storefront flows stay in `_e2e/features.spec.mjs`.
-- **Running:** `npx playwright test -c _e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`../components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
+- **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
+- **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Name things as a customer would see them; storefront flows stay in `e2e/features.spec.mjs`.
+- **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`../components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
 - **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The build leaves `*.fixture.jsx` out of `dist/`, and `files: ["dist"]` keeps the specs out of the package.
 
 ## Runtime and export
@@ -335,9 +335,9 @@ Every folder in `components/` has its own browser test beside the component: `<N
 `_runtime/` is generated; never edit it.
 
 - **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
-- **`app/pages.js`:** each `storefront-*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
+- **`app/pages.js`:** each `pages/*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
 - **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` (the build's base path) and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` prerenders every public address (`_build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Build:** `build:app` prerenders every public address (`build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 
@@ -345,7 +345,7 @@ Every folder in `components/` has its own browser test beside the component: `<N
 
 - **Tailwind 4.3.3, local build, `tw:` prefix:** spacing numbers follow Vendra's scale (`tw:gap-5` = `--space-5`). Use the named layout utilities (`max-w-page`, `px-gutter`, `h-tap`, `z-header`, `rounded-control`…) and the semantic colours (`bg-page`, `text-body`).
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
-- **Custom CSS** is for contextual selectors and component internals, in `_shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
+- **Custom CSS** is for contextual selectors and component internals, in `shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
 - **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
@@ -355,7 +355,7 @@ Every folder in `components/` has its own browser test beside the component: `<N
 ## TV mode
 
 The storefront runs on a television, read from about 3 metres and driven by a remote's arrows and OK
-(Enter). `main.jsx` decides before the first render (`_shared/services/tv.js` → `vfApplyTvMode`) and sets
+(Enter). `main.jsx` decides before the first render (`shared/services/tv.js` → `vfApplyTvMode`) and sets
 `data-density="tv"` on `<html>`; the Shell passes the same density to `VendraProvider` for the overlays.
 First match wins:
 
@@ -406,10 +406,10 @@ and pressing Add to bag.
 - **Checkout** stores the finished order in session storage. Track shows it, and Order again refills the bag.
 - **Account balance:** top-ups are simulated. Paying from a balance of at least `wallet.discountFrom` takes `discountPercent` off the products. A real store keeps the balance on its server.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
-- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `_shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
+- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
 - **Preview states:** add `?tenant=clay` (any tenant in `tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
-- **Store configuration** (`_shared/domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm --prefix apps/storefront run build` after changing it.
+- **Store configuration** (`shared/domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm --prefix apps/storefront run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `VF_TRACK.subscribe` listeners only after consent, without contact details. `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 
 

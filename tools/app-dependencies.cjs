@@ -4,9 +4,9 @@ const path = require('node:path');
 const {parseSync} = require('rolldown/experimental');
 const {layer, dependencyViolation} = require('./atomic.cjs');
 
-// apps/storefront/_shared/ is split by role, and each folder may import only the folders listed here
+// apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
-// _shared/ itself, or in a folder not listed, fails: place it by what it does.
+// shared/ itself, or in a folder not listed, fails: place it by what it does.
 //   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
 //   domain/    pure store rules and sample data
 //   services/  browser services: routing, SEO, focus/lifecycle, page state, offline, API, analytics
@@ -25,10 +25,10 @@ const sharedRules = {
   styles: {folders: [], packages: []}
 };
 const sharedFolder = file => {
-  const folder = /^apps\/storefront\/_shared\/([^/]+)\//.exec(file)?.[1];
+  const folder = /^apps\/storefront\/shared\/([^/]+)\//.exec(file)?.[1];
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
-const isShared = file => file.startsWith('apps/storefront/_shared/');
+const isShared = file => file.startsWith('apps/storefront/shared/');
 const uiLayer = file => /^apps\/storefront\/app\/(layouts|organisms|molecules)\//.exec(file)?.[1];
 const protectedSource = file =>
   uiLayer(file) || file === 'apps/storefront/app/ds.js' || isShared(file);
@@ -87,16 +87,11 @@ function walk(directory) {
 }
 
 function runtimeSources(root) {
-  const files = ['components', 'apps/storefront/app', 'apps/storefront/_shared'].flatMap(folder =>
+  const files = ['components', 'apps/storefront/app', 'apps/storefront/shared'].flatMap(folder =>
     walk(path.join(root, folder))
   );
-  const templates = path.join(root, 'apps/storefront');
-  if (fs.existsSync(templates)) {
-    for (const entry of fs.readdirSync(templates, {withFileTypes: true})) {
-      if (entry.isDirectory() && entry.name.startsWith('storefront-'))
-        files.push(...walk(path.join(templates, entry.name)));
-    }
-  }
+  const pages = path.join(root, 'apps/storefront/pages');
+  if (fs.existsSync(pages)) files.push(...walk(pages));
   return files
     .filter(file => /\.(js|jsx)$/.test(file) && !/\.(fixture|spec)\.(js|jsx)$/.test(file))
     .map(file => path.relative(root, file).split(path.sep).join('/'))
