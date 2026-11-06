@@ -1,5 +1,16 @@
 // Shared sample article content for journal and post pages. `publishedAt` is the API's publication
 // date (YYYY-MM-DD); the sitemap reads it as each article's lastmod.
+/**
+ * @typedef {{before: string[], quote: string, heading: string, after: string[]}} VfClassicArticle
+ * @typedef {{
+ *   id: string, image: string, cat: string, publishedAt: string, en: string[], fa: string[],
+ *   body?: {en: any[][], fa: any[][]},
+ *   classic?: {en: VfClassicArticle, fa: VfClassicArticle},
+ *   shop?: {en: string, fa: string},
+ *   products?: string[]
+ * }} VfPost
+ */
+/** @type {VfPost[]} */
 export const VF_POSTS = [
   {
     id: 'autumn',
@@ -17,63 +28,48 @@ export const VF_POSTS = [
       'داوودی، کوکب و آخرین رزهای باغی — و چطور بیشتر بمانند.',
       '۵ دقیقه مطالعه',
       '۶ مهر ۱۴۰۵'
-    ]
-  },
-  {
-    id: 'care',
-    image: 'assets/journal/care.webp',
-    cat: 'care',
-    publishedAt: '2026-09-12',
-    en: [
-      'Five ways to keep a bouquet fresh',
-      'Clean vase, angled stems, cool room. The small habits that add days.',
-      '3 min read',
-      '12 Sep 2026'
     ],
-    fa: [
-      'پنج راه برای تازه ماندن دسته‌گل',
-      'گلدان تمیز، ساقه مورب، اتاق خنک. عادت‌های کوچکی که روزها اضافه می‌کنند.',
-      '۳ دقیقه مطالعه',
-      '۲۱ شهریور ۱۴۰۵'
-    ]
-  },
-  {
-    id: 'bridal',
-    image: 'assets/journal/bridal.webp',
-    cat: 'weddings',
-    publishedAt: '2026-08-30',
-    en: [
-      'Choosing your bridal bouquet',
-      'Shape, scale and colour — a florist’s guide to the flowers you’ll hold all day.',
-      '6 min read',
-      '30 Aug 2026'
-    ],
-    fa: [
-      'انتخاب دسته‌گل عروس',
-      'فرم، اندازه و رنگ — راهنمای گل‌فروش برای گلی که تمام روز در دست دارید.',
-      '۶ دقیقه مطالعه',
-      '۸ شهریور ۱۴۰۵'
-    ]
-  },
-  {
-    id: 'orchids',
-    image: 'assets/journal/orchids.webp',
-    cat: 'care',
-    publishedAt: '2026-08-16',
-    en: [
-      'Orchids that bloom again',
-      'Light, water and patience: how to bring a phalaenopsis back into flower.',
-      '4 min read',
-      '16 Aug 2026'
-    ],
-    fa: [
-      'ارکیده‌ای که دوباره گل می‌دهد',
-      'نور، آب و حوصله: چطور فالانوپسیس دوباره گل بدهد.',
-      '۴ دقیقه مطالعه',
-      '۲۵ مرداد ۱۴۰۵'
-    ]
+    // An article in the classic layout (StorefrontPostClassic): the cover, paragraphs, a quote, a
+    // heading and more paragraphs, all the post's own.
+    classic: {
+      en: {
+        before: [
+          'By October the growers around Karaj are cutting the last of the summer roses, and the first chrysanthemums arrive in rust, cream and a dusty pink that suits the light this time of year.',
+          'Dahlias are the season’s showpiece: heavy heads, thousands of petals, and colours from burgundy to apricot. We pair them with rosehips and a little eucalyptus so the bouquet keeps its shape.'
+        ],
+        quote:
+          'Autumn flowers are sturdier than they look. Give them cool water and they’ll give you two weeks.',
+        heading: 'Making them last',
+        after: [
+          'Trim every stem at an angle before it goes in the vase, and strip any leaves that would sit below the water. Change the water every two days, and keep the vase away from fruit and radiators.',
+          'Chrysanthemums will happily last two weeks. Dahlias are shorter-lived — five or six days — so enjoy them while they’re at their best.'
+        ]
+      },
+      fa: {
+        before: [
+          'در مهر، باغدارهای اطراف کرج آخرین رزهای تابستان را می‌چینند و اولین داوودی‌ها با رنگ‌های زنگاری، شیری و صورتی گرفته از راه می‌رسند که به نور این فصل می‌آید.',
+          'کوکب ستاره فصل است: گل‌های سنگین، هزاران گلبرگ و رنگ‌هایی از شرابی تا زردآلویی. آن را با نسترن و کمی اکالیپتوس می‌بندیم تا دسته‌گل فرمش را نگه دارد.'
+        ],
+        quote: 'گل‌های پاییزی محکم‌تر از ظاهرشان هستند. آب خنک بدهید، دو هفته می‌مانند.',
+        heading: 'چطور بیشتر بمانند',
+        after: [
+          'پیش از گذاشتن در گلدان، هر ساقه را مورب کوتاه کنید و برگ‌هایی را که زیر آب می‌روند جدا کنید. هر دو روز آب را عوض کنید و گلدان را از میوه و بخاری دور نگه دارید.',
+          'داوودی به‌راحتی دو هفته می‌ماند. کوکب عمر کوتاه‌تری دارد — پنج یا شش روز — پس تا بهترین حالتش است لذت ببرید.'
+        ]
+      }
+    },
+    // The article's own call to action; without one the post page offers the whole shop.
+    shop: {en: 'Shop autumn bouquets', fa: 'خرید دسته‌گل پاییزی'}
   }
 ];
+// Retired articles and the newer post that replaced each (journal/care/ → journal/bouquet-last-longer/).
+// The router opens the newer post and writes its address back; the server answers the old address
+// with a 301 (deployment/nginx.conf).
+export const VF_POST_MOVED = {
+  care: 'bouquet-last-longer',
+  bridal: 'bridal-bouquet-guide',
+  orchids: 'orchid-care'
+};
 VF_POSTS.push(
   ...[
     {
