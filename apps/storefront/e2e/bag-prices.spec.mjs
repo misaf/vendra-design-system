@@ -20,7 +20,9 @@ for (const lang of ['en', 'fa']) {
       sessionStorage.setItem(key, JSON.stringify(saved));
     });
     await page.reload({waitUntil: 'domcontentloaded'});
-    await page.waitForFunction(() => window.VF_RENDERED && !document.getElementById('root')?.inert);
+    await page.waitForFunction(
+      () => window.__vfRuntime?.rendered && !document.getElementById('root')?.inert
+    );
     const notice = rows.first().locator('.ag-alert--info');
     await expect(notice).toBeVisible();
     await expect(notice).toContainText(fa ? 'قیمت هر عدد' : 'Price updated');
