@@ -1,12 +1,12 @@
 // Every page of the storefront that has an address of its own, as paths under the app's path
 // (en/shop/boxes/). The production build writes the app's page at each of them, so a static host
 // serves every address directly; `indexed` marks the ones search engines may list (the sitemap).
-import {VF_POLICIES, VF_ROUTES, vfAppBase, vfRouteUrl} from '../_shared/routing.js';
-import {VF_PRODUCTS} from '../_shared/catalog.js';
+import {VF_POLICIES, VF_ROUTES, vfAppBase, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_PRODUCTS} from '../_shared/domain/catalog.js';
 import {VF_POSTS} from '../_shared/translations/journal-content.js';
-import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
-import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
-import {VF_SEO} from '../_shared/seo.js';
+import {VF_CATEGORY_SLUGS} from '../_shared/domain/product-categories.js';
+import {VF_STORE, vfFeatures} from '../_shared/domain/store-config.js';
+import {VF_SEO} from '../_shared/services/seo.js';
 
 // Pages reached only through another page's address (product/<id>/, journal/<post>/), and the
 // not-found and error screens, which the host's 404 page shows.

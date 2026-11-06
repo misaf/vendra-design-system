@@ -1,22 +1,27 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
-import {VF_MONEY, vfSeparator} from '../_shared/formatting.js';
-import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
-import {vfShell, vfStored} from '../_shared/navigation.js';
-import {vfRouteUrl} from '../_shared/routing.js';
+import {
+  VF_PRODUCTS,
+  vfProductBadge,
+  vfProductImage,
+  vfProductSub
+} from '../_shared/domain/catalog.js';
+import {VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfAccountLoad, vfAccountPhone} from '../_shared/domain/account-data.js';
+import {vfShell, vfStored} from '../_shared/services/navigation.js';
+import {vfRouteUrl} from '../_shared/services/routing.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
   VF_SHOP_OCCASION_COPY
 } from '../_shared/translations/categories.js';
-import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
-import {vfCategoryImage} from '../_shared/category-images.js';
-import {vfJournalImage} from '../_shared/journal-images.js';
-import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
+import {VF_CATEGORY_SLUGS} from '../_shared/domain/product-categories.js';
+import {vfCategoryImage} from '../_shared/domain/category-images.js';
+import {vfJournalImage} from '../_shared/domain/journal-images.js';
+import {VF_STORE, vfLiveStore} from '../_shared/domain/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

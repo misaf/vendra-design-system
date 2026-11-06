@@ -1,7 +1,7 @@
 // Bilingual weddings copy. Edit here, then run npm --prefix templates run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current. Amounts are in
 // Toman and shown in the store's active currency.
-import {VF_MONEY} from '../_shared/formatting.js';
+import {VF_MONEY} from '../_shared/domain/formatting.js';
 export function vfCopy(S) {
   const m = v => VF_MONEY(v, S.lang === 'fa');
   return {

@@ -5,11 +5,11 @@ import './theme.js';
 import './runtime.js';
 import {PageError} from './PageError.jsx';
 import {loadPage, reloadOnStaleFiles} from './pages.js';
-import {vfAccountPhone} from '../_shared/account-data.js';
-import {vfHoldClock} from '../_shared/environment.js';
-import {vfTenant} from '../_shared/page-lifecycle.js';
-import {vfReadRoute} from '../_shared/routing.js';
-import {vfApplyTvMode} from '../_shared/tv.js';
+import {vfAccountPhone} from '../_shared/domain/account-data.js';
+import {vfHoldClock} from '../_shared/platform/environment.js';
+import {vfTenant} from '../_shared/services/page-lifecycle.js';
+import {vfReadRoute} from '../_shared/services/routing.js';
+import {vfApplyTvMode} from '../_shared/services/tv.js';
 
 reloadOnStaleFiles();
 vfApplyTvMode();

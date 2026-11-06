@@ -2,12 +2,12 @@
 const fs = require('node:fs');
 const path = require('node:path');
 function customCss(root) {
-  const shared = path.join(root, '_shared');
-  const entry = fs.readFileSync(path.join(shared, 'custom.css'), 'utf8');
+  const styles = path.join(root, '_shared', 'styles');
+  const entry = fs.readFileSync(path.join(styles, 'custom.css'), 'utf8');
   const css = entry.replace(
-    /@import ["'](\.\/[a-z-]+\.css|\.\.\/storefront-[a-z-]+\/styles\.css)["'];/g,
+    /@import ["'](\.\/[a-z-]+\.css|\.\.\/ui\/[a-z-]+\.css|\.\.\/\.\.\/storefront-[a-z-]+\/styles\.css)["'];/g,
     (_, source) => {
-      const file = path.resolve(shared, source);
+      const file = path.resolve(styles, source);
       const label = path.relative(root, file).split(path.sep).join('/');
       return '\n/* Source: ' + label + ' */\n' + fs.readFileSync(file, 'utf8');
     }

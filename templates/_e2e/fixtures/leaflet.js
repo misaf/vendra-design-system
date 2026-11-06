@@ -1,5 +1,5 @@
 // The map fixtures' loadLeaflet: Leaflet from templates/_vendor/leaflet, its stylesheet in the
-// package's components layer, as the storefront loads it (templates/_shared/location.js).
+// package's components layer, as the storefront loads it (templates/_shared/domain/location.js).
 const base = '/templates/_vendor/leaflet/';
 let loading = null;
 

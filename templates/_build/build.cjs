@@ -19,7 +19,7 @@ async function main() {
         );
       if (!check && content !== current) fs.writeFileSync(target, content);
     }
-    const {VF_STORE} = await import('../_shared/store-config.js');
+    const {VF_STORE} = await import('../_shared/domain/store-config.js');
     const specs = {default: {}, ...require('./tenants.cjs').tenantSpecs()};
     if (!specs[VF_STORE.tenant]) throw new Error('Unknown store tenant: ' + VF_STORE.tenant);
     specs[VF_STORE.tenant] = {
@@ -41,7 +41,7 @@ async function main() {
     const cli = path.join(cliFolder, cliPackage.bin.tailwindcss);
     const result = spawnSync(
       process.execPath,
-      [cli, '-i', '_shared/tailwind.css', '-o', output, '--minify'],
+      [cli, '-i', '_shared/styles/tailwind.css', '-o', output, '--minify'],
       {cwd: root, stdio: 'inherit'}
     );
     if (result.error) throw result.error;

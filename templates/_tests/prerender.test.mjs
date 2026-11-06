@@ -8,8 +8,8 @@ import {fileURLToPath} from 'node:url';
 import {buildServer, prerenderedPage} from '../_build/prerender.mjs';
 import {storefrontRoutes} from '../_build/routes.mjs';
 import {VF_POSTS} from '../_shared/translations/journal-content.js';
-import {vfAbsoluteUrl, vfServerRender} from '../_shared/environment.js';
-import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
+import {vfAbsoluteUrl, vfServerRender} from '../_shared/platform/environment.js';
+import {VF_STORE, vfLiveStore} from '../_shared/domain/store-config.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Inside the repository, so the built entry finds React in node_modules.

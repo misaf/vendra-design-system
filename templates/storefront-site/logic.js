@@ -1,5 +1,5 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/account-data.js';
+import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/domain/account-data.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -12,10 +12,10 @@ import {
   vfProductIds,
   vfReorderBag,
   vfSampleBag
-} from '../_shared/catalog.js';
-import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../_shared/delivery.js';
-import {VF_STORE, vfLanguage} from '../_shared/store-config.js';
-import {vfPageTenant} from '../_shared/page-lifecycle.js';
+} from '../_shared/domain/catalog.js';
+import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../_shared/domain/delivery.js';
+import {VF_STORE, vfLanguage} from '../_shared/domain/store-config.js';
+import {vfPageTenant} from '../_shared/services/page-lifecycle.js';
 import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,
@@ -24,10 +24,10 @@ import {
   vfInApp,
   vfReadRoute,
   vfRouteUrl
-} from '../_shared/routing.js';
+} from '../_shared/services/routing.js';
 import {loadPage, pageReady} from '../app/pages.js';
-import {vfOnServer} from '../_shared/environment.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
+import {vfOnServer} from '../_shared/platform/environment.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
 const VF_SESSION = 'vendra-template:' + vfAppBase();

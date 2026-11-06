@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfOrderMessage} from '../_shared/order-message.js';
-import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
+import {vfOrderMessage} from '../_shared/domain/order-message.js';
+import {vfAccountLoad, vfAccountPhone} from '../_shared/domain/account-data.js';
 import {
   VF_ADDONS,
   vfCardMessages,
@@ -16,7 +16,7 @@ import {
   vfProductImage,
   vfSampleBag,
   vfTokenText
-} from '../_shared/catalog.js';
+} from '../_shared/domain/catalog.js';
 import {
   VF_DELIVERY,
   VF_FREE_DELIVERY_THRESHOLD,
@@ -37,18 +37,18 @@ import {
   vfTotals,
   vfZone,
   vfZoneAt
-} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
-import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
-import {vfShell} from '../_shared/navigation.js';
-import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
+} from '../_shared/domain/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/domain/location.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../_shared/domain/promotions.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/domain/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel, vfDeliveryWhen} from '../_shared/translations/time.js';
-import {VF_NAV} from '../_shared/page-focus.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {vfNow} from '../_shared/environment.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {VF_NAV} from '../_shared/services/page-focus.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {vfNow} from '../_shared/platform/environment.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // Two checkout steps share this page: the bag (bag/) and delivery details (bag/?step=delivery).
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
