@@ -59,10 +59,15 @@ function vals(page) {
         ]
       }
     : null;
+  // Everything the article shows is the post's own; the page copy holds only its chrome.
+  const classic = post && !post.body ? post.classic?.[L] : undefined;
   if (post) {
     C.title = post[L][0];
     C.lede = post[L][1];
     C.meta = post[L].slice(2).join(vfSeparator(L));
+    C.quote = classic?.quote;
+    C.h2 = classic?.heading;
+    if (post.shop?.[L]) C.shopIt = post.shop[L];
   }
   return {
     migration: C.migration,
@@ -75,7 +80,7 @@ function vals(page) {
       ...C
     },
     hasBlocks: !!post?.body,
-    hasClassic: !post?.body,
+    hasClassic: !!classic,
     image: vfJournalImage(post?.image),
     blocks: (post?.body?.[L] || []).map(([type, value, caption]) => ({
       paragraph: type === 'p',
@@ -105,8 +110,8 @@ function vals(page) {
           ? vfAbsoluteUrl(vfRouteUrl({lang: L, view: 'post', post: id}))
           : vfRouteUrl({lang: L, view: 'post', post: id})
       ),
-    paras1: C.p1,
-    paras2: C.p2,
+    paras1: classic?.before || [],
+    paras2: classic?.after || [],
     copyLabel: page.state.copied ? C.copied : C.copy,
     copy: () => {
       try {
