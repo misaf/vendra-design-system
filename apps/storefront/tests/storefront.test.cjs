@@ -1744,15 +1744,17 @@ for (const lang of ['en', 'fa']) {
   c.setTimeout = () => 0;
   const storage = new Map(),
     session = new Map();
-  c.localStorage = {
-    getItem: key => storage.get(key) || null,
-    setItem: (key, value) => storage.set(key, value),
-    removeItem: key => storage.delete(key)
-  };
-  c.sessionStorage = {
-    getItem: key => session.get(key) || null,
-    setItem: (key, value) => session.set(key, value)
-  };
+  const area = map => ({
+    getItem: key => map.get(key) || null,
+    setItem: (key, value) => map.set(key, value),
+    removeItem: key => map.delete(key),
+    key: index => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    }
+  });
+  c.localStorage = area(storage);
+  c.sessionStorage = area(session);
   const login = phone => {
     vm.runInContext('vfAccountLogin', c)(phone, lang);
     site.renderVals().store.syncCustomer();
@@ -1770,12 +1772,7 @@ for (const lang of ['en', 'fa']) {
   site.renderVals().store.complete(first);
   site.renderVals().store.setDelivery({address: 'Private address A'});
   site.renderVals().store.setPaymentDraft({last4: '1234', ref: 'PRIVATE-A'});
-  vm.runInContext('vfAccountSignOut()', c);
-  site.renderVals().store.syncCustomer();
-  assert.equal(site.state.customerId, 'guest');
-  assert.equal(site.state.orders.length, 0);
-  assert.equal(site.state.delivery.address, '');
-  assert.equal(site.state.paymentDraft.ref, '');
+  // Switching accounts without signing out keeps each customer's session apart.
   login('09121111111');
   assert.equal(site.state.orders.length, 0, 'another customer cannot see earlier history');
   site.renderVals().store.complete({...first, id: 'VN-31002', customerId: '09120000000'});
@@ -1789,6 +1786,26 @@ for (const lang of ['en', 'fa']) {
   assert.equal(site.state.orders.length, 2);
   assert.equal(site.state.delivery.address, 'Private address A');
   assert.equal(site.state.paymentDraft.ref, 'PRIVATE-A');
+  // Signing out leaves none of the signed-in customers' session data behind.
+  vm.runInContext('vfAccountSignOut()', c);
+  site.renderVals().store.syncCustomer();
+  assert.equal(site.state.customerId, 'guest');
+  assert.equal(site.state.orders.length, 0);
+  assert.equal(site.state.delivery.address, '');
+  assert.equal(site.state.paymentDraft.ref, '');
+  assert.deepEqual(Object.keys(site.state.customers), ['guest']);
+  site.renderVals().store.complete({...first, id: 'VN-31003', customerId: '09120000000'});
+  assert.deepEqual(
+    Object.keys(site.state.customers),
+    ['guest'],
+    'a late completion after sign-out keeps nothing of that customer'
+  );
+  site.lifecycle.didUpdate();
+  assert.doesNotMatch([...session.values()].join('\n'), /Private address A|PRIVATE-A|VN-3100/);
+  assert.deepEqual(Object.keys(new c.Logic({lang}).state.customers), ['guest']);
+  login('09120000000');
+  assert.equal(site.state.orders.length, 0, 'signing in again restores no session history');
+  assert.equal(site.state.delivery.address, '');
 
   const checkout = loadPage('checkout', {lang, store: site.renderVals().store});
   checkout.ctx.localStorage = c.localStorage;
@@ -1826,6 +1843,46 @@ for (const lang of ['en', 'fa']) {
 console.log(
   'Passed customer-isolated drafts, history, late completions, reloads and payment recovery.'
 );
+
+// Sign-out removes every stored account and the customer's private records from this browser (#145).
+{
+  const {ctx: c} = loadPage('account', {lang: 'en'});
+  const area = map => ({
+    getItem: key => (map.has(key) ? map.get(key) : null),
+    setItem: (key, value) => map.set(key, String(value)),
+    removeItem: key => map.delete(key),
+    key: index => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    }
+  });
+  const local = new Map([
+    ['vf-consent', 'essential'],
+    ['vendra-recently-viewed', '["VF-7K2M4Q"]']
+  ]);
+  const session = new Map([['vf-online-payment:guest', '{"id":"VN-GUEST"}']]);
+  c.localStorage = area(local);
+  c.sessionStorage = area(session);
+  vm.runInContext('vfAccountLogin', c)('0912 000 0000', 'en');
+  vm.runInContext('vfAccountSave', c)('09121112233', {profile: {}, addresses: [], reminders: []});
+  local.set('vf-newsletter', 'customer@example.com');
+  local.set('vendra-saved-map', '{"VF-7K2M4Q":7}');
+  session.set('vf-online-payment:09120000000', '{"id":"VN-PRIVATE"}');
+  assert.ok(local.has('vf-account:09120000000'));
+  vm.runInContext('vfAccountSignOut()', c);
+  assert.deepEqual(
+    [...local.keys()].filter(key => key.startsWith('vf-account')),
+    [],
+    'no vf-account* key remains after sign-out'
+  );
+  assert.equal(local.has('vf-newsletter'), false);
+  assert.equal(local.has('vendra-saved-map'), false);
+  assert.equal(session.has('vf-online-payment:09120000000'), false);
+  assert.equal(local.get('vf-consent'), 'essential', 'device settings stay');
+  assert.ok(session.has('vf-online-payment:guest'), "a guest's own payment record stays");
+  assert.equal(vm.runInContext('vfAccountPhone()', c), '');
+}
+console.log('Passed sign-out removing stored accounts and private records.');
 
 for (const lang of ['en', 'fa']) {
   let destination;

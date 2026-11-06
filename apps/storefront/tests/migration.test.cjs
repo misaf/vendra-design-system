@@ -221,7 +221,6 @@ function page(name, c, props = {}) {
   const a = c.vfAccountLoad('09123456789');
   a.profile.name = 'Demo A';
   c.vfAccountSave('09123456789', a);
-  c.vfAccountSignOut();
   c.vfAccountLogin('09999999999', 'en');
   assert.equal(c.vfAccountLoad('09999999999').profile.name, '');
   assert.equal(c.vfAccountLocale(), 'en');
@@ -229,7 +228,6 @@ function page(name, c, props = {}) {
   assert.equal(c.vfAccountLocale(), 'fa');
   assert.equal(c.vfAccountLoad('09123456789').profile.name, 'Demo A');
   // The same mobile typed another way is the same account.
-  c.vfAccountSignOut();
   c.vfAccountLogin('+98 912 345 6789', 'en');
   assert.equal(c.vfAccountPhone(), '09123456789');
   assert.equal(c.vfAccountLoad('0098 912 345 6789').profile.name, 'Demo A');
