@@ -68,8 +68,8 @@ export function View({v}) {
           feedback={
             v.isOk ? (
               <StorefrontSigninCompletion
-                title={v.t?.okA}
-                accent={v.okName}
+                title={v.okTitle}
+                accent={v.okAccent}
                 body={v.t?.okP}
                 fromCheckout={v.fromCheckout}
                 notFromCheckout={v.notFromCheckout}
@@ -79,6 +79,7 @@ export function View({v}) {
                   label: v.t?.backToCheckout
                 }}
                 account={{href: v.href?.account, label: v.t?.toAccount}}
+                namePrompt={v.namePrompt}
               />
             ) : null
           }

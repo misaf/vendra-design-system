@@ -8,7 +8,8 @@ export function StorefrontSigninCompletion({
   fromCheckout,
   notFromCheckout,
   checkout,
-  account
+  account,
+  namePrompt
 }) {
   return (
     <>
@@ -20,6 +21,14 @@ export function StorefrontSigninCompletion({
         body={body}
         headingLevel={1}
       />
+      {namePrompt ? (
+        <p className="tw:m-0 tw:text-center tw:text-sm tw:leading-body tw:text-quiet">
+          <>{namePrompt.text} </>
+          <a href={namePrompt.href} className="tw:text-inherit! tw:[text-underline-offset:3px]">
+            <>{namePrompt.label}</>
+          </a>
+        </p>
+      ) : null}
       <div className="tw:flex tw:justify-center tw:gap-3 tw:flex-wrap">
         {fromCheckout ? (
           <>
