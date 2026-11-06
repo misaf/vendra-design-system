@@ -40,6 +40,7 @@ function vfCheckoutBlocked(state) {
     (!state.bag.length ||
       Object.values(vfErrors(state.delivery, state.bag)).some(Boolean) ||
       vfDeliveryChanged(state.delivery, new Date(), state.bag) ||
+      Object.keys(state.priceChanges || {}).length > 0 ||
       state.bag.some(line => !vfLineQuantityValid(line, state.bag)))
   );
 }
@@ -48,7 +49,9 @@ function vfCheckoutFallback(state, lang) {
     lang,
     view: 'bag',
     step:
-      state.bag.length && state.bag.every(line => vfLineQuantityValid(line, state.bag))
+      state.bag.length &&
+      !Object.keys(state.priceChanges || {}).length &&
+      state.bag.every(line => vfLineQuantityValid(line, state.bag))
         ? 'delivery'
         : 'bag'
   };

@@ -1035,6 +1035,25 @@ for (const lang of ['en', 'fa']) {
     from: stale[0].unit,
     to: current[0].unit
   });
+  // Unseen price changes keep a direct checkout visit and an order on the bag.
+  setAddress(c, `/apps/storefront/app/${lang}/checkout/`);
+  const direct = new c.Logic({lang});
+  assert.equal(direct.state.route, 'bag');
+  assert.equal(direct.state.routeInfo.step, 'bag', 'a direct checkout visit opens the bag notices');
+  setAddress(c, `/apps/storefront/app/${lang}/bag/`);
+  let unseenRoute;
+  const {logic: unseen} = loadPage('checkout', {
+    lang,
+    go: next => (unseenRoute = next),
+    store: {
+      bag: site.state.bag,
+      priceChanges: site.state.priceChanges,
+      delivery: {...site.state.delivery, date: '', slot: null}
+    }
+  });
+  unseen.setState({last4: '1234'});
+  unseen.renderVals().place();
+  assert.equal(unseenRoute.step, 'bag', 'checkout shows unseen price changes in the bag first');
   let route;
   const {logic: bag, ctx: bc} = loadPage('bag', {
     lang,
@@ -1045,6 +1064,16 @@ for (const lang of ['en', 'fa']) {
     bag.props.store = site.renderVals().store;
     return bag.renderVals();
   };
+  bc.window.VF_TRACK = {event() {}, consent() {}};
+  const announcePrices = bag._announcePrices;
+  let announced = [];
+  bag._announcePrices = changes => announcePrices((announced = changes));
+  bag.lifecycle.didMount();
+  assert.deepEqual(
+    plain(announced),
+    current.map((line, index) => ({id: line.id, from: stale[index].unit, to: line.unit})),
+    'price changes made before the bag opened are announced on opening'
+  );
   let values = view();
   assert.ok(values.lines[0].priceNotice.includes(money(stale[0].unit)));
   assert.ok(values.lines[0].priceNotice.includes(money(current[0].unit)));

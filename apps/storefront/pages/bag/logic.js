@@ -160,7 +160,13 @@ export function usePage(props) {
     didMount() {
       page._prefillSender();
       const st = page.props.store;
-      page._reprice();
+      // Prices repriced before the bag opened (on loading the session, or by checkout) are announced
+      // here too, beside any found now.
+      if (!page._reprice().length) {
+        const pending = (st ? st.priceChanges : page.state.priceChanges) || {};
+        const changes = Object.entries(pending).map(([id, change]) => ({id, ...change}));
+        if (changes.length) page._announcePrices(changes);
+      }
       const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
       if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
         window.VF_TRACK.event('view_cart', {

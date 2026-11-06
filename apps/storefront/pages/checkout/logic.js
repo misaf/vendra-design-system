@@ -224,7 +224,10 @@ function vals(page) {
       line => !vfLineAvailable(line) || !vfLineQuantityValid(line, items)
     );
     // A price changed since the bag was checked: the bag shows the new price beside its line.
-    const priceChanged = vfRepriceLines(items).changes.length > 0;
+    // Prices already updated but not yet seen in the bag (a reload or a direct visit) count too.
+    const priceChanged =
+      vfRepriceLines(items).changes.length > 0 ||
+      Object.keys(page.props.store?.priceChanges || {}).length > 0;
     if (!changed && !stockChanged && !priceChanged) return true;
     event?.preventDefault();
     if (priceChanged) page.props.store?.reprice?.();
