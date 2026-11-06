@@ -5,6 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {prerender} from './prerender.mjs';
+import {precompress} from './compress.mjs';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '../..');
@@ -154,6 +155,8 @@ location.replace(target.href);
 </html>
 `
       );
+      // Last, once every file is written: .br and .gz copies for hosts that serve them as they are.
+      await precompress(outDir);
     }
   };
 }
@@ -193,13 +196,16 @@ export default defineConfig({
     // Evergreen browsers and Safari 16+: the minifier keeps -webkit-backdrop-filter for Safari and the
     // standard property for the rest (sources list the prefixed one first).
     cssTarget: ['chrome120', 'edge120', 'firefox120', 'safari16'],
+    // Vite's content-hashed files get a folder of their own, apart from the repository's assets/ copied
+    // in under their own names, so a host can cache exactly these forever (deployment/nginx.conf).
+    assetsDir: 'assets/hashed',
     rollupOptions: {
       input: path.join(templates, 'app/index.html'),
       // Each page's chunk is named after its folder (storefront-shop/Page.jsx → page-shop).
       output: {
         chunkFileNames: chunk => {
           const page = /storefront-([\w-]+)\/Page\.jsx$/.exec(chunk.facadeModuleId || '');
-          return 'assets/' + (page ? 'page-' + page[1] : '[name]') + '-[hash].js';
+          return 'assets/hashed/' + (page ? 'page-' + page[1] : '[name]') + '-[hash].js';
         }
       }
     }
