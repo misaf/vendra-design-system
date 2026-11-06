@@ -3,7 +3,7 @@ import {PromoCodeField} from './PromoCodeField.jsx';
 
 // WELCOME10 is accepted, anything else refused; inside a form whose submit is reported, to show
 // Enter applies the code without submitting it. Below it, the same field tucked behind its
-// "Have a promo code?" disclosure.
+// "Have a promo code?" disclosure, whose answer comes back a moment later, as from a server.
 export function Fixture({lang}) {
   return (
     <>
@@ -29,8 +29,12 @@ function PromoForm({lang, id, collapsible}) {
         id={id}
         collapsible={collapsible}
         onApply={code => {
-          if (code.toUpperCase() === 'WELCOME10') setApplied('WELCOME10 · 10% off');
-          else setError(lang === 'fa' ? 'این کد معتبر نیست.' : 'We don’t recognise that code.');
+          const answer = () => {
+            if (code.toUpperCase() === 'WELCOME10') setApplied('WELCOME10 · 10% off');
+            else setError(lang === 'fa' ? 'این کد معتبر نیست.' : 'We don’t recognise that code.');
+          };
+          if (collapsible) setTimeout(answer, 400);
+          else answer();
         }}
         onChange={() => setError(undefined)}
         error={error}
