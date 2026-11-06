@@ -8,9 +8,11 @@ import {
   vfAddCard,
   vfUndoCardAddition,
   vfLinesFromParam,
+  vfMergePriceChanges,
   vfProduct,
   vfProductIds,
   vfReorderBag,
+  vfRepriceLines,
   vfSampleBag
 } from '../../shared/domain/catalog.js';
 import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../../shared/domain/delivery.js';
@@ -126,7 +128,8 @@ const vfCustomerState = state => ({
 // Persist after mount as well as updates: consumed handover links have already left the URL.
 function vfPersistSession(state) {
   try {
-    const {bag, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} = state;
+    const {bag, priceChanges, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} =
+      state;
     sessionStorage.setItem(
       VF_SESSION,
       JSON.stringify({
@@ -136,6 +139,7 @@ function vfPersistSession(state) {
           [state.customerId]: vfCustomerState(state)
         },
         bag,
+        priceChanges,
         saved,
         delivery,
         order,
@@ -178,6 +182,13 @@ function vfSiteInitial(props) {
     route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
     if (vfReadRoute().view === 'account') replaceUrl(vfRouteUrl(route));
   }
+  // A bag kept from an earlier visit is priced again from the current catalog; changed lines say so.
+  const bag = vfRepriceLines(
+    vfJoinLines(
+      Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
+      handedLines
+    )
+  );
   const initial = {
     customerId,
     customers: saved.customers || {},
@@ -188,9 +199,11 @@ function vfSiteInitial(props) {
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
     // The demo's sample bag and saved items stand in only when nothing was handed over.
-    bag: vfJoinLines(
-      Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
-      handedLines
+    bag: bag.lines,
+    priceChanges: vfMergePriceChanges(
+      saved.priceChanges && typeof saved.priceChanges === 'object' ? saved.priceChanges : {},
+      bag.changes,
+      bag.lines
     ),
     saved: [
       ...new Set([
@@ -492,6 +505,22 @@ function vals(page) {
       customerId: s.customerId,
       syncCustomer: page.syncCustomer,
       bag: s.bag,
+      priceChanges: s.priceChanges,
+      // Prices the bag from the current catalog and returns what changed, so a step can stop and
+      // show the new prices before the customer continues.
+      reprice: () => {
+        const {lines, changes} = vfRepriceLines(page.state.bag);
+        if (changes.length)
+          page.setState(current => ({
+            order: null,
+            bag: lines,
+            priceChanges: vfMergePriceChanges(current.priceChanges, changes, lines)
+          }));
+        return changes;
+      },
+      // The customer has seen the new prices and continued.
+      seenPrices: () =>
+        Object.keys(page.state.priceChanges).length && page.setState({priceChanges: {}}),
       saved: s.saved,
       delivery: s.delivery,
       checkoutPending: s.checkoutPending,
@@ -574,6 +603,7 @@ function vals(page) {
                   order,
                   checkoutNotice: null,
                   bag: [],
+                  priceChanges: {},
                   paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
                   cardAddition: null,
                   delivery: {...VF_DELIVERY}
@@ -684,13 +714,15 @@ function vals(page) {
           order: null,
           paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
-          bag: VF_BAG0
+          bag: VF_BAG0,
+          priceChanges: {}
         }),
       clear: () =>
         page.setState({
           paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
-          bag: []
+          bag: [],
+          priceChanges: {}
         }),
       toggleSave: id => {
         const removing = page.state.saved.includes(id);

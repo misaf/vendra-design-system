@@ -643,18 +643,52 @@ export const VF_PRODUCT_DETAILS = Object.fromEntries(
   VF_API_PRODUCTS.map(product => [product.token, [product.description.en, product.description.fa]])
 );
 
+// A line's price each from the current catalog (product, size and add-ons), or null when its
+// product is no longer in the catalog.
+export function vfLineUnit(line) {
+  const product = vfFindProduct(vfLineProductId(line));
+  if (!product) return null;
+  const size = VF_SIZES.find(item => item.id === vfLineSize(line));
+  const addons = vfLineAddons(line);
+  const extra = VF_ADDONS.filter(addon => addons.includes(addon.id)).reduce(
+    (sum, addon) => sum + addon.price,
+    0
+  );
+  return product.price + (product.sizes && size ? size.price : 0) + extra;
+}
+
 export function vfReorderLines(lines) {
   return lines.flatMap(line => {
     const product = vfFindProduct(vfLineProductId(line));
     if (!product || product.inStock === false) return [];
-    const size = VF_SIZES.find(item => item.id === vfLineSize(line));
-    const addons = vfLineAddons(line);
-    const extra = VF_ADDONS.filter(addon => addons.includes(addon.id)).reduce(
-      (sum, addon) => sum + addon.price,
-      0
-    );
-    return [{...line, unit: product.price + (product.sizes && size ? size.price : 0) + extra}];
+    return [{...line, unit: vfLineUnit(line)}];
   });
+}
+
+// Bag lines priced from the current catalog, as a bag kept for days may hold old prices, with each
+// change ({id, from, to}). Unavailable lines keep theirs: the bag already asks to remove them.
+export function vfRepriceLines(lines) {
+  const changes = [];
+  const repriced = lines.map(line => {
+    const unit = vfLineAvailable(line) ? vfLineUnit(line) : null;
+    if (unit == null || unit === line.unit) return line;
+    changes.push({id: line.id, from: line.unit, to: unit});
+    return {...line, unit};
+  });
+  return {lines: changes.length ? repriced : lines, changes};
+}
+
+// Price changes still to show, keyed by line id: a later change keeps the price the customer first
+// saw, a price back where it was drops its notice, and removed lines drop theirs.
+export function vfMergePriceChanges(previous, changes, lines) {
+  const next = {...previous};
+  for (const change of changes) {
+    const from = next[change.id] ? next[change.id].from : change.from;
+    if (from === change.to) delete next[change.id];
+    else next[change.id] = {from, to: change.to};
+  }
+  const ids = new Set(lines.map(line => line.id));
+  return Object.fromEntries(Object.entries(next).filter(([id]) => ids.has(id)));
 }
 
 export function vfLineAvailable(line) {

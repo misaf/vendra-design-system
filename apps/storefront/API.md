@@ -31,7 +31,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 ## B. Backend requests (vendra)
 
 ### Cart and checkout
-1. **Cart writes.** Only `GET /api/sales/carts` exists. The storefront needs to create a cart and add, update and remove lines.
+1. **Cart writes.** Only `GET /api/sales/carts` exists. The storefront needs to create a cart and add, update and remove lines. Each cart response should return every line's current unit price and the cart totals, so the bag shows what checkout will charge for the `cartToken`; until then the storefront reprices saved bag lines from the catalog when the bag opens and before delivery and payment.
 2. **Delivery quote result.** `POST /api/delivery/quotes` returns the same schema it receives (`latitude`, `longitude`, `currencyCode`). It should return the matched zone, fee, currency, same-day availability, or "outside the delivery area".
 3. **Checkout result.** `POST /api/sales/checkout` returns the `Checkout` input. It should return the created order: `number`, `itemsAmount`, `deliveryAmount`, `totalAmount` (as on `Order`), and for `gateway: "online"` the redirect in `payment` (30). The storefront reads it with `vfCheckoutResultFromApi` (`shared/domain/payment-api.js`) and shows the server's number and totals on the confirmation and in tracking links; until the API returns them it keeps the browser's own.
 4. **Checkout fields the storefront collects but can't send:** recipient phone; sender name and phone; address details a map can't show (unit, floor, plaque) or a typed address when the map fails; a card message per line (the spec has one `cardMessage`); promo code; pay from balance; size and add-ons per line. Accept the `gateway` values and `paymentReference` format above.
