@@ -1,6 +1,8 @@
 // Where the storefront runs: a browser tab, or Node while the build prerenders one address
 // (app/entry-server.jsx). Shared code reads the page's address and the asset base here, never
 // window or location at import time, so every module also loads and renders on the server.
+import {vfRuntime} from './runtime.js';
+
 let vfServerState = null;
 let vfHeldTime = null;
 
@@ -68,8 +70,8 @@ export function vfAbsoluteUrl(url) {
 }
 
 // Where product images, map scripts and tenant themes are served from: the build's base path
-// (app/theme.js sets VF_ASSET_BASE in the browser), or three folders up for pages opened from files.
+// (app/theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
 export function vfAssetBase() {
   if (vfServerState) return vfServerState.base;
-  return (typeof window !== 'undefined' && window.VF_ASSET_BASE) || '../../../';
+  return vfRuntime.assetBase || '../../../';
 }

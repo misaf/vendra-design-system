@@ -13,9 +13,10 @@ for (const lang of ['en', 'fa']) {
         await openSite(page, 'search', lang, width === 1920 ? {tv: '1'} : {});
         const footer = page.getByRole('contentinfo');
         await expect(footer.locator('.vf-shell-footer-details')).toBeVisible();
+        // Persian visitors get Neshan and Balad first.
         await expect(
-          footer.getByRole('link', {name: fa ? 'مسیریابی' : 'Get directions'})
-        ).toBeVisible();
+          footer.getByRole('list', {name: fa ? 'مسیریابی' : 'Get directions'}).getByRole('link')
+        ).toHaveText(fa ? ['نشان', 'بلد', 'گوگل‌مپ'] : ['Google Maps', 'Neshan', 'Balad']);
         await expect(footer.locator('a[href^="tel:"]')).toHaveCount(2);
         await expect(footer.locator('.vf-shell-footer-seals')).toBeVisible();
         if (width === 390) {

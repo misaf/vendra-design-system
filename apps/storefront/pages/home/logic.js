@@ -24,6 +24,7 @@ import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../shared/services/structured-data.js';
 import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -132,12 +133,12 @@ function newsletter(page, S, C, L) {
         return;
       }
       page.setState({vfNews: {...news, draft, error: '', sending: true}});
-      window.VF_API.newsletter(email, profile.name).then(
+      vfRuntime.api.newsletter(email, profile.name).then(
         () => {
           try {
             localStorage.setItem('vf-newsletter', email);
           } catch {}
-          window.VF_TRACK.event('generate_lead', {lead_source: 'newsletter'});
+          vfRuntime.track.event('generate_lead', {lead_source: 'newsletter'});
           page.setState({vfNews: {done: email}});
           S.focus('vf-news-done');
         },

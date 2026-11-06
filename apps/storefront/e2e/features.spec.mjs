@@ -673,11 +673,14 @@ test('the storefront reports the contract’s events, and nothing personal', asy
   page.on('console', message => {
     if (message.text().startsWith('VF_TRACK')) warnings.push(message.text());
   });
-  const names = () => page.evaluate(() => window.VF_TRACK.log.map(event => event.event));
+  const names = () => page.evaluate(() => window.__vfRuntime.track.log.map(event => event.event));
   // The latest event of one kind: page views and product lists follow renders, so other
   // events may come after it.
   const last = name =>
-    page.evaluate(name => window.VF_TRACK.log.findLast(event => event.event === name), name);
+    page.evaluate(
+      name => window.__vfRuntime.track.log.findLast(event => event.event === name),
+      name
+    );
   await openSite(page, 'product', 'en');
   expect(await last('view_item')).toMatchObject({items: [{item_id: 'VF-7K2M4Q'}]});
   // The site changes routes in place, so it reports each page itself: the path, no query.
@@ -694,7 +697,9 @@ test('the storefront reports the contract’s events, and nothing personal', asy
   await page.getByRole('searchbox').fill('orchid');
   // Once the typing settles, with how many it found.
   await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.find(event => event.event === 'search')))
+    .poll(() =>
+      page.evaluate(() => window.__vfRuntime.track.log.find(event => event.event === 'search'))
+    )
     .toMatchObject({search_term: 'orchid', results: 1});
   await page.getByRole('searchbox').fill('09121234567');
   await expect.poll(() => last('search')).toMatchObject({search_term: '(personal data)'});
@@ -929,9 +934,20 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   await openSite(page, 'contact', 'en');
   const map = page.getByRole('region', {name: 'The studio on the map'});
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
-  await expect(page.getByRole('main').getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+  // Neshan, Balad and Google Maps; Google Maps first in English.
+  const directions = page.getByRole('main').getByRole('list', {name: 'Get directions'});
+  await expect(directions.getByRole('link')).toHaveText(['Google Maps', 'Neshan', 'Balad']);
+  await expect(directions.getByRole('link', {name: 'Google Maps'})).toHaveAttribute(
     'href',
     /destination=35\.8352,50\.975/
+  );
+  await expect(directions.getByRole('link', {name: 'Neshan'})).toHaveAttribute(
+    'href',
+    'https://nshn.ir/?lat=35.8352&lng=50.975'
+  );
+  await expect(directions.getByRole('link', {name: 'Balad'})).toHaveAttribute(
+    'href',
+    /^https:\/\/balad\.ir\/location\?latitude=35\.8352&longitude=50\.975/
   );
   await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
@@ -1260,13 +1276,14 @@ for (const lang of ['en', 'fa']) {
     page
   }) => {
     await page.addInitScript(() => {
-      let api;
+      let runtime;
       const submission = (window.__newsletterSubmission = {calls: 0});
-      Object.defineProperty(window, 'VF_API', {
+      Object.defineProperty(window, '__vfRuntime', {
         configurable: true,
-        get: () => api,
+        get: () => runtime,
         set: value => {
-          api = value;
+          runtime = value;
+          const api = value.api;
           api.newsletter = () => {
             submission.calls++;
             return new Promise((resolve, reject) => {
@@ -1361,8 +1378,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -1380,8 +1397,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -1435,8 +1452,8 @@ test.describe('a first visit', () => {
       await page.evaluate(() =>
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -1460,7 +1477,9 @@ test('the footer lists shop and studio links, social links, contact details and 
   const social = footer.getByRole('list', {name: 'Follow and message us'});
   await expect(social.getByRole('link')).toHaveCount(3);
   await expect(social.getByRole('link', {name: /^Instagram/})).toHaveAttribute('target', '_blank');
-  await expect(footer.getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+  const directions = footer.getByRole('list', {name: 'Get directions'});
+  await expect(directions.getByRole('link')).toHaveText(['Google Maps', 'Neshan', 'Balad']);
+  await expect(directions.getByRole('link', {name: 'Google Maps'})).toHaveAttribute(
     'href',
     /destination=35\.8352,50\.975/
   );
@@ -2101,12 +2120,13 @@ test('a design that sells out after it was ordered is not handed over', async ({
     })
   );
   await page.addInitScript(() => {
-    let api;
-    Object.defineProperty(window, 'VF_API', {
+    let runtime;
+    Object.defineProperty(window, '__vfRuntime', {
       configurable: true,
-      get: () => api,
+      get: () => runtime,
       set: value => {
-        api = value;
+        runtime = value;
+        const api = value.api;
         api.setBase('https://api.test');
       }
     });

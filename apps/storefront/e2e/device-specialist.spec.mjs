@@ -27,7 +27,7 @@ for (const lang of ['en', 'fa']) {
   }, info) => {
     const copy = weddingCopy({lang});
     await openSite(page, 'weddings', lang);
-    expect(await page.evaluate(() => window.VF_API.live)).toBe(false);
+    expect(await page.evaluate(() => window.__vfRuntime.api.live)).toBe(false);
     await tap(page.getByRole('button', {name: copy.send, exact: true}));
     const summary = page.locator('#vf-wedding-errors');
     await expect(summary).toBeFocused();

@@ -458,7 +458,7 @@ for (const lang of ['en', 'fa']) {
       stored = value;
     };
     c.sessionStorage.getItem = () => stored || null;
-    c.window.VF_API = {live: false};
+    c.vfRuntime.api = {live: false};
     c.window.addEventListener = c.document.addEventListener = () => {};
     site.lifecycle.didMount();
     assert.ok(stored, 'initial handover is saved on mount without an edit');
@@ -1016,6 +1016,116 @@ for (const file of [
   assert.doesNotMatch(read(file), /\b(v|S)\.(mob|desk|compactShop)\b/, file);
 console.log('Passed: no view lays out from a JavaScript breakpoint.');
 
+// A bag kept from an earlier visit is priced from the current catalog when it opens and again
+// before delivery and payment; each changed line says so and the totals follow the new prices.
+for (const lang of ['en', 'fa']) {
+  const {logic: first, ctx: c} = loadPage('site', {lang}, `/apps/storefront/app/${lang}/bag/`);
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const money = value => vm.runInContext('VF_MONEY', c)(value, lang === 'fa');
+  const current = plain(first.state.bag);
+  const stale = current.map(line => ({...line, unit: line.unit - 100000}));
+  c.sessionStorage.getItem = () => JSON.stringify({bag: stale});
+  const site = new c.Logic({lang});
+  assert.deepEqual(
+    plain(site.state.bag).map(line => line.unit),
+    current.map(line => line.unit),
+    'a saved bag opens at the current prices'
+  );
+  assert.deepEqual(plain(site.state.priceChanges[current[0].id]), {
+    from: stale[0].unit,
+    to: current[0].unit
+  });
+  // Unseen price changes keep a direct checkout visit and an order on the bag.
+  setAddress(c, `/apps/storefront/app/${lang}/checkout/`);
+  const direct = new c.Logic({lang});
+  assert.equal(direct.state.route, 'bag');
+  assert.equal(direct.state.routeInfo.step, 'bag', 'a direct checkout visit opens the bag notices');
+  setAddress(c, `/apps/storefront/app/${lang}/bag/`);
+  let unseenRoute;
+  const {logic: unseen} = loadPage('checkout', {
+    lang,
+    go: next => (unseenRoute = next),
+    store: {
+      bag: site.state.bag,
+      priceChanges: site.state.priceChanges,
+      delivery: {...site.state.delivery, date: '', slot: null}
+    }
+  });
+  unseen.setState({last4: '1234'});
+  unseen.renderVals().place();
+  assert.equal(unseenRoute.step, 'bag', 'checkout shows unseen price changes in the bag first');
+  let route;
+  const {logic: bag, ctx: bc} = loadPage('bag', {
+    lang,
+    store: site.renderVals().store,
+    go: next => (route = next)
+  });
+  const view = () => {
+    bag.props.store = site.renderVals().store;
+    return bag.renderVals();
+  };
+  bc.window.VF_TRACK = {event() {}, consent() {}};
+  const announcePrices = bag._announcePrices;
+  let announced = [];
+  bag._announcePrices = changes => announcePrices((announced = changes));
+  bag.lifecycle.didMount();
+  assert.deepEqual(
+    plain(announced),
+    current.map((line, index) => ({id: line.id, from: stale[index].unit, to: line.unit})),
+    'price changes made before the bag opened are announced on opening'
+  );
+  let values = view();
+  assert.ok(values.lines[0].priceNotice.includes(money(stale[0].unit)));
+  assert.ok(values.lines[0].priceNotice.includes(money(current[0].unit)));
+  const subtotal = current.reduce((sum, line) => sum + line.unit * line.qty, 0);
+  assert.equal(
+    vm.runInContext('vfTotals', bc)(site.state.bag, site.state.delivery).sub,
+    subtotal,
+    'totals add up the current prices'
+  );
+  // The catalog changes while the bag is open: Continue stops beside the new price.
+  vm.runInContext("vfProduct('" + current[1].productId + "').price += 50000", c);
+  values.toDelivery();
+  assert.equal(route, undefined, 'a new price keeps the customer on the bag');
+  assert.equal(site.state.bag[1].unit, current[1].unit + 50000);
+  values = view();
+  assert.ok(values.lines[1].priceNotice.includes(money(current[1].unit + 50000)));
+  assert.ok(values.lines[0].priceNotice, 'earlier notices stay until the customer continues');
+  values.toDelivery();
+  assert.deepEqual(plain(route), {view: 'bag', step: 'delivery'});
+  assert.deepEqual(plain(site.state.priceChanges), {}, 'continuing clears the seen notices');
+  // A change while the delivery form is open goes back to the bag before payment.
+  vm.runInContext("vfProduct('" + current[1].productId + "').price -= 50000", c);
+  view().next();
+  assert.deepEqual(plain(route), {view: 'bag', step: 'bag'});
+  assert.equal(site.state.bag[1].unit, current[1].unit);
+  assert.ok(view().lines[1].priceNotice);
+  // Checkout checks once more before placing the order.
+  let checkoutRoute;
+  const {logic: checkout, ctx: cc} = loadPage('checkout', {
+    lang,
+    go: next => (checkoutRoute = next),
+    store: {
+      bag: site.state.bag,
+      delivery: {...site.state.delivery, date: '', slot: null}
+    }
+  });
+  vm.runInContext("vfProduct('" + current[0].productId + "').price += 1000", cc);
+  checkout.setState({last4: '1234'});
+  checkout.renderVals().place();
+  assert.equal(checkoutRoute.view, 'bag');
+  assert.equal(checkoutRoute.step, 'bag', 'a changed price sends checkout back to the bag');
+  setTimeout(
+    () =>
+      assert.ok(
+        site.state.announcement.includes(money(current[1].unit)),
+        'the price change is announced'
+      ),
+    200
+  );
+}
+console.log('Passed bag repricing on opening, before delivery and before payment.');
+
 // Stock, delivery changes, address switching, repeat orders and the WhatsApp handoff preserve intent.
 for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage('site', {lang});
@@ -1309,7 +1419,7 @@ console.log(
       const writes = [];
       let hydrate, rejectHydration;
       const write = id => new Promise((resolve, reject) => writes.push({id, resolve, reject}));
-      c.window.VF_API = {
+      c.vfRuntime.api = {
         live,
         saveItem: write,
         unsaveItem: write,
@@ -1430,7 +1540,7 @@ console.log(
     cc.setTimeout = () => 0;
     let finish,
       calls = 0;
-    cc.window.VF_API = {
+    cc.vfRuntime.api = {
       live: true,
       checkout: () => {
         calls++;
@@ -1520,7 +1630,7 @@ console.log(
     sc.window.addEventListener = () => {};
     sc.document.addEventListener = () => {};
     let hydrate;
-    sc.window.VF_API = {
+    sc.vfRuntime.api = {
       live: true,
       loadSaved: () => new Promise(resolve => (hydrate = resolve)),
       saveItem: () => Promise.resolve(),
@@ -1647,7 +1757,7 @@ for (const lang of ['en', 'fa']) {
       setItem: (key, value) => storage.set(key, value),
       removeItem: key => storage.delete(key)
     };
-    c.window.VF_TRACK.event = () => {};
+    c.vfRuntime.track.event = () => {};
     logic.renderVals().setPhone(phone);
     logic.renderVals().send();
     logic.renderVals().completeCode('12345');
@@ -1690,7 +1800,7 @@ for (const lang of ['en', 'fa']) {
     setItem: (key, value) => fresh.set(key, value),
     removeItem: key => fresh.delete(key)
   };
-  c.window.VF_TRACK.event = () => {};
+  c.vfRuntime.track.event = () => {};
   logic.renderVals().send();
   logic.renderVals().completeCode('12345');
   assert.equal(greeting(logic.renderVals()), {en: 'Welcome, Mina.', fa: 'خوش آمدید، Mina.'}[lang]);
@@ -1702,7 +1812,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: checkout, ctx: c} = loadPage('checkout', {lang, store: site.renderVals().store});
   c.setTimeout = () => 0;
   let submitted = 0;
-  c.window.VF_API = {
+  c.vfRuntime.api = {
     live: true,
     checkout: () => {
       submitted++;
@@ -1719,7 +1829,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(submitted, 0, 'a missing recovery record blocks the API submission too');
   assert.equal(checkout.state.payment, null);
   assert.ok(checkout.renderVals().paymentSaveError);
-  c.window.VF_API.live = false;
+  c.vfRuntime.api.live = false;
   let saved;
   c.sessionStorage.setItem = (_, value) => (saved = JSON.parse(value));
   checkout.renderVals().place();
@@ -1744,15 +1854,17 @@ for (const lang of ['en', 'fa']) {
   c.setTimeout = () => 0;
   const storage = new Map(),
     session = new Map();
-  c.localStorage = {
-    getItem: key => storage.get(key) || null,
-    setItem: (key, value) => storage.set(key, value),
-    removeItem: key => storage.delete(key)
-  };
-  c.sessionStorage = {
-    getItem: key => session.get(key) || null,
-    setItem: (key, value) => session.set(key, value)
-  };
+  const area = map => ({
+    getItem: key => map.get(key) || null,
+    setItem: (key, value) => map.set(key, value),
+    removeItem: key => map.delete(key),
+    key: index => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    }
+  });
+  c.localStorage = area(storage);
+  c.sessionStorage = area(session);
   const login = phone => {
     vm.runInContext('vfAccountLogin', c)(phone, lang);
     site.renderVals().store.syncCustomer();
@@ -1770,12 +1882,7 @@ for (const lang of ['en', 'fa']) {
   site.renderVals().store.complete(first);
   site.renderVals().store.setDelivery({address: 'Private address A'});
   site.renderVals().store.setPaymentDraft({last4: '1234', ref: 'PRIVATE-A'});
-  vm.runInContext('vfAccountSignOut()', c);
-  site.renderVals().store.syncCustomer();
-  assert.equal(site.state.customerId, 'guest');
-  assert.equal(site.state.orders.length, 0);
-  assert.equal(site.state.delivery.address, '');
-  assert.equal(site.state.paymentDraft.ref, '');
+  // Switching accounts without signing out keeps each customer's session apart.
   login('09121111111');
   assert.equal(site.state.orders.length, 0, 'another customer cannot see earlier history');
   site.renderVals().store.complete({...first, id: 'VN-31002', customerId: '09120000000'});
@@ -1789,6 +1896,33 @@ for (const lang of ['en', 'fa']) {
   assert.equal(site.state.orders.length, 2);
   assert.equal(site.state.delivery.address, 'Private address A');
   assert.equal(site.state.paymentDraft.ref, 'PRIVATE-A');
+  // Signing out leaves none of the signed-in customers' session data behind.
+  vm.runInContext('vfAccountSignOut()', c);
+  site.renderVals().store.syncCustomer();
+  assert.equal(site.state.customerId, 'guest');
+  assert.equal(site.state.orders.length, 0);
+  assert.equal(site.state.delivery.address, '');
+  assert.equal(site.state.paymentDraft.ref, '');
+  assert.deepEqual(Object.keys(site.state.customers), ['guest']);
+  site.renderVals().store.complete({...first, id: 'VN-31003', customerId: '09120000000'});
+  assert.deepEqual(
+    Object.keys(site.state.customers),
+    ['guest'],
+    'a late completion after sign-out keeps nothing of that customer'
+  );
+  site.lifecycle.didUpdate();
+  assert.doesNotMatch([...session.values()].join('\n'), /Private address A|PRIVATE-A|VN-3100/);
+  assert.deepEqual(Object.keys(new c.Logic({lang}).state.customers), ['guest']);
+  login('09121111111');
+  site.renderVals().store.complete({...first, id: 'VN-31004', customerId: '09120000000'});
+  assert.equal(
+    site.state.customers['09120000000'],
+    undefined,
+    'a signed-out customer stays out after another customer signs in'
+  );
+  login('09120000000');
+  assert.equal(site.state.orders.length, 0, 'signing in again restores no session history');
+  assert.equal(site.state.delivery.address, '');
 
   const checkout = loadPage('checkout', {lang, store: site.renderVals().store});
   checkout.ctx.localStorage = c.localStorage;
@@ -1826,6 +1960,46 @@ for (const lang of ['en', 'fa']) {
 console.log(
   'Passed customer-isolated drafts, history, late completions, reloads and payment recovery.'
 );
+
+// Sign-out removes every stored account and the customer's private records from this browser (#145).
+{
+  const {ctx: c} = loadPage('account', {lang: 'en'});
+  const area = map => ({
+    getItem: key => (map.has(key) ? map.get(key) : null),
+    setItem: (key, value) => map.set(key, String(value)),
+    removeItem: key => map.delete(key),
+    key: index => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    }
+  });
+  const local = new Map([
+    ['vf-consent', 'essential'],
+    ['vendra-recently-viewed', '["VF-7K2M4Q"]']
+  ]);
+  const session = new Map([['vf-online-payment:guest', '{"id":"VN-GUEST"}']]);
+  c.localStorage = area(local);
+  c.sessionStorage = area(session);
+  vm.runInContext('vfAccountLogin', c)('0912 000 0000', 'en');
+  vm.runInContext('vfAccountSave', c)('09121112233', {profile: {}, addresses: [], reminders: []});
+  local.set('vf-newsletter', 'customer@example.com');
+  local.set('vendra-saved-map', '{"VF-7K2M4Q":7}');
+  session.set('vf-online-payment:09120000000', '{"id":"VN-PRIVATE"}');
+  assert.ok(local.has('vf-account:09120000000'));
+  vm.runInContext('vfAccountSignOut()', c);
+  assert.deepEqual(
+    [...local.keys()].filter(key => key.startsWith('vf-account')),
+    [],
+    'no vf-account* key remains after sign-out'
+  );
+  assert.equal(local.has('vf-newsletter'), false);
+  assert.equal(local.has('vendra-saved-map'), false);
+  assert.equal(session.has('vf-online-payment:09120000000'), false);
+  assert.equal(local.get('vf-consent'), 'essential', 'device settings stay');
+  assert.ok(session.has('vf-online-payment:guest'), "a guest's own payment record stays");
+  assert.equal(vm.runInContext('vfAccountPhone()', c), '');
+}
+console.log('Passed sign-out removing stored accounts and private records.');
 
 for (const lang of ['en', 'fa']) {
   let destination;

@@ -1,4 +1,4 @@
-// Storefront commerce rules: import { commerce } (the runtime bundle also exposes window.AG_COMMERCE).
+// Storefront commerce rules: import { commerce } (guidelines/card-runtime.js also exposes it as window.AG_COMMERCE for the cards).
 // Pure functions: every tenant value (zones, promo codes, balance rules, delivery schedule, API records)
 // comes in as an argument, so a tenant storefront runs them on its own data from the Vendra API.
 // Amounts are in Toman. No imports: storefront pages load this before the component bundle.
@@ -69,6 +69,23 @@ const validLocation = location =>
 const pinLocation = point => {
   const round = value => Math.round(value * 1e6) / 1e6;
   return {lat: round(point.lat), lng: round(point.lng)};
+};
+
+// Links that show a place in Neshan, Balad and Google Maps, each opening the installed app on
+// phones where the link allows it. Persian visitors mostly drive with Neshan and Balad, so they
+// come first in Persian; Google Maps comes first otherwise. [] for a missing or invalid point.
+// Neshan: its own point link (github.com/NeshanMaps/Neshan-MCP, utils/deeplinks.py). Balad: the
+// web app's /location page, which reads latitude, longitude and zoom.
+const directionsLinks = (location, language) => {
+  if (!validLocation(location)) return [];
+  const {lat, lng} = location;
+  const links = {
+    neshan: 'https://nshn.ir/?lat=' + lat + '&lng=' + lng,
+    balad: 'https://balad.ir/location?latitude=' + lat + '&longitude=' + lng + '&zoom=17',
+    google: 'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lng
+  };
+  const order = language === 'fa' ? ['neshan', 'balad', 'google'] : ['google', 'neshan', 'balad'];
+  return order.map(app => ({app, href: links[app]}));
 };
 
 const distanceKm = (a, b) => {
@@ -644,6 +661,7 @@ export const commerce = {
   isMobile,
   validLocation,
   pinLocation,
+  directionsLinks,
   distanceKm,
   zoneAt,
   isoDate,

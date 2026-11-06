@@ -111,8 +111,8 @@ for (const lang of ['en', 'fa']) {
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
       expect(persisted.customers.guest.delivery).toEqual(initial.delivery);
-      if (existing)
-        expect(persisted.customers['09121111111'].delivery.address).toBe('Other customer address');
+      // Signed out, the session keeps nothing of another customer's private drafts.
+      expect(Object.keys(persisted.customers)).toEqual(['guest']);
       expect(errors).toEqual([]);
       expect(await scanAxe(page)).toEqual([]);
       await info.attach('initial-handover-persistence', {
@@ -128,7 +128,7 @@ for (const lang of ['en', 'fa']) {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await delivery(page, fa);
-    await page.evaluate(() => window.VF_API.setBase('/__offline-checkout-api'));
+    await page.evaluate(() => window.__vfRuntime.api.setBase('/__offline-checkout-api'));
     await chooseMethod(page, fa ? 'پرداخت در محل' : 'Pay on delivery');
     const requests = [],
       failures = [],
@@ -267,7 +267,7 @@ for (const lang of ['en', 'fa']) {
       } else await route.fulfill({json: {}});
     });
     await page.evaluate(() => {
-      window.VF_API.setBase('/__pending-checkout-api');
+      window.__vfRuntime.api.setBase('/__pending-checkout-api');
       window.__pendingSite = window.__vfSite;
       window.__pendingInput = [];
       for (const type of ['pointerdown', 'pointerup', 'click']) {
@@ -567,7 +567,7 @@ for (const lang of ['en', 'fa']) {
       const initialMap = action === 'save' ? {[other]: 702} : {[other]: 702, [target]: 701};
       await page.evaluate(initialMap => {
         localStorage.setItem('vendra-saved-map', JSON.stringify(initialMap));
-        window.VF_API.setBase('/__offline-saved-api');
+        window.__vfRuntime.api.setBase('/__offline-saved-api');
       }, initialMap);
       const privateState = () =>
         page.evaluate(() => ({
@@ -714,12 +714,21 @@ for (const lang of ['en', 'fa']) {
 
   test(`initial saved-list loading keeps newer customer actions (${lang})`, async ({page}) => {
     await page.addInitScript(() => {
-      window.VF_API = {
-        live: true,
-        loadSaved: () => new Promise(resolve => (window.__vfHydrateSaved = resolve)),
-        saveItem: () => Promise.resolve(),
-        unsaveItem: () => Promise.resolve()
-      };
+      // Swap in this client when app/runtime.js exposes the runtime, before the site mounts.
+      let runtime;
+      Object.defineProperty(window, '__vfRuntime', {
+        configurable: true,
+        get: () => runtime,
+        set: value => {
+          runtime = value;
+          runtime.api = {
+            live: true,
+            loadSaved: () => new Promise(resolve => (window.__vfHydrateSaved = resolve)),
+            saveItem: () => Promise.resolve(),
+            unsaveItem: () => Promise.resolve()
+          };
+        }
+      });
     });
     await openSite(page, 'product', lang, {id: 'VF-7K2M4Q'});
     await page
@@ -798,7 +807,7 @@ for (const lang of ['en', 'fa']) {
           });
         } else await route.fulfill({json: {}});
       });
-      await page.evaluate(() => window.VF_API.setBase('/__cross-tab-api'));
+      await page.evaluate(() => window.__vfRuntime.api.setBase('/__cross-tab-api'));
       const tab = await context.newPage();
       try {
         await openSite(tab, 'home', lang);
@@ -856,29 +865,24 @@ for (const lang of ['en', 'fa']) {
           lastOrder: null,
           notice: null
         });
-        expect(after.ownerOrders).toHaveLength(outcome === 'success' ? 1 : 0);
-        const placed = after.ownerOrders[0];
-        if (placed) {
-          expect(placed.customerId).toBe(owner);
-          expect(placed.delivery.address).toBe('Test street 12, unit 3');
-          await expect(page.locator('main')).not.toContainText(placed.id);
-        }
+        // The owner signed out before the response, so even a successful order keeps nothing
+        // of theirs in this tab (it is the server's); B's drafts are untouched.
+        expect(after.ownerOrders).toEqual([]);
         await expect(page.locator('#vf-address')).toHaveValue('Customer B private street');
         await expect(page.locator('#vf-name')).toHaveValue('Customer B recipient');
         await switchCustomer(tab, lang, owner);
         await expect.poll(() => page.evaluate(() => window.__vfSite.state.customerId)).toBe(owner);
         await page.evaluate(() => window.__vfSite.navigate({view: 'account'}));
         await expect(page).toHaveURL(/\/account\//);
-        if (placed) await expect(page.locator('main')).toContainText(placed.id);
         await page.reload();
         await expect.poll(() => page.evaluate(() => window.__vfSite?.state.customerId)).toBe(owner);
         const restored = await page.evaluate(() => ({
           orders: window.__vfSite.state.orders,
           delivery: window.__vfSite.state.delivery
         }));
-        expect(restored.orders).toHaveLength(outcome === 'success' ? 1 : 0);
-        expect(restored.delivery.address).toBe('Test street 12, unit 3');
-        if (placed) await expect(page.locator('main')).toContainText(placed.id);
+        // switchCustomer signs out first, and sign-out keeps no private history or delivery draft.
+        expect(restored.orders).toEqual([]);
+        expect(restored.delivery.address).toBe('');
         expect(errors).toEqual([]);
         await info.attach('two-tab-response-ownership', {
           body: JSON.stringify(

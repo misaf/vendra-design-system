@@ -1,30 +1,13 @@
 // Globals the shared storefront logic reads but does not declare itself.
 // Type-checked with `npm --prefix apps/storefront run typecheck`; nothing here ships to the browser.
+// The integrations and page-wide state are not globals: modules import vfRuntime from
+// shared/platform/runtime.js. tools/app-dependencies.cjs fails any window.VF_* or window.AG_* access.
 
 interface Window {
-  // AG_*: the package helpers (components/utils/), set by guidelines/card-runtime.js for the cards.
-  AG_COMMERCE: any;
-  AG_DATES: any;
-  AG_FORMAT: any;
-  // VF_*: from the Vendra Florist templates. Routing and <head> (shared/services/seo.js), focus (shared/services/page-focus.js).
-  VF_NAV: any;
-  VF_SEO: any;
-  // Integrations defined in shared/services/integrations/ and shared/domain/payments.js.
-  VF_API: any;
-  VF_TRACK: any;
-  VF_PAYMENT: any;
-  // Set by app/theme.js.
-  VF_ASSET_BASE: string;
-  VF_USE_TENANT?: (tenant: string) => void;
-  // Page state shared between templates in one document.
-  VF_TENANT?: string;
-  VF_VIEWED?: boolean;
-  // How app/main.jsx showed the page: 'hydrated' (adopted the build's prerendered markup) or
-  // 'rendered' (rendered it in the browser), for tests.
-  VF_RENDERED?: 'hydrated' | 'rendered';
+  // The runtime, exposed by app/runtime.js for tests and QA only; storefront code never reads it.
+  __vfRuntime?: import('../shared/platform/runtime.js').VfRuntime;
   // The click-through site's page object (pages/site/logic.js), for tests.
   __vfSite?: any;
   // Leaflet, loaded on demand by shared/domain/location.js.
   L: any;
-  vfLeafletLoading?: Promise<any>;
 }

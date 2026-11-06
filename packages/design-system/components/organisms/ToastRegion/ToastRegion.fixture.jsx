@@ -14,6 +14,17 @@ export function Fixture() {
       >
         Add
       </Button>
+      <Button
+        onClick={() =>
+          queue.add(
+            {title: 'Removed from your bag', action: {label: 'Undo', onClick: () => {}}},
+            {timeout: 50}
+          )
+        }
+      >
+        Remove
+      </Button>
+      <Button onClick={() => queue.add({title: 'Code copied'}, {timeout: 50})}>Copy</Button>
       <ToastRegion queue={queue} label="Notifications" />
     </div>
   );

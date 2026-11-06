@@ -46,8 +46,8 @@ for (const lang of ['en', 'fa']) {
     // Hold both requests locally; this never sends an inquiry to the studio.
     await page.evaluate(() => {
       window.__weddingRequests = [];
-      window.VF_API = {
-        ...window.VF_API,
+      window.__vfRuntime.api = {
+        ...window.__vfRuntime.api,
         live: true,
         inquiry: payload => {
           window.__weddingRequests.push(payload);

@@ -28,8 +28,8 @@ for (const route of storefrontRoutes())
     expect(response.status()).toBe(200);
     // The prerendered heading is in the page's own source, before any script runs.
     expect(await response.text()).toMatch(/<main[\s\S]*<h1/);
-    await page.waitForFunction(() => window.VF_RENDERED);
-    expect(await page.evaluate(() => window.VF_RENDERED)).toBe('hydrated');
+    await page.waitForFunction(() => window.__vfRuntime?.rendered);
+    expect(await page.evaluate(() => window.__vfRuntime?.rendered)).toBe('hydrated');
     // Effects after hydration (focus, head tags, deferred values) have run.
     await expect(page.locator('main h1').first()).toBeVisible();
     await page.waitForTimeout(300);
@@ -54,18 +54,18 @@ test('a returning visitor gets the page rendered afresh in place of the prerende
   page
 }) => {
   await page.goto(SITE + 'en/shop/');
-  await page.waitForFunction(() => window.VF_RENDERED);
+  await page.waitForFunction(() => window.__vfRuntime?.rendered);
   // The site keeps its session in storage from the first visit on.
   await page.reload();
-  await page.waitForFunction(() => window.VF_RENDERED);
-  expect(await page.evaluate(() => window.VF_RENDERED)).toBe('rendered');
+  await page.waitForFunction(() => window.__vfRuntime?.rendered);
+  expect(await page.evaluate(() => window.__vfRuntime?.rendered)).toBe('rendered');
   await expect(page.locator('main h1')).toContainText('The shop');
 });
 
 test('an address with no page of its own opens in the app, not as not-found', async ({page}) => {
   const response = await page.goto(SITE + 'en/track/VF-1234/');
   expect(response.status()).toBe(404);
-  await page.waitForFunction(() => window.VF_RENDERED);
+  await page.waitForFunction(() => window.__vfRuntime?.rendered);
   await expect(page.locator('main h1')).toContainText('Track');
   await expect(page.locator('#root')).toBeVisible();
 });

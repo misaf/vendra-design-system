@@ -7,6 +7,7 @@ import {usePageLogic} from '../../shared/services/page-state.js';
 import {vfAssetBase, vfNow} from '../../shared/platform/environment.js';
 import {vfLiveStore} from '../../shared/domain/store-config.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -146,7 +147,7 @@ function vals(page) {
         });
         S.focus('vf-weddings-success');
       };
-      if (!window.VF_API.live) {
+      if (!vfRuntime.api.live) {
         success();
         return;
       }
@@ -154,16 +155,17 @@ function vals(page) {
         busy: true,
         apiError: ''
       });
-      return window.VF_API.inquiry({
-        name: s.name || '',
-        phone: s.phone ? vfMobile(s.phone) : null,
-        email: s.email || '',
-        message:
-          [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') ||
-          'Wedding inquiry',
-        occasion: 'weddings',
-        preferredLocale: window.VF_API.preferredLocale()
-      })
+      return vfRuntime.api
+        .inquiry({
+          name: s.name || '',
+          phone: s.phone ? vfMobile(s.phone) : null,
+          email: s.email || '',
+          message:
+            [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') ||
+            'Wedding inquiry',
+          occasion: 'weddings',
+          preferredLocale: vfRuntime.api.preferredLocale()
+        })
         .then(success)
         .catch(() =>
           page.setState({

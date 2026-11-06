@@ -1,6 +1,5 @@
 <!-- @dsCard group="Storefront" viewport="1400x1640" name="Emails" subtitle="English left, Persian right — confirmation · delivered · reminder, tenant theme" -->
 <!doctype html><html lang="en"><head><meta charset="utf-8"><title>Emails</title><link rel="stylesheet" href="../../../packages/design-system/styles.css">
-<script src="notifications.js"></script><script src="email-templates.js"></script>
 <style>body{margin:0;padding:24px 28px;background:var(--surface-page);color:var(--text-body);font-family:var(--font-body)}
 .top{display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;align-items:flex-end;margin-bottom:20px}h1{margin:0;font-family:var(--font-display);font-weight:500;font-size:32px}.top p{margin:6px 0 0;max-width:560px;font-size:14px;line-height:1.55;color:var(--text-secondary)}
 .ctl{display:flex;gap:20px;flex-wrap:wrap}.ctl label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
@@ -16,7 +15,8 @@ iframe{display:block;width:100%;height:900px;border:0;background:var(--surface-p
 <div lang="fa" dir="rtl" data-lang="fa"><div class="pk">فارسی</div><div class="inbox"><div class="hd" id="hd-fa"></div><iframe id="fr-fa" title="Persian email preview"></iframe></div></div></div>
 <div class="txts"><div><b>Plain-text part</b><pre id="tx-en"></pre></div><div lang="fa" dir="rtl"><b>متن ساده</b><pre id="tx-fa"></pre></div></div>
 <div class="side"><div><b>Send with</b><code>VF_EMAIL.render(event, customer, vars, order)</code> → subject, preheader, html, text.</div><div><b>Sent when</b>Confirmation: order placed. Delivered: courier marks delivered. Reminder: the reminder’s “days before”, only if the customer chose email.</div><div><b>Theme</b>Pass <code>vars.theme</code>: <code>'default'</code>, <code>'clay'</code>, or the palette from <code>VF_EMAIL.themeFromCSS(el)</code>. Colours, button shape and case, card radius and the English heading font follow the tenant.</div><div><b>Logo</b>Pass <code>assetBase</code> — the absolute URL where the logo PNGs are hosted. Without it the brand name is set in type.</div></div>
-<script>
+<script type="module">
+import {VF_EMAIL} from './email-templates.js';
 const V={en:{first:'Shirin',id:'VN-10522',date:'Fri 9 Oct',slot:'16:00–20:00',recipient:'Mina',address:'12 Golha St, Azimiyeh',msg:'Happy birthday, with love',payment:'Online · paid',time:'17:40',name:'Mum',occasion:'birthday',total:'4,100,000 Toman',items:[{code:'VF-7K2M4Q',name:'Flower box · Generous',qty:1,price:'4,100,000 Toman'}],link:'https://example.test/o/10522',assetBase:'../../../assets'},
  fa:{first:'شیرین',id:'VN-10522',date:'جمعه ۱۷ مهر',slot:'۱۶ تا ۲۰',recipient:'مینا',address:'عظیمیه، خیابان گلها، پلاک ۱۲',msg:'تولدت مبارک، با عشق',payment:'آنلاین · پرداخت شد',time:'17:40',name:'مامان',occasion:'تولد',total:'۴٬۱۰۰٬۰۰۰ تومان',items:[{code:'VF-7K2M4Q',name:'باکس گل · بزرگ',qty:1,price:'۴٬۱۰۰٬۰۰۰ تومان'}],link:'https://example.test/o/10522',assetBase:'../../../assets'}};
 const K='vendra-email-card';let st;try{st=JSON.parse(localStorage.getItem(K)||'null');}catch(e){}st=st||{ev:'received'};st.theme=st.theme||'default';

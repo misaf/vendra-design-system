@@ -71,8 +71,9 @@ StorefrontBagLayout arranges bag/delivery slots with externally controlled conte
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 Bag View passes layout, conditional line items, summary, empty feedback and sticky action directly;
 items/delivery multi-child groups and all visibility guards remain.
-StorefrontBagItems composes editable line items and stock warnings from explicit records/labels;
-View/logic retain visibility, pricing/stock limits, quantity/remove/Undo and persistence/focus.
+StorefrontBagItems composes editable line items, price notices and stock warnings from explicit records/labels;
+View/logic retain visibility, catalog repricing (on opening, before delivery and payment), stock limits,
+quantity/remove/Undo and persistence/focus.
 StorefrontBagSummary composes summary rows, free-delivery meter, controlled promo and navigation actions;
 View/logic retain totals, promo validation/persistence, quote rules and delivery/payment validation.
 StorefrontBagSticky composes total and controlled continuation actions inside Shell’s sticky slot;
@@ -263,7 +264,10 @@ SEO, focus/lifecycle, page state, offline, TV, navigation, integrations) may add
 `ui/` (collection carousel, QR) imports ui/domain/translations, package components, React and
 qrcode-generator, never services or platform; `styles/` holds CSS only. A JS module loose in
 `shared/` or in another folder fails. The DS bridge is checked too; missing relative modules and
-runtime JS/JSX cycles fail. The checker does not expand router globs or inspect runtime globals/state.
+runtime JS/JSX cycles fail. The checker does not expand router globs or inspect runtime state.
+No module reads or sets `window.VF_*`/`window.AG_*`/`window.VendraDesignSystem` (the checker fails it):
+integrations and page-wide state live on `vfRuntime` (`shared/platform/runtime.js`), installed by
+`app/runtime.js`/`app/theme.js`; only `guidelines/card-runtime.js` sets the cards' AG_* compatibility globals.
 Site View renders lazy route elements and live-announcement text directly. Keep VendraProvider,
 LiveRegion, PageBoundary and Suspense at coordinator level; retain each route guard and all four
 customer keys (bag, checkout, track and account). Site/shared logic owns routing and customer state.
