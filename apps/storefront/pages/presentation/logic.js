@@ -26,6 +26,7 @@ import {VF_CATEGORY_COPY} from '../../shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfLocation} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 
 // The counter settings, kept on this device (the shop's tablet). The PIN only keeps a curious
 // customer out of the settings; it is stored on the tablet as it is.
@@ -439,7 +440,8 @@ async function vfStartCamera(page) {
 // design on screen stays on screen as the list around it changes; if it left the list, the
 // full-screen view closes.
 function vfRefreshStock(page) {
-  window.VF_API.loadStock()
+  vfRuntime.api
+    .loadStock()
     .then(stock => {
       if (page._unmounted || !stock) return;
       const {open} = page.state;
@@ -522,7 +524,7 @@ export function usePage(props) {
       if (!text.trim()) return;
       page._searchTimer = setTimeout(
         () =>
-          window.VF_TRACK.event('search', {
+          vfRuntime.track.event('search', {
             search_term: text,
             results: vfShownProducts(page.state).length
           }),
@@ -543,7 +545,7 @@ export function usePage(props) {
       page._onConnection = () => {
         const online = navigator.onLine !== false;
         page.setState({online, ...(online ? {preloadVersion: page.state.preloadVersion + 1} : {})});
-        if (online && window.VF_API.live) vfRefreshStock(page);
+        if (online && vfRuntime.api.live) vfRefreshStock(page);
       };
       window.addEventListener('online', page._onConnection);
       window.addEventListener('offline', page._onConnection);
@@ -646,7 +648,7 @@ export function usePage(props) {
       vfSyncWakeLock(page);
       vfRestartIdle(page);
       vfSyncDisplay(page);
-      if (window.VF_API.live) {
+      if (vfRuntime.api.live) {
         vfRefreshStock(page);
         page._stockTimer = setInterval(() => vfRefreshStock(page), VF_STOCK_MS);
       }

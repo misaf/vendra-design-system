@@ -1,4 +1,4 @@
-// Shared Persian digits and currency formatting. Uses the core AG_FORMAT API.
+// Shared Persian digits and currency formatting, on the package's format helpers (utils/format.js).
 import {VF_STORE} from './store-config.js';
 import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {format} from '../../../../packages/design-system/components/utils/format.js';

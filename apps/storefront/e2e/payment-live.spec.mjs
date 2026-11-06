@@ -42,12 +42,13 @@ async function liveStore(page, api) {
     return route.fulfill({json: {}});
   });
   await page.addInitScript(base => {
-    let api;
-    Object.defineProperty(window, 'VF_API', {
+    let runtime;
+    Object.defineProperty(window, '__vfRuntime', {
       configurable: true,
-      get: () => api,
+      get: () => runtime,
       set: value => {
-        api = value;
+        runtime = value;
+        const api = value.api;
         api.setBase(base);
       }
     });

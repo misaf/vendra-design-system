@@ -18,6 +18,7 @@ import {vfDeliveryWhen} from '../../shared/translations/time.js';
 import {VF_NAV} from '../../shared/services/page-focus.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -228,7 +229,7 @@ function vals(page) {
     hasBag: currentBag.length > 0,
     confirmReorder: () => {
       if (!order || !buyer || !reorderLines.length) return;
-      window.VF_TRACK.event('order_again', {transaction_id: order.id});
+      vfRuntime.track.event('order_again', {transaction_id: order.id});
       page.props.store.reorder(order, ls.reorderMode);
       page.props.go('bag');
     },

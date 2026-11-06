@@ -66,7 +66,7 @@ function page(name, c, props = {}) {
   // product's saved-id mapping while a delete is still pending.
   {
     const {c: api, storage} = environment();
-    api.VF_API.setBase('https://example.test');
+    api.vfRuntime.api.setBase('https://example.test');
     storage.set('vendra-saved-map', JSON.stringify({'VF-8RD5WN': 701, 'VF-4CJ6ZB': 702}));
     const calls = [];
     let releaseDelete;
@@ -82,9 +82,9 @@ function page(name, c, props = {}) {
       }
       return {ok: true, status: 200, json: async () => ({id: slug === 'VF-8RD5WN' ? 801 : 802})};
     };
-    const remove = api.VF_API.unsaveItem('VF-8RD5WN');
-    const undo = api.VF_API.saveItem('VF-8RD5WN');
-    await api.VF_API.saveItem('VF-4CJ6ZB');
+    const remove = api.vfRuntime.api.unsaveItem('VF-8RD5WN');
+    const undo = api.vfRuntime.api.saveItem('VF-8RD5WN');
+    await api.vfRuntime.api.saveItem('VF-4CJ6ZB');
     assert.deepEqual(calls, [
       ['DELETE', '701'],
       ['POST', 'VF-4CJ6ZB']
@@ -100,8 +100,8 @@ function page(name, c, props = {}) {
       if (options.method === 'DELETE') throw new Error('Temporary failure');
       return {ok: true, status: 200, json: async () => ({id: 803})};
     };
-    const failed = api.VF_API.unsaveItem('VF-8RD5WN');
-    const retry = api.VF_API.saveItem('VF-8RD5WN');
+    const failed = api.vfRuntime.api.unsaveItem('VF-8RD5WN');
+    const retry = api.vfRuntime.api.saveItem('VF-8RD5WN');
     await assert.rejects(failed, /Temporary failure/);
     await retry;
     assert.equal(JSON.parse(storage.get('vendra-saved-map'))['VF-8RD5WN'], 803);
@@ -110,7 +110,7 @@ function page(name, c, props = {}) {
   // Idempotency-Key until the server confirms it, so a lost answer never places it twice.
   {
     const {c: api, storage, timers} = environment();
-    api.VF_API.setBase('https://example.test');
+    api.vfRuntime.api.setBase('https://example.test');
     const order = {cartToken: '', gateway: 'card', paymentReference: '1234 77'};
     const sent = [];
     api.fetch = (url, options) => {
@@ -121,7 +121,7 @@ function page(name, c, props = {}) {
         )
       );
     };
-    const stalled = api.VF_API.checkout(order);
+    const stalled = api.vfRuntime.api.checkout(order);
     assert.equal(timers.length, 1, 'the request sets its timeout at once');
     timers.at(-1)();
     await assert.rejects(stalled, error => error.kind === 'timeout');
@@ -138,11 +138,11 @@ function page(name, c, props = {}) {
       sent.push({url, key: options.headers['Idempotency-Key']});
       throw new TypeError('Failed to fetch');
     };
-    await assert.rejects(api.VF_API.checkout({...order}), error => error.kind === 'network');
+    await assert.rejects(api.vfRuntime.api.checkout({...order}), error => error.kind === 'network');
     assert.equal(sent[1].key, sent[0].key);
     // Offline before sending: nothing reached the server, and the failure says so.
     api.navigator = {onLine: false};
-    await assert.rejects(api.VF_API.checkout(order), error => error.kind === 'offline');
+    await assert.rejects(api.vfRuntime.api.checkout(order), error => error.kind === 'offline');
     delete api.navigator;
     sent.pop();
     // The server's error answer keeps the key too, and says what it was.
@@ -151,7 +151,7 @@ function page(name, c, props = {}) {
       return {ok: false, status: 503, json: async () => ({detail: 'busy'})};
     };
     await assert.rejects(
-      api.VF_API.checkout(order),
+      api.vfRuntime.api.checkout(order),
       error => error.kind === 'http' && error.status === 503 && error.body.detail === 'busy'
     );
     assert.equal(sent[2].key, sent[0].key);
@@ -160,7 +160,7 @@ function page(name, c, props = {}) {
       sent.push({url, key: options.headers['Idempotency-Key']});
       return {ok: false, status: 500, json: async () => null};
     };
-    await assert.rejects(api.VF_API.checkout({...order, paymentReference: '1234 78'}));
+    await assert.rejects(api.vfRuntime.api.checkout({...order, paymentReference: '1234 78'}));
     assert.notEqual(sent[3].key, sent[0].key);
     // Back to the first order: once the server confirms it, the key is dropped, so placing the same
     // bag again later is a new order.
@@ -168,10 +168,10 @@ function page(name, c, props = {}) {
       sent.push({url, key: options.headers['Idempotency-Key']});
       return {ok: true, status: 200, json: async () => ({number: 'VN-1'})};
     };
-    assert.equal((await api.VF_API.checkout(order)).number, 'VN-1');
+    assert.equal((await api.vfRuntime.api.checkout(order)).number, 'VN-1');
     assert.notEqual(sent[4].key, sent[3].key);
     assert.ok(!JSON.parse(storage.get('vendra-idempotency'))['checkout:guest']);
-    await api.VF_API.checkout(order);
+    await api.vfRuntime.api.checkout(order);
     assert.notEqual(sent[5].key, sent[4].key);
     // A full storage quota: the write fails while reads still work, so this page keeps its own key.
     {
@@ -186,15 +186,15 @@ function page(name, c, props = {}) {
         throw new TypeError('Failed to fetch');
       };
       const full = {...order, paymentReference: '9999 01'};
-      await assert.rejects(api.VF_API.checkout(full));
-      await assert.rejects(api.VF_API.checkout(full));
+      await assert.rejects(api.vfRuntime.api.checkout(full));
+      await assert.rejects(api.vfRuntime.api.checkout(full));
       assert.equal(sent.at(-1).key, sent.at(-2).key);
       api.localStorage.setItem = setItem;
       api.fetch = confirming;
       sent.splice(-2);
     }
     // Inquiries are keyed as well; reads are not, and use the shorter read timeout.
-    await api.VF_API.inquiry({name: 'Shirin', message: 'Hello'});
+    await api.vfRuntime.api.inquiry({name: 'Shirin', message: 'Hello'});
     assert.match(sent[6].url, /\/api\/support\/inquiries$/);
     assert.ok(sent[6].key);
     const before = timers.length;
@@ -208,10 +208,10 @@ function page(name, c, props = {}) {
       delay = ms;
       return setTimeoutBefore(callback, ms);
     };
-    await api.VF_API.loadStock();
+    await api.vfRuntime.api.loadStock();
     api.setTimeout = setTimeoutBefore;
     assert.equal(sent.at(-1).key, undefined);
-    assert.equal(delay, api.VF_API.timeouts.read);
+    assert.equal(delay, api.vfRuntime.api.timeouts.read);
     assert.equal(timers.length, before + 1);
     // Stock follows the collection's next page, so products past the first page are refreshed
     // too; a full next URL is read as a path, and a repeated link ends the walk.
@@ -232,11 +232,11 @@ function page(name, c, props = {}) {
       };
       const asked = [];
       api.fetch = async url => {
-        const path = url.slice(api.VF_API.base.length);
+        const path = url.slice(api.vfRuntime.api.base.length);
         asked.push(path);
         return {ok: true, status: 200, json: async () => pages[path]};
       };
-      const stock = await api.VF_API.loadStock();
+      const stock = await api.vfRuntime.api.loadStock();
       assert.deepEqual(asked, Object.keys(pages));
       assert.deepEqual(JSON.parse(JSON.stringify(stock)), {
         'VF-AAAAAA': {inStock: true, quantity: 3},
@@ -256,7 +256,7 @@ function page(name, c, props = {}) {
           })
         };
       };
-      await api.VF_API.loadStock();
+      await api.vfRuntime.api.loadStock();
       assert.equal(asked.length, 50);
     }
   }
@@ -396,13 +396,13 @@ function page(name, c, props = {}) {
   checkout.renderVals().place();
   assert.equal(checkout.state.order.method, 'card');
   assert.equal(checkout.state.order.preferredLocale, 'fa');
-  assert.equal(c.VF_PAYMENT.bankOf('۶۰۳۷۹۹۰۰۰۰۰۰۰۰۰۰').en, 'Bank Melli');
-  assert.equal(c.VF_PAYMENT.luhn('1111111111111111'), false);
-  await c.VF_API.saveItem('ivory');
-  await c.VF_API.unsaveItem('ivory');
-  assert.equal(await c.VF_API.loadSaved(), null);
-  assert.equal(c.VF_API.live, false);
-  c.VF_API.setBase('https://example.test');
+  assert.equal(vm.runInContext('vfPayment', c).bankOf('۶۰۳۷۹۹۰۰۰۰۰۰۰۰۰۰').en, 'Bank Melli');
+  assert.equal(vm.runInContext('vfPayment', c).luhn('1111111111111111'), false);
+  await c.vfRuntime.api.saveItem('ivory');
+  await c.vfRuntime.api.unsaveItem('ivory');
+  assert.equal(await c.vfRuntime.api.loadSaved(), null);
+  assert.equal(c.vfRuntime.api.live, false);
+  c.vfRuntime.api.setBase('https://example.test');
   const contact = page('contact', c);
   contact.renderVals().setMsg('Keep this draft');
   contact.renderVals().setPhone('09121234567');
@@ -418,7 +418,7 @@ function page(name, c, props = {}) {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(live.state.failed, true);
   assert.equal(live.state.order, null);
-  c.VF_API.setBase('');
+  c.vfRuntime.api.setBase('');
   const cod = page('checkout', c);
   cod.props.store = {
     bag: c.vfSampleBag(),
@@ -460,13 +460,14 @@ function page(name, c, props = {}) {
         page('post', c, {lang, routeInfo: {view: 'post', post: id}}).renderVals().hasPost,
         true
       );
-  const comm = {window: null, console};
-  comm.window = comm;
+  const comm = {console};
   vm.createContext(comm);
+  const {strip} = require('./page-script.cjs');
   vm.runInContext(
-    read('apps/storefront/communications/notifications.js') +
+    strip(read('apps/storefront/communications/notifications.js')) +
       '\n' +
-      read('apps/storefront/communications/email-templates.js'),
+      strip(read('apps/storefront/communications/email-templates.js')) +
+      '\nObject.assign(this, {VF_NOTIFY, VF_EMAIL});',
     comm
   );
   for (const lang of ['en', 'fa']) {

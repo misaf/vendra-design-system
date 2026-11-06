@@ -7,16 +7,17 @@
 import '../_runtime/tailwind.css';
 import '../../../packages/design-system/styles.css';
 import '../_runtime/custom.css';
+import {vfRuntime} from '../shared/platform/runtime.js';
 
 // Product images, map scripts and tenant themes sit under this root (the build copies them).
 // The dev server serves the repo root and the build keeps the same paths, both at the base path,
 // which the build's prerender also writes (a path, so its markup matches the browser's).
-window.VF_ASSET_BASE = import.meta.env.BASE_URL;
+vfRuntime.assetBase = import.meta.env.BASE_URL;
 
 // Loads only this tenant's stylesheet (page code calls it with ?tenant= or store-config.js). The page
 // stays hidden until the theme arrives so another brand's colours never flash, for at most 2s. The
 // build links the store's own theme in every prerendered page, so those never wait for it.
-window.VF_USE_TENANT = tenant => {
+vfRuntime.useTenant = tenant => {
   let link = /** @type {HTMLLinkElement & {vfTimer?: number}} */ (
     document.getElementById('vf-tenant-css')
   );
@@ -25,7 +26,7 @@ window.VF_USE_TENANT = tenant => {
     return;
   }
   const href = new URL(
-    window.VF_ASSET_BASE + 'packages/design-system/tokens/tenants/' + tenant + '.css',
+    vfRuntime.assetBase + 'packages/design-system/tokens/tenants/' + tenant + '.css',
     location.href
   ).href;
   if (link && link.href === href) return;
@@ -56,4 +57,5 @@ window.VF_USE_TENANT = tenant => {
   link.setAttribute('href', href);
   document.head.appendChild(link);
 };
-if (window.VF_TENANT) window.VF_USE_TENANT(window.VF_TENANT);
+// A tenant applied before this module ran (page-lifecycle.js records it) loads now.
+if (vfRuntime.tenant) vfRuntime.useTenant(vfRuntime.tenant);

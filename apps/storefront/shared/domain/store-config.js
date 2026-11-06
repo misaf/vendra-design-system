@@ -1,6 +1,7 @@
 // Store identity and contact details. Change these once, then run npm --prefix apps/storefront run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
+import {vfRuntime} from '../platform/runtime.js';
 
 export const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.
@@ -150,11 +151,11 @@ export function vfFeatures() {
 export function vfLanguage(lang) {
   return VF_STORE.languages.includes(lang) ? lang : VF_STORE.languages[0];
 }
-// Whether orders go to the store's API (VF_STORE.apiBase or VF_API.setBase), not the local demo. The
-// build's prerender has no VF_API: there the configured apiBase decides, as it does on first load.
+// Whether orders go to the store's API (VF_STORE.apiBase or vfRuntime.api.setBase), not the local demo.
+// The build's prerender has no API client: there the configured apiBase decides, as on first load.
 export function vfLiveStore() {
   if (typeof window === 'undefined') return !!VF_STORE.apiBase;
-  return !!window.VF_API?.live;
+  return !!vfRuntime.api?.live;
 }
 // The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp, and
 // a live store takes online payments only through a connected gateway (VF_STORE.gateway).
