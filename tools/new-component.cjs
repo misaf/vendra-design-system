@@ -124,7 +124,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -191,5 +191,5 @@ Next:
      component uses), and add it to a guideline card in guidelines/components/.
   2. npm --prefix apps/storefront run format && npm --prefix apps/storefront run build
   3. npm --prefix apps/storefront run check && npm --prefix apps/storefront test
-  4. npx playwright test -c apps/storefront/_e2e/playwright.config.mjs ../${componentPath}
+  4. npx playwright test -c apps/storefront/e2e/playwright.config.mjs ../${componentPath}
      then the whole test:e2e (CLAUDE.md rule 5).`);

@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   expectAccessible,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 for (const [lang, lines] of [
   ['en', ['In stock', 'Only 2 left', 'Back on 12 October', 'Back soon', 'Sold out']],

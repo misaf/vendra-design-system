@@ -110,7 +110,7 @@ function packageFiles() {
 
   // Design tokens for other platforms (W3C DTCG JSON): the base system from tokens/*.css, and per
   // sample tenant the tokens its theme changes (merge them over tokens.json).
-  const themeApi = require('../apps/storefront/_shared/domain/tenant-theme.js');
+  const themeApi = require('../apps/storefront/shared/domain/tenant-theme.js');
   const json = value => JSON.stringify(value, null, 2) + '\n';
   files.set('tokens/tokens.json', json(themeApi.designTokens(baseTokenVars())));
   for (const name of tenants) {
@@ -122,7 +122,7 @@ function packageFiles() {
     );
   }
 
-  const theme = readRepo('apps/storefront/_shared/domain/tenant-theme.js');
+  const theme = readRepo('apps/storefront/shared/domain/tenant-theme.js');
   files.set('theme.cjs', HEADER + theme);
   files.set(
     'theme.js',
@@ -130,8 +130,8 @@ function packageFiles() {
       "import theme from './theme.cjs';\n" +
       'export const {VENDRA, CHOICES, FONTS, RAMPS, shade, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
   );
-  files.set('theme.d.ts', readRepo('apps/storefront/_shared/domain/tenant-theme.d.ts'));
-  files.set('theme.d.cts', readRepo('apps/storefront/_shared/domain/tenant-theme.d.ts'));
+  files.set('theme.d.ts', readRepo('apps/storefront/shared/domain/tenant-theme.d.ts'));
+  files.set('theme.d.cts', readRepo('apps/storefront/shared/domain/tenant-theme.d.ts'));
   return files;
 }
 

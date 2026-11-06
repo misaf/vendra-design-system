@@ -3,7 +3,7 @@ import {
   expectAccessible,
   openComponent,
   scanAxe
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 const open = async (page, lang = 'en') => {
   await openComponent(page, 'Lightbox', lang);

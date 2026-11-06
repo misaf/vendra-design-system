@@ -1,1 +1,1 @@
-leaflet/: Leaflet 1.9.4 (BSD-2-Clause, see leaflet/LICENSE), the delivery pin map. Only leaflet.js and leaflet.css from the npm package's dist/; the bag page loads them on demand (_shared/domain/location.js), and npm run build:app copies them into the build.
+leaflet/: Leaflet 1.9.4 (BSD-2-Clause, see leaflet/LICENSE), the delivery pin map. Only leaflet.js and leaflet.css from the npm package's dist/; the bag page loads them on demand (shared/domain/location.js), and npm run build:app copies them into the build.

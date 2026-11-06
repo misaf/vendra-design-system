@@ -3,9 +3,9 @@ dist/
 **/node_modules/
 apps/storefront/_runtime/
 apps/storefront/_vendor/
-apps/storefront/_e2e/__screenshots__/
-apps/storefront/_e2e/test-results/
-apps/storefront/_e2e/playwright-report/
+apps/storefront/e2e/__screenshots__/
+apps/storefront/e2e/test-results/
+apps/storefront/e2e/playwright-report/
 packages/design-system/tokens/tenants/*.css
 packages/design-system/tokens/tenants.css
 **/package-lock.json

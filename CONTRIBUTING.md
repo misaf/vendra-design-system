@@ -49,7 +49,7 @@ The `--` matters: without it npm keeps the flags for itself. The generator adds 
 - **Server rendering.** Touch `window` and `document` only in effects and event handlers.
 - **Test it** in `<Name>.spec.mjs`: role and name, keyboard, wording in both languages, the main props, and `expectAccessible` (axe in English and Persian). `<output>` elements count as `role=status`, so use a `<span data-test>` to show what a callback reported.
 - **Use it.** `npm test` fails until a storefront page (or another component) uses it, and it belongs on a guideline card in `guidelines/components/`.
-- **Size.** `npm test` measures it gzipped (`apps/storefront/_tests/size.test.mjs`). Raise a budget only on purpose, saying why in the code and the commit.
+- **Size.** `npm test` measures it gzipped (`apps/storefront/tests/size.test.mjs`). Raise a budget only on purpose, saying why in the code and the commit.
 
 ## Breaking changes
 

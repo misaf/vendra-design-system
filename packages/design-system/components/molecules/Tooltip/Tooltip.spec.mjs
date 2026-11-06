@@ -3,7 +3,7 @@ import {
   expectAccessible,
   hover,
   openComponent
-} from '../../../../../apps/storefront/_e2e/component-test.mjs';
+} from '../../../../../apps/storefront/e2e/component-test.mjs';
 
 // WCAG 1.4.13 content on hover or focus, on React Aria's tooltip.
 test.beforeEach(({page}) => openComponent(page, 'Tooltip'));
