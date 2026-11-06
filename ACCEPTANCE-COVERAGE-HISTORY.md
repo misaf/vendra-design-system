@@ -30,16 +30,16 @@ execute; it is excluded from production configuration. The frozen stage-219 coun
 
 | Dedicated suite | Scenarios | EN/FA × phone/tablet | Main coverage |
 | --- | ---: | ---: | --- |
-| [device-routes.spec.mjs](templates/_e2e/device-routes.spec.mjs) | 4 | 16 | Product, bag/delivery, checkout, contact. |
-| [device-browsing.spec.mjs](templates/_e2e/device-browsing.spec.mjs) | 4 | 16 | Search context, saved undo, missing/error recovery. |
-| [device-customer.spec.mjs](templates/_e2e/device-customer.spec.mjs) | 3 | 12 | Demo sign-in, profile/sign-out, guest order lookup. |
-| [device-editorial.spec.mjs](templates/_e2e/device-editorial.spec.mjs) | 4 | 16 | Journal, article, FAQ, policy. |
-| [device-specialist.spec.mjs](templates/_e2e/device-specialist.spec.mjs) | 2 | 8 | Wedding draft/validation, presentation shortlist/tools. |
-| [device-catalog.spec.mjs](templates/_e2e/device-catalog.spec.mjs) | 3 | 12 | Home discovery, shop sorting/paging/filters. |
+| [device-routes.spec.mjs](apps/storefront/_e2e/device-routes.spec.mjs) | 4 | 16 | Product, bag/delivery, checkout, contact. |
+| [device-browsing.spec.mjs](apps/storefront/_e2e/device-browsing.spec.mjs) | 4 | 16 | Search context, saved undo, missing/error recovery. |
+| [device-customer.spec.mjs](apps/storefront/_e2e/device-customer.spec.mjs) | 3 | 12 | Demo sign-in, profile/sign-out, guest order lookup. |
+| [device-editorial.spec.mjs](apps/storefront/_e2e/device-editorial.spec.mjs) | 4 | 16 | Journal, article, FAQ, policy. |
+| [device-specialist.spec.mjs](apps/storefront/_e2e/device-specialist.spec.mjs) | 2 | 8 | Wedding draft/validation, presentation shortlist/tools. |
+| [device-catalog.spec.mjs](apps/storefront/_e2e/device-catalog.spec.mjs) | 3 | 12 | Home discovery, shop sorting/paging/filters. |
 
 ## Route-to-flow checklist
 
-All 19 entries of [`VF_ROUTES`](templates/_shared/services/routing.js) have selected dedicated bilingual touch coverage. These are user-flow
+All 19 entries of [`VF_ROUTES`](apps/storefront/_shared/services/routing.js) have selected dedicated bilingual touch coverage. These are user-flow
 assertions, not a promise of a fresh content axe scan at each route's initial state. For example,
 the bag case scans delivery validation, and sign-in scans incomplete-code validation.
 
@@ -71,10 +71,10 @@ this table does not turn those mobile/desktop results into dedicated touch or ha
 
 ## Geometry and content-scan contract
 
-Sources: [project configuration](templates/_e2e/playwright.config.mjs),
-[control geometry helpers](templates/_e2e/device-helpers.mjs),
-[content/visual helpers](templates/_e2e/helpers.mjs),
-[visual configuration](templates/_e2e/visual-browser.mjs), and
+Sources: [project configuration](apps/storefront/_e2e/playwright.config.mjs),
+[control geometry helpers](apps/storefront/_e2e/device-helpers.mjs),
+[content/visual helpers](apps/storefront/_e2e/helpers.mjs),
+[visual configuration](apps/storefront/_e2e/visual-browser.mjs), and
 [CI jobs](.github/workflows/ci.yml).
 
 - Actions use synthesized Chromium taps with normal Playwright actionability, without force or
@@ -103,10 +103,10 @@ runner builds the app, owns its preview on 4173 and tears it down; the existing 
 is preserved. `npm run check` also passes. Runtime/tests/styles/baselines are unchanged by the audit.
 
 ```sh
-E2E_WORKERS=2 PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage227-production.json npm --prefix templates run test:e2e:build -- device-routes.spec.mjs device-browsing.spec.mjs device-customer.spec.mjs device-editorial.spec.mjs device-specialist.spec.mjs device-catalog.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage227-production-results --reporter=list,json
+E2E_WORKERS=2 PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage227-production.json npm --prefix apps/storefront run test:e2e:build -- device-routes.spec.mjs device-browsing.spec.mjs device-customer.spec.mjs device-editorial.spec.mjs device-specialist.spec.mjs device-catalog.spec.mjs --project=touch-phone --project=tablet --retries=0 --output=/tmp/vendra-stage227-production-results --reporter=list,json
 ```
 
-Discovery uses `npm --prefix templates run test:e2e -- --list --reporter=json`. Local results and
+Discovery uses `npm --prefix apps/storefront run test:e2e -- --list --reporter=json`. Local results and
 logs at `/tmp/vendra-stage227-*` are temporary evidence, not durable CI artifacts. This audit does
 **not** freshly run the combined dev matrix, original device/TV/offline cases, component/hydration
 suite or full repository browser suite. Dev and per-stage unit results remain the earlier staged

@@ -18,11 +18,11 @@ The last item was not covered by stage 235's initial separator hypothesis. Sourc
 is retained. The old content is restored only in intercepted development module responses:
 
 ```js
-// /templates/_shared/domain/formatting.js
+// /apps/storefront/_shared/domain/formatting.js
 body = body.replace("lang === true || lang === 'fa' ? '، ' : ' · '", "' · '");
-// /templates/_shared/domain/account-data.js
+// /apps/storefront/_shared/domain/account-data.js
 body = body.replace("'VN-10187'", "'VB-TEST-1'");
-// /templates/storefront-product/copy.js — old literals from the same source commit
+// /apps/storefront/storefront-product/copy.js — old literals from the same source commit
 body = body
   .replace("sub: 'رز، لیسیانتوس، ساتن'", "sub: 'رز · لیسیانتوس · ساتن'")
   .replace("count => 'جمع ' + S.n(count)", "count => 'جمع · ' + S.n(count)")
@@ -91,8 +91,8 @@ policy, and `--update-snapshots=none --retries=0`. All 76 cases run per target; 
 within the existing policy, not raw identity.
 
 ```sh
-E2E_WORKERS=2 npm --prefix templates run test:e2e -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
-E2E_WORKERS=2 npm --prefix templates run test:e2e:build -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
+E2E_WORKERS=2 npm --prefix apps/storefront run test:e2e -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
+E2E_WORKERS=2 npm --prefix apps/storefront run test:e2e:build -- pages.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none
 ```
 
 Only ten existing Darwin PNGs and documentation change. All other 248 snapshot hashes, including

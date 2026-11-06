@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../apps/storefront/_e2e/component-test.mjs';
 
 test("navigate makes the components' links client-side", async ({page}) => {
   await openComponent(page, 'VendraProvider');

@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+  <loc>https://example.test/apps/storefront/app/en/contact/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/contact/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/contact/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/contact/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/faq/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/faq/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/faq/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/faq/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/</loc>
+  <lastmod>2026-09-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/weddings/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/weddings/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/weddings/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/weddings/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/bouquets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/bouquets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/boxes/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/boxes/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/boxes/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/boxes/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/orchids/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/orchids/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/bridal/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/bridal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/rose-bouquets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/rose-bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/rose-bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/rose-bouquets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/baskets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/baskets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/baskets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/baskets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/plants/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/plants/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/plants/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/plants/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/dried/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/dried/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/dried/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/dried/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/wreaths/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/wreaths/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/wreaths/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/wreaths/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/table/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/table/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/table/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/table/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/wedding-cars/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/wedding-cars/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/wedding-cars/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/wedding-cars/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/shop/gifts/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/gifts/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/gifts/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/gifts/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-7K2M4Q/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-7K2M4Q/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-7K2M4Q/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-7K2M4Q/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-3HX9TP/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-3HX9TP/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-3HX9TP/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-3HX9TP/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-8RD5WN/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-8RD5WN/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-8RD5WN/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-8RD5WN/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-4CJ6ZB/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-4CJ6ZB/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-4CJ6ZB/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-4CJ6ZB/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-9FA2KE/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-9FA2KE/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-9FA2KE/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-9FA2KE/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/product/VF-6MT3VY/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-6MT3VY/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-6MT3VY/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-6MT3VY/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/autumn/</loc>
+  <lastmod>2026-09-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/autumn/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/care/</loc>
+  <lastmod>2026-09-12</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/care/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/care/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/care/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/bridal/</loc>
+  <lastmod>2026-08-30</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/orchids/</loc>
+  <lastmod>2026-08-16</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/</loc>
+  <lastmod>2026-09-24</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/morning-at-the-studio/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/flowers-for-friends/</loc>
+  <lastmod>2026-09-21</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/flowers-for-friends/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/flowers-for-friends/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/flowers-for-friends/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/bouquet-last-longer/</loc>
+  <lastmod>2026-09-18</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bouquet-last-longer/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bouquet-last-longer/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bouquet-last-longer/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/yalda-flowers/</loc>
+  <lastmod>2026-09-09</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/yalda-flowers/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/yalda-flowers/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/yalda-flowers/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/bridal-bouquet-guide/</loc>
+  <lastmod>2026-08-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal-bouquet-guide/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal-bouquet-guide/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal-bouquet-guide/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/journal/orchid-care/</loc>
+  <lastmod>2026-08-14</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchid-care/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchid-care/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchid-care/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/policy/shipping/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/shipping/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/shipping/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/shipping/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/policy/returns/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/returns/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/returns/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/returns/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/policy/privacy/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/privacy/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/privacy/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/privacy/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/policy/terms/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/terms/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/terms/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/terms/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/en/policy/accessibility/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/accessibility/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/accessibility/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/accessibility/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/contact/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/contact/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/contact/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/contact/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/faq/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/faq/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/faq/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/faq/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/</loc>
+  <lastmod>2026-09-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/weddings/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/weddings/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/weddings/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/weddings/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/bouquets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/bouquets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/boxes/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/boxes/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/boxes/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/boxes/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/orchids/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/orchids/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/bridal/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/bridal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/rose-bouquets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/rose-bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/rose-bouquets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/rose-bouquets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/baskets/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/baskets/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/baskets/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/baskets/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/plants/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/plants/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/plants/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/plants/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/dried/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/dried/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/dried/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/dried/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/wreaths/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/wreaths/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/wreaths/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/wreaths/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/table/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/table/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/table/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/table/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/wedding-cars/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/wedding-cars/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/wedding-cars/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/wedding-cars/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/shop/gifts/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/shop/gifts/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/shop/gifts/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/shop/gifts/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-7K2M4Q/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-7K2M4Q/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-7K2M4Q/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-7K2M4Q/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-3HX9TP/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-3HX9TP/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-3HX9TP/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-3HX9TP/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-8RD5WN/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-8RD5WN/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-8RD5WN/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-8RD5WN/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-4CJ6ZB/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-4CJ6ZB/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-4CJ6ZB/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-4CJ6ZB/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-9FA2KE/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-9FA2KE/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-9FA2KE/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-9FA2KE/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/product/VF-6MT3VY/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/product/VF-6MT3VY/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/product/VF-6MT3VY/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/product/VF-6MT3VY/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/autumn/</loc>
+  <lastmod>2026-09-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/autumn/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/care/</loc>
+  <lastmod>2026-09-12</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/care/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/care/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/care/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/bridal/</loc>
+  <lastmod>2026-08-30</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/orchids/</loc>
+  <lastmod>2026-08-16</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchids/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/morning-at-the-studio/</loc>
+  <lastmod>2026-09-24</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/morning-at-the-studio/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/flowers-for-friends/</loc>
+  <lastmod>2026-09-21</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/flowers-for-friends/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/flowers-for-friends/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/flowers-for-friends/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/bouquet-last-longer/</loc>
+  <lastmod>2026-09-18</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bouquet-last-longer/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bouquet-last-longer/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bouquet-last-longer/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/yalda-flowers/</loc>
+  <lastmod>2026-09-09</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/yalda-flowers/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/yalda-flowers/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/yalda-flowers/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/bridal-bouquet-guide/</loc>
+  <lastmod>2026-08-28</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal-bouquet-guide/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal-bouquet-guide/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal-bouquet-guide/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/journal/orchid-care/</loc>
+  <lastmod>2026-08-14</lastmod>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchid-care/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchid-care/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchid-care/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/policy/shipping/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/shipping/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/shipping/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/shipping/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/policy/returns/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/returns/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/returns/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/returns/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/policy/privacy/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/privacy/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/privacy/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/privacy/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/policy/terms/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/terms/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/terms/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/terms/"/>
+</url>
+<url>
+  <loc>https://example.test/apps/storefront/app/fa/policy/accessibility/</loc>
+  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/policy/accessibility/"/>
+  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/policy/accessibility/"/>
+  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/policy/accessibility/"/>
+</url>
+</urlset>

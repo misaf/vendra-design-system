@@ -24,7 +24,7 @@ and test registration counts are distinguished from executed checks.
 | Production/offline | devices.spec includes cached collection loops, reconnect, service-worker update, open-display activation and shareable setup review. | Requires production target. Map tiles are stubbed. Device production results are recorded below. |
 | Hydration/first layout | hydration.spec registers 24 invocations; beforeEach limits execution to desktop. Two bilingual component hydration cases plus ten shell-first-layout width/language cases can execute. | Registered and inspected; not freshly executed in this stage. Production config excludes this fixture spec. |
 | CI | ci.yml runs both the dev suite and production suite, with browser/React-19 jobs after checks; screenshot update is a separate manually dispatched workflow. | Configuration inspected, not a claim of a completed full current-head CI run. Default retries can report flaky cases; fresh audit commands disable retries. |
-| Physical devices | Intended iPad/Safari, WebOS, Tizen and Android TV checks are already called out in templates/README.md. | No fresh physical-device execution here. |
+| Physical devices | Intended iPad/Safari, WebOS, Tizen and Android TV checks are already called out in apps/storefront/README.md. | No fresh physical-device execution here. |
 | Assistive technology | Axe tags, semantic checks, keyboard/focus tests and hydration are available. | No executed VoiceOver/NVDA/JAWS or other screen-reader session in this stage; they cannot be inferred from axe. |
 
 ## Fresh execution
@@ -46,13 +46,13 @@ No runtime source, style, baseline, screenshot policy or test configuration is c
 The production command uses one worker and no retries:
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- devices.spec.mjs tv.spec.mjs --project=touch-phone --project=tablet --project=tv --retries=0 --output=/tmp/vendra-stage219-device-results --reporter=list
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- devices.spec.mjs tv.spec.mjs --project=touch-phone --project=tablet --project=tv --retries=0 --output=/tmp/vendra-stage219-device-results --reporter=list
 ```
 
 The focused run uses one worker, no retries and updates disabled:
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none --output=/tmp/vendra-stage219-focused-results --reporter=list --grep 'page: (post|notfound) |axe: (post|notfound|contact|error) '
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --retries=0 --update-snapshots=none --output=/tmp/vendra-stage219-focused-results --reporter=list --grep 'page: (post|notfound) |axe: (post|notfound|contact|error) '
 ```
 
 This samples eight default post/not-found screenshots and sixteen post/not-found/contact/error axe
