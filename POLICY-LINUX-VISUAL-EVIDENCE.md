@@ -31,7 +31,7 @@ retry differs from them in **16 pixels/max 20**. CI's first browser-job comparat
 
 [Stage 224](ATOMIC-DESIGN.md) fixed phone contents links obscuring their target heading. Commit
 `3309f347771f856b0d25215793aa2273976c1da4` changed the phone selector in
-[information-pages.css](apps/storefront/_shared/information-pages.css) to
+[information-pages.css](apps/storefront/_shared/styles/information-pages.css) to
 `.vf-page .vf-info-toc.vf-sticky-panel`, keeping it `position: static` below 768px. That outranks the
 shared fit-based sticky-panel selector. The original phone selector lost that specificity contest.
 Tablet/wide contents remain sticky when they fit.

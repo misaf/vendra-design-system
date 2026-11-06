@@ -42,7 +42,7 @@ export const VIEWS = {
   error: {}
 };
 
-// The screen's one path segment after its name (en/product/VF-7K2M4Q/), as _shared/seo.js writes it.
+// The screen's one path segment after its name (en/product/VF-7K2M4Q/), as _shared/services/seo.js writes it.
 const SEGMENT = {product: 'id', post: 'post', track: 'id', shop: 'cat', policy: 'id'};
 
 // A view's address: SITE + <lang>/<view>/<id>/, with anything else as the query.

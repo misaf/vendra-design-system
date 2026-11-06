@@ -9,14 +9,14 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
 - [ ] Save it as `tokens/tenants/<slug>.json` and run `npm --prefix apps/storefront run build`. The build writes `tokens/tenants/<slug>.css` and the tenant's email palette in `apps/storefront/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
-- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/_shared/store-config.js` and rebuild. The storefront then loads only `tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `tokens/tenants.css`).
+- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/_shared/domain/store-config.js` and rebuild. The storefront then loads only `tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `tokens/tenants.css`).
 
 **The tenant JSON**
 - `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
 - `character`: `headings` (`serif`, `sans`, `vazir`), `case` (`none`, `uppercase`), `accentWord` (`italic`, `upright`), `controls` (`pill`, `square`), `frame` (`arch`, `soft`, `square`).
 - `overrides` (optional): a generated shade the designer wants to set by hand, for example `{"--border-input": "#847E70"}`. Only shade names are accepted (`--peony-*`, `--petal-*`, `--ink-*`, `--stem-*`, `--border-input`). Changing a base colour in the Theme builder drops the overrides tuned for it.
 - `description` (optional): one line, copied into the generated CSS.
-- Own font? That needs a new `headings` choice in `apps/storefront/_shared/tenant-theme.js` (the generator) with its `@font-face` in `tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
+- Own font? That needs a new `headings` choice in `apps/storefront/_shared/domain/tenant-theme.js` (the generator) with its `@font-face` in `tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
 
 ## 2. Brand assets (florist supplies · designer prepares)
 Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
@@ -29,7 +29,7 @@ Until approved artwork arrives, omit the logo fields to show the localized store
 | `icons` | `favicon` (32 × 32 PNG), `apple` (180 × 180 PNG), `app192` (192 × 192 PNG), `app512` (512 × 512 PNG), `maskable` (512 × 512 PNG) | Browser tab and installed app; supply the complete set |
 | `ogImage` | `{en, fa}` paths to 1200 × 630 PNG/JPEG images | Localized social previews |
 
-For a deployment-specific override, set `VF_STORE.brandAssets` in `apps/storefront/_shared/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
+For a deployment-specific override, set `VF_STORE.brandAssets` in `apps/storefront/_shared/domain/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
 
 - [ ] Prepare approved logo, compact mark and light footer artwork. Check contrast against the actual header and footer colours in both languages; transparent artwork must remain readable. Keep essential maskable artwork inside the central 80% circle.
 - [ ] Export PNG icons in the sizes above (the build accepts prepared files; it does not resize them). `assets/brand-export-source.html` is a starting point. Supply localized social images.
@@ -37,7 +37,7 @@ For a deployment-specific override, set `VF_STORE.brandAssets` in `apps/storefro
 - [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)
-The storefront reads all of this as data (`apps/storefront/_shared/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
+The storefront reads all of this as data (`apps/storefront/_shared/domain/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `uploads/openapi-*.json`). No component has it hard-coded.
 - [ ] **Store name** in EN and FA. **Contact:** phone, WhatsApp, Instagram, address (EN + FA), map pin, opening hours.
 - [ ] **Currency:** one active currency. Toman and Rial are built in; for any other (USD, EUR, AED…) supply its rate per Toman in the store's `currencies` table and keep it current — `money()` throws for a currency without a rate.
 - [ ] **Delivery:** zones per country, with fee, same-day cut-off, time slots and free-delivery threshold.

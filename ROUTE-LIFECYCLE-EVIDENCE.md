@@ -41,9 +41,9 @@ and preloads routes in the background. The [site router](apps/storefront/storefr
 `vfShowRoute` keeps the current URL/page while a requested module loads and checks a navigation
 sequence before committing it. A newer navigation owns the eventual visible route.
 
-[page-lifecycle.js](apps/storefront/_shared/page-lifecycle.js) sets locale, waits for the heading and
+[page-lifecycle.js](apps/storefront/_shared/services/page-lifecycle.js) sets locale, waits for the heading and
 schedules later-view focus; first-load focus is left at the top. Its delayed heading helper in
-[page-focus.js](apps/storefront/_shared/page-focus.js) preserves explicitly focused fields/recovery
+[page-focus.js](apps/storefront/_shared/services/page-focus.js) preserves explicitly focused fields/recovery
 controls. [Shell](apps/storefront/app/Shell.jsx) adjusts focused content away from sticky bars on a later
 frame. These delays have distinct owners; a test's navigation click is not itself proof that the
 final heading is ready and focused.

@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/account-data.js';
+import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../_shared/domain/account-data.js';
 import {
   vfCardMessages,
   vfLineAvailable,
@@ -9,7 +9,7 @@ import {
   vfLineToken,
   vfProductImage,
   vfSampleBag
-} from '../_shared/catalog.js';
+} from '../_shared/domain/catalog.js';
 import {commerce} from '../../../components/utils/commerce.js';
 import {
   VF_DELIVERY,
@@ -18,23 +18,23 @@ import {
   vfDeliveryChanged,
   vfTotals,
   vfZone
-} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, vfSeparator} from '../_shared/formatting.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../_shared/store-config.js';
+} from '../_shared/domain/delivery.js';
+import {VF_FA_DIGITS, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfSummaryRows} from '../_shared/domain/promotions.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../_shared/domain/store-config.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
-import {vfOrderMessage} from '../_shared/order-message.js';
+import {vfOrderMessage} from '../_shared/domain/order-message.js';
 import {
   vfBalanceDiscountOn,
   vfWalletBalance,
   vfWalletChange,
   vfWalletOf
-} from '../_shared/wallet.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {vfNow} from '../_shared/environment.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+} from '../_shared/domain/wallet.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {vfNow} from '../_shared/platform/environment.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
 const vfPaymentKey = () => 'vf-online-payment:' + vfCustomerId();

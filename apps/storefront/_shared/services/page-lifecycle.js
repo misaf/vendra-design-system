@@ -1,15 +1,15 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
-import {vfBrand, vfBrandHead, vfBrandUrl} from './brand.js';
-import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
-import {VF_PRODUCTS, vfFindProduct} from './catalog.js';
+import {vfBrand, vfBrandHead, vfBrandUrl} from '../domain/brand.js';
+import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
+import {VF_PRODUCTS, vfFindProduct} from '../domain/catalog.js';
 import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
-import {VF_STORE} from './store-config.js';
-import {VF_SHELL} from './translations/shell.js';
+import {VF_STORE} from '../domain/store-config.js';
+import {VF_SHELL} from '../translations/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
-import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from './environment.js';
+import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from '../platform/environment.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {

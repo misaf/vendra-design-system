@@ -6,10 +6,10 @@ import {
   vfProductImage,
   vfProductSub,
   vfTokenText
-} from '../_shared/catalog.js';
-import {vfShell} from '../_shared/navigation.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+} from '../_shared/domain/catalog.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

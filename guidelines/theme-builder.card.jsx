@@ -1,6 +1,6 @@
 import './card-runtime.js';
 const { Button, Badge, Chip, ProductCard } = window.VendraDesignSystem;
-// Generation and checks come from apps/storefront/_shared/tenant-theme.js — the same code the build uses for tokens/tenants/<slug>.css.
+// Generation and checks come from apps/storefront/_shared/domain/tenant-theme.js — the same code the build uses for tokens/tenants/<slug>.css.
 const T = window.VF_TENANT_THEME, TENANTS = window.VF_TENANTS || {};
 const START = {vendra: T.VENDRA, ...TENANTS};
 const label = key => key === 'vendra' ? 'Vendra (default)' : key.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');

@@ -6,10 +6,10 @@ interface Window {
   AG_COMMERCE: any;
   AG_DATES: any;
   AG_FORMAT: any;
-  // VF_*: from the Vendra Florist templates. Routing and <head> (_shared/seo.js), focus (_shared/page-focus.js).
+  // VF_*: from the Vendra Florist templates. Routing and <head> (_shared/services/seo.js), focus (_shared/services/page-focus.js).
   VF_NAV: any;
   VF_SEO: any;
-  // Integrations defined in _shared/integrations/ and _shared/payments.js.
+  // Integrations defined in _shared/services/integrations/ and _shared/domain/payments.js.
   VF_API: any;
   VF_TRACK: any;
   VF_PAYMENT: any;
@@ -24,7 +24,7 @@ interface Window {
   VF_RENDERED?: 'hydrated' | 'rendered';
   // The click-through site's page object (storefront-site/logic.js), for tests.
   __vfSite?: any;
-  // Leaflet, loaded on demand by _shared/location.js.
+  // Leaflet, loaded on demand by _shared/domain/location.js.
   L: any;
   vfLeafletLoading?: Promise<any>;
 }

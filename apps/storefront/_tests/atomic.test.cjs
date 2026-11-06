@@ -25,7 +25,7 @@ for (const [source, target] of [
   ['components/molecules/Search/Search.jsx', 'components/organisms/Header/Header.jsx'],
   ['components/utils/messages.js', 'components/atoms/Spinner/Spinner.jsx'],
   ['components/atoms/Button/Button.jsx', 'components/Legacy/Legacy.jsx'],
-  ['components/atoms/Button/Button.jsx', 'apps/storefront/_shared/catalog.js']
+  ['components/atoms/Button/Button.jsx', 'apps/storefront/_shared/domain/catalog.js']
 ])
   assert.ok(dependencyViolation(source, target), `${source} must not depend on ${target}`);
 

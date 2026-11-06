@@ -6,12 +6,12 @@ import {
   vfProductImage,
   vfProductSub,
   vfReady
-} from '../_shared/catalog.js';
-import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {VF_STORE, vfFeatures} from '../_shared/store-config.js';
+} from '../_shared/domain/catalog.js';
+import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../_shared/domain/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_STORE, vfFeatures} from '../_shared/domain/store-config.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
@@ -19,9 +19,9 @@ import {
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
 import {commerce} from '../../../components/utils/commerce.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
-import {VF_CATEGORY_SLUGS} from '../_shared/product-categories.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
+import {VF_CATEGORY_SLUGS} from '../_shared/domain/product-categories.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
 // The "under" quick filter's price limit, in Toman.
 const VF_UNDER_PRICE = 3000000;

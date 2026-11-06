@@ -2,8 +2,8 @@
 // components, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from './formatting.js';
-import {commerce} from '../../../components/utils/commerce.js';
-import {vfAssetBase} from './environment.js';
+import {commerce} from '../../../../components/utils/commerce.js';
+import {vfAssetBase} from '../platform/environment.js';
 
 export function vfValidLocation(location) {
   return commerce.validLocation(location);

@@ -1,7 +1,7 @@
 @layer vendra.components {
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 
-/* Source: _shared/shell.css */
+/* Source: _shared/styles/shell.css */
 /* Template document defaults. */
 body {
   margin: 0;
@@ -202,7 +202,7 @@ html {
 }
 
 
-/* Source: _shared/information-pages.css */
+/* Source: _shared/styles/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
 .vf-page .vf-info {
   max-width: 1088px;
@@ -256,7 +256,7 @@ html {
 }
 
 
-/* Source: _shared/page-layouts.css */
+/* Source: _shared/styles/page-layouts.css */
 /* Three storefront page families. Exceptions are named and kept here. */
 
 /* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
@@ -448,7 +448,7 @@ html {
 }
 
 
-/* Source: _shared/collection-carousel.css */
+/* Source: _shared/ui/collection-carousel.css */
 /* Every collection keeps explicit navigation on touch screens and a glimpse of the next card. */
 .vf-collection-carousel .ag-carousel__nav {
   display: flex;
@@ -1402,7 +1402,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: _shared/responsive-spacing.css */
+/* Source: _shared/styles/responsive-spacing.css */
 /* Compact spacing for phones and tablets. Layout gaps and card text stacks get tighter;
    body type and control dimensions keep their normal readable, touch-friendly sizes. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
@@ -1470,7 +1470,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: _shared/commerce-spacing.css */
+/* Source: _shared/styles/commerce-spacing.css */
 /* Compact shopping and checkout rhythm. Keep type, photos, fields and controls at their
    existing sizes; remove space between groups and the bag's duplicated row padding. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
@@ -1519,7 +1519,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: _shared/headings.css */
+/* Source: _shared/styles/headings.css */
 /* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
    Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
 .vf-page .ag-sechead__title {
