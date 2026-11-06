@@ -1,0 +1,49 @@
+# Publishes @vendra/design-system (packages/design-system/) to the public npm registry when a version
+# tag is pushed. Bump "version" in packages/design-system/package.json, build, merge to master, then
+# tag that commit with the same version (git tag v0.2.0 && git push origin v0.2.0).
+# Needs the repository secret NPM_TOKEN: an npm automation (or granular publish) token for the
+# @vendra scope.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      # npm provenance: the registry links the published version to this workflow run.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      # The tag names the version being published.
+      - name: Check the tag matches the package version
+        run: |
+          version=$(node -p "require('./packages/design-system/package.json').version")
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match packages/design-system/package.json version $version."
+            exit 1
+          fi
+      # dist/ is committed: check proves it matches its sources; test proves the packed tarball.
+      - run: npm --prefix apps/storefront run check
+      - run: npm --prefix apps/storefront test
+      - run: npm publish --workspace packages/design-system --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

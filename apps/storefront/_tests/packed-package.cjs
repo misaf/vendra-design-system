@@ -6,6 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const {execFileSync} = require('node:child_process');
 const repo = path.resolve(__dirname, '../../..');
+const pkg = path.join(repo, 'packages/design-system');
 
 function filesUnder(folder, prefix = '') {
   return fs.readdirSync(folder, {withFileTypes: true}).flatMap(entry => {
@@ -36,7 +37,7 @@ function createPackedConsumer(peers = repo) {
           '--pack-destination',
           temporary
         ],
-        {cwd: repo, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024}
+        {cwd: pkg, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024}
       )
     );
     app = fs.realpathSync(fs.mkdtempSync(path.join(peers, 'node_modules/.vendra-packed-test-')));
@@ -44,7 +45,7 @@ function createPackedConsumer(peers = repo) {
       path.join(app, 'package.json'),
       JSON.stringify({name: 'vendra-packed-consumer', private: true, type: 'module'})
     );
-    const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
+    const manifest = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8'));
     const installed = path.join(app, 'node_modules', manifest.name);
     fs.mkdirSync(installed, {recursive: true});
     execFileSync('tar', [
@@ -63,11 +64,11 @@ function createPackedConsumer(peers = repo) {
         file + ' leaks source or tooling into the package'
       );
       assert.ok(
-        fs.readFileSync(path.join(installed, file)).equals(fs.readFileSync(path.join(repo, file))),
+        fs.readFileSync(path.join(installed, file)).equals(fs.readFileSync(path.join(pkg, file))),
         file + ' packed bytes differ from the checkout'
       );
     }
-    for (const file of filesUnder(path.join(repo, 'dist')))
+    for (const file of filesUnder(path.join(pkg, 'dist')))
       assert.ok(files.has('dist/' + file), 'dist/' + file + ' missing from npm payload');
     return {app, installed, manifest, files, cleanup};
   } catch (error) {

@@ -10,9 +10,9 @@ const {execFileSync} = require('node:child_process');
 
 const REACT = '19.3.0';
 const TYPES = '19.3.0';
-const repo = path.resolve(__dirname, '../../..');
+const pkg = path.resolve(__dirname, '../../../packages/design-system');
 const workspace = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
-const manifest = JSON.parse(fs.readFileSync(path.join(repo, 'package.json'), 'utf8'));
+const manifest = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8'));
 const app = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-react-19-')));
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const run = (command, args, options = {}) =>
@@ -60,8 +60,8 @@ try {
   // dist's declarations as a strict TypeScript app on React 19's types compiles them.
   const types = path.join(app, 'node_modules', manifest.name);
   fs.mkdirSync(types, {recursive: true});
-  fs.cpSync(path.join(repo, 'dist'), path.join(types, 'dist'), {recursive: true});
-  fs.copyFileSync(path.join(repo, 'package.json'), path.join(types, 'package.json'));
+  fs.cpSync(path.join(pkg, 'dist'), path.join(types, 'dist'), {recursive: true});
+  fs.copyFileSync(path.join(pkg, 'package.json'), path.join(types, 'package.json'));
   fs.writeFileSync(
     path.join(app, 'app.tsx'),
     "import {Button, ProductCard, VendraProvider} from '" +

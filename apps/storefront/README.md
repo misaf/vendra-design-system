@@ -3,7 +3,7 @@
 The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `storefront-*`, wired together by `storefront-site` (the click-through router). Pages run on sample data in `_shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
-`../../components/atoms/` and `../../components/molecules/`; organisms follow in separate batches.
+`../../packages/design-system/components/atoms/` and `../../packages/design-system/components/molecules/`; organisms follow in separate batches.
 The app continues to import components through `app/ds.js`, and `storefront-*` remains the source
 for routed pages.
 
@@ -137,12 +137,12 @@ for routed pages.
 | Routes and URL helpers | [_shared/services/routing.js](_shared/services/routing.js) |
 | Responsive state, focus, `<head>` | `_shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `_shared/translations/` |
-| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../../components/`; Leaflet loading and location text in `_shared/domain/location.js` |
+| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../../packages/design-system/components/`; Leaflet loading and location text in `_shared/domain/location.js` |
 | Shared CSS: shell, page families, information pages | `_shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
 | Tailwind entry and token aliases | [_shared/styles/tailwind.css](_shared/styles/tailwind.css) |
-| Tokens and tenant themes | `../../tokens/`, `../../tokens/tenants/<slug>.json` |
-| Number, currency and date formatting | `../../components/utils/` (wrapped by `_shared/domain/formatting.js`) |
-| Delivery, totals, discount and API-adapter rules | `../../components/utils/commerce.js` (wrapped by `_shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
+| Tokens and tenant themes | `../../packages/design-system/tokens/`, `../../packages/design-system/tokens/tenants/<slug>.json` |
+| Number, currency and date formatting | `../../packages/design-system/components/utils/` (wrapped by `_shared/domain/formatting.js`) |
+| Delivery, totals, discount and API-adapter rules | `../../packages/design-system/components/utils/commerce.js` (wrapped by `_shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 
@@ -155,10 +155,10 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 | Folder | Holds | May import |
 | --- | --- | --- |
 | `platform/` | `environment.js`: the page's address, asset base and clock, in the browser and the prerender | nothing |
-| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `translations/`, `platform/`, `../../components/utils/`, `_runtime/` |
+| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `translations/`, `platform/`, `../../packages/design-system/components/utils/`, `_runtime/` |
 | `translations/` | genuinely shared bilingual copy | same as `domain/` |
-| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `translations/`, `platform/`, `../../components/utils/`, `_runtime/`, React, React Aria |
-| `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `../../components/`, React, `qrcode-generator` |
+| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `translations/`, `platform/`, `../../packages/design-system/components/utils/`, `_runtime/`, React, React Aria |
+| `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `../../packages/design-system/components/`, React, `qrcode-generator` |
 | `styles/` | the Tailwind entry and the custom CSS entry with shared page CSS | CSS only |
 
 A JS module loose in `_shared/` or in any other folder fails the check: place a new module by what it does.
@@ -183,7 +183,7 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `tokens/tenants/`.
+- **Tenant list only:** `node _build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `packages/design-system/tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
 ## GitHub Pages demo
@@ -258,7 +258,7 @@ host can send them without compressing per request. Vite's content-hashed files 
 folder, `assets/hashed/` (`build.assetsDir`), apart from the repository's `assets/` copied in under
 their own names, so exactly those can be cached forever. `deployment/nginx.conf` is the reference
 server: precompressed files (`brotli_static`, `gzip_static`); `assets/hashed/` for a year,
-`immutable`, with CORS for its fonts; `assets/fonts/` for 30 days with CORS; other fixed-name
+`immutable`, with CORS for its fonts; the package's `packages/design-system/assets/fonts/` for 30 days with CORS; other fixed-name
 photos, icons and map files for a day; pages, `404.html`, `sw.js`, tenant themes and the offline
 manifest `no-cache`. Other hosts should apply the same rules; security headers belong in the same
 file. GitHub Pages ignores both (it compresses on the fly and caches for 10 minutes).
@@ -323,7 +323,7 @@ The jobs still run in the pinned Playwright image, so the `-linux.png` baselines
 
 ## Component tests
 
-Every folder in `components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
+Every folder in `packages/design-system/components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
 
 - **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `_e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
 - **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `_e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Name things as a customer would see them; storefront flows stay in `_e2e/features.spec.mjs`.
@@ -336,9 +336,9 @@ Every folder in `components/` has its own browser test beside the component: `<N
 
 - **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
 - **`app/pages.js`:** each `storefront-*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **`app/theme.js`:** imports `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` (the build's base path) and loads the active tenant's stylesheet from `tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` prerenders every public address (`_build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the Leaflet files, `tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
-- **Components:** the app imports them from `../../components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
+- **`app/theme.js`:** imports the package's `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `VF_ASSET_BASE` (the build's base path) and loads the active tenant's stylesheet from `packages/design-system/tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
+- **Build:** `build:app` prerenders every public address (`_build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the package's fonts, the Leaflet files, `packages/design-system/tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Components:** the app imports them from `../../packages/design-system/components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (18.3.1) and React Aria.
 
 ## Styling rules
@@ -347,7 +347,7 @@ Every folder in `components/` has its own browser test beside the component: `<N
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
 - **Custom CSS** is for contextual selectors and component internals, in `_shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
-- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
+- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `packages/design-system/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
 - **Layout tiers:** phone (< 768px), tablet (768–1023px) and desktop (1024px up) are chosen in CSS, never in JavaScript: the shell and views render every structure and Tailwind's `md:`/`lg:` (or `max-md:`/`max-lg:`) variants show one, so the first paint is the final layout. Phones get the compact header, the tab bar and the page's sticky action; tablets the menu header with the language switch and account but no tab bar; desktops the full header. Hide a component root with the important form (`tw:max-md:hidden!`), since the package's layers sit above Tailwind's utilities. JavaScript reads `matchMedia` only inside effects, for behaviour such as closing the menu or the shop's Filters dialog when the window widens.
 - **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px, 768px and desktop width.
@@ -369,18 +369,18 @@ First match wins:
 
 In TV mode:
 
-- **Sizes** come from the `tv` density (`tokens/spacing.css`, `typography.css`): 24px body text, 64px
+- **Sizes** come from the `tv` density (`packages/design-system/tokens/spacing.css`, `typography.css`): 24px body text, 64px
   tap minimum, 1760px content width and 48px gutters. Controls with a fixed size (the shell's text
   links, LanguageSwitch, Breadcrumb links, Gallery dots, Checkbox and Switch rows, the QuantityInput
   count, RangeSlider thumbs) take at least `--control-h-xs` (48px), so nothing interactive is smaller.
 - **Arrow keys** move focus to the nearest item in that direction (`useVfRemoteNavigation`, on
-  `components/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
+  `packages/design-system/components/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
   open dialog. Directions are physical, so Persian (RTL) needs no mirroring. Tab order and what
   screen readers announce don't change. Widgets that use the arrows themselves keep them: tabs,
   lists, menus, radio groups, sliders, the Lightbox, and the caret in text fields (up and down
   still leave a text field). With nothing in that direction, the arrow scrolls the page.
 - **Focus** shows the thicker `tv` ring (`--focus-width`, `--focus-offset`) plus a glow of
-  `--focus-ring` around the control, or around the card whose link has focus (`tokens/base.css`).
+  `--focus-ring` around the control, or around the card whose link has focus (`packages/design-system/tokens/base.css`).
 
 The `tv` Playwright project (1920×1080, no touch) runs `tv.spec.mjs`: home, shop and product in
 both languages with no horizontal overflow and no control under 48px, and the arrow keys reaching
@@ -408,7 +408,7 @@ and pressing Add to bag.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `_shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
-- **Preview states:** add `?tenant=clay` (any tenant in `tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
+- **Preview states:** add `?tenant=clay` (any tenant in `packages/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
 - **Store configuration** (`_shared/domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm --prefix apps/storefront run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `VF_TRACK.subscribe` listeners only after consent, without contact details. `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 

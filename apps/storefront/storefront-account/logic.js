@@ -29,7 +29,7 @@ import {
 } from '../_shared/domain/wallet.js';
 import {VF_NAV} from '../_shared/services/page-focus.js';
 import {vfAmountInputMode, vfAmountToInput} from '../_shared/domain/formatting.js';
-import {dates} from '../../../components/utils/dates.js';
+import {dates} from '../../../packages/design-system/components/utils/dates.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];

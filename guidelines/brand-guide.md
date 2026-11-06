@@ -77,7 +77,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Iconography
 
-- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`components/atoms/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
+- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`packages/design-system/components/atoms/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
 - **Style:** outline only, 2px stroke, 16–22px. Ink colour by default; peony (`--text-accent`) only for small value-prop icons.
 - **Common glyphs:** flower-2, leaf, sprout, heart, shopping-bag, search, user, truck, gift, calendar, map-pin, arrow-right, chevron-down, x, plus, minus, check.
 - **No** emoji, icon fonts, PNG icons or unicode glyph icons.
@@ -179,7 +179,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.
-- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `components/atoms/ChoiceGroup/`).
+- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `packages/design-system/components/atoms/ChoiceGroup/`).
 - **RangeSlider:** two handles (or one), swaps sides in RTL.
 - **DatePicker:** Shamsi/Gregorian toggle with year/month/day selects; shows the equivalent date in the other calendar.
 
@@ -228,10 +228,10 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **AddressCard**, **ReminderRow:** account tabs.
 
 **Helpers** (not components)
-- `components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
-- `components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
-- `components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
-- `components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
+- `packages/design-system/components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
+- `packages/design-system/components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
+- `packages/design-system/components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
+- `packages/design-system/components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `apps/storefront/_shared/services/seo.js` → `VF_SEO` and `apps/storefront/_shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
 - `apps/storefront/communications/email-templates.js` → `window.VF_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
 - `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards; the storefront imports them.

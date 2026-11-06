@@ -1,9 +1,11 @@
 // Shared by the component generator and architecture checks. Paths are repo-relative, with /.
+const {componentsFolder} = require('./paths.cjs');
+
 const levels = ['atoms', 'molecules', 'organisms'];
 
 function layer(file) {
-  const parts = file.split('/');
-  if (parts[0] !== 'components') return null;
+  if (!file.startsWith(componentsFolder + '/')) return null;
+  const parts = file.slice(componentsFolder.length).split('/');
   if (parts[1] === 'utils' || parts[1] === 'VendraProvider') return 'foundation';
   return levels.includes(parts[1]) ? parts[1] : null;
 }

@@ -8,10 +8,10 @@ customer state and checkout rules forward.
 
 | Layer | Responsibility | Source | Dependencies |
 | --- | --- | --- | --- |
-| Foundations | Tokens, themes, shared utilities, locale/router/density context | `tokens/`, `components/utils/`, `components/VendraProvider/` | External libraries and foundations |
-| Atoms | A basic control or visual primitive: Icon, Spinner, Button | `components/atoms/<Name>/` | Foundations and atoms |
-| Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `components/molecules/<Name>/` | Foundations, atoms and molecules |
-| Organisms | A substantial reusable section: Gallery, OrderSummary | `components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |
+| Foundations | Tokens, themes, shared utilities, locale/router/density context | `packages/design-system/tokens/`, `packages/design-system/components/utils/`, `packages/design-system/components/VendraProvider/` | External libraries and foundations |
+| Atoms | A basic control or visual primitive: Icon, Spinner, Button | `packages/design-system/components/atoms/<Name>/` | Foundations and atoms |
+| Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `packages/design-system/components/molecules/<Name>/` | Foundations, atoms and molecules |
+| Organisms | A substantial reusable section: Gallery, OrderSummary | `packages/design-system/components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |
 | Templates | Layout and slots for page sections | `apps/storefront/app/layouts/<Name>/`; composed by Shell and pages | UI layers; no account, catalog or payment persistence |
 | Pages | Routed screens that supply content, state and actions | `apps/storefront/storefront-*/` | Layouts, UI layers and storefront services |
 
@@ -33,7 +33,7 @@ by Shell or pages, keeping content, callbacks and state outside the layout.
 
 Store data, delivery policy, customer identity, payment recovery and API effects stay in the
 storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations remain in
-`components/utils/commerce.js`. Atomic Design organizes UI; it does not replace those boundaries.
+`packages/design-system/components/utils/commerce.js`. Atomic Design organizes UI; it does not replace those boundaries.
 
 ## Steps and checkpoints
 
@@ -44,14 +44,14 @@ storefront's `logic.js` and `_shared/`. Reusable pure commerce calculations rema
 3. **Remaining primitives.** Inspect the dependency graph and migrate small batches, starting with
    non-form primitives, then Field and the accessible form controls that use it. Decide the layer
    from the actual responsibility before moving each batch. The non-form batch now lives under
-   `components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
+   `packages/design-system/components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
    SkipLink and LiveRegion. The basic form batch has also moved: Field, Input, Checkbox, Radio,
    RadioGroup, Switch and Select. The specialized form batch has moved too: PhoneInput, CodeInput,
    QuantityInput, RangeSlider and ChoiceGroup with its ChoiceTile part. **The planned primitive
    batches are complete: 26 atom folders.**
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
-   SearchField, PromoCodeField and ResendCode are the first batch in `components/molecules/`.
+   SearchField, PromoCodeField and ResendCode are the first batch in `packages/design-system/components/molecules/`.
    Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
    Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
    SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard

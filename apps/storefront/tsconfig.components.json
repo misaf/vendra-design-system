@@ -10,5 +10,5 @@
     "lib": ["es2023", "dom", "dom.iterable"],
     "types": ["react"]
   },
-  "include": ["../../components/**/*.d.ts"]
+  "include": ["../../packages/design-system/components/**/*.d.ts"]
 }
