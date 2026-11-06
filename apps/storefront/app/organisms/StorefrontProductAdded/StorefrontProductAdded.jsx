@@ -1,7 +1,16 @@
 import React from 'react';
 import * as DS from '../../ds.js';
 
-export function StorefrontProductAdded({open, onClose, lines, sums, checkout, labels}) {
+// undo ({label, onClick}) is optional: it reverses the add and closes the panel.
+export function StorefrontProductAdded({
+  open,
+  onClose,
+  lines,
+  sums,
+  checkout,
+  labels,
+  undo = null
+}) {
   return (
     <DS.Dialog
       open={open}
@@ -28,6 +37,18 @@ export function StorefrontProductAdded({open, onClose, lines, sums, checkout, la
           <DS.Button variant="ghost" size="lg" block={true} onClick={onClose}>
             <>{labels.continue}</>
           </DS.Button>
+          {undo ? (
+            <DS.Button
+              variant="ghost"
+              size="lg"
+              block={true}
+              iconStart="undo-2"
+              onClick={undo.onClick}
+              className="vf-product-added-undo"
+            >
+              <>{undo.label}</>
+            </DS.Button>
+          ) : null}
         </div>
       </div>
     </DS.Dialog>
