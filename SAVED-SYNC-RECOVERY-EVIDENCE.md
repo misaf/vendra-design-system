@@ -67,7 +67,7 @@ baseline PNGs are byte-identical. Discovery remains 1,812 dev / 125 files and 1,
 local tested source. The task volume is removed; VM restored to stopped / 3814 MiB.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'offline saved|initial saved-list loading' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'offline saved|initial saved-list loading' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
 npm test
 npm run check

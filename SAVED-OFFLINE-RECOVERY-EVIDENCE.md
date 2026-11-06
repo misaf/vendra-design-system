@@ -3,7 +3,7 @@
 Reviewed 2026-11-05 against stage-245 `4326e0c15ab48feca59432ebd307a963fe88e8e7`.
 The [state audit](STATE-INTEGRITY-ACCEPTANCE.md) and stage 245 left non-checkout offline writes open.
 This stage adds EN/FA save/removal cases to the existing
-[customer-state-integrity spec](templates/_e2e/customer-state-integrity.spec.mjs).
+[customer-state-integrity spec](apps/storefront/_e2e/customer-state-integrity.spec.mjs).
 No application, policy, style or baseline change is made.
 
 ## Explicit checks
@@ -72,10 +72,10 @@ Tested source bytes match the Linux archive; local document links and diff check
 Linux volume is removed and the VM restored to stopped / 3814 MiB.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'offline saved|initial saved-list loading|product page saves the design' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'offline saved|initial saved-list loading|product page saves the design' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
-node templates/_tests/migration.test.cjs
-node templates/_tests/storefront.test.cjs
+node apps/storefront/_tests/migration.test.cjs
+node apps/storefront/_tests/storefront.test.cjs
 ```
 
 Each target selects 14 cases: eight new save/removal cases (EN/FA × mobile/desktop), four existing

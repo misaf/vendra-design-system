@@ -27,7 +27,7 @@ const photo = {
 - `placeholder` (a tiny blurred `data:image/…` URI) fills the frame until the photo loads, then goes, so a transparent PNG never shows it.
 - Photos load lazily. Pass `priority` to the photos a page shows first: the product page's first photo (Gallery does this itself), and the first cards on home and shop. They load at once at high priority. Use it on two or three photos at most.
 - `alt` overrides `image.alt`; without either the photo is decorative (`alt=""`).
-- `commerce.imageFromApi` builds the object from an API Multimedia record (`templates/API.md` → Photos). A record with only a URL gives `{src}`.
+- `commerce.imageFromApi` builds the object from an API Multimedia record (`apps/storefront/API.md` → Photos). A record with only a URL gives `{src}`.
 
 ## Usage
 
