@@ -5,15 +5,16 @@ import {fileURLToPath} from 'node:url';
 // Install it locally with `npm exec --workspace apps/storefront -- playwright install chromium`.
 // CI runs inside Playwright's Linux image against the -linux screenshots.
 // The development server serves the repo root for guideline and component fixtures.
-// Storefront tests run against a production build. Only source fixtures and the gateway
-// tests that mutate a source module need the development server (E2E_TARGET=dev).
+// Storefront tests run against a production build. Only source fixtures and the tests that
+// mutate a source module (the gateway, the shop's page size) need the development server (E2E_TARGET=dev).
 const build = process.env.E2E_TARGET !== 'dev';
 const devSpecs = [
   'cards.spec.mjs',
   'package.spec.mjs',
   'hydration.spec.mjs',
   'tenant-fixtures.spec.mjs',
-  'payment-live.spec.mjs'
+  'payment-live.spec.mjs',
+  'shop-paging.spec.mjs'
 ];
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
