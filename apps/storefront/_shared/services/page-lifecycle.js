@@ -100,19 +100,30 @@ function vfAnnounce(page) {
 }
 
 // A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
-// one, the page in each of the store's languages, and a preview image (`page.head.image`, set by
-// pages with a photo of their own, otherwise the tenant's preview image). The browser applies it once the page
-// has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
+// one, the page in each of the store's languages, and a preview image with its alt text and size
+// (`page.head.image`, {src, alt, width, height}, set by pages with a photo of their own, otherwise the
+// tenant's 1200×630 preview image). `page.head.price` adds a product's price. The browser applies it
+// once the page has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
 export function vfPageHead(page, heading) {
   const lang = page.props.lang === 'fa' ? 'fa' : 'en';
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
   const head = page.head || {};
+  const image = head.image?.src
+    ? head.image
+    : {
+        src: vfBrandUrl(vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`),
+        alt: VF_SHELL[lang].brand,
+        width: 1200,
+        height: 630
+      };
   return {
     title: heading + ' · ' + VF_SHELL[lang].brand,
     description: head.description || heading,
-    image:
-      head.image ||
-      vfBrandUrl(vfBrand(tenant).ogImage?.[lang] || `assets/social/og-default-${lang}.png`),
+    image: image.src,
+    imageAlt: image.alt,
+    imageWidth: image.width,
+    imageHeight: image.height,
+    price: head.price,
     url: vfLocation().href,
     locale: lang,
     type: head.type || 'website',
