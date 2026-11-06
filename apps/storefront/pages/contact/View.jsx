@@ -39,7 +39,7 @@ export function View({v}) {
                 zoom: v.placesView?.zoom,
                 onFail: v.placesView?.fail
               }}
-              directions={v.hasDirections ? {label: v.t?.directions, href: v.directions} : null}
+              directions={v.hasDirections ? {label: v.t?.directions, links: v.directions} : null}
             />
           }
           form={

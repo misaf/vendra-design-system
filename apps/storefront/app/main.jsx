@@ -8,6 +8,7 @@ import {loadPage, reloadOnStaleFiles} from './pages.js';
 import {vfAccountLocale, vfAccountPhone} from '../shared/domain/account-data.js';
 import {VF_STORE, vfLanguage} from '../shared/domain/store-config.js';
 import {vfHoldClock} from '../shared/platform/environment.js';
+import {vfRuntime} from '../shared/platform/runtime.js';
 import {vfTenant} from '../shared/services/page-lifecycle.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {vfApplyTvMode} from '../shared/services/tv.js';
@@ -69,7 +70,7 @@ function show(element) {
       }
     });
   else createRoot(container).render(element);
-  window.VF_RENDERED = prerendered ? 'hydrated' : 'rendered';
+  vfRuntime.rendered = prerendered ? 'hydrated' : 'rendered';
   // The 404 page waits to show its prerendered not-found content until the app knows the address.
   document.documentElement.removeAttribute('data-vf-routing');
 }

@@ -17,6 +17,7 @@ import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
 import {vfReportLists} from './list-tracking.js';
 import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from '../platform/environment.js';
+import {vfRuntime} from '../platform/runtime.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {
@@ -36,9 +37,9 @@ export function vfPageTenant(props) {
 // arrives asynchronously, so whichever of the two runs second does the loading. The build's prerender
 // links the store's own theme in the page instead.
 export function vfApplyTenant(tenant) {
-  if (vfOnServer() || window.VF_TENANT === tenant) return;
-  window.VF_TENANT = tenant;
-  if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
+  if (vfOnServer() || vfRuntime.tenant === tenant) return;
+  vfRuntime.tenant = tenant;
+  vfRuntime.useTenant(tenant);
 }
 // What every storefront page does around its own logic: send the page's analytics events (its own
 // view event and the product lists it rendered: list-tracking.js), and once each render settles set the document language and
@@ -57,10 +58,10 @@ export function useStorefrontPage(page) {
         page._vfPage
       ];
       if (event)
-        window.VF_TRACK.event(
+        vfRuntime.track.event(
           event,
           page._vfPage === 'product'
-            ? {items: [window.VF_TRACK.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
+            ? {items: [vfRuntime.track.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
             : {}
         );
       vfReportLists(page);
@@ -97,7 +98,7 @@ function vfAnnounce(page) {
     // On the first view of a document, leave focus at the top so Tab reaches the
     // skip link and header; the browser already reads the new page. Only later
     // views (in-site navigation, a replaced h1) move focus and announce.
-    if (window.VF_VIEWED) {
+    if (vfRuntime.viewed) {
       // Keep an explicitly focused field or recovery control (e.g. Undo after the last bag item
       // disappears). The changed heading is still announced and its SEO is updated.
       VF_NAV.focusHeading({preserveFocus: true});
@@ -107,7 +108,7 @@ function vfAnnounce(page) {
           vfAnnouncement: title
         });
     }
-    window.VF_VIEWED = true;
+    vfRuntime.viewed = true;
   }, 40);
 }
 

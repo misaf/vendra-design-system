@@ -41,6 +41,9 @@ export function vfCopy(S) {
       noDelivery: 'No delivery windows are available. Please contact the studio.',
       stockChanged:
         'This quantity exceeds the remaining stock. Reduce it or remove the item to continue.',
+      priceChanged: 'Price updated from {old} to {new} each.',
+      priceChangedFor: '{name}: price updated from {old} to {new} each.',
+      pricesChanged: 'Prices in your bag have changed. Check the new total before you continue.',
       cards: 'Cards',
       cardsIntro: 'Add a handwritten card to any item.',
       cardFor: 'Card for {name}',
@@ -128,6 +131,9 @@ export function vfCopy(S) {
       noDelivery: 'زمانی برای ارسال موجود نیست. لطفاً با استودیو تماس بگیرید.',
       stockChanged:
         'این تعداد بیش از موجودی است. برای ادامه، تعداد را کم کنید یا کالا را حذف کنید.',
+      priceChanged: 'قیمت هر عدد از {old} به {new} تغییر کرد.',
+      priceChangedFor: '{name}: قیمت هر عدد از {old} به {new} تغییر کرد.',
+      pricesChanged: 'قیمت‌های سبد شما تغییر کرده است. پیش از ادامه، جمع تازه را ببینید.',
       steps: 'مراحل خرید',
       s1: 'سبد',
       s2: 'ارسال',

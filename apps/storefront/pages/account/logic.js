@@ -32,6 +32,7 @@ import {vfAmountInputMode, vfAmountToInput} from '../../shared/domain/formatting
 import {dates} from '../../../../packages/design-system/components/utils/dates.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -275,7 +276,7 @@ function vals(page) {
       });
     } else {
       if (!f.id)
-        window.VF_TRACK.event('reminder_created', {
+        vfRuntime.track.event('reminder_created', {
           occasion: f.occ,
           calendar: f.cal,
           days_before: f.before,
@@ -408,7 +409,7 @@ function vals(page) {
             page.setState({topUpBusy: false, topUpError: 'storage'});
             return;
           }
-          window.VF_TRACK.event('top_up', {value: amount});
+          vfRuntime.track.event('top_up', {value: amount});
           page.setState({
             account: next,
             topUp: '',

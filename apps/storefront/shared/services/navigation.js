@@ -8,7 +8,7 @@ import {
   vfDeliveryDays
 } from '../domain/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
-import {vfDirectionsUrl} from '../domain/location.js';
+import {vfDirections} from '../domain/location.js';
 import {vfPageTenant} from './page-lifecycle.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
 import {VF_STORE, vfFeatures} from '../domain/store-config.js';
@@ -18,6 +18,7 @@ import {vfDayMonth, vfDayName} from '../translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
 import {vfNow, vfOnServer} from '../platform/environment.js';
+import {vfRuntime} from '../platform/runtime.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.
@@ -161,7 +162,7 @@ export function vfShell(self, page) {
     dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
   } catch {}
   const consentShown =
-    (!(st.vfConsent ?? (vfOnServer() ? '' : window.VF_TRACK.consent())) && !dismissed) ||
+    (!(st.vfConsent ?? (vfOnServer() ? '' : vfRuntime.track.consent())) && !dismissed) ||
     !!st.vfConsentOpen;
   const hideConsent = patch => {
     const reopened = st.vfConsentOpen;
@@ -169,7 +170,7 @@ export function vfShell(self, page) {
     if (reopened) focus(self._vfConsentTrigger || 'vf-consent-settings');
   };
   const choose = value => {
-    window.VF_TRACK.setConsent(value);
+    vfRuntime.track.setConsent(value);
     hideConsent({vfConsent: value});
   };
   const consent = {
@@ -230,7 +231,7 @@ export function vfShell(self, page) {
         : []),
       {icon: 'phone', label: F.call + ' ' + VF_STORE.phoneLabel, href: 'tel:' + VF_STORE.phone}
     ],
-    directions: VF_STORE.studio ? vfDirectionsUrl(VF_STORE.studio) : '',
+    directions: vfDirections(VF_STORE.studio, L),
     email: VF_STORE.email || '',
     emailHref: VF_STORE.email ? 'mailto:' + VF_STORE.email : '',
     seals: VF_STORE.trustSeals || [],

@@ -46,12 +46,13 @@ test('adding to the bag opens a bag panel that leads to checkout', async ({page}
   await expect(page.locator('main h1')).toContainText('Your bag');
 });
 
-test('saving a design shows a toast that waits while the pointer is on it', async ({
+test('saving a design shows a toast that stays until dismissed; unsaving closes after 10 s', async ({
   page
 }, info) => {
   await page.clock.install();
   await openSite(page, 'product', 'en');
-  await page.getByRole('button', {name: 'Save this design'}).click();
+  const save = page.getByRole('button', {name: 'Save this design'});
+  await save.click();
   const toast = page.getByRole('alertdialog', {name: 'Saved to your list'});
   await expect(toast).toBeVisible();
   await expect(toast.getByRole('link', {name: 'View saved'})).toHaveAttribute('href', /\/saved\//);
@@ -61,12 +62,21 @@ test('saving a design shows a toast that waits while the pointer is on it', asyn
     const box = await toast.boundingBox();
     expect(box.y + box.height).toBeLessThanOrEqual(bar.y);
   }
-  await toast.hover();
-  await page.clock.runFor(10000);
-  await expect(toast).toBeVisible();
+  // A toast with an action never closes on its own (WCAG 2.2.1), even with nothing on it.
   await page.mouse.move(0, 0);
-  await page.clock.runFor(6500);
+  await page.clock.runFor(30000);
+  await expect(toast).toBeVisible();
+  await toast.getByRole('button', {name: 'Dismiss'}).click();
   await expect(toast).toHaveCount(0);
+  // An informational toast stays 10 s, then closes.
+  await save.click();
+  const removed = page.getByRole('alertdialog', {name: 'Removed from your list'});
+  await expect(removed).toBeVisible();
+  await page.mouse.move(0, 0);
+  await page.clock.runFor(9000);
+  await expect(removed).toBeVisible();
+  await page.clock.runFor(1500);
+  await expect(removed).toHaveCount(0);
 });
 
 test('home arrivals scroll with the snap scroller', async ({page}, info) => {
@@ -97,13 +107,13 @@ test('the Sheba hint describes its button', async ({page}) => {
   await page.goto('/apps/storefront/app/?page=checkout');
   await expect(page.locator('#main')).toBeVisible();
   // Demo stores have no Sheba number; set one, then re-render by switching method.
-  await page.evaluate(() =>
-    window.VF_PAYMENT.setPayCard({
+  await page.evaluate(() => {
+    window.__vfRuntime.payment.setPayCard({
       cardNumber: '6221061072645437',
       holderEn: 'Demo',
       sheba: 'IR000000000000000000000000'
-    })
-  );
+    });
+  });
   const group = page.getByRole('radiogroup', {name: 'Choose a payment method'});
   await group.getByText('Online card demo').click();
   await group.getByText('Card-to-card transfer').click();

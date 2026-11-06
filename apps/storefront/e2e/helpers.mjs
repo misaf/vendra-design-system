@@ -112,7 +112,9 @@ export async function openSite(page, view, lang, extra) {
   await page.goto(siteUrl(view, lang, extra), {waitUntil: 'domcontentloaded'});
   // Prerendered content is already visible before React takes control. Wait for the app
   // and its mount effects to release the inert preview, without waiting on background loads.
-  await page.waitForFunction(() => window.VF_RENDERED && !document.getElementById('root')?.inert);
+  await page.waitForFunction(
+    () => window.__vfRuntime?.rendered && !document.getElementById('root')?.inert
+  );
   // Slow-network performance tests can render after the default 5s assertion timeout.
   // Keep the usual 30s navigation allowance for the routed content itself.
   await expect(page.locator('#main')).toBeVisible({timeout: 30000});

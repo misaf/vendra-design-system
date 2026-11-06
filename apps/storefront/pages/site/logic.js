@@ -1,5 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../shared/domain/account-data.js';
+import {
+  vfAccountLocale,
+  vfAccountPhone,
+  vfClearPrivateSession,
+  vfCustomerId
+} from '../../shared/domain/account-data.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -8,9 +13,11 @@ import {
   vfAddCard,
   vfUndoCardAddition,
   vfLinesFromParam,
+  vfMergePriceChanges,
   vfProduct,
   vfProductIds,
   vfReorderBag,
+  vfRepriceLines,
   vfSampleBag
 } from '../../shared/domain/catalog.js';
 import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../../shared/domain/delivery.js';
@@ -28,6 +35,7 @@ import {
 import {loadPage, pageReady} from '../../app/pages.js';
 import {vfOnServer} from '../../shared/platform/environment.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
 const VF_SESSION = 'vendra-template:' + vfAppBase();
@@ -38,6 +46,7 @@ function vfCheckoutBlocked(state) {
     (!state.bag.length ||
       Object.values(vfErrors(state.delivery, state.bag)).some(Boolean) ||
       vfDeliveryChanged(state.delivery, new Date(), state.bag) ||
+      Object.keys(state.priceChanges || {}).length > 0 ||
       state.bag.some(line => !vfLineQuantityValid(line, state.bag)))
   );
 }
@@ -46,7 +55,9 @@ function vfCheckoutFallback(state, lang) {
     lang,
     view: 'bag',
     step:
-      state.bag.length && state.bag.every(line => vfLineQuantityValid(line, state.bag))
+      state.bag.length &&
+      !Object.keys(state.priceChanges || {}).length &&
+      state.bag.every(line => vfLineQuantityValid(line, state.bag))
         ? 'delivery'
         : 'bag'
   };
@@ -68,7 +79,7 @@ function vfReportPageView(page) {
   if (page._vfPageView === key) return;
   page._vfPageView = key;
   // The page's own language: <html lang> follows only once the new page has rendered.
-  window.VF_TRACK.event('page_view', {
+  vfRuntime.track.event('page_view', {
     language: page.state.lang,
     page_type: page.state.route,
     page_path: location.pathname
@@ -115,6 +126,9 @@ const vfEmptyCustomer = () => ({
   orders: [],
   tracked: {}
 });
+// Signed out, the session keeps only the guest's own drafts and history: every signed-in
+// customer's delivery details, payment drafts, orders and lookups leave with the account.
+const vfGuestCustomers = customers => (customers?.guest ? {guest: customers.guest} : {});
 const vfCustomerState = state => ({
   delivery: state.delivery,
   paymentDraft: state.paymentDraft,
@@ -126,7 +140,8 @@ const vfCustomerState = state => ({
 // Persist after mount as well as updates: consumed handover links have already left the URL.
 function vfPersistSession(state) {
   try {
-    const {bag, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} = state;
+    const {bag, priceChanges, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} =
+      state;
     sessionStorage.setItem(
       VF_SESSION,
       JSON.stringify({
@@ -136,6 +151,7 @@ function vfPersistSession(state) {
           [state.customerId]: vfCustomerState(state)
         },
         bag,
+        priceChanges,
         saved,
         delivery,
         order,
@@ -178,9 +194,16 @@ function vfSiteInitial(props) {
     route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
     if (vfReadRoute().view === 'account') replaceUrl(vfRouteUrl(route));
   }
+  // A bag kept from an earlier visit is priced again from the current catalog; changed lines say so.
+  const bag = vfRepriceLines(
+    vfJoinLines(
+      Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
+      handedLines
+    )
+  );
   const initial = {
     customerId,
-    customers: saved.customers || {},
+    customers: customerId === 'guest' ? vfGuestCustomers(saved.customers) : saved.customers || {},
     route: route.view,
     routeInfo: route,
     searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
@@ -188,9 +211,11 @@ function vfSiteInitial(props) {
       ? route.lang
       : vfLanguage(vfAccountLocale() || props.lang || VF_STORE.languages[0]),
     // The demo's sample bag and saved items stand in only when nothing was handed over.
-    bag: vfJoinLines(
-      Array.isArray(saved.bag) ? saved.bag : handedLines.length ? [] : VF_BAG0,
-      handedLines
+    bag: bag.lines,
+    priceChanges: vfMergePriceChanges(
+      saved.priceChanges && typeof saved.priceChanges === 'object' ? saved.priceChanges : {},
+      bag.changes,
+      bag.lines
     ),
     saved: [
       ...new Set([
@@ -246,6 +271,8 @@ function vfSiteInitial(props) {
 export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = vfSiteInitial(page.props);
+    // Customers who signed out while this page was open.
+    page._signedOut = new Set();
     page._savedEdits = new Map();
     page._savedLoading = false;
     // Load failures and individual product failures have independent recovery ownership.
@@ -276,7 +303,13 @@ export function usePage(props) {
         current = page.state;
       if (customerId === current.customerId) return;
       const previous = vfCustomerState(current);
-      const customers = {...current.customers, [current.customerId]: previous};
+      let customers = {...current.customers, [current.customerId]: previous};
+      if (customerId === 'guest') {
+        // Checkouts these customers submitted may still answer; their completions are dropped.
+        Object.keys(customers).forEach(id => id !== 'guest' && page._signedOut.add(id));
+        customers = vfGuestCustomers(customers);
+        vfClearPrivateSession();
+      } else page._signedOut.delete(customerId);
       let next = customers[customerId] || vfEmptyCustomer();
       if (current.customerId === 'guest' && customerId !== 'guest') {
         const claimed = previous.orders.filter(
@@ -367,11 +400,13 @@ export function usePage(props) {
   useLifecycle(page, {
     didMount() {
       window.__vfSite = page;
+      if (page.state.customerId === 'guest') vfClearPrivateSession();
       page.syncCustomer();
       vfPersistSession(page.state);
-      if (window.VF_API.live) {
+      if (vfRuntime.api.live) {
         page._savedLoading = true;
-        window.VF_API.loadSaved()
+        vfRuntime.api
+          .loadSaved()
           .then(saved => {
             if (saved) {
               const merged = new Set(saved);
@@ -413,7 +448,7 @@ export function usePage(props) {
         // Any way of opening the store's WhatsApp chat counts, wherever the link is.
         const chat = event.target.closest?.('a[href]');
         if (chat && VF_STORE.whatsapp && chat.href.startsWith(VF_STORE.whatsapp))
-          window.VF_TRACK.event('contact_whatsapp');
+          vfRuntime.track.event('contact_whatsapp');
         if (event.defaultPrevented || event.button !== 0) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         const link = event.target.closest?.('a[href]');
@@ -492,6 +527,22 @@ function vals(page) {
       customerId: s.customerId,
       syncCustomer: page.syncCustomer,
       bag: s.bag,
+      priceChanges: s.priceChanges,
+      // Prices the bag from the current catalog and returns what changed, so a step can stop and
+      // show the new prices before the customer continues.
+      reprice: () => {
+        const {lines, changes} = vfRepriceLines(page.state.bag);
+        if (changes.length)
+          page.setState(current => ({
+            order: null,
+            bag: lines,
+            priceChanges: vfMergePriceChanges(current.priceChanges, changes, lines)
+          }));
+        return changes;
+      },
+      // The customer has seen the new prices and continued.
+      seenPrices: () =>
+        Object.keys(page.state.priceChanges).length && page.setState({priceChanges: {}}),
       saved: s.saved,
       delivery: s.delivery,
       checkoutPending: s.checkoutPending,
@@ -546,6 +597,10 @@ function vals(page) {
       complete: order =>
         page.setState(current => {
           if (order.customerId && order.customerId !== current.customerId) {
+            // After sign-out nothing of that customer stays here, even once someone else signs
+            // in; the order is the server's.
+            if (current.customerId === 'guest' || page._signedOut.has(order.customerId))
+              return null;
             const owner = current.customers[order.customerId] || vfEmptyCustomer();
             if (owner.orders.some(previous => previous.id === order.id)) return null;
             return {
@@ -574,6 +629,7 @@ function vals(page) {
                   order,
                   checkoutNotice: null,
                   bag: [],
+                  priceChanges: {},
                   paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
                   cardAddition: null,
                   delivery: {...VF_DELIVERY}
@@ -587,7 +643,7 @@ function vals(page) {
       // listName names the list the line was added from (e.g. 'saved') for analytics.
       add: (line, date, listName) =>
         page.setState(p => {
-          window.VF_TRACK.event('add_to_cart', {
+          vfRuntime.track.event('add_to_cart', {
             items: [
               {
                 // Analytics and the studio's reports know a product by its code.
@@ -657,7 +713,7 @@ function vals(page) {
         page.setState(p => {
           const line = p.bag.find(x => x.id === id);
           if (line)
-            window.VF_TRACK.event('remove_from_cart', {
+            vfRuntime.track.event('remove_from_cart', {
               items: vfLineItems([line]),
               value: line.unit * line.qty
             });
@@ -670,7 +726,7 @@ function vals(page) {
       restoreLine: (line, index) =>
         page.setState(p => {
           if (p.bag.some(item => item.id === line.id)) return null;
-          window.VF_TRACK.event('add_to_cart', {
+          vfRuntime.track.event('add_to_cart', {
             items: vfLineItems([line]),
             value: line.unit * line.qty
           });
@@ -684,13 +740,15 @@ function vals(page) {
           order: null,
           paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
-          bag: VF_BAG0
+          bag: VF_BAG0,
+          priceChanges: {}
         }),
       clear: () =>
         page.setState({
           paymentDraft: {method: null, last4: '', ref: '', receiptAmount: null},
           cardAddition: null,
-          bag: []
+          bag: [],
+          priceChanges: {}
         }),
       toggleSave: id => {
         const removing = page.state.saved.includes(id);
@@ -699,8 +757,8 @@ function vals(page) {
           saved: removing ? p.saved.filter(x => x !== id) : [...p.saved, id]
         }));
         if (!removing)
-          window.VF_TRACK.event('add_to_wishlist', {
-            items: [window.VF_TRACK.item(vfProduct(id))]
+          vfRuntime.track.event('add_to_wishlist', {
+            items: [vfRuntime.track.item(vfProduct(id))]
           });
         const version = (page._savedWriteVersions.get(id) || 0) + 1;
         page._savedWriteVersions.set(id, version);
@@ -709,7 +767,7 @@ function vals(page) {
           page._savedWriteSettled.set(id, version);
           page.savedSyncError(id, failed, failed);
         };
-        return (removing ? window.VF_API.unsaveItem(id) : window.VF_API.saveItem(id)).then(
+        return (removing ? vfRuntime.api.unsaveItem(id) : vfRuntime.api.saveItem(id)).then(
           result => {
             // Demo mode, a missing server handle, or an empty response is not confirmed recovery.
             if (result != null) settle(false);

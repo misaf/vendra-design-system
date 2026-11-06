@@ -1,3 +1,5 @@
+export type DirectionsApp = 'neshan' | 'balad' | 'google';
+
 export interface LatLng {
   lat: number;
   lng: number;
@@ -222,6 +224,12 @@ export interface Commerce {
   validLocation(location: unknown): location is LatLng;
   /** A point rounded to six decimals (about 10 cm). */
   pinLocation(point: LatLng): LatLng;
+  /** Neshan, Balad and Google Maps links to the place: Neshan and Balad first in Persian, Google
+   * Maps first otherwise. [] for a missing or invalid point. */
+  directionsLinks(
+    location: LatLng | null | undefined,
+    language: string
+  ): {app: DirectionsApp; href: string}[];
   distanceKm(a: LatLng, b: LatLng): number;
   /** The smallest zone reaching the pin, from its center or `origin`; null outside every zone. */
   zoneAt(

@@ -80,6 +80,29 @@ function appDependencyViolation(source, target, relative) {
   return allowed ? null : `${source}: forbidden UI dependency ${target}`;
 }
 
+// Shared dependencies are imported, never hung on window: the storefront runtime is vfRuntime
+// (apps/storefront/shared/platform/runtime.js). Only the guideline cards' compatibility layer,
+// guidelines/card-runtime.js (outside the checked folders), sets the package's AG_* helpers and
+// window.VendraDesignSystem for the cards' classic scripts.
+const cardCompatibility = 'guidelines/card-runtime.js';
+const globalObjects = ['window', 'globalThis', 'self'];
+const forbiddenGlobal = name => /^(VF_|AG_)/.test(name) || name === 'VendraDesignSystem';
+function globalAccess(node) {
+  if (!/MemberExpression$/.test(node.type)) return null;
+  const object = node.object;
+  if (object?.type !== 'Identifier' || !globalObjects.includes(object.name)) return null;
+  const property = node.property;
+  const name =
+    !node.computed && property?.type === 'Identifier'
+      ? property.name
+      : typeof property?.value === 'string'
+        ? property.value
+        : property?.type === 'Literal' && typeof property.value === 'string'
+          ? property.value
+          : null;
+  return name && forbiddenGlobal(name) ? object.name + '.' + name : null;
+}
+
 function walk(directory) {
   if (!fs.existsSync(directory)) return [];
   return fs.readdirSync(directory, {withFileTypes: true}).flatMap(entry => {
@@ -89,9 +112,12 @@ function walk(directory) {
 }
 
 function runtimeSources(root) {
-  const files = [componentsFolder, 'apps/storefront/app', 'apps/storefront/shared'].flatMap(
-    folder => walk(path.join(root, folder))
-  );
+  const files = [
+    componentsFolder,
+    'apps/storefront/app',
+    'apps/storefront/shared',
+    'apps/storefront/communications'
+  ].flatMap(folder => walk(path.join(root, folder)));
   const pages = path.join(root, 'apps/storefront/pages');
   if (fs.existsSync(pages)) files.push(...walk(pages));
   return files
@@ -121,6 +147,9 @@ function checkDependencies(root) {
       continue;
     }
     visit(program, node => {
+      const global = source !== cardCompatibility && globalAccess(node);
+      if (global)
+        violations.push(`${source}: reads or sets the global ${global}; import it instead`);
       if (
         ![
           'ImportDeclaration',
