@@ -1573,6 +1573,67 @@ for (const lang of ['en', 'fa']) {
 }
 console.log('Passed account updates against newer wallet, profile, address and reminder data.');
 
+// Sign-in greets by the account's own first name; with none it never falls back to a sample name,
+// and a first sign-in is a welcome rather than a welcome back.
+for (const lang of ['en', 'fa']) {
+  const signIn = (storage, phone = '09121112233') => {
+    const {logic, ctx: c} = loadPage('signin', {lang});
+    c.setTimeout = () => 0;
+    c.localStorage = {
+      getItem: key => (storage.has(key) ? storage.get(key) : null),
+      setItem: (key, value) => storage.set(key, value),
+      removeItem: key => storage.delete(key)
+    };
+    c.window.VF_TRACK.event = () => {};
+    logic.renderVals().setPhone(phone);
+    logic.renderVals().send();
+    logic.renderVals().completeCode('12345');
+    return {vals: logic.renderVals(), ctx: c};
+  };
+  const sample = {en: 'Shirin', fa: 'شیرین'};
+  const greeting = vals => vals.okTitle + ' ' + vals.okAccent;
+  const storage = new Map();
+  const first = signIn(storage);
+  assert.equal(first.vals.isOk, true);
+  assert.ok(!greeting(first.vals).includes(sample.en) && !greeting(first.vals).includes(sample.fa));
+  assert.equal(
+    greeting(first.vals),
+    {en: 'You’re signed in.', fa: 'وارد شدید.'}[lang],
+    'a new unnamed account is not welcomed back'
+  );
+  assert.ok(first.vals.namePrompt, 'an unnamed account is invited to add a name');
+  assert.ok(first.vals.namePrompt.href.includes('tab=profile'));
+  const returning = signIn(storage);
+  assert.equal(greeting(returning.vals), {en: 'Welcome back.', fa: 'خوش برگشتید.'}[lang]);
+  assert.ok(!greeting(returning.vals).includes(sample.en));
+  const account = vm.runInContext("vfAccountLoad('09121112233')", returning.ctx);
+  account.profile.name = 'Dariush Kamali';
+  vm.runInContext('vfAccountSave', returning.ctx)('09121112233', account);
+  const named = signIn(storage);
+  assert.equal(
+    greeting(named.vals),
+    {en: 'Welcome back, Dariush.', fa: 'خوش برگشتید، Dariush.'}[lang]
+  );
+  assert.equal(named.vals.namePrompt, null);
+  // A first sign-in with the checkout name is a named welcome.
+  const fresh = new Map();
+  const {logic, ctx: c} = loadPage('signin', {
+    lang,
+    store: {lastOrder: {delivery: {sender: 'Mina Rad', senderPhone: '09124445566'}}}
+  });
+  c.setTimeout = () => 0;
+  c.localStorage = {
+    getItem: key => (fresh.has(key) ? fresh.get(key) : null),
+    setItem: (key, value) => fresh.set(key, value),
+    removeItem: key => fresh.delete(key)
+  };
+  c.window.VF_TRACK.event = () => {};
+  logic.renderVals().send();
+  logic.renderVals().completeCode('12345');
+  assert.equal(greeting(logic.renderVals()), {en: 'Welcome, Mina.', fa: 'خوش آمدید، Mina.'}[lang]);
+}
+console.log('Passed sign-in greetings for new, returning, named and unnamed accounts.');
+
 for (const lang of ['en', 'fa']) {
   const {logic: site} = loadPage('site', {lang});
   const {logic: checkout, ctx: c} = loadPage('checkout', {lang, store: site.renderVals().store});
