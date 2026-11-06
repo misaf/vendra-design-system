@@ -3,7 +3,13 @@
 import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandUrl} from '../domain/brand.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from '../domain/catalog.js';
-import {VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
+import {
+  VF_ROUTE_EXTRA,
+  vfCanonicalRoute,
+  vfPageRoute,
+  vfRouteRefined,
+  vfRouteUrl
+} from './routing.js';
 import {VF_STORE} from '../domain/store-config.js';
 import {VF_SHELL} from '../translations/shell.js';
 import {VF_SEO} from './seo.js';
@@ -83,6 +89,9 @@ function vfAnnounce(page) {
     if (!h) return;
     const title = h.innerText.replace(/\s+/g, ' ').trim();
     const identity = title + lang + tenant;
+    // The head follows the route, not only the heading: a shop whose filters change keeps its h1
+    // but gains or loses noindex, its canonical and its alternates. syncHead only writes changes.
+    VF_SEO.syncHead(vfPageHead(page, title));
     if (identity === page._vfTitle) return;
     page._vfTitle = identity;
     // On the first view of a document, leave focus at the top so Tab reaches the
@@ -99,7 +108,6 @@ function vfAnnounce(page) {
         });
     }
     window.VF_VIEWED = true;
-    VF_SEO.syncHead(vfPageHead(page, title));
   }, 40);
 }
 
@@ -111,8 +119,10 @@ export function vfPageBrandHtml(page) {
   return vfBrandHtml(tenant, lang);
 }
 
-// A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
-// one, the page in each of the store's languages, a preview image with its alt text and size
+// A page's <head> (VF_SEO.headTags): its main heading as the title, its canonical address
+// (vfCanonicalRoute: always with its language, without sorting or filters; none for the not-found
+// and error screens, which answer many addresses), the same address in each of the store's
+// languages, robots noindex for private pages and refined shop views (vfRouteRefined), a preview image with its alt text and size
 // (`page.head.image`, {src, alt, width, height}, set by pages with a photo of their own, otherwise the
 // tenant's 1200×630 preview image), a product's price (`page.head.price`) and the page's schema.org
 // data (`page.head.structuredData`, structured-data.js). The browser applies it once the page has
@@ -129,6 +139,9 @@ export function vfPageHead(page, heading) {
         width: 1200,
         height: 630
       };
+  const view = page._vfPage;
+  const route = {...VF_ROUTE_EXTRA[view], ...vfPageRoute(page.props), view};
+  const canonical = vfCanonicalRoute(route);
   return {
     title: heading + ' · ' + VF_SHELL[lang].brand,
     description: head.description || heading,
@@ -137,21 +150,13 @@ export function vfPageHead(page, heading) {
     imageWidth: image.width,
     imageHeight: image.height,
     price: head.price,
-    url: vfLocation().href,
+    url: ['notfound', 'error'].includes(view) ? undefined : vfRouteUrl({...canonical, lang}),
     locale: lang,
     type: head.type || 'website',
     structuredData: head.structuredData,
-    noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',
+    noindex: VF_SEO.isNoindex(view) || view === 'signin' || vfRouteRefined(route),
     alternates: Object.fromEntries(
-      VF_STORE.languages.map(lang => [
-        lang,
-        vfRouteUrl({
-          ...VF_ROUTE_EXTRA[page._vfPage],
-          ...vfPageRoute(page.props),
-          view: page._vfPage,
-          lang
-        })
-      ])
+      VF_STORE.languages.map(language => [language, vfRouteUrl({...canonical, lang: language})])
     )
   };
 }
