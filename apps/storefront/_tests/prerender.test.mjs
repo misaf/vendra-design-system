@@ -10,6 +10,8 @@ import {storefrontRoutes} from '../_build/routes.mjs';
 import {VF_POSTS} from '../_shared/translations/journal-content.js';
 import {vfAbsoluteUrl, vfServerRender} from '../_shared/platform/environment.js';
 import {VF_STORE, vfLiveStore} from '../_shared/domain/store-config.js';
+import {VF_SEO} from '../_shared/services/seo.js';
+import {vfFindProduct} from '../_shared/domain/catalog.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Inside the repository, so the built entry finds React in node_modules.
@@ -143,11 +145,60 @@ try {
   VF_STORE.apiBase = apiBase;
   assert.equal(vfLiveStore(), false);
 
-  // Every route renders on the server with its heading.
+  // Structured data (JSON-LD) is in the source, from the store's own data: the product with its
+  // offer and breadcrumb trail, the studio as a Florist, the FAQ and journal articles. Private pages
+  // have none.
+  const graph = html => {
+    const scripts = [
+      ...html.matchAll(/<script type="application\/ld\+json" data-ag-seo>([^<]*)<\/script>/g)
+    ];
+    assert.ok(scripts.length <= 1, 'one JSON-LD script at most');
+    if (!scripts.length) return [];
+    const data = JSON.parse(scripts[0][1]);
+    assert.equal(data['@context'], 'https://schema.org');
+    return data['@graph'];
+  };
+  const typed = (html, type) => graph(html).find(item => item['@type'] === type);
+  const product = typed(await page('en/product/VF-7K2M4Q/'), 'Product');
+  assert.equal(product.name, 'VF-7K2M4Q', 'the product is named by its code');
+  assert.equal(product.url, app + 'en/product/VF-7K2M4Q/');
+  assert.match(product.image[0], new RegExp('^' + origin + '/assets/products/'));
+  assert.equal(product.offers.priceCurrency, 'IRR', 'Toman is written as Rial (ISO 4217)');
+  assert.equal(
+    product.offers.price,
+    String(vfFindProduct('VF-7K2M4Q').price * 10),
+    'price in Rial'
+  );
+  assert.equal(product.offers.availability, 'https://schema.org/InStock');
+  const crumbs = typed(await page('fa/product/VF-7K2M4Q/'), 'BreadcrumbList');
+  assert.deepEqual(
+    crumbs.itemListElement.map(item => item.item),
+    [app + 'fa/shop/', app + 'fa/shop/boxes/', app + 'fa/product/VF-7K2M4Q/'],
+    "the breadcrumb trail is the page's own"
+  );
+  const florist = typed(await page('en/contact/'), 'Florist');
+  assert.equal(florist.name, VF_STORE.brand.en);
+  assert.equal(florist.telephone, VF_STORE.phone);
+  assert.equal(florist.geo.latitude, VF_STORE.studio.lat);
+  assert.equal(florist.openingHoursSpecification[0].opens, VF_STORE.hours.week[0].opens);
+  assert.ok(typed(await page('fa/'), 'Florist'), 'the home page names the studio');
+  const faq = typed(await page('en/faq/'), 'FAQPage');
+  assert.ok(faq.mainEntity.length > 3 && faq.mainEntity[0].acceptedAnswer.text, 'FAQ answers');
+  const article = typed(await page('en/journal/care/'), 'Article');
+  assert.equal(article.headline, post.en[0]);
+  assert.equal(article.datePublished, post.publishedAt);
+  assert.deepEqual(graph(bag), [], 'private pages carry no structured data');
+  assert.ok(
+    VF_SEO.headHtml({structuredData: [{'@type': 'Thing', name: '</script><b>'}]}).includes(
+      '\\u003c/script>\\u003cb>'
+    ),
+    'text in the data cannot close the script element'
+  );
+
   for (const route of storefrontRoutes()) await page(route.path);
 
   console.log(
-    'Passed: prerendered pages carry their heading, title, preview tags, canonical and alternates (' +
+    'Passed: prerendered pages carry their heading, title, preview tags, canonical, alternates and structured data (' +
       storefrontRoutes().length +
       ' routes).'
   );

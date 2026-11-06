@@ -9,6 +9,7 @@ import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 import {vfAbsoluteUrl} from '../_shared/platform/environment.js';
+import {vfArticleData} from '../_shared/services/structured-data.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -41,7 +42,21 @@ function vals(page) {
     loading = vfPageRoute(page.props).demo === 'loading';
   // Link previews show the post's photo and its standfirst (page-lifecycle.js vfPageHead).
   page.head = post
-    ? {image: vfJournalImage(post.image)?.src, description: post[L][1], type: 'article'}
+    ? {
+        image: vfJournalImage(post.image)?.src,
+        description: post[L][1],
+        type: 'article',
+        structuredData: [
+          vfArticleData({
+            headline: post[L][0],
+            description: post[L][1],
+            image: vfJournalImage(post.image)?.src,
+            published: post.publishedAt,
+            url: vfRouteUrl({lang: L, view: 'post', post: post.id}),
+            lang: L
+          })
+        ]
+      }
     : null;
   if (post) {
     C.title = post[L][0];

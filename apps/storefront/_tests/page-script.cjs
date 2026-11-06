@@ -98,6 +98,7 @@ const sharedFiles = [
   'services/integrations/analytics.js',
   'domain/formatting.js',
   'services/routing.js',
+  'services/structured-data.js',
   'services/page-state.js',
   'services/page-lifecycle.js',
   'services/navigation.js'
