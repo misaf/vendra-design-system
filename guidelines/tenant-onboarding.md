@@ -15,9 +15,35 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
 - `character`: `headings` (`serif`, `sans`, `vazir`), `case` (`none`, `uppercase`), `accentWord` (`italic`, `upright`), `controls` (`pill`, `square`), `frame` (`arch`, `soft`, `square`).
 - `overrides` (optional): a generated shade the designer wants to set by hand, for example `{"--border-input": "#847E70"}`. Only shade names are accepted (`--peony-*`, `--petal-*`, `--ink-*`, `--stem-*`, `--border-input`). Changing a base colour in the Theme builder drops the overrides tuned for it.
+- `font` (optional): the florist's own brand font — see **Brand font** below.
 - `description` (optional): one line, copied into the generated CSS.
 - Other top-level fields (such as `brand`, below) are allowed and checked separately.
-- Own font? That needs a new `headings` choice in `apps/storefront/shared/domain/tenant-theme.js` (the generator) with its `@font-face` in `packages/design-system/tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
+
+**Brand font**
+Instrument Serif, Jost and Vazirmatn stay the built-in presets. A tenant with its own licensed typeface (Latin, Persian or both — for example Yekan Bakh, IRANSans, Dana or a licensed serif) adds a `font` object; no package change is needed:
+
+```json
+"font": {
+  "family": "Yekan Bakh",
+  "licence": "Commercial web licence, bought 2026-10 for rose-and-moss.ir",
+  "files": {
+    "latin": "assets/tenants/rose-and-moss/fonts/yekan-bakh-latin.woff2",
+    "arabic": "assets/tenants/rose-and-moss/fonts/yekan-bakh-arabic.woff2"
+  },
+  "weight": "300 700",
+  "body": false
+}
+```
+
+- `family`: the CSS family name — letters, digits, spaces and hyphens, never a built-in name (`Instrument Serif`, `Jost`, `Vazirmatn` or their `Fallback` faces).
+- `licence`: under which licence the files are served. Required: confirm the licence covers self-hosting on the florist's domain before adding a font.
+- `files`: self-hosted **WOFF2** only, under `assets/` (keep them in `assets/tenants/<slug>/fonts/`), one per script: `latin`, `arabic` or both. Each gets its own `unicode-range`, so a page downloads only the scripts it shows. The build refuses a missing file or one that isn't WOFF2.
+- `weight` (optional): one weight (`"400"`, the default) or a variable font's range (`"300 700"`), in hundreds.
+- `body` (optional): `true` also sets body text in the brand font; by default it covers headings only.
+- **Fallback:** `character.headings` still picks a preset, which follows the brand family in the stack. It renders whichever script the brand files leave out (Vazirmatn for Persian in every preset) and shows while the font loads (`font-display: swap`); choose the preset closest in shape. Emails use the preset, as mail clients don't load web fonts.
+- The generated CSS starts with the font's `@font-face` rules. Prerendered pages of the florist's own deployment preload only the current language's file (English → `latin`, Persian → `arabic`).
+- The seven contrast checks and the type scale are unchanged. Still check Home, Product and Bag in **both EN and FA**: a brand font with a larger or smaller x-height may need a different preset or weight.
+- Apps that render stored themes with `tenantCss()` pass `assetBase` (default `/`, or e.g. `https://cdn.example.com/`) to say where `assets/` is served, and can add `fontPreloads(spec, lang, assetBase)` as `<link rel="preload" as="font" type="font/woff2" crossorigin>` tags.
 
 **Validating a theme outside the build**
 The package publishes these rules as a JSON Schema (draft 2020-12): `@vendra/design-system/theme.schema.json` (`node_modules/@vendra/design-system/dist/theme.schema.json`). The build generates it from the same `CHOICES` and shade names that `validate()` uses, so a package upgrade brings any new option with it; `schema()` in `@vendra/design-system/theme` returns the same object.

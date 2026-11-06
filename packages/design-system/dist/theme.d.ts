@@ -13,6 +13,24 @@ export interface TenantSpec {
   };
   /** Hand-set generated shades, e.g. {"--peony-600": "#A0304B"}. */
   overrides?: Record<string, Hex>;
+  /**
+   * The tenant's own brand font, placed ahead of the character.headings preset (which stays as
+   * the fallback stack for the script the files leave out and while they load).
+   */
+  font?: TenantFont;
+}
+/** A self-hosted brand font: one WOFF2 file per script. */
+export interface TenantFont {
+  /** The CSS family name: letters, digits, spaces and hyphens; not a built-in font's name. */
+  family: string;
+  /** Under which licence the files are served (kept with the spec, not written to CSS). */
+  licence: string;
+  /** WOFF2 paths under assets/, relative to the deployment root; at least one script. */
+  files: {latin?: string; arabic?: string};
+  /** One weight ('400', the default) or a variable font's range ('300 700'). */
+  weight?: string;
+  /** Also use the font for body text (default: headings only). */
+  body?: boolean;
 }
 /** OKLCH shade controls; lightness overrides shift when both are supplied. */
 export interface ShadeStep {
@@ -60,8 +78,16 @@ export declare function tokens(spec: TenantSpec): {
 export declare function contrast(a: Hex | string, b: Hex | string): number;
 export declare function oklch(hex: string): [number, number, number];
 export declare function fromOklch(lch: [number, number, number]): string;
-/** The [data-tenant] CSS block for a trusted spec (the build uses this). */
-export declare function css(slug: string, spec: TenantSpec): string;
+/**
+ * The tenant's CSS for a trusted spec (the build uses this): the brand font's @font-face rules, if
+ * any, then the [data-tenant] block. assetBase leads to the deployment root from where the CSS is
+ * served; the default fits the build's packages/design-system/tokens/tenants/<slug>.css.
+ */
+export declare function css(slug: string, spec: TenantSpec, options?: {assetBase?: string}): string;
+/** The brand font's @font-face rules (font-display: swap, one unicode-range per script). */
+export declare function fontFaces(spec: TenantSpec, assetBase?: string): string;
+/** The brand-font file to preload on a page in `lang` ('en' → latin, 'fa' → arabic): [url] or []. */
+export declare function fontPreloads(spec: TenantSpec, lang: string, assetBase?: string): string[];
 /**
  * The [data-tenant="<slug>"] CSS block for a spec loaded at runtime (e.g. from the database).
  * Throws on an unsafe slug, an invalid spec or failing contrast unless allowFailing is set.
@@ -69,7 +95,11 @@ export declare function css(slug: string, spec: TenantSpec): string;
 export declare function tenantCss(
   slug: string,
   spec: TenantSpec,
-  options?: {allowFailing?: boolean}
+  options?: {
+    allowFailing?: boolean;
+    /** Prefix for brand-font file paths: '/' (default), a path ending in '/' or an https:// origin. */
+    assetBase?: string;
+  }
 ): string;
 /** One W3C design token (DTCG). */
 export interface DesignToken {
