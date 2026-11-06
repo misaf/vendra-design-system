@@ -7,6 +7,7 @@ import {
   vfFindProduct
 } from '../domain/catalog.js';
 import {VF_SHOP_OCCASIONS} from '../translations/categories.js';
+import {VF_POST_MOVED} from '../translations/journal-moved.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from '../domain/store-config.js';
 import {VF_CATEGORY_SLUGS} from '../domain/product-categories.js';
@@ -164,6 +165,9 @@ export function vfReadRoute(url = vfCurrentUrl()) {
     // How many "Show more" pages are open (?page=2 shows the first two pages).
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   }
+  // A retired article opens the newer post that replaced it, and the link is written back with it.
+  if (route.view === 'post' && Object.hasOwn(VF_POST_MOVED, route.post))
+    route.post = VF_POST_MOVED[route.post];
   // A journal page (journal/?page=2).
   if (route.view === 'journal')
     route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;

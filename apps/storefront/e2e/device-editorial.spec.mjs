@@ -14,7 +14,7 @@ for (const lang of ['en', 'fa']) {
   test(`touch journal pagination and empty filters recover (${lang})`, async ({page}, info) => {
     await openSite(page, 'journal', lang);
     const stories = page.locator('main .ag-blog');
-    await expect(stories).toHaveCount(7);
+    await expect(stories).toHaveCount(4);
     const pages = page.getByRole('navigation', {name: fa ? 'صفحه‌ها' : 'Pages', exact: true});
     const second = pages.getByRole('link', {name: fa ? 'صفحهٔ ۲' : 'Page 2', exact: true});
     await tap(second);
@@ -32,7 +32,7 @@ for (const lang of ['en', 'fa']) {
     await tap(page.locator('.ag-search__clear'));
     await expect(search).toHaveValue('');
     await expect(search).toBeFocused();
-    await expect(stories).toHaveCount(7);
+    await expect(stories).toHaveCount(4);
     const categories = page.getByRole('group', {name: fa ? 'دسته‌بندی مطالب' : 'Story categories'});
     const last = categories.getByRole('button').last();
     await tap(last);
@@ -41,7 +41,7 @@ for (const lang of ['en', 'fa']) {
     await tap(
       page.getByRole('button', {name: fa ? 'پاک کردن جست‌وجو' : 'Clear search', exact: true})
     );
-    await expect(stories).toHaveCount(7);
+    await expect(stories).toHaveCount(4);
     await expect(categories.getByRole('button').first()).toHaveAttribute('aria-pressed', 'true');
     await finish(page, lang, info, search);
   });
@@ -62,7 +62,7 @@ for (const lang of ['en', 'fa']) {
     await finish(page, lang, info, back);
     await tap(back);
     await expect(page).toHaveURL(/\/journal\//);
-    await expect(page.locator('main .ag-blog')).toHaveCount(7);
+    await expect(page.locator('main .ag-blog')).toHaveCount(4);
     await expect(page.locator('main h1')).toBeFocused();
     await shell(page, lang);
   });
