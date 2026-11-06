@@ -545,6 +545,22 @@ test('the standalone track page shows its whole sample order', async ({page}) =>
   await expect(page.locator('main').getByRole('link', {name: 'Order again'})).toBeVisible();
 });
 
+// A page shown on its own (?page=<name>) opens in the language asked for, wherever ?lang= sits.
+for (const address of [
+  '?page=presentation&lang=fa',
+  '?lang=fa&page=presentation',
+  '?page=shop&lang=fa',
+  '?page=product&lang=fa',
+  'fa/?page=shop'
+]) {
+  test(`the standalone page ${address} opens in Persian`, async ({page}) => {
+    await page.goto('/apps/storefront/app/' + address);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+    await expect(page).toHaveTitle(/گل‌فروشی وندرا/);
+  });
+}
+
 test('a card-to-card order says its payment is being confirmed, and offers an account', async ({
   page
 }) => {

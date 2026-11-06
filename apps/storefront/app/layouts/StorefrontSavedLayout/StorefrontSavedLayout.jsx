@@ -1,6 +1,14 @@
 import React from 'react';
 
-export function StorefrontSavedLayout({showResults, showEmpty, heading, notice, results, empty}) {
+export function StorefrontSavedLayout({
+  showResults,
+  showEmpty,
+  heading,
+  notice,
+  results,
+  empty,
+  added
+}) {
   return (
     <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
       <div className="vf-saved-header tw:mb-6">{heading}</div>
@@ -18,6 +26,7 @@ export function StorefrontSavedLayout({showResults, showEmpty, heading, notice, 
           {empty}
         </div>
       ) : null}
+      {added}
     </main>
   );
 }

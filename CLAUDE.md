@@ -200,14 +200,15 @@ StorefrontTrackReorderDialog composes controlled review choices/notices/actions;
 tracking/shared logic retain reconciliation/mode/bag changes, and package Dialog retains modal focus.
 Tracking View passes layout/lookup/pending notice/delivery photo/summary elements directly; multi-child
 heading/details and the empty sticky-slot fragments retain their existing visibility and mappings.
-StorefrontSavedLayout arranges heading, notice, results and empty-state slots with controlled
+StorefrontSavedLayout arranges heading, notice, results, empty-state and added-dialog slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
 StorefrontSavedHeading composes the h1 SectionHeader; View maps localized props and saved/shared logic
 retain list counts, remove/Undo, persistence and focus.
 StorefrontSavedRemovalNotice composes removal feedback/Undo; View retains message visibility/mapping,
 saved/shared logic retain additive restoration/persistence/focus, and layout preserves empty-state recovery.
-StorefrontSavedResults composes product cards from explicit products/labels; View retains visibility/list
-normalization, saved/shared logic retain descriptors/removal, and layout retains the product grid.
+StorefrontSavedResults composes product cards and add/size/unavailable bag actions from explicit products/labels;
+View retains visibility/list normalization, saved/shared logic retain descriptors, removal, bag eligibility,
+adds (tracked as list `saved`) and add Undo, and layout retains the product grid.
 StorefrontSavedEmpty composes empty messaging/shop link; View retains visibility/localized mapping,
 saved/shared logic retain list/removal state and layout keeps empty placement and notice recovery.
 Saved View composes its layout/results/empty elements directly; visibility, descriptors, list
