@@ -5,15 +5,40 @@
 // number, address or card message can't reach a report by accident. No imports.
 
 // Product codes, not names: a product is known by its code in reports, as in the studio.
-// item_list_name names the list an item was picked from (e.g. 'saved').
-const ITEM_KEYS = ['item_id', 'item_name', 'item_category', 'item_list_name', 'price', 'quantity'];
+// item_list_name names the list an item was picked from (e.g. 'saved'); `index` is its position in
+// a list (view_item_list, select_item), counted from 0.
+const ITEM_KEYS = [
+  'item_id',
+  'item_name',
+  'item_category',
+  'item_list_name',
+  'price',
+  'quantity',
+  'index'
+];
 const COMMON = ['language', 'currency'];
 
 const EVENTS = {
+  page_view: {
+    about: 'A page shown, including each in-app route change',
+    params: ['page_type', 'page_path']
+  },
+  view_item_list: {
+    about: 'A list of products shown (shop, home, search, recently viewed)',
+    params: ['item_list_id', 'item_list_name', 'items']
+  },
+  select_item: {
+    about: 'A product opened from a list',
+    params: ['item_list_id', 'item_list_name', 'items']
+  },
   view_item: {about: 'A product page opened', params: ['items', 'value']},
   add_to_cart: {about: 'Added to the bag', params: ['items', 'value']},
   remove_from_cart: {about: 'Removed from the bag', params: ['items', 'value']},
   view_cart: {about: 'The bag opened', params: ['items', 'value']},
+  add_shipping_info: {
+    about: 'Delivery step completed (zone and slot chosen)',
+    params: ['items', 'value', 'shipping_tier']
+  },
   begin_checkout: {about: 'From the bag to the payment step', params: ['items', 'value']},
   add_payment_info: {about: 'Pay or place order pressed', params: ['payment_type', 'value']},
   payment_result: {

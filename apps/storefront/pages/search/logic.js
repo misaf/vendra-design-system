@@ -5,8 +5,12 @@ import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
-// Results update as the customer types; a search is reported once the typing settles.
+import {vfSelectItem, vfViewList} from '../../shared/services/list-tracking.js';
+// Results update as the customer types; a search (and the result list it shows) is reported once
+// the typing settles. A query that arrives with the address (a link, a reload, Back/Forward) shows
+// its results at once, so their list is reported at once too.
 const VF_SEARCH_SETTLE_MS = 1000;
+const vfSearchQuery = page => (page.props.go ? vfPageRoute(page.props).q || '' : page.state.q);
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -14,21 +18,39 @@ export function usePage(props) {
     page.state = {
       q: vfPageRoute(page.props).q || ''
     };
+    // view_item_list once per query shown, whichever way it arrived.
+    page._listResults = text => {
+      const key = text.trim().toLowerCase();
+      if (!key || key === page._listedQuery) return;
+      page._listedQuery = key;
+      vfViewList('search', vfSearchProducts(text));
+    };
     page._report = (text, delay) => {
       clearTimeout(page._searchTimer);
+      page._typedQuery = text;
       if (!text.trim()) return;
-      page._searchTimer = setTimeout(
-        () =>
-          window.VF_TRACK.event('search', {
-            search_term: text,
-            results: vfSearchProducts(text).length
-          }),
-        delay
-      );
+      page._searchTimer = setTimeout(() => {
+        window.VF_TRACK.event('search', {
+          search_term: text,
+          results: vfSearchProducts(text).length
+        });
+        page._listResults(text);
+      }, delay);
     };
   });
   useStorefrontPage(page);
   useLifecycle(page, {
+    didMount() {
+      page._shownQuery = vfSearchQuery(page);
+      page._listResults(page._shownQuery);
+    },
+    didUpdate() {
+      const query = vfSearchQuery(page);
+      if (query === page._shownQuery) return;
+      page._shownQuery = query;
+      // Typing reports when it settles (_report); a query from the address reports now.
+      if (query !== page._typedQuery) page._listResults(query);
+    },
     willUnmount() {
       clearTimeout(page._searchTimer);
     }
@@ -77,8 +99,9 @@ function vals(page) {
       label: l,
       pick: () => change(l, 0)
     })),
-    results: results.map(p => ({
+    results: results.map((p, index) => ({
       ...S.productLink(p.id),
+      select: vfSelectItem('search', p, index),
       image: vfProductImage(p, L),
       name: p.id,
       sub: vfProductSub(p, L),

@@ -9,6 +9,7 @@ import {VF_SHELL} from '../translations/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
+import {vfReportLists} from './list-tracking.js';
 import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from '../platform/environment.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
@@ -33,7 +34,8 @@ export function vfApplyTenant(tenant) {
   window.VF_TENANT = tenant;
   if (window.VF_USE_TENANT) window.VF_USE_TENANT(tenant);
 }
-// What every storefront page does around its own logic: send the page-view analytics event, and once each render settles set the document language and
+// What every storefront page does around its own logic: send the page's analytics events (its own
+// view event and the product lists it rendered: list-tracking.js), and once each render settles set the document language and
 // direction, move focus to a new heading and announce it, and update <head> (title, alternates).
 export function useStorefrontPage(page) {
   vfServerPage(page);
@@ -55,9 +57,11 @@ export function useStorefrontPage(page) {
             ? {items: [window.VF_TRACK.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
             : {}
         );
+      vfReportLists(page);
       vfAnnounce(page);
     },
     didUpdate() {
+      vfReportLists(page);
       vfAnnounce(page);
     },
     willUnmount() {
