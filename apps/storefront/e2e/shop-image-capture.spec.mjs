@@ -10,7 +10,7 @@ test.beforeEach(async ({page}, info) => {
 
 const photos = '.vf-shop-product-grid .ag-product img';
 const capture = (page, info, name, viewport) =>
-  captureImages(page, info, name, viewport, {selector: photos, count: 4});
+  captureImages(page, info, name, viewport, {selector: photos, count: 6});
 
 for (const width of [768, 1920]) {
   test.describe(`shop capture at ${width}px`, () => {
