@@ -5473,7 +5473,7 @@ acceptance gaps remain a separate completion requirement.
 
 ## Stage 216 checkpoint: package contract audit
 
-[PACKAGE-CONTRACT-AUDIT.md](PACKAGE-CONTRACT-AUDIT.md) records an enumerated checklist, evidence,
+The package contract audit recorded an enumerated checklist, evidence,
 confidence limits and follow-up order. An actual 255-file npm tarball has the checked dist bytes;
 a disposable packed consumer imports 93 root values, server-renders 72 components and compiles
 strict public root/ESM-theme/CommonJS-theme consumers. Sixteen concrete public asset paths resolve,
@@ -5563,7 +5563,7 @@ checks, reproducible gaps and hardware/assistive-technology checks that still ne
 
 ## Stage 219 checkpoint: device, visual and accessibility evidence audit
 
-[ACCEPTANCE-EVIDENCE.md](ACCEPTANCE-EVIDENCE.md) records an enumerated capability checklist, current
+The acceptance evidence audit recorded an enumerated capability checklist, current
 coverage, fresh production device checks, focused screenshot/axe results, historical observations
 and follow-up order. The inventory has 1,569 registered tests; it is not a full-suite pass. Route
 screenshots/axe use desktop Chromium at phone/desktop widths; dedicated touch/tablet/TV projects
@@ -5815,7 +5815,7 @@ separating selected route coverage from complete flow, visual and physical-devic
 
 ## Stage 227 checkpoint: refreshed acceptance coverage inventory
 
-Added [ACCEPTANCE-COVERAGE.md](ACCEPTANCE-COVERAGE.md), a current inventory and 19-route flow matrix
+Added an acceptance coverage report, a inventory and 19-route flow matrix
 against stage-226 commit 15eb969. The frozen stage-219 audit and staged results remain intact and
 link to this refresh. Discovery registers 1,737 invocations in 120 files: mobile/desktop 681 each,
 touch-phone/tablet 49 each, TV 23, components 254. The six route suites contain 20 scenarios × two
@@ -5843,7 +5843,7 @@ hydration, platform and assistive-technology acceptance gates.
 
 ## Stage 228 checkpoint: contact-map lifecycle diagnosis
 
-Added [CONTACT-MAP-EVIDENCE.md](CONTACT-MAP-EVIDENCE.md) and a focused lifecycle regression. Original
+Added contact-map evidence and a focused lifecycle regression. Original
 stage-214 routed PNG pairs at EN390/FA390/EN768 decode exactly equal (zero pixel/channel differences),
 including the EN768 pair that failed strict markup equality. Current bilingual direct/routed traces
 at 768×1000 reproduce the same childless zoom-13 level/scale(4) transform beside loaded zoom-15 tiles.
@@ -5872,7 +5872,7 @@ and unchanged visual policy; retain the other acceptance gates and their evidenc
 
 ## Stage 229 checkpoint: shop image capture diagnosis
 
-[SHOP-IMAGE-EVIDENCE.md](SHOP-IMAGE-EVIDENCE.md) records fresh RGBA verification of retained
+The shop image evidence recorded fresh RGBA verification of retained
 stage-210 residuals and four exact historical decoded repeats. The wide original visibly contains
 a blank fourth photo. Original failing captures lack selected-resource/decode/paint state, and the
 repeat changed viewport preparation and decoding together, so the precise cause remains unproven.
@@ -5894,7 +5894,7 @@ unchanged visual policy.
 
 ## Stage 230 checkpoint: bag/checkout thumbnail capture diagnosis
 
-[ORDER-THUMBNAIL-EVIDENCE.md](ORDER-THUMBNAIL-EVIDENCE.md) confirms the retained stage-212/213
+The order thumbnail evidence confirmed the retained stage-212/213
 pixel counts and ten exact historical targeted-repeat pairs. EN390 restored payment separates
 125 progress-indicator pixels/max 1 from 1,849 thumbnail pixels/max 6; FA390 restored varies only in
 63 progress-indicator pixels/max 1. Original captures already awaited decode, so a missing decode wait
@@ -5918,7 +5918,7 @@ the intended clear/Escape contract. Other visual/platform gates and original res
 
 ## Stage 231 checkpoint: SearchField keyboard contract
 
-[SEARCH-KEYBOARD-EVIDENCE.md](SEARCH-KEYBOARD-EVIDENCE.md) reproduces and explains stage-176's
+The search keyboard evidence reproduced and explained stage-176's
 forced-focus/Enter symptom: inherited press-start handling focuses the input before button keyup,
 so that off-Tab button press does not complete. The documented keyboard path uses Escape in the
 input. Runtime behavior and React Aria context are preserved; no extra Tab stop is introduced.
@@ -5942,7 +5942,7 @@ Next: investigate historical route loading/focus timeouts with explicit lifecycl
 
 ## Stage 232 checkpoint: route readiness and focus diagnostics
 
-[ROUTE-LIFECYCLE-EVIDENCE.md](ROUTE-LIFECYCLE-EVIDENCE.md) inspects retained stage-200/214 traces:
+The route lifecycle evidence inspected retained stage-200/214 traces:
 `#main` is absent before axe, with 19–50 app-module requests unfinished when the failed assertion
 completes. This substantiates module-readiness overruns without establishing why loading was slow.
 The stage-197 scratch inactive-heading failure lacks a retained focus trace and remains unproven.
@@ -5965,8 +5965,8 @@ historical observations and explicit evidence boundaries.
 
 ## Stage 233 checkpoint: acceptance matrix and priorities
 
-The refreshed [current acceptance matrix](ACCEPTANCE-COVERAGE.md) reconciles stages 228–232 and
-preserves the old snapshot/follow-ups in [coverage history](ACCEPTANCE-COVERAGE-HISTORY.md). Fresh
+The refreshed current acceptance matrix reconciles stages 228–232 and
+preserves the old snapshot/follow-ups in coverage history. Fresh
 registration discovery is 1,783 dev invocations/125 files and 1,387 production/51 files; skips remain
 explicit. The 19-route matrix separates supported flow assertions, historical explanations,
 unresolved causes and physical/backend/platform exclusions.
@@ -5988,7 +5988,7 @@ the matrix's visual, latency/focus, deeper-state and physical/integration priori
 
 ## Stage 234 checkpoint: Linux phone policy visual parity
 
-[POLICY-LINUX-VISUAL-EVIDENCE.md](POLICY-LINUX-VISUAL-EVIDENCE.md) reviews both prior CI artifacts
+The policy Linux visual evidence reviewed both prior CI artifacts
 and confirms that Linux expected images still represent the pre-stage-224 sticky-phone contents
 rule. In the exact Linux AMD64 Playwright image, injecting only that old rule reproduces both
 expected PNGs with zero raw pixel differences; removing it matches the common CI actuals exactly.
@@ -6006,7 +6006,7 @@ Next: update-disabled full-page comparisons on the reviewed head and explicit re
 
 ## Stage 235 checkpoint: full-page comparison audit
 
-[FULL-PAGE-VISUAL-EVIDENCE.md](FULL-PAGE-VISUAL-EVIDENCE.md) records 304 first-run comparisons of
+The full-page visual evidence recorded 304 first-run comparisons of
 all 76 default pages on Darwin/Linux in dev/production. Darwin has 66 pass/10 screenshot fail in
 each target; Linux dev has 73 pass/two contact screenshot fail/one pre-capture readiness fail;
 Linux production passes 76/76. Two workers, zero skips/retries; this is not an all-green result.
@@ -6025,7 +6025,7 @@ Next: isolate/review the ten stale-text Darwin expectations and correct only sup
 
 ## Stage 236 checkpoint: Darwin content expectations
 
-[DARWIN-CONTENT-VISUAL-EVIDENCE.md](DARWIN-CONTENT-VISUAL-EVIDENCE.md) isolates all ten stale
+The Darwin content visual evidence isolated all ten stale
 expectations. Old-content counterfactuals pass 10/10 against old baselines: cancelled order code,
 Persian detail/blog separators, and the product total's separately changed literal. Complete
 expected/current page pairs and decoded differences are reviewed. Only the ten Darwin PNGs change,
@@ -6040,7 +6040,7 @@ state, physical/AT and backend gates.
 
 ## Stage 237 checkpoint: Linux capture/readiness diagnosis
 
-Stage 237 [diagnoses Linux capture/readiness symptoms](LINUX-CAPTURE-DIAGNOSTICS.md).
+Stage 237 diagnoses Linux capture/readiness symptoms.
 Fixed-clock CPU4 map probes reproduce the EN failure exactly and FA within one raw pixel; public
 tooltip update restores both baselines exactly. FA callback instrumentation records a transient
 1×1 viewport/font-loading phase measuring width98 instead of101, leaving the observed offset.
@@ -6051,7 +6051,7 @@ Next: test lifecycle-safe tooltip repositioning after later font loads, then a s
 
 ## Stage 238 checkpoint: permanent map label font readiness
 
-Stage 238 [corrects map labels after later font loads](MAP-FONT-LOAD-EVIDENCE.md).
+Stage 238 corrects map labels after later font loads.
 PlacesMap refreshes current tooltips on FontFaceSet loading completion and removes the listener
 on unmount. Three new component regressions fail before the correction and pass afterward.
 The Linux CPU4 capture again measures temporary narrow widths, then automatically recenters labels;
@@ -6064,7 +6064,7 @@ remain separate. Next: isolate active post load/evaluation timing; retain broade
 
 ## Stage 239 checkpoint: post evaluation readiness
 
-Stage 239 [separates post HTTP completion from evaluation readiness](POST-EVALUATION-READINESS.md).
+Stage 239 separates post HTTP completion from evaluation readiness.
 Four new bilingual default-project cases hold real post module evaluation after HTTP200, assert
 the original helper's five-second missing-main deadline, then verify article/locale and first-load
 focus recovery on release. The source module is changed only by test interception.
@@ -6077,7 +6077,7 @@ and other acceptance residuals without adding speculative waits.
 
 ## Stage 240 checkpoint: state and integrity acceptance subset
 
-Stage 240 [maps the state/integrity acceptance subset](STATE-INTEGRITY-ACCEPTANCE.md).
+Stage 240 maps the state/integrity acceptance subset.
 Sixteen explicit frontend invariants are linked to actual browser/unit assertions and residuals.
 A four-case dev probe confirms F01: the named payment-failure axe fixture is redirected to delivery
 and still passes axe. This is a coverage defect, separate from the working refused-payment path.
@@ -6089,7 +6089,7 @@ remain unproved. Next: repair F01's payment-state setup and assert the intended 
 
 ## Stage 241 checkpoint: asserted payment states
 
-Stage 241 [corrects the failed-payment state fixture](PAYMENT-STATE-FIXTURE-EVIDENCE.md).
+Stage 241 corrects the failed-payment state fixture.
 Four pre-fix assertions fail because the old setup reaches delivery. The corrected fixture fills
 valid delivery, exercises the local failed bank return and requires its heading/focus/retry state
 before axe. Nearby payment step/errors/completion also gain explicit state assertions.
@@ -6102,7 +6102,7 @@ Next: shared-origin two-tab customer switch/pending-response coverage.
 
 ## Stage 242 checkpoint: two-tab response ownership
 
-Stage 242 [verifies two-tab customer/response ownership](CROSS-TAB-RESPONSE-EVIDENCE.md).
+Stage 242 verifies two-tab customer/response ownership.
 Real shared-origin tabs switch customer identity through the demo UI while a checkout POST waits.
 Trusted storage events change the submitting tab to B; old success belongs to A, failure creates no
 order, and B's newer private/current state survives. Returning to A and reloading retains its history.
@@ -6115,7 +6115,7 @@ then repeated-submit/remount and offline-write controls.
 
 ## Stage 243 checkpoint: numeric promo restoration
 
-Stage 243 [asserts numeric promo total restoration](PROMO-TOTAL-RESTORATION-EVIDENCE.md).
+Stage 243 asserts numeric promo total restoration.
 The existing removal flow now runs EN/FA and requires 8,450,000 → 7,605,000 → 8,450,000 Toman in
 the strong total row, with localized digits/currency, code normalization and restored input focus.
 All 24 selected cases pass across Darwin/Linux dev/production, including 16 removal executions,
@@ -6162,12 +6162,12 @@ or `_runtime/` files directly.
 
 ## Stage 244 checkpoint: pending checkout pointer replay
 
-Stage 244 [prevents pending pointer replay across checkout remount](PENDING-CHECKOUT-REMOUNT-EVIDENCE.md).
+Stage 244 prevents pending pointer replay across checkout remount.
 The extended bilingual flow exposed a delayed synthetic click after disabled confirmation became
 available, producing a second POST. Button now blocks pointer starts while loading/disabled.
 A held real-adapter request, repeated native clicks before/after remount, original order quantity,
 newer current state and one POST are checked together. Existing initial failures and readiness
-residuals are retained separately in the evidence document. All 80 selected cases pass across
+residuals were recorded separately (see git history). All 80 selected cases pass across
 Darwin/Linux dev/production with zero skips/retries, plus full root unit/check and fresh builds.
 All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. Restoring the old
 Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
@@ -6176,7 +6176,7 @@ Next: offline mutation/reconnect controls.
 
 ## Stage 245 checkpoint: offline checkout recovery
 
-Stage 245 [verifies offline checkout and explicit reconnect recovery](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md).
+Stage 245 verifies offline checkout and explicit reconnect recovery.
 Actual browser-offline fetch failure must preserve bag, delivery, payment draft and order state.
 Two reconnects send nothing; Try again only re-enables confirmation. Explicit confirmation sends
 one controlled successful retry with the same payload and produces one local order. The application
@@ -6188,7 +6188,7 @@ Next: saved-item offline write/reconnect controls.
 
 ## Stage 246 checkpoint: saved-item offline recovery
 
-Stage 246 [verifies saved-item offline writes and explicit recovery](SAVED-OFFLINE-RECOVERY-EVIDENCE.md).
+Stage 246 verifies saved-item offline writes and explicit recovery.
 Real browser-offline POST/DELETE failures preserve local intent and unrelated saved data. Two
 reconnects do not replay; explicit save toggles or Undo send a controlled successful POST, update
 only the target handle and survive a local reload. No runtime or baseline changes.
@@ -6201,30 +6201,30 @@ Next: reproduce initial shortlist-handover persistence, then scoped saved-sync e
 
 ## Stage 247 checkpoint: initial handover durability
 
-Stage 247 [persists initial handovers before any customer edit](INITIAL-HANDOVER-PERSISTENCE-EVIDENCE.md).
+Stage 247 persists initial handovers before any customer edit.
 A confirmed bilingual reload regression replaced a consumed shortlist with the demo defaults.
 The site now uses the same session serializer on mount and subsequent updates, preserving customer
 partitions. Browser coverage checks fresh and existing visitor lists, duplicate/invalid handover IDs,
 reload and full product navigation without an edit; focused unit coverage also checks bag handovers
 and blocked-storage mounts. All 48 selected Darwin/Linux dev/production cases, full root unit and
 check pass; all 258 baselines are unchanged. This requires available sessionStorage and does not establish server
-persistence or same-account cross-tab atomicity. See the evidence document for final validation scope.
+persistence or same-account cross-tab atomicity.
 Next: scoped saved-sync error ownership and recovery.
 
 ## Stage 248 checkpoint: scoped saved-sync recovery
 
-Stage 248 [clears recovered saved-item errors without hiding unresolved failures](SAVED-SYNC-RECOVERY-EVIDENCE.md).
+Stage 248 clears recovered saved-item errors without hiding unresolved failures.
 Initial list-load failures and individual product failures have separate ownership. A confirmed
 write clears only its product; pending retries, local no-ops and other unresolved failures keep
 feedback visible. Versioned outcomes prevent stale responses from hiding or reviving newer errors.
 Owned stale live announcements clear after recovery while unrelated announcements are preserved.
 All 48 selected Darwin/Linux dev/production cases, full root unit and check pass; 258 baselines
-are unchanged. See the evidence document for validation and remaining boundaries.
+are unchanged.
 Next: browser coverage for independent product and initial-load failure ownership.
 
 ## Stage 249 checkpoint: browser saved-error ownership
 
-Stage 249 [checks unresolved saved-error ownership through the real browser client](SAVED-ERROR-OWNERSHIP-EVIDENCE.md).
+Stage 249 checks unresolved saved-error ownership through the real browser client.
 Independent product failures, a failed initial read followed by a successful write, and a successful
 late read following a failed write retain the unresolved alert. A fresh successful read clears
 transient feedback without replaying writes. Controlled read-back can restore failed removals;

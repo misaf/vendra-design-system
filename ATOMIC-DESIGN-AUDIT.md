@@ -82,14 +82,14 @@ dynamic imports in the runtime JS/JSX graph are checked for missing targets, cyc
 boundary violations. Thirty filesystem regression scenarios exercise positive and negative graphs;
 408 current modules pass. This closes the module-check gap identified in the frozen inventory,
 within the documented JS/JSX/literal-import scope; it does not prove runtime state ownership.
-Stage 216 records the [package contract audit](PACKAGE-CONTRACT-AUDIT.md): packed consumer root/types/
+Stage 216 records the package contract audit: packed consumer root/types/
 assets/SSR and no-alias tree shaking pass. CommonJS-only RAMPS/shade and automated packed-consumer
 coverage gaps remain confirmed findings. Theme export/type parity with existing CommonJS members
 preserved is completed by stage 217: fifteen theme values agree and both declaration forms cover
 RAMPS/shade, with parity/palette and strict consumer-type regressions. Persistent packed-consumer
 checks are completed in stage 218: package/size tests consume actual tarballs, resolve public assets,
 compile all root values and JSX consumers, and bundle all root exports without aliases. Existing
-budgets remain. Stage 219 records the [acceptance evidence audit](ACCEPTANCE-EVIDENCE.md), including
+budgets remain. Stage 219 records the acceptance evidence audit, including
 fresh device/TV and focused screenshot/axe evidence, project/geometry limits and open observations.
 Stage 220 resolves its Persian post mismatch as stale Darwin separator baselines: two reviewed
 images are refreshed and exact bilingual metadata regressions added. Dedicated touch/tablet route
@@ -131,14 +131,14 @@ unchanged shared sticky/content-axe/portrait helpers and no runtime UI changes. 
 route now has selected touch coverage; complete state/device acceptance is not implied. Refreshing
 the coverage inventory and remaining gaps is next.
 
-Stage 227 publishes the [stage-227 acceptance inventory](ACCEPTANCE-COVERAGE-HISTORY.md): 1,737 registrations
+Stage 227 publishes the stage-227 acceptance inventory: 1,737 registrations
 in 120 files, with deliberate skip boundaries, a 19-route flow/state/exclusion matrix and remaining
 visual/hydration/device/AT gates. Fresh combined production execution passes 80 dedicated bilingual
 touch cases, with two workers and no retries/skips. This is selected route evidence, not complete
 state/platform acceptance. Only documentation changes; older observations remain historical/open.
 The contact-map lifecycle/markup observation is the next focused diagnosis.
 
-Stage 228 [scopes the contact-map observation](CONTACT-MAP-EVIDENCE.md): retained original routed
+Stage 228 scopes the contact-map observation: retained original routed
 PNG pairs are exact, while the reproduced extra empty outgoing tile level is legitimate Leaflet
 lifecycle DOM. Four bilingual dedicated lifecycle tests pass in dev/production, checking current
 loaded tiles, marker, zoom completion, resize and routed unload/remount/history/reload. No runtime
@@ -146,14 +146,14 @@ or baseline change. Discovery is now 1,745/121 files; stage-227 inventory is lab
 Original scheduling asymmetry and broader map/visual/network/heap/platform acceptance remain open.
 Shop photo/decode capture diagnostics are next.
 
-Stage 229 [scopes the shop photo capture observation](SHOP-IMAGE-EVIDENCE.md). Retained
+Stage 229 scopes the shop photo capture observation. Retained
 residuals are confirmed; all four historical decoded repeats are exact, but the original cause is
 not isolated. Four bilingual 768/1920 diagnostics pass in dev/production across direct, reload and
 routed entry, attaching image readiness and repeated main captures. No runtime or visual-policy/
 baseline changes. Discovery is 1,753/122 files; historical configurations are not dedicated device
 acceptance. Bag/checkout thumbnail observations and broader visual/platform gates remain open.
 
-Stage 230 [scopes bag/checkout thumbnail observations](ORDER-THUMBNAIL-EVIDENCE.md). Retained
+Stage 230 scopes bag/checkout thumbnail observations. Retained
 residuals and ten exact historical repeats are verified; original captures already decoded images,
 and the cause remains unproven. Four new affected-combination regressions check exact thumbnails
 through bag/delivery/payment navigation/reload; all four shop cases also pass after shared-helper
@@ -161,7 +161,7 @@ extraction, in dev/production without retries. Full tests/check/build pass. Expl
 phone-bag text pixels/max 1 remain documented; order full-main exactness is not claimed. No runtime,
 baseline or policy changes. Discovery is 1,761/123 files. SearchField keyboard-clear audit is next.
 
-Stage 231 [scopes SearchField keyboard behavior](SEARCH-KEYBOARD-EVIDENCE.md): forced-focus
+Stage 231 scopes SearchField keyboard behavior: forced-focus
 Enter follows inherited focus/press semantics, while actual Tab/Enter/Escape clearing works as
 documented. Two new component cases check callback counts/focus; eight journal/search keyboard
 cases check filtering and recovery. All 13 dev/eight production cases and full tests/check/build
@@ -169,22 +169,22 @@ pass without retries. README callback-focus wording is corrected; no runtime or 
 Discovery is 1,771/124 files. AT/IME/soft-keyboard acceptance remains separate. Historical route
 loading/focus timeout diagnostics are next.
 
-Stage 232 [scopes historical loading/focus failures](ROUTE-LIFECYCLE-EVIDENCE.md). Retained
+Stage 232 scopes historical loading/focus failures. Retained
 readiness failures have unfinished modules before axe; their slow-load cause and the original
 stage-197 focus race remain unproven. Twelve controlled module-delay/latest-navigation/final-focus
 cases pass in dev, followed by 16 existing route axe cases; all 28 pass together in production,
 with one worker and no retries. Full tests/check/build pass. No runtime, timeout, baseline or policy
 changes. Discovery is 1,783/125 files. Acceptance matrix/prioritized-gap refresh is next.
 
-Stage 233 publishes the refreshed [current acceptance matrix](ACCEPTANCE-COVERAGE.md), preserving
-[prior coverage history](ACCEPTANCE-COVERAGE-HISTORY.md). Discovery is 1,783 dev/1,387 production
+Stage 233 publishes the refreshed current acceptance matrix, preserving
+prior coverage history. Discovery is 1,783 dev/1,387 production
 registrations. All 84 combined dedicated route/map production cases pass without retries/skips.
 Completed prior-head Linux CI has two policy mobile screenshot failures in both broad jobs; unit/
 React 19 pass, and logs establish 76 route axe/74 page screenshot passes per job plus 12 desktop
 hydration passes in dev. Linux artifact diagnosis is the next priority; acceptance remains incomplete.
 No runtime/test/config/baseline changes; npm check and inventory/document-link consistency pass.
 
-Stage 234 [corrects stale Linux phone policy expectations](POLICY-LINUX-VISUAL-EVIDENCE.md).
+Stage 234 corrects stale Linux phone policy expectations.
 The old sticky-rule counterfactual reproduces both old PNGs exactly in the CI-matched Linux image;
 restoring static contents matches the common CI actuals exactly. Only two Linux mobile PNGs change.
 Eight policy screenshot/axe cases pass per dev/production target on Linux and Darwin without
@@ -192,21 +192,21 @@ retries or snapshot updates; check/build pass. No runtime/tolerance changes. Ori
 historical red, with broad fresh PR CI separate. Full-page visual comparisons/residual review are
 next; other state/platform/backend gates remain open.
 
-Stage 235 [audits the full default page matrix](FULL-PAGE-VISUAL-EVIDENCE.md): 304 first-run
+Stage 235 audits the full default page matrix: 304 first-run
 invocations; Darwin dev/production each 66 pass/10 screenshot fail, Linux dev 73 pass/three fail
 (two screenshots/one readiness), Linux production 76 pass. Three Linux serial repeats pass, with
 original failures/unknown causes retained. Ten Darwin stale-text expectations persist across both
 targets; source/history and inspected crops support focused review next. All baseline PNGs remain
 unchanged. Docs/check/build only; full visual/migration acceptance remains open.
 
-Stage 236 [corrects ten stale Darwin content expectations](DARWIN-CONTENT-VISUAL-EVIDENCE.md).
+Stage 236 corrects ten stale Darwin content expectations.
 All ten old-content counterfactuals pass the original policy. The product total's removed dot is
 verified separately from the shared Persian separator. Adopted images are retained stage-235 dev
 captures; all other 248 snapshots remain unchanged. Darwin dev and production each pass all 76 default page comparisons, with two workers,
 zero skips/retries and snapshot updates explicitly disabled.
 Linux development readiness/map causes and deeper state/platform/backend acceptance remain open.
 
-Stage 237 [diagnoses Linux capture/readiness symptoms](LINUX-CAPTURE-DIAGNOSTICS.md).
+Stage 237 diagnoses Linux capture/readiness symptoms.
 Fixed-clock CPU4 map probes reproduce the EN failure exactly and FA within one raw pixel; public
 tooltip update restores both baselines exactly. FA callback instrumentation records a transient
 1×1 viewport/font-loading phase measuring width98 instead of101, leaving the observed offset.
@@ -215,7 +215,7 @@ renders; an active-post hold produces the old missing-main signature and recover
 No source/policy/baseline changes; exact post scheduling cause and tiny-viewport origin remain open.
 Next: test lifecycle-safe tooltip repositioning after later font loads, then a supported correction.
 
-Stage 238 [corrects map labels after later font loads](MAP-FONT-LOAD-EVIDENCE.md).
+Stage 238 corrects map labels after later font loads.
 PlacesMap refreshes current tooltips on FontFaceSet loading completion and removes the listener
 on unmount. Three new component regressions fail before the correction and pass afterward.
 The Linux CPU4 capture again measures temporary narrow widths, then automatically recenters labels;
@@ -226,7 +226,7 @@ unit/check/build, unchanged snapshot hashes and discovery checks pass. Inventory
 No baseline or screenshot-policy changes. The post readiness deadline and tiny-viewport attribution
 remain separate. Next: isolate active post load/evaluation timing; retain broader acceptance gates.
 
-Stage 239 [separates post HTTP completion from evaluation readiness](POST-EVALUATION-READINESS.md).
+Stage 239 separates post HTTP completion from evaluation readiness.
 Four new bilingual default-project cases hold real post module evaluation after HTTP200, assert
 the original helper's five-second missing-main deadline, then verify article/locale and first-load
 focus recovery on release. The source module is changed only by test interception.
@@ -237,7 +237,7 @@ No runtime/policy/baseline changes. This establishes the waiting/recovery contra
 unobserved scheduling cause. Next: explicit state/integrity acceptance mapping; retain old latency
 and other acceptance residuals without adding speculative waits.
 
-Stage 240 [maps the state/integrity acceptance subset](STATE-INTEGRITY-ACCEPTANCE.md).
+Stage 240 maps the state/integrity acceptance subset.
 Sixteen explicit frontend invariants are linked to actual browser/unit assertions and residuals.
 A four-case dev probe confirms F01: the named payment-failure axe fixture is redirected to delivery
 and still passes axe. This is a coverage defect, separate from the working refused-payment path.
@@ -247,7 +247,7 @@ checks pass. The four F01 observations are separate diagnostics, not added to th
 No runtime/test/baseline changes. True cross-tab concurrency, server idempotency and offline writes
 remain unproved. Next: repair F01's payment-state setup and assert the intended state before axe.
 
-Stage 241 [corrects the failed-payment state fixture](PAYMENT-STATE-FIXTURE-EVIDENCE.md).
+Stage 241 corrects the failed-payment state fixture.
 Four pre-fix assertions fail because the old setup reaches delivery. The corrected fixture fills
 valid delivery, exercises the local failed bank return and requires its heading/focus/retry state
 before axe. Nearby payment step/errors/completion also gain explicit state assertions.
@@ -258,7 +258,7 @@ No application/baseline/policy changes or new registrations. F01 is closed for t
 true two-tab behavior, repeated-submit UI, offline writes and other acceptance gaps remain open.
 Next: shared-origin two-tab customer switch/pending-response coverage.
 
-Stage 242 [verifies two-tab customer/response ownership](CROSS-TAB-RESPONSE-EVIDENCE.md).
+Stage 242 verifies two-tab customer/response ownership.
 Real shared-origin tabs switch customer identity through the demo UI while a checkout POST waits.
 Trusted storage events change the submitting tab to B; old success belongs to A, failure creates no
 order, and B's newer private/current state survives. Returning to A and reloading retains its history.
@@ -269,7 +269,7 @@ Existing runtime passes these controls; no application/baseline changes. This do
 same-account write atomicity or backend guarantees. Next: numeric promo-removal amount assertion,
 then repeated-submit/remount and offline-write controls.
 
-Stage 243 [asserts numeric promo total restoration](PROMO-TOTAL-RESTORATION-EVIDENCE.md).
+Stage 243 asserts numeric promo total restoration.
 The existing removal flow now runs EN/FA and requires 8,450,000 → 7,605,000 → 8,450,000 Toman in
 the strong total row, with localized digits/currency, code normalization and restored input focus.
 All 24 selected cases pass across Darwin/Linux dev/production, including 16 removal executions,
@@ -278,19 +278,19 @@ pass; all 258 baselines are unchanged. Inventory is 1,800 dev / 1,401 production
 No runtime/baseline changes. The result covers visible sample totals, not backend discount authority.
 Next: repeated-submit/remount UI coverage, followed by offline-write/reconnect controls.
 
-Stage 244 [prevents pending pointer replay across checkout remount](PENDING-CHECKOUT-REMOUNT-EVIDENCE.md).
+Stage 244 prevents pending pointer replay across checkout remount.
 The extended bilingual flow exposed a delayed synthetic click after disabled confirmation became
 available, producing a second POST. Button now blocks pointer starts while loading/disabled.
 A held real-adapter request, repeated native clicks before/after remount, original order quantity,
 newer current state and one POST are checked together. Existing initial failures and readiness
-residuals are retained separately in the evidence document. All 80 selected cases pass across
+residuals were recorded separately (see git history). All 80 selected cases pass across
 Darwin/Linux dev/production with zero skips/retries, plus full root unit/check and fresh builds.
 All 258 baselines and 1,800 dev / 1,401 production registrations are unchanged. Restoring the old
 Button makes all four exact remount regressions fail with two POSTs; the patch is restored afterward.
 No CSS or baseline changes; client guarding does not establish backend exactly-once behavior.
 Next: offline mutation/reconnect controls.
 
-Stage 245 [verifies offline checkout and explicit reconnect recovery](OFFLINE-CHECKOUT-RECOVERY-EVIDENCE.md).
+Stage 245 verifies offline checkout and explicit reconnect recovery.
 Actual browser-offline fetch failure must preserve bag, delivery, payment draft and order state.
 Two reconnects send nothing; Try again only re-enables confirmation. Explicit confirmation sends
 one controlled successful retry with the same payload and produces one local order. The application
@@ -300,7 +300,7 @@ All 258 baselines remain unchanged; inventory increases to 1,804 dev / 1,405 pro
 This is not a persistent queue or a backend exactly-once guarantee.
 Next: saved-item offline write/reconnect controls.
 
-Stage 246 [verifies saved-item offline writes and explicit recovery](SAVED-OFFLINE-RECOVERY-EVIDENCE.md).
+Stage 246 verifies saved-item offline writes and explicit recovery.
 Real browser-offline POST/DELETE failures preserve local intent and unrelated saved data. Two
 reconnects do not replay; explicit save toggles or Undo send a controlled successful POST, update
 only the target handle and survive a local reload. No runtime or baseline changes.
@@ -313,30 +313,30 @@ Next: reproduce initial shortlist-handover persistence, then scoped saved-sync e
 
 ## Stage 247 checkpoint: initial handover durability
 
-Stage 247 [persists initial handovers before any customer edit](INITIAL-HANDOVER-PERSISTENCE-EVIDENCE.md).
+Stage 247 persists initial handovers before any customer edit.
 A confirmed bilingual reload regression replaced a consumed shortlist with the demo defaults.
 The site now uses the same session serializer on mount and subsequent updates, preserving customer
 partitions. Browser coverage checks fresh and existing visitor lists, duplicate/invalid handover IDs,
 reload and full product navigation without an edit; focused unit coverage also checks bag handovers
 and blocked-storage mounts. All 48 selected Darwin/Linux dev/production cases, full root unit and
 check pass; all 258 baselines are unchanged. This requires available sessionStorage and does not establish server
-persistence or same-account cross-tab atomicity. See the evidence document for final validation scope.
+persistence or same-account cross-tab atomicity.
 Next: scoped saved-sync error ownership and recovery.
 
 ## Stage 248 checkpoint: scoped saved-sync recovery
 
-Stage 248 [clears recovered saved-item errors without hiding unresolved failures](SAVED-SYNC-RECOVERY-EVIDENCE.md).
+Stage 248 clears recovered saved-item errors without hiding unresolved failures.
 Initial list-load failures and individual product failures have separate ownership. A confirmed
 write clears only its product; pending retries, local no-ops and other unresolved failures keep
 feedback visible. Versioned outcomes prevent stale responses from hiding or reviving newer errors.
 Owned stale live announcements clear after recovery while unrelated announcements are preserved.
 All 48 selected Darwin/Linux dev/production cases, full root unit and check pass; 258 baselines
-are unchanged. See the evidence document for validation and remaining boundaries.
+are unchanged.
 Next: browser coverage for independent product and initial-load failure ownership.
 
 ## Stage 249 checkpoint: browser saved-error ownership
 
-Stage 249 [checks unresolved saved-error ownership through the real browser client](SAVED-ERROR-OWNERSHIP-EVIDENCE.md).
+Stage 249 checks unresolved saved-error ownership through the real browser client.
 Independent product failures, a failed initial read followed by a successful write, and a successful
 late read following a failed write retain the unresolved alert. A fresh successful read clears
 transient feedback without replaying writes. Controlled read-back can restore failed removals;

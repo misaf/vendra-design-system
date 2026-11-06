@@ -22,6 +22,7 @@ import {VF_STORE, vfLiveStore} from '../_shared/domain/store-config.js';
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
 import {usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
+import {vfFloristData} from '../_shared/services/structured-data.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -34,6 +35,8 @@ function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const S = vfShell(page, 'home');
+  // Search engines read the studio's address, hours and phone as a Florist (structured-data.js).
+  page.head = {structuredData: [vfFloristData(L)]};
   const C = vfCopy(S);
   const inStock = VF_PRODUCTS.filter(p => p.inStock !== false);
   const featured = VF_STORE.featuredProducts

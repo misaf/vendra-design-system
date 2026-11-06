@@ -100,10 +100,11 @@ function vfAnnounce(page) {
 }
 
 // A page's <head> (VF_SEO.headTags): its main heading as the title, this address as the canonical
-// one, the page in each of the store's languages, and a preview image with its alt text and size
+// one, the page in each of the store's languages, a preview image with its alt text and size
 // (`page.head.image`, {src, alt, width, height}, set by pages with a photo of their own, otherwise the
-// tenant's 1200×630 preview image). `page.head.price` adds a product's price. The browser applies it
-// once the page has rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
+// tenant's 1200×630 preview image), a product's price (`page.head.price`) and the page's schema.org
+// data (`page.head.structuredData`, structured-data.js). The browser applies it once the page has
+// rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
 export function vfPageHead(page, heading) {
   const lang = page.props.lang === 'fa' ? 'fa' : 'en';
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
@@ -127,6 +128,7 @@ export function vfPageHead(page, heading) {
     url: vfLocation().href,
     locale: lang,
     type: head.type || 'website',
+    structuredData: head.structuredData,
     noindex: VF_SEO.isNoindex(page._vfPage) || page._vfPage === 'signin',
     alternates: Object.fromEntries(
       VF_STORE.languages.map(lang => [

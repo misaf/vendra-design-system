@@ -19,13 +19,18 @@ import {
   vfRememberViewed,
   vfTokenText
 } from '../_shared/domain/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY, vfPriceTag, vfSeparator} from '../_shared/domain/formatting.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
 import {vfShell} from '../_shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
 import {vfFeatures} from '../_shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
+import {
+  vfBreadcrumbData,
+  vfOfferPrice,
+  vfProductData
+} from '../_shared/services/structured-data.js';
 
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {
@@ -153,13 +158,30 @@ function vals(page) {
   const total = unit * quantity;
   const care = product.care?.[L] || C.careT;
   // Link previews show the product's photo (its largest size, with its description as alt text),
-  // its description and its starting price (page-lifecycle.js vfPageHead).
+  // its description and its price (page-lifecycle.js vfPageHead); search engines also read its
+  // price, stock and breadcrumb trail (structured-data.js).
+  const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
   const photo = vfProductImage(product, L);
   page.head = {
     image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
     description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
     type: 'product',
-    price: vfPriceTag(base + (hasSizes ? Math.min(...VF_SIZES.map(item => item.price)) : 0))
+    price: vfOfferPrice(product.price),
+    structuredData: [
+      vfProductData({
+        product,
+        lang: L,
+        url,
+        images: vfProductImages(product, L).map(image => image.src),
+        description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
+        category: VF_CATEGORY_COPY[L][product.cat]
+      }),
+      vfBreadcrumbData([
+        {name: S.t.shop, url: S.href.shop},
+        {name: VF_CATEGORY_COPY[L][product.cat], url: S.shopLink(product.cat).href},
+        {name: product.id, url}
+      ])
+    ]
   };
   return {
     ...S,
