@@ -59,6 +59,32 @@ for (const [lang, reveal, label, remove] of [
     await expect(page.locator('[data-test=submitted-more]')).toHaveText('0');
   });
 
+test('a refusal or an applied code reopens a field tucked away while it was checked', async ({
+  page
+}) => {
+  await openComponent(page, 'PromoCodeField');
+  const panel = page.locator('#ag-promo-more-panel');
+  const toggle = page.getByRole('button', {name: 'Have a promo code?'});
+  const field = page.locator('#ag-promo-more');
+  await toggle.click();
+  await field.fill('NOPE');
+  await field.press('Enter');
+  await toggle.click();
+  await expect(panel).toBeHidden();
+  // The refusal shows the field again, says why and takes focus.
+  await expect(panel).toBeVisible();
+  await expect(field).toHaveAccessibleDescription('We don’t recognise that code.');
+  await expect(field).toBeFocused();
+  await field.fill('WELCOME10');
+  await field.press('Enter');
+  await toggle.click();
+  await expect(page.getByRole('status')).toHaveText(new RegExp('WELCOME10'));
+  // Remove brings the field back open, not tucked away.
+  await page.getByRole('button', {name: 'Remove code'}).click();
+  await expect(field).toBeFocused();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+});
+
 test('an empty field applies nothing', async ({page}) => {
   await openComponent(page, 'PromoCodeField');
   await page.getByRole('button', {name: 'Apply'}).click();

@@ -25,14 +25,20 @@ export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, erro
 	}, locale);
 	const [draft, setDraft] = React.useState("");
 	const code = value ?? draft;
-	const hasCode = Boolean(code || error || applied);
-	const [open, setOpen] = React.useState(defaultOpen || hasCode);
-	const expanded = !collapsible || open;
+	const [open, setOpen] = React.useState(defaultOpen || Boolean(code || error || applied));
+	// A refusal shows at once, even if the field was tucked away while the code was being checked,
+	// so the error (and the focus move to the field below) is never hidden.
+	const expanded = !collapsible || open || Boolean(error);
 	const focusOnOpen = React.useRef(false);
-	// A code that arrives later (a campaign link, a refused or applied code) opens the field.
+	// Each new code, refusal or applied code (a campaign link, an answer from the server) opens the
+	// field, so it is still open after Remove.
 	React.useEffect(() => {
-		if (hasCode) setOpen(true);
-	}, [hasCode]);
+		if (value || error || applied) setOpen(true);
+	}, [
+		value,
+		error,
+		applied
+	]);
 	React.useEffect(() => {
 		if (!open || !focusOnOpen.current) return;
 		focusOnOpen.current = false;
