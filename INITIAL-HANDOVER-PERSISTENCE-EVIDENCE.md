@@ -56,7 +56,7 @@ All 258 baseline PNGs remain byte-identical. Discovery is 1,820 dev / 125 files 
 The Linux source archive matches the tested local runtime and spec bytes.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'initial handover|initial saved-list loading' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs --project=mobile --project=desktop --grep 'initial handover|initial saved-list loading' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
 npm test
 npm run check

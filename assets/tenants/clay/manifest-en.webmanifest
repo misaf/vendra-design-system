@@ -2,8 +2,8 @@
   "name": "Clay Florist",
   "lang": "en",
   "dir": "ltr",
-  "start_url": "../../../templates/app/?lang=en&tenant=clay",
-  "scope": "../../../templates/app/",
+  "start_url": "../../../apps/storefront/app/?lang=en&tenant=clay",
+  "scope": "../../../apps/storefront/app/",
   "display": "standalone",
   "icons": [
     {

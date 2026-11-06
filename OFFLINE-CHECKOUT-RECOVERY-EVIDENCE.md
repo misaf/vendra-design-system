@@ -3,7 +3,7 @@
 Reviewed 2026-11-05 against stage-244 `6dc736008a367ef567066ea696b1eb8363ef5eea`.
 The [state audit](STATE-INTEGRITY-ACCEPTANCE.md) previously checked offline notice text, without
 attempting a checkout write. This stage adds one bilingual browser family to the existing
-[customer-state-integrity spec](templates/_e2e/customer-state-integrity.spec.mjs).
+[customer-state-integrity spec](apps/storefront/_e2e/customer-state-integrity.spec.mjs).
 The existing application passes; no application, policy, style or baseline change is needed.
 
 ## Asserted behavior
@@ -54,9 +54,9 @@ Linux source archive; local document links and diff checks pass. The task Linux 
 and the VM restored to stopped / 3814 MiB.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'offline checkout|late checkout responses|site says when the connection' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'offline checkout|late checkout responses|site says when the connection' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build for production.
-node templates/_tests/storefront.test.cjs
+node apps/storefront/_tests/storefront.test.cjs
 ```
 
 Each final target selects ten cases: four new EN/FA offline checkout executions, four stage-244
