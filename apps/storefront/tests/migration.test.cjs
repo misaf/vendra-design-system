@@ -1,0 +1,680 @@
+// Regression coverage for features consolidated into the maintained templates.
+const assert = require('node:assert/strict'),
+  fs = require('node:fs'),
+  path = require('node:path'),
+  vm = require('node:vm');
+const root = path.resolve(__dirname, '../../..'),
+  read = p => fs.readFileSync(path.join(root, p), 'utf8');
+function environment() {
+  const storage = new Map(),
+    session = new Map(),
+    timers = [];
+  const c = {
+    URL,
+    URLSearchParams,
+    console,
+    document: {getElementById: () => null, documentElement: {lang: 'en', getAttribute: () => 'en'}},
+    location: {pathname: '/site', search: '', href: 'http://localhost/site'},
+    history: {pushState() {}, replaceState() {}},
+    setTimeout: f => {
+      timers.push(f);
+      return timers.length;
+    },
+    clearTimeout() {},
+    AbortController,
+    crypto: globalThis.crypto,
+    localStorage: {
+      getItem: k => storage.get(k) || null,
+      setItem: (k, v) => storage.set(k, v),
+      removeItem: k => storage.delete(k)
+    },
+    sessionStorage: {
+      getItem: k => session.get(k) ?? null,
+      setItem: (k, v) => session.set(k, String(v)),
+      removeItem: k => session.delete(k)
+    },
+    fetch: () => {
+      throw Error('Unexpected network request');
+    },
+    DCLogic: class {
+      constructor(props) {
+        this.props = props;
+        this.state = {};
+      }
+      setState(p) {
+        Object.assign(this.state, typeof p === 'function' ? p(this.state) : p);
+      }
+    }
+  };
+  c.window = c;
+  c.innerWidth = 390;
+  c.scrollTo = () => {};
+  vm.createContext(c);
+  c.React = {forwardRef: f => f};
+  vm.runInContext(require('./page-script.cjs').sharedLogic, c);
+  return {c, storage, timers};
+}
+function page(name, c, props = {}) {
+  const logic = require('./page-script.cjs').pageScript('pages/' + name);
+  return vm.runInContext(
+    `(()=>{${logic}\nreturn new Component(${JSON.stringify({lang: 'en', ...props})});})()`,
+    c
+  );
+}
+(async () => {
+  // Remove and immediate Undo must reach the API in that order, without overwriting another
+  // product's saved-id mapping while a delete is still pending.
+  {
+    const {c: api, storage} = environment();
+    api.VF_API.setBase('https://example.test');
+    storage.set('vendra-saved-map', JSON.stringify({'VF-8RD5WN': 701, 'VF-4CJ6ZB': 702}));
+    const calls = [];
+    let releaseDelete;
+    const deleting = new Promise(resolve => {
+      releaseDelete = resolve;
+    });
+    api.fetch = async (url, options) => {
+      const slug = options.body && JSON.parse(options.body).metadata.slug;
+      calls.push([options.method, slug || url.split('/').at(-1)]);
+      if (options.method === 'DELETE') {
+        await deleting;
+        return {ok: true, status: 204};
+      }
+      return {ok: true, status: 200, json: async () => ({id: slug === 'VF-8RD5WN' ? 801 : 802})};
+    };
+    const remove = api.VF_API.unsaveItem('VF-8RD5WN');
+    const undo = api.VF_API.saveItem('VF-8RD5WN');
+    await api.VF_API.saveItem('VF-4CJ6ZB');
+    assert.deepEqual(calls, [
+      ['DELETE', '701'],
+      ['POST', 'VF-4CJ6ZB']
+    ]);
+    releaseDelete();
+    await Promise.all([remove, undo]);
+    assert.deepEqual(calls.at(-1), ['POST', 'VF-8RD5WN']);
+    assert.deepEqual(JSON.parse(storage.get('vendra-saved-map')), {
+      'VF-8RD5WN': 801,
+      'VF-4CJ6ZB': 802
+    });
+    api.fetch = async (url, options) => {
+      if (options.method === 'DELETE') throw new Error('Temporary failure');
+      return {ok: true, status: 200, json: async () => ({id: 803})};
+    };
+    const failed = api.VF_API.unsaveItem('VF-8RD5WN');
+    const retry = api.VF_API.saveItem('VF-8RD5WN');
+    await assert.rejects(failed, /Temporary failure/);
+    await retry;
+    assert.equal(JSON.parse(storage.get('vendra-saved-map'))['VF-8RD5WN'], 803);
+  }
+  // A stalled request gives up with a distinct timeout, and resending the same order reuses its
+  // Idempotency-Key until the server confirms it, so a lost answer never places it twice.
+  {
+    const {c: api, storage, timers} = environment();
+    api.VF_API.setBase('https://example.test');
+    const order = {cartToken: '', gateway: 'card', paymentReference: '1234 77'};
+    const sent = [];
+    api.fetch = (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return new Promise((resolve, reject) =>
+        options.signal.addEventListener('abort', () =>
+          reject(new Error('The operation was aborted'))
+        )
+      );
+    };
+    const stalled = api.VF_API.checkout(order);
+    assert.equal(timers.length, 1, 'the request sets its timeout at once');
+    timers.at(-1)();
+    await assert.rejects(stalled, error => error.kind === 'timeout');
+    assert.match(
+      sent[0].key,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    );
+    assert.ok(
+      !storage.get('vendra-idempotency').includes('1234'),
+      'only a hash of the body is kept'
+    );
+    // A reload or another tab reads the same stored key; a network failure keeps it too.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      throw new TypeError('Failed to fetch');
+    };
+    await assert.rejects(api.VF_API.checkout({...order}), error => error.kind === 'network');
+    assert.equal(sent[1].key, sent[0].key);
+    // Offline before sending: nothing reached the server, and the failure says so.
+    api.navigator = {onLine: false};
+    await assert.rejects(api.VF_API.checkout(order), error => error.kind === 'offline');
+    delete api.navigator;
+    sent.pop();
+    // The server's error answer keeps the key too, and says what it was.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: false, status: 503, json: async () => ({detail: 'busy'})};
+    };
+    await assert.rejects(
+      api.VF_API.checkout(order),
+      error => error.kind === 'http' && error.status === 503 && error.body.detail === 'busy'
+    );
+    assert.equal(sent[2].key, sent[0].key);
+    // A different order (another payment reference) is a new request with a new key.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: false, status: 500, json: async () => null};
+    };
+    await assert.rejects(api.VF_API.checkout({...order, paymentReference: '1234 78'}));
+    assert.notEqual(sent[3].key, sent[0].key);
+    // Back to the first order: once the server confirms it, the key is dropped, so placing the same
+    // bag again later is a new order.
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: true, status: 200, json: async () => ({number: 'VN-1'})};
+    };
+    assert.equal((await api.VF_API.checkout(order)).number, 'VN-1');
+    assert.notEqual(sent[4].key, sent[3].key);
+    assert.ok(!JSON.parse(storage.get('vendra-idempotency'))['checkout:guest']);
+    await api.VF_API.checkout(order);
+    assert.notEqual(sent[5].key, sent[4].key);
+    // A full storage quota: the write fails while reads still work, so this page keeps its own key.
+    {
+      const setItem = api.localStorage.setItem,
+        confirming = api.fetch;
+      api.localStorage.setItem = (k, v) => {
+        if (k === 'vendra-idempotency') throw new Error('QuotaExceededError');
+        return setItem(k, v);
+      };
+      api.fetch = async (url, options) => {
+        sent.push({url, key: options.headers['Idempotency-Key']});
+        throw new TypeError('Failed to fetch');
+      };
+      const full = {...order, paymentReference: '9999 01'};
+      await assert.rejects(api.VF_API.checkout(full));
+      await assert.rejects(api.VF_API.checkout(full));
+      assert.equal(sent.at(-1).key, sent.at(-2).key);
+      api.localStorage.setItem = setItem;
+      api.fetch = confirming;
+      sent.splice(-2);
+    }
+    // Inquiries are keyed as well; reads are not, and use the shorter read timeout.
+    await api.VF_API.inquiry({name: 'Shirin', message: 'Hello'});
+    assert.match(sent[6].url, /\/api\/support\/inquiries$/);
+    assert.ok(sent[6].key);
+    const before = timers.length;
+    api.fetch = async (url, options) => {
+      sent.push({url, key: options.headers['Idempotency-Key']});
+      return {ok: true, status: 200, json: async () => ({member: []})};
+    };
+    let delay;
+    const setTimeoutBefore = api.setTimeout;
+    api.setTimeout = (callback, ms) => {
+      delay = ms;
+      return setTimeoutBefore(callback, ms);
+    };
+    await api.VF_API.loadStock();
+    api.setTimeout = setTimeoutBefore;
+    assert.equal(sent.at(-1).key, undefined);
+    assert.equal(delay, api.VF_API.timeouts.read);
+    assert.equal(timers.length, before + 1);
+  }
+  const {c, timers} = environment();
+  vm.runInContext("vfAccountLogin('۰۹۱۲۳۴۵۶۷۸۹','fa')", c);
+  assert.equal(c.vfAccountPhone(), '09123456789');
+  assert.equal(c.vfAccountLocale(), 'fa');
+  const a = c.vfAccountLoad('09123456789');
+  a.profile.name = 'Demo A';
+  c.vfAccountSave('09123456789', a);
+  c.vfAccountSignOut();
+  c.vfAccountLogin('09999999999', 'en');
+  assert.equal(c.vfAccountLoad('09999999999').profile.name, '');
+  assert.equal(c.vfAccountLocale(), 'en');
+  c.vfAccountLogin('09123456789', 'en');
+  assert.equal(c.vfAccountLocale(), 'fa');
+  assert.equal(c.vfAccountLoad('09123456789').profile.name, 'Demo A');
+  // The same mobile typed another way is the same account.
+  c.vfAccountSignOut();
+  c.vfAccountLogin('+98 912 345 6789', 'en');
+  assert.equal(c.vfAccountPhone(), '09123456789');
+  assert.equal(c.vfAccountLoad('0098 912 345 6789').profile.name, 'Demo A');
+  const account = page('account', c);
+  let v = account.renderVals();
+  v.addAddress();
+  account.renderVals().saveForm();
+  assert.ok(account.state.errors.line);
+  assert.ok(account.state.errors.phone);
+  assert.ok(account.state.errors.location);
+  for (const [key, value] of Object.entries({
+    label: 'Test',
+    line: 'Example address',
+    phone: '۰۹۱۲۳۴۵۶۷۸۹',
+    recipient: 'Demo'
+  }))
+    account.renderVals().set[key](value);
+  account._setLocation({lat: 35.83, lng: 50.96});
+  assert.equal(account.state.errors.location, undefined);
+  account.renderVals().saveForm();
+  v = account.renderVals();
+  assert.equal(v.addresses.length, 3);
+  assert.equal(
+    JSON.stringify(c.vfAccountLoad('09123456789').addresses[2].location),
+    '{"lat":35.83,"lng":50.96}'
+  );
+  v.addresses[2].makeDefault();
+  assert.equal(account.renderVals().addresses.filter(a => a.isDefault).length, 1);
+  account.renderVals().addresses[2].remove();
+  assert.equal(account.renderVals().addresses[0].isDefault, true);
+  v = account.renderVals();
+  v.addReminder();
+  v = account.renderVals();
+  v.setOccasion('nowruz');
+  v = account.renderVals();
+  assert.equal(v.dateLocked, true);
+  assert.equal(v.dateValue.m, 1);
+  assert.equal(v.dateValue.d, 1);
+  v.set.name('Test occasion');
+  account.renderVals().saveForm();
+  assert.equal(c.vfAccountLoad('09123456789').reminders.length, 4);
+  const normalized = c.vfNormalizeReminder({date: '2026-02-14', occ: 'birthday'});
+  assert.equal(normalized.cal, 'g');
+  assert.equal(normalized.m, 2);
+  assert.equal(normalized.d, 14);
+  const next = c.vfReminderNext({occ: 'valentine', cal: 'j', m: 1, d: 1}, new Date(2026, 1, 13));
+  assert.equal(next.days, 1);
+  const route = c.vfReadRoute('/apps/storefront/app/fa/shop/?min=NaN&max=-5&stock=1');
+  assert.equal(route.min, 0);
+  assert.equal(route.max, 0);
+  assert.equal(route.stock, true);
+  const shop = page('shop', c, {
+    routeInfo: {view: 'shop', min: 2000000, max: 4000000, stock: true}
+  }).renderVals();
+  assert.equal(shop.items.length, 3);
+  assert.equal(shop.price[0], 2000000);
+  assert.ok(shop.formatPrice(2000000).includes('2,000,000'));
+  const reorder = c.vfReorderLines([
+    {id: 'ivory-classic-card', unit: 1, qty: 1},
+    {id: 'bridal', unit: 1, qty: 1}
+  ]);
+  assert.equal(reorder.length, 1);
+  assert.equal(reorder[0].unit, 5050000);
+  // Online, the customer leaves for the bank's page; the simulated bank's answer rides on the return
+  // link, and the order waits in this tab's session until the bank has confirmed it.
+  const checkout = page('checkout', c, {routeInfo: {view: 'checkout', demo: 'error'}});
+  checkout.renderVals().setMethod('online');
+  checkout.renderVals().place();
+  let payment = checkout.renderVals().bankTrip;
+  assert.equal(payment.status, 'redirecting');
+  assert.equal(payment.redirect.method, 'GET');
+  assert.match(payment.redirect.url, /\/checkout\/$/);
+  assert.deepEqual(
+    [payment.redirect.fields.payment, payment.redirect.fields.result],
+    ['return', 'failed']
+  );
+  assert.equal(checkout.state.order, null);
+  const orderNumber = payment.orderNumber;
+  const back = (result, id = orderNumber) => {
+    const returned = page('checkout', c, {
+      routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
+    });
+    returned.lifecycle.didMount();
+    return returned;
+  };
+  const refused = back('failed');
+  assert.equal(refused.state.payment.status, 'verifying');
+  timers.pop()();
+  assert.equal(refused.state.payment.status, 'failed');
+  assert.equal(refused.state.order, null);
+  // Paying again goes back to the bank for the same order, which the simulated bank now takes.
+  refused.renderVals().payRetry();
+  payment = refused.renderVals().bankTrip;
+  assert.equal(payment.orderNumber, orderNumber);
+  assert.equal(payment.redirect.fields.result, 'paid');
+  // Not confirmed yet: nothing is placed until a later check confirms it.
+  const unconfirmed = back('pending');
+  timers.pop()();
+  assert.equal(unconfirmed.state.payment.status, 'pending');
+  assert.equal(unconfirmed.renderVals().bankTrip.supportHref, 'tel:+989129333034');
+  unconfirmed.renderVals().payCheckAgain();
+  assert.equal(unconfirmed.state.payment.status, 'verifying');
+  timers.pop()();
+  assert.equal(unconfirmed.state.payment, null);
+  assert.equal(unconfirmed.state.order.id, orderNumber);
+  assert.equal(unconfirmed.state.order.method, 'online');
+  assert.equal(unconfirmed.state.order.paymentStatus, 'Paid online');
+  assert.match(unconfirmed.state.order.ref, /^\d{12}$/);
+  // Once placed, the order no longer waits; a return link for it (or from another tab) only says
+  // not to pay twice.
+  const stale = back('paid');
+  assert.equal(stale.state.payment.status, 'pending');
+  assert.equal(stale.state.payment.record, null);
+  // Another method: the store's first usable one that isn't online (here the balance covers it).
+  checkout.renderVals().payOther();
+  assert.equal(checkout.state.payment, null);
+  assert.equal(checkout.renderVals().method, 'wallet');
+  checkout.renderVals().setMethod('card');
+  checkout.renderVals().setLast4('۱۲۳۴');
+  checkout.renderVals().place();
+  assert.equal(checkout.state.order.method, 'card');
+  assert.equal(checkout.state.order.preferredLocale, 'fa');
+  assert.equal(c.VF_PAYMENT.bankOf('۶۰۳۷۹۹۰۰۰۰۰۰۰۰۰۰').en, 'Bank Melli');
+  assert.equal(c.VF_PAYMENT.luhn('1111111111111111'), false);
+  await c.VF_API.saveItem('ivory');
+  await c.VF_API.unsaveItem('ivory');
+  assert.equal(await c.VF_API.loadSaved(), null);
+  assert.equal(c.VF_API.live, false);
+  c.VF_API.setBase('https://example.test');
+  const contact = page('contact', c);
+  contact.renderVals().setMsg('Keep this draft');
+  contact.renderVals().setPhone('09121234567');
+  await contact.renderVals().send();
+  assert.equal(contact.state.sent, false);
+  assert.equal(contact.state.msg, 'Keep this draft');
+  assert.ok(contact.state.apiError);
+  // With an API base, an order goes out as a Checkout request; a failed request places nothing.
+  const live = page('checkout', c);
+  live.renderVals().setLast4('1234');
+  live.renderVals().place();
+  assert.equal(live.state.busy, true);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(live.state.failed, true);
+  assert.equal(live.state.order, null);
+  c.VF_API.setBase('');
+  const cod = page('checkout', c);
+  cod.props.store = {
+    bag: c.vfSampleBag(),
+    delivery: {
+      zone: 'tehran',
+      name: 'Demo',
+      address: 'Example address',
+      phone: '09123456789',
+      slot: 12
+    },
+    order: null
+  };
+  // Pay on delivery doesn't reach Tehran: it can't be chosen, and the order stays on a usable method.
+  cod.renderVals().setMethod('cod');
+  assert.notEqual(cod.renderVals().method, 'cod');
+  const codOption = cod.renderVals().methodOptions.find(o => o.value === 'cod');
+  assert.equal(codOption.disabled, true);
+  assert.ok(codOption.description);
+  const post = page('post', c, {
+    routeInfo: {view: 'post', post: 'morning-at-the-studio'}
+  }).renderVals();
+  assert.equal(post.hasBlocks, true);
+  assert.ok(post.blocks.some(b => b.tips));
+  assert.ok(post.blocks.some(b => b.image));
+  assert.equal(
+    page('post', c, {routeInfo: {view: 'post', post: 'missing'}}).renderVals().missing,
+    true
+  );
+  for (const id of vm.runInContext(
+    '(()=>{' +
+      require('./page-script.cjs').strip(
+        read('apps/storefront/shared/translations/journal-content.js')
+      ) +
+      ';return VF_POSTS.map(p=>p.id);})()',
+    c
+  ))
+    for (const lang of ['en', 'fa'])
+      assert.equal(
+        page('post', c, {lang, routeInfo: {view: 'post', post: id}}).renderVals().hasPost,
+        true
+      );
+  const comm = {window: null, console};
+  comm.window = comm;
+  vm.createContext(comm);
+  vm.runInContext(
+    read('apps/storefront/communications/notifications.js') +
+      '\n' +
+      read('apps/storefront/communications/email-templates.js'),
+    comm
+  );
+  for (const lang of ['en', 'fa']) {
+    const customer = {preferredLocale: lang},
+      vars = {
+        first: 'Demo',
+        id: 'VN-123',
+        date: '24 October',
+        slot: '10:00',
+        amount: '2000000',
+        items: [{code: 'VF-7K2M4Q', qty: 2}, {code: 'VF-3HX9TP'}],
+        recipient: 'Demo',
+        link: 'https://example.test/order',
+        remLink: 'https://example.test/reminder',
+        wa: 'https://example.test/contact',
+        time: '12:00',
+        name: 'Demo',
+        occasion: 'Birthday',
+        assetBase: 'https://example.test/assets',
+        unsubLink: 'https://example.test/unsubscribe'
+      };
+    for (const event of comm.VF_NOTIFY.events) {
+      const rendered = comm.VF_NOTIFY.render(
+        typeof event === 'string' ? event : event.id,
+        customer,
+        vars
+      );
+      assert.equal(rendered.lang, lang);
+      assert.ok(rendered.sms.parts >= 1);
+      assert.ok(!rendered.text.includes('{'));
+    }
+    for (const event of ['received', 'ready', 'onway'])
+      for (const channel of ['sms', 'wa']) {
+        const rendered = comm.VF_NOTIFY.render(event, customer, vars, channel);
+        assert.ok(rendered.text.includes('VF-7K2M4Q'), event + ' names the product codes');
+        if (channel === 'sms') assert.ok(rendered.sms.parts <= 2, event + ' fits 2 SMS parts');
+      }
+    assert.equal(
+      comm.VF_NOTIFY.itemsText([{code: 'VF-7K2M4Q', qty: 2}, 'VF-3HX9TP'], lang),
+      lang === 'fa' ? 'VF-7K2M4Q ×۲، VF-3HX9TP' : 'VF-7K2M4Q x2, VF-3HX9TP'
+    );
+    assert.equal(
+      comm.VF_NOTIFY.itemsText(['A', 'B', 'C', 'D'], lang),
+      lang === 'fa' ? 'A، B و ۲ مورد دیگر' : 'A, B +2 more'
+    );
+    for (const event of comm.VF_EMAIL.events)
+      for (const theme of ['default', 'clay']) {
+        const rendered = comm.VF_EMAIL.render(event, customer, {...vars, theme});
+        assert.equal(rendered.lang, lang);
+        assert.ok(rendered.html.includes('<table'));
+        assert.ok(rendered.html.includes(comm.VF_EMAIL.themes[theme].gold));
+      }
+  }
+  assert.equal(fs.existsSync(path.join(root, 'ui_kits')), false);
+  // Every @dsCard page's local scripts and stylesheets resolve (cards moved folders more than once).
+  const htmlFiles = dir =>
+    fs
+      .readdirSync(path.join(root, dir), {withFileTypes: true})
+      .flatMap(e =>
+        e.isDirectory()
+          ? ['node_modules', 'e2e'].includes(e.name)
+            ? []
+            : htmlFiles(dir + '/' + e.name)
+          : e.name.endsWith('.html')
+            ? [dir + '/' + e.name]
+            : []
+      );
+  const cards = ['components', 'guidelines', 'apps/storefront']
+    .flatMap(htmlFiles)
+    .filter(f => read(f).startsWith('<!-- @dsCard'));
+  assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');
+  for (const card of cards)
+    for (const [, url] of read(card).matchAll(
+      /<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g
+    ))
+      assert.ok(fs.existsSync(path.join(root, path.dirname(card), url)), card + ' → ' + url);
+  // Each payment method is a feature the store turns on by listing it (VF_STORE.paymentMethods).
+  {
+    const {c: store} = environment();
+    const json = value => JSON.parse(JSON.stringify(value));
+    const offer = methods =>
+      vm.runInContext('VF_STORE.paymentMethods = ' + JSON.stringify(methods), store);
+    const card = {
+      id: 'card',
+      cardNumber: '6221061072645437',
+      holder: {en: 'Demo', fa: 'نمونه'},
+      bank: {en: 'Saman Bank', fa: 'بانک سامان'}
+    };
+    const delivery = zone => ({
+      bag: store.vfSampleBag(),
+      delivery: {zone, name: 'Demo', address: 'Example address', phone: '09123456789', slot: 12},
+      order: null
+    });
+    // The rules: in the store's order, unknown ids dropped, each usable or not for this order.
+    const options = json(
+      vm.runInContext(
+        `commerce.paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
+          {id: 'online'}], {zone: 'tehran', balance: 100, total: 500})`,
+        store
+      )
+    );
+    assert.deepEqual(
+      options.map(option => [option.id, option.available, option.reason || null]),
+      [
+        ['cod', false, 'zone'],
+        ['wallet', false, 'balance'],
+        ['online', true, null]
+      ]
+    );
+    assert.equal(
+      vm.runInContext(`commerce.defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
+      'online'
+    );
+    // Card-to-card only: no choice to make, its steps show; the bag, terms and account follow.
+    offer([card]);
+    let only = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.equal(only.showMethods, false);
+    assert.equal(only.method, 'card');
+    assert.equal(only.isCard, true);
+    assert.equal(only.payment.cardNumber, '6221061072645437');
+    assert.match(
+      page('bag', store).renderVals().t.payNote,
+      /^You pay on the next step: card-to-card\./
+    );
+    const terms = JSON.stringify(page('policy', store, {doc: 'terms'}).renderVals());
+    assert.match(terms, /You can pay by card-to-card transfer\./);
+    const privacy = JSON.stringify(page('policy', store, {doc: 'privacy'}).renderVals().doc);
+    assert.match(privacy, /only ask for the last four digits/);
+    assert.ok(!/Online payments/.test(privacy), 'no online payment sentence without online');
+    const statement = JSON.stringify(
+      page('policy', store, {doc: 'accessibility'}).renderVals().doc
+    );
+    assert.match(statement, /Known limits/);
+    assert.ok(!/bank’s own page/.test(statement));
+    const account = page('account', store, {tab: 'balance'}).renderVals();
+    assert.ok(!account.tabItems.some(tab => tab.id === 'balance'), 'no balance tab without wallet');
+    assert.equal(account.isBalance, false);
+    // Pay on delivery only: usable inside its zones; elsewhere nothing can be placed, and the
+    // customer is told to call.
+    offer([{id: 'cod', zones: ['central']}]);
+    only = page('checkout', store, {store: delivery('central')}).renderVals();
+    assert.equal(only.method, 'cod');
+    assert.equal(only.noMethod, false);
+    const outside = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.equal(outside.method, null);
+    assert.equal(outside.noMethod, true);
+    assert.equal(outside.placeDisabled, true);
+    // The store's order is the checkout's order.
+    offer([{id: 'whatsapp'}, {id: 'online'}, card]);
+    const listed = page('checkout', store, {store: delivery('tehran')}).renderVals();
+    assert.deepEqual(json(listed.methodOptions.map(option => option.value)), [
+      'whatsapp',
+      'online',
+      'card'
+    ]);
+    assert.equal(listed.method, 'whatsapp');
+    assert.equal(listed.isWhatsapp, true);
+  }
+  // The optional parts of the storefront are features too (VF_STORE.features), as are its languages
+  // and contact channels: a store with none of them, in Persian only, without WhatsApp or Instagram.
+  {
+    const {c: store} = environment();
+    const json = value => JSON.parse(JSON.stringify(value));
+    assert.deepEqual(
+      json(vm.runInContext("commerce.storeFeatures(['journal', 'paypal'])", store)),
+      {
+        promoCodes: false,
+        sameDay: false,
+        weddings: false,
+        journal: true,
+        reminders: false,
+        newsletter: false
+      }
+    );
+    vm.runInContext(
+      `VF_STORE.features = []; VF_STORE.languages = ['fa']; VF_STORE.whatsapp = null;
+       VF_STORE.instagram = null; VF_STORE.paymentMethods = [{id: 'whatsapp'}, {id: 'online'}];`,
+      store
+    );
+    // Shell: no weddings or journal links, language switch or WhatsApp; the home page, no newsletter.
+    const home = page('home', store, {lang: 'fa'}).renderVals();
+    const labels = home.menuItems.map(item => item.label).join(' ');
+    assert.ok(!/عروسی|دفترچه/.test(labels), labels);
+    assert.equal(home.footer.studio.length, 4);
+    assert.equal(home.newsletter, false);
+    assert.deepEqual(json(home.posts), [], 'no journal posts on the home page');
+    assert.equal(home.weddings, null, 'no weddings band');
+    assert.equal(home.hasLang, false);
+    assert.equal(home.waHref, '');
+    assert.deepEqual(json(home.tabs.map(tab => tab.id)), ['home', 'shop', 'bag']);
+    // Routes: its pages are gone, English opens in Persian, the same-day filter is dropped.
+    const route = search => json(store.vfReadRoute(search));
+    assert.equal(route('/apps/storefront/app/weddings/').view, 'notfound');
+    assert.equal(route('/apps/storefront/app/journal/').view, 'notfound');
+    assert.equal(route('/apps/storefront/app/journal/morning-at-the-studio/').view, 'notfound');
+    assert.equal(route('/apps/storefront/app/en/faq/').lang, 'fa');
+    assert.deepEqual(route('/apps/storefront/app/shop/?filters=same,roses').filters, ['roses']);
+    // No same-day delivery: the first day is tomorrow, and nothing says "same day".
+    assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
+    assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');
+    const shop = page('shop', store, {lang: 'fa'}).renderVals();
+    assert.equal(shop.chips.length, 3, 'ready, under 3M and roses; no same-day');
+    // No promo codes: no field, and a saved code takes nothing off.
+    assert.equal(page('bag', store, {lang: 'fa'}).renderVals().promoShown, false);
+    const lines = store.vfSampleBag();
+    assert.equal(
+      store.vfTotals(lines, {zone: 'central', promo: 'WELCOME10'}).discount,
+      0,
+      'no promo discount without promo codes'
+    );
+    // No reminders tab; no WhatsApp payment without WhatsApp; contact lists only what it has.
+    vm.runInContext("vfAccountLogin('09123456789', 'fa')", store);
+    const account = page('account', store, {lang: 'fa', tab: 'reminders'}).renderVals();
+    assert.ok(!account.tabItems.some(tab => tab.id === 'reminders'));
+    assert.equal(account.isReminders, false);
+    const checkout = page('checkout', store, {
+      lang: 'fa',
+      store: {
+        bag: lines,
+        delivery: {
+          zone: 'central',
+          name: 'Demo',
+          address: 'Example',
+          phone: '09123456789',
+          slot: 12
+        },
+        order: null
+      }
+    }).renderVals();
+    assert.equal(checkout.method, 'online');
+    assert.equal(checkout.showMethods, false);
+    const contact = page('contact', store, {lang: 'fa'}).renderVals();
+    assert.deepEqual(json(contact.rows.map(row => row.icon)), ['map-pin', 'clock', 'phone']);
+    const privacy = JSON.stringify(
+      page('policy', store, {lang: 'fa', doc: 'privacy'}).renderVals().doc
+    );
+    assert.ok(!/یادآور|خبرنامه/.test(privacy), 'privacy names no reminders or newsletter');
+    const shipping = JSON.stringify(
+      page('policy', store, {lang: 'fa', doc: 'shipping'}).renderVals().doc
+    );
+    assert.ok(!/ارسال همان روز برای سفارش تا/.test(shipping));
+    // No add-ons: the product page has no extras and the bag can't add a card.
+    vm.runInContext('VF_ADDONS.splice(0)', store);
+    assert.equal(page('product', store, {lang: 'fa'}).renderVals().addons.length, 0);
+    const bag = page('bag', store, {lang: 'fa'}).renderVals();
+    assert.ok(bag.cardLines.every(line => !line.noCard));
+    assert.equal(bag.cardsShown, false);
+  }
+  console.log(
+    'Passed migrated account persistence/editors, reminders, filters, reordering, payment recovery, store features, optional API mode, article blocks, bilingual communications and relocated card paths.'
+  );
+})().catch(e => {
+  console.error(e);
+  process.exitCode = 1;
+});

@@ -1,12 +1,12 @@
-// The storefront rendered to HTML for one address, at build time (_build/vite.config.mjs prerenders
+// The storefront rendered to HTML for one address, at build time (build/vite.config.mjs prerenders
 // every public route with it). It runs in Node: no window and no storage, so pages render what a
 // first-time visitor sees, and app/main.jsx hydrates that markup for such a visitor.
 import React from 'react';
 import {renderToPipeableStream} from 'react-dom/server';
-import {vfServerPage, vfServerRender} from '../_shared/platform/environment.js';
-import {vfPageHead} from '../_shared/services/page-lifecycle.js';
-import {vfReadRoute} from '../_shared/services/routing.js';
-import {VF_SEO} from '../_shared/services/seo.js';
+import {vfServerPage, vfServerRender} from '../shared/platform/environment.js';
+import {vfPageHead} from '../shared/services/page-lifecycle.js';
+import {vfReadRoute} from '../shared/services/routing.js';
+import {VF_SEO} from '../shared/services/seo.js';
 import {loadPage} from './pages.js';
 
 const ENTITIES = {amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' '};

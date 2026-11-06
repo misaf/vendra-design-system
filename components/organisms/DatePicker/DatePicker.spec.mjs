@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/e2e/component-test.mjs';
 
 // React Aria's DatePicker and calendar, in Shamsi and Gregorian.
 for (const lang of ['en', 'fa'])
