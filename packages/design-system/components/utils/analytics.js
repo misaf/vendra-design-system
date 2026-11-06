@@ -46,7 +46,7 @@ const EVENTS = {
   add_payment_info: {about: 'Pay or place order pressed', params: ['payment_type', 'value']},
   order_placed: {
     about:
-      'Order placed, paid or not (card-to-card, pay on delivery and WhatsApp wait for payment)',
+      'Order created, paid or not (online before the bank answers, card-to-card, pay on delivery, WhatsApp)',
     params: ['transaction_id', 'value', 'payment_type', 'payment_status', 'items']
   },
   payment_result: {
