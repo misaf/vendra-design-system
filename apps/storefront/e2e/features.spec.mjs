@@ -1243,8 +1243,8 @@ test('the home page shows the categories, ready-made designs, weddings and the l
   const journal = page.locator('.vf-home-journal');
   await expect(journal.getByRole('heading', {level: 3})).toHaveText([
     'What’s in season this autumn',
-    'Five ways to keep a bouquet fresh',
-    'Choosing your bridal bouquet'
+    'A morning at the Vendra workbench',
+    'Flowers aren’t only for special days'
   ]);
   // Every category, in the store's order, as a row of circles; each opens its shop filter.
   const categories = page.getByRole('region', {name: /^Categories/});
@@ -1258,8 +1258,8 @@ test('the home page shows the categories, ready-made designs, weddings and the l
     page.locator('.vf-home-weddings').getByRole('link', {name: 'Plan your wedding flowers'})
   ).toHaveAttribute('href', /\/weddings\//);
   expect(await scanAxe(page)).toEqual([]);
-  await journal.getByRole('link', {name: /Five ways to keep a bouquet fresh/}).click();
-  await expect(page).toHaveURL(/\/journal\/care\//);
+  await journal.getByRole('link', {name: /A morning at the Vendra workbench/}).click();
+  await expect(page).toHaveURL(/\/journal\/morning-at-the-studio\//);
 });
 
 test('the home page newsletter checks the address and confirms the sign-up', async ({page}) => {
@@ -1670,7 +1670,7 @@ test('the journal splits its stories across pages, keeping the page in the URL',
   await openSite(page, 'journal', 'en');
   const stories = page.locator('main .ag-blog');
   const pages = page.getByRole('navigation', {name: 'Pages'});
-  await expect(stories).toHaveCount(7);
+  await expect(stories).toHaveCount(4);
   await expect(pages.getByRole('link', {name: 'Page 1'})).toHaveAttribute('aria-current', 'page');
   await expect(pages.getByRole('link', {name: 'Previous page'})).toHaveAttribute(
     'aria-disabled',
