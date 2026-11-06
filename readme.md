@@ -113,7 +113,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `apps/storefront/_build/` | The storefront app's Vite build: dev server, prerendered routes, sitemap, precompression, page CSS and the tenant list. |
 | `tools/` | Repo tooling: the build (`build.cjs`, which writes `dist/` via `package.cjs` and tenant themes via `tenants.cjs`/`brand.cjs`), the component generator (`new-component.cjs`) and the Atomic Design and import checks (`atomic.cjs`, `app-dependencies.cjs`). Run through the `npm --prefix apps/storefront` scripts. |
 | `apps/storefront/_shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
-| `apps/storefront/communications/`, `previews/`, `deployment/` | Email/SMS/WhatsApp examples, theme previews, robots and sitemap samples. |
+| `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
 | `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
 | `apps/storefront/_runtime/`, `dist/` | Generated: never edit. |
 | `assets/` | Logos, social images, app icons, fonts, placeholders. |
@@ -134,4 +134,4 @@ npm --prefix apps/storefront run test:e2e:build  # build once, then storefront/v
 npm --prefix apps/storefront run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
 
-Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Ownership and integration boundaries: [apps/storefront/MIGRATION.md](apps/storefront/MIGRATION.md). Working rules: [CLAUDE.md](CLAUDE.md).
+Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Preview states and integration boundaries: [Demo behavior](apps/storefront/README.md#demo-behavior). Working rules: [CLAUDE.md](CLAUDE.md).

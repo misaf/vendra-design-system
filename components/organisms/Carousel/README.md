@@ -10,7 +10,7 @@ Horizontal snap row for categories and occasions. Scrollbar hidden, focusable (a
 </Carousel>
 ```
 
-Pair with SectionHeader through `ref` (`scrollPrev` / `scrollNext`) and `onScrollStateChange` — see [SectionHeader](../SectionHeader/README.md). On mobile it bleeds into the 16px gutter and shows 2.3 items.
+Pair with SectionHeader through `ref` (`scrollPrev` / `scrollNext`) and `onScrollStateChange` — see [SectionHeader](../../molecules/SectionHeader/README.md). On mobile it bleeds into the 16px gutter and shows 2.3 items.
 
 Three ways to pass items — all give one snap slot per item:
 
