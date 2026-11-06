@@ -20,7 +20,7 @@ import {tenantCss} from '@vendra/design-system/theme';
 |---|---|
 | `@vendra/design-system` | The components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps` and `ICON_SVGS`. |
 | `@vendra/design-system/styles.css` | Fonts, tokens, base styles and every `ag-*` class. |
-| `@vendra/design-system/theme` | `tenantCss`, `validate`, `checks`, `tokens`, `designTokens`, `email` and the default spec. |
+| `@vendra/design-system/theme` | `tenantCss`, `validate`, `checks`, `tokens`, `designTokens`, `email`, the brand-font helpers `fontFaces` and `fontPreloads`, and the default spec. |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenant themes. |
 | `@vendra/design-system/tokens.json` | Every design token as W3C design tokens (DTCG JSON). |
 
