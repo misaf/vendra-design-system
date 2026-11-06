@@ -111,8 +111,8 @@ for (const lang of ['en', 'fa']) {
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
       expect(persisted.customers.guest.delivery).toEqual(initial.delivery);
-      if (existing)
-        expect(persisted.customers['09121111111'].delivery.address).toBe('Other customer address');
+      // Signed out, the session keeps nothing of another customer's private drafts.
+      expect(Object.keys(persisted.customers)).toEqual(['guest']);
       expect(errors).toEqual([]);
       expect(await scanAxe(page)).toEqual([]);
       await info.attach('initial-handover-persistence', {
