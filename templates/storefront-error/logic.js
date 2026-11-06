@@ -3,9 +3,9 @@
 // the app shows when the API is down. It offers a retry, the way home, and the phone, so an order
 // can still be placed.
 import {vfCopy} from './copy.js';
-import {vfShell} from '../_shared/navigation.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

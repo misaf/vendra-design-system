@@ -5,12 +5,12 @@ import {
   VF_SAVED_IDS_PATTERN,
   vfBagLine,
   vfFindProduct
-} from './catalog.js';
-import {VF_SHOP_OCCASIONS} from './translations/categories.js';
+} from '../domain/catalog.js';
+import {VF_SHOP_OCCASIONS} from '../translations/categories.js';
 import {VF_SEO} from './seo.js';
-import {vfFeatures, vfLanguage} from './store-config.js';
-import {VF_CATEGORY_SLUGS} from './product-categories.js';
-import {vfLocation} from './environment.js';
+import {vfFeatures, vfLanguage} from '../domain/store-config.js';
+import {VF_CATEGORY_SLUGS} from '../domain/product-categories.js';
+import {vfLocation} from '../platform/environment.js';
 
 // The shop's quick filters (?filters=), in the order the shop shows them.
 export const VF_SHOP_FILTERS = ['ready', 'under3', 'same', 'roses'];

@@ -3,10 +3,10 @@
 // first-time visitor sees, and app/main.jsx hydrates that markup for such a visitor.
 import React from 'react';
 import {renderToPipeableStream} from 'react-dom/server';
-import {vfServerPage, vfServerRender} from '../_shared/environment.js';
-import {vfPageHead} from '../_shared/page-lifecycle.js';
-import {vfReadRoute} from '../_shared/routing.js';
-import {VF_SEO} from '../_shared/seo.js';
+import {vfServerPage, vfServerRender} from '../_shared/platform/environment.js';
+import {vfPageHead} from '../_shared/services/page-lifecycle.js';
+import {vfReadRoute} from '../_shared/services/routing.js';
+import {VF_SEO} from '../_shared/services/seo.js';
 import {loadPage} from './pages.js';
 
 const ENTITIES = {amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' '};

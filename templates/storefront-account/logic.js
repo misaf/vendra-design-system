@@ -8,25 +8,30 @@ import {
   vfAccountSignOut,
   vfReminderNext,
   vfKnownOrders
-} from '../_shared/account-data.js';
-import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../_shared/catalog.js';
-import {VF_ZONES, vfMobile} from '../_shared/delivery.js';
-import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/location.js';
-import {vfShell} from '../_shared/navigation.js';
-import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {VF_STORE, vfFeatures, vfLiveStore} from '../_shared/store-config.js';
+} from '../_shared/domain/account-data.js';
+import {
+  VF_PRODUCTS,
+  vfProductBadge,
+  vfProductImage,
+  vfProductSub
+} from '../_shared/domain/catalog.js';
+import {VF_ZONES, vfMobile} from '../_shared/domain/delivery.js';
+import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../_shared/domain/location.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_STORE, vfFeatures, vfLiveStore} from '../_shared/domain/store-config.js';
 import {
   vfBalanceDiscountOn,
   vfTopUpAmount,
   vfTopUpError,
   vfWalletChange,
   vfWalletOf
-} from '../_shared/wallet.js';
-import {VF_NAV} from '../_shared/page-focus.js';
-import {vfAmountInputMode, vfAmountToInput} from '../_shared/formatting.js';
+} from '../_shared/domain/wallet.js';
+import {VF_NAV} from '../_shared/services/page-focus.js';
+import {vfAmountInputMode, vfAmountToInput} from '../_shared/domain/formatting.js';
 import {dates} from '../../components/utils/dates.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.

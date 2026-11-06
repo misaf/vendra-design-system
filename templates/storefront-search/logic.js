@@ -1,10 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfProductImage, vfProductSub, vfSearchProducts} from '../_shared/catalog.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfProductImage, vfProductSub, vfSearchProducts} from '../_shared/domain/catalog.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // Results update as the customer types; a search is reported once the typing settles.
 const VF_SEARCH_SETTLE_MS = 1000;
 // The page: its state (applied at once, as the logic reads it back), effects and the values

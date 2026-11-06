@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, shell, finish} from './device-helpers.mjs';
 import {vfCopy} from '../storefront-shop/copy.js';
-import {VF_MONEY} from '../_shared/formatting.js';
+import {VF_MONEY} from '../_shared/domain/formatting.js';
 
 test.use({reducedMotion: 'reduce'});
 test.beforeEach(async ({page}, info) => {

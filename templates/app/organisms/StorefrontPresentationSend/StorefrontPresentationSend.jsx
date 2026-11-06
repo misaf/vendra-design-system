@@ -1,6 +1,6 @@
 import React from 'react';
 import * as DS from '../../ds.js';
-import {vfQrPath} from '../../../_shared/qr.js';
+import {vfQrPath} from '../../../_shared/ui/qr.js';
 
 function Qr({text, label}) {
   const {path, size} = React.useMemo(() => vfQrPath(text), [text]);

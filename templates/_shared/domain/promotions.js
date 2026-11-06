@@ -2,7 +2,7 @@
 // Edit this file, then run: npm --prefix templates run build
 // percent comes off the subtotal; min is the smallest subtotal the code accepts.
 // The rules are in components/utils/commerce.js; these functions pass VF_PROMOS to them.
-import {commerce} from '../../components/utils/commerce.js';
+import {commerce} from '../../../components/utils/commerce.js';
 export const VF_PROMOS = [
   {code: 'WELCOME10', percent: 10, min: 0},
   {code: 'ROSES15', percent: 15, min: 4_000_000}

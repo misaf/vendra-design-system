@@ -1,23 +1,23 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
-import {vfBrand} from './brand.js';
-import {vfFindProduct, vfProductId} from './catalog.js';
+import {vfBrand} from '../domain/brand.js';
+import {vfFindProduct, vfProductId} from '../domain/catalog.js';
 import {
   VF_FREE_DELIVERY_THRESHOLD,
   VF_ZONES,
   vfDeliveryCutoff,
   vfDeliveryDays
-} from './delivery.js';
-import {VF_FA_DIGITS, VF_MONEY} from './formatting.js';
-import {vfDirectionsUrl} from './location.js';
+} from '../domain/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
+import {vfDirectionsUrl} from '../domain/location.js';
 import {vfPageTenant} from './page-lifecycle.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
-import {VF_STORE, vfFeatures} from './store-config.js';
-import {VF_CATEGORY_COPY} from './translations/categories.js';
-import {VF_SHELL} from './translations/shell.js';
-import {vfDayMonth, vfDayName} from './translations/time.js';
+import {VF_STORE, vfFeatures} from '../domain/store-config.js';
+import {VF_CATEGORY_COPY} from '../translations/categories.js';
+import {VF_SHELL} from '../translations/shell.js';
+import {vfDayMonth, vfDayName} from '../translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
-import {vfNow, vfOnServer} from './environment.js';
+import {vfNow, vfOnServer} from '../platform/environment.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.

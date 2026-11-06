@@ -40,7 +40,7 @@ for (const folder of fs
       }
     }
     for (const match of code.matchAll(
-      /from '\.\.\/\.\.\/components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
+      /from '(?:\.\.\/)+components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
     )) {
       if (new RegExp('<' + match[1] + '\\b').test(code)) used.add(match[1]);
     }

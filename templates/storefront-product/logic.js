@@ -18,14 +18,14 @@ import {
   vfRecentlyViewed,
   vfRememberViewed,
   vfTokenText
-} from '../_shared/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/formatting.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {vfFeatures} from '../_shared/store-config.js';
+} from '../_shared/domain/catalog.js';
+import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {vfFeatures} from '../_shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../_shared/translations/categories.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {

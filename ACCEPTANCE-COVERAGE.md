@@ -49,7 +49,7 @@ names or overrides establishes a physical phone, tablet or television result.
 
 ## Route-to-flow checklist
 
-All 19 [`VF_ROUTES`](templates/_shared/routing.js) have selected dedicated bilingual touch coverage.
+All 19 [`VF_ROUTES`](templates/_shared/services/routing.js) have selected dedicated bilingual touch coverage.
 The following supplements that flow coverage with stages 228–232. It does not claim every route's
 initial state was scanned by the dedicated cases or that every listed gap has no older test.
 
