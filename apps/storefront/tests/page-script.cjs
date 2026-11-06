@@ -57,6 +57,8 @@ class Component {
 
 function pageScript(folder) {
   const parts = [];
+  if (['pages/home', 'pages/journal', 'pages/post'].includes(folder))
+    parts.push(read('shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
   const logic = read(folder + '/logic.js');
   // Pages that queue toasts get a minimal queue (the component's is React Aria's).
@@ -85,7 +87,7 @@ const sharedFiles = [
   'domain/catalog.js',
   'translations/shell.js',
   'translations/categories.js',
-  'translations/journal-content.js',
+  'translations/journal-moved.js',
   'translations/time.js',
   'domain/order-message.js',
   'translations/location.js',

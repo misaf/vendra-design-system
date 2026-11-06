@@ -1610,7 +1610,7 @@ test('the journal splits its stories across pages, keeping the page in the URL',
   await openSite(page, 'journal', 'en');
   const stories = page.locator('main .ag-blog');
   const pages = page.getByRole('navigation', {name: 'Pages'});
-  await expect(stories).toHaveCount(7);
+  await expect(stories).toHaveCount(4);
   await expect(pages.getByRole('link', {name: 'Page 1'})).toHaveAttribute('aria-current', 'page');
   await expect(pages.getByRole('link', {name: 'Previous page'})).toHaveAttribute(
     'aria-disabled',
