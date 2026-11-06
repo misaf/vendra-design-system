@@ -128,8 +128,10 @@ function packageFiles() {
     'theme.js',
     HEADER +
       "import theme from './theme.cjs';\n" +
-      'export const {VENDRA, CHOICES, FONTS, RAMPS, shade, validate, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
+      'export const {VENDRA, CHOICES, FONTS, RAMPS, shade, validate, schema, checks, tokens, contrast, oklch, fromOklch, css, tenantCss, email, designTokens} = theme;\n'
   );
+  // validate()'s rules as JSON Schema, for backends and admin forms that don't run JavaScript.
+  files.set('theme.schema.json', json(themeApi.schema()));
   files.set('theme.d.ts', readRepo('apps/storefront/shared/domain/tenant-theme.d.ts'));
   files.set('theme.d.cts', readRepo('apps/storefront/shared/domain/tenant-theme.d.ts'));
   return files;

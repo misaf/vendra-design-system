@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vendra tenant theme spec",
+  "type": "object",
+  "required": [
+    "colours",
+    "character"
+  ],
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "colours": {
+      "type": "object",
+      "required": [
+        "accent",
+        "neutral",
+        "ink",
+        "footer"
+      ],
+      "properties": {
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "neutral": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "ink": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "footer": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        }
+      }
+    },
+    "character": {
+      "type": "object",
+      "required": [
+        "headings",
+        "case",
+        "accentWord",
+        "controls",
+        "frame"
+      ],
+      "properties": {
+        "headings": {
+          "enum": [
+            "serif",
+            "sans",
+            "vazir"
+          ]
+        },
+        "case": {
+          "enum": [
+            "none",
+            "uppercase"
+          ]
+        },
+        "accentWord": {
+          "enum": [
+            "italic",
+            "upright"
+          ]
+        },
+        "controls": {
+          "enum": [
+            "pill",
+            "square"
+          ]
+        },
+        "frame": {
+          "enum": [
+            "arch",
+            "soft",
+            "square"
+          ]
+        }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "--petal-50",
+          "--petal-100",
+          "--petal-200",
+          "--petal-300",
+          "--petal-400",
+          "--peony-100",
+          "--peony-200",
+          "--peony-400",
+          "--peony-500",
+          "--peony-600",
+          "--peony-700",
+          "--stem-500",
+          "--stem-700",
+          "--stem-900",
+          "--ink-300",
+          "--ink-500",
+          "--ink-700",
+          "--ink-900",
+          "--border-input"
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$"
+      }
+    }
+  }
+}

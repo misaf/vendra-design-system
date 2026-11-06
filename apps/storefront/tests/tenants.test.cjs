@@ -66,6 +66,86 @@ broken({character: {...clay.character, controls: 'round'}}, /character\.controls
 broken({overrides: {'--surface-page': '#FFFFFF'}}, /only set generated shades/);
 broken({overrides: {'--ink-500': 'grey'}}, /overrides\.--ink-500/);
 
+// 4b. The published JSON Schema accepts and rejects exactly what validate() does. A small
+// evaluator covers the keywords the schema uses; any other keyword fails the test.
+const schema = theme.schema();
+const KEYWORDS = new Set([
+  '$schema',
+  'title',
+  'type',
+  'required',
+  'properties',
+  'pattern',
+  'enum',
+  'propertyNames',
+  'additionalProperties'
+]);
+function conforms(rules, value) {
+  for (const key of Object.keys(rules)) assert.ok(KEYWORDS.has(key), 'schema keyword ' + key);
+  const isObject = !!value && typeof value === 'object' && !Array.isArray(value);
+  if (rules.type === 'object' && !isObject) return false;
+  if (rules.type === 'string' && typeof value !== 'string') return false;
+  if (rules.enum && !rules.enum.includes(value)) return false;
+  if (rules.pattern && !new RegExp(rules.pattern).test(value)) return false;
+  if (!isObject) return true;
+  if ((rules.required || []).some(key => !(key in value))) return false;
+  return Object.entries(value).every(([key, item]) => {
+    if (rules.propertyNames && !conforms(rules.propertyNames, key)) return false;
+    if (rules.properties && key in rules.properties) return conforms(rules.properties[key], item);
+    return rules.additionalProperties ? conforms(rules.additionalProperties, item) : true;
+  });
+}
+const accepts = spec => {
+  try {
+    theme.validate(spec);
+    return true;
+  } catch {
+    return false;
+  }
+};
+assert.deepEqual(
+  JSON.parse(
+    fs.readFileSync(path.join(root, 'packages/design-system/dist/theme.schema.json'), 'utf8')
+  ),
+  schema,
+  'dist/theme.schema.json is current (run the build)'
+);
+assert.deepEqual(
+  schema.properties.character.properties,
+  Object.fromEntries(Object.entries(theme.CHOICES).map(([key, options]) => [key, {enum: options}])),
+  'character enums come from CHOICES'
+);
+const {colours, character} = clay;
+const specs = {
+  vendra: theme.VENDRA,
+  ...tenantSpecs(),
+  'bad hex': {...clay, colours: {...colours, accent: 'A9532E'}},
+  'short hex': {...clay, colours: {...colours, ink: '#123'}},
+  'missing colour': {
+    ...clay,
+    colours: {accent: colours.accent, neutral: colours.neutral, ink: colours.ink}
+  },
+  'missing colours': {character},
+  'unknown choice': {...clay, character: {...character, controls: 'round'}},
+  'missing choice': {...clay, character: {...character, frame: undefined}},
+  'override of a semantic token': {...clay, overrides: {'--surface-page': '#FFFFFF'}},
+  'override that is not hex': {...clay, overrides: {'--ink-500': 'grey'}},
+  'overrides list': {...clay, overrides: ['#FFFFFF']},
+  'null overrides': {...clay, overrides: null},
+  'numeric description': {...clay, description: 4},
+  'valid override': {...clay, overrides: {'--peony-600': '#a0304b'}},
+  'extra keys': {...clay, brand: {}, notes: 'kept'},
+  'array spec': [clay],
+  'null spec': null
+};
+for (const [name, spec] of Object.entries(specs)) {
+  // JSON drops undefined members, as a backend would receive the spec.
+  const received = JSON.parse(JSON.stringify(spec));
+  assert.equal(conforms(schema, received), accepts(received), name + ': schema matches validate()');
+}
+for (const name of ['vendra', ...Object.keys(tenantSpecs()), 'valid override', 'extra keys'])
+  assert.ok(accepts(JSON.parse(JSON.stringify(specs[name]))), name + ' is valid');
+
 // 5. Every tenant passes the seven checks, and its CSS and the runtime list are current.
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
   assert.deepEqual(
