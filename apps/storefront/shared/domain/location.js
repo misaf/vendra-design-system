@@ -4,6 +4,7 @@
 import {VF_FA_DIGITS} from './formatting.js';
 import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {vfAssetBase} from '../platform/environment.js';
+import {VF_MAPS_APPS} from '../translations/location.js';
 
 export function vfValidLocation(location) {
   return commerce.validLocation(location);
@@ -23,9 +24,15 @@ export function vfLocationText(location, fa) {
   );
 }
 
-// A route to the place in the visitor's own maps app (Google Maps opens natively on phones).
-export function vfDirectionsUrl(location) {
-  return 'https://www.google.com/maps/dir/?api=1&destination=' + location.lat + ',' + location.lng;
+// The place in Neshan, Balad and Google Maps (each opens its app on phones where it can), named in
+// the page's language and ordered for it: Neshan and Balad first in Persian. [] without a valid point.
+export function vfDirections(location, lang) {
+  const names = VF_MAPS_APPS[lang] || VF_MAPS_APPS.en;
+  return commerce.directionsLinks(location, lang).map(({app, href}) => ({
+    app,
+    label: names[app],
+    href
+  }));
 }
 
 // Loads Leaflet once (from apps/storefront/_vendor/leaflet) and resolves with window.L.

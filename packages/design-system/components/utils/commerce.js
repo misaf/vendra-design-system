@@ -71,6 +71,23 @@ const pinLocation = point => {
   return {lat: round(point.lat), lng: round(point.lng)};
 };
 
+// Links that show a place in Neshan, Balad and Google Maps, each opening the installed app on
+// phones where the link allows it. Persian visitors mostly drive with Neshan and Balad, so they
+// come first in Persian; Google Maps comes first otherwise. [] for a missing or invalid point.
+// Neshan: its own point link (github.com/NeshanMaps/Neshan-MCP, utils/deeplinks.py). Balad: the
+// web app's /location page, which reads latitude, longitude and zoom.
+const directionsLinks = (location, language) => {
+  if (!validLocation(location)) return [];
+  const {lat, lng} = location;
+  const links = {
+    neshan: 'https://nshn.ir/?lat=' + lat + '&lng=' + lng,
+    balad: 'https://balad.ir/location?latitude=' + lat + '&longitude=' + lng + '&zoom=17',
+    google: 'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lng
+  };
+  const order = language === 'fa' ? ['neshan', 'balad', 'google'] : ['google', 'neshan', 'balad'];
+  return order.map(app => ({app, href: links[app]}));
+};
+
 const distanceKm = (a, b) => {
   const rad = Math.PI / 180,
     dLat = (b.lat - a.lat) * rad,
@@ -644,6 +661,7 @@ export const commerce = {
   isMobile,
   validLocation,
   pinLocation,
+  directionsLinks,
   distanceKm,
   zoneAt,
   isoDate,
