@@ -89,6 +89,9 @@ function vfAnnounce(page) {
     if (!h) return;
     const title = h.innerText.replace(/\s+/g, ' ').trim();
     const identity = title + lang + tenant;
+    // The head follows the route, not only the heading: a shop whose filters change keeps its h1
+    // but gains or loses noindex, its canonical and its alternates. syncHead only writes changes.
+    VF_SEO.syncHead(vfPageHead(page, title));
     if (identity === page._vfTitle) return;
     page._vfTitle = identity;
     // On the first view of a document, leave focus at the top so Tab reaches the
@@ -105,7 +108,6 @@ function vfAnnounce(page) {
         });
     }
     window.VF_VIEWED = true;
-    VF_SEO.syncHead(vfPageHead(page, title));
   }, 40);
 }
 
