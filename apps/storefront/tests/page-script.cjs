@@ -100,6 +100,7 @@ const sharedFiles = [
   'services/routing.js',
   'services/structured-data.js',
   'services/page-state.js',
+  'services/list-tracking.js',
   'services/page-lifecycle.js',
   'services/navigation.js'
 ];

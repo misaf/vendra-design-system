@@ -23,6 +23,7 @@ import {VF_JCATS, VF_POSTS} from '../../shared/translations/journal-content.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../shared/services/structured-data.js';
+import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -43,7 +44,11 @@ function vals(page) {
     .map(id => inStock.find(p => p.id === id))
     .filter(Boolean);
   const others = inStock.filter(p => !featured.includes(p));
-  const card = p => ({
+  const studio = others.length >= 4 ? others : inStock;
+  vfShowList(page, 'home_featured', featured);
+  vfShowList(page, 'home_studio', studio);
+  const card = list => (p, index) => ({
+    select: vfSelectItem(list, p, index),
     fav: S.isFav(p.id, []),
     toggleFav: S.toggleFav(p.id, []),
     ...S.productLink(p.id),
@@ -78,9 +83,9 @@ function vals(page) {
     }),
     // The studio's ready-made designs, in its order; the studio collection leaves them
     // out while at least four other designs remain (a small catalogue shows them all).
-    featured: featured.map(card),
+    featured: featured.map(card('home_featured')),
     readyHref: vfRouteUrl({view: 'shop', lang: L, cat: 'all', filters: ['ready']}),
-    products: (others.length >= 4 ? others : inStock).map(card),
+    products: studio.map(card('home_studio')),
     weddings: S.features.weddings ? {href: S.href.weddings} : null,
     // The latest journal posts, newest first as the journal lists them.
     posts: S.features.journal

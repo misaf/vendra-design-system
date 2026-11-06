@@ -350,10 +350,14 @@ function vals(page) {
           phone: vfMobile(delivery.phone),
           senderPhone: vfMobile(delivery.senderPhone)
         });
-      window.VF_TRACK.event('begin_checkout', {
-        items: vfLineItems(live.filter(vfLineAvailable)),
-        value: total
+      // The delivery step is done (zone and slot chosen); the bag moves on to payment.
+      const items = vfLineItems(live.filter(vfLineAvailable));
+      window.VF_TRACK.event('add_shipping_info', {
+        items,
+        value: total,
+        shipping_tier: delivery.zone
       });
+      window.VF_TRACK.event('begin_checkout', {items, value: total});
       if (page.props.go) page.props.go('checkout');
     },
     hasItems: live.length > 0,

@@ -5,15 +5,37 @@
 // Each event keeps only its listed parameters (plus `language` and `currency`), so a name, phone
 // number, address or card message can't reach a report by accident. No imports.
 // Product codes, not names: a product is known by its code in reports, as in the studio.
+// `index` is the product's position in a list (view_item_list, select_item), counted from 0.
 const ITEM_KEYS = [
 	"item_id",
 	"item_name",
 	"item_category",
 	"price",
-	"quantity"
+	"quantity",
+	"index"
 ];
 const COMMON = ["language", "currency"];
 const EVENTS = {
+	page_view: {
+		about: "A page shown, including each in-app route change",
+		params: ["page_type", "page_path"]
+	},
+	view_item_list: {
+		about: "A list of products shown (shop, home, search, recently viewed)",
+		params: [
+			"item_list_id",
+			"item_list_name",
+			"items"
+		]
+	},
+	select_item: {
+		about: "A product opened from a list",
+		params: [
+			"item_list_id",
+			"item_list_name",
+			"items"
+		]
+	},
 	view_item: {
 		about: "A product page opened",
 		params: ["items", "value"]
@@ -29,6 +51,14 @@ const EVENTS = {
 	view_cart: {
 		about: "The bag opened",
 		params: ["items", "value"]
+	},
+	add_shipping_info: {
+		about: "Delivery step completed (zone and slot chosen)",
+		params: [
+			"items",
+			"value",
+			"shipping_tier"
+		]
 	},
 	begin_checkout: {
 		about: "From the bag to the payment step",

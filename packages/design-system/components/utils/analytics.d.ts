@@ -1,8 +1,12 @@
 export type AnalyticsEventName =
+  | 'page_view'
+  | 'view_item_list'
+  | 'select_item'
   | 'view_item'
   | 'add_to_cart'
   | 'remove_from_cart'
   | 'view_cart'
+  | 'add_shipping_info'
   | 'begin_checkout'
   | 'add_payment_info'
   | 'payment_result'
@@ -26,6 +30,8 @@ export interface AnalyticsItem {
   item_category?: string;
   price?: number;
   quantity?: number;
+  /** Position in a list (view_item_list, select_item), from 0 */
+  index?: number;
 }
 
 /** An event as the app hands it on: its name and only its own parameters. */

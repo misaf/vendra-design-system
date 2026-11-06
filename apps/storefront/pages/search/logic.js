@@ -5,7 +5,9 @@ import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
-// Results update as the customer types; a search is reported once the typing settles.
+import {vfSelectItem, vfViewList} from '../../shared/services/list-tracking.js';
+// Results update as the customer types; a search (and the result list it shows) is reported once
+// the typing settles.
 const VF_SEARCH_SETTLE_MS = 1000;
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -17,14 +19,11 @@ export function usePage(props) {
     page._report = (text, delay) => {
       clearTimeout(page._searchTimer);
       if (!text.trim()) return;
-      page._searchTimer = setTimeout(
-        () =>
-          window.VF_TRACK.event('search', {
-            search_term: text,
-            results: vfSearchProducts(text).length
-          }),
-        delay
-      );
+      page._searchTimer = setTimeout(() => {
+        const results = vfSearchProducts(text);
+        window.VF_TRACK.event('search', {search_term: text, results: results.length});
+        vfViewList('search', results);
+      }, delay);
     };
   });
   useStorefrontPage(page);
@@ -77,8 +76,9 @@ function vals(page) {
       label: l,
       pick: () => change(l, 0)
     })),
-    results: results.map(p => ({
+    results: results.map((p, index) => ({
       ...S.productLink(p.id),
+      select: vfSelectItem('search', p, index),
       image: vfProductImage(p, L),
       name: p.id,
       sub: vfProductSub(p, L),
