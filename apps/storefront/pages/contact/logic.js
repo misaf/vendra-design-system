@@ -10,6 +10,7 @@ import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../shared/services/structured-data.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();
@@ -177,7 +178,7 @@ function vals(page) {
         });
         S.focus('vf-contact-success');
       };
-      if (!window.VF_API.live) {
+      if (!vfRuntime.api.live) {
         success();
         return;
       }
@@ -185,14 +186,15 @@ function vals(page) {
         busy: true,
         apiError: ''
       });
-      return window.VF_API.inquiry({
-        name: s.name.trim(),
-        phone: s.phone ? vfMobile(s.phone) : null,
-        email: s.email.trim(),
-        message: s.msg.trim(),
-        occasion: 'contact',
-        preferredLocale: window.VF_API.preferredLocale()
-      })
+      return vfRuntime.api
+        .inquiry({
+          name: s.name.trim(),
+          phone: s.phone ? vfMobile(s.phone) : null,
+          email: s.email.trim(),
+          message: s.msg.trim(),
+          occasion: 'contact',
+          preferredLocale: vfRuntime.api.preferredLocale()
+        })
         .then(success)
         .catch(() =>
           page.setState({

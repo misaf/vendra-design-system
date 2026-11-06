@@ -225,7 +225,7 @@ assert.match(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 3}), /p
 assert.doesNotMatch(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
 
 // Analytics: events stay in the local log until the visitor allows visit counts.
-const track = ctx.window.VF_TRACK;
+const track = ctx.vfRuntime.track;
 const sent = [];
 const unsubscribe = track.subscribe(event => sent.push(event));
 assert.equal(track.consent(), '');

@@ -26,7 +26,7 @@ for (const lang of ['en', 'fa']) {
     const bagLine = () =>
       page.evaluate(() => window.__vfSite.state.bag.find(line => line.id === 'VF-3HX9TP') ?? null);
     const before = await page.evaluate(
-      () => window.VF_TRACK.log.filter(event => event.event === 'add_to_cart').length
+      () => window.__vfRuntime.track.log.filter(event => event.event === 'add_to_cart').length
     );
     const add = card('VF-3HX9TP').getByRole('button', {
       name: `\u2066VF-3HX9TP\u2069: ${fa ? 'افزودن به سبد' : 'add to bag'}`
@@ -39,12 +39,16 @@ for (const lang of ['en', 'fa']) {
     await expect(dialog).toContainText('VF-3HX9TP');
     await expect
       .poll(() =>
-        page.evaluate(() => window.VF_TRACK.log.filter(event => event.event === 'add_to_cart'))
+        page.evaluate(() =>
+          window.__vfRuntime.track.log.filter(event => event.event === 'add_to_cart')
+        )
       )
       .toHaveLength(before + 1);
     expect(
       await page.evaluate(
-        () => window.VF_TRACK.log.filter(event => event.event === 'add_to_cart').at(-1).items[0]
+        () =>
+          window.__vfRuntime.track.log.filter(event => event.event === 'add_to_cart').at(-1)
+            .items[0]
       )
     ).toMatchObject({item_id: 'VF-3HX9TP', item_list_name: 'saved', quantity: 1});
     expect(await scanAxe(page)).toEqual([]);

@@ -12,8 +12,8 @@ for (const lang of ['en', 'fa']) {
     // This stub holds the request locally; it never contacts the studio.
     await page.evaluate(() => {
       window.__contactRequests = 0;
-      window.VF_API = {
-        ...window.VF_API,
+      window.__vfRuntime.api = {
+        ...window.__vfRuntime.api,
         live: true,
         inquiry: () => {
           window.__contactRequests++;

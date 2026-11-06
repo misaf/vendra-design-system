@@ -342,7 +342,7 @@ export function vfProductSub(product, lang = 'en') {
 }
 
 // A product photo for Picture, with its alt text in `lang`. `asset` is a URL or a photo
-// (commerce.imageFromApi); a relative URL is resolved against VF_ASSET_BASE.
+// (commerce.imageFromApi); a relative URL is resolved against the asset base (vfAssetBase).
 export function vfProductImage(
   product,
   lang = 'en',

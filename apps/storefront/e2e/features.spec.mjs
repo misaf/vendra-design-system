@@ -696,11 +696,14 @@ test('the storefront reports the contract’s events, and nothing personal', asy
   page.on('console', message => {
     if (message.text().startsWith('VF_TRACK')) warnings.push(message.text());
   });
-  const names = () => page.evaluate(() => window.VF_TRACK.log.map(event => event.event));
+  const names = () => page.evaluate(() => window.__vfRuntime.track.log.map(event => event.event));
   // The latest event of one kind: page views and product lists follow renders, so other
   // events may come after it.
   const last = name =>
-    page.evaluate(name => window.VF_TRACK.log.findLast(event => event.event === name), name);
+    page.evaluate(
+      name => window.__vfRuntime.track.log.findLast(event => event.event === name),
+      name
+    );
   await openSite(page, 'product', 'en');
   expect(await last('view_item')).toMatchObject({items: [{item_id: 'VF-7K2M4Q'}]});
   // The site changes routes in place, so it reports each page itself: the path, no query.
@@ -717,7 +720,9 @@ test('the storefront reports the contract’s events, and nothing personal', asy
   await page.getByRole('searchbox').fill('orchid');
   // Once the typing settles, with how many it found.
   await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.find(event => event.event === 'search')))
+    .poll(() =>
+      page.evaluate(() => window.__vfRuntime.track.log.find(event => event.event === 'search'))
+    )
     .toMatchObject({search_term: 'orchid', results: 1});
   await page.getByRole('searchbox').fill('09121234567');
   await expect.poll(() => last('search')).toMatchObject({search_term: '(personal data)'});
@@ -1281,13 +1286,14 @@ for (const lang of ['en', 'fa']) {
     page
   }) => {
     await page.addInitScript(() => {
-      let api;
+      let runtime;
       const submission = (window.__newsletterSubmission = {calls: 0});
-      Object.defineProperty(window, 'VF_API', {
+      Object.defineProperty(window, '__vfRuntime', {
         configurable: true,
-        get: () => api,
+        get: () => runtime,
         set: value => {
-          api = value;
+          runtime = value;
+          const api = value.api;
           api.newsletter = () => {
             submission.calls++;
             return new Promise((resolve, reject) => {
@@ -1382,8 +1388,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -1401,8 +1407,8 @@ test.describe('a first visit', () => {
         localStorage.getItem('vf-consent'),
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -1456,8 +1462,8 @@ test.describe('a first visit', () => {
       await page.evaluate(() =>
         (() => {
           const sent = [];
-          const stop = VF_TRACK.subscribe(event => sent.push(event));
-          VF_TRACK.event('search', {});
+          const stop = window.__vfRuntime.track.subscribe(event => sent.push(event));
+          window.__vfRuntime.track.event('search', {});
           stop();
           return sent.length;
         })()
@@ -2123,12 +2129,13 @@ test('a design that sells out after it was ordered is not handed over', async ({
     })
   );
   await page.addInitScript(() => {
-    let api;
-    Object.defineProperty(window, 'VF_API', {
+    let runtime;
+    Object.defineProperty(window, '__vfRuntime', {
       configurable: true,
-      get: () => api,
+      get: () => runtime,
       set: value => {
-        api = value;
+        runtime = value;
+        const api = value.api;
         api.setBase('https://api.test');
       }
     });

@@ -23,6 +23,7 @@ import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
 import {VF_CATEGORY_SLUGS} from '../../shared/domain/product-categories.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
 // The "under" quick filter's price limit, in Toman.
 const VF_UNDER_PRICE = 3000000;
@@ -81,7 +82,7 @@ function vals(page) {
   const dayLabel = d => vfDayName(d, fa) + vfSeparator(fa) + vfDayMonth(d.date, fa);
   // Filters set here are reported as they change; FilterBar reports the ones removed from its row.
   const filterUsed = (filterId, value, on) =>
-    window.VF_TRACK.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
+    vfRuntime.track.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
   const change = patch => {
     const next = {
       ...route,

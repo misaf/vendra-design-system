@@ -75,13 +75,13 @@ for (const tenant of ['default', ...TENANTS]) {
   test(`email palette matches the rendered theme (${tenant})`, async ({page}) => {
     await page.goto('/apps/storefront/e2e/fixtures/tokens.html');
     await page.addStyleTag({url: '/packages/design-system/tokens/tenants.css'});
-    await page.addScriptTag({url: '/apps/storefront/communications/email-templates.js'});
-    const {live, shipped} = await page.evaluate(tenant => {
+    const {live, shipped} = await page.evaluate(async tenant => {
+      const {VF_EMAIL} = await import('/apps/storefront/communications/email-templates.js');
       const wrap = document.createElement('div');
       if (tenant !== 'default') wrap.setAttribute('data-tenant', tenant);
       document.body.append(wrap);
-      const {disp: a, ...live} = window.VF_EMAIL.themeFromCSS(wrap);
-      const {disp: b, ...shipped} = window.VF_EMAIL.themes[tenant];
+      const {disp: a, ...live} = VF_EMAIL.themeFromCSS(wrap);
+      const {disp: b, ...shipped} = VF_EMAIL.themes[tenant];
       return {live, shipped};
     }, tenant);
     expect(shipped).toEqual(live);

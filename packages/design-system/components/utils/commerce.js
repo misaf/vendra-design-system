@@ -1,4 +1,4 @@
-// Storefront commerce rules: import { commerce } (the runtime bundle also exposes window.AG_COMMERCE).
+// Storefront commerce rules: import { commerce } (guidelines/card-runtime.js also exposes it as window.AG_COMMERCE for the cards).
 // Pure functions: every tenant value (zones, promo codes, balance rules, delivery schedule, API records)
 // comes in as an argument, so a tenant storefront runs them on its own data from the Vendra API.
 // Amounts are in Toman. No imports: storefront pages load this before the component bundle.

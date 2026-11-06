@@ -458,7 +458,7 @@ for (const lang of ['en', 'fa']) {
       stored = value;
     };
     c.sessionStorage.getItem = () => stored || null;
-    c.window.VF_API = {live: false};
+    c.vfRuntime.api = {live: false};
     c.window.addEventListener = c.document.addEventListener = () => {};
     site.lifecycle.didMount();
     assert.ok(stored, 'initial handover is saved on mount without an edit');
@@ -1309,7 +1309,7 @@ console.log(
       const writes = [];
       let hydrate, rejectHydration;
       const write = id => new Promise((resolve, reject) => writes.push({id, resolve, reject}));
-      c.window.VF_API = {
+      c.vfRuntime.api = {
         live,
         saveItem: write,
         unsaveItem: write,
@@ -1430,7 +1430,7 @@ console.log(
     cc.setTimeout = () => 0;
     let finish,
       calls = 0;
-    cc.window.VF_API = {
+    cc.vfRuntime.api = {
       live: true,
       checkout: () => {
         calls++;
@@ -1520,7 +1520,7 @@ console.log(
     sc.window.addEventListener = () => {};
     sc.document.addEventListener = () => {};
     let hydrate;
-    sc.window.VF_API = {
+    sc.vfRuntime.api = {
       live: true,
       loadSaved: () => new Promise(resolve => (hydrate = resolve)),
       saveItem: () => Promise.resolve(),
@@ -1647,7 +1647,7 @@ for (const lang of ['en', 'fa']) {
       setItem: (key, value) => storage.set(key, value),
       removeItem: key => storage.delete(key)
     };
-    c.window.VF_TRACK.event = () => {};
+    c.vfRuntime.track.event = () => {};
     logic.renderVals().setPhone(phone);
     logic.renderVals().send();
     logic.renderVals().completeCode('12345');
@@ -1690,7 +1690,7 @@ for (const lang of ['en', 'fa']) {
     setItem: (key, value) => fresh.set(key, value),
     removeItem: key => fresh.delete(key)
   };
-  c.window.VF_TRACK.event = () => {};
+  c.vfRuntime.track.event = () => {};
   logic.renderVals().send();
   logic.renderVals().completeCode('12345');
   assert.equal(greeting(logic.renderVals()), {en: 'Welcome, Mina.', fa: 'خوش آمدید، Mina.'}[lang]);
@@ -1702,7 +1702,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: checkout, ctx: c} = loadPage('checkout', {lang, store: site.renderVals().store});
   c.setTimeout = () => 0;
   let submitted = 0;
-  c.window.VF_API = {
+  c.vfRuntime.api = {
     live: true,
     checkout: () => {
       submitted++;
@@ -1719,7 +1719,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(submitted, 0, 'a missing recovery record blocks the API submission too');
   assert.equal(checkout.state.payment, null);
   assert.ok(checkout.renderVals().paymentSaveError);
-  c.window.VF_API.live = false;
+  c.vfRuntime.api.live = false;
   let saved;
   c.sessionStorage.setItem = (_, value) => (saved = JSON.parse(value));
   checkout.renderVals().place();

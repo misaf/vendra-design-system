@@ -97,13 +97,13 @@ test('the Sheba hint describes its button', async ({page}) => {
   await page.goto('/apps/storefront/app/?page=checkout');
   await expect(page.locator('#main')).toBeVisible();
   // Demo stores have no Sheba number; set one, then re-render by switching method.
-  await page.evaluate(() =>
-    window.VF_PAYMENT.setPayCard({
+  await page.evaluate(() => {
+    window.__vfRuntime.payment.setPayCard({
       cardNumber: '6221061072645437',
       holderEn: 'Demo',
       sheba: 'IR000000000000000000000000'
-    })
-  );
+    });
+  });
   const group = page.getByRole('radiogroup', {name: 'Choose a payment method'});
   await group.getByText('Online card demo').click();
   await group.getByText('Card-to-card transfer').click();

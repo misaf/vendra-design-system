@@ -1,5 +1,5 @@
 import '../../../guidelines/card-runtime.js';
-const N = window.VF_NOTIFY;
+import {VF_NOTIFY as N} from './notifications.js';
 const LABEL = {
   received: 'Order received',
   paid: 'Payment confirmed',

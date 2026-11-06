@@ -6,6 +6,7 @@ import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // Seconds before another code can be requested (ResendCode keeps the time).
 const VF_SIGNIN_RESEND_SECONDS = 60;
 // The page: its state (applied at once, as the logic reads it back), effects and the values
@@ -152,7 +153,7 @@ function vals(page) {
       vfAccountSave(s.phone, account);
     }
     store?.syncCustomer?.({continueCheckout: fromCheckout});
-    window.VF_TRACK.event('login', {method: 'sms'});
+    vfRuntime.track.event('login', {method: 'sms'});
     if (page.props.setLang) page.props.setLang(account.profile.locale);
     page.setState({
       step: 'ok',

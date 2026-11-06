@@ -1,16 +1,17 @@
 // Analytics: one wrapper for every tracked event, on the package's event contract
-// (components/utils/analytics.js, `analytics.EVENTS`). VF_TRACK.event(name, params) keeps only that
-// event's parameters, adds language and currency, keeps the last 50 in VF_TRACK.log for QA, and
-// hands each event to the VF_TRACK.subscribe(listener) listeners only after the visitor accepts
-// analytics in the consent banner (VF_TRACK.consent() === 'all'). Nothing is sent anywhere until a
+// (components/utils/analytics.js, `analytics.EVENTS`). vfRuntime.track.event(name, params) keeps only that
+// event's parameters, adds language and currency, keeps the last 50 in vfRuntime.track.log for QA, and
+// hands each event to the vfRuntime.track.subscribe(listener) listeners only after the visitor accepts
+// analytics in the consent banner (vfRuntime.track.consent() === 'all'). Nothing is sent anywhere until a
 // store subscribes a sender to its own backend. Components report their events through
 // VendraProvider's onEvent, which the shell points here.
 import {analytics} from '../../../../../packages/design-system/components/utils/analytics.js';
 import {VF_STORE} from '../../domain/store-config.js';
 import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
-(() => {
-  // Browser only: the build's prerender (app/entry-server.jsx) records and sends nothing.
-  if (typeof window === 'undefined' || window.VF_TRACK) return;
+// Creates the tracker; shared/services/integrations/runtime.js installs it as vfRuntime.track in the
+// browser only (the build's prerender, app/entry-server.jsx, records and sends nothing).
+/** @returns {import('../../platform/runtime.js').VfTracker} */
+export function vfCreateTracker() {
   const EVENTS = analytics.EVENTS;
   // The visitor's choice from the consent banner: 'all', 'essential', or '' before they choose.
   const KEY = 'vf-consent';
@@ -82,7 +83,7 @@ import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
       if (document.visibilityState === 'hidden') flush();
     });
   }
-  window.VF_TRACK = {
+  return {
     event,
     item,
     EVENTS,
@@ -91,4 +92,4 @@ import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
     setConsent,
     subscribe
   };
-})();
+}
