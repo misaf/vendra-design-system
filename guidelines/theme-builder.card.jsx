@@ -16,7 +16,9 @@ function App(){
   const t=T.tokens(s);const cs=T.checks(s);const fails=cs.filter(c=>!c.pass).length;const kept=Object.keys(s.overrides).length;
   const json=()=>{const {description,overrides,colours,character,font,brand}=s;return JSON.stringify({description,colours,character,overrides,...(font?{font}:{}),...(brand?{brand}:{})},null,2)+'\n';};
   const copy=()=>{navigator.clipboard&&navigator.clipboard.writeText(json());setCopied(true);setTimeout(()=>setCopied(false),1400);};
+  // A tenant's brand font: its @font-face rules, with paths from guidelines/ to the repo root's assets/.
   return <div className="tb">
+    {s.font&&<style>{T.fontFaces(s,'../')}</style>}
     <div className="tb-c">
       <Row label="Start from"><select value={start} onChange={e=>open(e.target.value)}>{Object.keys(START).map(k=><option key={k} value={k}>{label(k)}</option>)}</select></Row>
       <div className="tb-k">Colour</div>
