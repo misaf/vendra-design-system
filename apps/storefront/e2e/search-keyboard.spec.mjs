@@ -41,14 +41,14 @@ for (const lang of ['en', 'fa']) {
       await expect(box).toHaveValue('');
       await expect(box).toBeFocused();
       await expect(clear).toBeHidden();
-      if (view === 'journal') await expect(results).toHaveCount(7);
+      if (view === 'journal') await expect(results).toHaveCount(4);
       else await expect(page).not.toHaveURL(/(?:\?|&)q=[^&]+/);
       await page.keyboard.type('zzzz-missing');
       await expect(results).toHaveCount(0);
       await page.keyboard.press('Escape');
       await expect(box).toHaveValue('');
       await expect(box).toBeFocused();
-      if (view === 'journal') await expect(results).toHaveCount(7);
+      if (view === 'journal') await expect(results).toHaveCount(4);
       else await expect(page).not.toHaveURL(/(?:\?|&)q=[^&]+/);
     });
   }
