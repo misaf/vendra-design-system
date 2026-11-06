@@ -34,7 +34,7 @@ try {
       .replace(/<[^>]+>/g, '')
       .replace(/&amp;/g, '&')
       .trim();
-  const post = VF_POSTS.find(item => item.id === 'care');
+  const post = VF_POSTS.find(item => item.id === 'bouquet-last-longer');
   const cases = [
     {
       address: 'en/product/VF-7K2M4Q/',
@@ -51,11 +51,11 @@ try {
       alternate: ['fa', 'fa/shop/boxes/']
     },
     {
-      address: 'en/journal/care/',
+      address: 'en/journal/bouquet-last-longer/',
       lang: 'en',
       heading: post.en[0],
-      image: /\/assets\/journal\/care\.webp$/,
-      alternate: ['fa', 'fa/journal/care/']
+      image: /\/assets\/journal\/bouquet-last-longer\.webp$/,
+      alternate: ['fa', 'fa/journal/bouquet-last-longer/']
     },
     {
       address: 'fa/',
@@ -184,7 +184,7 @@ try {
   assert.ok(typed(await page('fa/'), 'Florist'), 'the home page names the studio');
   const faq = typed(await page('en/faq/'), 'FAQPage');
   assert.ok(faq.mainEntity.length > 3 && faq.mainEntity[0].acceptedAnswer.text, 'FAQ answers');
-  const article = typed(await page('en/journal/care/'), 'Article');
+  const article = typed(await page('en/journal/bouquet-last-longer/'), 'Article');
   assert.equal(article.headline, post.en[0]);
   assert.equal(article.datePublished, post.publishedAt);
   assert.deepEqual(graph(bag), [], 'private pages carry no structured data');
