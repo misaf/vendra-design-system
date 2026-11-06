@@ -110,6 +110,54 @@
         "type": "string",
         "pattern": "^#[0-9A-Fa-f]{6}$"
       }
+    },
+    "font": {
+      "type": "object",
+      "required": [
+        "family",
+        "licence",
+        "files"
+      ],
+      "propertyNames": {
+        "enum": [
+          "family",
+          "licence",
+          "files",
+          "weight",
+          "body"
+        ]
+      },
+      "properties": {
+        "family": {
+          "type": "string",
+          "pattern": "^(?!(?:[Ii][Nn][Ss][Tt][Rr][Uu][Mm][Ee][Nn][Tt] [Ss][Ee][Rr][Ii][Ff]|[Jj][Oo][Ss][Tt]|[Vv][Aa][Zz][Ii][Rr][Mm][Aa][Tt][Nn])(?: [Ff][Aa][Ll][Ll][Bb][Aa][Cc][Kk].*)?$)[A-Za-z][A-Za-z0-9 -]{0,62}[A-Za-z0-9]$"
+        },
+        "licence": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "files": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "enum": [
+              "latin",
+              "arabic"
+            ]
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^assets/(?:[\\w-][\\w.-]*/)*[\\w-][\\w.-]*\\.woff2$"
+          }
+        },
+        "weight": {
+          "type": "string",
+          "pattern": "^[1-9]00(?: [1-9]00)?$"
+        },
+        "body": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

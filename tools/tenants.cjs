@@ -7,6 +7,23 @@ const root = path.resolve(__dirname, '../apps/storefront');
 const {packageRoot, packageFolder} = require('./paths.cjs');
 const folder = path.join(packageRoot, 'tokens/tenants');
 
+// A brand font's files must ship with the deployment: present under the repo root and WOFF2.
+const repo = path.resolve(__dirname, '..');
+function validateFontFiles(font, label) {
+  if (!font) return;
+  for (const [script, file] of Object.entries(font.files)) {
+    const absolute = path.join(repo, file);
+    if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile())
+      throw new Error(label + '.files.' + script + ': no file at ' + file);
+    const signature = Buffer.alloc(4);
+    const handle = fs.openSync(absolute, 'r');
+    fs.readSync(handle, signature, 0, 4, 0);
+    fs.closeSync(handle);
+    if (signature.toString('latin1') !== 'wOF2')
+      throw new Error(label + '.files.' + script + ': ' + file + ' is not a WOFF2 file');
+  }
+}
+
 function tenantSpecs() {
   const specs = {};
   for (const file of fs
@@ -25,6 +42,7 @@ function tenantSpecs() {
     }
     require('./brand.cjs').validateBrand(spec.brand, label + '.brand');
     specs[slug] = theme.validate(spec, label);
+    validateFontFiles(spec.font, label + '.font');
     const failing = theme.checks(spec).filter(check => !check.pass);
     if (failing.length)
       throw new Error(
@@ -113,4 +131,4 @@ function withEmailThemes(source, specs) {
   return source.slice(0, start + begin.length) + (body ? body + '\n' : '') + source.slice(finish);
 }
 
-module.exports = {tenantSpecs, tenantOutputs, tenantSlugs};
+module.exports = {tenantSpecs, tenantOutputs, tenantSlugs, validateFontFiles};

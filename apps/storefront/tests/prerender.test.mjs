@@ -247,3 +247,10 @@ try {
 } finally {
   fs.rmSync(outDir, {recursive: true, force: true});
 }
+
+// A tenant's brand font is preloaded only for the page's language; sample tenants have none.
+{
+  const {tenantFontPreloads} = await import('../build/prerender.mjs');
+  assert.equal(tenantFontPreloads(null, 'fa'), '');
+  assert.equal(tenantFontPreloads('clay', 'fa'), '');
+}
