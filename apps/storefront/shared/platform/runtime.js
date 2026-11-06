@@ -32,6 +32,8 @@
  * @property {() => string} consent The visitor's choice: 'all', 'essential' or '' (not chosen yet).
  * @property {(value: string) => void} setConsent
  * @property {(listener: (event: object) => void) => () => void} subscribe
+ * @property {() => Record<string, string>} attribution Where the visit came from (utm_* values and
+ *   the referrer's host).
  */
 
 /**

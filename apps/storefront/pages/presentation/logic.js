@@ -56,8 +56,6 @@ const VF_SLIDE_MS = 6_000;
 const VF_CALM_MS = 4_000;
 // How often an open presentation asks the API what is in stock.
 const VF_STOCK_MS = 120_000;
-// How long "Cleared · Undo" stays.
-const VF_UNDO_MS = 8_000;
 // What counts as someone using the screen, for the slideshow.
 const VF_ACTIVITY = ['pointerdown', 'keydown', 'wheel'];
 
@@ -722,25 +720,22 @@ function vals(page) {
   const available = st.order.filter(line => !lineSoldOut(line));
   const orderTotal = available.reduce((sum, line) => sum + line.unit * line.qty, 0);
   const setOrder = order => page.setState({order});
-  // Clearing the shortlist or the order closes its dialog and can be undone for a few seconds, as one
-  // tap clears it.
+  // Clearing the shortlist or the order closes its dialog and can be undone, as one tap clears it. The
+  // Undo toast stays until it is used, dismissed or replaced (a toast with an action never times out).
   const clearWithUndo = (patch, title) => {
     const kept = vfCustomerKept(page.state, Object.keys(patch));
     page.setState({...patch, ...vfViewerClosed(), panel: null});
     page.toasts.clear();
-    page.toasts.add(
-      {
-        title,
-        action: {
-          label: C.undo,
-          onClick: () => {
-            page.setState(kept);
-            page.toasts.clear();
-          }
+    page.toasts.add({
+      title,
+      action: {
+        label: C.undo,
+        onClick: () => {
+          page.setState(kept);
+          page.toasts.clear();
         }
-      },
-      {timeout: VF_UNDO_MS}
-    );
+      }
+    });
   };
   // What the send dialog hands over, as a link for the customer's phone.
   const sendInfo = (() => {

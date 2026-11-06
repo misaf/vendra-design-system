@@ -37,6 +37,22 @@ export interface AnalyticsItem {
   index?: number;
 }
 
+/** Where a visit came from; only the keys found. {} is a direct visit. */
+export interface AnalyticsAttribution {
+  /** utm_source, e.g. "instagram" */
+  source?: string;
+  /** utm_medium, e.g. "social" */
+  medium?: string;
+  /** utm_campaign */
+  campaign?: string;
+  /** utm_content */
+  content?: string;
+  /** utm_term */
+  term?: string;
+  /** The referring site's host without "www.", e.g. "l.instagram.com"; never its path or query */
+  referrer_host?: string;
+}
+
 /** An event as the app hands it on: its name and only its own parameters. */
 export interface AnalyticsEvent {
   event: AnalyticsEventName;
@@ -54,6 +70,11 @@ export interface Analytics {
   /** Every event: what it means and the parameters it keeps (besides language and currency). */
   EVENTS: Record<AnalyticsEventName, {about: string; params: string[]}>;
   ITEM_KEYS: string[];
+  /** The attribution parameters page_view and purchase take. */
+  ATTRIBUTION_KEYS: string[];
+  /** Where a visit came from: the utm_* values in the landing query (`search`), cleaned like search
+   * terms, and the referrer's host when it isn't the store's own `host`. */
+  attribution(options?: {search?: string; referrer?: string; host?: string}): AnalyticsAttribution;
   /** The events whose `value` is an amount in Toman (turned into the report currency). */
   AMOUNT_EVENTS: AnalyticsEventName[];
   /** The ISO 4217 code reports use for `currency` (Toman, IRT, becomes Rial, IRR, 10 to the Toman),
