@@ -165,6 +165,45 @@
     frame: ['arch', 'soft', 'square']
   };
 
+  // --- A tenant's own brand font (spec.font) ---
+  // Self-hosted WOFF2 files, one per script, placed ahead of the character.headings preset, which
+  // stays as the fallback stack for whichever script the brand files leave out and while they load.
+  // unicode-range keeps each file to its script, so a page downloads only what its language uses.
+  const FONT_RANGES = {
+    latin:
+      'U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF',
+    arabic:
+      'U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC'
+  };
+  // The script whose file a page in each language preloads.
+  const FONT_SCRIPT = {en: 'latin', fa: 'arabic'};
+  // Built-in family names (and their metric fallbacks) stay the package's own: a tenant font
+  // with one of these names would replace the shared @font-face for every page that loads it.
+  const caseless = text =>
+    text.replace(/[a-z]/gi, letter => '[' + letter.toUpperCase() + letter.toLowerCase() + ']');
+  const FONT_FAMILY =
+    '^(?!(?:' +
+    ['Instrument Serif', 'Jost', 'Vazirmatn'].map(caseless).join('|') +
+    ')(?: ' +
+    caseless('Fallback') +
+    '.*)?$)[A-Za-z][A-Za-z0-9 -]{0,62}[A-Za-z0-9]$';
+  // Paths under assets/, relative to the deployment root like brand assets; no '..' segments.
+  const FONT_FILE = '^assets/(?:[\\w-][\\w.-]*/)*[\\w-][\\w.-]*\\.woff2$';
+  // One weight (400) or a variable font's range (300 700), in hundreds.
+  const FONT_WEIGHT = '^[1-9]00(?: [1-9]00)?$';
+  const FONT_KEYS = ['family', 'licence', 'files', 'weight', 'body'];
+  // Where the generated CSS finds the deployment root: the build writes
+  // packages/design-system/tokens/tenants/<slug>.css, four folders below it.
+  const ASSET_BASE = /^(?:(?:https:\/\/[\w.-]+(?::\d+)?)?\/(?:[\w.~-]+\/)*|(?:\.\.\/)*)$/;
+  const assetBase = base => {
+    if (typeof base !== 'string' || !ASSET_BASE.test(base))
+      throw new Error(
+        "assetBase must be '', '../' steps, '/' or an https:// origin, ending in '/': " +
+          JSON.stringify(base)
+      );
+    return base;
+  };
+
   // The default theme as a spec: the Theme builder's starting point.
   const VENDRA = {
     colours: {accent: '#C8405F', neutral: '#ECE4E0', ink: '#17211C', footer: '#17211C'},
@@ -202,6 +241,32 @@
         fail('overrides may only set generated shades (' + name + ' is not one)');
       if (!isHex(value)) fail('overrides.' + name + ' must be a #RRGGBB colour');
     }
+    if (spec.font !== undefined) {
+      const font = spec.font;
+      if (!isObject(font)) fail('font must be an object');
+      for (const key of Object.keys(font))
+        if (!FONT_KEYS.includes(key)) fail('font.' + key + ' is not a font field');
+      if (typeof font.family !== 'string' || !new RegExp(FONT_FAMILY).test(font.family))
+        fail(
+          'font.family must be 2-64 letters, digits, spaces or hyphens, and not a built-in font name'
+        );
+      if (typeof font.licence !== 'string' || !/\S/.test(font.licence))
+        fail('font.licence must say under which licence the files are served');
+      if (!isObject(font.files) || !Object.keys(font.files).length)
+        fail('font.files must give a WOFF2 file for latin, arabic or both');
+      for (const [script, file] of Object.entries(font.files)) {
+        if (!(script in FONT_RANGES)) fail('font.files may only have latin and arabic');
+        if (typeof file !== 'string' || !new RegExp(FONT_FILE).test(file))
+          fail('font.files.' + script + ' must be a .woff2 path under assets/');
+      }
+      if (
+        font.weight !== undefined &&
+        (typeof font.weight !== 'string' || !new RegExp(FONT_WEIGHT).test(font.weight))
+      )
+        fail("font.weight must be one weight ('400') or a variable range ('300 700')");
+      if (font.body !== undefined && typeof font.body !== 'boolean')
+        fail('font.body must be true or false');
+    }
     return spec;
   }
 
@@ -233,6 +298,23 @@
           type: 'object',
           propertyNames: {enum: ORDER.slice()},
           additionalProperties: hex
+        },
+        font: {
+          type: 'object',
+          required: ['family', 'licence', 'files'],
+          propertyNames: {enum: FONT_KEYS.slice()},
+          properties: {
+            family: {type: 'string', pattern: FONT_FAMILY},
+            licence: {type: 'string', pattern: '\\S'},
+            files: {
+              type: 'object',
+              minProperties: 1,
+              propertyNames: {enum: Object.keys(FONT_RANGES)},
+              additionalProperties: {type: 'string', pattern: FONT_FILE}
+            },
+            weight: {type: 'string', pattern: FONT_WEIGHT},
+            body: {type: 'boolean'}
+          }
         }
       }
     };
@@ -304,8 +386,10 @@
     };
     const square = ch.controls === 'square',
       upright = ch.accentWord === 'upright';
+    const own = spec.font ? "'" + spec.font.family + "'," : '';
     const character = {
-      '--font-display': FONTS[ch.headings],
+      '--font-display': own + FONTS[ch.headings],
+      ...(spec.font && spec.font.body ? {'--font-body': own + FONTS.sans} : {}),
       '--tracking-display':
         ch.case === 'uppercase' ? '.02em' : ch.headings === 'serif' ? '-.015em' : '-.01em',
       '--display-case': ch.case,
@@ -458,7 +542,36 @@
     };
   }
 
-  function css(slug, spec) {
+  // The brand font's @font-face rules; each url is assetBase + the file's path.
+  function fontFaces(spec, base = '/') {
+    const font = spec.font;
+    if (!font) return '';
+    base = assetBase(base);
+    return Object.entries(font.files)
+      .map(
+        ([script, file]) =>
+          "@font-face{font-family:'" +
+          font.family +
+          "';font-style:normal;font-weight:" +
+          (font.weight || '400') +
+          ";font-display:swap;src:url('" +
+          base +
+          file +
+          "') format('woff2');unicode-range:" +
+          FONT_RANGES[script] +
+          ';}\n'
+      )
+      .join('');
+  }
+
+  // The brand-font file a page in `lang` should preload, as [url] or [] (no font, or none for
+  // that language's script). The other script's file loads only if the page uses it.
+  function fontPreloads(spec, lang, base = '/') {
+    const file = spec.font && spec.font.files[FONT_SCRIPT[lang]];
+    return file ? [assetBase(base) + file] : [];
+  }
+
+  function css(slug, spec, {assetBase: base = '../../../../'} = {}) {
     const t = tokens(spec);
     // Claude Design reads @kind to classify tokens that are not colours, sizes or fonts.
     const kind = {
@@ -481,6 +594,7 @@
       'Apply with data-tenant="' +
       slug +
       '" on <html> (or any wrapper). */\n' +
+      fontFaces(spec, base) +
       '[data-tenant="' +
       slug +
       '"]{\n' +
@@ -497,7 +611,7 @@
   // refuses unsafe slugs, invalid specs and failing contrast, and drops the free-text
   // description so stored data can never close the <style> element it is written into.
   const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  function tenantCss(slug, spec, {allowFailing = false} = {}) {
+  function tenantCss(slug, spec, {allowFailing = false, assetBase: base = '/'} = {}) {
     if (typeof slug !== 'string' || !SLUG.test(slug))
       throw new Error(
         'Tenant slugs are lowercase letters, digits and hyphens: ' + JSON.stringify(slug)
@@ -513,7 +627,16 @@
             .map(c => c.label + ' ' + Number(c.ratio).toFixed(2) + ':1 (needs ' + c.min + ')')
             .join('; ')
       );
-    return css(slug, {colours: spec.colours, character: spec.character, overrides: spec.overrides});
+    return css(
+      slug,
+      {
+        colours: spec.colours,
+        character: spec.character,
+        overrides: spec.overrides,
+        font: spec.font
+      },
+      {assetBase: base}
+    );
   }
 
   return {
@@ -531,6 +654,8 @@
     checks,
     css,
     tenantCss,
+    fontFaces,
+    fontPreloads,
     email,
     designTokens
   };
