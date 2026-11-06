@@ -9,6 +9,7 @@ export type AnalyticsEventName =
   | 'add_shipping_info'
   | 'begin_checkout'
   | 'add_payment_info'
+  | 'order_placed'
   | 'payment_result'
   | 'purchase'
   | 'search'
@@ -56,10 +57,14 @@ export interface AnalyticsAttribution {
 export interface AnalyticsEvent {
   event: AnalyticsEventName;
   language?: string;
+  /** An ISO 4217 code: Toman amounts are reported as Rial (IRR) */
   currency?: string;
   items?: AnalyticsItem[];
   [param: string]: unknown;
 }
+
+/** A tenant's currency table: units per 1 Toman, and the decimals it is written with. */
+export type AnalyticsCurrencies = Record<string, {rate: number; decimals?: number}>;
 
 export interface Analytics {
   /** Every event: what it means and the parameters it keeps (besides language and currency). */
@@ -70,6 +75,21 @@ export interface Analytics {
   /** Where a visit came from: the utm_* values in the landing query (`search`), cleaned like search
    * terms, and the referrer's host when it isn't the store's own `host`. */
   attribution(options?: {search?: string; referrer?: string; host?: string}): AnalyticsAttribution;
+  /** The events whose `value` is an amount in Toman (turned into the report currency). */
+  AMOUNT_EVENTS: AnalyticsEventName[];
+  /** The ISO 4217 code reports use for `currency` (Toman, IRT, becomes Rial, IRR, 10 to the Toman),
+   * and how to turn a Toman amount into it. A currency without a usable rate falls back to Rial. */
+  reportCurrency(
+    currency?: string,
+    currencies?: AnalyticsCurrencies
+  ): {code: string; amount(toman: number): number};
+  /** The event's parameters with an ISO `currency` and its amounts (`value` for AMOUNT_EVENTS, each
+   * item's `price`) turned from Toman into that currency. */
+  inCurrency(
+    name: AnalyticsEventName,
+    params?: Record<string, unknown>,
+    options?: {currency?: string; currencies?: AnalyticsCurrencies}
+  ): Record<string, unknown>;
   /** The event with only its own parameters (items reduced to ITEM_KEYS; a search term that looks
    * like a phone number or email replaced), or null for an unknown name. Keys left out go into `dropped`. */
   event(

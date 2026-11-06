@@ -10,6 +10,7 @@
 import {build} from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
+import {createRequire} from 'node:module';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {storefrontRoutes} from './routes.mjs';
 import {VF_STORE} from '../shared/domain/store-config.js';
@@ -17,6 +18,23 @@ import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '../..');
+const theme = createRequire(import.meta.url)('../shared/domain/tenant-theme.js');
+
+// The tenant's brand-font file for a page in `lang`, as <link rel="preload"> tags: only the
+// current language's script, so the other file downloads only if the page uses it.
+export function tenantFontPreloads(tenant, lang, base = '/') {
+  if (!tenant) return '';
+  const spec = JSON.parse(
+    fs.readFileSync(
+      path.join(root, 'packages/design-system/tokens/tenants', tenant + '.json'),
+      'utf8'
+    )
+  );
+  return theme
+    .fontPreloads(spec, lang, base)
+    .map(href => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>\n`)
+    .join('');
+}
 
 // Builds the server entry (app/entry-server.jsx) for Node into `outDir` and imports it.
 export async function buildServer({base = '/', outDir}) {
@@ -74,6 +92,7 @@ export async function prerenderedPage(
     html = html.replace(
       '</head>',
       () =>
+        tenantFontPreloads(tenant, rendered.lang, base) +
         `<link id="vf-tenant-css" rel="stylesheet" href="${base}packages/design-system/tokens/tenants/${tenant}.css">\n</head>`
     );
   // A preview of another tenant (?tenant=clay) hides the page before its first paint, until

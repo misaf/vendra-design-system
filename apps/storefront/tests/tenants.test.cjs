@@ -78,17 +78,20 @@ const KEYWORDS = new Set([
   'pattern',
   'enum',
   'propertyNames',
-  'additionalProperties'
+  'additionalProperties',
+  'minProperties'
 ]);
 function conforms(rules, value) {
   for (const key of Object.keys(rules)) assert.ok(KEYWORDS.has(key), 'schema keyword ' + key);
   const isObject = !!value && typeof value === 'object' && !Array.isArray(value);
   if (rules.type === 'object' && !isObject) return false;
   if (rules.type === 'string' && typeof value !== 'string') return false;
+  if (rules.type === 'boolean' && typeof value !== 'boolean') return false;
   if (rules.enum && !rules.enum.includes(value)) return false;
   if (rules.pattern && !new RegExp(rules.pattern).test(value)) return false;
   if (!isObject) return true;
   if ((rules.required || []).some(key => !(key in value))) return false;
+  if (rules.minProperties && Object.keys(value).length < rules.minProperties) return false;
   return Object.entries(value).every(([key, item]) => {
     if (rules.propertyNames && !conforms(rules.propertyNames, key)) return false;
     if (rules.properties && key in rules.properties) return conforms(rules.properties[key], item);
@@ -116,7 +119,43 @@ assert.deepEqual(
   'character enums come from CHOICES'
 );
 const {colours, character} = clay;
+const font = {
+  family: 'Yekan Bakh',
+  licence: 'Commercial web licence for the tenant domain',
+  files: {
+    latin: 'assets/tenants/clay/fonts/yekan-latin.woff2',
+    arabic: 'assets/tenants/clay/fonts/yekan-arabic.woff2'
+  },
+  weight: '300 700',
+  body: true
+};
 const specs = {
+  'brand font': {...clay, font},
+  'brand font, Persian only': {
+    ...clay,
+    font: {family: 'Dana', licence: 'OFL', files: {arabic: 'assets/dana.woff2'}}
+  },
+  'brand font without licence': {...clay, font: {...font, licence: undefined}},
+  'brand font with blank licence': {...clay, font: {...font, licence: ' '}},
+  'brand font without files': {...clay, font: {...font, files: {}}},
+  'brand font with unknown script': {...clay, font: {...font, files: {cyrillic: 'assets/a.woff2'}}},
+  'brand font as TTF': {...clay, font: {...font, files: {latin: 'assets/a.ttf'}}},
+  'brand font outside assets': {...clay, font: {...font, files: {latin: 'assets/../a.woff2'}}},
+  'brand font from a URL': {
+    ...clay,
+    font: {...font, files: {latin: 'https://cdn.example/a.woff2'}}
+  },
+  'brand font named Jost': {...clay, font: {...font, family: 'jost'}},
+  'brand font named like a fallback': {
+    ...clay,
+    font: {...font, family: 'Vazirmatn Fallback Naskh'}
+  },
+  'brand font with quotes': {...clay, font: {...font, family: "Dana';}x{"}},
+  'brand font with odd weight': {...clay, font: {...font, weight: '350'}},
+  'brand font with numeric weight': {...clay, font: {...font, weight: 400}},
+  'brand font with string body': {...clay, font: {...font, body: 'yes'}},
+  'brand font with unknown field': {...clay, font: {...font, display: 'block'}},
+  'brand font list': {...clay, font: [font]},
   vendra: theme.VENDRA,
   ...tenantSpecs(),
   'bad hex': {...clay, colours: {...colours, accent: 'A9532E'}},
@@ -143,8 +182,95 @@ for (const [name, spec] of Object.entries(specs)) {
   const received = JSON.parse(JSON.stringify(spec));
   assert.equal(conforms(schema, received), accepts(received), name + ': schema matches validate()');
 }
-for (const name of ['vendra', ...Object.keys(tenantSpecs()), 'valid override', 'extra keys'])
+for (const name of [
+  'vendra',
+  ...Object.keys(tenantSpecs()),
+  'valid override',
+  'extra keys',
+  'brand font',
+  'brand font, Persian only'
+])
   assert.ok(accepts(JSON.parse(JSON.stringify(specs[name]))), name + ' is valid');
+
+// 4c. A brand font leads the heading (and optionally body) stack with the preset behind it, gets one
+// swap @font-face per script, and preloads only the current language's file.
+{
+  const branded = {...clay, font};
+  const character = theme.tokens(branded).character;
+  assert.equal(character['--font-display'], "'Yekan Bakh'," + theme.FONTS.sans);
+  assert.equal(character['--font-body'], "'Yekan Bakh'," + theme.FONTS.sans);
+  assert.equal(
+    theme.tokens({...clay, font: {...font, body: false}}).character['--font-body'],
+    undefined
+  );
+  assert.equal(theme.email(branded).disp, theme.email(clay).disp, 'emails keep the preset');
+  const generated = theme.css('clay', branded);
+  const faces = generated.match(/@font-face\{[^}]*\}/g);
+  assert.equal(faces.length, 2);
+  for (const face of faces) {
+    assert.match(face, /font-family:'Yekan Bakh';/);
+    assert.match(face, /font-display:swap;/);
+    assert.match(face, /font-weight:300 700;/);
+  }
+  assert.match(
+    faces[0],
+    /url\('\.\.\/\.\.\/\.\.\/\.\.\/assets\/tenants\/clay\/fonts\/yekan-latin\.woff2'\) format\('woff2'\);unicode-range:U\+0000-00FF/
+  );
+  assert.match(faces[1], /yekan-arabic\.woff2'\) format\('woff2'\);unicode-range:U\+0600-06FF/);
+  assert.ok(generated.indexOf('@font-face') < generated.indexOf('[data-tenant="clay"]'));
+  assert.equal(theme.css('clay', clay).includes('@font-face'), false, 'no font, no @font-face');
+  assert.match(theme.fontFaces({...clay, font: {...font, weight: undefined}}), /font-weight:400;/);
+  assert.deepEqual(theme.fontPreloads(branded, 'en'), [
+    '/assets/tenants/clay/fonts/yekan-latin.woff2'
+  ]);
+  assert.deepEqual(theme.fontPreloads(branded, 'fa', '/shop/'), [
+    '/shop/assets/tenants/clay/fonts/yekan-arabic.woff2'
+  ]);
+  assert.deepEqual(
+    theme.fontPreloads({...clay, font: {...font, files: {arabic: font.files.arabic}}}, 'en'),
+    []
+  );
+  assert.deepEqual(theme.fontPreloads(clay, 'fa'), []);
+  // Stored themes: urls start at assetBase, which must be a plain path or https origin.
+  assert.match(
+    theme.tenantCss('clay', branded),
+    /url\('\/assets\/tenants\/clay\/fonts\/yekan-latin\.woff2'\)/
+  );
+  assert.match(
+    theme.tenantCss('clay', branded, {assetBase: 'https://cdn.example.com/clay/'}),
+    /url\('https:\/\/cdn\.example\.com\/clay\/assets\/tenants\/clay\/fonts\/yekan-arabic\.woff2'\)/
+  );
+  for (const assetBase of ["/');}*{x", 'http://cdn.example.com/', 'cdn/', 'javascript:'])
+    assert.throws(() => theme.tenantCss('clay', branded, {assetBase}), /assetBase/);
+  assert.throws(
+    () => theme.tenantCss('clay', {...clay, font: {...font, family: "a'b"}}),
+    /font\.family/
+  );
+
+  // The build refuses missing files and files that are not WOFF2.
+  const {validateFontFiles} = require('../../../tools/tenants.cjs');
+  assert.throws(
+    () =>
+      validateFontFiles(
+        {...font, files: {latin: 'assets/tenants/clay/fonts/none.woff2'}},
+        'clay.font'
+      ),
+    /clay\.font\.files\.latin: no file/
+  );
+  const fontsFolder = fs.mkdtempSync(path.join(root, 'assets/.font-test-'));
+  try {
+    const relative = path.relative(root, fontsFolder);
+    fs.writeFileSync(path.join(fontsFolder, 'real.woff2'), Buffer.from('wOF2\0\1\0\0'));
+    fs.writeFileSync(path.join(fontsFolder, 'fake.woff2'), 'wOFFxxxx');
+    validateFontFiles({...font, files: {latin: relative + '/real.woff2'}}, 'clay.font');
+    assert.throws(
+      () => validateFontFiles({...font, files: {arabic: relative + '/fake.woff2'}}, 'clay.font'),
+      /is not a WOFF2 file/
+    );
+  } finally {
+    fs.rmSync(fontsFolder, {recursive: true, force: true});
+  }
+}
 
 // 5. Every tenant passes the seven checks, and its CSS and the runtime list are current.
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
