@@ -69,8 +69,8 @@ home FA, product FA and journal FA. The inspected differences include **visible 
 Commit `646e5ab038f3fd12feddad6b25f5815eb71e97fb` intentionally changed both the cancelled demo-order
 code and Persian separators at **2026-10-19 15:46 Iran time**. The relevant Darwin expectations were
 captured by `bd7f880118e696bd28c2d5afb750fdbb7dbb2597` at **14:33 that day**. Current
-[formatting.js](apps/storefront/_shared/formatting.js), [catalog.js](apps/storefront/_shared/catalog.js) and
-[account-data.js](apps/storefront/_shared/account-data.js) retain that intended content. Linux account
+[formatting.js](apps/storefront/_shared/domain/formatting.js), [catalog.js](apps/storefront/_shared/domain/catalog.js) and
+[account-data.js](apps/storefront/_shared/domain/account-data.js) retain that intended content. Linux account
 expectations were subsequently refreshed in `de9203f`; current Linux production passes these views.
 Stage 220 already reviewed the separate Persian post expectations, not all these other views.
 

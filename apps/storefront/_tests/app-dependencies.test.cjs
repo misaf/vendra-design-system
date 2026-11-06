@@ -6,10 +6,10 @@ const path = require('node:path');
 const {checkDependencies} = require('../_build/app-dependencies.cjs');
 const repo = path.resolve(__dirname, '../../..');
 const ui = 'apps/storefront/app/organisms/Card/Card.jsx';
-const service = 'apps/storefront/_shared/integrations/api.js';
+const service = 'apps/storefront/_shared/services/integrations/api.js';
 const bridge = 'apps/storefront/app/ds.js';
-const carousel = 'apps/storefront/_shared/collection-carousel.jsx';
-const qr = 'apps/storefront/_shared/qr.js';
+const carousel = 'apps/storefront/_shared/ui/collection-carousel.jsx';
+const qr = 'apps/storefront/_shared/ui/qr.js';
 const component = 'components/organisms/Carousel/Carousel.jsx';
 const cases = [];
 function check(name, sources, expected) {
@@ -34,24 +34,27 @@ function check(name, sources, expected) {
 }
 const allowed = {
   [ui]: `import React from 'react'; import * as DS from '../../ds.js';
-    import {CollectionCarousel} from '../../../_shared/collection-carousel.jsx';
-    import {vfQrPath} from '../../../_shared/qr.js';
+    import {CollectionCarousel} from '../../../_shared/ui/collection-carousel.jsx';
+    import {vfQrPath} from '../../../_shared/ui/qr.js';
     import {Label} from '../../molecules/Label';`,
   [bridge]: `export {Carousel} from '../../../components/organisms/Carousel/Carousel.jsx';`,
   [component]: 'export const Carousel = () => null;',
-  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../../components/organisms/Carousel/Carousel.jsx';`,
+  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../../../components/organisms/Carousel/Carousel.jsx';`,
   [qr]: `import qrcode from 'qrcode-generator'; export const vfQrPath = qrcode;`,
   'apps/storefront/app/molecules/Label/index.jsx': `export const Label = () => null;`,
   'apps/storefront/app/layouts/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
 };
 check('UI helpers, bridge, lower layer and index resolution', allowed);
 for (const [name, statement] of [
-  ['static service import', `import '../../../_shared/integrations/api.js';`],
-  ['named service re-export', `export {save} from '../../../_shared/integrations/api.js';`],
-  ['star service re-export', `export * from '../../../_shared/integrations/api.js';`],
+  ['static service import', `import '../../../_shared/services/integrations/api.js';`],
+  [
+    'named service re-export',
+    `export {save} from '../../../_shared/services/integrations/api.js';`
+  ],
+  ['star service re-export', `export * from '../../../_shared/services/integrations/api.js';`],
   [
     'nested dynamic service import',
-    `async function load(){return import('../../../_shared/integrations/api.js')}`
+    `async function load(){return import('../../../_shared/services/integrations/api.js')}`
   ]
 ])
   check(
@@ -61,19 +64,19 @@ for (const [name, statement] of [
   );
 check(
   'business import through allowed helper',
-  {...allowed, [qr]: `import './integrations/api.js';`, [service]: ''},
+  {...allowed, [qr]: `import '../services/integrations/api.js';`, [service]: ''},
   /forbidden UI dependency/
 );
 check(
   'business re-export through bridge',
-  {...allowed, [bridge]: `export * from '../_shared/integrations/api.js';`, [service]: ''},
+  {...allowed, [bridge]: `export * from '../_shared/services/integrations/api.js';`, [service]: ''},
   /forbidden UI dependency/
 );
 check(
   'package cannot import storefront services',
   {
     ...allowed,
-    [component]: `import '../../../apps/storefront/_shared/integrations/api.js';`,
+    [component]: `import '../../../apps/storefront/_shared/services/integrations/api.js';`,
     [service]: ''
   },
   /outside the migrated design system/
@@ -106,7 +109,7 @@ check(
 );
 check(
   'UI cannot bypass policy with absolute URL',
-  {[ui]: `import '/apps/storefront/_shared/integrations/api.js';`},
+  {[ui]: `import '/apps/storefront/_shared/services/integrations/api.js';`},
   /forbidden UI dependency/
 );
 check(
@@ -122,49 +125,49 @@ for (const statement of [
 ])
   check(
     'missing target: ' + statement,
-    {'apps/storefront/_shared/a.js': statement},
+    {'apps/storefront/_shared/domain/a.js': statement},
     /missing relative dependency/
   );
 check(
   'directory without module entry is missing',
   {
-    'apps/storefront/_shared/a.js': `import './folder';`,
-    'apps/storefront/_shared/folder/other.js': ''
+    'apps/storefront/_shared/domain/a.js': `import './folder';`,
+    'apps/storefront/_shared/domain/folder/other.js': ''
   },
   /missing relative dependency/
 );
 check('extensionless module resolution', {
-  'apps/storefront/_shared/a.js': `import './b';`,
-  'apps/storefront/_shared/b.js': ''
+  'apps/storefront/_shared/domain/a.js': `import './b';`,
+  'apps/storefront/_shared/domain/b.js': ''
 });
 check('diamond is acyclic', {
-  'apps/storefront/_shared/a.js': `import './b.js'; import './c.js';`,
-  'apps/storefront/_shared/b.js': `export * from './d.js';`,
-  'apps/storefront/_shared/c.js': `export * from './d.js';`,
-  'apps/storefront/_shared/d.js': ''
+  'apps/storefront/_shared/domain/a.js': `import './b.js'; import './c.js';`,
+  'apps/storefront/_shared/domain/b.js': `export * from './d.js';`,
+  'apps/storefront/_shared/domain/c.js': `export * from './d.js';`,
+  'apps/storefront/_shared/domain/d.js': ''
 });
 check(
   'cycle includes re-export and nested dynamic import',
   {
-    'apps/storefront/_shared/a.js': `export * from './b.js';`,
-    'apps/storefront/_shared/b.js': `const load = () => import('./c.js');`,
-    'apps/storefront/_shared/c.js': `import './a.js';`
+    'apps/storefront/_shared/domain/a.js': `export * from './b.js';`,
+    'apps/storefront/_shared/domain/b.js': `const load = () => import('./c.js');`,
+    'apps/storefront/_shared/domain/c.js': `import './a.js';`
   },
   /Import cycle: .*a.js -> .*b.js -> .*c.js -> .*a.js/
 );
-check('self-cycle', {'apps/storefront/_shared/a.js': `import './a.js';`}, /Import cycle:/);
+check('self-cycle', {'apps/storefront/_shared/domain/a.js': `import './a.js';`}, /Import cycle:/);
 check(
   'referenced generated data is scanned for cycles',
   {
-    'apps/storefront/_shared/a.js': `import '../_runtime/data.js';`,
-    'apps/storefront/_runtime/data.js': `import '../_shared/a.js';`
+    'apps/storefront/_shared/domain/a.js': `import '../../_runtime/data.js';`,
+    'apps/storefront/_runtime/data.js': `import '../_shared/domain/a.js';`
   },
   /Import cycle:/
 );
 check(
   'referenced module outside initial roots is checked for missing imports',
   {
-    'apps/storefront/_shared/a.js': `import '../other/data.js';`,
+    'apps/storefront/_shared/domain/a.js': `import '../../other/data.js';`,
     'apps/storefront/other/data.js': `import './missing.js';`
   },
   /missing relative dependency/
@@ -191,10 +194,75 @@ check(
   /forbidden UI dependency/
 );
 check('literal dynamic imports contribute valid graph edges', {
-  'apps/storefront/_shared/a.js': `const load = () => import('./b.js');`,
-  'apps/storefront/_shared/b.js': ''
+  'apps/storefront/_shared/domain/a.js': `const load = () => import('./b.js');`,
+  'apps/storefront/_shared/domain/b.js': ''
 });
-check('parse errors fail', {'apps/storefront/_shared/a.js': 'const = ;'}, /parse error/);
+const domain = 'apps/storefront/_shared/domain/catalog.js';
+const environment = 'apps/storefront/_shared/platform/environment.js';
+check('shared folders follow their allowed directions', {
+  [environment]: 'export const vfNow = () => 0;',
+  [domain]: `import '../platform/environment.js'; import '../translations/shell.js';
+    import '../../../../components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
+  'apps/storefront/_shared/translations/shell.js': '',
+  'components/utils/commerce.js': '',
+  'apps/storefront/_runtime/tenant-slugs.js': '',
+  [service]: `import React from 'react'; import '../../domain/catalog.js';`,
+  [qr]: `import qrcode from 'qrcode-generator'; import '../domain/catalog.js';`
+});
+for (const [name, sources, expected] of [
+  [
+    'domain cannot import services',
+    {[domain]: `import '../services/integrations/api.js';`, [service]: ''},
+    /forbidden domain dependency/
+  ],
+  [
+    'domain cannot import packages',
+    {[domain]: `import React from 'react';`},
+    /forbidden domain dependency react/
+  ],
+  [
+    'domain cannot import app UI',
+    {[domain]: `import '../../app/ds.js';`, [bridge]: ''},
+    /forbidden domain dependency/
+  ],
+  [
+    'domain cannot import package components',
+    {[domain]: `import '../../../../components/organisms/Carousel/Carousel.jsx';`, [component]: ''},
+    /forbidden domain dependency/
+  ],
+  [
+    'platform cannot import domain',
+    {[environment]: `import '../domain/catalog.js';`, [domain]: ''},
+    /forbidden platform dependency/
+  ],
+  [
+    'services cannot import UI helpers',
+    {[service]: `import '../../ui/qr.js';`, [qr]: ''},
+    /forbidden services dependency/
+  ],
+  [
+    'UI helpers cannot import platform state',
+    {[carousel]: `import '../platform/environment.js';`, [environment]: ''},
+    /forbidden UI dependency/
+  ],
+  [
+    'app UI cannot import domain modules directly',
+    {[ui]: `import '../../../_shared/domain/catalog.js';`, [domain]: ''},
+    /forbidden UI dependency/
+  ],
+  [
+    'loose shared module must be placed in a folder',
+    {'apps/storefront/_shared/helper.js': ''},
+    /shared module outside/
+  ],
+  [
+    'unknown shared folder fails',
+    {'apps/storefront/_shared/misc/helper.js': ''},
+    /shared module outside/
+  ]
+])
+  check(name, sources, expected);
+check('parse errors fail', {'apps/storefront/_shared/domain/a.js': 'const = ;'}, /parse error/);
 
 const result = checkDependencies(repo);
 assert.ok(result.files.length > 0, 'runtime sources were discovered');

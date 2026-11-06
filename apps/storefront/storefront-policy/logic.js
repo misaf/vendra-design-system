@@ -1,10 +1,10 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {vfCopy} from './copy.js';
-import {VF_FA_DIGITS} from '../_shared/formatting.js';
-import {vfShell} from '../_shared/navigation.js';
-import {VF_POLICIES, vfPageRoute} from '../_shared/routing.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {VF_FA_DIGITS} from '../_shared/domain/formatting.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {VF_POLICIES, vfPageRoute} from '../_shared/services/routing.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

@@ -16,7 +16,7 @@
     "test:e2e:update": "node _e2e/run.mjs --update-snapshots",
     "test:e2e:remote": "node _e2e/remote.mjs",
     "format": "prettier --ignore-path ../../.prettierignore --write ../../components .",
-    "lint:css": "stylelint \"../../components/**/*.css\" \"_shared/*.css\" \"storefront-*/*.css\"",
+    "lint:css": "stylelint \"../../components/**/*.css\" \"_shared/**/*.css\" \"storefront-*/*.css\"",
     "new:component": "node _build/new-component.cjs"
   },
   "devDependencies": {

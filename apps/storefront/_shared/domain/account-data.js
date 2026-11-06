@@ -3,9 +3,9 @@ import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES, vfLineDetail} 
 import {VF_DELIVERY, vfMobile} from './delivery.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
-import {commerce} from '../../../components/utils/commerce.js';
-import {vfNow} from './environment.js';
-import {dates} from '../../../components/utils/dates.js';
+import {commerce} from '../../../../components/utils/commerce.js';
+import {vfNow} from '../platform/environment.js';
+import {dates} from '../../../../components/utils/dates.js';
 export function vfAccountPhone() {
   try {
     return localStorage.getItem('vf-account-phone') || '';

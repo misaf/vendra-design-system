@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const theme = require('../_shared/tenant-theme.js');
+const theme = require('../_shared/domain/tenant-theme.js');
 const {tenantSpecs, tenantOutputs} = require('../_build/tenants.cjs');
 const root = path.resolve(__dirname, '../../..');
 
@@ -159,7 +159,7 @@ const brandContext = {
 vm.createContext(brandContext);
 vm.runInContext(
   fs
-    .readFileSync(path.join(root, 'apps/storefront/_shared/brand.js'), 'utf8')
+    .readFileSync(path.join(root, 'apps/storefront/_shared/domain/brand.js'), 'utf8')
     .replace(/^import .*;\n/gm, '')
     .replace(/^export /gm, ''),
   brandContext

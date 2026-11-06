@@ -75,32 +75,32 @@ function pageScript(folder) {
 // The shared storefront logic (_shared/), in load order, as one script whose declarations are
 // globals, as page logic expects them in a vm context.
 const sharedFiles = [
-  'store-config.js',
-  'brand.js',
-  'delivery.js',
-  'store-hours.js',
-  'location.js',
-  'promotions.js',
-  'product-categories.js',
-  'category-images.js',
-  'journal-images.js',
-  'catalog.js',
+  'domain/store-config.js',
+  'domain/brand.js',
+  'domain/delivery.js',
+  'domain/store-hours.js',
+  'domain/location.js',
+  'domain/promotions.js',
+  'domain/product-categories.js',
+  'domain/category-images.js',
+  'domain/journal-images.js',
+  'domain/catalog.js',
   'translations/shell.js',
   'translations/categories.js',
   'translations/time.js',
-  'order-message.js',
+  'domain/order-message.js',
   'translations/location.js',
-  'account-data.js',
-  'wallet.js',
-  'payments.js',
-  'payment-api.js',
-  'integrations/api.js',
-  'integrations/analytics.js',
-  'formatting.js',
-  'routing.js',
-  'page-state.js',
-  'page-lifecycle.js',
-  'navigation.js'
+  'domain/account-data.js',
+  'domain/wallet.js',
+  'domain/payments.js',
+  'domain/payment-api.js',
+  'services/integrations/api.js',
+  'services/integrations/analytics.js',
+  'domain/formatting.js',
+  'services/routing.js',
+  'services/page-state.js',
+  'services/page-lifecycle.js',
+  'services/navigation.js'
 ];
 // The package helpers and the routing / focus helpers the shared logic imports, each in its own scope.
 const scoped = (name, file) =>
@@ -111,9 +111,9 @@ const sharedLogic =
   scoped('analytics', '../../components/utils/analytics.js') +
   scoped('dates', '../../components/utils/dates.js') +
   scoped('format', '../../components/utils/format.js') +
-  strip(read('_shared/environment.js')) +
-  scoped('VF_SEO', '_shared/seo.js') +
-  scoped('VF_NAV', '_shared/page-focus.js') +
+  strip(read('_shared/platform/environment.js')) +
+  scoped('VF_SEO', '_shared/services/seo.js') +
+  scoped('VF_NAV', '_shared/services/page-focus.js') +
   'const VF_TENANT_BRANDS = ' +
   JSON.stringify(
     Object.fromEntries(

@@ -1,13 +1,13 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {VF_JCATS, VF_POSTS} from '../_shared/translations/journal-content.js';
-import {vfJournalImage} from '../_shared/journal-images.js';
-import {vfSeparator} from '../_shared/formatting.js';
+import {vfJournalImage} from '../_shared/domain/journal-images.js';
+import {vfSeparator} from '../_shared/domain/formatting.js';
 import {vfCopy} from './copy.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {VF_STORE} from '../_shared/store-config.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {VF_STORE} from '../_shared/domain/store-config.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

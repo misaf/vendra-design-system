@@ -14,8 +14,8 @@ recorded page-console error. There are 423 network records, four unfinished (`st
 
 - `apps/storefront/app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx`
 - `apps/storefront/app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx`
-- `apps/storefront/_shared/collection-carousel.jsx`
-- `apps/storefront/_shared/qr.js`
+- `apps/storefront/_shared/ui/collection-carousel.jsx`
+- `apps/storefront/_shared/ui/qr.js`
 
 These are unfinished observations, not HTTP errors. No completed network record ends after the
 failed expectation. Post Page/logic/View/copy responses are recorded as 200, but HTTP completion

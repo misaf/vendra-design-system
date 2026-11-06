@@ -1,9 +1,9 @@
 // The studio's opening hours as text, from VF_STORE.hours on the store's clock (VF_STORE.timeZone).
 // The rules are commerce.openingStatus/hoursSummary/hoursExceptions; this file only words them.
 // Persian times use Persian digits, isolated so they stay left to right inside a sentence.
-import {commerce} from '../../../components/utils/commerce.js';
+import {commerce} from '../../../../components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
-import {vfNow} from './environment.js';
+import {vfNow} from '../platform/environment.js';
 
 const hoursDigits = value => String(value).replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]);
 const hoursIsolate = text => '⁨' + text + '⁩';

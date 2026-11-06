@@ -1,11 +1,11 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLogin, vfAccountSave} from '../_shared/account-data.js';
-import {vfMobile} from '../_shared/delivery.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfPageRoute, vfRouteUrl} from '../_shared/routing.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfAccountLogin, vfAccountSave} from '../_shared/domain/account-data.js';
+import {vfMobile} from '../_shared/domain/delivery.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // Seconds before another code can be requested (ResendCode keeps the time).
 const VF_SIGNIN_RESEND_SECONDS = 60;
 // The page: its state (applied at once, as the logic reads it back), effects and the values
