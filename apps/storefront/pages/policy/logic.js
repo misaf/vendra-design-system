@@ -1,5 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
-import {vfCopy} from './copy.js';
+import {VF_POLICY_UPDATED, vfCopy} from './copy.js';
+import {dates} from '../../../../packages/design-system/components/utils/dates.js';
 import {VF_FA_DIGITS} from '../../shared/domain/formatting.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {VF_POLICIES, vfPageRoute} from '../../shared/services/routing.js';
@@ -19,7 +20,10 @@ function vals(page) {
   // A standalone page can be given props.doc; the site opens policy/<doc>/.
   const id = page.props.doc ?? vfPageRoute(page.props).id ?? VF_POLICIES[0];
   const C = vfCopy(S);
-  const d = C.docs[id] || C.docs[VF_POLICIES[0]];
+  const docId = C.docs[id] ? id : VF_POLICIES[0];
+  const d = C.docs[docId];
+  // The document's own date: Jalali in Persian, Gregorian in English.
+  const updated = VF_POLICY_UPDATED[docId];
   return {
     ...S,
     t: {
@@ -29,6 +33,8 @@ function vals(page) {
     doc: {
       title: d.title,
       intro: d.intro,
+      updatedIso: updated,
+      updatedText: dates.fullDate(dates.fromIso(updated), dates.locale(L)),
       sections: d.sections.map((x, i) => ({
         id: 's' + (i + 1),
         href: '#s' + (i + 1),

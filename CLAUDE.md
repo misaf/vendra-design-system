@@ -301,8 +301,9 @@ StorefrontPolicyNotice composes explicit title/body through the warning Alert; V
 copy mapping, layout retains placement and Alert retains presentation/accessibility.
 StorefrontPolicyNavigation composes explicit label/links; View retains localized mapping and list
 normalization, shared logic retains link/current-state descriptors and routing, and layout retains placement.
-StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated props; View maps localized
-and selected-document copy, layout retains the header and policy/shared logic retain selection and routing.
+StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated label/date/ISO props as `<time>`;
+View maps localized and selected-document copy, layout retains the header and policy/shared logic retain
+selection, routing and each document's own date (`VF_POLICY_UPDATED`, Jalali in Persian).
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
 StorefrontJournalPagination forwards explicit paging props; View retains mapping, journal logic retains
