@@ -681,9 +681,14 @@ test('the storefront reports the contract’s events, and nothing personal', asy
     if (message.text().startsWith('VF_TRACK')) warnings.push(message.text());
   });
   const names = () => page.evaluate(() => window.VF_TRACK.log.map(event => event.event));
+  // The latest event of one kind: page views and product lists follow renders, so other
+  // events may come after it.
+  const last = name =>
+    page.evaluate(name => window.VF_TRACK.log.findLast(event => event.event === name), name);
   await openSite(page, 'product', 'en');
-  const viewed = await page.evaluate(() => window.VF_TRACK.log.at(-1));
-  expect(viewed).toMatchObject({event: 'view_item', items: [{item_id: 'VF-7K2M4Q'}]});
+  expect(await last('view_item')).toMatchObject({items: [{item_id: 'VF-7K2M4Q'}]});
+  // The site changes routes in place, so it reports each page itself: the path, no query.
+  expect(await last('page_view')).toMatchObject({language: 'en', page_type: 'product'});
   await page
     .getByRole('button', {name: /^Add to bag/})
     .locator('visible=true')
@@ -699,22 +704,36 @@ test('the storefront reports the contract’s events, and nothing personal', asy
     .poll(() => page.evaluate(() => window.VF_TRACK.log.find(event => event.event === 'search')))
     .toMatchObject({search_term: 'orchid', results: 1});
   await page.getByRole('searchbox').fill('09121234567');
-  await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'search', search_term: '(personal data)'});
+  await expect.poll(() => last('search')).toMatchObject({search_term: '(personal data)'});
+  // The settled search's results, as a list of product codes.
+  expect(await last('view_item_list')).toMatchObject({
+    item_list_id: 'search',
+    items: [{item_id: 'VF-8RD5WN', index: 0}]
+  });
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  await expect.poll(() => last('page_view')).toMatchObject({page_type: 'shop'});
+  await expect
+    .poll(async () => {
+      const list = await last('view_item_list');
+      return [list?.item_list_id, list?.items.map(item => item.index)];
+    })
+    .toEqual(['shop', [0, 1, 2, 3]]);
   await page
     .locator('.ag-switch', {hasText: 'In stock only'})
     .locator('visible=true')
     .first()
     .click();
-  await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'add'});
+  await expect.poll(() => last('filter')).toMatchObject({filter_id: 'stock', action: 'add'});
   await page.getByRole('button', {name: 'Remove In stock only'}).click();
+  await expect.poll(() => last('filter')).toMatchObject({filter_id: 'stock', action: 'remove'});
+  // Opening a card says which list it came from and where in it.
+  const opened = await page.locator('.vf-shop-product-grid .ag-product__link').nth(1);
+  const code = (await opened.textContent()).trim();
+  await opened.click();
   await expect
-    .poll(() => page.evaluate(() => window.VF_TRACK.log.at(-1)))
-    .toMatchObject({event: 'filter', filter_id: 'stock', action: 'remove'});
+    .poll(() => last('select_item'))
+    .toMatchObject({item_list_id: 'shop', items: [{item_id: code, index: 1}]});
+  await expect.poll(() => last('page_view')).toMatchObject({page_type: 'product'});
   expect(warnings).toEqual([]);
 });
 
