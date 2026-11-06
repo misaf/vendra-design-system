@@ -161,8 +161,9 @@ function vfSiteInitial(props) {
   if (route.view === 'home' && props.start) route = {...route, view: props.start};
   // The build's prerender only renders; the address stays as it is.
   const replaceUrl = url => !vfOnServer() && history.replaceState({}, '', url);
-  // An old product link (product/ivory/) is rewritten with the product's code.
-  if (route.view === 'product' && vfRouteUrl(route) !== vfCurrentUrl())
+  // An old product link (product/ivory/) is rewritten with the product's code, and a retired
+  // article's (journal/care/) with the post that replaced it.
+  if (['product', 'post'].includes(route.view) && vfRouteUrl(route) !== vfCurrentUrl())
     replaceUrl(vfRouteUrl(route));
   // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
   // are replaced, and the link is dropped from the address so a reload doesn't add them again.

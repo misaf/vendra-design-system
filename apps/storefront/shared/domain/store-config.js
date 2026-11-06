@@ -26,8 +26,9 @@ export const VF_STORE = {
   // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
   // a real store usually shows 12–24 (the API's itemsPerPage).
   shopPageSize: 4,
-  // Journal posts per page: the featured story and six more (the API's itemsPerPage).
-  journalPageSize: 7,
+  // Journal posts per page: the featured story and three more (the API's itemsPerPage). The sample
+  // uses 4 so paging shows with seven posts; a real store usually shows 7–13.
+  journalPageSize: 4,
   // The studio's ready-made designs, already arranged and quickest to send: the home page shows them
   // first, in this order, by product code (apps/storefront/API.md B32). Sold-out
   // ones are skipped.

@@ -153,27 +153,6 @@
   <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
 </url>
 <url>
-  <loc>https://example.test/apps/storefront/app/en/journal/care/</loc>
-  <lastmod>2026-09-12</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/care/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/care/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/care/"/>
-</url>
-<url>
-  <loc>https://example.test/apps/storefront/app/en/journal/bridal/</loc>
-  <lastmod>2026-08-30</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
-</url>
-<url>
-  <loc>https://example.test/apps/storefront/app/en/journal/orchids/</loc>
-  <lastmod>2026-08-16</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchids/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
-</url>
-<url>
   <loc>https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/</loc>
   <lastmod>2026-09-24</lastmod>
   <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/morning-at-the-studio/"/>
@@ -396,27 +375,6 @@
   <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
   <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/autumn/"/>
   <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/autumn/"/>
-</url>
-<url>
-  <loc>https://example.test/apps/storefront/app/fa/journal/care/</loc>
-  <lastmod>2026-09-12</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/care/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/care/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/care/"/>
-</url>
-<url>
-  <loc>https://example.test/apps/storefront/app/fa/journal/bridal/</loc>
-  <lastmod>2026-08-30</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/bridal/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/bridal/"/>
-</url>
-<url>
-  <loc>https://example.test/apps/storefront/app/fa/journal/orchids/</loc>
-  <lastmod>2026-08-16</lastmod>
-  <xhtml:link rel="alternate" hreflang="en" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
-  <xhtml:link rel="alternate" hreflang="fa" href="https://example.test/apps/storefront/app/fa/journal/orchids/"/>
-  <xhtml:link rel="alternate" hreflang="x-default" href="https://example.test/apps/storefront/app/en/journal/orchids/"/>
 </url>
 <url>
   <loc>https://example.test/apps/storefront/app/fa/journal/morning-at-the-studio/</loc>
