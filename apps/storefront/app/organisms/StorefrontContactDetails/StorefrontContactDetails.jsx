@@ -77,20 +77,31 @@ export function StorefrontContactDetails({rows, whatsapp, phone, instagram, map,
           </>
         ) : null}
       </DS.ErrorBoundary>
-      {directions ? (
-        <>
-          <div>
-            <DS.Button
-              variant="secondary"
-              iconStart="map-pin"
-              href={directions.href}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <>{directions.label}</>
-            </DS.Button>
-          </div>
-        </>
+      {directions?.links?.length ? (
+        <div className="vf-contact-directions tw:flex tw:flex-col tw:gap-2">
+          <span id="vf-contact-directions" className="tw:font-medium">
+            <>{directions.label}</>
+          </span>
+          {/* Neshan, Balad and Google Maps, in the order the page's language prefers. */}
+          <ul
+            aria-labelledby="vf-contact-directions"
+            className="tw:flex tw:flex-wrap tw:gap-3 tw:m-0 tw:p-0 tw:list-none"
+          >
+            {directions.links.map((link, index) => (
+              <li key={link.app}>
+                <DS.Button
+                  variant="secondary"
+                  iconStart={index === 0 ? 'map-pin' : undefined}
+                  href={link.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <>{link.label}</>
+                </DS.Button>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
     </>
   );

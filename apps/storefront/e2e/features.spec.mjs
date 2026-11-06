@@ -956,9 +956,20 @@ test('contact shows the studio on a map and needs a way to reply', async ({page}
   await openSite(page, 'contact', 'en');
   const map = page.getByRole('region', {name: 'The studio on the map'});
   await expect(map.locator('.leaflet-tooltip')).toHaveText(['Vendra Florist']);
-  await expect(page.getByRole('main').getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+  // Neshan, Balad and Google Maps; Google Maps first in English.
+  const directions = page.getByRole('main').getByRole('list', {name: 'Get directions'});
+  await expect(directions.getByRole('link')).toHaveText(['Google Maps', 'Neshan', 'Balad']);
+  await expect(directions.getByRole('link', {name: 'Google Maps'})).toHaveAttribute(
     'href',
     /destination=35\.8352,50\.975/
+  );
+  await expect(directions.getByRole('link', {name: 'Neshan'})).toHaveAttribute(
+    'href',
+    'https://nshn.ir/?lat=35.8352&lng=50.975'
+  );
+  await expect(directions.getByRole('link', {name: 'Balad'})).toHaveAttribute(
+    'href',
+    /^https:\/\/balad\.ir\/location\?latitude=35\.8352&longitude=50\.975/
   );
   await page.fill('#vf-cmsg', 'Do you deliver to Fardis?');
   await page.getByRole('button', {name: 'Send', exact: true}).click();
@@ -1487,7 +1498,9 @@ test('the footer lists shop and studio links, social links, contact details and 
   const social = footer.getByRole('list', {name: 'Follow and message us'});
   await expect(social.getByRole('link')).toHaveCount(3);
   await expect(social.getByRole('link', {name: /^Instagram/})).toHaveAttribute('target', '_blank');
-  await expect(footer.getByRole('link', {name: 'Get directions'})).toHaveAttribute(
+  const directions = footer.getByRole('list', {name: 'Get directions'});
+  await expect(directions.getByRole('link')).toHaveText(['Google Maps', 'Neshan', 'Balad']);
+  await expect(directions.getByRole('link', {name: 'Google Maps'})).toHaveAttribute(
     'href',
     /destination=35\.8352,50\.975/
   );
