@@ -1,9 +1,11 @@
-// Shared sample article content for journal and post pages.
+// Shared sample article content for journal and post pages. `publishedAt` is the API's publication
+// date (YYYY-MM-DD); the sitemap reads it as each article's lastmod.
 export const VF_POSTS = [
   {
     id: 'autumn',
     image: 'assets/journal/autumn.webp',
     cat: 'seasonal',
+    publishedAt: '2026-09-28',
     en: [
       'What’s in season this autumn',
       'Chrysanthemums, dahlias and the last garden roses — and how to make them last.',
@@ -21,6 +23,7 @@ export const VF_POSTS = [
     id: 'care',
     image: 'assets/journal/care.webp',
     cat: 'care',
+    publishedAt: '2026-09-12',
     en: [
       'Five ways to keep a bouquet fresh',
       'Clean vase, angled stems, cool room. The small habits that add days.',
@@ -38,6 +41,7 @@ export const VF_POSTS = [
     id: 'bridal',
     image: 'assets/journal/bridal.webp',
     cat: 'weddings',
+    publishedAt: '2026-08-30',
     en: [
       'Choosing your bridal bouquet',
       'Shape, scale and colour — a florist’s guide to the flowers you’ll hold all day.',
@@ -55,6 +59,7 @@ export const VF_POSTS = [
     id: 'orchids',
     image: 'assets/journal/orchids.webp',
     cat: 'care',
+    publishedAt: '2026-08-16',
     en: [
       'Orchids that bloom again',
       'Light, water and patience: how to bring a phalaenopsis back into flower.',
@@ -75,6 +80,7 @@ VF_POSTS.push(
       id: 'morning-at-the-studio',
       image: 'assets/journal/morning-at-the-studio.webp',
       cat: 'studio',
+      publishedAt: '2026-09-24',
       en: [
         'A morning at the Vendra workbench',
         'Buckets arrive at seven, the first bouquets leave by ten. Here’s how a day in the studio begins.',
@@ -165,6 +171,7 @@ VF_POSTS.push(
       id: 'flowers-for-friends',
       image: 'assets/journal/flowers-for-friends.webp',
       cat: 'occasions',
+      publishedAt: '2026-09-21',
       en: [
         'Flowers aren’t only for special days',
         'A thank-you, a new job, a friend who needs cheering up — why a small bouquet on an ordinary day often means the most.',
@@ -240,6 +247,7 @@ VF_POSTS.push(
       id: 'bouquet-last-longer',
       image: 'assets/journal/bouquet-last-longer.webp',
       cat: 'care',
+      publishedAt: '2026-09-18',
       en: [
         'Five small habits that make a bouquet last a week',
         'Fresh water, a sharp cut and a cool corner — the simple things we tell every customer at the studio door.',
@@ -330,6 +338,7 @@ VF_POSTS.push(
       id: 'yalda-flowers',
       image: 'assets/journal/yalda-flowers.webp',
       cat: 'occasions',
+      publishedAt: '2026-09-09',
       en: [
         'Flowers for Yalda night: deep reds and candlelight',
         'Pomegranate tones, anthuriums and roses for the longest night of the year — and how to order ahead.',
@@ -408,6 +417,7 @@ VF_POSTS.push(
       id: 'bridal-bouquet-guide',
       image: 'assets/journal/bridal-bouquet-guide.webp',
       cat: 'weddings',
+      publishedAt: '2026-08-28',
       en: [
         'Choosing a bridal bouquet that feels like you',
         'Cascading orchids or a loose garden gather? How we match the bouquet to the dress, the venue and the season.',
@@ -504,6 +514,7 @@ VF_POSTS.push(
       id: 'orchid-care',
       image: 'assets/journal/orchid-care.webp',
       cat: 'plants',
+      publishedAt: '2026-08-14',
       en: [
         'Orchid care: water less than you think',
         'Most orchids are lost to kindness. A simple weekly routine to keep yours flowering for months.',
