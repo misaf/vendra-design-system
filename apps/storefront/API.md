@@ -102,3 +102,6 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
     - list `Idempotency-Key` in `Access-Control-Allow-Headers` (the requests already need a CORS preflight for their JSON body).
 
     The client gives up after 10 s for reads and 20 s for writes (`VF_API.timeouts`). After a timeout or a lost connection, checkout says the order couldn't be confirmed and to check messages before trying again; the retry sends the same key.
+
+### Channels
+38. **Where an order came from.** `page_view` and `purchase` carry the visit's `source`, `medium`, `campaign`, `content` and `term` (from the landing link's `utm_*` values) and `referrer_host` (the referring site's host, never its full address) (`analytics.attribution`), so the analytics endpoint (31) can already report sales by channel by joining `purchase.transaction_id` to the order. To report it from the order itself, add the same optional, nullable fields to `Checkout` and `Order` (for example an `attribution` object with those six strings, each at most 100 characters). The storefront keeps them only after the visitor accepts analytics, so the fields are empty for everyone else; `commerce.checkoutRequest` adds them once the spec has them (the contract test allows only spec fields).
