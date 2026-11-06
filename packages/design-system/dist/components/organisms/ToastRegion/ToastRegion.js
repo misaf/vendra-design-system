@@ -4,9 +4,22 @@ import React from "react";
 import { UNSTABLE_ToastQueue as AriaToastQueue, UNSTABLE_ToastRegion as AriaToastRegion } from "react-aria-components";
 import { Toast } from "../../molecules/Toast/Toast.js";
 import { cx } from "../../utils/cx.js";
+// The shortest time an informational toast stays (WCAG 2.2.1): long enough to hear it announced.
+export const TOAST_MIN_TIMEOUT = 1e4;
 // The toasts a page shows: queue.add({tone, title, message, action}, {timeout}) returns a key, and
-// close(key) or clear() removes them. A React Aria toast queue; ToastRegion shows it.
-export const ToastQueue = AriaToastQueue;
+// close(key) or clear() removes them. A React Aria toast queue; ToastRegion shows it. A toast with an
+// action (Undo, View bag) never closes on its own: touch screen-reader users can't hover to pause it
+// and may not reach the region in time, so it stays until it is used or dismissed. A timed toast
+// without an action stays at least TOAST_MIN_TIMEOUT.
+export class ToastQueue extends AriaToastQueue {
+	add(content, options = {}) {
+		const timeout = content?.action || !options.timeout ? undefined : Math.max(options.timeout, TOAST_MIN_TIMEOUT);
+		return super.add(content, {
+			...options,
+			timeout
+		});
+	}
+}
 // Where a ToastQueue's toasts appear: React Aria's toast region (a landmark you can reach with F6),
 // fixed at the bottom inline-end corner. Each toast is an alertdialog announced as it appears;
 // timers pause while the pointer or focus is on the region. `className` places it (for example

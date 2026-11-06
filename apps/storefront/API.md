@@ -48,6 +48,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 ### Customers and accounts
 11. **Authentication.** The spec defines no security scheme, so orders, carts and wishlists are open to anyone. The storefront signs in with phone number + one-time code and needs a session. The code SMS should end with a line `@<the storefront's domain> #<code>` (e.g. `@shop.example #12345`) so Chrome on Android fills the code itself (Web OTP); the storefront waits 60 seconds before offering a new code, and a new code should replace the last one.
+    Personal data is the server's: a storefront loads the profile, addresses (with recipients' names and mobiles), reminders and balance per session and keeps them in memory, or in `sessionStorage` at most, never in `localStorage`. Sign-out ends the server session and clears whatever the browser holds (the sample store's `vfAccountSignOut` shows what to remove).
 12. **Profile:** `GET`/`PATCH /api/customers/me` (name, email, preferred language, SMS opt-in).
 13. **Addresses:** CRUD. `Checkout.addressId` refers to addresses no endpoint returns.
 14. **Reminders:** CRUD for yearly occasion reminders.
@@ -102,3 +103,6 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
     - list `Idempotency-Key` in `Access-Control-Allow-Headers` (the requests already need a CORS preflight for their JSON body).
 
     The client gives up after 10 s for reads and 20 s for writes (`vfRuntime.api.timeouts`). After a timeout or a lost connection, checkout says the order couldn't be confirmed and to check messages before trying again; the retry sends the same key.
+
+### Channels
+38. **Where an order came from.** `page_view` and `purchase` carry the visit's `source`, `medium`, `campaign`, `content` and `term` (from the landing link's `utm_*` values) and `referrer_host` (the referring site's host, never its full address) (`analytics.attribution`), so the analytics endpoint (31) can already report sales by channel by joining `purchase.transaction_id` to the order. To report it from the order itself, add the same optional, nullable fields to `Checkout` and `Order` (for example an `attribution` object with those six strings, each at most 100 characters). The storefront keeps them only after the visitor accepts analytics, so the fields are empty for everyone else; `commerce.checkoutRequest` adds them once the spec has them (the contract test allows only spec fields).

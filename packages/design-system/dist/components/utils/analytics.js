@@ -20,10 +20,23 @@ const ITEM_KEYS = [
 	"index"
 ];
 const COMMON = ["language", "currency"];
+// Where a visit came from: the landing address's utm_* values and the referring site's host.
+const ATTRIBUTION_KEYS = [
+	"source",
+	"medium",
+	"campaign",
+	"content",
+	"term",
+	"referrer_host"
+];
 const EVENTS = {
 	page_view: {
 		about: "A page shown, including each in-app route change",
-		params: ["page_type", "page_path"]
+		params: [
+			"page_type",
+			"page_path",
+			...ATTRIBUTION_KEYS
+		]
 	},
 	view_item_list: {
 		about: "A list of products shown (shop, home, search, recently viewed)",
@@ -93,7 +106,8 @@ const EVENTS = {
 			"transaction_id",
 			"value",
 			"payment_type",
-			"items"
+			"items",
+			...ATTRIBUTION_KEYS
 		]
 	},
 	search: {
@@ -203,6 +217,29 @@ const searchTerm = (value) => {
 	return /@|[\d۰-۹٠-٩][\d۰-۹٠-٩\s-]{6,}/.test(term) ? "(personal data)" : term;
 };
 const cleanItem = (item) => Object.fromEntries(ITEM_KEYS.filter((key) => item && item[key] != null).map((key) => [key, item[key]]));
+// Where a visit came from, for page_view and purchase: utm_source, utm_medium, utm_campaign,
+// utm_content and utm_term from the landing address's query (`search`), as source, medium, …, and
+// the referring site's host (never its path or query) when it isn't the store's own `host`. Values
+// are cleaned like search terms (trimmed, at most 100 characters, a phone number or email replaced).
+// Only the keys found are returned, so {} is a direct visit.
+const hostOf = (value) => {
+	try {
+		return new URL(value).hostname.toLowerCase().replace(/^www\./, "");
+	} catch {
+		return "";
+	}
+};
+const attribution = ({ search = "", referrer = "", host = "" } = {}) => {
+	const query = new URLSearchParams(search);
+	const result = {};
+	ATTRIBUTION_KEYS.slice(0, 5).forEach((key) => {
+		const value = searchTerm(query.get("utm_" + key));
+		if (value) result[key] = value;
+	});
+	const from = hostOf(referrer);
+	if (from && from !== String(host).toLowerCase().replace(/^www\./, "")) result.referrer_host = from;
+	return result;
+};
 // {event, ...params} with only the event's own parameters, or null for a name not in EVENTS.
 // `dropped` (optional) collects the keys left out, for a warning in development.
 const event = (name, params = {}, dropped) => {
@@ -224,7 +261,9 @@ const event = (name, params = {}, dropped) => {
 export const analytics = {
 	EVENTS,
 	ITEM_KEYS,
+	ATTRIBUTION_KEYS,
 	AMOUNT_EVENTS,
+	attribution,
 	event,
 	reportCurrency,
 	inCurrency

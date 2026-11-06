@@ -148,7 +148,9 @@ for (const lang of ['en', 'fa']) {
     await page
       .getByRole('link', {name: fa ? 'رفتن به حساب' : 'Go to my account', exact: true})
       .click();
-    await expect(page.locator('main')).toContainText('VN-51001');
+    // A signed out earlier, so this browser kept none of A's session history (the server has it).
+    await expect(page.locator('main')).toContainText('VN-10522');
+    await expect(page.locator('main')).not.toContainText('VN-51001');
     expect(await scanAxe(page)).toEqual([]);
   });
 
