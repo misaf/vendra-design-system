@@ -1239,6 +1239,25 @@ body:has(.vf-presentation) .ag-dialog__foot {
 /* Custom styles for the saved page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
+/* Each card and its bag action keep the product grid's shared rows (page-layouts.css): the card's
+   five subgrid rows, then the action, so actions line up across a row. */
+.vf-saved-product-grid .vf-saved-card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 6;
+  row-gap: 14px;
+  min-width: 0;
+}
+/* Phones and tablets stack cards without shared rows (responsive-spacing.css). */
+@media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
+  :where(html:not([data-density='tv'])) .vf-page .vf-saved-product-grid .vf-saved-card {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    gap: var(--space-3);
+  }
+}
+
 
 /* Source: pages/search/styles.css */
 /* Result layout follows available reading space, including narrow embedded views. */

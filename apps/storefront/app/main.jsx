@@ -5,7 +5,8 @@ import './theme.js';
 import './runtime.js';
 import {PageError} from './PageError.jsx';
 import {loadPage, reloadOnStaleFiles} from './pages.js';
-import {vfAccountPhone} from '../shared/domain/account-data.js';
+import {vfAccountLocale, vfAccountPhone} from '../shared/domain/account-data.js';
+import {VF_STORE, vfLanguage} from '../shared/domain/store-config.js';
 import {vfHoldClock} from '../shared/platform/environment.js';
 import {vfTenant} from '../shared/services/page-lifecycle.js';
 import {vfReadRoute} from '../shared/services/routing.js';
@@ -14,7 +15,8 @@ import {vfApplyTvMode} from '../shared/services/tv.js';
 reloadOnStaleFiles();
 vfApplyTvMode();
 
-const name = new URLSearchParams(location.search).get('page') || 'site';
+const query = new URLSearchParams(location.search);
+const name = query.get('page') || 'site';
 const container = document.getElementById('root');
 
 // Whether this browser holds any of the storefront's own state (bag, saved items, customer, consent,
@@ -92,12 +94,27 @@ function addressPage() {
   return (shown && loadPage(shown)?.catch(() => {})) || Promise.resolve();
 }
 
+// A page shown on its own (?page=<name>) opens in the language asked for, as the site does: ?lang=,
+// then the address's language (apps/storefront/app/fa/), then the customer's, then the page's own
+// preview default. A language the store doesn't offer opens in its default one.
+function standaloneLang(defaults) {
+  return vfLanguage(
+    query.get('lang') ||
+      vfReadRoute().lang ||
+      vfAccountLocale() ||
+      defaults?.lang ||
+      VF_STORE.languages[0]
+  );
+}
+
 (loadPage(name) || loadPage('site'))
   .then(page => (name === 'site' ? addressPage().then(() => page) : page))
   .then(
     page => {
       const Page = page.default;
-      show(<Page {...page.defaults} />);
+      const props =
+        name === 'site' ? page.defaults : {...page.defaults, lang: standaloneLang(page.defaults)};
+      show(<Page {...props} />);
     },
     error => {
       console.error(error);
