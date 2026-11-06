@@ -16,7 +16,13 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - `character`: `headings` (`serif`, `sans`, `vazir`), `case` (`none`, `uppercase`), `accentWord` (`italic`, `upright`), `controls` (`pill`, `square`), `frame` (`arch`, `soft`, `square`).
 - `overrides` (optional): a generated shade the designer wants to set by hand, for example `{"--border-input": "#847E70"}`. Only shade names are accepted (`--peony-*`, `--petal-*`, `--ink-*`, `--stem-*`, `--border-input`). Changing a base colour in the Theme builder drops the overrides tuned for it.
 - `description` (optional): one line, copied into the generated CSS.
+- Other top-level fields (such as `brand`, below) are allowed and checked separately.
 - Own font? That needs a new `headings` choice in `apps/storefront/shared/domain/tenant-theme.js` (the generator) with its `@font-face` in `packages/design-system/tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
+
+**Validating a theme outside the build**
+The package publishes these rules as a JSON Schema (draft 2020-12): `@vendra/design-system/theme.schema.json` (`node_modules/@vendra/design-system/dist/theme.schema.json`). The build generates it from the same `CHOICES` and shade names that `validate()` uses, so a package upgrade brings any new option with it; `schema()` in `@vendra/design-system/theme` returns the same object.
+- A backend (for example Laravel with a PHP JSON Schema library) validates a theme against it before saving, and an admin form can build its fields and dropdowns from its `enum` lists.
+- The schema accepts and rejects exactly what `validate()` does. It can't check contrast: run `checks()` (or `tenantCss()`, which refuses a failing theme) before a theme goes live.
 
 ## 2. Brand assets (florist supplies · designer prepares)
 Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `packages/design-system/tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.

@@ -183,7 +183,12 @@
     const fail = message => {
       throw new Error(label + ': ' + message);
     };
-    if (!spec || typeof spec !== 'object') fail('spec must be an object');
+    const isObject = value => !!value && typeof value === 'object' && !Array.isArray(value);
+    if (!isObject(spec)) fail('spec must be an object');
+    if (spec.description !== undefined && typeof spec.description !== 'string')
+      fail('description must be a string');
+    if (spec.overrides !== undefined && !isObject(spec.overrides))
+      fail('overrides must be an object');
     for (const key of Object.keys(RAMPS))
       if (!isHex(spec.colours && spec.colours[key]))
         fail('colours.' + key + ' must be a #RRGGBB colour');
@@ -197,6 +202,39 @@
       if (!isHex(value)) fail('overrides.' + name + ' must be a #RRGGBB colour');
     }
     return spec;
+  }
+
+  // The same rules as validate() as a JSON Schema (draft 2020-12), so a backend or an admin form
+  // can check a spec without running this file. Published as @vendra/design-system/theme.schema.json.
+  // Other top-level keys (such as brand) are allowed, as validate() allows them.
+  function schema() {
+    const hex = {type: 'string', pattern: '^#[0-9A-Fa-f]{6}$'};
+    return {
+      $schema: 'https://json-schema.org/draft/2020-12/schema',
+      title: 'Vendra tenant theme spec',
+      type: 'object',
+      required: ['colours', 'character'],
+      properties: {
+        description: {type: 'string'},
+        colours: {
+          type: 'object',
+          required: Object.keys(RAMPS),
+          properties: Object.fromEntries(Object.keys(RAMPS).map(key => [key, hex]))
+        },
+        character: {
+          type: 'object',
+          required: Object.keys(CHOICES),
+          properties: Object.fromEntries(
+            Object.entries(CHOICES).map(([key, options]) => [key, {enum: options.slice()}])
+          )
+        },
+        overrides: {
+          type: 'object',
+          propertyNames: {enum: ORDER.slice()},
+          additionalProperties: hex
+        }
+      }
+    };
   }
 
   const rgbParts = hex => channels(hex).join(',');
@@ -487,6 +525,7 @@
     contrast,
     shade,
     validate,
+    schema,
     tokens,
     checks,
     css,

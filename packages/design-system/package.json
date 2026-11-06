@@ -35,6 +35,7 @@
         "default": "./dist/theme.cjs"
       }
     },
+    "./theme.schema.json": "./dist/theme.schema.json",
     "./package.json": "./package.json"
   },
   "files": [
