@@ -47,7 +47,7 @@ Use this rather than importing React Aria's `RouterProvider` yourself. `react-ar
 
 Without a provider, components use React Aria's locale (an `I18nProvider` higher up, or the browser's) and plain links.
 
-**Analytics:** pass `onEvent` to receive the events the components report: FilterBar (`filter`, removed or cleared), PaymentStatus (`payment_result`), ResendCode (`code_resent`) and LanguageSwitch (`language_switch`). They come in the shape of `analytics.event` (`components/utils/analytics.js`), which lists every storefront event and keeps each to its own parameters, so a name, phone number or card message can't reach a report. The app reports its own events (product views, the bag, checkout, purchases) with the same helper, and sends them to its own backend once the visitor has accepted analytics.
+**Analytics:** pass `onEvent` to receive the events the components report: FilterBar (`filter`, removed or cleared), PaymentStatus (`payment_result`), ResendCode (`code_resent`) and LanguageSwitch (`language_switch`). They come in the shape of `analytics.event` (`components/utils/analytics.js`), which lists every storefront event and keeps each to its own parameters, so a name, phone number or card message can't reach a report. The app reports its own events (product views, the bag, checkout, placed orders and verified purchases) with the same helper, turning Toman amounts into an ISO currency with `analytics.inCurrency` (Rial, `IRR`, for Toman), and sends them to its own backend once the visitor has accepted analytics.
 
 ```jsx
 import {analytics, VendraProvider} from '@vendra/design-system';

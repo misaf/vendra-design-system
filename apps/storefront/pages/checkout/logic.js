@@ -265,12 +265,18 @@ function vals(page) {
         placed: true,
         order: record
       });
-    window.VF_TRACK.event('purchase', {
+    // Every order counts as placed; only a payment already verified here (the bank confirmed it, or
+    // the balance paid it) counts as a purchase. Card-to-card, pay on delivery and WhatsApp orders
+    // wait for payment: the store reports their purchase once it confirms the money arrived.
+    const paid = record.method === 'online' || record.method === 'wallet';
+    const placed = {
       transaction_id: record.id,
       value: record.totals.total,
       payment_type: record.method,
       items: vfLineItems(record.lines)
-    });
+    };
+    window.VF_TRACK.event('order_placed', {...placed, payment_status: paid ? 'paid' : 'pending'});
+    if (paid) window.VF_TRACK.event('purchase', placed);
   };
   // The bank confirmed an online payment: the order is placed, with the bank's tracking number. A
   // live store shows the one the API reported; the simulated bank makes one up.
