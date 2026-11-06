@@ -15,7 +15,7 @@ This is a test setup/coverage correction, not evidence of a broken actual paymen
 
 ## Correct setup and state assertions
 
-[states.spec.mjs](templates/_e2e/states.spec.mjs) reuses its valid delivery/payment setup:
+[states.spec.mjs](apps/storefront/_e2e/states.spec.mjs) reuses its valid delivery/payment setup:
 
 1. Start at bag delivery, fill recipient/sender/address and map pin, then continue to payment.
 2. Select the local online bank demo after setting its existing error-mode route input, as the
@@ -63,7 +63,7 @@ and unknown payment return). The feature cases are EN/EN/FA respectively; this i
 bilingual payment-method/state cross-product. Every selected state runs axe after setup/assertions.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- states.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'state: (checkout|bag delivery step|bag errors)|online payment goes to the bank|payment the bank refuses|return link for an order' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- states.spec.mjs features.spec.mjs --project=mobile --project=desktop --grep 'state: (checkout|bag delivery step|bag errors)|online payment goes to the bank|payment the bank refuses|return link for an order' --retries=0 --update-snapshots=none
 # Use test:e2e:build for the same production selection.
 ```
 

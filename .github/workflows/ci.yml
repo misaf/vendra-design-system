@@ -1,6 +1,6 @@
 # Pushes to master and pull requests: formatting and generated files, unit tests, then the browser
 # tests. The browser tests run inside Playwright's Linux image, pinned to the version in
-# templates/package.json, so the -linux screenshot baselines stay comparable from run to run.
+# apps/storefront/package.json, so the -linux screenshot baselines stay comparable from run to run.
 # After a deliberate visual change, run the "Update screenshots" workflow to refresh them.
 name: CI
 
@@ -34,10 +34,10 @@ jobs:
           cache: npm
       - run: npm ci
       # Formatting, and dist/, Tailwind, tenant CSS and the tenant list match their sources.
-      - run: npm --prefix templates run check
+      - run: npm --prefix apps/storefront run check
       # Types, storefront logic, tenants, the package's server render, its bundle size and the API
       # contract.
-      - run: npm --prefix templates test
+      - run: npm --prefix apps/storefront test
 
   react-19:
     name: Package on React 19
@@ -53,7 +53,7 @@ jobs:
       - run: npm ci
       # The workspace tests on React 18.3.1; this installs React 19 in a scratch app and runs the
       # package test (import, server render, wording, themes) and a strict type check there.
-      - run: npm --prefix templates run test:react19
+      - run: npm --prefix apps/storefront run test:react19
 
   # Skips the browser tests when a push or pull request changes only .github/ (Dependabot's action
   # bumps, workflow edits): run CI by hand after a workflow change that the browser tests need to
@@ -140,15 +140,15 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm --prefix templates run test:e2e:dev
+      - run: npm --prefix apps/storefront run test:e2e:dev
       - name: Keep the report and failing screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-report
           path: |
-            templates/_e2e/playwright-report
-            templates/_e2e/test-results
+            apps/storefront/_e2e/playwright-report
+            apps/storefront/_e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
@@ -178,15 +178,15 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm --prefix templates run test:e2e:build
+      - run: npm --prefix apps/storefront run test:e2e:build
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-build-report
           path: |
-            templates/_e2e/playwright-report
-            templates/_e2e/test-results
+            apps/storefront/_e2e/playwright-report
+            apps/storefront/_e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
@@ -211,14 +211,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm --prefix templates run check
+      - run: npm --prefix apps/storefront run check
       # Prerendered pages name their absolute address (canonical, og:url, og:image).
-      - run: npm --prefix templates run build:app -- --base "/${{ github.event.repository.name }}/"
+      - run: npm --prefix apps/storefront run build:app -- --base "/${{ github.event.repository.name }}/"
         env:
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: templates/_app-build
+          path: apps/storefront/_app-build
 
   pages-deploy:
     name: Deploy the Pages demo

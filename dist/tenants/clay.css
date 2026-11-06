@@ -1,4 +1,4 @@
-/* GENERATED from tokens/tenants/clay.json by npm --prefix templates run build. Edit the JSON, not this file.
+/* GENERATED from tokens/tenants/clay.json by npm --prefix apps/storefront run build. Edit the JSON, not this file.
    Sample tenant theme "Clay": terracotta and sand palette, sans-serif uppercase display, upright accent words, squared controls and square image frames.
    Apply with data-tenant="clay" on <html> (or any wrapper). */
 [data-tenant="clay"]{

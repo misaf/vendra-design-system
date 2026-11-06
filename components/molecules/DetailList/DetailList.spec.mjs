@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 test('a description list of its rows, skipping empty ones', async ({page}) => {
   await openComponent(page, 'DetailList');

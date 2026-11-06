@@ -34,7 +34,7 @@ policy, endpoint, response handling, pricing, CSS, baseline or timing tolerance 
 
 ## Browser contract
 
-[customer-state-integrity.spec.mjs](templates/_e2e/customer-state-integrity.spec.mjs) selects
+[customer-state-integrity.spec.mjs](apps/storefront/_e2e/customer-state-integrity.spec.mjs) selects
 pay on delivery through the UI and sends through the real `VF_API.checkout` fetch adapter.
 A controlled route holds the checkout POST response; other task API calls return empty JSON.
 While it waits, the test requires disabled confirmation UI and sends native pointer double-clicks
@@ -95,9 +95,9 @@ backend transaction run is claimed. The first-run readiness timeouts remain sepa
 PR CI reports its own result.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- customer-state-integrity.spec.mjs Button.spec.mjs --project=mobile --project=desktop --project=components --grep 'late checkout responses|two-tab|a button presses|loading keeps|disabled:|pending|passes axe' --retries=0 --update-snapshots=none
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- customer-state-integrity.spec.mjs Button.spec.mjs --project=mobile --project=desktop --project=components --grep 'late checkout responses|two-tab|a button presses|loading keeps|disabled:|pending|passes axe' --retries=0 --update-snapshots=none
 # Repeat with test:e2e:build, omitting --project=components, for production.
-node templates/_tests/storefront.test.cjs
+node apps/storefront/_tests/storefront.test.cjs
 ```
 
 Next: offline mutation/reconnect controls with explicit operation/count/current-state assertions.

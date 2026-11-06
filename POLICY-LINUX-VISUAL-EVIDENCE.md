@@ -31,7 +31,7 @@ retry differs from them in **16 pixels/max 20**. CI's first browser-job comparat
 
 [Stage 224](ATOMIC-DESIGN.md) fixed phone contents links obscuring their target heading. Commit
 `3309f347771f856b0d25215793aa2273976c1da4` changed the phone selector in
-[information-pages.css](templates/_shared/styles/information-pages.css) to
+[information-pages.css](apps/storefront/_shared/styles/information-pages.css) to
 `.vf-page .vf-info-toc.vf-sticky-panel`, keeping it `position: static` below 768px. That outranks the
 shared fit-based sticky-panel selector. The original phone selector lost that specificity contest.
 Tablet/wide contents remain sticky when they fit.
@@ -92,8 +92,8 @@ remain the stage-233 inventory.
 
 ```sh
 # Inside the CI Linux image, or the normal local Darwin environment:
-CI=true E2E_WORKERS=1 npm --prefix templates run test:e2e -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'page: policy|axe: policy' --retries=0
-CI=true E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'page: policy|axe: policy' --retries=0
+CI=true E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'page: policy|axe: policy' --retries=0
+CI=true E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- pages.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'page: policy|axe: policy' --retries=0
 ```
 
 On Darwin, omit `CI=true` to use the installed Chrome channel. Linux uses an isolated source copy

@@ -51,7 +51,7 @@ The README's old statement that `onClear` happens **before focus returns** was i
 activation: React Aria restores focus at press start. It now describes that order and notes that
 React's value update may commit after the callback. No runtime component code changes.
 
-[search-keyboard.spec.mjs](templates/_e2e/search-keyboard.spec.mjs) adds eight English/Persian ×
+[search-keyboard.spec.mjs](apps/storefront/_e2e/search-keyboard.spec.mjs) adds eight English/Persian ×
 journal/search × mobile/desktop cases. Both projects use real keyboard input in Chromium; the
 390px mobile project has **no touch emulation**. They use the route's own initial input focus (search) or sequential Tab navigation (journal),
 filter to one result, verify Enter retains the current route/query/results, Tab past
@@ -69,8 +69,8 @@ component cases, including the existing English/Persian axe scan. Production exe
 dependency, baseline or visual-policy changes.
 
 ```sh
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- SearchField.spec.mjs search-keyboard.spec.mjs --project=components --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage231-final-dev-results --reporter=list
-E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- search-keyboard.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage231-production-results --reporter=list
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- SearchField.spec.mjs search-keyboard.spec.mjs --project=components --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage231-final-dev-results --reporter=list
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- search-keyboard.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage231-production-results --reporter=list
 ```
 
 The exploratory route test used a product-card selector for search rows; correcting it to the

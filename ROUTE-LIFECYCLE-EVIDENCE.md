@@ -35,20 +35,20 @@ repeats passed. This stage does **not** reconstruct or claim to resolve that ori
 
 ## Current ownership and diagnostic
 
-[main.jsx](templates/app/main.jsx) awaits the site module before rendering its root.
-[pages.js](templates/app/pages.js) shares module promises, records ready pages, retries failed loads
-and preloads routes in the background. The [site router](templates/storefront-site/logic.js)
+[main.jsx](apps/storefront/app/main.jsx) awaits the site module before rendering its root.
+[pages.js](apps/storefront/app/pages.js) shares module promises, records ready pages, retries failed loads
+and preloads routes in the background. The [site router](apps/storefront/storefront-site/logic.js)
 `vfShowRoute` keeps the current URL/page while a requested module loads and checks a navigation
 sequence before committing it. A newer navigation owns the eventual visible route.
 
-[page-lifecycle.js](templates/_shared/services/page-lifecycle.js) sets locale, waits for the heading and
+[page-lifecycle.js](apps/storefront/_shared/services/page-lifecycle.js) sets locale, waits for the heading and
 schedules later-view focus; first-load focus is left at the top. Its delayed heading helper in
-[page-focus.js](templates/_shared/services/page-focus.js) preserves explicitly focused fields/recovery
-controls. [Shell](templates/app/Shell.jsx) adjusts focused content away from sticky bars on a later
+[page-focus.js](apps/storefront/_shared/services/page-focus.js) preserves explicitly focused fields/recovery
+controls. [Shell](apps/storefront/app/Shell.jsx) adjusts focused content away from sticky bars on a later
 frame. These delays have distinct owners; a test's navigation click is not itself proof that the
 final heading is ready and focused.
 
-[route-lifecycle.spec.mjs](templates/_e2e/route-lifecycle.spec.mjs) adds **12** cases: three scenarios ×
+[route-lifecycle.spec.mjs](apps/storefront/_e2e/route-lifecycle.spec.mjs) adds **12** cases: three scenarios ×
 English/Persian × default mobile/desktop. Both projects are non-touch Chromium, at 390/1280px.
 A request gate holds the actual site/shop/notfound module before navigation. Release waits for its
 HTTP response and imports that same URL to await ESM evaluation, including dependencies, through the
@@ -83,9 +83,9 @@ existing initial-route contract, not a payment-page assertion. Full `npm test`, 
 and production build pass. Runners own and tear down their previews.
 
 ```sh
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage232-dev.json E2E_WORKERS=1 npm --prefix templates run test:e2e -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage232-dev-results --reporter=list,json
-E2E_WORKERS=1 npm --prefix templates run test:e2e -- storefront.spec.mjs --project=mobile --project=desktop --grep 'axe: (shop|checkout|account|error) \(' --retries=0 --output=/tmp/vendra-stage232-initial-routes-results --reporter=list
-PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage232-production.json E2E_WORKERS=1 npm --prefix templates run test:e2e:build -- route-lifecycle.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'module readiness|latest route wins|delayed invalid-policy|axe: (shop|checkout|account|error) \(' --retries=0 --output=/tmp/vendra-stage232-production-results --reporter=list,json
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage232-dev.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- route-lifecycle.spec.mjs --project=mobile --project=desktop --retries=0 --output=/tmp/vendra-stage232-dev-results --reporter=list,json
+E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e -- storefront.spec.mjs --project=mobile --project=desktop --grep 'axe: (shop|checkout|account|error) \(' --retries=0 --output=/tmp/vendra-stage232-initial-routes-results --reporter=list
+PLAYWRIGHT_JSON_OUTPUT_NAME=/tmp/vendra-stage232-production.json E2E_WORKERS=1 npm --prefix apps/storefront run test:e2e:build -- route-lifecycle.spec.mjs storefront.spec.mjs --project=mobile --project=desktop --grep 'module readiness|latest route wins|delayed invalid-policy|axe: (shop|checkout|account|error) \(' --retries=0 --output=/tmp/vendra-stage232-production-results --reporter=list,json
 ```
 
 Discovery registers **1,783 invocations in 125 files**: mobile/desktop 701 each, phone/tablet 51 each,

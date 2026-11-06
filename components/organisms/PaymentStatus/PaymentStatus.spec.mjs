@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../templates/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
 
 const state = (page, name) => page.locator('[data-state="' + name + '"]');
 
@@ -27,7 +27,9 @@ test('redirecting goes on its own after the delay, with GET fields in the link',
   await page.route('**/bank/start**', route =>
     route.fulfill({contentType: 'text/html', body: '<title>Bank</title>'})
   );
-  await page.goto('/templates/_e2e/fixtures/component.html?component=PaymentStatus&lang=en&auto=1');
+  await page.goto(
+    '/apps/storefront/_e2e/fixtures/component.html?component=PaymentStatus&lang=en&auto=1'
+  );
   await expect(page).toHaveURL(/\/bank\/start\?Authority=A0+123456$/);
 });
 

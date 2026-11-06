@@ -1,6 +1,6 @@
-templates/_app-build/
-templates/_e2e/test-results/
-templates/_e2e/playwright-report/
+apps/storefront/_app-build/
+apps/storefront/_e2e/test-results/
+apps/storefront/_e2e/playwright-report/
 
 # OS and scratch files
 .DS_Store
