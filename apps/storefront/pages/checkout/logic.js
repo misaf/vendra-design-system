@@ -35,6 +35,7 @@ import {
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it
 // pays for waits in this tab's session meanwhile.
 const vfPaymentKey = () => 'vf-online-payment:' + vfCustomerId();
@@ -75,7 +76,7 @@ function vfVerifyPayment(page, number, demoResult) {
       return;
     }
     page.setState({payment: {status: 'verifying', record, number}});
-    const check = (page._paymentCheck = window.VF_API.orderPayment(number).then(
+    const check = (page._paymentCheck = vfRuntime.api.orderPayment(number).then(
       payment => {
         if (page._paymentCheck !== check) return;
         const status = payment ? payment.status : 'pending';
@@ -265,7 +266,7 @@ function vals(page) {
         placed: true,
         order: record
       });
-    window.VF_TRACK.event('purchase', {
+    vfRuntime.track.event('purchase', {
       transaction_id: record.id,
       value: record.totals.total,
       payment_type: record.method,
@@ -448,7 +449,7 @@ function vals(page) {
         }, 0);
         return;
       }
-      window.VF_TRACK.event('add_payment_info', {
+      vfRuntime.track.event('add_payment_info', {
         payment_type: method
       });
       const record = {
@@ -486,7 +487,8 @@ function vals(page) {
         if (st?.beginCheckout && !st.beginCheckout()) return;
         const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
         page.setState({busy: true});
-        window.VF_API.checkout(request)
+        vfRuntime.api
+          .checkout(request)
           .then(
             result => {
               page.setState({busy: false, unconfirmed: false});
@@ -563,7 +565,7 @@ function vals(page) {
         const payment = {...s.payment, status: 'verifying'};
         page.setState({payment, retryReview: false});
         leavePaymentUrl();
-        const check = (page._paymentCheck = window.VF_API.payAgain(number).then(
+        const check = (page._paymentCheck = vfRuntime.api.payAgain(number).then(
           redirect => {
             if (page._paymentCheck !== check) return;
             page.setState({

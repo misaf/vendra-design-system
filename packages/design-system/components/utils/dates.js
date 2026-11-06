@@ -1,4 +1,4 @@
-// Jalali (Shamsi) / Gregorian date helpers: import { dates } (the runtime bundle also exposes window.AG_DATES).
+// Jalali (Shamsi) / Gregorian date helpers: import { dates } (guidelines/card-runtime.js also exposes it as window.AG_DATES for the cards).
 // Always pass explicit locales: 'fa-IR-u-ca-persian', 'fa-IR-u-ca-gregory', 'en-GB', 'en-GB-u-ca-persian' (see locale()).
 const div = (a, b) => Math.floor(a / b);
 const noon = d => {

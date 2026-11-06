@@ -73,7 +73,8 @@ function pageScript(folder) {
 }
 
 // The shared storefront logic (shared/), in load order, as one script whose declarations are
-// globals, as page logic expects them in a vm context.
+// globals, as page logic expects them in a vm context. The runtime (shared/platform/runtime.js) is
+// installed at the end and exposed as the context's vfRuntime.
 const sharedFiles = [
   'domain/store-config.js',
   'domain/brand.js',
@@ -96,6 +97,7 @@ const sharedFiles = [
   'domain/payment-api.js',
   'services/integrations/api.js',
   'services/integrations/analytics.js',
+  'services/integrations/runtime.js',
   'domain/formatting.js',
   'services/routing.js',
   'services/structured-data.js',
@@ -113,6 +115,7 @@ const sharedLogic =
   scoped('analytics', '../../packages/design-system/components/utils/analytics.js') +
   scoped('dates', '../../packages/design-system/components/utils/dates.js') +
   scoped('format', '../../packages/design-system/components/utils/format.js') +
+  strip(read('shared/platform/runtime.js')) +
   strip(read('shared/platform/environment.js')) +
   scoped('VF_SEO', 'shared/services/seo.js') +
   scoped('VF_NAV', 'shared/services/page-focus.js') +
@@ -130,6 +133,7 @@ const sharedLogic =
   JSON.stringify(require('../../../tools/tenants.cjs').tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read('shared/' + file))).join('\n\n') +
-  '\n';
+  // Installs the integrations as app/runtime.js does; tests stub them through this.vfRuntime.
+  '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
 module.exports = {pageScript, strip, sharedLogic, sharedFiles};

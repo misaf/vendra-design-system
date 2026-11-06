@@ -1,7 +1,9 @@
 // Sample bank prefixes and card configuration; adapt from your payment provider.
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
-(() => {
+// Card helpers for the checkout: the bank of a card number, a Luhn check and the store's
+// card-to-card details.
+export const vfPayment = (() => {
   const D = {};
   D.banks = [
     ['603799', 'Bank Melli', 'بانک ملی'],
@@ -78,5 +80,5 @@ import {VF_STORE} from './store-config.js';
       cardValid: D.luhn(n)
     });
   };
-  if (typeof window !== 'undefined') window.VF_PAYMENT = D;
+  return D;
 })();

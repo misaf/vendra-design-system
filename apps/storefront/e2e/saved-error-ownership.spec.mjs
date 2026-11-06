@@ -18,12 +18,13 @@ for (const lang of ['en', 'fa']) {
         ({base, ids}) => {
           // Configure the real client's public base when it installs, before site mount.
           // No client methods, fetch, or application handlers are replaced.
-          let client;
-          Object.defineProperty(window, 'VF_API', {
+          let runtime;
+          Object.defineProperty(window, '__vfRuntime', {
             configurable: true,
-            get: () => client,
+            get: () => runtime,
             set: value => {
-              client = value;
+              runtime = value;
+              const client = value.api;
               client.setBase(base);
             }
           });

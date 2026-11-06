@@ -264,6 +264,23 @@ for (const [name, sources, expected] of [
   check(name, sources, expected);
 check('parse errors fail', {'apps/storefront/shared/domain/a.js': 'const = ;'}, /parse error/);
 
+// Shared dependencies are imported: no module reads or sets window.VF_* / window.AG_* (or the cards'
+// window.VendraDesignSystem), only guidelines/card-runtime.js, the cards' compatibility layer.
+for (const [name, file, code] of [
+  ['page reads the API global', 'apps/storefront/pages/home/logic.js', 'window.VF_API.live;'],
+  ['service sets a global', service, 'window.VF_TRACK = {};'],
+  ['component reads a helper global', component, 'export const x = window.AG_FORMAT;'],
+  ['computed global name', 'apps/storefront/app/main.jsx', "globalThis['VF_TENANT'] = 'x';"],
+  ['communications global', 'apps/storefront/communications/a.js', 'self.VF_NOTIFY = {};'],
+  ['cards namespace', 'apps/storefront/app/theme.js', 'window.VendraDesignSystem;']
+])
+  check(name, {[file]: code}, /reads or sets the global/);
+check('card compatibility layer and other window names are allowed', {
+  'apps/storefront/app/main.jsx': `import '../../../guidelines/card-runtime.js';
+    window.__vfRuntime = {}; window.L; const VF_API = 1;`,
+  'guidelines/card-runtime.js': 'window.VendraDesignSystem = {}; window.AG_DATES = {};'
+});
+
 const result = checkDependencies(repo);
 assert.ok(result.files.length > 0, 'runtime sources were discovered');
 assert.deepEqual(result.violations, [], 'Runtime import graph and app UI boundary violations');

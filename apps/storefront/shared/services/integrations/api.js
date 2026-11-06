@@ -8,10 +8,12 @@ import {
   vfGatewayRedirect,
   vfPaymentFromApi
 } from '../../domain/payment-api.js';
-(() => {
+// Creates the client; shared/services/integrations/runtime.js installs it as vfRuntime.api in the
+// browser only (the build's prerender, app/entry-server.jsx, calls no API).
+/** @returns {import('../../platform/runtime.js').VfApi} */
+export function vfCreateApi() {
   const KEY = 'vendra-saved-map';
-  // Browser only: the build's prerender (app/entry-server.jsx) calls no API.
-  if (typeof window === 'undefined' || window.VF_API) return;
+  /** @type {any} */
   const A = {
     base: VF_STORE.apiBase || '',
     setBase(b) {
@@ -298,5 +300,5 @@ import {
   // Guests: the page language at checkout.
   A.preferredLocale = () =>
     vfAccountLocale() || (document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fa');
-  window.VF_API = A;
-})();
+  return A;
+}

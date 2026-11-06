@@ -3,7 +3,7 @@
 // The header language switch only changes what they're browsing; it never affects messages.
 // Pass the customer record. Guests (no account) → the order's preferredLocale = page language at checkout. Neither → 'fa'.
 // If they change the account language, messages from then on — including for open orders — use the new one.
-(() => {
+export const VF_NOTIFY = (() => {
   const FA_D = '۰۱۲۳۴۵۶۷۸۹';
   const faDigits = s => String(s).replace(/\d/g, d => FA_D[d]);
   // Codes and links stay Latin in both languages so they can be typed, searched and tapped.
@@ -165,7 +165,7 @@
       sms: channel === 'sms' ? smsInfo(text) : null
     };
   };
-  window.VF_NOTIFY = {
+  return {
     templates: T,
     events: EVENTS,
     render,

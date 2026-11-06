@@ -54,6 +54,7 @@ import {VF_NAV} from '../../shared/services/page-focus.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // Two checkout steps share this page: the bag (bag/) and delivery details (bag/?step=delivery).
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -109,7 +110,7 @@ export function usePage(props) {
       const st = page.props.store;
       const lines = st ? st.bag : page.state.lines;
       if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
-        window.VF_TRACK.event('view_cart', {
+        vfRuntime.track.event('view_cart', {
           items: vfLineItems(lines),
           value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
         });
@@ -352,12 +353,12 @@ function vals(page) {
         });
       // The delivery step is done (zone and slot chosen); the bag moves on to payment.
       const items = vfLineItems(live.filter(vfLineAvailable));
-      window.VF_TRACK.event('add_shipping_info', {
+      vfRuntime.track.event('add_shipping_info', {
         items,
         value: total,
         shipping_tier: delivery.zone
       });
-      window.VF_TRACK.event('begin_checkout', {items, value: total});
+      vfRuntime.track.event('begin_checkout', {items, value: total});
       if (page.props.go) page.props.go('checkout');
     },
     hasItems: live.length > 0,

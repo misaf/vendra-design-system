@@ -6,6 +6,7 @@ import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfViewList} from '../../shared/services/list-tracking.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 // Results update as the customer types; a search (and the result list it shows) is reported once
 // the typing settles. A query that arrives with the address (a link, a reload, Back/Forward) shows
 // its results at once, so their list is reported at once too.
@@ -30,7 +31,7 @@ export function usePage(props) {
       page._typedQuery = text;
       if (!text.trim()) return;
       page._searchTimer = setTimeout(() => {
-        window.VF_TRACK.event('search', {
+        vfRuntime.track.event('search', {
           search_term: text,
           results: vfSearchProducts(text).length
         });

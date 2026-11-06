@@ -233,8 +233,8 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - `packages/design-system/components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
 - `packages/design-system/components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `apps/storefront/shared/services/seo.js` → `VF_SEO` and `apps/storefront/shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
-- `apps/storefront/communications/email-templates.js` → `window.VF_EMAIL`: `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
-- `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards; the storefront imports them.
+- `apps/storefront/communications/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
+- `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards, set only in `guidelines/card-runtime.js`; the storefront and the package import them, and `tools/app-dependencies.cjs` fails any other `window.VF_*` or `window.AG_*` access.
 
 ### Intentional additions
 These came from the source system, which authored a standard set plus:
