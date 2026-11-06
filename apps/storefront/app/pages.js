@@ -71,7 +71,7 @@ export function preloadPages() {
     // Everything requested before this mark is what the first page needed (performance budgets).
     performance.mark('vf-preload-pages');
     Object.keys(modules).forEach(key =>
-      loadPage(key.split('/')[1].slice(11), false)?.catch(() => {})
+      loadPage(key.split('/')[2], false)?.catch(() => {})
     );
   };
   if ('requestIdleCallback' in window) requestIdleCallback(run);
