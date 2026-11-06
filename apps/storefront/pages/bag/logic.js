@@ -12,6 +12,8 @@ import {
   vfLineQuantityMax,
   vfLineQuantityValid,
   vfAddCard,
+  vfMergePriceChanges,
+  vfRepriceLines,
   vfUndoCardAddition,
   vfProductImage,
   vfSampleBag,
@@ -61,6 +63,7 @@ export function usePage(props) {
   const page = usePageLogic(props, page => {
     page.state = {
       lines: vfSampleBag(),
+      priceChanges: {},
       removed: null,
       cardAddition: null,
       step: null,
@@ -75,6 +78,56 @@ export function usePage(props) {
     };
     page._lines = change => {
       page.setState(prev => ({lines: change(prev.lines)}));
+    };
+    // Prices the bag from the current catalog (on opening and before each step on) and announces
+    // what changed. Returns the changes, so a step can stop and show the new prices first.
+    page._reprice = () => {
+      const st = page.props.store;
+      let changes = [];
+      if (st) changes = st.reprice ? st.reprice() : [];
+      else {
+        const repriced = vfRepriceLines(page.state.lines);
+        changes = repriced.changes;
+        if (changes.length)
+          page.setState(prev => ({
+            lines: repriced.lines,
+            priceChanges: vfMergePriceChanges(prev.priceChanges, changes, repriced.lines)
+          }));
+      }
+      if (changes.length) page._announcePrices(changes);
+      return changes;
+    };
+    page._announcePrices = changes => {
+      const fa = page.props.lang === 'fa';
+      const C = vfCopy(vfShell(page, 'bag'));
+      const lines = page.props.store ? page.props.store.bag : page.state.lines;
+      const text = [C.pricesChanged]
+        .concat(
+          changes.map(change =>
+            C.priceChangedFor
+              .replace(
+                '{name}',
+                vfTokenText(vfLineToken(lines.find(line => line.id === change.id) || change))
+              )
+              .replace('{old}', VF_MONEY(change.from, fa))
+              .replace('{new}', VF_MONEY(change.to, fa))
+          )
+        )
+        .join(' ');
+      // After the page's own heading announcement (made 40ms after a new view renders), so a
+      // navigation into the bag doesn't replace it.
+      clearTimeout(page._priceTimer);
+      page._priceTimer = setTimeout(() => {
+        const st = page.props.store;
+        if (st && st.announce) st.announce(text);
+        else page.setState({vfAnnouncement: text});
+      }, 100);
+    };
+    // The customer saw the new prices and continued: their notices are done.
+    page._seenPrices = () => {
+      const st = page.props.store;
+      if (st) st.seenPrices && st.seenPrices();
+      else if (Object.keys(page.state.priceChanges).length) page.setState({priceChanges: {}});
     };
     page._update = patch => {
       const st = page.props.store;
@@ -107,12 +160,16 @@ export function usePage(props) {
     didMount() {
       page._prefillSender();
       const st = page.props.store;
-      const lines = st ? st.bag : page.state.lines;
+      page._reprice();
+      const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
       if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
         window.VF_TRACK.event('view_cart', {
           items: vfLineItems(lines),
           value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
         });
+    },
+    willUnmount() {
+      clearTimeout(page._priceTimer);
     }
   });
   return vals(page);
@@ -130,6 +187,7 @@ function vals(page) {
   const step = s.step || vfPageRoute(page.props).step || 'bag';
   const onDelivery = step === 'delivery';
   const live = st ? st.bag : s.lines;
+  const priceChanges = (st ? st.priceChanges : s.priceChanges) || {};
   const delivery = st ? st.delivery : s.delivery;
   const totals = vfTotals(live.filter(vfLineAvailable), delivery);
   const {sub, total} = totals;
@@ -315,6 +373,9 @@ function vals(page) {
     confirmDelivery: () => update({date, slot}),
     toDelivery: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
+      // A changed price stops here, beside its line, before the customer goes on.
+      if (page._reprice().length) return;
+      page._seenPrices();
       stepTo('delivery');
     },
     backToBag: e => {
@@ -325,6 +386,11 @@ function vals(page) {
     stepClick: i => i === 0 && stepTo('bag'),
     next: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
+      // A price that changed while the form was open goes back to the bag, beside its line.
+      if (page._reprice().length) {
+        stepTo('bag');
+        return;
+      }
       // Recheck at click time too: the customer may have left this form open past the cutoff.
       if (vfDeliveryChanged(delivery, new Date(), live)) {
         page.setState({submitted: true});
@@ -407,6 +473,11 @@ function vals(page) {
       qty: l.qty,
       quantityMax: Math.max(1, vfLineQuantityMax(l, live)),
       stockWarning: !vfLineQuantityValid(l, live) ? C.stockChanged : '',
+      priceNotice: priceChanges[l.id]
+        ? C.priceChanged
+            .replace('{old}', m(priceChanges[l.id].from))
+            .replace('{new}', m(priceChanges[l.id].to))
+        : '',
       setQty: q =>
         st
           ? st.setQty(l.id, q)
