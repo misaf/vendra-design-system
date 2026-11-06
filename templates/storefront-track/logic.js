@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfCustomerId, vfKnownOrders} from '../_shared/account-data.js';
+import {vfCustomerId, vfKnownOrders} from '../_shared/domain/account-data.js';
 import {
   vfCardMessages,
   vfLineToken,
@@ -8,16 +8,16 @@ import {
   vfSampleBag,
   vfReorderBag,
   vfReorderLines
-} from '../_shared/catalog.js';
-import {vfMobile, vfTotals, vfZone} from '../_shared/delivery.js';
-import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../_shared/formatting.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfSummaryRows} from '../_shared/promotions.js';
-import {vfPageRoute} from '../_shared/routing.js';
+} from '../_shared/domain/catalog.js';
+import {vfMobile, vfTotals, vfZone} from '../_shared/domain/delivery.js';
+import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../_shared/domain/formatting.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfSummaryRows} from '../_shared/domain/promotions.js';
+import {vfPageRoute} from '../_shared/services/routing.js';
 import {vfDeliveryWhen} from '../_shared/translations/time.js';
-import {VF_NAV} from '../_shared/page-focus.js';
-import {usePageLogic} from '../_shared/page-state.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {VF_NAV} from '../_shared/services/page-focus.js';
+import {usePageLogic} from '../_shared/services/page-state.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {

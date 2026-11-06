@@ -18,14 +18,14 @@ import {
   vfProductImages,
   vfReady,
   vfSearchProducts
-} from '../_shared/catalog.js';
-import {vfShell} from '../_shared/navigation.js';
-import {vfSeparator} from '../_shared/formatting.js';
-import {vfReadRoute, vfRouteUrl} from '../_shared/routing.js';
+} from '../_shared/domain/catalog.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {vfSeparator} from '../_shared/domain/formatting.js';
+import {vfReadRoute, vfRouteUrl} from '../_shared/services/routing.js';
 import {VF_CATEGORY_COPY} from '../_shared/translations/categories.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {vfLocation} from '../_shared/environment.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {vfLocation} from '../_shared/platform/environment.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 
 // The counter settings, kept on this device (the shop's tablet). The PIN only keeps a curious
 // customer out of the settings; it is stored on the tablet as it is.

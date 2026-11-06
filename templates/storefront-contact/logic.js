@@ -1,14 +1,14 @@
 // Page behavior. Edit here, then run npm --prefix templates run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLoad, vfAccountPhone} from '../_shared/account-data.js';
-import {vfMobile} from '../_shared/delivery.js';
-import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/location.js';
-import {vfShell} from '../_shared/navigation.js';
-import {VF_STORE, vfLiveStore} from '../_shared/store-config.js';
-import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../_shared/store-hours.js';
-import {useLifecycle, usePageLogic} from '../_shared/page-state.js';
-import {vfNow} from '../_shared/environment.js';
-import {useStorefrontPage} from '../_shared/page-lifecycle.js';
+import {vfAccountLoad, vfAccountPhone} from '../_shared/domain/account-data.js';
+import {vfMobile} from '../_shared/domain/delivery.js';
+import {vfDirectionsUrl, vfLoadLeaflet, vfValidLocation} from '../_shared/domain/location.js';
+import {vfShell} from '../_shared/services/navigation.js';
+import {VF_STORE, vfLiveStore} from '../_shared/domain/store-config.js';
+import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../_shared/domain/store-hours.js';
+import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
+import {vfNow} from '../_shared/platform/environment.js';
+import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();

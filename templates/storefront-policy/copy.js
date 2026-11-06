@@ -9,10 +9,10 @@ import {
   VF_ZONES,
   vfDeliveryCutoff,
   vfZone
-} from '../_shared/delivery.js';
-import {vfHoursText} from '../_shared/store-hours.js';
-import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../_shared/formatting.js';
-import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/store-config.js';
+} from '../_shared/domain/delivery.js';
+import {vfHoursText} from '../_shared/domain/store-hours.js';
+import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../_shared/domain/formatting.js';
+import {VF_STORE, vfFeatures, vfPaymentMethods} from '../_shared/domain/store-config.js';
 import {VF_SHELL} from '../_shared/translations/shell.js';
 import {vfSlotLabel} from '../_shared/translations/time.js';
 export function vfCopy(S) {

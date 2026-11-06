@@ -1,6 +1,6 @@
 // Shared localized delivery-window text. Parameters are the chosen start/end hours.
-import {VF_SLOTS} from '../delivery.js';
-import {VF_FA_DIGITS, vfSeparator} from '../formatting.js';
+import {VF_SLOTS} from '../domain/delivery.js';
+import {VF_FA_DIGITS, vfSeparator} from '../domain/formatting.js';
 import {dates} from '../../../components/utils/dates.js';
 export function vfSlotLabel(start, end, fa) {
   return fa

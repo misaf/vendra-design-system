@@ -1,4 +1,4 @@
-import {vfAssetBase} from './environment.js';
+import {vfAssetBase} from '../platform/environment.js';
 
 // Responsive sample journal photos. Relative paths also work under GitHub Pages' repo path.
 export function vfJournalImage(asset) {

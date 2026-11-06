@@ -71,5 +71,5 @@ export function vfAbsoluteUrl(url) {
 // (app/theme.js sets VF_ASSET_BASE in the browser), or two folders up for pages opened from files.
 export function vfAssetBase() {
   if (vfServerState) return vfServerState.base;
-  return (typeof window !== 'undefined' && window.VF_ASSET_BASE) || '../../';
+  return (typeof window !== 'undefined' && window.VF_ASSET_BASE) || '../../../';
 }

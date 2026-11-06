@@ -463,7 +463,7 @@ const {app, installed, manifest, files} = packed;
         commonTheme[key],
         key + ' shares the existing CommonJS implementation'
       );
-    assert.deepEqual(theme.RAMPS, require('../_shared/tenant-theme.js').RAMPS);
+    assert.deepEqual(theme.RAMPS, require('../_shared/domain/tenant-theme.js').RAMPS);
     for (const [key, ramp] of Object.entries(theme.RAMPS)) {
       for (const [token, step] of Object.entries(ramp.steps))
         assert.equal(
