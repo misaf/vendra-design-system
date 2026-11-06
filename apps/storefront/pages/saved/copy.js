@@ -17,7 +17,7 @@ export function vfCopy(S) {
       addLabel: '{name}: add to bag',
       inBag: 'Stock already in bag',
       chooseSize: 'Choose size',
-      chooseSizeLabel: '{name}: choose a size',
+      chooseSizeLabel: '{name}: choose size',
       soldOut: 'Sold out',
       added: 'Added to your bag',
       undoAdd: 'Undo',
