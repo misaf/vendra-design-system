@@ -9,6 +9,7 @@ import {vfPageRoute, vfRouteUrl} from '../_shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 import {vfAbsoluteUrl} from '../_shared/platform/environment.js';
+import {vfArticleData} from '../_shared/services/structured-data.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -45,7 +46,17 @@ function vals(page) {
     ? {
         image: cover && {src: cover.src, alt: post[L][0], width: cover.width, height: cover.height},
         description: post[L][1],
-        type: 'article'
+        type: 'article',
+        structuredData: [
+          vfArticleData({
+            headline: post[L][0],
+            description: post[L][1],
+            image: cover?.src,
+            published: post.publishedAt,
+            url: vfRouteUrl({lang: L, view: 'post', post: post.id}),
+            lang: L
+          })
+        ]
       }
     : null;
   if (post) {

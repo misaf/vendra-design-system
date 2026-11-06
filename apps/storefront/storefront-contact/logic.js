@@ -9,6 +9,7 @@ import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../_shared/domain/st
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {vfNow} from '../_shared/platform/environment.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
+import {vfFloristData} from '../_shared/services/structured-data.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
   const phone = vfAccountPhone();
@@ -65,6 +66,8 @@ export function usePage(props) {
 
 function vals(page) {
   const S = vfShell(page, 'contact');
+  // Search engines read the studio's address, hours and phone as a Florist (structured-data.js).
+  page.head = {structuredData: [vfFloristData(S.lang)]};
   const s = page.state;
   const C = vfCopy(S);
   const invalid = page._invalid();

@@ -31,13 +31,6 @@ export const vfAmountToInput = toman => {
   const currency = vfCurrency();
   return String(+(toman * currency.rate).toFixed(currency.decimals));
 };
-// A Toman price for link-preview tags (product:price:*): the amount in the active currency and its
-// ISO 4217 code. Toman has no code of its own, so it is given in Rial (IRR), its ISO unit.
-export function vfPriceTag(toman) {
-  const code = VF_STORE.currency === 'IRT' ? 'IRR' : VF_STORE.currency;
-  const currency = VF_STORE.currencies[code] || {rate: 10, decimals: 0};
-  return {amount: (toman * currency.rate).toFixed(currency.decimals), currency: code};
-}
 export const VF_MONEY = (n, fa) =>
   format.money(n, {
     lang: fa ? 'fa' : 'en',
