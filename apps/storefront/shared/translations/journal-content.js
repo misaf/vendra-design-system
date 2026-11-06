@@ -62,14 +62,6 @@ export const VF_POSTS = [
     shop: {en: 'Shop autumn bouquets', fa: 'خرید دسته‌گل پاییزی'}
   }
 ];
-// Retired articles and the newer post that replaced each (journal/care/ → journal/bouquet-last-longer/).
-// The router opens the newer post and writes its address back; the server answers the old address
-// with a 301 (deployment/nginx.conf).
-export const VF_POST_MOVED = {
-  care: 'bouquet-last-longer',
-  bridal: 'bridal-bouquet-guide',
-  orchids: 'orchid-care'
-};
 VF_POSTS.push(
   ...[
     {

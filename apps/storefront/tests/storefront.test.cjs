@@ -1908,8 +1908,9 @@ Promise.all([
 // page's copy, and retired articles redirect, in the router and on the server, to listed posts.
 Promise.all([
   import('../shared/translations/journal-content.js'),
+  import('../shared/translations/journal-moved.js'),
   import('../shared/services/routing.js')
-]).then(([{VF_POSTS, VF_POST_MOVED}, {vfReadRoute}]) => {
+]).then(([{VF_POSTS}, {VF_POST_MOVED}, {vfReadRoute}]) => {
   const ids = VF_POSTS.map(post => post.id);
   assert.equal(new Set(ids).size, ids.length, 'post ids are unique');
   for (const lang of ['en', 'fa']) {
