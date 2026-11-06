@@ -71,8 +71,9 @@ StorefrontBagLayout arranges bag/delivery slots with externally controlled conte
 line edits, undo, delivery validation, totals and checkout actions stay in the bag View/logic.
 Bag View passes layout, conditional line items, summary, empty feedback and sticky action directly;
 items/delivery multi-child groups and all visibility guards remain.
-StorefrontBagItems composes editable line items and stock warnings from explicit records/labels;
-View/logic retain visibility, pricing/stock limits, quantity/remove/Undo and persistence/focus.
+StorefrontBagItems composes editable line items, price notices and stock warnings from explicit records/labels;
+View/logic retain visibility, catalog repricing (on opening, before delivery and payment), stock limits,
+quantity/remove/Undo and persistence/focus.
 StorefrontBagSummary composes summary rows, free-delivery meter, controlled promo and navigation actions;
 View/logic retain totals, promo validation/persistence, quote rules and delivery/payment validation.
 StorefrontBagSticky composes total and controlled continuation actions inside Shell’s sticky slot;

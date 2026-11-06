@@ -1024,6 +1024,116 @@ for (const file of [
   assert.doesNotMatch(read(file), /\b(v|S)\.(mob|desk|compactShop)\b/, file);
 console.log('Passed: no view lays out from a JavaScript breakpoint.');
 
+// A bag kept from an earlier visit is priced from the current catalog when it opens and again
+// before delivery and payment; each changed line says so and the totals follow the new prices.
+for (const lang of ['en', 'fa']) {
+  const {logic: first, ctx: c} = loadPage('site', {lang}, `/apps/storefront/app/${lang}/bag/`);
+  const plain = value => JSON.parse(JSON.stringify(value));
+  const money = value => vm.runInContext('VF_MONEY', c)(value, lang === 'fa');
+  const current = plain(first.state.bag);
+  const stale = current.map(line => ({...line, unit: line.unit - 100000}));
+  c.sessionStorage.getItem = () => JSON.stringify({bag: stale});
+  const site = new c.Logic({lang});
+  assert.deepEqual(
+    plain(site.state.bag).map(line => line.unit),
+    current.map(line => line.unit),
+    'a saved bag opens at the current prices'
+  );
+  assert.deepEqual(plain(site.state.priceChanges[current[0].id]), {
+    from: stale[0].unit,
+    to: current[0].unit
+  });
+  // Unseen price changes keep a direct checkout visit and an order on the bag.
+  setAddress(c, `/apps/storefront/app/${lang}/checkout/`);
+  const direct = new c.Logic({lang});
+  assert.equal(direct.state.route, 'bag');
+  assert.equal(direct.state.routeInfo.step, 'bag', 'a direct checkout visit opens the bag notices');
+  setAddress(c, `/apps/storefront/app/${lang}/bag/`);
+  let unseenRoute;
+  const {logic: unseen} = loadPage('checkout', {
+    lang,
+    go: next => (unseenRoute = next),
+    store: {
+      bag: site.state.bag,
+      priceChanges: site.state.priceChanges,
+      delivery: {...site.state.delivery, date: '', slot: null}
+    }
+  });
+  unseen.setState({last4: '1234'});
+  unseen.renderVals().place();
+  assert.equal(unseenRoute.step, 'bag', 'checkout shows unseen price changes in the bag first');
+  let route;
+  const {logic: bag, ctx: bc} = loadPage('bag', {
+    lang,
+    store: site.renderVals().store,
+    go: next => (route = next)
+  });
+  const view = () => {
+    bag.props.store = site.renderVals().store;
+    return bag.renderVals();
+  };
+  bc.window.VF_TRACK = {event() {}, consent() {}};
+  const announcePrices = bag._announcePrices;
+  let announced = [];
+  bag._announcePrices = changes => announcePrices((announced = changes));
+  bag.lifecycle.didMount();
+  assert.deepEqual(
+    plain(announced),
+    current.map((line, index) => ({id: line.id, from: stale[index].unit, to: line.unit})),
+    'price changes made before the bag opened are announced on opening'
+  );
+  let values = view();
+  assert.ok(values.lines[0].priceNotice.includes(money(stale[0].unit)));
+  assert.ok(values.lines[0].priceNotice.includes(money(current[0].unit)));
+  const subtotal = current.reduce((sum, line) => sum + line.unit * line.qty, 0);
+  assert.equal(
+    vm.runInContext('vfTotals', bc)(site.state.bag, site.state.delivery).sub,
+    subtotal,
+    'totals add up the current prices'
+  );
+  // The catalog changes while the bag is open: Continue stops beside the new price.
+  vm.runInContext("vfProduct('" + current[1].productId + "').price += 50000", c);
+  values.toDelivery();
+  assert.equal(route, undefined, 'a new price keeps the customer on the bag');
+  assert.equal(site.state.bag[1].unit, current[1].unit + 50000);
+  values = view();
+  assert.ok(values.lines[1].priceNotice.includes(money(current[1].unit + 50000)));
+  assert.ok(values.lines[0].priceNotice, 'earlier notices stay until the customer continues');
+  values.toDelivery();
+  assert.deepEqual(plain(route), {view: 'bag', step: 'delivery'});
+  assert.deepEqual(plain(site.state.priceChanges), {}, 'continuing clears the seen notices');
+  // A change while the delivery form is open goes back to the bag before payment.
+  vm.runInContext("vfProduct('" + current[1].productId + "').price -= 50000", c);
+  view().next();
+  assert.deepEqual(plain(route), {view: 'bag', step: 'bag'});
+  assert.equal(site.state.bag[1].unit, current[1].unit);
+  assert.ok(view().lines[1].priceNotice);
+  // Checkout checks once more before placing the order.
+  let checkoutRoute;
+  const {logic: checkout, ctx: cc} = loadPage('checkout', {
+    lang,
+    go: next => (checkoutRoute = next),
+    store: {
+      bag: site.state.bag,
+      delivery: {...site.state.delivery, date: '', slot: null}
+    }
+  });
+  vm.runInContext("vfProduct('" + current[0].productId + "').price += 1000", cc);
+  checkout.setState({last4: '1234'});
+  checkout.renderVals().place();
+  assert.equal(checkoutRoute.view, 'bag');
+  assert.equal(checkoutRoute.step, 'bag', 'a changed price sends checkout back to the bag');
+  setTimeout(
+    () =>
+      assert.ok(
+        site.state.announcement.includes(money(current[1].unit)),
+        'the price change is announced'
+      ),
+    200
+  );
+}
+console.log('Passed bag repricing on opening, before delivery and before payment.');
+
 // Stock, delivery changes, address switching, repeat orders and the WhatsApp handoff preserve intent.
 for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage('site', {lang});
