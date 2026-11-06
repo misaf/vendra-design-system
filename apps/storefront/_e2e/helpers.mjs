@@ -8,7 +8,7 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 // Every tenant theme in tokens/tenants/ (the _template file is a .txt, so it is skipped).
 export const TENANTS = fs
-  .readdirSync(path.join(ROOT, 'tokens/tenants'))
+  .readdirSync(path.join(ROOT, 'packages/design-system/tokens/tenants'))
   .filter(f => f.endsWith('.css'))
   .map(f => f.slice(0, -4))
   .sort();

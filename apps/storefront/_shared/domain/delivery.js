@@ -9,7 +9,7 @@ import {vfLineHasCard, vfLineToken, vfFindProduct, vfLineProductId} from './cata
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from './promotions.js';
 import {VF_STORE, vfFeatures} from './store-config.js';
-import {commerce} from '../../../../components/utils/commerce.js';
+import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
 import {vfNow} from '../platform/environment.js';
 
 // GET /api/delivery/zones

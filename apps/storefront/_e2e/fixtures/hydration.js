@@ -3,7 +3,7 @@
 // attributes, which React 18 only logs).
 import React from 'react';
 import {hydrateRoot} from 'react-dom/client';
-import * as ds from '../../../../dist/index.js';
+import * as ds from '../../../../packages/design-system/dist/index.js';
 import {componentSamples} from './component-samples.js';
 
 const problems = [];

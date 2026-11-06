@@ -5,7 +5,7 @@
 // the package's (vendra.*), and the page CSS (in vendra.components) meets the ag-* classes on
 // specificity while both still win over utilities, as the storefront was written.
 import '../_runtime/tailwind.css';
-import '../../../styles.css';
+import '../../../packages/design-system/styles.css';
 import '../_runtime/custom.css';
 
 // Product images, map scripts and tenant themes sit under this root (the build copies them).
@@ -24,8 +24,10 @@ window.VF_USE_TENANT = tenant => {
     if (link) link.remove();
     return;
   }
-  const href = new URL(window.VF_ASSET_BASE + 'tokens/tenants/' + tenant + '.css', location.href)
-    .href;
+  const href = new URL(
+    window.VF_ASSET_BASE + 'packages/design-system/tokens/tenants/' + tenant + '.css',
+    location.href
+  ).href;
   if (link && link.href === href) return;
   const root = document.documentElement;
   if (!document.getElementById('vf-tenant-wait')) {

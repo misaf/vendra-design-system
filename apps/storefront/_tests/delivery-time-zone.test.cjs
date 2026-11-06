@@ -13,7 +13,7 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
   console.log('Passed store delivery clocks across three customer time zones.');
 } else {
   (async () => {
-    const {commerce} = await import('../../../components/utils/commerce.js');
+    const {commerce} = await import('../../../packages/design-system/components/utils/commerce.js');
     const timeZone = 'Asia/Tehran';
     const rules = {days: 3, timeZone};
     const now = new Date('2026-10-05T19:00:00Z'); // 22:30 Tehran, 12:00 Los Angeles.

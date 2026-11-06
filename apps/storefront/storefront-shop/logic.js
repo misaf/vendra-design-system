@@ -18,7 +18,7 @@ import {
   VF_SHOP_OCCASION_COPY
 } from '../_shared/translations/categories.js';
 import {vfDayMonth, vfDayName} from '../_shared/translations/time.js';
-import {commerce} from '../../../components/utils/commerce.js';
+import {commerce} from '../../../packages/design-system/components/utils/commerce.js';
 import {useLifecycle, usePageLogic} from '../_shared/services/page-state.js';
 import {useStorefrontPage} from '../_shared/services/page-lifecycle.js';
 import {VF_CATEGORY_SLUGS} from '../_shared/domain/product-categories.js';

@@ -6,8 +6,8 @@ apps/storefront/_vendor/
 apps/storefront/_e2e/__screenshots__/
 apps/storefront/_e2e/test-results/
 apps/storefront/_e2e/playwright-report/
-tokens/tenants/*.css
-tokens/tenants.css
+packages/design-system/tokens/tenants/*.css
+packages/design-system/tokens/tenants.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator
 # writes marked regions into the storefront pages.

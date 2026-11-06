@@ -62,8 +62,10 @@ for (const tenant of [null, ...TENANTS]) {
 }
 
 test('styles.css carries no tenant; tokens/tenants.css carries them all for cards', () => {
-  expect(fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8')).not.toContain('tokens/tenants');
-  const all = fs.readFileSync(path.join(ROOT, 'tokens/tenants.css'), 'utf8');
+  expect(
+    fs.readFileSync(path.join(ROOT, 'packages/design-system/styles.css'), 'utf8')
+  ).not.toContain('tokens/tenants');
+  const all = fs.readFileSync(path.join(ROOT, 'packages/design-system/tokens/tenants.css'), 'utf8');
   for (const tenant of TENANTS) expect(all).toContain(`@import url('tenants/${tenant}.css');`);
 });
 
@@ -72,7 +74,7 @@ test('styles.css carries no tenant; tokens/tenants.css carries them all for card
 for (const tenant of ['default', ...TENANTS]) {
   test(`email palette matches the rendered theme (${tenant})`, async ({page}) => {
     await page.goto('/apps/storefront/_e2e/fixtures/tokens.html');
-    await page.addStyleTag({url: '/tokens/tenants.css'});
+    await page.addStyleTag({url: '/packages/design-system/tokens/tenants.css'});
     await page.addScriptTag({url: '/apps/storefront/communications/email-templates.js'});
     const {live, shipped} = await page.evaluate(tenant => {
       const wrap = document.createElement('div');

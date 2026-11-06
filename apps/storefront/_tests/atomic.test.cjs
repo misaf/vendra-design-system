@@ -9,29 +9,53 @@ const {levels, layer, dependencyViolation} = require('../../../tools/atomic.cjs'
 const repo = path.resolve(__dirname, '../../..');
 
 assert.equal(
-  dependencyViolation('components/atoms/Button/Button.jsx', 'components/atoms/Icon/Icon.jsx'),
+  dependencyViolation(
+    'packages/design-system/components/atoms/Button/Button.jsx',
+    'packages/design-system/components/atoms/Icon/Icon.jsx'
+  ),
   null
 );
 assert.equal(
-  dependencyViolation('components/molecules/Search/Search.jsx', 'components/atoms/Input/Input.jsx'),
+  dependencyViolation(
+    'packages/design-system/components/molecules/Search/Search.jsx',
+    'packages/design-system/components/atoms/Input/Input.jsx'
+  ),
   null
 );
 assert.equal(
-  dependencyViolation('components/atoms/Spinner/Spinner.jsx', 'components/utils/messages.js'),
+  dependencyViolation(
+    'packages/design-system/components/atoms/Spinner/Spinner.jsx',
+    'packages/design-system/components/utils/messages.js'
+  ),
   null
 );
 for (const [source, target] of [
-  ['components/atoms/Button/Button.jsx', 'components/molecules/Search/Search.jsx'],
-  ['components/molecules/Search/Search.jsx', 'components/organisms/Header/Header.jsx'],
-  ['components/utils/messages.js', 'components/atoms/Spinner/Spinner.jsx'],
-  ['components/atoms/Button/Button.jsx', 'components/Legacy/Legacy.jsx'],
-  ['components/atoms/Button/Button.jsx', 'apps/storefront/_shared/domain/catalog.js']
+  [
+    'packages/design-system/components/atoms/Button/Button.jsx',
+    'packages/design-system/components/molecules/Search/Search.jsx'
+  ],
+  [
+    'packages/design-system/components/molecules/Search/Search.jsx',
+    'packages/design-system/components/organisms/Header/Header.jsx'
+  ],
+  [
+    'packages/design-system/components/utils/messages.js',
+    'packages/design-system/components/atoms/Spinner/Spinner.jsx'
+  ],
+  [
+    'packages/design-system/components/atoms/Button/Button.jsx',
+    'packages/design-system/components/Legacy/Legacy.jsx'
+  ],
+  [
+    'packages/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/_shared/domain/catalog.js'
+  ]
 ])
   assert.ok(dependencyViolation(source, target), `${source} must not depend on ${target}`);
 
 const sources = fs
-  .readdirSync(path.join(repo, 'components'), {recursive: true})
-  .map(file => 'components/' + file.split(path.sep).join('/'));
+  .readdirSync(path.join(repo, 'packages/design-system/components'), {recursive: true})
+  .map(file => 'packages/design-system/components/' + file.split(path.sep).join('/'));
 const violations = [];
 for (const source of sources.filter(
   file => /\.(js|jsx)$/.test(file) && !file.endsWith('.fixture.jsx') && layer(file)
@@ -60,7 +84,7 @@ for (const source of sources.filter(
   names.add(name);
 }
 for (const level of levels) {
-  const folder = path.join(repo, 'components', level);
+  const folder = path.join(repo, 'packages/design-system/components', level);
   if (!fs.existsSync(folder)) continue;
   for (const entry of fs.readdirSync(folder, {withFileTypes: true})) {
     if (!entry.isDirectory()) continue;
@@ -80,9 +104,10 @@ try {
     '.prettierrc.json',
     'tools/new-component.cjs',
     'tools/atomic.cjs',
+    'tools/paths.cjs',
     'apps/storefront/app/ds.js',
-    'components/index.css',
-    'components/utils/messages.d.ts'
+    'packages/design-system/components/index.css',
+    'packages/design-system/components/utils/messages.d.ts'
   ]) {
     const target = path.join(temporary, file);
     fs.mkdirSync(path.dirname(target), {recursive: true});
@@ -99,23 +124,23 @@ try {
     const name = 'Sample' + level[0].toUpperCase() + level.slice(1);
     const result = generate(name, '--level', level, '--wording');
     assert.equal(result.status, 0, result.stderr);
-    const base = path.join(temporary, 'components', level, name, name);
+    const base = path.join(temporary, 'packages/design-system/components', level, name, name);
     for (const suffix of ['.jsx', '.d.ts', '.css', '.spec.mjs', '.fixture.jsx'])
       assert.ok(fs.existsSync(base + suffix), `${name}${suffix} generated`);
     assert.ok(fs.readFileSync(base + '.jsx', 'utf8').includes("from '../../utils/messages.js'"));
     assert.ok(
       fs
         .readFileSync(base + '.spec.mjs', 'utf8')
-        .includes("from '../../../apps/storefront/_e2e/component-test.mjs'")
+        .includes("from '../../../../../apps/storefront/_e2e/component-test.mjs'")
     );
     assert.ok(
       fs
         .readFileSync(path.join(temporary, 'apps/storefront/app/ds.js'), 'utf8')
-        .includes(`../../../components/${level}/${name}/${name}.jsx`)
+        .includes(`../../../packages/design-system/components/${level}/${name}/${name}.jsx`)
     );
     assert.ok(
       fs
-        .readFileSync(path.join(temporary, 'components/index.css'), 'utf8')
+        .readFileSync(path.join(temporary, 'packages/design-system/components/index.css'), 'utf8')
         .includes(`${level}/${name}/${name}.css`)
     );
   }
@@ -126,7 +151,11 @@ try {
   );
   const noCss = generate('Unstyled', '--level', 'atoms', '--no-css');
   assert.equal(noCss.status, 0, noCss.stderr);
-  assert.ok(!fs.existsSync(path.join(temporary, 'components/atoms/Unstyled/Unstyled.css')));
+  assert.ok(
+    !fs.existsSync(
+      path.join(temporary, 'packages/design-system/components/atoms/Unstyled/Unstyled.css')
+    )
+  );
 } finally {
   fs.rmSync(temporary, {recursive: true, force: true});
 }

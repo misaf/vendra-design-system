@@ -12,7 +12,7 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
   console.log('Passed store opening hours across three customer time zones.');
 } else {
   (async () => {
-    const {commerce} = await import('../../../components/utils/commerce.js');
+    const {commerce} = await import('../../../packages/design-system/components/utils/commerce.js');
     const zone = 'Asia/Tehran';
     // Tehran is UTC+03:30 all year.
     const tehran = (date, time) => new Date(`${date}T${time}:00+03:30`);

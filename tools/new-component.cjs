@@ -1,14 +1,14 @@
 // npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
-// Starts components/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
+// Starts packages/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
 // npm test pass from the first build: the component, its declarations, CSS (added to
-// components/index.css), README with its Usage section, fixture and spec, and with --wording its
+// the package's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
 // re-exports the component for the storefront (app/ds.js). What it can't know is left as TODO.
 const fs = require('node:fs');
 const path = require('node:path');
 const {levels} = require('./atomic.cjs');
+const {repo, componentsFolder} = require('./paths.cjs');
 
-const repo = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
 const wording = args.includes('--wording');
@@ -25,10 +25,10 @@ if (!name || !/^[A-Z][A-Za-z0-9]+$/.test(name))
   );
 if (!args.includes('--level') || !levels.includes(level))
   fail('--level is required: atoms, molecules or organisms. See ATOMIC-DESIGN.md.');
-const existing = fs.readdirSync(path.join(repo, 'components'), {recursive: true});
+const existing = fs.readdirSync(path.join(repo, componentsFolder), {recursive: true});
 if (existing.some(file => path.basename(file) === name + '.jsx'))
   fail('A component named ' + name + ' already exists');
-const componentPath = `components/${level}/${name}`;
+const componentPath = `${componentsFolder}/${level}/${name}`;
 const folder = path.join(repo, componentPath);
 
 const className = 'ag-' + name.replace(/(?<!^)([A-Z])/g, '-$1').toLowerCase();
@@ -124,7 +124,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../apps/storefront/_e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../../../apps/storefront/_e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -151,16 +151,16 @@ const insertSorted = (file, pattern, line) => {
 };
 insertSorted(
   path.join(repo, 'apps/storefront/app/ds.js'),
-  /^export \* from '\.\.\/\.\.\/\.\.\/components\//,
+  /^export \* from '\.\.\/\.\.\/\.\.\/packages\/design-system\/components\//,
   `export * from '../../../${componentPath}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
-    path.join(repo, 'components/index.css'),
+    path.join(repo, componentsFolder, 'index.css'),
     `@import url('${level}/${name}/${name}.css');\n`
   );
 if (wording) {
-  const types = path.join(repo, 'components/utils/messages.d.ts');
+  const types = path.join(repo, componentsFolder, 'utils/messages.d.ts');
   const text = fs.readFileSync(types, 'utf8');
   const marker = 'export interface ComponentMessages {\n';
   if (!text.includes(marker)) fail('ComponentMessages not found in ' + types);
@@ -176,13 +176,13 @@ require('node:child_process').execFileSync(
     '--write',
     folder,
     path.join(repo, 'apps/storefront/app/ds.js'),
-    path.join(repo, 'components/utils/messages.d.ts')
+    path.join(repo, componentsFolder, 'utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to apps/storefront/app/ds.js${css ? ', components/index.css' : ''}${
+Added it to apps/storefront/app/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 

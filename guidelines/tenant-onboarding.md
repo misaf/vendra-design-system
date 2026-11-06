@@ -7,19 +7,19 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
-- [ ] Save it as `tokens/tenants/<slug>.json` and run `npm --prefix apps/storefront run build`. The build writes `tokens/tenants/<slug>.css` and the tenant's email palette in `apps/storefront/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
+- [ ] Save it as `packages/design-system/tokens/tenants/<slug>.json` and run `npm --prefix apps/storefront run build`. The build writes `packages/design-system/tokens/tenants/<slug>.css` and the tenant's email palette in `apps/storefront/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
-- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/_shared/domain/store-config.js` and rebuild. The storefront then loads only `tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `tokens/tenants.css`).
+- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/_shared/domain/store-config.js` and rebuild. The storefront then loads only `packages/design-system/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `packages/design-system/tokens/tenants.css`).
 
 **The tenant JSON**
 - `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
 - `character`: `headings` (`serif`, `sans`, `vazir`), `case` (`none`, `uppercase`), `accentWord` (`italic`, `upright`), `controls` (`pill`, `square`), `frame` (`arch`, `soft`, `square`).
 - `overrides` (optional): a generated shade the designer wants to set by hand, for example `{"--border-input": "#847E70"}`. Only shade names are accepted (`--peony-*`, `--petal-*`, `--ink-*`, `--stem-*`, `--border-input`). Changing a base colour in the Theme builder drops the overrides tuned for it.
 - `description` (optional): one line, copied into the generated CSS.
-- Own font? That needs a new `headings` choice in `apps/storefront/_shared/domain/tenant-theme.js` (the generator) with its `@font-face` in `tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
+- Own font? That needs a new `headings` choice in `apps/storefront/_shared/domain/tenant-theme.js` (the generator) with its `@font-face` in `packages/design-system/tokens/fonts.css`. Keep `'Vazirmatn'` second in the stack so Persian still renders.
 
 ## 2. Brand assets (florist supplies · designer prepares)
-Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
+Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `packages/design-system/tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
 
 | Field | Format / size | Use |
 |---|---|---|

@@ -13,14 +13,17 @@ const walk = dir =>
     else if (entry.name.endsWith('.jsx') && !entry.name.endsWith('.fixture.jsx'))
       components.push(entry.name.slice(0, -4));
   });
-walk(path.join(root, '../..', 'components'));
+walk(path.join(root, '../..', 'packages/design-system/components'));
 const used = new Set();
 const buildingBlocks = new Set();
 const sources = fs
-  .readdirSync(path.join(root, '../..', 'components'), {recursive: true})
+  .readdirSync(path.join(root, '../..', 'packages/design-system/components'), {recursive: true})
   .filter(name => name.endsWith('.jsx') && !name.endsWith('.fixture.jsx'));
 for (const file of sources) {
-  const code = fs.readFileSync(path.join(root, '../..', 'components', file), 'utf8');
+  const code = fs.readFileSync(
+    path.join(root, '../..', 'packages/design-system/components', file),
+    'utf8'
+  );
   for (const match of code.matchAll(/from '(?:\.\.?\/)+(?:[A-Za-z]+\/)*([A-Za-z]+)\.jsx'/g))
     buildingBlocks.add(match[1]);
 }
@@ -40,7 +43,7 @@ for (const folder of fs
       }
     }
     for (const match of code.matchAll(
-      /from '(?:\.\.\/)+components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
+      /from '(?:\.\.\/)+packages\/design-system\/components\/(?:[A-Za-z]+\/)+([A-Za-z]+)\.jsx'/g
     )) {
       if (new RegExp('<' + match[1] + '\\b').test(code)) used.add(match[1]);
     }
@@ -59,7 +62,7 @@ const folders = sources
   .map(file => path.dirname(file));
 const untested = folders.filter(folder => {
   const name = path.basename(folder);
-  const base = path.join(root, '../..', 'components', folder, name);
+  const base = path.join(root, '../..', 'packages/design-system/components', folder, name);
   if (!fs.existsSync(base + '.spec.mjs') || !fs.existsSync(base + '.fixture.jsx')) return true;
   return !fs.readFileSync(base + '.spec.mjs', 'utf8').includes("'" + name + "'");
 });

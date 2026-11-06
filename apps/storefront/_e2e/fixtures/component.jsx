@@ -2,9 +2,9 @@
 // inside VendraProvider, in the page language: ?component=FilterBar&lang=fa.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {VendraProvider} from '../../../../components/VendraProvider/VendraProvider.jsx';
+import {VendraProvider} from '../../../../packages/design-system/components/VendraProvider/VendraProvider.jsx';
 
-const fixtures = import.meta.glob('../../../../components/**/*.fixture.jsx');
+const fixtures = import.meta.glob('../../../../packages/design-system/components/**/*.fixture.jsx');
 const query = new URLSearchParams(location.search);
 const name = query.get('component');
 const lang = query.get('lang') === 'fa' ? 'fa' : 'en';

@@ -19,7 +19,7 @@ function distance(a, b) {
 }
 
 // 1. The Vendra spec reproduces the hand-tuned default palette in tokens/colors.css.
-const colors = fs.readFileSync(path.join(root, 'tokens/colors.css'), 'utf8');
+const colors = fs.readFileSync(path.join(root, 'packages/design-system/tokens/colors.css'), 'utf8');
 const vendra = theme.tokens(theme.VENDRA).ramps;
 for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
   const declared = colors.match(new RegExp(name + ':(#[0-9A-F]{6})', 'i'))[1];
@@ -30,7 +30,9 @@ for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
 }
 
 // 2. Generation is deterministic, keeps the base colours and applies overrides.
-const clay = JSON.parse(fs.readFileSync(path.join(root, 'tokens/tenants/clay.json'), 'utf8'));
+const clay = JSON.parse(
+  fs.readFileSync(path.join(root, 'packages/design-system/tokens/tenants/clay.json'), 'utf8')
+);
 assert.equal(theme.css('clay', clay), theme.css('clay', clay));
 const ramps = theme.tokens(clay).ramps;
 assert.equal(ramps['--peony-500'], clay.colours.accent);

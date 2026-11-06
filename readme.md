@@ -9,14 +9,20 @@
 
 ## Using the package
 
-`@vendra/design-system` publishes only `dist/`, which the build generates and commits. Install a tagged commit from GitHub (`npm install github:misaf/vendra-design-system#v0.1.0`). React 18.2+, `react-aria-components` 1.21+ and `@internationalized/date` 3.12+ are peer dependencies, so your app and the components share one React Aria copy.
+`@vendra/design-system` lives in [`packages/design-system/`](packages/design-system/) and is published to the public npm registry; the tarball holds only `dist/`, which the build generates and commits. Install a released version:
+
+```sh
+npm install @vendra/design-system@0.1.0
+```
+
+React 18.2+, `react-aria-components` 1.21+ and `@internationalized/date` 3.12+ are peer dependencies, so your app and the components share one React Aria copy.
 
 | Import | What it is |
 |---|---|
 | `@vendra/design-system` | 71 components (with `VendraProvider`) plus `format`, `dates`, `commerce`, `maps` and `ICON_SVGS`: ES modules with types; server-render safe and marked `'use client'` for React Server Components. |
 | `@vendra/design-system/styles.css` | Fonts (with metric-matched local fallbacks, so the font swap doesn't shift the layout), tokens, base styles and every `ag-*` class. Load once in the root layout, and preload the body fonts your pages use (`fonts/jost-var-latin.woff2`, `fonts/vazirmatn-var-arabic.woff2`) with `<link rel="preload" as="font" type="font/woff2" crossorigin>`. |
 | `@vendra/design-system/theme` | `tenantCss(slug, spec)`, `validate`, `checks` (the seven contrast checks), `tokens`, `designTokens`, `email`, `VENDRA` (default spec), `RAMPS` and `shade` (individual OKLCH shade generation). |
-| `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `tokens/tenants/*.json`. |
+| `@vendra/design-system/tenants/<slug>.css` | The sample tenants built from `packages/design-system/tokens/tenants/*.json`. |
 | `@vendra/design-system/tokens.json` | Every design token as W3C design tokens (DTCG JSON), for native apps and design tools. |
 | `@vendra/design-system/tokens/tenants/<slug>.json` | The tokens a sample tenant changes, to merge over `tokens.json`. |
 
@@ -64,8 +70,8 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 ## Tenant themes
 
 - **Tokens only.** Components read semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant overrides them under `[data-tenant="<slug>"]`; never fork component CSS.
-- **One JSON per tenant.** `tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `apps/storefront/_shared/domain/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
-- **It overrides:** the palette ramps (`--petal/peony/ink/stem-*`), the semantic aliases, and the character tokens in `tokens/character.css` (display font, case, tracking, control and frame radii). Spacing, type scale, motion, focus ring, status colours and RTL rules are fixed.
+- **One JSON per tenant.** `packages/design-system/tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `apps/storefront/_shared/domain/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
+- **It overrides:** the palette ramps (`--petal/peony/ink/stem-*`), the semantic aliases, and the character tokens in `packages/design-system/tokens/character.css` (display font, case, tracking, control and frame radii). Spacing, type scale, motion, focus ring, status colours and RTL rules are fixed.
 - **Contrast:** `--accent` 4.5:1 with white text, `--text-accent` 4.5:1 on the page, `--border-input` 3:1, `--focus-ring-on-inverse` 3:1 on the inverse surface.
 - **Samples:** `clay` (terracotta, squared controls, uppercase Jost) and `fern` (teal, pill controls, deliberately near the contrast limits). Preview with `?tenant=<slug>`.
 - **Onboarding:** follow [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md) and design the theme in `guidelines/theme-builder.html`.
@@ -106,26 +112,27 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 | Path | Contents |
 |---|---|
-| `components/` | [Atomic Design migration](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component; remaining flat folders migrate in batches. Helpers in `components/utils/`. |
-| `tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
+| `packages/design-system/` | The published `@vendra/design-system` package: its `package.json`, `components/`, `tokens/`, `styles.css`, `assets/fonts/` and the generated `dist/`. |
+| `packages/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
+| `packages/design-system/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
 | `apps/storefront/storefront-*` | 17 bilingual storefront pages plus `storefront-site`, the click-through router. The source of truth for the storefront. |
 | `apps/storefront/_build/` | The storefront app's Vite build: dev server, prerendered routes, sitemap, precompression, page CSS and the tenant list. |
-| `tools/` | Repo tooling: the build (`build.cjs`, which writes `dist/` via `package.cjs` and tenant themes via `tenants.cjs`/`brand.cjs`), the component generator (`new-component.cjs`) and the Atomic Design and import checks (`atomic.cjs`, `app-dependencies.cjs`). Run through the `npm --prefix apps/storefront` scripts. |
+| `tools/` | Repo tooling: the build (`build.cjs`, which writes the package's `dist/` via `package.cjs` and tenant themes via `tenants.cjs`/`brand.cjs`), the component generator (`new-component.cjs`) and the Atomic Design and import checks (`atomic.cjs`, `app-dependencies.cjs`); `paths.cjs` names the package folder. Run through the `npm --prefix apps/storefront` scripts. |
 | `apps/storefront/_shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
 | `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
 | `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
-| `apps/storefront/_runtime/`, `dist/` | Generated: never edit. |
-| `assets/` | Logos, social images, app icons, fonts, placeholders. |
+| `apps/storefront/_runtime/`, `packages/design-system/dist/` | Generated: never edit. |
+| `assets/` | Storefront and brand assets: logos, social images, app icons, placeholders. |
 | `uploads/` | Storefront OpenAPI spec. |
-| `styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
+| `packages/design-system/styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
 
 ## Commands
 
 ```sh
-npm ci                                   # first setup, at the repo root (apps/storefront is a workspace)
+npm ci                                   # first setup, at the repo root (packages/* and apps/* are workspaces)
 npm --prefix apps/storefront run dev     # Vite preview at http://127.0.0.1:5173/ with rebuilds
-npm --prefix apps/storefront run build   # components, dist/, Tailwind, tenant CSS, generated template sections
+npm --prefix apps/storefront run build   # components, the package's dist/, Tailwind, tenant CSS, generated template sections
 npm --prefix apps/storefront run format  # Prettier
 npm --prefix apps/storefront run check   # generated files current + formatting
 npm --prefix apps/storefront test        # typecheck and unit tests
@@ -133,5 +140,11 @@ npm --prefix apps/storefront run test:e2e  # production storefront, then develop
 npm --prefix apps/storefront run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
 npm --prefix apps/storefront run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
+
+## Releasing the package
+
+1. Bump `version` in `packages/design-system/package.json` (semver; breaking changes ship directly), run `npm --prefix apps/storefront run build`, and merge to `master`.
+2. Tag that commit with the same version and push the tag: `git tag v0.2.0 && git push origin v0.2.0`.
+3. The **Release** workflow (`.github/workflows/release.yml`) checks the tag matches the version, runs `check` and `test`, and publishes to npm with provenance. It needs the repository secret `NPM_TOKEN`, a publish token for the `@vendra` scope.
 
 Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Preview states and integration boundaries: [Demo behavior](apps/storefront/README.md#demo-behavior). Working rules: [CLAUDE.md](CLAUDE.md).
