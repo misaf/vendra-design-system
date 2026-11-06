@@ -298,7 +298,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out (the React 19 job covers the next one), and a Playwright bump must also move the image tag in the workflows, which `assets.test.cjs` checks.
 
-A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on the branch (Actions → Update screenshots → Run workflow); it commits the changed `-linux.png` files. Review both before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
+A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on a non-default branch (Actions → Update screenshots → Run workflow → select your branch); it commits the changed `-linux.png` files to that branch. Runs on the repository's default branch (currently `master`) or a tag fail before the screenshot job starts. Review both sets of baselines in a pull request before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
 
 ### On a remote server (optional)
 
