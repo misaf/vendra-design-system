@@ -6,8 +6,9 @@ import {openSite} from './helpers.mjs';
 // here before it reaches customers. Raise one only on purpose, with the reason in the commit.
 const BUDGET = {
   // Compressed JS / CSS / font bytes a page loads before the site starts preloading other pages.
-  // 255KB since master's account page (fa) reached 246KB in November 2026, over the 245KB set for
-  // the structured opening hours (then 241KB in CI).
+  // 255KB since November 2026: the account page (fa) grew from 243KB to 246KB in small, intended
+  // steps (analytics events and channel attribution, catalog repricing of the bag, the LOCALES
+  // config), past the 245KB set for the structured opening hours.
   firstPageJsKb: 255,
   // One shared stylesheet for every page: 24KB since the counter presentation and the
   // product-code and delivery-review work of October 2026.
