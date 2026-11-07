@@ -180,7 +180,13 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   // Time keeps running from 09:00: the map's pan animation needs a moving clock.
   await page.clock.setSystemTime(MORNING);
   await openSite(page, 'bag', 'en');
+  // The field waits behind its disclosure, which opens it and moves focus into it.
+  const reveal = page.getByRole('button', {name: 'Have a promo code?'});
+  await expect(reveal).toHaveAttribute('aria-expanded', 'false');
+  await reveal.click();
+  await expect(reveal).toHaveAttribute('aria-expanded', 'true');
   const code = page.getByRole('textbox', {name: 'Promo code'});
+  await expect(code).toBeFocused();
   await code.fill('nope');
   await code.press('Enter');
   await expect(code).toHaveAccessibleDescription('We don’t recognise that code.');
@@ -224,6 +230,7 @@ for (const lang of ['en', 'fa']) {
     const discounted = fa ? '۷٬۶۰۵٬۰۰۰ تومان' : '7,605,000 Toman';
     await expect(total).toHaveCount(1);
     await expect(total).toHaveText(original);
+    await page.getByRole('button', {name: fa ? 'کد تخفیف دارید؟' : 'Have a promo code?'}).click();
     await code.fill(fa ? 'WELCOME۱۰' : 'welcome 10');
     await page.getByRole('button', {name: fa ? 'اعمال' : 'Apply', exact: true}).click();
     await expect(summary).toContainText(fa ? 'تخفیف · WELCOME10' : 'Discount · WELCOME10');

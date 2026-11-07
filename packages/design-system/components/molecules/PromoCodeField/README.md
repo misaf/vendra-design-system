@@ -21,8 +21,9 @@ const [error, setError] = useState();
 - It has no `<form>` of its own, so it can sit inside a checkout form: Enter in the field applies the code without submitting the outer form.
 - Focus follows what happened: back to the field when a code is refused or removed, to Remove once one is applied. The applied line is a `role="status"`, so screen readers hear it.
 - The field is left-to-right in Persian too (codes are Latin), with no autocomplete, spell check or autocorrect.
-- Built-in wording: "Promo code", "Apply", "Remove code" («کد تخفیف»، «اعمال»، «حذف کد») from `messages.js`; `label`, `applyLabel` and `removeLabel` change them.
+- Built-in wording: "Promo code", "Apply", "Remove code", "Have a promo code?" («کد تخفیف»، «اعمال»، «حذف کد»، «کد تخفیف دارید؟») from `messages.js`; `label`, `applyLabel`, `removeLabel` and `revealLabel` change them.
 - Without `value` the field keeps what was typed itself.
+- `collapsible` tucks the field behind a "Have a promo code?" («کد تخفیف دارید؟») disclosure button (`aria-expanded`, `aria-controls`), so an empty field doesn't send customers off looking for a code. Pressing it opens the field and moves focus into it; it opens by itself whenever there is a code (`value` prefilled from a link or campaign, a refused code's `error`, or an `applied` one), and stays open after Remove. `defaultOpen` starts it open; `revealLabel` changes the button's words.
 
 ## Usage
 

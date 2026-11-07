@@ -4479,6 +4479,24 @@ a.ag-tabbar__item {
   align-items: center;
   gap: var(--space-2);
 }
+/* collapsible: the disclosure button sits at the start; its chevron turns while open. */
+.ag-promo__toggle {
+  align-self: flex-start;
+}
+.ag-promo__toggle .ag-icon {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.ag-promo__toggle[aria-expanded='true'] .ag-icon {
+  transform: rotate(180deg);
+}
+.ag-promo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ag-promo__panel[hidden] {
+  display: none;
+}
 
 /* components/molecules/ErrorSummary/ErrorSummary.css */
 /* ErrorSummary: a danger Alert listing the fields to fix, each a link to its field. */

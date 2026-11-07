@@ -11,7 +11,9 @@ import {messages} from './messages.js';
 // line ("ROSES15 · 15% off") with Remove. The app checks the code (onApply gets it trimmed) and says
 // why it was refused in `error`. No <form> of its own, so it can sit inside a checkout form: Enter
 // in the field applies. Focus follows: to the field when a code is refused or removed, to Remove
-// once one is applied (the status line is announced).
+// once one is applied (the status line is announced). `collapsible` tucks the field behind a
+// "Have a promo code?" disclosure button that opens it and moves focus into it; it opens by itself
+// once there is a code (typed, prefilled from a link or campaign, refused or applied).
 export function PromoCodeField({
   id = 'ag-promo',
   value,
@@ -21,9 +23,12 @@ export function PromoCodeField({
   applied,
   onRemove,
   busy = false,
+  collapsible = false,
+  defaultOpen = false,
   label,
   applyLabel,
   removeLabel,
+  revealLabel,
   className,
   style
 }) {
@@ -31,11 +36,26 @@ export function PromoCodeField({
   const text = useMessages(
     'PromoCodeField',
     messages,
-    {label, apply: applyLabel, remove: removeLabel},
+    {label, apply: applyLabel, remove: removeLabel, reveal: revealLabel},
     locale
   );
   const [draft, setDraft] = React.useState('');
   const code = value ?? draft;
+  const [open, setOpen] = React.useState(defaultOpen || Boolean(code || error || applied));
+  // A refusal shows at once, even if the field was tucked away while the code was being checked,
+  // so the error (and the focus move to the field below) is never hidden.
+  const expanded = !collapsible || open || Boolean(error);
+  const focusOnOpen = React.useRef(false);
+  // Each new code, refusal or applied code (a campaign link, an answer from the server) opens the
+  // field, so it is still open after Remove.
+  React.useEffect(() => {
+    if (value || error || applied) setOpen(true);
+  }, [value, error, applied]);
+  React.useEffect(() => {
+    if (!open || !focusOnOpen.current) return;
+    focusOnOpen.current = false;
+    document.getElementById(id)?.focus();
+  }, [open, id]);
   const appliedRef = React.useRef(null);
   const before = React.useRef({applied, error});
   React.useEffect(() => {
@@ -66,30 +86,52 @@ export function PromoCodeField({
         </div>
       ) : (
         <>
-          <label id={id + '-label'} className="ag-field__label" htmlFor={id}>
-            {text.label}
-          </label>
-          <div className="ag-promo__row">
-            <Input
-              id={id}
-              aria-labelledby={id + '-label'}
-              value={code}
-              onChange={change}
-              onKeyDown={event => {
-                if (event.key !== 'Enter') return;
-                event.preventDefault();
-                apply();
+          {collapsible ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              iconEnd="chevron-down"
+              className="ag-promo__toggle"
+              aria-expanded={expanded}
+              aria-controls={id + '-panel'}
+              onClick={() => {
+                focusOnOpen.current = !open;
+                setOpen(!open);
               }}
-              error={error}
-              autoComplete="off"
-              autoCapitalize="characters"
-              spellCheck={false}
-              dir="ltr"
-            />
-            <div className="ag-promo__apply">
-              <Button variant="ghost" size="sm" loading={busy} onClick={apply}>
-                {text.apply}
-              </Button>
+            >
+              {text.reveal}
+            </Button>
+          ) : null}
+          <div id={id + '-panel'} className="ag-promo__panel" hidden={!expanded}>
+            <label
+              id={id + '-label'}
+              className={collapsible ? 'ag-sr-only' : 'ag-field__label'}
+              htmlFor={id}
+            >
+              {text.label}
+            </label>
+            <div className="ag-promo__row">
+              <Input
+                id={id}
+                aria-labelledby={id + '-label'}
+                value={code}
+                onChange={change}
+                onKeyDown={event => {
+                  if (event.key !== 'Enter') return;
+                  event.preventDefault();
+                  apply();
+                }}
+                error={error}
+                autoComplete="off"
+                autoCapitalize="characters"
+                spellCheck={false}
+                dir="ltr"
+              />
+              <div className="ag-promo__apply">
+                <Button variant="ghost" size="sm" loading={busy} onClick={apply}>
+                  {text.apply}
+                </Button>
+              </div>
             </div>
           </div>
         </>
