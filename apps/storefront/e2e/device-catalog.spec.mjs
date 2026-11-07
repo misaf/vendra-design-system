@@ -55,21 +55,15 @@ for (const lang of ['en', 'fa']) {
     await reachable(product);
   });
 
-  test(`touch sort and load-more survive reload (${lang})`, async ({page}, info) => {
+  // Load-more on touch is in shop-paging.spec.mjs: the six sample designs fit on one page.
+  test(`touch sort survives reload (${lang})`, async ({page}, info) => {
     await openSite(page, 'shop', lang);
     const cards = page.locator('.vf-shop-product-grid .ag-product');
-    await expect(cards).toHaveCount(4);
+    await expect(cards).toHaveCount(6);
+    await expect(page.getByRole('link', {name: copy.showMore, exact: true})).toHaveCount(0);
     await tap(sortControl(page));
     await tap(page.getByRole('option', {name: copy.sortOptions[1].label, exact: true}));
     await expect(page).toHaveURL(/sort=low/);
-    const initial = await prices(page);
-    expect(initial).toEqual([...initial].sort((a, b) => a - b));
-    const more = page.getByRole('link', {name: copy.showMore, exact: true});
-    await tap(more);
-    await expect(cards).toHaveCount(6);
-    const added = page.locator('.vf-shop-product-grid .ag-product__link').nth(4);
-    await expect(added).toBeFocused();
-    await reachable(added, {scroll: false});
     const all = await prices(page);
     expect(all).toHaveLength(6);
     expect(all).toEqual([...all].sort((a, b) => a - b));
@@ -80,9 +74,8 @@ for (const lang of ['en', 'fa']) {
     expect(params(page).get('sort')).toBe('low');
     await tap(sortControl(page));
     await tap(page.getByRole('option', {name: copy.sortOptions[2].label, exact: true}));
-    await expect(cards).toHaveCount(4);
+    await expect(cards).toHaveCount(6);
     expect(params(page).get('sort')).toBe('high');
-    expect(params(page).has('page')).toBe(false);
     const descending = await prices(page);
     expect(descending).toEqual([...descending].sort((a, b) => b - a));
     await finish(page, lang, info, sortControl(page));
@@ -139,7 +132,7 @@ for (const lang of ['en', 'fa']) {
     expect(params(page).get('filters')).toBe('under3');
     await tap(under);
     await expect(under).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('.vf-shop-product-grid .ag-product')).toHaveCount(4);
+    await expect(page.locator('.vf-shop-product-grid .ag-product')).toHaveCount(6);
     expect(params(page).has('filters')).toBe(false);
     expect(await page.evaluate(() => history.length)).toBe(historyLength);
     await finish(page, lang, info, under);

@@ -29,9 +29,10 @@ export const VF_STORE = {
     EUR: {rate: 1 / 110000, decimals: 2, symbol: '€', en: 'EUR', fa: 'یورو'},
     AED: {rate: 1 / 27000, decimals: 0, symbol: '', en: 'AED', fa: 'درهم'}
   },
-  // Products per "Show more" page in the shop. The sample uses 4 so paging shows with six products;
-  // a real store usually shows 12–24 (the API's itemsPerPage).
-  shopPageSize: 4,
+  // Products per "Show more" page in the shop (the API's itemsPerPage). Keep it a multiple of 12 so
+  // every page fills whole rows of the 2-, 3- and 4-column grids. The six sample products fit on one
+  // page; the paging tests serve this module with a smaller size (e2e/shop-paging.spec.mjs).
+  shopPageSize: 12,
   // Journal posts per page: the featured story and three more (the API's itemsPerPage). The sample
   // uses 4 so paging shows with seven posts; a real store usually shows 7–13.
   journalPageSize: 4,
