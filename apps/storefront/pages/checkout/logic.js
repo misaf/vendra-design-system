@@ -5,6 +5,7 @@ import {
   vfCardMessages,
   vfLineAvailable,
   vfLineQuantityValid,
+  vfRepriceLines,
   vfLineItems,
   vfLineToken,
   vfProductImage,
@@ -223,9 +224,15 @@ function vals(page) {
     const stockChanged = items.some(
       line => !vfLineAvailable(line) || !vfLineQuantityValid(line, items)
     );
-    if (!changed && !stockChanged) return true;
+    // A price changed since the bag was checked: the bag shows the new price beside its line.
+    // Prices already updated but not yet seen in the bag (a reload or a direct visit) count too.
+    const priceChanged =
+      vfRepriceLines(items).changes.length > 0 ||
+      Object.keys(page.props.store?.priceChanges || {}).length > 0;
+    if (!changed && !stockChanged && !priceChanged) return true;
     event?.preventDefault();
-    page.props.go?.({view: 'bag', step: stockChanged ? 'bag' : 'delivery'});
+    if (priceChanged) page.props.store?.reprice?.();
+    page.props.go?.({view: 'bag', step: stockChanged || priceChanged ? 'bag' : 'delivery'});
     return false;
   };
   // Below the discount line, say what topping up would save on this order: enough to reach the line

@@ -4,8 +4,8 @@ import React from "react";
 import { Button } from "../../atoms/Button/Button.js";
 import { cx } from "../../utils/cx.js";
 import { format } from "../../utils/format.js";
-import { usePageLocale } from "../../utils/locale.js";
-import { localeLanguage, useMessages } from "../../utils/messages.js";
+import { useLocaleConfig, usePageLocale } from "../../utils/locale.js";
+import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 import { useTrack } from "../../utils/track.js";
 // "Send a new code" for a one-time code, after a wait. The wait runs on the clock, not on timer
@@ -16,7 +16,8 @@ import { useTrack } from "../../utils/track.js";
 export function ResendCode({ seconds = 60, onResend, resendLabel, className, style }) {
 	const { locale, ref } = usePageLocale();
 	const text = useMessages("ResendCode", messages, { resend: resendLabel }, locale);
-	const language = localeLanguage(locale) === "fa" ? "fa" : "en";
+	const config = useLocaleConfig(locale);
+	const language = config.code;
 	const track = useTrack();
 	const endsAt = React.useRef(null);
 	const [left, setLeft] = React.useState(seconds);
@@ -42,12 +43,12 @@ export function ResendCode({ seconds = 60, onResend, resendLabel, className, sty
 			document.removeEventListener("visibilitychange", tick);
 		};
 	}, [left > 0]);
-	const time = format.number(Math.floor(left / 60), language) + ":" + format.number(left % 60, language).padStart(2, language === "fa" ? "۰" : "0");
+	const time = format.number(Math.floor(left / 60), language) + ":" + format.number(left % 60, language).padStart(2, format.number(0, language));
 	return /* @__PURE__ */ React.createElement("div", {
 		ref,
 		className: cx("ag-resend", className),
 		style
-	}, left > 0 ? /* @__PURE__ */ React.createElement("p", { className: "ag-resend__wait" }, text.wait.replace("{time}", language === "fa" ? "⁦" + time + "⁩" : time)) : /* @__PURE__ */ React.createElement(Button, {
+	}, left > 0 ? /* @__PURE__ */ React.createElement("p", { className: "ag-resend__wait" }, text.wait.replace("{time}", config.dir === "rtl" ? "⁦" + time + "⁩" : time)) : /* @__PURE__ */ React.createElement(Button, {
 		variant: "secondary",
 		iconStart: "rotate-ccw",
 		onClick: () => {

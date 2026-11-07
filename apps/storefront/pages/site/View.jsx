@@ -5,6 +5,7 @@ import {StorefrontSiteCheckoutNotice} from '../../app/organisms/StorefrontSiteCh
 import {StorefrontSiteIntegrationFeedback} from '../../app/organisms/StorefrontSiteIntegrationFeedback/StorefrontSiteIntegrationFeedback.jsx';
 import {PageBoundary} from '../../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../../app/pages.js';
+import {vfLocale} from '../../shared/domain/store-config.js';
 
 // Each page loads on first view; the rest follow once the browser is idle. The site switches to a
 // page once its code has loaded (vfShowRoute in logic.js), so the current page stays until then.
@@ -32,7 +33,7 @@ export function View({v}) {
   useEffect(preloadPages, []);
   return (
     // In-site links (Button href, NavLink, ProductCard, ...) navigate through the site's router.
-    <DS.VendraProvider locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'} navigate={v.routerNavigate}>
+    <DS.VendraProvider locale={vfLocale(v.lang).tag} navigate={v.routerNavigate}>
       <DS.LiveRegion>{v.announcement}</DS.LiveRegion>
       {v.checkoutNotice && (
         <StorefrontSiteCheckoutNotice

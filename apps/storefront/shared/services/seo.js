@@ -4,6 +4,7 @@
 // so a static host serves each one from its own index.html. The path says which page it is; the
 // query only carries state on that page (filters, sorting, steps), added by routing.js.
 import {vfAbsoluteUrl, vfAssetBase, vfLocation} from '../platform/environment.js';
+import {LOCALES} from '../../../../packages/design-system/components/utils/locales.js';
 
 export const VF_SEO = (() => {
   const SCREENS = new Set([
@@ -37,7 +38,8 @@ export const VF_SEO = (() => {
     'error',
     'presentation'
   ]);
-  const LANGUAGES = ['en', 'fa'];
+  // Every language with a path segment (the package's LOCALES): /en/, /fa/, …
+  const LANGUAGES = Object.keys(LOCALES);
   // The screen's one path segment after its name, and the route key it fills.
   const SEGMENT = {
     product: 'id',
@@ -131,7 +133,10 @@ export const VF_SEO = (() => {
     routePath({lang: state.lang, view: screen, ...extra});
   const isNoindex = view => NOINDEX.has(view);
 
-  const LOCALE = {en: 'en_US', fa: 'fa_IR'};
+  // Open Graph locales from the language tags: en-US → en_US.
+  const LOCALE = Object.fromEntries(
+    Object.values(LOCALES).map(locale => [locale.code, locale.tag.replace('-', '_')])
+  );
   // The head tags for a page: <title>, description, og:*, twitter:*, canonical, hreflang en/fa/
   // x-default and robots, as {title, meta: [{key, name, content}], links: [{rel, hreflang?, href}]}.
   // Pure: the browser applies them (syncHead) and the build writes them into each page (headHtml).
@@ -158,7 +163,8 @@ export const VF_SEO = (() => {
   } = {}) => {
     const img = vfAbsoluteUrl(image),
       href = vfAbsoluteUrl(url);
-    const other = locale === 'fa' ? 'en' : 'fa';
+    // Open Graph names one alternate: the first other language the page has.
+    const other = LANGUAGES.find(language => language !== locale && alternates[language]);
     const meta = [
       ['name', 'description', description],
       ['property', 'og:title', title],

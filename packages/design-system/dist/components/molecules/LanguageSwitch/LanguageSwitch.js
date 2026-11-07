@@ -3,24 +3,25 @@
 import React from "react";
 import { ToggleButton } from "react-aria-components";
 import { useMessages } from "../../utils/messages.js";
+import { useLocales } from "../../utils/locale.js";
 import { messages } from "./messages.js";
 import { useTrack } from "../../utils/track.js";
 // The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
-// own `lang`. Choosing one reports `language_switch` (VendraProvider's onEvent).
-export function LanguageSwitch({ value = "en", onChange, label, options = [{
-	id: "en",
-	label: "EN"
-}, {
-	id: "fa",
-	label: "فا"
-}] }) {
+// own `lang`. Without `options` it offers VendraProvider's languages (`locales`, by default English
+// and Persian) with their own labels. Choosing one reports `language_switch` (VendraProvider's onEvent).
+export function LanguageSwitch({ value = "en", onChange, label, options }) {
+	const locales = useLocales();
+	const choices = options || Object.values(locales).map((o) => ({
+		id: o.code,
+		label: o.label
+	}));
 	const text = useMessages("LanguageSwitch", messages, { label });
 	const track = useTrack();
 	return /* @__PURE__ */ React.createElement("div", {
 		className: "ag-lang",
 		role: "group",
 		"aria-label": text.label
-	}, options.map((o) => /* @__PURE__ */ React.createElement(ToggleButton, {
+	}, choices.map((o) => /* @__PURE__ */ React.createElement(ToggleButton, {
 		key: o.id,
 		lang: o.id,
 		isSelected: value === o.id,
