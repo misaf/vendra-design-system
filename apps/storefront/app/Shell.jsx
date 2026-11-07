@@ -13,6 +13,7 @@ import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
 import {StorefrontHeader} from './organisms/StorefrontHeader/StorefrontHeader.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../shared/services/tv.js';
 import {vfRuntime} from '../shared/platform/runtime.js';
+import {vfLocale} from '../shared/domain/store-config.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false}) {
   const brandAssets = {...v.brandAssets};
@@ -94,7 +95,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
   if (bare)
     return (
       <DS.VendraProvider
-        locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}
+        locale={vfLocale(v.lang).tag}
         onEvent={({event, ...params}) => vfRuntime.track.event(event, params)}
       >
         <div
@@ -120,7 +121,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
   return (
     // The page's language for the components' built-in wording and React Aria's formats.
     <DS.VendraProvider
-      locale={v.lang === 'fa' ? 'fa-IR' : 'en-US'}
+      locale={vfLocale(v.lang).tag}
       onEvent={({event, ...params}) => vfRuntime.track.event(event, params)}
       density={density}
     >

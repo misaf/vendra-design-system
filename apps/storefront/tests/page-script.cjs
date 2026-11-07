@@ -112,6 +112,9 @@ const scoped = (name, file) =>
   'const ' + name + ' = (() => {\n' + strip(read(file)) + '\nreturn ' + name + ';\n})();\n';
 const sharedLogic =
   hooksHarness +
+  // utils/locales.js declares LOCALES, localeConfig and plural at the top level.
+  strip(read('../../packages/design-system/components/utils/locales.js')) +
+  '\n' +
   scoped('commerce', '../../packages/design-system/components/utils/commerce.js') +
   scoped('analytics', '../../packages/design-system/components/utils/analytics.js') +
   scoped('dates', '../../packages/design-system/components/utils/dates.js') +

@@ -10,7 +10,7 @@ import {
   vfRouteRefined,
   vfRouteUrl
 } from './routing.js';
-import {VF_STORE} from '../domain/store-config.js';
+import {VF_STORE, vfLocale} from '../domain/store-config.js';
 import {VF_SHELL} from '../translations/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
@@ -80,9 +80,10 @@ function vfAnnounce(page) {
   clearTimeout(page._vfTimer);
   page._vfTimer = setTimeout(() => {
     // Language and direction never wait for a heading (loading states have none).
-    const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+    const locale = vfLocale(page.props.lang);
+    const lang = locale.code;
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.dir = locale.dir;
     document.documentElement.dataset.lang = lang;
     const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
     const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
@@ -115,7 +116,7 @@ function vfAnnounce(page) {
 // The page's tenant icons and manifest as HTML, for the build's static pages (app/entry-server.jsx);
 // vfBrandHead keeps them current in the browser.
 export function vfPageBrandHtml(page) {
-  const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+  const lang = vfLocale(page.props.lang).code;
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
   return vfBrandHtml(tenant, lang);
 }
@@ -129,7 +130,7 @@ export function vfPageBrandHtml(page) {
 // data (`page.head.structuredData`, structured-data.js). The browser applies it once the page has
 // rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
 export function vfPageHead(page, heading) {
-  const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+  const lang = vfLocale(page.props.lang).code;
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
   const head = page.head || {};
   const image = head.image?.src

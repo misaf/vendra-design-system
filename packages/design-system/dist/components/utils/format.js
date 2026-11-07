@@ -19,7 +19,8 @@ const CURRENCIES = {
 		fa: "ریال"
 	}
 };
-const loc = (l) => l === "fa" ? "fa-IR" : "en-US";
+// en and fa keep their fixed regions; any other language (a tenant's `locales`) formats by its own code.
+const loc = (l) => l === "fa" ? "fa-IR" : !l || l === "en" ? "en-US" : l;
 // Normalize separators explicitly so Persian output is stable across browser locale data.
 const formatNumber = (n, lang, options = {}) => {
 	const formatter = new Intl.NumberFormat(loc(lang), {
@@ -29,7 +30,8 @@ const formatNumber = (n, lang, options = {}) => {
 	return formatter.formatToParts(Number(n)).map((p) => lang === "fa" ? p.type === "group" ? "٬" : p.type === "decimal" ? "٫" : p.value : p.value).join("");
 };
 const number = (n, lang = "en") => formatNumber(n, lang);
-// fa: number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first ($42.00), words after (4,200,000 Toman)
+// fa (and any language the currency names): number then label (۴٬۲۰۰٬۰۰۰ تومان) · en: symbol first
+// ($42.00), words after (4,200,000 Toman)
 const money = (n, { currency = "IRT", lang = "en", currencies = CURRENCIES } = {}) => {
 	const c = currencies[currency];
 	// A price in the wrong currency is worse than none: refuse instead of falling back to Toman.
@@ -38,7 +40,7 @@ const money = (n, { currency = "IRT", lang = "en", currencies = CURRENCIES } = {
 		minimumFractionDigits: c.decimals,
 		maximumFractionDigits: c.decimals
 	});
-	if (lang === "fa") return s + " " + c.fa;
+	if (lang !== "en" && c[lang]) return s + " " + c[lang];
 	return c.symbol ? c.symbol + s : s + " " + c.en;
 };
 export const format = {
