@@ -22,7 +22,8 @@ import {dates} from '../../utils/dates.js';
 import {Select} from '../../atoms/Select/Select.jsx';
 import {FieldMessage} from '../../atoms/Field/Field.jsx';
 import {cx} from '../../utils/cx.js';
-import {localeLanguage, useMessages} from '../../utils/messages.js';
+import {useMessages} from '../../utils/messages.js';
+import {useLocaleConfig} from '../../utils/locale.js';
 import {useDensity} from '../../utils/density.js';
 import {messages} from './messages.js';
 
@@ -70,7 +71,9 @@ export function DatePicker({
   style
 }) {
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
-  const lang = langProp || (localeLanguage(useLocale().locale) === 'fa' ? 'fa' : 'en');
+  const appLocale = useLocale().locale;
+  const config = useLocaleConfig(langProp || appLocale);
+  const lang = config.code;
   const text = useMessages('DatePicker', messages, labels, lang);
   const density = useDensity();
   const generatedId = React.useId();
@@ -78,7 +81,7 @@ export function DatePicker({
   const messageId = fieldId + '-hint';
   const labelId = fieldId + '-label';
   const message = error || hint;
-  const preferredCalendar = lang === 'fa' ? 'j' : 'g';
+  const preferredCalendar = config.calendar === 'persian' ? 'j' : 'g';
   const [uncontrolledCalendar, setUncontrolledCalendar] = React.useState(
     () =>
       (yearly && value && value.cal) ||

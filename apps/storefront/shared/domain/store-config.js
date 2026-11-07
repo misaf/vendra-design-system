@@ -1,6 +1,11 @@
 // Store identity and contact details. Change these once, then run npm --prefix apps/storefront run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
+import {
+  LOCALES,
+  localeConfig,
+  plural
+} from '../../../../packages/design-system/components/utils/locales.js';
 import {vfRuntime} from '../platform/runtime.js';
 
 export const VF_STORE = {
@@ -147,6 +152,18 @@ export const VF_STORE = {
 // VF_STORE.features each time.
 export function vfFeatures() {
   return commerce.storeFeatures(VF_STORE.features);
+}
+// Every language the storefront has copy for, by code: its tag, direction, digits, calendar and
+// switch label (the package's LOCALES). A new language adds its entry here, its code to
+// VF_STORE.languages and its copy beside every page's English (tests/storefront.test.cjs checks).
+export const VF_LOCALES = LOCALES;
+// The settings of `lang` (English for an unknown language): vfLocale('fa').dir → 'rtl'.
+export function vfLocale(lang) {
+  return localeConfig(lang, VF_LOCALES);
+}
+// A count's word in `lang` by Intl.PluralRules: vfPlural(2, {one: ' design', other: ' designs'}).
+export function vfPlural(count, forms, lang = 'en') {
+  return plural(count, forms, lang, VF_LOCALES);
 }
 // `lang` when the storefront offers it, otherwise its default language.
 export function vfLanguage(lang) {

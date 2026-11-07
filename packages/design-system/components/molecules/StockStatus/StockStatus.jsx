@@ -3,8 +3,8 @@ import {Icon} from '../../atoms/Icon/Icon.jsx';
 import {cx} from '../../utils/cx.js';
 import {dates} from '../../utils/dates.js';
 import {format} from '../../utils/format.js';
-import {usePageLocale} from '../../utils/locale.js';
-import {localeLanguage, useMessages} from '../../utils/messages.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: 'circle-x'};
@@ -15,7 +15,7 @@ const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: '
 // renders nothing for a product in stock (product cards show only what needs attention).
 export function StockStatus({stock, hideInStock, size = 'md', className, style}) {
   const {locale, ref} = usePageLocale();
-  const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
+  const language = useLocaleConfig(locale).code;
   const text = useMessages('StockStatus', messages, undefined, locale);
   const status = stock && ICONS[stock.status] ? stock.status : 'in';
   if (status === 'in' && hideInStock) return null;

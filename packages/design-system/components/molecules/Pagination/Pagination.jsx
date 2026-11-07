@@ -3,8 +3,8 @@ import {Button, Link} from 'react-aria-components';
 import {Icon} from '../../atoms/Icon/Icon.jsx';
 import {cx} from '../../utils/cx.js';
 import {format} from '../../utils/format.js';
-import {usePageLocale} from '../../utils/locale.js';
-import {localeLanguage, useMessages} from '../../utils/messages.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // The pages to show: the first, the last, and `siblings` either side of the current one, with null
@@ -47,7 +47,7 @@ export function Pagination({
     {label, previous: previousLabel, next: nextLabel},
     locale
   );
-  const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
+  const language = useLocaleConfig(locale).code;
   if (!(pageCount > 1)) return null;
   const current = Math.min(Math.max(1, page), pageCount);
   const control = (target, content, props) => {
