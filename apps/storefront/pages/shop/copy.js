@@ -1,5 +1,6 @@
 // Bilingual shop copy. Edit here, then run npm --prefix apps/storefront run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfPlural} from '../../shared/domain/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   const result = {
@@ -44,7 +45,7 @@ export function vfCopy(S) {
         same: 'Same day',
         roses: 'Roses'
       },
-      designCount: value => value + (value === 1 ? ' design' : ' designs'),
+      designCount: value => value + vfPlural(value, {one: ' design', other: ' designs'}),
       showMore: 'Show more',
       showing: (shown, total) =>
         shown < total

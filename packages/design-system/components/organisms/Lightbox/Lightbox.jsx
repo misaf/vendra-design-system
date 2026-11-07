@@ -4,8 +4,8 @@ import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
 import {Picture} from '../../atoms/Picture/Picture.jsx';
 import {cx} from '../../utils/cx.js';
 import {format} from '../../utils/format.js';
-import {localeLanguage, useMessages} from '../../utils/messages.js';
-import {usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
 import {useDensity} from '../../utils/density.js';
 import {messages} from './messages.js';
 
@@ -38,7 +38,7 @@ export function Lightbox({
     {label, previous: previousLabel, next: nextLabel, close: closeLabel},
     locale
   );
-  const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
+  const language = useLocaleConfig(locale).code;
   const count = items.length;
   const open = index != null && index >= 0 && index < count;
   const item = open ? items[index] : null;

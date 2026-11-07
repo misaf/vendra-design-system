@@ -27,6 +27,7 @@ export function StorefrontBagItems({lines, removeLabel, quantityLabels, formatQu
               quantityLabels={quantityLabels}
               formatQuantity={formatQuantity}
             />
+            {l.priceNotice && <DS.Alert tone="info">{l.priceNotice}</DS.Alert>}
             {l.stockWarning && <DS.Alert tone="warning">{l.stockWarning}</DS.Alert>}
           </div>
         </React.Fragment>

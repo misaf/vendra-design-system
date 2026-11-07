@@ -1,6 +1,7 @@
 // Bilingual product copy. Edit here, then run npm --prefix apps/storefront run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 import {VF_ZONES, vfDeliveryCutoff, vfDeliveryHint} from '../../shared/domain/delivery.js';
+import {vfPlural} from '../../shared/domain/store-config.js';
 export function vfCopy(S) {
   const m = S.m;
   return {
@@ -18,7 +19,7 @@ export function vfCopy(S) {
       saveDesign: 'Save this design',
       recentA: 'Recently',
       recentB: 'viewed.',
-      recentCount: count => S.n(count) + (count === 1 ? ' design' : ' designs'),
+      recentCount: count => S.n(count) + vfPlural(count, {one: ' design', other: ' designs'}),
       recentPrev: 'Previous recently viewed products',
       recentNext: 'More recently viewed products',
       ship:
@@ -28,7 +29,8 @@ export function vfCopy(S) {
       quantity: 'Quantity',
       priceEach: 'Price per item',
       priceBeforeExtras: 'Per item, before extras',
-      selectionTotal: count => 'Total · ' + S.n(count) + (count === 1 ? ' item' : ' items'),
+      selectionTotal: count =>
+        'Total · ' + S.n(count) + vfPlural(count, {one: ' item', other: ' items'}),
       totalDelivery: 'Delivery calculated at checkout.',
       totalWithExtras: 'Selected extras included. Delivery calculated at checkout.',
       add: 'Add to bag',
