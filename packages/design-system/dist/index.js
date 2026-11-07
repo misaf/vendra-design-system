@@ -80,6 +80,7 @@ export * from './components/utils/density.js';
 export * from './components/utils/effects.js';
 export * from './components/utils/format.js';
 export * from './components/utils/locale.js';
+export * from './components/utils/locales.js';
 export * from './components/utils/maps.js';
 export * from './components/utils/messages.js';
 export * from './components/utils/spatial.js';

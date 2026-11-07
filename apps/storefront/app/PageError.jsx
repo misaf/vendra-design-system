@@ -5,7 +5,7 @@ import {Alert} from '../../../packages/design-system/components/molecules/Alert/
 import {Button} from '../../../packages/design-system/components/atoms/Button/Button.jsx';
 import {vfLocation} from '../shared/platform/environment.js';
 import {vfAppBase} from '../shared/services/routing.js';
-import {VF_STORE} from '../shared/domain/store-config.js';
+import {VF_STORE, vfLocale} from '../shared/domain/store-config.js';
 
 const COPY = {
   en: {
@@ -22,18 +22,20 @@ const COPY = {
 
 export function PageError() {
   // The language is the first segment after the app's path (apps/storefront/app/fa/…).
-  const lang = vfLocation().pathname.startsWith(vfAppBase() + 'fa/') ? 'fa' : 'en';
+  const segment = vfLocation().pathname.slice(vfAppBase().length).split('/')[0];
+  const locale = vfLocale(COPY[segment] ? segment : 'en');
+  const lang = locale.code;
   const copy = COPY[lang];
   React.useEffect(() => {
     document.title = copy.title + ' · ' + VF_STORE.brand[lang];
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.dir = locale.dir;
   }, [lang]);
   return (
     <main
       id="main"
       lang={lang}
-      dir={lang === 'fa' ? 'rtl' : 'ltr'}
+      dir={locale.dir}
       style={{maxWidth: 560, margin: '48px auto', padding: '0 16px'}}
     >
       <Alert

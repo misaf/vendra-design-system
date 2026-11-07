@@ -2,8 +2,8 @@ import React from 'react';
 import {Button} from '../../atoms/Button/Button.jsx';
 import {cx} from '../../utils/cx.js';
 import {format} from '../../utils/format.js';
-import {usePageLocale} from '../../utils/locale.js';
-import {localeLanguage, useMessages} from '../../utils/messages.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 import {useTrack} from '../../utils/track.js';
 
@@ -15,7 +15,8 @@ import {useTrack} from '../../utils/track.js';
 export function ResendCode({seconds = 60, onResend, resendLabel, className, style}) {
   const {locale, ref} = usePageLocale();
   const text = useMessages('ResendCode', messages, {resend: resendLabel}, locale);
-  const language = localeLanguage(locale) === 'fa' ? 'fa' : 'en';
+  const config = useLocaleConfig(locale);
+  const language = config.code;
   const track = useTrack();
   const endsAt = React.useRef(null);
   const [left, setLeft] = React.useState(seconds);
@@ -44,12 +45,12 @@ export function ResendCode({seconds = 60, onResend, resendLabel, className, styl
   const time =
     format.number(Math.floor(left / 60), language) +
     ':' +
-    format.number(left % 60, language).padStart(2, language === 'fa' ? '۰' : '0');
+    format.number(left % 60, language).padStart(2, format.number(0, language));
   return (
     <div ref={ref} className={cx('ag-resend', className)} style={style}>
       {left > 0 ? (
         <p className="ag-resend__wait">
-          {text.wait.replace('{time}', language === 'fa' ? '\u2066' + time + '\u2069' : time)}
+          {text.wait.replace('{time}', config.dir === 'rtl' ? '\u2066' + time + '\u2069' : time)}
         </p>
       ) : (
         <Button
