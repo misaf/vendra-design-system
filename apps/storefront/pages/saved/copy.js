@@ -1,5 +1,6 @@
 // Bilingual saved copy. Edit here, then run npm --prefix apps/storefront run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfPlural} from '../../shared/domain/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   return {
@@ -25,7 +26,7 @@ export function vfCopy(S) {
       checkout: 'View bag and check out',
       keepShopping: 'Keep shopping',
       bagSubtotal: 'Bag subtotal · {count} items',
-      designCount: value => value + (value === 1 ? ' design' : ' designs')
+      designCount: value => value + vfPlural(value, {one: ' design', other: ' designs'})
     },
     fa: {
       hA: 'ذخیره‌شده',

@@ -1,5 +1,6 @@
 // Bilingual home copy. Edit here, then run npm --prefix apps/storefront run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfPlural} from '../../shared/domain/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   return {
@@ -25,10 +26,10 @@ export function vfCopy(S) {
       newAll: 'Explore all flowers',
       prev: 'Previous designs',
       next: 'More designs',
-      designCount: value => value + (value === 1 ? ' design' : ' designs'),
-      categoryCount: value => value + (value === 1 ? ' category' : ' categories'),
-      occasionCount: value => value + (value === 1 ? ' occasion' : ' occasions'),
-      storyCount: value => value + (value === 1 ? ' story' : ' stories'),
+      designCount: value => value + vfPlural(value, {one: ' design', other: ' designs'}),
+      categoryCount: value => value + vfPlural(value, {one: ' category', other: ' categories'}),
+      occasionCount: value => value + vfPlural(value, {one: ' occasion', other: ' occasions'}),
+      storyCount: value => value + vfPlural(value, {one: ' story', other: ' stories'}),
       featEb: 'Quickest to send',
       featLabel: 'Ready to send designs',
       featPrev: 'Previous ready to send designs',

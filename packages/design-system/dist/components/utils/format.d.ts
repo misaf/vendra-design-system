@@ -7,11 +7,14 @@ export interface Currency {
   symbol: string;
   en: string;
   fa: string;
+  /** The currency's name in any other offered language (written after the amount). */
+  [language: string]: string | number;
 }
 export interface MoneyOptions {
   /** Key in `currencies`; defaults to 'IRT' (Toman). Throws if the table has no such currency. */
   currency?: string;
-  lang?: 'en' | 'fa';
+  /** Language code; 'en' and 'fa' have fixed regions, any other formats by its own code. */
+  lang?: string;
   /** The tenant's currency table. Defaults to CURRENCIES, which has only Toman and Rial; any other
    * currency needs the tenant's own rate. */
   currencies?: Record<string, Currency>;
@@ -22,7 +25,7 @@ export interface Format {
   /** "4,200,000 Toman", "$42.00", "۴٬۲۰۰٬۰۰۰ تومان". Throws for a currency missing from the table. */
   money(toman: number | string, options?: MoneyOptions): string;
   /** Grouped number; Persian digits and separators for 'fa'. */
-  number(n: number | string, lang?: 'en' | 'fa'): string;
+  number(n: number | string, lang?: string): string;
 }
-/** Number and currency formatting for English and Persian. */
+/** Number and currency formatting: English, Persian, or any language code Intl knows. */
 export declare const format: Format;

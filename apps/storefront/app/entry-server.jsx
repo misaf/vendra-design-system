@@ -7,6 +7,7 @@ import {vfServerPage, vfServerRender} from '../shared/platform/environment.js';
 import {vfPageBrandHtml, vfPageHead} from '../shared/services/page-lifecycle.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
+import {vfLocale} from '../shared/domain/store-config.js';
 import {loadPage} from './pages.js';
 
 const ENTITIES = {amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' '};
@@ -69,12 +70,13 @@ export async function render(url, {base = '/', origin = '', time = Date.now()} =
     });
     const page = vfServerPage();
     if (!page) throw new Error('No storefront page rendered at ' + url);
-    const lang = page.props.lang === 'fa' ? 'fa' : 'en';
+    const locale = vfLocale(page.props.lang);
+    const lang = locale.code;
     return {
       html,
       head: VF_SEO.headHtml(vfPageHead(page, mainHeading(html))) + '\n' + vfPageBrandHtml(page),
       lang,
-      dir: lang === 'fa' ? 'rtl' : 'ltr',
+      dir: locale.dir,
       view: page._vfPage
     };
   } finally {
