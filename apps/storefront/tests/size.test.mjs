@@ -25,7 +25,8 @@ const BUDGET = {
   // 41 KB since commerce's opening-hours rules (openingStatus, hoursSummary, hoursExceptions; 39.9 KB
   // before).
   // 42 KB since analytics reports amounts in an ISO currency (inCurrency, reportCurrency; 41.2 KB).
-  everything: 42 * 1024,
+  // 43 KB since PromoCodeField's collapsible "Have a promo code?" disclosure (42.2 KB).
+  everything: 43 * 1024,
   // Any one export. Components that draw an Icon carry the icon set (ICON_SVGS, ~6 KB).
   oneExport: 15 * 1024,
   // Exports with no icon and no React Aria-heavy helpers: only themselves.
