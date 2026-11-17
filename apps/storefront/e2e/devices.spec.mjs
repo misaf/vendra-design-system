@@ -132,6 +132,10 @@ test('a setup link can be reviewed on a fresh device before applying its prefere
   try {
     const next = await destination.newPage();
     await next.goto(link);
+    // The display is prerendered before its keyboard handlers and mount effects are ready.
+    await next.waitForFunction(
+      () => window.__vfRuntime?.rendered && !document.getElementById('root')?.inert
+    );
     await expect(next.locator('.vf-display')).toHaveAttribute('data-mode', 'tablet');
     await next.keyboard.press('Enter');
     await next.getByRole('button', {name: 'Review shared setup', exact: true}).click();

@@ -330,7 +330,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's styles (`app/theme.js`: Tailwind, the package and page CSS) and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
-- **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontAccountEditorDialog and StorefrontPresentationOrder.
+- **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
 - **Guard:** `tests/atomic.test.cjs` fails when a spec lacks its fixture (or the reverse), and when a new organism has neither. Organisms that predate the rule are listed in `tests/organisms-without-specs.json`; the list only shrinks: remove a name when you add its spec.
 
 ## Runtime and export
