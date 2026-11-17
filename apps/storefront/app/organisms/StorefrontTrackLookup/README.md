@@ -7,3 +7,5 @@ View retains lookup visibility and localized mapping. Tracking/shared logic reta
 Verify bilingual empty/invalid/mismatched/successful lookup, field and warning focus, error/failure clearing, normalized number/mobile variants, native form submission, track-another reset and browse navigation. Compare markup, touch/rotation, keyboard use, desktop/TV, containment and accessibility against the previous version.
 
 The accented h1 and intro render through the shared StorefrontPageHeading molecule (`variant="info"`, so the intro keeps the form width).
+
+Isolated fixture/spec coverage exercises the bilingual supplied heading, controlled fields and phone metadata, native form submission (Enter and pointer), noValidate delegation, field errors, independent failure visibility/focus target, browse destination, axe and compact containment. Lookup matching, normalization rules and page-managed focus stay in integration coverage.
