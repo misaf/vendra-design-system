@@ -22,10 +22,10 @@ export function useField({id, hint, error, describedBy}) {
 }
 
 // The hint or error under a control. Renders nothing without a message.
-export function FieldMessage({id, error, children}) {
+export function FieldMessage({id, error, children, ref}) {
   if (!children) return null;
   return (
-    <span id={id} className={cx('ag-field__hint', error && 'ag-field__hint--error')}>
+    <span ref={ref} id={id} className={cx('ag-field__hint', error && 'ag-field__hint--error')}>
       {children}
     </span>
   );

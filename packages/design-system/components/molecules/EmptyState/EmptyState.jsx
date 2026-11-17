@@ -14,11 +14,12 @@ export function EmptyState({
   actions,
   headingLevel = 2,
   className = '',
-  style
+  style,
+  ref
 }) {
   const Heading = 'h' + headingLevel;
   return (
-    <div className={cx('ag-empty', className)} style={style}>
+    <div ref={ref} className={cx('ag-empty', className)} style={style}>
       {icon && (
         <span className={cx('ag-empty__icon', 'ag-empty__icon--' + tone)}>
           {typeof icon === 'string' ? <Icon name={icon} size={28} /> : icon}

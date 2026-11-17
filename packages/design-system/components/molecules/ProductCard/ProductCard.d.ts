@@ -3,6 +3,8 @@ import type {Photo} from '../../atoms/Picture/Picture.js';
 import type {Stock} from '../../utils/commerce.js';
 
 export interface ProductCardProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** petal (default) or product (studio backdrop). */
   tone?: 'petal' | 'product';
   name: string;
@@ -36,4 +38,4 @@ export interface ProductCardProps {
   placeholder?: string;
   favLabel?: string;
 }
-export declare function ProductCard(props: ProductCardProps): JSX.Element;
+export declare function ProductCard(props: ProductCardProps): React.JSX.Element;

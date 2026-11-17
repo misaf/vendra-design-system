@@ -1,4 +1,6 @@
 export interface PromoCodeFieldProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The field's id (its label and error hang off it). Default "ag-promo" */
   id?: string;
   /** The code as typed; leave out to let the field keep it */
@@ -27,4 +29,4 @@ export interface PromoCodeFieldProps {
   style?: React.CSSProperties;
 }
 /** A discount code field with Apply inside it, then the applied code with Remove. */
-export declare function PromoCodeField(props: PromoCodeFieldProps): JSX.Element;
+export declare function PromoCodeField(props: PromoCodeFieldProps): React.JSX.Element;

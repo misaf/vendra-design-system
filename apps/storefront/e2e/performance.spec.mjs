@@ -8,8 +8,9 @@ const BUDGET = {
   // Compressed JS / CSS / font bytes a page loads before the site starts preloading other pages.
   // 255KB since November 2026: the account page (fa) grew from 243KB to 246KB in small, intended
   // steps (analytics events and channel attribution, catalog repricing of the bag, the LOCALES
-  // config), past the 245KB set for the structured opening hours.
-  firstPageJsKb: 255,
+  // config), past the 245KB set for the structured opening hours. 280KB since the move to React 19
+  // (react-dom 19 is larger): the account page (fa) went from 246KB to 270KB.
+  firstPageJsKb: 280,
   // One shared stylesheet for every page: 24KB since the counter presentation and the
   // product-code and delivery-review work of October 2026.
   firstPageCssKb: 27,

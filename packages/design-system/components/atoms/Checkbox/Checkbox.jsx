@@ -23,12 +23,14 @@ export function Checkbox({
   className,
   style,
   'aria-describedby': describedBy,
+  ref,
   ...rest
 }) {
   const {messageId, message, controlProps} = useField({id, hint, error, describedBy});
   const box = (
     <AriaCheckbox
       {...rest}
+      inputRef={ref}
       id={id}
       name={name}
       value={value}

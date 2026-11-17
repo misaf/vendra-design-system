@@ -9,6 +9,8 @@ export interface LightboxItem {
   caption?: React.ReactNode;
 }
 export interface LightboxProps {
+  /** The dialog element (while open). */
+  ref?: React.Ref<HTMLElement>;
   items: LightboxItem[];
   /** The item on screen; null (or out of range) keeps the viewer closed */
   index: number | null;
@@ -28,4 +30,4 @@ export interface LightboxProps {
   className?: string;
 }
 /** A full-screen React Aria modal showing one item's photo at a time: ←/→, swipe and previous/next move through the items (mirrored in RTL), Esc closes, focus returns to the opener. */
-export declare function Lightbox(props: LightboxProps): JSX.Element;
+export declare function Lightbox(props: LightboxProps): React.JSX.Element;

@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface EmptyStateProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Lucide icon name, or any node (e.g. a spinner or "404") */
   icon?: string | React.ReactNode;
   /** Icon disc colour: neutral (sunken), accent (soft peony) or danger. */

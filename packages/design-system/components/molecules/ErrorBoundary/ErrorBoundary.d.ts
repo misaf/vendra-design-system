@@ -14,4 +14,4 @@ export interface ErrorBoundaryProps {
   className?: string;
 }
 /** Shows a short note with Try again in place of a part of the page that failed to render. */
-export declare function ErrorBoundary(props: ErrorBoundaryProps): JSX.Element;
+export declare function ErrorBoundary(props: ErrorBoundaryProps): React.JSX.Element;

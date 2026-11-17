@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface SpinnerProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLSpanElement>;
   /** Diameter in px. Default 20 */
   size?: number;
   /** What is loading, announced politely. Default: "Loading" in the current language */

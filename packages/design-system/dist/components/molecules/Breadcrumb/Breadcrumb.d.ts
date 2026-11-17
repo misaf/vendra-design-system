@@ -7,6 +7,8 @@ export interface BreadcrumbItem {
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 export interface BreadcrumbProps {
+  /** The nav. */
+  ref?: React.Ref<HTMLElement>;
   /** From the top of the site to the current page, which comes last */
   items: BreadcrumbItem[];
   /** The nav's accessible name. Default: "Breadcrumb" in the current language */

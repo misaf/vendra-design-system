@@ -28,7 +28,8 @@ export function LocationPicker({
   onFail,
   compact = false,
   className,
-  style
+  style,
+  ref
 }) {
   const box = React.useRef(null);
   const map = React.useRef(null);
@@ -101,7 +102,11 @@ export function LocationPicker({
   };
 
   return (
-    <div className={cx('ag-location', compact && 'ag-location--compact', className)} style={style}>
+    <div
+      ref={ref}
+      className={cx('ag-location', compact && 'ag-location--compact', className)}
+      style={style}
+    >
       <span id={id + '-label'} className="ag-field__label">
         {label}
       </span>

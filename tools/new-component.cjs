@@ -71,7 +71,7 @@ ${wording ? `  /** Its accessible name. Default: the built-in wording in the pag
   style?: React.CSSProperties;
 }
 /** TODO: one line on what ${name} is. */
-export declare function ${name}(props: ${name}Props): JSX.Element;
+export declare function ${name}(props: ${name}Props): React.JSX.Element;
 `;
 
 if (css)

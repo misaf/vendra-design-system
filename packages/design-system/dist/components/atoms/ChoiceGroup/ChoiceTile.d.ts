@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface ChoiceTileProps {
+  /** The native radio input. */
+  ref?: React.Ref<HTMLInputElement>;
   label: React.ReactNode;
   description?: React.ReactNode;
   /** What the ChoiceGroup's value becomes when this tile is chosen (and what a form posts) */

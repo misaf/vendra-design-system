@@ -1,4 +1,6 @@
 export interface QuantityStepperProps {
+  /** The number input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   value?: number;
   defaultValue?: number;
   min?: number;
@@ -10,4 +12,4 @@ export interface QuantityStepperProps {
   /** decrease/increase name the buttons, value names the count field. Defaults come from VendraProvider's language (QuantityInput/messages.js) */
   labels?: {decrease: string; increase: string; value?: string};
 }
-export declare function QuantityInput(props: QuantityStepperProps): JSX.Element;
+export declare function QuantityInput(props: QuantityStepperProps): React.JSX.Element;

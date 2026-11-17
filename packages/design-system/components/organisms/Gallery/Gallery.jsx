@@ -14,7 +14,8 @@ export function Gallery({
   label,
   slideLabel = (i, n) => i + ' / ' + n,
   onIndexChange,
-  className = ''
+  className = '',
+  ref
 }) {
   const trackRef = React.useRef(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
@@ -35,6 +36,7 @@ export function Gallery({
   };
   return (
     <div
+      ref={ref}
       role="region"
       aria-roledescription="carousel"
       aria-label={label}

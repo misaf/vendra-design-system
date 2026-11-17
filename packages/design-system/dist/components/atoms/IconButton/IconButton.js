@@ -4,9 +4,12 @@ import React from "react";
 import { Button as AriaButton, Link } from "react-aria-components";
 import { Icon } from "../Icon/Icon.js";
 import { cx } from "../../utils/cx.js";
+import { useMergedRef } from "../../utils/refs.js";
 // An icon-only React Aria Button, or React Aria Link with `href`. `label` is its accessible name and tooltip;
 // `active` sets aria-pressed and `count` shows a badge; `inverse` draws it light for a dark surface.
-export function IconButton({ icon, label, variant = "ghost", size = "md", active, inverse, count, className = "", type = "button", href, target, rel, disabled, ...rest }) {
+export function IconButton({ icon, label, variant = "ghost", size = "md", active, inverse, count, className = "", type = "button", href, target, rel, disabled, ref, ...rest }) {
+	// React Aria passes on only the attributes it knows, so the tooltip title is set here.
+	const titledRef = useMergedRef(ref, (element) => element && (element.title = label));
 	const iconSize = size === "sm" ? 16 : size === "lg" ? 22 : 20;
 	const classes = cx("ag-iconbtn", "ag-iconbtn--" + variant, "ag-iconbtn--" + size, inverse && "ag-iconbtn--inverse", active && "ag-iconbtn--active", className);
 	// count may be a pre-localized string (Persian digits), so test for a value rather than count>0.
@@ -20,7 +23,7 @@ export function IconButton({ icon, label, variant = "ghost", size = "md", active
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
 		"aria-label": label,
-		ref: (element) => element && (element.title = label),
+		ref: titledRef,
 		className: classes
 	}, content);
 	return /* @__PURE__ */ React.createElement(AriaButton, {
@@ -29,8 +32,7 @@ export function IconButton({ icon, label, variant = "ghost", size = "md", active
 		isDisabled: disabled,
 		"aria-label": label,
 		"aria-pressed": active,
-		// React Aria passes on only the attributes it knows, so the tooltip title is set here.
-		ref: (element) => element && (element.title = label),
+		ref: titledRef,
 		className: classes
 	}, content);
 }

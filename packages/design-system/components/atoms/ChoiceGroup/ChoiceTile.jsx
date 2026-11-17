@@ -11,6 +11,7 @@ export function ChoiceTile({
   disabled,
   size = 'md',
   className = '',
+  ref,
   ...rest
 }) {
   const tileId = React.useId();
@@ -20,6 +21,7 @@ export function ChoiceTile({
   return (
     <Radio
       {...rest}
+      inputRef={ref}
       value={String(value)}
       isDisabled={disabled}
       aria-labelledby={namedByLabel ? labelId : rest['aria-labelledby']}

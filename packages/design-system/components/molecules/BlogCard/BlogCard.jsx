@@ -21,7 +21,8 @@ export function BlogCard({
   layout = 'stack',
   headingLevel = 3,
   priority,
-  className = ''
+  className = '',
+  ref
 }) {
   const Heading = 'h' + headingLevel;
   const TitleLink = href ? Link : Button;
@@ -60,7 +61,7 @@ export function BlogCard({
   );
   // The wide card is its own container, so its layout follows its width; the grid sits inside.
   return (
-    <article className={cx('ag-blog', wide && 'ag-blog--wide', className)}>
+    <article ref={ref} className={cx('ag-blog', wide && 'ag-blog--wide', className)}>
       {wide ? <div className="ag-blog__layout">{content}</div> : content}
     </article>
   );

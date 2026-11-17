@@ -5,6 +5,8 @@ export interface ErrorSummaryError {
   target: string;
 }
 export interface ErrorSummaryProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** In form order. Nothing renders without any */
   errors: ErrorSummaryError[];
   /** Default: the built-in "Check {count} details to continue." in the page's language */
@@ -17,4 +19,4 @@ export interface ErrorSummaryProps {
   style?: React.CSSProperties;
 }
 /** After a failed submit, a danger Alert listing what to fix, each a link that focuses its field. */
-export declare function ErrorSummary(props: ErrorSummaryProps): JSX.Element | null;
+export declare function ErrorSummary(props: ErrorSummaryProps): React.JSX.Element | null;

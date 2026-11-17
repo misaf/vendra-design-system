@@ -1,6 +1,7 @@
 import React from 'react';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // How far a value is towards a target (role="meter"): the spend left before free delivery, a
 // balance towards a discount. The label says what it measures; `valueLabel` replaces the default
@@ -19,16 +20,18 @@ export function Meter({
   className,
   style,
   'aria-label': ariaLabel,
-  'aria-labelledby': labelledBy
+  'aria-labelledby': labelledBy,
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const labelId = React.useId();
   const clamped = Math.min(Math.max(Number(value) || 0, minValue), maxValue);
   const share = maxValue > minValue ? (clamped - minValue) / (maxValue - minValue) : 0;
   const valueText = valueLabel ?? new Intl.NumberFormat(locale, {style: 'percent'}).format(share);
   return (
     <div
-      ref={ref}
+      ref={rootRef}
       id={id}
       role="meter"
       aria-valuenow={clamped}

@@ -1,5 +1,5 @@
 // Exercise the real publish payload without registry installs or lifecycle scripts. Consumers
-// live under the peer app's node_modules so React 18 and the React-19 job keep their own peers.
+// live under the peer app's node_modules, so they resolve its React and React Aria as peers.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');

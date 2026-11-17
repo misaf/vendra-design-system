@@ -3,6 +3,8 @@ export interface OrderTimelineStep {
   /** Pre-localized, e.g. "09:12" / "۰۹:۱۲" */ time?: React.ReactNode;
 }
 export interface OrderTimelineProps {
+  /** The ol. */
+  ref?: React.Ref<HTMLOListElement>;
   steps: OrderTimelineStep[];
   /** Index of the current step */
   current?: number;
@@ -16,4 +18,4 @@ export interface OrderTimelineProps {
   style?: React.CSSProperties;
 }
 /** <ol> with aria-current="step". Done: --text-body dot + check · current: --accent ring on --accent-soft · upcoming: --border-default / --text-muted. */
-export declare function OrderTimeline(props: OrderTimelineProps): JSX.Element | null;
+export declare function OrderTimeline(props: OrderTimelineProps): React.JSX.Element | null;

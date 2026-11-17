@@ -1,4 +1,6 @@
 export interface RadioGroupProps {
+  /** The outer element (a fieldset with `legend`). */
+  ref?: React.Ref<HTMLElement>;
   /** aria-label (or use labelledBy) */
   label?: string;
   labelledBy?: string;
@@ -24,4 +26,4 @@ export interface RadioGroupProps {
   style?: React.CSSProperties;
 }
 /** React Aria radiogroup: one Tab stop, arrow keys move and select (mirrored in RTL, following the page's language). */
-export declare function RadioGroup(props: RadioGroupProps): JSX.Element;
+export declare function RadioGroup(props: RadioGroupProps): React.JSX.Element;

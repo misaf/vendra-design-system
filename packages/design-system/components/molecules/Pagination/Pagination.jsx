@@ -6,6 +6,7 @@ import {format} from '../../utils/format.js';
 import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // The pages to show: the first, the last, and `siblings` either side of the current one, with null
 // for each gap. A gap of one page shows that page instead.
@@ -38,9 +39,11 @@ export function Pagination({
   previousLabel,
   nextLabel,
   className,
-  style
+  style,
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const text = useMessages(
     'Pagination',
     messages,
@@ -74,7 +77,7 @@ export function Pagination({
     );
   };
   return (
-    <nav ref={ref} aria-label={text.label} className={cx('ag-pages', className)} style={style}>
+    <nav ref={rootRef} aria-label={text.label} className={cx('ag-pages', className)} style={style}>
       <ul className="ag-pages__list">
         <li>
           {control(current - 1, <Icon name="chevron-left" size={18} />, {

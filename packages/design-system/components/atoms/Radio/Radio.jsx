@@ -4,7 +4,7 @@ import {cx} from '../../utils/cx.js';
 
 // One radio (React Aria) inside a RadioGroup, which holds the value and the keyboard. The label
 // alone names the radio; the description is read after it, so it never becomes part of the name.
-export function Radio({label, description, value, disabled, className, style, ...rest}) {
+export function Radio({label, description, value, disabled, className, style, ref, ...rest}) {
   const radioId = React.useId();
   const labelId = radioId + '-label';
   const descriptionId = radioId + '-desc';
@@ -12,6 +12,7 @@ export function Radio({label, description, value, disabled, className, style, ..
   return (
     <AriaRadio
       {...rest}
+      inputRef={ref}
       value={String(value ?? radioId)}
       isDisabled={disabled}
       aria-labelledby={namedByLabel ? labelId : rest['aria-labelledby']}

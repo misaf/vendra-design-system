@@ -4,9 +4,11 @@ export interface DetailListRow {
   value: React.ReactNode;
 }
 export interface DetailListProps {
+  /** The dl. */
+  ref?: React.Ref<HTMLDListElement>;
   rows: (DetailListRow | null | false)[];
   className?: string;
   style?: React.CSSProperties;
 }
 /** <dl> of label/value rows; icon aria-hidden in --text-accent; values use overflow-wrap:anywhere. Falsy rows are skipped. */
-export declare function DetailList(props: DetailListProps): JSX.Element;
+export declare function DetailList(props: DetailListProps): React.JSX.Element;

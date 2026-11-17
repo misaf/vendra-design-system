@@ -7,9 +7,10 @@ import { cx } from "../../utils/cx.js";
 // loads the next page. `href` makes the button a real link to the next page (it works without
 // JavaScript and for crawlers); `onClick` loads in place. When everything is showing, only the
 // status stays.
-export function LoadMore({ shown, total, status, label, href, onClick, busy = false, className = "", style }) {
+export function LoadMore({ shown, total, status, label, href, onClick, busy = false, className = "", style, ref }) {
 	const percent = total > 0 ? Math.min(100, Math.round(shown / total * 100)) : 100;
 	return /* @__PURE__ */ React.createElement("div", {
+		ref,
 		className: cx("ag-loadmore", className),
 		style
 	}, /* @__PURE__ */ React.createElement("p", {

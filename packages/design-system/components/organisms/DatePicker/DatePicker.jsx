@@ -68,7 +68,8 @@ export function DatePicker({
   disabled,
   id,
   className = '',
-  style
+  style,
+  ref
 }) {
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
   const appLocale = useLocale().locale;
@@ -206,7 +207,12 @@ export function DatePicker({
   const describedBy = message ? messageId : undefined;
 
   return (
-    <fieldset className={cx('ag-fieldset', 'ag-date', className)} style={style} disabled={disabled}>
+    <fieldset
+      ref={ref}
+      className={cx('ag-fieldset', 'ag-date', className)}
+      style={style}
+      disabled={disabled}
+    >
       <legend className="ag-date__legend">
         {label && (
           <span id={labelId} className="ag-field__label">
@@ -278,7 +284,15 @@ export function DatePicker({
           >
             <Group className={cx('ag-input ag-date__field', error && 'ag-input--error')}>
               <DateInput id={fieldId} className="ag-date__input">
-                {segment => <DateSegment segment={segment} className="ag-date__segment" />}
+                {segment => (
+                  <DateSegment
+                    segment={segment}
+                    className={cx(
+                      'ag-date__segment',
+                      segment.isEditable && segment.text.length < 2 && 'ag-date__segment--narrow'
+                    )}
+                  />
+                )}
               </DateInput>
               <Button className="ag-date__open" aria-label={text.open}>
                 <Icon name="calendar" size={18} />

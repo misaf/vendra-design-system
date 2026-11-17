@@ -2,6 +2,7 @@ import React from 'react';
 import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {cx} from '../../utils/cx.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // An icon-only React Aria Button, or React Aria Link with `href`. `label` is its accessible name and tooltip;
 // `active` sets aria-pressed and `count` shows a badge; `inverse` draws it light for a dark surface.
@@ -19,8 +20,11 @@ export function IconButton({
   target,
   rel,
   disabled,
+  ref,
   ...rest
 }) {
+  // React Aria passes on only the attributes it knows, so the tooltip title is set here.
+  const titledRef = useMergedRef(ref, element => element && (element.title = label));
   const iconSize = size === 'sm' ? 16 : size === 'lg' ? 22 : 20;
   const classes = cx(
     'ag-iconbtn',
@@ -45,7 +49,7 @@ export function IconButton({
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
         aria-label={label}
-        ref={element => element && (element.title = label)}
+        ref={titledRef}
         className={classes}
       >
         {content}
@@ -58,8 +62,7 @@ export function IconButton({
       isDisabled={disabled}
       aria-label={label}
       aria-pressed={active}
-      // React Aria passes on only the attributes it knows, so the tooltip title is set here.
-      ref={element => element && (element.title = label)}
+      ref={titledRef}
       className={classes}
     >
       {content}

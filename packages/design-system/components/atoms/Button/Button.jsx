@@ -3,6 +3,7 @@ import {Button as AriaButton, Link} from 'react-aria-components';
 import {Icon} from '../Icon/Icon.jsx';
 import {Spinner} from '../Spinner/Spinner.jsx';
 import {cx} from '../../utils/cx.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // href → React Aria's Link (navigation; in-site links go through VendraProvider's navigate); no href
 // → React Aria's Button (action), with onClick, type, disabled and the ARIA button attributes. A
@@ -25,9 +26,11 @@ export function Button({
   loading,
   loadingLabel,
   autoFocus,
+  ref,
   ...rest
 }) {
   const buttonRef = React.useRef(null);
+  const mergedRef = useMergedRef(buttonRef, ref);
   React.useEffect(() => {
     const button = buttonRef.current;
     const form = button?.form;
@@ -71,6 +74,7 @@ export function Button({
     return (
       <Link
         {...rest}
+        ref={ref}
         href={disabled || loading ? undefined : href}
         target={target}
         rel={rel ?? (target === '_blank' ? 'noopener noreferrer' : undefined)}
@@ -95,7 +99,7 @@ export function Button({
   return (
     <AriaButton
       {...pendingProps}
-      ref={buttonRef}
+      ref={mergedRef}
       type={loading && type === 'submit' ? 'button' : type}
       isDisabled={disabled}
       onPointerDownCapture={

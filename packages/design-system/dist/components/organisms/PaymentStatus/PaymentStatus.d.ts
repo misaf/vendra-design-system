@@ -3,6 +3,8 @@ export type PaymentState =
   'redirecting' | 'verifying' | 'paid' | 'cancelled' | 'failed' | 'pending';
 
 export interface PaymentStatusProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   status: PaymentState;
   /** Formatted by the app: format.money(total, {currency, lang, currencies}) */
   amount?: React.ReactNode;

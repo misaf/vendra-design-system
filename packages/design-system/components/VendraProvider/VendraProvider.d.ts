@@ -25,4 +25,4 @@ export interface VendraProviderProps {
   children?: React.ReactNode;
 }
 /** Language, router and density for every component below: React Aria's I18nProvider (and RouterProvider when `navigate` is set) plus the components' built-in wording. A nested one changes only the props it is given. Props on a component still win. */
-export declare function VendraProvider(props: VendraProviderProps): JSX.Element;
+export declare function VendraProvider(props: VendraProviderProps): React.JSX.Element;

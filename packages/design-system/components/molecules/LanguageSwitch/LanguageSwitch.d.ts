@@ -3,6 +3,8 @@ export interface LanguageOption {
   label: string;
 }
 export interface LanguageSwitchProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Current language id, e.g. "en" | "fa" */
   value?: string;
   onChange?: (id: string) => void;
@@ -11,4 +13,4 @@ export interface LanguageSwitchProps {
   /** Group name for screen readers, in the page's language (default "Language") */
   label?: string;
 }
-export declare function LanguageSwitch(props: LanguageSwitchProps): JSX.Element;
+export declare function LanguageSwitch(props: LanguageSwitchProps): React.JSX.Element;

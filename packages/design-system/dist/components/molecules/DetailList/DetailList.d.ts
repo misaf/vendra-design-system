@@ -5,6 +5,8 @@ export interface DetailListRow {
   value: React.ReactNode;
 }
 export interface DetailListProps {
+  /** The dl. */
+  ref?: React.Ref<HTMLDListElement>;
   rows: (DetailListRow | null | false)[];
   className?: string;
   style?: React.CSSProperties;

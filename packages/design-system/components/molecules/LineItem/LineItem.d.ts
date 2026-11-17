@@ -1,6 +1,8 @@
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface LineItemProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** A URL or a photo object (see Picture); sized to the thumbnail */
   image?: Photo;
   name: React.ReactNode;
@@ -29,4 +31,4 @@ export interface LineItemProps {
   busy?: boolean;
   className?: string;
 }
-export declare function LineItem(props: LineItemProps): JSX.Element;
+export declare function LineItem(props: LineItemProps): React.JSX.Element;

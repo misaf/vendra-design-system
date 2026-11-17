@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface SkeletonProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLElement>;
   /** card = ProductCard-shaped preset (arch image + 3 text lines) */
   shape?: 'text' | 'block' | 'circle' | 'arch' | 'card';
   width?: number | string;

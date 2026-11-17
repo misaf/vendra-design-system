@@ -38,10 +38,11 @@ export function Select({
   'aria-describedby': describedBy,
   'aria-invalid': ariaInvalid,
   'aria-errormessage': _errorMessage,
+  ref,
   ...rest
 }) {
   const {fieldId, messageId, message, controlProps} = useField({id, hint, error, describedBy});
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
   const density = useDensity();
   const invalid = !!error || ariaInvalid === true || ariaInvalid === 'true';
   const toKey = selected => (selected == null || selected === '' ? null : String(selected));
@@ -52,7 +53,7 @@ export function Select({
     <I18nProvider locale={locale}>
       <AriaSelect
         {...rest}
-        ref={ref}
+        ref={localeRef}
         id={fieldId}
         name={name}
         selectedKey={value === undefined ? undefined : toKey(value)}
@@ -69,6 +70,7 @@ export function Select({
       >
         {label && <Label className="ag-field__label">{label}</Label>}
         <Button
+          ref={ref}
           className={cx(
             'ag-input ag-select__trigger',
             invalid && 'ag-input--error',

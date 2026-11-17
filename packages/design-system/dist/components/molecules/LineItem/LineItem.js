@@ -10,14 +10,17 @@ import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 // A bag or order row. `size="lg"` (bag) adds the quantity control and Remove; `sm` (summaries)
 // shows ×quantity. `unavailable` greys it out and hides the price; `busy` marks it aria-busy.
-export function LineItem({ image, name, meta, note, price, quantity, quantityMax, onQuantityChange, onRemove, removeLabel, quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel, busy, className = "" }) {
+export function LineItem({ image, name, meta, note, price, quantity, quantityMax, onQuantityChange, onRemove, removeLabel, quantityLabels, formatQuantity = (n) => String(n), size = "lg", unavailable, unavailableLabel, busy, className = "", ref }) {
 	const text = useMessages("LineItem", messages, {
 		remove: removeLabel,
 		unavailable: unavailableLabel
 	});
 	const large = size !== "sm";
 	const thumbWidth = large ? 88 : 44;
-	return /* @__PURE__ */ React.createElement("div", { className: "ag-linewrap" }, /* @__PURE__ */ React.createElement("div", {
+	return /* @__PURE__ */ React.createElement("div", {
+		ref,
+		className: "ag-linewrap"
+	}, /* @__PURE__ */ React.createElement("div", {
 		className: cx("ag-line", "ag-line--" + (large ? "lg" : "sm"), unavailable && "ag-line--unavailable", className),
 		"aria-busy": busy || undefined
 	}, /* @__PURE__ */ React.createElement("span", {

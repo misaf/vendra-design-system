@@ -23,10 +23,12 @@ export interface FieldState {
 /** Ids and ARIA wiring shared by every form control. */
 export declare function useField(options: UseFieldOptions): FieldState;
 export interface FieldMessageProps {
+  /** The message element. */
+  ref?: React.Ref<HTMLSpanElement>;
   id: string;
   /** Styles the message as an error. */
   error?: boolean;
   children?: React.ReactNode;
 }
 /** The hint or error under a control; renders nothing without children. */
-export declare function FieldMessage(props: FieldMessageProps): JSX.Element | null;
+export declare function FieldMessage(props: FieldMessageProps): React.JSX.Element | null;
