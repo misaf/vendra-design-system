@@ -3,6 +3,8 @@ export interface TabItem {
   label: React.ReactNode;
 }
 export interface TabsProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   items: TabItem[];
   value?: string;
   defaultValue?: string;
@@ -22,4 +24,4 @@ export interface TabsProps {
   children?: React.ReactNode;
 }
 /** React Aria tabs: one Tab stop; ←/→ (mirrored in RTL), Home and End move and select; children is the selected tab's panel. */
-export declare function Tabs(props: TabsProps): JSX.Element;
+export declare function Tabs(props: TabsProps): React.JSX.Element;

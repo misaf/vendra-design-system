@@ -1,6 +1,8 @@
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface GalleryProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** URLs or photo objects (see Picture); the first loads at once, the rest lazily */
   images: Photo[];
   /** Default '(max-width: 767px) 100vw, 540px'. Applied per image when it has candidates. */
@@ -16,4 +18,4 @@ export interface GalleryProps {
   onIndexChange?: (index: number) => void;
   className?: string;
 }
-export declare function Gallery(props: GalleryProps): JSX.Element;
+export declare function Gallery(props: GalleryProps): React.JSX.Element;

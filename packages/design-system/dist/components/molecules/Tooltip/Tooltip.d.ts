@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface TooltipProps {
+  /** The trigger's wrapper. */
+  ref?: React.Ref<HTMLSpanElement>;
   content: React.ReactNode;
   placement?: 'top' | 'bottom';
   /** Force visible (previews) */

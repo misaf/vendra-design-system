@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface AnnouncementBarProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
   onClose?: () => void;
   closeLabel?: string;

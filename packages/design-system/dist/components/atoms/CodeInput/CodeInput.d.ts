@@ -4,6 +4,8 @@ export interface CodeInputProps extends Omit<
   InputProps,
   'type' | 'multiline' | 'maxLength' | 'onChange'
 > {
+  /** The native input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   /** Digits in the code; default 5. */
   length?: number;
   /** The code so far: digits only. */

@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface AlertProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The status tones Badge and Toast share. */
   tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
   /** Lucide icon name; defaults per tone. Pass false to hide. */

@@ -2,6 +2,8 @@ export interface SearchFieldProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'onSubmit' | 'value' | 'defaultValue' | 'type'
 > {
+  /** The native input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   value?: string;
   defaultValue?: string;
   /** The text as typed */
@@ -19,4 +21,4 @@ export interface SearchFieldProps extends Omit<
   clearLabel?: string;
 }
 /** React Aria SearchField styled like Input: Esc or the clear button empties it, Enter submits. */
-export declare function SearchField(props: SearchFieldProps): JSX.Element;
+export declare function SearchField(props: SearchFieldProps): React.JSX.Element;

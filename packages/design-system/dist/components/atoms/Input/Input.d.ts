@@ -3,6 +3,8 @@ export interface InputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'value' | 'defaultValue'
 > {
+  /** The native input (textarea with `multiline`), for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
   value?: string;
   defaultValue?: string;
   /** The text as typed */

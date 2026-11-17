@@ -22,6 +22,8 @@ export interface PictureProps extends Omit<
   React.ImgHTMLAttributes<HTMLImageElement>,
   'src' | 'srcSet' | 'width' | 'height' | 'loading'
 > {
+  /** The img. */
+  ref?: React.Ref<HTMLImageElement>;
   image?: Photo;
   /** Overrides image.alt. Default ''. */
   alt?: string;
@@ -31,4 +33,4 @@ export interface PictureProps extends Omit<
   priority?: boolean;
 }
 /** A responsive <img> (or <picture> with AVIF/WebP sources), lazy unless `priority`; renders nothing without a src. */
-export declare function Picture(props: PictureProps): JSX.Element | null;
+export declare function Picture(props: PictureProps): React.JSX.Element | null;

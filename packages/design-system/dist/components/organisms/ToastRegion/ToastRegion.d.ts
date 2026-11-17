@@ -14,6 +14,8 @@ export declare class ToastQueue {
   clear(): void;
 }
 export interface ToastRegionProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   queue: ToastQueue;
   /** Names the landmark. Default: React Aria's "Notifications" in the page language */
   label?: string;

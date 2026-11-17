@@ -12,11 +12,12 @@ export function OrderSummary({
   title,
   titleAs = 'h2',
   className = '',
-  style
+  style,
+  ref
 }) {
   const Title = titleAs;
   return (
-    <section className={cx('ag-osum', className)} style={style}>
+    <section ref={ref} className={cx('ag-osum', className)} style={style}>
       {title && <Title className="ag-osum__title">{title}</Title>}
       <ul className="ag-osum__lines">
         {lines.map((line, i) => (

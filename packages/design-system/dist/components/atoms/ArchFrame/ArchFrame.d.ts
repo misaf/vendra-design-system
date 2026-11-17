@@ -2,6 +2,8 @@ import * as React from 'react';
 import type {Photo} from '../Picture/Picture.js';
 
 export interface ArchFrameProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** A URL or a photo object with srcSet, AVIF/WebP sources and a placeholder (see Picture) */
   src?: Photo;
   /** The width the frame shows at; applied when the photo has candidates */

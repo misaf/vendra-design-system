@@ -12,14 +12,14 @@ import { useDensity } from "../../utils/density.js";
 // `name`/`required`/`autoComplete` for forms (React Aria keeps a
 // hidden native select for autofill). A group picker (DatePicker) can own the message: it passes
 // aria-invalid and aria-describedby itself, with no hint or error here.
-export function Select({ label, hint, error, options = [], placeholder = "", disabled, required, id, name, value, defaultValue, onChange, className, style, "aria-describedby": describedBy, "aria-invalid": ariaInvalid, "aria-errormessage": _errorMessage, ...rest }) {
+export function Select({ label, hint, error, options = [], placeholder = "", disabled, required, id, name, value, defaultValue, onChange, className, style, "aria-describedby": describedBy, "aria-invalid": ariaInvalid, "aria-errormessage": _errorMessage, ref, ...rest }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
 		error,
 		describedBy
 	});
-	const { locale, ref } = usePageLocale();
+	const { locale, ref: localeRef } = usePageLocale();
 	const density = useDensity();
 	const invalid = !!error || ariaInvalid === true || ariaInvalid === "true";
 	const toKey = (selected) => selected == null || selected === "" ? null : String(selected);
@@ -29,7 +29,7 @@ export function Select({ label, hint, error, options = [], placeholder = "", dis
 	} : option);
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(AriaSelect, {
 		...rest,
-		ref,
+		ref: localeRef,
 		id: fieldId,
 		name,
 		selectedKey: value === undefined ? undefined : toKey(value),
@@ -43,7 +43,10 @@ export function Select({ label, hint, error, options = [], placeholder = "", dis
 		"aria-describedby": controlProps["aria-describedby"],
 		className: cx("ag-field ag-select", className),
 		style
-	}, label && /* @__PURE__ */ React.createElement(Label, { className: "ag-field__label" }, label), /* @__PURE__ */ React.createElement(Button, { className: cx("ag-input ag-select__trigger", invalid && "ag-input--error", disabled && "ag-input--disabled") }, /* @__PURE__ */ React.createElement(SelectValue, { className: "ag-select__value" }), /* @__PURE__ */ React.createElement(Icon, {
+	}, label && /* @__PURE__ */ React.createElement(Label, { className: "ag-field__label" }, label), /* @__PURE__ */ React.createElement(Button, {
+		ref,
+		className: cx("ag-input ag-select__trigger", invalid && "ag-input--error", disabled && "ag-input--disabled")
+	}, /* @__PURE__ */ React.createElement(SelectValue, { className: "ag-select__value" }), /* @__PURE__ */ React.createElement(Icon, {
 		name: "chevron-down",
 		size: 16,
 		className: "ag-input__chev"

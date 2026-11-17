@@ -18,9 +18,10 @@ export function QuantityInput({
   onChange,
   disabled,
   size = 'md',
-  labels = {}
+  labels = {},
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
   const text = useMessages('QuantityInput', messages, labels, locale);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const quantity = value ?? uncontrolledValue;
@@ -30,7 +31,7 @@ export function QuantityInput({
           before the first paint) gets a fresh field. */}
       <NumberField
         key={locale}
-        ref={ref}
+        ref={localeRef}
         value={quantity}
         minValue={min}
         maxValue={max}
@@ -50,7 +51,7 @@ export function QuantityInput({
           <Button slot="decrement" aria-label={text.decrease}>
             <Icon name="minus" size={16} />
           </Button>
-          <Input className="ag-qty__val" />
+          <Input ref={ref} className="ag-qty__val" />
           <Button slot="increment" aria-label={text.increase}>
             <Icon name="plus" size={16} />
           </Button>

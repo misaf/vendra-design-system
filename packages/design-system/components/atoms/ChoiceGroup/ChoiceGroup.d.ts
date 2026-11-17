@@ -1,4 +1,6 @@
 export interface ChoiceGroupProps {
+  /** The outer element (a fieldset with `legend`). */
+  ref?: React.Ref<HTMLElement>;
   /** aria-label (or use labelledBy) */
   label?: string;
   labelledBy?: string;
@@ -26,4 +28,4 @@ export interface ChoiceGroupProps {
   style?: React.CSSProperties;
 }
 /** React Aria radiogroup: one Tab stop, arrow keys move and select (mirrored in RTL, following the page's language). */
-export declare function ChoiceGroup(props: ChoiceGroupProps): JSX.Element;
+export declare function ChoiceGroup(props: ChoiceGroupProps): React.JSX.Element;

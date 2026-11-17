@@ -20,6 +20,8 @@ export interface DatePickerLabels {
   /** "That’s {date}" · fa «برابر با {date}» */ equivalent?: string;
 }
 export interface DatePickerProps {
+  /** The fieldset. */
+  ref?: React.Ref<HTMLFieldSetElement>;
   label?: string;
   /** ISO 'YYYY-MM-DD', or {cal, m, d} when yearly */
   value?: string | YearlyDate | null;

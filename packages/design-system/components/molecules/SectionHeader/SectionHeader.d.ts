@@ -1,4 +1,6 @@
 export interface SectionHeaderProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   title: React.ReactNode;
   /** Italic serif word after the title (upright in Persian) */
   accent?: React.ReactNode;
@@ -19,4 +21,4 @@ export interface SectionHeaderProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function SectionHeader(props: SectionHeaderProps): JSX.Element;
+export declare function SectionHeader(props: SectionHeaderProps): React.JSX.Element;

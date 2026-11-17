@@ -1,4 +1,6 @@
 export interface SpinnerProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLSpanElement>;
   /** Diameter in px. Default 20 */
   size?: number;
   /** What is loading, announced politely. Default: "Loading" in the current language */
@@ -9,4 +11,4 @@ export interface SpinnerProps {
   style?: React.CSSProperties;
 }
 /** A spinning ring for a wait of unknown length: a polite status unless `decorative`. */
-export declare function Spinner(props: SpinnerProps): JSX.Element;
+export declare function Spinner(props: SpinnerProps): React.JSX.Element;

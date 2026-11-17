@@ -4,6 +4,8 @@ export interface StepperStep {
   /** Pre-localized number, e.g. "۲" */ number?: string;
 }
 export interface StepperProps {
+  /** The outer element (the ol, or its wrapper when compact). */
+  ref?: React.Ref<HTMLElement>;
   steps: StepperStep[];
   /** Index of the current step */
   current: number;

@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface LoadMoreProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Items showing now. */
   shown: number;
   /** Items in the whole list (the API's total). */

@@ -24,7 +24,7 @@ function Content({ title, titleId, onClose, closeLabel, footer, children, headin
 // control inside marked autoFocus) and stays inside, Esc and a click outside close it (when there is
 // onClose), and focus returns to the opener. `inline` previews sit
 // inside their parent instead, without moving focus or locking the page (several can share a card).
-export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center" }) {
+export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center", ref }) {
 	const text = useMessages("Dialog", messages, { close: closeLabel });
 	const density = useDensity();
 	const titleId = React.useId();
@@ -39,6 +39,7 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 			className: overlayClass,
 			"data-density": density
 		}, /* @__PURE__ */ React.createElement("div", {
+			ref,
 			role: "dialog",
 			"aria-labelledby": title ? titleId : undefined,
 			className: dialogClass,
@@ -61,7 +62,10 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 	}, /* @__PURE__ */ React.createElement(Modal, {
 		className: dialogClass,
 		style
-	}, /* @__PURE__ */ React.createElement(AriaDialog, { className: "ag-dialog__frame" }, /* @__PURE__ */ React.createElement(Content, {
+	}, /* @__PURE__ */ React.createElement(AriaDialog, {
+		ref,
+		className: "ag-dialog__frame"
+	}, /* @__PURE__ */ React.createElement(Content, {
 		onClose,
 		closeLabel: text.close,
 		footer,

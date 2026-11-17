@@ -3,9 +3,9 @@ import {Icon} from '../../atoms/Icon/Icon.jsx';
 import {cx} from '../../utils/cx.js';
 
 // Label / value pairs as a <dl>. Icons are decorative (aria-hidden) in --text-accent; values wrap anywhere (long addresses, references).
-export function DetailList({rows = [], className = '', style}) {
+export function DetailList({rows = [], className = '', style, ref}) {
   return (
-    <dl className={cx('ag-dl', className)} style={style}>
+    <dl ref={ref} className={cx('ag-dl', className)} style={style}>
       {rows.filter(Boolean).map((row, i) => (
         <div key={i} className={cx('ag-dl__row', row.icon && 'ag-dl__row--icon')}>
           <dt className="ag-dl__label">

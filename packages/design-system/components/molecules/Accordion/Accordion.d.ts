@@ -4,6 +4,8 @@ export interface AccordionItem {
   /** Plain strings keep line breaks (pre-line) */ content: React.ReactNode;
 }
 export interface AccordionProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   items: AccordionItem[];
   /** Controlled: the open item's id, or ids with allowMultiple */
   value?: string | string[] | null;
@@ -15,4 +17,4 @@ export interface AccordionProps {
   headingLevel?: 2 | 3 | 4;
   className?: string;
 }
-export declare function Accordion(props: AccordionProps): JSX.Element;
+export declare function Accordion(props: AccordionProps): React.JSX.Element;

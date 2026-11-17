@@ -1,4 +1,6 @@
 export interface RadioProps {
+  /** The native radio input. */
+  ref?: React.Ref<HTMLInputElement>;
   label?: React.ReactNode;
   /** Secondary muted line under the label, exposed as the accessible description (not part of the name) */
   description?: React.ReactNode;
@@ -12,4 +14,4 @@ export interface RadioProps {
   style?: React.CSSProperties;
 }
 /** A React Aria radio. Place it inside <RadioGroup>, which holds the value, name, hint and error. */
-export declare function Radio(props: RadioProps): JSX.Element;
+export declare function Radio(props: RadioProps): React.JSX.Element;

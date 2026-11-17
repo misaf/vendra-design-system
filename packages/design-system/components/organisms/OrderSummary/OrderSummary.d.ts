@@ -21,6 +21,8 @@ export interface OrderSummarySum {
   /** Grand total row */ strong?: boolean;
 }
 export interface OrderSummaryProps {
+  /** The section. */
+  ref?: React.Ref<HTMLElement>;
   lines: OrderSummaryLine[];
   sums?: OrderSummarySum[];
   title?: React.ReactNode;
@@ -30,4 +32,4 @@ export interface OrderSummaryProps {
   style?: React.CSSProperties;
 }
 /** <ul> of lines (48px ArchFrame thumb, size="thumb", tone="product") then a <dl> of totals. */
-export declare function OrderSummary(props: OrderSummaryProps): JSX.Element;
+export declare function OrderSummary(props: OrderSummaryProps): React.JSX.Element;

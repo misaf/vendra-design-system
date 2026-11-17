@@ -1,4 +1,6 @@
 export interface IconProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLSpanElement>;
   /** Lucide icon name, kebab-case (e.g. "flower-2", "shopping-bag"). */
   name: string;
   /** Pixels at the comfortable density; scales with `data-density` (--size-scale). Default 20. */
@@ -11,4 +13,4 @@ export interface IconProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function Icon(props: IconProps): JSX.Element;
+export declare function Icon(props: IconProps): React.JSX.Element;

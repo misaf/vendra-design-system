@@ -7,7 +7,7 @@ import { Picture } from "../../atoms/Picture/Picture.js";
 import { cx } from "../../utils/cx.js";
 // A category tile (photo, name, count) that is a link with `href` or a button with `onClick`.
 // frame="circle" is the small round version for a quick row of categories.
-export function CategoryCard({ label, count, image, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", aspect, onClick, href, className = "" }) {
+export function CategoryCard({ label, count, image, priority, sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw", frame = "arch", aspect, onClick, href, className = "", ref }) {
 	const inner = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
 		className: cx("ag-cat__media", "ag-product__media--" + frame),
 		style: aspect ? { aspectRatio: aspect } : undefined
@@ -22,11 +22,13 @@ export function CategoryCard({ label, count, image, priority, sizes = "(max-widt
 		className: "ag-cat__arrow"
 	})), count && /* @__PURE__ */ React.createElement("span", { className: "ag-cat__count" }, count));
 	if (href) return /* @__PURE__ */ React.createElement(Link, {
+		ref,
 		href,
 		className: cx("ag-cat", "ag-cat--" + frame, className),
 		onClick
 	}, inner);
 	return /* @__PURE__ */ React.createElement(Button, {
+		ref,
 		className: cx("ag-cat", "ag-cat--" + frame, className),
 		onClick
 	}, inner);

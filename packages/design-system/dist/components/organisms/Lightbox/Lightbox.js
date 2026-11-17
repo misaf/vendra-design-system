@@ -10,6 +10,7 @@ import { useMessages } from "../../utils/messages.js";
 import { useLocaleConfig, usePageLocale } from "../../utils/locale.js";
 import { useDensity } from "../../utils/density.js";
 import { messages } from "./messages.js";
+import { useMergedRef } from "../../utils/refs.js";
 // How far a finger has to travel sideways before a swipe changes the item.
 const SWIPE_MIN = 48;
 const photoSrc = (photo) => typeof photo === "string" ? photo : photo && photo.src;
@@ -17,7 +18,7 @@ const photoSrc = (photo) => typeof photo === "string" ? photo : photo && photo.s
 // previous/next buttons, ←/→ and a sideways swipe move through `items` (mirrored in RTL), dots move
 // through the current item's photos, Esc or × close it and focus returns to the opener. The
 // position ("3 of 14") is announced as it changes; the neighbours' first photos load ahead.
-export function Lightbox({ items = [], index, onIndexChange, onClose, label, previousLabel, nextLabel, closeLabel, actions, sizes = "100vw", className }) {
+export function Lightbox({ items = [], index, onIndexChange, onClose, label, previousLabel, nextLabel, closeLabel, actions, sizes = "100vw", className, ref }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const density = useDensity();
 	const text = useMessages("Lightbox", messages, {
@@ -33,8 +34,15 @@ export function Lightbox({ items = [], index, onIndexChange, onClose, label, pre
 	const photos = item ? item.images || [] : [];
 	const [photoIndex, setPhotoIndex] = React.useState(0);
 	const frameRef = React.useRef(null);
+	const mergedRef = useMergedRef(frameRef, localeRef, ref);
 	const swipe = React.useRef(null);
 	React.useEffect(() => setPhotoIndex(0), [index]);
+	// Next or Previous turns disabled at either end and drops focus to the page; keep it in the
+	// viewer, so the arrow keys and Esc still reach it.
+	React.useEffect(() => {
+		const frame = frameRef.current;
+		if (frame && !frame.contains(document.activeElement)) frame.focus();
+	}, [index]);
 	const goTo = (target) => {
 		if (target >= 0 && target < count && target !== index && onIndexChange) onIndexChange(target);
 	};
@@ -80,10 +88,7 @@ export function Lightbox({ items = [], index, onIndexChange, onClose, label, pre
 	}, /* @__PURE__ */ React.createElement(Modal, { className: cx("ag-lightbox", className) }, /* @__PURE__ */ React.createElement(Dialog, {
 		"aria-label": text.label,
 		className: "ag-lightbox__frame ag-on-inverse",
-		ref: (element) => {
-			frameRef.current = element;
-			localeRef.current = element;
-		}
+		ref: mergedRef
 	}, item && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-lightbox__bar" }, /* @__PURE__ */ React.createElement("span", {
 		className: "ag-lightbox__position",
 		"aria-live": "polite"

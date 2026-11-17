@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface DialogProps {
+  /** The dialog element (while open). */
+  ref?: React.Ref<HTMLElement>;
   open: boolean;
   onClose?: () => void;
   title?: React.ReactNode;

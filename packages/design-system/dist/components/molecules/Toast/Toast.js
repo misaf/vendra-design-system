@@ -14,8 +14,9 @@ const ICONS = {
 	danger: "circle-alert"
 };
 // What a toast shows: tone icon, title, message, the follow-up action and React Aria's close button.
-function ToastBody({ toast, tone = "success", title, message, action, closeLabel, closable, style }) {
+function ToastBody({ toast, tone = "success", title, message, action, closeLabel, closable, style, ref }) {
 	return /* @__PURE__ */ React.createElement(AriaToast, {
+		ref,
 		toast,
 		className: "ag-toast",
 		style
@@ -49,7 +50,7 @@ function ToastBody({ toast, tone = "success", title, message, action, closeLabel
 // A toast on React Aria (role="alertdialog", its text in an atomic alert). Inside a ToastRegion it
 // shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
 // and onClose is what its close button does.
-export function Toast({ toast: queued, tone, title, message, action, onClose, closeLabel, style }) {
+export function Toast({ toast: queued, tone, title, message, action, onClose, closeLabel, style, ref }) {
 	const text = useMessages("Toast", messages, { close: closeLabel });
 	const key = React.useId();
 	const latestClose = React.useRef(onClose);
@@ -74,7 +75,8 @@ export function Toast({ toast: queued, tone, title, message, action, onClose, cl
 		action,
 		closeLabel: text.close,
 		closable: true,
-		style
+		style,
+		ref
 	});
 	return /* @__PURE__ */ React.createElement(ToastStateContext.Provider, { value: state }, /* @__PURE__ */ React.createElement(ToastBody, {
 		toast,
@@ -84,6 +86,7 @@ export function Toast({ toast: queued, tone, title, message, action, onClose, cl
 		action,
 		closeLabel: text.close,
 		closable: !!onClose,
-		style
+		style,
+		ref
 	}));
 }

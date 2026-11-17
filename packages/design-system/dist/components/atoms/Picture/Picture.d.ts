@@ -23,6 +23,8 @@ export interface PictureProps extends Omit<
   React.ImgHTMLAttributes<HTMLImageElement>,
   'src' | 'srcSet' | 'width' | 'height' | 'loading'
 > {
+  /** The img. */
+  ref?: React.Ref<HTMLImageElement>;
   image?: Photo;
   /** Overrides image.alt. Default ''. */
   alt?: string;

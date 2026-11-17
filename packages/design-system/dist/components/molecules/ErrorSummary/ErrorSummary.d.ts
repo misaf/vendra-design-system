@@ -6,6 +6,8 @@ export interface ErrorSummaryError {
   target: string;
 }
 export interface ErrorSummaryProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** In form order. Nothing renders without any */
   errors: ErrorSummaryError[];
   /** Default: the built-in "Check {count} details to continue." in the page's language */

@@ -10,6 +10,8 @@ export interface LightboxItem {
   caption?: React.ReactNode;
 }
 export interface LightboxProps {
+  /** The dialog element (while open). */
+  ref?: React.Ref<HTMLElement>;
   items: LightboxItem[];
   /** The item on screen; null (or out of range) keeps the viewer closed */
   index: number | null;

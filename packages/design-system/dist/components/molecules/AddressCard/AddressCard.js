@@ -8,10 +8,11 @@ import { cx } from "../../utils/cx.js";
 import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 // Saved delivery address. Edit / delete IconButtons get specific names ("Edit Home", "Delete Home").
-export function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, onDelete, onMakeDefault, labels, className = "", style }) {
+export function AddressCard({ label, line, recipient, phone, zone, isDefault, onEdit, onDelete, onMakeDefault, labels, className = "", style, ref }) {
 	const text = useMessages("AddressCard", messages, labels);
 	const named = (template) => template.replace("{name}", label || "");
 	return /* @__PURE__ */ React.createElement("div", {
+		ref,
 		className: cx("ag-card", "ag-addr", className),
 		style
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-addr__head" }, /* @__PURE__ */ React.createElement("span", { className: "ag-addr__label" }, label), /* @__PURE__ */ React.createElement("div", { className: "ag-addr__tools" }, isDefault && /* @__PURE__ */ React.createElement(Badge, { tone: "accent" }, text.default), onEdit && /* @__PURE__ */ React.createElement(IconButton, {

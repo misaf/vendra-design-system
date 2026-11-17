@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface PriceProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLSpanElement>;
   /** The price to pay, formatted by the app: format.money(n, {currency, lang, currencies}) */
   value: React.ReactNode;
   /** The price before a reduction, formatted the same way; struck through, read as "Was …" */

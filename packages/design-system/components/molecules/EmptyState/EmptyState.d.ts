@@ -1,4 +1,6 @@
 export interface EmptyStateProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Lucide icon name, or any node (e.g. a spinner or "404") */
   icon?: string | React.ReactNode;
   /** Icon disc colour: neutral (sunken), accent (soft peony) or danger. */
@@ -15,4 +17,4 @@ export interface EmptyStateProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function EmptyState(props: EmptyStateProps): JSX.Element;
+export declare function EmptyState(props: EmptyStateProps): React.JSX.Element;

@@ -6,6 +6,8 @@ export interface FilterBarFilter {
   onRemove: () => void;
 }
 export interface FilterBarProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The filters that are on; the bar renders nothing when there are none */
   filters: FilterBarFilter[];
   /** Shows "Clear all" after the filters. Move focus somewhere useful, as the bar goes away */
@@ -18,4 +20,4 @@ export interface FilterBarProps {
   style?: React.CSSProperties;
 }
 /** The filters that are on, each removable, and "Clear all". */
-export declare function FilterBar(props: FilterBarProps): JSX.Element | null;
+export declare function FilterBar(props: FilterBarProps): React.JSX.Element | null;

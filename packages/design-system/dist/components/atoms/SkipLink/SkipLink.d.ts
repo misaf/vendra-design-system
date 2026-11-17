@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface SkipLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** The link. */
+  ref?: React.Ref<HTMLAnchorElement>;
   /** Target landmark. Default "#main" */
   href?: string;
   /** Localised label, e.g. "Skip to content" / «رفتن به محتوا» */

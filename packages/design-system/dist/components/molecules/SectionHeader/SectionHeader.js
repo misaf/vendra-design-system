@@ -7,7 +7,7 @@ import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 // A section title with an optional italic `accent`, eyebrow and action, plus prev/next arrows
 // when `onPrev`/`onNext` are given (pair them with a Carousel's ref).
-export function SectionHeader({ title, accent, eyebrow, level = "h2", action, onPrev, onNext, canPrev = true, canNext = true, prevLabel, nextLabel, id, className = "", style }) {
+export function SectionHeader({ title, accent, eyebrow, level = "h2", action, onPrev, onNext, canPrev = true, canNext = true, prevLabel, nextLabel, id, className = "", style, ref }) {
 	const text = useMessages("SectionHeader", messages, {
 		previous: prevLabel,
 		next: nextLabel
@@ -19,6 +19,7 @@ export function SectionHeader({ title, accent, eyebrow, level = "h2", action, on
 	].includes(level) ? level : "h2";
 	const hasArrows = onPrev || onNext;
 	return /* @__PURE__ */ React.createElement("div", {
+		ref,
 		className: cx("ag-sechead", "ag-sechead--" + Heading, className),
 		style
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-sechead__text" }, eyebrow && /* @__PURE__ */ React.createElement("div", { className: "ag-eyebrow ag-sechead__eyebrow" }, eyebrow), /* @__PURE__ */ React.createElement(Heading, {

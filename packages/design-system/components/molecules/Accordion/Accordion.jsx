@@ -16,10 +16,12 @@ export function Accordion({
   onChange,
   allowMultiple,
   headingLevel = 3,
-  className = ''
+  className = '',
+  ref
 }) {
   return (
     <DisclosureGroup
+      ref={ref}
       expandedKeys={value === undefined ? undefined : toList(value)}
       defaultExpandedKeys={toList(defaultValue)}
       onExpandedChange={keys => onChange && onChange([...keys].map(String))}

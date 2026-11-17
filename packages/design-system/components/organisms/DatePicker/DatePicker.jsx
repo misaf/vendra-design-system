@@ -68,7 +68,8 @@ export function DatePicker({
   disabled,
   id,
   className = '',
-  style
+  style,
+  ref
 }) {
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
   const appLocale = useLocale().locale;
@@ -206,7 +207,12 @@ export function DatePicker({
   const describedBy = message ? messageId : undefined;
 
   return (
-    <fieldset className={cx('ag-fieldset', 'ag-date', className)} style={style} disabled={disabled}>
+    <fieldset
+      ref={ref}
+      className={cx('ag-fieldset', 'ag-date', className)}
+      style={style}
+      disabled={disabled}
+    >
       <legend className="ag-date__legend">
         {label && (
           <span id={labelId} className="ag-field__label">

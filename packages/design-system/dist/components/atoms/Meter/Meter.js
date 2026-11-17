@@ -3,19 +3,21 @@
 import React from "react";
 import { cx } from "../../utils/cx.js";
 import { usePageLocale } from "../../utils/locale.js";
+import { useMergedRef } from "../../utils/refs.js";
 // How far a value is towards a target (role="meter"): the spend left before free delivery, a
 // balance towards a discount. The label says what it measures; `valueLabel` replaces the default
 // percentage ("3,800,000 of 5,000,000 Toman"). `done` fills it in the success colour once the target
 // is reached. Not React Aria's Meter: its "meter progressbar" role fallback fails axe's
 // aria-allowed-attr, and every browser the storefront supports knows "meter".
-export function Meter({ label, value, minValue = 0, maxValue = 100, valueLabel, showValue = true, done, id, className, style, "aria-label": ariaLabel, "aria-labelledby": labelledBy }) {
-	const { locale, ref } = usePageLocale();
+export function Meter({ label, value, minValue = 0, maxValue = 100, valueLabel, showValue = true, done, id, className, style, "aria-label": ariaLabel, "aria-labelledby": labelledBy, ref }) {
+	const { locale, ref: localeRef } = usePageLocale();
+	const rootRef = useMergedRef(localeRef, ref);
 	const labelId = React.useId();
 	const clamped = Math.min(Math.max(Number(value) || 0, minValue), maxValue);
 	const share = maxValue > minValue ? (clamped - minValue) / (maxValue - minValue) : 0;
 	const valueText = valueLabel ?? new Intl.NumberFormat(locale, { style: "percent" }).format(share);
 	return /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: rootRef,
 		id,
 		role: "meter",
 		"aria-valuenow": clamped,
