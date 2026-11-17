@@ -37,7 +37,8 @@ export function ProductCard({ name, subtitle, price, compareAt, stock, image, im
 		href,
 		className: "ag-product__link",
 		"aria-label": accessibleName,
-		onClick
+		// Use the native click so Enter can cancel navigation before React Aria's key-up click.
+		onClickCapture: onClick
 	}, name) : onClick ? /* @__PURE__ */ React.createElement(Button, {
 		className: "ag-product__link",
 		"aria-label": accessibleName,

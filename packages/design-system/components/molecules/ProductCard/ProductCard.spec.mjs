@@ -40,3 +40,36 @@ test('without href the name is a button', async ({page}) => {
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'ProductCard');
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`${lang}: link callback cancels pointer and Enter navigation once per activation`, async ({
+    page
+  }) => {
+    await openComponent(page, 'ProductCard', lang);
+    const before = page.url();
+    const link = page.getByRole('link', {name: 'Lavender Whisper — 490,000 Toman'});
+    await link.click();
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('1');
+    expect(page.url()).toBe(before);
+    await link.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('2');
+    expect(page.url()).toBe(before);
+  });
+
+  test(`${lang}: an uncancelled callback allows native link navigation without duplicate calls`, async ({
+    page
+  }) => {
+    await openComponent(page, 'ProductCard', lang);
+    await page.getByRole('checkbox', {name: 'Allow link navigation', exact: true}).check();
+    const link = page.getByRole('link', {name: 'Lavender Whisper — 490,000 Toman'});
+    await link.click();
+    await expect(page).toHaveURL(/#lavender$/);
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('1');
+    await page.evaluate(() => history.replaceState(null, '', location.pathname + location.search));
+    await link.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/#lavender$/);
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('2');
+  });
+}

@@ -4,6 +4,8 @@ import {ProductCard} from './ProductCard.jsx';
 export function Fixture() {
   const [favorite, setFavorite] = React.useState(false);
   const [opened, setOpened] = React.useState('');
+  const [allowNavigation, setAllowNavigation] = React.useState(false);
+  const [linkClicks, setLinkClicks] = React.useState(0);
   return (
     <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 240px)', gap: 24}}>
       <ProductCard
@@ -15,6 +17,10 @@ export function Fixture() {
         badgeTone="accent"
         stock={{status: 'low', count: 2}}
         href="#lavender"
+        onClick={event => {
+          setLinkClicks(value => value + 1);
+          if (!allowNavigation) event.preventDefault();
+        }}
         favorite={favorite}
         onFavorite={() => setFavorite(!favorite)}
       />
@@ -25,6 +31,15 @@ export function Fixture() {
         onClick={() => setOpened('garden')}
       />
       <output data-test="opened">{opened}</output>
+      <label>
+        <input
+          type="checkbox"
+          checked={allowNavigation}
+          onChange={event => setAllowNavigation(event.target.checked)}
+        />
+        Allow link navigation
+      </label>
+      <span data-test="link-clicks">{linkClicks}</span>
     </div>
   );
 }

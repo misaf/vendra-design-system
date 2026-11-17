@@ -16,6 +16,8 @@ Catalogue tile: 4:5 arch-framed image, product code as the name (`--font-code`, 
 
 Pass `href` (product URL): the name becomes `<a href>` stretched over the card; `onClick` goes on that link (never preventDefault-ed inside). `linkLabel` defaults to `name — price`. Without href, `onClick` renders a real `<button>`. Favourite stays clickable above the link; focus ring covers the card (8px radius).
 
+With `href`, `onClick` runs on the native click capture event so callers can cancel pointer or Enter navigation with `preventDefault()`. Uncancelled callbacks retain native navigation. The callback runs once per activation; favorite actions remain separate.
+
 ## Usage
 
 **Use when:** Product grids, related products and Carousel rows. Sold out: `badge` + `badgeTone="neutral"`. Loading: `<Skeleton shape="card"/>` at the same size.
