@@ -1,5 +1,7 @@
 # StorefrontSearchResults
 
+The colocated fixture/spec covers ordered codes/subtitles/prices, thumbnail/placeholder rendering, selection callbacks and native destinations, single/empty arrays and supplied count status, with bilingual axe and compact containment. Ranking, exact-code matching, query/history recovery and product navigation policy remain in page integration coverage.
+
 Composes the result count/status and linked product rows from explicit countLabel and normalized results descriptors. Preserves result order, indexed fragment keys, product hrefs, soft thumbnail frames, image alt/sizes, LTR product codes, localized subtitles, prices and responsive classes without adding a wrapper.
 
 View retains results visibility, count mapping and list normalization. Search/shared logic retain matching, image/link/subtitle/price descriptors, query and language URL/history state, reporting, navigation and focus. Package ArchFrame/Price retain media and price rendering. StorefrontSearchLayout retains slot placement. This organism owns no state, calculations, persistence or browser effects.

@@ -1,5 +1,7 @@
 # StorefrontSearchPopular
 
+The colocated fixture/spec covers title/term order, isolated pointer and keyboard callbacks, unselected chip semantics and empty-array rendering, with bilingual axe and compact containment. Query matching, URL updates and popular-section visibility remain in page integration coverage.
+
 Composes popular search terms from an explicit title and normalized terms array (label, pick). Preserves the eyebrow, wrapping chip row, indexed fragment keys, term order and package Chip callbacks without adding a wrapper.
 
 View retains empty-query visibility, localized title mapping and list normalization. Search/shared logic retain localized term descriptors, query matching, URL/history updates, reporting, navigation and focus. Package Chip retains button semantics. StorefrontSearchLayout retains slot placement. This organism owns no state, calculations, persistence or browser effects.

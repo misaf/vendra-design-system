@@ -11,3 +11,7 @@ no store access or persistence.
 Keep this composition under `apps/storefront/app/organisms/`, alongside the storefront shell. The
 published `components/` package remains independent of storefront copy and `vf-*` presentation.
 Tailwind scans nested app JSX so extracted markup retains its utilities.
+
+`StorefrontHeader.spec.mjs` covers English/Persian desktop, tablet and phone layouts; supplied navigation order/current state and destinations; localized bag count; language callbacks and controlled selection across layout changes; menu keyboard/pointer activation; optional language/empty navigation; supplied logo/mark selection; axe and viewport containment. Its fixture owns callback state without routing or persisting language changes.
+
+Shell routing, language persistence, menu open state, resize dismissal and shared layout/focus effects remain integration responsibilities.
