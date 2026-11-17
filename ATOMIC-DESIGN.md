@@ -6262,3 +6262,18 @@ TrackOrderSummary merge into the shared `StorefrontOrderSummaryCard` molecule. T
 dropped and props kept, so screenshots and axe results must not change. Root unit, typecheck and
 check pass.
 Next: audit the 26–40 line organisms against the same rule; duplicated headings/feedback are #123.
+
+## Stage 251 checkpoint: audit 26–40 line storefront organisms (#122)
+
+Stage 251 audits the 27 storefront organisms of 26–40 lines against the organism rule. Six small
+combinations move to `apps/storefront/app/molecules/`: BagHeading and PolicyHeading (heading
+markup), BagDeliveryIntro (ErrorSummary plus sign-in prompt), PresentationUnlock (Dialog plus
+CodeInput) and TrackOrderActions (button group). The identical compact/wide Stepper pairs of
+BagProgress and CheckoutProgress merge into the shared `StorefrontStepProgress` molecule; bag View
+keeps its `vf-bag-steps` wrapper, so the DOM is unchanged. The other 20 stay organisms: each is a
+section with its own structure (Card sections with headings/actions, repeated card or document
+lists, carousels, dialogs with forms, sticky action bars, the Shell announcement, the gallery with
+its lightbox, and StorefrontCheckoutBank composing progress with PaymentStatus). WeddingsHeading is
+the borderline case; it stays because it carries the hero actions with its heading. The app now has
+104 organism and 23 molecule folders. Root unit, typecheck and check pass.
+Next: duplicated headings/feedback (#123).

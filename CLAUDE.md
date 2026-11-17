@@ -79,8 +79,9 @@ StorefrontBagSticky composes total and controlled continuation actions inside Sh
 View/logic retain visibility/totals/validation; Shell retains docking and focus measurements.
 StorefrontBagFeedback composes removal notice/Undo and empty-state recovery in separate layout slots;
 View/logic retain visibility, removed-line data, Undo/reset, persistence and focus restoration.
-StorefrontBagProgress composes compact/wide Steppers from explicit steps/current/labels/formatters;
-View/logic retain visibility, stage state, navigation and permitted-step callbacks.
+StorefrontStepProgress (molecule shared by bag and checkout) composes compact/wide Steppers from explicit
+steps/current/labels/formatters; bag View adds the vf-bag-steps wrapper and View/logic retain visibility,
+stage state, navigation and permitted-step callbacks.
 StorefrontBagRecipient composes recipient heading, saved-address chips and controlled name/phone fields;
 View/logic retain address mapping/selection, validation, persistence and the surrounding delivery/map flow.
 StorefrontBagLocation composes controlled map/zone status, failed-map zone selection and address input;
@@ -109,7 +110,7 @@ StorefrontCheckoutSubmission composes WhatsApp, processing/failure feedback and 
 View/logic retain readiness, submission/deduplication, pending/errors, retries and navigation.
 StorefrontCheckoutNotices composes independent retry-review and recovery-storage notices;
 View/logic retain retry eligibility, storage, focus, record clearing and review navigation.
-StorefrontCheckoutProgress composes compact/wide Steppers; StorefrontCheckoutHeading composes payment h1;
+Checkout reuses StorefrontStepProgress; StorefrontCheckoutHeading composes payment h1;
 View/logic retain state visibility, current indices, labels/formatters, permitted navigation and focus.
 StorefrontCheckoutBank composes bank progress and PaymentStatus from explicit descriptors;
 View/logic retain recovery, redirect data, retry/method/check callbacks, verification and completion.
