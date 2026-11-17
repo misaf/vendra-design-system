@@ -5,21 +5,23 @@ import { I18nProvider, RadioGroup } from "react-aria-components";
 import { useField, FieldMessage } from "../Field/Field.js";
 import { cx } from "../../utils/cx.js";
 import { usePageLocale } from "../../utils/locale.js";
+import { useMergedRef } from "../../utils/refs.js";
 // A radiogroup of ChoiceTiles on React Aria: arrow keys move and select (mirrored in RTL, following
 // the page's language), with one Tab stop. Controlled with `value`, or not with `defaultValue`;
 // onChange(value) gets the chosen tile's value, and `name` is the form field it posts under. `legend` renders <fieldset><legend>; the hint or error
 // sits under the tiles (see Field).
-export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, columns, minTileWidth = 140, children, className, style }) {
+export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, columns, minTileWidth = 140, children, className, style, ref }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
 		error
 	});
 	const legendId = fieldId + "-legend";
-	const { locale, ref } = usePageLocale();
+	const { locale, ref: localeRef } = usePageLocale();
+	const rootRef = useMergedRef(localeRef, ref);
 	const wrapped = !!(legend || message);
 	const group = /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(RadioGroup, {
-		ref: wrapped ? undefined : ref,
+		ref: wrapped ? undefined : rootRef,
 		id: fieldId,
 		name,
 		value: value === undefined ? undefined : value ?? null,
@@ -43,7 +45,7 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, 
 		error: !!error
 	}, message);
 	if (legend) return /* @__PURE__ */ React.createElement("fieldset", {
-		ref,
+		ref: rootRef,
 		className: cx("ag-field ag-fieldset", className),
 		style
 	}, /* @__PURE__ */ React.createElement("legend", {
@@ -51,7 +53,7 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, 
 		className: "ag-field__label"
 	}, legend), group, hintElement);
 	return /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: rootRef,
 		className: cx("ag-field", className),
 		style
 	}, group, hintElement);

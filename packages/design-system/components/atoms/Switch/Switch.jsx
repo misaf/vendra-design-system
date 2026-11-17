@@ -15,11 +15,13 @@ export function Switch({
   value,
   className = '',
   style,
+  ref,
   ...rest
 }) {
   return (
     <AriaSwitch
       {...rest}
+      inputRef={ref}
       name={name}
       value={value}
       isSelected={checked}

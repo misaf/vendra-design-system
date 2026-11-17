@@ -4,8 +4,9 @@ import React from "react";
 import { cx } from "../../utils/cx.js";
 // Loading placeholders: text lines, a shape (`block`, `circle`, `arch`) or a whole product `card`.
 // Hidden from screen readers; the shimmer stops with reduced motion.
-export function Skeleton({ shape = "text", width, height, lines = 1, radius, className = "", style }) {
+export function Skeleton({ shape = "text", width, height, lines = 1, radius, className = "", style, ref }) {
 	if (shape === "card") return /* @__PURE__ */ React.createElement("div", {
+		ref,
 		"aria-hidden": "true",
 		className: cx("ag-skel-card", className),
 		style: {
@@ -26,6 +27,7 @@ export function Skeleton({ shape = "text", width, height, lines = 1, radius, cla
 		style: { width: "30%" }
 	}));
 	if (shape === "text") return /* @__PURE__ */ React.createElement("div", {
+		ref,
 		"aria-hidden": "true",
 		className: cx("ag-skel-lines", className),
 		style: {
@@ -42,6 +44,7 @@ export function Skeleton({ shape = "text", width, height, lines = 1, radius, cla
 		}
 	})));
 	return /* @__PURE__ */ React.createElement("span", {
+		ref,
 		"aria-hidden": "true",
 		className: cx("ag-skel", "ag-skel--" + shape, className),
 		style: {

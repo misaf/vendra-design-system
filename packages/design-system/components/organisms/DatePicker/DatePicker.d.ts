@@ -19,6 +19,8 @@ export interface DatePickerLabels {
   /** "That’s {date}" · fa «برابر با {date}» */ equivalent?: string;
 }
 export interface DatePickerProps {
+  /** The fieldset. */
+  ref?: React.Ref<HTMLFieldSetElement>;
   label?: string;
   /** ISO 'YYYY-MM-DD', or {cal, m, d} when yearly */
   value?: string | YearlyDate | null;
@@ -48,4 +50,4 @@ export interface DatePickerProps {
   style?: React.CSSProperties;
 }
 /** <fieldset><legend> + a Shamsi/Gregorian switch (React Aria ToggleButtonGroup) + React Aria's DatePicker (typed segments and a month grid in the chosen calendar); yearly dates use month/day Selects, clamped with daysInMonth. */
-export declare function DatePicker(props: DatePickerProps): JSX.Element;
+export declare function DatePicker(props: DatePickerProps): React.JSX.Element;

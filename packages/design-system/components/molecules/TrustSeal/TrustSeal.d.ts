@@ -1,4 +1,6 @@
 export interface TrustSealProps {
+  /** The link. */
+  ref?: React.Ref<HTMLAnchorElement>;
   /** Which seal: its name comes from messages (eNamad, Samandehi) unless `label` is given */
   kind: 'enamad' | 'samandehi' | (string & {});
   /** The seal's verification link, as the issuer's panel gives it */
@@ -11,4 +13,4 @@ export interface TrustSealProps {
   style?: React.CSSProperties;
 }
 /** An eNamad or Samandehi trust seal that links to its verification page. */
-export declare function TrustSeal(props: TrustSealProps): JSX.Element;
+export declare function TrustSeal(props: TrustSealProps): React.JSX.Element;

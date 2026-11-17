@@ -2,9 +2,17 @@ import React from 'react';
 import {cx} from '../../utils/cx.js';
 
 // Mount once, keep mounted, change children to announce. polite → role="status"; assertive → role="alert" (errors only).
-export function LiveRegion({children, politeness = 'polite', atomic = true, id, className = ''}) {
+export function LiveRegion({
+  children,
+  politeness = 'polite',
+  atomic = true,
+  id,
+  className = '',
+  ref
+}) {
   return (
     <div
+      ref={ref}
       id={id}
       role={politeness === 'assertive' ? 'alert' : 'status'}
       aria-live={politeness}

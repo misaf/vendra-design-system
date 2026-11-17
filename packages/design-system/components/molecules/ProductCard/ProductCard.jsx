@@ -30,7 +30,8 @@ export function ProductCard({
   href,
   linkLabel,
   placeholder,
-  favLabel
+  favLabel,
+  ref
 }) {
   const text = useMessages('ProductCard', messages, {placeholder, favorite: favLabel});
   const photos = (images && images.length ? images : image ? [image] : []).map(photo =>
@@ -68,7 +69,7 @@ export function ProductCard({
     name
   );
   return (
-    <div className={cx('ag-product', linked && 'ag-product--link')}>
+    <div ref={ref} className={cx('ag-product', linked && 'ag-product--link')}>
       <div
         className={cx(
           'ag-product__media',

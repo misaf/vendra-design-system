@@ -1,4 +1,6 @@
 export interface ChoiceTileProps {
+  /** The native radio input. */
+  ref?: React.Ref<HTMLInputElement>;
   label: React.ReactNode;
   description?: React.ReactNode;
   /** What the ChoiceGroup's value becomes when this tile is chosen (and what a form posts) */
@@ -9,4 +11,4 @@ export interface ChoiceTileProps {
   className?: string;
 }
 /** Radio-like tile. Always place inside <ChoiceGroup>. */
-export declare function ChoiceTile(props: ChoiceTileProps): JSX.Element;
+export declare function ChoiceTile(props: ChoiceTileProps): React.JSX.Element;

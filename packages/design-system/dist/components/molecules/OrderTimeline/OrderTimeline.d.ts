@@ -4,6 +4,8 @@ export interface OrderTimelineStep {
   /** Pre-localized, e.g. "09:12" / "۰۹:۱۲" */ time?: React.ReactNode;
 }
 export interface OrderTimelineProps {
+  /** The ol. */
+  ref?: React.Ref<HTMLOListElement>;
   steps: OrderTimelineStep[];
   /** Index of the current step */
   current?: number;

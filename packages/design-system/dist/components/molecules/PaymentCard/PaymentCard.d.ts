@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface PaymentCardProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Raw digits (Latin or Persian); grouped in 4s, always LTR */
   cardNumber: string;
   holder?: string;

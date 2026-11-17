@@ -2,6 +2,8 @@ export interface CheckboxProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange'
 > {
+  /** The native checkbox input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   /** The new state */
   onChange?: (checked: boolean) => void;
   label?: React.ReactNode;
@@ -10,4 +12,4 @@ export interface CheckboxProps extends Omit<
   /** Error message: danger border, aria-invalid, and aria-errormessage → the hint element */
   error?: React.ReactNode;
 }
-export declare function Checkbox(props: CheckboxProps): JSX.Element;
+export declare function Checkbox(props: CheckboxProps): React.JSX.Element;

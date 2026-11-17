@@ -6,11 +6,13 @@ import { cx } from "../../utils/cx.js";
 import { usePageLocale } from "../../utils/locale.js";
 import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
+import { useMergedRef } from "../../utils/refs.js";
 // A slim band while the browser is offline, then "You’re back online." for a few seconds. The band
 // is a polite live region that is always in the page (empty while online), so both changes are
 // announced. On the server, and until the first effect, it is empty: navigator is read only there.
-export function OfflineNotice({ offlineText, onlineText, backFor = 4e3, className, style }) {
-	const { locale, ref } = usePageLocale();
+export function OfflineNotice({ offlineText, onlineText, backFor = 4e3, className, style, ref }) {
+	const { locale, ref: localeRef } = usePageLocale();
+	const rootRef = useMergedRef(localeRef, ref);
 	const text = useMessages("OfflineNotice", messages, {
 		offline: offlineText,
 		online: onlineText
@@ -37,7 +39,7 @@ export function OfflineNotice({ offlineText, onlineText, backFor = 4e3, classNam
 		};
 	}, [backFor]);
 	return /* @__PURE__ */ React.createElement("div", {
-		ref,
+		ref: rootRef,
 		role: "status",
 		className: cx("ag-offline", state !== "online" && "ag-offline--" + state, className),
 		style

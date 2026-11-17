@@ -24,12 +24,18 @@ export function Alert({
   onClose,
   closeLabel,
   className = '',
-  style
+  style,
+  ref
 }) {
   const text = useMessages('Alert', messages, {close: closeLabel});
   const role = tone === 'danger' || tone === 'warning' ? 'alert' : 'status';
   return (
-    <div role={role} className={cx('ag-alert', 'ag-alert--' + tone, className)} style={style}>
+    <div
+      ref={ref}
+      role={role}
+      className={cx('ag-alert', 'ag-alert--' + tone, className)}
+      style={style}
+    >
       {icon !== false && (
         <Icon
           name={icon || ALERT_ICONS[tone] || ALERT_ICONS.neutral}

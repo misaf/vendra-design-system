@@ -26,7 +26,8 @@ export function LineItem({
   unavailable,
   unavailableLabel,
   busy,
-  className = ''
+  className = '',
+  ref
 }) {
   const text = useMessages('LineItem', messages, {
     remove: removeLabel,
@@ -35,7 +36,7 @@ export function LineItem({
   const large = size !== 'sm';
   const thumbWidth = large ? 88 : 44;
   return (
-    <div className="ag-linewrap">
+    <div ref={ref} className="ag-linewrap">
       <div
         className={cx(
           'ag-line',

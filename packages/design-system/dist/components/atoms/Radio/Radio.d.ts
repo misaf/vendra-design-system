@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface RadioProps {
+  /** The native radio input. */
+  ref?: React.Ref<HTMLInputElement>;
   label?: React.ReactNode;
   /** Secondary muted line under the label, exposed as the accessible description (not part of the name) */
   description?: React.ReactNode;

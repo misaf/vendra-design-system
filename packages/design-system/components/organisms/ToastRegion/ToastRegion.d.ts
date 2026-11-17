@@ -13,6 +13,8 @@ export declare class ToastQueue {
   clear(): void;
 }
 export interface ToastRegionProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   queue: ToastQueue;
   /** Names the landmark. Default: React Aria's "Notifications" in the page language */
   label?: string;
@@ -21,4 +23,4 @@ export interface ToastRegionProps {
   className?: string;
 }
 /** React Aria toast region: a landmark (F6) fixed at the bottom inline-end corner; timers pause on hover and focus. */
-export declare function ToastRegion(props: ToastRegionProps): JSX.Element;
+export declare function ToastRegion(props: ToastRegionProps): React.JSX.Element;

@@ -8,7 +8,7 @@ import { messages } from "./messages.js";
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
 // Card-to-card transfer details: the card number in groups of four (always LTR) with a copy
 // button, then holder, bank and amount. Persian digits in `cardNumber` are accepted.
-export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onCopy, className = "" }) {
+export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onCopy, className = "", ref }) {
 	const text = useMessages("PaymentCard", messages, labels);
 	const digits = String(cardNumber).replace(/[۰-۹]/g, (digit) => FA_DIGITS.indexOf(digit)).replace(/\D/g, "");
 	const grouped = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -50,7 +50,10 @@ export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onC
 			"amount"
 		]
 	].filter(([, value]) => value);
-	return /* @__PURE__ */ React.createElement("div", { className: cx("ag-pay", className) }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, text.card), /* @__PURE__ */ React.createElement("div", {
+	return /* @__PURE__ */ React.createElement("div", {
+		ref,
+		className: cx("ag-pay", className)
+	}, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, text.card), /* @__PURE__ */ React.createElement("div", {
 		className: "ag-pay__num",
 		dir: "ltr"
 	}, grouped)), /* @__PURE__ */ React.createElement(Button, {

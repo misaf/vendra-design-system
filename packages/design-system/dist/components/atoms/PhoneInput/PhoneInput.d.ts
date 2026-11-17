@@ -1,6 +1,8 @@
 import * as React from 'react';
 import type {InputProps} from '../Input/Input.js';
 export interface PhoneInputProps extends Omit<InputProps, 'type' | 'multiline' | 'onChange'> {
+  /** The native input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   /** 'tel' (default) for the customer's own number; 'off' for someone else's, such as a recipient. */
   autoComplete?: string;
   /** What was typed, plus the number as 09xxxxxxxxx when it is an Iranian mobile however it was

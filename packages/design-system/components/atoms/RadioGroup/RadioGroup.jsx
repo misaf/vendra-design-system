@@ -3,6 +3,7 @@ import {I18nProvider, RadioGroup as AriaRadioGroup} from 'react-aria-components'
 import {useField, FieldMessage} from '../Field/Field.jsx';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // A list of Radios on React Aria's RadioGroup: one Tab stop, arrow keys move and select (mirrored
 // in RTL, following the page's language). Controlled with `value`, or not with `defaultValue`;
@@ -23,16 +24,18 @@ export function RadioGroup({
   required,
   children,
   className,
-  style
+  style,
+  ref
 }) {
   const {fieldId, messageId, message, controlProps} = useField({id, hint, error});
   const legendId = fieldId + '-legend';
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const wrapped = !!(legend || message);
   const group = (
     <I18nProvider locale={locale}>
       <AriaRadioGroup
-        ref={wrapped ? undefined : ref}
+        ref={wrapped ? undefined : rootRef}
         id={fieldId}
         name={name}
         value={value === undefined ? undefined : (value ?? null)}
@@ -61,7 +64,7 @@ export function RadioGroup({
   );
   if (legend)
     return (
-      <fieldset ref={ref} className={cx('ag-field ag-fieldset', className)} style={style}>
+      <fieldset ref={rootRef} className={cx('ag-field ag-fieldset', className)} style={style}>
         <legend id={legendId} className="ag-field__label">
           {legend}
         </legend>
@@ -70,7 +73,7 @@ export function RadioGroup({
       </fieldset>
     );
   return (
-    <div ref={ref} className={cx('ag-field', className)} style={style}>
+    <div ref={rootRef} className={cx('ag-field', className)} style={style}>
       {group}
       {messageElement}
     </div>

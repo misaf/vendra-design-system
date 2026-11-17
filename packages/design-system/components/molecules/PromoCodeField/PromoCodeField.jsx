@@ -6,6 +6,7 @@ import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // A discount code: a field with Apply inside its end, then, once the app accepts the code, a status
 // line ("ROSES15 · 15% off") with Remove. The app checks the code (onApply gets it trimmed) and says
@@ -30,9 +31,11 @@ export function PromoCodeField({
   removeLabel,
   revealLabel,
   className,
-  style
+  style,
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const text = useMessages(
     'PromoCodeField',
     messages,
@@ -73,7 +76,7 @@ export function PromoCodeField({
     if (!busy && code.trim()) onApply?.(code.trim());
   };
   return (
-    <div ref={ref} className={cx('ag-promo', className)} style={style}>
+    <div ref={rootRef} className={cx('ag-promo', className)} style={style}>
       {applied ? (
         <div ref={appliedRef} className="ag-promo__applied" role="status">
           <span className="ag-promo__code">

@@ -6,9 +6,10 @@ import { cx } from "../../utils/cx.js";
 // An on/off toggle on React Aria (role="switch"): the label is the whole target, and the state shows
 // as data-selected, data-focus-visible and data-disabled on it. It takes checked/defaultChecked,
 // disabled, name, value and onChange(checked).
-export function Switch({ label, checked, defaultChecked, disabled, onChange, name, value, className = "", style, ...rest }) {
+export function Switch({ label, checked, defaultChecked, disabled, onChange, name, value, className = "", style, ref, ...rest }) {
 	return /* @__PURE__ */ React.createElement(AriaSwitch, {
 		...rest,
+		inputRef: ref,
 		name,
 		value,
 		isSelected: checked,

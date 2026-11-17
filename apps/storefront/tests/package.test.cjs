@@ -10,10 +10,8 @@ const {createPackedConsumer} = require('./packed-package.cjs');
 
 const repo = path.resolve(__dirname, '../../..');
 const pkg = path.join(repo, 'packages/design-system');
-// Inside the workspace's node_modules, so the package resolves react from there like a peer;
-// react-19.cjs points VENDRA_PACKAGE_APP at an app with React 19 instead.
-const peers = process.env.VENDRA_PACKAGE_APP || repo;
-const packed = createPackedConsumer(peers);
+// Inside the workspace's node_modules, so the package resolves react from there like a peer.
+const packed = createPackedConsumer(repo);
 const {app, installed, manifest, files} = packed;
 
 (async () => {

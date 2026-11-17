@@ -7,6 +7,8 @@ export interface SelectProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
   'onChange' | 'defaultValue' | 'placeholder'
 > {
+  /** The trigger button (the focusable control), for focusing it or a form library. */
+  ref?: React.Ref<HTMLButtonElement>;
   label?: string;
   /** Helper text below the control, linked with aria-describedby="{id}-hint" */
   hint?: string;
@@ -25,4 +27,4 @@ export interface SelectProps extends Omit<
   autoComplete?: string;
 }
 /** React Aria Select: a button that opens a listbox; ↑/↓, Home/End and typing move, Enter/Space choose, Esc closes. */
-export declare function Select(props: SelectProps): JSX.Element;
+export declare function Select(props: SelectProps): React.JSX.Element;

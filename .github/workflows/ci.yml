@@ -39,22 +39,6 @@ jobs:
       # contract.
       - run: npm --prefix apps/storefront test
 
-  react-19:
-    name: Package on React 19
-    needs: check
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      # The workspace tests on React 18.3.1; this installs React 19 in a scratch app and runs the
-      # package test (import, server render, wording, themes) and a strict type check there.
-      - run: npm --prefix apps/storefront run test:react19
-
   # Skips the browser tests when a push or pull request changes only .github/ (Dependabot's action
   # bumps, workflow edits): run CI by hand after a workflow change that the browser tests need to
   # prove. Manual runs always test.
@@ -196,8 +180,8 @@ jobs:
 
   pages-build:
     name: Build the Pages demo
-    needs: [check, react-19, e2e, e2e-build]
-    # All four suites must succeed. A .github/-only push skips the browser tests and deployment;
+    needs: [check, e2e, e2e-build]
+    # All three suites must succeed. A .github/-only push skips the browser tests and deployment;
     # run CI manually on master to test and deploy those changes.
     if: >-
       success() && github.ref == 'refs/heads/master' &&

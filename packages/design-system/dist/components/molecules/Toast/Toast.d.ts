@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface ToastProps {
+  /** The toast. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The queued toast, when a ToastRegion renders it (internal) */
   toast?: unknown;
   tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';

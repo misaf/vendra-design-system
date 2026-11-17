@@ -41,7 +41,8 @@ export function Dialog({
   inline,
   closeLabel,
   maxWidth,
-  placement = 'center'
+  placement = 'center',
+  ref
 }) {
   const text = useMessages('Dialog', messages, {close: closeLabel});
   const density = useDensity();
@@ -66,6 +67,7 @@ export function Dialog({
     return (
       <div className={overlayClass} data-density={density}>
         <div
+          ref={ref}
           role="dialog"
           aria-labelledby={title ? titleId : undefined}
           className={dialogClass}
@@ -94,7 +96,7 @@ export function Dialog({
       data-density={density}
     >
       <Modal className={dialogClass} style={style}>
-        <AriaDialog className="ag-dialog__frame">
+        <AriaDialog ref={ref} className="ag-dialog__frame">
           <Content
             onClose={onClose}
             closeLabel={text.close}

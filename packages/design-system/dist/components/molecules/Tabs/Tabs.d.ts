@@ -4,6 +4,8 @@ export interface TabItem {
   label: React.ReactNode;
 }
 export interface TabsProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   items: TabItem[];
   value?: string;
   defaultValue?: string;

@@ -15,7 +15,7 @@
 npm install @vendra/design-system@0.1.0
 ```
 
-React 18.2+, `react-aria-components` 1.21+ and `@internationalized/date` 3.12+ are peer dependencies, so your app and the components share one React Aria copy.
+React 19.3+ (React 19 only), `react-aria-components` 1.22+ and `@internationalized/date` 3.12+ are peer dependencies, so your app and the components share one React Aria copy.
 
 | Import | What it is |
 |---|---|

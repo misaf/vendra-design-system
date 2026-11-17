@@ -1,6 +1,8 @@
 import type {ButtonDOMProps} from '../Button/Button.js';
 
 export interface IconButtonProps extends ButtonDOMProps {
+  /** The button, or the link with `href`. */
+  ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
   icon: string;
   /** Required accessible label (also used as title) */
   label: string;
@@ -21,4 +23,4 @@ export interface IconButtonProps extends ButtonDOMProps {
   /** Defaults to "noopener noreferrer" when target="_blank" */
   rel?: string;
 }
-export declare function IconButton(props: IconButtonProps): JSX.Element;
+export declare function IconButton(props: IconButtonProps): React.JSX.Element;

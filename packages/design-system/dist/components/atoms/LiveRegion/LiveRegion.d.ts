@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface LiveRegionProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Message to announce. Change it to announce again; clear it (then set) to repeat the same text. */
   children?: React.ReactNode;
   /** polite (default) waits for the reader to finish; assertive interrupts — failures only */

@@ -12,6 +12,8 @@ export interface Place {
   onSelect?: () => void;
 }
 export interface PlacesMapProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The map's id. */
   id: string;
   /** The map region's accessible name. */
@@ -32,4 +34,4 @@ export interface PlacesMapProps {
   style?: React.CSSProperties;
 }
 /** A read-only map of labelled places; each marker opens its place by pointer or keyboard. */
-export declare function PlacesMap(props: PlacesMapProps): JSX.Element;
+export declare function PlacesMap(props: PlacesMapProps): React.JSX.Element;

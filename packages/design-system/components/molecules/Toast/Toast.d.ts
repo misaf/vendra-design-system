@@ -1,4 +1,6 @@
 export interface ToastProps {
+  /** The toast. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The queued toast, when a ToastRegion renders it (internal) */
   toast?: unknown;
   tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
@@ -11,7 +13,7 @@ export interface ToastProps {
   style?: React.CSSProperties;
 }
 /** React Aria toast (alertdialog + atomic alert). On its own it renders in place; ToastRegion shows queued ones. */
-export declare function Toast(props: ToastProps): JSX.Element;
+export declare function Toast(props: ToastProps): React.JSX.Element;
 /** What a queued toast shows. */
 export interface ToastContent {
   tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';

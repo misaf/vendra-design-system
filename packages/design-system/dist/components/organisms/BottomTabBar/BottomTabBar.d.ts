@@ -11,6 +11,8 @@ export interface BottomTabItem {
   /** Defaults to "noopener noreferrer" for target="_blank" */ rel?: string;
 }
 export interface BottomTabBarProps {
+  /** The nav. */
+  ref?: React.Ref<HTMLElement>;
   items: BottomTabItem[];
   /** aria-label for the nav */ label?: string;
   className?: string;

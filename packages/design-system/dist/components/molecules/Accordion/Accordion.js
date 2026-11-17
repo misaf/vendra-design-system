@@ -9,8 +9,9 @@ const toList = (value) => value == null ? [] : Array.isArray(value) ? value : [v
 // (the open ids), uncontrolled with `defaultValue`; onChange(ids) gets the open ids. `allowMultiple`
 // keeps other panels open.
 // Each button has aria-expanded and controls its panel, a region named by the button.
-export function Accordion({ items = [], value, defaultValue, onChange, allowMultiple, headingLevel = 3, className = "" }) {
+export function Accordion({ items = [], value, defaultValue, onChange, allowMultiple, headingLevel = 3, className = "", ref }) {
 	return /* @__PURE__ */ React.createElement(DisclosureGroup, {
+		ref,
 		expandedKeys: value === undefined ? undefined : toList(value),
 		defaultExpandedKeys: toList(defaultValue),
 		onExpandedChange: (keys) => onChange && onChange([...keys].map(String)),

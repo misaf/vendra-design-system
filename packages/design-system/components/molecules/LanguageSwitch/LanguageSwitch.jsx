@@ -8,13 +8,13 @@ import {useTrack} from '../../utils/track.js';
 // The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
 // own `lang`. Without `options` it offers VendraProvider's languages (`locales`, by default English
 // and Persian) with their own labels. Choosing one reports `language_switch` (VendraProvider's onEvent).
-export function LanguageSwitch({value = 'en', onChange, label, options}) {
+export function LanguageSwitch({value = 'en', onChange, label, options, ref}) {
   const locales = useLocales();
   const choices = options || Object.values(locales).map(o => ({id: o.code, label: o.label}));
   const text = useMessages('LanguageSwitch', messages, {label});
   const track = useTrack();
   return (
-    <div className="ag-lang" role="group" aria-label={text.label}>
+    <div ref={ref} className="ag-lang" role="group" aria-label={text.label}>
       {choices.map(o => (
         <ToggleButton
           key={o.id}

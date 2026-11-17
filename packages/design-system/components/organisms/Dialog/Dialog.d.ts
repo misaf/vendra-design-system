@@ -1,4 +1,6 @@
 export interface DialogProps {
+  /** The dialog element (while open). */
+  ref?: React.Ref<HTMLElement>;
   open: boolean;
   onClose?: () => void;
   title?: React.ReactNode;
@@ -14,4 +16,4 @@ export interface DialogProps {
   placement?: 'center' | 'start';
 }
 /** role="dialog", aria-modal, aria-labelledby → title; focus trapped, Esc closes, focus returns to the opener, page scroll locked (not for inline). */
-export declare function Dialog(props: DialogProps): JSX.Element | null;
+export declare function Dialog(props: DialogProps): React.JSX.Element | null;

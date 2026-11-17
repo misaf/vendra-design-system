@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface SectionHeaderProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   title: React.ReactNode;
   /** Italic serif word after the title (upright in Persian) */
   accent?: React.ReactNode;

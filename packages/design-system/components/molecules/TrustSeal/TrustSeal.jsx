@@ -3,20 +3,22 @@ import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // A trust seal from the tenant's eNamad or Samandehi panel: the link and image URLs exactly as the
 // panel gives them. Both carry referrerPolicy="origin", because the issuer checks which site shows
 // the seal, and the link opens a new tab without noreferrer for the same reason. When there is no
 // image, or it fails to load (blocked, offline), the seal's name stands in and the link still works.
-export function TrustSeal({kind, href, image, label, className, style}) {
-  const {locale, ref} = usePageLocale();
+export function TrustSeal({kind, href, image, label, className, style, ref}) {
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const text = useMessages('TrustSeal', messages, undefined, locale);
   const name = label ?? text[kind] ?? kind;
   const [failedImage, setFailedImage] = React.useState(null);
   const showImage = !!image && failedImage !== image;
   return (
     <a
-      ref={ref}
+      ref={rootRef}
       href={href}
       target="_blank"
       rel="noopener"

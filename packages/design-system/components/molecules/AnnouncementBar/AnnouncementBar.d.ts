@@ -1,4 +1,6 @@
 export interface AnnouncementBarProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
   onClose?: () => void;
   closeLabel?: string;
@@ -6,4 +8,4 @@ export interface AnnouncementBarProps {
   label: string;
   className?: string;
 }
-export declare function AnnouncementBar(props: AnnouncementBarProps): JSX.Element;
+export declare function AnnouncementBar(props: AnnouncementBarProps): React.JSX.Element;

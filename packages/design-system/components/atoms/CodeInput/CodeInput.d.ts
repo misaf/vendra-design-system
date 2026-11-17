@@ -3,6 +3,8 @@ export interface CodeInputProps extends Omit<
   InputProps,
   'type' | 'multiline' | 'maxLength' | 'onChange'
 > {
+  /** The native input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   /** Digits in the code; default 5. */
   length?: number;
   /** The code so far: digits only. */
@@ -16,4 +18,4 @@ export interface CodeInputProps extends Omit<
   webOtp?: boolean;
 }
 /** A one-time code field: digits only, Persian digits accepted, SMS autofill and Web OTP. */
-export declare function CodeInput(props: CodeInputProps): JSX.Element;
+export declare function CodeInput(props: CodeInputProps): React.JSX.Element;

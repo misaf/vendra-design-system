@@ -20,9 +20,19 @@ const ICONS = {
 };
 
 // What a toast shows: tone icon, title, message, the follow-up action and React Aria's close button.
-function ToastBody({toast, tone = 'success', title, message, action, closeLabel, closable, style}) {
+function ToastBody({
+  toast,
+  tone = 'success',
+  title,
+  message,
+  action,
+  closeLabel,
+  closable,
+  style,
+  ref
+}) {
   return (
-    <AriaToast toast={toast} className="ag-toast" style={style}>
+    <AriaToast ref={ref} toast={toast} className="ag-toast" style={style}>
       <Icon name={ICONS[tone]} size={20} className={'ag-toast__icon--' + tone} />
       <ToastContent className="ag-toast__body">
         <Text slot="title" elementType="div" className="ag-toast__title">
@@ -57,7 +67,17 @@ function ToastBody({toast, tone = 'success', title, message, action, closeLabel,
 // A toast on React Aria (role="alertdialog", its text in an atomic alert). Inside a ToastRegion it
 // shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
 // and onClose is what its close button does.
-export function Toast({toast: queued, tone, title, message, action, onClose, closeLabel, style}) {
+export function Toast({
+  toast: queued,
+  tone,
+  title,
+  message,
+  action,
+  onClose,
+  closeLabel,
+  style,
+  ref
+}) {
   const text = useMessages('Toast', messages, {close: closeLabel});
   const key = React.useId();
   const latestClose = React.useRef(onClose);
@@ -85,6 +105,7 @@ export function Toast({toast: queued, tone, title, message, action, onClose, clo
         closeLabel={text.close}
         closable
         style={style}
+        ref={ref}
       />
     );
   return (
@@ -98,6 +119,7 @@ export function Toast({toast: queued, tone, title, message, action, onClose, clo
         closeLabel={text.close}
         closable={!!onClose}
         style={style}
+        ref={ref}
       />
     </ToastStateContext.Provider>
   );

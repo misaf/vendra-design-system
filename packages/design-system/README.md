@@ -7,7 +7,7 @@ themes for Vendra florist storefronts.
 npm install @vendra/design-system react react-dom react-aria-components @internationalized/date
 ```
 
-React 18.2+, `react-aria-components` 1.21+ and `@internationalized/date` 3.12+ are peer
+React 19.3+ (React 19 only), `react-aria-components` 1.22+ and `@internationalized/date` 3.12+ are peer
 dependencies, so your app and the components share one React Aria copy.
 
 ```jsx
@@ -23,6 +23,11 @@ import {tenantCss} from '@vendra/design-system/theme';
 | `@vendra/design-system/theme` | `tenantCss`, `validate`, `checks`, `tokens`, `designTokens`, `email`, the brand-font helpers `fontFaces` and `fontPreloads`, and the default spec. |
 | `@vendra/design-system/tenants/<slug>.css` | The sample tenant themes. |
 | `@vendra/design-system/tokens.json` | Every design token as W3C design tokens (DTCG JSON). |
+
+Every component takes React 19's `ref` prop. Form controls (`Input`, `PhoneInput`, `CodeInput`,
+`Checkbox`, `Radio`, `Switch`, `ChoiceTile`, `QuantityInput`, `SearchField`) hand over their native
+input, `Select` its trigger button, so a form library can focus an invalid field; the others hand
+over their own outer element (`Carousel` its scroll handle).
 
 Full documentation, tenant themes and the reference storefront:
 [github.com/misaf/vendra-design-system](https://github.com/misaf/vendra-design-system).

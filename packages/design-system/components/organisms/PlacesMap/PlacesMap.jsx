@@ -18,7 +18,8 @@ export function PlacesMap({
   height = 280,
   onFail,
   className,
-  style
+  style,
+  ref
 }) {
   const box = React.useRef(null);
   const view = React.useRef(null);
@@ -114,6 +115,7 @@ export function PlacesMap({
 
   return (
     <div
+      ref={ref}
       className={cx('ag-map', className)}
       style={{blockSize: typeof height === 'number' ? height + 'px' : height, ...style}}
     >

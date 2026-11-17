@@ -1,4 +1,6 @@
 export interface AlertProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The status tones Badge and Toast share. */
   tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
   /** Lucide icon name; defaults per tone. Pass false to hide. */
@@ -13,4 +15,4 @@ export interface AlertProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function Alert(props: AlertProps): JSX.Element;
+export declare function Alert(props: AlertProps): React.JSX.Element;

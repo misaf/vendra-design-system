@@ -6,6 +6,7 @@ import { cx } from "../../utils/cx.js";
 import { usePageLocale } from "../../utils/locale.js";
 import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
+import { useMergedRef } from "../../utils/refs.js";
 const FOCUSABLE = "input, select, textarea, button, [tabindex]:not([tabindex=\"-1\"]), a[href]";
 // Moves to a field from its link: scrolls it to the middle (its label stays in view) and focuses it,
 // or the first control inside it when the target is a group or a map.
@@ -20,10 +21,11 @@ function goTo(event, target) {
 // After a failed submit: what to fix, in form order, each a link to its field. The app focuses it
 // (it has tabIndex -1), or sets autoFocus; with a single error an app may focus that field instead.
 // Renders nothing without errors.
-export function ErrorSummary({ errors = [], title, id, autoFocus = false, className, style }) {
-	const { locale, ref } = usePageLocale();
+export function ErrorSummary({ errors = [], title, id, autoFocus = false, className, style, ref }) {
+	const { locale, ref: localeRef } = usePageLocale();
 	const text = useMessages("ErrorSummary", messages, {}, locale);
 	const own = React.useRef(null);
+	const rootRef = useMergedRef(own, localeRef, ref);
 	const count = errors.length;
 	React.useEffect(() => {
 		if (autoFocus && count && own.current) own.current.focus();
@@ -31,10 +33,7 @@ export function ErrorSummary({ errors = [], title, id, autoFocus = false, classN
 	if (!count) return null;
 	const heading = title || (count === 1 ? text.one : text.other).replace("{count}", new Intl.NumberFormat(locale).format(count));
 	return /* @__PURE__ */ React.createElement("div", {
-		ref: (node) => {
-			own.current = node;
-			ref.current = node;
-		},
+		ref: rootRef,
 		id,
 		tabIndex: -1,
 		className: cx("ag-error-summary", className),

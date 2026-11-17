@@ -2,6 +2,7 @@ import React from 'react';
 import {I18nProvider, Tab, TabList, TabPanel, Tabs as AriaTabs} from 'react-aria-components';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // Tabs on React Aria: one Tab stop on the selected tab; arrow keys (mirrored in RTL, following the
 // page's language), Home and End move and select. `children` is the selected tab's content: it
@@ -16,9 +17,11 @@ export function Tabs({
   className = '',
   listClassName,
   panelClassName,
-  children
+  children,
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? items[0]?.id);
   const selected = value ?? uncontrolledValue;
   // A value that matches no tab selects the first, so there is always one Tab stop.
@@ -42,7 +45,7 @@ export function Tabs({
   return (
     <I18nProvider locale={locale}>
       <AriaTabs
-        ref={ref}
+        ref={rootRef}
         selectedKey={selectedKey ?? null}
         onSelectionChange={key => {
           const id = String(key);

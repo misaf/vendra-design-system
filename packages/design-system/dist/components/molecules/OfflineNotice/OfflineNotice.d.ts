@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface OfflineNoticeProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Default: built-in "You’re offline. …" in the page's language */
   offlineText?: string;
   /** Default: built-in "You’re back online." */

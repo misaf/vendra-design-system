@@ -1,6 +1,8 @@
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface BlogCardProps {
+  /** The article. */
+  ref?: React.Ref<HTMLElement>;
   /** A URL or a photo object (see Picture) */
   image?: Photo;
   /** Default '(max-width: 767px) 100vw, 400px' (wide: 55vw). Applied when the photo has candidates. */
@@ -26,4 +28,4 @@ export interface BlogCardProps {
   priority?: boolean;
   className?: string;
 }
-export declare function BlogCard(props: BlogCardProps): JSX.Element;
+export declare function BlogCard(props: BlogCardProps): React.JSX.Element;

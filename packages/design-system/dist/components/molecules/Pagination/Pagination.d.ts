@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface PaginationProps {
+  /** The nav. */
+  ref?: React.Ref<HTMLElement>;
   /** The current page, from 1 */
   page: number;
   /** Pages in the whole list (from the API's total and itemsPerPage). Renders nothing below 2 */

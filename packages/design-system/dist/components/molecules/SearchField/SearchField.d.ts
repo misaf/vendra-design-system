@@ -3,6 +3,8 @@ export interface SearchFieldProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'onSubmit' | 'value' | 'defaultValue' | 'type'
 > {
+  /** The native input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   value?: string;
   defaultValue?: string;
   /** The text as typed */

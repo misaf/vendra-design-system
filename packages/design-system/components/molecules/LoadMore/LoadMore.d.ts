@@ -1,4 +1,6 @@
 export interface LoadMoreProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Items showing now. */
   shown: number;
   /** Items in the whole list (the API's total). */
@@ -17,4 +19,4 @@ export interface LoadMoreProps {
   style?: React.CSSProperties;
 }
 /** "Show more" paging: status, progress bar and a button for the next page. */
-export declare function LoadMore(props: LoadMoreProps): JSX.Element;
+export declare function LoadMore(props: LoadMoreProps): React.JSX.Element;

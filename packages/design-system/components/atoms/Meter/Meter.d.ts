@@ -1,4 +1,6 @@
 export interface MeterProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** What it measures, shown above the bar and naming the meter */
   label?: React.ReactNode;
   value: number;
@@ -20,4 +22,4 @@ export interface MeterProps {
   style?: React.CSSProperties;
 }
 /** A value towards a target (role="meter"), with a label and value text. */
-export declare function Meter(props: MeterProps): JSX.Element;
+export declare function Meter(props: MeterProps): React.JSX.Element;

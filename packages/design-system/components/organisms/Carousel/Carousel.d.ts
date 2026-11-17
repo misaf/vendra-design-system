@@ -38,6 +38,6 @@ export interface SnapScrollerProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare const Carousel: React.ForwardRefExoticComponent<
-  SnapScrollerProps & React.RefAttributes<SnapScrollerHandle>
->;
+export declare function Carousel(
+  props: SnapScrollerProps & {ref?: React.Ref<SnapScrollerHandle>}
+): React.JSX.Element;

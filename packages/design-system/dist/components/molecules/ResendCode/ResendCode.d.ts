@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface ResendCodeProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The wait before another code can be asked for, in seconds; it starts when the component mounts. Default 60 */
   seconds?: number;
   /** Send the code again; the wait starts over. */

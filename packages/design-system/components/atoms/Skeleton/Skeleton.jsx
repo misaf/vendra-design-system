@@ -10,11 +10,17 @@ export function Skeleton({
   lines = 1,
   radius,
   className = '',
-  style
+  style,
+  ref
 }) {
   if (shape === 'card')
     return (
-      <div aria-hidden="true" className={cx('ag-skel-card', className)} style={{width, ...style}}>
+      <div
+        ref={ref}
+        aria-hidden="true"
+        className={cx('ag-skel-card', className)}
+        style={{width, ...style}}
+      >
         <span className="ag-skel ag-skel--arch"></span>
         <span className="ag-skel ag-skel--text" style={{width: '70%', height: 20}}></span>
         <span className="ag-skel ag-skel--text" style={{width: '45%'}}></span>
@@ -23,7 +29,12 @@ export function Skeleton({
     );
   if (shape === 'text')
     return (
-      <div aria-hidden="true" className={cx('ag-skel-lines', className)} style={{width, ...style}}>
+      <div
+        ref={ref}
+        aria-hidden="true"
+        className={cx('ag-skel-lines', className)}
+        style={{width, ...style}}
+      >
         {Array.from({length: Math.max(1, lines)}, (_, i) => (
           <span
             key={i}
@@ -39,6 +50,7 @@ export function Skeleton({
     );
   return (
     <span
+      ref={ref}
       aria-hidden="true"
       className={cx('ag-skel', 'ag-skel--' + shape, className)}
       style={{

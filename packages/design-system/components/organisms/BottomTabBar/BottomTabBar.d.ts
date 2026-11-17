@@ -10,8 +10,10 @@ export interface BottomTabItem {
   /** Defaults to "noopener noreferrer" for target="_blank" */ rel?: string;
 }
 export interface BottomTabBarProps {
+  /** The nav. */
+  ref?: React.Ref<HTMLElement>;
   items: BottomTabItem[];
   /** aria-label for the nav */ label?: string;
   className?: string;
 }
-export declare function BottomTabBar(props: BottomTabBarProps): JSX.Element;
+export declare function BottomTabBar(props: BottomTabBarProps): React.JSX.Element;

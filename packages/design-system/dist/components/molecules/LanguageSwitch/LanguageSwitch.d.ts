@@ -4,6 +4,8 @@ export interface LanguageOption {
   label: string;
 }
 export interface LanguageSwitchProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Current language id, e.g. "en" | "fa" */
   value?: string;
   onChange?: (id: string) => void;

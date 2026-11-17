@@ -1,14 +1,16 @@
 import React from 'react';
 import {Focusable, Tooltip as AriaTooltip, TooltipTrigger} from 'react-aria-components';
 import {cx} from '../../utils/cx.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // A tooltip on React Aria (WCAG 1.4.13): it shows on hover and keyboard focus, describes its trigger
 // (aria-describedby) while shown, and Esc dismisses it. React Aria ignores touch, so a tap on the
 // trigger toggles it too, and a tap anywhere else hides it. The trigger is a React Aria button
 // (Button, IconButton) or a native focusable element.
-export function Tooltip({content, placement = 'top', open, children}) {
+export function Tooltip({content, placement = 'top', open, children, ref}) {
   const [tapped, setTapped] = React.useState(false);
   const wrapperRef = React.useRef(null);
+  const mergedRef = useMergedRef(wrapperRef, ref);
   React.useEffect(() => {
     if (!tapped) return;
     const onPointerDown = event => {
@@ -32,7 +34,7 @@ export function Tooltip({content, placement = 'top', open, children}) {
       closeDelay={200}
     >
       <span
-        ref={wrapperRef}
+        ref={mergedRef}
         className="ag-tip"
         onPointerUp={event => event.pointerType === 'touch' && setTapped(shown => !shown)}
       >
