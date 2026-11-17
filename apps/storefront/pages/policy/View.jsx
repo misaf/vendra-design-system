@@ -3,7 +3,7 @@ import React from 'react';
 import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontPolicyLayout} from '../../app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
-import {StorefrontPolicyHeading} from '../../app/organisms/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
+import {StorefrontPolicyHeading} from '../../app/molecules/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
 import {StorefrontPolicyNavigation} from '../../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
 import {StorefrontPolicyContents} from '../../app/organisms/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
 import {StorefrontPolicyDocument} from '../../app/organisms/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';

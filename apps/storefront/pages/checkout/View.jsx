@@ -7,7 +7,7 @@ import {StorefrontCheckoutMethods} from '../../app/organisms/StorefrontCheckoutM
 import {StorefrontCheckoutReceipt} from '../../app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx';
 import {StorefrontCheckoutSubmission} from '../../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {StorefrontCheckoutNotices} from '../../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
-import {StorefrontCheckoutProgress} from '../../app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
+import {StorefrontStepProgress} from '../../app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx';
 import {StorefrontCheckoutHeading} from '../../app/molecules/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
 import {StorefrontCheckoutBank} from '../../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {StorefrontCheckoutConfirmation} from '../../app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
@@ -35,7 +35,7 @@ export function View({v}) {
           }
           progress={
             v.paying ? (
-              <StorefrontCheckoutProgress
+              <StorefrontStepProgress
                 steps={v.steps}
                 current={2}
                 onStepClick={v.stepClick}

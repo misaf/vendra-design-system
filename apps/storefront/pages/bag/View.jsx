@@ -7,14 +7,14 @@ import {StorefrontBagItems} from '../../app/organisms/StorefrontBagItems/Storefr
 import {StorefrontBagSummary} from '../../app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx';
 import {StorefrontBagSticky} from '../../app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx';
 import {StorefrontBagFeedback} from '../../app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx';
-import {StorefrontBagProgress} from '../../app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx';
+import {StorefrontStepProgress} from '../../app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx';
 import {StorefrontBagRecipient} from '../../app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx';
 import {StorefrontBagLocation} from '../../app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx';
 import {StorefrontBagSchedule} from '../../app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx';
 import {StorefrontBagCards} from '../../app/organisms/StorefrontBagCards/StorefrontBagCards.jsx';
 import {StorefrontBagSender} from '../../app/organisms/StorefrontBagSender/StorefrontBagSender.jsx';
-import {StorefrontBagDeliveryIntro} from '../../app/organisms/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx';
-import {StorefrontBagHeading} from '../../app/organisms/StorefrontBagHeading/StorefrontBagHeading.jsx';
+import {StorefrontBagDeliveryIntro} from '../../app/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx';
+import {StorefrontBagHeading} from '../../app/molecules/StorefrontBagHeading/StorefrontBagHeading.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -35,14 +35,16 @@ export function View({v}) {
           }
           progress={
             v.hasItems ? (
-              <StorefrontBagProgress
-                steps={v.steps}
-                current={v.stepIndex}
-                onStepClick={v.stepClick}
-                labels={{region: v.t?.steps, done: v.t?.doneStep}}
-                formatNumber={v.fmt}
-                captionFormat={v.caption}
-              />
+              <div className="vf-bag-steps tw:mb-5h">
+                <StorefrontStepProgress
+                  steps={v.steps}
+                  current={v.stepIndex}
+                  onStepClick={v.stepClick}
+                  labels={{region: v.t?.steps, done: v.t?.doneStep}}
+                  formatNumber={v.fmt}
+                  captionFormat={v.caption}
+                />
+              </div>
             ) : null
           }
           heading={

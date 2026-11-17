@@ -7,7 +7,7 @@ import {StorefrontTrackLookup} from '../../app/organisms/StorefrontTrackLookup/S
 import {StorefrontTrackProgress} from '../../app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {StorefrontTrackDeliveryPhoto} from '../../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
 import {StorefrontTrackOrderDetails} from '../../app/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
-import {StorefrontTrackOrderActions} from '../../app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
+import {StorefrontTrackOrderActions} from '../../app/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
 import {StorefrontOrderSummaryCard} from '../../app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
 import {StorefrontTrackReorderDialog} from '../../app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx';
 import {Shell} from '../../app/Shell.jsx';

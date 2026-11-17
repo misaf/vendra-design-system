@@ -29,14 +29,14 @@ for routed pages.
 | Presentation shortlist | `app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx` (controlled items/open/prices, localized labels, label renderer and close/clear/send/item callbacks) |
 | Presentation order | `app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
 | Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
-| Presentation PIN unlock | `app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
+| Presentation PIN unlock | `app/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
 | Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
 | Saved-page empty state | `app/molecules/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
 | Saved-page product results | `app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
 | Saved-page removal notice | `app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
 | Tracking repeat-order review | `app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx` (controlled dialog/choice/confirmation/notices; reconciliation and bag changes remain in logic) |
 | Order summary card (checkout and tracking) | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` (explicit title/lines/sums; formatting remains in logic and column/aside placement in layouts) |
-| Tracking order actions | `app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
+| Tracking order actions | `app/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
 | Tracking order details | `app/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx` (explicit rows; delivery/message/payment formatting remains in logic) |
 | Tracking delivery photo | `app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx` (explicit src/placeholderLabel/alt/caption; status and photo selection remain in logic) |
 | Tracking progress | `app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
@@ -64,19 +64,19 @@ for routed pages.
 | Checkout summary and sticky action | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` and `app/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx` (explicit title/lines/sums and summary/place descriptors) |
 | Checkout confirmation | `app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx` (explicit progress, heading, status, rows, account and links descriptors) |
 | Checkout bank status | `app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx` (explicit progress, payment and recovery-action descriptors) |
-| Checkout progress and heading | `app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx` and `app/molecules/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx` (explicit step state/labels/formatters/callback and heading text) |
+| Checkout progress and heading | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` and `app/molecules/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx` (explicit step state/labels/formatters/callback and heading text) |
 | Checkout status notices | `app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
 | Checkout submission | `app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
 | Checkout receipt details | `app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
 | Checkout payment methods | `app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
 | Checkout delivery review | `app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx` (explicit labels, edit descriptor and detail rows) |
-| Bag delivery sign-in and feedback | `app/organisms/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
+| Bag delivery sign-in and feedback | `app/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
 | Bag sender fields | `app/organisms/StorefrontBagSender/StorefrontBagSender.jsx` (explicit labels and controlled sender name/phone descriptors) |
 | Bag card messages | `app/organisms/StorefrontBagCards/StorefrontBagCards.jsx` (explicit labels, card-addition notice and normalized line records) |
 | Bag delivery scheduling | `app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx` (explicit title, preparation notice, review and day/slot descriptors) |
 | Bag delivery location | `app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx` (explicit picker, zone, fallback and address descriptors) |
 | Bag recipient fields | `app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
-| Bag progress | `app/organisms/StorefrontBagProgress/StorefrontBagProgress.jsx` (explicit steps/current, labels, formatters and step callback) |
+| Bag progress | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` inside bag View's `vf-bag-steps` wrapper (explicit steps/current, labels, formatters and step callback) |
 | Bag feedback and recovery | `app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
 | Bag sticky actions | `app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
 | Bag summary | `app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx` (explicit summary, meter, promo, action descriptors and payment note) |
