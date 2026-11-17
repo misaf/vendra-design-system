@@ -5,3 +5,5 @@ Composes controlled profile fields from explicit problems, name/phone/email/lang
 View retains profile-tab visibility and descriptor mapping. Account/shared logic retains customer identity/scope, drafts and changed-field tracking, email validation/focus, merging against newer account data, save errors/notices, locale switching and persistence. No state, effects, browser APIs or profile rules belong here.
 
 Verify bilingual field semantics, invalid-email summary/focus, drafts, SMS/language selection, storage-error retry, persisted profile values, preservation of newer wallet/account data, reload/tab continuity, customer isolation, touch/keyboard use, rotation, overflow and accessibility against the previous version.
+
+Isolated fixture/spec coverage exercises bilingual controlled name/email/language/SMS edits and save callbacks, disabled phone semantics, email summary focus/error clearing, axe and compact containment. Profile persistence, customer scope and locale switching stay in page integration coverage.
