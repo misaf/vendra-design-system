@@ -9,7 +9,6 @@
   "StorefrontHomeCategories",
   "StorefrontHomeFeatured",
   "StorefrontHomeJournal",
-  "StorefrontHomeNewsletter",
   "StorefrontHomeOccasions",
   "StorefrontHomeStudio",
   "StorefrontHomeWeddings",
@@ -37,8 +36,6 @@
   "StorefrontProductHeading",
   "StorefrontProductRecent",
   "StorefrontTrackDeliveryPhoto",
-  "StorefrontWeddingsCompletion",
-  "StorefrontWeddingsFormControls",
   "StorefrontWeddingsHeading",
   "StorefrontWeddingsServices",
   "StorefrontWeddingsStory"
