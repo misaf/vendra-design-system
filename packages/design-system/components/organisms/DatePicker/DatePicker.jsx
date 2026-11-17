@@ -284,7 +284,15 @@ export function DatePicker({
           >
             <Group className={cx('ag-input ag-date__field', error && 'ag-input--error')}>
               <DateInput id={fieldId} className="ag-date__input">
-                {segment => <DateSegment segment={segment} className="ag-date__segment" />}
+                {segment => (
+                  <DateSegment
+                    segment={segment}
+                    className={cx(
+                      'ag-date__segment',
+                      segment.isEditable && segment.text.length < 2 && 'ag-date__segment--narrow'
+                    )}
+                  />
+                )}
               </DateInput>
               <Button className="ag-date__open" aria-label={text.open}>
                 <Icon name="calendar" size={18} />

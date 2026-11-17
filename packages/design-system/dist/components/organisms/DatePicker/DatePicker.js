@@ -228,7 +228,7 @@ export function DatePicker({ label, value, onChange, calendar, onCalendarChange,
 		className: "ag-date__input"
 	}, (segment) => /* @__PURE__ */ React.createElement(DateSegment, {
 		segment,
-		className: "ag-date__segment"
+		className: cx("ag-date__segment", segment.isEditable && segment.text.length < 2 && "ag-date__segment--narrow")
 	})), /* @__PURE__ */ React.createElement(Button, {
 		className: "ag-date__open",
 		"aria-label": text.open
