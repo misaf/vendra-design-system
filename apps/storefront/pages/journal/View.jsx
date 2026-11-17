@@ -1,14 +1,13 @@
 // StorefrontJournal: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontJournalLayout} from '../../app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from '../../app/organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
-import {StorefrontJournalSearch} from '../../app/organisms/StorefrontJournalSearch/StorefrontJournalSearch.jsx';
-import {StorefrontJournalEmpty} from '../../app/organisms/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
-import {StorefrontJournalLoading} from '../../app/organisms/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
+import {StorefrontJournalEmpty} from '../../app/molecules/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
+import {StorefrontJournalLoading} from '../../app/molecules/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
 import {StorefrontJournalFeatured} from '../../app/organisms/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
 import {StorefrontJournalStories} from '../../app/organisms/StorefrontJournalStories/StorefrontJournalStories.jsx';
-import {StorefrontJournalPagination} from '../../app/organisms/StorefrontJournalPagination/StorefrontJournalPagination.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -31,9 +30,7 @@ export function View({v}) {
               }}
             />
           }
-          search={
-            <StorefrontJournalSearch label={v.migration?.search} value={v.q} onChange={v.setQ} />
-          }
+          search={<DS.SearchField label={v.migration?.search} value={v.q} onChange={v.setQ} />}
           feedback={
             <>
               {v.noStories ? (
@@ -60,7 +57,8 @@ export function View({v}) {
           }
           stories={<StorefrontJournalStories stories={list(v.rest)} />}
           pagination={
-            <StorefrontJournalPagination
+            <DS.Pagination
+              className="vf-journal-pagination tw:mt-8"
               page={v.paging?.page}
               pageCount={v.paging?.pageCount}
               href={v.paging?.href}

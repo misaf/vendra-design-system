@@ -2,7 +2,7 @@
 import React from 'react';
 import {list} from '../../app/runtime.js';
 import {StorefrontFaqLayout} from '../../app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
-import {StorefrontFaqHeading} from '../../app/organisms/StorefrontFaqHeading/StorefrontFaqHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontFaqQuestions} from '../../app/organisms/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
 import {StorefrontFaqContact} from '../../app/organisms/StorefrontFaqContact/StorefrontFaqContact.jsx';
 import {Shell} from '../../app/Shell.jsx';
@@ -14,7 +14,8 @@ export function View({v}) {
       content={
         <StorefrontFaqLayout
           heading={
-            <StorefrontFaqHeading
+            <StorefrontPageHeading
+              variant="info"
               eyebrow={v.t?.eyebrow}
               title={v.t?.titleA}
               accent={v.t?.titleB}

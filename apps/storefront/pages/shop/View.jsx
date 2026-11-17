@@ -1,5 +1,6 @@
 // StorefrontShop: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontShopLayout} from '../../app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx';
 import {StorefrontShopCategories} from '../../app/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx';
@@ -7,7 +8,6 @@ import {StorefrontShopSidebarFilters} from '../../app/organisms/StorefrontShopSi
 import {StorefrontShopFilterDialog} from '../../app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx';
 import {StorefrontShopToolbar} from '../../app/organisms/StorefrontShopToolbar/StorefrontShopToolbar.jsx';
 import {StorefrontShopResults} from '../../app/organisms/StorefrontShopResults/StorefrontShopResults.jsx';
-import {StorefrontShopHeading} from '../../app/organisms/StorefrontShopHeading/StorefrontShopHeading.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -17,7 +17,8 @@ export function View({v}) {
       content={
         <StorefrontShopLayout
           heading={
-            <StorefrontShopHeading
+            <DS.SectionHeader
+              level="h1"
               eyebrow={v.t?.eyebrow}
               title={v.t?.titleA}
               accent={v.t?.titleB}
