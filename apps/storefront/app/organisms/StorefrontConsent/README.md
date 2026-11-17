@@ -6,4 +6,6 @@ Shell supplies visibility, bilingual title/body/action labels, the policy URL, a
 
 Preserve `vf-consent`, `vf-consent-title`, the focusable section, docking classes and action attributes: the shared consent workflow and shell height measurements rely on them. Shell keeps the banner in its bottom bar above the page action and tab bar.
 
-Verify with the first-visit cases in `features.spec.mjs`, footer reopening in `footer.spec.mjs`, and touch rotation in `devices.spec.mjs`.
+`StorefrontConsent.spec.mjs` covers English/Persian content and policy destination, stable IDs/focus target, isolated pointer/Enter/Space callbacks, keyboard action order, controlled visibility and responsive axe/containment at phone, tablet and desktop widths. Callbacks report actions without changing the supplied visibility.
+
+Persistence, analytics gating, first-visit decisions and footer focus restoration remain covered by `features.spec.mjs`, `footer.spec.mjs` and the touch rotation cases in `devices.spec.mjs`.

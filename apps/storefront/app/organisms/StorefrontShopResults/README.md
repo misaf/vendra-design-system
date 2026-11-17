@@ -5,3 +5,5 @@ Composes the product grid, LoadMore and loading/error/empty feedback. Receives n
 View retains normalization and explicit state/label mapping. Shop/shared logic retains matching/sorting, pagination, URL state, product data/localization, favorites, navigation, first-new-card focus, retry and clear semantics. No page model, state/effects, browser APIs or commerce rules belong here. Independent visibility flags preserve existing behavior.
 
 Verify English/Persian default/loaded pages, product identity/order, favorite persistence and product navigation; Show more URL/reload/focus; loading status, error retry, empty-state clear; responsive grid, touch rotation, overflow and accessibility. Compare result regions with the unchanged baseline.
+
+Bilingual isolated fixture/spec coverage checks supplied card content/destinations/image priority/frame, per-product favorite/select callbacks, paging status/href/callback and completed state, independent loading/error/empty flags and recovery callbacks, axe and compact containment. Matching/sorting, pagination rules, persistence and first-new-card focus remain in page integration coverage.

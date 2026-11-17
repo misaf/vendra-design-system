@@ -5,3 +5,5 @@ Composes the saved-product removal notice from explicit message and undo label/c
 View retains removed-message visibility and localized prop mapping. Saved/shared logic retain the last removed product, additive Undo, persistence, synchronization and focus restoration. Package Alert/Button retain status and action semantics. Layout keeps the notice outside results/empty groups so final-item removal still offers recovery. This organism owns no state, mutations, persistence or browser effects.
 
 Verify bilingual notice copy, focus on removal, additive Undo without reverting other changes, final-item recovery, favorite-button focus restoration, reload persistence and responsive markup against the previous version.
+
+Bilingual isolated fixture/spec coverage checks the supplied polite status message, stable Undo ID and keep-focus attribute, pointer/Enter/Space callbacks, latest message/label/callback updates, owner-controlled visibility, axe and compact containment. Removed membership, additive Undo and focus restoration remain in page integration coverage.

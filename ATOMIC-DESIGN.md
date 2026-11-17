@@ -23,6 +23,16 @@ may compose each other; avoid dependency cycles.
 Storefront-specific molecules live in `apps/storefront/app/molecules/<Name>/` for small app-owned
 combinations with explicit content props. They follow the same ownership boundaries as organisms.
 
+**Storefront organism rule.** A storefront organism is a substantial section that composes several
+molecules or atoms with its own structure. A wrapper around a single component (one Alert,
+Button, SectionHeader, SearchField, Pagination or plain heading/paragraph with fixed props) is
+not an organism: write it inline in the page's `View.jsx`. A small combination of two or three
+components with one purpose (a Card around OrderSummary, an EmptyState with its recovery Button,
+a heading with its accent and intro) is a storefront molecule. Prefer one shared molecule over
+per-page copies when two pages render the same combination (`StorefrontOrderSummaryCard`).
+Organisms may import molecules and other organisms; molecules import molecules and the DS bridge;
+layouts receive both as slots.
+
 Storefront-specific organisms live in `apps/storefront/app/organisms/<Name>/`. They compose the package
 UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
 They do not belong in the published package or import store state and persistence. Shell and page
@@ -6234,3 +6244,71 @@ All 64 selected master-based Darwin/Linux dev/production cases, root unit and ch
 258 baselines remain unchanged. All 12 compatibility cases pass on PR #169 runtime; all three
 blanket-clear negative controls fail as expected. Original master runtime is restored.
 Next: review the pending saved-state PRs, then initial-load retry UX.
+
+## Stage 250 checkpoint: reclassify thin storefront organisms (#122)
+
+Stage 250 applies the storefront organism rule above. Twenty-two single-component wrappers are
+inlined in their Views with identical props and classes: AccountNotices, AccountFeedback,
+AccountSessionAction, AccountTabs, ContactFeedback, ContactFormHeading, ErrorMessage,
+JournalPagination, JournalSearch, NotfoundMessage, NotfoundRecommendationHeading, PolicyNotice,
+ProductBreadcrumbs, SavedHeading, SearchHeading, ShopHeading, SigninChangeNumber,
+SiteCheckoutNotice, SiteIntegrationFeedback, TrackPendingNotice, WeddingsFeedback and
+WeddingsHeroMedia. Fifteen small combinations move to `apps/storefront/app/molecules/`:
+AccountHeading, CheckoutHeading, JournalEmpty, JournalLoading, NotfoundActions, PostActions,
+PostLoading, PostMissing, SavedEmpty, SigninHeading, SigninPolicies, SigninResend,
+TrackOrderDetails, TrackProgress and WeddingsInquiryIntro. The identical CheckoutSummary and
+TrackOrderSummary merge into the shared `StorefrontOrderSummaryCard` molecule. The app now has
+111 organism and 17 molecule folders. Rendered markup is unchanged: fragments around text were
+dropped and props kept, so screenshots and axe results must not change. Root unit, typecheck and
+check pass.
+Next: audit the 26–40 line organisms against the same rule; duplicated headings/feedback are #123.
+
+## Stage 251 checkpoint: audit 26–40 line storefront organisms (#122)
+
+Stage 251 audits the 27 storefront organisms of 26–40 lines against the organism rule. Six small
+combinations move to `apps/storefront/app/molecules/`: BagHeading and PolicyHeading (heading
+markup), BagDeliveryIntro (ErrorSummary plus sign-in prompt), PresentationUnlock (Dialog plus
+CodeInput) and TrackOrderActions (button group). The identical compact/wide Stepper pairs of
+BagProgress and CheckoutProgress merge into the shared `StorefrontStepProgress` molecule; bag View
+keeps its `vf-bag-steps` wrapper, so the DOM is unchanged. The other 20 stay organisms: each is a
+section with its own structure (Card sections with headings/actions, repeated card or document
+lists, carousels, dialogs with forms, sticky action bars, the Shell announcement, the gallery with
+its lightbox, and StorefrontCheckoutBank composing progress with PaymentStatus). WeddingsHeading is
+the borderline case; it stays because it carries the hero actions with its heading. The app now has
+104 organism and 23 molecule folders. Root unit, typecheck and check pass.
+Next: duplicated headings/feedback (#123).
+
+## Stage 252 checkpoint: one shared page heading (#123)
+
+Stage 252 replaces the near-identical page headings with the `StorefrontPageHeading` molecule
+(optional eyebrow, `level` heading with optional accent, optional intro and meta; `variant="page"`
+keeps the intro to the reading measure and `variant="info"` lets it span information-page
+columns). It replaces the Account, Bag, Checkout, Contact, FAQ, Policy, Sign-in and Tracking
+headings (three organisms, five molecules) and the inline headings of StorefrontTrackLookup and
+StorefrontWeddingsHeading. Eight per-page accent classes (`vf-account/bag/checkout/contact/faq/
+signin/track/weddings-accent`, none styled) and their eyebrow/intro twins become the shared
+`vf-page-eyebrow`, `vf-page-accent`, `vf-page-intro` and `vf-page-meta`; `vf-home-weddings-accent`
+keeps its own inverse styling. Views keep visibility, copy mapping and wrappers (checkout's
+`vf-checkout-heading`, the policy `<time>` passed as `meta`). Heading levels, landmarks and
+utility classes are unchanged. The feedback half of #123 landed in stage 250: single Alert,
+EmptyState and status wrappers are inline DS components in Views, and the remaining feedback
+molecules each combine a message with its own recovery action. SectionHeader-based headings
+(journal, saved, shop, not-found) already share the package component. The app now has 101
+organism and 19 molecule folders. Root unit, typecheck and check pass.
+
+## Stage 253 checkpoint: storefront organism tests (#127)
+
+Stage 253 gives storefront UI the package's component-test pattern. A storefront fixture host
+(`apps/storefront/e2e/fixtures/storefront-component.html`) loads the storefront styles and renders
+`app/<layer>/<Name>/<Name>.fixture.jsx` inside VendraProvider; `openStorefrontComponent` and
+`expectStorefrontAccessible` open it, and the `storefront-components` Playwright project runs the
+specs with the development suite. Six interaction-heavy organisms have fixtures and specs:
+CheckoutMethods, CheckoutReceipt, CheckoutSubmission, BagSchedule, AccountEditorDialog and
+PresentationOrder (controlled values, callbacks, conditional branches, LTR Sheba/product codes,
+dialog close paths and axe in English and Persian; 23 tests). `tests/atomic.test.cjs` now requires
+a spec and fixture together and for every new organism; the 95 older organisms are listed in
+`apps/storefront/tests/organisms-without-specs.json`, which may only shrink. Root unit, typecheck,
+check and the new project pass locally.
+Next: BagLocation (map), BagCards, AccountAddressEditor/ReminderEditor (DatePicker) and the
+presentation viewer/send/settings organisms.
+

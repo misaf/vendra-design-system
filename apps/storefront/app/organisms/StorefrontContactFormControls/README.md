@@ -4,4 +4,6 @@ Composes the contact error summary, controlled name/mobile/email/message fields 
 
 View retains not-sent visibility and localized descriptor/callback mapping, form heading and completion/feedback composition. Contact/shared logic retain signed-in prefill, reply-channel/message validation, API submission, busy/errors, draft retention and focus. Package field/ErrorSummary/Button components retain control semantics. StorefrontContactLayout retains form placement and columns. This organism owns no state, calculations, persistence or browser effects.
 
-Verify bilingual labels, guest/customer prefill, summary links and single-field focus, email/mobile reply alternatives, demo completion and return-to-form drafts, pending/failed submission recovery and responsive markup against the previous version.
+`StorefrontContactFormControls.spec.mjs` covers English/Persian labels and field metadata, supplied value updates without callbacks, isolated controlled editing and phone metadata, keyboard field/action order, summary links/focus, supplied errors and clearing, busy activation suppression/recovery, compact containment and axe in empty/filled/error/busy states.
+
+Guest/customer prefill decisions, reply-channel/message validation, API outcomes, draft retention and page-managed focus remain integration responsibilities. The fixture supplies errors and busy state; it does not implement submission rules.

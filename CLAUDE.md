@@ -12,8 +12,18 @@ Keep pending announcements independent of button IDs so completion/navigation ma
 Explicit disabled remains native; another enabled submit button is not blocked by the pending guard.
 
 Storefront-specific molecules live under `apps/storefront/app/molecules/<Name>/` for small app-owned
-combinations. StorefrontPresentationLabel renders code/sold-out text from explicit props;
+combinations (headings with accent/intro, EmptyState plus recovery action, Card around one package
+section). A wrapper around a single component is not a molecule or organism: write it inline in the
+page's `View.jsx` (see ATOMIC-DESIGN.md → Storefront organism rule). StorefrontPresentationLabel renders code/sold-out text from explicit props;
 View/logic retain product data, localization and stock decisions.
+
+StorefrontPageHeading (molecule) is the one page heading: optional eyebrow, `level` heading (h1 by
+default) with optional accent, optional intro and meta, and `variant` (`page` keeps the intro to the
+reading measure, `info` lets it span information-page columns). Account, bag, checkout, contact, FAQ,
+policy, sign-in and tracking Views, StorefrontTrackLookup and StorefrontWeddingsHeading use it; Views
+keep visibility, copy mapping and wrappers. Policy passes its updated label and `<time>` as `meta`;
+policy/shared logic retain each document's own date (`VF_POLICY_UPDATED`, Jalali in Persian). Do not add per-page heading components or `vf-<page>-accent`
+classes; use its shared `vf-page-*` classes.
 
 Storefront-specific organisms live under `apps/storefront/app/organisms/<Name>/` and receive explicit
 content props and callbacks from Shell or pages. StorefrontHeader owns the responsive header
@@ -43,16 +53,13 @@ StorefrontProductAdded composes the controlled bag-confirmation summary and chec
 View/logic retain bag mutations, summary calculations, dialog state and checkout continuation.
 StorefrontProductSticky composes the live total and add action inside Shell's sticky slot;
 View/logic retain totals/stock/bag actions; Shell retains positioning/measurement/focus behavior.
-StorefrontProductBreadcrumbs composes explicit navigation label/items through Breadcrumb; View maps
-localized items, logic retains identity/category/shop URLs and layout retains placement.
 StorefrontProductLayout arranges product slots; product View/logic retain controls, state and
 purchase actions, and the sticky purchase action stays in Shell. Product View passes its layout,
 sticky action and conditional recent organism directly, retaining the recent reset boundary and
 required multi-child details/feedback groups.
-StorefrontShopHeading composes the localized h1 SectionHeader from explicit eyebrow/title/accent;
-View maps copy and layout retains heading placement. Shop View passes StorefrontShopLayout directly
-to Shell content, preserving sidebar/results fragments and the empty sticky slot. Filtering, sorting,
-paging and URL state remain in the shop View/logic.
+Shop View passes StorefrontShopLayout directly to Shell content with its h1 SectionHeader inline,
+preserving sidebar/results fragments and the empty sticky slot. Filtering, sorting, paging and URL
+state remain in the shop View/logic.
 StorefrontShopCategories composes sidebar category buttons and compact chips from explicit records;
 View/logic retain eligibility, filtered counts, selection/tracking, URL/paging and sorting.
 StorefrontShopSidebarFilters composes controlled occasion/date/price/stock controls from explicit descriptors;
@@ -63,8 +70,6 @@ StorefrontShopToolbar composes compact filters/sort, active filters, quick chips
 View/logic retain filtering, sorting, URL/paging, tracking and focus-scroll callbacks.
 StorefrontShopResults composes product cards, paging and loading/error/empty feedback from explicit props;
 View/logic retain state/visibility, mapping, favorites, recovery and navigation/paging focus.
-StorefrontBagHeading composes explicit bag/delivery visibility and heading copy; View retains the
-hasItems guard, logic retains step state and layout retains placement.
 StorefrontBagDeliveryLayout arranges recipient/location React-node slots in the named delivery section;
 View retains visibility and field descriptors, logic retains validation/map state and callbacks.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
@@ -80,8 +85,9 @@ StorefrontBagSticky composes total and controlled continuation actions inside Sh
 View/logic retain visibility/totals/validation; Shell retains docking and focus measurements.
 StorefrontBagFeedback composes removal notice/Undo and empty-state recovery in separate layout slots;
 View/logic retain visibility, removed-line data, Undo/reset, persistence and focus restoration.
-StorefrontBagProgress composes compact/wide Steppers from explicit steps/current/labels/formatters;
-View/logic retain visibility, stage state, navigation and permitted-step callbacks.
+StorefrontStepProgress (molecule shared by bag and checkout) composes compact/wide Steppers from explicit
+steps/current/labels/formatters; bag View adds the vf-bag-steps wrapper and View/logic retain visibility,
+stage state, navigation and permitted-step callbacks.
 StorefrontBagRecipient composes recipient heading, saved-address chips and controlled name/phone fields;
 View/logic retain address mapping/selection, validation, persistence and the surrounding delivery/map flow.
 StorefrontBagLocation composes controlled map/zone status, failed-map zone selection and address input;
@@ -110,13 +116,14 @@ StorefrontCheckoutSubmission composes WhatsApp, processing/failure feedback and 
 View/logic retain readiness, submission/deduplication, pending/errors, retries and navigation.
 StorefrontCheckoutNotices composes independent retry-review and recovery-storage notices;
 View/logic retain retry eligibility, storage, focus, record clearing and review navigation.
-StorefrontCheckoutProgress composes compact/wide Steppers; StorefrontCheckoutHeading composes payment h1;
+Checkout reuses StorefrontStepProgress and StorefrontPageHeading (inside its vf-checkout-heading wrapper);
 View/logic retain state visibility, current indices, labels/formatters, permitted navigation and focus.
 StorefrontCheckoutBank composes bank progress and PaymentStatus from explicit descriptors;
 View/logic retain recovery, redirect data, retry/method/check callbacks, verification and completion.
 StorefrontCheckoutConfirmation composes completion progress, heading, details, account offer and links;
 View/logic retain completion state, wording/formatting, customer eligibility, destinations and persistence.
-StorefrontCheckoutSummary composes summary Card/rows; StorefrontCheckoutSticky composes compact total/place;
+StorefrontOrderSummaryCard (molecule) composes the summary Card shared by checkout and tracking;
+StorefrontCheckoutSticky composes compact total/place;
 View/logic retain totals, visibility, validation/submission and pending/errors; Shell retains docking/focus.
 StorefrontAccountLayout arranges heading, actions, notices, tabs, feedback and editor-dialog slots;
 account View/logic retain tab controls, customer isolation, validation and account mutations.
@@ -142,24 +149,12 @@ StorefrontAccountReminderEditor composes controlled name/occasion/date/lead-time
 View/logic retain field visibility/mapping, drafts, calendar rules, date locking, validation/focus and persistence.
 StorefrontAccountEditorDialog composes the controlled shared dialog, storage alert, summary and actions;
 View/logic retain field selection, drafts, validation/focus, save/error state, mutations and persistence.
-StorefrontAccountHeading composes eyebrow and h1/accent from explicit text;
-Layout retains its wrapper; View/logic retain localization, visibility and navigation/focus.
-StorefrontAccountTabs composes controlled tab items and selected-panel children;
-View/logic retain panel visibility/mapping, tab eligibility/fallback and state; package Tabs retains ARIA/keyboard behavior.
-StorefrontAccountSessionAction composes the labelled sign-out button;
-View retains placement/copy; account/shared logic retains session cleanup and home navigation.
-StorefrontAccountFeedback composes the persistent status paragraph;
-View retains placement; account/shared logic retains localized notice transitions and persistence.
-StorefrontAccountNotices composes the page storage-error Alert;
-View retains visibility/placement; account/shared logic retains error state, persistence and retry.
 StorefrontAccountBalancePanel composes overview/top-up/checkout return/history;
 View retains visibility and descriptor mapping; account/shared logic retains wallet rules and persistence.
 Account View composes organisms directly in slots/tab/editor branches; its visibility conditions and
 descriptor mapping remain in View, and the empty sticky-slot fragment is preserved.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
-StorefrontSigninHeading composes phone/code step h1/accent and intro from explicit text;
-View retains step visibility/copy mapping; sign-in/shared logic retains validation, focus and authentication.
 StorefrontSigninPhoneControls composes controlled phone/error-summary/send controls;
 View retains visibility/mapping; sign-in/shared logic retains validation, focus and step transitions.
 StorefrontSigninCodeControls composes controlled code/error-summary/verify controls;
@@ -170,18 +165,12 @@ StorefrontSigninPolicies composes localized text and native policy links;
 View retains visibility/mapping; shared logic/router retains destinations, navigation and history.
 StorefrontSigninCompletion composes success feedback and controlled continuation branches;
 View retains visibility/mapping; sign-in/shared logic retains naming, eligibility, authentication and checkout callback.
-StorefrontSigninChangeNumber composes the controlled change-number button;
-View retains code-step visibility/copy; sign-in/shared logic retains phone retention and code/resent reset.
 Sign-in View passes layout/completion elements directly; multi-child phone/code fragments and
 the empty sticky-slot fragment remain, with existing conditions and mappings preserved.
 StorefrontTrackLayout arranges lookup, order heading/details/summary and feedback slots; tracking
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontTrackLookup composes controlled lookup fields, heading, failure and submit/browse actions;
 View retains visibility/mapping; tracking/shared logic retains validation, normalization, matching and focus.
-StorefrontTrackHeading composes the tracking order eyebrow, accented title and status introduction;
-View retains visibility and mapping, and tracking logic retains status/payment interpretation.
-StorefrontTrackPendingNotice composes the neutral payment alert; View retains order/pending visibility
-and mapping, and tracking logic retains eligibility, localized messages and payment/contact formatting.
 StorefrontTrackProgress composes the timeline card; View retains visibility/mapping, tracking logic
 retains status/step interpretation and localized steps, and package OrderTimeline retains semantics.
 StorefrontTrackDeliveryPhoto composes the delivered photo figure; View retains visibility/copy,
@@ -195,16 +184,12 @@ Tracking shows an order only to its viewer: the buyer (session checkout, signed-
 matching the sender's mobile) sees everything; a recipient (lookup or sign-in matching only the
 recipient's mobile) sees progress, delivery, photo and contact, never prices, payment, card words or
 repeat. Links to unverified orders open the lookup. Verified lookups persist per customer as `tracked`.
-StorefrontTrackOrderSummary composes the summary card; View retains visibility/mapping, tracking/shared
-logic retain line/totals formatting and StorefrontTrackLayout retains the responsive sticky aside.
 StorefrontTrackReorderDialog composes controlled review choices/notices/actions; View maps descriptors,
 tracking/shared logic retain reconciliation/mode/bag changes, and package Dialog retains modal focus.
 Tracking View passes layout/lookup/pending notice/delivery photo/summary elements directly; multi-child
 heading/details and the empty sticky-slot fragments retain their existing visibility and mappings.
 StorefrontSavedLayout arranges heading, notice, results, empty-state and added-dialog slots with controlled
 visibility; saved View/logic retain product links, remove/Undo, persistence and synchronization.
-StorefrontSavedHeading composes the h1 SectionHeader; View maps localized props and saved/shared logic
-retain list counts, remove/Undo, persistence and focus.
 StorefrontSavedRemovalNotice composes removal feedback/Undo; View retains message visibility/mapping,
 saved/shared logic retain additive restoration/persistence/focus, and layout preserves empty-state recovery.
 StorefrontSavedResults composes product cards and add/size/unavailable bag actions from explicit products/labels;
@@ -214,8 +199,6 @@ StorefrontSavedEmpty composes empty messaging/shop link; View retains visibility
 saved/shared logic retain list/removal state and layout keeps empty placement and notice recovery.
 Saved View composes its layout/results/empty elements directly; visibility, descriptors, list
 normalization and the empty sticky-slot fragment remain unchanged.
-StorefrontSearchHeading composes the explicit localized title as the original display h1; View maps
-copy and search/shared logic retain query, matching, reporting, navigation and focus.
 StorefrontSearchControls composes the controlled search field/close link and responsive row from
 explicit query/close descriptors; View maps copy/callbacks and search/shared logic retain behavior.
 StorefrontSearchPopular composes title/term chips; View retains visibility/list normalization and
@@ -234,12 +217,8 @@ StorefrontFaqContact composes explicit help copy, contact actions and sample not
 localized/link mapping and WhatsApp availability, and layout retains aside placement.
 StorefrontFaqQuestions composes explicit question groups; View normalizes the list, FAQ logic
 retains category/answer mapping and delivery wording, and Accordion owns disclosure behavior.
-StorefrontFaqHeading composes explicit eyebrow/title/accent/intro; View maps localized copy, layout
-retains the header and FAQ/shared logic retain question mapping, navigation, locale and focus.
 Weddings View passes layout/form/completion elements directly; localized descriptors, visibility,
 callbacks, list normalization, the multi-child inquiry fragment and empty Shell sticky slot remain.
-StorefrontWeddingsFeedback composes an explicit API-failure message; View retains visibility,
-weddings logic retains failures/retry/drafts and layout keeps feedback after the inquiry section.
 StorefrontWeddingsCompletion composes explicit title/body/edit feedback; View retains visibility
 and demo/live copy mapping, while weddings logic retains outcomes, drafts, edit transitions and focus.
 StorefrontWeddingsFormControls composes explicit validation/field/send descriptors; View retains
@@ -250,10 +229,12 @@ StorefrontWeddingsStory composes gallery/process content; View maps titles and n
 logic supplies photo/step descriptors and StorefrontWeddingsLayout retains the section.
 StorefrontWeddingsServices composes service cards; View normalizes the list, logic supplies localized
 records and StorefrontWeddingsLayout retains the responsive grid.
-StorefrontWeddingsHeroMedia composes the hero arch placeholder; View maps its localized label
-and StorefrontWeddingsLayout retains responsive hero placement.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
+A new storefront organism gets `<Name>.spec.mjs` and `<Name>.fixture.jsx` beside it (storefront host
+`e2e/fixtures/storefront-component.html`, `openStorefrontComponent`, project `storefront-components`);
+`tests/atomic.test.cjs` enforces it, and `tests/organisms-without-specs.json` lists older organisms
+still without one — remove a name when its spec lands, never add one.
 `npm test` runs `tools/app-dependencies.cjs` through filesystem regression tests. App layouts use
 React/layouts; molecules and organisms use the DS bridge, same/lower app UI layers and
 `shared/ui/`. Keep business modules and page coordinators out of app UI. `shared/` is split by
@@ -271,23 +252,13 @@ integrations and page-wide state live on `vfRuntime` (`shared/platform/runtime.j
 Site View renders lazy route elements and live-announcement text directly. Keep VendraProvider,
 LiveRegion, PageBoundary and Suspense at coordinator level; retain each route guard and all four
 customer keys (bag, checkout, track and account). Site/shared logic owns routing and customer state.
-StorefrontSiteIntegrationFeedback composes an explicit message through danger Alert; site View retains
-visibility/provider placement and logic retains failure state, copy, announcements and local data.
-StorefrontSiteCheckoutNotice composes explicit title/action label/href and dismissal callback; site View
-retains visibility/provider placement, logic retains late-completion ownership, bag preservation and URLs.
-StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
-and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
 StorefrontContactDetails composes studio rows (with optional opening status/detail lines), actions and
 map/directions from explicit descriptors; View maps availability/callbacks and contact/shared logic
 retain studio values, opening-hours wording on the store clock (`shared/domain/store-hours.js`), map loading/fallback.
-StorefrontContactFormHeading composes an explicit title as h2; View keeps it outside form/completion
-branches. Contact logic retains drafts, validation, submission and focus; layout retains placement.
 StorefrontContactFormControls composes summary, controlled fields and busy send action; View maps
 visibility/descriptors/callbacks and contact/shared logic retain validation, submission, drafts and focus.
 StorefrontContactCompletion composes the named success region, alert and edit action; View maps
 visibility/demo-live copy and contact/shared logic retain outcomes, draft retention and focus.
-StorefrontContactFeedback composes API-failure messaging; View retains visibility/message mapping
-and contact/shared logic retain errors, draft retention and clearing on edit/retry.
 Contact View passes its layout directly; localized descriptors, availability, callbacks, form
 composition and the empty Shell sticky-slot fragment remain unchanged.
 StorefrontContactLayout arranges heading, details, form and feedback slots; contact View/logic
@@ -302,17 +273,10 @@ StorefrontPolicyDocument composes normalized section descriptors; View retains n
 policy logic retains selection/content/numbering/list visibility and layout retains document placement.
 StorefrontPolicyContents composes explicit label/sections; View retains label mapping/list normalization,
 policy logic retains section descriptors/numbering and shared logic retains focus/sticky measurements.
-StorefrontPolicyNotice composes explicit title/body through the warning Alert; View retains localized
-copy mapping, layout retains placement and Alert retains presentation/accessibility.
 StorefrontPolicyNavigation composes explicit label/links; View retains localized mapping and list
 normalization, shared logic retains link/current-state descriptors and routing, and layout retains placement.
-StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated label/date/ISO props as `<time>`;
-View maps localized and selected-document copy, layout retains the header and policy/shared logic retain
-selection, routing and each document's own date (`VF_POLICY_UPDATED`, Jalali in Persian).
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
-StorefrontJournalPagination forwards explicit paging props; View retains mapping, journal logic retains
-clamping/slices/hrefs/resets and Pagination retains localized controls and single-page visibility.
 StorefrontJournalStories composes explicit story records; View retains list normalization, journal
 logic retains filtering/pagination/mapping and layout retains the responsive grid wrapper.
 StorefrontJournalFeatured composes explicit story props through the wide arch BlogCard; View retains
@@ -321,8 +285,6 @@ StorefrontJournalLoading composes an explicit status message and decorative Skel
 visibility/copy mapping, journal logic retains demo state and layout retains feedback placement.
 StorefrontJournalEmpty composes explicit title/clearLabel/onClear; View retains visibility/mapping,
 journal logic retains query/category matching and clear/reset behavior and layout retains placement.
-StorefrontJournalSearch forwards explicit label/value/onChange to SearchField; View retains mapping,
-journal logic retains query/matching/page resets and SearchField retains focus/clear/accessibility.
 StorefrontJournalHeading composes explicit heading/category props and forwards focus/selection callbacks;
 View retains label mapping/list normalization/focus scrolling and logic retains filtering/page resets.
 StorefrontJournalLayout arranges heading, search, feedback, featured story, grid and pagination
@@ -371,17 +333,11 @@ StorefrontHomeLayout arranges top, featured, occasions, arrivals, weddings, jour
 slots with controlled optional visibility; home View/logic retain collections, controls and sign-up.
 StorefrontNotfoundProducts composes explicit products/photoLabel/saveLabel; View retains normalization/
 copy mapping, logic retains product selection/descriptors/URLs and layout retains the responsive grid.
-StorefrontNotfoundRecommendationHeading composes explicit title/accent through SectionHeader; View
-maps localized copy and layout retains recommendation placement/spacing/grid.
 StorefrontNotfoundActions composes explicit home/search labels/hrefs; View retains mapping, shared
 logic retains destinations/navigation/locale/focus and layout retains placement/wrapping.
-StorefrontNotfoundMessage composes explicit eyebrow/title/accent/body through EmptyState; View maps
-localized copy, shared logic retains invalid-route handling/SEO/focus and layout retains placement.
 StorefrontNotfoundLayout arranges message, recovery actions, recommendation heading and product
 slots passed directly by not-found View; View/logic retain localized content, product mapping and
 recovery links. The explicit empty Shell sticky slot is retained.
-StorefrontErrorMessage composes explicit eyebrow/title/accent/body through EmptyState; View retains
-copy mapping, logic retains reload/phone wording and layout retains placement.
 StorefrontErrorActions composes explicit retry callback/label and home/phone labels/hrefs; View maps
 props, logic retains reload/phone wording and layout retains action placement/wrapping.
 StorefrontErrorLayout arranges message and recovery-action slots passed directly by error View;

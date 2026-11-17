@@ -73,6 +73,14 @@ export function projectsForTarget(build) {
             testDir: '../../../packages/design-system/components',
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
+          },
+          // Storefront molecules, organisms and layouts with their own spec
+          // (app/<layer>/<Name>/<Name>.spec.mjs), on the storefront fixture host page.
+          {
+            name: 'storefront-components',
+            testDir: '../app',
+            testMatch: '*.spec.mjs',
+            use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           }
         ])
   ];

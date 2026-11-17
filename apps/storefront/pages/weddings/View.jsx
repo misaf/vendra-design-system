@@ -1,15 +1,14 @@
 // StorefrontWeddings: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontWeddingsLayout} from '../../app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
 import {StorefrontWeddingsHeading} from '../../app/organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
-import {StorefrontWeddingsHeroMedia} from '../../app/organisms/StorefrontWeddingsHeroMedia/StorefrontWeddingsHeroMedia.jsx';
 import {StorefrontWeddingsServices} from '../../app/organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
 import {StorefrontWeddingsStory} from '../../app/organisms/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
-import {StorefrontWeddingsInquiryIntro} from '../../app/organisms/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
+import {StorefrontWeddingsInquiryIntro} from '../../app/molecules/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
 import {StorefrontWeddingsFormControls} from '../../app/organisms/StorefrontWeddingsFormControls/StorefrontWeddingsFormControls.jsx';
 import {StorefrontWeddingsCompletion} from '../../app/organisms/StorefrontWeddingsCompletion/StorefrontWeddingsCompletion.jsx';
-import {StorefrontWeddingsFeedback} from '../../app/organisms/StorefrontWeddingsFeedback/StorefrontWeddingsFeedback.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -28,7 +27,7 @@ export function View({v}) {
               whatsapp={v.waHref ? {label: v.t?.wa, href: v.waHref} : null}
             />
           }
-          heroMedia={<StorefrontWeddingsHeroMedia placeholderLabel={v.t?.ph} />}
+          heroMedia={<DS.ArchFrame ratio="4/5" placeholderLabel={v.t?.ph} alt="" />}
           services={<StorefrontWeddingsServices services={list(v.services)} />}
           story={
             <StorefrontWeddingsStory
@@ -95,7 +94,7 @@ export function View({v}) {
               ) : null}
             </>
           }
-          feedback={v.apiError ? <StorefrontWeddingsFeedback message={v.apiError} /> : null}
+          feedback={v.apiError ? <DS.Alert tone="danger" title={v.apiError} /> : null}
         />
       }
       sticky={<></>}

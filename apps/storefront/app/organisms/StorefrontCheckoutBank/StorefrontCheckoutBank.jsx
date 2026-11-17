@@ -1,11 +1,11 @@
 import React from 'react';
 import * as DS from '../../ds.js';
-import {StorefrontCheckoutProgress} from '../StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
+import {StorefrontStepProgress} from '../../molecules/StorefrontStepProgress/StorefrontStepProgress.jsx';
 
 export function StorefrontCheckoutBank({progress, payment, actions}) {
   return (
     <>
-      <StorefrontCheckoutProgress
+      <StorefrontStepProgress
         steps={progress.steps}
         current={progress.current}
         labels={progress.labels}

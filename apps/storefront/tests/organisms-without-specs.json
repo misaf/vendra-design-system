@@ -1,0 +1,23 @@
+[
+  "StorefrontAccountBalanceHistory",
+  "StorefrontAccountBalanceOverview",
+  "StorefrontAccountOrders",
+  "StorefrontFaqContact",
+  "StorefrontHomeWeddings",
+  "StorefrontJournalFeatured",
+  "StorefrontJournalStories",
+  "StorefrontNotfoundProducts",
+  "StorefrontPolicyContents",
+  "StorefrontPolicyDocument",
+  "StorefrontPolicyNavigation",
+  "StorefrontPostBlocks",
+  "StorefrontPostClassic",
+  "StorefrontPostHeading",
+  "StorefrontPostProducts",
+  "StorefrontPostRelated",
+  "StorefrontPostSocial",
+  "StorefrontTrackDeliveryPhoto",
+  "StorefrontWeddingsHeading",
+  "StorefrontWeddingsServices",
+  "StorefrontWeddingsStory"
+]

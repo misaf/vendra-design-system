@@ -11,7 +11,7 @@ import {StorefrontPresentationSend} from '../../app/organisms/StorefrontPresenta
 import {StorefrontPresentationShortlist} from '../../app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx';
 import {StorefrontPresentationOrder} from '../../app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx';
 import {StorefrontPresentationScan} from '../../app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx';
-import {StorefrontPresentationUnlock} from '../../app/organisms/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
+import {StorefrontPresentationUnlock} from '../../app/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx';
 import {StorefrontPresentationSettings} from '../../app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx';
 import {StorefrontPresentationTools} from '../../app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx';
 import {StorefrontPresentationLabel} from '../../app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx';

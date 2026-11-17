@@ -2,7 +2,6 @@
 import React from 'react';
 import {list} from '../../app/runtime.js';
 import {StorefrontSearchLayout} from '../../app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
-import {StorefrontSearchHeading} from '../../app/organisms/StorefrontSearchHeading/StorefrontSearchHeading.jsx';
 import {StorefrontSearchControls} from '../../app/organisms/StorefrontSearchControls/StorefrontSearchControls.jsx';
 import {StorefrontSearchPopular} from '../../app/organisms/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
 import {StorefrontSearchResults} from '../../app/organisms/StorefrontSearchResults/StorefrontSearchResults.jsx';
@@ -15,7 +14,7 @@ export function View({v}) {
       v={v}
       content={
         <StorefrontSearchLayout
-          heading={<StorefrontSearchHeading title={v.t?.label} />}
+          heading={<h1 className="ag-display">{v.t?.label}</h1>}
           controls={
             <StorefrontSearchControls
               query={{

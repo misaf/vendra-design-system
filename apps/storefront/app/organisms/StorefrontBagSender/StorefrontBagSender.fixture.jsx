@@ -1,0 +1,81 @@
+import React from 'react';
+import {StorefrontBagSender} from './StorefrontBagSender.jsx';
+
+const copy = {
+  en: {
+    title: 'Sender',
+    name: 'Full name',
+    phone: 'Mobile number',
+    hint: 'We use your number for delivery updates.',
+    error: 'Check this field.'
+  },
+  fa: {
+    title: 'فرستنده',
+    name: 'نام کامل',
+    phone: 'شماره همراه',
+    hint: 'از شماره شما برای اطلاع‌رسانی ارسال استفاده می‌کنیم.',
+    error: 'این فیلد را بررسی کنید.'
+  }
+};
+
+export function Fixture({lang}) {
+  const t = copy[lang];
+  const [name, setName] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [invalid, setInvalid] = React.useState(false);
+  const [changed, setChanged] = React.useState('');
+  const [nameCalls, setNameCalls] = React.useState(0);
+  const [phoneCalls, setPhoneCalls] = React.useState(0);
+
+  return (
+    <main className="tw:flex tw:flex-col tw:gap-4 tw:max-w-form">
+      <h1>{t.title}</h1>
+      <label>
+        <input
+          type="checkbox"
+          checked={invalid}
+          onChange={event => setInvalid(event.target.checked)}
+        />{' '}
+        Show validation
+      </label>
+      <button
+        type="button"
+        onClick={() => {
+          setName(lang === 'fa' ? 'مینا' : 'Mina');
+          setPhone('09120000000');
+        }}
+      >
+        Set supplied values
+      </button>
+
+      <StorefrontBagSender
+        labels={{title: t.title, hint: t.hint}}
+        name={{
+          label: t.name,
+          value: name,
+          error: invalid ? t.error : '',
+          onChange: value => {
+            setName(value);
+            setNameCalls(count => count + 1);
+          }
+        }}
+        phone={{
+          label: t.phone,
+          value: phone,
+          error: invalid ? t.error : '',
+          onChange: (value, metadata) => {
+            setPhone(value);
+            setChanged(JSON.stringify({value, ...metadata}));
+            setPhoneCalls(count => count + 1);
+          }
+        }}
+      />
+
+      <span data-test="name">{name}</span>
+      <span data-test="phone">{phone}</span>
+      <span data-test="changed">{changed}</span>
+      <span data-test="name-calls">{nameCalls}</span>
+      <span data-test="phone-calls">{phoneCalls}</span>
+    </main>
+  );
+}
