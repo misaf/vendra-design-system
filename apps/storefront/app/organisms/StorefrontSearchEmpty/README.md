@@ -1,5 +1,7 @@
 # StorefrontSearchEmpty
 
+The colocated fixture/spec covers supplied zero-count status, title/accent/body updates, pointer/Enter/Space retry callbacks and browse destination/keyboard order, with bilingual axe and compact containment. No-result visibility and retry clearing/focus remain in page integration coverage.
+
 Composes the no-result count/status, search-x EmptyState and recovery actions from explicit countLabel/title/accent/body, retry (label, onClick) and browse (label, href) props. Preserves the status/content siblings, centered content and wrapping action row, primary retry button and secondary shop link without adding a wrapper.
 
 View retains no-result visibility and localized mapping. Search/shared logic retain matching, counts, query and URL/history updates, retry clearing/focus, reporting and navigation. Package EmptyState/Button retain heading/icon/action semantics. StorefrontSearchLayout retains slot placement. This organism owns no state, calculations, persistence or browser effects.

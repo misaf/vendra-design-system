@@ -4,4 +4,6 @@ Composes the recipient h2, optional saved-address fieldset/chips and controlled 
 
 View retains normalized records and descriptor mapping. Bag/shared logic retains saved-address eligibility/selection, recipient values, validation, persistence, pin/address updates and error-summary focus. StorefrontBagDeliveryLayout owns the surrounding section; View retains delivery/map descriptor composition. No page model, state/effects, browser APIs or commerce rules belong here.
 
-Verify bilingual guest/signed-in fields, saved-address selection and pin isolation, required/error relationships, summary links/focus, typed values/Persian digits and reload, touch/tablet rotation, TV keyboard activation, overflow and accessibility. Compare field/choice regions with the unchanged baseline.
+`StorefrontBagRecipient.spec.mjs` covers English/Persian labels and IDs, required/autocomplete/phone semantics, controlled editing and supplied updates, phone callback metadata, error relationships and clearing, saved-address order/pressed state and pointer/keyboard callbacks, hidden/empty saved options, compact containment and axe in empty/filled/error states. The fixture owns its values and selection; chip callbacks do not invent address or pin mutations.
+
+Guest/signed-in eligibility, address/pin updates, validation rules, error-summary focus, persistence/reload and delivery round trips remain page-level coverage.
