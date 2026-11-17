@@ -6,4 +6,6 @@ Shell supplies explicit brand, social, navigation, contact (including `direction
 
 FooterLinks shares the supplied navigation groups between expanded columns and the phone Accordion. CSS selects the layout; the Accordion owns disclosure state. Preserve the consent trigger IDs because the consent workflow restores focus to them.
 
-Verify with `footer.spec.mjs` for English/Persian links, touch disclosures, consent focus, rotation, accessibility and overflow.
+`StorefrontFooter.spec.mjs` covers English/Persian supplied content, navigation order/current state/destinations, desktop/phone consent trigger IDs and callbacks, independent phone disclosures across resizing, social/directions/contact/credit/trust attributes, optional content and empty collections, dark-logo selection, axe and responsive containment. Fixtures use local images and do not open external destinations.
+
+Consent state/persistence and focus restoration, routing and shared Shell effects remain integration responsibilities in `footer.spec.mjs`, including touch and rotation coverage. The package Accordion owns disclosure mechanics; TrustSeal owns issuer-image loading/fallback behavior.
