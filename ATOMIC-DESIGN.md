@@ -23,6 +23,16 @@ may compose each other; avoid dependency cycles.
 Storefront-specific molecules live in `apps/storefront/app/molecules/<Name>/` for small app-owned
 combinations with explicit content props. They follow the same ownership boundaries as organisms.
 
+**Storefront organism rule.** A storefront organism is a substantial section that composes several
+molecules or atoms with its own structure. A wrapper around a single component (one Alert,
+Button, SectionHeader, SearchField, Pagination or plain heading/paragraph with fixed props) is
+not an organism: write it inline in the page's `View.jsx`. A small combination of two or three
+components with one purpose (a Card around OrderSummary, an EmptyState with its recovery Button,
+a heading with its accent and intro) is a storefront molecule. Prefer one shared molecule over
+per-page copies when two pages render the same combination (`StorefrontOrderSummaryCard`).
+Organisms may import molecules and other organisms; molecules import molecules and the DS bridge;
+layouts receive both as slots.
+
 Storefront-specific organisms live in `apps/storefront/app/organisms/<Name>/`. They compose the package
 UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
 They do not belong in the published package or import store state and persistence. Shell and page
@@ -6234,3 +6244,21 @@ All 64 selected master-based Darwin/Linux dev/production cases, root unit and ch
 258 baselines remain unchanged. All 12 compatibility cases pass on PR #169 runtime; all three
 blanket-clear negative controls fail as expected. Original master runtime is restored.
 Next: review the pending saved-state PRs, then initial-load retry UX.
+
+## Stage 250 checkpoint: reclassify thin storefront organisms (#122)
+
+Stage 250 applies the storefront organism rule above. Twenty-two single-component wrappers are
+inlined in their Views with identical props and classes: AccountNotices, AccountFeedback,
+AccountSessionAction, AccountTabs, ContactFeedback, ContactFormHeading, ErrorMessage,
+JournalPagination, JournalSearch, NotfoundMessage, NotfoundRecommendationHeading, PolicyNotice,
+ProductBreadcrumbs, SavedHeading, SearchHeading, ShopHeading, SigninChangeNumber,
+SiteCheckoutNotice, SiteIntegrationFeedback, TrackPendingNotice, WeddingsFeedback and
+WeddingsHeroMedia. Fifteen small combinations move to `apps/storefront/app/molecules/`:
+AccountHeading, CheckoutHeading, JournalEmpty, JournalLoading, NotfoundActions, PostActions,
+PostLoading, PostMissing, SavedEmpty, SigninHeading, SigninPolicies, SigninResend,
+TrackOrderDetails, TrackProgress and WeddingsInquiryIntro. The identical CheckoutSummary and
+TrackOrderSummary merge into the shared `StorefrontOrderSummaryCard` molecule. The app now has
+111 organism and 17 molecule folders. Rendered markup is unchanged: fragments around text were
+dropped and props kept, so screenshots and axe results must not change. Root unit, typecheck and
+check pass.
+Next: audit the 26–40 line organisms against the same rule; duplicated headings/feedback are #123.

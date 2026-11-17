@@ -1,5 +1,6 @@
 // StorefrontAccount: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontAccountLayout} from '../../app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from '../../app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
@@ -10,11 +11,7 @@ import {StorefrontAccountProfile} from '../../app/organisms/StorefrontAccountPro
 import {StorefrontAccountAddressEditor} from '../../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {StorefrontAccountReminderEditor} from '../../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {StorefrontAccountEditorDialog} from '../../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
-import {StorefrontAccountHeading} from '../../app/organisms/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
-import {StorefrontAccountTabs} from '../../app/organisms/StorefrontAccountTabs/StorefrontAccountTabs.jsx';
-import {StorefrontAccountSessionAction} from '../../app/organisms/StorefrontAccountSessionAction/StorefrontAccountSessionAction.jsx';
-import {StorefrontAccountFeedback} from '../../app/organisms/StorefrontAccountFeedback/StorefrontAccountFeedback.jsx';
-import {StorefrontAccountNotices} from '../../app/organisms/StorefrontAccountNotices/StorefrontAccountNotices.jsx';
+import {StorefrontAccountHeading} from '../../app/molecules/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
 import {StorefrontAccountBalancePanel} from '../../app/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
@@ -27,16 +24,21 @@ export function View({v}) {
           heading={
             <StorefrontAccountHeading eyebrow={v.t?.hello} title={v.t?.accA} accent={v.t?.accB} />
           }
-          actions={<StorefrontAccountSessionAction label={v.t?.signOut} onSignOut={v.signOut} />}
-          notices={
-            v.saveError && !v.formOpen && <StorefrontAccountNotices saveError={v.saveError} />
+          actions={
+            <DS.Button variant="ghost" iconStart="log-out" onClick={v.signOut}>
+              {v.t?.signOut}
+            </DS.Button>
           }
+          notices={v.saveError && !v.formOpen && <DS.Alert tone="danger" title={v.saveError} />}
           tabs={
-            <StorefrontAccountTabs
+            <DS.Tabs
+              variant="pill"
               items={v.tabItems}
               value={v.tab}
               onChange={v.setTab}
               label={v.t?.accA}
+              listClassName="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"
+              panelClassName="vf-account-panel"
             >
               {v.isOrders ? <StorefrontAccountOrders orders={list(v.orders)} /> : null}
               {v.isBalance ? (
@@ -166,9 +168,13 @@ export function View({v}) {
                   save={{label: v.t?.saveP, onClick: v.saveProfile}}
                 />
               ) : null}
-            </StorefrontAccountTabs>
+            </DS.Tabs>
           }
-          feedback={<StorefrontAccountFeedback notice={v.notice} />}
+          feedback={
+            <p role="status" className="tw:text-sm tw:text-secondary">
+              {v.notice}
+            </p>
+          }
           dialog={
             <StorefrontAccountEditorDialog
               open={v.formOpen}
