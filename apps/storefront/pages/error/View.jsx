@@ -1,7 +1,7 @@
 // StorefrontError: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {StorefrontErrorLayout} from '../../app/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx';
-import {StorefrontErrorMessage} from '../../app/organisms/StorefrontErrorMessage/StorefrontErrorMessage.jsx';
 import {StorefrontErrorActions} from '../../app/organisms/StorefrontErrorActions/StorefrontErrorActions.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
@@ -12,11 +12,13 @@ export function View({v}) {
       content={
         <StorefrontErrorLayout
           message={
-            <StorefrontErrorMessage
+            <DS.EmptyState
+              icon="flower-2"
               eyebrow={v.t?.code}
               title={v.t?.hA}
-              accent={v.t?.hB}
+              titleAccent={v.t?.hB}
               body={v.t?.hP}
+              headingLevel={1}
             />
           }
           actions={

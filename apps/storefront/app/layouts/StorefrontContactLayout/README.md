@@ -10,12 +10,12 @@ StorefrontContactHeading composes the eyebrow, accented h1 and introduction from
 
 StorefrontContactDetails composes rows, contact actions, protected map and directions from explicit descriptors. View maps availability/callbacks; contact/shared logic retain studio values and map loading/fallback. This layout retains details placement and responsive columns.
 
-StorefrontContactFormHeading composes a persistent h2 from an explicit title, outside the form/completion branches. View maps localized copy; this layout retains form-column placement.
+View renders the inline h2 directly for a persistent h2 from an explicit title, outside the form/completion branches. View maps localized copy; this layout retains form-column placement.
 
 StorefrontContactFormControls composes the validation summary, controlled fields and send button. View retains visibility/descriptor mapping; contact/shared logic retain validation, submission, busy/errors, drafts and focus. This layout retains form placement.
 
 StorefrontContactCompletion composes the named success region, alert and return-to-form action from explicit props. View retains visibility/demo-live copy mapping; contact/shared logic retain outcomes, drafts and focus. This layout retains form-column placement.
 
-StorefrontContactFeedback composes the API-error danger Alert from an explicit message. View retains visibility/message mapping; contact/shared logic retain localized errors, drafts and clearing on edit/retry. This layout retains feedback placement after the columns.
+View renders the inline danger Alert directly for the API-error danger Alert from an explicit message. View retains visibility/message mapping; contact/shared logic retain localized errors, drafts and clearing on edit/retry. This layout retains feedback placement after the columns.
 
 Contact View passes this layout directly without a single-child fragment. Localized descriptors, availability, callbacks, the form composition fragments and empty Shell sticky-slot fragment remain unchanged.

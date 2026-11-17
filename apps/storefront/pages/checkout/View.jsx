@@ -8,10 +8,10 @@ import {StorefrontCheckoutReceipt} from '../../app/organisms/StorefrontCheckoutR
 import {StorefrontCheckoutSubmission} from '../../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {StorefrontCheckoutNotices} from '../../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
 import {StorefrontCheckoutProgress} from '../../app/organisms/StorefrontCheckoutProgress/StorefrontCheckoutProgress.jsx';
-import {StorefrontCheckoutHeading} from '../../app/organisms/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
+import {StorefrontCheckoutHeading} from '../../app/molecules/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
 import {StorefrontCheckoutBank} from '../../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {StorefrontCheckoutConfirmation} from '../../app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
-import {StorefrontCheckoutSummary} from '../../app/organisms/StorefrontCheckoutSummary/StorefrontCheckoutSummary.jsx';
+import {StorefrontOrderSummaryCard} from '../../app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
 import {StorefrontCheckoutSticky} from '../../app/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
@@ -152,7 +152,7 @@ export function View({v}) {
           }
           summary={
             v.paying ? (
-              <StorefrontCheckoutSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
+              <StorefrontOrderSummaryCard title={v.t?.summary} lines={v.lines} sums={v.sums} />
             ) : null
           }
           bank={
