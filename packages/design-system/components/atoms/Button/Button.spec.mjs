@@ -37,6 +37,46 @@ test('disabled: a button is disabled; a link loses its href', async ({page}) => 
   await expect(unavailable).toHaveAttribute('aria-disabled', 'true');
 });
 
+for (const lang of ['en', 'fa']) {
+  test(`link callbacks cancel pointer and keyboard navigation exactly once (${lang})`, async ({
+    page
+  }) => {
+    await openComponent(page, 'Button', lang);
+    const before = page.url();
+    const link = page.getByRole('link', {name: 'Handled link', exact: true});
+    await link.click();
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('1');
+    expect(page.url()).toBe(before);
+    await link.focus();
+    await link.press('Enter');
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('2');
+    expect(page.url()).toBe(before);
+  });
+
+  test(`link callbacks can allow native navigation and plain links still navigate (${lang})`, async ({
+    page
+  }) => {
+    await openComponent(page, 'Button', lang);
+    await page.getByRole('checkbox', {name: 'Allow link navigation', exact: true}).check();
+    await page.getByRole('link', {name: 'Handled link', exact: true}).press('Enter');
+    await expect(page).toHaveURL(/#handled$/);
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('1');
+    await page.getByRole('link', {name: 'Shop', exact: true}).press('Enter');
+    await expect(page).toHaveURL(/#shop$/);
+    await expect(page.locator('[data-test="link-clicks"]')).toHaveText('1');
+  });
+}
+
+test('disabled and pending link callbacks stay suppressed', async ({page}) => {
+  for (const name of ['Unavailable', 'Pending link']) {
+    const link = page.getByRole('link', {name, exact: true});
+    await expect(link).not.toHaveAttribute('href');
+    await expect(link).toHaveAttribute('aria-disabled', 'true');
+    await link.evaluate(element => element.click());
+  }
+  await expect(page.locator('[data-test="blocked-clicks"]')).toHaveText('0');
+});
+
 test('passes axe in English and Persian', async ({page}) => {
   await expectAccessible(page, 'Button');
 });
