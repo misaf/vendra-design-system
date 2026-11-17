@@ -4,4 +4,6 @@ Storefront-specific news strip composed from AnnouncementBar and Icon. Shell sup
 
 CSS selects the phone text below 768px; matching messages render once. Existing link styling and the RTL-aware arrow are preserved. Delivery cut-offs, translated copy, feature decisions and session dismissal stay in shared storefront logic. This organism reads no store or browser state and performs no persistence.
 
-Verify with the announcement cases in `components-in-use.spec.mjs` and `features.spec.mjs`, plus the shell tier/resize cases in `mobile-layout.spec.mjs`.
+`StorefrontAnnouncement.spec.mjs` covers English/Persian phone/wider text, matching-message deduplication, supplied action destination and arrow class, independent action/dismissal visibility, isolated pointer/Enter/Space close callbacks, empty full-message suppression, axe and responsive containment. Callback reporting does not dismiss the controlled message.
+
+Delivery cut-offs, session dismissal and shared Shell behavior remain covered by `components-in-use.spec.mjs`, `features.spec.mjs` and the shell tier/resize cases in `mobile-layout.spec.mjs`.
