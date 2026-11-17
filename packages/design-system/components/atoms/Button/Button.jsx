@@ -70,10 +70,14 @@ export function Button({
       )}
     </>
   );
-  if (href != null)
+  if (href != null) {
+    const {onClick, ...linkProps} = rest;
     return (
       <Link
-        {...rest}
+        {...linkProps}
+        // React Aria synthesizes onClick at key-up, after Enter's native link activation.
+        // Use the native click so the callback can cancel navigation for every input method.
+        onClickCapture={disabled || loading ? undefined : onClick}
         ref={ref}
         href={disabled || loading ? undefined : href}
         target={target}
@@ -85,6 +89,7 @@ export function Button({
         {content}
       </Link>
     );
+  }
   // Keep pending announcements as text in the component. React Aria's isPending announcement
   // references this button's ID, which becomes dangling if completion unmounts the button.
   const pendingProps = loading
