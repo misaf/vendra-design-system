@@ -4,4 +4,6 @@ Storefront organism for the presentation seller-tools drawer. Receives controlle
 
 Owns the dialog, status/alert markup, setup and device information, and seller action order. View retains offline preparation and localized progress/device text; presentation logic retains capability checks, stock/display recovery, PIN gates, navigation, customer state and persistence. No state, effects or page-logic imports live here.
 
-Preserve start placement, width, live status/data attribute, stock timestamp isolation, conditional controls, retry disabled state, icons and action order. Verify bilingual focus restoration, setup/browse/shortlist/order/settings transitions, offline progress and warnings, photo retry, TV keyboard behavior and phone/tablet rendering.
+`StorefrontPresentationTools.spec.mjs` covers English/Persian supplied offline progress/status, stock timestamp isolation, device details, action order and isolated callbacks, offline retry suppression, independent warning/setup/capability branches, compact axe, keyboard containment, Escape/close dismissal and trigger focus restoration. Callbacks report actions without closing the controlled drawer.
+
+Offline preparation, actual photo/stock recovery, setup/PIN gates, device capabilities, panel transitions and persistence remain page-level integration responsibilities. The package Dialog owns modal mechanics.
