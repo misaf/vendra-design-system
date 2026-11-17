@@ -23,7 +23,7 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 ## Demo deployment
 
 The **CI** workflow publishes the GitHub Pages demo after a push to `master` only when
-the unit tests, React 19 checks, browser tests, and production build/performance budgets all
+the unit tests, browser tests, and production build/performance budgets all
 succeed. Failed, cancelled, or skipped checks prevent deployment. Pull requests do not deploy.
 
 Changes confined to `.github/` skip the browser tests on push, so they also skip deployment.

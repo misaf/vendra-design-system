@@ -8,6 +8,7 @@ import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 import {useTrack} from '../../utils/track.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 const RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 const LOOK = {
@@ -40,10 +41,12 @@ export function PaymentStatus({
   headingLevel = 2,
   children,
   className,
-  style
+  style,
+  ref
 }) {
   // The wording follows the nearest lang, as the page around it is written.
   const {locale, ref: rootRef} = usePageLocale();
+  const mergedRef = useMergedRef(rootRef, ref);
   const text = useMessages('PaymentStatus', messages, {}, locale);
   const formRef = React.useRef(null);
   const firstStatus = React.useRef(status);
@@ -121,7 +124,7 @@ export function PaymentStatus({
 
   return (
     <div
-      ref={rootRef}
+      ref={mergedRef}
       className={cx('ag-payment-status', 'ag-payment-status--' + status, className)}
       style={style}
       aria-busy={waiting || undefined}

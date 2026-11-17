@@ -1,8 +1,6 @@
 import React from 'react';
 import {cx} from '../../utils/cx.js';
-
-// React 18 only knows the lowercase attribute; React 19 renamed the prop and warns on the old one.
-const FETCH_PRIORITY = /^18\./.test(React.version) ? 'fetchpriority' : 'fetchPriority';
+import {useMergedRef} from '../../utils/refs.js';
 
 // One photo, at the size the layout shows it. `image` is a URL or {src, srcSet, sources, width,
 // height, placeholder, alt}: `sources` adds AVIF/WebP candidates in a <picture> for browsers that
@@ -16,10 +14,12 @@ export function Picture({
   className,
   style,
   onLoad: onPhotoLoad,
+  ref,
   ...rest
 }) {
   const photo = typeof image === 'string' ? {src: image} : image || {};
   const imgRef = React.useRef(null);
+  const mergedRef = useMergedRef(imgRef, ref);
   const [loaded, setLoaded] = React.useState(false);
   // A photo from the cache can finish before hydration attaches onLoad.
   React.useEffect(() => {
@@ -31,7 +31,7 @@ export function Picture({
   const img = (
     <img
       {...rest}
-      ref={imgRef}
+      ref={mergedRef}
       className={cx(className, !loaded && photo.placeholder && 'ag-picture--waiting')}
       src={photo.src}
       srcSet={photo.srcSet}
@@ -41,7 +41,7 @@ export function Picture({
       alt={alt ?? photo.alt ?? ''}
       loading={priority ? 'eager' : 'lazy'}
       decoding={priority ? undefined : 'async'}
-      {...(priority ? {[FETCH_PRIORITY]: 'high'} : {})}
+      fetchPriority={priority ? 'high' : undefined}
       style={
         !loaded && photo.placeholder
           ? {backgroundImage: 'url("' + photo.placeholder.replace(/"/g, '%22') + '")', ...style}

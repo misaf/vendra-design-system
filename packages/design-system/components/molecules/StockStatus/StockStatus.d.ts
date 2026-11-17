@@ -1,6 +1,8 @@
 import type {Stock} from '../../utils/commerce.js';
 
 export interface StockStatusProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLSpanElement>;
   /** commerce.stockStatus(product): in, low (with count), soon (with ISO date or null) or out */
   stock: Stock;
   /** Render nothing for a product in stock, as product cards do */
@@ -11,4 +13,4 @@ export interface StockStatusProps {
   style?: React.CSSProperties;
 }
 /** A product's availability: an icon in the status colour and a short line in the page's language. */
-export declare function StockStatus(props: StockStatusProps): JSX.Element | null;
+export declare function StockStatus(props: StockStatusProps): React.JSX.Element | null;

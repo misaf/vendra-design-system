@@ -1,4 +1,6 @@
 export interface PaginationProps {
+  /** The nav. */
+  ref?: React.Ref<HTMLElement>;
   /** The current page, from 1 */
   page: number;
   /** Pages in the whole list (from the API's total and itemsPerPage). Renders nothing below 2 */
@@ -19,7 +21,7 @@ export interface PaginationProps {
   style?: React.CSSProperties;
 }
 /** Numbered pages in a labelled nav: previous, page numbers with gaps, next; aria-current on the current page. */
-export declare function Pagination(props: PaginationProps): JSX.Element | null;
+export declare function Pagination(props: PaginationProps): React.JSX.Element | null;
 /** The page numbers to show, with null for each gap: (5, 10) → [1, null, 4, 5, 6, null, 10]. */
 export declare function paginationRange(
   page: number,

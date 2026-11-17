@@ -8,6 +8,7 @@ import {useMessages} from '../../utils/messages.js';
 import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
 import {useDensity} from '../../utils/density.js';
 import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // How far a finger has to travel sideways before a swipe changes the item.
 const SWIPE_MIN = 48;
@@ -28,7 +29,8 @@ export function Lightbox({
   closeLabel,
   actions,
   sizes = '100vw',
-  className
+  className,
+  ref
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const density = useDensity();
@@ -45,8 +47,15 @@ export function Lightbox({
   const photos = item ? item.images || [] : [];
   const [photoIndex, setPhotoIndex] = React.useState(0);
   const frameRef = React.useRef(null);
+  const mergedRef = useMergedRef(frameRef, localeRef, ref);
   const swipe = React.useRef(null);
   React.useEffect(() => setPhotoIndex(0), [index]);
+  // Next or Previous turns disabled at either end and drops focus to the page; keep it in the
+  // viewer, so the arrow keys and Esc still reach it.
+  React.useEffect(() => {
+    const frame = frameRef.current;
+    if (frame && !frame.contains(document.activeElement)) frame.focus();
+  }, [index]);
 
   const goTo = target => {
     if (target >= 0 && target < count && target !== index && onIndexChange) onIndexChange(target);
@@ -97,10 +106,7 @@ export function Lightbox({
         <Dialog
           aria-label={text.label}
           className="ag-lightbox__frame ag-on-inverse"
-          ref={element => {
-            frameRef.current = element;
-            localeRef.current = element;
-          }}
+          ref={mergedRef}
         >
           {item && (
             <>

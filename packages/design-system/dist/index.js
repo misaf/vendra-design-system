@@ -83,5 +83,6 @@ export * from './components/utils/locale.js';
 export * from './components/utils/locales.js';
 export * from './components/utils/maps.js';
 export * from './components/utils/messages.js';
+export * from './components/utils/refs.js';
 export * from './components/utils/spatial.js';
 export * from './components/utils/track.js';

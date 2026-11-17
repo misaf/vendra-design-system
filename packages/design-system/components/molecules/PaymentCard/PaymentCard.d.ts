@@ -1,4 +1,6 @@
 export interface PaymentCardProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Raw digits (Latin or Persian); grouped in 4s, always LTR */
   cardNumber: string;
   holder?: string;
@@ -17,4 +19,4 @@ export interface PaymentCardProps {
   onCopy?: (digits: string) => void;
   className?: string;
 }
-export declare function PaymentCard(props: PaymentCardProps): JSX.Element;
+export declare function PaymentCard(props: PaymentCardProps): React.JSX.Element;

@@ -1,4 +1,6 @@
 export interface NavLinkProps {
+  /** The link, or the button without `href`. */
+  ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Renders <a> when set, otherwise <button> */
   href?: string;
   current?: boolean;
@@ -8,4 +10,4 @@ export interface NavLinkProps {
   children: React.ReactNode;
   className?: string;
 }
-export declare function NavLink(props: NavLinkProps): JSX.Element;
+export declare function NavLink(props: NavLinkProps): React.JSX.Element;

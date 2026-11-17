@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface QuantityStepperProps {
+  /** The number input, for focusing it or a form library. */
+  ref?: React.Ref<HTMLInputElement>;
   value?: number;
   defaultValue?: number;
   min?: number;

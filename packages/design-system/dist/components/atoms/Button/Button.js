@@ -5,13 +5,15 @@ import { Button as AriaButton, Link } from "react-aria-components";
 import { Icon } from "../Icon/Icon.js";
 import { Spinner } from "../Spinner/Spinner.js";
 import { cx } from "../../utils/cx.js";
+import { useMergedRef } from "../../utils/refs.js";
 // href → React Aria's Link (navigation; in-site links go through VendraProvider's navigate); no href
 // → React Aria's Button (action), with onClick, type, disabled and the ARIA button attributes. A
 // disabled link renders without its href, aria-disabled.
 // loading: spinner replaces iconStart, label stays (width doesn't jump), the button is pending (it
 // keeps focus but can't be pressed); loadingLabel is announced to screen readers.
-export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, autoFocus, ...rest }) {
+export function Button({ variant = "primary", size = "md", iconStart, iconEnd, block, className = "", children, type = "button", href, target, rel, disabled, loading, loadingLabel, autoFocus, ref, ...rest }) {
 	const buttonRef = React.useRef(null);
+	const mergedRef = useMergedRef(buttonRef, ref);
 	React.useEffect(() => {
 		const button = buttonRef.current;
 		const form = button?.form;
@@ -48,6 +50,7 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 	}, loadingLabel));
 	if (href != null) return /* @__PURE__ */ React.createElement(Link, {
 		...rest,
+		ref,
 		href: disabled || loading ? undefined : href,
 		target,
 		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
@@ -60,7 +63,7 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 	const pendingProps = loading ? Object.fromEntries(Object.entries(rest).filter(([key]) => !key.startsWith("on") || /Focus|Blur|Hover|Pointer(Enter|Leave|Over|Out)|Mouse(Enter|Leave|Over|Out)/.test(key))) : rest;
 	return /* @__PURE__ */ React.createElement(AriaButton, {
 		...pendingProps,
-		ref: buttonRef,
+		ref: mergedRef,
 		type: loading && type === "submit" ? "button" : type,
 		isDisabled: disabled,
 		onPointerDownCapture: disabled || loading ? (event) => {

@@ -54,7 +54,7 @@ function declarations(file) {
   const dts = file.replace(/\.jsx?$/, '.d.ts');
   if (!fs.existsSync(path.join(repo, dts)))
     throw new Error(file + ' exports but has no ' + path.basename(dts));
-  const text = read(dts).replace(/\bJSX\.Element\b/g, 'React.JSX.Element');
+  const text = read(dts);
   return (/\bReact\./.test(text) ? "import * as React from 'react';\n" : '') + text;
 }
 

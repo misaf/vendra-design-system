@@ -9,7 +9,7 @@ import { cx } from "../../utils/cx.js";
 // data-focus-visible and data-disabled on it. It takes checked/defaultChecked, disabled, required,
 // name, value and onChange(checked). With a hint or error, the pair is
 // wrapped in .ag-field and the message is linked to the checkbox (see Field).
-export function Checkbox({ label, hint, error, disabled, required, checked, defaultChecked, onChange, name, value, id, className, style, "aria-describedby": describedBy, ...rest }) {
+export function Checkbox({ label, hint, error, disabled, required, checked, defaultChecked, onChange, name, value, id, className, style, "aria-describedby": describedBy, ref, ...rest }) {
 	const { messageId, message, controlProps } = useField({
 		id,
 		hint,
@@ -18,6 +18,7 @@ export function Checkbox({ label, hint, error, disabled, required, checked, defa
 	});
 	const box = /* @__PURE__ */ React.createElement(AriaCheckbox, {
 		...rest,
+		inputRef: ref,
 		id,
 		name,
 		value,

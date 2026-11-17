@@ -1,4 +1,6 @@
 export interface OfflineNoticeProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** Default: built-in "You’re offline. …" in the page's language */
   offlineText?: string;
   /** Default: built-in "You’re back online." */
@@ -9,4 +11,4 @@ export interface OfflineNoticeProps {
   style?: React.CSSProperties;
 }
 /** A slim band while the browser is offline, then "back online" for a few seconds. Put it once, under the header. */
-export declare function OfflineNotice(props: OfflineNoticeProps): JSX.Element;
+export declare function OfflineNotice(props: OfflineNoticeProps): React.JSX.Element;

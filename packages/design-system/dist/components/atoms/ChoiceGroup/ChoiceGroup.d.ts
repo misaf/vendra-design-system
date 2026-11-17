@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface ChoiceGroupProps {
+  /** The outer element (a fieldset with `legend`). */
+  ref?: React.Ref<HTMLElement>;
   /** aria-label (or use labelledBy) */
   label?: string;
   labelledBy?: string;

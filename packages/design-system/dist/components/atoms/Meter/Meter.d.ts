@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface MeterProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** What it measures, shown above the bar and naming the meter */
   label?: React.ReactNode;
   value: number;

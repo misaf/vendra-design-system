@@ -2,6 +2,8 @@ import * as React from 'react';
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface CategoryCardProps {
+  /** The link, or the button without `href`. */
+  ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Category name, already localized */
   label: string;
   /** Optional muted line, e.g. "12 designs" */

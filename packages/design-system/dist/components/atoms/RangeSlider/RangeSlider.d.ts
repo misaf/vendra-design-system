@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface RangeSliderProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** true (default) = two handles with value [lo, hi]; false = one handle with a number */
   range?: boolean;
   min?: number;

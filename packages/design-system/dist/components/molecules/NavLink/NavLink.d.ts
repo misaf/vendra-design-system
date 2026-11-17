@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface NavLinkProps {
+  /** The link, or the button without `href`. */
+  ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Renders <a> when set, otherwise <button> */
   href?: string;
   current?: boolean;

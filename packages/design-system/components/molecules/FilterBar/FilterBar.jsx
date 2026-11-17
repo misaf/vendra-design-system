@@ -8,14 +8,16 @@ import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 import {useTrack} from '../../utils/track.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // The filters that are on, each a button that removes it ("Remove Anniversary"), then "Clear all".
 // `filters` are {id, label, onRemove}. After a removal, focus moves to the filter now in its place
 // (or the one before, or "Clear all"); when the last one goes the bar is gone, so the app moves
 // focus (e.g. to its result count), as it does for `onClearAll`. Renders nothing with no filters.
 // Removing or clearing reports a `filter` event (VendraProvider's onEvent).
-export function FilterBar({filters, onClearAll, label, clearAllLabel, className, style}) {
+export function FilterBar({filters, onClearAll, label, clearAllLabel, className, style, ref}) {
   const {locale, ref: barRef} = usePageLocale();
+  const rootRef = useMergedRef(barRef, ref);
   const text = useMessages('FilterBar', messages, {label, clearAll: clearAllLabel}, locale);
   const removedAt = React.useRef(null);
   const track = useTrack();
@@ -30,7 +32,7 @@ export function FilterBar({filters, onClearAll, label, clearAllLabel, className,
   if (!count) return null;
   return (
     <div
-      ref={barRef}
+      ref={rootRef}
       role="group"
       aria-label={text.label}
       className={cx('ag-filterbar', className)}

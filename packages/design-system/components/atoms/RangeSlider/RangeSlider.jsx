@@ -5,6 +5,7 @@ import {useClientLayoutEffect} from '../../utils/effects.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
 
 // A slider on React Aria: two handles over one track (or one with `range={false}`). Each handle is
 // a real range input for keyboards and screen readers (read as formatValue); dragging a handle or
@@ -23,9 +24,11 @@ export function RangeSlider({
   labelledBy,
   labels,
   showValues = true,
-  className = ''
+  className = '',
+  ref
 }) {
-  const {locale, ref} = usePageLocale();
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
   const text = useMessages('RangeSlider', messages, {label, ...labels}, locale);
   const initial = defaultValue ?? (range ? [min, max] : min);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
@@ -65,7 +68,7 @@ export function RangeSlider({
   return (
     <I18nProvider locale={locale}>
       <Slider
-        ref={ref}
+        ref={rootRef}
         value={range ? values : values[0]}
         minValue={min}
         maxValue={max}

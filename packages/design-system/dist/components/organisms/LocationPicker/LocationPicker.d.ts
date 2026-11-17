@@ -1,6 +1,8 @@
 import * as React from 'react';
 import type {LatLng} from '../../utils/commerce.js';
 export interface LocationPickerProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The map's id; the label, status and error use `${id}-label`, `-status` and `-error`. */
   id: string;
   label: React.ReactNode;

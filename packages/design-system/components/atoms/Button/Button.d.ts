@@ -63,6 +63,8 @@ export type ButtonDOMProps = Pick<
   | 'onTransitionEnd'
 > & {[dataAttribute: `data-${string}`]: string | number | boolean | undefined};
 export interface ButtonProps extends ButtonDOMProps {
+  /** The button, or the link with `href`. */
+  ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
   /** primary = accent (peony) fill, white text (one per view); secondary = ink outline; soft = pale accent tint; ghost = text only */
   variant?: 'primary' | 'secondary' | 'soft' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
@@ -82,4 +84,4 @@ export interface ButtonProps extends ButtonDOMProps {
   children?: React.ReactNode;
 }
 /** React Aria Button for actions; React Aria Link with href. */
-export declare function Button(props: ButtonProps): JSX.Element;
+export declare function Button(props: ButtonProps): React.JSX.Element;

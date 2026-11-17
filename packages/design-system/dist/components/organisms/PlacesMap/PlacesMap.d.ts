@@ -13,6 +13,8 @@ export interface Place {
   onSelect?: () => void;
 }
 export interface PlacesMapProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The map's id. */
   id: string;
   /** The map region's accessible name. */

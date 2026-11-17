@@ -6,6 +6,8 @@ export interface ReminderRowLabels {
   delete?: string;
 }
 export interface ReminderRowProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   name: string;
   /** Pre-localized day number (Persian digits for fa) */
   day: React.ReactNode;
@@ -35,4 +37,4 @@ export interface ReminderRowProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function ReminderRow(props: ReminderRowProps): JSX.Element;
+export declare function ReminderRow(props: ReminderRowProps): React.JSX.Element;

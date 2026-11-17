@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface PromoCodeFieldProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** The field's id (its label and error hang off it). Default "ag-promo" */
   id?: string;
   /** The code as typed; leave out to let the field keep it */

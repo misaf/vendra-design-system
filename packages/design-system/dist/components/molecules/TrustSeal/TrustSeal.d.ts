@@ -1,5 +1,7 @@
 import * as React from 'react';
 export interface TrustSealProps {
+  /** The link. */
+  ref?: React.Ref<HTMLAnchorElement>;
   /** Which seal: its name comes from messages (eNamad, Samandehi) unless `label` is given */
   kind: 'enamad' | 'samandehi' | (string & {});
   /** The seal's verification link, as the issuer's panel gives it */

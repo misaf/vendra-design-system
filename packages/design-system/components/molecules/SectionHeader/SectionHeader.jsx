@@ -20,13 +20,14 @@ export function SectionHeader({
   nextLabel,
   id,
   className = '',
-  style
+  style,
+  ref
 }) {
   const text = useMessages('SectionHeader', messages, {previous: prevLabel, next: nextLabel});
   const Heading = ['h1', 'h2', 'h3'].includes(level) ? level : 'h2';
   const hasArrows = onPrev || onNext;
   return (
-    <div className={cx('ag-sechead', 'ag-sechead--' + Heading, className)} style={style}>
+    <div ref={ref} className={cx('ag-sechead', 'ag-sechead--' + Heading, className)} style={style}>
       <div className="ag-sechead__text">
         {eyebrow && <div className="ag-eyebrow ag-sechead__eyebrow">{eyebrow}</div>}
         <Heading id={id} className="ag-sechead__title">

@@ -1,6 +1,8 @@
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface CategoryCardProps {
+  /** The link, or the button without `href`. */
+  ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Category name, already localized */
   label: string;
   /** Optional muted line, e.g. "12 designs" */
@@ -21,4 +23,4 @@ export interface CategoryCardProps {
   onClick?: (e: React.MouseEvent) => void;
   className?: string;
 }
-export declare function CategoryCard(props: CategoryCardProps): JSX.Element;
+export declare function CategoryCard(props: CategoryCardProps): React.JSX.Element;

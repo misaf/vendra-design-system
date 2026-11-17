@@ -10,6 +10,7 @@ import { usePageLocale } from "../../utils/locale.js";
 import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 import { useTrack } from "../../utils/track.js";
+import { useMergedRef } from "../../utils/refs.js";
 const RESULTS = [
 	"paid",
 	"cancelled",
@@ -42,9 +43,10 @@ const LOOK = {
 // `failed` (pay again or choose another method) or `pending`: the bank hasn't confirmed, so the
 // customer must not pay twice. When the status changes, focus moves to the new heading. Each answer
 // (paid, cancelled, failed, pending) reports `payment_result` once (VendraProvider's onEvent).
-export function PaymentStatus({ status, amount, orderNumber, reference, gateway, redirect, redirectDelay = 1500, onRetry, onOtherMethod, onCheckAgain, supportHref, headingLevel = 2, children, className, style }) {
+export function PaymentStatus({ status, amount, orderNumber, reference, gateway, redirect, redirectDelay = 1500, onRetry, onOtherMethod, onCheckAgain, supportHref, headingLevel = 2, children, className, style, ref }) {
 	// The wording follows the nearest lang, as the page around it is written.
 	const { locale, ref: rootRef } = usePageLocale();
+	const mergedRef = useMergedRef(rootRef, ref);
 	const text = useMessages("PaymentStatus", messages, {}, locale);
 	const formRef = React.useRef(null);
 	const firstStatus = React.useRef(status);
@@ -142,7 +144,7 @@ export function PaymentStatus({ status, amount, orderNumber, reference, gateway,
 		}
 	].filter(Boolean);
 	return /* @__PURE__ */ React.createElement("div", {
-		ref: rootRef,
+		ref: mergedRef,
 		className: cx("ag-payment-status", "ag-payment-status--" + status, className),
 		style,
 		"aria-busy": waiting || undefined

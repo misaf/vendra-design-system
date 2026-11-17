@@ -2,6 +2,8 @@ import * as React from 'react';
 import type {ButtonDOMProps} from '../Button/Button.js';
 
 export interface IconButtonProps extends ButtonDOMProps {
+  /** The button, or the link with `href`. */
+  ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;
   icon: string;
   /** Required accessible label (also used as title) */
   label: string;

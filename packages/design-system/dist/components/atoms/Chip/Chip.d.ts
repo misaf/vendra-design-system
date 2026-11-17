@@ -2,6 +2,8 @@ import * as React from 'react';
 import type {ButtonDOMProps} from '../Button/Button.js';
 
 export interface ChipProps extends ButtonDOMProps {
+  /** The button. */
+  ref?: React.Ref<HTMLButtonElement>;
   /** Filled ink when selected */
   selected?: boolean;
   children?: React.ReactNode;

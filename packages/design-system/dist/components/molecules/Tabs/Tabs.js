@@ -4,11 +4,13 @@ import React from "react";
 import { I18nProvider, Tab, TabList, TabPanel, Tabs as AriaTabs } from "react-aria-components";
 import { cx } from "../../utils/cx.js";
 import { usePageLocale } from "../../utils/locale.js";
+import { useMergedRef } from "../../utils/refs.js";
 // Tabs on React Aria: one Tab stop on the selected tab; arrow keys (mirrored in RTL, following the
 // page's language), Home and End move and select. `children` is the selected tab's content: it
 // renders in a tabpanel linked to its tab. Without children the component is just the tab list.
-export function Tabs({ items = [], value, defaultValue, onChange, variant = "underline", label, className = "", listClassName, panelClassName, children }) {
-	const { locale, ref } = usePageLocale();
+export function Tabs({ items = [], value, defaultValue, onChange, variant = "underline", label, className = "", listClassName, panelClassName, children, ref }) {
+	const { locale, ref: localeRef } = usePageLocale();
+	const rootRef = useMergedRef(localeRef, ref);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? items[0]?.id);
 	const selected = value ?? uncontrolledValue;
 	// A value that matches no tab selects the first, so there is always one Tab stop.
@@ -22,7 +24,7 @@ export function Tabs({ items = [], value, defaultValue, onChange, variant = "und
 		className: ({ isSelected }) => cx("ag-tab", isSelected && "ag-tab--active")
 	}, item.label)));
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(AriaTabs, {
-		ref,
+		ref: rootRef,
 		selectedKey: selectedKey ?? null,
 		onSelectionChange: (key) => {
 			const id = String(key);

@@ -5,6 +5,8 @@ export interface AddressCardLabels {
   makeDefault?: string;
 }
 export interface AddressCardProps {
+  /** The outer element. */
+  ref?: React.Ref<HTMLDivElement>;
   /** e.g. "Home" — also used in the IconButton names */
   label: string;
   line: React.ReactNode;
@@ -20,4 +22,4 @@ export interface AddressCardProps {
   className?: string;
   style?: React.CSSProperties;
 }
-export declare function AddressCard(props: AddressCardProps): JSX.Element;
+export declare function AddressCard(props: AddressCardProps): React.JSX.Element;
