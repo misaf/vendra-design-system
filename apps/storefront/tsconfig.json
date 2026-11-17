@@ -15,5 +15,7 @@
     "noUnusedLocals": true,
     "skipLibCheck": true
   },
-  "include": ["shared/**/*.js", "types/*.d.ts", "app/**/*", "pages/**/*"]
+  "include": ["shared/**/*.js", "types/*.d.ts", "app/**/*", "pages/**/*"],
+  // Browser specs run in Node under Playwright, like the package components' specs.
+  "exclude": ["app/**/*.spec.mjs"]
 }
