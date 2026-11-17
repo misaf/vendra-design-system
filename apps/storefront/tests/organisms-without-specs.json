@@ -1,11 +1,8 @@
 [
   "BrandLogo",
-  "StorefrontAccountAddresses",
   "StorefrontAccountBalanceHistory",
   "StorefrontAccountBalanceOverview",
   "StorefrontAccountOrders",
-  "StorefrontAccountReminders",
-  "StorefrontAccountSaved",
   "StorefrontAnnouncement",
   "StorefrontBagRecipient",
   "StorefrontBagSender",
