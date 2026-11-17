@@ -4,4 +4,6 @@ Composes the sunken details card (each row may add an opening `status` {open, te
 
 View maps localized descriptors, availability and callbacks. Contact/shared logic retain studio values, opening-status wording and its refresh, valid-location checks, channels, map loading/fallback and navigation. Package DetailList/Button/IconButton/PlacesMap/ErrorBoundary retain rendering and interaction semantics; StorefrontContactLayout retains the details wrapper and columns. This organism owns no state, calculations, persistence or browser effects.
 
-Verify bilingual details/actions, safe destinations and marker semantics, map failure leaving address/directions usable, responsive containment, form recovery and markup against the previous version.
+`StorefrontContactDetails.spec.mjs` covers English/Persian row order/content, supplied opening status and secondary-line visibility, contact/directions destinations and safe external-link attributes, independent optional actions, local-map marker callbacks with pointer/Enter/Space, empty places and map visibility, loader failure preserving address/actions/directions, compact containment and axe on meaningful states. Leaflet loads locally and remote tiles are stubbed.
+
+Studio/opening-status calculations, valid-location decisions, page-managed map fallback, submission/form recovery and navigation remain integration responsibilities. Package map and ErrorBoundary tests retain their internal lifecycle/error coverage.
