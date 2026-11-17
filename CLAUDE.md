@@ -17,6 +17,14 @@ section). A wrapper around a single component is not a molecule or organism: wri
 page's `View.jsx` (see ATOMIC-DESIGN.md → Storefront organism rule). StorefrontPresentationLabel renders code/sold-out text from explicit props;
 View/logic retain product data, localization and stock decisions.
 
+StorefrontPageHeading (molecule) is the one page heading: optional eyebrow, `level` heading (h1 by
+default) with optional accent, optional intro and meta, and `variant` (`page` keeps the intro to the
+reading measure, `info` lets it span information-page columns). Account, bag, checkout, contact, FAQ,
+policy, sign-in and tracking Views, StorefrontTrackLookup and StorefrontWeddingsHeading use it; Views
+keep visibility, copy mapping and wrappers. Policy passes its updated label and `<time>` as `meta`;
+policy/shared logic retain each document's own date (`VF_POLICY_UPDATED`, Jalali in Persian). Do not add per-page heading components or `vf-<page>-accent`
+classes; use its shared `vf-page-*` classes.
+
 Storefront-specific organisms live under `apps/storefront/app/organisms/<Name>/` and receive explicit
 content props and callbacks from Shell or pages. StorefrontHeader owns the responsive header
 markup; StorefrontFooter owns footer markup and responsive link groups. Shell owns their data,
@@ -62,8 +70,6 @@ StorefrontShopToolbar composes compact filters/sort, active filters, quick chips
 View/logic retain filtering, sorting, URL/paging, tracking and focus-scroll callbacks.
 StorefrontShopResults composes product cards, paging and loading/error/empty feedback from explicit props;
 View/logic retain state/visibility, mapping, favorites, recovery and navigation/paging focus.
-StorefrontBagHeading composes explicit bag/delivery visibility and heading copy; View retains the
-hasItems guard, logic retains step state and layout retains placement.
 StorefrontBagDeliveryLayout arranges recipient/location React-node slots in the named delivery section;
 View retains visibility and field descriptors, logic retains validation/map state and callbacks.
 StorefrontBagLayout arranges bag/delivery slots with externally controlled content visibility;
@@ -110,7 +116,7 @@ StorefrontCheckoutSubmission composes WhatsApp, processing/failure feedback and 
 View/logic retain readiness, submission/deduplication, pending/errors, retries and navigation.
 StorefrontCheckoutNotices composes independent retry-review and recovery-storage notices;
 View/logic retain retry eligibility, storage, focus, record clearing and review navigation.
-Checkout reuses StorefrontStepProgress; StorefrontCheckoutHeading composes payment h1;
+Checkout reuses StorefrontStepProgress and StorefrontPageHeading (inside its vf-checkout-heading wrapper);
 View/logic retain state visibility, current indices, labels/formatters, permitted navigation and focus.
 StorefrontCheckoutBank composes bank progress and PaymentStatus from explicit descriptors;
 View/logic retain recovery, redirect data, retry/method/check callbacks, verification and completion.
@@ -143,16 +149,12 @@ StorefrontAccountReminderEditor composes controlled name/occasion/date/lead-time
 View/logic retain field visibility/mapping, drafts, calendar rules, date locking, validation/focus and persistence.
 StorefrontAccountEditorDialog composes the controlled shared dialog, storage alert, summary and actions;
 View/logic retain field selection, drafts, validation/focus, save/error state, mutations and persistence.
-StorefrontAccountHeading composes eyebrow and h1/accent from explicit text;
-Layout retains its wrapper; View/logic retain localization, visibility and navigation/focus.
 StorefrontAccountBalancePanel composes overview/top-up/checkout return/history;
 View retains visibility and descriptor mapping; account/shared logic retains wallet rules and persistence.
 Account View composes organisms directly in slots/tab/editor branches; its visibility conditions and
 descriptor mapping remain in View, and the empty sticky-slot fragment is preserved.
 StorefrontSigninLayout arranges phone, code and feedback slots; sign-in View/logic retain
 validation, resend timing, authentication, customer synchronization and checkout continuation.
-StorefrontSigninHeading composes phone/code step h1/accent and intro from explicit text;
-View retains step visibility/copy mapping; sign-in/shared logic retains validation, focus and authentication.
 StorefrontSigninPhoneControls composes controlled phone/error-summary/send controls;
 View retains visibility/mapping; sign-in/shared logic retains validation, focus and step transitions.
 StorefrontSigninCodeControls composes controlled code/error-summary/verify controls;
@@ -169,8 +171,6 @@ StorefrontTrackLayout arranges lookup, order heading/details/summary and feedbac
 View/logic retain order lookup, status interpretation and reorder review/confirmation.
 StorefrontTrackLookup composes controlled lookup fields, heading, failure and submit/browse actions;
 View retains visibility/mapping; tracking/shared logic retains validation, normalization, matching and focus.
-StorefrontTrackHeading composes the tracking order eyebrow, accented title and status introduction;
-View retains visibility and mapping, and tracking logic retains status/payment interpretation.
 StorefrontTrackProgress composes the timeline card; View retains visibility/mapping, tracking logic
 retains status/step interpretation and localized steps, and package OrderTimeline retains semantics.
 StorefrontTrackDeliveryPhoto composes the delivered photo figure; View retains visibility/copy,
@@ -217,8 +217,6 @@ StorefrontFaqContact composes explicit help copy, contact actions and sample not
 localized/link mapping and WhatsApp availability, and layout retains aside placement.
 StorefrontFaqQuestions composes explicit question groups; View normalizes the list, FAQ logic
 retains category/answer mapping and delivery wording, and Accordion owns disclosure behavior.
-StorefrontFaqHeading composes explicit eyebrow/title/accent/intro; View maps localized copy, layout
-retains the header and FAQ/shared logic retain question mapping, navigation, locale and focus.
 Weddings View passes layout/form/completion elements directly; localized descriptors, visibility,
 callbacks, list normalization, the multi-child inquiry fragment and empty Shell sticky slot remain.
 StorefrontWeddingsCompletion composes explicit title/body/edit feedback; View retains visibility
@@ -250,8 +248,6 @@ integrations and page-wide state live on `vfRuntime` (`shared/platform/runtime.j
 Site View renders lazy route elements and live-announcement text directly. Keep VendraProvider,
 LiveRegion, PageBoundary and Suspense at coordinator level; retain each route guard and all four
 customer keys (bag, checkout, track and account). Site/shared logic owns routing and customer state.
-StorefrontContactHeading composes explicit eyebrow/title/accent/intro; View maps localized copy
-and contact/shared logic retain prefill, validation, submission, map fallback, navigation and focus.
 StorefrontContactDetails composes studio rows (with optional opening status/detail lines), actions and
 map/directions from explicit descriptors; View maps availability/callbacks and contact/shared logic
 retain studio values, opening-hours wording on the store clock (`shared/domain/store-hours.js`), map loading/fallback.
@@ -275,9 +271,6 @@ StorefrontPolicyContents composes explicit label/sections; View retains label ma
 policy logic retains section descriptors/numbering and shared logic retains focus/sticky measurements.
 StorefrontPolicyNavigation composes explicit label/links; View retains localized mapping and list
 normalization, shared logic retains link/current-state descriptors and routing, and layout retains placement.
-StorefrontPolicyHeading composes explicit eyebrow/title/intro/updated label/date/ISO props as `<time>`;
-View maps localized and selected-document copy, layout retains the header and policy/shared logic retain
-selection, routing and each document's own date (`VF_POLICY_UPDATED`, Jalali in Persian).
 StorefrontPolicyLayout arranges heading, policy navigation, notice, contents and document slots;
 policy View/logic retain localized labels, document selection, section anchors and numbering.
 StorefrontJournalStories composes explicit story records; View retains list normalization, journal

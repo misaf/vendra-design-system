@@ -1,5 +1,6 @@
 import React from 'react';
 import * as DS from '../../ds.js';
+import {StorefrontPageHeading} from '../../molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 
 export function StorefrontTrackLookup({
   heading,
@@ -16,15 +17,12 @@ export function StorefrontTrackLookup({
       onSubmit={onSubmit}
       noValidate
     >
-      <h1>
-        <>{heading.title} </>
-        <em className="vf-track-accent tw:[font-style:var(--accent-font-style)] tw:[font-weight:var(--accent-font-weight)]! tw:text-accent">
-          <>{heading.accent}</>
-        </em>
-      </h1>
-      <p className="tw:text-secondary tw:m-0 tw:text-md tw:leading-body tw:text-pretty">
-        <>{heading.intro}</>
-      </p>
+      <StorefrontPageHeading
+        variant="info"
+        title={heading.title}
+        accent={heading.accent}
+        intro={heading.intro}
+      />
       {failure.visible ? (
         <>
           <div id="vf-lookup-failed" tabIndex={-1}>

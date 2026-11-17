@@ -169,7 +169,7 @@ for (const lang of ['en', 'fa']) {
       });
       window.__vfKeyboardRepeatDocument = 'kept';
     });
-    await expect(page.locator('.vf-track-eyebrow')).toContainText('VN-KEYBOARD');
+    await expect(page.locator('.vf-page-eyebrow')).toContainText('VN-KEYBOARD');
     await settlePage(page);
     const before = await page.evaluate(() => ({
       bag: window.__vfSite.state.bag,

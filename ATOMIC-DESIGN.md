@@ -6277,3 +6277,21 @@ its lightbox, and StorefrontCheckoutBank composing progress with PaymentStatus).
 the borderline case; it stays because it carries the hero actions with its heading. The app now has
 104 organism and 23 molecule folders. Root unit, typecheck and check pass.
 Next: duplicated headings/feedback (#123).
+
+## Stage 252 checkpoint: one shared page heading (#123)
+
+Stage 252 replaces the near-identical page headings with the `StorefrontPageHeading` molecule
+(optional eyebrow, `level` heading with optional accent, optional intro and meta; `variant="page"`
+keeps the intro to the reading measure and `variant="info"` lets it span information-page
+columns). It replaces the Account, Bag, Checkout, Contact, FAQ, Policy, Sign-in and Tracking
+headings (three organisms, five molecules) and the inline headings of StorefrontTrackLookup and
+StorefrontWeddingsHeading. Eight per-page accent classes (`vf-account/bag/checkout/contact/faq/
+signin/track/weddings-accent`, none styled) and their eyebrow/intro twins become the shared
+`vf-page-eyebrow`, `vf-page-accent`, `vf-page-intro` and `vf-page-meta`; `vf-home-weddings-accent`
+keeps its own inverse styling. Views keep visibility, copy mapping and wrappers (checkout's
+`vf-checkout-heading`, the policy `<time>` passed as `meta`). Heading levels, landmarks and
+utility classes are unchanged. The feedback half of #123 landed in stage 250: single Alert,
+EmptyState and status wrappers are inline DS components in Views, and the remaining feedback
+molecules each combine a message with its own recovery action. SectionHeader-based headings
+(journal, saved, shop, not-found) already share the package component. The app now has 101
+organism and 19 molecule folders. Root unit, typecheck and check pass.

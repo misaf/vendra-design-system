@@ -2,7 +2,7 @@
 import React from 'react';
 import * as DS from '../../app/ds.js';
 import {StorefrontTrackLayout} from '../../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
-import {StorefrontTrackHeading} from '../../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontTrackLookup} from '../../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
 import {StorefrontTrackProgress} from '../../app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {StorefrontTrackDeliveryPhoto} from '../../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
@@ -50,7 +50,7 @@ export function View({v}) {
           heading={
             v.hasOrder ? (
               <>
-                <StorefrontTrackHeading
+                <StorefrontPageHeading
                   eyebrow={v.t?.orderNo}
                   title={v.titleA}
                   accent={v.titleB}
