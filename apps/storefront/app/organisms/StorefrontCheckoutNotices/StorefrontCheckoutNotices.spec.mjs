@@ -27,6 +27,7 @@ for (const lang of ['en', 'fa']) {
     await openStorefrontComponent(page, 'StorefrontCheckoutNotices', lang);
     const target = page.locator('#vf-payment-review');
     await expect(target).toHaveAttribute('tabindex', '-1');
+    await expect(target).toHaveAttribute('data-vf-keep-focus', 'true');
     await target.focus();
     await expect(target).toBeFocused();
     await target.getByRole('button', {name: t.review, exact: true}).click();
