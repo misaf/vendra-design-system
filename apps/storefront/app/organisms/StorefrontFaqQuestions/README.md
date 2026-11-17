@@ -1,5 +1,7 @@
 # StorefrontFaqQuestions
 
+Colocated fixtures/specs cover supplied content, meaningful controlled or disclosure states, pointer/keyboard interaction, compact containment and English/Persian axe checks. Fixtures keep routing, filtering, persistence and page-managed focus with their existing owners.
+
 Composes FAQ category sections, labelled h2 headings and Accordions from explicit groups records (id, title, items and open). Preserves order, keyed fragments, stable heading IDs, aria-labelledby, headingLevel=3, default expansion and section classes without adding a wrapper.
 
 View retains list normalization. FAQ logic retains category/answer mapping and delivery-rule interpolation; shared page logic retains navigation, locale, SEO and focus. Accordion owns disclosure state and keyboard interaction. StorefrontFaqLayout retains the question-list wrapper and responsive column placement. This organism owns no state, calculations, persistence or browser effects.

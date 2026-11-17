@@ -1,5 +1,7 @@
 # StorefrontJournalHeading
 
+Colocated fixtures/specs cover supplied content, meaningful controlled or disclosure states, pointer/keyboard interaction, compact containment and English/Persian axe checks. Fixtures keep routing, filtering, persistence and page-managed focus with their existing owners.
+
 Composes the journal SectionHeader and labelled category Chip group from explicit eyebrow/title/accent, categoriesLabel/categories and onCategoryFocus props. Preserves h1, keyed chips, selection/aria-pressed, callbacks and classes without adding a wrapper.
 
 View retains localized mapping, category list normalization and focus-scroll behavior. Journal logic retains category/query state, matching, selection callbacks, page resets and navigation. StorefrontJournalLayout retains header placement; shared logic retains locale, SEO and page focus. This organism owns no state, calculations, persistence or browser effects.
