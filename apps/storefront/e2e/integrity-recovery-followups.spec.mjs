@@ -209,7 +209,9 @@ for (const lang of ['en', 'fa']) {
     await page.goBack();
     await expect(page.getByRole('radio', {name: fa ? /^بزرگ/ : /^Generous/})).toBeChecked();
     await expect(page).toHaveURL(/qty=2/);
-    // The reload kept the scroll position, and Back restores it; judge the page from the top.
+    // Wait for restored navigation's heading focus before resetting the scroll position;
+    // otherwise the breadcrumb can move under the sticky header during the axe scan.
+    await expect(page.getByRole('heading', {level: 1})).toBeFocused();
     await page.evaluate(() => window.scrollTo(0, 0));
     expect(await scanAxe(page)).toEqual([]);
   });

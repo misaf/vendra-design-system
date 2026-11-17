@@ -5,3 +5,5 @@ Composes the compact filter opener and sort control, active FilterBar, quick-fil
 View retains normalization and the browser callback that scrolls focused quick filters into view. Shop/shared logic retains filtering, sorting, tracking, dialog state, clear/removal semantics, result labels, URL state and paging. No page model, browser APIs, state/effects or commerce rules belong here.
 
 Verify bilingual default/filtered states on phone, touch tablet, desktop and TV; sorting and reload; quick-filter toggles and horizontal focus; removal/clear focus and counts; compact dialog entry/restoration; tablet rotation; overflow and accessibility. Compare existing toolbar regions against the unchanged baseline.
+
+Bilingual isolated fixture/spec coverage checks compact/desktop controlled sort continuity, filter opener, active-filter removal/Clear callbacks, quick-filter focus and pressed state, supplied live count and focus target, axe and compact containment. Filtering/sorting, count calculation, dialog/focus policy and URL state remain in page logic.
