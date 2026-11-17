@@ -12,8 +12,6 @@
   "StorefrontAnnouncement",
   "StorefrontBagRecipient",
   "StorefrontBagSender",
-  "StorefrontCheckoutConfirmation",
-  "StorefrontCheckoutDeliveryReview",
   "StorefrontConsent",
   "StorefrontContactCompletion",
   "StorefrontContactDetails",
