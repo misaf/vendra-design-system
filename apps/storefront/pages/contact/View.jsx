@@ -1,12 +1,11 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {StorefrontContactLayout} from '../../app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx';
-import {StorefrontContactHeading} from '../../app/organisms/StorefrontContactHeading/StorefrontContactHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontContactDetails} from '../../app/organisms/StorefrontContactDetails/StorefrontContactDetails.jsx';
 import {StorefrontContactFormControls} from '../../app/organisms/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
 import {StorefrontContactCompletion} from '../../app/organisms/StorefrontContactCompletion/StorefrontContactCompletion.jsx';
-import {StorefrontContactFeedback} from '../../app/organisms/StorefrontContactFeedback/StorefrontContactFeedback.jsx';
-import {StorefrontContactFormHeading} from '../../app/organisms/StorefrontContactFormHeading/StorefrontContactFormHeading.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
 export function View({v}) {
@@ -16,7 +15,8 @@ export function View({v}) {
       content={
         <StorefrontContactLayout
           heading={
-            <StorefrontContactHeading
+            <StorefrontPageHeading
+              variant="info"
               eyebrow={v.t?.eb}
               title={v.t?.hA}
               accent={v.t?.hB}
@@ -44,7 +44,7 @@ export function View({v}) {
           }
           form={
             <>
-              <StorefrontContactFormHeading title={v.t?.fA} />
+              <h2>{v.t?.fA}</h2>
               {v.notSent ? (
                 <StorefrontContactFormControls
                   problems={v.problems}
@@ -80,7 +80,7 @@ export function View({v}) {
               ) : null}
             </>
           }
-          feedback={v.apiError ? <StorefrontContactFeedback message={v.apiError} /> : null}
+          feedback={v.apiError ? <DS.Alert tone="danger" title={v.apiError} /> : null}
         />
       }
       sticky={<></>}

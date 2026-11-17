@@ -6,7 +6,7 @@ The View retains conditional content construction, localized heading mapping, qu
 
 Verify query and language URL recovery, product exploration/back, close-to-origin context, clear/Escape and no-result recovery focus, popular searches, readable codes/prices, touch-width overflow, hydration and English/Persian responsive layouts.
 
-StorefrontSearchHeading composes the display h1 from an explicit title without adding a wrapper. This layout retains heading placement.
+View renders the inline display h1 directly for the display h1 from an explicit title without adding a wrapper. This layout retains heading placement.
 
 StorefrontSearchControls owns the existing responsive query/close row and controlled package controls. View maps localized descriptors and callbacks; this layout retains slot placement.
 

@@ -5,3 +5,5 @@ Composes the weddings eyebrow, accented h1, introduction and plan/optional Whats
 View retains localized copy, inquiry anchor mapping and WhatsApp availability. Weddings/shared logic retain configuration, navigation, inquiry state, validation, submission, drafts and focus. StorefrontWeddingsLayout retains the heading wrapper and responsive hero placement. This organism owns no state, persistence or browser effects.
 
 Verify English/Persian heading and action markup, configured/absent WhatsApp, inquiry-anchor navigation without draft loss, keyboard/touch activation, responsive containment and accessibility against the previous version.
+
+The eyebrow, accented h1 and intro render through the shared StorefrontPageHeading molecule; this organism adds the plan/WhatsApp actions.

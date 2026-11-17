@@ -1,14 +1,14 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../app/ds.js';
 import {StorefrontTrackLayout} from '../../app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
-import {StorefrontTrackHeading} from '../../app/organisms/StorefrontTrackHeading/StorefrontTrackHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontTrackLookup} from '../../app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
-import {StorefrontTrackPendingNotice} from '../../app/organisms/StorefrontTrackPendingNotice/StorefrontTrackPendingNotice.jsx';
-import {StorefrontTrackProgress} from '../../app/organisms/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
+import {StorefrontTrackProgress} from '../../app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
 import {StorefrontTrackDeliveryPhoto} from '../../app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
-import {StorefrontTrackOrderDetails} from '../../app/organisms/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
-import {StorefrontTrackOrderActions} from '../../app/organisms/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
-import {StorefrontTrackOrderSummary} from '../../app/organisms/StorefrontTrackOrderSummary/StorefrontTrackOrderSummary.jsx';
+import {StorefrontTrackOrderDetails} from '../../app/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
+import {StorefrontTrackOrderActions} from '../../app/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
+import {StorefrontOrderSummaryCard} from '../../app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
 import {StorefrontTrackReorderDialog} from '../../app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
@@ -50,14 +50,18 @@ export function View({v}) {
           heading={
             v.hasOrder ? (
               <>
-                <StorefrontTrackHeading
+                <StorefrontPageHeading
                   eyebrow={v.t?.orderNo}
                   title={v.titleA}
                   accent={v.titleB}
                   intro={v.statusP}
                 />
                 {v.pending ? (
-                  <StorefrontTrackPendingNotice title={v.pendingTitle} body={v.pendingBody} />
+                  <div className="tw:max-w-measure">
+                    <DS.Alert tone="neutral" icon="clock" title={v.pendingTitle}>
+                      {v.pendingBody}
+                    </DS.Alert>
+                  </div>
                 ) : null}
               </>
             ) : null
@@ -99,7 +103,7 @@ export function View({v}) {
           }
           summary={
             v.hasOrder && v.showSummary ? (
-              <StorefrontTrackOrderSummary title={v.t?.summary} lines={v.lines} sums={v.sums} />
+              <StorefrontOrderSummaryCard title={v.t?.summary} lines={v.lines} sums={v.sums} />
             ) : null
           }
           feedback={

@@ -1,8 +1,6 @@
 // The click-through site: the routed page, the shared bag and saved items.
 import React, {Suspense, useEffect} from 'react';
 import * as DS from '../../app/ds.js';
-import {StorefrontSiteCheckoutNotice} from '../../app/organisms/StorefrontSiteCheckoutNotice/StorefrontSiteCheckoutNotice.jsx';
-import {StorefrontSiteIntegrationFeedback} from '../../app/organisms/StorefrontSiteIntegrationFeedback/StorefrontSiteIntegrationFeedback.jsx';
 import {PageBoundary} from '../../app/PageError.jsx';
 import {lazyPage, preloadPages} from '../../app/pages.js';
 import {vfLocale} from '../../shared/domain/store-config.js';
@@ -36,16 +34,18 @@ export function View({v}) {
     <DS.VendraProvider locale={vfLocale(v.lang).tag} navigate={v.routerNavigate}>
       <DS.LiveRegion>{v.announcement}</DS.LiveRegion>
       {v.checkoutNotice && (
-        <StorefrontSiteCheckoutNotice
+        <DS.Alert
+          tone="info"
           title={v.checkoutNotice.title}
-          actionLabel={v.checkoutNotice.label}
-          actionHref={v.checkoutNotice.href}
-          onDismiss={v.dismissCheckoutNotice}
+          onClose={v.dismissCheckoutNotice}
+          action={
+            <DS.Button variant="secondary" href={v.checkoutNotice.href}>
+              {v.checkoutNotice.label}
+            </DS.Button>
+          }
         />
       )}
-      {v.integrationError ? (
-        <StorefrontSiteIntegrationFeedback message={v.integrationErrorText} />
-      ) : null}
+      {v.integrationError ? <DS.Alert tone="danger" title={v.integrationErrorText} /> : null}
       <PageBoundary view={v.routeInfo?.view}>
         <Suspense fallback={null}>
           {v.is?.home ? (

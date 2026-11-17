@@ -28,15 +28,15 @@ StorefrontAccountReminderEditor composes controlled reminder/date fields. View r
 
 StorefrontAccountEditorDialog composes the shared controlled editor, error feedback, field slot and save/cancel actions. View retains field selection/mapping; account/shared logic retains drafts, validation/focus, mutations and persistence.
 
-StorefrontAccountHeading composes eyebrow and h1/accent from explicit text. This layout retains the heading/header wrappers; View/logic retain localization, visibility and navigation/focus.
+StorefrontPageHeading composes eyebrow and h1/accent from explicit text. This layout retains the heading/header wrappers; View/logic retain localization, visibility and navigation/focus.
 
-StorefrontAccountTabs composes controlled pill tabs and the selected-panel slot. View retains panel visibility/mapping; account/shared logic retains tab eligibility/fallback, routing and state. Package Tabs retains ARIA links and keyboard/focus behavior.
+View renders the inline pill Tabs directly for controlled pill tabs and the selected-panel slot. View retains panel visibility/mapping; account/shared logic retains tab eligibility/fallback, routing and state. Package Tabs retains ARIA links and keyboard/focus behavior.
 
-StorefrontAccountSessionAction composes the controlled sign-out button. This layout retains header placement; View retains localized copy and account/shared logic retains session cleanup and navigation.
+View renders the inline sign-out Button directly for the controlled sign-out button. This layout retains header placement; View retains localized copy and account/shared logic retains session cleanup and navigation.
 
-StorefrontAccountFeedback composes the always-mounted status paragraph. This layout retains feedback placement after the tabs; account/shared logic retains localized notice transitions and persistence.
+View renders the inline status paragraph directly for the always-mounted status paragraph. This layout retains feedback placement after the tabs; account/shared logic retains localized notice transitions and persistence.
 
-StorefrontAccountNotices composes the page storage-error alert. View retains error/non-editor visibility; this layout retains placement before the tabs. Account/shared logic retains storage/error/retry state; StorefrontAccountEditorDialog retains editor alerts.
+View renders the inline danger Alert directly for the page storage-error alert. View retains error/non-editor visibility; this layout retains placement before the tabs. Account/shared logic retains storage/error/retry state; StorefrontAccountEditorDialog retains editor alerts.
 
 StorefrontAccountBalancePanel composes the balance overview, top-up, optional checkout return and history. View retains tab visibility, localized descriptor mapping/list normalization and return eligibility; account/shared logic retains wallet reads, validation, timers, mutations, persistence and checkout destinations.
 
