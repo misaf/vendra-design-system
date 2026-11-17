@@ -5,7 +5,7 @@ export function StorefrontCheckoutNotices({review, saveError}) {
   return (
     <>
       {review.visible && (
-        <div id="vf-payment-review" tabIndex={-1}>
+        <div id="vf-payment-review" tabIndex={-1} data-vf-keep-focus="true">
           <DS.Alert
             tone="warning"
             title={review.title}

@@ -5,3 +5,5 @@ Composes the reminder add action, empty/upcoming feedback, introduction and norm
 View retains reminder-tab visibility and list normalization. Account/shared logic retains customer scope, calendar/date calculations, ordering/upcoming selection, localized formatting, editor state/validation/focus, reminder mutations and persistence. No state, effects, browser APIs or reminder rules belong here.
 
 Verify English/Persian populated/upcoming/paused/empty states, toggle/edit/delete/add actions, shop navigation, validation and focus return, reload/tab continuity, customer isolation, touch/keyboard use, rotation, overflow and accessibility against the previous version.
+
+Isolated fixture/spec coverage exercises bilingual reminder content, per-row edit/delete/toggle callbacks, controlled paused/soon states, upcoming/empty branches, add target, shop destination, axe and compact containment. Date calculations, ordering, persistence and editor behavior remain in page integration coverage.
