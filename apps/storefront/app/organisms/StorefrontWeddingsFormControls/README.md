@@ -4,4 +4,6 @@ Composes the weddings inquiry Card, validation summary, name/email/phone fields,
 
 View retains localized descriptor mapping and form/completion visibility. Weddings/shared logic retain field values and callbacks, date constraints, validation, request payloads, API/busy/error/completion state, drafts, navigation and focus. StorefrontWeddingsLayout retains inquiry placement. This organism owns no state, validation, calculations, persistence or browser effects.
 
-Verify bilingual summary links and field focus, select/date interaction, complete payloads, pending activation guards, failed-send retry, completion/edit draft retention, responsive containment, accessibility and screenshots against the previous version.
+`StorefrontWeddingsFormControls.spec.mjs` covers English/Persian field metadata and external values, controlled edits and phone metadata, event/budget callbacks, supplied date language/minimum and calendar selection, summary links/focus and error clearing, busy activation suppression/recovery, compact containment and axe on meaningful states.
+
+Prefill, date/validation rules, request payload decisions, API outcomes, drafts and page-managed completion/edit focus remain integration responsibilities. Fixtures supply state and callbacks without implementing submission rules.
