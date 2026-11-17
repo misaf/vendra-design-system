@@ -3809,6 +3809,11 @@ a.ag-tabbar__item {
   border-radius: var(--radius-xs);
   outline: 0;
 }
+/* A one-digit segment (۹, or 3 in a day) still meets the 24px target size (WCAG 2.5.8). */
+.ag-date__segment--narrow {
+  min-inline-size: calc(24px * var(--size-scale, 1));
+  text-align: center;
+}
 .ag-date__segment[data-type='literal'],
 .ag-date__segment[data-placeholder] {
   color: var(--text-muted);
