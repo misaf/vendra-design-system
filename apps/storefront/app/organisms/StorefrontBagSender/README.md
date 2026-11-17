@@ -4,4 +4,6 @@ Composes the sender section/title/hint and controlled name/phone grid from expli
 
 View retains descriptor mapping and delivery-step visibility. Bag/shared logic retains sender values, signed-in prefill, validation, persistence, customer isolation and error-summary focus. No page model, state/effects, browser APIs or commerce rules belong here.
 
-Verify bilingual empty/error/filled fields, summary links/focus, corrected values/Persian digits, required/autocomplete semantics, signed-in prefill, reload and bag/delivery round trips, touch/tablet rotation, keyboard activation, overflow and accessibility. Compare sender regions with the unchanged baseline.
+`StorefrontBagSender.spec.mjs` covers the named section/title/hint, English/Persian labels and IDs, required/autocomplete/phone semantics, controlled editing and supplied updates, isolated callbacks and phone metadata, field keyboard order, supplied errors and clearing, compact containment and axe in empty/filled/error states.
+
+Signed-in prefill, customer isolation, validation rules, error-summary focus, persistence/reload and bag/delivery round trips remain page-level coverage.
