@@ -58,7 +58,13 @@ export function ProductCard({
     (typeof name === 'string' && typeof price === 'string' ? name + ' — ' + price : undefined);
   const linked = !!(href || onClick);
   const title = href ? (
-    <Link href={href} className="ag-product__link" aria-label={accessibleName} onClick={onClick}>
+    <Link
+      href={href}
+      className="ag-product__link"
+      aria-label={accessibleName}
+      // Use the native click so Enter can cancel navigation before React Aria's key-up click.
+      onClickCapture={onClick}
+    >
       {name}
     </Link>
   ) : onClick ? (
