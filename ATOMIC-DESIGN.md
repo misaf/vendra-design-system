@@ -6295,3 +6295,20 @@ EmptyState and status wrappers are inline DS components in Views, and the remain
 molecules each combine a message with its own recovery action. SectionHeader-based headings
 (journal, saved, shop, not-found) already share the package component. The app now has 101
 organism and 19 molecule folders. Root unit, typecheck and check pass.
+
+## Stage 253 checkpoint: storefront organism tests (#127)
+
+Stage 253 gives storefront UI the package's component-test pattern. A storefront fixture host
+(`apps/storefront/e2e/fixtures/storefront-component.html`) loads the storefront styles and renders
+`app/<layer>/<Name>/<Name>.fixture.jsx` inside VendraProvider; `openStorefrontComponent` and
+`expectStorefrontAccessible` open it, and the `storefront-components` Playwright project runs the
+specs with the development suite. Six interaction-heavy organisms have fixtures and specs:
+CheckoutMethods, CheckoutReceipt, CheckoutSubmission, BagSchedule, AccountEditorDialog and
+PresentationOrder (controlled values, callbacks, conditional branches, LTR Sheba/product codes,
+dialog close paths and axe in English and Persian; 23 tests). `tests/atomic.test.cjs` now requires
+a spec and fixture together and for every new organism; the 95 older organisms are listed in
+`apps/storefront/tests/organisms-without-specs.json`, which may only shrink. Root unit, typecheck,
+check and the new project pass locally.
+Next: BagLocation (map), BagCards, AccountAddressEditor/ReminderEditor (DatePicker) and the
+presentation viewer/send/settings organisms.
+

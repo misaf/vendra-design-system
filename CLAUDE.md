@@ -231,6 +231,10 @@ StorefrontWeddingsServices composes service cards; View normalizes the list, log
 records and StorefrontWeddingsLayout retains the responsive grid.
 StorefrontWeddingsHeading composes explicit eyebrow/title/accent/intro and plan/WhatsApp actions;
 View maps localized copy, the inquiry anchor and WhatsApp availability; logic retains behavior.
+A new storefront organism gets `<Name>.spec.mjs` and `<Name>.fixture.jsx` beside it (storefront host
+`e2e/fixtures/storefront-component.html`, `openStorefrontComponent`, project `storefront-components`);
+`tests/atomic.test.cjs` enforces it, and `tests/organisms-without-specs.json` lists older organisms
+still without one — remove a name when its spec lands, never add one.
 `npm test` runs `tools/app-dependencies.cjs` through filesystem regression tests. App layouts use
 React/layouts; molecules and organisms use the DS bridge, same/lower app UI layers and
 `shared/ui/`. Keep business modules and page coordinators out of app UI. `shared/` is split by

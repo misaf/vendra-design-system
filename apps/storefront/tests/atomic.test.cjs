@@ -96,6 +96,40 @@ for (const level of levels) {
 }
 assert.deepEqual(violations, [], 'Atomic Design dependency violations');
 
+// Storefront UI: a spec and its fixture come together (app/<layer>/<Name>/<Name>.spec.mjs and
+// <Name>.fixture.jsx, run by the storefront-components project). Every new organism has them; the
+// organisms that predate this rule are listed in organisms-without-specs.json, which only shrinks.
+const appUi = path.join(repo, 'apps/storefront/app');
+const grandfathered = new Set(require('./organisms-without-specs.json'));
+for (const level of ['molecules', 'organisms', 'layouts']) {
+  for (const name of fs.readdirSync(path.join(appUi, level))) {
+    const base = path.join(appUi, level, name, name);
+    const spec = fs.existsSync(base + '.spec.mjs');
+    const fixture = fs.existsSync(base + '.fixture.jsx');
+    assert.equal(
+      spec,
+      fixture,
+      `${level}/${name}: a spec needs its fixture and a fixture its spec`
+    );
+    if (level !== 'organisms') continue;
+    if (spec)
+      assert.ok(
+        !grandfathered.has(name),
+        `${name} has a spec now: remove it from organisms-without-specs.json`
+      );
+    else
+      assert.ok(
+        grandfathered.has(name),
+        `organisms/${name} needs ${name}.spec.mjs and ${name}.fixture.jsx`
+      );
+  }
+}
+for (const name of grandfathered)
+  assert.ok(
+    fs.existsSync(path.join(appUi, 'organisms', name)),
+    `organisms-without-specs.json lists ${name}, which no longer exists`
+  );
+
 // Exercise the actual CLI in a disposable repo: scaffolding must work at the deeper path,
 // publish its export/CSS, and reject ambiguous names without changing the real checkout.
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-atomic-'));
@@ -159,4 +193,6 @@ try {
 } finally {
   fs.rmSync(temporary, {recursive: true, force: true});
 }
-console.log('Passed: Atomic Design layer boundaries, unique names and component structure.');
+console.log(
+  'Passed: Atomic Design layer boundaries, unique names, component structure and storefront organism specs.'
+);
