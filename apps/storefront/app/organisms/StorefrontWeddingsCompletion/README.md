@@ -4,4 +4,6 @@ Composes the weddings success region, success Alert and secondary return-to-form
 
 View retains completion visibility and localized demo/live copy mapping. Weddings/shared logic retain submission outcomes, busy/errors, retained drafts, edit transitions and focus. StorefrontWeddingsLayout retains inquiry placement. This organism owns no state, calculations, persistence or browser effects.
 
-Verify bilingual demo/live wording, success-region focus and accessible name, absent form controls during completion, secondary edit action, return-to-name focus/drafts, failure/retry, accessibility, responsive containment and screenshots against the previous version.
+`StorefrontWeddingsCompletion.spec.mjs` covers English/Persian supplied content updates, stable named region/focus target, pointer/Enter/Space edit callbacks, owner-controlled visibility, compact containment and axe with alternate completion wording.
+
+Submission outcomes, demo/live wording decisions, retained drafts and return-to-name focus remain page-level integration responsibilities.
