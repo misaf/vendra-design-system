@@ -1,13 +1,11 @@
 [
   "BrandLogo",
-  "StorefrontAccountAddressEditor",
   "StorefrontAccountAddresses",
   "StorefrontAccountBalanceHistory",
   "StorefrontAccountBalanceOverview",
   "StorefrontAccountBalancePanel",
   "StorefrontAccountOrders",
   "StorefrontAccountProfile",
-  "StorefrontAccountReminderEditor",
   "StorefrontAccountReminders",
   "StorefrontAccountSaved",
   "StorefrontAccountTopUp",
