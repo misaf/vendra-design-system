@@ -19,3 +19,5 @@ Dual-thumb price range on React Aria's Slider. Accent fill between thumbs; mirro
 **Use when:** Price range filter in the shop.
 
 **Don’t use when:** Don’t use where exact values matter (Input) or for single settings with few steps (ChoiceGroup).
+
+External `labelledBy` IDs name both thumbs together with their own min/max names (or the single thumb directly). Multiple IDs and updated label text remain supported; the slider descendants are excluded from the thumb name.

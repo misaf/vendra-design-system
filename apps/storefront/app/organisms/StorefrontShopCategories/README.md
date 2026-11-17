@@ -5,3 +5,5 @@ Shop category navigation receiving normalized category records, the category lab
 View retains record normalization and placement. Shop/shared logic retains eligible-category rules (including an active empty category), counts under current filters, selection, tracking, URL updates, paging reset, sorting and product results. Preserve fragments, classes/order, native button types, pressed states, counts, compact group name and horizontal scrolling. No page model, state/effects, browser APIs or commerce rules move here.
 
 Verify English/Persian sidebar/compact views, default/selected/filtered/empty categories, dependent counts and result pages, URL/reload, filter/sort preservation, selecting All, touch/TV input, tablet rotation, contained horizontal scrolling and accessibility.
+
+Bilingual isolated fixture/spec coverage checks sidebar/compact category labels and formatted counts, controlled selection (including a supplied zero-count category), per-record callbacks, empty records, axe and compact containment. Eligibility/count calculation and URL/paging remain in page logic.

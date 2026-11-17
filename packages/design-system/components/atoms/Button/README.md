@@ -13,6 +13,8 @@ Variants: primary · secondary · soft · ghost. Sizes: sm 36 / md 46 / lg 56px.
 
 `loading` makes the button pending: it keeps focus (so a keyboard user isn't dropped) but can't be pressed, and `loadingLabel` is announced through an inline text status. The wrapper blocks activation and implicit submit while pending without creating live announcements that reference a button which completion may unmount. Pending callbacks are suppressed while focus/hover callbacks remain available. Pending styles use the existing loading class. Implicit submission is guarded while pending; another enabled submit button remains usable. Explicit `disabled` still uses native disabled semantics. Action buttons block pointer starts while loading or disabled so a delayed press fallback cannot replay that gesture after the button becomes enabled.
 
+For links, `onClick` receives the native React click event once for pointer or keyboard activation. Calling `event.preventDefault()` cancels navigation for either input method. Link callbacks are suppressed while disabled or pending; callbacks that allow navigation preserve the ordinary link/router behavior.
+
 ## Usage
 
 **Use when:** One `primary` per view for the main action; `secondary`/`soft`/`ghost` for the rest. `loading` while a request runs (keep the label; add `loadingLabel`). `disabled` only when the reason is visible nearby.
