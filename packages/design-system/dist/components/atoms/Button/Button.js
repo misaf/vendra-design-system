@@ -48,16 +48,22 @@ export function Button({ variant = "primary", size = "md", iconStart, iconEnd, b
 		className: "ag-sr-only",
 		role: "status"
 	}, loadingLabel));
-	if (href != null) return /* @__PURE__ */ React.createElement(Link, {
-		...rest,
-		ref,
-		href: disabled || loading ? undefined : href,
-		target,
-		rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
-		isDisabled: disabled || loading,
-		autoFocus,
-		className: classes + (disabled || loading ? " ag-btn--disabled" : "")
-	}, content);
+	if (href != null) {
+		const { onClick, ...linkProps } = rest;
+		return /* @__PURE__ */ React.createElement(Link, {
+			...linkProps,
+			// React Aria synthesizes onClick at key-up, after Enter's native link activation.
+			// Use the native click so the callback can cancel navigation for every input method.
+			onClickCapture: disabled || loading ? undefined : onClick,
+			ref,
+			href: disabled || loading ? undefined : href,
+			target,
+			rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined),
+			isDisabled: disabled || loading,
+			autoFocus,
+			className: classes + (disabled || loading ? " ag-btn--disabled" : "")
+		}, content);
+	}
 	// Keep pending announcements as text in the component. React Aria's isPending announcement
 	// references this button's ID, which becomes dangling if completion unmounts the button.
 	const pendingProps = loading ? Object.fromEntries(Object.entries(rest).filter(([key]) => !key.startsWith("on") || /Focus|Blur|Hover|Pointer(Enter|Leave|Over|Out)|Mouse(Enter|Leave|Over|Out)/.test(key))) : rest;
