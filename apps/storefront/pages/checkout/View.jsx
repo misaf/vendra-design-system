@@ -8,7 +8,7 @@ import {StorefrontCheckoutReceipt} from '../../app/organisms/StorefrontCheckoutR
 import {StorefrontCheckoutSubmission} from '../../app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {StorefrontCheckoutNotices} from '../../app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
 import {StorefrontStepProgress} from '../../app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx';
-import {StorefrontCheckoutHeading} from '../../app/molecules/StorefrontCheckoutHeading/StorefrontCheckoutHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontCheckoutBank} from '../../app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {StorefrontCheckoutConfirmation} from '../../app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
 import {StorefrontOrderSummaryCard} from '../../app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
@@ -46,7 +46,11 @@ export function View({v}) {
             ) : null
           }
           heading={
-            v.paying ? <StorefrontCheckoutHeading title={v.t?.payA} accent={v.t?.payB} /> : null
+            v.paying ? (
+              <div className="vf-checkout-heading tw:mb-6">
+                <StorefrontPageHeading title={v.t?.payA} accent={v.t?.payB} />
+              </div>
+            ) : null
           }
           review={
             v.paying ? (

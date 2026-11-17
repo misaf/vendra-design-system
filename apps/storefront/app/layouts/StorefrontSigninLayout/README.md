@@ -6,7 +6,7 @@ The View conditionally composes each step and maps organism descriptors. Sign-in
 
 Verify invalid phone/code focus, code completion and SMS autofill, resend timing, phone-step return, checkout continuation, customer isolation, hydration and English/Persian responsive layouts.
 
-StorefrontSigninHeading composes the phone/code h1/accent and introduction from explicit text without adding a wrapper. View retains step visibility and localized mapping, including the code phone-message bidi isolates. This layout retains the narrow wrapper and slot order; sign-in/shared logic retains validation/focus, resend, authentication and continuation.
+StorefrontPageHeading composes the phone/code h1/accent and introduction from explicit text without adding a wrapper. View retains step visibility and localized mapping, including the code phone-message bidi isolates. This layout retains the narrow wrapper and slot order; sign-in/shared logic retains validation/focus, resend, authentication and continuation.
 
 StorefrontSigninPhoneControls composes the controlled phone input, summary and send action. View retains phone-step visibility, localized descriptors and heading; StorefrontSigninPolicies retains the policy note; sign-in/shared logic retains validation, focus, phone state and code-step transitions. This layout retains the wrapper and slot order.
 

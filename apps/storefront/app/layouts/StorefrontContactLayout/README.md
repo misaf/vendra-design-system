@@ -6,7 +6,7 @@ The View retains studio-detail descriptor/availability mapping, form-control vis
 
 Preserve wrapper classes and focus targets. Verify guest/customer prefill, reply-channel and message validation, summary links, success/edit draft retention, failed-request recovery, map fallback/directions, responsive fields, hydration and English/Persian accessibility.
 
-StorefrontContactHeading composes the eyebrow, accented h1 and introduction from explicit props without a wrapper. View retains localized mapping; this layout retains the header wrapper and placement.
+StorefrontPageHeading composes the eyebrow, accented h1 and introduction from explicit props without a wrapper. View retains localized mapping; this layout retains the header wrapper and placement.
 
 StorefrontContactDetails composes rows, contact actions, protected map and directions from explicit descriptors. View maps availability/callbacks; contact/shared logic retain studio values and map loading/fallback. This layout retains details placement and responsive columns.
 

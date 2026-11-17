@@ -3,7 +3,7 @@ import React from 'react';
 import * as DS from '../../app/ds.js';
 import {list} from '../../app/runtime.js';
 import {StorefrontPolicyLayout} from '../../app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
-import {StorefrontPolicyHeading} from '../../app/molecules/StorefrontPolicyHeading/StorefrontPolicyHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontPolicyNavigation} from '../../app/organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
 import {StorefrontPolicyContents} from '../../app/organisms/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
 import {StorefrontPolicyDocument} from '../../app/organisms/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';
@@ -16,13 +16,16 @@ export function View({v}) {
       content={
         <StorefrontPolicyLayout
           heading={
-            <StorefrontPolicyHeading
+            <StorefrontPageHeading
+              variant="info"
               eyebrow={v.t?.eb}
               title={v.doc?.title}
               intro={v.doc?.intro}
-              updatedLabel={v.t?.updatedL}
-              updatedDate={v.doc?.updatedText}
-              updatedIso={v.doc?.updatedIso}
+              meta={
+                <>
+                  {v.t?.updatedL} <time dateTime={v.doc?.updatedIso}>{v.doc?.updatedText}</time>
+                </>
+              }
             />
           }
           policyNavigation={

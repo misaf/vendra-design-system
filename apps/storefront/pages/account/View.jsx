@@ -11,7 +11,7 @@ import {StorefrontAccountProfile} from '../../app/organisms/StorefrontAccountPro
 import {StorefrontAccountAddressEditor} from '../../app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {StorefrontAccountReminderEditor} from '../../app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {StorefrontAccountEditorDialog} from '../../app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
-import {StorefrontAccountHeading} from '../../app/molecules/StorefrontAccountHeading/StorefrontAccountHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontAccountBalancePanel} from '../../app/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
 import {Shell} from '../../app/Shell.jsx';
 
@@ -22,7 +22,7 @@ export function View({v}) {
       content={
         <StorefrontAccountLayout
           heading={
-            <StorefrontAccountHeading eyebrow={v.t?.hello} title={v.t?.accA} accent={v.t?.accB} />
+            <StorefrontPageHeading eyebrow={v.t?.hello} title={v.t?.accA} accent={v.t?.accB} />
           }
           actions={
             <DS.Button variant="ghost" iconStart="log-out" onClick={v.signOut}>

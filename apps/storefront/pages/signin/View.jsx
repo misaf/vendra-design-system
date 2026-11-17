@@ -2,7 +2,7 @@
 import React from 'react';
 import * as DS from '../../app/ds.js';
 import {StorefrontSigninLayout} from '../../app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
-import {StorefrontSigninHeading} from '../../app/molecules/StorefrontSigninHeading/StorefrontSigninHeading.jsx';
+import {StorefrontPageHeading} from '../../app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontSigninPhoneControls} from '../../app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
 import {StorefrontSigninCodeControls} from '../../app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
 import {StorefrontSigninResend} from '../../app/molecules/StorefrontSigninResend/StorefrontSigninResend.jsx';
@@ -19,7 +19,7 @@ export function View({v}) {
           phone={
             v.isPhone ? (
               <>
-                <StorefrontSigninHeading title={v.t?.inA} accent={v.t?.inB} intro={v.t?.inP} />
+                <StorefrontPageHeading title={v.t?.inA} accent={v.t?.inB} intro={v.t?.inP} />
                 <StorefrontSigninPhoneControls
                   problems={v.phoneProblems}
                   phone={{
@@ -43,7 +43,7 @@ export function View({v}) {
           code={
             v.isCode ? (
               <>
-                <StorefrontSigninHeading title={v.t?.codeA} accent={v.t?.codeB} intro={v.codeP} />
+                <StorefrontPageHeading title={v.t?.codeA} accent={v.t?.codeB} intro={v.codeP} />
                 <StorefrontSigninCodeControls
                   problems={v.codeProblems}
                   code={{
