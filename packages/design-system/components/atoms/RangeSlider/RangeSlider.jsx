@@ -43,7 +43,12 @@ export function RangeSlider({
   useClientLayoutEffect(() => {
     values.forEach((number, index) => {
       const input = inputs[index].current;
-      if (input) input.setAttribute('aria-valuetext', formatValue(number));
+      if (!input) return;
+      input.setAttribute('aria-valuetext', formatValue(number));
+      // React Aria points thumbs at the slider root for external labels, so they read its
+      // descendants instead. Keep each thumb's own name, then reference the supplied label IDs.
+      if (labelledBy)
+        input.setAttribute('aria-labelledby', range ? input.id + ' ' + labelledBy : labelledBy);
     });
   });
   const change = next => {

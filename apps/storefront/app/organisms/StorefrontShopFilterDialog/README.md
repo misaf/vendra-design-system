@@ -5,3 +5,5 @@ Controlled compact filter dialog receiving open/close/clear callbacks, title/sho
 View normalizes records/maps descriptors. Shop/shared logic retain dialog state, availability/cutoffs, price rules, filtering, tracking/debounce, result labels, URL/paging, sorting and clear semantics. Dialog and existing CSS retain focus trapping/restoration, dismissal, scrolling and action placement. No page model, state/effects, browser APIs or commerce rules move here.
 
 Verify English/Persian top/scrolled views, short phone/tablet heights, reachable footer actions, selected/cleared controls, live result labels, disabled dates, slider values, URL and sort/category retention, Clear staying open, Show/Escape/close dismissal, focus wrap/restoration, reload, rotation, wide-layout closure and accessibility.
+
+Bilingual isolated fixture/spec coverage checks controlled occasion/date/stock callbacks, disabled dates, supplied price labels/formatters and step bounds, dialog-specific IDs, Clear staying open, supplied Show-label updates and Show/Escape/close focus return, axe and compact containment. Result counts, clear semantics and filtering/URL state remain in page logic.

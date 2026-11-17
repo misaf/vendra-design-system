@@ -5,3 +5,5 @@ Composes the controlled repeat-order review from explicit open/onClose/title/can
 View maps localized copy, visibility, selection and confirmation descriptors. Tracking/shared logic retain open/mode state, availability/price/stock reconciliation, warning messages, bag mutations, analytics and navigation. Package Dialog/RadioGroup retain modal/focus/keyboard and selection semantics. StorefrontTrackLayout retains feedback outside main. This organism owns no state, reconciliation, persistence or browser effects.
 
 Verify bilingual add/replace selection, empty and populated bags, changed/unavailable lines, disabled confirmation, cancellation/focus restoration, explicit confirmation/bag changes and responsive markup against the previous version.
+
+Isolated fixture/spec coverage exercises bilingual controlled add/replace selection and confirmation, ordered change warnings, no-bag intro, independent unavailable/disabled branches, cancel/Escape/close focus return, axe and compact containment. Reconciliation, availability and bag persistence stay in integration coverage.
