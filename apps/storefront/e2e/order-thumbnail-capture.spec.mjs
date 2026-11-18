@@ -39,14 +39,15 @@ for (const [width, lang] of [
       };
       const capture = (name, count) =>
         captureImages(page, info, name, viewport, {
-          selector: 'main img',
+          selector: 'main img:visible',
           count,
-          captureSelector: 'main img'
+          captureSelector: 'main img:visible'
         });
-      const summary = page.locator('main .ag-osum img');
       await openSite(page, 'bag', lang);
-      await expect(summary).toHaveCount(2);
-      await capture('bag', 4);
+      const summary = page.locator('main .ag-osum img:visible');
+      const summaryCount = width < 928 ? 0 : 2;
+      await expect(summary).toHaveCount(summaryCount);
+      await capture('bag', 2 + summaryCount);
       await page.evaluate(() => {
         window.__orderCaptureDocument = true;
       });
