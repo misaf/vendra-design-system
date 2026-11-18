@@ -264,20 +264,6 @@ assert.equal(
   'other days keep every slot'
 );
 assert.equal(ctx.slot({zone: 'central', date: iso, slot: '08'}, afternoon), undefined);
-// The shop's delivery-day filter: same-day designs from today, the rest from tomorrow, never sold out or out of stock.
-vm.runInContext('this.deliverable=vfDeliverableOn;this.product=vfProduct;', ctx);
-const morning = new Date('2026-10-06T09:00:00+03:30'),
-  evening = new Date('2026-10-06T19:00:00+03:30');
-assert.equal(ctx.deliverable(ctx.product('ivory'), '2026-10-06', morning), true);
-assert.equal(ctx.deliverable(ctx.product('orchid'), '2026-10-06', morning), false);
-assert.equal(ctx.deliverable(ctx.product('orchid'), '2026-10-07', morning), true);
-assert.equal(
-  ctx.deliverable(ctx.product('ivory'), '2026-10-06', evening),
-  false,
-  'today closes at the cut-off'
-);
-assert.equal(ctx.deliverable(ctx.product('ivory'), '2026-10-08', morning), false, 'sold-out day');
-assert.equal(ctx.deliverable(ctx.product('bridal'), '2026-10-09', morning), false, 'out of stock');
 assert.equal(ctx.slot({zone: 'central', date: '2026-10-07', slot: '08'}, afternoon), '08');
 // Pages may delegate their main landmark to a rendered app layout. An unused import must not
 // satisfy the skip-link contract; only follow named JSX imports that the source renders.

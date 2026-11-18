@@ -3,14 +3,20 @@ const assert = require('node:assert/strict');
 const {spawnSync} = require('node:child_process');
 const vm = require('node:vm');
 if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
-  for (const TZ of ['America/Los_Angeles', 'Pacific/Kiritimati', 'UTC']) {
+  for (const TZ of [
+    'Asia/Tehran',
+    'UTC',
+    'America/Los_Angeles',
+    'Asia/Tokyo',
+    'Pacific/Kiritimati'
+  ]) {
     const result = spawnSync(process.execPath, [__filename], {
       env: {...process.env, TZ, VENDRA_DELIVERY_TZ_TEST: '1'},
       encoding: 'utf8'
     });
     assert.equal(result.status, 0, `${TZ}: ${result.stdout}${result.stderr}`);
   }
-  console.log('Passed store delivery clocks across three customer time zones.');
+  console.log('Passed store delivery clocks across five customer time zones.');
 } else {
   (async () => {
     const {commerce} = await import('../../../packages/design-system/components/utils/commerce.js');
@@ -123,12 +129,25 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
     assert.equal(storeDays('central', now)[0].pastCutoff, true);
     assert.ok(storeSlots('2026-10-05', now).every(slot => slot.closed));
 
+    const deliverable = vm.runInContext('vfDeliverableOn', ctx);
+    const product = vm.runInContext('vfProduct', ctx);
+    const ivory = product('ivory');
+    const orchid = product('orchid');
+    assert.equal(deliverable(ivory, '2026-10-05', rollover), false, 'yesterday at the store');
+    assert.equal(deliverable(ivory, '2026-10-06', rollover), true, 'today at the store');
+    assert.equal(deliverable(orchid, '2026-10-06', rollover), false, 'requires preparation');
+    assert.equal(deliverable(orchid, '2026-10-07', rollover), true);
+    assert.equal(deliverable(ivory, '2026-10-08', rollover), false, 'sold-out day');
+    assert.equal(deliverable(product('bridal'), '2026-10-09', rollover), false, 'out of stock');
+    assert.equal(deliverable(ivory, '2026-10-05', now), false, 'past the store cutoff');
+
     vm.runInContext("VF_ZONES[0].cutoff = '22:00'", ctx);
     const storeDate = vm.runInContext('vfDeliveryDate', ctx);
     const storeSlot = vm.runInContext('vfDeliverySlot', ctx);
     const storeChanged = vm.runInContext('vfDeliveryChanged', ctx);
     const chosen = {zone: 'central', date: today, slot: '20'};
     assert.equal(storeDays('central', afterLastSlot)[0].noOpenSlots, true);
+    assert.equal(deliverable(ivory, today, afterLastSlot), false, 'no open slots');
     const replacement = storeDate(chosen, afterLastSlot);
     assert.equal(replacement, '2026-10-06');
     assert.equal(storeSlot(chosen, afterLastSlot), undefined);
