@@ -10,15 +10,14 @@
 import {build} from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
-import {createRequire} from 'node:module';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {storefrontRoutes} from './routes.mjs';
+import theme from '../shared/domain/tenant-theme.js';
 import {VF_STORE} from '../shared/domain/store-config.js';
 import {VF_TENANT_SLUGS} from '../_runtime/tenant-slugs.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.resolve(templates, '../..');
-const theme = createRequire(import.meta.url)('../shared/domain/tenant-theme.js');
 
 // The tenant's brand-font file for a page in `lang`, as <link rel="preload"> tags: only the
 // current language's script, so the other file downloads only if the page uses it.

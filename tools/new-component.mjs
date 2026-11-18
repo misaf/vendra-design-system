@@ -4,10 +4,12 @@
 // the package's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
 // re-exports the component for the storefront (app/ds.js). What it can't know is left as TODO.
-const fs = require('node:fs');
-const path = require('node:path');
-const {levels} = require('./atomic.cjs');
-const {repo, componentsFolder} = require('./paths.cjs');
+import {execFileSync} from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {levels} from './atomic.mjs';
+import {repo, componentsFolder} from './paths.mjs';
 
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
@@ -168,10 +170,10 @@ if (wording) {
 }
 
 // Prettier's layout from the start, so the build's copy in dist/ matches the formatted sources.
-require('node:child_process').execFileSync(
+execFileSync(
   process.execPath,
   [
-    require.resolve('prettier/bin/prettier.cjs'),
+    fileURLToPath(import.meta.resolve('prettier/bin/prettier.cjs')),
     '--log-level=warn',
     '--write',
     folder,

@@ -1,7 +1,7 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const theme = require('../apps/storefront/shared/domain/tenant-theme.js');
-const root = path.resolve(__dirname, '..');
+import fs from 'node:fs';
+import path from 'node:path';
+import theme from '../apps/storefront/shared/domain/tenant-theme.js';
+const root = path.resolve(import.meta.dirname, '..');
 
 // Only repository assets are accepted: all referenced files ship under the deployment's base URL.
 function validateBrand(brand = {}, label = 'brand') {
@@ -109,4 +109,4 @@ function brandOutputs(specs) {
   }
   return output;
 }
-module.exports = {validateBrand, brandOutputs};
+export {validateBrand, brandOutputs};

@@ -1,14 +1,15 @@
 // The npm tarball as an app installs it: resolved through package.json "exports", imported in plain
 // Node (no window, as on a server) and server-rendered with React.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const {pathToFileURL} = require('node:url');
-const {createRequire} = require('node:module');
-const {execFileSync} = require('node:child_process');
-const {createPackedConsumer} = require('./packed-package.cjs');
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import fs from 'node:fs';
+import {createRequire} from 'node:module';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import sourceTheme from '../shared/domain/tenant-theme.js';
+import {createPackedConsumer} from './packed-package.mjs';
 
-const repo = path.resolve(__dirname, '../../..');
+const repo = path.resolve(import.meta.dirname, '../../..');
 const pkg = path.join(repo, 'packages/design-system');
 // Inside the workspace's node_modules, so the package resolves react from there like a peer.
 const packed = createPackedConsumer(repo);
@@ -20,7 +21,9 @@ const {app, installed, manifest, files} = packed;
     assert.deepEqual(manifest.files, ['dist']);
     // React Aria is a peer dependency, so the app and the components share one copy (one
     // RouterProvider / I18nProvider context); its range starts at the version the build tests with.
-    const built = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+    const built = JSON.parse(
+      fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf8')
+    );
     assert.deepEqual(manifest.dependencies || {}, {}, 'the package has no bundled dependencies');
     for (const [name, version] of Object.entries(built.dependencies || {}))
       assert.equal(
@@ -474,7 +477,7 @@ const {app, installed, manifest, files} = packed;
         commonTheme[key],
         key + ' shares the existing CommonJS implementation'
       );
-    assert.deepEqual(theme.RAMPS, require('../shared/domain/tenant-theme.js').RAMPS);
+    assert.deepEqual(theme.RAMPS, sourceTheme.RAMPS);
     for (const [key, ramp] of Object.entries(theme.RAMPS)) {
       for (const [token, step] of Object.entries(ramp.steps))
         assert.equal(
@@ -488,7 +491,7 @@ const {app, installed, manifest, files} = packed;
 
     // Compile actual public import/require consumers, including expected type errors.
     for (const file of ['theme-consumer.mts', 'theme-consumer.cts', 'package-consumer.tsx'])
-      fs.copyFileSync(path.join(__dirname, 'fixtures', file), path.join(app, file));
+      fs.copyFileSync(path.join(import.meta.dirname, 'fixtures', file), path.join(app, file));
     const names = Object.keys(ds).sort();
     fs.writeFileSync(
       path.join(app, 'root-consumer.mts'),

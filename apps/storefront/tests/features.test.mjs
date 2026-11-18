@@ -1,10 +1,10 @@
 // Product codes, delivery days, promo codes, shop occasions, recently viewed products and analytics consent.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
-const root = path.resolve(__dirname, '../../..');
-const {sharedLogic} = require('./page-script.cjs');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+const root = path.resolve(import.meta.dirname, '../../..');
+import {sharedLogic} from './page-script.mjs';
 const store = {};
 const ctx = {
   URL,

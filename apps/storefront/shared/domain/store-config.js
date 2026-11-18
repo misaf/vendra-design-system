@@ -155,7 +155,7 @@ export function vfFeatures() {
 }
 // Every language the storefront has copy for, by code: its tag, direction, digits, calendar and
 // switch label (the package's LOCALES). A new language adds its entry here, its code to
-// VF_STORE.languages and its copy beside every page's English (tests/storefront.test.cjs checks).
+// VF_STORE.languages and its copy beside every page's English (tests/storefront.test.mjs checks).
 export const VF_LOCALES = LOCALES;
 // The settings of `lang` (English for an unknown language): vfLocale('fa').dir → 'rtl'.
 export function vfLocale(lang) {
