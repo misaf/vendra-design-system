@@ -1,6 +1,6 @@
 # Storefront templates
 
-The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `pages/*`, wired together by `pages/site` (the click-through router). Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
+The bilingual storefront uses Next.js App Router for the static site and React views in `pages/*`. The existing `pages/site` router handles navigation and commerce state in the browser. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
 `../../packages/design-system/components/atoms/` and `../../packages/design-system/components/molecules/`; organisms follow in separate batches.
@@ -179,17 +179,19 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 
 ## GitHub Pages demo
 
-`.github/workflows/pages.yml` builds and deploys the app on pushes to `master`, or when run manually
-from Actions. Repository Settings → Pages → Source must be **GitHub Actions**. The workflow passes
-`--base /<repository-name>/` to Vite, keeping local development at `/` while published scripts, images
-and tenant themes use the repository path. The uploaded artifact is `apps/storefront/_app-build/`.
+`.github/workflows/ci.yml` builds and deploys the Next.js export when CI passes on `master`.
+Repository Settings → Pages → Source must be **GitHub Actions**. CI sets
+`VF_BASE_PATH=/<repository-name>` so scripts, images and tenant themes use the repository path.
+The uploaded artifact is `apps/storefront/next/out/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
 `https://misaf.github.io/vendra-design-system/apps/storefront/app/en/presentation/`. This hosts the
 sample-data demo; live API services need their own backend.
 
-**Prerendered pages.** The build writes the app's page at every public address
-(`apps/storefront/build/routes.mjs`: each view, category, product, journal post and policy, in each
+### Vite reference build
+
+The Vite build serves the full browser and visual regression suite. It writes storefront HTML at
+every known address (`apps/storefront/build/routes.mjs`: each view, category, product, journal post and policy, in each
 language) already rendered (`build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
 tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
 in the source, so search engines and WhatsApp/Telegram link previews read them without running
@@ -288,7 +290,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront organism spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
-3. **Production storefront, visuals and performance:** `test:e2e:build` builds once and runs all storefront flows, page screenshots, accessibility, responsive/device tests and performance budgets in the same image. Storefront first-paint checks live in `first-paint.spec.mjs`; source hydration fixtures remain in the development suite.
+3. **Production storefront, visuals and performance:** `test:e2e:build` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Vite reference build. `test:e2e:next` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the package supports React 19 only, and a new major is a deliberate upgrade. The package and the storefront both pin React and React Aria, and Dependabot's single root entry updates every workspace manifest in one pull request; `tests/dependencies.test.mjs` fails if a package pinned in more than one manifest has differing versions or if the lockfile or `node_modules` holds a second copy of it. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
@@ -739,19 +741,22 @@ All 64 selected master-based Darwin/Linux dev/production cases, root unit and ch
 blanket-clear negative controls fail as expected. Original master runtime is restored.
 Next: review the pending saved-state PRs, then initial-load retry UX.
 
-## Next.js preview
+## Next.js development and static export
 
-Run `npm run dev:next --workspace vendra-storefront` from the repository root and open
-`http://localhost:3000/`. The App Router serves the existing storefront addresses, including
-`/apps/storefront/app/en/product/VF-7K2M4Q/` and its Persian counterpart under `/fa/`.
-Product pages include localized catalog HTML, metadata and Product structured data in the initial
-response. The existing client router takes over interactive navigation, including bag and checkout.
+```sh
+npm run dev
+npm run build:app
+npm run preview
+npm run test:e2e:next --workspace vendra-storefront
+```
 
-For a production-mode preview, build with
-`VF_ORIGIN=https://shop.example npm run build:next --workspace vendra-storefront` and serve it with
-`npm run start:next --workspace vendra-storefront`. Set `VF_ORIGIN` to the public origin when
-building for a real host so canonical and share URLs are absolute.
+The dev and preview servers open on port 3000. The production build exports every address
+in `build/routes.mjs` to `next/out/` with the existing React view HTML, metadata and structured data.
+The browser takes over the shopping flow and restores the visitor's bag and checkout state. The
+export's `404.html` lets tracking links with runtime order IDs and older product or journal links
+boot the storefront at the requested address.
 
-This stage keeps the GitHub Pages deployment on Vite. The Next.js preview uses a Node server for
-direct links that can contain values created after build time. Initial HTML for non-product routes
-and the offline display service worker still need migration.
+For a subpath deployment, set `VF_BASE_PATH=/repository-name` when building, previewing and testing.
+Set `VF_ORIGIN` to the public origin for absolute canonical, sitemap and share URLs. The export also
+ships a service worker and manifest that cache each localized presentation document, its
+Next.js assets and selected product photos for offline counter use.

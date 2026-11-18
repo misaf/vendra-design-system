@@ -3,22 +3,29 @@
 // the network first and from the cache when it is out. Hashed build assets are cached once.
 // Fixed URLs, including photos, are served from cache while the network copy is revalidated.
 // Other API reads (a signed-in customer's lists, orders, account) always go to the network.
-// Other sites (map tiles, WhatsApp) are left alone. Copied next to the built app by the Vite config.
+// Other sites (map tiles, WhatsApp) are left alone. Both builds copy it beside the app.
 const sw = /** @type {any} */ (self);
-// Every address under the app serves the same page, so one copy of it answers them all offline;
-// files and photos are kept up to FILES_MAX, the oldest let go first, so a tablet that runs for months doesn't fill up.
+// Vite uses one app shell for every route. Next caches each localized presentation document.
+// The file cache has a fixed limit, so a tablet that runs for months does not fill up.
 const SCOPE = new URL(sw.registration.scope).pathname;
 const ROOT = new URL('../../../', sw.location.href).pathname;
 const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
-const PAGES = CACHE_PREFIX + '-pages-v4';
-const FILES = CACHE_PREFIX + '-files-v4';
+const NEXT = false; // The Next.js export sets this flag when it copies the worker.
+const PAGES = CACHE_PREFIX + (NEXT ? '-pages-next-v1' : '-pages-v4');
+const FILES = CACHE_PREFIX + (NEXT ? '-files-next-v1' : '-files-v4');
 const FILES_MAX = 400;
 let protectedFiles = new Set();
 const API_PUBLIC = /^\/api\/catalog\//;
+const isApi = pathname => pathname.startsWith('/api/') || pathname.startsWith(ROOT + 'api/');
 const FILE = /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/i;
 const PHOTO = /\.(svg|png|jpe?g|webp|avif)$/i;
 const immutable = url =>
-  url.pathname.startsWith(ROOT + 'assets/hashed/') && /-[\w-]{8}\.[\w]+$/.test(url.pathname);
+  (NEXT && url.pathname.startsWith(ROOT + '_next/static/')) ||
+  (url.pathname.startsWith(ROOT + 'assets/hashed/') && /-[\w-]{8}\.[\w]+$/.test(url.pathname));
+const displayDocument = pathname =>
+  NEXT &&
+  pathname.startsWith(SCOPE) &&
+  /^[a-z-]+\/presentation\/$/.test(pathname.slice(SCOPE.length));
 const noStore = response =>
   /(?:^|,)\s*no-store\s*(?:,|$)/i.test(response.headers.get('Cache-Control') || '');
 
@@ -42,7 +49,7 @@ const fromNetwork = async (request, key) => {
   const cache = await caches.open(PAGES);
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put(key, response.clone());
+    if (response.ok && !noStore(response)) await cache.put(key, response.clone()).catch(() => {});
     return response;
   } catch (error) {
     const cached = await cache.match(key, {ignoreVary: true});
@@ -96,15 +103,12 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== location.origin) return;
-  if (request.mode === 'navigate')
-    event.respondWith(
-      fromNetwork(
-        request,
-        url.pathname.startsWith(SCOPE) ? url.origin + SCOPE : url.origin + url.pathname
-      )
-    );
-  else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
-  else if (url.pathname.startsWith('/api/')) return;
+  if (request.mode === 'navigate') {
+    if (NEXT && !displayDocument(url.pathname)) return;
+    const pathname = !NEXT && url.pathname.startsWith(SCOPE) ? SCOPE : url.pathname;
+    event.respondWith(fromNetwork(request, url.origin + pathname));
+  } else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
+  else if (isApi(url.pathname)) return;
   else if (FILE.test(url.pathname)) fromFiles(event, request, url);
 });
 
@@ -139,15 +143,17 @@ sw.addEventListener('message', event => {
             url =>
               url.origin === sw.location.origin &&
               url.pathname.startsWith(ROOT) &&
-              !url.pathname.startsWith('/api/') &&
-              (url.pathname === app.pathname || FILE.test(url.pathname))
+              !isApi(url.pathname) &&
+              ((NEXT ? displayDocument(url.pathname) : url.pathname === app.pathname) ||
+                FILE.test(url.pathname))
           );
         total = urls.length;
         if (total > FILES_MAX) throw new Error('collection-too-large');
         protectedFiles = new Set(urls.map(url => url.href));
         for (const url of urls) {
-          const cache = await caches.open(url.pathname === app.pathname ? PAGES : FILES);
-          const key = url.origin + url.pathname + (url.pathname === app.pathname ? '' : url.search);
+          const document = NEXT ? displayDocument(url.pathname) : url.pathname === app.pathname;
+          const cache = await caches.open(document ? PAGES : FILES);
+          const key = document ? url.origin + url.pathname : url.href;
           let response = immutable(url) ? await cache.match(key, {ignoreVary: true}) : null;
           if (!response) response = await fetch(url.href, {cache: 'no-cache'});
           if (noStore(response)) {

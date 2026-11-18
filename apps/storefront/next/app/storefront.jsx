@@ -15,8 +15,10 @@ export function Storefront({children}) {
         if (active) setPage(page);
       })
       .catch(error => {
+        if (!active) return;
         console.error(error);
-        if (active) setFailed(true);
+        document.getElementById('vf-initial-page')?.removeAttribute('inert');
+        setFailed(true);
       });
     return () => {
       active = false;

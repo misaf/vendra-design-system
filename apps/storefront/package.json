@@ -17,9 +17,10 @@
     "format": "prettier --ignore-path ../../.prettierignore --write ../../packages/design-system/components ../../tools .",
     "lint:css": "stylelint \"../../packages/design-system/components/**/*.css\" \"shared/**/*.css\" \"pages/*/*.css\"",
     "new:component": "node ../../tools/new-component.mjs",
-    "dev:next": "npm run build && node next/prepare-assets.mjs && next dev next",
-    "build:next": "npm run build && node next/prepare-assets.mjs && next build next",
-    "start:next": "next start next"
+    "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-pages.mjs && next dev next",
+    "build:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-pages.mjs && next build next && node next/finish-export.mjs",
+    "start:next": "node next/serve-export.mjs",
+    "test:e2e:next": "playwright test -c next/playwright.config.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

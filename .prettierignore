@@ -16,3 +16,5 @@ packages/design-system/tokens/tenants.css
 apps/storefront/_app-build/
 apps/storefront/next/.next/
 apps/storefront/next/public/
+apps/storefront/next/_generated/
+apps/storefront/next/out/

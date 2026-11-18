@@ -12,6 +12,20 @@ export default async function RootLayout({children, params}) {
 
   return (
     <html lang={lang} dir={dir} data-lang={lang} suppressHydrationWarning>
+      <head>
+        {VF_STORE.tenant !== 'default' && (
+          <link
+            id="vf-tenant-css"
+            rel="stylesheet"
+            href={
+              process.env.NEXT_PUBLIC_VF_BASE_PATH +
+              '/packages/design-system/tokens/tenants/' +
+              VF_STORE.tenant +
+              '.css'
+            }
+          />
+        )}
+      </head>
       <body>{children}</body>
     </html>
   );

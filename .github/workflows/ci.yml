@@ -163,6 +163,13 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm --prefix apps/storefront run test:e2e:build
+      - name: Build and test the Next.js Pages export
+        env:
+          VF_BASE_PATH: /${{ github.event.repository.name }}
+          VF_ORIGIN: https://${{ github.repository_owner }}.github.io
+        run: |
+          npm --prefix apps/storefront run build:next
+          npm --prefix apps/storefront run test:e2e:next
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7
@@ -197,12 +204,13 @@ jobs:
       - run: npm ci
       - run: npm --prefix apps/storefront run check
       # Prerendered pages name their absolute address (canonical, og:url, og:image).
-      - run: npm --prefix apps/storefront run build:app -- --base "/${{ github.event.repository.name }}/"
+      - run: npm --prefix apps/storefront run build:next
         env:
+          VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: apps/storefront/_app-build
+          path: apps/storefront/next/out
 
   pages-deploy:
     name: Deploy the Pages demo

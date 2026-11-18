@@ -2,12 +2,14 @@ import {loadPage} from '../../app/pages.js';
 import {installTenantTheme} from '../../app/tenant-theme.js';
 import {vfLanguage} from '../../shared/domain/store-config.js';
 import {vfAccountLocale, vfAccountPhone} from '../../shared/domain/account-data.js';
+import {vfRuntime} from '../../shared/platform/runtime.js';
 import {vfReadRoute} from '../../shared/services/routing.js';
 import {vfApplyTvMode} from '../../shared/services/tv.js';
 import '../../app/runtime.js';
 
 export async function startStorefront() {
-  installTenantTheme('/');
+  installTenantTheme(process.env.NEXT_PUBLIC_VF_BASE_PATH + '/');
+  vfRuntime.offlineDisplay = process.env.NODE_ENV === 'production';
   vfApplyTvMode();
 
   const query = new URLSearchParams(location.search);

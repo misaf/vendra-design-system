@@ -347,11 +347,10 @@ export function vfProductImage(
   product,
   lang = 'en',
   asset = product.image || VF_PRODUCT_PLACEHOLDER,
-  index = 0,
-  assetBase = vfAssetBase()
+  index = 0
 ) {
   const photo = typeof asset === 'string' ? {src: asset} : asset;
-  const src = /^(https?:|data:|\/)/.test(photo.src) ? photo.src : assetBase + photo.src;
+  const src = /^(https?:|data:|\/)/.test(photo.src) ? photo.src : vfAssetBase() + photo.src;
   const name = VF_CATEGORY_ITEM[lang][product.cat] + ' ' + vfTokenText(product.id);
   const label = lang === 'fa' ? 'جای تصویر محصول' : 'Product image placeholder';
   const alts = product[lang] && product[lang].alts;
@@ -364,7 +363,7 @@ export function vfProductImage(
       .map(candidate => {
         const [url, descriptor] = candidate.trim().split(/\s+/);
         return (
-          (/^(https?:|data:|\/)/.test(url) ? url : assetBase + url) +
+          (/^(https?:|data:|\/)/.test(url) ? url : vfAssetBase() + url) +
           (descriptor ? ' ' + descriptor : '')
         );
       })

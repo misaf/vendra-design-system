@@ -7,7 +7,8 @@ import {vfServerPage, vfServerRender} from '../shared/platform/environment.js';
 import {vfPageBrandHtml, vfPageHead} from '../shared/services/page-lifecycle.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
-import {vfLocale} from '../shared/domain/store-config.js';
+import {vfBrandLinks} from '../shared/domain/brand.js';
+import {VF_STORE, vfLocale} from '../shared/domain/store-config.js';
 import {loadPage} from './pages.js';
 
 const ENTITIES = {amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' '};
@@ -72,9 +73,12 @@ export async function render(url, {base = '/', origin = '', time = Date.now()} =
     if (!page) throw new Error('No storefront page rendered at ' + url);
     const locale = vfLocale(page.props.lang);
     const lang = locale.code;
+    const head = vfPageHead(page, mainHeading(html));
     return {
       html,
-      head: VF_SEO.headHtml(vfPageHead(page, mainHeading(html))) + '\n' + vfPageBrandHtml(page),
+      tags: VF_SEO.headTags(head),
+      brandLinks: vfBrandLinks(page.props.tenant || VF_STORE.tenant, lang),
+      head: VF_SEO.headHtml(head) + '\n' + vfPageBrandHtml(page),
       lang,
       dir: locale.dir,
       view: page._vfPage
