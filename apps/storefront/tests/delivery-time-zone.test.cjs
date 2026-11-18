@@ -54,6 +54,23 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
       {start: '08', end: '12'},
       {start: '20', end: '22'}
     ];
+    const afterLastSlot = new Date('2026-10-05T17:30:00Z'); // 21:00 Tehran, before a 22:00 cutoff.
+    const lateDays = commerce.deliveryDays('22:00', rules, afterLastSlot);
+    const today = commerce.openDay(lateDays, '2026-10-05');
+    assert.equal(today, '2026-10-05');
+    const closedSlots = commerce.deliverySlots(today, slots, 120, afterLastSlot, timeZone);
+    assert.ok(closedSlots.every(slot => slot.closed));
+    assert.equal(commerce.openSlot(closedSlots, '20'), undefined);
+    assert.equal(commerce.openSlot([], '20'), undefined);
+    const tomorrowSlots = commerce.deliverySlots(
+      lateDays[1].iso,
+      slots,
+      120,
+      afterLastSlot,
+      timeZone
+    );
+    assert.equal(commerce.openSlot(tomorrowSlots, '20'), '20');
+    assert.equal(commerce.openSlot(tomorrowSlots, '16'), '08');
     assert.deepEqual(
       commerce.deliverySlots('2026-10-05', slots, 120, now, timeZone).map(slot => slot.closed),
       [true, true]
@@ -105,6 +122,23 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
     assert.equal(storeDays('central', rollover)[2].soldOut, true);
     assert.equal(storeDays('central', now)[0].pastCutoff, true);
     assert.ok(storeSlots('2026-10-05', now).every(slot => slot.closed));
+
+    vm.runInContext("VF_ZONES[0].cutoff = '22:00'", ctx);
+    const storeDate = vm.runInContext('vfDeliveryDate', ctx);
+    const storeSlot = vm.runInContext('vfDeliverySlot', ctx);
+    const storeChanged = vm.runInContext('vfDeliveryChanged', ctx);
+    const chosen = {zone: 'central', date: today, slot: '20'};
+    assert.equal(storeDays('central', afterLastSlot)[0].noOpenSlots, true);
+    const replacement = storeDate(chosen, afterLastSlot);
+    assert.equal(replacement, '2026-10-06');
+    assert.equal(storeSlot(chosen, afterLastSlot), '20');
+    assert.equal(storeChanged(chosen, afterLastSlot), true);
+    assert.equal(storeChanged({...chosen, date: replacement}, afterLastSlot), false);
+
+    vm.runInContext('VF_SLOTS.length = 0', ctx);
+    assert.equal(storeDate(chosen, afterLastSlot), undefined);
+    assert.equal(storeSlot(chosen, afterLastSlot), undefined);
+    assert.equal(storeChanged(chosen, afterLastSlot), true);
   })().catch(error => {
     console.error(error);
     process.exitCode = 1;

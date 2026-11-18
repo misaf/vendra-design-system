@@ -26,7 +26,9 @@ export function vfNextDelivery(lang) {
   const fa = lang === 'fa';
   const T = VF_SHELL[lang];
   const zone = VF_ZONES[0];
-  const next = vfDeliveryDays(zone.id).find(day => !day.soldOut && !day.pastCutoff);
+  const next = vfDeliveryDays(zone.id).find(
+    day => !day.soldOut && !day.pastCutoff && !day.noOpenSlots
+  );
   if (!next) return {text: '', sameDay: false};
   if (next.offset === 0)
     return {text: T.sameDay.replace('{time}', vfDeliveryCutoff(zone, fa)), sameDay: true};
