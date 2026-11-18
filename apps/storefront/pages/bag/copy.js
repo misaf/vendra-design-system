@@ -36,8 +36,7 @@ export function vfCopy(S) {
       cardAdded: 'Card added for {name}.',
       undoCard: 'Undo adding a card for {name}',
       deliveryChanged:
-        'Your chosen delivery window is no longer available. Confirm a new window before continuing.',
-      confirmDelivery: 'Use this delivery window',
+        'Your chosen delivery window is no longer available. Choose a new time before continuing.',
       noDelivery: 'No delivery windows are available. Please contact the studio.',
       stockChanged:
         'This quantity exceeds the remaining stock. Reduce it or remove the item to continue.',
@@ -115,6 +114,7 @@ export function vfCopy(S) {
         outside: 'We don’t deliver there yet. Move the pin inside Karaj, Alborz or Tehran.',
         address: 'Add the plaque and unit, or the house number.',
         addressFull: 'Enter a full address (at least 6 characters).',
+        slot: 'Choose a delivery time.',
         card: 'Write what the card should say.',
         sender: 'Enter your name.',
         senderPhone: 'Enter your 11-digit mobile number starting with 09.'
@@ -128,8 +128,7 @@ export function vfCopy(S) {
       cardAdded: 'کارت برای {name} افزوده شد.',
       undoCard: 'بازگردانی افزودن کارت برای {name}',
       deliveryChanged:
-        'زمان ارسال انتخابی دیگر در دسترس نیست. پیش از ادامه، زمان جدید را تأیید کنید.',
-      confirmDelivery: 'تأیید این زمان ارسال',
+        'زمان ارسال انتخابی دیگر در دسترس نیست. پیش از ادامه، زمان دیگری انتخاب کنید.',
       noDelivery: 'زمانی برای ارسال موجود نیست. لطفاً با استودیو تماس بگیرید.',
       stockChanged:
         'این تعداد بیش از موجودی است. برای ادامه، تعداد را کم کنید یا کالا را حذف کنید.',
@@ -229,6 +228,7 @@ export function vfCopy(S) {
         outside: 'هنوز به این نقطه ارسال نداریم. سوزن را در کرج، البرز یا تهران بگذارید.',
         address: 'پلاک و واحد یا شماره خانه را بنویسید.',
         addressFull: 'آدرس کامل را وارد کنید؛ دست‌کم ۶ نویسه.',
+        slot: 'زمان ارسال را انتخاب کنید.',
         card: 'متن کارت را بنویسید.',
         sender: 'نام خود را وارد کنید.',
         senderPhone: 'شماره موبایل ۱۱ رقمی خود را با ۰۹ وارد کنید.'

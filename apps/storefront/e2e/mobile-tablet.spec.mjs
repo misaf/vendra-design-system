@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {openSite, pinDelivery, scanAxe, chooseDeliveryTime} from './helpers.mjs';
 
 test.use({hasTouch: true});
 
@@ -129,6 +129,7 @@ for (const lang of ['en', 'fa']) {
     await page.locator('#vf-address').fill('Plaque 12, unit 3');
     await page.locator('#vf-sender').fill('Sara Karimi');
     await page.locator('#vf-sender-phone').fill('09121112233');
+    await chooseDeliveryTime(page);
     await page
       .getByRole('button', {name: lang === 'fa' ? 'ادامه و پرداخت' : 'Continue to payment'})
       .locator('visible=true')

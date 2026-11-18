@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe, chooseDeliveryTime} from './helpers.mjs';
 
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 async function fillDelivery(page) {
@@ -12,6 +12,7 @@ async function fillDelivery(page) {
   await page.locator('#vf-address').fill('Test street 12, unit 3');
   await page.locator('#vf-sender').fill('Test Sender');
   await page.locator('#vf-sender-phone').fill('09121111111');
+  await chooseDeliveryTime(page);
 }
 async function next(page, fa) {
   await page

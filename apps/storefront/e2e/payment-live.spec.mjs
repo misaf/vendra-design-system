@@ -2,7 +2,7 @@
 // gateway, the redirect and order number come from the API's checkout result, and a return from the
 // bank is confirmed by asking the API, in whichever tab it lands (apps/storefront/API.md B3, B30).
 import {test, expect} from '@playwright/test';
-import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {openSite, pinDelivery, scanAxe, chooseDeliveryTime} from './helpers.mjs';
 
 const API = 'https://api.test';
 const BANK = 'https://bank.test/pay';
@@ -71,6 +71,7 @@ async function toPayment(page) {
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.fill('#vf-sender', 'Sara Karimi');
   await page.fill('#vf-sender-phone', '09121112233');
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')

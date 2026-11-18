@@ -1,6 +1,6 @@
 // Core routes with real Chromium touch input and the normal sticky shell geometry.
 import {test, expect} from '@playwright/test';
-import {openSite} from './helpers.mjs';
+import {openSite, chooseDeliveryTime} from './helpers.mjs';
 import {reachable, tap, fill, shell, finish} from './device-helpers.mjs';
 
 test.use({reducedMotion: 'reduce'});
@@ -22,6 +22,7 @@ async function delivery(page) {
   await fill(page, '#vf-address', 'Test street 12, unit 3');
   await fill(page, '#vf-sender', 'Touch Sender');
   await fill(page, '#vf-sender-phone', '09121111111');
+  await chooseDeliveryTime(page);
 }
 
 for (const lang of ['en', 'fa']) {

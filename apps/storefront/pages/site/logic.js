@@ -145,6 +145,7 @@ function vfPersistSession(state) {
     sessionStorage.setItem(
       VF_SESSION,
       JSON.stringify({
+        explicitDeliverySlots: true,
         customerId: state.customerId,
         customers: {
           ...state.customers,
@@ -167,6 +168,12 @@ function vfSiteInitial(props) {
   let saved = {};
   try {
     saved = JSON.parse(sessionStorage.getItem(VF_SESSION) || '{}') || {};
+    // Older drafts could save an automatic slot even when the customer had chosen a day.
+    if (!saved.explicitDeliverySlots) {
+      for (const draft of [saved, ...Object.values(saved.customers || {})]) {
+        if (draft?.delivery) draft.delivery.slot = null;
+      }
+    }
   } catch {}
   const customerId = vfCustomerId();
   // Unowned legacy private data may be restored only to the guest it originally belonged to.
@@ -590,7 +597,9 @@ function vals(page) {
               mode === 'add' && current.bag.length
                 ? current.delivery
                 : {
-                    ...order.delivery
+                    ...order.delivery,
+                    date: '',
+                    slot: null
                   }
           };
         }),
@@ -657,7 +666,9 @@ function vals(page) {
           const ex = p.bag.find(x => x.id === line.id);
           return {
             order: null,
-            ...(date ? {delivery: {...p.delivery, date}} : {}),
+            ...(date && date !== p.delivery.date
+              ? {delivery: {...p.delivery, date, slot: null}}
+              : {}),
             bag: ex
               ? p.bag.map(x =>
                   x.id === line.id

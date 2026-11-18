@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe, choiceTile, settlePage} from './helpers.mjs';
+import {openSite, scanAxe, settlePage, chooseDeliveryTime, siteUrl} from './helpers.mjs';
 
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 async function deliveryDetails(page) {
@@ -47,7 +47,46 @@ for (const lang of ['en', 'fa']) {
     expect(await scanAxe(page)).toEqual([]);
   });
 
-  test(`changed delivery windows need explicit confirmation (${lang})`, async ({page}) => {
+  test(`delivery needs an explicit time for the selected day (${lang})`, async ({page}) => {
+    await page.clock.install({time: MORNING});
+    await openSite(page, 'bag', lang, {step: 'delivery'});
+    await deliveryDetails(page);
+    const slots = page.locator('#vf-slot').getByRole('radiogroup');
+    const checked = slots.getByRole('radio', {checked: true});
+    await expect(checked).toHaveCount(0);
+    await page.evaluate(() => {
+      const key = 'vendra-template:/apps/storefront/app/';
+      const previous = JSON.parse(sessionStorage.getItem(key));
+      delete previous.explicitDeliverySlots;
+      Object.assign(previous.customers.guest.delivery, {date: '2026-10-06', slot: '12'});
+      sessionStorage.setItem(key, JSON.stringify(previous));
+    });
+    await page.goto(siteUrl('checkout', lang));
+    await expect(page).toHaveURL(/step=delivery/);
+    await expect(checked).toHaveCount(0);
+    await continueToPayment(page, fa);
+    const summary = page.locator('#vf-errors');
+    const message = fa ? 'زمان ارسال را انتخاب کنید.' : 'Choose a delivery time.';
+    await expect(summary).toBeFocused();
+    await expect(slots).toHaveAccessibleDescription(message);
+    await summary.getByRole('link', {name: message}).click();
+    await expect(page.locator('#vf-slot')).toBeFocused();
+    await chooseDeliveryTime(page);
+    await expect(checked).toHaveCount(1);
+    await page.reload();
+    await expect(checked).toHaveCount(1);
+    const days = page.getByRole('radiogroup', {name: fa ? 'روز ارسال' : 'Delivery day'});
+    await days.getByRole('radio', {disabled: false}).last().press('Space');
+    await expect(checked).toHaveCount(0);
+    await chooseDeliveryTime(page);
+    await continueToPayment(page, fa);
+    await expect(
+      page.getByRole('region', {name: fa ? 'مرور اطلاعات ارسال' : 'Delivery review'})
+    ).toBeVisible();
+    expect(await scanAxe(page)).toEqual([]);
+  });
+
+  test(`expired delivery windows need a new time choice (${lang})`, async ({page}) => {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await page.evaluate(() => {
@@ -56,16 +95,16 @@ for (const lang of ['en', 'fa']) {
     });
     await deliveryDetails(page);
     const days = page.getByRole('radiogroup', {name: fa ? 'روز ارسال' : 'Delivery day'});
-    // Commit an explicit date, rather than the untouched first-visit default.
-    await choiceTile(days, fa ? /^فردا/ : /^Tomorrow/).click();
-    await choiceTile(days, fa ? /^امروز/ : /^Today/).click();
+    await expect(days.getByRole('radio', {name: fa ? /^امروز/ : /^Today/})).toBeChecked();
+    await chooseDeliveryTime(page);
     await page.clock.setSystemTime(new Date('2026-10-05T19:00:00+03:30'));
     await continueToPayment(page, fa);
     const changed = page.locator('#vf-delivery-changed');
     await expect(changed).toBeVisible();
     await expect(changed).toBeFocused();
     expect(await page.evaluate(() => window.__vfSite.state.delivery.date)).toBe('2026-10-05');
-    await changed.getByRole('button').click();
+    await expect(page.locator('#vf-slot').getByRole('radio', {checked: true})).toHaveCount(0);
+    await chooseDeliveryTime(page);
     await expect(changed).toHaveCount(0);
     expect(await page.evaluate(() => window.__vfSite.state.delivery.date)).toBe('2026-10-06');
     await continueToPayment(page, fa);
@@ -98,6 +137,7 @@ for (const lang of ['en', 'fa']) {
     });
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await deliveryDetails(page);
+    await chooseDeliveryTime(page);
     await page.getByRole('button', {name: 'Office', exact: true}).click();
     expect(await page.evaluate(() => window.__vfSite.state.delivery.location)).toBeNull();
     await continueToPayment(page, fa);
@@ -207,6 +247,7 @@ for (const lang of ['en', 'fa']) {
     await page.clock.install({time: MORNING});
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await deliveryDetails(page);
+    await chooseDeliveryTime(page);
     await continueToPayment(page, fa);
     await page
       .getByRole('radio', {name: fa ? 'تأیید در واتس‌اپ' : 'Confirm on WhatsApp', exact: true})

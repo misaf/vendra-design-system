@@ -189,6 +189,15 @@ export function choiceTile(group, name) {
   return group.locator('label.ag-choice').filter({has: group.page().getByRole('radio', {name})});
 }
 
+export async function chooseDeliveryTime(page) {
+  const slots = page.locator('#vf-slot');
+  const tiles = slots.locator('label.ag-choice');
+  const midday = tiles.filter({has: page.locator('input[value="12"]:enabled')});
+  const available = tiles.filter({has: page.getByRole('radio', {disabled: false})});
+  await expect(available.first()).toBeVisible();
+  await ((await midday.count()) ? midday : available.first()).click();
+}
+
 export async function expectNoViteError(page) {
   await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
   // Every design-system source (and the bundled react-aria-components) loaded without an error.

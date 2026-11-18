@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, pinDelivery} from './helpers.mjs';
+import {openSite, pinDelivery, chooseDeliveryTime} from './helpers.mjs';
 import {captureImages} from './image-capture-helpers.mjs';
 import {vfCopy} from '../pages/bag/copy.js';
 
@@ -74,6 +74,7 @@ for (const [width, lang] of [
       await page.locator('#vf-address').fill('Local test address, unit 3');
       await page.locator('#vf-sender').fill('Test Sender');
       await page.locator('#vf-sender-phone').fill('09121111111');
+      await chooseDeliveryTime(page);
       const next = async () => {
         await activate(
           page.getByRole('button', {name: copy.next, exact: true}).filter({visible: true}).first()

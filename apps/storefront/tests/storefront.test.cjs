@@ -15,6 +15,14 @@ function setAddress(ctx, url) {
   ctx.location.pathname = address.pathname;
   ctx.location.search = address.search;
 }
+function openDeliveryWindow(ctx, delivery, lines) {
+  const now = new Date();
+  const deliveryDate = vm.runInContext('vfDeliveryDate', ctx);
+  const deliverySlots = vm.runInContext('vfDeliverySlots', ctx);
+  const date = deliveryDate(delivery, now, lines);
+  const slot = deliverySlots(date, now).find(window => !window.closed).start;
+  return {date, slot};
+}
 function context() {
   const history = [];
   const ctx = {
@@ -255,7 +263,7 @@ assert.equal(
   'false,false,false,false',
   'other days keep every slot'
 );
-assert.equal(ctx.slot({zone: 'central', date: iso, slot: '08'}, afternoon), '16');
+assert.equal(ctx.slot({zone: 'central', date: iso, slot: '08'}, afternoon), undefined);
 // The shop's delivery-day filter: same-day designs from today, the rest from tomorrow, never sold out or out of stock.
 vm.runInContext('this.deliverable=vfDeliverableOn;this.product=vfProduct;', ctx);
 const morning = new Date('2026-10-06T09:00:00+03:30'),
@@ -379,6 +387,11 @@ for (const folder of fs
       sender: 'Buyer',
       senderPhone: '09121112233'
     });
+    logic.navigate('checkout');
+    assert.equal(logic.state.routeInfo.step, 'delivery', 'payment requires a chosen time');
+    logic
+      .renderVals()
+      .store.setDelivery(openDeliveryWindow(c, logic.state.delivery, logic.state.bag));
     logic.navigate('checkout');
     assert.equal(logic.state.route, 'checkout');
     const originalBag = logic.state.bag;
@@ -838,7 +851,7 @@ for (const lang of ['en', 'fa']) {
     phone: '09120000000',
     address: 'Demo street 12',
     zone: 'tehran',
-    slot: '16',
+    ...openDeliveryWindow(c, {zone: 'tehran'}, lines),
     sender: 'Demo sender',
     senderPhone: '09121112233'
   };
@@ -1155,16 +1168,16 @@ for (const lang of ['en', 'fa']) {
   bc.setTimeout = () => 0;
   bag.setState({delivery: {...bag.state.delivery, date: '2000-01-01', slot: '08'}});
   let values = bag.renderVals();
-  assert.equal(values.deliveryChanged, true);
-  assert.ok(values.deliverySuggestion);
+  assert.ok(values.deliveryReview);
+  assert.equal(values.slot, null);
   values.next();
   assert.equal(
     bag.state.delivery.date,
     '2000-01-01',
     'continue does not silently accept a replacement'
   );
-  values.confirmDelivery();
-  assert.equal(bag.renderVals().deliveryChanged, false);
+  values.setSlot(values.slots.find(slot => !slot.off).value);
+  assert.equal(bag.renderVals().deliveryReview, '');
   assert.notEqual(bag.state.delivery.date, '2000-01-01');
   const address = {
     label: 'Office',
@@ -1418,8 +1431,7 @@ console.log(
       address: 'Street 12 unit 3',
       location: {lat: 35.8352, lng: 50.975}
     };
-    delivery.date = vm.runInContext('vfDeliveryDate', c)(delivery, new Date(), site.state.bag);
-    site.setState({delivery});
+    site.setState({delivery: {...delivery, ...openDeliveryWindow(c, delivery, site.state.bag)}});
   };
   for (const lang of ['en', 'fa']) {
     const setup = (live = false) => {
@@ -1816,7 +1828,8 @@ for (const lang of ['en', 'fa']) {
 console.log('Passed sign-in greetings for new, returning, named and unnamed accounts.');
 
 for (const lang of ['en', 'fa']) {
-  const {logic: site} = loadPage('site', {lang});
+  const {logic: site, ctx: sc} = loadPage('site', {lang});
+  site.renderVals().store.setDelivery(openDeliveryWindow(sc, site.state.delivery, site.state.bag));
   const {logic: checkout, ctx: c} = loadPage('checkout', {lang, store: site.renderVals().store});
   c.setTimeout = () => 0;
   let submitted = 0;
@@ -2012,8 +2025,10 @@ console.log('Passed sign-out removing stored accounts and private records.');
 for (const lang of ['en', 'fa']) {
   let destination;
   const {logic: site, ctx: sc} = loadPage('site', {lang});
-  const d = {...site.state.delivery};
-  d.date = vm.runInContext('vfDeliveryDate', sc)(d, new Date(), site.state.bag);
+  const d = {
+    ...site.state.delivery,
+    ...openDeliveryWindow(sc, site.state.delivery, site.state.bag)
+  };
   const {logic: checkout, ctx: c} = loadPage('checkout', {
     lang,
     store: site.renderVals().store,
