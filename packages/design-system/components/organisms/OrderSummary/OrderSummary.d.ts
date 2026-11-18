@@ -28,6 +28,8 @@ export interface OrderSummaryProps {
   title?: React.ReactNode;
   /** Heading element for the title. Default h2 */
   titleAs?: 'h2' | 'h3' | 'div';
+  /** Optional label for a collapsed list of items. Totals remain visible. */
+  itemsDisclosureLabel?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }

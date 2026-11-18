@@ -11,35 +11,46 @@ export function OrderSummary({
   sums = [],
   title,
   titleAs = 'h2',
+  itemsDisclosureLabel,
   className = '',
   style,
   ref
 }) {
   const Title = titleAs;
+  const items = (
+    <ul className="ag-osum__lines">
+      {lines.map((line, i) => (
+        <li key={i} className="ag-osum__line">
+          <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
+          <div className="ag-osum__main">
+            <div className="ag-osum__name">
+              {line.href ? (
+                <Link href={line.href} onClick={line.onClick}>
+                  {line.name}
+                </Link>
+              ) : (
+                line.name
+              )}
+            </div>
+            {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
+            {line.note && <div className="ag-osum__note">{line.note}</div>}
+          </div>
+          {line.total != null && <Price value={line.total} className="ag-osum__total" />}
+        </li>
+      ))}
+    </ul>
+  );
   return (
     <section ref={ref} className={cx('ag-osum', className)} style={style}>
       {title && <Title className="ag-osum__title">{title}</Title>}
-      <ul className="ag-osum__lines">
-        {lines.map((line, i) => (
-          <li key={i} className="ag-osum__line">
-            <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
-            <div className="ag-osum__main">
-              <div className="ag-osum__name">
-                {line.href ? (
-                  <Link href={line.href} onClick={line.onClick}>
-                    {line.name}
-                  </Link>
-                ) : (
-                  line.name
-                )}
-              </div>
-              {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
-              {line.note && <div className="ag-osum__note">{line.note}</div>}
-            </div>
-            {line.total != null && <Price value={line.total} className="ag-osum__total" />}
-          </li>
-        ))}
-      </ul>
+      {itemsDisclosureLabel && lines.length > 0 ? (
+        <details className="ag-osum__items">
+          <summary>{itemsDisclosureLabel}</summary>
+          {items}
+        </details>
+      ) : (
+        items
+      )}
       {sums.length > 0 && (
         <dl className="ag-osum__sums">
           {sums.map((sum, i) => (

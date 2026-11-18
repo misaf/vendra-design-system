@@ -21,6 +21,7 @@ export function View({v}) {
   return (
     <Shell
       v={v}
+      compactCheckout={v.onDelivery && v.hasItems}
       content={
         <StorefrontBagLayout
           showContents={v.hasItems}
@@ -168,7 +169,12 @@ export function View({v}) {
                     />
                     {v.cardsShown ? (
                       <StorefrontBagCards
-                        labels={{title: v.t?.cards, hint: v.t?.cardHint, undo: v.t.undo}}
+                        labels={{
+                          title: v.t?.cards,
+                          hint: v.t?.cardHint,
+                          undo: v.t.undo,
+                          edit: v.t.editCard
+                        }}
                         notice={{
                           message: v.cardAddedMessage,
                           undoLabel: v.undoCardLabel,
@@ -200,7 +206,14 @@ export function View({v}) {
           summary={
             v.hasItems ? (
               <StorefrontBagSummary
-                summary={{title: v.t?.summary, lines: v.summary, sums: v.sums}}
+                summary={{
+                  title: v.t?.summary,
+                  lines: v.summary,
+                  sums: v.sums,
+                  itemsDisclosureLabel: v.onDelivery
+                    ? v.t.showItems.replace('{count}', v.fmt(v.summary.length))
+                    : undefined
+                }}
                 freeDelivery={v.freeDelivery}
                 promo={{
                   visible: v.promoShown,

@@ -2,6 +2,21 @@ import React from 'react';
 import * as DS from '../../ds.js';
 
 export function StorefrontBagSchedule({title, preparationNotice, review, day, slot}) {
+  const dayFieldset = React.useRef(null);
+  React.useEffect(() => {
+    const scroller = dayFieldset.current?.querySelector('.ag-choices');
+    const selected = scroller?.querySelector('.ag-choice[data-selected]');
+    if (!selected || scroller.scrollWidth <= scroller.clientWidth) return;
+
+    // Keep the selected date visible when returning to delivery, without moving the page.
+    const viewport = scroller.getBoundingClientRect();
+    const tile = selected.getBoundingClientRect();
+    const padding = parseFloat(getComputedStyle(scroller).paddingInlineStart);
+    const left = Math.min(0, tile.left - viewport.left - padding);
+    const right = Math.max(0, tile.right - viewport.right + padding);
+    if (left || right) scroller.scrollBy(left || right, 0);
+  }, [day.value]);
+
   return (
     <section
       className="vf-bag-delivery tw:flex tw:flex-col tw:gap-4h"
@@ -29,6 +44,8 @@ export function StorefrontBagSchedule({title, preparationNotice, review, day, sl
         </div>
       )}
       <DS.ChoiceGroup
+        ref={dayFieldset}
+        className="vf-bag-days"
         legend={day.label}
         minTileWidth={104}
         value={day.value}
