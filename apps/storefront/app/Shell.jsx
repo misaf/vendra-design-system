@@ -15,7 +15,7 @@ import {useVfDensity, useVfRemoteNavigation} from '../shared/services/tv.js';
 import {vfRuntime} from '../shared/platform/runtime.js';
 import {vfLocale} from '../shared/domain/store-config.js';
 
-export function Shell({v, content, sticky, bare = false, quiet = false}) {
+export function Shell({v, content, sticky, bare = false, quiet = false, compactCheckout = false}) {
   const brandAssets = {...v.brandAssets};
   for (const key of ['logo', 'logoMark', 'logoOnDark']) {
     if (brandAssets[key])
@@ -218,42 +218,44 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
         notices={<DS.OfflineNotice />}
         content={content}
         footer={
-          <StorefrontFooter
-            homeHref={v.href?.home}
-            brand={v.shellText?.brand}
-            brandAssets={brandAssets}
-            lang={v.lang}
-            tagline={v.footer?.tagline}
-            socialLabel={v.shellText?.footer?.social}
-            socialLinks={list(v.footer?.social)}
-            visitLabel={v.shellText?.visit}
-            address={v.footer?.address}
-            findUs={v.footer?.findUs}
-            directionsLinks={v.footer?.directions}
-            directionsLabel={v.shellText?.footer?.directions}
-            hours={v.shellText?.hours}
-            phoneHref={v.phoneHref}
-            phoneLabel={v.phoneLabel}
-            emailHref={v.footer?.emailHref}
-            email={v.footer?.email}
-            seals={list(v.footer?.seals)}
-            copyright={v.footer?.copyright}
-            credit={v.footer?.credit}
-            groups={[
-              {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
-              {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
-              {
-                id: 'help',
-                title: v.shellText?.help,
-                links: [
-                  {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
-                  ...list(v.policyLinks)
-                ]
-              }
-            ]}
-            consentSettingsLabel={v.shellText?.consent?.settings}
-            onOpenConsent={v.consent?.open}
-          />
+          !compactCheckout && (
+            <StorefrontFooter
+              homeHref={v.href?.home}
+              brand={v.shellText?.brand}
+              brandAssets={brandAssets}
+              lang={v.lang}
+              tagline={v.footer?.tagline}
+              socialLabel={v.shellText?.footer?.social}
+              socialLinks={list(v.footer?.social)}
+              visitLabel={v.shellText?.visit}
+              address={v.footer?.address}
+              findUs={v.footer?.findUs}
+              directionsLinks={v.footer?.directions}
+              directionsLabel={v.shellText?.footer?.directions}
+              hours={v.shellText?.hours}
+              phoneHref={v.phoneHref}
+              phoneLabel={v.phoneLabel}
+              emailHref={v.footer?.emailHref}
+              email={v.footer?.email}
+              seals={list(v.footer?.seals)}
+              copyright={v.footer?.copyright}
+              credit={v.footer?.credit}
+              groups={[
+                {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
+                {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
+                {
+                  id: 'help',
+                  title: v.shellText?.help,
+                  links: [
+                    {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
+                    ...list(v.policyLinks)
+                  ]
+                }
+              ]}
+              consentSettingsLabel={v.shellText?.consent?.settings}
+              onOpenConsent={v.consent?.open}
+            />
+          )
         }
         bottomBar={
           <StorefrontBottomBar
@@ -273,7 +275,9 @@ export function Shell({v, content, sticky, bare = false, quiet = false}) {
               />
             }
             sticky={sticky}
-            navigation={<DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />}
+            navigation={
+              !compactCheckout && <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
+            }
           />
         }
       />

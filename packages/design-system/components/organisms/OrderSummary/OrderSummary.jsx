@@ -11,18 +11,18 @@ export function OrderSummary({
   sums = [],
   title,
   titleAs = 'h2',
+  itemsDisclosureLabel,
   className = '',
   style,
   ref
 }) {
   const Title = titleAs;
-  return (
-    <section ref={ref} className={cx('ag-osum', className)} style={style}>
-      {title && <Title className="ag-osum__title">{title}</Title>}
-      <ul className="ag-osum__lines">
-        {lines.map((line, i) => (
-          <li key={i} className="ag-osum__line">
-            <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
+  const items = (
+    <ul className="ag-osum__lines">
+      {lines.map((line, i) => (
+        <li key={i} className="ag-osum__line">
+          <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
+          <div className="ag-osum__details">
             <div className="ag-osum__main">
               <div className="ag-osum__name">
                 {line.href ? (
@@ -37,9 +37,22 @@ export function OrderSummary({
               {line.note && <div className="ag-osum__note">{line.note}</div>}
             </div>
             {line.total != null && <Price value={line.total} className="ag-osum__total" />}
-          </li>
-        ))}
-      </ul>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <section ref={ref} className={cx('ag-osum', className)} style={style}>
+      {title && <Title className="ag-osum__title">{title}</Title>}
+      {itemsDisclosureLabel && lines.length > 0 ? (
+        <details className="ag-osum__items">
+          <summary>{itemsDisclosureLabel}</summary>
+          {items}
+        </details>
+      ) : (
+        items
+      )}
       {sums.length > 0 && (
         <dl className="ag-osum__sums">
           {sums.map((sum, i) => (

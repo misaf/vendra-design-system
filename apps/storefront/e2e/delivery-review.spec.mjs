@@ -22,6 +22,7 @@ for (const lang of ['en', 'fa']) {
         .click();
     const review = page.getByRole('region', {name: fa ? 'مرور اطلاعات ارسال' : 'Delivery review'});
     await continueToPayment();
+    await expect(page.locator('main h1')).toBeFocused();
     await expect(review).toBeVisible();
     await expect(review).toContainText('Shirin Ahmadi');
     await expect(review).toContainText('09121234567');

@@ -82,6 +82,97 @@ test('first visit prepares offline shell and a full collection survives reconnec
   await expect(page.locator('.vf-display-photo').first()).toBeVisible();
 });
 
+test('the worker revalidates fixed URLs and keeps hashed build files cache first', async ({
+  page,
+  context
+}, info) => {
+  test.skip(info.project.name !== 'tablet', 'one production cache-strategy check');
+  const photo = '/assets/test-mutable-photo.svg';
+  const hashed = '/assets/hashed/test-build-AbCd1234.css';
+  let revision = 'original';
+  let cacheControl = 'public, max-age=86400';
+  let buildRequests = 0;
+  await context.route('**' + photo, route =>
+    route.fulfill({body: revision, headers: {'cache-control': cacheControl}})
+  );
+  await context.route('**' + hashed, route => {
+    buildRequests++;
+    return route.fulfill({body: 'hashed stylesheet'});
+  });
+  await openSite(page, 'presentation', 'en');
+  await page.waitForFunction(() => navigator.serviceWorker.controller);
+  const read = path => page.evaluate(url => fetch(url).then(response => response.text()), path);
+  const cached = path =>
+    page.evaluate(async url => {
+      const scope = new URL((await navigator.serviceWorker.ready).scope).pathname;
+      const store = await caches.open('vf-' + encodeURIComponent(scope) + '-files-v4');
+      return (await store.match(url))?.text();
+    }, path);
+  expect(await read(photo)).toBe('original');
+  expect(await read(hashed)).toBe('hashed stylesheet');
+  await expect.poll(() => cached(photo)).toBe('original');
+  await expect.poll(() => cached(hashed)).toBe('hashed stylesheet');
+
+  revision = 'replacement';
+  expect(await read(photo)).toBe('original');
+  await expect.poll(() => cached(photo)).toBe('replacement');
+  expect(await read(photo)).toBe('replacement');
+  expect(await read(hashed)).toBe('hashed stylesheet');
+  expect(buildRequests).toBe(1);
+
+  await context.setOffline(true);
+  await context.unroute('**' + photo);
+  expect(await read(photo)).toBe('replacement');
+
+  await context.setOffline(false);
+  cacheControl = 'no-store';
+  await context.route('**' + photo, route =>
+    route.fulfill({body: revision, headers: {'cache-control': cacheControl}})
+  );
+  await read(photo);
+  await expect.poll(() => cached(photo)).toBeUndefined();
+});
+
+test('seller tools refresh the displayed photo at the same URL and keep it offline', async ({
+  page,
+  context
+}, info) => {
+  test.skip(info.project.name !== 'tablet', 'one production photo-refresh check');
+  await openSite(page, 'presentation', 'en');
+  await page.keyboard.press('Enter');
+  const ready = page.locator('[data-offline-status="ready"]');
+  await expect(ready).toBeVisible({timeout: 60000});
+  const photo = page.locator('.vf-display-photo').first();
+  const original = await photo.evaluate(image => image.currentSrc);
+  const replacementColor = [12, 34, 56, 255];
+  const visibleColor = () =>
+    photo.evaluate(image => {
+      if (!image.complete || !image.naturalWidth) return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      const paint = canvas.getContext('2d');
+      paint.drawImage(image, 0, 0, 1, 1);
+      return [...paint.getImageData(0, 0, 1, 1).data];
+    });
+  expect(await visibleColor()).not.toEqual(replacementColor);
+  await context.route(original, route =>
+    route.fulfill({
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="13"><rect width="100%" height="100%" fill="#0c2238"/></svg>'
+    })
+  );
+  const refresh = page.getByRole('button', {name: 'Refresh photos', exact: true});
+  await refresh.click();
+  await expect(ready).toBeVisible({timeout: 60000});
+  await expect.poll(visibleColor).toEqual(replacementColor);
+  expect(await photo.evaluate(image => image.currentSrc)).toContain('vf-photo-revision=');
+  await context.setOffline(true);
+  await expect(refresh).toBeDisabled();
+  await context.unroute(original);
+  await page.reload();
+  await expect.poll(visibleColor).toEqual(replacementColor);
+});
+
 test('a new service worker activates without interrupting an open display', async ({
   page
 }, info) => {

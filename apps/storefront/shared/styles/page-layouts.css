@@ -104,12 +104,8 @@
   container: vf-tv-summary / inline-size;
 }
 @container vf-tv-summary (width < 480px) {
-  .ag-osum__line {
-    grid-template-columns: 48px minmax(0, 1fr);
-  }
-  .ag-osum__total {
-    grid-column: 2;
-    justify-content: start;
+  .ag-osum__main {
+    flex-basis: 100%;
   }
 }
 

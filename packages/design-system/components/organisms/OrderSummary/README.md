@@ -25,6 +25,7 @@ Read-only order lines + totals (order page, confirmation). For editable bag line
 
 - The name is the product code, set in `--font-code`; it is an `<a href>` only when `href` is given (navigation is always a link).
 - All values arrive pre-formatted through `money()`; the note is italic in EN and upright in FA.
+- Pass a localized `itemsDisclosureLabel` to collapse the line items by default while keeping totals visible.
 
 ## Usage
 

@@ -52,10 +52,16 @@ for (const lang of ['en', 'fa']) {
     });
   }
 
-  test(`delivery keeps the itemized summary on phones (${lang})`, async ({page}) => {
+  test(`delivery can expand the itemized summary on phones (${lang})`, async ({page}) => {
     await page.setViewportSize({width: 390, height: 844});
     await openSite(page, 'bag', lang);
+    const itemCount = await page.locator('.vf-bag-line').count();
     await page.locator('.vf-mobile-action').getByRole('button').click();
-    await expect(page.locator('.vf-bag-summary').getByRole('listitem').first()).toBeVisible();
+    await expect(page).toHaveURL(/step=delivery/);
+    const summary = page.locator('.vf-bag-summary');
+    const items = summary.getByRole('listitem');
+    await expect(items).toHaveCount(0);
+    await summary.locator('.ag-osum__items > summary').click();
+    await expect(items).toHaveCount(itemCount);
   });
 }

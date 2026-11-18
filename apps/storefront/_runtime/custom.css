@@ -366,12 +366,8 @@ html {
   container: vf-tv-summary / inline-size;
 }
 @container vf-tv-summary (width < 480px) {
-  .ag-osum__line {
-    grid-template-columns: 48px minmax(0, 1fr);
-  }
-  .ag-osum__total {
-    grid-column: 2;
-    justify-content: start;
+  .ag-osum__main {
+    flex-basis: 100%;
   }
 }
 
@@ -534,6 +530,46 @@ html {
     align-items: flex-start;
     text-align: start;
     margin-block-start: 0;
+  }
+}
+
+.vf-bag-card-editor--compact .vf-bag-card-edit {
+  display: none;
+}
+
+@media (width < 768px) {
+  .vf-bag-days .ag-choices {
+    display: flex;
+    overflow-x: auto;
+    /* Keep React Aria's positioned radio inputs inside the scrolling region. */
+    position: relative;
+    /* Make room for the focus ring, including at both ends of the strip. */
+    padding: var(--space-2);
+    scroll-padding-inline: var(--space-2);
+  }
+  .vf-bag-days .ag-choice {
+    /* Leave part of the next tile visible at common phone widths. */
+    flex: 0 0 96px;
+  }
+
+  .vf-bag-card-editor--compact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .vf-bag-card-editor--compact .ag-field {
+    flex: 1;
+    min-inline-size: 0;
+  }
+  .vf-bag-card-editor--compact .vf-bag-card-edit {
+    display: inline-flex;
+  }
+  .vf-bag-card-editor--compact:not(:focus-within) textarea {
+    block-size: calc(1em * var(--lh-body));
+    min-block-size: 0;
+    padding-block: 0;
+    resize: none;
+    overflow: hidden;
   }
 }
 

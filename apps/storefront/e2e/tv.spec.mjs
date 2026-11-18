@@ -130,8 +130,10 @@ for (const lang of LANGS) {
   test(`narrow TV summaries keep codes and amounts readable (${lang})`, async ({page}) => {
     await page.setViewportSize({width: 1280, height: 720});
     await openSite(page, 'bag', lang, {tv: '1', step: 'delivery'});
-    const lines = page.locator('.vf-bag-summary .ag-osum__line');
-    expect(await lines.count()).toBeGreaterThan(0);
+    const summary = page.locator('.vf-bag-summary');
+    await summary.locator('.ag-osum__items > summary').click();
+    const lines = summary.locator('.ag-osum__line');
+    await expect(lines.first()).toBeVisible();
     for (const line of await lines.all()) {
       const measured = await line.evaluate(element => {
         const name = element.querySelector('.ag-osum__name');

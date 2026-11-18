@@ -34,25 +34,37 @@ export function StorefrontBagCards({labels, notice, lines}) {
           }
         />
       )}
-      {lines.map((c, $index) => (
-        <React.Fragment key={$index}>
-          <div className="vf-bag-card">
-            {c?.hasCard ? (
-              <>
+      {lines.map((c, index) => {
+        const compact = c?.hasCard && labels.edit && c.value?.trim() && !c.error;
+        return (
+          <div className="vf-bag-card" key={c.id ?? index}>
+            {c?.hasCard && (
+              <div className={compact ? 'vf-bag-card-editor--compact' : undefined}>
                 <DS.Input
-                  id={c?.id}
-                  value={c?.value}
-                  onChange={c?.setCard}
-                  error={c?.error}
+                  id={c.id}
+                  value={c.value}
+                  onChange={c.setCard}
+                  error={c.error}
                   required={true}
                   maxLength={200}
-                  label={c?.label}
-                  hint={c?.detail}
+                  label={c.label}
+                  hint={c.detail}
                   multiline={true}
                   rows={3}
                 />
-              </>
-            ) : null}
+                {compact && (
+                  <DS.Button
+                    className="vf-bag-card-edit"
+                    variant="ghost"
+                    size="sm"
+                    aria-label={labels.edit + ' ' + c.label}
+                    onClick={() => document.getElementById(c.id)?.focus()}
+                  >
+                    {labels.edit}
+                  </DS.Button>
+                )}
+              </div>
+            )}
             {c?.noCard ? (
               <>
                 <div className="tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-2 tw:[border-top:1px_solid_var(--border-subtle)]">
@@ -78,8 +90,8 @@ export function StorefrontBagCards({labels, notice, lines}) {
               </>
             ) : null}
           </div>
-        </React.Fragment>
-      ))}
+        );
+      })}
     </section>
   );
 }

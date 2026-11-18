@@ -1,19 +1,26 @@
 // The storefront's service worker, registered by the counter presentation (shared/services/offline.js) so
 // the shop's tablet keeps working when the Wi-Fi drops: pages and the public catalog reads come from
-// the network first and from the cache when it is out; the app's files and photos come from the
-// cache first (their names change with their content) and are fetched once. Nothing personal is
-// kept: other API reads (a signed-in customer's lists, orders, account) always go to the network.
+// the network first and from the cache when it is out. Hashed build assets are cached once.
+// Fixed URLs, including photos, are served from cache while the network copy is revalidated.
+// Other API reads (a signed-in customer's lists, orders, account) always go to the network.
 // Other sites (map tiles, WhatsApp) are left alone. Copied next to the built app by the Vite config.
 const sw = /** @type {any} */ (self);
 // Every address under the app serves the same page, so one copy of it answers them all offline;
 // files and photos are kept up to FILES_MAX, the oldest let go first, so a tablet that runs for months doesn't fill up.
 const SCOPE = new URL(sw.registration.scope).pathname;
+const ROOT = new URL('../../../', sw.location.href).pathname;
 const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
 const PAGES = CACHE_PREFIX + '-pages-v4';
-const FILES = CACHE_PREFIX + '-files-v3';
+const FILES = CACHE_PREFIX + '-files-v4';
 const FILES_MAX = 400;
 let protectedFiles = new Set();
 const API_PUBLIC = /^\/api\/catalog\//;
+const FILE = /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/i;
+const PHOTO = /\.(svg|png|jpe?g|webp|avif)$/i;
+const immutable = url =>
+  url.pathname.startsWith(ROOT + 'assets/hashed/') && /-[\w-]{8}\.[\w]+$/.test(url.pathname);
+const noStore = response =>
+  /(?:^|,)\s*no-store\s*(?:,|$)/i.test(response.headers.get('Cache-Control') || '');
 
 sw.addEventListener('install', () => sw.skipWaiting());
 sw.addEventListener('activate', (/** @type {any} */ event) =>
@@ -52,13 +59,37 @@ const trim = async cache => {
       .map(key => cache.delete(key))
   );
 };
-const fromCache = async request => {
-  const cache = await caches.open(FILES);
-  const cached = await cache.match(request, {ignoreVary: true});
-  if (cached) return cached;
-  const response = await fetch(request);
-  if (response.ok) cache.put(request, response.clone()).then(() => trim(cache));
-  return response;
+const fromFiles = (event, request, url) => {
+  // A seller-triggered refresh changes the image URL in the document to bypass its decoded
+  // image cache. The worker still uses the original URL for HTTP validation and offline access.
+  const original = PHOTO.test(url.pathname)
+    ? request.url.replace(/[?&]vf-photo-revision=\d+$/, '')
+    : request.url;
+  const key = original === request.url ? request : original;
+  const hashed = immutable(url);
+  const cache = caches.open(FILES);
+  const cached = cache.then(store => store.match(key, {ignoreVary: true}));
+  // Let the HTTP cache validate with ETag/Last-Modified even while its copy is fresh.
+  const update = cached.then(stored =>
+    stored && hashed ? null : fetch(key, {cache: hashed ? 'default' : 'no-cache'})
+  );
+  event.waitUntil(
+    update
+      .then(async response => {
+        if (!response) return;
+        if (noStore(response)) {
+          await (await cache).delete(key);
+          return;
+        }
+        if (!response.ok || response.status === 206) return;
+        const copy = response.clone();
+        const store = await cache;
+        await store.put(key, copy);
+        await trim(store);
+      })
+      .catch(() => {})
+  );
+  event.respondWith(cached.then(stored => stored || update));
 };
 
 sw.addEventListener('fetch', (/** @type {any} */ event) => {
@@ -74,8 +105,7 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
     );
   else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
   else if (url.pathname.startsWith('/api/')) return;
-  else if (/\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))
-    event.respondWith(fromCache(request));
+  else if (FILE.test(url.pathname)) fromFiles(event, request, url);
 });
 
 // Cache hashed app assets from the build manifest and explicit product photos. Never cache a
@@ -95,7 +125,6 @@ sw.addEventListener('message', event => {
           return response.json();
         });
         const app = new URL('./', sw.location.href);
-        const root = new URL('../../../', sw.location.href).pathname;
         if (
           (event.data.urls || []).some(
             value => new URL(value, sw.location.href).origin !== sw.location.origin
@@ -109,9 +138,9 @@ sw.addEventListener('message', event => {
           .filter(
             url =>
               url.origin === sw.location.origin &&
-              url.pathname.startsWith(root) &&
-              (url.pathname === app.pathname ||
-                /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/.test(url.pathname))
+              url.pathname.startsWith(ROOT) &&
+              !url.pathname.startsWith('/api/') &&
+              (url.pathname === app.pathname || FILE.test(url.pathname))
           );
         total = urls.length;
         if (total > FILES_MAX) throw new Error('collection-too-large');
@@ -119,9 +148,12 @@ sw.addEventListener('message', event => {
         for (const url of urls) {
           const cache = await caches.open(url.pathname === app.pathname ? PAGES : FILES);
           const key = url.origin + url.pathname + (url.pathname === app.pathname ? '' : url.search);
-          const immutable = /-[\w-]{8}\.(js|css|woff2?)$/.test(url.pathname);
-          let response = immutable ? await cache.match(key, {ignoreVary: true}) : null;
-          if (!response) response = await fetch(url.href, {cache: 'reload'});
+          let response = immutable(url) ? await cache.match(key, {ignoreVary: true}) : null;
+          if (!response) response = await fetch(url.href, {cache: 'no-cache'});
+          if (noStore(response)) {
+            await cache.delete(key);
+            throw new Error('not-cacheable');
+          }
           if (!response.ok) throw new Error('asset');
           await cache.put(key, response.clone());
           completed++;

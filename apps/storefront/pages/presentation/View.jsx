@@ -16,15 +16,37 @@ import {StorefrontPresentationSettings} from '../../app/organisms/StorefrontPres
 import {StorefrontPresentationTools} from '../../app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx';
 import {StorefrontPresentationLabel} from '../../app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx';
 import {Shell} from '../../app/Shell.jsx';
-import {vfKeepOffline} from '../../shared/services/offline.js';
+import {
+  vfKeepOffline,
+  vfOfflinePhotoUrls,
+  vfVersionOfflinePhoto
+} from '../../shared/services/offline.js';
 
 export function View({v}) {
   const [offline, setOffline] = React.useState({status: 'preparing', completed: 0, total: 0});
-  const offlineUrls = v.offlineUrls.join('\n');
+  const [refresh, setRefresh] = React.useState(null);
+  const [photoVersion, setPhotoVersion] = React.useState(null);
+  const applyPhotoRefresh = React.useEffectEvent(version => {
+    if (!version || version === photoVersion) return;
+    v.retryDisplay();
+    setPhotoVersion(version);
+  });
+  const offlineUrls = [...new Set(v.offlinePhotos.flatMap(vfOfflinePhotoUrls))].join('\n');
   React.useEffect(
-    () => vfKeepOffline(offlineUrls.split('\n').filter(Boolean), setOffline),
-    [offlineUrls]
+    () =>
+      vfKeepOffline(offlineUrls.split('\n').filter(Boolean), state => {
+        setOffline(state);
+        if (state.status === 'ready') applyPhotoRefresh(refresh);
+      }),
+    [offlineUrls, refresh]
   );
+  const versionPhotos = products =>
+    photoVersion
+      ? products.map(product => ({
+          ...product,
+          image: vfVersionOfflinePhoto(product.image, photoVersion)
+        }))
+      : products;
   return (
     <Shell
       v={v}
@@ -90,9 +112,9 @@ export function View({v}) {
                 <StorefrontPresentationDisplay
                   mode={v.displayMode}
                   direction={v.dir}
-                  products={v.displayProducts}
+                  products={versionPhotos(v.displayProducts)}
                   hasCurrentProduct={!!v.displayProduct}
-                  preloadProducts={v.preloadProducts}
+                  preloadProducts={versionPhotos(v.preloadProducts)}
                   preloadVersion={v.preloadVersion}
                   captionMode={v.captionMode}
                   showPrices={v.showPrices}
@@ -126,6 +148,7 @@ export function View({v}) {
                     stockIssue: v.t.stockIssue,
                     stockUpdated: v.t.stockUpdated,
                     retryPhotos: v.t.retryPhotos,
+                    refreshPhotos: v.t.refreshPhotos,
                     setupIntro: v.t.setupIntro,
                     setupTitle: v.t.setupTitle,
                     reviewSetup: v.t.reviewSetup,
@@ -162,6 +185,14 @@ export function View({v}) {
                   scan={v.canScan ? {label: v.t.scan, onClick: v.openScan} : null}
                   startOver={v.canStartOver ? {label: v.t.startOver, onClick: v.startOver} : null}
                   onRetryPhotos={v.retryDisplay}
+                  onRefreshPhotos={
+                    offline.status === 'unsupported'
+                      ? undefined
+                      : () => {
+                          setOffline({status: 'preparing', completed: 0, total: 0});
+                          setRefresh({base: location.href, revision: Date.now()});
+                        }
+                  }
                   onBrowse={v.browse}
                   onSettings={v.openSettings}
                 />
