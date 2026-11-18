@@ -1,12 +1,14 @@
 // The migration must not let a low-level component depend on page data or higher-level UI.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const os = require('node:os');
-const {spawnSync} = require('node:child_process');
-const {parseSync} = require('rolldown/experimental');
-const {levels, layer, dependencyViolation} = require('../../../tools/atomic.cjs');
-const repo = path.resolve(__dirname, '../../..');
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {parseSync} from 'rolldown/experimental';
+import {levels, layer, dependencyViolation} from '../../../tools/atomic.mjs';
+import organismsWithoutSpecs from './organisms-without-specs.json' with {type: 'json'};
+
+const repo = path.resolve(import.meta.dirname, '../../..');
 
 assert.equal(
   dependencyViolation(
@@ -100,7 +102,7 @@ assert.deepEqual(violations, [], 'Atomic Design dependency violations');
 // <Name>.fixture.jsx, run by the storefront-components project). Every new organism has them; the
 // organisms that predate this rule are listed in organisms-without-specs.json, which only shrinks.
 const appUi = path.join(repo, 'apps/storefront/app');
-const grandfathered = new Set(require('./organisms-without-specs.json'));
+const grandfathered = new Set(organismsWithoutSpecs);
 for (const level of ['molecules', 'organisms', 'layouts']) {
   for (const name of fs.readdirSync(path.join(appUi, level))) {
     const base = path.join(appUi, level, name, name);
@@ -136,9 +138,9 @@ const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-atomic-'));
 try {
   for (const file of [
     '.prettierrc.json',
-    'tools/new-component.cjs',
-    'tools/atomic.cjs',
-    'tools/paths.cjs',
+    'tools/new-component.mjs',
+    'tools/atomic.mjs',
+    'tools/paths.mjs',
     'apps/storefront/app/ds.js',
     'packages/design-system/components/index.css',
     'packages/design-system/components/utils/messages.d.ts'
@@ -149,7 +151,7 @@ try {
   }
   fs.symlinkSync(path.join(repo, 'node_modules'), path.join(temporary, 'node_modules'), 'dir');
   const generate = (...args) =>
-    spawnSync(process.execPath, [path.join(temporary, 'tools/new-component.cjs'), ...args], {
+    spawnSync(process.execPath, [path.join(temporary, 'tools/new-component.mjs'), ...args], {
       encoding: 'utf8'
     });
   assert.notEqual(generate('Sample').status, 0, 'a layer is required');

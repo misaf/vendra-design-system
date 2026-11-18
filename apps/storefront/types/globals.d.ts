@@ -1,7 +1,7 @@
 // Globals the shared storefront logic reads but does not declare itself.
 // Type-checked with `npm --prefix apps/storefront run typecheck`; nothing here ships to the browser.
 // The integrations and page-wide state are not globals: modules import vfRuntime from
-// shared/platform/runtime.js. tools/app-dependencies.cjs fails any window.VF_* or window.AG_* access.
+// shared/platform/runtime.js. tools/app-dependencies.mjs fails any window.VF_* or window.AG_* access.
 
 interface Window {
   // The runtime, exposed by app/runtime.js for tests and QA only; storefront code never reads it.

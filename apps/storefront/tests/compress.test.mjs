@@ -4,13 +4,14 @@
 // content-hashed folder forever.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import {fileURLToPath} from 'node:url';
 import {precompress, MIN_SIZE} from '../build/compress.mjs';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const outDir = fs.mkdtempSync(path.join(templates, '../../node_modules/.vite/compress-test-'));
+const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-compress-test-'));
 try {
   const text = 'export const words = ' + JSON.stringify('flower '.repeat(MIN_SIZE)) + ';\n';
   const files = {
