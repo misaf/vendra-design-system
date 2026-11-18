@@ -35,6 +35,13 @@ export const VF_SHELL = {
     langL: 'Language',
     faq: 'FAQ',
     help: 'Help',
+    backToBag: 'Back to bag',
+    leaveCheckout: {
+      title: 'Leave checkout?',
+      body: 'You’ll return to the storefront home page.',
+      stay: 'Stay in checkout',
+      confirm: 'Go to home'
+    },
     balanceDiscount: 'Balance discount · {percent}%',
     footer: {
       shop: 'Shop',
@@ -98,6 +105,13 @@ export const VF_SHELL = {
     langL: 'زبان',
     faq: 'پرسش‌های متداول',
     help: 'راهنما',
+    backToBag: 'بازگشت به سبد',
+    leaveCheckout: {
+      title: 'از فرایند خرید خارج می‌شوید؟',
+      body: 'به صفحهٔ اصلی فروشگاه برمی‌گردید.',
+      stay: 'ادامهٔ خرید',
+      confirm: 'رفتن به صفحهٔ اصلی'
+    },
     balanceDiscount: 'تخفیف کیف پول، ٪{percent}',
     footer: {
       shop: 'فروشگاه',

@@ -37,7 +37,10 @@ for (const lang of ['en', 'fa']) {
     await edit.focus();
     await expect(edit).toBeFocused();
     expect((await edit.boundingBox()).height).toBeGreaterThanOrEqual(44);
-    await edit.press('Enter');
+    const headerBack = page.getByRole('banner').getByRole('link', {
+      name: fa ? 'بازگشت به ارسال' : 'Back to delivery'
+    });
+    await headerBack.press('Enter');
     await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
     await expect(page.locator('#vf-address')).toHaveValue('Plaque 12, unit 3');
     await page.locator('#vf-name').fill('Mina Ahmadi');

@@ -624,6 +624,7 @@ test('an online payment goes to the bank and comes back paid', async ({page}) =>
     .first()
     .click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('Taking you to the bank');
+  await expect(page.locator('.ag-announce, .ag-tabbar')).toHaveCount(0);
   await expect(page.locator('.vf-mobile-action')).toBeHidden();
   // The browser leaves for the bank, which sends it back to checkout with its answer. PaymentStatus
   // waits 1.5s before it leaves, then a full page load follows: more than the default 5s under load.
@@ -656,6 +657,8 @@ test('a payment the bank refuses keeps the bag and can be paid again', async ({p
   await refusedReturn;
   const heading = page.getByRole('heading', {level: 1});
   await expect(heading).toHaveText('The payment didn’t go through');
+  await expect(page.locator('.ag-announce, .ag-tabbar')).toHaveCount(0);
+  await expect(page.getByRole('banner').getByRole('link', {name: 'Back to bag'})).toBeVisible();
   // The bank's answer takes focus, so a screen reader reads it.
   await expect(heading).toBeFocused();
   await expect(page.locator('main')).toContainText('within 72 hours');

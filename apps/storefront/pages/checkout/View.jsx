@@ -19,6 +19,12 @@ export function View({v}) {
   return (
     <Shell
       v={v}
+      enclosedCheckout={{
+        back: v.paying
+          ? {href: v.backHref, label: v.t?.back, onClick: v.goBack}
+          : {href: v.href?.bag, label: v.shellText?.backToBag},
+        confirmLeave: !v.done && !!(v.bagCount || v.bankTrip)
+      }}
       content={
         <StorefrontCheckoutLayout
           showPayment={v.paying}

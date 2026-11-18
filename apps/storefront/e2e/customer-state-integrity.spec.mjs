@@ -318,6 +318,7 @@ for (const lang of ['en', 'fa']) {
         .click();
       expect(await firstButton.evaluate(button => button.isConnected)).toBe(false);
       await page
+        .getByRole('banner')
         .getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true})
         .click();
       await page
@@ -403,7 +404,10 @@ for (const lang of ['en', 'fa']) {
     await page
       .getByRole('link', {name: fa ? 'ویرایش اطلاعات ارسال' : 'Edit delivery details', exact: true})
       .click();
-    await page.getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true}).click();
+    await page
+      .getByRole('banner')
+      .getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true})
+      .click();
     await page
       .locator('.vf-bag-line')
       .first()
