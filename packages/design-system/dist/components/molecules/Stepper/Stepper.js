@@ -7,8 +7,9 @@ import { cx } from "../../utils/cx.js";
 const defaultCaption = (number, total, label) => "Step " + number + " of " + total + " · " + label;
 // Checkout progress as an ordered list; done steps can be revisited with `onStepClick`.
 // `compact` (phones) shows only the dots plus a "Step 2 of 3 · Label" caption.
-export function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (number) => String(number), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "", ref }) {
+export function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (number) => String(number), doneLabel, label, compact = false, captionFormat = defaultCaption, className = "", ref, ...rest }) {
 	const list = /* @__PURE__ */ React.createElement("ol", {
+		...compact ? undefined : rest,
 		ref: compact ? undefined : ref,
 		"aria-label": label,
 		className: cx("ag-steps", compact && "ag-steps--compact", !compact && className)
@@ -34,6 +35,7 @@ export function Stepper({ steps = [], current = 0, onStepClick, formatNumber = (
 	const currentIndex = Math.min(Math.max(current, 0), steps.length - 1);
 	const currentStep = steps[currentIndex];
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		className: cx("ag-steps-wrap", className)
 	}, list, currentStep && /* @__PURE__ */ React.createElement("p", {

@@ -1,4 +1,6 @@
-export interface RangeSliderProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface RangeSliderProps extends AriaWidgetAttributes<HTMLDivElement> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** true (default) = two handles with value [lo, hi]; false = one handle with a number */

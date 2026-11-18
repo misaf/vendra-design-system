@@ -1,10 +1,15 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface ErrorSummaryError {
   /** What to fix, as the field's own error says it (it may name the field: "Card for Rosa: …") */
   text: React.ReactNode;
   /** The id of the field (or of a group or map holding it); the link goes there and focuses it */
   target: string;
 }
-export interface ErrorSummaryProps {
+export interface ErrorSummaryProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'title' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** In form order. Nothing renders without any */

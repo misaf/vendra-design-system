@@ -29,7 +29,8 @@ export function LocationPicker({
   compact = false,
   className,
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const box = React.useRef(null);
   const map = React.useRef(null);
@@ -103,6 +104,7 @@ export function LocationPicker({
 
   return (
     <div
+      {...rest}
       ref={ref}
       className={cx('ag-location', compact && 'ag-location--compact', className)}
       style={style}

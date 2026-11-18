@@ -43,6 +43,7 @@ export function Icon({
   const length = typeof size === 'number' ? `calc(${size}px * var(--size-scale, 1))` : size;
   return (
     <span
+      {...rest}
       role={label ? 'img' : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
@@ -57,7 +58,6 @@ export function Icon({
         mask: mask ? mask + ' center/contain no-repeat' : undefined,
         ...style
       }}
-      {...rest}
     ></span>
   );
 }

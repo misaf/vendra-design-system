@@ -42,7 +42,8 @@ export function PaymentStatus({
   children,
   className,
   style,
-  ref
+  ref,
+  ...rest
 }) {
   // The wording follows the nearest lang, as the page around it is written.
   const {locale, ref: rootRef} = usePageLocale();
@@ -124,6 +125,7 @@ export function PaymentStatus({
 
   return (
     <div
+      {...rest}
       ref={mergedRef}
       className={cx('ag-payment-status', 'ag-payment-status--' + status, className)}
       style={style}

@@ -1,4 +1,6 @@
-export interface TrustSealProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface TrustSealProps extends Omit<RootAttributes<HTMLAnchorElement>, 'children'> {
   /** The link. */
   ref?: React.Ref<HTMLAnchorElement>;
   /** Which seal: its name comes from messages (eNamad, Samandehi) unless `label` is given */

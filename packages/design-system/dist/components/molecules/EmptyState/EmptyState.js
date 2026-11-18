@@ -5,9 +5,10 @@ import { Icon } from "../../atoms/Icon/Icon.js";
 import { cx } from "../../utils/cx.js";
 // An empty or finished state: icon disc, eyebrow, title (with an italic `titleAccent` line), body
 // and actions. `icon` is a Lucide name or any node.
-export function EmptyState({ icon, tone = "neutral", eyebrow, title, titleAccent, body, actions, headingLevel = 2, className = "", style, ref }) {
+export function EmptyState({ icon, tone = "neutral", eyebrow, title, titleAccent, body, actions, headingLevel = 2, className = "", style, ref, ...rest }) {
 	const Heading = "h" + headingLevel;
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		className: cx("ag-empty", className),
 		style

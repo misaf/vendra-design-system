@@ -1,10 +1,12 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface DetailListRow {
   /** Lucide icon name, decorative */ icon?: string;
   label: React.ReactNode;
   value: React.ReactNode;
 }
-export interface DetailListProps {
+export interface DetailListProps extends Omit<RootAttributes<HTMLDListElement>, 'children'> {
   /** The dl. */
   ref?: React.Ref<HTMLDListElement>;
   rows: (DetailListRow | null | false)[];

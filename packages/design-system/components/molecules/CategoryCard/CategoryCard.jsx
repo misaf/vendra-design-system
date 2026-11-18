@@ -17,7 +17,8 @@ export function CategoryCard({
   onClick,
   href,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   const inner = (
     <>
@@ -41,6 +42,7 @@ export function CategoryCard({
   if (href)
     return (
       <Link
+        {...rest}
         ref={ref}
         href={href}
         className={cx('ag-cat', 'ag-cat--' + frame, className)}
@@ -50,7 +52,12 @@ export function CategoryCard({
       </Link>
     );
   return (
-    <Button ref={ref} className={cx('ag-cat', 'ag-cat--' + frame, className)} onClick={onClick}>
+    <Button
+      {...rest}
+      ref={ref}
+      className={cx('ag-cat', 'ag-cat--' + frame, className)}
+      onClick={onClick}
+    >
       {inner}
     </Button>
   );

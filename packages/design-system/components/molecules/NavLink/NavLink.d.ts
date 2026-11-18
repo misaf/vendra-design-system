@@ -1,4 +1,6 @@
-export interface NavLinkProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface NavLinkProps extends AriaWidgetAttributes<HTMLAnchorElement | HTMLButtonElement> {
   /** The link, or the button without `href`. */
   ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Renders <a> when set, otherwise <button> */

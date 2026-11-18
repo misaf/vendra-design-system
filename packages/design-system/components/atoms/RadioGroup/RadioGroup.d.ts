@@ -1,4 +1,6 @@
-export interface RadioGroupProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface RadioGroupProps extends Omit<RootAttributes<HTMLElement>, 'onChange'> {
   /** The outer element (a fieldset with `legend`). */
   ref?: React.Ref<HTMLElement>;
   /** aria-label (or use labelledBy) */

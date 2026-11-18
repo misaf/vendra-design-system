@@ -8,7 +8,7 @@ import { messages } from "./messages.js";
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
 // Card-to-card transfer details: the card number in groups of four (always LTR) with a copy
 // button, then holder, bank and amount. Persian digits in `cardNumber` are accepted.
-export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onCopy, className = "", ref }) {
+export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onCopy, className = "", ref, ...rest }) {
 	const text = useMessages("PaymentCard", messages, labels);
 	const digits = String(cardNumber).replace(/[۰-۹]/g, (digit) => FA_DIGITS.indexOf(digit)).replace(/\D/g, "");
 	const grouped = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -51,6 +51,7 @@ export function PaymentCard({ cardNumber = "", holder, bank, amount, labels, onC
 		]
 	].filter(([, value]) => value);
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		className: cx("ag-pay", className)
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__row" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__cardcol" }, /* @__PURE__ */ React.createElement("div", { className: "ag-pay__k" }, text.card), /* @__PURE__ */ React.createElement("div", {

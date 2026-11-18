@@ -6,10 +6,11 @@ import { Icon } from "../../atoms/Icon/Icon.js";
 import { cx } from "../../utils/cx.js";
 // The phone tab bar. Items with `href` are React Aria links (aria-current="page" when current); the rest
 // are React Aria buttons. `count` shows a badge on the icon.
-export function BottomTabBar({ items = [], label, className = "", ref }) {
+export function BottomTabBar({ items = [], label, className = "", ref, ...rest }) {
 	return /* @__PURE__ */ React.createElement("nav", {
+		...rest,
 		ref,
-		"aria-label": label,
+		"aria-label": label ?? rest["aria-label"],
 		className: cx("ag-tabbar", className)
 	}, /* @__PURE__ */ React.createElement("ul", { className: "ag-tabbar__list" }, items.map((item) => {
 		const classes = cx("ag-tabbar__item", item.current && "ag-tabbar__item--current");

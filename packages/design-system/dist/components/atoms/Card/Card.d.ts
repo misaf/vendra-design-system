@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement>, DataAttributes {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** default = warm white + hairline; sunken = linen fill; raised = soft shadow */

@@ -1,9 +1,14 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface AccordionItem {
   id: string;
   title: React.ReactNode;
   /** Plain strings keep line breaks (pre-line) */ content: React.ReactNode;
 }
-export interface AccordionProps {
+export interface AccordionProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'defaultValue' | 'onChange' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   items: AccordionItem[];

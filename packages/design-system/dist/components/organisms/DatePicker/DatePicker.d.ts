@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface YearlyDate {
   cal: 'j' | 'g';
   m: number;
@@ -19,7 +21,10 @@ export interface DatePickerLabels {
   next?: string;
   /** "That’s {date}" · fa «برابر با {date}» */ equivalent?: string;
 }
-export interface DatePickerProps {
+export interface DatePickerProps extends Omit<
+  RootAttributes<HTMLFieldSetElement>,
+  'onChange' | 'children'
+> {
   /** The fieldset. */
   ref?: React.Ref<HTMLFieldSetElement>;
   label?: string;

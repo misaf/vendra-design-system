@@ -1,5 +1,10 @@
 import * as React from 'react';
-export interface PaymentCardProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface PaymentCardProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'children' | 'onCopy'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Raw digits (Latin or Persian); grouped in 4s, always LTR */

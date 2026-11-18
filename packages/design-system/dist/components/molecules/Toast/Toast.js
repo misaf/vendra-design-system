@@ -4,6 +4,7 @@ import React from "react";
 import { Button as AriaButton, Text, UNSTABLE_Toast as AriaToast, UNSTABLE_ToastContent as ToastContent, UNSTABLE_ToastStateContext as ToastStateContext } from "react-aria-components";
 import { Icon } from "../../atoms/Icon/Icon.js";
 import { Button } from "../../atoms/Button/Button.js";
+import { cx } from "../../utils/cx.js";
 import { useMessages } from "../../utils/messages.js";
 import { messages } from "./messages.js";
 const ICONS = {
@@ -14,21 +15,28 @@ const ICONS = {
 	danger: "circle-alert"
 };
 // What a toast shows: tone icon, title, message, the follow-up action and React Aria's close button.
-function ToastBody({ toast, tone = "success", title, message, action, closeLabel, closable, style, ref }) {
+function ToastBody({ toast, tone = "success", title, message, action, closeLabel, closable, style, className, "aria-labelledby": labelledBy, "aria-describedby": describedBy, ref, ...rest }) {
+	const titleId = React.useId();
+	const messageId = React.useId();
 	return /* @__PURE__ */ React.createElement(AriaToast, {
+		...rest,
 		ref,
 		toast,
-		className: "ag-toast",
-		style
+		className: cx("ag-toast", className),
+		style,
+		"aria-labelledby": cx(titleId, labelledBy),
+		"aria-describedby": cx(message && messageId, describedBy) || undefined
 	}, /* @__PURE__ */ React.createElement(Icon, {
 		name: ICONS[tone],
 		size: 20,
 		className: "ag-toast__icon--" + tone
 	}), /* @__PURE__ */ React.createElement(ToastContent, { className: "ag-toast__body" }, /* @__PURE__ */ React.createElement(Text, {
+		id: titleId,
 		slot: "title",
 		elementType: "div",
 		className: "ag-toast__title"
 	}, title), message && /* @__PURE__ */ React.createElement(Text, {
+		id: messageId,
 		slot: "description",
 		elementType: "div",
 		className: "ag-toast__msg"
@@ -50,7 +58,7 @@ function ToastBody({ toast, tone = "success", title, message, action, closeLabel
 // A toast on React Aria (role="alertdialog", its text in an atomic alert). Inside a ToastRegion it
 // shows a queued `toast`; on its own it renders in place (previews, pages that place it themselves)
 // and onClose is what its close button does.
-export function Toast({ toast: queued, tone, title, message, action, onClose, closeLabel, style, ref }) {
+export function Toast({ toast: queued, tone, title, message, action, onClose, closeLabel, style, className, ref, ...rest }) {
 	const text = useMessages("Toast", messages, { close: closeLabel });
 	const key = React.useId();
 	const latestClose = React.useRef(onClose);
@@ -67,26 +75,18 @@ export function Toast({ toast: queued, tone, title, message, action, onClose, cl
 		pauseAll() {},
 		resumeAll() {}
 	}), [key, toast]);
-	if (queued) return /* @__PURE__ */ React.createElement(ToastBody, {
-		toast: queued,
+	const body = /* @__PURE__ */ React.createElement(ToastBody, {
+		...rest,
+		toast: queued ?? toast,
 		tone,
 		title,
 		message,
 		action,
 		closeLabel: text.close,
-		closable: true,
+		closable: !!(queued || onClose),
+		className,
 		style,
 		ref
 	});
-	return /* @__PURE__ */ React.createElement(ToastStateContext.Provider, { value: state }, /* @__PURE__ */ React.createElement(ToastBody, {
-		toast,
-		tone,
-		title,
-		message,
-		action,
-		closeLabel: text.close,
-		closable: !!onClose,
-		style,
-		ref
-	}));
+	return queued ? body : /* @__PURE__ */ React.createElement(ToastStateContext.Provider, { value: state }, body);
 }

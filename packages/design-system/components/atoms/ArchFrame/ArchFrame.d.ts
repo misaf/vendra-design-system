@@ -1,6 +1,8 @@
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../Picture/Picture.js';
 
-export interface ArchFrameProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ArchFrameProps extends React.HTMLAttributes<HTMLDivElement>, DataAttributes {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** A URL or a photo object with srcSet, AVIF/WebP sources and a placeholder (see Picture) */

@@ -25,12 +25,14 @@ export function Alert({
   closeLabel,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('Alert', messages, {close: closeLabel});
   const role = tone === 'danger' || tone === 'warning' ? 'alert' : 'status';
   return (
     <div
+      {...rest}
       ref={ref}
       role={role}
       className={cx('ag-alert', 'ag-alert--' + tone, className)}

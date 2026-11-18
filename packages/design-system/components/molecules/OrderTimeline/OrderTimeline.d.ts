@@ -1,8 +1,10 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface OrderTimelineStep {
   label: React.ReactNode;
   /** Pre-localized, e.g. "09:12" / "۰۹:۱۲" */ time?: React.ReactNode;
 }
-export interface OrderTimelineProps {
+export interface OrderTimelineProps extends Omit<RootAttributes<HTMLOListElement>, 'children'> {
   /** The ol. */
   ref?: React.Ref<HTMLOListElement>;
   steps: OrderTimelineStep[];

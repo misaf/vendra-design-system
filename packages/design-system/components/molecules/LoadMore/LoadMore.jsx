@@ -16,11 +16,12 @@ export function LoadMore({
   busy = false,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const percent = total > 0 ? Math.min(100, Math.round((shown / total) * 100)) : 100;
   return (
-    <div ref={ref} className={cx('ag-loadmore', className)} style={style}>
+    <div {...rest} ref={ref} className={cx('ag-loadmore', className)} style={style}>
       <p className="ag-loadmore__status" role="status">
         {status}
       </p>

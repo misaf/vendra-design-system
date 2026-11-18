@@ -11,7 +11,7 @@ import { maps } from "../../utils/maps.js";
 // Leaflet comes from `loadLeaflet()` (the app decides how to load it) and is only created in the
 // browser, so the component renders on the server. When it can't load, `onFail` lets the page offer
 // a typed address instead.
-export function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet, tiles, center, zoom = 13, pinZoom = 17, locateLabel, onLocateError, onReady, onFail, compact = false, className, style, ref }) {
+export function LocationPicker({ id, label, status, error, value, onChange, loadLeaflet, tiles, center, zoom = 13, pinZoom = 17, locateLabel, onLocateError, onReady, onFail, compact = false, className, style, ref, ...rest }) {
 	const box = React.useRef(null);
 	const map = React.useRef(null);
 	const [locating, setLocating] = React.useState(false);
@@ -78,6 +78,7 @@ export function LocationPicker({ id, label, status, error, value, onChange, load
 		});
 	};
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		className: cx("ag-location", compact && "ag-location--compact", className),
 		style

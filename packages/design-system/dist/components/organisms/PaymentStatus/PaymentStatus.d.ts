@@ -1,8 +1,10 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export type PaymentState =
   'redirecting' | 'verifying' | 'paid' | 'cancelled' | 'failed' | 'pending';
 
-export interface PaymentStatusProps {
+export interface PaymentStatusProps extends RootAttributes<HTMLDivElement> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   status: PaymentState;

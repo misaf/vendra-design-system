@@ -1,8 +1,13 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface LanguageOption {
   id: string;
   label: string;
 }
-export interface LanguageSwitchProps {
+export interface LanguageSwitchProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'onChange' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Current language id, e.g. "en" | "fa" */

@@ -47,7 +47,7 @@ const GREGORIAN_MAX_DAYS = [
 // ("2026-10-08"): React Aria's DatePicker, a typed field (day, month and year segments) with a
 // month grid in a pop-up, both in the chosen calendar. With `yearly` it is a recurring {cal, m, d}
 // with no year, picked from month and day Selects. Under it, the same date in the other calendar.
-export function DatePicker({ label, value, onChange, calendar, onCalendarChange, calendars = ["j", "g"], yearly = false, years = 3, minDate, hint, error, lang: langProp, labels, showEquivalent = true, disabled, id, className = "", style, ref }) {
+export function DatePicker({ label, value, onChange, calendar, onCalendarChange, calendars = ["j", "g"], yearly = false, years = 3, minDate, hint, error, lang: langProp, labels, showEquivalent = true, disabled, id, className = "", style, "aria-describedby": externalDescription, ref, ...rest }) {
 	// Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
 	const appLocale = useLocale().locale;
 	const config = useLocaleConfig(langProp || appLocale);
@@ -165,8 +165,11 @@ export function DatePicker({ label, value, onChange, calendar, onCalendarChange,
 		}).date : dates.toDate(activeCalendar, draft.year, draft.month, draft.day);
 		equivalent = text.equivalent.replace("{date}", dates.fullDate(date, dates.locale(lang, otherCalendar), false));
 	}
-	const describedBy = message ? messageId : undefined;
+	const describedBy = cx(message && messageId, externalDescription) || undefined;
 	return /* @__PURE__ */ React.createElement("fieldset", {
+		...rest,
+		id: yearly ? id : undefined,
+		"aria-describedby": externalDescription,
 		ref,
 		className: cx("ag-fieldset", "ag-date", className),
 		style,

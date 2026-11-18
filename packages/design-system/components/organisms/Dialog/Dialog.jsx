@@ -42,7 +42,11 @@ export function Dialog({
   closeLabel,
   maxWidth,
   placement = 'center',
-  ref
+  className,
+  style,
+  'aria-labelledby': labelledBy,
+  ref,
+  ...rest
 }) {
   const text = useMessages('Dialog', messages, {close: closeLabel});
   const density = useDensity();
@@ -54,8 +58,9 @@ export function Dialog({
     sheet && 'ag-dialog__overlay--sheet'
   );
   const dialogClass = cx('ag-dialog', sheet && 'ag-dialog--sheet');
+  const nameIds = cx(title && titleId, labelledBy) || undefined;
   // A number is the width at the comfortable density; it grows and shrinks with the others.
-  const style = maxWidth
+  const widthStyle = maxWidth
     ? {
         maxWidth:
           typeof maxWidth === 'number' ? `calc(${maxWidth}px * var(--size-scale, 1))` : maxWidth
@@ -67,11 +72,12 @@ export function Dialog({
     return (
       <div className={overlayClass} data-density={density}>
         <div
+          {...rest}
           ref={ref}
           role="dialog"
-          aria-labelledby={title ? titleId : undefined}
-          className={dialogClass}
-          style={style}
+          aria-labelledby={nameIds}
+          className={cx(dialogClass, className)}
+          style={{...widthStyle, ...style}}
         >
           <Content
             title={title}
@@ -95,15 +101,22 @@ export function Dialog({
       className={overlayClass}
       data-density={density}
     >
-      <Modal className={dialogClass} style={style}>
-        <AriaDialog ref={ref} className="ag-dialog__frame">
+      <Modal className={dialogClass} style={widthStyle}>
+        <AriaDialog
+          {...rest}
+          ref={ref}
+          role="dialog"
+          aria-labelledby={nameIds}
+          className={cx('ag-dialog__frame', className)}
+          style={style}
+        >
           <Content
             onClose={onClose}
             closeLabel={text.close}
             footer={footer}
             heading={
               title ? (
-                <Heading slot="title" level={2} className="ag-dialog__title">
+                <Heading slot="title" id={titleId} level={2} className="ag-dialog__title">
                   {title}
                 </Heading>
               ) : null

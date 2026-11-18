@@ -24,11 +24,18 @@ export class ToastQueue extends AriaToastQueue {
 // fixed at the bottom inline-end corner. Each toast is an alertdialog announced as it appears;
 // timers pause while the pointer or focus is on the region. `className` places it (for example
 // above a sticky mobile bar).
-export function ToastRegion({ queue, label, closeLabel, className, ref }) {
+export function ToastRegion({ queue, label, closeLabel, className, "aria-label": ariaLabel, "aria-labelledby": labelledBy, "aria-describedby": describedBy, "aria-details": details, ref, ...rest }) {
 	return /* @__PURE__ */ React.createElement(AriaToastRegion, {
+		...rest,
 		ref,
 		queue,
-		"aria-label": label,
+		"aria-label": label ?? ariaLabel,
+		render: (props) => /* @__PURE__ */ React.createElement("div", {
+			...props,
+			"aria-labelledby": labelledBy,
+			"aria-describedby": describedBy,
+			"aria-details": details
+		}),
 		className: cx("ag-toast-region", className)
 	}, ({ toast }) => /* @__PURE__ */ React.createElement(Toast, {
 		toast,

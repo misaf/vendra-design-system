@@ -16,7 +16,7 @@ import { useMergedRef } from "../../utils/refs.js";
 // once one is applied (the status line is announced). `collapsible` tucks the field behind a
 // "Have a promo code?" disclosure button that opens it and moves focus into it; it opens by itself
 // once there is a code (typed, prefilled from a link or campaign, refused or applied).
-export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, error, applied, onRemove, busy = false, collapsible = false, defaultOpen = false, label, applyLabel, removeLabel, revealLabel, className, style, ref }) {
+export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, error, applied, onRemove, busy = false, collapsible = false, defaultOpen = false, label, applyLabel, removeLabel, revealLabel, className, style, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const text = useMessages("PromoCodeField", messages, {
@@ -72,6 +72,7 @@ export function PromoCodeField({ id = "ag-promo", value, onChange, onApply, erro
 		if (!busy && code.trim()) onApply?.(code.trim());
 	};
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-promo", className),
 		style

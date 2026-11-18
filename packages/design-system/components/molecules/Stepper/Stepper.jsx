@@ -17,10 +17,12 @@ export function Stepper({
   compact = false,
   captionFormat = defaultCaption,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   const list = (
     <ol
+      {...(compact ? undefined : rest)}
       ref={compact ? undefined : ref}
       aria-label={label}
       className={cx('ag-steps', compact && 'ag-steps--compact', !compact && className)}
@@ -64,7 +66,7 @@ export function Stepper({
   const currentIndex = Math.min(Math.max(current, 0), steps.length - 1);
   const currentStep = steps[currentIndex];
   return (
-    <div ref={ref} className={cx('ag-steps-wrap', className)}>
+    <div {...rest} ref={ref} className={cx('ag-steps-wrap', className)}>
       {list}
       {currentStep && (
         <p className="ag-steps__caption" aria-hidden="true">

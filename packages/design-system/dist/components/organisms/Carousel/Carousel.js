@@ -28,7 +28,7 @@ function flattenSnap(children) {
 // A horizontal scroll-snap row. Pass children, or `items` + `renderItem`. With `arrows` it shows
 // its own prev/next buttons; otherwise drive it through `ref` (scrollPrev / scrollNext) and
 // `onScrollStateChange`, e.g. from SectionHeader.
-export function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel, nextLabel, onScrollStateChange, bleed = true, className = "", style, ref }) {
+export function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin = "200px", perView = 5, perViewMobile = 2.3, gap = "16px", label, arrows, prevLabel, nextLabel, onScrollStateChange, bleed = true, className = "", style, ref, ...rest }) {
 	const text = useMessages("Carousel", messages, {
 		previous: prevLabel,
 		next: nextLabel
@@ -98,6 +98,7 @@ export function Carousel({ children, items, renderItem, itemAs = "wrap", itemMin
 	};
 	const itemKey = (item, i) => item && item.id != null ? item.id : i;
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		className: cx("ag-carousel", bleed && "ag-carousel--bleed", itemAs === "contents" && "ag-carousel--contents", className),
 		style: layout
 	}, arrows && /* @__PURE__ */ React.createElement("div", { className: "ag-carousel__nav" }, /* @__PURE__ */ React.createElement(IconButton, {

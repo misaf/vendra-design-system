@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
 /** A photo: a URL, or what commerce.imageFromApi returns for an API Multimedia record. */
 export type Photo =
   | string
@@ -19,10 +21,13 @@ export type Photo =
       crop?: string;
     };
 
-export interface PictureProps extends Omit<
-  React.ImgHTMLAttributes<HTMLImageElement>,
-  'src' | 'srcSet' | 'width' | 'height' | 'loading'
-> {
+export interface PictureProps
+  extends
+    Omit<
+      React.ImgHTMLAttributes<HTMLImageElement>,
+      'src' | 'srcSet' | 'width' | 'height' | 'loading'
+    >,
+    DataAttributes {
   /** The img. */
   ref?: React.Ref<HTMLImageElement>;
   image?: Photo;

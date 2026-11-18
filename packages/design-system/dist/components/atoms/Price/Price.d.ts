@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface PriceProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface PriceProps extends Omit<RootAttributes<HTMLSpanElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLSpanElement>;
   /** The price to pay, formatted by the app: format.money(n, {currency, lang, currencies}) */

@@ -1,9 +1,11 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 import type {Stock} from '../../utils/commerce.js';
 
-export interface ProductCardProps {
+export interface ProductCardProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** petal (default) or product (studio backdrop). */

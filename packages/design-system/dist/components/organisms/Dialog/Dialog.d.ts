@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface DialogProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface DialogProps extends AriaWidgetAttributes<HTMLElement> {
   /** The dialog element (while open). */
   ref?: React.Ref<HTMLElement>;
   open: boolean;

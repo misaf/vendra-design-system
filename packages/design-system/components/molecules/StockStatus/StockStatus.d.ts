@@ -1,6 +1,8 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Stock} from '../../utils/commerce.js';
 
-export interface StockStatusProps {
+export interface StockStatusProps extends Omit<RootAttributes<HTMLSpanElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLSpanElement>;
   /** commerce.stockStatus(product): in, low (with count), soon (with ISO date or null) or out */

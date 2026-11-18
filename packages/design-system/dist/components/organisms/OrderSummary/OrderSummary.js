@@ -7,7 +7,7 @@ import { Price } from "../../atoms/Price/Price.js";
 import { cx } from "../../utils/cx.js";
 // Lines + totals for order pages and confirmations. Card note: italic in EN, upright in FA (CSS).
 // Every amount is a Price, so totals share the product prices' digits and stay whole in RTL.
-export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", itemsDisclosureLabel, className = "", style, ref }) {
+export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", itemsDisclosureLabel, className = "", style, ref, ...rest }) {
 	const Title = titleAs;
 	const items = /* @__PURE__ */ React.createElement("ul", { className: "ag-osum__lines" }, lines.map((line, i) => /* @__PURE__ */ React.createElement("li", {
 		key: i,
@@ -26,6 +26,7 @@ export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", ite
 		className: "ag-osum__total"
 	})))));
 	return /* @__PURE__ */ React.createElement("section", {
+		...rest,
 		ref,
 		className: cx("ag-osum", className),
 		style

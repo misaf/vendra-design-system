@@ -10,17 +10,19 @@ import { useMergedRef } from "../../utils/refs.js";
 // in RTL, following the page's language). Controlled with `value`, or not with `defaultValue`;
 // onChange(value) gets the chosen Radio's value, and `name` is the form field it posts under.
 // `legend` renders <fieldset><legend>; the hint or error sits under the radios (see Field).
-export function RadioGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, required, children, className, style, ref }) {
+export function RadioGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, required, children, className, style, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, "aria-describedby": describedBy, "aria-details": details, ref, ...rest }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
-		error
+		error,
+		describedBy
 	});
 	const legendId = fieldId + "-legend";
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const wrapped = !!(legend || message);
 	const group = /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(AriaRadioGroup, {
+		...!wrapped && rest,
 		ref: wrapped ? undefined : rootRef,
 		id: fieldId,
 		name,
@@ -31,8 +33,9 @@ export function RadioGroup({ label, labelledBy, legend, hint, error, id, name, v
 		isRequired: required,
 		isInvalid: !!error,
 		validationBehavior: "aria",
-		"aria-label": legend ? undefined : label,
-		"aria-labelledby": legend ? legendId : labelledBy,
+		"aria-label": legend ? undefined : label ?? ariaLabel,
+		"aria-labelledby": cx(legend && legendId, labelledBy ?? ariaLabelledBy) || undefined,
+		"aria-details": details,
 		"aria-describedby": controlProps["aria-describedby"],
 		"aria-errormessage": controlProps["aria-errormessage"],
 		className: cx("ag-radios", !wrapped && className),
@@ -44,6 +47,7 @@ export function RadioGroup({ label, labelledBy, legend, hint, error, id, name, v
 		error: !!error
 	}, message);
 	if (legend) return /* @__PURE__ */ React.createElement("fieldset", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-field ag-fieldset", className),
 		style
@@ -52,6 +56,7 @@ export function RadioGroup({ label, labelledBy, legend, hint, error, id, name, v
 		className: "ag-field__label"
 	}, legend), group, messageElement);
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-field", className),
 		style

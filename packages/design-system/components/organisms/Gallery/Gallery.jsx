@@ -15,7 +15,8 @@ export function Gallery({
   slideLabel = (i, n) => i + ' / ' + n,
   onIndexChange,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   const trackRef = React.useRef(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
@@ -36,10 +37,11 @@ export function Gallery({
   };
   return (
     <div
+      {...rest}
       ref={ref}
       role="region"
       aria-roledescription="carousel"
-      aria-label={label}
+      aria-label={label ?? rest['aria-label']}
       className={cx('ag-gallery', className)}
     >
       <div

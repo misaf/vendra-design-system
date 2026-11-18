@@ -14,7 +14,8 @@ export function OrderSummary({
   itemsDisclosureLabel,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const Title = titleAs;
   const items = (
@@ -43,7 +44,7 @@ export function OrderSummary({
     </ul>
   );
   return (
-    <section ref={ref} className={cx('ag-osum', className)} style={style}>
+    <section {...rest} ref={ref} className={cx('ag-osum', className)} style={style}>
       {title && <Title className="ag-osum__title">{title}</Title>}
       {itemsDisclosureLabel && lines.length > 0 ? (
         <details className="ag-osum__items">

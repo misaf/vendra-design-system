@@ -1,4 +1,6 @@
-export interface IconProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface IconProps extends Omit<RootAttributes<HTMLSpanElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLSpanElement>;
   /** Lucide icon name, kebab-case (e.g. "flower-2", "shopping-bag"). */

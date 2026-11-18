@@ -19,7 +19,9 @@ export function QuantityInput({
   disabled,
   size = 'md',
   labels = {},
-  ref
+  className,
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const text = useMessages('QuantityInput', messages, labels, locale);
@@ -30,6 +32,7 @@ export function QuantityInput({
       {/* NumberField keeps the text it first formatted, so a new locale (the page's lang, read
           before the first paint) gets a fresh field. */}
       <NumberField
+        {...rest}
         key={locale}
         ref={localeRef}
         value={quantity}
@@ -37,13 +40,13 @@ export function QuantityInput({
         maxValue={max}
         step={1}
         isDisabled={disabled}
-        aria-label={text.value}
+        aria-label={rest['aria-label'] ?? text.value}
         onChange={next => {
           if (Number.isNaN(next)) return;
           if (value === undefined) setUncontrolledValue(next);
           onChange && onChange(next);
         }}
-        className="ag-qty-root"
+        className={cx('ag-qty-root', className)}
       >
         <Group
           className={cx('ag-qty', size === 'sm' && 'ag-qty--sm', disabled && 'ag-qty--disabled')}

@@ -21,14 +21,18 @@ export function RangeSlider({
   onChange,
   formatValue = number => String(number),
   label,
-  labelledBy,
+  labelledBy: labelIds,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-label': ariaLabel,
   labels,
   showValues = true,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
+  const labelledBy = labelIds ?? ariaLabelledBy;
   const text = useMessages('RangeSlider', messages, {label, ...labels}, locale);
   const initial = defaultValue ?? (range ? [min, max] : min);
   const [uncontrolledValue, setUncontrolledValue] = React.useState(initial);
@@ -73,13 +77,14 @@ export function RangeSlider({
   return (
     <I18nProvider locale={locale}>
       <Slider
+        {...rest}
         ref={rootRef}
         value={range ? values : values[0]}
         minValue={min}
         maxValue={max}
         step={step}
         onChange={change}
-        aria-label={labelledBy ? undefined : text.label}
+        aria-label={labelledBy ? undefined : (ariaLabel ?? text.label)}
         aria-labelledby={labelledBy}
         className={cx('ag-range', !range && 'ag-range--single', className)}
       >

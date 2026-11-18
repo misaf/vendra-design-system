@@ -10,17 +10,19 @@ import { useMergedRef } from "../../utils/refs.js";
 // the page's language), with one Tab stop. Controlled with `value`, or not with `defaultValue`;
 // onChange(value) gets the chosen tile's value, and `name` is the form field it posts under. `legend` renders <fieldset><legend>; the hint or error
 // sits under the tiles (see Field).
-export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, columns, minTileWidth = 140, children, className, style, ref }) {
+export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, value, defaultValue, onChange, disabled, columns, minTileWidth = 140, children, className, style, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, "aria-describedby": describedBy, "aria-details": details, ref, ...rest }) {
 	const { fieldId, messageId, message, controlProps } = useField({
 		id,
 		hint,
-		error
+		error,
+		describedBy
 	});
 	const legendId = fieldId + "-legend";
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const wrapped = !!(legend || message);
 	const group = /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(RadioGroup, {
+		...!wrapped && rest,
 		ref: wrapped ? undefined : rootRef,
 		id: fieldId,
 		name,
@@ -28,8 +30,9 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, 
 		defaultValue,
 		onChange: (next) => onChange && onChange(next),
 		isDisabled: disabled,
-		"aria-label": legend ? undefined : label,
-		"aria-labelledby": legend ? legendId : labelledBy,
+		"aria-label": legend ? undefined : label ?? ariaLabel,
+		"aria-labelledby": cx(legend && legendId, labelledBy ?? ariaLabelledBy) || undefined,
+		"aria-details": details,
 		"aria-describedby": controlProps["aria-describedby"],
 		"aria-errormessage": controlProps["aria-errormessage"],
 		isInvalid: !!error,
@@ -45,6 +48,7 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, 
 		error: !!error
 	}, message);
 	if (legend) return /* @__PURE__ */ React.createElement("fieldset", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-field ag-fieldset", className),
 		style
@@ -53,6 +57,7 @@ export function ChoiceGroup({ label, labelledBy, legend, hint, error, id, name, 
 		className: "ag-field__label"
 	}, legend), group, hintElement);
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-field", className),
 		style

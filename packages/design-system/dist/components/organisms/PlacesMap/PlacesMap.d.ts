@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {LatLng} from '../../utils/commerce.js';
 import type {MapTiles} from '../../utils/maps.js';
 export interface Place {
@@ -12,7 +14,7 @@ export interface Place {
   /** Runs on a click, Enter or Space on the marker. */
   onSelect?: () => void;
 }
-export interface PlacesMapProps {
+export interface PlacesMapProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** The map's id. */

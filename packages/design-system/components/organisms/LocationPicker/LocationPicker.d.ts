@@ -1,5 +1,10 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {LatLng} from '../../utils/commerce.js';
-export interface LocationPickerProps {
+export interface LocationPickerProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'onChange' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** The map's id; the label, status and error use `${id}-label`, `-status` and `-error`. */

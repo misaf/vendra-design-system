@@ -10,7 +10,7 @@ import { useMergedRef } from "../../utils/refs.js";
 // panel gives them. Both carry referrerPolicy="origin", because the issuer checks which site shows
 // the seal, and the link opens a new tab without noreferrer for the same reason. When there is no
 // image, or it fails to load (blocked, offline), the seal's name stands in and the link still works.
-export function TrustSeal({ kind, href, image, label, className, style, ref }) {
+export function TrustSeal({ kind, href, image, label, className, style, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const text = useMessages("TrustSeal", messages, undefined, locale);
@@ -18,6 +18,7 @@ export function TrustSeal({ kind, href, image, label, className, style, ref }) {
 	const [failedImage, setFailedImage] = React.useState(null);
 	const showImage = !!image && failedImage !== image;
 	return /* @__PURE__ */ React.createElement("a", {
+		...rest,
 		ref: rootRef,
 		href,
 		target: "_blank",

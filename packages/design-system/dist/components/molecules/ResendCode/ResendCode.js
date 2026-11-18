@@ -14,7 +14,7 @@ import { useMergedRef } from "../../utils/refs.js";
 // background tabs). While it runs, the time left shows as text; when it ends, the button appears and
 // a polite status says so once. Pressing it calls onResend, starts the wait again and reports
 // `code_resent` (VendraProvider's onEvent).
-export function ResendCode({ seconds = 60, onResend, resendLabel, className, style, ref }) {
+export function ResendCode({ seconds = 60, onResend, resendLabel, className, style, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const text = useMessages("ResendCode", messages, { resend: resendLabel }, locale);
@@ -47,6 +47,7 @@ export function ResendCode({ seconds = 60, onResend, resendLabel, className, sty
 	}, [left > 0]);
 	const time = format.number(Math.floor(left / 60), language) + ":" + format.number(left % 60, language).padStart(2, format.number(0, language));
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: rootRef,
 		className: cx("ag-resend", className),
 		style

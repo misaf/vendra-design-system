@@ -43,7 +43,7 @@ const LOOK = {
 // `failed` (pay again or choose another method) or `pending`: the bank hasn't confirmed, so the
 // customer must not pay twice. When the status changes, focus moves to the new heading. Each answer
 // (paid, cancelled, failed, pending) reports `payment_result` once (VendraProvider's onEvent).
-export function PaymentStatus({ status, amount, orderNumber, reference, gateway, redirect, redirectDelay = 1500, onRetry, onOtherMethod, onCheckAgain, supportHref, headingLevel = 2, children, className, style, ref }) {
+export function PaymentStatus({ status, amount, orderNumber, reference, gateway, redirect, redirectDelay = 1500, onRetry, onOtherMethod, onCheckAgain, supportHref, headingLevel = 2, children, className, style, ref, ...rest }) {
 	// The wording follows the nearest lang, as the page around it is written.
 	const { locale, ref: rootRef } = usePageLocale();
 	const mergedRef = useMergedRef(rootRef, ref);
@@ -144,6 +144,7 @@ export function PaymentStatus({ status, amount, orderNumber, reference, gateway,
 		}
 	].filter(Boolean);
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: mergedRef,
 		className: cx("ag-payment-status", "ag-payment-status--" + status, className),
 		style,

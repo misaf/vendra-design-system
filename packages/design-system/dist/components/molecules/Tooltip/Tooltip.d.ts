@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface TooltipProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface TooltipProps extends Omit<RootAttributes<HTMLSpanElement>, 'content'> {
   /** The trigger's wrapper. */
   ref?: React.Ref<HTMLSpanElement>;
   content: React.ReactNode;

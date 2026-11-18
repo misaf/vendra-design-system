@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
 /** The <button> attributes React Aria's Button and ToggleButton pass on to the element (plus any
  * data-*). Others, such as title, tabIndex, role and most aria-*, would be dropped, so they are left out. */
 export type ButtonDOMProps = Pick<
@@ -62,7 +64,8 @@ export type ButtonDOMProps = Pick<
   | 'onAnimationStart'
   | 'onAnimationEnd'
   | 'onTransitionEnd'
-> & {[dataAttribute: `data-${string}`]: string | number | boolean | undefined};
+> &
+  DataAttributes;
 export interface ButtonProps extends ButtonDOMProps {
   /** The button, or the link with `href`. */
   ref?: React.Ref<HTMLButtonElement | HTMLAnchorElement>;

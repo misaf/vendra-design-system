@@ -21,7 +21,8 @@ export function Meter({
   style,
   'aria-label': ariaLabel,
   'aria-labelledby': labelledBy,
-  ref
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
@@ -31,6 +32,7 @@ export function Meter({
   const valueText = valueLabel ?? new Intl.NumberFormat(locale, {style: 'percent'}).format(share);
   return (
     <div
+      {...rest}
       ref={rootRef}
       id={id}
       role="meter"

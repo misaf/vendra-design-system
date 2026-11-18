@@ -30,7 +30,8 @@ export function Lightbox({
   actions,
   sizes = '100vw',
   className,
-  ref
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const density = useDensity();
@@ -104,7 +105,9 @@ export function Lightbox({
     >
       <Modal className={cx('ag-lightbox', className)}>
         <Dialog
-          aria-label={text.label}
+          {...rest}
+          role="dialog"
+          aria-label={label ?? rest['aria-label'] ?? text.label}
           className="ag-lightbox__frame ag-on-inverse"
           ref={mergedRef}
         >

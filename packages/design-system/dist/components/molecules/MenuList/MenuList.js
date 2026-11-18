@@ -3,8 +3,9 @@
 import React from "react";
 import { cx } from "../../utils/cx.js";
 // A titled navigation list; each child (usually a NavLink) becomes a list item.
-export function MenuList({ title, label, children, className = "", ref }) {
+export function MenuList({ title, label, children, className = "", ref, ...rest }) {
 	return /* @__PURE__ */ React.createElement("nav", {
+		...rest,
 		ref,
 		"aria-label": label || (typeof title === "string" ? title : undefined),
 		className: cx("ag-menu", className)

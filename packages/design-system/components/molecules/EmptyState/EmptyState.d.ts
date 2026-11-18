@@ -1,4 +1,9 @@
-export interface EmptyStateProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface EmptyStateProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'title' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Lucide icon name, or any node (e.g. a spinner or "404") */

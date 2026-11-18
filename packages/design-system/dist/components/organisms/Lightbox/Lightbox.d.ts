@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface LightboxItem {
@@ -9,7 +11,7 @@ export interface LightboxItem {
   /** Shown under the photo: the code, the kind, the price… */
   caption?: React.ReactNode;
 }
-export interface LightboxProps {
+export interface LightboxProps extends AriaWidgetAttributes<HTMLElement> {
   /** The dialog element (while open). */
   ref?: React.Ref<HTMLElement>;
   items: LightboxItem[];
