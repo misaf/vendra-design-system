@@ -156,8 +156,7 @@ export function vfIsoDate(date) {
   return commerce.isoDate(date);
 }
 
-// The next VF_DELIVERY_DAYS days for a zone, each marked sold out or past today's cut-off; from
-// tomorrow when the store doesn't deliver the same day.
+// The next VF_DELIVERY_DAYS days for a zone, starting tomorrow when same-day delivery is disabled.
 export function vfDeliveryDays(zoneId, now = vfNow(), lines = []) {
   return commerce
     .deliveryDays(
@@ -172,7 +171,12 @@ export function vfDeliveryDays(zoneId, now = vfNow(), lines = []) {
     )
     .map(day => ({
       ...day,
-      soldOut: day.soldOut || day.offset === VF_SAMPLE_SOLD_OUT_IN_DAYS
+      soldOut: day.soldOut || day.offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
+      noOpenSlots:
+        VF_SLOTS.length === 0 ||
+        (day.offset === 0 &&
+          !day.pastCutoff &&
+          vfDeliverySlots(day.iso, now).every(slot => slot.closed))
     }));
 }
 
@@ -196,16 +200,24 @@ export function vfDeliveryQuoted(delivery) {
 export function vfDeliverableOn(product, iso, now = vfNow()) {
   if (product.inStock === false) return false;
   const day = vfDeliveryDays(VF_ZONES[0].id, now).find(d => d.iso === iso);
-  return !!day && !day.soldOut && !day.pastCutoff && (!!product.same || day.offset > 0);
+  return (
+    !!day &&
+    !day.soldOut &&
+    !day.pastCutoff &&
+    !day.noOpenSlots &&
+    (!!product.same || day.offset > 0)
+  );
 }
 
 // The chosen day when it is still open, otherwise the first open day.
 export function vfDeliveryDate(delivery, now = vfNow(), lines = []) {
-  return commerce.openDay(vfDeliveryDays(delivery.zone, now, lines), delivery.date);
+  const days = vfDeliveryDays(delivery.zone, now, lines).filter(day => !day.noOpenSlots);
+  return commerce.openDay(days, delivery.date);
 }
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 export function vfDeliverySlots(iso, now = vfNow()) {
+  if (!iso) return [];
   return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now, VF_DELIVERY_TIME_ZONE);
 }
 

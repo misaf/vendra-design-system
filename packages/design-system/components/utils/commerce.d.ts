@@ -258,8 +258,8 @@ export interface Commerce {
     /** Store IANA time zone; omitted uses the device zone. Invalid zones throw RangeError. */
     timeZone?: string
   ): DeliverySlotState[];
-  /** The chosen slot's start when open, otherwise the first open slot's. */
-  openSlot(slots: DeliverySlotState[], chosen: string): string;
+  /** The chosen slot's start when open, otherwise the first open slot's. Undefined when none is open. */
+  openSlot(slots: DeliverySlotState[], chosen: string): string | undefined;
   /** Open or closed at `now` on the store's clock (IANA `timeZone`; omitted: device zone), and the
    * next change within a week. Invalid zones throw RangeError. */
   openingStatus(hours: OpeningHours, now?: Date, timeZone?: string): OpeningStatus;

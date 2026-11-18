@@ -152,10 +152,10 @@ const deliverySlots = (iso, slots, leadMinutes, now = new Date(), timeZone) => {
 		closed: today && minutes > Number(end) * 60 - leadMinutes
 	}));
 };
-// The chosen slot's start when it is open, otherwise the first open slot's.
+// The chosen slot's start when open, otherwise the first open slot's (undefined when none is).
 const openSlot = (slots, chosen) => {
 	const open = slots.filter((slot) => !slot.closed);
-	return (open.find((slot) => slot.start === chosen) || open[0] || { start: chosen }).start;
+	return (open.find((slot) => slot.start === chosen) || open[0])?.start;
 };
 // Opening hours: {week: [{days, opens, closes}], exceptions?: [{date, closed?, opens?, closes?}]}.
 // `days` are weekday numbers (0 Sunday … 6 Saturday); times are "HH:MM" on the store's clock. A

@@ -199,9 +199,10 @@ function vals(page) {
   const totals = vfTotals(live.filter(vfLineAvailable), delivery);
   const {sub, total} = totals;
   const z = vfZone(delivery.zone);
-  const date = vfDeliveryDate(delivery, vfNow(), live);
-  const slot = vfDeliverySlot(delivery, vfNow(), live);
-  const deliveryChanged = vfDeliveryChanged(delivery, vfNow(), live);
+  const now = vfNow();
+  const date = vfDeliveryDate(delivery, now, live);
+  const slot = vfDeliverySlot(delivery, now, live);
+  const deliveryChanged = vfDeliveryChanged(delivery, now, live);
   const quoted = vfDeliveryQuoted(delivery);
   const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
   const displayedTotal = quoted ? total : total - totals.fee;
@@ -557,20 +558,22 @@ function vals(page) {
       value: zone.id,
       label: zoneLabel(zone)
     })),
-    days: vfDeliveryDays(delivery.zone, vfNow(), live).map(day => {
-      const off = day.soldOut || day.pastCutoff;
+    days: vfDeliveryDays(delivery.zone, now, live).map(day => {
+      const off = day.soldOut || day.pastCutoff || day.noOpenSlots;
       return {
         label: vfDayName(day, fa),
         desc: day.soldOut
           ? C.soldOut
           : day.pastCutoff
             ? C.pastCutoff.replace('{time}', vfDeliveryCutoff(z, fa))
-            : vfDayMonth(day.date, fa),
+            : day.noOpenSlots
+              ? C.slotClosed
+              : vfDayMonth(day.date, fa),
         value: day.iso,
         off
       };
     }),
-    slots: vfDeliverySlots(date).map(({start, end, closed}) => ({
+    slots: vfDeliverySlots(date, now).map(({start, end, closed}) => ({
       label: vfSlotLabel(start, end, fa),
       desc: closed ? C.slotClosed : undefined,
       value: String(start),
@@ -581,7 +584,7 @@ function vals(page) {
     slot: slot == null ? null : String(slot),
     setSlot: value => {
       const chosen = vfDeliverySlots(date).find(({start}) => String(start) === value);
-      if (chosen) update({slot: chosen.start});
+      if (chosen && !chosen.closed) update({slot: chosen.start});
     },
     summary: live.map(l => ({
       image: vfProductImage(l, L),
