@@ -8,6 +8,17 @@
   line-height: var(--lh-tight);
   margin: 0 0 var(--space-3);
 }
+.ag-osum__items > summary {
+  min-block-size: var(--tap-min);
+  align-content: center;
+  cursor: pointer;
+  color: var(--text-accent);
+  font-weight: var(--weight-medium);
+}
+.ag-osum__items > summary:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
 .ag-osum__lines {
   list-style: none;
   margin: 0;

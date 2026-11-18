@@ -5,7 +5,12 @@ export function StorefrontBagSummary({summary, freeDelivery, promo, actions, pay
   return (
     <>
       <DS.Card padding={20}>
-        <DS.OrderSummary title={summary.title} lines={summary.lines} sums={summary.sums} />
+        <DS.OrderSummary
+          title={summary.title}
+          lines={summary.lines}
+          sums={summary.sums}
+          itemsDisclosureLabel={summary.itemsDisclosureLabel}
+        />
         {freeDelivery ? (
           <>
             <DS.Meter
