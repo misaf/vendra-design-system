@@ -1,10 +1,6 @@
 import {test, expect} from '@playwright/test';
-import {openSite, openFooterGroup, siteUrl} from './helpers.mjs';
+import {openSite, openFooterGroup, pageChunk, siteUrl} from './helpers.mjs';
 
-const SITE_CODE = /pages\/site\/Page\.jsx|\/page-site-[\w-]+\.js/;
-const POST_CODE = /pages\/post\/Page\.jsx|\/page-post-[\w-]+\.js/;
-const SHOP_CODE = /pages\/shop\/Page\.jsx|\/page-shop-[\w-]+\.js/;
-const NOTFOUND_CODE = /pages\/notfound\/Page\.jsx|\/page-notfound-[\w-]+\.js/;
 test.use({reducedMotion: 'reduce'});
 
 async function hold(page, pattern) {
@@ -28,9 +24,6 @@ async function hold(page, pattern) {
       release();
       const loaded = await response;
       expect(loaded.ok()).toBe(true);
-      // Await the actual requested ESM module's evaluation, including its imports. This shares
-      // the browser module cache with loadPage and does not replace its implementation/options.
-      await page.evaluate(url => import(url).then(() => {}), loaded.url());
       await page.evaluate(
         () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
       );
@@ -71,13 +64,14 @@ for (const lang of ['en', 'fa']) {
   test(`post waits for evaluation after its successful HTTP response (${lang})`, async ({
     page
   }, info) => {
+    const postCode = pageChunk('post');
     const pending = new Set();
     const completed = [];
     const errors = [];
     page.on('request', request => pending.add(new URL(request.url()).pathname));
     page.on('requestfinished', request => {
       pending.delete(new URL(request.url()).pathname);
-      if (POST_CODE.test(request.url()))
+      if (postCode.test(request.url()))
         completed.push({path: new URL(request.url()).pathname, at: performance.now()});
     });
     page.on('requestfailed', request => pending.delete(new URL(request.url()).pathname));
@@ -89,21 +83,14 @@ for (const lang of ['en', 'fa']) {
       });
       window.__postEvaluationStarted = false;
       window.__postEvaluationFinished = false;
+      window.__vfPageEvaluation = async name => {
+        if (name !== 'post') return;
+        window.__postEvaluationStarted = true;
+        await window.__postEvaluationGate;
+        window.__postEvaluationFinished = true;
+      };
     });
-    await page.route(POST_CODE, async route => {
-      const response = await route.fetch();
-      expect(response.status()).toBe(200);
-      // Keep the real imports/exports. HTTP completes, but ESM evaluation must still wait.
-      const body =
-        (await response.text()) +
-        `
-window.__postEvaluationStarted = true;
-await window.__postEvaluationGate;
-window.__postEvaluationFinished = true;
-`;
-      await route.fulfill({response, body});
-    });
-    const response = page.waitForResponse(response => POST_CODE.test(response.url()));
+    const response = page.waitForResponse(response => postCode.test(response.url()));
     try {
       await page.goto(siteUrl('post', lang));
       await expect.poll(() => page.evaluate(() => window.__postEvaluationStarted)).toBe(true);
@@ -122,12 +109,10 @@ window.__postEvaluationFinished = true;
         finished: window.__postEvaluationFinished,
         statusCount: document.querySelectorAll('[role=status]').length
       }));
-      // In the production build the prerendered post stays in view (inert) with its language; the
-      // dev server's plain page is empty and English until the post renders.
-      const build = process.env.E2E_TARGET === 'build';
+      // The localized initial document stays in view while the route's module is pending.
       expect(deadline).toMatchObject({
-        main: build ? 1 : 0,
-        lang: build ? lang : 'en',
+        main: 1,
+        lang,
         started: true,
         finished: false
       });
@@ -154,15 +139,13 @@ window.__postEvaluationFinished = true;
   });
 
   test(`initial module readiness preserves first-load focus (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, SITE_CODE);
+    const gate = await hold(page, pageChunk('site'));
     try {
       await page.goto(siteUrl('shop', lang), {waitUntil: 'domcontentloaded'});
       await gate.requested;
-      if (process.env.E2E_TARGET === 'build') {
-        // The prerendered page stays in view, taking no input until the app has it.
-        await expect(page.locator('#main')).toHaveCount(1);
-        await expect(page.locator('#root')).toHaveAttribute('inert', '');
-      } else await expect(page.locator('#main')).toHaveCount(0);
+      // The prerendered page stays in view and takes no input until the app mounts.
+      await expect(page.locator('#main')).toHaveCount(1);
+      await expect(page.locator('#root')).toHaveAttribute('inert', '');
       await record(page, info, 'initial-module-held');
       await gate.complete();
       await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
@@ -178,7 +161,7 @@ window.__postEvaluationFinished = true;
   });
 
   test(`latest route wins while an earlier page module is held (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, SHOP_CODE);
+    const gate = await hold(page, pageChunk('shop'));
     try {
       await openSite(page, 'home', lang);
       await page.evaluate(() => {
@@ -218,7 +201,7 @@ window.__postEvaluationFinished = true;
   test(`delayed invalid-policy recovery focuses the final heading (${lang})`, async ({
     page
   }, info) => {
-    const gate = await hold(page, NOTFOUND_CODE);
+    const gate = await hold(page, pageChunk('notfound'));
     try {
       await openSite(page, 'home', lang);
       await page.evaluate(() => {

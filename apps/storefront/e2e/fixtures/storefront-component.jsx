@@ -3,10 +3,9 @@
 // ?component=StorefrontCheckoutMethods&lang=fa.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import '../../app/theme.js';
 import {VendraProvider} from '../../app/ds.js';
 
-const fixtures = import.meta.glob('../../app/{molecules,organisms,layouts}/*/*.fixture.jsx');
+import fixtures from 'fixtures:storefront';
 const query = new URLSearchParams(location.search);
 const name = query.get('component');
 const lang = query.get('lang') === 'fa' ? 'fa' : 'en';

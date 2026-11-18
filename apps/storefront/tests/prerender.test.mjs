@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {buildServer, prerenderedPage} from '../build/prerender.mjs';
+import {buildServer} from '../build/prerender.mjs';
 import {storefrontRoutes} from '../build/routes.mjs';
 import {VF_POSTS} from '../shared/translations/journal-content.js';
 import {vfAbsoluteUrl, vfServerRender} from '../shared/platform/environment.js';
@@ -15,14 +15,20 @@ import {vfFindProduct} from '../shared/domain/catalog.js';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // Inside the repository, so the built entry finds React in node_modules.
-fs.mkdirSync(path.join(templates, '../../node_modules/.vite'), {recursive: true});
-const outDir = fs.mkdtempSync(path.join(templates, '../../node_modules/.vite/prerender-test-'));
+fs.mkdirSync(path.join(templates, '../../node_modules/.vendra-next'), {recursive: true});
+const outDir = fs.mkdtempSync(
+  path.join(templates, '../../node_modules/.vendra-next/prerender-test-')
+);
 const origin = 'https://shop.example';
 const app = origin + '/apps/storefront/app/';
 try {
   const server = await buildServer({outDir});
-  const shell = fs.readFileSync(path.join(templates, 'app/index.html'), 'utf8');
-  const page = address => prerenderedPage(server, shell, address, {origin});
+  const page = async address => {
+    const {html, lang, dir, head} = await server.render('/apps/storefront/app/' + address, {
+      origin
+    });
+    return `<html lang="${lang}" dir="${dir}"><head>${head}</head><body>${html}</body></html>`;
+  };
   const one = (html, pattern, message) => {
     const found = html.match(pattern);
     assert.ok(found, message);
@@ -108,7 +114,6 @@ try {
     );
     assert.ok(html.includes('hreflang="x-default"'), where + 'x-default');
     assert.ok(!html.includes('name="robots"'), where + 'indexed');
-    assert.ok(html.includes(`data-vf-path="/apps/storefront/app/${address}"`), where + 'address');
   }
 
   // Private pages say so; the 404 page names no address of its own.
@@ -118,14 +123,9 @@ try {
     'the bag is not indexed'
   );
   assert.ok(!bag.includes('hreflang='), 'noindex pages list no alternates');
-  const missing = await prerenderedPage(server, shell, 'en/404/', {origin, notFound: true});
+  const missing = await page('en/404/');
   assert.ok(missing.includes('noindex'), 'the 404 page is not indexed');
   assert.ok(!/rel="canonical"|og:url|data-vf-path/.test(missing), 'the 404 page has no address');
-  assert.ok(
-    missing.includes('data-vf-routing'),
-    'the 404 page waits for the app to read the address'
-  );
-
   // Without VF_ORIGIN the store's own URLs start at the site root; an image on another host keeps
   // its origin. On the server a configured apiBase makes the store live, as in the browser.
   vfServerRender({url: '/apps/storefront/app/en/'});
@@ -250,7 +250,7 @@ try {
 
 // A tenant's brand font is preloaded only for the page's language; sample tenants have none.
 {
-  const {tenantFontPreloads} = await import('../build/prerender.mjs');
-  assert.equal(tenantFontPreloads(null, 'fa'), '');
-  assert.equal(tenantFontPreloads('clay', 'fa'), '');
+  const {tenantFontUrls} = await import('../build/prerender.mjs');
+  assert.deepEqual(tenantFontUrls(null, 'fa'), []);
+  assert.deepEqual(tenantFontUrls('clay', 'fa'), []);
 }

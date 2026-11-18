@@ -11,7 +11,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react",
-    "types": ["vite/client"],
+    "types": ["react"],
     "noUnusedLocals": true,
     "skipLibCheck": true
   },

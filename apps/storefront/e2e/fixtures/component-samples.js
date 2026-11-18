@@ -1,6 +1,6 @@
 // One element per component export, with fixed props, for the hydration test: the spec renders
 // them with react-dom/server in Node and the fixture hydrates the result in the browser, both from
-// dist/. Plain ES module with no JSX, so Node and Vite both load it; it is given the package
+// dist/. Plain ES module with no JSX, so Node and the browser fixture both load it; it is given the package
 // (`ds`) and React instead of importing them, so each side passes its own copy.
 const PROPS = {
   Icon: {name: 'flower-2'},

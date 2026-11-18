@@ -163,7 +163,7 @@ jobs:
           node-version: 22
       - run: npm ci
       - run: npm --prefix apps/storefront run test:e2e:build
-      - name: Build and test the Next.js Pages export
+      - name: Test the Next.js export under the Pages base path
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io

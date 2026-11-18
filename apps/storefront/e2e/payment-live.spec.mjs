@@ -56,11 +56,10 @@ async function liveStore(page, api) {
   return calls;
 }
 
-// A connected gateway (VF_STORE.gateway); the dev server serves the module the app imports.
+// Configure the gateway on the development store before continuing to payment.
 async function connectGateway(page) {
-  await page.evaluate(async () => {
-    const {VF_STORE} = await import('/apps/storefront/shared/domain/store-config.js');
-    VF_STORE.gateway = {en: 'Test Bank', fa: 'بانک آزمایشی'};
+  await page.evaluate(() => {
+    window.__vfDevStore.gateway = {en: 'Test Bank', fa: 'بانک آزمایشی'};
   });
 }
 

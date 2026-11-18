@@ -7,7 +7,7 @@ How to change the Vendra design system. The rules behind these steps are in [CLA
 ```sh
 npm ci                                   # one install at the root (apps/storefront/ is a workspace)
 npm run dev                              # Next.js storefront at http://localhost:3000/
-npm --prefix apps/storefront run dev     # Vite reference storefront and guideline cards at http://127.0.0.1:5173/
+                                        # guideline cards are also available under /guidelines/
 ```
 
 Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwright's Linux image instead).

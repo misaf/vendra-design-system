@@ -31,7 +31,6 @@ updates:
       build-tools:
         patterns:
           [
-            'vite',
             'rolldown',
             'tailwindcss',
             '@tailwindcss/*',

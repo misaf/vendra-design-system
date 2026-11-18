@@ -117,7 +117,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `packages/design-system/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
 | `apps/storefront/pages/*` | 17 bilingual storefront pages plus `pages/site`, the click-through router. The source of truth for the storefront. |
-| `apps/storefront/build/` | The storefront app's Vite build: dev server, prerendered routes, sitemap, precompression, page CSS and the tenant list. |
+| `apps/storefront/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
 | `tools/` | Repo tooling: the build (`build.mjs`, which writes the package's `dist/` via `package.mjs` and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the package folder. Run through the `npm --prefix apps/storefront` scripts. |
 | `apps/storefront/shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
 | `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
@@ -131,7 +131,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 ```sh
 npm ci                                   # first setup, at the repo root (packages/* and apps/* are workspaces)
-npm --prefix apps/storefront run dev     # Vite preview at http://127.0.0.1:5173/ with rebuilds
+npm run dev                             # Next.js development at http://localhost:3000/
 npm --prefix apps/storefront run build   # components, the package's dist/, Tailwind, tenant CSS, generated template sections
 npm --prefix apps/storefront run format  # Prettier
 npm --prefix apps/storefront run check   # generated files current + formatting

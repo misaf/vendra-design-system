@@ -63,7 +63,7 @@ for (const lang of ['en', 'fa']) {
   test('offline presentation reloads in ' + lang, async ({page, context}) => {
     test.setTimeout(60000);
     await page.goto(site + 'presentation/');
-    await expect(page.locator('#vf-initial-page')).toHaveCount(0);
+    await expect(page.locator('#root')).not.toHaveAttribute('inert', '');
     await expect(page.locator('.vf-display-photo').first()).toBeVisible();
     await page.locator('.vf-display').press('Enter');
     await page

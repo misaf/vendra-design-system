@@ -23,7 +23,10 @@ export default function config(phase) {
     basePath,
     trailingSlash: true,
     poweredByHeader: false,
-    env: {NEXT_PUBLIC_VF_BASE_PATH: basePath},
+    env: {
+      NEXT_PUBLIC_VF_BASE_PATH: basePath,
+      NEXT_PUBLIC_VF_BROWSER_TEST: process.env.E2E_TARGET === 'build' ? '1' : '0'
+    },
     turbopack: {root: path.resolve(import.meta.dirname, '../../..')}
   };
 }

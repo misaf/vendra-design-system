@@ -16,22 +16,32 @@ export function generateStaticParams() {
   ];
 }
 
+function Fallback() {
+  return (
+    <>
+      <meta name="robots" content="noindex, follow" />
+      <noscript dangerouslySetInnerHTML={{__html: exported.fallback}} />
+      <div id="root" />
+      <Storefront />
+    </>
+  );
+}
+
 export default async function Page({params}) {
   const {lang, segments = []} = await params;
   if (!VF_STORE.languages.includes(lang)) notFound();
-  if (segments.length === 1 && segments[0] === fallback)
-    return (
-      <Storefront>
-        <meta name="robots" content="noindex, follow" />
-        <noscript dangerouslySetInnerHTML={{__html: exported.fallback}} />
-      </Storefront>
-    );
+  if (segments.length === 1 && segments[0] === fallback) return <Fallback />;
 
-  const page = pages[[lang, ...segments].join('/') + '/'];
-  if (!page) notFound();
-  const {html, tags, brandLinks} = page;
+  const address = [lang, ...segments].join('/') + '/';
+  const page = pages[address];
+  if (!page) {
+    if (process.env.NODE_ENV === 'development') return <Fallback />;
+    notFound();
+  }
+  const {html, tags, brandLinks, time} = page;
+  const path = process.env.NEXT_PUBLIC_VF_BASE_PATH + '/apps/storefront/app/' + address;
   return (
-    <Storefront>
+    <>
       <title>{tags.title}</title>
       {tags.meta
         .filter(({content}) => content != null && content !== '')
@@ -51,12 +61,14 @@ export default async function Page({params}) {
       {brandLinks.map(link => (
         <link key={link.rel + (link.sizes || '')} {...link} />
       ))}
-      <div id="vf-initial-page" suppressHydrationWarning dangerouslySetInnerHTML={{__html: html}} />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: "document.getElementById('vf-initial-page').inert = true;"
-        }}
+      <div
+        data-vf-path={path}
+        data-vf-time={time}
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{__html: `<div id="root">${html}</div>`}}
       />
-    </Storefront>
+      <script dangerouslySetInnerHTML={{__html: "document.getElementById('root').inert = true;"}} />
+      <Storefront />
+    </>
   );
 }

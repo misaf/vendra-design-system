@@ -2,6 +2,7 @@ import {test, expect} from '@playwright/test';
 import {
   NO_CONSENT,
   openSite,
+  pageChunk,
   openFooterGroup,
   pinDelivery,
   scanAxe,
@@ -1533,12 +1534,9 @@ test('the Persian footer dates the copyright in the Persian calendar', async ({p
   expect(await scanAxe(page)).toEqual([]);
 });
 
-// A page whose code fails to load (dev: its Page.jsx; build: its page-<name> chunk) shows a reload
-// alert, in the site and on its own, and the rest of the site keeps working.
-const SHOP_CODE = /pages\/shop\/Page\.jsx|\/page-shop-[\w-]+\.js/;
-
+// A page whose Next.js chunk fails to load offers a reload while the rest of the site works.
 test('a page that fails to load offers a reload', async ({page}) => {
-  await page.route(SHOP_CODE, route => route.abort());
+  await page.route(pageChunk('shop'), route => route.abort());
   await openSite(page, 'home', 'en');
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
   const alert = page.getByRole('alert').filter({hasText: 'This page didn’t load.'});
@@ -1550,7 +1548,7 @@ test('a page that fails to load offers a reload', async ({page}) => {
 });
 
 test('a standalone page that fails to load offers a reload', async ({page}) => {
-  await page.route(SHOP_CODE, route => route.abort());
+  await page.route(pageChunk('shop'), route => route.abort());
   await page.goto('/apps/storefront/app/fa/?page=shop');
   await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
   await expect(page).toHaveTitle('این صفحه بارگذاری نشد. · گل‌فروشی وندرا');
@@ -1560,7 +1558,7 @@ test('a standalone page that fails to load offers a reload', async ({page}) => {
 test('a page that fails to preload in the background never reloads the tab', async ({page}) => {
   let loads = 0;
   page.on('load', () => loads++);
-  await page.route(SHOP_CODE, route => route.abort());
+  await page.route(pageChunk('shop'), route => route.abort());
   await openSite(page, 'checkout', 'en');
   await page.waitForTimeout(1500);
   expect(loads).toBe(1);
@@ -1576,7 +1574,7 @@ test('forms leave validation to the storefront', async ({page}) => {
 test('while a page’s code loads, the current page stays on screen', async ({page}) => {
   let release;
   const held = new Promise(resolve => (release = resolve));
-  await page.route(SHOP_CODE, async route => {
+  await page.route(pageChunk('shop'), async route => {
     await held;
     await route.continue();
   });

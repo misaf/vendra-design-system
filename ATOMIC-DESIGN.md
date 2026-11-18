@@ -6164,7 +6164,7 @@ npm --prefix apps/storefront run test:e2e -- --workers=2
 ```
 
 Run the migrated components' own browser specs first for fast feedback, then the broader suite.
-After moving component folders, restart an existing Vite preview before browser verification;
+After moving component folders, restart the storefront development server before browser verification;
 its cached CSS import graph can retain paths from before the move.
 Review visual differences before changing baselines. Record the exact scope and failures; a
 focused run does not prove the complete screenshot or device suite. Never edit generated `dist/`

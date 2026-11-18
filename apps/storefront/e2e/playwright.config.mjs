@@ -4,9 +4,8 @@ import {fileURLToPath} from 'node:url';
 // Browser tests use Playwright's bundled Chromium locally and in CI.
 // Install it locally with `npm exec --workspace apps/storefront -- playwright install chromium`.
 // CI runs inside Playwright's Linux image against the -linux screenshots.
-// The development server serves the repo root for guideline and component fixtures.
-// Storefront tests run against a production build. Only source fixtures and the tests that
-// mutate a source module (the gateway, the shop's page size) need the development server (E2E_TARGET=dev).
+// The Next.js development server serves guideline and component fixtures and lets tests
+// configure a sample store. The remaining storefront tests use the production export.
 const build = process.env.E2E_TARGET !== 'dev';
 const devSpecs = [
   'cards.spec.mjs',
@@ -99,7 +98,7 @@ export default defineConfig({
   // A loaded machine runs the slowest flows (top-up then checkout) in up to ~40s.
   timeout: 60000,
   forbidOnly: ci,
-  // One Vite dev server serves every page; more workers than this starts timing out.
+  // One Next.js dev server serves every page; more workers than this starts timing out.
   // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
   workers: Number(process.env.E2E_WORKERS) || 2,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
@@ -125,6 +124,7 @@ export default defineConfig({
   },
   use: {
     baseURL: origin,
+    channel: process.env.VF_BROWSER_CHANNEL || undefined,
     // Every test starts with the cookie choice made, so the consent banner stays out of
     // screenshots and clicks. Consent tests opt out with test.use({storageState: NO_CONSENT}).
     storageState: {
@@ -140,14 +140,14 @@ export default defineConfig({
   projects: projectsForTarget(build),
   webServer: build
     ? {
-        command: 'npm run build:app && npm run preview',
+        command: 'npm run build:next && npm run start:next -- --port 4173',
         cwd: '..',
         url: origin + '/apps/storefront/app/',
         reuseExistingServer: false,
         timeout: 180000
       }
     : {
-        command: 'npm run dev',
+        command: 'npm run dev:next -- --hostname 127.0.0.1 --port 5173',
         cwd: '..',
         url: origin + '/apps/storefront/app/',
         reuseExistingServer: false,

@@ -1,19 +1,18 @@
 // "Show more" in the shop. The store shows VF_STORE.shopPageSize (12) designs per page, more than
-// the six sample designs, so these tests serve the store config with four per page. The development
-// server serves the source module the app imports, so this spec runs with E2E_TARGET=dev.
+// the six sample designs, so the development fixture sets a page size of four before mount.
 import {test, expect} from '@playwright/test';
 import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, finish} from './device-helpers.mjs';
 import {vfCopy} from '../pages/shop/copy.js';
 
 async function shopPageSize(page, size) {
-  await page.route('**/apps/storefront/shared/domain/store-config.js*', async route => {
-    const response = await route.fetch();
-    const source = await response.text();
-    const body = source.replace(/shopPageSize: \d+/, `shopPageSize: ${size}`);
-    if (body === source) throw new Error('store-config.js no longer sets shopPageSize');
-    await route.fulfill({response, body});
-  });
+  await page.addInitScript(size => {
+    Object.defineProperty(window, '__vfDevStore', {
+      set(store) {
+        store.shopPageSize = size;
+      }
+    });
+  }, size);
 }
 
 const params = page => new Map(Object.entries(routeOf(page.url())));

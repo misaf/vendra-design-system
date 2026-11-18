@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import {ROOT, TENANTS, contrast, expectNoViteError} from './helpers.mjs';
+import {ROOT, TENANTS, contrast, expectNoBrowserError} from './helpers.mjs';
 
 // The seven Theme builder checks (guidelines/theme-builder.html), run against
 // each shipped tenant file rather than the builder's generated ramps, so a
@@ -45,7 +45,7 @@ function resolve(page, tenant, names) {
 for (const tenant of [null, ...TENANTS]) {
   test(`theme builder checks pass (${tenant || 'default'} tenant)`, async ({page}) => {
     await page.goto('/apps/storefront/e2e/fixtures/tokens.html');
-    await expectNoViteError(page);
+    await expectNoBrowserError(page);
     const names = [...new Set(CHECKS.flatMap(([, fg, bg]) => [fg, bg]))];
     const c = await resolve(page, tenant, names);
     for (const name of names)
@@ -92,7 +92,7 @@ for (const tenant of ['default', ...TENANTS]) {
 for (const start of ['vendra', ...TENANTS]) {
   test(`theme builder: starting from ${start} passes all seven checks`, async ({page}) => {
     await page.goto('/guidelines/theme-builder.html');
-    await expectNoViteError(page);
+    await expectNoBrowserError(page);
     await page.locator('.tb-row select').first().selectOption(start);
     const verdicts = page.locator('.tb-ch span:nth-child(3n)');
     await expect(verdicts).toHaveCount(7);

@@ -1,8 +1,9 @@
 // Adapt the exported pages to the static host's root URLs and 404 fallback.
-import {copyFile, readdir, readFile, writeFile} from 'node:fs/promises';
+import {copyFile, readdir, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {VF_STORE} from '../shared/domain/store-config.js';
 import {vfServerRender} from '../shared/platform/environment.js';
+import {precompress} from '../build/compress.mjs';
 import {storefrontSitemap} from '../build/routes.mjs';
 
 const out = join(import.meta.dirname, 'out');
@@ -41,11 +42,7 @@ await writeFile(
   'User-agent: *\nAllow: /\nSitemap: ' + origin + base + 'sitemap.xml\n'
 );
 
-const worker = await readFile(join(import.meta.dirname, '..', 'app', 'sw.js'), 'utf8');
-await writeFile(
-  join(out, app, 'sw.js'),
-  worker.replace('const NEXT = false;', 'const NEXT = true;')
-);
+await copyFile(join(import.meta.dirname, '..', 'app', 'sw.js'), join(out, app, 'sw.js'));
 const staticFiles = (await readdir(join(out, '_next', 'static'), {recursive: true})).filter(name =>
   /\.(js|css|woff2?)$/.test(name)
 );
@@ -57,3 +54,4 @@ await writeFile(
   ])
 );
 await writeFile(join(out, '.nojekyll'), '');
+await precompress(out);

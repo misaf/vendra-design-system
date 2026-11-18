@@ -162,20 +162,19 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm ci                                   # first setup, at the repo root (apps/storefront is a workspace)
-npm --prefix apps/storefront run dev     # Vite at http://127.0.0.1:5173/ → /apps/storefront/app/en/ (fa/ for Persian, ?page=<name> for one page)
+npm run dev                             # Next.js at http://localhost:3000/ → /apps/storefront/app/en/
 npm --prefix apps/storefront run build   # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
 npm --prefix apps/storefront run check   # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm --prefix apps/storefront test        # typecheck, storefront logic, generation, copy parity, package
 npm --prefix apps/storefront run test:e2e  # Playwright: axe, screenshots, cards, tenants
-npm --prefix apps/storefront run build:app  # production build → apps/storefront/_app-build/ (same paths as dev)
-npm --prefix apps/storefront run preview  # serve the build at http://127.0.0.1:4173/apps/storefront/app/
+npm run build:app                          # production export → apps/storefront/next/out/
+npm run preview                           # serve the export at http://127.0.0.1:3000/
 npm --prefix apps/storefront run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
 npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `packages/design-system/tokens/tenants/`.
-- **Port:** 5173 is fixed.
 
 ## GitHub Pages demo
 
@@ -188,81 +187,23 @@ The repository's Pages root opens the storefront; direct links can select a view
 `https://misaf.github.io/vendra-design-system/apps/storefront/app/en/presentation/`. This hosts the
 sample-data demo; live API services need their own backend.
 
-### Vite reference build
+### Prerendering and hydration
 
-The Vite build serves the full browser and visual regression suite. It writes storefront HTML at
-every known address (`apps/storefront/build/routes.mjs`: each view, category, product, journal post and policy, in each
-language) already rendered (`build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
-tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
-in the source, so search engines and WhatsApp/Telegram link previews read them without running
-scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
-Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
-`VF_SEO.headTags` the browser applies (`vfPageHead` in `shared/services/page-lifecycle.js`: the page's h1,
-its canonical address, its alternates and a preview image — the product's or post's photo, otherwise the
-logo). The canonical address is `vfCanonicalRoute` (`shared/services/routing.js`): always with its
-language and its path id, plus only a shop occasion or a journal page in the query, in one order —
-never sorting, price, stock, quick filters, the delivery day, the shop's "Show more" page or product
-choices. The hreflang alternates are that same address with only the language changed, and sorted or
-filtered shop views (`vfRouteRefined`) are `noindex, follow` (`tests/seo-canonical.test.mjs`). The same head carries the page's schema.org structured data as one JSON-LD script
-(`shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
-in ISO 4217, Toman as Rial) and `BreadcrumbList` on product pages, the studio as a `Florist` (address,
-map point, phone, opening hours and holidays) on the home and contact pages, `FAQPage` on the FAQ and
-`Article` on journal posts; noindex pages have none. Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
-and preview URLs; without it they start at the site root. CI's Pages build sets it.
+`build/routes.mjs` lists the localized views, categories, products, journal posts and policies. The
+Next.js App Router exports each one with its rendered HTML, title, canonical URL, language alternates,
+share metadata, and JSON-LD. The shared React renderer provides the initial view and metadata to the
+export. The browser hydrates the same markup for a first visit. Returning visitors and query-driven
+flows render from the requested address and their saved state. The initial document holds the build
+clock for hydration, then delivery days and cutoffs update to the visitor's current time.
 
-**Sitemap.** `storefrontSitemap(origin)` in `build/routes.mjs` lists every indexed address of those
-routes, each with the same page in every store language as `xhtml:link` hreflang alternates
-(x-default English, as in the page's head) and a `lastmod` where the data has one: an article's
-`publishedAt`, and the journal's newest post. `deployment/sitemap.xml` is its `example.test` sample;
-`npm test` fails when it is stale.
-
-Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
-customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
-is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`
-key in storage. Otherwise (a returning visitor, a query, the 404 page) it renders the page in its
-place as before (`createRoot`; `vfRuntime.rendered`, `window.__vfRuntime.rendered` in tests, says which). Either way the prerendered page
-stays in view while the app loads but is `inert` (and, when it will be replaced, its controls are
-disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
-does not have yet. The app does not set `inert` without scripts, so links keep working then.
-Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
-`shared/platform/environment.js`), and the page renders again at the real time once it has mounted, so
-delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
-from `shared/platform/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
-import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
-QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
-hidden while it loads.
-
-The site's `404.html` is the prerendered not-found page: a static host serves it for every address
-without a file (an order to track, a mistyped link). It stays hidden (at most 3s) until the app has
-read the address and rendered that address's page (not-found or another). A host that can rewrite
-addresses can instead serve `apps/storefront/app/index.html` (the plain shell, which also serves the
-`?page=<name>` previews) for every path under `apps/storefront/app/`. `tests/prerender.test.mjs` checks
-the source of a product, a shop category, a journal post and the Persian home page, and
-`e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
-on any hydration error.
-
-To verify the same paths locally:
-
-```sh
-npm --prefix apps/storefront run build:app -- --base /vendra-design-system/
-npm --prefix apps/storefront run preview -- --base /vendra-design-system/
-# http://127.0.0.1:4173/vendra-design-system/apps/storefront/app/en/presentation/
-```
-
-**Compression and caching.** The build ends by writing a Brotli (`.br`) and a gzip (`.gz`) copy
-beside every page, script, stylesheet and data file of 1 KB or more (`build/compress.mjs`), so a
-host can send them without compressing per request. Vite's content-hashed files go in their own
-folder, `assets/hashed/` (`build.assetsDir`), apart from the repository's `assets/` copied in under
-their own names, so exactly those can be cached forever. `deployment/nginx.conf` is the reference
-server: precompressed files (`brotli_static`, `gzip_static`); `assets/hashed/` for a year,
-`immutable`, with CORS for its fonts; the package's `packages/design-system/assets/fonts/` for 30 days with CORS; other fixed-name
-photos, icons and map files for a day; pages, `404.html`, `sw.js`, tenant themes and the offline
-manifest `no-cache`. Other hosts should apply the same rules; security headers belong in the same
-file. GitHub Pages ignores both (it compresses on the fly and caches for 10 minutes).
+The build writes `sitemap.xml` from the same address list. A static host's `404.html` lets the browser
+resolve order tracking URLs with runtime IDs and old product and journal addresses. The nginx
+reference shows the fallback and cache headers. The export includes Brotli and gzip copies for
+hosts that serve precompressed files.
 
 ## Browser tests
 
-`test:e2e` builds the app once and runs storefront tests against Vite preview, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
+`test:e2e` builds the app once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 Install the browser after `npm ci` (and after upgrading Playwright), then run the tests:
 
@@ -290,7 +231,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront organism spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
-3. **Production storefront, visuals and performance:** `test:e2e:build` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Vite reference build. `test:e2e:next` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
+3. **Production storefront, visuals and performance:** `test:e2e:build` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:e2e:next` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the package supports React 19 only, and a new major is a deliberate upgrade. The package and the storefront both pin React and React Aria, and Dependabot's single root entry updates every workspace manifest in one pull request; `tests/dependencies.test.mjs` fails if a package pinned in more than one manifest has differing versions or if the lockfile or `node_modules` holds a second copy of it. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
@@ -330,7 +271,7 @@ Every folder in `packages/design-system/components/` has its own browser test be
 
 Storefront molecules, organisms and layouts may have the same pair beside them (`app/<layer>/<Name>/<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
 
-- **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's styles (`app/theme.js`: Tailwind, the package and page CSS) and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
+- **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
 - **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
 - **Guard:** `tests/atomic.test.mjs` fails when a spec lacks its fixture (or the reverse), and when a new organism has neither. Organisms that predate the rule are listed in `tests/organisms-without-specs.json`; the list only shrinks: remove a name when you add its spec.
@@ -339,10 +280,10 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
+- **`next/app/`:** App Router layouts and exported routes. The browser boot code hydrates the initial storefront or restores the visit's saved state. `app/entry-server.jsx` renders the shared markup for the export.
 - **`app/pages.js`:** each `pages/*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **`app/theme.js`:** imports the package's `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `vfRuntime.assetBase` (the build's base path) and installs `vfRuntime.useTenant`, which loads the active tenant's stylesheet from `packages/design-system/tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` prerenders every public address (`build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the package's fonts, the Leaflet files, `packages/design-system/tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Styles:** The Next.js layout imports Tailwind, the design-system stylesheet and storefront CSS. `app/tenant-theme.js` loads the active tenant stylesheet on demand.
+- **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, the package's fonts, the Leaflet files, `packages/design-system/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `../../packages/design-system/components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (19.3.1) and React Aria.
 

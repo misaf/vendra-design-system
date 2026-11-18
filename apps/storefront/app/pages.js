@@ -29,8 +29,6 @@ const ready = new Set();
 const modulesByName = {};
 // Pages being loaded to show them now (not background preloads).
 const showing = new Set();
-// Set when Vite reports a file this tab expects is gone (a deploy replaced them).
-let staleFiles = false;
 
 // Loads a page module (pages/<name>/Page.jsx), once; a failed load is forgotten so the next
 // attempt fetches it again. `show` says the page is wanted on screen now: if its files were replaced
@@ -38,8 +36,11 @@ let staleFiles = false;
 export function loadPage(name, show = true) {
   if (!Object.hasOwn(modules, name)) return null;
   if (show && !ready.has(name)) showing.add(name);
-  const load = (loaded[name] ||= modules[name]().then(module => {
-    // Vite resolves a failed load with nothing once its preload error has been handled.
+  const load = (loaded[name] ||= modules[name]().then(async module => {
+    // @ts-expect-error Next.js substitutes this build-time constant.
+    if (process.env.NEXT_PUBLIC_VF_BROWSER_TEST === '1' && typeof window !== 'undefined') {
+      await /** @type {any} */ (window).__vfPageEvaluation?.(name);
+    }
     if (!module) throw new Error('The ' + name + ' page did not load.');
     modulesByName[name] = module;
     ready.add(name);
@@ -47,25 +48,31 @@ export function loadPage(name, show = true) {
   }));
   load.then(
     () => showing.delete(name),
-    () => {
-      if (showing.delete(name) && staleFiles) reloadOnce();
+    error => {
+      if (showing.delete(name) && /ChunkLoadError|Failed to load chunk/i.test(String(error)))
+        reloadIfDeployed(error);
       if (loaded[name] === load) delete loaded[name];
     }
   );
   return load;
 }
 
-// Reloads at most once a minute, so a file that is really missing shows PageError instead of
-// reloading forever. It waits a moment, so the site has put the page's URL in the address bar.
-function reloadOnce() {
+// A missing hashed chunk after a new deployment can be recovered by reloading its document.
+async function reloadIfDeployed(error) {
+  const url = /(?:https?:\/\/[^/\s)]+)?(?:\/[\w.-]+)*\/_next\/static\/[^\s)]+\.js/.exec(
+    String(error)
+  )?.[0];
+  if (!url) return;
   try {
-    const last = Number(sessionStorage.getItem('vf-reloaded-at')) || 0;
+    if (new URL(url, location.href).origin !== location.origin) return;
+    const key = 'vf-reloaded-at';
+    const last = Number(sessionStorage.getItem(key)) || 0;
     if (Date.now() - last < 60000) return;
-    sessionStorage.setItem('vf-reloaded-at', String(Date.now()));
-  } catch {
-    return;
-  }
-  setTimeout(() => location.reload());
+    const response = await fetch(url, {method: 'HEAD', cache: 'no-store'});
+    if (response.status !== 404) return;
+    sessionStorage.setItem(key, String(Date.now()));
+    location.reload();
+  } catch {}
 }
 
 // Whether a page's code has loaded (it then renders at once, without suspending).
@@ -74,7 +81,7 @@ export function pageReady(name) {
 }
 
 // A page as a lazy component; render it inside <Suspense> and a PageBoundary. A page whose code is
-// already in renders at once: the build's prerender and the browser's hydration (app/main.jsx loads
+// already in renders at once: the build's prerender and the browser's hydration (the Next.js boot code loads
 // the address's page first) then render the same markup, without suspending.
 export function lazyPage(name) {
   const Lazy = React.lazy(() => loadPage(name));
@@ -84,22 +91,25 @@ export function lazyPage(name) {
   };
 }
 
-// Fetches every page in the background (a failure here is retried when the page is shown).
+// Prefetch after the first route is usable, one page per idle turn to avoid blocking input.
 export function preloadPages() {
-  const run = () => {
-    // Everything requested before this mark is what the first page needed (performance budgets).
-    performance.mark('vf-preload-pages');
-    Object.keys(modules).forEach(name => loadPage(name, false)?.catch(() => {}));
-  };
-  if ('requestIdleCallback' in window) requestIdleCallback(run);
-  else setTimeout(run, 200);
-}
+  const queue = Object.keys(modules).values();
+  let active = true;
+  performance.mark('vf-preload-pages');
 
-// Vite reports a failed load with an event before failing it; note it, and let loadPage decide
-// (a background preload never reloads the page someone is using).
-export function reloadOnStaleFiles() {
-  window.addEventListener('vite:preloadError', event => {
-    staleFiles = true;
-    event.preventDefault();
-  });
+  function run() {
+    if (!active) return;
+    const {value, done} = queue.next();
+    if (done) return;
+    loadPage(value, false)?.then(schedule, schedule);
+  }
+  function schedule() {
+    if (!active) return;
+    if ('requestIdleCallback' in window) requestIdleCallback(run);
+    else setTimeout(run, 200);
+  }
+  schedule();
+  return () => {
+    active = false;
+  };
 }

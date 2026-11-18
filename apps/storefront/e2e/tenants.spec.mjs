@@ -48,10 +48,8 @@ for (const tenant of ['default', ...TENANTS, 'not-a-tenant']) {
     if (expected !== 'default')
       expect(
         await page.evaluate(() => {
-          // The app's stylesheets: Vite's injected styles in dev, linked files in the build.
-          const sheets = [
-            ...document.head.querySelectorAll('link[rel=stylesheet], style[data-vite-dev-id]')
-          ];
+          // The app's stylesheets: stylesheet links Next.js emits for the route.
+          const sheets = [...document.head.querySelectorAll('link[rel=stylesheet]')];
           return sheets.at(-1)?.id === 'vf-tenant-css';
         })
       ).toBe(true);

@@ -24,7 +24,7 @@ export function vfNow() {
 }
 
 // Holds vfNow at `time` (milliseconds) while the browser hydrates the prerendered markup (app/
-// main.jsx), and lets it run again with null (page-lifecycle.js, once the page has hydrated).
+// start-storefront.jsx), and lets it run again with null (page-lifecycle.js, once the page has hydrated).
 // Returns whether it was held.
 /** @param {number | null} time */
 export function vfHoldClock(time) {
@@ -70,7 +70,7 @@ export function vfAbsoluteUrl(url) {
 }
 
 // Where product images, map scripts and tenant themes are served from: the build's base path
-// (app/theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
+// (app/tenant-theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
 export function vfAssetBase() {
   if (vfServerState) return vfServerState.base;
   return vfRuntime.assetBase || '../../../';

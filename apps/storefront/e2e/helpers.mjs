@@ -16,6 +16,29 @@ export const TENANTS = fs
 // A fresh visitor who has not made a cookie choice yet (the config pre-sets one for every other test).
 export const NO_CONSENT = {cookies: [], origins: []};
 
+const pageMarkers = {
+  site: 'vendra-template:',
+  shop: 'vf-shop-product-grid',
+  notfound: 'vf-notfound-message',
+  post: 'vf-post-article'
+};
+
+export function pageChunk(name) {
+  // Turbopack names its JavaScript by content hash. Identify the real route chunk from its markup
+  // or state identifier, so network tests still exercise the actual dynamic import.
+  const dir = path.join(ROOT, 'apps/storefront/next/out/_next/static/chunks');
+  const matches = fs
+    .readdirSync(dir)
+    .filter(
+      file =>
+        file.endsWith('.js') &&
+        fs.readFileSync(path.join(dir, file), 'utf8').includes(pageMarkers[name])
+    );
+  if (matches.length !== 1)
+    throw new Error('Expected one Next.js chunk for ' + name + ': ' + matches);
+  return new RegExp('/_next/static/chunks/' + matches[0].replace('.', '\\.') + '$');
+}
+
 export const SITE = '/apps/storefront/app/';
 export const LANGS = ['en', 'fa'];
 
@@ -119,7 +142,7 @@ export async function openSite(page, view, lang, extra) {
   // Keep the usual 30s navigation allowance for the routed content itself.
   await expect(page.locator('#main')).toBeVisible({timeout: 30000});
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
-  await expectNoViteError(page);
+  await expectNoBrowserError(page);
 }
 
 // Phone footer links live in disclosures; wider layouts expose the same navigation directly.
@@ -182,7 +205,6 @@ export async function settlePage(page) {
   );
 }
 
-// Vite reports transform errors as an overlay element (pushed to every open page).
 // The tile a customer clicks in a ChoiceGroup: the label around the radio named `name`. The radio
 // itself is a visually hidden native input (React Aria), so tests click the tile, as people do.
 export function choiceTile(group, name) {
@@ -198,8 +220,12 @@ export async function chooseDeliveryTime(page) {
   await ((await midday.count()) ? midday : available.first()).click();
 }
 
-export async function expectNoViteError(page) {
-  await expect(page.locator('vite-error-overlay'), 'Vite error overlay').toHaveCount(0);
+// Check the Next.js development overlay and errors surfaced by the guideline cards.
+export async function expectNoBrowserError(page) {
+  await expect(
+    page.locator('nextjs-portal [data-nextjs-dialog-overlay]'),
+    'Next.js error overlay'
+  ).toHaveCount(0);
   // Every design-system source (and the bundled react-aria-components) loaded without an error.
   const problems = await page.evaluate(() => {
     const ds = window.VendraDesignSystem;

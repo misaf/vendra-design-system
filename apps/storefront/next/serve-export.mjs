@@ -58,9 +58,23 @@ const server = createServer(async (req, res) => {
     }
     const exists = entry && (await stat(file).catch(() => null))?.isFile();
     if (!exists) file = resolve(root, '404.html');
-    res.writeHead(exists ? 200 : 404, {
-      'Content-Type': mime[extname(file)] || 'application/octet-stream'
-    });
+    const headers = {'Content-Type': mime[extname(file)] || 'application/octet-stream'};
+    const encodings = (req.headers['accept-encoding'] || '').split(',').map(value => value.trim());
+    // The service worker update test edits its source in place.
+    if (!file.endsWith('/sw.js')) {
+      for (const [encoding, suffix] of [
+        ['br', '.br'],
+        ['gzip', '.gz']
+      ]) {
+        if (!encodings.includes(encoding)) continue;
+        if (!(await stat(file + suffix).catch(() => null))?.isFile()) continue;
+        headers['Content-Encoding'] = encoding;
+        headers.Vary = 'Accept-Encoding';
+        file += suffix;
+        break;
+      }
+    }
+    res.writeHead(exists ? 200 : 404, headers);
     if (req.method === 'HEAD') res.end();
     else
       createReadStream(file)

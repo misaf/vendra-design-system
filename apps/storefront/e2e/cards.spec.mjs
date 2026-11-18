@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {VISUAL_BROWSER} from './visual-browser.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
-import {ROOT as root, TENANTS, expectNoViteError, waitForQuiet} from './helpers.mjs';
+import {ROOT as root, TENANTS, expectNoBrowserError, waitForQuiet} from './helpers.mjs';
 
 test.use(VISUAL_BROWSER);
 
@@ -34,7 +34,7 @@ async function openCard(page, card, tenant) {
   page.on('pageerror', e => errors.push(e.message));
   await page.goto('/' + card.file);
   await waitForQuiet(page);
-  await expectNoViteError(page);
+  await expectNoBrowserError(page);
   await page.evaluate(() => document.fonts.ready);
   return errors;
 }

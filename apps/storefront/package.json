@@ -6,9 +6,9 @@
     "build": "node ../../tools/build.mjs",
     "check": "node ../../tools/build.mjs --check && prettier --ignore-path ../../.prettierignore --check ../../packages/design-system/components ../../tools . && npm run lint:css",
     "test": "npm run typecheck && cd tests && node --test",
-    "dev": "vite --config build/vite.config.mjs",
-    "build:app": "npm run build && vite build --config build/vite.config.mjs",
-    "preview": "vite preview --config build/vite.config.mjs",
+    "dev": "npm run dev:next --",
+    "build:app": "npm run build:next",
+    "preview": "npm run start:next --",
     "test:e2e:dev": "E2E_TARGET=dev playwright test -c e2e/playwright.config.mjs",
     "test:e2e:build": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
     "test:e2e": "node e2e/run.mjs",
@@ -17,7 +17,7 @@
     "format": "prettier --ignore-path ../../.prettierignore --write ../../packages/design-system/components ../../tools .",
     "lint:css": "stylelint \"../../packages/design-system/components/**/*.css\" \"shared/**/*.css\" \"pages/*/*.css\"",
     "new:component": "node ../../tools/new-component.mjs",
-    "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-pages.mjs && next dev next",
+    "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-pages.mjs && node next/prepare-fixtures.mjs && next dev next",
     "build:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-pages.mjs && next build next && node next/finish-export.mjs",
     "start:next": "node next/serve-export.mjs",
     "test:e2e:next": "playwright test -c next/playwright.config.mjs"
@@ -34,8 +34,7 @@
     "rolldown": "1.2.16",
     "stylelint": "17.16.0",
     "tailwindcss": "4.3.4",
-    "typescript": "7.0.2",
-    "vite": "8.3.5"
+    "typescript": "7.0.2"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

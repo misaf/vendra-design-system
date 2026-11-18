@@ -2,8 +2,8 @@ import {test, expect} from '@playwright/test';
 import {SITE} from './helpers.mjs';
 import {storefrontRoutes} from '../build/routes.mjs';
 
-// The production build prerenders every public address (build/vite.config.mjs): a first-time
-// visitor's browser adopts that markup (hydration, app/main.jsx) instead of rendering it again. A
+// The production build prerenders every public address (Next.js static export): a first-time
+// visitor's browser adopts that markup (start-storefront.jsx) instead of rendering it again. A
 // difference between the build's render and the browser's first one (a clock, a stored value, an
 // origin) makes React log an error and render the page again: none may.
 test.skip(process.env.E2E_TARGET !== 'build', 'Only the production build is prerendered');

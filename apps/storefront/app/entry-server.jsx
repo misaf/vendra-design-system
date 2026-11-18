@@ -1,6 +1,5 @@
-// The storefront rendered to HTML for one address, at build time (build/vite.config.mjs prerenders
-// every public route with it). It runs in Node: no window and no storage, so pages render what a
-// first-time visitor sees, and app/main.jsx hydrates that markup for such a visitor.
+// The Next.js export renders the storefront in Node for each known address. Without browser storage
+// the views render what a first-time visitor sees, which the browser can hydrate.
 import React from 'react';
 import {renderToPipeableStream} from 'react-dom/server';
 import {vfServerPage, vfServerRender} from '../shared/platform/environment.js';
