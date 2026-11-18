@@ -33,7 +33,8 @@ for (const lang of ['en', 'fa']) {
       await openSite(page, 'bag', lang, {step: 'delivery'});
       await settlePage(page);
 
-      await expect(page.locator('footer, .ag-tabbar')).toHaveCount(0);
+      await expect(page.locator('.ag-tabbar')).toHaveCount(0);
+      await expect(page.getByRole('contentinfo')).toBeVisible();
       await expect(
         page.locator('.vf-shell-bottom-bar').getByRole('button', {name: t.next})
       ).toBeVisible();

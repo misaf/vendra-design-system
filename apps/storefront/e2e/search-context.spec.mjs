@@ -82,16 +82,27 @@ for (const lang of ['en', 'fa']) {
     expect(params(page).lang).toBe(nextLang);
   });
 
-  test(`closing search restores the delivery step and its entered details (${lang})`, async ({
+  test(`closing search restores the bag and preserves its delivery draft (${lang})`, async ({
     page
   }) => {
     const fa = lang === 'fa';
     await openSite(page, 'bag', lang, {step: 'delivery'});
     await page.locator('#vf-name').fill('Shirin Ahmadi');
+    await page
+      .getByRole('banner')
+      .getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true})
+      .click();
+    const bag = params(page);
     await headerSearch(page).click();
     await page.getByRole('searchbox').fill('VF-7K2M4Q ');
     await expect(page.getByRole('searchbox')).toHaveValue('VF-7K2M4Q ');
     await closeSearch(page, fa).click();
+    const toDelivery = page
+      .getByRole('button', {name: fa ? 'ادامه و ارسال' : 'Continue to delivery', exact: true})
+      .filter({visible: true});
+    await expect(toDelivery).toBeVisible();
+    expect(params(page)).toEqual(bag);
+    await toDelivery.click();
     await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
     expect(params(page)).toMatchObject({view: 'bag', step: 'delivery', lang});
   });
