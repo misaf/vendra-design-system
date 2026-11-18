@@ -44,7 +44,7 @@ function sharedDependencyViolation(source, target, relative) {
   let allowed;
   if (!relative) allowed = rules.packages.includes(target);
   else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
-  // Domain and services use the package's pure helpers; UI helpers may compose its components.
+  // Domain and services use the design system's pure helpers; UI helpers may compose its components.
   else if (target.startsWith(componentsFolder + '/'))
     allowed =
       from === 'ui' || (from !== 'styles' && target.startsWith(componentsFolder + '/utils/'));
@@ -82,7 +82,7 @@ function appDependencyViolation(source, target, relative) {
 
 // Shared dependencies are imported, never hung on window: the storefront runtime is vfRuntime
 // (apps/storefront/shared/platform/runtime.js). Only the guideline cards' compatibility layer,
-// guidelines/card-runtime.js (outside the checked folders), sets the package's AG_* helpers and
+// guidelines/card-runtime.js (outside the checked folders), sets the design system's AG_* helpers and
 // window.VendraDesignSystem for the cards' classic scripts.
 const cardCompatibility = 'guidelines/card-runtime.js';
 const globalObjects = ['window', 'globalThis', 'self'];

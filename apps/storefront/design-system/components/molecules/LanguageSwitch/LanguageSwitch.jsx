@@ -1,0 +1,42 @@
+'use client';
+
+import React from 'react';
+import {cx} from '../../utils/cx.js';
+import {ToggleButton} from 'react-aria-components';
+import {useMessages} from '../../utils/messages.js';
+import {useLocales} from '../../utils/locale.js';
+import {messages} from './messages.js';
+import {useTrack} from '../../utils/track.js';
+
+// The EN / فا toggle: one React Aria ToggleButton (aria-pressed) per language, each marked with its
+// own `lang`. Without `options` it offers VendraProvider's languages (`locales`, by default English
+// and Persian) with their own labels. Choosing one reports `language_switch` (VendraProvider's onEvent).
+export function LanguageSwitch({value = 'en', onChange, label, options, className, ref, ...rest}) {
+  const locales = useLocales();
+  const choices = options || Object.values(locales).map(o => ({id: o.code, label: o.label}));
+  const text = useMessages('LanguageSwitch', messages, {label});
+  const track = useTrack();
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      className={cx('ag-lang', className)}
+      role="group"
+      aria-label={text.label}
+    >
+      {choices.map(o => (
+        <ToggleButton
+          key={o.id}
+          lang={o.id}
+          isSelected={value === o.id}
+          onChange={() => {
+            if (value !== o.id) track('language_switch', {to: o.id});
+            if (onChange) onChange(o.id);
+          }}
+        >
+          {o.label}
+        </ToggleButton>
+      ))}
+    </div>
+  );
+}

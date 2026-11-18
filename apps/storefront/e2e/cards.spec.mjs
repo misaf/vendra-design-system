@@ -9,7 +9,7 @@ test.use(VISUAL_BROWSER);
 // Every @dsCard in guidelines/ and the package's components/, at the viewport its header declares.
 function cards() {
   const found = [];
-  for (const dir of ['guidelines', 'packages/design-system/components']) {
+  for (const dir of ['guidelines', 'apps/storefront/design-system/components']) {
     for (const file of fs.readdirSync(path.join(root, dir), {recursive: true})) {
       if (!file.endsWith('.html')) continue;
       const first = fs.readFileSync(path.join(root, dir, file), 'utf8').split('\n', 1)[0];

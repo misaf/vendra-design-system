@@ -1,7 +1,7 @@
 // npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
-// Starts packages/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
+// Starts apps/storefront/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
 // npm test pass from the first build: the component, its declarations, CSS (added to
-// the package's components/index.css), README with its Usage section, fixture and spec, and with --wording its
+// the design system's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
 // re-exports the component for the storefront (app/ds.js). What it can't know is left as TODO.
 import {execFileSync} from 'node:child_process';
@@ -36,7 +36,9 @@ const folder = path.join(repo, componentPath);
 const className = 'ag-' + name.replace(/(?<!^)([A-Z])/g, '-$1').toLowerCase();
 const files = {};
 
-files[name + '.jsx'] = `import React from 'react';
+files[name + '.jsx'] = `'use client';
+
+import React from 'react';
 import {cx} from '../../utils/cx.js';
 ${
   wording
@@ -126,7 +128,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../../../apps/storefront/e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../../e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -153,8 +155,8 @@ const insertSorted = (file, pattern, line) => {
 };
 insertSorted(
   path.join(repo, 'apps/storefront/app/ds.js'),
-  /^export \* from '\.\.\/\.\.\/\.\.\/packages\/design-system\/components\//,
-  `export * from '../../../${componentPath}/${name}.jsx';`
+  /^export \* from '\.\.\/design-system\/components\//,
+  `export * from '${path.posix.relative('apps/storefront/app', componentPath)}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
@@ -169,7 +171,7 @@ if (wording) {
   fs.writeFileSync(types, text.replace(marker, marker + `  ${name}: {label: string};\n`));
 }
 
-// Prettier's layout from the start, so the build's copy in dist/ matches the formatted sources.
+// Match the formatting check from the start.
 execFileSync(
   process.execPath,
   [

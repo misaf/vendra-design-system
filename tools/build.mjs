@@ -1,4 +1,4 @@
-// Build the tenant list and themes, Tailwind and the pages' custom CSS, and dist/. --check writes nothing.
+// Build the tenant list and themes, Tailwind and the pages' custom CSS. --check writes nothing.
 import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -7,7 +7,6 @@ import {fileURLToPath} from 'node:url';
 import {customCss} from '../apps/storefront/build/custom-css.mjs';
 import {generate} from '../apps/storefront/build/generate.mjs';
 import {brandOutputs} from './brand.mjs';
-import {buildPackage} from './package.mjs';
 import {tenantOutputs, tenantSpecs} from './tenants.mjs';
 
 const root = path.resolve(import.meta.dirname, '../apps/storefront');
@@ -66,12 +65,10 @@ async function main() {
         throw new Error(file + ' is stale. Run npm --prefix apps/storefront run build.');
       if (!check && css !== current) fs.writeFileSync(target, css);
     }
-    // The same sources → dist/, the @vendra/design-system package.
-    buildPackage(check);
     console.log(
       check
-        ? 'Tailwind, custom CSS, tenant themes, the tenant list and dist/ are current.'
-        : 'Built dist/, Tailwind, custom CSS and tenant themes.'
+        ? 'Tailwind, custom CSS, design tokens, tenant themes and the tenant list are current.'
+        : 'Built Tailwind, custom CSS, design tokens and tenant themes.'
     );
   } catch (error) {
     console.error(error.message);

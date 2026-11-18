@@ -70,7 +70,7 @@ export function projectsForTarget(build) {
       : [
           {
             name: 'components',
-            testDir: '../../../packages/design-system/components',
+            testDir: '../design-system/components',
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           },

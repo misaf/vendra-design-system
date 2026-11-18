@@ -5,15 +5,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {
-  LOCALES,
-  localeConfig,
-  plural
-} from '../../../packages/design-system/components/utils/locales.js';
-import {format} from '../../../packages/design-system/components/utils/format.js';
+import {LOCALES, localeConfig, plural} from '../design-system/components/utils/locales.js';
+import {format} from '../design-system/components/utils/format.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-const components = path.join(root, 'packages/design-system/components');
+const components = path.join(root, 'apps/storefront/design-system/components');
 
 // Each language's settings are complete and keyed by their own code.
 for (const [code, locale] of Object.entries(LOCALES)) {

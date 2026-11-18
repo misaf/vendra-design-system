@@ -1,11 +1,7 @@
 // Store identity and contact details. Change these once, then run npm --prefix apps/storefront run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
-import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
-import {
-  LOCALES,
-  localeConfig,
-  plural
-} from '../../../../packages/design-system/components/utils/locales.js';
+import {commerce} from '../../design-system/components/utils/commerce.js';
+import {LOCALES, localeConfig, plural} from '../../design-system/components/utils/locales.js';
 import {vfRuntime} from '../platform/runtime.js';
 
 export const VF_STORE = {
@@ -17,7 +13,7 @@ export const VF_STORE = {
   // Optional parts of the storefront: each id turns one on; leave one out to turn it off (its page,
   // links and fields go with it). The ids: commerce.STORE_FEATURES in components/utils/commerce.js.
   // Add-ons and the handwritten card's message follow VF_ADDONS in catalog.js.
-  /** @type {import('../../../../packages/design-system/components/utils/commerce.js').StoreFeature[]} */
+  /** @type {import('../../design-system/components/utils/commerce.js').StoreFeature[]} */
   features: ['promoCodes', 'sameDay', 'weddings', 'journal', 'reminders', 'newsletter'],
   currency: 'IRT', // The active currency: a key in `currencies`.
   // Units per 1 Toman (prices are stored in Toman). Toman and Rial are fixed; the others are SAMPLE
@@ -132,7 +128,7 @@ export const VF_STORE = {
   // How this store takes payment: each entry turns one method on, and the checkout lists them in this
   // order and starts on the first one the order can use (the balance, when it covers the order). Leave one out to turn it off (the account's Balance tab goes with `wallet`). Methods and
   // their settings: commerce.PAYMENT_METHODS in components/utils/commerce.js.
-  /** @type {import('../../../../packages/design-system/components/utils/commerce.js').PaymentMethod[]} */
+  /** @type {import('../../design-system/components/utils/commerce.js').PaymentMethod[]} */
   paymentMethods: [
     {id: 'wallet'},
     {

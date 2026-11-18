@@ -4,7 +4,7 @@ import {dirname, join, resolve} from 'node:path';
 
 const root = resolve(import.meta.dirname, '../../..');
 const publicDir = join(import.meta.dirname, 'public');
-const tenants = 'packages/design-system/tokens/tenants';
+const tenants = 'apps/storefront/design-system/tokens/tenants';
 const themes = (await readdir(join(root, tenants)))
   .filter(name => name.endsWith('.css'))
   .map(name => join(tenants, name));
@@ -13,7 +13,7 @@ await rm(publicDir, {recursive: true, force: true});
 await Promise.all(
   [
     'assets',
-    'packages/design-system/assets/fonts',
+    'apps/storefront/design-system/assets/fonts',
     'apps/storefront/_vendor/leaflet',
     ...themes
   ].map(async path => {

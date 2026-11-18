@@ -33,7 +33,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Formatting, and dist/, Tailwind, tenant CSS and the tenant list match their sources.
+      # Formatting, and Tailwind, design tokens, tenant CSS and the tenant list match their sources.
       - run: npm --prefix apps/storefront run check
       # Types, storefront logic, tenants, the package's server render, its bundle size and the API
       # contract.

@@ -14,7 +14,7 @@ export function installTenantTheme(assetBase) {
       return;
     }
     const href = new URL(
-      vfRuntime.assetBase + 'packages/design-system/tokens/tenants/' + tenant + '.css',
+      vfRuntime.assetBase + 'apps/storefront/design-system/tokens/tenants/' + tenant + '.css',
       location.href
     ).href;
     if (link && link.href === href) return;

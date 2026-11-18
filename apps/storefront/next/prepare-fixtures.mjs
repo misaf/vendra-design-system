@@ -1,12 +1,12 @@
 // Serve the existing fixture documents and their compiled React entrypoints from Next dev.
-import {copyFile, cp, mkdir, readdir, readFile, writeFile} from 'node:fs/promises';
+import {copyFile, mkdir, readdir, readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, normalize, resolve} from 'node:path';
 import {rolldown} from 'rolldown';
 
 const root = resolve(import.meta.dirname, '../../..');
 const publicDir = join(import.meta.dirname, 'public');
 const app = 'apps/storefront';
-const designSystem = 'packages/design-system';
+const designSystem = 'apps/storefront/design-system';
 const componentDirs = [designSystem + '/components', app + '/app'];
 
 async function list(dir, suffix) {
@@ -50,16 +50,12 @@ for (const dir of [
 await Promise.all(
   [
     designSystem + '/styles.css',
-    designSystem + '/dist/styles.css',
     ...(await list(designSystem + '/tokens', '.css')),
     ...(await list(designSystem + '/components', '.css')),
     app + '/_runtime/tailwind.css',
     app + '/_runtime/custom.css'
   ].map(copy)
 );
-await cp(join(root, designSystem, 'dist/fonts'), join(publicDir, designSystem, 'dist/fonts'), {
-  recursive: true
-});
 
 const fixtures = Object.fromEntries(
   await Promise.all(
@@ -70,6 +66,7 @@ const fixtures = Object.fromEntries(
   )
 );
 const bundle = await rolldown({
+  checks: {moduleLevelDirective: false},
   input: Object.fromEntries(
     [...entries].map(file => [file.replace(/\.jsx?$/, ''), join(root, file)])
   ),

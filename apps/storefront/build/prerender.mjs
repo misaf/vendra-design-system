@@ -13,7 +13,7 @@ export function tenantFontUrls(tenant, lang, base = '/') {
   if (!tenant || tenant === 'default') return [];
   const spec = JSON.parse(
     fs.readFileSync(
-      path.join(root, 'packages/design-system/tokens/tenants', tenant + '.json'),
+      path.join(root, 'apps/storefront/design-system/tokens/tenants', tenant + '.json'),
       'utf8'
     )
   );
@@ -23,6 +23,7 @@ export function tenantFontUrls(tenant, lang, base = '/') {
 // Builds the server entry (app/entry-server.jsx) for Node into `outDir` and imports it.
 export async function buildServer({outDir}) {
   const bundle = await rolldown({
+    checks: {moduleLevelDirective: false},
     input: path.join(templates, 'app/entry-server.jsx'),
     platform: 'node',
     external: [/^react(?:-dom|-aria-components)?(?:\/|$)/, /^@internationalized\//]

@@ -2,7 +2,7 @@ import {notFound} from 'next/navigation';
 import exported from '../../../../../_generated/pages.json';
 import {VF_STORE, vfLocale} from '../../../../../../shared/domain/store-config.js';
 import '../../../../../../_runtime/tailwind.css';
-import '../../../../../../../../packages/design-system/styles.css';
+import '../../../../../../design-system/styles.css';
 import '../../../../../../_runtime/custom.css';
 import './storefront.css';
 
@@ -23,7 +23,7 @@ export default async function RootLayout({children, params}) {
             rel="stylesheet"
             href={
               process.env.NEXT_PUBLIC_VF_BASE_PATH +
-              '/packages/design-system/tokens/tenants/' +
+              '/apps/storefront/design-system/tokens/tenants/' +
               VF_STORE.tenant +
               '.css'
             }

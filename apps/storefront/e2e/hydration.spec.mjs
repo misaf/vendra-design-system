@@ -1,13 +1,13 @@
 import {test, expect} from '@playwright/test';
 import {createRequire} from 'node:module';
 import path from 'node:path';
-import {pathToFileURL} from 'node:url';
+import {loadDesignSystem} from '../tests/load-design-system.mjs';
 import {ROOT} from './helpers.mjs';
 import {componentNames, componentSamples} from './fixtures/component-samples.js';
 
-// The package renders on the server, then the app hydrates it in the browser. Any difference
+// The source components render on the server, then the app hydrates it in the browser. Any difference
 // between the two (an id, a locale-dependent label, a date) makes React throw the server HTML
-// away or log a mismatch. Both sides use dist/, and the same props.
+// away or log a mismatch. Both sides use the same components and props.
 const FIXTURE = '/apps/storefront/e2e/fixtures/hydration.html';
 const require = createRequire(path.join(ROOT, 'package.json'));
 const React = require('react');
@@ -17,9 +17,7 @@ test.beforeEach(({}, info) => test.skip(info.project.name !== 'desktop', 'viewpo
 
 for (const lang of ['en', 'fa'])
   test(`every component hydrates its server HTML (${lang})`, async ({page}) => {
-    const ds = await import(
-      pathToFileURL(path.join(ROOT, 'packages/design-system/dist/index.js')).href
-    );
+    const ds = await loadDesignSystem();
     const html = renderToString(componentSamples(ds, React, lang));
     for (const name of componentNames(ds)) expect(html).toContain(`data-component="${name}"`);
     await page.goto(FIXTURE);

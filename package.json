@@ -1,10 +1,9 @@
 {
   "name": "vendra-design-system-workspace",
   "private": true,
-  "description": "Workspace root: the @vendra/design-system package (packages/design-system) and the sample storefront (apps/storefront).",
+  "description": "Vendra Next.js storefront and its design system.",
   "license": "UNLICENSED",
   "workspaces": [
-    "packages/*",
     "apps/*"
   ],
   "scripts": {

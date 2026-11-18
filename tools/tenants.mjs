@@ -1,13 +1,13 @@
-// Generate the package's tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
+// Generate the design system's tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 import fs from 'node:fs';
 import path from 'node:path';
 import theme from '../apps/storefront/shared/domain/tenant-theme.js';
 import {validateBrand} from './brand.mjs';
-import {packageRoot, packageFolder} from './paths.mjs';
+import {designSystemRoot, designSystemFolder} from './paths.mjs';
 
 const root = path.resolve(import.meta.dirname, '../apps/storefront');
-const folder = path.join(packageRoot, 'tokens/tenants');
+const folder = path.join(designSystemRoot, 'tokens/tenants');
 
 // A brand font's files must ship with the deployment: present under the repo root and WOFF2.
 const repo = path.resolve(import.meta.dirname, '..');
@@ -35,7 +35,7 @@ function tenantSpecs() {
     const slug = file.slice(0, -5);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
       throw new Error('Tenant file names must be lowercase slugs: ' + file);
-    const label = packageFolder + '/tokens/tenants/' + file;
+    const label = designSystemFolder + '/tokens/tenants/' + file;
     let spec;
     try {
       spec = JSON.parse(fs.readFileSync(path.join(folder, file), 'utf8'));
@@ -70,7 +70,7 @@ function tenantOutputs() {
   if (orphans.length)
     throw new Error(
       'Tenant CSS without a JSON source (' +
-        packageFolder +
+        designSystemFolder +
         '/tokens/tenants/): ' +
         orphans.join(', ')
     );
@@ -82,6 +82,17 @@ function tenantOutputs() {
         .map(slug => "@import url('tenants/" + slug + ".css');\n")
         .join('')
   );
+  const json = value => JSON.stringify(value, null, 2) + '\n';
+  result.set(path.join(designSystemRoot, 'tokens/theme.schema.json'), json(theme.schema()));
+  result.set(
+    path.join(designSystemRoot, 'tokens/design/tokens.json'),
+    json(theme.designTokens(baseTokenVars()))
+  );
+  for (const [slug, spec] of Object.entries(specs))
+    result.set(
+      path.join(designSystemRoot, 'tokens/design/tenants', slug + '.json'),
+      json(theme.designTokens(theme.tokens(spec).all))
+    );
   const emails = path.join(root, 'communications/email-templates.js');
   result.set(emails, withEmailThemes(fs.readFileSync(emails, 'utf8'), specs));
   result.set(
@@ -91,6 +102,21 @@ function tenantOutputs() {
       ';\n'
   );
   return result;
+}
+
+// Read the base custom properties used by the design-token export.
+function baseTokenVars() {
+  const vars = {};
+  for (const file of ['colors', 'typography', 'spacing', 'effects', 'character']) {
+    const css = fs
+      .readFileSync(path.join(designSystemRoot, 'tokens', file + '.css'), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/@media[^{]*\{(?:[^{}]*\{[^}]*\})*[^}]*\}/g, '');
+    for (const block of css.match(/:root(?:,\[data-density="comfortable"\])?\s*\{[^}]*\}/g) || [])
+      for (const match of block.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g))
+        vars[match[1]] = match[2].trim();
+  }
+  return vars;
 }
 
 // Slugs only; storefront pages load one tenant's CSS and never need the specs.

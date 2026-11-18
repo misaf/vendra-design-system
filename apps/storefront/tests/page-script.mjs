@@ -115,12 +115,12 @@ const scoped = (name, file) =>
 const sharedLogic =
   hooksHarness +
   // utils/locales.js declares LOCALES, localeConfig and plural at the top level.
-  strip(read('../../packages/design-system/components/utils/locales.js')) +
+  strip(read('design-system/components/utils/locales.js')) +
   '\n' +
-  scoped('commerce', '../../packages/design-system/components/utils/commerce.js') +
-  scoped('analytics', '../../packages/design-system/components/utils/analytics.js') +
-  scoped('dates', '../../packages/design-system/components/utils/dates.js') +
-  scoped('format', '../../packages/design-system/components/utils/format.js') +
+  scoped('commerce', 'design-system/components/utils/commerce.js') +
+  scoped('analytics', 'design-system/components/utils/analytics.js') +
+  scoped('dates', 'design-system/components/utils/dates.js') +
+  scoped('format', 'design-system/components/utils/format.js') +
   strip(read('shared/platform/runtime.js')) +
   strip(read('shared/platform/environment.js')) +
   scoped('VF_SEO', 'shared/services/seo.js') +
