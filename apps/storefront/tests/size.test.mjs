@@ -9,7 +9,7 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 import {rolldown} from 'rolldown';
 import {pathToFileURL} from 'node:url';
-import {createPackedConsumer} from './packed-package.cjs';
+import {createPackedConsumer} from './packed-package.mjs';
 
 const PEERS = [
   /^react($|\/)/,

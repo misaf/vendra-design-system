@@ -20,6 +20,8 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 5. After a change to a component, its CSS, tokens or `packages/design-system/styles.css`: `npm run test:e2e`. Storefront tests run against a fresh production build, then source fixtures and component tests run on the development server. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm --prefix apps/storefront run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
 6. Commit to `master` with `packages/design-system/dist/` included. Releasing to npm: see the readme's **Releasing the package**.
 
+Run one unit suite from the repository root with `node --test apps/storefront/tests/api-contract.test.mjs`. Add `--watch` before the file path to rerun it while you edit.
+
 ## Demo deployment
 
 The **CI** workflow publishes the GitHub Pages demo after a push to `master` only when

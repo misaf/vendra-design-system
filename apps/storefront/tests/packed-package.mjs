@@ -1,11 +1,11 @@
 // Exercise the real publish payload without registry installs or lifecycle scripts. Consumers
 // live under the peer app's node_modules, so they resolve its React and React Aria as peers.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
-const {execFileSync} = require('node:child_process');
-const repo = path.resolve(__dirname, '../../..');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+const repo = path.resolve(import.meta.dirname, '../../..');
 const pkg = path.join(repo, 'packages/design-system');
 
 function filesUnder(folder, prefix = '') {
@@ -77,4 +77,4 @@ function createPackedConsumer(peers = repo) {
   }
 }
 
-module.exports = {createPackedConsumer};
+export {createPackedConsumer};

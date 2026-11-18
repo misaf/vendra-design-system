@@ -141,7 +141,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Shared code layout:** `shared/` is split by role, and `npm test` (`tools/app-dependencies.cjs` at the repo root) enforces which folder may import which:
+**Shared code layout:** `shared/` is split by role, and `npm test` (`tools/app-dependencies.mjs` at the repo root) enforces which folder may import which:
 
 | Folder | Holds | May import |
 | --- | --- | --- |
@@ -174,7 +174,7 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.cjs` rewrites `_runtime/tenant-slugs.js` from `packages/design-system/tokens/tenants/`.
+- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `packages/design-system/tokens/tenants/`.
 - **Port:** 5173 is fixed.
 
 ## GitHub Pages demo
@@ -290,7 +290,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront organism spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
 3. **Production storefront, visuals and performance:** `test:e2e:build` builds once and runs all storefront flows, page screenshots, accessibility, responsive/device tests and performance budgets in the same image. Storefront first-paint checks live in `first-paint.spec.mjs`; source hydration fixtures remain in the development suite.
 
-Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the package supports React 19 only, and a new major is a deliberate upgrade. The package and the storefront both pin React and React Aria, and Dependabot's single root entry updates every workspace manifest in one pull request; `tests/dependencies.test.cjs` fails if a package pinned in more than one manifest has differing versions or if the lockfile or `node_modules` holds a second copy of it. A Playwright bump must also move the image tag in the workflows, which `assets.test.cjs` checks.
+Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the package supports React 19 only, and a new major is a deliberate upgrade. The package and the storefront both pin React and React Aria, and Dependabot's single root entry updates every workspace manifest in one pull request; `tests/dependencies.test.mjs` fails if a package pinned in more than one manifest has differing versions or if the lockfile or `node_modules` holds a second copy of it. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
 A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on a non-default branch (Actions → Update screenshots → Run workflow → select your branch); it commits the changed `-linux.png` files to that branch. Runs on the repository's default branch (currently `master`) or a tag fail before the screenshot job starts. Review both sets of baselines in a pull request before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
 
@@ -331,7 +331,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's styles (`app/theme.js`: Tailwind, the package and page CSS) and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
 - **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
-- **Guard:** `tests/atomic.test.cjs` fails when a spec lacks its fixture (or the reverse), and when a new organism has neither. Organisms that predate the rule are listed in `tests/organisms-without-specs.json`; the list only shrinks: remove a name when you add its spec.
+- **Guard:** `tests/atomic.test.mjs` fails when a spec lacks its fixture (or the reverse), and when a new organism has neither. Organisms that predate the rule are listed in `tests/organisms-without-specs.json`; the list only shrinks: remove a name when you add its spec.
 
 ## Runtime and export
 

@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {VISUAL_BROWSER} from './visual-browser.mjs';
-import {LANGS, VIEWS, openSite, settlePage} from './helpers.mjs';
+import {LANGS, VIEWS, chooseDeliveryTime, openSite, pinDelivery, settlePage} from './helpers.mjs';
 
 test.use(VISUAL_BROWSER);
 
@@ -22,8 +22,28 @@ for (const lang of LANGS) {
         if (message.type() === 'warning' && /visible label/.test(message.text()))
           labelWarnings.push(message.text());
       });
-      await page.clock.setFixedTime(NOW);
-      await openSite(page, view, lang);
+      if (view === 'checkout') {
+        // A fresh tab at /checkout/ is sent to delivery until the bag has a valid delivery draft.
+        // Leaflet needs time to advance while choosing the pin.
+        await page.clock.setSystemTime(NOW);
+        await openSite(page, 'bag', lang, {step: 'delivery'});
+        await page.locator('#vf-name').fill('Shirin Ahmadi');
+        await page.locator('#vf-phone').fill('09121234567');
+        await pinDelivery(page);
+        await page.locator('#vf-address').fill('Plaque 12, unit 3');
+        await page.locator('#vf-sender').fill('Sara Karimi');
+        await page.locator('#vf-sender-phone').fill('09121112233');
+        await chooseDeliveryTime(page);
+        await page
+          .getByRole('button', {name: lang === 'fa' ? 'ادامه و پرداخت' : 'Continue to payment'})
+          .locator('visible=true')
+          .click();
+        await expect(page).toHaveURL(/\/checkout\//);
+        await expect(page.locator('main h1')).toBeFocused();
+      } else {
+        await page.clock.setFixedTime(NOW);
+        await openSite(page, view, lang);
+      }
       await settlePage(page);
       expect(labelWarnings, 'React Aria label warnings').toEqual([]);
       await expect(page).toHaveScreenshot(`page__${view}__${lang}__${info.project.name}.png`, {

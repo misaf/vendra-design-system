@@ -118,7 +118,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
 | `apps/storefront/pages/*` | 17 bilingual storefront pages plus `pages/site`, the click-through router. The source of truth for the storefront. |
 | `apps/storefront/build/` | The storefront app's Vite build: dev server, prerendered routes, sitemap, precompression, page CSS and the tenant list. |
-| `tools/` | Repo tooling: the build (`build.cjs`, which writes the package's `dist/` via `package.cjs` and tenant themes via `tenants.cjs`/`brand.cjs`), the component generator (`new-component.cjs`) and the Atomic Design and import checks (`atomic.cjs`, `app-dependencies.cjs`); `paths.cjs` names the package folder. Run through the `npm --prefix apps/storefront` scripts. |
+| `tools/` | Repo tooling: the build (`build.mjs`, which writes the package's `dist/` via `package.mjs` and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the package folder. Run through the `npm --prefix apps/storefront` scripts. |
 | `apps/storefront/shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
 | `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
 | `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |

@@ -7,6 +7,8 @@ import {list} from './runtime.js';
 import {StorefrontLayout} from './layouts/StorefrontLayout/StorefrontLayout.jsx';
 import {StorefrontBottomBar} from './layouts/StorefrontBottomBar/StorefrontBottomBar.jsx';
 import {StorefrontAnnouncement} from './organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx';
+import {StorefrontCheckoutFooter} from './organisms/StorefrontCheckoutFooter/StorefrontCheckoutFooter.jsx';
+import {StorefrontCheckoutHeader} from './organisms/StorefrontCheckoutHeader/StorefrontCheckoutHeader.jsx';
 import {StorefrontConsent} from './organisms/StorefrontConsent/StorefrontConsent.jsx';
 import {StorefrontFooter} from './organisms/StorefrontFooter/StorefrontFooter.jsx';
 import {StorefrontMenu} from './organisms/StorefrontMenu/StorefrontMenu.jsx';
@@ -15,7 +17,8 @@ import {useVfDensity, useVfRemoteNavigation} from '../shared/services/tv.js';
 import {vfRuntime} from '../shared/platform/runtime.js';
 import {vfLocale} from '../shared/domain/store-config.js';
 
-export function Shell({v, content, sticky, bare = false, quiet = false, compactCheckout = false}) {
+export function Shell({v, content, sticky, bare = false, quiet = false, enclosedCheckout = null}) {
+  const enclosed = !!enclosedCheckout;
   const brandAssets = {...v.brandAssets};
   for (const key of ['logo', 'logoMark', 'logoOnDark']) {
     if (brandAssets[key])
@@ -144,81 +147,103 @@ export function Shell({v, content, sticky, bare = false, quiet = false, compactC
           ) : null
         }
         announcement={
-          <StorefrontAnnouncement
-            label={v.shellText?.news}
-            closeLabel={v.shellText?.dismissNews}
-            onClose={v.closeAnnouncement}
-            text={v.announcement}
-            phoneText={v.announcementPhone}
-            link={v.announcementLink}
-          />
+          !enclosed && (
+            <StorefrontAnnouncement
+              label={v.shellText?.news}
+              closeLabel={v.shellText?.dismissNews}
+              onClose={v.closeAnnouncement}
+              text={v.announcement}
+              phoneText={v.announcementPhone}
+              link={v.announcementLink}
+            />
+          )
         }
         header={
-          <StorefrontHeader
-            brand={v.shellText?.brand}
-            brandAssets={brandAssets}
-            lang={v.lang}
-            homeHref={v.href?.home}
-            navigation={[
-              {id: 'shop', href: v.href?.shop, label: v.shellText?.shop, current: v.nav?.shop},
-              v.features?.weddings && {
-                id: 'weddings',
-                href: v.href?.weddings,
-                label: v.shellText?.weddings,
-                current: v.nav?.weddings
-              },
-              v.features?.journal && {
-                id: 'journal',
-                href: v.href?.journal,
-                label: v.shellText?.journal,
-                current: v.nav?.journal
+          enclosed ? (
+            <StorefrontCheckoutHeader
+              brand={brandAssets.logo?.alt?.[v.lang] || v.shellText?.brand}
+              logo={brandAssets.logo}
+              homeHref={v.href?.home}
+              back={enclosedCheckout.back}
+              help={v.checkoutHelp}
+              leave={enclosedCheckout.confirmLeave ? v.shellText?.leaveCheckout : undefined}
+            />
+          ) : (
+            <StorefrontHeader
+              brand={v.shellText?.brand}
+              brandAssets={brandAssets}
+              lang={v.lang}
+              homeHref={v.href?.home}
+              navigation={[
+                {id: 'shop', href: v.href?.shop, label: v.shellText?.shop, current: v.nav?.shop},
+                v.features?.weddings && {
+                  id: 'weddings',
+                  href: v.href?.weddings,
+                  label: v.shellText?.weddings,
+                  current: v.nav?.weddings
+                },
+                v.features?.journal && {
+                  id: 'journal',
+                  href: v.href?.journal,
+                  label: v.shellText?.journal,
+                  current: v.nav?.journal
+                }
+              ].filter(Boolean)}
+              searchHref={v.href?.search}
+              searchLabel={v.shellText?.search}
+              accountHref={v.href?.account}
+              accountLabel={v.shellText?.account}
+              bagHref={v.href?.bag}
+              bagLabel={v.bagLabel}
+              bagCount={v.bagCount}
+              language={
+                v.hasLang
+                  ? {
+                      value: v.lang,
+                      options: v.langOpts,
+                      label: v.shellText?.langL,
+                      alternative: v.otherLang
+                    }
+                  : undefined
               }
-            ].filter(Boolean)}
-            searchHref={v.href?.search}
-            searchLabel={v.shellText?.search}
-            accountHref={v.href?.account}
-            accountLabel={v.shellText?.account}
-            bagHref={v.href?.bag}
-            bagLabel={v.bagLabel}
-            bagCount={v.bagCount}
-            language={
-              v.hasLang
-                ? {
-                    value: v.lang,
-                    options: v.langOpts,
-                    label: v.shellText?.langL,
-                    alternative: v.otherLang
-                  }
-                : undefined
-            }
-            onLanguageChange={v.setLang}
-            onPickAlternativeLanguage={v.otherLang?.pick}
-            menuLabel={v.shellText?.menu}
-            onOpenMenu={v.openMenu}
-          />
+              onLanguageChange={v.setLang}
+              onPickAlternativeLanguage={v.otherLang?.pick}
+              menuLabel={v.shellText?.menu}
+              onOpenMenu={v.openMenu}
+            />
+          )
         }
         menu={
-          <StorefrontMenu
-            open={v.menuOpen}
-            onClose={v.closeMenu}
-            title={v.shellText?.brand}
-            closeLabel={v.shellText?.closeMenu}
-            navigationLabel={v.shellText?.mainNav}
-            navigation={list(v.menuItems)}
-            language={
-              v.hasLang
-                ? {value: v.lang, options: v.langOpts, label: v.shellText?.langL}
-                : undefined
-            }
-            onLanguageChange={v.setLang}
-            whatsappHref={v.waHref}
-            whatsappLabel={v.shellText?.waLong}
-          />
+          !enclosed && (
+            <StorefrontMenu
+              open={v.menuOpen}
+              onClose={v.closeMenu}
+              title={v.shellText?.brand}
+              closeLabel={v.shellText?.closeMenu}
+              navigationLabel={v.shellText?.mainNav}
+              navigation={list(v.menuItems)}
+              language={
+                v.hasLang
+                  ? {value: v.lang, options: v.langOpts, label: v.shellText?.langL}
+                  : undefined
+              }
+              onLanguageChange={v.setLang}
+              whatsappHref={v.waHref}
+              whatsappLabel={v.shellText?.waLong}
+            />
+          )
         }
         notices={<DS.OfflineNotice />}
         content={content}
         footer={
-          !compactCheckout && (
+          enclosed ? (
+            <StorefrontCheckoutFooter
+              links={[...list(v.policyLinks), {href: v.href?.contact, label: v.shellText?.contact}]}
+              seals={list(v.footer?.seals)}
+              consentSettingsLabel={v.shellText?.consent?.settings}
+              onOpenConsent={v.consent?.open}
+            />
+          ) : (
             <StorefrontFooter
               homeHref={v.href?.home}
               brand={v.shellText?.brand}
@@ -276,7 +301,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false, compactC
             }
             sticky={sticky}
             navigation={
-              !compactCheckout && <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
+              !enclosed && <DS.BottomTabBar items={v.tabs} label={v.shellText?.mainNav} />
             }
           />
         }

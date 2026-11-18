@@ -21,7 +21,14 @@ export function View({v}) {
   return (
     <Shell
       v={v}
-      compactCheckout={v.onDelivery && v.hasItems}
+      enclosedCheckout={
+        v.onDelivery && v.hasItems
+          ? {
+              back: {href: v.bagHref, label: v.t?.backToBag, onClick: v.backToBag},
+              confirmLeave: true
+            }
+          : undefined
+      }
       content={
         <StorefrontBagLayout
           showContents={v.hasItems}

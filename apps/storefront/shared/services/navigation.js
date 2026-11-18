@@ -360,6 +360,9 @@ export function vfShell(self, page) {
       }
     ],
     waHref: VF_STORE.whatsapp || '',
+    checkoutHelp: VF_STORE.whatsapp
+      ? {href: VF_STORE.whatsapp, label: T.wa, target: '_blank'}
+      : {href: href.contact, label: T.help},
     // A WhatsApp chat with the message already written; pages use it to quote product codes.
     waWith: text =>
       VF_STORE.whatsapp ? VF_STORE.whatsapp + '?text=' + encodeURIComponent(text) : '',

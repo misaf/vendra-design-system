@@ -1,6 +1,6 @@
-const assert = require('node:assert/strict');
-const vm = require('node:vm');
-const {sharedLogic, pageScript} = require('./page-script.cjs');
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {sharedLogic, pageScript} from './page-script.mjs';
 function presentation(settings = {}) {
   const timers = new Map();
   let timerId = 0;
