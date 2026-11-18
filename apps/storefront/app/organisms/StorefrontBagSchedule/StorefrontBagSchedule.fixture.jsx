@@ -6,8 +6,6 @@ const copy = {
     title: 'When should it arrive?',
     preparation: 'Bouquets need three hours to prepare.',
     review: 'Your delivery time is no longer available',
-    suggestion: 'The next free time is tomorrow, 10:00–13:00.',
-    confirm: 'Use this time',
     day: 'Day',
     slot: 'Time',
     days: [
@@ -25,8 +23,6 @@ const copy = {
     title: 'چه زمانی برسد؟',
     preparation: 'آماده‌سازی دسته‌گل سه ساعت طول می‌کشد.',
     review: 'زمان ارسال انتخابی دیگر در دسترس نیست',
-    suggestion: 'نزدیک‌ترین زمان آزاد فردا ۱۰ تا ۱۳ است.',
-    confirm: 'همین زمان',
     day: 'روز',
     slot: 'ساعت',
     days: [
@@ -52,21 +48,14 @@ export function Fixture({lang}) {
       <StorefrontBagSchedule
         title={t.title}
         preparationNotice={t.preparation}
-        review={{
-          visible: reviewing,
-          title: t.review,
-          suggestion: t.suggestion,
-          confirmLabel: t.confirm,
-          onConfirm: () => {
-            setDay('tomorrow');
-            setSlot('morning');
-            setReviewing(false);
-          }
-        }}
+        review={reviewing ? t.review : ''}
         day={{
           label: t.day,
           value: day,
-          onChange: setDay,
+          onChange: value => {
+            setDay(value);
+            setSlot(null);
+          },
           options: t.days.map(([value, label, desc]) => ({
             value,
             label,
@@ -77,7 +66,10 @@ export function Fixture({lang}) {
         slot={{
           label: t.slot,
           value: slot,
-          onChange: setSlot,
+          onChange: value => {
+            setSlot(value);
+            setReviewing(false);
+          },
           options: t.slots.map(([value, label]) => ({value, label, off: value === 'evening'}))
         }}
       />

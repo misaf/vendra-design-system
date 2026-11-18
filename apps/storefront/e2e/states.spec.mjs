@@ -1,5 +1,12 @@
 import {test, expect} from '@playwright/test';
-import {LANGS, openSite, pinDelivery, scanAxe, waitForQuiet} from './helpers.mjs';
+import {
+  LANGS,
+  openSite,
+  pinDelivery,
+  scanAxe,
+  waitForQuiet,
+  chooseDeliveryTime
+} from './helpers.mjs';
 
 // Interactive states the first-load scan in storefront.spec.mjs never reaches:
 // open menus and dialogs, expanded accordions, other tabs, validation errors,
@@ -98,6 +105,7 @@ async function toPayment(page, t) {
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.fill('#vf-sender', 'Sara Karimi');
   await page.fill('#vf-sender-phone', '09121112233');
+  await chooseDeliveryTime(page);
   await page.getByRole('button', {name: t.next}).locator('visible=true').first().click();
   await expect(page).toHaveURL(/\/checkout\//);
   await expect(page.getByRole('radio', {name: t.card, exact: true})).toBeChecked();

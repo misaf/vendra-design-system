@@ -26,7 +26,6 @@ import {
   VF_ZONES,
   vfDeliveryCutoff,
   vfDeliveryDate,
-  vfDeliveryChanged,
   vfDeliveryQuoted,
   vfBagSameDay,
   vfDeliveryDays,
@@ -46,12 +45,7 @@ import {vfShell} from '../../shared/services/navigation.js';
 import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../../shared/domain/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../shared/domain/store-config.js';
-import {
-  vfDayMonth,
-  vfDayName,
-  vfSlotLabel,
-  vfDeliveryWhen
-} from '../../shared/translations/time.js';
+import {vfDayMonth, vfDayName, vfSlotLabel} from '../../shared/translations/time.js';
 import {VF_NAV} from '../../shared/services/page-focus.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
@@ -202,13 +196,14 @@ function vals(page) {
   const now = vfNow();
   const date = vfDeliveryDate(delivery, now, live);
   const slot = vfDeliverySlot(delivery, now, live);
-  const deliveryChanged = vfDeliveryChanged(delivery, now, live);
+  const deliveryChanged = (day, time) =>
+    !day || (!!delivery.date && (delivery.date !== day || (delivery.slot != null && time == null)));
   const quoted = vfDeliveryQuoted(delivery);
   const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
   const displayedTotal = quoted ? total : total - totals.fee;
   const cardAddition = st ? st.cardAddition : s.cardAddition;
   const quantitiesValid = live.every(line => vfLineQuantityValid(line, live));
-  const invalid = vfErrors(delivery, live);
+  const invalid = {...vfErrors(delivery, live), slot: !!date && slot == null};
   const update = patch => page._update(patch);
   const errors = C.errors;
   const shown = key => s.submitted && invalid[key];
@@ -231,7 +226,8 @@ function vals(page) {
     ['phone', 'vf-phone', errors.phone],
     ['location', 'vf-map', errors.location],
     ['outside', 'vf-map', errors.outside],
-    ['address', 'vf-address', s.mapFailed ? errors.addressFull : errors.address]
+    ['address', 'vf-address', s.mapFailed ? errors.addressFull : errors.address],
+    ['slot', 'vf-slot', errors.slot]
   ]
     .filter(([key]) => invalid[key])
     .concat(
@@ -258,13 +254,9 @@ function vals(page) {
     if (page.props.go) page.props.go({view: 'bag', step: next});
     else page.setState({step: next});
   };
-  const waOrder = vfOrderMessage(
-    live,
-    {...delivery, date: deliveryChanged ? '' : date, slot},
-    displayedTotal,
-    L,
-    {deliveryPending: !quoted}
-  );
+  const waOrder = vfOrderMessage(live, {...delivery, date, slot}, displayedTotal, L, {
+    deliveryPending: !quoted
+  });
   return {
     ...S,
     waHref: live.length ? S.waWith(waOrder) : S.waHref,
@@ -375,10 +367,9 @@ function vals(page) {
       }
     },
     problems: s.submitted ? problems : [],
-    deliveryChanged,
+    deliveryReview: !date ? C.noDelivery : deliveryChanged(date, slot) ? C.deliveryChanged : '',
     preparationNotice: !vfBagSameDay(live) ? C.preparationNotice : '',
-    deliverySuggestion: date && slot != null ? vfDeliveryWhen({...delivery, date, slot}, fa) : '',
-    confirmDelivery: () => update({date, slot}),
+    slotError: shown('slot') ? errors.slot : undefined,
     toDelivery: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
       // A changed price stops here, beside its line, before the customer goes on.
@@ -400,18 +391,18 @@ function vals(page) {
         return;
       }
       // Recheck at click time too: the customer may have left this form open past the cutoff.
-      if (vfDeliveryChanged(delivery, new Date(), live)) {
-        page.setState({submitted: true});
+      const clickTime = vfNow();
+      const currentDate = vfDeliveryDate(delivery, clickTime, live);
+      const currentSlot = vfDeliverySlot(delivery, clickTime, live);
+      page.setState({submitted: true});
+      if (deliveryChanged(currentDate, currentSlot)) {
         S.focus('vf-delivery-changed');
         return;
       }
-      page.setState({
-        submitted: true
-      });
-      if (problems.length) {
+      if (problems.length || currentSlot == null) {
         // One problem goes straight to its field; several go to the summary that lists them.
         // The map can't carry aria-invalid, so it is focused directly.
-        if (problems.length > 1) S.focus('vf-errors');
+        if (problems.length > 1 || currentSlot == null) S.focus('vf-errors');
         else if (problems[0].target === 'vf-map') S.focus('vf-map');
         else VF_NAV.focusFirstInvalid();
         return;
@@ -419,8 +410,8 @@ function vals(page) {
       if (st)
         st.setDelivery({
           ...delivery,
-          date,
-          slot,
+          date: currentDate,
+          slot: currentSlot,
           phone: vfMobile(delivery.phone),
           senderPhone: vfMobile(delivery.senderPhone)
         });
@@ -580,11 +571,13 @@ function vals(page) {
       off: closed
     })),
     date,
-    setDate: iso => update({date: iso}),
+    setDate: iso => update({date: iso, slot: null}),
     slot: slot == null ? null : String(slot),
     setSlot: value => {
-      const chosen = vfDeliverySlots(date).find(({start}) => String(start) === value);
-      if (chosen && !chosen.closed) update({slot: chosen.start});
+      const pickedAt = vfNow();
+      if (date !== vfDeliveryDate(delivery, pickedAt, live)) return;
+      const chosen = vfDeliverySlots(date, pickedAt).find(({start}) => String(start) === value);
+      if (chosen && !chosen.closed) update({date, slot: chosen.start});
     },
     summary: live.map(l => ({
       image: vfProductImage(l, L),

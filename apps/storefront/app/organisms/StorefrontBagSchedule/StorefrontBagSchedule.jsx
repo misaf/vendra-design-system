@@ -29,18 +29,9 @@ export function StorefrontBagSchedule({title, preparationNotice, review, day, sl
         <>{title}</>
       </h2>
       {preparationNotice && <p className="ag-field__hint tw:m-0">{preparationNotice}</p>}
-      {review.visible && (
+      {review && (
         <div id="vf-delivery-changed" tabIndex={-1}>
-          <DS.Alert tone="warning" title={review.title}>
-            {review.suggestion ? (
-              <>
-                <p>{review.suggestion}</p>
-                <DS.Button onClick={review.onConfirm}>{review.confirmLabel}</DS.Button>
-              </>
-            ) : (
-              <p>{review.unavailableLabel}</p>
-            )}
-          </DS.Alert>
+          <DS.Alert tone="warning" title={review} />
         </div>
       )}
       <DS.ChoiceGroup
@@ -63,24 +54,26 @@ export function StorefrontBagSchedule({title, preparationNotice, review, day, sl
           </React.Fragment>
         ))}
       </DS.ChoiceGroup>
-      <DS.ChoiceGroup
-        legend={slot.label}
-        minTileWidth={130}
-        value={slot.value}
-        onChange={slot.onChange}
-      >
-        {slot.options.map((z, $index) => (
-          <React.Fragment key={$index}>
+      <div id="vf-slot" tabIndex={-1}>
+        <DS.ChoiceGroup
+          legend={slot.label}
+          error={slot.error}
+          minTileWidth={130}
+          value={slot.value}
+          onChange={slot.onChange}
+        >
+          {slot.options.map(z => (
             <DS.ChoiceTile
+              key={z.value}
               size="sm"
-              value={z?.value}
-              label={z?.label}
-              description={z?.desc}
-              disabled={z?.off}
+              value={z.value}
+              label={z.label}
+              description={z.desc}
+              disabled={z.off}
             />
-          </React.Fragment>
-        ))}
-      </DS.ChoiceGroup>
+          ))}
+        </DS.ChoiceGroup>
+      </div>
     </section>
   );
 }

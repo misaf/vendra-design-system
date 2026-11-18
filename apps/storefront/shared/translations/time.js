@@ -25,6 +25,7 @@ export function vfDayMonth(date, fa) {
 
 // When an order arrives: «سه‌شنبه، ۱۴ مهر، ۱۲:۰۰ تا ۱۶:۰۰» / "Tue 6 October · 12:00–16:00".
 export function vfDeliveryWhen(delivery, fa) {
+  if (delivery.slot == null) return '';
   const end = (VF_SLOTS.find(slot => slot.start === delivery.slot) || VF_SLOTS[1]).end;
   const slot = vfSlotLabel(delivery.slot, end, fa);
   if (!delivery.date) return slot;

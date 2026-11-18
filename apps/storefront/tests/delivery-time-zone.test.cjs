@@ -131,8 +131,10 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
     assert.equal(storeDays('central', afterLastSlot)[0].noOpenSlots, true);
     const replacement = storeDate(chosen, afterLastSlot);
     assert.equal(replacement, '2026-10-06');
-    assert.equal(storeSlot(chosen, afterLastSlot), '20');
+    assert.equal(storeSlot(chosen, afterLastSlot), undefined);
     assert.equal(storeChanged(chosen, afterLastSlot), true);
+    assert.equal(storeChanged({...chosen, date: replacement, slot: null}, afterLastSlot), true);
+    assert.equal(storeChanged({...chosen, date: ''}, afterLastSlot), true);
     assert.equal(storeChanged({...chosen, date: replacement}, afterLastSlot), false);
 
     vm.runInContext('VF_SLOTS.length = 0', ctx);

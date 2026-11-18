@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, pinDelivery, scanAxe} from './helpers.mjs';
+import {openSite, pinDelivery, scanAxe, chooseDeliveryTime} from './helpers.mjs';
 
 for (const lang of ['en', 'fa']) {
   test(`payment reviews delivery and preserves edits (${lang})`, async ({page}, info) => {
@@ -11,6 +11,7 @@ for (const lang of ['en', 'fa']) {
     await page.locator('#vf-address').fill('Plaque 12, unit 3');
     await page.locator('#vf-sender').fill('Sara Karimi');
     await page.locator('#vf-sender-phone').fill('09121112233');
+    await chooseDeliveryTime(page);
     const continueToPayment = () =>
       page
         .getByRole('button', {

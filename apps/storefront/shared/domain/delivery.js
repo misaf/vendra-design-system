@@ -119,7 +119,7 @@ export const VF_DELIVERY = {
   noMap: false,
   zone: 'central',
   date: '',
-  slot: '12',
+  slot: null,
   promo: ''
 };
 
@@ -221,24 +221,17 @@ export function vfDeliverySlots(iso, now = vfNow()) {
   return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now, VF_DELIVERY_TIME_ZONE);
 }
 
-// The chosen slot when it is still open on the delivery day, otherwise the first open slot.
+// A time choice belongs to its date and must still be open.
 export function vfDeliverySlot(delivery, now = vfNow(), lines = []) {
-  return commerce.openSlot(
-    vfDeliverySlots(vfDeliveryDate(delivery, now, lines), now),
-    delivery.slot
-  );
+  if (!delivery.date || delivery.date !== vfDeliveryDate(delivery, now, lines)) return;
+  return vfDeliverySlots(delivery.date, now).find(
+    slot => !slot.closed && String(slot.start) === String(delivery.slot)
+  )?.start;
 }
 
-// Empty defaults can pick the first window; an explicit choice must never change unnoticed.
+// Checkout requires a chosen, still-available delivery window.
 export function vfDeliveryChanged(delivery, now = vfNow(), lines = []) {
-  const date = vfDeliveryDate(delivery, now, lines);
-  const slot = vfDeliverySlot(delivery, now, lines);
-  return (
-    !date ||
-    slot == null ||
-    (!!delivery.date && delivery.date !== date) ||
-    (!!delivery.date && delivery.slot != null && String(delivery.slot) !== String(slot))
-  );
+  return vfDeliverySlot(delivery, now, lines) == null;
 }
 
 export function vfPhone(value) {

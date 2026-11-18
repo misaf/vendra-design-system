@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from './helpers.mjs';
+import {openSite, scanAxe, chooseDeliveryTime} from './helpers.mjs';
 const MORNING = new Date('2026-10-05T09:00:00+03:30');
 const button = (page, name) =>
   page.getByRole('button', {name, exact: true}).filter({visible: true});
@@ -13,6 +13,7 @@ async function fillDelivery(page) {
   await page.locator('#vf-address').fill('Private street A, unit 3');
   await page.locator('#vf-sender').fill('Private sender A');
   await page.locator('#vf-sender-phone').fill('09120000000');
+  await chooseDeliveryTime(page);
 }
 async function payStep(page, fa) {
   await button(page, fa ? 'ادامه و پرداخت' : 'Continue to payment').click();

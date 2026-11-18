@@ -5,7 +5,8 @@ import {
   openFooterGroup,
   pinDelivery,
   scanAxe,
-  choiceTile
+  choiceTile,
+  chooseDeliveryTime
 } from './helpers.mjs';
 
 // Counter workflows remain available from the display-first presentation.
@@ -75,7 +76,7 @@ test('today’s slots close two hours before they end', async ({page}) => {
     await expect(slot).toBeDisabled();
     await expect(slot).toHaveAccessibleDescription(/Closed/);
   }
-  await expect(slots.getByRole('radio', {name: /^16:00–20:00/})).toBeChecked();
+  await expect(slots.getByRole('radio', {checked: true})).toHaveCount(0);
   await choiceTile(page.getByRole('radiogroup', {name: 'Delivery day'}), /^Tomorrow/).click();
   await expect(slots.getByRole('radio', {disabled: true})).toHaveCount(0);
 });
@@ -109,6 +110,7 @@ test('a bought card needs its message, and any item can add one', async ({page})
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -135,7 +137,7 @@ test('several problems are listed together, each linking to its field', async ({
     .click();
   const summary = page.locator('#vf-errors');
   await expect(summary).toBeFocused();
-  await expect(summary).toContainText('Check 6 details to continue.');
+  await expect(summary).toContainText('Check 7 details to continue.');
   await summary.getByRole('link', {name: 'Enter your name.'}).click();
   await expect(page.locator('#vf-sender')).toBeFocused();
   expect(await scanAxe(page)).toEqual([]);
@@ -186,6 +188,7 @@ test('a promo code discounts the bag and carries to checkout', async ({page}) =>
   await page.fill('#vf-phone', '09121234567');
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -278,6 +281,7 @@ test('a delivered order shows the delivery photo', async ({page}) => {
 test('the delivery pin is required and travels with the order', async ({page}) => {
   await openSite(page, 'bag', 'en', {step: 'delivery'});
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page.fill('#vf-name', 'Shirin Ahmadi');
   await page.fill('#vf-phone', '09121234567');
   await page.fill('#vf-address', 'Plaque 12, unit 3');
@@ -315,6 +319,7 @@ test('without a map, a full typed address is enough', async ({page}) => {
   await page.fill('#vf-name', 'شیرین احمدی');
   await page.fill('#vf-phone', '09121234567');
   await page.fill('#vf-address', 'کرج، عظیمیه، خیابان گلستان، پلاک ۱۲');
+  await chooseDeliveryTime(page);
   await page.getByRole('button', {name: 'ادامه و پرداخت'}).locator('visible=true').first().click();
   await expect(page.locator('#vf-last4')).toBeVisible();
 });
@@ -375,6 +380,7 @@ test('a signed-in customer can send to a saved address', async ({page}) => {
   await expect(page.locator('#vf-name')).toHaveValue('Shirin Ahmadi');
   await expect(page.locator('#vf-address')).toHaveValue('40 Moazen Blvd, Gohardasht');
   await expect(page.locator('#vf-map-status')).toContainText('35.81620, 50.93910');
+  await chooseDeliveryTime(page);
   expect(await scanAxe(page)).toEqual([]);
   await page
     .getByRole('button', {name: 'Continue to payment'})
@@ -554,6 +560,7 @@ test('a card-to-card order says its payment is being confirmed, and offers an ac
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -588,6 +595,7 @@ async function toOnlinePayment(page) {
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -828,6 +836,7 @@ test('a customer tops up their balance, then pays from it with the balance disco
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await page.fill('#vf-sender', 'Shirin Ahmadi');
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -857,6 +866,7 @@ test('a guest is asked to sign in before paying from a balance', async ({page}) 
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')
@@ -890,6 +900,7 @@ test('a balance below the discount line says what a top-up would save', async ({
   await pinDelivery(page);
   await page.fill('#vf-address', 'Plaque 12, unit 3');
   await fillSender(page);
+  await chooseDeliveryTime(page);
   await page
     .getByRole('button', {name: 'Continue to payment'})
     .locator('visible=true')

@@ -360,7 +360,8 @@ export const VF_SAMPLE_ORDER_EXTRAS = {
     phone: '09121230000',
     sender: 'Shirin Ahmadi',
     senderPhone: '09125649438',
-    address: '12 Golha St, Azimiyeh'
+    address: '12 Golha St, Azimiyeh',
+    slot: '12'
   }
 };
 

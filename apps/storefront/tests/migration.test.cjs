@@ -339,7 +339,18 @@ function page(name, c, props = {}) {
   assert.equal(reorder[0].unit, 5050000);
   // Online, the customer leaves for the bank's page; the simulated bank's answer rides on the return
   // link, and the order waits in this tab's session until the bank has confirmed it.
-  const checkout = page('checkout', c, {routeInfo: {view: 'checkout', demo: 'error'}});
+  const checkoutWithDelivery = routeInfo => {
+    const logic = page('checkout', c, {routeInfo});
+    const bag = c.vfSampleBag();
+    const date = c.vfDeliveryDate({zone: 'central'}, new Date(), bag);
+    logic.props.store = {
+      bag,
+      delivery: {zone: 'central', date, slot: '12'},
+      complete: order => logic.setState({order, placed: true})
+    };
+    return logic;
+  };
+  const checkout = checkoutWithDelivery({view: 'checkout', demo: 'error'});
   checkout.renderVals().setMethod('online');
   checkout.renderVals().place();
   let payment = checkout.renderVals().bankTrip;
@@ -411,7 +422,7 @@ function page(name, c, props = {}) {
   assert.equal(contact.state.msg, 'Keep this draft');
   assert.ok(contact.state.apiError);
   // With an API base, an order goes out as a Checkout request; a failed request places nothing.
-  const live = page('checkout', c);
+  const live = checkoutWithDelivery({view: 'checkout'});
   live.renderVals().setLast4('1234');
   live.renderVals().place();
   assert.equal(live.state.busy, true);

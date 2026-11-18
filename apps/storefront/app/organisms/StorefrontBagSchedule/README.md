@@ -1,7 +1,7 @@
 # StorefrontBagSchedule
 
-Composes the scheduling section/title, preparation notice, controlled changed-window feedback/confirmation and day/time ChoiceGroups from explicit title, notice, review and day/slot descriptors. Preserves section/heading IDs, focusable review ID, classes/order, group legends, tile widths/sizes, descriptions and disabled states.
+Composes the scheduling heading, preparation notice, availability warning, and controlled day and time choices. The time group shows its validation message and provides a focus target for the error summary.
 
-View retains descriptor mapping and normalized options. Bag/shared logic retains preparation eligibility, zone/date/cutoff rules, available days/slots, selection/persistence, changed-window detection, suggestion/confirmation and validation focus. No page model, state/effects, browser APIs or commerce rules belong here.
+View maps the descriptors and options. Bag and shared logic own delivery eligibility, zone cutoffs, availability, selection, persistence, and validation focus.
 
-Verify bilingual mixed/same-day eligibility, sold-out days and elapsed slots, day/time selection, changed-window explicit confirmation and focus, reload, touch/tablet rotation, keyboard selection, overflow and accessibility. Compare scheduling regions with the unchanged baseline.
+Verify bilingual mixed-bag and same-day eligibility, sold-out days, elapsed slots, required time selection, persistence after reload, keyboard and touch interaction, and error focus. Changing the day or losing the selected window requires a new time choice.

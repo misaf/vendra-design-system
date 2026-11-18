@@ -147,14 +147,7 @@ export function View({v}) {
                     <StorefrontBagSchedule
                       title={v.t?.when}
                       preparationNotice={v.preparationNotice}
-                      review={{
-                        visible: v.deliveryChanged,
-                        title: v.t.deliveryChanged,
-                        suggestion: v.deliverySuggestion,
-                        onConfirm: v.confirmDelivery,
-                        confirmLabel: v.t.confirmDelivery,
-                        unavailableLabel: v.t.noDelivery
-                      }}
+                      review={v.deliveryReview}
                       day={{
                         label: v.t?.day,
                         value: v.date,
@@ -163,6 +156,7 @@ export function View({v}) {
                       }}
                       slot={{
                         label: v.t?.slot,
+                        error: v.slotError,
                         value: v.slot,
                         onChange: v.setSlot,
                         options: list(v.slots)
