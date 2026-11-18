@@ -18,6 +18,9 @@ a {
 .vf-page * {
   box-sizing: border-box;
 }
+.vf-shell-container {
+  container-name: vf-storefront;
+}
 .vf-page main {
   width: 100%;
   min-width: 0;
@@ -1493,7 +1496,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 /* Source: shared/styles/commerce-spacing.css */
 /* Keep the editable bag's summary itemized only when it sits beside the items.
    In the standard density, two columns need 480px + 380px + 20px gap + 48px page padding. */
-@container (width < 928px) {
+@container vf-storefront (width < 928px) {
   .vf-bag-columns[data-editing-items] > .vf-bag-items {
     flex-basis: 100%;
   }
@@ -1501,7 +1504,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
     display: none;
   }
 }
-@container (width >= 928px) {
+@container vf-storefront (width >= 928px) {
   .vf-bag-columns[data-editing-items] {
     flex-wrap: nowrap;
   }

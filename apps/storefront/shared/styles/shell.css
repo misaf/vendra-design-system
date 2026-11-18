@@ -14,6 +14,9 @@ a {
 .vf-page * {
   box-sizing: border-box;
 }
+.vf-shell-container {
+  container-name: vf-storefront;
+}
 .vf-page main {
   width: 100%;
   min-width: 0;
