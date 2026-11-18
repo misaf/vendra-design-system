@@ -7,7 +7,16 @@ import {useMergedRef} from '../../utils/refs.js';
 // (aria-describedby) while shown, and Esc dismisses it. React Aria ignores touch, so a tap on the
 // trigger toggles it too, and a tap anywhere else hides it. The trigger is a React Aria button
 // (Button, IconButton) or a native focusable element.
-export function Tooltip({content, placement = 'top', open, children, ref}) {
+export function Tooltip({
+  content,
+  placement = 'top',
+  open,
+  children,
+  className,
+  onPointerUp,
+  ref,
+  ...rest
+}) {
   const [tapped, setTapped] = React.useState(false);
   const wrapperRef = React.useRef(null);
   const mergedRef = useMergedRef(wrapperRef, ref);
@@ -34,9 +43,13 @@ export function Tooltip({content, placement = 'top', open, children, ref}) {
       closeDelay={200}
     >
       <span
+        {...rest}
         ref={mergedRef}
-        className="ag-tip"
-        onPointerUp={event => event.pointerType === 'touch' && setTapped(shown => !shown)}
+        className={cx('ag-tip', className)}
+        onPointerUp={event => {
+          onPointerUp?.(event);
+          if (!event.defaultPrevented && event.pointerType === 'touch') setTapped(shown => !shown);
+        }}
       >
         {trigger}
       </span>

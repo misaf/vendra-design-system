@@ -13,12 +13,13 @@ export function OrderTimeline({
   doneLabel,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('OrderTimeline', messages, {done: doneLabel});
   if (status === 'cancelled') return null;
   return (
-    <ol ref={ref} className={cx('ag-otl', className)} style={style} aria-label={label}>
+    <ol {...rest} ref={ref} className={cx('ag-otl', className)} style={style} aria-label={label}>
       {steps.map((step, i) => {
         const done = status === 'done' || i < current;
         const isCurrent = status !== 'done' && i === current;

@@ -1,4 +1,6 @@
-export interface ChoiceTileProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface ChoiceTileProps extends AriaWidgetAttributes<HTMLLabelElement> {
   /** The native radio input. */
   ref?: React.Ref<HTMLInputElement>;
   label: React.ReactNode;

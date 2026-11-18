@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface UseFieldOptions {
   /** The control's id; generated when omitted. */
   id?: string;
@@ -23,7 +25,7 @@ export interface FieldState {
 }
 /** Ids and ARIA wiring shared by every form control. */
 export declare function useField(options: UseFieldOptions): FieldState;
-export interface FieldMessageProps {
+export interface FieldMessageProps extends RootAttributes<HTMLSpanElement> {
   /** The message element. */
   ref?: React.Ref<HTMLSpanElement>;
   id: string;

@@ -12,9 +12,10 @@ import { useMergedRef } from "../../utils/refs.js";
 // a real range input for keyboards and screen readers (read as formatValue); dragging a handle or
 // pressing the track moves the nearest one. The handles stay a step apart; RTL mirrors it, following
 // the page's language.
-export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (number) => String(number), label, labelledBy, labels, showValues = true, className = "", ref }) {
+export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value, defaultValue, onChange, formatValue = (number) => String(number), label, labelledBy: labelIds, "aria-labelledby": ariaLabelledBy, "aria-label": ariaLabel, labels, showValues = true, className = "", ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
+	const labelledBy = labelIds ?? ariaLabelledBy;
 	const text = useMessages("RangeSlider", messages, {
 		label,
 		...labels
@@ -57,13 +58,14 @@ export function RangeSlider({ range = true, min = 0, max = 100, step = 1, value,
 	// React Aria names each handle by its own label followed by the slider's (label or labelledBy).
 	const thumbLabels = range ? [text.min, text.max] : [undefined];
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(Slider, {
+		...rest,
 		ref: rootRef,
 		value: range ? values : values[0],
 		minValue: min,
 		maxValue: max,
 		step,
 		onChange: change,
-		"aria-label": labelledBy ? undefined : text.label,
+		"aria-label": labelledBy ? undefined : ariaLabel ?? text.label,
 		"aria-labelledby": labelledBy,
 		className: cx("ag-range", !range && "ag-range--single", className)
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-range__track" }, /* @__PURE__ */ React.createElement("span", {

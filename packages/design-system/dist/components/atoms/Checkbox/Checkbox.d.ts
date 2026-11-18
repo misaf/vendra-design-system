@@ -1,8 +1,8 @@
 import * as React from 'react';
-export interface CheckboxProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange'
-> {
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface CheckboxProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>, DataAttributes {
   /** The native checkbox input, for focusing it or a form library. */
   ref?: React.Ref<HTMLInputElement>;
   /** The new state */

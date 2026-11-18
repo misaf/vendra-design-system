@@ -20,12 +20,13 @@ export function AddressCard({
   labels,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('AddressCard', messages, labels);
   const named = template => template.replace('{name}', label || '');
   return (
-    <div ref={ref} className={cx('ag-card', 'ag-addr', className)} style={style}>
+    <div {...rest} ref={ref} className={cx('ag-card', 'ag-addr', className)} style={style}>
       <div className="ag-addr__head">
         <span className="ag-addr__label">{label}</span>
         <div className="ag-addr__tools">

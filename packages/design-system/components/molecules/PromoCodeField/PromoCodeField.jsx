@@ -32,7 +32,8 @@ export function PromoCodeField({
   revealLabel,
   className,
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
@@ -76,7 +77,7 @@ export function PromoCodeField({
     if (!busy && code.trim()) onApply?.(code.trim());
   };
   return (
-    <div ref={rootRef} className={cx('ag-promo', className)} style={style}>
+    <div {...rest} ref={rootRef} className={cx('ag-promo', className)} style={style}>
       {applied ? (
         <div ref={appliedRef} className="ag-promo__applied" role="status">
           <span className="ag-promo__code">

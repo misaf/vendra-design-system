@@ -1,3 +1,5 @@
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
 import type {ToastContent} from '../../molecules/Toast/Toast.js';
 /** The shortest time, in milliseconds, a timed toast without an action stays (10 s). */
 export declare const TOAST_MIN_TIMEOUT: number;
@@ -12,7 +14,7 @@ export declare class ToastQueue {
   close(key: string): void;
   clear(): void;
 }
-export interface ToastRegionProps {
+export interface ToastRegionProps extends Omit<AriaWidgetAttributes<HTMLDivElement>, 'dir'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   queue: ToastQueue;

@@ -1,4 +1,6 @@
-export interface AlertProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface AlertProps extends Omit<RootAttributes<HTMLDivElement>, 'title'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** The status tones Badge and Toast share. */

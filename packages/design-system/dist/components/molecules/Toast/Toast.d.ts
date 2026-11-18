@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface ToastProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface ToastProps extends AriaWidgetAttributes<HTMLDivElement> {
   /** The toast. */
   ref?: React.Ref<HTMLDivElement>;
   /** The queued toast, when a ToastRegion renders it (internal) */

@@ -8,6 +8,7 @@ import {
 } from 'react-aria-components';
 import {Icon} from '../../atoms/Icon/Icon.jsx';
 import {Button} from '../../atoms/Button/Button.jsx';
+import {cx} from '../../utils/cx.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
@@ -29,17 +30,31 @@ function ToastBody({
   closeLabel,
   closable,
   style,
-  ref
+  className,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  ref,
+  ...rest
 }) {
+  const titleId = React.useId();
+  const messageId = React.useId();
   return (
-    <AriaToast ref={ref} toast={toast} className="ag-toast" style={style}>
+    <AriaToast
+      {...rest}
+      ref={ref}
+      toast={toast}
+      className={cx('ag-toast', className)}
+      style={style}
+      aria-labelledby={cx(titleId, labelledBy)}
+      aria-describedby={cx(message && messageId, describedBy) || undefined}
+    >
       <Icon name={ICONS[tone]} size={20} className={'ag-toast__icon--' + tone} />
       <ToastContent className="ag-toast__body">
-        <Text slot="title" elementType="div" className="ag-toast__title">
+        <Text id={titleId} slot="title" elementType="div" className="ag-toast__title">
           {title}
         </Text>
         {message && (
-          <Text slot="description" elementType="div" className="ag-toast__msg">
+          <Text id={messageId} slot="description" elementType="div" className="ag-toast__msg">
             {message}
           </Text>
         )}
@@ -76,7 +91,9 @@ export function Toast({
   onClose,
   closeLabel,
   style,
-  ref
+  className,
+  ref,
+  ...rest
 }) {
   const text = useMessages('Toast', messages, {close: closeLabel});
   const key = React.useId();
@@ -94,33 +111,24 @@ export function Toast({
     }),
     [key, toast]
   );
-  if (queued)
-    return (
-      <ToastBody
-        toast={queued}
-        tone={tone}
-        title={title}
-        message={message}
-        action={action}
-        closeLabel={text.close}
-        closable
-        style={style}
-        ref={ref}
-      />
-    );
-  return (
-    <ToastStateContext.Provider value={state}>
-      <ToastBody
-        toast={toast}
-        tone={tone}
-        title={title}
-        message={message}
-        action={action}
-        closeLabel={text.close}
-        closable={!!onClose}
-        style={style}
-        ref={ref}
-      />
-    </ToastStateContext.Provider>
+  const body = (
+    <ToastBody
+      {...rest}
+      toast={queued ?? toast}
+      tone={tone}
+      title={title}
+      message={message}
+      action={action}
+      closeLabel={text.close}
+      closable={!!(queued || onClose)}
+      className={className}
+      style={style}
+      ref={ref}
+    />
+  );
+  return queued ? (
+    body
+  ) : (
+    <ToastStateContext.Provider value={state}>{body}</ToastStateContext.Provider>
   );
 }

@@ -1,6 +1,5 @@
-// Renders every package component with a React 19 `ref` (an object ref, as a tenant app or a form
-// library passes one) and puts the refs on window.vendraRefs for refs.spec.mjs. Each component sits
-// in its own ErrorBoundary, so one failure fails only its own test.
+// Shared package fixture for DOM attribute and React 19 ref tests. Each component sits in
+// its own ErrorBoundary so a single render failure doesn't break the rest of the fixture.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import * as DS from '../../app/ds.js';
@@ -15,145 +14,177 @@ toasts.add({title: 'Saved'});
 
 const samples = {
   // Form controls: the ref is the native control.
-  Input: ref => <DS.Input ref={ref} label="Name" />,
-  PhoneInput: ref => <DS.PhoneInput ref={ref} label="Phone" />,
-  CodeInput: ref => <DS.CodeInput ref={ref} label="Code" webOtp={false} />,
-  Checkbox: ref => <DS.Checkbox ref={ref} label="Gift wrap" />,
-  Radio: ref => (
+  Input: props => <DS.Input {...props} label="Name" />,
+  PhoneInput: props => <DS.PhoneInput {...props} label="Phone" />,
+  CodeInput: props => <DS.CodeInput {...props} label="Code" webOtp={false} />,
+  Checkbox: props => <DS.Checkbox {...props} label="Gift wrap" />,
+  Radio: props => (
     <DS.RadioGroup label="Size">
-      <DS.Radio ref={ref} value="s" label="Small" />
+      <DS.Radio {...props} value="s" label="Small" />
     </DS.RadioGroup>
   ),
-  Switch: ref => <DS.Switch ref={ref} label="In stock only" />,
-  ChoiceTile: ref => (
+  Switch: props => <DS.Switch {...props} label="In stock only" />,
+  ChoiceTile: props => (
     <DS.ChoiceGroup label="Delivery">
-      <DS.ChoiceTile ref={ref} value="today" label="Today" />
+      <DS.ChoiceTile {...props} value="today" label="Today" />
     </DS.ChoiceGroup>
   ),
-  QuantityInput: ref => <DS.QuantityInput ref={ref} />,
-  Select: ref => <DS.Select ref={ref} label="City" options={['Karaj', 'Tehran']} />,
-  SearchField: ref => <DS.SearchField ref={ref} label="Search" />,
+  QuantityInput: props => <DS.QuantityInput {...props} />,
+  Select: props => <DS.Select {...props} label="City" options={['Karaj', 'Tehran']} />,
+  SearchField: props => <DS.SearchField {...props} label="Search" />,
   // Everything else: the ref is the component's own element.
-  ArchFrame: ref => <DS.ArchFrame ref={ref} />,
-  Badge: ref => <DS.Badge ref={ref}>New</DS.Badge>,
-  Button: ref => <DS.Button ref={ref}>Add</DS.Button>,
-  ButtonLink: ref => (
-    <DS.Button ref={ref} href="#shop">
+  ArchFrame: props => <DS.ArchFrame {...props} />,
+  Badge: props => <DS.Badge {...props}>New</DS.Badge>,
+  Button: props => <DS.Button {...props}>Add</DS.Button>,
+  ButtonLink: props => (
+    <DS.Button {...props} href="#shop">
       Shop
     </DS.Button>
   ),
-  Card: ref => <DS.Card ref={ref}>Card</DS.Card>,
-  Chip: ref => <DS.Chip ref={ref}>Roses</DS.Chip>,
-  ChoiceGroup: ref => (
-    <DS.ChoiceGroup ref={ref} label="Wrap">
+  Card: props => <DS.Card {...props}>Card</DS.Card>,
+  Chip: props => <DS.Chip {...props}>Roses</DS.Chip>,
+  ChoiceGroupWrapped: props => (
+    <DS.ChoiceGroup {...props} hint="Choose one" label="Wrap">
       <DS.ChoiceTile value="paper" label="Paper" />
     </DS.ChoiceGroup>
   ),
-  FieldMessage: ref => (
-    <FieldMessage ref={ref} id="message">
-      Hint
-    </FieldMessage>
+  ChoiceGroup: props => (
+    <DS.ChoiceGroup {...props} label="Wrap">
+      <DS.ChoiceTile value="paper" label="Paper" />
+    </DS.ChoiceGroup>
   ),
-  Icon: ref => <DS.Icon ref={ref} name="heart" />,
-  IconButton: ref => <DS.IconButton ref={ref} icon="heart" label="Save" />,
-  LiveRegion: ref => <DS.LiveRegion ref={ref}>Updated</DS.LiveRegion>,
-  Meter: ref => <DS.Meter ref={ref} label="Progress" value={40} />,
-  Picture: ref => <DS.Picture ref={ref} image={photo} />,
-  Price: ref => <DS.Price ref={ref} value="2,200,000 Toman" />,
-  RadioGroup: ref => (
-    <DS.RadioGroup ref={ref} label="Colour">
+  FieldMessage: props => <FieldMessage {...props}>Hint</FieldMessage>,
+  Icon: props => <DS.Icon {...props} name="heart" />,
+  IconButton: props => <DS.IconButton {...props} icon="heart" label="Save" />,
+  LiveRegion: props => <DS.LiveRegion {...props}>Updated</DS.LiveRegion>,
+  Meter: props => <DS.Meter {...props} label="Progress" value={40} />,
+  Picture: props => <DS.Picture {...props} image={photo} />,
+  Price: props => <DS.Price {...props} value="2,200,000 Toman" />,
+  RadioGroupWrapped: props => (
+    <DS.RadioGroup {...props} legend="Colour" hint="Choose one" aria-describedby="group-details">
+      <DS.Radio value="red" label="Red" />
+      <span id="group-details">Available colours</span>
+    </DS.RadioGroup>
+  ),
+  RadioGroup: props => (
+    <DS.RadioGroup {...props} label="Colour">
       <DS.Radio value="red" label="Red" />
     </DS.RadioGroup>
   ),
-  RangeSlider: ref => <DS.RangeSlider ref={ref} label="Price" />,
-  Skeleton: ref => <DS.Skeleton ref={ref} />,
-  SkipLink: ref => <DS.SkipLink ref={ref}>Skip to content</DS.SkipLink>,
-  Spinner: ref => <DS.Spinner ref={ref} />,
-  Accordion: ref => <DS.Accordion ref={ref} items={[{id: 'a', title: 'Care', content: 'Water'}]} />,
-  AddressCard: ref => <DS.AddressCard ref={ref} label="Home" line="12 Golestan St" />,
-  Alert: ref => <DS.Alert ref={ref}>Saved</DS.Alert>,
-  AnnouncementBar: ref => (
-    <DS.AnnouncementBar ref={ref} label="News">
+  RangeSlider: props => <DS.RangeSlider {...props} label="Price" />,
+  SkeletonCard: props => <DS.Skeleton {...props} shape="card" />,
+  SkeletonCircle: props => <DS.Skeleton {...props} shape="circle" />,
+  Skeleton: props => <DS.Skeleton {...props} />,
+  SkipLink: props => <DS.SkipLink {...props}>Skip to content</DS.SkipLink>,
+  SpinnerDecorative: props => <DS.Spinner {...props} decorative />,
+  Spinner: props => <DS.Spinner {...props} />,
+  Accordion: props => (
+    <DS.Accordion
+      {...props}
+      aria-labelledby="component-SectionHeader"
+      items={[{id: 'a', title: 'Care', content: 'Water'}]}
+    />
+  ),
+  AddressCard: props => <DS.AddressCard {...props} label="Home" line="12 Golestan St" />,
+  Alert: props => (
+    <DS.Alert {...props} tone="danger" role="note" aria-describedby="tenant-details">
+      Saved
+    </DS.Alert>
+  ),
+  AnnouncementBar: props => (
+    <DS.AnnouncementBar {...props} label="News">
       Free delivery
     </DS.AnnouncementBar>
   ),
-  BlogCard: ref => <DS.BlogCard ref={ref} title="Peonies" href="#post" />,
-  Breadcrumb: ref => <DS.Breadcrumb ref={ref} items={[{label: 'Shop', href: '#shop'}]} />,
-  CategoryCard: ref => <DS.CategoryCard ref={ref} label="Roses" href="#roses" />,
-  DetailList: ref => <DS.DetailList ref={ref} rows={[{label: 'Code', value: 'VF-7K2M4Q'}]} />,
-  EmptyState: ref => <DS.EmptyState ref={ref} title="Nothing here" />,
-  ErrorSummary: ref => (
-    <DS.ErrorSummary ref={ref} errors={[{text: 'Enter a name', target: 'name'}]} />
+  BlogCard: props => <DS.BlogCard {...props} title="Peonies" href="#post" />,
+  Breadcrumb: props => <DS.Breadcrumb {...props} items={[{label: 'Shop', href: '#shop'}]} />,
+  CategoryButton: props => <DS.CategoryCard {...props} label="Roses" onClick={() => {}} />,
+  CategoryCard: props => <DS.CategoryCard {...props} label="Roses" href="#roses" />,
+  DetailList: props => <DS.DetailList {...props} rows={[{label: 'Code', value: 'VF-7K2M4Q'}]} />,
+  EmptyState: props => <DS.EmptyState {...props} title="Nothing here" />,
+  ErrorSummary: props => (
+    <DS.ErrorSummary {...props} errors={[{text: 'Enter a name', target: 'name'}]} />
   ),
-  FilterBar: ref => <DS.FilterBar ref={ref} filters={[{id: 'red', label: 'Red'}]} />,
-  LanguageSwitch: ref => <DS.LanguageSwitch ref={ref} />,
-  LineItem: ref => <DS.LineItem ref={ref} name="VF-7K2M4Q" price="2,200,000 Toman" />,
-  LoadMore: ref => (
-    <DS.LoadMore ref={ref} shown={12} total={40} status="12 of 40" label="Show more" />
+  FilterBar: props => <DS.FilterBar {...props} filters={[{id: 'red', label: 'Red'}]} />,
+  LanguageSwitch: props => <DS.LanguageSwitch {...props} />,
+  LineItem: props => <DS.LineItem {...props} name="VF-7K2M4Q" price="2,200,000 Toman" />,
+  LoadMore: props => (
+    <DS.LoadMore {...props} shown={12} total={40} status="12 of 40" label="Show more" />
   ),
-  MenuList: ref => (
-    <DS.MenuList ref={ref} label="Menu">
+  MenuList: props => (
+    <DS.MenuList {...props} label="Menu">
       <a href="#shop">Shop</a>
     </DS.MenuList>
   ),
-  NavLink: ref => (
-    <DS.NavLink ref={ref} href="#shop">
+  NavLink: props => (
+    <DS.NavLink {...props} href="#shop">
       Shop
     </DS.NavLink>
   ),
-  OfflineNotice: ref => <DS.OfflineNotice ref={ref} />,
-  OrderTimeline: ref => <DS.OrderTimeline ref={ref} steps={[{label: 'Placed'}]} />,
-  Pagination: ref => <DS.Pagination ref={ref} page={1} pageCount={3} onChange={() => {}} />,
-  PaymentCard: ref => <DS.PaymentCard ref={ref} cardNumber="6037 9918 1234 5678" />,
-  ProductCard: ref => <DS.ProductCard ref={ref} name="VF-7K2M4Q" price="2,200,000 Toman" />,
-  PromoCodeField: ref => <DS.PromoCodeField ref={ref} onApply={() => {}} />,
-  ReminderRow: ref => (
-    <DS.ReminderRow ref={ref} name="Rosa" day="12" month="Mehr" occasion="Birthday" />
+  OfflineNotice: props => <DS.OfflineNotice {...props} />,
+  OrderTimeline: props => <DS.OrderTimeline {...props} steps={[{label: 'Placed'}]} />,
+  Pagination: props => <DS.Pagination {...props} page={1} pageCount={3} onChange={() => {}} />,
+  PaymentCard: props => <DS.PaymentCard {...props} cardNumber="6037 9918 1234 5678" />,
+  ProductCard: props => <DS.ProductCard {...props} name="VF-7K2M4Q" price="2,200,000 Toman" />,
+  PromoCodeField: props => <DS.PromoCodeField {...props} onApply={() => {}} />,
+  ReminderRow: props => (
+    <DS.ReminderRow {...props} name="Rosa" day="12" month="Mehr" occasion="Birthday" />
   ),
-  ResendCode: ref => <DS.ResendCode ref={ref} onResend={() => {}} />,
-  SectionHeader: ref => <DS.SectionHeader ref={ref} title="New in" />,
-  Stepper: ref => (
-    <DS.Stepper ref={ref} steps={[{label: 'Bag'}, {label: 'Delivery'}]} current={0} />
+  ResendCode: props => <DS.ResendCode {...props} onResend={() => {}} />,
+  SectionHeader: props => <DS.SectionHeader {...props} title="New in" />,
+  StepperCompact: props => <DS.Stepper {...props} compact steps={[{label: 'Bag'}]} />,
+  Stepper: props => (
+    <DS.Stepper {...props} steps={[{label: 'Bag'}, {label: 'Delivery'}]} current={0} />
   ),
-  StockStatus: ref => <DS.StockStatus ref={ref} stock={{status: 'low', count: 2}} />,
-  Tabs: ref => <DS.Tabs ref={ref} label="Account" items={[{id: 'orders', label: 'Orders'}]} />,
-  Toast: ref => <DS.Toast ref={ref} title="Added to bag" />,
-  Tooltip: ref => (
-    <DS.Tooltip ref={ref} content="Saved items">
+  StockStatus: props => <DS.StockStatus {...props} stock={{status: 'low', count: 2}} />,
+  Tabs: props => (
+    <DS.Tabs
+      {...props}
+      aria-labelledby="component-SectionHeader"
+      items={[{id: 'orders', label: 'Orders'}]}
+    />
+  ),
+  Toast: props => (
+    <DS.Toast {...props} title="Added to bag" message="Ready" aria-describedby="tenant-details" />
+  ),
+  Tooltip: props => (
+    <DS.Tooltip {...props} content="Saved items">
       <button>Saved</button>
     </DS.Tooltip>
   ),
-  TrustSeal: ref => <DS.TrustSeal ref={ref} kind="enamad" href="#seal" />,
-  BottomTabBar: ref => (
+  TrustSeal: props => <DS.TrustSeal {...props} kind="enamad" href="#seal" />,
+  BottomTabBar: props => (
     <DS.BottomTabBar
-      ref={ref}
+      {...props}
       label="Main"
       items={[{id: 'bag', icon: 'shopping-bag', label: 'Bag'}]}
     />
   ),
-  Carousel: ref => (
-    <DS.Carousel ref={ref} label="New in">
+  Carousel: props => (
+    <DS.Carousel {...props} label="New in">
       <span>One</span>
       <span>Two</span>
     </DS.Carousel>
   ),
-  DatePicker: ref => <DS.DatePicker ref={ref} label="Delivery date" onChange={() => {}} />,
-  Dialog: ref => (
-    <DS.Dialog ref={ref} open inline title="Added">
+  DatePickerYearly: props => (
+    <DS.DatePicker {...props} yearly label="Birthday" onChange={() => {}} />
+  ),
+  DatePicker: props => <DS.DatePicker {...props} label="Delivery date" onChange={() => {}} />,
+  Dialog: props => (
+    <DS.Dialog {...props} open inline title="Added">
       In your bag
     </DS.Dialog>
   ),
-  DialogModal: ref => (
-    <DS.Dialog ref={ref} open title="Added">
-      In your bag
+  DialogModal: props => (
+    <DS.Dialog {...props} open title="Added" aria-describedby="tenant-details">
+      <p id="tenant-details">In your bag</p>
     </DS.Dialog>
   ),
-  Gallery: ref => <DS.Gallery ref={ref} images={[photo, photo]} />,
-  Lightbox: ref => <DS.Lightbox ref={ref} items={[{id: 1, images: [photo]}]} index={0} />,
-  LocationPicker: ref => (
+  Gallery: props => <DS.Gallery {...props} images={[photo, photo]} />,
+  Lightbox: props => <DS.Lightbox {...props} items={[{id: 1, images: [photo]}]} index={0} />,
+  LocationPicker: props => (
     <DS.LocationPicker
-      ref={ref}
-      id="pin"
+      {...props}
       label="Pin"
       onChange={() => {}}
       loadLeaflet={never}
@@ -161,14 +192,13 @@ const samples = {
       center={[35.83, 50.97]}
     />
   ),
-  OrderSummary: ref => (
-    <DS.OrderSummary ref={ref} lines={[{name: 'VF-7K2M4Q', price: '2,200,000 Toman'}]} />
+  OrderSummary: props => (
+    <DS.OrderSummary {...props} lines={[{name: 'VF-7K2M4Q', price: '2,200,000 Toman'}]} />
   ),
-  PaymentStatus: ref => <DS.PaymentStatus ref={ref} status="paid" />,
-  PlacesMap: ref => (
+  PaymentStatus: props => <DS.PaymentStatus {...props} status="paid" />,
+  PlacesMap: props => (
     <DS.PlacesMap
-      ref={ref}
-      id="places"
+      {...props}
       label="Addresses"
       places={[]}
       loadLeaflet={never}
@@ -176,7 +206,7 @@ const samples = {
       center={[35.83, 50.97]}
     />
   ),
-  ToastRegion: ref => <DS.ToastRegion ref={ref} queue={toasts} label="Notifications" />
+  ToastRegion: props => <DS.ToastRegion {...props} queue={toasts} label="Notifications" />
 };
 
 const refs = Object.fromEntries(Object.keys(samples).map(name => [name, React.createRef()]));
@@ -188,7 +218,14 @@ function Fixture() {
   }, []);
   return Object.entries(samples).map(([name, render]) => (
     <section key={name} data-sample={name}>
-      <DS.ErrorBoundary title={name + ' failed'}>{render(refs[name])}</DS.ErrorBoundary>
+      <DS.ErrorBoundary title={name + ' failed'}>
+        {render({
+          ref: refs[name],
+          id: 'component-' + name,
+          'data-testid': 'component-' + name,
+          'data-analytics': name
+        })}
+      </DS.ErrorBoundary>
     </section>
   ));
 }

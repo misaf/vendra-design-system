@@ -15,10 +15,11 @@ const ALERT_ICONS = {
 };
 // An inline message. danger and warning interrupt screen readers (role="alert"); the others are
 // announced politely (role="status"). `icon={false}` hides the icon.
-export function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel, className = "", style, ref }) {
+export function Alert({ tone = "neutral", icon, title, children, action, onClose, closeLabel, className = "", style, ref, ...rest }) {
 	const text = useMessages("Alert", messages, { close: closeLabel });
 	const role = tone === "danger" || tone === "warning" ? "alert" : "status";
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		role,
 		className: cx("ag-alert", "ag-alert--" + tone, className),

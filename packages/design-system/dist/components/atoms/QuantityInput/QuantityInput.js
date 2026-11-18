@@ -11,12 +11,13 @@ import { messages } from "./messages.js";
 // clamped to min..max. The count is a text field (React Aria drops the spinbutton role, which
 // VoiceOver can't focus): type a number, or use ↑/↓, Home/End or the buttons (which, as in React Aria, are left out of the Tab order). Digits follow the page's
 // language.
-export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", labels = {}, ref }) {
+export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onChange, disabled, size = "md", labels = {}, className, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const text = useMessages("QuantityInput", messages, labels, locale);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
 	const quantity = value ?? uncontrolledValue;
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(NumberField, {
+		...rest,
 		key: locale,
 		ref: localeRef,
 		value: quantity,
@@ -24,13 +25,13 @@ export function QuantityInput({ value, defaultValue = 1, min = 1, max = 99, onCh
 		maxValue: max,
 		step: 1,
 		isDisabled: disabled,
-		"aria-label": text.value,
+		"aria-label": rest["aria-label"] ?? text.value,
 		onChange: (next) => {
 			if (Number.isNaN(next)) return;
 			if (value === undefined) setUncontrolledValue(next);
 			onChange && onChange(next);
 		},
-		className: "ag-qty-root"
+		className: cx("ag-qty-root", className)
 	}, /* @__PURE__ */ React.createElement(Group, { className: cx("ag-qty", size === "sm" && "ag-qty--sm", disabled && "ag-qty--disabled") }, /* @__PURE__ */ React.createElement(Button, {
 		slot: "decrement",
 		"aria-label": text.decrease

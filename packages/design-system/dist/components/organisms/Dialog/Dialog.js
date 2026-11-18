@@ -24,26 +24,31 @@ function Content({ title, titleId, onClose, closeLabel, footer, children, headin
 // control inside marked autoFocus) and stays inside, Esc and a click outside close it (when there is
 // onClose), and focus returns to the opener. `inline` previews sit
 // inside their parent instead, without moving focus or locking the page (several can share a card).
-export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center", ref }) {
+export function Dialog({ open, onClose, title, children, footer, inline, closeLabel, maxWidth, placement = "center", className, style, "aria-labelledby": labelledBy, ref, ...rest }) {
 	const text = useMessages("Dialog", messages, { close: closeLabel });
 	const density = useDensity();
 	const titleId = React.useId();
 	const sheet = placement === "start";
 	const overlayClass = cx("ag-dialog__overlay", inline && "ag-dialog__overlay--inline", sheet && "ag-dialog__overlay--sheet");
 	const dialogClass = cx("ag-dialog", sheet && "ag-dialog--sheet");
+	const nameIds = cx(title && titleId, labelledBy) || undefined;
 	// A number is the width at the comfortable density; it grows and shrinks with the others.
-	const style = maxWidth ? { maxWidth: typeof maxWidth === "number" ? `calc(${maxWidth}px * var(--size-scale, 1))` : maxWidth } : undefined;
+	const widthStyle = maxWidth ? { maxWidth: typeof maxWidth === "number" ? `calc(${maxWidth}px * var(--size-scale, 1))` : maxWidth } : undefined;
 	if (inline) {
 		if (!open) return null;
 		return /* @__PURE__ */ React.createElement("div", {
 			className: overlayClass,
 			"data-density": density
 		}, /* @__PURE__ */ React.createElement("div", {
+			...rest,
 			ref,
 			role: "dialog",
-			"aria-labelledby": title ? titleId : undefined,
-			className: dialogClass,
-			style
+			"aria-labelledby": nameIds,
+			className: cx(dialogClass, className),
+			style: {
+				...widthStyle,
+				...style
+			}
 		}, /* @__PURE__ */ React.createElement(Content, {
 			title,
 			titleId,
@@ -61,16 +66,21 @@ export function Dialog({ open, onClose, title, children, footer, inline, closeLa
 		"data-density": density
 	}, /* @__PURE__ */ React.createElement(Modal, {
 		className: dialogClass,
-		style
+		style: widthStyle
 	}, /* @__PURE__ */ React.createElement(AriaDialog, {
+		...rest,
 		ref,
-		className: "ag-dialog__frame"
+		role: "dialog",
+		"aria-labelledby": nameIds,
+		className: cx("ag-dialog__frame", className),
+		style
 	}, /* @__PURE__ */ React.createElement(Content, {
 		onClose,
 		closeLabel: text.close,
 		footer,
 		heading: title ? /* @__PURE__ */ React.createElement(Heading, {
 			slot: "title",
+			id: titleId,
 			level: 2,
 			className: "ag-dialog__title"
 		}, title) : null

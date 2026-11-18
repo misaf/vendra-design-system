@@ -40,7 +40,8 @@ export function Pagination({
   nextLabel,
   className,
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
@@ -77,7 +78,13 @@ export function Pagination({
     );
   };
   return (
-    <nav ref={rootRef} aria-label={text.label} className={cx('ag-pages', className)} style={style}>
+    <nav
+      {...rest}
+      ref={rootRef}
+      aria-label={text.label}
+      className={cx('ag-pages', className)}
+      style={style}
+    >
       <ul className="ag-pages__list">
         <li>
           {control(current - 1, <Icon name="chevron-left" size={18} />, {

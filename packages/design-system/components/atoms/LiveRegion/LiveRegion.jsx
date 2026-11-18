@@ -8,10 +8,12 @@ export function LiveRegion({
   atomic = true,
   id,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   return (
     <div
+      {...rest}
       ref={ref}
       id={id}
       role={politeness === 'assertive' ? 'alert' : 'status'}

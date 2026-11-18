@@ -16,7 +16,7 @@ import { useMergedRef } from "../../utils/refs.js";
 // (or the one before, or "Clear all"); when the last one goes the bar is gone, so the app moves
 // focus (e.g. to its result count), as it does for `onClearAll`. Renders nothing with no filters.
 // Removing or clearing reports a `filter` event (VendraProvider's onEvent).
-export function FilterBar({ filters, onClearAll, label, clearAllLabel, className, style, ref }) {
+export function FilterBar({ filters, onClearAll, label, clearAllLabel, className, style, ref, ...rest }) {
 	const { locale, ref: barRef } = usePageLocale();
 	const rootRef = useMergedRef(barRef, ref);
 	const text = useMessages("FilterBar", messages, {
@@ -35,6 +35,7 @@ export function FilterBar({ filters, onClearAll, label, clearAllLabel, className
 	}, [count]);
 	if (!count) return null;
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref: rootRef,
 		role: "group",
 		"aria-label": text.label,

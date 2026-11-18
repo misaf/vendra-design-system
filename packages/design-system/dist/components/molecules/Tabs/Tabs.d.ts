@@ -1,9 +1,11 @@
 import * as React from 'react';
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
 export interface TabItem {
   id: string;
   label: React.ReactNode;
 }
-export interface TabsProps {
+export interface TabsProps extends AriaWidgetAttributes<HTMLDivElement> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   items: TabItem[];

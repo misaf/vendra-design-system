@@ -17,11 +17,13 @@ export function Accordion({
   allowMultiple,
   headingLevel = 3,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   return (
     <DisclosureGroup
       ref={ref}
+      render={props => <div {...rest} {...props} />}
       expandedKeys={value === undefined ? undefined : toList(value)}
       defaultExpandedKeys={toList(defaultValue)}
       onExpandedChange={keys => onChange && onChange([...keys].map(String))}

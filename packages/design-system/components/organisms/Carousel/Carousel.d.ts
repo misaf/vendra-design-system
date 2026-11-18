@@ -1,3 +1,5 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface SnapScrollerState {
   canPrev: boolean;
   canNext: boolean;
@@ -9,7 +11,7 @@ export interface SnapScrollerHandle {
   readonly element: HTMLDivElement | null;
   readonly state: SnapScrollerState;
 }
-export interface SnapScrollerProps {
+export interface SnapScrollerProps extends RootAttributes<HTMLDivElement> {
   /** Each item becomes its own snap slot. Fragments, nested arrays and elements with data-snap-group are flattened first. */
   children?: React.ReactNode;
   /** Alternative to children: data array rendered with renderItem (keyed by item.id when present) */

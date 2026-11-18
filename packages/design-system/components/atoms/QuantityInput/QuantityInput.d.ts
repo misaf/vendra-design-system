@@ -1,4 +1,6 @@
-export interface QuantityStepperProps {
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
+export interface QuantityStepperProps extends AriaWidgetAttributes<HTMLDivElement> {
   /** The number input, for focusing it or a form library. */
   ref?: React.Ref<HTMLInputElement>;
   value?: number;

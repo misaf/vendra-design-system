@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface OfflineNoticeProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface OfflineNoticeProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Default: built-in "You’re offline. …" in the page's language */

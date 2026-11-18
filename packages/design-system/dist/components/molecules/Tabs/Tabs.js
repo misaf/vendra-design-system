@@ -8,7 +8,7 @@ import { useMergedRef } from "../../utils/refs.js";
 // Tabs on React Aria: one Tab stop on the selected tab; arrow keys (mirrored in RTL, following the
 // page's language), Home and End move and select. `children` is the selected tab's content: it
 // renders in a tabpanel linked to its tab. Without children the component is just the tab list.
-export function Tabs({ items = [], value, defaultValue, onChange, variant = "underline", label, className = "", listClassName, panelClassName, children, ref }) {
+export function Tabs({ items = [], value, defaultValue, onChange, variant = "underline", label, className = "", listClassName, panelClassName, children, "aria-label": ariaLabel, "aria-labelledby": labelledBy, "aria-describedby": describedBy, "aria-details": details, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? items[0]?.id);
@@ -16,7 +16,10 @@ export function Tabs({ items = [], value, defaultValue, onChange, variant = "und
 	// A value that matches no tab selects the first, so there is always one Tab stop.
 	const selectedKey = items.some((item) => item.id === selected) ? selected : items[0]?.id;
 	const list = /* @__PURE__ */ React.createElement(TabList, {
-		"aria-label": label,
+		"aria-label": label ?? ariaLabel,
+		"aria-labelledby": labelledBy,
+		"aria-describedby": describedBy,
+		"aria-details": details,
 		className: cx("ag-tabs", variant === "pill" && "ag-tabs--pill", className)
 	}, items.map((item) => /* @__PURE__ */ React.createElement(Tab, {
 		key: item.id,
@@ -24,6 +27,7 @@ export function Tabs({ items = [], value, defaultValue, onChange, variant = "und
 		className: ({ isSelected }) => cx("ag-tab", isSelected && "ag-tab--active")
 	}, item.label)));
 	return /* @__PURE__ */ React.createElement(I18nProvider, { locale }, /* @__PURE__ */ React.createElement(AriaTabs, {
+		...rest,
 		ref: rootRef,
 		selectedKey: selectedKey ?? null,
 		onSelectionChange: (key) => {

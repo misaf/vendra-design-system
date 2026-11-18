@@ -29,6 +29,33 @@ Every component takes React 19's `ref` prop. Form controls (`Input`, `PhoneInput
 input, `Select` its trigger button, so a form library can focus an invalid field; the others hand
 over their own outer element (`Carousel` its scroll handle).
 
+## DOM attributes
+
+Pass `id`, `data-testid` or any other `data-*` attribute to identify a component from a test,
+analytics handler or another element. These attributes usually go on the rendered root. On
+`Dialog` and `Lightbox`, the root for attributes is the dialog itself. With `Carousel`, attributes
+go on the outer carousel and its scroll handle still points to the track.
+
+| Component | Target when it differs from the root |
+|---|---|
+| `Input`, `PhoneInput`, `CodeInput`, `SearchField` | Both attributes go on the input or textarea, even with a label or hint. |
+| `Checkbox`, `Radio`, `ChoiceTile`, `Switch` | `id` and naming attributes go on the input. Data attributes go on its wrapping label. |
+| `Select`, `QuantityInput` | `id` and naming attributes go on the trigger button or quantity input. Data attributes go on the outer field. |
+| `ChoiceGroup`, `RadioGroup` | `id` and naming attributes go on the radiogroup. Data attributes go on the outer field wrapper if it has a legend, hint or error. |
+| `DatePicker` | `id` goes on the date input, or the fieldset in yearly mode. Data attributes go on the fieldset. |
+| `LocationPicker`, `PlacesMap` | `id` identifies the map canvas. Data attributes go on the outer map component. |
+| `PromoCodeField` | `id` identifies the promo code input when the form is rendered. Data attributes go on the outer field. |
+| `SectionHeader` | `id` identifies the heading. Data attributes go on the outer header. |
+| `Tabs` | Naming and description attributes go on the tab list. `className` also styles the tab list. |
+| `VendraProvider`, `ErrorBoundary` | These components can render children without a DOM element of their own. Put DOM attributes on a child or on the custom fallback you render. |
+
+Component props retain their configured behavior. For example, `Alert` sets its live-region role
+from its tone, and `Skeleton` stays hidden from assistive technology. For components that already
+provide a description, such as `Toast` and `RadioGroup`, `aria-describedby` adds to that
+description. React Aria widgets accept a subset of HTML props. Use their declared props and the
+component README for details. React Aria may also control focus, direction, state attributes and
+ARIA relationships used by the widget.
+
 Full documentation, tenant themes and the reference storefront:
 [github.com/misaf/vendra-design-system](https://github.com/misaf/vendra-design-system).
 

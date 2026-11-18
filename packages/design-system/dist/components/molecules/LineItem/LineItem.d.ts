@@ -1,7 +1,9 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
-export interface LineItemProps {
+export interface LineItemProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** A URL or a photo object (see Picture); sized to the thumbnail */

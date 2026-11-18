@@ -29,12 +29,13 @@ export function ReminderRow({
   labels,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('ReminderRow', messages, labels);
   const named = template => template.replace('{name}', typeof name === 'string' ? name : '');
   return (
-    <div ref={ref} className={cx('ag-remwrap', className)} style={style}>
+    <div {...rest} ref={ref} className={cx('ag-remwrap', className)} style={style}>
       <div className={cx('ag-rem', soon && on && 'ag-rem--soon')}>
         <div className={cx('ag-rem__tile', !on && 'ag-rem__tile--paused')} aria-hidden="true">
           <span className="ag-rem__day">{day}</span>

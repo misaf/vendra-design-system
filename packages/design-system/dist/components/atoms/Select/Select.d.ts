@@ -1,13 +1,15 @@
 import * as React from 'react';
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
 export interface SelectOption {
   value: string;
   label: string;
   disabled?: boolean;
 }
-export interface SelectProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  'onChange' | 'defaultValue' | 'placeholder'
-> {
+export interface SelectProps
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue' | 'placeholder'>,
+    DataAttributes {
   /** The trigger button (the focusable control), for focusing it or a form library. */
   ref?: React.Ref<HTMLButtonElement>;
   label?: string;

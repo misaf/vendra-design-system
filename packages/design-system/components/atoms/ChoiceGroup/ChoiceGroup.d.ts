@@ -1,4 +1,6 @@
-export interface ChoiceGroupProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface ChoiceGroupProps extends Omit<RootAttributes<HTMLElement>, 'onChange'> {
   /** The outer element (a fieldset with `legend`). */
   ref?: React.Ref<HTMLElement>;
   /** aria-label (or use labelledBy) */

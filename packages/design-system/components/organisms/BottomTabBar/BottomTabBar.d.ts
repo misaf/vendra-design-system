@@ -1,3 +1,5 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface BottomTabItem {
   id: string;
   icon: string;
@@ -9,7 +11,7 @@ export interface BottomTabItem {
   target?: string;
   /** Defaults to "noopener noreferrer" for target="_blank" */ rel?: string;
 }
-export interface BottomTabBarProps {
+export interface BottomTabBarProps extends Omit<RootAttributes<HTMLElement>, 'children'> {
   /** The nav. */
   ref?: React.Ref<HTMLElement>;
   items: BottomTabItem[];

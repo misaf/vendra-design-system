@@ -1,4 +1,9 @@
-export interface PromoCodeFieldProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface PromoCodeFieldProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'onChange' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** The field's id (its label and error hang off it). Default "ag-promo" */

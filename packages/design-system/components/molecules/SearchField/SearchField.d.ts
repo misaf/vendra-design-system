@@ -1,7 +1,12 @@
-export interface SearchFieldProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange' | 'onSubmit' | 'value' | 'defaultValue' | 'type'
-> {
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface SearchFieldProps
+  extends
+    Omit<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      'onChange' | 'onSubmit' | 'value' | 'defaultValue' | 'type'
+    >,
+    DataAttributes {
   /** The native input, for focusing it or a form library. */
   ref?: React.Ref<HTMLInputElement>;
   value?: string;

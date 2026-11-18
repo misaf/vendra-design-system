@@ -44,7 +44,8 @@ export function Carousel({
   bleed = true,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('Carousel', messages, {previous: prevLabel, next: nextLabel});
   const trackRef = React.useRef(null);
@@ -114,6 +115,7 @@ export function Carousel({
 
   return (
     <div
+      {...rest}
       className={cx(
         'ag-carousel',
         bleed && 'ag-carousel--bleed',

@@ -1,8 +1,10 @@
 import * as React from 'react';
-export interface InputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'onChange' | 'value' | 'defaultValue'
-> {
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface InputProps
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'defaultValue'>,
+    DataAttributes {
   /** The native input (textarea with `multiline`), for focusing it or a form library. */
   ref?: React.Ref<HTMLInputElement | HTMLTextAreaElement>;
   value?: string;

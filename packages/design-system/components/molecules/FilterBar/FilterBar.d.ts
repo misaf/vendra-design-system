@@ -1,3 +1,5 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface FilterBarFilter {
   /** Stable key; default the label */
   id?: string;
@@ -5,7 +7,7 @@ export interface FilterBarFilter {
   label: string;
   onRemove: () => void;
 }
-export interface FilterBarProps {
+export interface FilterBarProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** The filters that are on; the bar renders nothing when there are none */

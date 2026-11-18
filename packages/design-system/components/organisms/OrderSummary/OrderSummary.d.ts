@@ -1,3 +1,5 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
 export interface OrderSummaryLine {
@@ -20,7 +22,7 @@ export interface OrderSummarySum {
   value: React.ReactNode;
   /** Grand total row */ strong?: boolean;
 }
-export interface OrderSummaryProps {
+export interface OrderSummaryProps extends Omit<RootAttributes<HTMLElement>, 'title' | 'children'> {
   /** The section. */
   ref?: React.Ref<HTMLElement>;
   lines: OrderSummaryLine[];

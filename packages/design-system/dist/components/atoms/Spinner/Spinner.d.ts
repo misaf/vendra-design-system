@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface SpinnerProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface SpinnerProps extends Omit<RootAttributes<HTMLSpanElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLSpanElement>;
   /** Diameter in px. Default 20 */

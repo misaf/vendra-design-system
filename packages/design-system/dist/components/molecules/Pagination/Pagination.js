@@ -28,7 +28,7 @@ export function paginationRange(page, pageCount, siblings = 1) {
 // current page is marked aria-current="page". With `href(page)` every page is a real link (it works
 // without JavaScript and lets crawlers reach every page); onChange(page) alone makes them buttons
 // that change the page in place. Numbers follow the page's language (Persian digits under fa).
-export function Pagination({ page, pageCount, href, onChange, siblings = 1, label, previousLabel, nextLabel, className, style, ref }) {
+export function Pagination({ page, pageCount, href, onChange, siblings = 1, label, previousLabel, nextLabel, className, style, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const rootRef = useMergedRef(localeRef, ref);
 	const text = useMessages("Pagination", messages, {
@@ -59,6 +59,7 @@ export function Pagination({ page, pageCount, href, onChange, siblings = 1, labe
 		}, content);
 	};
 	return /* @__PURE__ */ React.createElement("nav", {
+		...rest,
 		ref: rootRef,
 		"aria-label": text.label,
 		className: cx("ag-pages", className),

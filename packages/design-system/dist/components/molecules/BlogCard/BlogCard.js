@@ -7,7 +7,7 @@ import { Picture } from "../../atoms/Picture/Picture.js";
 import { cx } from "../../utils/cx.js";
 // A journal post: image, date, title link and excerpt. `layout="wide"` puts the image beside
 // the text; the title is the only link (a React Aria Link, or a Button without `href`).
-export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "", ref }) {
+export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClick, href, frame = "arch", aspect, layout = "stack", headingLevel = 3, priority, className = "", ref, ...rest }) {
 	const Heading = "h" + headingLevel;
 	const TitleLink = href ? Link : Button;
 	const wide = layout === "wide";
@@ -33,6 +33,7 @@ export function BlogCard({ image, sizes, date, meta, title, excerpt, cta, onClic
 	}))));
 	// The wide card is its own container, so its layout follows its width; the grid sits inside.
 	return /* @__PURE__ */ React.createElement("article", {
+		...rest,
 		ref,
 		className: cx("ag-blog", wide && "ag-blog--wide", className)
 	}, wide ? /* @__PURE__ */ React.createElement("div", { className: "ag-blog__layout" }, content) : content);

@@ -1,6 +1,8 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
-export interface BlogCardProps {
+export interface BlogCardProps extends Omit<RootAttributes<HTMLElement>, 'children'> {
   /** The article. */
   ref?: React.Ref<HTMLElement>;
   /** A URL or a photo object (see Picture) */

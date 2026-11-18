@@ -18,7 +18,13 @@ export function Tabs({
   listClassName,
   panelClassName,
   children,
-  ref
+
+  'aria-label': ariaLabel,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  'aria-details': details,
+  ref,
+  ...rest
 }) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
@@ -28,7 +34,10 @@ export function Tabs({
   const selectedKey = items.some(item => item.id === selected) ? selected : items[0]?.id;
   const list = (
     <TabList
-      aria-label={label}
+      aria-label={label ?? ariaLabel}
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
+      aria-details={details}
       className={cx('ag-tabs', variant === 'pill' && 'ag-tabs--pill', className)}
     >
       {items.map(item => (
@@ -45,6 +54,7 @@ export function Tabs({
   return (
     <I18nProvider locale={locale}>
       <AriaTabs
+        {...rest}
         ref={rootRef}
         selectedKey={selectedKey ?? null}
         onSelectionChange={key => {

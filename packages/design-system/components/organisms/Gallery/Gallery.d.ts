@@ -1,6 +1,8 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
-export interface GalleryProps {
+export interface GalleryProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** URLs or photo objects (see Picture); the first loads at once, the rest lazily */

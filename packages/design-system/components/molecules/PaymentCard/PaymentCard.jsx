@@ -16,7 +16,8 @@ export function PaymentCard({
   labels,
   onCopy,
   className = '',
-  ref
+  ref,
+  ...rest
 }) {
   const text = useMessages('PaymentCard', messages, labels);
   const digits = String(cardNumber)
@@ -59,7 +60,7 @@ export function PaymentCard({
     [text.amount, amount, 'amount']
   ].filter(([, value]) => value);
   return (
-    <div ref={ref} className={cx('ag-pay', className)}>
+    <div {...rest} ref={ref} className={cx('ag-pay', className)}>
       <div className="ag-pay__row">
         <div className="ag-pay__cardcol">
           <div className="ag-pay__k">{text.card}</div>

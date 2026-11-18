@@ -1,4 +1,6 @@
 import * as React from 'react';
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface BreadcrumbItem {
   label: React.ReactNode;
   /** The page's URL; the last item (the current page) is not a link */
@@ -6,7 +8,7 @@ export interface BreadcrumbItem {
   /** In-place navigation (call preventDefault to stop the link) */
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
-export interface BreadcrumbProps {
+export interface BreadcrumbProps extends Omit<RootAttributes<HTMLElement>, 'children'> {
   /** The nav. */
   ref?: React.Ref<HTMLElement>;
   /** From the top of the site to the current page, which comes last */

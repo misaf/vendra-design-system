@@ -1,3 +1,5 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface ReminderRowLabels {
   paused?: string;
   sendFlowers?: string;
@@ -5,7 +7,10 @@ export interface ReminderRowLabels {
   edit?: string;
   delete?: string;
 }
-export interface ReminderRowProps {
+export interface ReminderRowProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'children' | 'onToggle'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   name: string;

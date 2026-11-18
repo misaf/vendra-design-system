@@ -1,8 +1,10 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface StepperStep {
   label: React.ReactNode;
   /** Pre-localized number, e.g. "۲" */ number?: string;
 }
-export interface StepperProps {
+export interface StepperProps extends Omit<RootAttributes<HTMLElement>, 'children'> {
   /** The outer element (the ol, or its wrapper when compact). */
   ref?: React.Ref<HTMLElement>;
   steps: StepperStep[];

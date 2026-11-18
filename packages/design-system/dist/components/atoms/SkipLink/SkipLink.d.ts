@@ -1,5 +1,8 @@
 import * as React from 'react';
-export interface SkipLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface SkipLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>, DataAttributes {
   /** The link. */
   ref?: React.Ref<HTMLAnchorElement>;
   /** Target landmark. Default "#main" */

@@ -26,7 +26,8 @@ const BUDGET = {
   // before).
   // 42 KB since analytics reports amounts in an ISO currency (inCurrency, reportCurrency; 41.2 KB).
   // 43 KB since PromoCodeField's collapsible "Have a promo code?" disclosure (42.2 KB).
-  everything: 43 * 1024,
+  // Attribute forwarding across the component library adds prop routing to the 43.2 KB bundle.
+  everything: 43.5 * 1024,
   // Any one export. Components that draw an Icon carry the icon set (ICON_SVGS, ~6 KB).
   oneExport: 15 * 1024,
   // Exports with no icon and no React Aria-heavy helpers: only themselves.

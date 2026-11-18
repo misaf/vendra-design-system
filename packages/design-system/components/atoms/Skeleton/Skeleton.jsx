@@ -11,11 +11,13 @@ export function Skeleton({
   radius,
   className = '',
   style,
-  ref
+  ref,
+  ...rest
 }) {
   if (shape === 'card')
     return (
       <div
+        {...rest}
         ref={ref}
         aria-hidden="true"
         className={cx('ag-skel-card', className)}
@@ -30,6 +32,7 @@ export function Skeleton({
   if (shape === 'text')
     return (
       <div
+        {...rest}
         ref={ref}
         aria-hidden="true"
         className={cx('ag-skel-lines', className)}
@@ -50,6 +53,7 @@ export function Skeleton({
     );
   return (
     <span
+      {...rest}
       ref={ref}
       aria-hidden="true"
       className={cx('ag-skel', 'ag-skel--' + shape, className)}

@@ -8,7 +8,7 @@ import { maps } from "../../utils/maps.js";
 // account. Each place has a labelled marker that opens it (onSelect) with a pointer or with Enter and
 // Space; the view fits every place. Leaflet comes from `loadLeaflet()` and is only created in the
 // browser, so the component renders on the server.
-export function PlacesMap({ id, label, places = [], loadLeaflet, tiles, center, zoom = 13, height = 280, onFail, className, style, ref }) {
+export function PlacesMap({ id, label, places = [], loadLeaflet, tiles, center, zoom = 13, height = 280, onFail, className, style, ref, ...rest }) {
 	const box = React.useRef(null);
 	const view = React.useRef(null);
 	// The latest places, for marker listeners Leaflet keeps from an earlier render.
@@ -100,6 +100,7 @@ export function PlacesMap({ id, label, places = [], loadLeaflet, tiles, center, 
 	// New, moved or renamed places redraw the markers.
 	React.useEffect(draw, [key]);
 	return /* @__PURE__ */ React.createElement("div", {
+		...rest,
 		ref,
 		className: cx("ag-map", className),
 		style: {

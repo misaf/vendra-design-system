@@ -26,9 +26,15 @@ export function ChoiceGroup({
   children,
   className,
   style,
-  ref
+
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  'aria-describedby': describedBy,
+  'aria-details': details,
+  ref,
+  ...rest
 }) {
-  const {fieldId, messageId, message, controlProps} = useField({id, hint, error});
+  const {fieldId, messageId, message, controlProps} = useField({id, hint, error, describedBy});
   const legendId = fieldId + '-legend';
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
@@ -36,6 +42,7 @@ export function ChoiceGroup({
   const group = (
     <I18nProvider locale={locale}>
       <RadioGroup
+        {...(!wrapped && rest)}
         ref={wrapped ? undefined : rootRef}
         id={fieldId}
         name={name}
@@ -43,8 +50,9 @@ export function ChoiceGroup({
         defaultValue={defaultValue}
         onChange={next => onChange && onChange(next)}
         isDisabled={disabled}
-        aria-label={legend ? undefined : label}
-        aria-labelledby={legend ? legendId : labelledBy}
+        aria-label={legend ? undefined : (label ?? ariaLabel)}
+        aria-labelledby={cx(legend && legendId, labelledBy ?? ariaLabelledBy) || undefined}
+        aria-details={details}
         aria-describedby={controlProps['aria-describedby']}
         aria-errormessage={controlProps['aria-errormessage']}
         isInvalid={!!error}
@@ -68,7 +76,12 @@ export function ChoiceGroup({
   );
   if (legend)
     return (
-      <fieldset ref={rootRef} className={cx('ag-field ag-fieldset', className)} style={style}>
+      <fieldset
+        {...rest}
+        ref={rootRef}
+        className={cx('ag-field ag-fieldset', className)}
+        style={style}
+      >
         <legend id={legendId} className="ag-field__label">
           {legend}
         </legend>
@@ -77,7 +90,7 @@ export function ChoiceGroup({
       </fieldset>
     );
   return (
-    <div ref={rootRef} className={cx('ag-field', className)} style={style}>
+    <div {...rest} ref={rootRef} className={cx('ag-field', className)} style={style}>
       {group}
       {hintElement}
     </div>

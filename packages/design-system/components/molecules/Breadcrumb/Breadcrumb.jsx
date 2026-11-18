@@ -9,10 +9,16 @@ import {messages} from './messages.js';
 // of links. Items are {label, href, onClick}; the last one is the current page (aria-current="page",
 // not a link). The chevrons between them are decorative and mirror in RTL. In-site links go through
 // VendraProvider's navigate.
-export function Breadcrumb({items = [], label, className, style, ref}) {
+export function Breadcrumb({items = [], label, className, style, ref, ...rest}) {
   const text = useMessages('Breadcrumb', messages, {label});
   return (
-    <nav ref={ref} aria-label={text.label} className={cx('ag-crumbs', className)} style={style}>
+    <nav
+      {...rest}
+      ref={ref}
+      aria-label={text.label}
+      className={cx('ag-crumbs', className)}
+      style={style}
+    >
       <Breadcrumbs className="ag-crumbs__list">
         {items.map((item, index) => (
           <AriaBreadcrumb key={index} id={String(index)} className="ag-crumbs__item">

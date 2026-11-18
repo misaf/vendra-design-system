@@ -4,8 +4,9 @@ import React from "react";
 import { Icon } from "../../atoms/Icon/Icon.js";
 import { cx } from "../../utils/cx.js";
 // Label / value pairs as a <dl>. Icons are decorative (aria-hidden) in --text-accent; values wrap anywhere (long addresses, references).
-export function DetailList({ rows = [], className = "", style, ref }) {
+export function DetailList({ rows = [], className = "", style, ref, ...rest }) {
 	return /* @__PURE__ */ React.createElement("dl", {
+		...rest,
 		ref,
 		className: cx("ag-dl", className),
 		style

@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface AnnouncementBarProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface AnnouncementBarProps extends RootAttributes<HTMLDivElement> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;

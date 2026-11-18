@@ -69,7 +69,9 @@ export function DatePicker({
   id,
   className = '',
   style,
-  ref
+  'aria-describedby': externalDescription,
+  ref,
+  ...rest
 }) {
   // Its own language (labels, digits, the preferred calendar), else the app's (VendraProvider).
   const appLocale = useLocale().locale;
@@ -204,10 +206,13 @@ export function DatePicker({
       dates.fullDate(date, dates.locale(lang, otherCalendar), false)
     );
   }
-  const describedBy = message ? messageId : undefined;
+  const describedBy = cx(message && messageId, externalDescription) || undefined;
 
   return (
     <fieldset
+      {...rest}
+      id={yearly ? id : undefined}
+      aria-describedby={externalDescription}
       ref={ref}
       className={cx('ag-fieldset', 'ag-date', className)}
       style={style}

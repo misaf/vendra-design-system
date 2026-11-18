@@ -18,7 +18,7 @@ const photoSrc = (photo) => typeof photo === "string" ? photo : photo && photo.s
 // previous/next buttons, ←/→ and a sideways swipe move through `items` (mirrored in RTL), dots move
 // through the current item's photos, Esc or × close it and focus returns to the opener. The
 // position ("3 of 14") is announced as it changes; the neighbours' first photos load ahead.
-export function Lightbox({ items = [], index, onIndexChange, onClose, label, previousLabel, nextLabel, closeLabel, actions, sizes = "100vw", className, ref }) {
+export function Lightbox({ items = [], index, onIndexChange, onClose, label, previousLabel, nextLabel, closeLabel, actions, sizes = "100vw", className, ref, ...rest }) {
 	const { locale, ref: localeRef } = usePageLocale();
 	const density = useDensity();
 	const text = useMessages("Lightbox", messages, {
@@ -86,7 +86,9 @@ export function Lightbox({ items = [], index, onIndexChange, onClose, label, pre
 		className: "ag-lightbox__overlay",
 		"data-density": density
 	}, /* @__PURE__ */ React.createElement(Modal, { className: cx("ag-lightbox", className) }, /* @__PURE__ */ React.createElement(Dialog, {
-		"aria-label": text.label,
+		...rest,
+		role: "dialog",
+		"aria-label": label ?? rest["aria-label"] ?? text.label,
 		className: "ag-lightbox__frame ag-on-inverse",
 		ref: mergedRef
 	}, item && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "ag-lightbox__bar" }, /* @__PURE__ */ React.createElement("span", {

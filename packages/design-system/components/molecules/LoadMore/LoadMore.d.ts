@@ -1,4 +1,6 @@
-export interface LoadMoreProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface LoadMoreProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Items showing now. */

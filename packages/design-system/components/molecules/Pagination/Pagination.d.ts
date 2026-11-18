@@ -1,4 +1,9 @@
-export interface PaginationProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface PaginationProps extends Omit<
+  RootAttributes<HTMLElement>,
+  'onChange' | 'children'
+> {
   /** The nav. */
   ref?: React.Ref<HTMLElement>;
   /** The current page, from 1 */

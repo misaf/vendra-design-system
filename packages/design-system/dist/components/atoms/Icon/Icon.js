@@ -30,6 +30,7 @@ export function Icon({ name, size = 20, color = "currentColor", label, flipRtl, 
 	const flip = flipRtl ?? DIRECTIONAL.includes(name);
 	const length = typeof size === "number" ? `calc(${size}px * var(--size-scale, 1))` : size;
 	return /* @__PURE__ */ React.createElement("span", {
+		...rest,
 		role: label ? "img" : undefined,
 		"aria-label": label,
 		"aria-hidden": label ? undefined : true,
@@ -43,7 +44,6 @@ export function Icon({ name, size = 20, color = "currentColor", label, flipRtl, 
 			WebkitMask: mask ? mask + " center/contain no-repeat" : undefined,
 			mask: mask ? mask + " center/contain no-repeat" : undefined,
 			...style
-		},
-		...rest
+		}
 	});
 }

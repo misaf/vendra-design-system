@@ -1,7 +1,11 @@
 import * as React from 'react';
+import type {AriaWidgetAttributes} from '../../utils/root-attributes.js';
+
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
-export interface CategoryCardProps {
+export interface CategoryCardProps extends AriaWidgetAttributes<
+  HTMLAnchorElement | HTMLButtonElement
+> {
   /** The link, or the button without `href`. */
   ref?: React.Ref<HTMLAnchorElement | HTMLButtonElement>;
   /** Category name, already localized */

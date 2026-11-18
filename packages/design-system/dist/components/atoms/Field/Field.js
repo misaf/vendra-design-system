@@ -22,9 +22,10 @@ export function useField({ id, hint, error, describedBy }) {
 	};
 }
 // The hint or error under a control. Renders nothing without a message.
-export function FieldMessage({ id, error, children, ref }) {
+export function FieldMessage({ id, error, children, ref, ...rest }) {
 	if (!children) return null;
 	return /* @__PURE__ */ React.createElement("span", {
+		...rest,
 		ref,
 		id,
 		className: cx("ag-field__hint", error && "ag-field__hint--error")

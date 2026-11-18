@@ -5,10 +5,24 @@ import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';
 
 // A dismissible strip above the header (role="region", named by `label`) for store-wide news.
-export function AnnouncementBar({children, onClose, closeLabel, label, className = '', ref}) {
+export function AnnouncementBar({
+  children,
+  onClose,
+  closeLabel,
+  label,
+  className = '',
+  ref,
+  ...rest
+}) {
   const text = useMessages('AnnouncementBar', messages, {close: closeLabel});
   return (
-    <div ref={ref} role="region" aria-label={label} className={cx('ag-announce', className)}>
+    <div
+      {...rest}
+      ref={ref}
+      role="region"
+      aria-label={label}
+      className={cx('ag-announce', className)}
+    >
       <div className="ag-announce__text">{children}</div>
       {onClose && (
         <IconButton icon="x" label={text.close} className="ag-announce__close" onClick={onClose} />

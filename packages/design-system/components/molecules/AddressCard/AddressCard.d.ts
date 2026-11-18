@@ -1,10 +1,12 @@
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
 export interface AddressCardLabels {
   /** "Edit {name}" */ edit?: string;
   /** "Delete {name}" */ delete?: string;
   default?: string;
   makeDefault?: string;
 }
-export interface AddressCardProps {
+export interface AddressCardProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** e.g. "Home" — also used in the IconButton names */

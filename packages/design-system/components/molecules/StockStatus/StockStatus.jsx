@@ -14,7 +14,7 @@ const ICONS = {in: 'circle-check', low: 'circle-alert', soon: 'calendar', out: '
 // October" (Shamsi in Persian) or sold out. Pass commerce.stockStatus(product) as `stock`. Only the
 // icon takes the status colour; the words stay in the text colour so they always read. `hideInStock`
 // renders nothing for a product in stock (product cards show only what needs attention).
-export function StockStatus({stock, hideInStock, size = 'md', className, style, ref}) {
+export function StockStatus({stock, hideInStock, size = 'md', className, style, ref, ...rest}) {
   const {locale, ref: localeRef} = usePageLocale();
   const rootRef = useMergedRef(localeRef, ref);
   const language = useLocaleConfig(locale).code;
@@ -30,6 +30,7 @@ export function StockStatus({stock, hideInStock, size = 'md', className, style, 
         : text[status];
   return (
     <span
+      {...rest}
       ref={rootRef}
       className={cx('ag-stock', 'ag-stock--' + status, 'ag-stock--' + size, className)}
       style={style}

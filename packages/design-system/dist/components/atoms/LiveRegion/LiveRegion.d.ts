@@ -1,5 +1,7 @@
 import * as React from 'react';
-export interface LiveRegionProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface LiveRegionProps extends RootAttributes<HTMLDivElement> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   /** Message to announce. Change it to announce again; clear it (then set) to repeat the same text. */

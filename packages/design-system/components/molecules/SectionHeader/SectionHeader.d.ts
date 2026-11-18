@@ -1,4 +1,9 @@
-export interface SectionHeaderProps {
+import type {RootAttributes} from '../../utils/root-attributes.js';
+
+export interface SectionHeaderProps extends Omit<
+  RootAttributes<HTMLDivElement>,
+  'title' | 'children'
+> {
   /** The outer element. */
   ref?: React.Ref<HTMLDivElement>;
   title: React.ReactNode;
