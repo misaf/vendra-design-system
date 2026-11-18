@@ -131,8 +131,8 @@ export default defineConfig({
       cookies: [],
       origins: [{origin, localStorage: [{name: 'vf-consent', value: 'essential'}]}]
     },
-    // The store is in Karaj: delivery days and cut-offs read the clock in Tehran time, whatever
-    // the machine's own zone (CI runs in UTC).
+    // Keep visual baselines in the store's zone. delivery-time-zone.spec.mjs
+    // overrides this to simulate a customer abroad.
     timezoneId: 'Asia/Tehran',
     locale: 'en-US',
     trace: 'retain-on-failure'

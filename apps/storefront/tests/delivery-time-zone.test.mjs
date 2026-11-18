@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
 import {commerce} from '../../../packages/design-system/components/utils/commerce.js';
+import {vfProduct} from '../shared/domain/catalog.js';
 import {
   VF_SLOTS,
   VF_ZONES,
+  vfDeliverableOn,
   vfDeliveryChanged,
   vfDeliveryDate,
   vfDeliveryDays,
@@ -14,7 +16,13 @@ import {
 } from '../shared/domain/delivery.js';
 
 if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
-  for (const TZ of ['America/Los_Angeles', 'Pacific/Kiritimati', 'UTC']) {
+  for (const TZ of [
+    'Asia/Tehran',
+    'UTC',
+    'America/Los_Angeles',
+    'Asia/Tokyo',
+    'Pacific/Kiritimati'
+  ]) {
     test(`delivery rules in ${TZ}`, () => {
       const result = spawnSync(process.execPath, [import.meta.filename], {
         env: {...process.env, TZ, VENDRA_DELIVERY_TZ_TEST: '1'},
@@ -130,9 +138,20 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
   assert.equal(vfDeliveryDays('central', now)[0].pastCutoff, true);
   assert.ok(vfDeliverySlots('2026-10-05', now).every(slot => slot.closed));
 
+  const ivory = vfProduct('ivory');
+  const orchid = vfProduct('orchid');
+  assert.equal(vfDeliverableOn(ivory, '2026-10-05', rollover), false, 'yesterday at the store');
+  assert.equal(vfDeliverableOn(ivory, '2026-10-06', rollover), true, 'today at the store');
+  assert.equal(vfDeliverableOn(orchid, '2026-10-06', rollover), false, 'requires preparation');
+  assert.equal(vfDeliverableOn(orchid, '2026-10-07', rollover), true);
+  assert.equal(vfDeliverableOn(ivory, '2026-10-08', rollover), false, 'sold-out day');
+  assert.equal(vfDeliverableOn(vfProduct('bridal'), '2026-10-09', rollover), false, 'out of stock');
+  assert.equal(vfDeliverableOn(ivory, '2026-10-05', now), false, 'past the store cutoff');
+
   VF_ZONES[0].cutoff = '22:00';
   const chosen = {zone: 'central', date: today, slot: '20'};
   assert.equal(vfDeliveryDays('central', afterLastSlot)[0].noOpenSlots, true);
+  assert.equal(vfDeliverableOn(ivory, today, afterLastSlot), false, 'no open slots');
   const replacement = vfDeliveryDate(chosen, afterLastSlot);
   assert.equal(replacement, '2026-10-06');
   assert.equal(vfDeliverySlot(chosen, afterLastSlot), undefined);
