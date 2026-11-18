@@ -14,3 +14,5 @@ packages/design-system/tokens/tenants.css
 *.html
 *.md
 apps/storefront/_app-build/
+apps/storefront/next/.next/
+apps/storefront/next/public/

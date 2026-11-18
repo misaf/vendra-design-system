@@ -2,7 +2,27 @@
 // click-through site fetches the rest once the browser is idle so moving between pages stays instant.
 import React from 'react';
 
-const modules = import.meta.glob('../pages/*/Page.jsx');
+const modules = {
+  account: () => import('../pages/account/Page.jsx'),
+  bag: () => import('../pages/bag/Page.jsx'),
+  checkout: () => import('../pages/checkout/Page.jsx'),
+  contact: () => import('../pages/contact/Page.jsx'),
+  error: () => import('../pages/error/Page.jsx'),
+  faq: () => import('../pages/faq/Page.jsx'),
+  home: () => import('../pages/home/Page.jsx'),
+  journal: () => import('../pages/journal/Page.jsx'),
+  notfound: () => import('../pages/notfound/Page.jsx'),
+  policy: () => import('../pages/policy/Page.jsx'),
+  post: () => import('../pages/post/Page.jsx'),
+  presentation: () => import('../pages/presentation/Page.jsx'),
+  product: () => import('../pages/product/Page.jsx'),
+  saved: () => import('../pages/saved/Page.jsx'),
+  search: () => import('../pages/search/Page.jsx'),
+  shop: () => import('../pages/shop/Page.jsx'),
+  signin: () => import('../pages/signin/Page.jsx'),
+  track: () => import('../pages/track/Page.jsx'),
+  weddings: () => import('../pages/weddings/Page.jsx')
+};
 const loaded = {};
 const ready = new Set();
 // Each loaded page module by name, so a page whose code is in renders without suspending.
@@ -16,10 +36,9 @@ let staleFiles = false;
 // attempt fetches it again. `show` says the page is wanted on screen now: if its files were replaced
 // by a deploy, the tab reloads to get the new ones.
 export function loadPage(name, show = true) {
-  const key = '../pages/' + name + '/Page.jsx';
-  if (!modules[key]) return null;
+  if (!Object.hasOwn(modules, name)) return null;
   if (show && !ready.has(name)) showing.add(name);
-  const load = (loaded[name] ||= modules[key]().then(module => {
+  const load = (loaded[name] ||= modules[name]().then(module => {
     // Vite resolves a failed load with nothing once its preload error has been handled.
     if (!module) throw new Error('The ' + name + ' page did not load.');
     modulesByName[name] = module;
@@ -70,7 +89,7 @@ export function preloadPages() {
   const run = () => {
     // Everything requested before this mark is what the first page needed (performance budgets).
     performance.mark('vf-preload-pages');
-    Object.keys(modules).forEach(key => loadPage(key.split('/')[2], false)?.catch(() => {}));
+    Object.keys(modules).forEach(name => loadPage(name, false)?.catch(() => {}));
   };
   if ('requestIdleCallback' in window) requestIdleCallback(run);
   else setTimeout(run, 200);

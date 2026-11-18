@@ -46,6 +46,7 @@
  *   from (the build's base path); '' until app/theme.js sets it.
  * @property {(tenant: string) => void} useTenant Loads a tenant's theme stylesheet; a no-op until
  *   app/theme.js installs the loader.
+ * @property {boolean} offlineDisplay Whether this build ships the offline display worker and manifest.
  * @property {string} tenant The tenant whose theme this document shows ('' before the first).
  * @property {boolean} viewed Whether this document has shown a page yet (SPA page views).
  * @property {'' | 'hydrated' | 'rendered'} rendered How app/main.jsx showed the page, for tests.
@@ -58,6 +59,7 @@ export const vfRuntime = {
   payment: null,
   assetBase: '',
   useTenant: () => {},
+  offlineDisplay: false,
   tenant: '',
   viewed: false,
   rendered: ''

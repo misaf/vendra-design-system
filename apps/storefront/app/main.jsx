@@ -108,7 +108,7 @@ function standaloneLang(defaults) {
   );
 }
 
-(loadPage(name) || loadPage('site'))
+(loadPage(name) || import('../pages/site/Page.jsx'))
   .then(page => (name === 'site' ? addressPage().then(() => page) : page))
   .then(
     page => {

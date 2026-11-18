@@ -1,3 +1,4 @@
+import {vfRuntime} from '../platform/runtime.js';
 import {vfAppBase} from './routing.js';
 
 function mapPhotoSources(photo, map) {
@@ -47,7 +48,7 @@ export function vfKeepOffline(
     void state;
   }
 ) {
-  if (!import.meta.env.PROD || !('serviceWorker' in navigator)) {
+  if (!vfRuntime.offlineDisplay || !('serviceWorker' in navigator)) {
     update({status: 'unsupported', completed: 0, total: 0});
     return () => {};
   }

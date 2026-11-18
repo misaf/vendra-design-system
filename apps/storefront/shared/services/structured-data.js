@@ -18,8 +18,10 @@ const AVAILABILITY = {
 };
 
 // The store's home page in `lang`, as an absolute URL when the build knows its origin.
-const homeUrl = lang => vfAbsoluteUrl(vfRouteUrl({lang, view: 'home'}));
-const absolute = urls => [...new Set(urls.map(vfAbsoluteUrl).filter(Boolean))];
+const homeUrl = (lang, resolveUrl = vfAbsoluteUrl) => resolveUrl(vfRouteUrl({lang, view: 'home'}));
+const absolute = (urls, resolveUrl = vfAbsoluteUrl) => [
+  ...new Set(urls.map(resolveUrl).filter(Boolean))
+];
 
 // A Toman amount in an ISO 4217 currency: the store's active one, with Toman (IRT, not an ISO code)
 // written as Rial (10 Rial to the Toman).
@@ -85,7 +87,7 @@ export function vfBreadcrumbData(items) {
 // A product as a schema.org Product with one Offer. Its name is the product code (Product.token),
 // as everywhere in the storefront; the description and category are the localized ones.
 export function vfProductData(
-  {product, lang, url, images, description, category},
+  {product, lang, url, images, description, category, resolveUrl = vfAbsoluteUrl},
   store = VF_STORE
 ) {
   const stock = product.stock || {status: 'in'};
@@ -95,16 +97,20 @@ export function vfProductData(
     sku: product.id,
     ...(description && {description}),
     ...(category && {category}),
-    image: absolute(images),
-    url: vfAbsoluteUrl(url),
+    image: absolute(images, resolveUrl),
+    url: resolveUrl(url),
     offers: {
       '@type': 'Offer',
-      url: vfAbsoluteUrl(url),
+      url: resolveUrl(url),
       ...vfOfferPrice(product.price, store),
       availability: SCHEMA + (AVAILABILITY[stock.status] || 'InStock'),
       ...(stock.status === 'soon' && stock.date && {availabilityStarts: stock.date}),
       itemCondition: SCHEMA + 'NewCondition',
-      seller: {'@id': homeUrl(lang) + '#store', '@type': 'Florist', name: store.brand[lang]}
+      seller: {
+        '@id': homeUrl(lang, resolveUrl) + '#store',
+        '@type': 'Florist',
+        name: store.brand[lang]
+      }
     }
   };
 }

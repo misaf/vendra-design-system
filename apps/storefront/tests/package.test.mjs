@@ -25,12 +25,15 @@ const {app, installed, manifest, files} = packed;
       fs.readFileSync(path.join(import.meta.dirname, '../package.json'), 'utf8')
     );
     assert.deepEqual(manifest.dependencies || {}, {}, 'the package has no bundled dependencies');
-    for (const [name, version] of Object.entries(built.dependencies || {}))
+    for (const [name, version] of Object.entries(built.dependencies || {})) {
+      // The Next.js framework runs the storefront preview. The component package shares UI dependencies.
+      if (name === 'next') continue;
       assert.equal(
         manifest.peerDependencies[name],
         '^' + version,
         name + ' peer range should start at the tested ' + version
       );
+    }
     const targets = JSON.stringify(manifest.exports).match(/\.\/dist\/[^"]+/g);
     for (const target of targets.filter(t => !t.includes('*')))
       assert.ok(files.has(target.slice(2)), target + ' is missing');

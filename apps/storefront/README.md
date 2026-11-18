@@ -738,3 +738,20 @@ All 64 selected master-based Darwin/Linux dev/production cases, root unit and ch
 258 baselines remain unchanged. All 12 compatibility cases pass on PR #169 runtime; all three
 blanket-clear negative controls fail as expected. Original master runtime is restored.
 Next: review the pending saved-state PRs, then initial-load retry UX.
+
+## Next.js preview
+
+Run `npm run dev:next --workspace vendra-storefront` from the repository root and open
+`http://localhost:3000/`. The App Router serves the existing storefront addresses, including
+`/apps/storefront/app/en/product/VF-7K2M4Q/` and its Persian counterpart under `/fa/`.
+Product pages include localized catalog HTML, metadata and Product structured data in the initial
+response. The existing client router takes over interactive navigation, including bag and checkout.
+
+For a production-mode preview, build with
+`VF_ORIGIN=https://shop.example npm run build:next --workspace vendra-storefront` and serve it with
+`npm run start:next --workspace vendra-storefront`. Set `VF_ORIGIN` to the public origin when
+building for a real host so canonical and share URLs are absolute.
+
+This stage keeps the GitHub Pages deployment on Vite. The Next.js preview uses a Node server for
+direct links that can contain values created after build time. Initial HTML for non-product routes
+and the offline display service worker still need migration.

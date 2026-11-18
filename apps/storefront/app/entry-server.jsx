@@ -40,7 +40,7 @@ export async function render(url, {base = '/', origin = '', time = Date.now()} =
   vfServerRender({url, base, origin, time});
   try {
     const route = vfReadRoute(url);
-    const site = await loadPage('site');
+    const site = await import('../pages/site/Page.jsx');
     // The site shows a route once its page's code is in; load it first, as the browser does.
     await loadPage(route.view);
     const html = await new Promise((resolve, reject) => {
