@@ -1,5 +1,45 @@
 import {vfAppBase} from './routing.js';
 
+function mapPhotoSources(photo, map) {
+  const mapSet = value =>
+    value
+      .split(',')
+      .map(candidate => {
+        const [url, ...descriptors] = candidate.trim().split(/\s+/);
+        return [map(url), ...descriptors].join(' ');
+      })
+      .join(', ');
+  return {
+    ...photo,
+    src: map(photo.src),
+    ...(photo.srcSet ? {srcSet: mapSet(photo.srcSet)} : {}),
+    ...(photo.sources
+      ? {sources: photo.sources.map(source => ({...source, srcSet: mapSet(source.srcSet)}))}
+      : {})
+  };
+}
+
+export function vfOfflinePhotoUrls(photo) {
+  const urls = [];
+  mapPhotoSources(photo, url => {
+    urls.push(url);
+    return url;
+  });
+  return urls;
+}
+
+// A new document URL makes the browser decode the freshly prepared photo at the same origin URL.
+export function vfVersionOfflinePhoto(photo, {base, revision}) {
+  const origin = new URL(base).origin;
+  return mapPhotoSources(photo, src => {
+    const url = new URL(src, base);
+    if (url.origin !== origin) return src;
+    const {hash} = url;
+    url.hash = '';
+    return url.href + (url.search ? '&' : '?') + 'vf-photo-revision=' + revision + hash;
+  });
+}
+
 // Prepare the built app shell and this display's photos on the very first visit.
 export function vfKeepOffline(
   urls = [],

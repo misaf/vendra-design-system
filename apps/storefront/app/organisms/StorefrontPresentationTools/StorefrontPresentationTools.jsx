@@ -16,6 +16,7 @@ export function StorefrontPresentationTools({
   scan,
   startOver,
   onRetryPhotos,
+  onRefreshPhotos = /** @type {(() => void) | undefined} */ (undefined),
   onBrowse,
   onSettings
 }) {
@@ -37,6 +38,15 @@ export function StorefrontPresentationTools({
         {photoIssue ? (
           <DS.Button variant="secondary" disabled={!online} onClick={onRetryPhotos}>
             {labels.retryPhotos}
+          </DS.Button>
+        ) : null}
+        {onRefreshPhotos ? (
+          <DS.Button
+            variant="secondary"
+            disabled={!online || offline.status === 'preparing'}
+            onClick={onRefreshPhotos}
+          >
+            {labels.refreshPhotos}
           </DS.Button>
         ) : null}
         {!setup.done ? <p className="tw:m-0">{labels.setupIntro}</p> : null}
