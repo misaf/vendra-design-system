@@ -18,7 +18,7 @@ export async function loadDesignSystem() {
       checks: {moduleLevelDirective: false}
     });
     try {
-      await bundle.write({file, format: 'es', inlineDynamicImports: true});
+      await bundle.write({file, format: 'es', codeSplitting: false});
     } finally {
       await bundle.close();
     }
