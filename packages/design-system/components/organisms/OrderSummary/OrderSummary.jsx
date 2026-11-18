@@ -23,20 +23,22 @@ export function OrderSummary({
         {lines.map((line, i) => (
           <li key={i} className="ag-osum__line">
             <ArchFrame size="thumb" tone="product" src={line.image} sizes="56px" alt="" />
-            <div className="ag-osum__main">
-              <div className="ag-osum__name">
-                {line.href ? (
-                  <Link href={line.href} onClick={line.onClick}>
-                    {line.name}
-                  </Link>
-                ) : (
-                  line.name
-                )}
+            <div className="ag-osum__details">
+              <div className="ag-osum__main">
+                <div className="ag-osum__name">
+                  {line.href ? (
+                    <Link href={line.href} onClick={line.onClick}>
+                      {line.name}
+                    </Link>
+                  ) : (
+                    line.name
+                  )}
+                </div>
+                {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
+                {line.note && <div className="ag-osum__note">{line.note}</div>}
               </div>
-              {line.meta && <div className="ag-osum__meta">{line.meta}</div>}
-              {line.note && <div className="ag-osum__note">{line.note}</div>}
+              {line.total != null && <Price value={line.total} className="ag-osum__total" />}
             </div>
-            {line.total != null && <Price value={line.total} className="ag-osum__total" />}
           </li>
         ))}
       </ul>
