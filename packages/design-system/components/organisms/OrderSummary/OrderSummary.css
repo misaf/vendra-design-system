@@ -15,18 +15,29 @@
 }
 .ag-osum__line {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr);
   gap: var(--space-3);
   align-items: start;
   padding: var(--space-3) 0;
   border-bottom: var(--border-hair) solid var(--border-subtle);
+}
+.ag-osum__details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.ag-osum__main {
+  /* Reserve the code's full width. The price wraps below the details when it cannot fit beside it. */
+  flex: 1 1 min-content;
+  overflow-wrap: anywhere;
 }
 .ag-osum__name {
   font-family: var(--font-code);
   font-variant-numeric: slashed-zero tabular-nums;
   letter-spacing: 0.025em;
   font-weight: var(--weight-medium);
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .ag-osum__name a {
   color: inherit;
@@ -51,7 +62,6 @@
   font-size: var(--text-md);
   color: var(--text-secondary);
   margin-top: var(--space-1);
-  overflow-wrap: anywhere;
 }
 [data-lang='fa'] .ag-osum__note,
 :lang(fa) .ag-osum__note {
@@ -60,7 +70,7 @@
   font-size: var(--text-sm);
 }
 .ag-osum__total {
-  justify-content: end;
+  flex: none;
 }
 .ag-osum__sums {
   margin: var(--space-3) 0 0;

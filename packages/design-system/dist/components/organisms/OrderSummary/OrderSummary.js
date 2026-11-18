@@ -22,13 +22,13 @@ export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", cla
 		src: line.image,
 		sizes: "56px",
 		alt: ""
-	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
+	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__details" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
 		href: line.href,
 		onClick: line.onClick
 	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), line.total != null && /* @__PURE__ */ React.createElement(Price, {
 		value: line.total,
 		className: "ag-osum__total"
-	})))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
+	}))))), sums.length > 0 && /* @__PURE__ */ React.createElement("dl", { className: "ag-osum__sums" }, sums.map((sum, i) => /* @__PURE__ */ React.createElement("div", {
 		key: i,
 		className: cx("ag-osum__sum", sum.strong && "ag-osum__sum--strong")
 	}, /* @__PURE__ */ React.createElement("dt", null, sum.label), /* @__PURE__ */ React.createElement("dd", null, /* @__PURE__ */ React.createElement(Price, { value: sum.value }))))));
