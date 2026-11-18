@@ -1,11 +1,18 @@
-// Run with: node apps/storefront/tests/tenants.test.cjs
+// Run with: node apps/storefront/tests/tenants.test.mjs
 // The tenant theme generator: shade accuracy, validation and the generated files.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const theme = require('../shared/domain/tenant-theme.js');
-const {tenantSpecs, tenantOutputs} = require('../../../tools/tenants.cjs');
-const root = path.resolve(__dirname, '../../..');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import test from 'node:test';
+import {brandOutputs, validateBrand} from '../../../tools/brand.mjs';
+import {tenantSpecs, tenantOutputs, validateFontFiles} from '../../../tools/tenants.mjs';
+import {VF_EMAIL} from '../communications/email-templates.js';
+import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../shared/domain/brand.js';
+import {VF_STORE} from '../shared/domain/store-config.js';
+import theme from '../shared/domain/tenant-theme.js';
+import {vfServerRender} from '../shared/platform/environment.js';
+
+const root = path.resolve(import.meta.dirname, '../../..');
 
 // OKLab distance; 0.02 is about the smallest difference people notice.
 function distance(a, b) {
@@ -248,7 +255,6 @@ for (const name of [
   );
 
   // The build refuses missing files and files that are not WOFF2.
-  const {validateFontFiles} = require('../../../tools/tenants.cjs');
   assert.throws(
     () =>
       validateFontFiles(
@@ -260,7 +266,7 @@ for (const name of [
   const fontsFolder = fs.mkdtempSync(path.join(root, 'assets/.font-test-'));
   try {
     const relative = path.relative(root, fontsFolder);
-    fs.writeFileSync(path.join(fontsFolder, 'real.woff2'), Buffer.from('wOF2\0\1\0\0'));
+    fs.writeFileSync(path.join(fontsFolder, 'real.woff2'), Buffer.from('wOF2\0\x01\0\0'));
     fs.writeFileSync(path.join(fontsFolder, 'fake.woff2'), 'wOFFxxxx');
     validateFontFiles({...font, files: {latin: relative + '/real.woff2'}}, 'clay.font');
     assert.throws(
@@ -289,25 +295,9 @@ for (const [file, content] of tenantOutputs()) {
 }
 
 // 6. Emails carry each tenant's palette, generated from the same spec.
-const vm = require('node:vm');
-const {strip} = require('./page-script.cjs');
-const communication = file =>
-  strip(fs.readFileSync(path.join(__dirname, '../communications', file), 'utf8'));
-const context = {};
-vm.runInNewContext(
-  communication('notifications.js') +
-    '\n' +
-    communication('email-templates.js') +
-    '\nthis.VF_EMAIL = VF_EMAIL;',
-  context
-);
-const emailThemes = context.VF_EMAIL.themes;
+const emailThemes = VF_EMAIL.themes;
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
-  assert.deepEqual(
-    {...emailThemes[slug]},
-    theme.email(spec),
-    slug + ' email palette matches its spec'
-  );
+  assert.deepEqual(emailThemes[slug], theme.email(spec), slug + ' email palette matches its spec');
 }
 const {disp, ...shape} = theme.email(theme.VENDRA);
 for (const key of ['btnRadius', 'btnCase', 'btnTrack', 'cardRadius', 'dispCase'])
@@ -317,7 +307,6 @@ assert.equal(emailThemes.default.disp, disp);
 console.log('Passed: tenant theme generator and email palettes');
 
 // Tenant branding fails the build for broken references or unusable image geometry.
-const {validateBrand, brandOutputs} = require('../../../tools/brand.cjs');
 assert.throws(
   () => validateBrand({logo: {src: 'assets/no-logo.svg', width: 10, height: 10}}),
   /missing or invalid/
@@ -369,21 +358,23 @@ for (const [file, source] of manifests) {
 }
 
 // Deployment overrides stay scoped to their tenant, and a live head update replaces old assets.
-const links = new Map();
-const linkKey = link =>
-  `link[rel="${link.rel}"]` + (link.rel === 'icon' ? `[sizes="${link.sizes}"]` : '');
-const brandContext = {
-  VF_TENANT_BRANDS: {clay: clay.brand, fern: {}},
-  VF_STORE: {
-    tenant: 'clay',
-    brandAssets: {
-      ogImage: {en: 'assets/social/og-default-en.png', fa: 'assets/social/og-default-fa.png'}
-    }
-  },
-  // environment.js: the deployment's asset base.
-  vfAssetBase: () => 'https://example.com/store/',
-  URL,
-  document: {
+test('Tenant branding and deployment asset paths', t => {
+  const links = new Map();
+  const linkKey = link =>
+    `link[rel="${link.rel}"]` + (link.rel === 'icon' ? `[sizes="${link.sizes}"]` : '');
+  const {tenant, brandAssets} = VF_STORE;
+  VF_STORE.tenant = 'clay';
+  VF_STORE.brandAssets = {
+    ogImage: {en: 'assets/social/og-default-en.png', fa: 'assets/social/og-default-fa.png'}
+  };
+  t.after(() => {
+    VF_STORE.tenant = tenant;
+    VF_STORE.brandAssets = brandAssets;
+    vfServerRender(null);
+    delete globalThis.document;
+  });
+  vfServerRender({url: '/', base: 'https://example.com/store/'});
+  globalThis.document = {
     head: {
       querySelector: selector => links.get(selector),
       append: link => links.set(linkKey(link), link)
@@ -396,77 +387,63 @@ const brandContext = {
         links.delete(linkKey(this));
       }
     })
-  }
-};
-vm.createContext(brandContext);
-vm.runInContext(
-  fs
-    .readFileSync(path.join(root, 'apps/storefront/shared/domain/brand.js'), 'utf8')
-    .replace(/^import .*;\n/gm, '')
-    .replace(/^export /gm, ''),
-  brandContext
-);
-const icon = size => links.get(`link[rel="icon"][sizes="${size}"]`);
-assert.equal(
-  vm.runInContext("vfBrand('clay').ogImage.en", brandContext),
-  'assets/social/og-default-en.png'
-);
-assert.equal(vm.runInContext("vfBrand('fern').ogImage", brandContext), undefined);
-vm.runInContext("vfBrandHead('fern', 'fa')", brandContext);
-assert.equal(links.size, 4);
-assert.equal(icon('16x16').href, 'https://example.com/store/assets/icons/favicon-16.png');
-assert.equal(icon('32x32').href, 'https://example.com/store/assets/icons/favicon-32.png');
-assert.equal(
-  links.get('link[rel="manifest"]').href,
-  'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
-);
-// Clay has its own icons and no 16 px one: the shared 16 px favicon goes, never shown for Clay.
-vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
-assert.equal(links.size, 3);
-assert.equal(icon('16x16'), undefined);
-assert.equal(icon('32x32').href, 'https://example.com/store/assets/tenants/clay/favicon-32.png');
-assert.equal(
-  links.get('link[rel="apple-touch-icon"]').href,
-  'https://example.com/store/assets/tenants/clay/apple-touch-icon.png'
-);
-
-// Prerendered builds use origin-relative bases at the root and under a deployment prefix.
-for (const base of ['/', '/store/']) {
-  brandContext.vfAssetBase = () => base;
-  vm.runInContext("vfBrandHead('clay', 'en')", brandContext);
-  assert.equal(icon('32x32').href, base + 'assets/tenants/clay/favicon-32.png');
-  assert.match(
-    vm.runInContext("vfBrandHtml('fern', 'en')", brandContext),
-    new RegExp(
-      `<link rel="icon" sizes="16x16" type="image/png" href="${base}assets/icons/favicon-16.png">`
-    )
+  };
+  const icon = size => links.get(`link[rel="icon"][sizes="${size}"]`);
+  assert.equal(vfBrand('clay').ogImage.en, 'assets/social/og-default-en.png');
+  assert.equal(vfBrand('fern').ogImage, undefined);
+  vfBrandHead('fern', 'fa');
+  assert.equal(links.size, 4);
+  assert.equal(icon('16x16').href, 'https://example.com/store/assets/icons/favicon-16.png');
+  assert.equal(icon('32x32').href, 'https://example.com/store/assets/icons/favicon-32.png');
+  assert.equal(
+    links.get('link[rel="manifest"]').href,
+    'https://example.com/store/assets/tenants/fern/manifest-fa.webmanifest'
   );
-}
-
-// Every shared icon and social image is used: by the default tenant's head links, its manifests or
-// the default preview image (page-lifecycle.js).
-brandContext.vfAssetBase = () => '';
-const used = new Set();
-for (const lang of ['en', 'fa']) {
-  for (const link of vm.runInContext(`vfBrandLinks('fern', '${lang}')`, brandContext))
-    used.add(link.href);
-  const manifest = JSON.parse(
-    manifests.get(path.join(root, `assets/tenants/default/manifest-${lang}.webmanifest`))
+  // Clay has its own icons and no 16 px one: the shared 16 px favicon goes, never shown for Clay.
+  vfBrandHead('clay', 'en');
+  assert.equal(links.size, 3);
+  assert.equal(icon('16x16'), undefined);
+  assert.equal(icon('32x32').href, 'https://example.com/store/assets/tenants/clay/favicon-32.png');
+  assert.equal(
+    links.get('link[rel="apple-touch-icon"]').href,
+    'https://example.com/store/assets/tenants/clay/apple-touch-icon.png'
   );
-  for (const {src} of manifest.icons)
-    used.add(path.posix.normalize('assets/tenants/default/' + src));
-}
-const lifecycle = fs.readFileSync(
-  path.join(root, 'apps/storefront/shared/services/page-lifecycle.js'),
-  'utf8'
-);
-assert.match(lifecycle, /`assets\/social\/og-default-\$\{lang\}\.png`/);
-for (const lang of ['en', 'fa']) used.add(`assets/social/og-default-${lang}.png`);
-for (const folder of ['assets/icons', 'assets/social'])
-  for (const name of fs.readdirSync(path.join(root, folder)))
-    assert.ok(
-      used.has(folder + '/' + name),
-      folder + '/' + name + ' is not used by the storefront'
+
+  // Prerendered builds use origin-relative bases at the root and under a deployment prefix.
+  for (const base of ['/', '/store/']) {
+    vfServerRender({url: '/', base});
+    vfBrandHead('clay', 'en');
+    assert.equal(icon('32x32').href, base + 'assets/tenants/clay/favicon-32.png');
+    assert.match(
+      vfBrandHtml('fern', 'en'),
+      new RegExp(
+        `<link rel="icon" sizes="16x16" type="image/png" href="${base}assets/icons/favicon-16.png">`
+      )
     );
+  }
 
-console.log('Passed: tenant branding, icons and manifests');
+  // Every shared icon and social image is used: by the default tenant's head links, its manifests or
+  // the default preview image (page-lifecycle.js).
+  vfServerRender({url: '/', base: ''});
+  const used = new Set();
+  for (const lang of ['en', 'fa']) {
+    for (const link of vfBrandLinks('fern', lang)) used.add(link.href);
+    const manifest = JSON.parse(
+      manifests.get(path.join(root, `assets/tenants/default/manifest-${lang}.webmanifest`))
+    );
+    for (const {src} of manifest.icons)
+      used.add(path.posix.normalize('assets/tenants/default/' + src));
+  }
+  const lifecycle = fs.readFileSync(
+    path.join(root, 'apps/storefront/shared/services/page-lifecycle.js'),
+    'utf8'
+  );
+  assert.match(lifecycle, /`assets\/social\/og-default-\$\{lang\}\.png`/);
+  for (const lang of ['en', 'fa']) used.add(`assets/social/og-default-${lang}.png`);
+  for (const folder of ['assets/icons', 'assets/social'])
+    for (const name of fs.readdirSync(path.join(root, folder)))
+      assert.ok(
+        used.has(folder + '/' + name),
+        folder + '/' + name + ' is not used by the storefront'
+      );
+});

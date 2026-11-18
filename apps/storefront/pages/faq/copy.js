@@ -4,7 +4,7 @@
 import {vfStoreText} from '../../shared/domain/delivery.js';
 
 // GET /api/content/faq-categories
-const VF_API_FAQ_CATEGORIES = [
+export const VF_API_FAQ_CATEGORIES = [
   {
     id: 1,
     name: {en: 'Ordering & delivery', fa: 'سفارش و ارسال'},
@@ -32,7 +32,7 @@ const VF_API_FAQ_CATEGORIES = [
 ];
 
 // GET /api/content/faqs
-const VF_API_FAQS = [
+export const VF_API_FAQS = [
   [
     1,
     'zones',

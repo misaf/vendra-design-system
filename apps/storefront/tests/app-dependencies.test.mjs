@@ -1,10 +1,10 @@
 // Exercise real filesystem graphs, not just the current list of allowed imports.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
-const {checkDependencies} = require('../../../tools/app-dependencies.cjs');
-const repo = path.resolve(__dirname, '../../..');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {checkDependencies} from '../../../tools/app-dependencies.mjs';
+const repo = path.resolve(import.meta.dirname, '../../..');
 const ui = 'apps/storefront/app/organisms/Card/Card.jsx';
 const service = 'apps/storefront/shared/services/integrations/api.js';
 const bridge = 'apps/storefront/app/ds.js';

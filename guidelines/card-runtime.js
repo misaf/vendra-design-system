@@ -2,7 +2,7 @@
 // (every component, the icon set and the format / dates / commerce helpers, also as AG_*). Each
 // card's .card.jsx imports this first; Vite compiles the JSX.
 // This is the one compatibility layer that sets window globals for the cards' classic scripts;
-// tools/app-dependencies.cjs fails window.VF_* / window.AG_* / window.VendraDesignSystem elsewhere.
+// tools/app-dependencies.mjs fails window.VF_* / window.AG_* / window.VendraDesignSystem elsewhere.
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {createRoot} from 'react-dom/client';

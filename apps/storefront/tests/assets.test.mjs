@@ -1,8 +1,10 @@
 // Each storefront page folder owns its sources and shares the runtime.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const root = path.resolve(__dirname, '..');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import playwrightPackage from '@playwright/test/package.json' with {type: 'json'};
+
+const root = path.resolve(import.meta.dirname, '..');
 for (const folder of fs.readdirSync(path.join(root, 'pages')).map(name => 'pages/' + name)) {
   const files = fs.readdirSync(path.join(root, folder));
   for (const name of ['tailwind.css', 'custom.css'])
@@ -34,7 +36,7 @@ assert.ok(!/@(?:apply|theme|source|import)\b/.test(custom));
 
 // CI and "Update screenshots" run in Playwright's Linux image; it must be the same version as
 // @playwright/test, or the browser differs from the one the -linux baselines were taken with.
-const playwright = require('@playwright/test/package.json').version;
+const playwright = playwrightPackage.version;
 const workflows = path.resolve(root, '../../.github/workflows');
 for (const name of fs.readdirSync(workflows)) {
   for (const [, tag] of fs

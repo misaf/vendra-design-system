@@ -1,9 +1,13 @@
 // Regression coverage for features consolidated into the maintained templates.
-const assert = require('node:assert/strict'),
-  fs = require('node:fs'),
-  path = require('node:path'),
-  vm = require('node:vm');
-const root = path.resolve(__dirname, '../../..'),
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import {VF_EMAIL} from '../communications/email-templates.js';
+import {VF_NOTIFY} from '../communications/notifications.js';
+import {VF_POSTS} from '../shared/translations/journal-content.js';
+import {pageScript, sharedLogic} from './page-script.mjs';
+const root = path.resolve(import.meta.dirname, '../../..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
 function environment() {
   const storage = new Map(),
@@ -51,11 +55,11 @@ function environment() {
   c.scrollTo = () => {};
   vm.createContext(c);
   c.React = {forwardRef: f => f};
-  vm.runInContext(require('./page-script.cjs').sharedLogic, c);
+  vm.runInContext(sharedLogic, c);
   return {c, storage, timers};
 }
 function page(name, c, props = {}) {
-  const logic = require('./page-script.cjs').pageScript('pages/' + name);
+  const logic = pageScript('pages/' + name);
   return vm.runInContext(
     `(()=>{${logic}\nreturn new Component(${JSON.stringify({lang: 'en', ...props})});})()`,
     c
@@ -458,29 +462,12 @@ function page(name, c, props = {}) {
     page('post', c, {routeInfo: {view: 'post', post: 'missing'}}).renderVals().missing,
     true
   );
-  for (const id of vm.runInContext(
-    '(()=>{' +
-      require('./page-script.cjs').strip(
-        read('apps/storefront/shared/translations/journal-content.js')
-      ) +
-      ';return VF_POSTS.map(p=>p.id);})()',
-    c
-  ))
+  for (const {id} of VF_POSTS)
     for (const lang of ['en', 'fa'])
       assert.equal(
         page('post', c, {lang, routeInfo: {view: 'post', post: id}}).renderVals().hasPost,
         true
       );
-  const comm = {console};
-  vm.createContext(comm);
-  const {strip} = require('./page-script.cjs');
-  vm.runInContext(
-    strip(read('apps/storefront/communications/notifications.js')) +
-      '\n' +
-      strip(read('apps/storefront/communications/email-templates.js')) +
-      '\nObject.assign(this, {VF_NOTIFY, VF_EMAIL});',
-    comm
-  );
   for (const lang of ['en', 'fa']) {
     const customer = {preferredLocale: lang},
       vars = {
@@ -500,8 +487,8 @@ function page(name, c, props = {}) {
         assetBase: 'https://example.test/assets',
         unsubLink: 'https://example.test/unsubscribe'
       };
-    for (const event of comm.VF_NOTIFY.events) {
-      const rendered = comm.VF_NOTIFY.render(
+    for (const event of VF_NOTIFY.events) {
+      const rendered = VF_NOTIFY.render(
         typeof event === 'string' ? event : event.id,
         customer,
         vars
@@ -512,24 +499,24 @@ function page(name, c, props = {}) {
     }
     for (const event of ['received', 'ready', 'onway'])
       for (const channel of ['sms', 'wa']) {
-        const rendered = comm.VF_NOTIFY.render(event, customer, vars, channel);
+        const rendered = VF_NOTIFY.render(event, customer, vars, channel);
         assert.ok(rendered.text.includes('VF-7K2M4Q'), event + ' names the product codes');
         if (channel === 'sms') assert.ok(rendered.sms.parts <= 2, event + ' fits 2 SMS parts');
       }
     assert.equal(
-      comm.VF_NOTIFY.itemsText([{code: 'VF-7K2M4Q', qty: 2}, 'VF-3HX9TP'], lang),
+      VF_NOTIFY.itemsText([{code: 'VF-7K2M4Q', qty: 2}, 'VF-3HX9TP'], lang),
       lang === 'fa' ? 'VF-7K2M4Q ×۲، VF-3HX9TP' : 'VF-7K2M4Q x2, VF-3HX9TP'
     );
     assert.equal(
-      comm.VF_NOTIFY.itemsText(['A', 'B', 'C', 'D'], lang),
+      VF_NOTIFY.itemsText(['A', 'B', 'C', 'D'], lang),
       lang === 'fa' ? 'A، B و ۲ مورد دیگر' : 'A, B +2 more'
     );
-    for (const event of comm.VF_EMAIL.events)
+    for (const event of VF_EMAIL.events)
       for (const theme of ['default', 'clay']) {
-        const rendered = comm.VF_EMAIL.render(event, customer, {...vars, theme});
+        const rendered = VF_EMAIL.render(event, customer, {...vars, theme});
         assert.equal(rendered.lang, lang);
         assert.ok(rendered.html.includes('<table'));
-        assert.ok(rendered.html.includes(comm.VF_EMAIL.themes[theme].gold));
+        assert.ok(rendered.html.includes(VF_EMAIL.themes[theme].gold));
       }
   }
   assert.equal(fs.existsSync(path.join(root, 'ui_kits')), false);

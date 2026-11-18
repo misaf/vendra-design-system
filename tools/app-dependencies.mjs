@@ -1,9 +1,9 @@
 // Runtime import checks. Paths and diagnostics are repo-relative, with / separators.
-const fs = require('node:fs');
-const path = require('node:path');
-const {parseSync} = require('rolldown/experimental');
-const {layer, dependencyViolation} = require('./atomic.cjs');
-const {componentsFolder} = require('./paths.cjs');
+import fs from 'node:fs';
+import path from 'node:path';
+import {parseSync} from 'rolldown/experimental';
+import {layer, dependencyViolation} from './atomic.mjs';
+import {componentsFolder} from './paths.mjs';
 
 // apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
@@ -217,4 +217,4 @@ function checkDependencies(root) {
   return {files, violations: [...new Set(violations)]};
 }
 
-module.exports = {checkDependencies};
+export {checkDependencies};

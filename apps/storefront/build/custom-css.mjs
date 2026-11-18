@@ -1,6 +1,6 @@
 // Assemble explicit source imports in cascade order into one runtime stylesheet.
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 function customCss(root) {
   const styles = path.join(root, 'shared', 'styles');
   const entry = fs.readFileSync(path.join(styles, 'custom.css'), 'utf8');
@@ -27,4 +27,4 @@ function customCss(root) {
   // one layer. app/theme.js loads Tailwind first, so its utilities sit under both.
   return '@layer vendra.components {\n' + css + '\n}\n';
 }
-module.exports = {customCss};
+export {customCss};

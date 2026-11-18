@@ -4,11 +4,11 @@
 // shared context (RouterProvider, I18nProvider) break. So every package pinned by more than one
 // manifest must have the same exact version everywhere, and the lockfile (what `npm ci` installs)
 // and node_modules must hold a single copy of each, at that version.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const repo = path.resolve(__dirname, '../../..');
+const repo = path.resolve(import.meta.dirname, '../../..');
 const readJson = file => JSON.parse(fs.readFileSync(path.join(repo, file), 'utf8'));
 const root = readJson('package.json');
 

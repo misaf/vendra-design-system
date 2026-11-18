@@ -1,13 +1,12 @@
-// Run with: node apps/storefront/tests/storefront.test.cjs
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
-const root = path.resolve(__dirname, '../../..');
+// Run with: node apps/storefront/tests/storefront.test.mjs
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+const root = path.resolve(import.meta.dirname, '../../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
-const {generate} = require('../build/generate.cjs');
-const {sharedLogic} = require('./page-script.cjs');
-const {pageScript} = require('./page-script.cjs');
+import {generate} from '../build/generate.mjs';
+import {pageScript, sharedLogic} from './page-script.mjs';
 generate(true);
 // Sets the test page's address: a path under the app, with its query.
 function setAddress(ctx, url) {

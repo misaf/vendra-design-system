@@ -1,9 +1,11 @@
-// A storefront page's copy and logic as one classic script, for running in a vm context that already
-// holds the shared logic: module imports (React, the runtime, copy, journal content) are dropped
-// and exports become plain declarations, as the browser sees them once imported.
-const fs = require('node:fs');
-const path = require('node:path');
-const templates = path.resolve(__dirname, '..');
+// VM harness for page hooks and stateful scenarios. Each context supplies its own React stub,
+// browser globals and runtime state. The harness strips imports and exports so the page hooks can
+// run against those stubs and tests can control the clock, storage and integration responses.
+import fs from 'node:fs';
+import path from 'node:path';
+import {tenantSlugs, tenantSpecs} from '../../../tools/tenants.mjs';
+
+const templates = path.resolve(import.meta.dirname, '..');
 const read = file => fs.readFileSync(path.join(templates, file), 'utf8');
 const strip = code =>
   code
@@ -126,18 +128,15 @@ const sharedLogic =
   'const VF_TENANT_BRANDS = ' +
   JSON.stringify(
     Object.fromEntries(
-      Object.entries(require('../../../tools/tenants.cjs').tenantSpecs()).map(([slug, spec]) => [
-        slug,
-        spec.brand || {}
-      ])
+      Object.entries(tenantSpecs()).map(([slug, spec]) => [slug, spec.brand || {}])
     )
   ) +
   ';\n' +
   'const VF_TENANT_SLUGS = ' +
-  JSON.stringify(require('../../../tools/tenants.cjs').tenantSlugs()) +
+  JSON.stringify(tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read('shared/' + file))).join('\n\n') +
   // Installs the integrations as app/runtime.js does; tests stub them through this.vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
-module.exports = {pageScript, strip, sharedLogic, sharedFiles};
+export {pageScript, sharedLogic};

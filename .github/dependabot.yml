@@ -2,10 +2,10 @@
 # weeks before it is offered (cooldown), so a broken or hijacked version is usually pulled first.
 # - React's majors are left for a deliberate upgrade: the package supports React 19 only (its peer
 #   range starts at the version the workspace pins and tests).
-# - @playwright/test must match the Playwright image in .github/workflows/*.yml (assets.test.cjs
+# - @playwright/test must match the Playwright image in .github/workflows/*.yml (assets.test.mjs
 #   fails otherwise): on its pull request, bump the image tag too, then run "Update screenshots".
 # - packages/design-system and apps/storefront both pin React and React Aria. This one root entry
-#   updates every workspace manifest in the same pull request; tests/dependencies.test.cjs fails if
+#   updates every workspace manifest in the same pull request; tests/dependencies.test.mjs fails if
 #   their versions differ or the lockfile installs a second copy.
 version: 2
 updates:

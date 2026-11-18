@@ -1,5 +1,5 @@
 // Shared by the component generator and architecture checks. Paths are repo-relative, with /.
-const {componentsFolder} = require('./paths.cjs');
+import {componentsFolder} from './paths.mjs';
 
 const levels = ['atoms', 'molecules', 'organisms'];
 
@@ -20,4 +20,4 @@ function dependencyViolation(source, target) {
   return null;
 }
 
-module.exports = {levels, layer, dependencyViolation};
+export {levels, layer, dependencyViolation};

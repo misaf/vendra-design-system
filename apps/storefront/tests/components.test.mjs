@@ -1,10 +1,10 @@
 // Every design-system component must be used by at least one storefront template (or, for
 // building blocks such as Field, by another component), so the templates stay a complete
 // reference for the system.
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const root = path.resolve(__dirname, '..');
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+const root = path.resolve(import.meta.dirname, '..');
 const components = [];
 const walk = dir =>
   fs.readdirSync(dir, {withFileTypes: true}).forEach(entry => {

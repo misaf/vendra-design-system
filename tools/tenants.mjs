@@ -1,14 +1,16 @@
 // Generate the package's tokens/tenants/<slug>.css, tokens/tenants.css (every tenant, for design-system cards)
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
-const fs = require('node:fs');
-const path = require('node:path');
-const theme = require('../apps/storefront/shared/domain/tenant-theme.js');
-const root = path.resolve(__dirname, '../apps/storefront');
-const {packageRoot, packageFolder} = require('./paths.cjs');
+import fs from 'node:fs';
+import path from 'node:path';
+import theme from '../apps/storefront/shared/domain/tenant-theme.js';
+import {validateBrand} from './brand.mjs';
+import {packageRoot, packageFolder} from './paths.mjs';
+
+const root = path.resolve(import.meta.dirname, '../apps/storefront');
 const folder = path.join(packageRoot, 'tokens/tenants');
 
 // A brand font's files must ship with the deployment: present under the repo root and WOFF2.
-const repo = path.resolve(__dirname, '..');
+const repo = path.resolve(import.meta.dirname, '..');
 function validateFontFiles(font, label) {
   if (!font) return;
   for (const [script, file] of Object.entries(font.files)) {
@@ -40,7 +42,7 @@ function tenantSpecs() {
     } catch (error) {
       throw new Error(label + ': ' + error.message);
     }
-    require('./brand.cjs').validateBrand(spec.brand, label + '.brand');
+    validateBrand(spec.brand, label + '.brand');
     specs[slug] = theme.validate(spec, label);
     validateFontFiles(spec.font, label + '.font');
     const failing = theme.checks(spec).filter(check => !check.pass);
@@ -131,4 +133,4 @@ function withEmailThemes(source, specs) {
   return source.slice(0, start + begin.length) + (body ? body + '\n' : '') + source.slice(finish);
 }
 
-module.exports = {tenantSpecs, tenantOutputs, tenantSlugs, validateFontFiles};
+export {tenantSpecs, tenantOutputs, tenantSlugs, validateFontFiles};
