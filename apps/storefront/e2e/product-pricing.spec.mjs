@@ -56,6 +56,38 @@ for (const lang of ['en', 'fa']) {
     await expect(confirmation.locator('.ag-osum__name')).toHaveText('VF-7K2M4Q');
     expect(amount(await confirmation.locator('.ag-osum__total').textContent())).toBe(10100000);
     expect(await scanAxe(page)).toEqual([]);
+    if (info.project.name === 'mobile') {
+      const originalViewport = page.viewportSize();
+      for (const width of [320, 390]) {
+        await page.setViewportSize({...originalViewport, width});
+        await page.evaluate(() => document.fonts.ready.then(() => {}));
+        const row = confirmation.locator('.ag-osum__line');
+        const layout = await row.evaluate(el => {
+          const name = el.querySelector('.ag-osum__name');
+          const price = el.querySelector('.ag-osum__total').getBoundingClientRect();
+          const row = el.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(name);
+          const code = range.getBoundingClientRect();
+          return {
+            codeHeight: name.getBoundingClientRect().height,
+            lineHeight: parseFloat(getComputedStyle(name).lineHeight),
+            overlap:
+              code.left < price.right &&
+              code.right > price.left &&
+              code.top < price.bottom &&
+              code.bottom > price.top,
+            insideRow:
+              Math.min(code.left, price.left) >= row.left - 1 &&
+              Math.max(code.right, price.right) <= row.right + 1
+          };
+        });
+        expect(layout.codeHeight, `code height at ${width}px`).toBeCloseTo(layout.lineHeight, 0);
+        expect(layout.overlap, `price overlap at ${width}px`).toBe(false);
+        expect(layout.insideRow, `code and price fit at ${width}px`).toBe(true);
+      }
+      await page.setViewportSize(originalViewport);
+    }
 
     await openSite(page, 'product', lang, {id: 'VF-8RD5WN'});
     await expect(page.locator('.vf-product-unit-label')).toHaveText(

@@ -18,13 +18,13 @@ export function OrderSummary({ lines = [], sums = [], title, titleAs = "h2", ite
 		src: line.image,
 		sizes: "56px",
 		alt: ""
-	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
+	}), /* @__PURE__ */ React.createElement("div", { className: "ag-osum__details" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__main" }, /* @__PURE__ */ React.createElement("div", { className: "ag-osum__name" }, line.href ? /* @__PURE__ */ React.createElement(Link, {
 		href: line.href,
 		onClick: line.onClick
 	}, line.name) : line.name), line.meta && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__meta" }, line.meta), line.note && /* @__PURE__ */ React.createElement("div", { className: "ag-osum__note" }, line.note)), line.total != null && /* @__PURE__ */ React.createElement(Price, {
 		value: line.total,
 		className: "ag-osum__total"
-	}))));
+	})))));
 	return /* @__PURE__ */ React.createElement("section", {
 		ref,
 		className: cx("ag-osum", className),

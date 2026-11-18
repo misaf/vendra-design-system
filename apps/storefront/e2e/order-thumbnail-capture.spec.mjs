@@ -65,6 +65,7 @@ for (const [width, lang] of [
           count: 2,
           captureSelector: 'main .ag-osum img'
         });
+      await activate(page.locator('main .ag-osum__items > summary'));
       await captureSummary('delivery');
       await page.locator('#vf-name').fill('Test Recipient');
       await page.locator('#vf-phone').fill('09120000000');

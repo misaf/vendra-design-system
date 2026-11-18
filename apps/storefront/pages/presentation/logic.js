@@ -913,9 +913,10 @@ function vals(page) {
         page.setState({transferError: true});
       }
     },
-    offlineUrls: displayPool.flatMap(product =>
-      vfProductImages(product, L).map(image => image.src)
-    ),
+    offlinePhotos: displayPool.flatMap(product => [
+      vfProductImage(product, L),
+      ...vfProductImages(product, L)
+    ]),
     display: !st.browsing,
     displayMode: st.settings.displayMode,
     displayProduct: displayPool.length
