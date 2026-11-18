@@ -14,7 +14,7 @@ export function OrderTimeline({ steps = [], current = 0, status = "active", labe
 		ref,
 		className: cx("ag-otl", className),
 		style,
-		"aria-label": label
+		"aria-label": label ?? rest["aria-label"]
 	}, steps.map((step, i) => {
 		const done = status === "done" || i < current;
 		const isCurrent = status !== "done" && i === current;

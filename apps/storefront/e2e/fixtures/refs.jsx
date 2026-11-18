@@ -92,7 +92,7 @@ const samples = {
     </DS.Alert>
   ),
   AnnouncementBar: props => (
-    <DS.AnnouncementBar {...props} label="News">
+    <DS.AnnouncementBar {...props} aria-label="News">
       Free delivery
     </DS.AnnouncementBar>
   ),
@@ -122,7 +122,9 @@ const samples = {
     </DS.NavLink>
   ),
   OfflineNotice: props => <DS.OfflineNotice {...props} />,
-  OrderTimeline: props => <DS.OrderTimeline {...props} steps={[{label: 'Placed'}]} />,
+  OrderTimeline: props => (
+    <DS.OrderTimeline {...props} aria-label="Order progress" steps={[{label: 'Placed'}]} />
+  ),
   Pagination: props => <DS.Pagination {...props} page={1} pageCount={3} onChange={() => {}} />,
   PaymentCard: props => <DS.PaymentCard {...props} cardNumber="6037 9918 1234 5678" />,
   ProductCard: props => <DS.ProductCard {...props} name="VF-7K2M4Q" price="2,200,000 Toman" />,
@@ -156,7 +158,15 @@ const samples = {
   BottomTabBar: props => (
     <DS.BottomTabBar
       {...props}
+      aria-label="Shopping navigation"
+      items={[{id: 'bag', icon: 'shopping-bag', label: 'Bag'}]}
+    />
+  ),
+  BottomTabBarWithLabel: props => (
+    <DS.BottomTabBar
+      {...props}
       label="Main"
+      aria-label="Shopping navigation"
       items={[{id: 'bag', icon: 'shopping-bag', label: 'Bag'}]}
     />
   ),
@@ -180,7 +190,7 @@ const samples = {
       <p id="tenant-details">In your bag</p>
     </DS.Dialog>
   ),
-  Gallery: props => <DS.Gallery {...props} images={[photo, photo]} />,
+  Gallery: props => <DS.Gallery {...props} aria-label="Product photos" images={[photo, photo]} />,
   Lightbox: props => <DS.Lightbox {...props} items={[{id: 1, images: [photo]}]} index={0} />,
   LocationPicker: props => (
     <DS.LocationPicker

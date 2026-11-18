@@ -20,7 +20,7 @@ export function AnnouncementBar({
       {...rest}
       ref={ref}
       role="region"
-      aria-label={label}
+      aria-label={label ?? rest['aria-label']}
       className={cx('ag-announce', className)}
     >
       <div className="ag-announce__text">{children}</div>

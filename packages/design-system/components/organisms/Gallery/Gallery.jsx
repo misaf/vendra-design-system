@@ -41,7 +41,7 @@ export function Gallery({
       ref={ref}
       role="region"
       aria-roledescription="carousel"
-      aria-label={label}
+      aria-label={label ?? rest['aria-label']}
       className={cx('ag-gallery', className)}
     >
       <div

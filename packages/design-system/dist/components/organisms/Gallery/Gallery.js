@@ -30,7 +30,7 @@ export function Gallery({ images = [], sizes = "(max-width: 767px) 100vw, 540px"
 		ref,
 		role: "region",
 		"aria-roledescription": "carousel",
-		"aria-label": label,
+		"aria-label": label ?? rest["aria-label"],
 		className: cx("ag-gallery", className)
 	}, /* @__PURE__ */ React.createElement("div", {
 		ref: trackRef,

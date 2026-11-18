@@ -78,3 +78,17 @@ test('forwarded ARIA preserves roles, labels and built-in descriptions', async (
   await expect(toast).toHaveAccessibleName('Added to bag');
   await expect(toast).toHaveAttribute('aria-describedby', /\S+ tenant-details$/);
 });
+
+test('components use aria-label when label is omitted and prefer an explicit label', async ({
+  page
+}) => {
+  const expected = {
+    AnnouncementBar: 'News',
+    BottomTabBar: 'Shopping navigation',
+    BottomTabBarWithLabel: 'Main',
+    Gallery: 'Product photos',
+    OrderTimeline: 'Order progress'
+  };
+  for (const [name, label] of Object.entries(expected))
+    await expect.soft(page.getByTestId('component-' + name), name).toHaveAccessibleName(label);
+});

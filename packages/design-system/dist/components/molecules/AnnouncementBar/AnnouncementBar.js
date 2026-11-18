@@ -12,7 +12,7 @@ export function AnnouncementBar({ children, onClose, closeLabel, label, classNam
 		...rest,
 		ref,
 		role: "region",
-		"aria-label": label,
+		"aria-label": label ?? rest["aria-label"],
 		className: cx("ag-announce", className)
 	}, /* @__PURE__ */ React.createElement("div", { className: "ag-announce__text" }, children), onClose && /* @__PURE__ */ React.createElement(IconButton, {
 		icon: "x",

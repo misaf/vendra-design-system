@@ -7,7 +7,12 @@ import {cx} from '../../utils/cx.js';
 // are React Aria buttons. `count` shows a badge on the icon.
 export function BottomTabBar({items = [], label, className = '', ref, ...rest}) {
   return (
-    <nav {...rest} ref={ref} aria-label={label} className={cx('ag-tabbar', className)}>
+    <nav
+      {...rest}
+      ref={ref}
+      aria-label={label ?? rest['aria-label']}
+      className={cx('ag-tabbar', className)}
+    >
       <ul className="ag-tabbar__list">
         {items.map(item => {
           const classes = cx('ag-tabbar__item', item.current && 'ag-tabbar__item--current');
