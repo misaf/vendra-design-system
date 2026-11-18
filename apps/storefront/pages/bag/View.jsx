@@ -25,6 +25,7 @@ export function View({v}) {
       content={
         <StorefrontBagLayout
           showContents={v.hasItems}
+          editingItems={v.onBag}
           notice={
             v.removedMessage ? (
               <StorefrontBagFeedback
