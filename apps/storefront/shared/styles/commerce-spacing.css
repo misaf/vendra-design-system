@@ -1,5 +1,21 @@
+/* Keep the editable bag's summary itemized only when it sits beside the items.
+   In the standard density, two columns need 480px + 380px + 20px gap + 48px page padding. */
+@container (width < 928px) {
+  .vf-bag-columns[data-editing-items] > .vf-bag-items {
+    flex-basis: 100%;
+  }
+  .vf-bag-columns[data-editing-items] > .vf-bag-summary .ag-osum__lines {
+    display: none;
+  }
+}
+@container (width >= 928px) {
+  .vf-bag-columns[data-editing-items] {
+    flex-wrap: nowrap;
+  }
+}
+
 /* Compact shopping and checkout rhythm. Keep type, photos, fields and controls at their
-   existing sizes; remove space between groups and the bag's duplicated row padding. */
+   existing sizes; remove space between groups and reduce summary row padding. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
   :where(html:not([data-density='tv'])) .vf-shopping--shop {
     gap: var(--space-4);

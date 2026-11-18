@@ -2,6 +2,7 @@ import React from 'react';
 
 export function StorefrontBagLayout({
   showContents,
+  editingItems,
   notice,
   progress,
   heading,
@@ -16,7 +17,10 @@ export function StorefrontBagLayout({
         <>
           {progress}
           {heading}
-          <div className="vf-bag-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start">
+          <div
+            className="vf-bag-columns tw:flex tw:flex-wrap tw:gap-7 tw:items-start"
+            data-editing-items={editingItems || undefined}
+          >
             <div className="vf-bag-items tw:min-w-0 tw:flex tw:flex-col tw:[flex:999_1_480px] tw:gap-7">
               {items}
             </div>
