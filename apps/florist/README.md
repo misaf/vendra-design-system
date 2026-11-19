@@ -139,7 +139,8 @@ The workspace lives in `apps/florist/`. The demo serves published URLs under its
 | Main storefront layout | `shell/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
 | Providers, bare presentation and sticky measurements | `shell/Shell.jsx` (values in `shared/services/navigation.js`) |
 | Routes and URL helpers | [shared/services/routing.js](shared/services/routing.js) |
-| Responsive state, focus, `<head>` | `shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
+| Browser analytics and focus | `shared/services/page-lifecycle.js`, `page-focus.js` |
+| Metadata for server rendering and browser navigation | `shared/services/page-metadata.js`, `seo.js` |
 | Shared translations | `i18n/` |
 | Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `design-system/components/`; Leaflet loading and location text in `shared/domain/location.js` |
 | Shared CSS: shell, page families, information pages | `styles/shell.css`, `page-layouts.css`, `information-pages.css` |
@@ -152,7 +153,7 @@ The workspace lives in `apps/florist/`. The demo serves published URLs under its
 
 Start in the feature folder. For checkout, `CheckoutScreen.jsx` combines `useCheckout.js` with `CheckoutView.jsx`. The hook owns state and effects. The view reads the resulting values and renders the feature's layouts, organisms and molecules. Keep feature-specific components beside the screen and put UI reused across features in `shell/`. The design system provides reusable components and tokens.
 
-The Next.js layout keeps `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics and heading focus. `shell/runtime.js` installs the API client and analytics on `vfRuntime` in the browser.
+The Next.js layout uses `app/_components/StorefrontDocument.jsx` to initialize browser integrations and keep `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics, document updates and heading focus.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
@@ -191,7 +192,7 @@ npm --prefix apps/florist run test:e2e:remote  # optional: the same tests on a L
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `packages/ui/tokens/tenants/`.
+- **Tenant list only:** `node apps/florist/build/generate.mjs` from the repository root rewrites `_runtime/tenant-slugs.js` from `packages/ui/tokens/tenants/`.
 
 ## GitHub Pages demo
 

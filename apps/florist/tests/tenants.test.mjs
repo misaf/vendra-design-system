@@ -421,7 +421,7 @@ test('Tenant branding and deployment asset paths', t => {
   }
 
   // Every shared icon and social image is used: by the default tenant's head links, its manifests or
-  // the default preview image (page-lifecycle.js).
+  // the default preview image (page-metadata.js).
   vfServerRender({url: '/', base: ''});
   const used = new Set();
   for (const lang of ['en', 'fa']) {
@@ -432,11 +432,11 @@ test('Tenant branding and deployment asset paths', t => {
     for (const {src} of manifest.icons)
       used.add(path.posix.normalize('assets/tenants/default/' + src));
   }
-  const lifecycle = fs.readFileSync(
-    path.join(root, 'apps/florist/shared/services/page-lifecycle.js'),
+  const metadata = fs.readFileSync(
+    path.join(root, 'apps/florist/shared/services/page-metadata.js'),
     'utf8'
   );
-  assert.match(lifecycle, /`assets\/social\/og-default-\$\{lang\}\.png`/);
+  assert.match(metadata, /`assets\/social\/og-default-\$\{lang\}\.png`/);
   for (const lang of ['en', 'fa']) used.add(`assets/social/og-default-${lang}.png`);
   for (const folder of ['assets/icons', 'assets/social'])
     for (const name of fs.readdirSync(path.join(root, folder)))

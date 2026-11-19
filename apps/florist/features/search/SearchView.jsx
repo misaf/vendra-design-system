@@ -1,6 +1,6 @@
 // StorefrontSearch: the page inside the storefront shell.
 import React from 'react';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontSearchLayout} from './layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
 import {StorefrontSearchControls} from './organisms/StorefrontSearchControls/StorefrontSearchControls.jsx';
 import {StorefrontSearchPopular} from './organisms/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
@@ -28,12 +28,12 @@ export function View({v}) {
           }
           popular={
             v.empty ? (
-              <StorefrontSearchPopular title={v.t?.popular} terms={list(v.popular)} />
+              <StorefrontSearchPopular title={v.t?.popular} terms={asList(v.popular)} />
             ) : null
           }
           results={
             v.hasResults ? (
-              <StorefrontSearchResults countLabel={v.countLabel} results={list(v.results)} />
+              <StorefrontSearchResults countLabel={v.countLabel} results={asList(v.results)} />
             ) : null
           }
           empty={

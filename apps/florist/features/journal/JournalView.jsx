@@ -1,7 +1,7 @@
 // StorefrontJournal: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontJournalLayout} from './layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from './organisms/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
 import {StorefrontJournalEmpty} from './molecules/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
@@ -22,7 +22,7 @@ export function View({v}) {
               title={v.t?.hA}
               accent={v.t?.hB}
               categoriesLabel={v.t?.categories}
-              categories={list(v.cats)}
+              categories={asList(v.cats)}
               onCategoryFocus={event => {
                 const target = /** @type {HTMLElement} */ (event.target);
                 if (target !== event.currentTarget)
@@ -55,7 +55,7 @@ export function View({v}) {
               />
             ) : null
           }
-          stories={<StorefrontJournalStories stories={list(v.rest)} />}
+          stories={<StorefrontJournalStories stories={asList(v.rest)} />}
           pagination={
             <DS.Pagination
               className="vf-journal-pagination tw:mt-8"

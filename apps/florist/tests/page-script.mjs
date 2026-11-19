@@ -137,6 +137,8 @@ const sharedFiles = [
   'shared/services/structured-data.js',
   'shared/services/page-state.js',
   'shared/services/list-tracking.js',
+  'shared/services/tenant.js',
+  'shared/services/page-metadata.js',
   'shared/services/page-lifecycle.js',
   'shared/services/navigation.js'
 ];
@@ -167,7 +169,7 @@ const sharedLogic =
   JSON.stringify(tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read(file))).join('\n\n') +
-  // Installs the integrations as shell/runtime.js does; tests stub them through this.vfRuntime.
+  // Install the same integrations as the Next.js entry point. Tests stub them through vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
 // Sets the test page's address: a path under the app, with its query.

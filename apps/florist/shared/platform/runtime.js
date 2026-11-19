@@ -1,9 +1,7 @@
 // The storefront's runtime: the browser integrations and page-wide state every page, the shell and
 // the shared logic use, in one object that modules import instead of reading window globals.
-// shell/runtime.js installs the API client and analytics (shared/services/integrations/runtime.js) and
-// shell/tenant-theme.js the asset base and tenant loader, both before the first render. In the build's
-// prerender nothing is installed: the integrations stay null, and code that renders on the server
-// must not call them (effects and event handlers run in the browser only).
+// The Next.js client entry installs the API client, analytics, asset base and tenant loader before
+// the first render. During static export the integrations stay null.
 
 /**
  * @typedef {object} VfApi The Vendra API client (shared/services/integrations/api.js).
