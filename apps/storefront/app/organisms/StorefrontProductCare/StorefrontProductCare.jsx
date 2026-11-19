@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import * as DS from '../../ds.js';
 
@@ -12,7 +13,7 @@ export function StorefrontProductCare({deliveryText, inquiry, items}) {
       </div>
       {inquiry.href ? (
         <>
-          <a
+          <StorefrontLink
             className="vf-product-ask tw:flex tw:items-center tw:in-data-[density=tv]:min-h-tap tw:gap-3 tw:text-sm tw:text-secondary tw:self-start tw:[text-underline-offset:3px]"
             href={inquiry.href}
             target="_blank"
@@ -22,7 +23,7 @@ export function StorefrontProductCare({deliveryText, inquiry, items}) {
             <span>
               <>{inquiry.label}</>
             </span>
-          </a>
+          </StorefrontLink>
         </>
       ) : null}
       <DS.Accordion items={items} defaultValue="care" />

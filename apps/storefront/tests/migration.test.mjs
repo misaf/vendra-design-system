@@ -372,6 +372,7 @@ function page(name, c, props = {}) {
       routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
     });
     returned.lifecycle.didMount();
+    timers.pop()(); // Start the payment check once the route has mounted.
     return returned;
   };
   const refused = back('failed');

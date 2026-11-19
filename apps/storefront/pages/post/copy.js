@@ -1,5 +1,29 @@
 // Bilingual post copy. Edit here, then run npm --prefix apps/storefront run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+import {vfJournalImage} from '../../shared/domain/journal-images.js';
+import {vfRouteUrl} from '../../shared/services/routing.js';
+import {vfArticleData} from '../../shared/services/structured-data.js';
+
+export function vfPostHead(post, L, cover = post && vfJournalImage(post.image)) {
+  return post
+    ? {
+        image: cover && {src: cover.src, alt: post[L][0], width: cover.width, height: cover.height},
+        description: post[L][1],
+        type: 'article',
+        structuredData: [
+          vfArticleData({
+            headline: post[L][0],
+            description: post[L][1],
+            image: cover?.src,
+            published: post.publishedAt,
+            url: vfRouteUrl({lang: L, view: 'post', post: post.id}),
+            lang: L
+          })
+        ]
+      }
+    : null;
+}
+
 export function vfCopy(S) {
   const result = {
     en: {

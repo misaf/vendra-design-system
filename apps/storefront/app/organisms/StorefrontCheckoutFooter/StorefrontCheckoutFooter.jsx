@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {TrustSeal} from '../../ds.js';
 
@@ -8,12 +9,12 @@ export function StorefrontCheckoutFooter({links, seals, consentSettingsLabel, on
         <ul className="tw:m-0 tw:p-0 tw:list-none tw:flex tw:flex-wrap tw:gap-x-4">
           {links.map(link => (
             <li key={link.href}>
-              <a
+              <StorefrontLink
                 href={link.href}
                 className="vf-shell-footer-link tw:inline-flex tw:items-center tw:min-h-tap tw:text-sm"
               >
                 {link.label}
-              </a>
+              </StorefrontLink>
             </li>
           ))}
           {onOpenConsent && (

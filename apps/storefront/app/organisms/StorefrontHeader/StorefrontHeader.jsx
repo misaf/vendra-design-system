@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
 import {IconButton, LanguageSwitch, NavLink} from '../../ds.js';
@@ -32,7 +33,7 @@ export function StorefrontHeader({
             </NavLink>
           ))}
         </nav>
-        <a
+        <StorefrontLink
           href={homeHref}
           className="vf-shell-desktop-brand tw:font-display tw:font-medium tw:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
         >
@@ -40,7 +41,7 @@ export function StorefrontHeader({
             image={brandAssets?.logo}
             name={brandAssets?.logo?.alt?.[lang] || brandAssets?.logo?.alt?.[lang] || brand}
           />
-        </a>
+        </StorefrontLink>
         <div className="tw:flex tw:gap-1 tw:items-center">
           {language ? (
             <div className="vf-shell-header-lang tw:me-2">
@@ -74,7 +75,7 @@ export function StorefrontHeader({
             </button>
           ) : null}
         </div>
-        <a
+        <StorefrontLink
           href={homeHref}
           className="vf-shell-mobile-brand tw:font-display tw:font-medium tw:text-md tw:md:text-xl tw:text-center tw:overflow-hidden tw:text-ellipsis tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline! tw:whitespace-nowrap"
         >
@@ -86,7 +87,7 @@ export function StorefrontHeader({
               brand
             }
           />
-        </a>
+        </StorefrontLink>
         <div className="vf-shell-mobile-tools tw:flex tw:justify-end tw:items-center tw:md:gap-1">
           {language ? (
             <div className="vf-shell-header-lang tw:max-md:hidden tw:me-2">

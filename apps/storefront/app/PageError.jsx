@@ -3,6 +3,7 @@
 import React from 'react';
 import {Alert} from '../design-system/components/molecules/Alert/Alert.jsx';
 import {Button} from '../design-system/components/atoms/Button/Button.jsx';
+import {vfRuntime} from '../shared/platform/runtime.js';
 import {vfLocation} from '../shared/platform/environment.js';
 import {vfAppBase} from '../shared/services/routing.js';
 import {VF_STORE, vfLocale} from '../shared/domain/store-config.js';
@@ -27,6 +28,8 @@ export function PageError() {
   const lang = locale.code;
   const copy = COPY[lang];
   React.useEffect(() => {
+    vfRuntime.restoreSession?.();
+    vfRuntime.rendered = 'hydrated';
     document.title = copy.title + ' · ' + VF_STORE.brand[lang];
     document.documentElement.lang = lang;
     document.documentElement.dir = locale.dir;

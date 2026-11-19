@@ -9,11 +9,10 @@ for (const folder of fs.readdirSync(path.join(root, 'pages')).map(name => 'pages
   const files = fs.readdirSync(path.join(root, folder));
   for (const name of ['tailwind.css', 'custom.css'])
     assert.ok(!files.includes(name), folder + ' duplicates ' + name);
-  if (folder !== 'pages/site') {
-    assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
-    assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
-  }
   assert.ok(files.includes('logic.js'), folder + ' must own its behavior source');
+  if (folder === 'pages/site') continue; // Shared session state lives above the App Router pages.
+  assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
+  assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
   for (const name of ['Page.jsx', 'View.jsx'])
     assert.ok(files.includes(name), folder + ' must have its ' + name);
   const view = fs.readFileSync(path.join(root, folder, 'View.jsx'), 'utf8');

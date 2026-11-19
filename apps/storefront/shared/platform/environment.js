@@ -1,10 +1,19 @@
-// Where the storefront runs: a browser tab, or Node while the build prerenders one address
-// (app/entry-server.jsx). Shared code reads the page's address and the asset base here, never
-// window or location at import time, so every module also loads and renders on the server.
+// Shared address, clock, and asset helpers for the browser and Next.js static export.
 import {vfRuntime} from './runtime.js';
 
 let vfServerState = null;
-let vfHeldTime = null;
+let vfHydrating = false;
+let vfRenderTime = 0;
+let vfRenderBase = '';
+
+export function vfConfigureRendering(base, time) {
+  vfRenderBase = base;
+  vfRenderTime = time;
+}
+
+export function vfSetHydrating(hydrating) {
+  vfHydrating = hydrating;
+}
 
 // The build sets the address it is rendering ({url, base, origin, time}) and clears it afterwards
 // (null). `url` is the path (with the build's base), `base` the build's base path, `origin` the
@@ -15,35 +24,16 @@ export function vfServerRender(options) {
   vfServerState = options ? {base: '/', origin: '', time: Date.now(), ...options} : null;
 }
 
-// The time pages render at. Delivery days, cut-offs and the like depend on it, so the browser renders
-// its first pass over the prerendered markup at the moment the build rendered it (vfHoldClock), and
-// then again at the real time; otherwise it is now.
+// Let the browser hydrate date-dependent content at the same time used by the static export.
 export function vfNow() {
   if (vfServerState) return new Date(vfServerState.time);
-  return new Date(vfHeldTime ?? Date.now());
-}
-
-// Holds vfNow at `time` (milliseconds) while the browser hydrates the prerendered markup (app/
-// start-storefront.jsx), and lets it run again with null (page-lifecycle.js, once the page has hydrated).
-// Returns whether it was held.
-/** @param {number | null} time */
-export function vfHoldClock(time) {
-  const held = vfHeldTime != null;
-  vfHeldTime = time;
-  return held;
-}
-
-// The storefront page the prerender rendered (page-lifecycle.js records it as it renders), so the
-// build writes that page's <head>; null in the browser.
-export function vfServerPage(page) {
-  if (!vfServerState) return null;
-  if (page) vfServerState.page = page;
-  return vfServerState.page || null;
+  const buildTime = vfOnServer() && vfRenderTime;
+  return new Date(buildTime || Date.now());
 }
 
 // Whether this render has no browser: the build's prerender, or any Node import.
 export function vfOnServer() {
-  return vfServerState != null || typeof window === 'undefined';
+  return vfServerState != null || vfHydrating || typeof window === 'undefined';
 }
 
 // The page's address as a URL: the browser's, or the address being prerendered.
@@ -73,5 +63,16 @@ export function vfAbsoluteUrl(url) {
 // (app/tenant-theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
 export function vfAssetBase() {
   if (vfServerState) return vfServerState.base;
-  return vfRuntime.assetBase || '../../../';
+  return vfRuntime.assetBase || vfRenderBase || '../../../';
+}
+
+// Ignore device storage until Next.js has hydrated the static document.
+export function vfStoredValue(key, session = false) {
+  if (vfOnServer()) return null;
+  try {
+    const storage = session ? sessionStorage : localStorage;
+    return storage.getItem(key);
+  } catch {
+    return null;
+  }
 }

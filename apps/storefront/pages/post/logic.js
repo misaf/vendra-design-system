@@ -2,14 +2,13 @@
 import {VF_JCATS, VF_POSTS} from '../../shared/translations/journal-content.js';
 import {vfJournalImage} from '../../shared/domain/journal-images.js';
 import {vfSeparator} from '../../shared/domain/formatting.js';
-import {vfCopy} from './copy.js';
+import {vfCopy, vfPostHead} from './copy.js';
 import {vfProduct, vfProductImage} from '../../shared/domain/catalog.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfAbsoluteUrl} from '../../shared/platform/environment.js';
-import {vfArticleData} from '../../shared/services/structured-data.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -40,25 +39,8 @@ function vals(page) {
     post = VF_POSTS.find(p => p.id === id),
     missing = id !== 'morning-at-the-studio' && !post,
     loading = vfPageRoute(page.props).demo === 'loading';
-  // Link previews show the post's photo and its standfirst (page-lifecycle.js vfPageHead).
   const cover = post && vfJournalImage(post.image);
-  page.head = post
-    ? {
-        image: cover && {src: cover.src, alt: post[L][0], width: cover.width, height: cover.height},
-        description: post[L][1],
-        type: 'article',
-        structuredData: [
-          vfArticleData({
-            headline: post[L][0],
-            description: post[L][1],
-            image: cover?.src,
-            published: post.publishedAt,
-            url: vfRouteUrl({lang: L, view: 'post', post: post.id}),
-            lang: L
-          })
-        ]
-      }
-    : null;
+  page.head = vfPostHead(post, L, cover);
   // Everything the article shows is the post's own; the page copy holds only its chrome.
   const classic = post && !post.body ? post.classic?.[L] : undefined;
   if (post) {

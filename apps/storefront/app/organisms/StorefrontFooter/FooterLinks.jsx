@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {Accordion} from '../../ds.js';
 
@@ -20,14 +21,14 @@ function FooterNavigation({group, compact = false, consentSettingsLabel, onOpenC
         </div>
       )}
       {group.links.map((link, index) => (
-        <a
+        <StorefrontLink
           key={index}
           href={link.href}
           aria-current={link.current}
           className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
         >
           {link.label}
-        </a>
+        </StorefrontLink>
       ))}
       {group.id === 'help' && (
         <button

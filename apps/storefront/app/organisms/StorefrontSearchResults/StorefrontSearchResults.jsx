@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import * as DS from '../../ds.js';
 
@@ -9,7 +10,7 @@ export function StorefrontSearchResults({countLabel, results}) {
       </div>
       {results.map((r, $index) => (
         <React.Fragment key={$index}>
-          <a
+          <StorefrontLink
             href={r?.href}
             onClick={r?.select}
             className="vf-search-result vf-search-row tw:grid tw:[grid-template-columns:48px_minmax(0,1fr)_auto] tw:gap-4 tw:items-center tw:py-3 tw:px-0 tw:[border-top:1px_solid_var(--border-subtle)] tw:text-body! tw:no-underline! tw:hover:bg-sunken"
@@ -33,7 +34,7 @@ export function StorefrontSearchResults({countLabel, results}) {
               </span>
             </span>
             <DS.Price value={r?.price} size="md" className="vf-price" />
-          </a>
+          </StorefrontLink>
         </React.Fragment>
       ))}
     </div>

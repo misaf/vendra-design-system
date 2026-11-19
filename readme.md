@@ -80,7 +80,8 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `apps/storefront/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
 | `apps/storefront/design-system/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
-| `apps/storefront/pages/*` | 17 bilingual storefront pages plus `pages/site`, the click-through router. The source of truth for the storefront. |
+| `apps/storefront/pages/*` | Bilingual storefront views and the shared commerce session in `pages/site`. |
+| `apps/storefront/next/app/` | App Router layouts and route files for both languages. |
 | `apps/storefront/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
 | `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/storefront` scripts. |
 | `apps/storefront/shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |

@@ -1,5 +1,13 @@
 import {vfRuntime} from '../shared/platform/runtime.js';
 
+let renderedTenant = '';
+let reveal = () => {};
+
+export function tenantRendered(tenant) {
+  renderedTenant = tenant;
+  reveal();
+}
+
 export function installTenantTheme(assetBase) {
   vfRuntime.assetBase = assetBase;
   // Loads only this tenant's stylesheet (page code calls it with ?tenant= or store-config.js). The page
@@ -9,8 +17,14 @@ export function installTenantTheme(assetBase) {
     let link = /** @type {HTMLLinkElement & {vfTimer?: number}} */ (
       document.getElementById('vf-tenant-css')
     );
+    const root = document.documentElement;
     if (!tenant || tenant === 'default' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(tenant)) {
-      if (link) link.remove();
+      if (link) {
+        clearTimeout(link.vfTimer);
+        link.remove();
+      }
+      reveal = () => {};
+      root.removeAttribute('data-vf-tenant-loading');
       return;
     }
     const href = new URL(
@@ -18,13 +32,6 @@ export function installTenantTheme(assetBase) {
       location.href
     ).href;
     if (link && link.href === href) return;
-    const root = document.documentElement;
-    if (!document.getElementById('vf-tenant-wait')) {
-      const style = document.createElement('style');
-      style.id = 'vf-tenant-wait';
-      style.textContent = 'html[data-vf-tenant-loading] body{visibility:hidden}';
-      document.head.appendChild(style);
-    }
     root.setAttribute('data-vf-tenant-loading', '');
     if (!link) {
       link = document.createElement('link');
@@ -34,8 +41,16 @@ export function installTenantTheme(assetBase) {
     const done = () => {
       clearTimeout(link.vfTimer);
       root.removeAttribute('data-vf-tenant-loading');
+      reveal = () => {};
     };
-    link.onload = done;
+    let loaded = false;
+    reveal = () => {
+      if (loaded && renderedTenant === tenant) done();
+    };
+    link.onload = () => {
+      loaded = true;
+      reveal();
+    };
     link.onerror = () => {
       done();
       console.error('No tenant theme at ' + href);

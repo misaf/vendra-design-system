@@ -27,13 +27,11 @@ import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,
   vfAppBase,
-  vfCurrentUrl,
   vfInApp,
   vfReadRoute,
   vfRouteUrl
 } from '../../shared/services/routing.js';
-import {loadPage, pageReady} from '../../app/pages.js';
-import {vfOnServer} from '../../shared/platform/environment.js';
+import {vfOnServer, vfStoredValue} from '../../shared/platform/environment.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
@@ -84,15 +82,6 @@ function vfReportPageView(page) {
     page_type: page.state.route,
     page_path: location.pathname
   });
-}
-// Shows a route at once when its page has loaded (page code may focus what it just rendered);
-// otherwise once its code arrives, so the current page stays as it is (URL, scroll and all) in the
-// meantime. Only the latest navigation is shown; a failed load shows the page's error.
-function vfShowRoute(page, view, show) {
-  const navigation = (page._navigation = (page._navigation || 0) + 1);
-  if (pageReady(view)) return show();
-  const latest = () => navigation === page._navigation && show();
-  (loadPage(view) || Promise.resolve()).then(latest, latest);
 }
 // A bag with handed-over lines added; a line with the same product, size and extras is replaced.
 function vfJoinLines(bag, lines) {
@@ -164,10 +153,10 @@ function vfPersistSession(state) {
     );
   } catch {}
 }
-function vfSiteInitial(props) {
+function vfSiteInitial(props, address = props.initialUrl) {
   let saved = {};
   try {
-    saved = JSON.parse(sessionStorage.getItem(VF_SESSION) || '{}') || {};
+    saved = JSON.parse(vfStoredValue(VF_SESSION, true) || '{}') || {};
     // Older drafts could save an automatic slot even when the customer had chosen a day.
     if (!saved.explicitDeliverySlots) {
       for (const draft of [saved, ...Object.values(saved.customers || {})]) {
@@ -180,27 +169,11 @@ function vfSiteInitial(props) {
   const privateState =
     saved.customers?.[customerId] ||
     (saved.customerId === customerId || (!saved.customerId && customerId === 'guest') ? saved : {});
-  let route = vfReadRoute();
+  let route = vfReadRoute(address);
   if (route.view === 'home' && props.start) route = {...route, view: props.start};
-  // The build's prerender only renders; the address stays as it is.
-  const replaceUrl = url => !vfOnServer() && history.replaceState({}, '', url);
-  // An old product link (product/ivory/) is rewritten with the product's code, and a retired
-  // article's (journal/care/) with the post that replaced it.
-  if (['product', 'post'].includes(route.view) && vfRouteUrl(route) !== vfCurrentUrl())
-    replaceUrl(vfRouteUrl(route));
-  // A bag or shortlist handed over from the shop counter joins this visitor's own, once: same lines
-  // are replaced, and the link is dropped from the address so a reload doesn't add them again.
   const handedLines = route.lines ? vfLinesFromParam(route.lines) : [];
   const handedIds = route.ids ? vfProductIds(route.ids.split(',')) : [];
-  if (route.lines || route.ids) {
-    route = {...route, lines: undefined, ids: undefined};
-    replaceUrl(vfRouteUrl(route));
-  }
-  // Open sign-in straight away rather than flashing the account first.
-  if (route.view === 'account' && !vfAccountPhone()) {
-    route = vfReadRoute(vfRouteUrl({lang: route.lang, view: 'signin'}));
-    if (vfReadRoute().view === 'account') replaceUrl(vfRouteUrl(route));
-  }
+  route = {...route, lines: undefined, ids: undefined};
   // A bag kept from an earlier visit is priced again from the current catalog; changed lines say so.
   const bag = vfRepriceLines(
     vfJoinLines(
@@ -265,14 +238,20 @@ function vfSiteInitial(props) {
   };
   // Checkout without a bag or delivery details opens the step the customer needs straight away, as
   // the account opens sign-in (the build's prerendered checkout is that step for a first visit).
-  const guarded = route.view === 'checkout' && vfGuardRoute(initial, route);
+  const guarded = vfGuardRoute(initial, route);
   if (guarded) {
     route = vfReadRoute(vfRouteUrl(guarded));
-    replaceUrl(vfRouteUrl(route));
     Object.assign(initial, {route: route.view, routeInfo: route});
   }
   return initial;
 }
+function previewAt(address) {
+  const query = new URL(address, 'http://localhost').searchParams;
+  const name = query.get('page');
+  if (!VF_ROUTES.includes(name)) return null;
+  return {name, lang: query.get('lang')};
+}
+
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function usePage(props) {
@@ -376,106 +355,133 @@ export function usePage(props) {
               lang: page.state.lang,
               ...input
             };
-      let r = vfReadRoute(vfRouteUrl(candidate));
-      const guarded = vfGuardRoute(page.state, r);
-      if (guarded) r = vfReadRoute(vfRouteUrl(guarded));
-      const url = vfRouteUrl(r);
-      vfShowRoute(page, r.view, () => {
-        const refiningSearch = replace && r.view === 'search' && page.state.route === 'search';
-        const searchReturn =
-          r.view !== 'search'
-            ? null
-            : page.state.route === 'search'
-              ? page.state.searchReturn
-              : {...page.state.routeInfo, view: page.state.route, lang: page.state.lang};
-        if (url !== vfCurrentUrl())
-          history[replace ? 'replaceState' : 'pushState'](
-            searchReturn ? {vfSearchReturn: vfRouteUrl(searchReturn)} : {},
-            '',
-            url
-          );
-        page.setState({
-          route: r.view,
-          routeInfo: r,
-          searchReturn,
-          lang: r.lang || page.state.lang
-        });
-        if (!refiningSearch) window.scrollTo(0, 0);
+      const route = vfReadRoute(vfRouteUrl(candidate));
+      const final = vfGuardRoute(page.state, route) || route;
+      const url = vfRouteUrl(final);
+      const previous = page.state.routeInfo;
+      const searchReturn =
+        final.view !== 'search'
+          ? null
+          : previous.view === 'search'
+            ? page.state.searchReturn
+            : previous;
+      page._pendingSearch = searchReturn && {url, route: searchReturn};
+      page.props.navigate?.(url, {
+        replace,
+        scroll: !(replace && final.view === 'search' && previous.view === 'search'),
+        document: final.view === 'track' && !!final.id
       });
+    };
+    // Next.js commits the address first. Apply query-backed state from that address on push,
+    // replace, Back, and Forward, using the same path as a direct visit.
+    page.receiveAddress = address => {
+      if (!page._restored || address === page._address) return;
+      page._address = address;
+      const route = vfReadRoute(address);
+      const guarded = vfGuardRoute(page.state, route);
+      if (guarded) {
+        page.navigate(guarded, true);
+        return;
+      }
+      const pending = page._pendingSearch;
+      if (pending?.url === address) {
+        history.replaceState(
+          {...history.state, vfSearchReturn: vfRouteUrl(pending.route)},
+          '',
+          address
+        );
+        page._pendingSearch = null;
+      }
+      let handover = {};
+      if (route.lines) {
+        const {lines, changes} = vfRepriceLines(
+          vfJoinLines(page.state.bag, vfLinesFromParam(route.lines))
+        );
+        handover = {
+          bag: lines,
+          priceChanges: vfMergePriceChanges(page.state.priceChanges, changes, lines)
+        };
+      }
+      if (route.ids)
+        handover = {
+          saved: [...new Set([...page.state.saved, ...vfProductIds(route.ids.split(','))])]
+        };
+      page.setState({
+        ...handover,
+        route: route.view,
+        routeInfo: route,
+        searchReturn: route.view === 'search' ? vfSearchReturnRoute() : null,
+        lang: route.lang || page.props.lang,
+        preview: previewAt(address)
+      });
+      if (route.lines || route.ids) {
+        vfPersistSession(page.state);
+        page.navigate({...route, lines: undefined, ids: undefined}, true);
+      }
+    };
+    page.loadSaved = () => {
+      if (!page._mounted || !page._restored || page._savedStarted || !vfRuntime.api?.live) return;
+      page._savedStarted = true;
+      page._savedLoading = true;
+      vfRuntime.api
+        .loadSaved()
+        .then(saved => {
+          if (saved) {
+            const merged = new Set(saved);
+            page._savedEdits.forEach((keep, id) => (keep ? merged.add(id) : merged.delete(id)));
+            page.setState({saved: [...merged]});
+            page.savedSyncError(null, false);
+          }
+        })
+        .catch(() => page.savedSyncError(null, true))
+        .finally(() => {
+          page._savedLoading = false;
+          page._savedEdits.clear();
+        });
+    };
+    page.restoreAddress = address => {
+      if (page._restored) return;
+      page._restored = true;
+      page._address = address;
+      const initial = vfSiteInitial(page.props, address);
+      page.setState({...initial, ready: true, preview: previewAt(address)});
+      if (initial.customerId === 'guest') vfClearPrivateSession();
+      vfPersistSession(initial);
+      page.loadSaved();
+      const requested = vfReadRoute(address);
+      const canonical = vfRouteUrl(initial.routeInfo);
+      if (
+        initial.route !== requested.view ||
+        requested.lines ||
+        requested.ids ||
+        (['product', 'post'].includes(requested.view) &&
+          new URL(address, location.href).pathname !== new URL(canonical, location.href).pathname)
+      )
+        page.navigate(initial.routeInfo, true);
     };
   });
   useLifecycle(page, {
     didMount() {
       window.__vfSite = page;
-      if (page.state.customerId === 'guest') vfClearPrivateSession();
-      page.syncCustomer();
-      vfPersistSession(page.state);
-      if (vfRuntime.api.live) {
-        page._savedLoading = true;
-        vfRuntime.api
-          .loadSaved()
-          .then(saved => {
-            if (saved) {
-              const merged = new Set(saved);
-              page._savedEdits.forEach((keep, id) => (keep ? merged.add(id) : merged.delete(id)));
-              page.setState({saved: [...merged]});
-              page.savedSyncError(null, false);
-            }
-          })
-          .catch(() => page.savedSyncError(null, true))
-          .finally(() => {
-            page._savedLoading = false;
-            page._savedEdits.clear();
-          });
-      }
-      page._pop = () => {
-        const r = vfReadRoute();
-        const guarded = vfGuardRoute(page.state, r);
-        if (guarded) {
-          page.navigate(guarded, true);
-          return;
-        }
-        vfShowRoute(page, r.view, () =>
-          page.setState({
-            route: r.view,
-            routeInfo: r,
-            searchReturn: r.view === 'search' ? vfSearchReturnRoute() : null,
-            lang: r.lang || page.props.lang || 'en'
-          })
-        );
-      };
+      page._mounted = true;
+      page.loadSaved();
       page._customerChanged = event => {
         if (event.key === 'vf-account-phone' || event.key == null) page.syncCustomer();
       };
       window.addEventListener('storage', page._customerChanged);
-      window.addEventListener('popstate', page._pop);
-      // Plain links to another view of the site (footer, policy and terms links) switch the view in
-      // place, as React Aria links do; a new tab, a download or another page loads normally.
       page._click = event => {
-        // Any way of opening the store's WhatsApp chat counts, wherever the link is.
         const chat = event.target.closest?.('a[href]');
         if (chat && VF_STORE.whatsapp && chat.href.startsWith(VF_STORE.whatsapp))
           vfRuntime.track.event('contact_whatsapp');
-        if (event.defaultPrevented || event.button !== 0) return;
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        const link = event.target.closest?.('a[href]');
-        if (!link || link.hasAttribute('download')) return;
-        if (link.target && link.target !== '_self') return;
-        const url = new URL(link.href, location.href);
-        if (!vfInApp(url) || url.hash) return;
-        event.preventDefault();
-        page.navigate(vfReadRoute(url.href));
       };
       document.addEventListener('click', page._click);
-      const guarded = vfGuardRoute(page.state, {
-        ...page.state.routeInfo,
-        view: page.state.route,
-        lang: page.state.lang
-      });
-      if (guarded) page.navigate(guarded, true);
-      vfReportPageView(page);
+      if (page._restored) {
+        vfPersistSession(page.state);
+        vfReportPageView(page);
+      }
     },
     didUpdate() {
+      if (!page._restored) return;
       vfReportPageView(page);
       if (page.state.customerId !== vfCustomerId()) {
         page.syncCustomer();
@@ -484,8 +490,8 @@ export function usePage(props) {
       vfPersistSession(page.state);
     },
     willUnmount() {
+      page._mounted = false;
       window.removeEventListener('storage', page._customerChanged);
-      window.removeEventListener('popstate', page._pop);
       document.removeEventListener('click', page._click);
       if (window.__vfSite === page) delete window.__vfSite;
     }
@@ -494,13 +500,12 @@ export function usePage(props) {
 }
 
 function vals(page) {
-  const s = page.state,
-    is = {};
-  VF_ROUTES.forEach(r => {
-    is[r] = r === s.route;
-  });
+  const s = page.state;
   return {
-    is,
+    ready: !!s.ready,
+    preview: s.preview,
+    restoreAddress: page.restoreAddress,
+    receiveAddress: page.receiveAddress,
     integrationError: !!s.integrationError,
     integrationErrorText:
       s.lang === 'fa'

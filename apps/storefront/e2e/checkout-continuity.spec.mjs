@@ -81,12 +81,13 @@ for (const lang of ['en', 'fa']) {
     const product = page.locator('main a[href*="/product/VF-7K2M4Q/"]').first();
     await expect(product).toHaveAttribute('href', /date=2026-10-06/);
     await product.click();
-    await expect(page).toHaveURL(/date=2026-10-06/);
+    await expect(page).toHaveURL(/product\/VF-7K2M4Q\/\?date=2026-10-06/);
     await page
       .getByRole('button', {name: fa ? 'افزودن به سبد' : 'Add to bag', exact: true})
       .filter({visible: true})
       .click();
     await page.getByRole('dialog').getByRole('link').click();
+    await expect(page).toHaveURL(/\/bag\/$/);
     expect(await page.evaluate(() => window.__vfSite.state.delivery.date)).toBe('2026-10-06');
     await page
       .getByRole('button', {

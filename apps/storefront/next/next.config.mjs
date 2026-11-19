@@ -25,7 +25,7 @@ export default function config(phase) {
     poweredByHeader: false,
     env: {
       NEXT_PUBLIC_VF_BASE_PATH: basePath,
-      NEXT_PUBLIC_VF_BROWSER_TEST: process.env.E2E_TARGET === 'build' ? '1' : '0'
+      NEXT_PUBLIC_VF_RENDER_TIME: String(Date.now())
     },
     turbopack: {root: path.resolve(import.meta.dirname, '../../..')}
   };

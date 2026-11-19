@@ -4,11 +4,11 @@ import {VF_DELIVERY, vfMobile} from './delivery.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
 import {commerce} from '../../design-system/components/utils/commerce.js';
-import {vfNow} from '../platform/environment.js';
+import {vfNow, vfStoredValue} from '../platform/environment.js';
 import {dates} from '../../design-system/components/utils/dates.js';
 export function vfAccountPhone() {
   try {
-    return localStorage.getItem('vf-account-phone') || '';
+    return vfStoredValue('vf-account-phone') || '';
   } catch {
     return '';
   }
@@ -22,7 +22,7 @@ export function vfAccountKey(phone) {
 }
 export function vfAccountLoad(phone, lang = 'en') {
   try {
-    const data = JSON.parse(localStorage.getItem(vfAccountKey(phone)) || 'null');
+    const data = JSON.parse(vfStoredValue(vfAccountKey(phone)) || 'null');
     if (data && Array.isArray(data.addresses) && Array.isArray(data.reminders) && data.profile) {
       data.reminders = data.reminders.map(vfNormalizeReminder);
       return data;
@@ -145,7 +145,7 @@ export function vfAccountUpdate(phone, change, lang = 'en') {
 // Whether a mobile already has a stored account (a returning customer) before signing in.
 export function vfAccountExists(phone) {
   try {
-    return !!localStorage.getItem(vfAccountKey(phone));
+    return !!vfStoredValue(vfAccountKey(phone));
   } catch {
     return false;
   }

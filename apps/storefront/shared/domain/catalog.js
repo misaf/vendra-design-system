@@ -11,7 +11,7 @@ import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../translations/categories.js'
 import {commerce} from '../../design-system/components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
 import {vfSeparator} from './formatting.js';
-import {vfAssetBase} from '../platform/environment.js';
+import {vfAssetBase, vfStoredValue} from '../platform/environment.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
 
 // GET /api/catalog/product-prices (the latest price of each product)
@@ -734,7 +734,7 @@ export function vfProductIds(ids) {
 export const VF_RECENT_KEY = 'vendra-recently-viewed';
 export function vfRecentlyViewed() {
   try {
-    const ids = JSON.parse(localStorage.getItem(VF_RECENT_KEY) || '[]');
+    const ids = JSON.parse(vfStoredValue(VF_RECENT_KEY) || '[]');
     return vfProductIds(ids);
   } catch {
     return [];

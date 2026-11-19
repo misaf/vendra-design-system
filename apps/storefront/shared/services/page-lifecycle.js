@@ -1,6 +1,6 @@
 // Heading focus, announcements and SEO for storefront pages.
 // Shared lifecycle for standalone templates and pages inside the click-through site.
-import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandUrl} from '../domain/brand.js';
+import {vfBrand, vfBrandHead, vfBrandUrl} from '../domain/brand.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
 import {VF_PRODUCTS, vfFindProduct} from '../domain/catalog.js';
 import {
@@ -16,12 +16,12 @@ import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';
 import {vfReportLists} from './list-tracking.js';
-import {vfHoldClock, vfLocation, vfOnServer, vfServerPage} from '../platform/environment.js';
+import {vfLocation, vfOnServer} from '../platform/environment.js';
 import {vfRuntime} from '../platform/runtime.js';
 
 // The tenant theme: ?tenant=<slug> for previews, otherwise this store's own (store-config.js).
 export function vfTenant() {
-  const asked = vfLocation().searchParams.get('tenant');
+  const asked = vfOnServer() ? null : vfLocation().searchParams.get('tenant');
   if (VF_TENANT_SLUGS.includes(asked)) return asked;
   return VF_TENANT_SLUGS.includes(VF_STORE.tenant) ? VF_STORE.tenant : 'default';
 }
@@ -45,14 +45,10 @@ export function vfApplyTenant(tenant) {
 // view event and the product lists it rendered: list-tracking.js), and once each render settles set the document language and
 // direction, move focus to a new heading and announce it, and update <head> (title, alternates).
 export function useStorefrontPage(page) {
-  vfServerPage(page);
   useLifecycle(page, {
     didMount() {
-      // Hydrated at the moment the build rendered this page: render again at the real time, so
-      // delivery days and cut-offs are the visitor's (environment.js vfNow).
-      if (vfHoldClock(null)) page.setState({});
-      // The app has the page: it takes clicks and typing again (next/app/start-storefront.jsx).
-      document.getElementById('root')?.removeAttribute('inert');
+      vfRuntime.restoreSession?.();
+      vfRuntime.rendered = 'hydrated';
       const route = vfPageRoute(page.props);
       const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
         page._vfPage
@@ -87,13 +83,15 @@ function vfAnnounce(page) {
     document.documentElement.dataset.lang = lang;
     const h = /** @type {HTMLElement} */ (document.querySelector('main h1'));
     const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
-    vfBrandHead(tenant, lang);
+    if (!page.props.updateHead) vfBrandHead(tenant, lang);
     if (!h) return;
     const title = h.innerText.replace(/\s+/g, ' ').trim();
     const identity = title + lang + tenant;
     // The head follows the route, not only the heading: a shop whose filters change keeps its h1
     // but gains or loses noindex, its canonical and its alternates. syncHead only writes changes.
-    VF_SEO.syncHead(vfPageHead(page, title));
+    const head = vfPageHead(page, title);
+    if (page.props.updateHead) page.props.updateHead(head);
+    else VF_SEO.syncHead(head);
     if (identity === page._vfTitle) return;
     page._vfTitle = identity;
     // On the first view of a document, leave focus at the top so Tab reaches the
@@ -113,14 +111,6 @@ function vfAnnounce(page) {
   }, 40);
 }
 
-// The page's tenant icons and manifest as HTML, for the build's static pages (app/entry-server.jsx);
-// vfBrandHead keeps them current in the browser.
-export function vfPageBrandHtml(page) {
-  const lang = vfLocale(page.props.lang).code;
-  const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();
-  return vfBrandHtml(tenant, lang);
-}
-
 // A page's <head> (VF_SEO.headTags): its main heading as the title, its canonical address
 // (vfCanonicalRoute: always with its language, without sorting or filters; none for the not-found
 // and error screens, which answer many addresses), the same address in each of the store's
@@ -128,7 +118,7 @@ export function vfPageBrandHtml(page) {
 // (`page.head.image`, {src, alt, width, height}, set by pages with a photo of their own, otherwise the
 // tenant's 1200×630 preview image), a product's price (`page.head.price`) and the page's schema.org
 // data (`page.head.structuredData`, structured-data.js). The browser applies it once the page has
-// rendered; the build writes it into the page's static HTML (app/entry-server.jsx).
+// rendered; Next.js renders it in the initial document.
 export function vfPageHead(page, heading) {
   const lang = vfLocale(page.props.lang).code;
   const tenant = VF_TENANT_SLUGS.includes(page.props.tenant) ? page.props.tenant : vfTenant();

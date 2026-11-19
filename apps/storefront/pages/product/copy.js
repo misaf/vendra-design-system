@@ -2,6 +2,46 @@
 // Formatting helpers keep delivery fees and tenant-specific store details current.
 import {VF_ZONES, vfDeliveryCutoff, vfDeliveryHint} from '../../shared/domain/delivery.js';
 import {vfPlural} from '../../shared/domain/store-config.js';
+import {VF_PRODUCT_DETAILS, vfProductImage, vfProductImages} from '../../shared/domain/catalog.js';
+import {VF_CATEGORY_COPY} from '../../shared/translations/categories.js';
+import {VF_SHELL} from '../../shared/translations/shell.js';
+import {vfRouteUrl} from '../../shared/services/routing.js';
+import {
+  vfBreadcrumbData,
+  vfOfferPrice,
+  vfProductData
+} from '../../shared/services/structured-data.js';
+
+export function vfProductHead(product, L) {
+  const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
+  const photo = vfProductImage(product, L);
+  const description = VF_PRODUCT_DETAILS[product.id][L === 'fa' ? 1 : 0];
+  return {
+    image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
+    description: description,
+    type: 'product',
+    price: vfOfferPrice(product.price),
+    structuredData: [
+      vfProductData({
+        product,
+        lang: L,
+        url,
+        images: vfProductImages(product, L).map(image => image.src),
+        description: description,
+        category: VF_CATEGORY_COPY[L][product.cat]
+      }),
+      vfBreadcrumbData([
+        {name: VF_SHELL[L].shop, url: vfRouteUrl({lang: L, view: 'shop'})},
+        {
+          name: VF_CATEGORY_COPY[L][product.cat],
+          url: vfRouteUrl({lang: L, view: 'shop', cat: product.cat})
+        },
+        {name: product.id, url}
+      ])
+    ]
+  };
+}
+
 export function vfCopy(S) {
   const m = S.m;
   return {

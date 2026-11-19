@@ -2,6 +2,7 @@
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {commerce} from '../../design-system/components/utils/commerce.js';
 import {LOCALES, localeConfig, plural} from '../../design-system/components/utils/locales.js';
+import {vfOnServer} from '../platform/environment.js';
 import {vfRuntime} from '../platform/runtime.js';
 
 export const VF_STORE = {
@@ -168,7 +169,7 @@ export function vfLanguage(lang) {
 // Whether orders go to the store's API (VF_STORE.apiBase or vfRuntime.api.setBase), not the local demo.
 // The build's prerender has no API client: there the configured apiBase decides, as on first load.
 export function vfLiveStore() {
-  if (typeof window === 'undefined') return !!VF_STORE.apiBase;
+  if (vfOnServer()) return !!VF_STORE.apiBase;
   return !!vfRuntime.api?.live;
 }
 // The payment methods the store offers, in its order; WhatsApp orders need the store's WhatsApp, and

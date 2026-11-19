@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {IconButton} from '../../ds.js';
 
@@ -41,12 +42,12 @@ export function StorefrontConsent({
         </div>
         <p className="tw:m-0">
           <>{body} </>
-          <a
+          <StorefrontLink
             href={policyHref}
             className="vf-shell-consent-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
           >
             <>{policyLabel}</>
-          </a>
+          </StorefrontLink>
         </p>
         <div className="tw:flex tw:flex-wrap tw:gap-2">
           <button

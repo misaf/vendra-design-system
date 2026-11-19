@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {AnnouncementBar, Icon} from '../../ds.js';
 
@@ -16,10 +17,10 @@ export function StorefrontAnnouncement({label, closeLabel, onClose, text, phoneT
       {link ? (
         <>
           {' '}
-          <a href={link.href} className="vf-shell-announcement-link">
+          <StorefrontLink href={link.href} className="vf-shell-announcement-link">
             <>{link.label}</>
             <Icon name="arrow-right" size={14} className="ag-flip-rtl" />
-          </a>
+          </StorefrontLink>
         </>
       ) : null}
     </AnnouncementBar>

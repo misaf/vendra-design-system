@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
 import {ToastQueue} from '../../app/ds.js';
-import {vfCopy} from './copy.js';
+import {vfCopy, vfProductHead} from './copy.js';
 import {
   VF_ADDONS,
   VF_PRODUCTS,
@@ -27,11 +27,6 @@ import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../shared/translations/cate
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';
-import {
-  vfBreadcrumbData,
-  vfOfferPrice,
-  vfProductData
-} from '../../shared/services/structured-data.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 
 // A shared counter quote supplies validated choices through the product route.
@@ -165,32 +160,7 @@ function vals(page) {
     .slice(0, 4)
     .map(vfProduct);
   vfShowList(page, 'recent', recent);
-  // Link previews show the product's photo (its largest size, with its description as alt text),
-  // its description and its price (page-lifecycle.js vfPageHead); search engines also read its
-  // price, stock and breadcrumb trail (structured-data.js).
-  const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
-  const photo = vfProductImage(product, L);
-  page.head = {
-    image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
-    description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
-    type: 'product',
-    price: vfOfferPrice(product.price),
-    structuredData: [
-      vfProductData({
-        product,
-        lang: L,
-        url,
-        images: vfProductImages(product, L).map(image => image.src),
-        description: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
-        category: VF_CATEGORY_COPY[L][product.cat]
-      }),
-      vfBreadcrumbData([
-        {name: S.t.shop, url: S.href.shop},
-        {name: VF_CATEGORY_COPY[L][product.cat], url: S.shopLink(product.cat).href},
-        {name: product.id, url}
-      ])
-    ]
-  };
+  page.head = vfProductHead(product, L);
   return {
     ...S,
     t: {
@@ -361,11 +331,21 @@ function vals(page) {
       page.setState({
         added: null
       }),
-    // Closes the panel; the link itself goes to the bag.
-    checkout: () =>
-      page.setState({
-        added: null
-      }),
+    // Navigate before dismissing the dialog, which unmounts the link's press handler.
+    checkout: event => {
+      if (
+        page.props.go &&
+        event &&
+        !event.metaKey &&
+        !event.ctrlKey &&
+        !event.shiftKey &&
+        !event.altKey
+      ) {
+        event.preventDefault();
+        page.props.go({view: 'bag', lang: L});
+      }
+      page.setState({added: null});
+    },
     toasts: page.toasts,
     recent: recent.map((p, index) => ({
       ...S.productLink(p.id),

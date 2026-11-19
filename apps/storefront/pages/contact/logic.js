@@ -56,6 +56,7 @@ export function usePage(props) {
   // The open/closed line follows the clock: re-render each minute while the page is open.
   useLifecycle(page, {
     didMount() {
+      page.setState(vfContactPrefill());
       page._clockTimer = setInterval(() => page.setState({clock: Date.now()}), 60_000);
     },
     willUnmount() {

@@ -141,9 +141,13 @@ export function usePage(props) {
     didMount() {
       const route = vfPageRoute(page.props);
       if (route.paymentOrder !== undefined)
-        vfVerifyPayment(page, route.paymentOrder, route.paymentResult);
+        page._paymentReturn = setTimeout(
+          () => vfVerifyPayment(page, route.paymentOrder, route.paymentResult),
+          0
+        );
     },
     willUnmount() {
+      clearTimeout(page._paymentReturn);
       clearTimeout(page._paymentTimer);
       page._paymentCheck = null;
     }

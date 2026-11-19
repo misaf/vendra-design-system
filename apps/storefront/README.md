@@ -1,6 +1,6 @@
 # Storefront templates
 
-The bilingual storefront uses Next.js App Router for the static site and React views in `pages/*`. The existing `pages/site` router handles navigation and commerce state in the browser. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
+The bilingual storefront uses Next.js App Router for the static site and React views in `pages/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
 `design-system/components/atoms/` and `design-system/components/molecules/`; organisms follow in separate batches.
@@ -154,7 +154,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 
 A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `shared/services/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `shared/styles/custom.css`, and the `lazyPage('<name>')` constant and route in `pages/site/View.jsx`.
+**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). Add its file under `next/app/apps/storefront/app/[lang]/`, register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -221,7 +221,7 @@ The combined command routes `--project` filters to the suites that define them. 
 
 `openSite()` waits for the app to take control of prerendered content, then checks the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
 
-Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
+Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads for the first route, the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
 Screenshot comparison specs use software rasterization (`--disable-gpu`) so decoded WebP photos have repeatable colors across browser processes. This does not change storefront rendering in customers’ browsers. Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `e2e/playwright-report/`, then run `test:e2e:update`.
 
@@ -280,9 +280,8 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 
 `_runtime/` is generated; never edit it.
 
-- **`next/app/`:** App Router layouts and exported routes. The browser boot code hydrates the initial storefront or restores the visit's saved state. `app/entry-server.jsx` renders the shared markup for the export.
-- **`app/pages.js`:** each `pages/*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **Styles:** The Next.js layout imports Tailwind, the design-system stylesheet and storefront CSS. `app/tenant-theme.js` loads the active tenant stylesheet on demand.
+- **`next/app/`:** App Router layouts and route modules own the React tree and its hydration. The session stays in the shared layout as navigation replaces the page.
+- **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, design system fonts, the Leaflet files, `apps/storefront/design-system/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `design-system/components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (19.3.1) and React Aria.

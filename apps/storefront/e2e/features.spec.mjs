@@ -3,6 +3,7 @@ import {
   NO_CONSENT,
   openSite,
   pageChunk,
+  routePayload,
   openFooterGroup,
   pinDelivery,
   scanAxe,
@@ -1571,10 +1572,10 @@ test('forms leave validation to the storefront', async ({page}) => {
   await expect(page.locator('form:not([novalidate])')).toHaveCount(0);
 });
 
-test('while a page’s code loads, the current page stays on screen', async ({page}) => {
+test('while a route payload loads, the current page stays on screen', async ({page}) => {
   let release;
   const held = new Promise(resolve => (release = resolve));
-  await page.route(pageChunk('shop'), async route => {
+  await page.route(routePayload('shop'), async route => {
     await held;
     await route.continue();
   });

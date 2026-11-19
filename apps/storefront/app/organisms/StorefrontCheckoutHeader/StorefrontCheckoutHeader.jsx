@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {Dialog, Button} from '../../ds.js';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
@@ -16,29 +17,29 @@ export function StorefrontCheckoutHeader({brand, logo = null, homeHref, back, he
   return (
     <header className="vf-shell-header tw:sticky tw:top-0 tw:z-header tw:bg-header tw:[backdrop-filter:blur(10px)] tw:[border-bottom:1px_solid_var(--border-subtle)]">
       <div className="tw:mx-auto tw:grid tw:grid-cols-[minmax(0,1fr)_minmax(0,50%)_minmax(0,1fr)] tw:items-center tw:gap-2 tw:max-w-page tw:min-h-header-mobile tw:px-gutter tw:md:min-h-header">
-        <a
+        <StorefrontLink
           href={back.href}
           onClick={back.onClick}
           className="tw:min-h-tap tw:flex tw:items-center tw:justify-self-start tw:text-sm"
         >
           {back.label}
-        </a>
-        <a
+        </StorefrontLink>
+        <StorefrontLink
           href={homeHref}
           aria-haspopup={leave ? 'dialog' : undefined}
           onClick={leave ? confirmHome : undefined}
           className="tw:min-h-tap tw:max-w-full tw:flex tw:items-center tw:justify-self-center tw:text-center tw:font-display tw:font-medium tw:text-lg tw:md:text-xl tw:tracking-display tw:[text-transform:var(--display-case)] tw:text-body! tw:no-underline!"
         >
           <BrandLogo image={logo} name={brand} />
-        </a>
-        <a
+        </StorefrontLink>
+        <StorefrontLink
           href={help.href}
           target={help.target}
           rel={help.target ? 'noopener noreferrer' : undefined}
           className="tw:min-h-tap tw:flex tw:items-center tw:justify-self-end tw:text-sm"
         >
           {help.label}
-        </a>
+        </StorefrontLink>
       </div>
       {leave && (
         <Dialog

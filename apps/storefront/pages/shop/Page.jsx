@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import {useStorefrontPageProps} from '../../shared/ui/storefront-page.js';
 import {usePage} from './logic.js';
 import {View} from './View.jsx';
 
@@ -6,5 +9,6 @@ import {View} from './View.jsx';
 export const defaults = {lang: 'en', tenant: 'default', mobile: false, frame: 'soft'};
 
 export default function StorefrontShop(props) {
+  props = useStorefrontPageProps(props);
   return <View v={{...props, ...usePage(props)}} />;
 }

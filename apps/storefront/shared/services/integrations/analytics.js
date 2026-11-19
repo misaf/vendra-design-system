@@ -10,7 +10,7 @@ import {analytics} from '../../../design-system/components/utils/analytics.js';
 import {VF_STORE} from '../../domain/store-config.js';
 import {VF_CATEGORY_ITEM} from '../../translations/categories.js';
 // Creates the tracker; shared/services/integrations/runtime.js installs it as vfRuntime.track in the
-// browser only (the build's prerender, app/entry-server.jsx, records and sends nothing).
+// browser only (the Next.js static export, records and sends nothing).
 /** @returns {import('../../platform/runtime.js').VfTracker} */
 export function vfCreateTracker() {
   const EVENTS = analytics.EVENTS;

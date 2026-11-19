@@ -1,36 +1,27 @@
 import {notFound} from 'next/navigation';
-import exported from '../../../../../_generated/pages.json';
-import {VF_STORE, vfLocale} from '../../../../../../shared/domain/store-config.js';
-import '../../../../../../_runtime/tailwind.css';
-import '../../../../../../design-system/styles.css';
-import '../../../../../../_runtime/custom.css';
-import './storefront.css';
+import {tenantFontUrls} from '../../../../../route-head.mjs';
+import {vfConfigureRendering} from '../../../../../../shared/platform/environment.js';
+import {VF_STORE} from '../../../../../../shared/domain/store-config.js';
 
-export default async function RootLayout({children, params}) {
+const base = process.env.NEXT_PUBLIC_VF_BASE_PATH + '/';
+vfConfigureRendering(base, 0);
+
+export function generateStaticParams() {
+  return VF_STORE.languages.map(lang => ({lang}));
+}
+
+export default async function LanguageLayout({children, params}) {
   const {lang} = await params;
   if (!VF_STORE.languages.includes(lang)) notFound();
-  const {dir} = vfLocale(lang);
+
+  const fonts = await tenantFontUrls(VF_STORE.tenant, lang, base);
 
   return (
-    <html lang={lang} dir={dir} data-lang={lang} suppressHydrationWarning>
-      <head>
-        {exported.fonts?.[lang]?.map(href => (
-          <link key={href} rel="preload" as="font" href={href} type="font/woff2" crossOrigin="" />
-        ))}
-        {VF_STORE.tenant !== 'default' && (
-          <link
-            id="vf-tenant-css"
-            rel="stylesheet"
-            href={
-              process.env.NEXT_PUBLIC_VF_BASE_PATH +
-              '/apps/storefront/design-system/tokens/tenants/' +
-              VF_STORE.tenant +
-              '.css'
-            }
-          />
-        )}
-      </head>
-      <body>{children}</body>
-    </html>
+    <>
+      {fonts.map(href => (
+        <link key={href} rel="preload" as="font" href={href} type="font/woff2" crossOrigin="" />
+      ))}
+      {children}
+    </>
   );
 }

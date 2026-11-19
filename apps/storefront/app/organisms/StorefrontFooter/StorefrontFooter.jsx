@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
 import {IconButton, TrustSeal} from '../../ds.js';
@@ -33,7 +34,7 @@ export function StorefrontFooter({
       <div className="vf-shell-footer-content tw:mx-auto tw:max-w-page tw:pt-8 tw:px-gutter tw:pb-6 tw:flex tw:flex-col tw:gap-7">
         <div className="vf-shell-footer-top tw:flex tw:flex-wrap tw:justify-between tw:gap-x-9 tw:gap-y-7">
           <div className="vf-shell-footer-brand-block tw:[flex:1_1_260px] tw:max-w-form tw:flex tw:flex-col tw:gap-4">
-            <a
+            <StorefrontLink
               href={homeHref}
               className="vf-shell-footer-brand tw:self-start tw:text-on-inverse! tw:no-underline! tw:font-display tw:font-medium tw:text-3xl tw:tracking-display tw:[text-transform:var(--display-case)]"
             >
@@ -45,7 +46,7 @@ export function StorefrontFooter({
                   brand
                 }
               />
-            </a>
+            </StorefrontLink>
             <p className="tw:m-0 tw:text-sm tw:leading-body tw:text-inverse-quiet">
               <>{tagline}</>
             </p>
@@ -100,14 +101,14 @@ export function StorefrontFooter({
                 >
                   {directionsLinks.map(link => (
                     <li key={link.app}>
-                      <a
+                      <StorefrontLink
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="vf-shell-footer-link tw:text-on-inverse! tw:[text-underline-offset:4px]"
                       >
                         <>{link.label}</>
-                      </a>
+                      </StorefrontLink>
                     </li>
                   ))}
                 </ul>
@@ -116,22 +117,22 @@ export function StorefrontFooter({
             <div className="tw:text-inverse-quiet">
               <>{hours}</>
             </div>
-            <a
+            <StorefrontLink
               href={phoneHref}
               dir="ltr"
               className="vf-shell-footer-contact-link vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
             >
               <>{phoneLabel}</>
-            </a>
+            </StorefrontLink>
             {email ? (
               <>
-                <a
+                <StorefrontLink
                   href={emailHref}
                   dir="ltr"
                   className="vf-shell-footer-link tw:text-on-inverse! tw:no-underline! tw:hover:underline! tw:[text-underline-offset:4px]"
                 >
                   <>{email}</>
-                </a>
+                </StorefrontLink>
               </>
             ) : null}
             {seals.length ? (
@@ -153,14 +154,14 @@ export function StorefrontFooter({
             <>
               <p className="vf-shell-footer-credit tw:m-0">
                 <>{credit?.before} </>
-                <a
+                <StorefrontLink
                   href={credit?.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="tw:text-on-inverse! tw:[text-underline-offset:4px]"
                 >
                   <>{credit?.name}</>
-                </a>
+                </StorefrontLink>
               </p>
             </>
           ) : null}

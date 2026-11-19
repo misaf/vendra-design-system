@@ -49,7 +49,8 @@
  * @property {boolean} offlineDisplay Whether this build ships the offline display worker and manifest.
  * @property {string} tenant The tenant whose theme this document shows ('' before the first).
  * @property {boolean} viewed Whether this document has shown a page yet (SPA page views).
- * @property {'' | 'hydrated' | 'rendered'} rendered How next/app/start-storefront.jsx showed the page, for tests.
+ * @property {(() => void) | null} restoreSession Restore browser state after the first page hydrates.
+ * @property {'' | 'hydrated'} rendered Whether the Next.js page has hydrated, for browser tests.
  */
 
 /** @type {VfRuntime} */
@@ -62,5 +63,6 @@ export const vfRuntime = {
   offlineDisplay: false,
   tenant: '',
   viewed: false,
+  restoreSession: null,
   rendered: ''
 };

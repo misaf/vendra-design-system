@@ -24,7 +24,7 @@ import {vfSeparator} from '../../shared/domain/formatting.js';
 import {vfReadRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_CATEGORY_COPY} from '../../shared/translations/categories.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
-import {vfLocation} from '../../shared/platform/environment.js';
+import {vfLocation, vfOnServer, vfStoredValue} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 
@@ -87,7 +87,7 @@ function vfNormalizeSettings(saved = {}) {
 }
 function vfReadSettings() {
   try {
-    return vfNormalizeSettings(JSON.parse(localStorage.getItem(VF_PRESENTATION_KEY) || '{}'));
+    return vfNormalizeSettings(JSON.parse(vfStoredValue(VF_PRESENTATION_KEY) || '{}'));
   } catch {
     return vfNormalizeSettings();
   }
@@ -98,7 +98,7 @@ function vfPortableSettings(settings) {
 }
 function vfReadCollections() {
   try {
-    const stored = JSON.parse(localStorage.getItem(VF_COLLECTIONS_KEY) || '[]');
+    const stored = JSON.parse(vfStoredValue(VF_COLLECTIONS_KEY) || '[]');
     if (!Array.isArray(stored)) return [];
     return stored
       .slice(0, 20)
@@ -466,13 +466,7 @@ export function usePage(props) {
     page.state = {
       q: '',
       cat: 'all',
-      setupDone: (() => {
-        try {
-          return !!localStorage.getItem('vf-display-setup-done');
-        } catch {
-          return false;
-        }
-      })(),
+      setupDone: !!vfStoredValue('vf-display-setup-done'),
       collections: vfReadCollections(),
       collectionName: '',
       activeCollection: '',
@@ -487,7 +481,7 @@ export function usePage(props) {
       preloadVersion: 0,
       displayIssue: false,
       failedImageKeys: [],
-      online: typeof navigator === 'undefined' || navigator.onLine !== false,
+      online: vfOnServer() || typeof navigator === 'undefined' || navigator.onLine !== false,
       stockIssue: false,
       displayLandscape: false,
       settings: vfReadSettings(),
@@ -537,7 +531,13 @@ export function usePage(props) {
     didMount() {
       // What this browser can do (wake lock, clipboard, QR scanning) and its own address are read
       // from here on: the build's prerender knows neither, and hydration renders as it did.
-      page.setState({mounted: true});
+      page.setState({
+        mounted: true,
+        setupDone: !!vfStoredValue('vf-display-setup-done'),
+        collections: vfReadCollections(),
+        settings: vfReadSettings(),
+        online: navigator.onLine !== false
+      });
       page._displayMedia = window.matchMedia('(min-width: 768px) and (min-aspect-ratio: 4/3)');
       page._onDisplayMedia = () => page.setState({displayLandscape: page._displayMedia.matches});
       page._displayMedia.addEventListener('change', page._onDisplayMedia);

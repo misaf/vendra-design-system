@@ -25,7 +25,7 @@ const pageMarkers = {
 
 export function pageChunk(name) {
   // Turbopack names its JavaScript by content hash. Identify the real route chunk from its markup
-  // or state identifier, so network tests still exercise the actual dynamic import.
+  // or state identifier, so network tests still exercise the actual client module.
   const dir = path.join(ROOT, 'apps/storefront/next/out/_next/static/chunks');
   const matches = fs
     .readdirSync(dir)
@@ -37,6 +37,11 @@ export function pageChunk(name) {
   if (matches.length !== 1)
     throw new Error('Expected one Next.js chunk for ' + name + ': ' + matches);
   return new RegExp('/_next/static/chunks/' + matches[0].replace('.', '\\.') + '$');
+}
+
+// Next.js fetches the exported RSC payload before committing a client navigation.
+export function routePayload(segment) {
+  return new RegExp('/' + segment + '/(?:index|__next\\.[^/?]+)\\.txt(?:\\?|$)');
 }
 
 export const SITE = '/apps/storefront/app/';

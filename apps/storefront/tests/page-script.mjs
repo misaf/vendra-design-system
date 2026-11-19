@@ -37,8 +37,6 @@ const React = (() => {
 })();
 `;
 const componentHarness = `
-const pageReady = () => true;
-const loadPage = () => null;
 const __vfUsePageLogic = usePageLogic;
 usePageLogic = (props, init) => (globalThis.__vfPage = __vfUsePageLogic(props, init));
 class Component {
@@ -49,9 +47,21 @@ class Component {
       React.begin(slots);
       return usePage(page ? page.props : props);
     };
+    if (typeof vfSiteInitial === 'function') {
+      props = {
+        ...props,
+        navigate(url, {replace}) {
+          history[replace ? 'replaceState' : 'pushState']({}, '', url);
+          page.receiveAddress(url);
+        }
+      };
+    }
     globalThis.__vfFlush = () => page && page.done.splice(0).forEach(done => done());
     render();
     page = globalThis.__vfPage;
+    if (typeof vfSiteInitial === 'function') {
+      page.restoreAddress(location.pathname + location.search);
+    }
     return new Proxy(page, {get: (target, key) => (key === 'renderVals' ? render : target[key])});
   }
 }

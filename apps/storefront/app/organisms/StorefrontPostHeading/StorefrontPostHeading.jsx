@@ -1,16 +1,17 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import * as DS from '../../ds.js';
 
 export function StorefrontPostHeading({journalHref, backLabel, meta, title, intro}) {
   return (
     <>
-      <a
+      <StorefrontLink
         href={journalHref}
         className="vf-post-back tw:inline-flex tw:items-center tw:gap-2 tw:text-sm tw:text-quiet! tw:no-underline!"
       >
         <DS.Icon name="arrow-left" size={16} />
         <>{backLabel}</>
-      </a>
+      </StorefrontLink>
       <div className="vf-post-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">
         <>{meta}</>
       </div>

@@ -1,3 +1,4 @@
+import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import * as DS from '../../ds.js';
 
@@ -22,12 +23,12 @@ export function StorefrontHomeWeddings({labels, weddingHref, contactHref}) {
         <DS.Button variant="primary" iconEnd="arrow-right" href={weddingHref}>
           <>{labels.wedding}</>
         </DS.Button>
-        <a
+        <StorefrontLink
           className="tw:text-on-inverse! tw:underline tw:underline-offset-4 tw:min-h-tap tw:inline-flex tw:items-center"
           href={contactHref}
         >
           {labels.contact}
-        </a>
+        </StorefrontLink>
       </div>
     </>
   );

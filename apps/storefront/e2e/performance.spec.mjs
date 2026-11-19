@@ -5,9 +5,12 @@ import {openSite} from './helpers.mjs';
 // They sit about 10–15% above today's numbers, so a heavy component, image or dependency fails
 // here before it reaches customers. Raise one only on purpose, with the reason in the commit.
 const BUDGET = {
-  // Compressed JS / CSS / font bytes a page loads before the site starts preloading other pages.
-  // The Persian account page is the largest initial route at 289 KB with the Next.js runtime.
-  firstPageJsKb: 300,
+  // Compressed JS, CSS and font bytes on the first route.
+  // App Router pages include their client entry and the shared React Aria chunk on first load.
+  // The largest measured initial route is about 340 KB Brotli.
+  firstPageJsKb: 350,
+  // A direct guest visit to checkout opens delivery and also loads the Leaflet map.
+  checkoutJsKb: 370,
   // One shared stylesheet for every page: 24KB since the counter presentation and the
   // product-code and delivery-review work of October 2026.
   firstPageCssKb: 27,
@@ -53,10 +56,7 @@ test.describe('performance budgets', () => {
       await page.waitForLoadState('load');
       await page.evaluate(() => document.fonts.ready);
       const used = await page.evaluate(() => {
-        const mark = performance.getEntriesByName('vf-preload-pages')[0];
-        const first = performance
-          .getEntriesByType('resource')
-          .filter(entry => !mark || entry.startTime < mark.startTime);
+        const first = performance.getEntriesByType('resource');
         const kb = pattern =>
           Math.round(
             first
@@ -65,7 +65,9 @@ test.describe('performance budgets', () => {
           );
         return {js: kb(/\.js(\?|$)/), css: kb(/\.css(\?|$)/), font: kb(/\.woff2(\?|$)/)};
       });
-      expect(used.js, 'first-page JS (KB)').toBeLessThanOrEqual(BUDGET.firstPageJsKb);
+      expect(used.js, 'first-page JS (KB)').toBeLessThanOrEqual(
+        view === 'checkout' ? BUDGET.checkoutJsKb : BUDGET.firstPageJsKb
+      );
       expect(used.css, 'first-page CSS (KB)').toBeLessThanOrEqual(BUDGET.firstPageCssKb);
       expect(used.font, 'first-page fonts (KB)').toBeLessThanOrEqual(BUDGET.firstPageFontKb);
     });

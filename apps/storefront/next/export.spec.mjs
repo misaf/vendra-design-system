@@ -35,6 +35,20 @@ for (const lang of ['en', 'fa']) {
     });
     await confirmation.locator('a[href*="/bag/"]').click();
     await expect(page).toHaveURL(new RegExp(site + 'bag/$'));
+    // A language switch is a Next.js navigation inside the same checkout session.
+    await page.evaluate(() => {
+      window.__sessionBeforeLanguageChange = window.__vfSite;
+    });
+    const other = fa ? 'en' : 'fa';
+    const languageButton = code => page.locator('.ag-lang button[lang="' + code + '"]:visible');
+    await languageButton(other).click();
+    await expect(page).toHaveURL(new RegExp(app + other + '/bag/$'));
+    await expect(page.locator('html')).toHaveAttribute('lang', other);
+    expect(
+      await page.evaluate(() => window.__vfSite === window.__sessionBeforeLanguageChange)
+    ).toBe(true);
+    await languageButton(lang).click();
+    await expect(page).toHaveURL(new RegExp(site + 'bag/$'));
     await page.reload();
     await expect(page.locator('main').getByText(product, {exact: true}).first()).toBeVisible();
 
