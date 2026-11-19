@@ -3,7 +3,7 @@
 // Refined shop views (sorted, filtered) are noindex, follow (issue 151).
 import assert from 'node:assert/strict';
 import {vfServerRender} from '../shared/platform/environment.js';
-import {vfPageHead} from '../shared/services/page-lifecycle.js';
+import {vfPageHead} from '../shared/services/page-metadata.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
 

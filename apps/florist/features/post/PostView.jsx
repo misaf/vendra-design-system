@@ -1,6 +1,6 @@
 // StorefrontPost: the page inside the storefront shell.
 import React from 'react';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontPostLayout} from './layouts/StorefrontPostLayout/StorefrontPostLayout.jsx';
 import {StorefrontPostLoading} from './molecules/StorefrontPostLoading/StorefrontPostLoading.jsx';
 import {StorefrontPostMissing} from './molecules/StorefrontPostMissing/StorefrontPostMissing.jsx';
@@ -45,7 +45,7 @@ export function View({v}) {
               />
               {v.hasBlocks ? (
                 <StorefrontPostBlocks
-                  blocks={list(v.blocks).map(block => ({
+                  blocks={asList(v.blocks).map(block => ({
                     paragraph: block?.paragraph,
                     heading: block?.heading,
                     quote: block?.quote,
@@ -54,17 +54,17 @@ export function View({v}) {
                     value: block?.value,
                     caption: block?.caption,
                     photo: block?.photo,
-                    tipsItems: list(block?.value)
+                    tipsItems: asList(block?.value)
                   }))}
                 />
               ) : null}
               {v.hasClassic ? (
                 <StorefrontPostClassic
                   image={v.image}
-                  paragraphsBefore={list(v.paras1)}
+                  paragraphsBefore={asList(v.paras1)}
                   quote={v.t?.quote}
                   heading={v.t?.h2}
-                  paragraphsAfter={list(v.paras2)}
+                  paragraphsAfter={asList(v.paras2)}
                 />
               ) : null}
             </>
@@ -86,14 +86,14 @@ export function View({v}) {
                 instagramLabel="Instagram"
                 instagramHref={v.instagram?.url}
               />
-              <StorefrontPostProducts products={list(v.storyProducts)} />
+              <StorefrontPostProducts products={asList(v.storyProducts)} />
             </>
           }
           related={
             <StorefrontPostRelated
               title={v.t?.moreA}
               accent={v.t?.moreB}
-              stories={list(v.related)}
+              stories={asList(v.related)}
             />
           }
         />

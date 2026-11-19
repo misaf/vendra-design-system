@@ -22,7 +22,7 @@ import {
 } from '../../shared/domain/catalog.js';
 import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../../shared/domain/delivery.js';
 import {VF_STORE, vfLanguage} from '../../shared/domain/store-config.js';
-import {vfPageTenant} from '../../shared/services/page-lifecycle.js';
+import {vfPageTenant} from '../../shared/services/tenant.js';
 import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,

@@ -1,6 +1,6 @@
 // StorefrontCheckout: the page inside the storefront shell.
 import React from 'react';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontCheckoutLayout} from './layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx';
 import {StorefrontCheckoutDeliveryReview} from './organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx';
 import {StorefrontCheckoutMethods} from './organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx';
@@ -77,7 +77,7 @@ export function View({v}) {
                     label: v.migration?.choose,
                     value: v.method,
                     onChange: v.setMethod,
-                    options: list(v.methodOptions)
+                    options: asList(v.methodOptions)
                   }}
                   unavailable={{
                     visible: v.noMethod,

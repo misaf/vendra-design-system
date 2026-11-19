@@ -9,7 +9,7 @@ import {
 } from '../domain/delivery.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
 import {vfDirections} from '../domain/location.js';
-import {vfPageTenant} from './page-lifecycle.js';
+import {vfPageTenant} from './tenant.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
 import {VF_STORE, vfFeatures, vfLocale} from '../domain/store-config.js';
 import {VF_CATEGORY_COPY} from '../../i18n/categories.js';

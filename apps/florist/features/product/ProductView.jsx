@@ -1,7 +1,7 @@
 // StorefrontProduct: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontProductLayout} from './layouts/StorefrontProductLayout/StorefrontProductLayout.jsx';
 import {StorefrontProductGallery} from './organisms/StorefrontProductGallery/StorefrontProductGallery.jsx';
 import {StorefrontProductHeading} from './organisms/StorefrontProductHeading/StorefrontProductHeading.jsx';
@@ -58,11 +58,11 @@ export function View({v}) {
               />
               <StorefrontProductConfiguration
                 showSizes={v.hasSizes}
-                sizes={list(v.sizes)}
+                sizes={asList(v.sizes)}
                 size={v.size}
                 onSizeChange={v.setSize}
                 showAddons={!!v.addons?.length}
-                addons={list(v.addons)}
+                addons={asList(v.addons)}
                 labels={{size: v.t?.size, extras: v.t?.extras}}
               />
               <StorefrontProductPurchase
@@ -83,13 +83,13 @@ export function View({v}) {
               {/* Recently viewed comes from this browser's history; a bad entry mustn't take the page down. */}
               {v.hasRecent ? (
                 <StorefrontProductRecent
-                  products={list(v.recent)}
+                  products={asList(v.recent)}
                   resetKey={v.productId}
                   labels={{
                     eyebrow: v.t?.recentEb,
                     title: v.t?.recentA,
                     accent: v.t?.recentB,
-                    count: v.t?.recentCount(list(v.recent).length),
+                    count: v.t?.recentCount(asList(v.recent).length),
                     region: v.recentLabel,
                     previous: v.t?.recentPrev,
                     next: v.t?.recentNext,

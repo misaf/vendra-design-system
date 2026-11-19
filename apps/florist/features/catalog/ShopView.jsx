@@ -1,7 +1,7 @@
 // StorefrontShop: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontShopLayout} from './layouts/StorefrontShopLayout/StorefrontShopLayout.jsx';
 import {StorefrontShopCategories} from './organisms/StorefrontShopCategories/StorefrontShopCategories.jsx';
 import {StorefrontShopSidebarFilters} from './organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx';
@@ -26,9 +26,9 @@ export function View({v}) {
           }
           sidebar={
             <>
-              <StorefrontShopCategories categories={list(v.categories)} label={v.t?.cats} />
+              <StorefrontShopCategories categories={asList(v.categories)} label={v.t?.cats} />
               <StorefrontShopSidebarFilters
-                occasion={{label: v.t?.occasion, options: list(v.occasionOptions)}}
+                occasion={{label: v.t?.occasion, options: asList(v.occasionOptions)}}
                 date={{
                   label: v.t?.deliverOn,
                   hint: v.t?.dateHint,
@@ -52,7 +52,7 @@ export function View({v}) {
           }
           categories={
             <StorefrontShopCategories
-              categories={list(v.categories)}
+              categories={asList(v.categories)}
               label={v.t?.cats}
               compact={true}
             />
@@ -71,8 +71,8 @@ export function View({v}) {
                   options: v.sortOptions,
                   onChange: v.setSort
                 }}
-                activeFilters={list(v.activeFilters)}
-                quickFilters={list(v.chips)}
+                activeFilters={asList(v.activeFilters)}
+                quickFilters={asList(v.chips)}
                 onOpenFilters={v.openFilters}
                 onClearFilters={v.clearFilters}
                 onQuickFilterFocus={event => {
@@ -82,7 +82,7 @@ export function View({v}) {
                 }}
               />
               <StorefrontShopResults
-                products={list(v.items)}
+                products={asList(v.items)}
                 frame={v.frame}
                 hasItems={v.hasItems}
                 showPaging={v.showPaging}
@@ -114,7 +114,7 @@ export function View({v}) {
               onClose={v.closeFilters}
               onClear={v.clearFilters}
               labels={{title: v.migration?.filters, show: v.showResults, clear: v.t?.clear}}
-              occasion={{label: v.t?.occasion, options: list(v.occasionOptions)}}
+              occasion={{label: v.t?.occasion, options: asList(v.occasionOptions)}}
               date={{
                 label: v.t?.deliverOn,
                 hint: v.t?.dateHint,

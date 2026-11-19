@@ -1,7 +1,7 @@
 // StorefrontSaved: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontSavedLayout} from './layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
 import {StorefrontSavedRemovalNotice} from './organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
 import {StorefrontSavedResults} from './organisms/StorefrontSavedResults/StorefrontSavedResults.jsx';
@@ -31,7 +31,7 @@ export function View({v}) {
           results={
             v.hasItems ? (
               <StorefrontSavedResults
-                products={list(v.items)}
+                products={asList(v.items)}
                 labels={{photo: v.t?.photo, unsave: v.t?.unsave}}
               />
             ) : null

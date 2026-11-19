@@ -13,12 +13,13 @@ import {installTenantTheme, tenantRendered} from '../../shell/tenant-theme.js';
 import {vfApplyTvMode} from '../../shared/services/tv.js';
 import {vfConfigureRendering, vfSetHydrating} from '../../shared/platform/environment.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
+import {vfInstallRuntime} from '../../shared/services/integrations/runtime.js';
+import {vfApplyTenant, vfTenant} from '../../shared/services/tenant.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
 import {vfInApp, vfReadRoute, VF_ROUTES} from '../../shared/services/routing.js';
 import {vfBrandLinks} from '../../shared/domain/brand.js';
 import {VF_SEO} from '../../shared/services/seo.js';
 import {VF_STORE, vfLanguage, vfLocale} from '../../shared/domain/store-config.js';
-import '../../shell/runtime.js';
 
 const base = process.env.NEXT_PUBLIC_VF_BASE_PATH;
 vfConfigureRendering(base + '/', Number(process.env.NEXT_PUBLIC_VF_RENDER_TIME));
@@ -26,6 +27,10 @@ const StorefrontContext = createContext(null);
 const previews = Object.fromEntries(VF_ROUTES.map(name => [name, lazyPage(name, true)]));
 
 if (typeof window !== 'undefined') {
+  vfInstallRuntime();
+  window.__vfRuntime = vfRuntime;
+  // Resolve the tenant from the browser URL before hydration suppresses browser reads.
+  vfApplyTenant(vfTenant());
   vfSetHydrating(true);
   installTenantTheme(base + '/');
   vfApplyTvMode();

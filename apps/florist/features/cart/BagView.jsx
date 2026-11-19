@@ -1,6 +1,6 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontBagDeliveryLayout} from './layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx';
 import {StorefrontBagLayout} from './layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
 import {StorefrontBagItems} from './organisms/StorefrontBagItems/StorefrontBagItems.jsx';
@@ -73,7 +73,7 @@ export function View({v}) {
               <>
                 {v.onBag ? (
                   <StorefrontBagItems
-                    lines={list(v.lines)}
+                    lines={asList(v.lines)}
                     removeLabel={v.t?.remove}
                     quantityLabels={v.qtyLabels}
                     formatQuantity={v.fmt}
@@ -98,7 +98,7 @@ export function View({v}) {
                           saved={{
                             visible: v.hasSaved,
                             label: v.t?.saved,
-                            options: list(v.savedAddresses)
+                            options: asList(v.savedAddresses)
                           }}
                           name={{
                             value: v.delivery?.name,
@@ -159,14 +159,14 @@ export function View({v}) {
                         label: v.t?.day,
                         value: v.date,
                         onChange: v.setDate,
-                        options: list(v.days)
+                        options: asList(v.days)
                       }}
                       slot={{
                         label: v.t?.slot,
                         error: v.slotError,
                         value: v.slot,
                         onChange: v.setSlot,
-                        options: list(v.slots)
+                        options: asList(v.slots)
                       }}
                     />
                     {v.cardsShown ? (
@@ -182,7 +182,7 @@ export function View({v}) {
                           undoLabel: v.undoCardLabel,
                           onUndo: v.undoCard
                         }}
-                        lines={list(v.cardLines)}
+                        lines={asList(v.cardLines)}
                       />
                     ) : null}
                     <StorefrontBagSender

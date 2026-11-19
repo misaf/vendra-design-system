@@ -1,7 +1,7 @@
 // StorefrontPresentation: the counter presentation, full screen without the site's header or footer.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontPresentationLayout} from './layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx';
 import {StorefrontPresentationCatalog} from './organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';
 import {StorefrontPresentationToolbar} from './organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx';
@@ -70,7 +70,7 @@ export function View({v}) {
                   onSubmit: v.submitQ
                 }}
                 categoryLabel={v.t?.categories}
-                kinds={list(v.kinds)}
+                kinds={asList(v.kinds)}
                 countLabel={v.countLabel}
                 resume={{label: v.t.resumeDisplay, onClick: v.resumeDisplay}}
                 scan={v.canScan ? {label: v.t?.scan, onClick: v.openScan} : null}
@@ -90,7 +90,7 @@ export function View({v}) {
             }
             catalog={
               <StorefrontPresentationCatalog
-                tiles={list(v.tiles)}
+                tiles={asList(v.tiles)}
                 noResults={v.noResults}
                 showPrices={v.showPrices}
                 readyLabel={v.t?.ready}
@@ -197,7 +197,7 @@ export function View({v}) {
                   onSettings={v.openSettings}
                 />
                 <StorefrontPresentationViewer
-                  items={list(v.viewer)}
+                  items={asList(v.viewer)}
                   index={v.open}
                   calm={v.calm}
                   showPrices={v.showPrices}
