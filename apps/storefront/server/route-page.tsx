@@ -1,4 +1,5 @@
 import 'server-only';
+import {notFound} from 'next/navigation';
 import type {ComponentType} from 'react';
 import {StorefrontScreen} from '../app/_components/StorefrontDocument.jsx';
 import {routeHead} from './route-head.mjs';
@@ -21,6 +22,8 @@ export function storefrontPage<Segments extends object = Record<never, never>>(
       base: process.env.NEXT_PUBLIC_VF_BASE_PATH + '/',
       origin: process.env.VF_ORIGIN || ''
     });
+    // The export host serves its own 404 document, which also restores runtime tracking URLs.
+    if (route.view === 'notfound' && process.env.NEXT_PUBLIC_VF_NEXT_EXPORT !== 'true') notFound();
     return (
       <StorefrontScreen
         initialTags={tags}

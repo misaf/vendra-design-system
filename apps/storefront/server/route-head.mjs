@@ -41,7 +41,6 @@ const descriptions = {
   journal: copy => heading(journal(copy)),
   notfound: copy => heading(missing(copy)),
   policy: (copy, route) => policy(copy).docs[route.id || 'shipping'].title,
-  post: (copy, route) => VF_POSTS.find(post => post.id === route.post)?.[copy.lang][0],
   presentation: copy => presentation(copy).title,
   product: (copy, route) => route.id,
   saved: copy => heading(saved(copy)),
@@ -69,6 +68,9 @@ export function routeHead(path, {base = '/', origin = '', lang: fallbackLang} = 
   vfServerRender({url, base, origin});
   try {
     const route = vfReadRoute(url);
+    const post =
+      route.view === 'post' ? VF_POSTS.find(entry => entry.id === route.post) : undefined;
+    if (route.view === 'post' && !post) route.view = 'notfound';
     const lang = route.lang || fallbackLang || VF_STORE.languages[0];
     const fa = lang === 'fa';
     const copy = {
@@ -77,14 +79,11 @@ export function routeHead(path, {base = '/', origin = '', lang: fallbackLang} = 
       n: value => (fa ? VF_FA_DIGITS(value) : String(value)),
       m: value => VF_MONEY(value, fa)
     };
-    const title = descriptions[route.view]?.(copy, route) || descriptions.notfound(copy);
+    const title =
+      post?.[lang][0] || descriptions[route.view]?.(copy, route) || descriptions.notfound(copy);
     let details;
     if (route.view === 'product') details = vfProductHead(vfFindProduct(route.id), lang);
-    if (route.view === 'post')
-      details = vfPostHead(
-        VF_POSTS.find(post => post.id === route.post),
-        lang
-      );
+    if (post) details = vfPostHead(post, lang);
     if (route.view === 'home' || route.view === 'contact')
       details = {structuredData: [vfFloristData(lang)]};
     if (route.view === 'faq')
