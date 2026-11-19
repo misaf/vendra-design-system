@@ -8,8 +8,8 @@ import {
   UNSTABLE_ToastContent as ToastContent,
   UNSTABLE_ToastStateContext as ToastStateContext
 } from 'react-aria-components';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
-import {Button} from '../../atoms/Button/Button.jsx';
+import {Icon} from '@vendra/ui/Icon';
+import {Button} from '@vendra/ui/Button';
 import {cx} from '../../utils/cx.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';

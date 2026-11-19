@@ -5,23 +5,23 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
-const components = [];
-const walk = dir =>
-  fs.readdirSync(dir, {withFileTypes: true}).forEach(entry => {
-    const file = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(file);
-    else if (entry.name.endsWith('.jsx') && !entry.name.endsWith('.fixture.jsx'))
-      components.push(entry.name.slice(0, -4));
-  });
-walk(path.join(root, 'design-system/components'));
+const storefrontComponents = path.join(root, 'design-system/components');
+const packageComponents = path.resolve(root, '../../packages/ui/components');
+const sourcesIn = folder =>
+  fs
+    .readdirSync(folder, {recursive: true})
+    .filter(file => file.endsWith('.jsx') && !file.endsWith('.fixture.jsx'))
+    .map(file => path.join(folder, file));
+const sources = [storefrontComponents, packageComponents].flatMap(sourcesIn);
+const components = sources.map(file => path.basename(file, '.jsx'));
+assert.equal(components.length, new Set(components).size, 'duplicate component implementation');
 const used = new Set();
 const buildingBlocks = new Set();
-const sources = fs
-  .readdirSync(path.join(root, 'design-system/components'), {recursive: true})
-  .filter(name => name.endsWith('.jsx') && !name.endsWith('.fixture.jsx'));
 for (const file of sources) {
-  const code = fs.readFileSync(path.join(root, 'design-system/components', file), 'utf8');
+  const code = fs.readFileSync(file, 'utf8');
   for (const match of code.matchAll(/from '(?:\.\.?\/)+(?:[A-Za-z]+\/)*([A-Za-z]+)\.jsx'/g))
+    buildingBlocks.add(match[1]);
+  for (const match of code.matchAll(/from '@vendra\/ui\/([A-Z][A-Za-z]+)'/g))
     buildingBlocks.add(match[1]);
 }
 for (const folder of ['shell', 'shared', 'features']) {
@@ -50,15 +50,22 @@ assert.deepEqual(
   [],
   'components no storefront template uses'
 );
-// Every component folder carries its own browser test: <Name>.spec.mjs opening <Name>.fixture.jsx
-// (run by the e2e suite's components project).
+// The storefront e2e suite owns the fixture and spec for each control, including package controls.
+const fixtureBases = new Map(
+  fs
+    .readdirSync(storefrontComponents, {recursive: true})
+    .filter(file => file.endsWith('.fixture.jsx'))
+    .map(file => [
+      path.basename(file, '.fixture.jsx'),
+      path.join(storefrontComponents, file.slice(0, -'.fixture.jsx'.length))
+    ])
+);
 const folders = sources
   .filter(file => path.basename(file, '.jsx') === path.basename(path.dirname(file)))
-  .map(file => path.dirname(file));
-const untested = folders.filter(folder => {
-  const name = path.basename(folder);
-  const base = path.join(root, 'design-system/components', folder, name);
-  if (!fs.existsSync(base + '.spec.mjs') || !fs.existsSync(base + '.fixture.jsx')) return true;
+  .map(file => path.basename(file, '.jsx'));
+const untested = folders.filter(name => {
+  const base = fixtureBases.get(name);
+  if (!base || !fs.existsSync(base + '.spec.mjs')) return true;
   return !fs.readFileSync(base + '.spec.mjs', 'utf8').includes("'" + name + "'");
 });
 assert.deepEqual(untested, [], 'component folders without a spec that opens their fixture');

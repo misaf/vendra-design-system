@@ -50,7 +50,7 @@ Without a provider, components use React Aria's locale (an `I18nProvider` higher
 **Analytics:** pass `onEvent` to receive the events the components report: FilterBar (`filter`, removed or cleared), PaymentStatus (`payment_result`), ResendCode (`code_resent`) and LanguageSwitch (`language_switch`). They come in the shape of `analytics.event` (`components/utils/analytics.js`), which lists every storefront event and keeps each to its own parameters, so a name, phone number or card message can't reach a report. The app reports its own events (product views, the bag, checkout, placed orders and verified purchases) with the same helper, turning Toman amounts into an ISO currency with `analytics.inCurrency` (Rial, `IRR`, for Toman), and sends them to its own backend once the visitor has accepted analytics.
 
 ```jsx
-import {VendraProvider} from './VendraProvider.jsx';
+import {VendraProvider} from '@vendra/ui/VendraProvider';
 import {analytics} from '../utils/analytics.js';
 
 const send = event => consented() && queue.push(event);

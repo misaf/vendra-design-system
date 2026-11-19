@@ -2,8 +2,8 @@
 
 import React from 'react';
 import {Checkbox as AriaCheckbox} from 'react-aria-components';
-import {Icon} from '../Icon/Icon.jsx';
-import {useField, FieldMessage} from '../Field/Field.jsx';
+import {Icon} from '@vendra/ui/Icon';
+import {useField, FieldMessage} from '@vendra/ui/Field';
 import {cx} from '../../utils/cx.js';
 
 // A checkbox on React Aria: the label is the whole target, and the state shows as data-selected,

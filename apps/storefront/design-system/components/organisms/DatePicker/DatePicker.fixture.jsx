@@ -1,5 +1,5 @@
 import React from 'react';
-import {DatePicker} from './DatePicker.jsx';
+import {DatePicker} from '@vendra/ui/DatePicker';
 
 export function Fixture({lang}) {
   const [day, setDay] = React.useState('2026-10-08');

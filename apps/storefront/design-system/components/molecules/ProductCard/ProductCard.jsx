@@ -3,7 +3,7 @@
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
 import {Badge} from '../../atoms/Badge/Badge.jsx';
-import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
+import {IconButton} from '@vendra/ui/IconButton';
 import {Picture} from '../../atoms/Picture/Picture.jsx';
 import {Price} from '../../atoms/Price/Price.jsx';
 import {StockStatus} from '../StockStatus/StockStatus.jsx';

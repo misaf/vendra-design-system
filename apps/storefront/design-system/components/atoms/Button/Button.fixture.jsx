@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from './Button.jsx';
+import {Button} from '@vendra/ui/Button';
 
 export function Fixture() {
   const [presses, setPresses] = React.useState(0);

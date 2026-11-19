@@ -7,10 +7,10 @@ import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {createRoot} from 'react-dom/client';
 import * as components from '../apps/storefront/shell/ds.js';
-import {ICON_SVGS} from '../apps/storefront/design-system/components/atoms/Icon/icon-svgs.js';
+import {ICON_SVGS} from '@vendra/ui/Icon/paths';
 import {dates} from '../apps/storefront/design-system/components/utils/dates.js';
 import {format} from '../apps/storefront/design-system/components/utils/format.js';
-import {commerce} from '../apps/storefront/design-system/components/utils/commerce.js';
+import {commerce} from '../apps/storefront/shared/domain/commerce.js';
 
 window.React = React;
 window.ReactDOM = {...ReactDOM, createRoot};

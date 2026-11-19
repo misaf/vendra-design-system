@@ -6,7 +6,7 @@ import {vfCopy} from './copy.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_STORE} from '../../shared/domain/store-config.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from '../../shared/domain/commerce.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 // Each post's search index per language (commerce.searchIndex of its text), built once rather than

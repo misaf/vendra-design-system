@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input} from './Input.jsx';
+import {Input} from '@vendra/ui/Input';
 
 export function Fixture() {
   const [note, setNote] = React.useState('');

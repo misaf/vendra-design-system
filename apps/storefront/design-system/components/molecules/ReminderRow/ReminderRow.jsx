@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Icon} from '@vendra/ui/Icon';
 import {Badge} from '../../atoms/Badge/Badge.jsx';
-import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
-import {Button} from '../../atoms/Button/Button.jsx';
+import {IconButton} from '@vendra/ui/IconButton';
+import {Button} from '@vendra/ui/Button';
 import {Switch} from '../../atoms/Switch/Switch.jsx';
 import {cx} from '../../utils/cx.js';
 import {useMessages} from '../../utils/messages.js';

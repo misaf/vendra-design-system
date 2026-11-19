@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import {Button} from '../../atoms/Button/Button.jsx';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
-import {commerce} from '../../utils/commerce.js';
+import {Button} from '@vendra/ui/Button';
+import {Icon} from '@vendra/ui/Icon';
+import {commerce} from '../../../../shared/domain/commerce.js';
 import {cx} from '../../utils/cx.js';
 import {maps} from '../../utils/maps.js';
 

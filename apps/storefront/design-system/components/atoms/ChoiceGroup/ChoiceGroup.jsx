@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {I18nProvider, RadioGroup} from 'react-aria-components';
-import {useField, FieldMessage} from '../Field/Field.jsx';
+import {useField, FieldMessage} from '@vendra/ui/Field';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMergedRef} from '../../utils/refs.js';

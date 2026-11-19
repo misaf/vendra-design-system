@@ -14,7 +14,7 @@ import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_STORE, vfFeatures} from '../../shared/domain/store-config.js';
 import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../../i18n/categories.js';
 import {vfDayMonth, vfDayName} from '../../i18n/time.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from '../../shared/domain/commerce.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';

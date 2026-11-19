@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {commerce} from '../../utils/commerce.js';
+import {commerce} from '../../../../shared/domain/commerce.js';
 import {cx} from '../../utils/cx.js';
 import {maps} from '../../utils/maps.js';
 

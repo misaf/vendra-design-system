@@ -17,7 +17,7 @@ import {
   vfProductImage,
   vfSampleBag
 } from '../../shared/domain/catalog.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from '../../shared/domain/commerce.js';
 import {
   VF_DELIVERY,
   vfCheckoutRequest,

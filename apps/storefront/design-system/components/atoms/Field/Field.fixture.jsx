@@ -1,5 +1,5 @@
 import React from 'react';
-import {FieldMessage, useField} from './Field.jsx';
+import {FieldMessage, useField} from '@vendra/ui/Field';
 
 // A plain <input> wired with useField, as a custom control would be.
 function Control({id, label, hint, error}) {

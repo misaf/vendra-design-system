@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import {Button} from '../../atoms/Button/Button.jsx';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
-import {Input} from '../../atoms/Input/Input.jsx';
+import {Button} from '@vendra/ui/Button';
+import {Icon} from '@vendra/ui/Icon';
+import {Input} from '@vendra/ui/Input';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';

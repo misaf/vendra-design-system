@@ -3,12 +3,15 @@ import {expect, test} from '@playwright/test';
 const base = process.env.VF_BASE_PATH || '';
 const published = base + '/apps/storefront/app';
 const product = 'VF-7K2M4Q';
+const orderNumber = 'VN-PILOT-1042';
 const live = process.env.VF_TEST_LIVE === '1';
 
 for (const [locale, direction] of [
   ['en', 'ltr'],
   ['fa', 'rtl']
 ]) {
+  const fa = locale === 'fa';
+
   test('localized and published product routes load in ' + locale, async ({page, request}) => {
     const path = '/' + locale + '/product/' + product + '/';
     const canonical = published + path;
@@ -46,14 +49,54 @@ for (const [locale, direction] of [
         expect(response.status(), path).toBe(404);
       }
     }
-    // The live server retains the storefront's localized missing-page screen.
-    if (live) {
-      await page.goto(base + '/' + locale + '/product/does-not-exist/');
-      await expect(page.locator('main h1')).toContainText(
-        locale === 'fa' ? 'پژمرده شده.' : 'wilted.'
-      );
-    }
+    // Check the rendered fallback, including the demo's base-prefixed published URLs.
+    await page.goto(published + '/' + locale + '/product/does-not-exist/');
+    await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    await expect(page.locator('main h1')).toContainText(fa ? 'پژمرده شده.' : 'wilted.');
   });
+
+  test(
+    'a bank return stays pending until the order API reports payment in ' + locale,
+    async ({page}) => {
+      let paymentStatus = 'awaiting';
+      const lookups = [];
+      await page.route('**/__pilot-api/api/sales/orders?**', route => {
+        const number = new URL(route.request().url()).searchParams.get('number');
+        lookups.push(number);
+        return route.fulfill({json: {member: [{number: orderNumber, paymentStatus}]}});
+      });
+      await page.addInitScript(() => {
+        let runtime;
+        Object.defineProperty(window, '__vfRuntime', {
+          configurable: true,
+          get: () => runtime,
+          set: value => {
+            runtime = value;
+            value.api.setBase('/__pilot-api');
+          }
+        });
+      });
+      const path =
+        published +
+        '/' +
+        locale +
+        '/checkout/?payment=return&order=' +
+        orderNumber +
+        '&result=paid';
+      const response = await page.goto(path);
+      expect(response.status()).toBe(200);
+      await expect(page).toHaveURL(url => url.pathname + url.search === path);
+      const heading = page.getByRole('heading', {level: 1});
+      await expect(heading).toHaveText(
+        fa ? 'پرداخت شما هنوز تأیید نشده' : 'Your payment isn’t confirmed yet'
+      );
+      await expect(page.locator('main')).toContainText(orderNumber);
+      paymentStatus = 'paid';
+      await page.getByRole('button', {name: fa ? 'بررسی دوباره' : 'Check again'}).click();
+      await expect(heading).toHaveText(fa ? 'پرداخت انجام شد' : 'Payment received');
+      expect(lookups).toEqual([orderNumber, orderNumber]);
+    }
+  );
 
   test('runtime tracking links open the lookup in ' + locale, async ({page}) => {
     const response = await page.goto(published + '/' + locale + '/track/DEMO1234/');

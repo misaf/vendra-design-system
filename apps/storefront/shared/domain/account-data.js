@@ -3,7 +3,7 @@ import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES, vfLineDetail} 
 import {VF_DELIVERY, vfMobile} from './delivery.js';
 import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from './commerce.js';
 import {vfNow, vfStoredValue} from '../platform/environment.js';
 import {dates} from '../../design-system/components/utils/dates.js';
 export function vfAccountPhone() {

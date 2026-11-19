@@ -3,7 +3,7 @@ import {Alert} from '../molecules/Alert/Alert.jsx';
 import {FilterBar} from '../molecules/FilterBar/FilterBar.jsx';
 import {LanguageSwitch} from '../molecules/LanguageSwitch/LanguageSwitch.jsx';
 import {NavLink} from '../molecules/NavLink/NavLink.jsx';
-import {VendraProvider} from './VendraProvider.jsx';
+import {VendraProvider} from '@vendra/ui/VendraProvider';
 
 export function Fixture() {
   const [path, setPath] = React.useState('');

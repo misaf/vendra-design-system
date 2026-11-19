@@ -1,8 +1,8 @@
 // Sample promo codes. Amounts are in Toman.
 // Edit this file, then run: npm --prefix apps/storefront run build
 // percent comes off the subtotal; min is the smallest subtotal the code accepts.
-// The rules are in components/utils/commerce.js; these functions pass VF_PROMOS to them.
-import {commerce} from '../../design-system/components/utils/commerce.js';
+// The rules are in commerce.js; these functions pass VF_PROMOS to them.
+import {commerce} from './commerce.js';
 export const VF_PROMOS = [
   {code: 'WELCOME10', percent: 10, min: 0},
   {code: 'ROSES15', percent: 15, min: 4_000_000}

@@ -66,6 +66,7 @@ const gzipped = async source => {
       id === input ||
         id === entry ||
         id === path.resolve(dir, '../shell/ds.js') ||
+        id === path.resolve(dir, '../shared/domain/commerce.js') ||
         id.startsWith(dir + path.sep) ||
         id.startsWith(ui + path.sep),
       id + ' got bundled'

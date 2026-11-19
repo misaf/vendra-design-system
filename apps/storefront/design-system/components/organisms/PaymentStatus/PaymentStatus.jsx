@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import {Button} from '../../atoms/Button/Button.jsx';
+import {Button} from '@vendra/ui/Button';
 import {DetailList} from '../../molecules/DetailList/DetailList.jsx';
 import {EmptyState} from '../../molecules/EmptyState/EmptyState.jsx';
-import {Spinner} from '../../atoms/Spinner/Spinner.jsx';
+import {Spinner} from '@vendra/ui/Spinner';
 import {cx} from '../../utils/cx.js';
 import {usePageLocale} from '../../utils/locale.js';
 import {useMessages} from '../../utils/messages.js';
