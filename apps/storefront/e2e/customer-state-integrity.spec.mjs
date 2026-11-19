@@ -316,7 +316,7 @@ for (const lang of ['en', 'fa']) {
           exact: true
         })
         .click();
-      expect(await firstButton.evaluate(button => button.isConnected)).toBe(false);
+      await expect.poll(() => firstButton.evaluate(button => button.isConnected)).toBe(false);
       await page
         .getByRole('banner')
         .getByRole('link', {name: fa ? 'بازگشت به سبد' : 'Back to bag', exact: true})
@@ -415,8 +415,9 @@ for (const lang of ['en', 'fa']) {
       .click();
     await visibleButton(page, fa ? 'ادامه و ارسال' : 'Continue to delivery').click();
     await visibleButton(page, fa ? 'ادامه و پرداخت' : 'Continue to payment').click();
-    await page.reload();
     const warning = page.locator('#vf-receipt-changed');
+    await expect(warning).toBeVisible();
+    await page.reload();
     await expect(warning).toBeVisible();
     await expect(page.locator('#vf-last4')).toHaveValue('1234');
     await expect(page.locator('#vf-ref')).toHaveValue('567890');

@@ -83,6 +83,7 @@ function pageScript(folder) {
   if (['features/home', 'features/journal', 'features/post'].includes(folder))
     parts.push(read('shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
+  if (folder === 'features/checkout') parts.push(read(folder + '/payment-recovery.js'));
   const files = featureFiles(folder);
   const logic = read(folder + '/' + files.logic);
   // Pages that queue toasts get a minimal queue (the component's is React Aria's).
