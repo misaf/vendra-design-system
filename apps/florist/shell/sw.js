@@ -31,7 +31,9 @@ sw.addEventListener('activate', (/** @type {any} */ event) =>
       .then(names =>
         Promise.all(
           names
-            .filter(name => name.startsWith(CACHE_PREFIX) && ![PAGES, FILES].includes(name))
+            // Match through the last encoded slash, which terminates the cache's scope.
+            .filter(name => name.match(/^vf-.*%2F-/)?.[0] === CACHE_PREFIX + '-')
+            .filter(name => name !== PAGES && name !== FILES)
             .map(name => caches.delete(name))
         )
       )
