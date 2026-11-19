@@ -3,7 +3,7 @@
 import React from 'react';
 import {vfBrandUrl} from '../shared/domain/brand.js';
 import * as DS from './ds.js';
-import {list} from './runtime.js';
+import {asList} from '../shared/ui/as-list.js';
 import {StorefrontLayout} from './layouts/StorefrontLayout/StorefrontLayout.jsx';
 import {StorefrontBottomBar} from './layouts/StorefrontBottomBar/StorefrontBottomBar.jsx';
 import {StorefrontAnnouncement} from './organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx';
@@ -221,7 +221,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
               title={v.shellText?.brand}
               closeLabel={v.shellText?.closeMenu}
               navigationLabel={v.shellText?.mainNav}
-              navigation={list(v.menuItems)}
+              navigation={asList(v.menuItems)}
               language={
                 v.hasLang
                   ? {value: v.lang, options: v.langOpts, label: v.shellText?.langL}
@@ -238,8 +238,11 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
         footer={
           enclosed ? (
             <StorefrontCheckoutFooter
-              links={[...list(v.policyLinks), {href: v.href?.contact, label: v.shellText?.contact}]}
-              seals={list(v.footer?.seals)}
+              links={[
+                ...asList(v.policyLinks),
+                {href: v.href?.contact, label: v.shellText?.contact}
+              ]}
+              seals={asList(v.footer?.seals)}
               consentSettingsLabel={v.shellText?.consent?.settings}
               onOpenConsent={v.consent?.open}
             />
@@ -251,7 +254,7 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
               lang={v.lang}
               tagline={v.footer?.tagline}
               socialLabel={v.shellText?.footer?.social}
-              socialLinks={list(v.footer?.social)}
+              socialLinks={asList(v.footer?.social)}
               visitLabel={v.shellText?.visit}
               address={v.footer?.address}
               findUs={v.footer?.findUs}
@@ -262,18 +265,18 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
               phoneLabel={v.phoneLabel}
               emailHref={v.footer?.emailHref}
               email={v.footer?.email}
-              seals={list(v.footer?.seals)}
+              seals={asList(v.footer?.seals)}
               copyright={v.footer?.copyright}
               credit={v.footer?.credit}
               groups={[
-                {id: 'shop', title: v.shellText?.footer?.shop, links: list(v.footer?.shop)},
-                {id: 'studio', title: v.shellText?.footer?.studio, links: list(v.footer?.studio)},
+                {id: 'shop', title: v.shellText?.footer?.shop, links: asList(v.footer?.shop)},
+                {id: 'studio', title: v.shellText?.footer?.studio, links: asList(v.footer?.studio)},
                 {
                   id: 'help',
                   title: v.shellText?.help,
                   links: [
                     {href: v.href?.faq, label: v.shellText?.faq, current: v.footer?.faqCurrent},
-                    ...list(v.policyLinks)
+                    ...asList(v.policyLinks)
                   ]
                 }
               ]}

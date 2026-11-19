@@ -1,7 +1,7 @@
 // StorefrontWeddings: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontWeddingsLayout} from './layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
 import {StorefrontWeddingsHeading} from './organisms/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
 import {StorefrontWeddingsServices} from './organisms/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
@@ -28,13 +28,13 @@ export function View({v}) {
             />
           }
           heroMedia={<DS.ArchFrame ratio="4/5" placeholderLabel={v.t?.ph} alt="" />}
-          services={<StorefrontWeddingsServices services={list(v.services)} />}
+          services={<StorefrontWeddingsServices services={asList(v.services)} />}
           story={
             <StorefrontWeddingsStory
               galleryTitle={v.t?.galleryTitle}
-              gallery={list(v.gallery)}
+              gallery={asList(v.gallery)}
               processTitle={v.t?.processTitle}
-              process={list(v.process)}
+              process={asList(v.process)}
             />
           }
           inquiryIntro={<StorefrontWeddingsInquiryIntro title={v.t?.fA} intro={v.t?.fP} />}

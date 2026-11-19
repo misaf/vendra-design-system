@@ -4,7 +4,7 @@
 // shared/platform/runtime.js. tools/app-dependencies.mjs fails any window.VF_* or window.AG_* access.
 
 interface Window {
-  // The runtime, exposed by shell/runtime.js for tests and QA only; storefront code never reads it.
+  // The runtime, exposed by the Next.js client entry for tests and QA.
   __vfRuntime?: import('../shared/platform/runtime.js').VfRuntime;
   // The click-through site's page object (shell/session/useStorefrontSession.js), for tests.
   __vfSite?: any;

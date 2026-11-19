@@ -1,6 +1,6 @@
 // StorefrontFaq: the page inside the storefront shell.
 import React from 'react';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontFaqLayout} from './layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontFaqQuestions} from './organisms/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
@@ -22,7 +22,7 @@ export function View({v}) {
               intro={v.t?.intro}
             />
           }
-          questions={<StorefrontFaqQuestions groups={list(v.groups)} />}
+          questions={<StorefrontFaqQuestions groups={asList(v.groups)} />}
           contact={
             <StorefrontFaqContact
               title={v.t?.helpTitle}

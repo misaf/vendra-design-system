@@ -1,7 +1,7 @@
 // StorefrontNotfound: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontNotfoundLayout} from './layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
 import {StorefrontNotfoundActions} from './molecules/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
 import {StorefrontNotfoundProducts} from './organisms/StorefrontNotfoundProducts/StorefrontNotfoundProducts.jsx';
@@ -34,7 +34,7 @@ export function View({v}) {
           recommendationHeading={<DS.SectionHeader title={v.t?.popA} accent={v.t?.popB} />}
           recommendations={
             <StorefrontNotfoundProducts
-              products={list(v.items)}
+              products={asList(v.items)}
               photoLabel={v.t?.photo}
               saveLabel={v.t?.save}
             />

@@ -1,7 +1,7 @@
 // StorefrontAccount: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontAccountLayout} from './layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from './organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
 import {StorefrontAccountSaved} from './organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
@@ -40,7 +40,7 @@ export function View({v}) {
               listClassName="vf-account-tabs tw:mb-6 tw:overflow-x-auto tw:[scrollbar-width:none]"
               panelClassName="vf-account-panel"
             >
-              {v.isOrders ? <StorefrontAccountOrders orders={list(v.orders)} /> : null}
+              {v.isOrders ? <StorefrontAccountOrders orders={asList(v.orders)} /> : null}
               {v.isBalance ? (
                 <StorefrontAccountBalancePanel
                   overview={{
@@ -53,7 +53,7 @@ export function View({v}) {
                       ? {
                           title: v.t?.balance?.topUp,
                           quickLabel: v.t?.balance?.quick,
-                          presets: list(v.balance?.presets),
+                          presets: asList(v.balance?.presets),
                           amount: {
                             label: v.t?.balance?.amount,
                             value: v.balance?.value,
@@ -83,7 +83,7 @@ export function View({v}) {
                     showEmpty: v.balance?.noHistory,
                     emptyText: v.t?.balance?.noHistory,
                     showHistory: v.balance?.hasHistory,
-                    entries: list(v.balance?.history)
+                    entries: asList(v.balance?.history)
                   }}
                 />
               ) : null}
@@ -91,7 +91,7 @@ export function View({v}) {
                 <StorefrontAccountSaved
                   showItems={v.hasSaved}
                   showEmpty={v.noSaved}
-                  items={list(v.savedItems)}
+                  items={asList(v.savedItems)}
                   labels={{
                     photo: v.t?.photo,
                     remove: v.t?.unsave,
@@ -115,7 +115,7 @@ export function View({v}) {
                     zoom: v.placesView?.zoom,
                     onFail: v.placesView?.fail
                   }}
-                  addresses={list(v.addresses)}
+                  addresses={asList(v.addresses)}
                   labels={v.addrLabels}
                   add={{label: v.t?.addAddr, onClick: v.addAddress}}
                 />
@@ -128,7 +128,7 @@ export function View({v}) {
                   coming={v.coming}
                   comingTitle={v.editor?.coming}
                   intro={v.t?.remP}
-                  reminders={list(v.reminders)}
+                  reminders={asList(v.reminders)}
                   shopHref={v.href?.shop}
                   labels={v.remLabels}
                 />

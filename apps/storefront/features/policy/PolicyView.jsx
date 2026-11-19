@@ -1,7 +1,7 @@
 // StorefrontPolicy: the page inside the storefront shell.
 import React from 'react';
 import * as DS from '../../shell/ds.js';
-import {list} from '../../shell/runtime.js';
+import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontPolicyLayout} from './layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontPolicyNavigation} from './organisms/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
@@ -29,7 +29,7 @@ export function View({v}) {
             />
           }
           policyNavigation={
-            <StorefrontPolicyNavigation label={v.t?.policiesL} links={list(v.policyLinks)} />
+            <StorefrontPolicyNavigation label={v.t?.policiesL} links={asList(v.policyLinks)} />
           }
           notice={
             <DS.Alert tone="warning" title={v.t?.sampleT}>
@@ -37,16 +37,16 @@ export function View({v}) {
             </DS.Alert>
           }
           tableOfContents={
-            <StorefrontPolicyContents label={v.t?.toc} sections={list(v.doc?.sections)} />
+            <StorefrontPolicyContents label={v.t?.toc} sections={asList(v.doc?.sections)} />
           }
           document={
             <StorefrontPolicyDocument
-              sections={list(v.doc?.sections).map(s => ({
+              sections={asList(v.doc?.sections).map(s => ({
                 id: s?.id,
                 title: s?.title,
-                paras: list(s?.paras),
+                paras: asList(s?.paras),
                 hasItems: s?.hasItems,
-                items: list(s?.items)
+                items: asList(s?.items)
               }))}
             />
           }

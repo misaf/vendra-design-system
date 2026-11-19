@@ -1,11 +1,19 @@
-# Storefront templates
+# Storefront
 
 The bilingual storefront uses Next.js App Router for the static site and React views in `features/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
-The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
-`design-system/components/atoms/` and `design-system/components/molecules/`; organisms follow in separate batches.
-The app continues to import components through `shell/ds.js`, and `features/*` remains the source
-for routed pages.
+The [design system](../../ATOMIC-DESIGN.md) organizes reusable UI into atoms, molecules and
+organisms. Storefront views import those components through `shell/ds.js`.
+
+## Architecture
+
+| Area | Responsibility |
+| --- | --- |
+| `next/app/` | App Router routes and layouts. `storefront.jsx` connects navigation, starts browser integrations and keeps the session mounted across routes and languages. |
+| `features/<name>/` | Routed screen, state, view, bilingual copy and styles for that feature. |
+| `shell/` | Shared layout and UI, tenant stylesheet loading, and the session for bag, checkout and account. |
+| `shared/` | Domain rules, translations, platform helpers and services used across features. `services/page-metadata.js` builds metadata for the export and browser navigation. `services/page-lifecycle.js` handles browser analytics, document updates and focus. |
+| `design-system/` | Reusable components and design tokens. |
 
 ## Where to edit
 
@@ -141,7 +149,7 @@ for routed pages.
 
 Start in the feature folder. For checkout, `CheckoutScreen.jsx` combines `useCheckout.js` with `CheckoutView.jsx`. The hook owns state and effects. The view reads the resulting values and renders the feature's layouts, organisms and molecules. Keep feature-specific components beside the screen and put UI reused across features in `shell/`. The design system provides reusable components and tokens.
 
-The Next.js layout keeps `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics and heading focus. `shell/runtime.js` installs the API client and analytics on `vfRuntime` in the browser.
+The Next.js layout keeps `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics and heading focus.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
@@ -178,7 +186,7 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `apps/storefront/design-system/tokens/tenants/`.
+- **Tenant list only:** `node apps/storefront/build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `apps/storefront/design-system/tokens/tenants/`.
 
 ## GitHub Pages demo
 

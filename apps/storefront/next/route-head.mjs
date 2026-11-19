@@ -2,7 +2,7 @@
 import {vfFindProduct} from '../shared/domain/catalog.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../shared/domain/formatting.js';
 import {vfServerRender} from '../shared/platform/environment.js';
-import {vfPageHead} from '../shared/services/page-lifecycle.js';
+import {vfPageHead} from '../shared/services/page-metadata.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
 import {vfFaqData, vfFloristData} from '../shared/services/structured-data.js';

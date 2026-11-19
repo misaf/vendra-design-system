@@ -129,6 +129,8 @@ const sharedFiles = [
   'services/structured-data.js',
   'services/page-state.js',
   'services/list-tracking.js',
+  'services/tenant.js',
+  'services/page-metadata.js',
   'services/page-lifecycle.js',
   'services/navigation.js'
 ];
@@ -159,7 +161,7 @@ const sharedLogic =
   JSON.stringify(tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read('shared/' + file))).join('\n\n') +
-  // Installs the integrations as shell/runtime.js does; tests stub them through this.vfRuntime.
+  // Install the same integrations as the Next.js entry point; tests stub them through vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
 export {featureFiles, pageScript, sharedLogic};

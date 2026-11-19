@@ -60,6 +60,6 @@ export function installTenantTheme(assetBase) {
     link.setAttribute('href', href);
     document.head.appendChild(link);
   };
-  // A tenant applied before this module ran (page-lifecycle.js records it) loads now.
+  // Load the tenant that the client entry selected before installing the stylesheet loader.
   if (vfRuntime.tenant) vfRuntime.useTenant(vfRuntime.tenant);
 }
