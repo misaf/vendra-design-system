@@ -1,4 +1,4 @@
-import type {InputProps} from '../Input/Input.js';
+import type {InputProps} from '@vendra/ui/Input';
 export interface PhoneInputProps extends Omit<InputProps, 'type' | 'multiline' | 'onChange'> {
   /** The native input, for focusing it or a form library. */
   ref?: React.Ref<HTMLInputElement>;

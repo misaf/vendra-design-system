@@ -17,7 +17,7 @@ import {
   vfProductImage,
   vfSampleBag
 } from '../../shared/domain/catalog.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from '../../shared/domain/commerce.js';
 import {
   VF_DELIVERY,
   vfCheckoutRequest,
@@ -31,7 +31,7 @@ import {vfShell} from '../../shared/services/navigation.js';
 import {vfSummaryRows} from '../../shared/domain/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../../shared/domain/store-config.js';
-import {vfDeliveryWhen} from '../../shared/translations/time.js';
+import {vfDeliveryWhen} from '../../i18n/time.js';
 import {vfOrderMessage} from '../../shared/domain/order-message.js';
 import {
   vfBalanceDiscountOn,

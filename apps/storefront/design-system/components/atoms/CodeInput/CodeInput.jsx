@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import {Input} from '../Input/Input.jsx';
-import {commerce} from '../../utils/commerce.js';
+import {Input} from '@vendra/ui/Input';
+import {commerce} from '../../../../shared/domain/commerce.js';
 import {cx} from '../../utils/cx.js';
 
 // A one-time code field, such as the sign-in code sent by SMS: one input (screen readers and SMS

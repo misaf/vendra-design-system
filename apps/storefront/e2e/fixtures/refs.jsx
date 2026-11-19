@@ -3,7 +3,7 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import * as DS from '../../shell/ds.js';
-import {FieldMessage} from '../../design-system/components/atoms/Field/Field.jsx';
+import {FieldMessage} from '@vendra/ui/Field';
 
 const never = () => new Promise(() => {});
 const tiles = {url: 'data:,', attribution: ''};

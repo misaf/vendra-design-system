@@ -4,10 +4,11 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import theme from '../shared/domain/tenant-theme.js';
+import theme from '@vendra/ui/tokens/theme';
 import {loadDesignSystem} from './load-design-system.mjs';
 
 const designSystem = path.resolve(import.meta.dirname, '../design-system');
+const ui = path.resolve(designSystem, '../../../packages/ui');
 const ds = await loadDesignSystem();
 
 assert.equal(typeof globalThis.window, 'undefined');
@@ -44,9 +45,7 @@ try {
 }
 // Design tokens for other platforms: W3C DTCG JSON whose aliases all resolve (a tenant's file
 // over the base one), and the runtime designTokens gives the same as the build.
-const baseTokens = JSON.parse(
-  fs.readFileSync(path.join(designSystem, 'tokens/design/tokens.json'), 'utf8')
-);
+const baseTokens = JSON.parse(fs.readFileSync(path.join(ui, 'tokens/design/tokens.json'), 'utf8'));
 const lookup = (tree, ref) => ref.split('.').reduce((node, key) => node && node[key], tree);
 const aliases = (tree, found = []) => {
   for (const node of Object.values(tree))
@@ -63,16 +62,14 @@ assert.equal(lookup(baseTokens, 'dur.fast').$value, '140ms');
 assert.equal(lookup(baseTokens, 'shadow.md').$value.offsetY, '8px');
 for (const ref of aliases(baseTokens))
   assert.ok(lookup(baseTokens, ref), 'tokens.json alias {' + ref + '} resolves');
-for (const name of fs.readdirSync(path.join(designSystem, 'tokens/design/tenants'))) {
-  const tenant = JSON.parse(
-    fs.readFileSync(path.join(designSystem, 'tokens/design/tenants', name), 'utf8')
-  );
+for (const name of fs.readdirSync(path.join(ui, 'tokens/design/tenants'))) {
+  const tenant = JSON.parse(fs.readFileSync(path.join(ui, 'tokens/design/tenants', name), 'utf8'));
   const merged = {...baseTokens};
   for (const [group, entries] of Object.entries(tenant))
     merged[group] = {...merged[group], ...entries};
   for (const ref of aliases(tenant))
     assert.ok(lookup(merged, ref), name + ' alias {' + ref + '} resolves over tokens.json');
-  const spec = JSON.parse(fs.readFileSync(path.join(designSystem, 'tokens/tenants', name), 'utf8'));
+  const spec = JSON.parse(fs.readFileSync(path.join(ui, 'tokens/tenants', name), 'utf8'));
   assert.deepEqual(theme.designTokens(theme.tokens(spec).all), tenant, name + ' matches runtime');
 }
 
@@ -91,13 +88,16 @@ assert.match(wording('fa-IR', null, {closeLabel: 'Hide'}), /aria-label="Hide"/);
 assert.match(wording('ar-AE', {ar: {Alert: {close: 'إغلاق'}}}), /aria-label="إغلاق"/);
 assert.match(wording('de-DE'), /aria-label="Dismiss"/);
 // Each component's wording (components/<Name>/messages.js) has Persian for every English key.
-const wordings = fs
-  .readdirSync(path.join(designSystem, 'components'), {recursive: true})
-  .filter(
-    name =>
-      path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
-  )
-  .map(name => path.dirname(name));
+const wordings = [path.join(designSystem, 'components'), path.join(ui, 'components')].flatMap(
+  directory =>
+    fs
+      .readdirSync(directory, {recursive: true})
+      .filter(
+        name =>
+          path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
+      )
+      .map(name => path.join(directory, name))
+);
 assert.ok(wordings.length > 20, 'components provide their own wording');
 assert.equal(ds.MESSAGES, undefined, 'no shared catalog: each component carries its own words');
 const keys = value =>
@@ -107,9 +107,7 @@ const keys = value =>
     )
     .sort();
 for (const name of wordings) {
-  const {messages} = await import(
-    pathToFileURL(path.join(designSystem, 'components', name, 'messages.js')).href
-  );
+  const {messages} = await import(pathToFileURL(name).href);
   assert.deepEqual(
     keys(messages.fa),
     keys(messages.en),
@@ -130,7 +128,7 @@ assert.match(link, /^<a class="ag-btn ag-btn--primary ag-btn--md"[^>]* href="\/s
 assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
 // 'use client' leads every component module so React Server Components frameworks treat them as client components.
 assert.match(
-  fs.readFileSync(path.join(designSystem, 'components/atoms/Button/Button.jsx'), 'utf8'),
+  fs.readFileSync(path.join(ui, 'components/Button/Button.jsx'), 'utf8'),
   /^'use client';\n/
 );
 
@@ -388,14 +386,12 @@ for (const [key, ramp] of Object.entries(theme.RAMPS)) {
 assert.equal(theme.shade('#C8405F', {lightness: 0, chroma: 0}), '#000000');
 assert.equal(theme.shade('#C8405F', {lightness: 1, chroma: 0}), '#FFFFFF');
 
-const fern = JSON.parse(
-  fs.readFileSync(path.join(designSystem, 'tokens/tenants/fern.json'), 'utf8')
-);
+const fern = JSON.parse(fs.readFileSync(path.join(ui, 'tokens/tenants/fern.json'), 'utf8'));
 const css = theme.tenantCss('fern', fern);
 assert.equal(
   css.replace(/\n {3}Sample tenant[^\n]*/, ''),
   fs
-    .readFileSync(path.join(designSystem, 'tokens/tenants/fern.css'), 'utf8')
+    .readFileSync(path.join(ui, 'tokens/tenants/fern.css'), 'utf8')
     .replace(/\n {3}Sample tenant[^\n]*/, '')
 );
 assert.doesNotMatch(

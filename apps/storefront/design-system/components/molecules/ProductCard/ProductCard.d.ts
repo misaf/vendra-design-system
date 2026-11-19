@@ -2,7 +2,7 @@ import type {RootAttributes} from '../../utils/root-attributes.js';
 
 import type {Photo} from '../../atoms/Picture/Picture.js';
 
-import type {Stock} from '../../utils/commerce.js';
+import type {Stock} from '../../../../shared/domain/commerce.js';
 
 export interface ProductCardProps extends Omit<RootAttributes<HTMLDivElement>, 'children'> {
   /** The outer element. */

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Icon} from '@vendra/ui/Icon';
 import {Picture} from '../../atoms/Picture/Picture.jsx';
 import {cx} from '../../utils/cx.js';
 

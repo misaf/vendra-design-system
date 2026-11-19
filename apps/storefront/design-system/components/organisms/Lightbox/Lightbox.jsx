@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Button, Dialog, Modal, ModalOverlay} from 'react-aria-components';
-import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
+import {IconButton} from '@vendra/ui/IconButton';
 import {Picture} from '../../atoms/Picture/Picture.jsx';
 import {cx} from '../../utils/cx.js';
 import {format} from '../../utils/format.js';

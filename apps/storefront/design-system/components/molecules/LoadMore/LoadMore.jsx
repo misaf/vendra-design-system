@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {Button} from '../../atoms/Button/Button.jsx';
+import {Button} from '@vendra/ui/Button';
 import {cx} from '../../utils/cx.js';
 
 // "Show more" for a long list: how many of the total are showing, a progress bar, and a button that

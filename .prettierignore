@@ -5,7 +5,7 @@ apps/storefront/_vendor/
 apps/storefront/e2e/__screenshots__/
 apps/storefront/e2e/test-results/
 apps/storefront/e2e/playwright-report/
-apps/storefront/design-system/tokens/
+packages/ui/tokens/
 apps/storefront/design-system/styles.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator
@@ -13,7 +13,9 @@ apps/storefront/design-system/styles.css
 *.html
 *.md
 apps/storefront/_app-build/
-apps/storefront/next/.next/
-apps/storefront/next/public/
-apps/storefront/next/_generated/
+apps/storefront/.next/
+apps/storefront/public/
 apps/storefront/next/out/
+apps/storefront/.next-live/
+apps/storefront/next-env.d.ts
+apps/storefront/.next-types.tsbuildinfo

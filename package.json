@@ -4,17 +4,20 @@
   "description": "Vendra Next.js storefront and its design system.",
   "license": "UNLICENSED",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm --prefix apps/storefront run dev:next --",
     "build": "npm --prefix apps/storefront run build",
-    "build:app": "npm --prefix apps/storefront run build:next",
-    "preview": "npm --prefix apps/storefront run start:next --",
+    "build:app": "npm --prefix apps/storefront run build:live",
+    "preview": "npm --prefix apps/storefront run start:live --",
     "check": "npm --prefix apps/storefront run check",
     "test": "npm --prefix apps/storefront test",
     "test:e2e": "npm --prefix apps/storefront run test:e2e --",
-    "new:component": "npm --prefix apps/storefront run new:component --"
+    "new:component": "npm --prefix apps/storefront run new:component --",
+    "build:demo": "npm --prefix apps/storefront run build:next",
+    "preview:demo": "npm --prefix apps/storefront run start:next --"
   },
   "overrides": {
     "@parcel/watcher": "2.6.0"

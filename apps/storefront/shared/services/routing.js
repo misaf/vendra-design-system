@@ -6,8 +6,8 @@ import {
   vfBagLine,
   vfFindProduct
 } from '../domain/catalog.js';
-import {VF_SHOP_OCCASIONS} from '../translations/categories.js';
-import {VF_POST_MOVED} from '../translations/journal-moved.js';
+import {VF_SHOP_OCCASIONS} from '../../i18n/categories.js';
+import {VF_POST_MOVED} from '../../i18n/journal-moved.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from '../domain/store-config.js';
 import {VF_CATEGORY_SLUGS} from '../domain/product-categories.js';

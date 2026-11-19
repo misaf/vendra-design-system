@@ -198,10 +198,10 @@ const domain = 'apps/storefront/shared/domain/catalog.js';
 const environment = 'apps/storefront/shared/platform/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
-  [domain]: `import '../platform/environment.js'; import '../translations/shell.js';
-    import '../../design-system/components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
-  'apps/storefront/shared/translations/shell.js': '',
-  'apps/storefront/design-system/components/utils/commerce.js': '',
+  [domain]: `import '../platform/environment.js'; import '../../i18n/shell.js';
+    import './commerce.js'; import '../../_runtime/tenant-slugs.js';`,
+  'apps/storefront/i18n/shell.js': '',
+  'apps/storefront/shared/domain/commerce.js': '',
   'apps/storefront/_runtime/tenant-slugs.js': '',
   [service]: `import React from 'react'; import '../../domain/catalog.js';`,
   [qr]: `import qrcode from 'qrcode-generator'; import '../domain/catalog.js';`
@@ -263,6 +263,30 @@ for (const [name, sources, expected] of [
 ])
   check(name, sources, expected);
 check('parse errors fail', {'apps/storefront/shared/domain/a.js': 'const = ;'}, /parse error/);
+
+const uiManifest = {
+  'packages/ui/package.json': JSON.stringify({peerDependencies: {react: '^19.0.0'}})
+};
+check('UI can import its React peer and local modules', {
+  ...uiManifest,
+  'packages/ui/src/index.tsx': "import type {ReactNode} from 'react'; export * from './tokens';",
+  'packages/ui/src/tokens.ts': 'export const size = 12;'
+});
+check(
+  'framework types stay in the app',
+  {...uiManifest, 'packages/ui/src/index.ts': "export type M = import('next').Metadata;"},
+  /forbidden package dependency next/
+);
+check(
+  'the API package cannot reach into the storefront',
+  {'packages/vendra-api/src/index.ts': "export * from '@storefront/server/route-page';"},
+  /use workspace package exports/
+);
+check(
+  'storefront code cannot bypass package exports',
+  {'apps/storefront/app/page.tsx': "export * from '../../../packages/ui/src/index';"},
+  /use workspace package exports/
+);
 
 // Shared dependencies are imported: no module reads or sets window.VF_* / window.AG_* (or the cards'
 // window.VendraDesignSystem), only guidelines/card-runtime.js, the cards' compatibility layer.

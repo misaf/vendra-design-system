@@ -14,8 +14,8 @@ import {
 import {vfHoursText} from '../../shared/domain/store-hours.js';
 import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../../shared/domain/formatting.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../shared/domain/store-config.js';
-import {VF_SHELL} from '../../shared/translations/shell.js';
-import {vfSlotLabel} from '../../shared/translations/time.js';
+import {VF_SHELL} from '../../i18n/shell.js';
+import {vfSlotLabel} from '../../i18n/time.js';
 // When each policy last changed, as an ISO date (YYYY-MM-DD). Change only the edited document's date:
 // terms and privacy dates record which version a customer agreed to.
 export const VF_POLICY_UPDATED = {

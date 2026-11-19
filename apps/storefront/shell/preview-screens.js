@@ -4,7 +4,7 @@ import React from 'react';
 
 const modules = {
   account: () => import('../features/account/AccountScreen.jsx'),
-  bag: () => import('../features/bag/BagScreen.jsx'),
+  bag: () => import('../features/cart/BagScreen.jsx'),
   checkout: () => import('../features/checkout/CheckoutScreen.jsx'),
   contact: () => import('../features/contact/ContactScreen.jsx'),
   error: () => import('../features/error/ErrorScreen.jsx'),
@@ -14,13 +14,13 @@ const modules = {
   notfound: () => import('../features/notfound/NotFoundScreen.jsx'),
   policy: () => import('../features/policy/PolicyScreen.jsx'),
   post: () => import('../features/post/PostScreen.jsx'),
-  presentation: () => import('../features/presentation/PresentationScreen.jsx'),
+  presentation: () => import('../features/counter/PresentationScreen.jsx'),
   product: () => import('../features/product/ProductScreen.jsx'),
   saved: () => import('../features/saved/SavedScreen.jsx'),
   search: () => import('../features/search/SearchScreen.jsx'),
-  shop: () => import('../features/shop/ShopScreen.jsx'),
+  shop: () => import('../features/catalog/ShopScreen.jsx'),
   signin: () => import('../features/signin/SignInScreen.jsx'),
-  track: () => import('../features/track/TrackScreen.jsx'),
+  track: () => import('../features/tracking/TrackScreen.jsx'),
   weddings: () => import('../features/weddings/WeddingsScreen.jsx')
 };
 

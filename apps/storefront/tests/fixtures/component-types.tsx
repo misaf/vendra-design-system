@@ -1,6 +1,7 @@
-import {Button} from '../../design-system/components/atoms/Button/Button.jsx';
+import {Button} from '@vendra/ui/Button';
 import {ProductCard} from '../../design-system/components/molecules/ProductCard/ProductCard.jsx';
-import {VendraProvider} from '../../design-system/components/VendraProvider/VendraProvider.jsx';
+import {VendraProvider} from '@vendra/ui/VendraProvider';
+import {commerce, type Totals} from '../../shared/domain/commerce.js';
 
 export const App = () => (
   <VendraProvider locale="fa-IR">
@@ -11,3 +12,20 @@ export const App = () => (
 
 // @ts-expect-error Invalid component variants must remain rejected by component declarations.
 export const invalid = <Button variant="unknown" />;
+
+declare const totals: Totals;
+const labels = {
+  sub: 'Subtotal',
+  discount: 'Discount',
+  fee: 'Delivery',
+  free: 'Free',
+  total: 'Total'
+};
+commerce.summaryRows(
+  totals,
+  '',
+  {...labels, balanceDiscount: 'Balance discount · {percent}%'},
+  String
+);
+// @ts-expect-error Summary callers must supply localized balance discount wording.
+commerce.summaryRows(totals, '', labels, String);

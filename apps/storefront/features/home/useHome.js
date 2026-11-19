@@ -10,16 +10,12 @@ import {VF_MONEY, vfSeparator} from '../../shared/domain/formatting.js';
 import {vfAccountLoad, vfAccountPhone} from '../../shared/domain/account-data.js';
 import {vfShell, vfStored} from '../../shared/services/navigation.js';
 import {vfRouteUrl} from '../../shared/services/routing.js';
-import {
-  VF_CATEGORY_COPY,
-  VF_SHOP_OCCASIONS,
-  VF_SHOP_OCCASION_COPY
-} from '../../shared/translations/categories.js';
+import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../../i18n/categories.js';
 import {VF_CATEGORY_SLUGS} from '../../shared/domain/product-categories.js';
 import {vfCategoryImage} from '../../shared/domain/category-images.js';
 import {vfJournalImage} from '../../shared/domain/journal-images.js';
 import {VF_STORE, vfLiveStore} from '../../shared/domain/store-config.js';
-import {VF_JCATS, VF_POSTS} from '../../shared/translations/journal-content.js';
+import {VF_JCATS, VF_POSTS} from '../../i18n/journal-content.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../shared/services/structured-data.js';

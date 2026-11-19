@@ -1,0 +1,35 @@
+import React from 'react';
+import {useLocale} from 'react-aria-components';
+
+// The components' built-in wording (accessible names and small labels) lives beside each
+// component, in its folder's messages.js ({en, fa}), so a component carries only its own words. A
+// component uses its props first, then its wording in the current language, then English. The
+// language is React Aria's locale: VendraProvider (or any I18nProvider) sets it, otherwise it is
+// the browser's. VendraProvider's `messages` add languages or change wording, keyed by language
+// then component name. {name} is replaced by the component.
+
+// Extra or changed wording from VendraProvider, by language then component.
+export const MessagesContext = React.createContext(null);
+
+// The language part of a locale: 'fa-IR' → 'fa'.
+export const localeLanguage = locale =>
+  String(locale || 'en')
+    .split('-')[0]
+    .toLowerCase();
+
+// A component's wording: the given props (undefined ones skipped), then its own `messages` in the
+// current language (or `locale`, for components that follow the page's lang), then English;
+// VendraProvider's wording for `component` overrides each language.
+export function useMessages(component, messages, props, locale) {
+  const current = useLocale().locale;
+  const custom = React.useContext(MessagesContext);
+  const language = localeLanguage(locale || current);
+  const text = {
+    ...messages.en,
+    ...(custom && custom.en && custom.en[component]),
+    ...messages[language],
+    ...(custom && custom[language] && custom[language][component])
+  };
+  for (const key in props) if (props[key] !== undefined) text[key] = props[key];
+  return text;
+}

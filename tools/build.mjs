@@ -49,7 +49,7 @@ async function main() {
     const cli = path.join(cliFolder, cliPackage.bin.tailwindcss);
     const result = spawnSync(
       process.execPath,
-      [cli, '-i', 'shared/styles/tailwind.css', '-o', output, '--minify'],
+      [cli, '-i', 'styles/tailwind.css', '-o', output, '--minify'],
       {cwd: root, stdio: 'inherit'}
     );
     if (result.error) throw result.error;

@@ -73,6 +73,8 @@ test.describe('performance budgets', () => {
     });
 
     test(`${view} (${lang}) barely shifts while fonts load`, async ({page}) => {
+      // Keep the delivery announcement consistent with the prerender while measuring font swaps.
+      await page.clock.setFixedTime(Number(process.env.VF_RENDER_TIME));
       await page.route(/\.woff2$/, async route => {
         await new Promise(resolve => setTimeout(resolve, 1200));
         await route.continue();

@@ -5,7 +5,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import {VF_EMAIL} from '../communications/email-templates.js';
 import {VF_NOTIFY} from '../communications/notifications.js';
-import {VF_POSTS} from '../shared/translations/journal-content.js';
+import {VF_POSTS} from '../i18n/journal-content.js';
 import {pageScript, sharedLogic} from './page-script.mjs';
 const root = path.resolve(import.meta.dirname, '../../..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -329,7 +329,7 @@ function page(name, c, props = {}) {
   assert.equal(route.min, 0);
   assert.equal(route.max, 0);
   assert.equal(route.stock, true);
-  const shop = page('shop', c, {
+  const shop = page('catalog', c, {
     routeInfo: {view: 'shop', min: 2000000, max: 4000000, stock: true}
   }).renderVals();
   assert.equal(shop.items.length, 3);
@@ -588,7 +588,7 @@ function page(name, c, props = {}) {
     assert.equal(only.isCard, true);
     assert.equal(only.payment.cardNumber, '6221061072645437');
     assert.match(
-      page('bag', store).renderVals().t.payNote,
+      page('cart', store).renderVals().t.payNote,
       /^You pay on the next step: card-to-card\./
     );
     const terms = JSON.stringify(page('policy', store, {doc: 'terms'}).renderVals());
@@ -667,10 +667,10 @@ function page(name, c, props = {}) {
     // No same-day delivery: the first day is tomorrow, and nothing says "same day".
     assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
     assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');
-    const shop = page('shop', store, {lang: 'fa'}).renderVals();
+    const shop = page('catalog', store, {lang: 'fa'}).renderVals();
     assert.equal(shop.chips.length, 3, 'ready, under 3M and roses; no same-day');
     // No promo codes: no field, and a saved code takes nothing off.
-    assert.equal(page('bag', store, {lang: 'fa'}).renderVals().promoShown, false);
+    assert.equal(page('cart', store, {lang: 'fa'}).renderVals().promoShown, false);
     const lines = store.vfSampleBag();
     assert.equal(
       store.vfTotals(lines, {zone: 'central', promo: 'WELCOME10'}).discount,
@@ -711,7 +711,7 @@ function page(name, c, props = {}) {
     // No add-ons: the product page has no extras and the bag can't add a card.
     vm.runInContext('VF_ADDONS.splice(0)', store);
     assert.equal(page('product', store, {lang: 'fa'}).renderVals().addons.length, 0);
-    const bag = page('bag', store, {lang: 'fa'}).renderVals();
+    const bag = page('cart', store, {lang: 'fa'}).renderVals();
     assert.ok(bag.cardLines.every(line => !line.noCard));
     assert.equal(bag.cardsShown, false);
   }

@@ -12,6 +12,8 @@
   },
   "include": [
     "design-system/components/**/*.d.ts",
+    "shared/domain/commerce.d.ts",
+    "../../packages/ui/**/*.d.ts",
     "tests/fixtures/component-types.tsx",
     "tests/fixtures/theme-types.mts"
   ]

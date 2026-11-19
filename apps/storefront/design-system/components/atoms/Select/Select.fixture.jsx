@@ -1,5 +1,5 @@
 import React from 'react';
-import {Select} from './Select.jsx';
+import {Select} from '@vendra/ui/Select';
 
 export function Fixture() {
   const [city, setCity] = React.useState('');

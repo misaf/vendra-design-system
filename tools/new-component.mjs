@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {levels} from './atomic.mjs';
-import {repo, componentsFolder} from './paths.mjs';
+import {repo, componentsFolder, uiRoot} from './paths.mjs';
 
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
@@ -27,7 +27,9 @@ if (!name || !/^[A-Z][A-Za-z0-9]+$/.test(name))
   );
 if (!args.includes('--level') || !levels.includes(level))
   fail('--level is required: atoms, molecules or organisms. See ATOMIC-DESIGN.md.');
-const existing = fs.readdirSync(path.join(repo, componentsFolder), {recursive: true});
+const existing = [path.join(repo, componentsFolder), path.join(uiRoot, 'components')].flatMap(
+  folder => fs.readdirSync(folder, {recursive: true})
+);
 if (existing.some(file => path.basename(file) === name + '.jsx'))
   fail('A component named ' + name + ' already exists');
 const componentPath = `${componentsFolder}/${level}/${name}`;
@@ -156,7 +158,7 @@ const insertSorted = (file, pattern, line) => {
 insertSorted(
   path.join(repo, 'apps/storefront/shell/ds.js'),
   /^export \* from '\.\.\/design-system\/components\//,
-  `export * from '${path.posix.relative('apps/storefront/app', componentPath)}/${name}.jsx';`
+  `export * from '${path.posix.relative('apps/storefront/shell', componentPath)}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
@@ -164,7 +166,7 @@ if (css)
     `@import url('${level}/${name}/${name}.css');\n`
   );
 if (wording) {
-  const types = path.join(repo, componentsFolder, 'utils/messages.d.ts');
+  const types = path.join(uiRoot, 'components/utils/messages.d.ts');
   const text = fs.readFileSync(types, 'utf8');
   const marker = 'export interface ComponentMessages {\n';
   if (!text.includes(marker)) fail('ComponentMessages not found in ' + types);
@@ -180,7 +182,7 @@ execFileSync(
     '--write',
     folder,
     path.join(repo, 'apps/storefront/shell/ds.js'),
-    path.join(repo, componentsFolder, 'utils/messages.d.ts')
+    path.join(uiRoot, 'components/utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );

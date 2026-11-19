@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {IconButton} from '../../atoms/IconButton/IconButton.jsx';
+import {IconButton} from '@vendra/ui/IconButton';
 import {cx} from '../../utils/cx.js';
 import {useMessages} from '../../utils/messages.js';
 import {messages} from './messages.js';

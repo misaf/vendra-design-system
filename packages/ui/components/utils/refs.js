@@ -1,0 +1,20 @@
+import React from 'react';
+
+// One ref for an element that both a component and its caller's `ref` need. It sets object refs
+// and calls callback refs, and returns React 19's cleanup so each is detached the way it expects
+// (a callback ref that returns a cleanup gets that, others are called with null).
+export function useMergedRef(...refs) {
+  return React.useCallback(node => {
+    const cleanups = refs.map(ref => {
+      if (typeof ref === 'function') {
+        const cleanup = ref(node);
+        return typeof cleanup === 'function' ? cleanup : () => ref(null);
+      }
+      if (ref) {
+        ref.current = node;
+        return () => (ref.current = null);
+      }
+    });
+    return () => cleanups.forEach(cleanup => cleanup && cleanup());
+  }, refs);
+}

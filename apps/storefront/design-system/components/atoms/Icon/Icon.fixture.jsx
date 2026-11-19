@@ -1,5 +1,5 @@
 import React from 'react';
-import {Icon} from './Icon.jsx';
+import {Icon} from '@vendra/ui/Icon';
 
 export function Fixture() {
   return (

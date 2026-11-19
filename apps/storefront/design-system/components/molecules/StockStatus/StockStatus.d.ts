@@ -1,6 +1,6 @@
 import type {RootAttributes} from '../../utils/root-attributes.js';
 
-import type {Stock} from '../../utils/commerce.js';
+import type {Stock} from '../../../../shared/domain/commerce.js';
 
 export interface StockStatusProps extends Omit<RootAttributes<HTMLSpanElement>, 'children'> {
   /** The outer element. */
