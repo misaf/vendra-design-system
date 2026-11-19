@@ -15,7 +15,7 @@ export async function openComponent(page, name, lang = 'en') {
   await expect(page.locator('html')).toHaveAttribute('lang', lang);
 }
 
-// Opens app/<layer>/<name>/<name>.fixture.jsx (a storefront molecule, organism or layout) on the
+// Opens the named fixture from shell/ or features/ on the
 // storefront host page, which loads the storefront's styles, in `lang`, once it has rendered.
 export async function openStorefrontComponent(page, name, lang = 'en') {
   await page.goto(

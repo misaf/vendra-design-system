@@ -1,6 +1,6 @@
 // Search text (components/utils/commerce.js): Persian typed any way finds what is indexed.
 import assert from 'node:assert/strict';
-import {commerce} from '../../../packages/design-system/components/utils/commerce.js';
+import {commerce} from '../design-system/components/utils/commerce.js';
 import {VF_PRODUCTS, vfSearchProducts} from '../shared/domain/catalog.js';
 import {VF_POSTS} from '../shared/translations/journal-content.js';
 

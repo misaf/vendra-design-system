@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+}
+
+/* The storefront announces its own in-session navigation after the new heading is ready. */
+next-route-announcer {
+  display: none;
+}
+
+/* A tenant preview starts hidden until its own palette is available. */
+html[data-vf-tenant-loading] body {
+  visibility: hidden;
+}
+
+/* Respect a returning visitor's saved choice during the first, storage-free render. */
+html[data-vf-consent-known] :is(.vf-shell-consent-dock, .vf-shell-consent-bar) {
+  display: none;
+}

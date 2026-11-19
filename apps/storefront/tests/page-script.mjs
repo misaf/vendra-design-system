@@ -36,9 +36,7 @@ const React = (() => {
   };
 })();
 `;
-const componentHarness = `
-const pageReady = () => true;
-const loadPage = () => null;
+const componentHarness = hook => `
 const __vfUsePageLogic = usePageLogic;
 usePageLogic = (props, init) => (globalThis.__vfPage = __vfUsePageLogic(props, init));
 class Component {
@@ -47,22 +45,47 @@ class Component {
     let page = null;
     const render = () => {
       React.begin(slots);
-      return usePage(page ? page.props : props);
+      return ${hook}(page ? page.props : props);
     };
+    if (typeof vfSiteInitial === 'function') {
+      props = {
+        ...props,
+        navigate(url, {replace}) {
+          history[replace ? 'replaceState' : 'pushState']({}, '', url);
+          page.receiveAddress(url);
+        }
+      };
+    }
     globalThis.__vfFlush = () => page && page.done.splice(0).forEach(done => done());
     render();
     page = globalThis.__vfPage;
+    if (typeof vfSiteInitial === 'function') {
+      page.restoreAddress(location.pathname + location.search);
+    }
     return new Proxy(page, {get: (target, key) => (key === 'renderVals' ? render : target[key])});
   }
 }
 `;
 
+function featureFiles(folder) {
+  if (folder === 'shell/session') {
+    return {hook: 'useStorefrontSession', logic: 'useStorefrontSession.js'};
+  }
+  const slug = path.basename(folder);
+  const name =
+    {signin: 'SignIn', notfound: 'NotFound'}[slug] || slug[0].toUpperCase() + slug.slice(1);
+  const hook = 'use' + name;
+  return {hook, logic: hook + '.js', view: name + 'View.jsx', screen: name + 'Screen.jsx'};
+}
+
 function pageScript(folder) {
   const parts = [];
-  if (['pages/home', 'pages/journal', 'pages/post'].includes(folder))
+  if (['features/home', 'features/journal', 'features/post'].includes(folder))
     parts.push(read('shared/translations/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
-  const logic = read(folder + '/logic.js');
+  if (folder === 'features/checkout') parts.push(read(folder + '/payment-recovery.js'));
+  const files = featureFiles(folder);
+  const logic = read(folder + '/' + files.logic);
   // Pages that queue toasts get a minimal queue (the component's is React Aria's).
   if (logic.includes('ToastQueue'))
     parts.push(
@@ -71,7 +94,7 @@ function pageScript(folder) {
         'close() { this.visibleToasts = []; } clear() { this.visibleToasts = []; } }'
     );
   parts.push(logic);
-  return parts.map(strip).join('\n\n') + componentHarness;
+  return parts.map(strip).join('\n\n') + componentHarness(files.hook);
 }
 
 // The shared storefront logic (shared/), in load order, as one script whose declarations are
@@ -115,12 +138,12 @@ const scoped = (name, file) =>
 const sharedLogic =
   hooksHarness +
   // utils/locales.js declares LOCALES, localeConfig and plural at the top level.
-  strip(read('../../packages/design-system/components/utils/locales.js')) +
+  strip(read('design-system/components/utils/locales.js')) +
   '\n' +
-  scoped('commerce', '../../packages/design-system/components/utils/commerce.js') +
-  scoped('analytics', '../../packages/design-system/components/utils/analytics.js') +
-  scoped('dates', '../../packages/design-system/components/utils/dates.js') +
-  scoped('format', '../../packages/design-system/components/utils/format.js') +
+  scoped('commerce', 'design-system/components/utils/commerce.js') +
+  scoped('analytics', 'design-system/components/utils/analytics.js') +
+  scoped('dates', 'design-system/components/utils/dates.js') +
+  scoped('format', 'design-system/components/utils/format.js') +
   strip(read('shared/platform/runtime.js')) +
   strip(read('shared/platform/environment.js')) +
   scoped('VF_SEO', 'shared/services/seo.js') +
@@ -136,7 +159,7 @@ const sharedLogic =
   JSON.stringify(tenantSlugs()) +
   ';\n\n' +
   sharedFiles.map(file => strip(read('shared/' + file))).join('\n\n') +
-  // Installs the integrations as app/runtime.js does; tests stub them through this.vfRuntime.
+  // Installs the integrations as shell/runtime.js does; tests stub them through this.vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
-export {pageScript, sharedLogic};
+export {featureFiles, pageScript, sharedLogic};

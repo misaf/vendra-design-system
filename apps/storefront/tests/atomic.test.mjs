@@ -12,52 +12,52 @@ const repo = path.resolve(import.meta.dirname, '../../..');
 
 assert.equal(
   dependencyViolation(
-    'packages/design-system/components/atoms/Button/Button.jsx',
-    'packages/design-system/components/atoms/Icon/Icon.jsx'
+    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/atoms/Icon/Icon.jsx'
   ),
   null
 );
 assert.equal(
   dependencyViolation(
-    'packages/design-system/components/molecules/Search/Search.jsx',
-    'packages/design-system/components/atoms/Input/Input.jsx'
+    'apps/storefront/design-system/components/molecules/Search/Search.jsx',
+    'apps/storefront/design-system/components/atoms/Input/Input.jsx'
   ),
   null
 );
 assert.equal(
   dependencyViolation(
-    'packages/design-system/components/atoms/Spinner/Spinner.jsx',
-    'packages/design-system/components/utils/messages.js'
+    'apps/storefront/design-system/components/atoms/Spinner/Spinner.jsx',
+    'apps/storefront/design-system/components/utils/messages.js'
   ),
   null
 );
 for (const [source, target] of [
   [
-    'packages/design-system/components/atoms/Button/Button.jsx',
-    'packages/design-system/components/molecules/Search/Search.jsx'
+    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/molecules/Search/Search.jsx'
   ],
   [
-    'packages/design-system/components/molecules/Search/Search.jsx',
-    'packages/design-system/components/organisms/Header/Header.jsx'
+    'apps/storefront/design-system/components/molecules/Search/Search.jsx',
+    'apps/storefront/design-system/components/organisms/Header/Header.jsx'
   ],
   [
-    'packages/design-system/components/utils/messages.js',
-    'packages/design-system/components/atoms/Spinner/Spinner.jsx'
+    'apps/storefront/design-system/components/utils/messages.js',
+    'apps/storefront/design-system/components/atoms/Spinner/Spinner.jsx'
   ],
   [
-    'packages/design-system/components/atoms/Button/Button.jsx',
-    'packages/design-system/components/Legacy/Legacy.jsx'
+    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/Legacy/Legacy.jsx'
   ],
   [
-    'packages/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
     'apps/storefront/shared/domain/catalog.js'
   ]
 ])
   assert.ok(dependencyViolation(source, target), `${source} must not depend on ${target}`);
 
 const sources = fs
-  .readdirSync(path.join(repo, 'packages/design-system/components'), {recursive: true})
-  .map(file => 'packages/design-system/components/' + file.split(path.sep).join('/'));
+  .readdirSync(path.join(repo, 'apps/storefront/design-system/components'), {recursive: true})
+  .map(file => 'apps/storefront/design-system/components/' + file.split(path.sep).join('/'));
 const violations = [];
 for (const source of sources.filter(
   file => /\.(js|jsx)$/.test(file) && !file.endsWith('.fixture.jsx') && layer(file)
@@ -86,7 +86,7 @@ for (const source of sources.filter(
   names.add(name);
 }
 for (const level of levels) {
-  const folder = path.join(repo, 'packages/design-system/components', level);
+  const folder = path.join(repo, 'apps/storefront/design-system/components', level);
   if (!fs.existsSync(folder)) continue;
   for (const entry of fs.readdirSync(folder, {withFileTypes: true})) {
     if (!entry.isDirectory()) continue;
@@ -98,39 +98,44 @@ for (const level of levels) {
 }
 assert.deepEqual(violations, [], 'Atomic Design dependency violations');
 
-// Storefront UI: a spec and its fixture come together (app/<layer>/<Name>/<Name>.spec.mjs and
+// Storefront UI: a spec and its fixture come together (shell/<layer>/<Name>/<Name>.spec.mjs and
 // <Name>.fixture.jsx, run by the storefront-components project). Every new organism has them; the
 // organisms that predate this rule are listed in organisms-without-specs.json, which only shrinks.
-const appUi = path.join(repo, 'apps/storefront/app');
+const storefront = path.join(repo, 'apps/storefront');
+const featureRoot = path.join(storefront, 'features');
+const uiRoots = [
+  path.join(storefront, 'shell'),
+  ...fs.readdirSync(featureRoot).map(name => path.join(featureRoot, name))
+];
 const grandfathered = new Set(organismsWithoutSpecs);
-for (const level of ['molecules', 'organisms', 'layouts']) {
-  for (const name of fs.readdirSync(path.join(appUi, level))) {
-    const base = path.join(appUi, level, name, name);
-    const spec = fs.existsSync(base + '.spec.mjs');
-    const fixture = fs.existsSync(base + '.fixture.jsx');
-    assert.equal(
-      spec,
-      fixture,
-      `${level}/${name}: a spec needs its fixture and a fixture its spec`
-    );
-    if (level !== 'organisms') continue;
-    if (spec)
-      assert.ok(
-        !grandfathered.has(name),
-        `${name} has a spec now: remove it from organisms-without-specs.json`
+for (const uiRoot of uiRoots) {
+  for (const level of ['molecules', 'organisms', 'layouts']) {
+    const layerRoot = path.join(uiRoot, level);
+    if (!fs.existsSync(layerRoot)) continue;
+    for (const name of fs.readdirSync(layerRoot)) {
+      const base = path.join(layerRoot, name, name);
+      const spec = fs.existsSync(base + '.spec.mjs');
+      const fixture = fs.existsSync(base + '.fixture.jsx');
+      assert.equal(
+        spec,
+        fixture,
+        `${level}/${name}: a spec needs its fixture and a fixture its spec`
       );
-    else
-      assert.ok(
-        grandfathered.has(name),
-        `organisms/${name} needs ${name}.spec.mjs and ${name}.fixture.jsx`
-      );
+      if (level !== 'organisms') continue;
+      if (spec)
+        assert.ok(
+          !grandfathered.has(name),
+          `${name} has a spec now: remove it from organisms-without-specs.json`
+        );
+      else
+        assert.ok(
+          grandfathered.delete(name),
+          `organisms/${name} needs ${name}.spec.mjs and ${name}.fixture.jsx`
+        );
+    }
   }
 }
-for (const name of grandfathered)
-  assert.ok(
-    fs.existsSync(path.join(appUi, 'organisms', name)),
-    `organisms-without-specs.json lists ${name}, which no longer exists`
-  );
+assert.deepEqual([...grandfathered], [], 'organisms-without-specs.json lists missing organisms');
 
 // Exercise the actual CLI in a disposable repo: scaffolding must work at the deeper path,
 // publish its export/CSS, and reject ambiguous names without changing the real checkout.
@@ -141,9 +146,9 @@ try {
     'tools/new-component.mjs',
     'tools/atomic.mjs',
     'tools/paths.mjs',
-    'apps/storefront/app/ds.js',
-    'packages/design-system/components/index.css',
-    'packages/design-system/components/utils/messages.d.ts'
+    'apps/storefront/shell/ds.js',
+    'apps/storefront/design-system/components/index.css',
+    'apps/storefront/design-system/components/utils/messages.d.ts'
   ]) {
     const target = path.join(temporary, file);
     fs.mkdirSync(path.dirname(target), {recursive: true});
@@ -160,23 +165,32 @@ try {
     const name = 'Sample' + level[0].toUpperCase() + level.slice(1);
     const result = generate(name, '--level', level, '--wording');
     assert.equal(result.status, 0, result.stderr);
-    const base = path.join(temporary, 'packages/design-system/components', level, name, name);
+    const base = path.join(
+      temporary,
+      'apps/storefront/design-system/components',
+      level,
+      name,
+      name
+    );
     for (const suffix of ['.jsx', '.d.ts', '.css', '.spec.mjs', '.fixture.jsx'])
       assert.ok(fs.existsSync(base + suffix), `${name}${suffix} generated`);
     assert.ok(fs.readFileSync(base + '.jsx', 'utf8').includes("from '../../utils/messages.js'"));
     assert.ok(
       fs
         .readFileSync(base + '.spec.mjs', 'utf8')
-        .includes("from '../../../../../apps/storefront/e2e/component-test.mjs'")
+        .includes("from '../../../../e2e/component-test.mjs'")
     );
     assert.ok(
       fs
-        .readFileSync(path.join(temporary, 'apps/storefront/app/ds.js'), 'utf8')
-        .includes(`../../../packages/design-system/components/${level}/${name}/${name}.jsx`)
+        .readFileSync(path.join(temporary, 'apps/storefront/shell/ds.js'), 'utf8')
+        .includes(`../design-system/components/${level}/${name}/${name}.jsx`)
     );
     assert.ok(
       fs
-        .readFileSync(path.join(temporary, 'packages/design-system/components/index.css'), 'utf8')
+        .readFileSync(
+          path.join(temporary, 'apps/storefront/design-system/components/index.css'),
+          'utf8'
+        )
         .includes(`${level}/${name}/${name}.css`)
     );
   }
@@ -189,7 +203,7 @@ try {
   assert.equal(noCss.status, 0, noCss.stderr);
   assert.ok(
     !fs.existsSync(
-      path.join(temporary, 'packages/design-system/components/atoms/Unstyled/Unstyled.css')
+      path.join(temporary, 'apps/storefront/design-system/components/atoms/Unstyled/Unstyled.css')
     )
   );
 } finally {

@@ -88,7 +88,7 @@ test('the worker revalidates fixed URLs and keeps hashed build files cache first
 }, info) => {
   test.skip(info.project.name !== 'tablet', 'one production cache-strategy check');
   const photo = '/assets/test-mutable-photo.svg';
-  const hashed = '/assets/hashed/test-build-AbCd1234.css';
+  const hashed = '/_next/static/chunks/test-build-AbCd1234.css';
   let revision = 'original';
   let cacheControl = 'public, max-age=86400';
   let buildRequests = 0;
@@ -105,7 +105,7 @@ test('the worker revalidates fixed URLs and keeps hashed build files cache first
   const cached = path =>
     page.evaluate(async url => {
       const scope = new URL((await navigator.serviceWorker.ready).scope).pathname;
-      const store = await caches.open('vf-' + encodeURIComponent(scope) + '-files-v4');
+      const store = await caches.open('vf-' + encodeURIComponent(scope) + '-files-next-v1');
       return (await store.match(url))?.text();
     }, path);
   expect(await read(photo)).toBe('original');
@@ -186,7 +186,7 @@ test('a new service worker activates without interrupting an open display', asyn
   await page.keyboard.press('Escape');
   const code = await page.locator('.vf-display-code').textContent();
   const workerPath = fileURLToPath(
-    new URL('../_app-build/apps/storefront/app/sw.js', import.meta.url)
+    new URL('../next/out/apps/storefront/app/sw.js', import.meta.url)
   );
   const original = await fs.readFile(workerPath, 'utf8');
   try {

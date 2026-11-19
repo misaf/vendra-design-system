@@ -8,3 +8,8 @@ scraps/
 scratch/
 screenshots/
 node_modules
+
+/apps/storefront/next/.next/
+/apps/storefront/next/public/
+/apps/storefront/next/_generated/
+/apps/storefront/next/out/

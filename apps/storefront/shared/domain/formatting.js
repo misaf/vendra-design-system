@@ -1,7 +1,7 @@
 // Shared Persian digits and currency formatting, on the package's format helpers (utils/format.js).
 import {VF_STORE} from './store-config.js';
-import {commerce} from '../../../../packages/design-system/components/utils/commerce.js';
-import {format} from '../../../../packages/design-system/components/utils/format.js';
+import {commerce} from '../../design-system/components/utils/commerce.js';
+import {format} from '../../design-system/components/utils/format.js';
 // Separates the parts of a line of details. Persian uses its comma: a raised dot beside Persian
 // digits reads as zero (۰), so «جمع · ۱» looks like ten. Takes the language or `fa` as a boolean.
 export const vfSeparator = lang => (lang === true || lang === 'fa' ? '، ' : ' · ');

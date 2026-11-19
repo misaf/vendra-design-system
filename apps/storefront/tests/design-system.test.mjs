@@ -1,0 +1,415 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+import React from 'react';
+import {renderToString} from 'react-dom/server';
+import theme from '../shared/domain/tenant-theme.js';
+import {loadDesignSystem} from './load-design-system.mjs';
+
+const designSystem = path.resolve(import.meta.dirname, '../design-system');
+const ds = await loadDesignSystem();
+
+assert.equal(typeof globalThis.window, 'undefined');
+
+// Components: every one renders on the server.
+// Components are the capitalised function exports (ToastQueue is a class, not a component;
+// MessagesContext is a React context).
+const components = Object.keys(ds).filter(
+  name =>
+    /^[A-Z][a-z]/.test(name) &&
+    ds[name].$$typeof !== Symbol.for('react.context') &&
+    !(typeof ds[name] === 'function' && /^class\b/.test(Function.prototype.toString.call(ds[name])))
+);
+assert.ok(components.length >= 45, 'only ' + components.length + ' components exported');
+const props = {Icon: {name: 'flower-2'}, ToastRegion: {queue: new ds.ToastQueue()}};
+// Parts that only exist inside their group render inside it.
+const groups = {ChoiceTile: 'ChoiceGroup', Radio: 'RadioGroup'};
+const element = name => {
+  const part = React.createElement(ds[name], {value: 'a', ...(props[name] || {})});
+  return groups[name]
+    ? React.createElement(ds[groups[name]], {label: 'Group'}, part)
+    : React.createElement(ds[name], props[name] || {});
+};
+const quiet = console.error,
+  warn = console.warn;
+console.error = console.warn = () => {};
+try {
+  for (const name of components) {
+    assert.doesNotThrow(() => renderToString(element(name)), name + ' fails to server-render');
+  }
+} finally {
+  console.error = quiet;
+  console.warn = warn;
+}
+// Design tokens for other platforms: W3C DTCG JSON whose aliases all resolve (a tenant's file
+// over the base one), and the runtime designTokens gives the same as the build.
+const baseTokens = JSON.parse(
+  fs.readFileSync(path.join(designSystem, 'tokens/design/tokens.json'), 'utf8')
+);
+const lookup = (tree, ref) => ref.split('.').reduce((node, key) => node && node[key], tree);
+const aliases = (tree, found = []) => {
+  for (const node of Object.values(tree))
+    if (node && typeof node === 'object')
+      if ('$value' in node)
+        JSON.stringify(node.$value).replace(/\{([\w.-]+)\}/g, (m, ref) => found.push(ref));
+      else aliases(node, found);
+  return found;
+};
+assert.deepEqual(lookup(baseTokens, 'peony.500'), {$type: 'color', $value: '#C8405F'});
+assert.deepEqual(lookup(baseTokens, 'success.default'), {$type: 'color', $value: '{leaf.700}'});
+assert.deepEqual(lookup(baseTokens, 'space.4'), {$type: 'dimension', $value: '1rem'});
+assert.equal(lookup(baseTokens, 'dur.fast').$value, '140ms');
+assert.equal(lookup(baseTokens, 'shadow.md').$value.offsetY, '8px');
+for (const ref of aliases(baseTokens))
+  assert.ok(lookup(baseTokens, ref), 'tokens.json alias {' + ref + '} resolves');
+for (const name of fs.readdirSync(path.join(designSystem, 'tokens/design/tenants'))) {
+  const tenant = JSON.parse(
+    fs.readFileSync(path.join(designSystem, 'tokens/design/tenants', name), 'utf8')
+  );
+  const merged = {...baseTokens};
+  for (const [group, entries] of Object.entries(tenant))
+    merged[group] = {...merged[group], ...entries};
+  for (const ref of aliases(tenant))
+    assert.ok(lookup(merged, ref), name + ' alias {' + ref + '} resolves over tokens.json');
+  const spec = JSON.parse(fs.readFileSync(path.join(designSystem, 'tokens/tenants', name), 'utf8'));
+  assert.deepEqual(theme.designTokens(theme.tokens(spec).all), tenant, name + ' matches runtime');
+}
+
+// Built-in wording follows VendraProvider's language; props and provider messages still win.
+const wording = (locale, messages, props = {}) =>
+  renderToString(
+    React.createElement(
+      ds.VendraProvider,
+      {locale, messages},
+      React.createElement(ds.Alert, {title: 'Note', onClose: () => {}, ...props})
+    )
+  );
+assert.match(wording('en-US'), /aria-label="Dismiss"/);
+assert.match(wording('fa-IR'), /aria-label="بستن"/);
+assert.match(wording('fa-IR', null, {closeLabel: 'Hide'}), /aria-label="Hide"/);
+assert.match(wording('ar-AE', {ar: {Alert: {close: 'إغلاق'}}}), /aria-label="إغلاق"/);
+assert.match(wording('de-DE'), /aria-label="Dismiss"/);
+// Each component's wording (components/<Name>/messages.js) has Persian for every English key.
+const wordings = fs
+  .readdirSync(path.join(designSystem, 'components'), {recursive: true})
+  .filter(
+    name =>
+      path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
+  )
+  .map(name => path.dirname(name));
+assert.ok(wordings.length > 20, 'components provide their own wording');
+assert.equal(ds.MESSAGES, undefined, 'no shared catalog: each component carries its own words');
+const keys = value =>
+  Object.entries(value)
+    .flatMap(([key, inner]) =>
+      typeof inner === 'object' ? keys(inner).map(sub => key + '.' + sub) : [key]
+    )
+    .sort();
+for (const name of wordings) {
+  const {messages} = await import(
+    pathToFileURL(path.join(designSystem, 'components', name, 'messages.js')).href
+  );
+  assert.deepEqual(
+    keys(messages.fa),
+    keys(messages.en),
+    name + ' wording: Persian matches English'
+  );
+}
+// The app's router reaches the components' links through VendraProvider (one React Aria copy).
+const routed = renderToString(
+  React.createElement(
+    ds.VendraProvider,
+    {navigate: () => {}, useHref: href => '/store' + href},
+    React.createElement(ds.Button, {href: '/shop'}, 'Shop')
+  )
+);
+assert.match(routed, /href="\/store\/shop"/, 'VendraProvider useHref reaches Button links');
+const link = renderToString(React.createElement(ds.Button, {href: '/shop'}, 'Shop'));
+assert.match(link, /^<a class="ag-btn ag-btn--primary ag-btn--md"[^>]* href="\/shop"/);
+assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
+// 'use client' leads every component module so React Server Components frameworks treat them as client components.
+assert.match(
+  fs.readFileSync(path.join(designSystem, 'components/atoms/Button/Button.jsx'), 'utf8'),
+  /^'use client';\n/
+);
+
+// Helpers.
+assert.equal(ds.format.money(4200000, {lang: 'en'}), '4,200,000 Toman');
+assert.equal(ds.format.money(4200000, {lang: 'fa'}), '۴٬۲۰۰٬۰۰۰ تومان');
+assert.equal(
+  ds.format.money(100, {
+    currency: 'GBP',
+    currencies: {GBP: {rate: 0.5, decimals: 2, symbol: '£', en: 'GBP', fa: 'پوند'}}
+  }),
+  '£50.00'
+);
+// Only Toman and Rial are built in; any other currency needs the tenant's rate, and an unknown one
+// throws rather than printing the amount as Toman.
+assert.deepEqual(Object.keys(ds.format.CURRENCIES), ['IRT', 'IRR']);
+assert.equal(ds.format.money(4200000, {currency: 'IRR'}), '42,000,000 Rial');
+assert.throws(() => ds.format.money(100, {currency: 'USD'}), /no rate for currency "USD"/);
+assert.throws(
+  () =>
+    ds.format.money(100, {
+      currency: 'GBP',
+      currencies: {GBP: {rate: 0, decimals: 2, symbol: '£'}}
+    }),
+  /no rate/
+);
+assert.deepEqual([...ds.dates.g2j(new Date(2026, 2, 21, 12))], [1405, 1, 1]);
+// Pagination: first, last and one page either side of the current one; a one-page gap shows the page.
+assert.deepEqual(ds.paginationRange(5, 10), [1, null, 4, 5, 6, null, 10]);
+assert.deepEqual(ds.paginationRange(1, 3), [1, 2, 3]);
+assert.deepEqual(ds.paginationRange(3, 7), [1, 2, 3, 4, null, 7]);
+assert.deepEqual(ds.paginationRange(12, 12), [1, null, 11, 12]);
+// Stock status from the API's own fields.
+const stock = fields => ds.commerce.stockStatus({inStock: true, quantity: 10, ...fields});
+assert.deepEqual(stock({stockThreshold: null}), {status: 'in'});
+assert.deepEqual(stock({stockThreshold: 3}), {status: 'in'});
+assert.deepEqual(stock({quantity: 3, stockThreshold: 3}), {status: 'low', count: 3});
+assert.deepEqual(stock({inStock: false, quantity: 0}), {status: 'out'});
+assert.deepEqual(
+  stock({inStock: false, availableSoon: true, availabilityDate: '2026-10-12T00:00:00+03:30'}),
+  {status: 'soon', date: '2026-10-12'}
+);
+assert.deepEqual(stock({inStock: false, availableSoon: true, availabilityDate: null}), {
+  status: 'soon',
+  date: null
+});
+
+// Photos from an API Multimedia record: widths sorted per format, AVIF before WebP, size and
+// placeholder only when valid, alt text per language. A record with only a URL is just the URL.
+const media = {
+  url: 'https://cdn.example/rose.jpg',
+  responsiveImages: {
+    960: 'https://cdn.example/rose-960.jpg',
+    480: 'https://cdn.example/rose-480.jpg',
+    'webp 480': 'https://cdn.example/rose-480.webp',
+    'avif 480': 'https://cdn.example/rose-480.avif',
+    'avif 960': 'https://cdn.example/rose-960.avif',
+    'avif wide': 'https://cdn.example/broken.avif'
+  },
+  customProperties: {
+    width: '1200',
+    height: '1500',
+    placeholder: 'data:image/webp;base64,AAAA',
+    alt_en: 'Ivory roses in a linen box',
+    alt_fa: 'رز عاجی در باکس کتان'
+  }
+};
+assert.deepEqual(ds.commerce.imageFromApi(media, 'fa'), {
+  src: 'https://cdn.example/rose.jpg',
+  srcSet: 'https://cdn.example/rose-480.jpg 480w, https://cdn.example/rose-960.jpg 960w',
+  sources: [
+    {
+      type: 'image/avif',
+      srcSet: 'https://cdn.example/rose-480.avif 480w, https://cdn.example/rose-960.avif 960w'
+    },
+    {type: 'image/webp', srcSet: 'https://cdn.example/rose-480.webp 480w'}
+  ],
+  width: 1200,
+  height: 1500,
+  placeholder: 'data:image/webp;base64,AAAA',
+  alt: 'رز عاجی در باکس کتان'
+});
+assert.deepEqual(
+  ds.commerce.imageFromApi({
+    url: '/rose.jpg',
+    responsiveImages: {},
+    customProperties: {width: '1200', placeholder: 'javascript:alert(1)'}
+  }),
+  {src: '/rose.jpg'}
+);
+assert.equal(ds.commerce.imageFromApi({url: null}), null);
+
+// Commerce rules run on a tenant's own data, passed in: no globals, no window.
+const {commerce} = ds;
+const zones = [
+  commerce.zoneFromApi(
+    {id: 7, name: {en: 'Centre', fa: 'مرکز'}, maxDistanceKm: 5, feeAmount: 90_000, position: 1},
+    {7: {key: 'centre', cutoff: '17:00'}}
+  )
+];
+const studio = {lat: 35.7, lng: 51.4};
+assert.equal(commerce.zoneAt({lat: 35.71, lng: 51.41}, zones, studio), 'centre');
+assert.equal(commerce.zoneAt({lat: 36.5, lng: 51.4}, zones, studio), null);
+// Directions: Neshan and Balad lead in Persian, Google Maps elsewhere; nothing without a point.
+assert.deepEqual(commerce.directionsLinks(studio, 'fa'), [
+  {app: 'neshan', href: 'https://nshn.ir/?lat=35.7&lng=51.4'},
+  {app: 'balad', href: 'https://balad.ir/location?latitude=35.7&longitude=51.4&zoom=17'},
+  {app: 'google', href: 'https://www.google.com/maps/dir/?api=1&destination=35.7,51.4'}
+]);
+assert.deepEqual(
+  commerce.directionsLinks(studio, 'en').map(link => link.app),
+  ['google', 'neshan', 'balad']
+);
+assert.deepEqual(commerce.directionsLinks(null, 'fa'), []);
+assert.deepEqual(commerce.directionsLinks({lat: 120, lng: 0}, 'en'), []);
+const rules = {
+  freeDelivery: {threshold: 1_000_000, zones: ['centre']},
+  promos: [{code: 'SPRING', percent: 20, min: 0}],
+  wallet: {discountFrom: 5_000_000, discountPercent: 5}
+};
+assert.deepEqual(
+  commerce.totals([{unit: 400_000, qty: 2}], {zone: zones[0], promo: 'spring '}, rules),
+  {sub: 800_000, fee: 90_000, discount: 160_000, total: 730_000}
+);
+assert.equal(
+  commerce.totals([{unit: 600_000, qty: 2}], {zone: zones[0], balance: 5_000_000}, rules).total,
+  1_140_000
+);
+const days = commerce.deliveryDays('17:00', {days: 3}, new Date(2026, 9, 5, 18, 0));
+assert.deepEqual(
+  days.map(day => [day.iso, day.pastCutoff]),
+  [
+    ['2026-10-05', true],
+    ['2026-10-06', false],
+    ['2026-10-07', false]
+  ]
+);
+assert.equal(commerce.openDay(days), '2026-10-06');
+assert.equal(commerce.normalizeCode(' vf-7k2m ۴q '), 'VF7K2M4Q');
+// PhoneInput and CodeInput clean what is typed: Persian digits, spaces and dashes.
+let phoneValue;
+ds.PhoneInput({
+  onChange: (typed, {number, mobile}) => (phoneValue = [number, mobile])
+}).props.onChange('۰۹۱۲ ۳۴۵-۶۷۸۹');
+assert.deepEqual(phoneValue, ['09123456789', true]);
+let codeValue, completed;
+// CodeInput uses hooks, so it is called inside a render to read the element it returns.
+let codeInput;
+renderToString(
+  React.createElement(() => {
+    codeInput = ds.CodeInput({
+      length: 5,
+      value: '1234',
+      onChange: code => (codeValue = code),
+      onComplete: code => (completed = code)
+    });
+    return null;
+  })
+);
+assert.equal(codeInput.props.autoComplete, 'one-time-code');
+codeInput.props.onChange('۱۲۳۴۵۶ ');
+assert.equal(codeValue, '12345');
+assert.equal(completed, '12345');
+const letters = ['a', 'b', 'c', 'd', 'e'];
+assert.deepEqual(commerce.page(letters, 1, 2), {
+  items: ['a', 'b'],
+  page: 1,
+  shown: 2,
+  total: 5,
+  hasMore: true
+});
+assert.deepEqual(commerce.page(letters, 3, 2).items, letters);
+assert.equal(commerce.page(letters, 'x', 2).page, 1);
+assert.deepEqual(commerce.page(['a', 'b'], 1, 2, 40), {
+  items: ['a', 'b'],
+  page: 1,
+  shown: 2,
+  total: 40,
+  hasMore: true
+});
+assert.deepEqual(
+  commerce
+    .deliverySlots(
+      '2026-10-05',
+      [
+        {start: '08', end: '12'},
+        {start: '16', end: '20'}
+      ],
+      120,
+      new Date(2026, 9, 5, 11, 0)
+    )
+    .map(slot => slot.closed),
+  [true, false]
+);
+const line = commerce.lineFromApi(
+  {
+    sellableId: 5,
+    name: 'VF-1',
+    quantity: 2,
+    unitAmount: 900_000,
+    metadata: {token: 'VF-1', size: 'large', addons: 'card'}
+  },
+  {
+    products: [{id: 'VF-1', apiId: 5, image: 'rose.jpg'}],
+    sizes: [
+      {
+        id: 'large',
+        price: 300_000,
+        name: {en: 'Large', fa: 'بزرگ'},
+        detail: {en: '30 stems', fa: '۳۰ شاخه'}
+      }
+    ],
+    addons: [{id: 'card', price: 100_000, name: {en: 'Card', fa: 'کارت'}}],
+    placeholder: 'none.svg',
+    describe: (product, size, addons, lang) =>
+      [size.name[lang], ...addons.map(addon => addon.name[lang])].join(' · ')
+  }
+);
+assert.deepEqual(
+  [line.id, line.qty, line.en[1], line.fa[1]],
+  ['VF-1-large-card', 2, 'Large · Card', 'بزرگ · کارت']
+);
+assert.equal(commerce.isMobile('۰۹۱۲ ۳۴۵ ۶۷۸۹'), true);
+// One stored form for every way a mobile is typed; anything else is ''.
+for (const typed of [
+  '09123456789',
+  '9123456789',
+  '+98 912 345 6789',
+  '98-912-345-6789',
+  '0098 (912) 345 6789',
+  '۰۹۱۲.۳۴۵.۶۷۸۹',
+  '٠٩١٢٣٤٥٦٧٨٩'
+])
+  assert.equal(commerce.mobile(typed), '09123456789', typed);
+for (const typed of [
+  '',
+  '0912345678',
+  '021 1234 5678',
+  '+1 912 345 6789',
+  '0912abc3456789',
+  '091234567890',
+  '98912345678'
+])
+  assert.equal(commerce.mobile(typed), '', typed);
+
+// Theme generation.
+for (const [key, ramp] of Object.entries(theme.RAMPS)) {
+  for (const [token, step] of Object.entries(ramp.steps))
+    assert.equal(
+      theme.shade(theme.VENDRA.colours[key], step),
+      theme.tokens(theme.VENDRA).ramps[token],
+      token + ' can be generated from the default theme'
+    );
+}
+assert.equal(theme.shade('#C8405F', {lightness: 0, chroma: 0}), '#000000');
+assert.equal(theme.shade('#C8405F', {lightness: 1, chroma: 0}), '#FFFFFF');
+
+const fern = JSON.parse(
+  fs.readFileSync(path.join(designSystem, 'tokens/tenants/fern.json'), 'utf8')
+);
+const css = theme.tenantCss('fern', fern);
+assert.equal(
+  css.replace(/\n {3}Sample tenant[^\n]*/, ''),
+  fs
+    .readFileSync(path.join(designSystem, 'tokens/tenants/fern.css'), 'utf8')
+    .replace(/\n {3}Sample tenant[^\n]*/, '')
+);
+assert.doesNotMatch(
+  theme.tenantCss('fern', {...fern, description: '</style><script>alert(1)</script>'}),
+  /<\/?(style|script)/
+);
+assert.throws(() => theme.tenantCss('fern"]{}*{x', fern), /slugs/);
+assert.throws(
+  () => theme.tenantCss('fern', {...fern, colours: {...fern.colours, accent: 'red'}}),
+  /colours\.accent/
+);
+const pale = {...fern, colours: {...fern.colours, accent: '#F4C2CF'}};
+assert.throws(() => theme.tenantCss('pale', pale), /fails contrast: White on accent button/);
+assert.match(theme.tenantCss('pale', pale, {allowFailing: true}), /^\[data-tenant="pale"\]\{/m);
+assert.equal(theme.checks(theme.VENDRA).filter(c => !c.pass).length, 0);
+
+console.log('Design system verified (' + components.length + ' components server-rendered)');

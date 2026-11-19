@@ -1,143 +1,147 @@
 # Storefront templates
 
-The maintained bilingual storefront: a Vite React app (`app/`) with 17 pages in `pages/*`, wired together by `pages/site` (the click-through router). Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
+The bilingual storefront uses Next.js App Router for the static site and React views in `features/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
-`../../packages/design-system/components/atoms/` and `../../packages/design-system/components/molecules/`; organisms follow in separate batches.
-The app continues to import components through `app/ds.js`, and `pages/*` remains the source
+`design-system/components/atoms/` and `design-system/components/molecules/`; organisms follow in separate batches.
+The app continues to import components through `shell/ds.js`, and `features/*` remains the source
 for routed pages.
 
 ## Where to edit
 
 | Change | File |
 | --- | --- |
-| Page markup | `pages/<page>/View.jsx` (JSX inside the shared `Shell`) |
-| Page behavior / copy / styles | `pages/<page>/logic.js` / `copy.js` / `styles.css` |
+| Route and URL parameters | `next/app/apps/storefront/app/[lang]/` |
+| Checkout screen and markup | `features/checkout/CheckoutScreen.jsx` and `CheckoutView.jsx` |
+| Checkout state, copy and styles | `features/checkout/useCheckout.js`, `copy.js` and `styles.css` |
+| Shared bag, checkout and account session | `shell/session/useStorefrontSession.js` |
 | Store name, contact, hours, currency, map, payment, balance, announcement | [shared/domain/store-config.js](shared/domain/store-config.js) |
 | Products, sizes, add-ons | [shared/domain/catalog.js](shared/domain/catalog.js) |
 | Delivery zones, fees, cut-offs, days, slots, free delivery | [shared/domain/delivery.js](shared/domain/delivery.js) |
 | Promo codes | [shared/domain/promotions.js](shared/domain/promotions.js) |
-| Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
-| Footer composition | `app/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
-| Mobile menu composition | `app/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
-| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `shared/services/navigation.js`) |
-| Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
-| Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
-| Presentation display | `app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
-| Presentation viewer | `app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx` (controlled lightbox, captions/options and customer actions; quotes, stock and seller state remain in View/logic) |
-| Presentation send/share | `app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx` (send descriptor, localized labels and close callback; QR/tag, warning and share/copy/print composition) |
-| Presentation shortlist | `app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx` (controlled items/open/prices, localized labels, label renderer and close/clear/send/item callbacks) |
-| Presentation order | `app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
-| Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
-| Presentation PIN unlock | `app/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
-| Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
-| Saved-page empty state | `app/molecules/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
-| Saved-page product results | `app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
-| Saved-page removal notice | `app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
-| Tracking repeat-order review | `app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx` (controlled dialog/choice/confirmation/notices; reconciliation and bag changes remain in logic) |
-| Page heading (account, bag, checkout, contact, FAQ, policy, sign-in, tracking, weddings) | `app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx` (explicit eyebrow/title/accent/intro/meta, level and page/info variant; visibility, copy and wrappers remain in Views) |
-| Order summary card (checkout and tracking) | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` (explicit title/lines/sums; formatting remains in logic and column/aside placement in layouts) |
-| Tracking order actions | `app/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
-| Tracking order details | `app/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx` (explicit rows; delivery/message/payment formatting remains in logic) |
-| Tracking delivery photo | `app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx` (explicit src/placeholderLabel/alt/caption; status and photo selection remain in logic) |
-| Tracking progress | `app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
-| Tracking lookup | `app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx` (explicit heading/failure/fields/submit/browse descriptors; matching and validation remain in logic) |
-| Sign-in completion | `app/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx` (explicit feedback/flags/link descriptors; eligibility and checkout continuation remain in logic) |
-| Sign-in policy links | `app/molecules/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx` (explicit text and terms/privacy descriptors; destinations and navigation retain their shared owners) |
-| Sign-in resend controls | `app/molecules/StorefrontSigninResend/StorefrontSigninResend.jsx` (explicit seconds/callback/status; package timing and sign-in reset/focus retain their owners) |
-| Sign-in code controls | `app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx` (explicit problems/code/verify descriptors; validation and verification remain in logic) |
-| Sign-in phone controls | `app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx` (explicit problems/phone/send descriptors; validation and transitions remain in logic) |
-| Account balance panel composition | `app/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx` (overview/top-up/optional return/history descriptors; wallet rules remain in logic) |
-| Account editor dialog | `app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx` (explicit open/title/close/error/problems/save/cancel/children; state and mutations remain in logic) |
-| Account reminder editor fields | `app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx` (explicit name/occasion/date/before/channel descriptors; calendar rules and mutations remain in logic) |
-| Account address editor fields | `app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx` (explicit label/zone/pin/address/recipient/phone descriptors; field mapping and mutations remain in View/logic) |
-| Account profile controls | `app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx` (explicit problems/field/save descriptors; drafts, validation and profile merges remain in logic) |
-| Account reminders | `app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx` (explicit add/feedback/intro/records/labels/shop link; reminder rules remain in logic) |
-| Account addresses | `app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx` (explicit map/addresses/labels/add; editor and address rules remain in logic) |
-| Account saved products | `app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx` (explicit visibility/items/labels/shop destination; favorites and mapping remain in logic) |
-| Account balance history | `app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx` (explicit title/visibility/empty text/entries; wallet history mapping remains in logic) |
-| Account top-up controls | `app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx` (explicit labels/presets/amount/payment/demo; validation and wallet changes remain in logic) |
-| Account balance overview | `app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx` (explicit title/amount/status; wallet rules and persistence remain in logic) |
-| Account orders | `app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx` (normalized presentation records; visibility/history/customer scope remain in View/logic) |
-| Checkout summary and sticky action | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` and `app/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx` (explicit title/lines/sums and summary/place descriptors) |
-| Checkout confirmation | `app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx` (explicit progress, heading, status, rows, account and links descriptors) |
-| Checkout bank status | `app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx` (explicit progress, payment and recovery-action descriptors) |
-| Checkout progress | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` (explicit step state/labels/formatters/callback) |
-| Checkout status notices | `app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
-| Checkout submission | `app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
-| Checkout receipt details | `app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
-| Checkout payment methods | `app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
-| Checkout delivery review | `app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx` (explicit labels, edit descriptor and detail rows) |
-| Bag delivery sign-in and feedback | `app/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
-| Bag sender fields | `app/organisms/StorefrontBagSender/StorefrontBagSender.jsx` (explicit labels and controlled sender name/phone descriptors) |
-| Bag card messages | `app/organisms/StorefrontBagCards/StorefrontBagCards.jsx` (explicit labels, card-addition notice and normalized line records) |
-| Bag delivery scheduling | `app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx` (explicit title, preparation notice, review and day/slot descriptors) |
-| Bag delivery location | `app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx` (explicit picker, zone, fallback and address descriptors) |
-| Bag recipient fields | `app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
-| Bag progress | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` inside bag View's `vf-bag-steps` wrapper (explicit steps/current, labels, formatters and step callback) |
-| Bag feedback and recovery | `app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
-| Bag sticky actions | `app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
-| Bag summary | `app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx` (explicit summary, meter, promo, action descriptors and payment note) |
-| Bag line items | `app/organisms/StorefrontBagItems/StorefrontBagItems.jsx` (explicit line records, remove/quantity labels and quantity formatter) |
-| Shop product results | `app/organisms/StorefrontShopResults/StorefrontShopResults.jsx` (explicit products, frame, visibility, paging, feedback and labels) |
-| Shop results toolbar | `app/organisms/StorefrontShopToolbar/StorefrontShopToolbar.jsx` (explicit labels, sort descriptor, filter records and action/focus callbacks) |
-| Shop sidebar filters | `app/organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx` (explicit occasion, date, price and stock values/labels/options/callbacks) |
-| Shop category navigation | `app/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx` (explicit category records/label and compact presentation flag) |
-| Product sticky purchase action | `app/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx` (explicit total label/value and add label/availability/callback; remains in Shell sticky slot) |
-| Product added-to-bag dialog | `app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx` (explicit open/close, summary lines/sums, checkout href/callback and localized labels) |
-| Recently viewed product section | `app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx` (explicit product records, heading/carousel/card labels and carousel reset key) |
-| Product delivery/care | `app/organisms/StorefrontProductCare/StorefrontProductCare.jsx` (explicit delivery text, optional inquiry href/label and localized accordion items) |
-| Product purchase summary/actions | `app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx` (explicit summary, controlled quantity, save state/action and add label/availability/action) |
-| Product size/add-on configuration | `app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx` (explicit visibility, controlled size options/value/change, add-on records/toggles and legends) |
-| Product heading/price/stock | `app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx` (explicit product text, unit price/stock, copy label and callback) |
-| Product gallery | `app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx` (explicit product code, images, viewer items/index, localized labels and callbacks) |
-| Home newsletter | `app/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx` (controlled draft/error/pending/completion, localized labels and change/submit callbacks) |
-| Home journal preview | `app/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx` (explicit post records, localized labels and journal URL) |
-| Home wedding promotion | `app/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx` (explicit localized labels plus wedding/contact URLs) |
-| Home studio designs | `app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx` (explicit product records, localized labels, shop URL and frame) |
-| Home occasion navigation | `app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx` (explicit occasion records, localized heading/count/carousel labels and frame) |
-| Home featured designs | `app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx` (explicit product records, localized labels, ready-filter URL and frame) |
-| Home category navigation | `app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx` (explicit category records and localized heading, count and carousel labels) |
-| Presentation product label | `app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx` (explicit code, sold-out state/label and large variant) |
-| Presentation seller tools | `app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx` (explicit status, setup/device descriptors, labels and action callbacks) |
-| Presentation settings/setup | `app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx` (explicit labels, grouped fullscreen/collection/display/toggle/transfer/PIN controls, formatter and close/start callbacks) |
-| Presentation toolbar | `app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx` (controlled search, categories, status and explicit action descriptors from View) |
-| Presentation catalog | `app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx` (tile data/callbacks, controlled empty/price visibility, localized labels, clear callback and label renderer from View) |
-| Presentation outer layout | `app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx` (heading, bar, catalog, display, overlays and feedback slots; externally controlled density/catalog visibility) |
-| Error layout | `app/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx` (the inline EmptyState and StorefrontErrorActions composed directly by error View; explicit empty sticky slot retained) |
-| Not-found layout | `app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx` (the inline EmptyState, StorefrontNotfoundActions, the inline SectionHeader and StorefrontNotfoundProducts composed directly by not-found View; explicit empty sticky slot retained) |
-| Home layout | `app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx` (top, featured, occasions, arrivals, weddings, journal and newsletter slots from home View; externally controlled optional visibility) |
-| Post layout | `app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx` (StorefrontPostLoading/StorefrontPostMissing feedback, StorefrontPostHeading/StorefrontPostBlocks/StorefrontPostClassic article content, StorefrontPostActions, StorefrontPostSocial/StorefrontPostProducts recommendations, and StorefrontPostRelated slots composed directly by post View; externally controlled article visibility) |
-| Journal layout | `app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx` (StorefrontJournalHeading, the inline SearchField, StorefrontJournalEmpty/StorefrontJournalLoading feedback, StorefrontJournalFeatured, StorefrontJournalStories and the inline Pagination slots passed directly from journal View; feedback retains its multi-child fragment) |
-| Policy layout | `app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (StorefrontPageHeading, StorefrontPolicyNavigation, the inline warning Alert, StorefrontPolicyContents and StorefrontPolicyDocument slots composed directly by policy View) |
-| FAQ layout | `app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (StorefrontPageHeading, StorefrontFaqQuestions and StorefrontFaqContact slots composed directly by FAQ View) |
-| Weddings layout | `app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (StorefrontWeddingsHeading, the inline ArchFrame, StorefrontWeddingsServices, StorefrontWeddingsStory, StorefrontWeddingsInquiryIntro, StorefrontWeddingsFormControls, StorefrontWeddingsCompletion and the inline danger Alert slots composed directly by weddings View) |
-| Contact layout | `app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontPageHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, the inline danger Alert and form heading slots composed directly by contact View) |
-| Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (the inline display h1, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots composed directly by search View) |
-| Saved-products layout | `app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
-| Tracking layout | `app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |
-| Sign-in layout | `app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |
-| Account layout | `app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx` (heading, actions, notices, tabs, feedback and dialog slots from account View) |
-| Checkout layout | `app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx` (payment visibility, notices, progress, heading, review, payment, summary and bank/success slots from checkout View) |
-| Bag recipient/location layout | `app/layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx` (recipient/location React-node slots from bag View) |
-| Bag/delivery layout | `app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx` (visibility and notice, progress, StorefrontPageHeading, items/delivery, summary and empty slots from bag View) |
-| Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (the inline h1 SectionHeader, sidebar, compact categories, results and filter-dialog slots from shop View) |
-| Product-page layout | `app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (the inline Breadcrumb, gallery, details, related designs and feedback slots from product View) |
-| Main storefront layout | `app/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
-| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `shared/services/navigation.js`) |
+| Header composition | `shell/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
+| Footer composition | `shell/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
+| Mobile menu composition | `shell/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
+| Consent banner composition | `shell/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `shared/services/navigation.js`) |
+| Announcement composition | `shell/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
+| Bottom-bar layout | `shell/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
+| Presentation display | `features/presentation/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
+| Presentation viewer | `features/presentation/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx` (controlled lightbox, captions/options and customer actions; quotes, stock and seller state remain in View/logic) |
+| Presentation send/share | `features/presentation/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx` (send descriptor, localized labels and close callback; QR/tag, warning and share/copy/print composition) |
+| Presentation shortlist | `features/presentation/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx` (controlled items/open/prices, localized labels, label renderer and close/clear/send/item callbacks) |
+| Presentation order | `features/presentation/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
+| Presentation tag scan | `features/presentation/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
+| Presentation PIN unlock | `features/presentation/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
+| Shop filter dialog | `features/shop/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Saved-page empty state | `features/saved/molecules/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
+| Saved-page product results | `features/saved/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
+| Saved-page removal notice | `features/saved/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
+| Tracking repeat-order review | `features/track/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx` (controlled dialog/choice/confirmation/notices; reconciliation and bag changes remain in logic) |
+| Page heading (account, bag, checkout, contact, FAQ, policy, sign-in, tracking, weddings) | `shell/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx` (explicit eyebrow/title/accent/intro/meta, level and page/info variant; visibility, copy and wrappers remain in Views) |
+| Order summary card (checkout and tracking) | `shell/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` (explicit title/lines/sums; formatting remains in logic and column/aside placement in layouts) |
+| Tracking order actions | `features/track/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
+| Tracking order details | `features/track/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx` (explicit rows; delivery/message/payment formatting remains in logic) |
+| Tracking delivery photo | `features/track/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx` (explicit src/placeholderLabel/alt/caption; status and photo selection remain in logic) |
+| Tracking progress | `features/track/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
+| Tracking lookup | `features/track/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx` (explicit heading/failure/fields/submit/browse descriptors; matching and validation remain in logic) |
+| Sign-in completion | `features/signin/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx` (explicit feedback/flags/link descriptors; eligibility and checkout continuation remain in logic) |
+| Sign-in policy links | `features/signin/molecules/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx` (explicit text and terms/privacy descriptors; destinations and navigation retain their shared owners) |
+| Sign-in resend controls | `features/signin/molecules/StorefrontSigninResend/StorefrontSigninResend.jsx` (explicit seconds/callback/status; package timing and sign-in reset/focus retain their owners) |
+| Sign-in code controls | `features/signin/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx` (explicit problems/code/verify descriptors; validation and verification remain in logic) |
+| Sign-in phone controls | `features/signin/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx` (explicit problems/phone/send descriptors; validation and transitions remain in logic) |
+| Account balance panel composition | `features/account/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx` (overview/top-up/optional return/history descriptors; wallet rules remain in logic) |
+| Account editor dialog | `features/account/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx` (explicit open/title/close/error/problems/save/cancel/children; state and mutations remain in logic) |
+| Account reminder editor fields | `features/account/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx` (explicit name/occasion/date/before/channel descriptors; calendar rules and mutations remain in logic) |
+| Account address editor fields | `features/account/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx` (explicit label/zone/pin/address/recipient/phone descriptors; field mapping and mutations remain in View/logic) |
+| Account profile controls | `features/account/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx` (explicit problems/field/save descriptors; drafts, validation and profile merges remain in logic) |
+| Account reminders | `features/account/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx` (explicit add/feedback/intro/records/labels/shop link; reminder rules remain in logic) |
+| Account addresses | `features/account/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx` (explicit map/addresses/labels/add; editor and address rules remain in logic) |
+| Account saved products | `features/account/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx` (explicit visibility/items/labels/shop destination; favorites and mapping remain in logic) |
+| Account balance history | `features/account/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx` (explicit title/visibility/empty text/entries; wallet history mapping remains in logic) |
+| Account top-up controls | `features/account/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx` (explicit labels/presets/amount/payment/demo; validation and wallet changes remain in logic) |
+| Account balance overview | `features/account/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx` (explicit title/amount/status; wallet rules and persistence remain in logic) |
+| Account orders | `features/account/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx` (normalized presentation records; visibility/history/customer scope remain in View/logic) |
+| Checkout summary and sticky action | `shell/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` and `features/checkout/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx` (explicit title/lines/sums and summary/place descriptors) |
+| Checkout confirmation | `features/checkout/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx` (explicit progress, heading, status, rows, account and links descriptors) |
+| Checkout bank status | `features/checkout/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx` (explicit progress, payment and recovery-action descriptors) |
+| Checkout progress | `shell/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` (explicit step state/labels/formatters/callback) |
+| Checkout status notices | `features/checkout/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
+| Checkout submission | `features/checkout/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
+| Checkout receipt details | `features/checkout/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
+| Checkout payment methods | `features/checkout/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
+| Checkout delivery review | `features/checkout/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx` (explicit labels, edit descriptor and detail rows) |
+| Bag delivery sign-in and feedback | `features/bag/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
+| Bag sender fields | `features/bag/organisms/StorefrontBagSender/StorefrontBagSender.jsx` (explicit labels and controlled sender name/phone descriptors) |
+| Bag card messages | `features/bag/organisms/StorefrontBagCards/StorefrontBagCards.jsx` (explicit labels, card-addition notice and normalized line records) |
+| Bag delivery scheduling | `features/bag/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx` (explicit title, preparation notice, review and day/slot descriptors) |
+| Bag delivery location | `features/bag/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx` (explicit picker, zone, fallback and address descriptors) |
+| Bag recipient fields | `features/bag/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
+| Bag progress | `shell/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` inside bag View's `vf-bag-steps` wrapper (explicit steps/current, labels, formatters and step callback) |
+| Bag feedback and recovery | `features/bag/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
+| Bag sticky actions | `features/bag/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
+| Bag summary | `features/bag/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx` (explicit summary, meter, promo, action descriptors and payment note) |
+| Bag line items | `features/bag/organisms/StorefrontBagItems/StorefrontBagItems.jsx` (explicit line records, remove/quantity labels and quantity formatter) |
+| Shop product results | `features/shop/organisms/StorefrontShopResults/StorefrontShopResults.jsx` (explicit products, frame, visibility, paging, feedback and labels) |
+| Shop results toolbar | `features/shop/organisms/StorefrontShopToolbar/StorefrontShopToolbar.jsx` (explicit labels, sort descriptor, filter records and action/focus callbacks) |
+| Shop sidebar filters | `features/shop/organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx` (explicit occasion, date, price and stock values/labels/options/callbacks) |
+| Shop category navigation | `features/shop/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx` (explicit category records/label and compact presentation flag) |
+| Product sticky purchase action | `features/product/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx` (explicit total label/value and add label/availability/callback; remains in Shell sticky slot) |
+| Product added-to-bag dialog | `features/product/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx` (explicit open/close, summary lines/sums, checkout href/callback and localized labels) |
+| Recently viewed product section | `features/product/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx` (explicit product records, heading/carousel/card labels and carousel reset key) |
+| Product delivery/care | `features/product/organisms/StorefrontProductCare/StorefrontProductCare.jsx` (explicit delivery text, optional inquiry href/label and localized accordion items) |
+| Product purchase summary/actions | `features/product/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx` (explicit summary, controlled quantity, save state/action and add label/availability/action) |
+| Product size/add-on configuration | `features/product/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx` (explicit visibility, controlled size options/value/change, add-on records/toggles and legends) |
+| Product heading/price/stock | `features/product/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx` (explicit product text, unit price/stock, copy label and callback) |
+| Product gallery | `features/product/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx` (explicit product code, images, viewer items/index, localized labels and callbacks) |
+| Home newsletter | `features/home/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx` (controlled draft/error/pending/completion, localized labels and change/submit callbacks) |
+| Home journal preview | `features/home/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx` (explicit post records, localized labels and journal URL) |
+| Home wedding promotion | `features/home/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx` (explicit localized labels plus wedding/contact URLs) |
+| Home studio designs | `features/home/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx` (explicit product records, localized labels, shop URL and frame) |
+| Home occasion navigation | `features/home/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx` (explicit occasion records, localized heading/count/carousel labels and frame) |
+| Home featured designs | `features/home/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx` (explicit product records, localized labels, ready-filter URL and frame) |
+| Home category navigation | `features/home/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx` (explicit category records and localized heading, count and carousel labels) |
+| Presentation product label | `features/presentation/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx` (explicit code, sold-out state/label and large variant) |
+| Presentation seller tools | `features/presentation/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx` (explicit status, setup/device descriptors, labels and action callbacks) |
+| Presentation settings/setup | `features/presentation/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx` (explicit labels, grouped fullscreen/collection/display/toggle/transfer/PIN controls, formatter and close/start callbacks) |
+| Presentation toolbar | `features/presentation/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx` (controlled search, categories, status and explicit action descriptors from View) |
+| Presentation catalog | `features/presentation/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx` (tile data/callbacks, controlled empty/price visibility, localized labels, clear callback and label renderer from View) |
+| Presentation outer layout | `features/presentation/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx` (heading, bar, catalog, display, overlays and feedback slots; externally controlled density/catalog visibility) |
+| Error layout | `features/error/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx` (the inline EmptyState and StorefrontErrorActions composed directly by error View; explicit empty sticky slot retained) |
+| Not-found layout | `features/notfound/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx` (the inline EmptyState, StorefrontNotfoundActions, the inline SectionHeader and StorefrontNotfoundProducts composed directly by not-found View; explicit empty sticky slot retained) |
+| Home layout | `features/home/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx` (top, featured, occasions, arrivals, weddings, journal and newsletter slots from home View; externally controlled optional visibility) |
+| Post layout | `features/post/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx` (StorefrontPostLoading/StorefrontPostMissing feedback, StorefrontPostHeading/StorefrontPostBlocks/StorefrontPostClassic article content, StorefrontPostActions, StorefrontPostSocial/StorefrontPostProducts recommendations, and StorefrontPostRelated slots composed directly by post View; externally controlled article visibility) |
+| Journal layout | `features/journal/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx` (StorefrontJournalHeading, the inline SearchField, StorefrontJournalEmpty/StorefrontJournalLoading feedback, StorefrontJournalFeatured, StorefrontJournalStories and the inline Pagination slots passed directly from journal View; feedback retains its multi-child fragment) |
+| Policy layout | `features/policy/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (StorefrontPageHeading, StorefrontPolicyNavigation, the inline warning Alert, StorefrontPolicyContents and StorefrontPolicyDocument slots composed directly by policy View) |
+| FAQ layout | `features/faq/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (StorefrontPageHeading, StorefrontFaqQuestions and StorefrontFaqContact slots composed directly by FAQ View) |
+| Weddings layout | `features/weddings/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (StorefrontWeddingsHeading, the inline ArchFrame, StorefrontWeddingsServices, StorefrontWeddingsStory, StorefrontWeddingsInquiryIntro, StorefrontWeddingsFormControls, StorefrontWeddingsCompletion and the inline danger Alert slots composed directly by weddings View) |
+| Contact layout | `features/contact/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontPageHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, the inline danger Alert and form heading slots composed directly by contact View) |
+| Search layout | `features/search/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (the inline display h1, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots composed directly by search View) |
+| Saved-products layout | `features/saved/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
+| Tracking layout | `features/track/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |
+| Sign-in layout | `features/signin/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |
+| Account layout | `features/account/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx` (heading, actions, notices, tabs, feedback and dialog slots from account View) |
+| Checkout layout | `features/checkout/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx` (payment visibility, notices, progress, heading, review, payment, summary and bank/success slots from checkout View) |
+| Bag recipient/location layout | `features/bag/layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx` (recipient/location React-node slots from bag View) |
+| Bag/delivery layout | `features/bag/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx` (visibility and notice, progress, StorefrontPageHeading, items/delivery, summary and empty slots from bag View) |
+| Shop-page layout | `features/shop/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (the inline h1 SectionHeader, sidebar, compact categories, results and filter-dialog slots from shop View) |
+| Product-page layout | `features/product/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (the inline Breadcrumb, gallery, details, related designs and feedback slots from product View) |
+| Main storefront layout | `shell/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
+| Providers, bare presentation and sticky measurements | `shell/Shell.jsx` (values in `shared/services/navigation.js`) |
 | Routes and URL helpers | [shared/services/routing.js](shared/services/routing.js) |
 | Responsive state, focus, `<head>` | `shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `shared/translations/` |
-| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `../../packages/design-system/components/`; Leaflet loading and location text in `shared/domain/location.js` |
+| Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `design-system/components/`; Leaflet loading and location text in `shared/domain/location.js` |
 | Shared CSS: shell, page families, information pages | `shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
 | Tailwind entry and token aliases | [shared/styles/tailwind.css](shared/styles/tailwind.css) |
-| Tokens and tenant themes | `../../packages/design-system/tokens/`, `../../packages/design-system/tokens/tenants/<slug>.json` |
-| Number, currency and date formatting | `../../packages/design-system/components/utils/` (wrapped by `shared/domain/formatting.js`) |
-| Delivery, totals, discount and API-adapter rules | `../../packages/design-system/components/utils/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
+| Tokens and tenant themes | `design-system/tokens/`, `design-system/tokens/tenants/<slug>.json` |
+| Number, currency and date formatting | `design-system/components/utils/` (wrapped by `shared/domain/formatting.js`) |
+| Delivery, totals, discount and API-adapter rules | `design-system/components/utils/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 
-Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`shared/services/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`shared/services/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `shared/` are ES modules that import what they use; the integrations (the API client and analytics) and page-wide state live on `vfRuntime` (`shared/platform/runtime.js`), which modules import; `app/runtime.js` installs the integrations once, before the first render (`window.__vfRuntime` exposes it to tests only). Card helpers (`shared/domain/payments.js`) are `vfRuntime.payment`. `shared/domain/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
+Start in the feature folder. For checkout, `CheckoutScreen.jsx` combines `useCheckout.js` with `CheckoutView.jsx`. The hook owns state and effects. The view reads the resulting values and renders the feature's layouts, organisms and molecules. Keep feature-specific components beside the screen and put UI reused across features in `shell/`. The design system provides reusable components and tokens.
+
+The Next.js layout keeps `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics and heading focus. `shell/runtime.js` installs the API client and analytics on `vfRuntime` in the browser.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
@@ -146,15 +150,15 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 | Folder | Holds | May import |
 | --- | --- | --- |
 | `platform/` | `environment.js`: the page's address, asset base and clock, in the browser and the prerender | nothing |
-| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `translations/`, `platform/`, `../../packages/design-system/components/utils/`, `_runtime/` |
+| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `translations/`, `platform/`, `design-system/components/utils/`, `_runtime/` |
 | `translations/` | genuinely shared bilingual copy | same as `domain/` |
-| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `translations/`, `platform/`, `../../packages/design-system/components/utils/`, `_runtime/`, React, React Aria |
-| `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `../../packages/design-system/components/`, React, `qrcode-generator` |
+| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `translations/`, `platform/`, `design-system/components/utils/`, `_runtime/`, React, React Aria |
+| `ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `ui/`, `domain/`, `translations/`, `design-system/components/`, React, `qrcode-generator` |
 | `styles/` | the Tailwind entry and the custom CSS entry with shared page CSS | CSS only |
 
 A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). `app/pages.js` finds it by folder name and loads it as its own chunk. Register the route in `shared/services/routing.js` and the label in `translations/shell.js`. Add the menu entry in `navigation.js` if needed, the CSS import in `shared/styles/custom.css`, and the `lazyPage('<name>')` constant and route in `pages/site/View.jsx`.
+**Adding a page:** copy a similar folder under `features/`. Name its screen, view and state hook for the feature, and keep `copy.js` and `styles.css` beside them. Add its file under `next/app/apps/storefront/app/[lang]/`, register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -162,105 +166,48 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm ci                                   # first setup, at the repo root (apps/storefront is a workspace)
-npm --prefix apps/storefront run dev     # Vite at http://127.0.0.1:5173/ → /apps/storefront/app/en/ (fa/ for Persian, ?page=<name> for one page)
-npm --prefix apps/storefront run build   # Tailwind, custom CSS, tenant themes, shared logic, components, dist/
+npm run dev                             # Next.js at http://localhost:3000/ → /apps/storefront/app/en/
+npm --prefix apps/storefront run build   # Tailwind, custom CSS, tenant themes, design tokens
 npm --prefix apps/storefront run check   # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
-npm --prefix apps/storefront test        # typecheck, storefront logic, generation, copy parity, package
+npm --prefix apps/storefront test        # typecheck, storefront logic, generation, copy parity, design system
 npm --prefix apps/storefront run test:e2e  # Playwright: axe, screenshots, cards, tenants
-npm --prefix apps/storefront run build:app  # production build → apps/storefront/_app-build/ (same paths as dev)
-npm --prefix apps/storefront run preview  # serve the build at http://127.0.0.1:4173/apps/storefront/app/
+npm run build:app                          # production export → apps/storefront/next/out/
+npm run preview                           # serve the export at http://127.0.0.1:3000/
 npm --prefix apps/storefront run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
 npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `packages/design-system/tokens/tenants/`.
-- **Port:** 5173 is fixed.
+- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `apps/storefront/design-system/tokens/tenants/`.
 
 ## GitHub Pages demo
 
-`.github/workflows/pages.yml` builds and deploys the app on pushes to `master`, or when run manually
-from Actions. Repository Settings → Pages → Source must be **GitHub Actions**. The workflow passes
-`--base /<repository-name>/` to Vite, keeping local development at `/` while published scripts, images
-and tenant themes use the repository path. The uploaded artifact is `apps/storefront/_app-build/`.
+`.github/workflows/ci.yml` builds and deploys the Next.js export when CI passes on `master`.
+Repository Settings → Pages → Source must be **GitHub Actions**. CI sets
+`VF_BASE_PATH=/<repository-name>` so scripts, images and tenant themes use the repository path.
+The uploaded artifact is `apps/storefront/next/out/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
 `https://misaf.github.io/vendra-design-system/apps/storefront/app/en/presentation/`. This hosts the
 sample-data demo; live API services need their own backend.
 
-**Prerendered pages.** The build writes the app's page at every public address
-(`apps/storefront/build/routes.mjs`: each view, category, product, journal post and policy, in each
-language) already rendered (`build/prerender.mjs`): the page's markup is in `#root` and its `<head>`
-tags (title, description, `og:*`, `twitter:*`, canonical, hreflang, robots) and `<html lang dir>` are
-in the source, so search engines and WhatsApp/Telegram link previews read them without running
-scripts. The server entry `app/entry-server.jsx` renders the click-through site for one address in
-Node (React's `renderToPipeableStream`, once every lazy page is in); the head tags come from the same
-`VF_SEO.headTags` the browser applies (`vfPageHead` in `shared/services/page-lifecycle.js`: the page's h1,
-its canonical address, its alternates and a preview image — the product's or post's photo, otherwise the
-logo). The canonical address is `vfCanonicalRoute` (`shared/services/routing.js`): always with its
-language and its path id, plus only a shop occasion or a journal page in the query, in one order —
-never sorting, price, stock, quick filters, the delivery day, the shop's "Show more" page or product
-choices. The hreflang alternates are that same address with only the language changed, and sorted or
-filtered shop views (`vfRouteRefined`) are `noindex, follow` (`tests/seo-canonical.test.mjs`). The same head carries the page's schema.org structured data as one JSON-LD script
-(`shared/services/structured-data.js`, from the store's own data): `Product` with its `Offer` (price
-in ISO 4217, Toman as Rial) and `BreadcrumbList` on product pages, the studio as a `Florist` (address,
-map point, phone, opening hours and holidays) on the home and contact pages, `FAQPage` on the FAQ and
-`Article` on journal posts; noindex pages have none. Set `VF_ORIGIN` (`VF_ORIGIN=https://shop.example npm run build:app`) for absolute canonical
-and preview URLs; without it they start at the site root. CI's Pages build sets it.
+### Prerendering and hydration
 
-**Sitemap.** `storefrontSitemap(origin)` in `build/routes.mjs` lists every indexed address of those
-routes, each with the same page in every store language as `xhtml:link` hreflang alternates
-(x-default English, as in the page's head) and a `lastmod` where the data has one: an article's
-`publishedAt`, and the journal's newest post. `deployment/sitemap.xml` is its `example.test` sample;
-`npm test` fails when it is stale.
+`build/routes.mjs` lists the localized views, categories, products, journal posts and policies. The
+Next.js App Router exports each one with its rendered HTML, title, canonical URL, language alternates,
+share metadata, and JSON-LD. The shared React renderer provides the initial view and metadata to the
+export. The browser hydrates the same markup for a first visit. Returning visitors and query-driven
+flows render from the requested address and their saved state. The initial document holds the build
+clock for hydration, then delivery days and cutoffs update to the visitor's current time.
 
-Pages render what a first-time visitor sees: the sample bag and saved items, no consent choice, no
-customer, no query. The browser adopts that markup (`hydrateRoot` in `app/main.jsx`) when the visit
-is exactly that — `#root[data-vf-path]` is this address, there is no query and no `vf-*`/`vendra*`
-key in storage. Otherwise (a returning visitor, a query, the 404 page) it renders the page in its
-place as before (`createRoot`; `vfRuntime.rendered`, `window.__vfRuntime.rendered` in tests, says which). Either way the prerendered page
-stays in view while the app loads but is `inert` (and, when it will be replaced, its controls are
-disabled) until the app's page has mounted, so nothing is typed into or clicked on a page React
-does not have yet. The app does not set `inert` without scripts, so links keep working then.
-Hydration renders at the moment the build did (`#root[data-vf-time]`, `vfNow` in
-`shared/platform/environment.js`), and the page renders again at the real time once it has mounted, so
-delivery days and cut-offs are the visitor's. Shared code reads the address, asset base and clock
-from `shared/platform/environment.js` (`vfLocation`, `vfAssetBase`, `vfNow`), never `window`/`location` at
-import time or while rendering; browser-only values (the share link's origin, wake lock, clipboard,
-QR scanning) are read after mount. The store's own tenant theme is linked in the page, so nothing is
-hidden while it loads.
-
-The site's `404.html` is the prerendered not-found page: a static host serves it for every address
-without a file (an order to track, a mistyped link). It stays hidden (at most 3s) until the app has
-read the address and rendered that address's page (not-found or another). A host that can rewrite
-addresses can instead serve `apps/storefront/app/index.html` (the plain shell, which also serves the
-`?page=<name>` previews) for every path under `apps/storefront/app/`. `tests/prerender.test.mjs` checks
-the source of a product, a shop category, a journal post and the Persian home page, and
-`e2e/prerender.spec.mjs` (in `test:e2e:build`) opens every route as a first-time visitor and fails
-on any hydration error.
-
-To verify the same paths locally:
-
-```sh
-npm --prefix apps/storefront run build:app -- --base /vendra-design-system/
-npm --prefix apps/storefront run preview -- --base /vendra-design-system/
-# http://127.0.0.1:4173/vendra-design-system/apps/storefront/app/en/presentation/
-```
-
-**Compression and caching.** The build ends by writing a Brotli (`.br`) and a gzip (`.gz`) copy
-beside every page, script, stylesheet and data file of 1 KB or more (`build/compress.mjs`), so a
-host can send them without compressing per request. Vite's content-hashed files go in their own
-folder, `assets/hashed/` (`build.assetsDir`), apart from the repository's `assets/` copied in under
-their own names, so exactly those can be cached forever. `deployment/nginx.conf` is the reference
-server: precompressed files (`brotli_static`, `gzip_static`); `assets/hashed/` for a year,
-`immutable`, with CORS for its fonts; the package's `packages/design-system/assets/fonts/` for 30 days with CORS; other fixed-name
-photos, icons and map files for a day; pages, `404.html`, `sw.js`, tenant themes and the offline
-manifest `no-cache`. Other hosts should apply the same rules; security headers belong in the same
-file. GitHub Pages ignores both (it compresses on the fly and caches for 10 minutes).
+The build writes `sitemap.xml` from the same address list. A static host's `404.html` lets the browser
+resolve order tracking URLs with runtime IDs and old product and journal addresses. The nginx
+reference shows the fallback and cache headers. The export includes Brotli and gzip copies for
+hosts that serve precompressed files.
 
 ## Browser tests
 
-`test:e2e` builds the app once and runs storefront tests against Vite preview, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
+`test:e2e` builds the app once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 Install the browser after `npm ci` (and after upgrading Playwright), then run the tests:
 
@@ -278,7 +225,7 @@ The combined command routes `--project` filters to the suites that define them. 
 
 `openSite()` waits for the app to take control of prerendered content, then checks the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
 
-Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads before the site preloads the others (`vf-preload-pages` mark in `app/pages.js`), the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
+Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads for the first route, the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
 Screenshot comparison specs use software rasterization (`--disable-gpu`) so decoded WebP photos have repeatable colors across browser processes. This does not change storefront rendering in customers’ browsers. Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `e2e/playwright-report/`, then run `test:e2e:update`.
 
@@ -286,9 +233,9 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 `.github/workflows/ci.yml` runs on pushes to `master`, on pull requests (a branch is tested through its pull request) and by hand. A push or pull request that changes only `.github/` skips the browser tests (2 and 3); after a workflow change those tests should prove, run CI by hand (Actions → CI → Run workflow). The browser jobs stop after 75 minutes:
 
-1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the package's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
-2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront organism spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole package (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every export from `dist/` in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
-3. **Production storefront, visuals and performance:** `test:e2e:build` builds once and runs all storefront flows, page screenshots, accessibility, responsive/device tests and performance budgets in the same image. Storefront first-paint checks live in `first-paint.spec.mjs`; source hydration fixtures remain in the development suite.
+1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the design system's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
+2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront organism spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole design system (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every component directly from source in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
+3. **Production storefront, visuals and performance:** `test:e2e:build` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:e2e:next` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the package supports React 19 only, and a new major is a deliberate upgrade. The package and the storefront both pin React and React Aria, and Dependabot's single root entry updates every workspace manifest in one pull request; `tests/dependencies.test.mjs` fails if a package pinned in more than one manifest has differing versions or if the lockfile or `node_modules` holds a second copy of it. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
@@ -317,18 +264,18 @@ The jobs still run in the pinned Playwright image, so the `-linux.png` baselines
 
 ## Component tests
 
-Every folder in `packages/design-system/components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
+Every folder in `apps/storefront/design-system/components/` has its own browser test beside the component: `<Name>.spec.mjs` and `<Name>.fixture.jsx`.
 
 - **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
 - **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Name things as a customer would see them; storefront flows stay in `e2e/features.spec.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`../components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
-- **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The build leaves `*.fixture.jsx` out of `dist/`, and `files: ["dist"]` keeps the specs out of the package.
+- **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The development server compiles the fixtures for browser tests.
 
 ### Storefront organism tests
 
-Storefront molecules, organisms and layouts may have the same pair beside them (`app/<layer>/<Name>/<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
+Storefront molecules, organisms and layouts may have the same pair beside them under `features/` or `shell/` (`<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
 
-- **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's styles (`app/theme.js`: Tailwind, the package and page CSS) and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
+- **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
 - **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
 - **Guard:** `tests/atomic.test.mjs` fails when a spec lacks its fixture (or the reverse), and when a new organism has neither. Organisms that predate the rule are listed in `tests/organisms-without-specs.json`; the list only shrinks: remove a name when you add its spec.
@@ -337,11 +284,10 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 
 `_runtime/` is generated; never edit it.
 
-- **`app/index.html`:** only the root element and the app module, `app/main.jsx`, which hydrates a prerendered page or renders the app (see *GitHub Pages demo*). `app/entry-server.jsx` is the build's server entry.
-- **`app/pages.js`:** each `pages/*/Page.jsx` is a separate chunk, loaded when first shown; the site preloads the others once the browser is idle (`preloadPages`). The dev server warms them up at start. The site switches to a page once its code has loaded, so the current page (and its URL and scroll position) stays until then; a page whose code fails to load shows `app/PageError.jsx` (an alert with Reload), and a deploy that replaced the files reloads the tab once when a page is opened (never from a background preload).
-- **`app/theme.js`:** imports the package's `styles.css`, `_runtime/tailwind.css` and `_runtime/custom.css` (Vite bundles them with the fonts), sets `vfRuntime.assetBase` (the build's base path) and installs `vfRuntime.useTenant`, which loads the active tenant's stylesheet from `packages/design-system/tokens/tenants/` on demand, keeping the page hidden until it arrives (at most 2s); prerendered pages link the store's own theme, so they never wait. The tenant comes from `store-config.js` or `?tenant=`.
-- **Build:** `build:app` prerenders every public address (`build/prerender.mjs`) and copies what pages load by URL at run time (`assets/`, the package's fonts, the Leaflet files, `packages/design-system/tokens/tenants/*.css`) to the same paths under `_app-build/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
-- **Components:** the app imports them from `../../packages/design-system/components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
+- **`next/app/`:** App Router layouts and route modules own the React tree and its hydration. The session stays in the shared layout as navigation replaces the page.
+- **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
+- **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, design system fonts, the Leaflet files, `apps/storefront/design-system/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Components:** the app imports them from `design-system/components/` through `shell/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (19.3.1) and React Aria.
 
 ## Styling rules
@@ -350,7 +296,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
 - **Custom CSS** is for contextual selectors and component internals, in `shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
-- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `packages/design-system/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
+- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `apps/storefront/design-system/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
 - **Layout tiers:** phone (< 768px), tablet (768–1023px) and desktop (1024px up) are chosen in CSS, never in JavaScript: the shell and views render every structure and Tailwind's `md:`/`lg:` (or `max-md:`/`max-lg:`) variants show one, so the first paint is the final layout. Phones get the compact header, the tab bar and the page's sticky action; tablets the menu header with the language switch and account but no tab bar; desktops the full header. Hide a component root with the important form (`tw:max-md:hidden!`), since the package's layers sit above Tailwind's utilities. JavaScript reads `matchMedia` only inside effects, for behaviour such as closing the menu or the shop's Filters dialog when the window widens.
 - **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px, 768px and desktop width.
@@ -372,18 +318,18 @@ First match wins:
 
 In TV mode:
 
-- **Sizes** come from the `tv` density (`packages/design-system/tokens/spacing.css`, `typography.css`): 24px body text, 64px
+- **Sizes** come from the `tv` density (`apps/storefront/design-system/tokens/spacing.css`, `typography.css`): 24px body text, 64px
   tap minimum, 1760px content width and 48px gutters. Controls with a fixed size (the shell's text
   links, LanguageSwitch, Breadcrumb links, Gallery dots, Checkbox and Switch rows, the QuantityInput
   count, RangeSlider thumbs) take at least `--control-h-xs` (48px), so nothing interactive is smaller.
 - **Arrow keys** move focus to the nearest item in that direction (`useVfRemoteNavigation`, on
-  `packages/design-system/components/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
+  `apps/storefront/design-system/components/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
   open dialog. Directions are physical, so Persian (RTL) needs no mirroring. Tab order and what
   screen readers announce don't change. Widgets that use the arrows themselves keep them: tabs,
   lists, menus, radio groups, sliders, the Lightbox, and the caret in text fields (up and down
   still leave a text field). With nothing in that direction, the arrow scrolls the page.
 - **Focus** shows the thicker `tv` ring (`--focus-width`, `--focus-offset`) plus a glow of
-  `--focus-ring` around the control, or around the card whose link has focus (`packages/design-system/tokens/base.css`).
+  `--focus-ring` around the control, or around the card whose link has focus (`apps/storefront/design-system/tokens/base.css`).
 
 The `tv` Playwright project (1920×1080, no touch) runs `tv.spec.mjs`: home, shop and product in
 both languages with no horizontal overflow and no control under 48px, and the arrow keys reaching
@@ -412,7 +358,7 @@ and pressing Add to bag.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
-- **Preview states:** add `?tenant=clay` (any tenant in `packages/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
+- **Preview states:** add `?tenant=clay` (any tenant in `apps/storefront/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
 - **Store configuration** (`shared/domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm --prefix apps/storefront run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`). `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 
@@ -738,3 +684,23 @@ All 64 selected master-based Darwin/Linux dev/production cases, root unit and ch
 258 baselines remain unchanged. All 12 compatibility cases pass on PR #169 runtime; all three
 blanket-clear negative controls fail as expected. Original master runtime is restored.
 Next: review the pending saved-state PRs, then initial-load retry UX.
+
+## Next.js development and static export
+
+```sh
+npm run dev
+npm run build:app
+npm run preview
+npm run test:e2e:next --workspace vendra-storefront
+```
+
+The dev and preview servers open on port 3000. The production build exports every address
+in `build/routes.mjs` to `next/out/` with the existing React view HTML, metadata and structured data.
+The browser takes over the shopping flow and restores the visitor's bag and checkout state. The
+export's `404.html` lets tracking links with runtime order IDs and older product or journal links
+boot the storefront at the requested address.
+
+For a subpath deployment, set `VF_BASE_PATH=/repository-name` when building, previewing and testing.
+Set `VF_ORIGIN` to the public origin for absolute canonical, sitemap and share URLs. The export also
+ships a service worker and manifest that cache each localized presentation document, its
+Next.js assets and selected product photos for offline counter use.

@@ -59,7 +59,7 @@ function environment() {
   return {c, storage, timers};
 }
 function page(name, c, props = {}) {
-  const logic = pageScript('pages/' + name);
+  const logic = pageScript('features/' + name);
   return vm.runInContext(
     `(()=>{${logic}\nreturn new Component(${JSON.stringify({lang: 'en', ...props})});})()`,
     c
@@ -372,6 +372,7 @@ function page(name, c, props = {}) {
       routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
     });
     returned.lifecycle.didMount();
+    timers.pop()(); // Start the payment check once the route has mounted.
     return returned;
   };
   const refused = back('failed');
@@ -533,7 +534,7 @@ function page(name, c, props = {}) {
             ? [dir + '/' + e.name]
             : []
       );
-  const cards = ['packages/design-system/components', 'guidelines', 'apps/storefront']
+  const cards = ['apps/storefront/design-system/components', 'guidelines', 'apps/storefront']
     .flatMap(htmlFiles)
     .filter(f => read(f).startsWith('<!-- @dsCard'));
   assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');

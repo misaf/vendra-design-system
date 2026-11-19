@@ -9,7 +9,7 @@ import {
   vfPaymentFromApi
 } from '../../domain/payment-api.js';
 // Creates the client; shared/services/integrations/runtime.js installs it as vfRuntime.api in the
-// browser only (the build's prerender, app/entry-server.jsx, calls no API).
+// browser only (the Next.js static export, calls no API).
 /** @returns {import('../../platform/runtime.js').VfApi} */
 export function vfCreateApi() {
   const KEY = 'vendra-saved-map';

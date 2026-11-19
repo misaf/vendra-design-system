@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
-import {VF_API_FAQ_CATEGORIES, VF_API_FAQS} from '../pages/faq/copy.js';
+import {VF_API_FAQ_CATEGORIES, VF_API_FAQS} from '../features/faq/copy.js';
 import {VF_API_ORDERS} from '../shared/domain/account-data.js';
 import {
   VF_API_PRODUCT_PRICES,

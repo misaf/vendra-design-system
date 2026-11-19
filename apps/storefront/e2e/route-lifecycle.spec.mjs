@@ -1,10 +1,6 @@
 import {test, expect} from '@playwright/test';
-import {openSite, openFooterGroup, siteUrl} from './helpers.mjs';
+import {openSite, openFooterGroup, pageChunk, routePayload, siteUrl} from './helpers.mjs';
 
-const SITE_CODE = /pages\/site\/Page\.jsx|\/page-site-[\w-]+\.js/;
-const POST_CODE = /pages\/post\/Page\.jsx|\/page-post-[\w-]+\.js/;
-const SHOP_CODE = /pages\/shop\/Page\.jsx|\/page-shop-[\w-]+\.js/;
-const NOTFOUND_CODE = /pages\/notfound\/Page\.jsx|\/page-notfound-[\w-]+\.js/;
 test.use({reducedMotion: 'reduce'});
 
 async function hold(page, pattern) {
@@ -28,9 +24,6 @@ async function hold(page, pattern) {
       release();
       const loaded = await response;
       expect(loaded.ok()).toBe(true);
-      // Await the actual requested ESM module's evaluation, including its imports. This shares
-      // the browser module cache with loadPage and does not replace its implementation/options.
-      await page.evaluate(url => import(url).then(() => {}), loaded.url());
       await page.evaluate(
         () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
       );
@@ -68,104 +61,45 @@ async function focusedHeading(page, lang) {
 }
 
 for (const lang of ['en', 'fa']) {
-  test(`post waits for evaluation after its successful HTTP response (${lang})`, async ({
-    page
-  }, info) => {
-    const pending = new Set();
-    const completed = [];
+  test(`post stays visible while its client code loads (${lang})`, async ({page}, info) => {
+    const gate = await hold(page, pageChunk('post'));
     const errors = [];
-    page.on('request', request => pending.add(new URL(request.url()).pathname));
-    page.on('requestfinished', request => {
-      pending.delete(new URL(request.url()).pathname);
-      if (POST_CODE.test(request.url()))
-        completed.push({path: new URL(request.url()).pathname, at: performance.now()});
-    });
-    page.on('requestfailed', request => pending.delete(new URL(request.url()).pathname));
     page.on('pageerror', error => errors.push(error.message));
-    await page.clock.setFixedTime(new Date('2026-10-05T09:00:00+03:30'));
-    await page.addInitScript(() => {
-      window.__postEvaluationGate = new Promise(resolve => {
-        window.__releasePostEvaluation = resolve;
-      });
-      window.__postEvaluationStarted = false;
-      window.__postEvaluationFinished = false;
-    });
-    await page.route(POST_CODE, async route => {
-      const response = await route.fetch();
-      expect(response.status()).toBe(200);
-      // Keep the real imports/exports. HTTP completes, but ESM evaluation must still wait.
-      const body =
-        (await response.text()) +
-        `
-window.__postEvaluationStarted = true;
-await window.__postEvaluationGate;
-window.__postEvaluationFinished = true;
-`;
-      await route.fulfill({response, body});
-    });
-    const response = page.waitForResponse(response => POST_CODE.test(response.url()));
     try {
-      await page.goto(siteUrl('post', lang));
-      await expect.poll(() => page.evaluate(() => window.__postEvaluationStarted)).toBe(true);
-      await page.waitForTimeout(500);
-      const deadlineAt = performance.now();
-      const loaded = await response;
-      expect(loaded.status()).toBe(200);
-      expect(await loaded.finished()).toBeNull();
-      expect(completed).toHaveLength(1);
-      expect(completed[0].at).toBeLessThan(deadlineAt);
-      const deadline = await page.evaluate(() => ({
-        at: performance.now(),
-        main: document.querySelectorAll('#main').length,
-        lang: document.documentElement.lang,
-        started: window.__postEvaluationStarted,
-        finished: window.__postEvaluationFinished,
-        statusCount: document.querySelectorAll('[role=status]').length
-      }));
-      // In the production build the prerendered post stays in view (inert) with its language; the
-      // dev server's plain page is empty and English until the post renders.
-      const build = process.env.E2E_TARGET === 'build';
-      expect(deadline).toMatchObject({
-        main: build ? 1 : 0,
-        lang: build ? lang : 'en',
-        started: true,
-        finished: false
-      });
-      await info.attach('post-evaluation-deadline', {
-        body: JSON.stringify({deadline, completed, pending: [...pending]}, null, 2),
-        contentType: 'application/json'
-      });
-      await page.evaluate(() => window.__releasePostEvaluation());
-      await expect(page.locator('#main')).toBeVisible();
+      await page.goto(siteUrl('post', lang), {waitUntil: 'domcontentloaded'});
+      await gate.requested;
       await expect(page.locator('main h1')).toHaveText(
         lang === 'fa' ? 'یک صبح پشت میز کار وندرا' : 'A morning at the Vendra workbench'
       );
+      await expect(page.locator('#main')).toHaveCount(1);
+      await expect(page.locator('#root')).toHaveAttribute('inert', '');
       await expect(page.locator('html')).toHaveAttribute('lang', lang);
-      expect(await page.evaluate(() => window.__postEvaluationFinished)).toBe(true);
+      await record(page, info, 'post-code-held');
+      await gate.complete();
+      await expect(page.locator('#root')).not.toHaveAttribute('inert', '');
       await expect.poll(() => page.evaluate(() => window.__vfRuntime.viewed)).toBe(true);
       await expect(page.locator('main h1')).not.toBeFocused();
       await page.keyboard.press('Tab');
       await expect(page.locator('.ag-skip')).toBeFocused();
       expect(errors).toEqual([]);
-      await record(page, info, 'post-evaluation-released');
+      await record(page, info, 'post-code-ready');
     } finally {
-      await page.evaluate(() => window.__releasePostEvaluation?.()).catch(() => {});
+      gate.release();
     }
   });
 
   test(`initial module readiness preserves first-load focus (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, SITE_CODE);
+    const gate = await hold(page, pageChunk('site'));
     try {
       await page.goto(siteUrl('shop', lang), {waitUntil: 'domcontentloaded'});
       await gate.requested;
-      if (process.env.E2E_TARGET === 'build') {
-        // The prerendered page stays in view, taking no input until the app has it.
-        await expect(page.locator('#main')).toHaveCount(1);
-        await expect(page.locator('#root')).toHaveAttribute('inert', '');
-      } else await expect(page.locator('#main')).toHaveCount(0);
+      // The prerendered page stays in view and takes no input until the app mounts.
+      await expect(page.locator('#main')).toHaveCount(1);
+      await expect(page.locator('#root')).toHaveAttribute('inert', '');
       await record(page, info, 'initial-module-held');
       await gate.complete();
       await expect(page.locator('.vf-shop-product-grid')).toBeVisible();
+      await expect(page.locator('#root')).not.toHaveAttribute('inert', '');
       await expect(page.locator('html')).toHaveAttribute('lang', lang);
       await expect.poll(() => page.evaluate(() => window.__vfRuntime.viewed)).toBe(true);
       await expect(page.locator('main h1')).not.toBeFocused();
@@ -177,8 +111,10 @@ window.__postEvaluationFinished = true;
     }
   });
 
-  test(`latest route wins while an earlier page module is held (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, SHOP_CODE);
+  test(`latest route wins while an earlier Next.js payload is held (${lang})`, async ({
+    page
+  }, info) => {
+    const gate = await hold(page, routePayload('shop'));
     try {
       await openSite(page, 'home', lang);
       await page.evaluate(() => {
@@ -218,7 +154,7 @@ window.__postEvaluationFinished = true;
   test(`delayed invalid-policy recovery focuses the final heading (${lang})`, async ({
     page
   }, info) => {
-    const gate = await hold(page, NOTFOUND_CODE);
+    const gate = await hold(page, routePayload('notfound'));
     try {
       await openSite(page, 'home', lang);
       await page.evaluate(() => {
@@ -226,7 +162,7 @@ window.__postEvaluationFinished = true;
       });
       const original = page.url();
       // Reproduce an invalid route via the same navigation API used by the site router.
-      // This is diagnostic route input, not a claim that the UI advertises a broken link.
+      // Simulate a stale policy link.
       await page.evaluate(() => window.__vfSite.navigate({view: 'policy', id: 'stage232-missing'}));
       await gate.requested;
       await expect(page).toHaveURL(original);

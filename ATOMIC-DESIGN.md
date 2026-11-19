@@ -8,20 +8,20 @@ customer state and checkout rules forward.
 
 | Layer | Responsibility | Source | Dependencies |
 | --- | --- | --- | --- |
-| Foundations | Tokens, themes, shared utilities, locale/router/density context | `packages/design-system/tokens/`, `packages/design-system/components/utils/`, `packages/design-system/components/VendraProvider/` | External libraries and foundations |
-| Atoms | A basic control or visual primitive: Icon, Spinner, Button | `packages/design-system/components/atoms/<Name>/` | Foundations and atoms |
-| Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `packages/design-system/components/molecules/<Name>/` | Foundations, atoms and molecules |
-| Organisms | A substantial reusable section: Gallery, OrderSummary | `packages/design-system/components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |
-| Templates | Layout and slots for page sections | `apps/storefront/app/layouts/<Name>/`; composed by Shell and pages | UI layers; no account, catalog or payment persistence |
-| Pages | Routed screens that supply content, state and actions | `apps/storefront/pages/*/` | Layouts, UI layers and storefront services |
+| Foundations | Tokens, themes, shared utilities, locale/router/density context | `apps/storefront/design-system/tokens/`, `apps/storefront/design-system/components/utils/`, `apps/storefront/design-system/components/VendraProvider/` | External libraries and foundations |
+| Atoms | A basic control or visual primitive: Icon, Spinner, Button | `apps/storefront/design-system/components/atoms/<Name>/` | Foundations and atoms |
+| Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `apps/storefront/design-system/components/molecules/<Name>/` | Foundations, atoms and molecules |
+| Organisms | A substantial reusable section: Gallery, OrderSummary | `apps/storefront/design-system/components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |
+| Templates | Layout and slots for page sections | `apps/storefront/features/<feature>/layouts/` or `apps/storefront/shell/layouts/` | UI layers; no account, catalog or payment persistence |
+| Pages | Routed screens that supply content, state and actions | `apps/storefront/features/*/` | Layouts, UI layers and storefront services |
 
 Classify by responsibility, not line count. Button can contain Icon and Spinner and still be a
 basic action primitive. Keep tightly coupled parts in one folder (for example ChoiceGroup and
 ChoiceTile). Do not split a React Aria widget just to make more layers. Components in one layer
 may compose each other; avoid dependency cycles.
 
-Storefront-specific molecules live in `apps/storefront/app/molecules/<Name>/` for small app-owned
-combinations with explicit content props. They follow the same ownership boundaries as organisms.
+Storefront-specific molecules are small combinations with explicit content props. Put them under
+`features/<feature>/molecules/` when one feature owns them or under `shell/molecules/` when shared.
 
 **Storefront organism rule.** A storefront organism is a substantial section that composes several
 molecules or atoms with its own structure. A wrapper around a single component (one Alert,
@@ -33,17 +33,16 @@ per-page copies when two pages render the same combination (`StorefrontOrderSumm
 Organisms may import molecules and other organisms; molecules import molecules and the DS bridge;
 layouts receive both as slots.
 
-Storefront-specific organisms live in `apps/storefront/app/organisms/<Name>/`. They compose the package
-UI with explicit content props and callbacks, retaining storefront `vf-*` styles and copy ownership.
-They do not belong in the published package or import store state and persistence. Shell and page
-logic supply their data and actions. Tailwind scans nested app JSX.
+Storefront-specific organisms live under `features/<feature>/organisms/` or `shell/organisms/`.
+They compose design-system components through explicit content props and callbacks. The shell and
+feature hooks supply their data and actions. Tailwind scans the feature and shell JSX.
 
-Layout templates live under `apps/storefront/app/layouts/<Name>/`. They arrange React-node slots supplied
-by Shell or pages, keeping content, callbacks and state outside the layout.
+Layout templates live under `features/<feature>/layouts/` or `shell/layouts/`. They arrange React
+node slots supplied by the shell or feature view.
 
 Store data, delivery policy, customer identity, payment recovery and API effects stay in the
-storefront's `logic.js` and `shared/`. Reusable pure commerce calculations remain in
-`packages/design-system/components/utils/commerce.js`. Atomic Design organizes UI; it does not replace those boundaries.
+storefront's feature hooks, session and `shared/`. Reusable pure commerce calculations remain in
+`apps/storefront/design-system/components/utils/commerce.js`. Atomic Design organizes UI; it does not replace those boundaries.
 
 ## Steps and checkpoints
 
@@ -54,14 +53,14 @@ storefront's `logic.js` and `shared/`. Reusable pure commerce calculations remai
 3. **Remaining primitives.** Inspect the dependency graph and migrate small batches, starting with
    non-form primitives, then Field and the accessible form controls that use it. Decide the layer
    from the actual responsibility before moving each batch. The non-form batch now lives under
-   `packages/design-system/components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
+   `apps/storefront/design-system/components/atoms/`: IconButton, Badge, Chip, Card, Picture, ArchFrame, Price, Skeleton, Meter,
    SkipLink and LiveRegion. The basic form batch has also moved: Field, Input, Checkbox, Radio,
    RadioGroup, Switch and Select. The specialized form batch has moved too: PhoneInput, CodeInput,
    QuantityInput, RangeSlider and ChoiceGroup with its ChoiceTile part. **The planned primitive
    batches are complete: 26 atom folders.**
 4. **Molecules.** Migrate focused combinations such as SearchField, PromoCodeField and the smaller
    commerce cards. Reuse the atoms; extract repeated markup only when it has a clear shared role.
-   SearchField, PromoCodeField and ResendCode are the first batch in `packages/design-system/components/molecules/`.
+   SearchField, PromoCodeField and ResendCode are the first batch in `apps/storefront/design-system/components/molecules/`.
    Alert, EmptyState, ErrorSummary and ErrorBoundary form the feedback batch. NavLink, Breadcrumb,
    Pagination and LoadMore form the navigation batch. FilterBar, LanguageSwitch, MenuList and
    SectionHeader form the browsing and menu batch. StockStatus, TrustSeal, DetailList, PaymentCard
@@ -77,19 +76,19 @@ storefront's `logic.js` and `shared/`. Reusable pure commerce calculations remai
    DatePicker as the calendar organism. LocationPicker and PlacesMap form the map batch, followed
    by BottomTabBar: **all existing package UI folders are now layered, with 11 organism folders.**
    VendraProvider remains a foundation. StorefrontHeader is extracted under
-   `apps/storefront/app/organisms/StorefrontHeader/` with explicit content props and callbacks.
+   `apps/storefront/shell/organisms/StorefrontHeader/` with explicit content props and callbacks.
    StorefrontFooter and its FooterLinks now live under
-   `apps/storefront/app/organisms/StorefrontFooter/` with explicit content and consent callbacks.
+   `apps/storefront/shell/organisms/StorefrontFooter/` with explicit content and consent callbacks.
    StorefrontMenu now composes the compact menu drawer under
-   `apps/storefront/app/organisms/StorefrontMenu/` with controlled state and explicit content/callbacks.
+   `apps/storefront/shell/organisms/StorefrontMenu/` with controlled state and explicit content/callbacks.
    StorefrontConsent now renders the privacy notice under
-   `apps/storefront/app/organisms/StorefrontConsent/` with visibility, content and action callbacks.
+   `apps/storefront/shell/organisms/StorefrontConsent/` with visibility, content and action callbacks.
    StorefrontAnnouncement now renders the responsive news strip under
-   `apps/storefront/app/organisms/StorefrontAnnouncement/` with explicit text, link and close callback.
+   `apps/storefront/shell/organisms/StorefrontAnnouncement/` with explicit text, link and close callback.
 6. **Templates and pages.** Separate layout slots from state, starting with product browsing,
    then bag/delivery, payment, account and the remaining information/display flows. Keep routed
-   page names and the maintained `pages/*` source folders. StorefrontBottomBar is the first
-   layout under `apps/storefront/app/layouts/`, with consent, sticky-action and navigation slots.
+   page names and the maintained `features/*` source folders. StorefrontBottomBar is the first
+   layout under `apps/storefront/shell/layouts/`, with consent, sticky-action and navigation slots.
    StorefrontLayout now arranges the main section slots and tenant/language wrappers.
    StorefrontProductLayout now arranges product breadcrumbs, gallery, details, related designs and
    feedback; product state and purchase actions stay in the View/logic.
@@ -540,7 +539,7 @@ The next stage extracts the storefront header from Shell; header/footer composit
 and pages still need migration work.
 
 **Twenty-first checkpoint verified:** StorefrontHeader is the first storefront-specific organism,
-under `apps/storefront/app/organisms/StorefrontHeader/`. Shell passes explicit brand, navigation, tool,
+under `apps/storefront/shell/organisms/StorefrontHeader/`. Shell passes explicit brand, navigation, tool,
 bag and language content plus callbacks. Feature availability, state, routing, the menu drawer and
 shared layout effects remain in Shell and storefront logic. Header markup keeps its existing
 classes and CSS-selected layouts. Tailwind now scans nested app JSX, and the JavaScript-breakpoint
@@ -555,7 +554,7 @@ The full browser/device suites and known unrelated snapshot failures were not re
 menu composition, templates and page migration work remains.
 
 **Twenty-second checkpoint verified:** StorefrontFooter and its FooterLinks are extracted under
-`apps/storefront/app/organisms/StorefrontFooter/`. Shell supplies explicit brand, navigation, social,
+`apps/storefront/shell/organisms/StorefrontFooter/`. Shell supplies explicit brand, navigation, social,
 contact, seal and credit content plus the consent settings callback. Storefront routing, feature
 filtering, consent state and focus restoration stay in Shell and shared logic. Existing markup,
 classes, link attributes, disclosure state and consent trigger IDs are preserved. The component
@@ -570,7 +569,7 @@ or tolerances changed. The full browser/device suites and known unrelated snapsh
 not rerun. The next stage extracts the storefront mobile menu from Shell.
 
 **Twenty-third checkpoint verified:** StorefrontMenu is extracted under
-`apps/storefront/app/organisms/StorefrontMenu/`. Shell supplies controlled open/close state, navigation,
+`apps/storefront/shell/organisms/StorefrontMenu/`. Shell supplies controlled open/close state, navigation,
 optional language content and its callback, and the optional WhatsApp link. Routing, feature
 filtering, language/menu state and desktop resize dismissal remain in Shell and storefront logic.
 The organism composes the existing package Dialog, MenuList, NavLink, LanguageSwitch and Button;
@@ -588,7 +587,7 @@ screenshot baselines or tolerances changed. The full browser/device suites and k
 snapshot failures were not rerun. The next stage extracts the storefront consent banner.
 
 **Twenty-fourth checkpoint verified:** StorefrontConsent is extracted under
-`apps/storefront/app/organisms/StorefrontConsent/`. Shell supplies visibility, bilingual content,
+`apps/storefront/shell/organisms/StorefrontConsent/`. Shell supplies visibility, bilingual content,
 the policy URL and close/accept/essential callbacks, and retains placement in the bottom bar.
 Consent persistence, session dismissal, analytics gating and footer focus restoration remain
 in the existing shared workflow. Markup, focus IDs, accessible labels, action attributes and
@@ -605,7 +604,7 @@ device suites and known unrelated snapshot failures were not rerun. The next sta
 storefront announcement composition from Shell.
 
 **Twenty-fifth checkpoint verified:** StorefrontAnnouncement is extracted under
-`apps/storefront/app/organisms/StorefrontAnnouncement/`. Shell supplies full/phone text, accessible
+`apps/storefront/shell/organisms/StorefrontAnnouncement/`. Shell supplies full/phone text, accessible
 labels, the optional action link and the dismissal callback. Delivery cut-offs, bilingual copy,
 link availability and session dismissal remain in shared storefront logic. Existing markup,
 CSS-selected text, link styling and RTL arrow behavior are preserved. The dismissal browser test
@@ -621,7 +620,7 @@ browser/device suites and known unrelated snapshot failures were not rerun. The 
 extracts the bottom-bar layout with its sticky-action slot.
 
 **Twenty-sixth checkpoint verified:** StorefrontBottomBar is the first layout template under
-`apps/storefront/app/layouts/StorefrontBottomBar/`. It arranges React-node slots for consent, the page's
+`apps/storefront/shell/layouts/StorefrontBottomBar/`. It arranges React-node slots for consent, the page's
 sticky action and navigation, without owning content, callbacks, state, routing or persistence.
 Shell composes those slots and retains sticky-height/focus measurements. Existing wrapper classes,
 slot order and CSS-controlled docking/visibility are preserved. Build, generated-file/format/CSS
@@ -639,7 +638,7 @@ snapshot failures were not rerun. The next stage extracts the main storefront la
 content, footer and bottom-bar slots.
 
 **Twenty-seventh checkpoint verified:** StorefrontLayout is extracted under
-`apps/storefront/app/layouts/StorefrontLayout/`. It owns the background, tenant/language container,
+`apps/storefront/shell/layouts/StorefrontLayout/`. It owns the background, tenant/language container,
 content wrapper and section order, receiving React-node slots for skip link, live region,
 announcement, header, menu, notices, content, footer and bottom bar. Shell retains providers,
 tracking callbacks, menu resize dismissal, sticky-height/focus effects and the separate bare
@@ -660,7 +659,7 @@ tolerances changed. The full browser/device suites and known unrelated snapshot 
 not rerun. The next stage extracts the product page layout with gallery and details slots.
 
 **Twenty-eighth checkpoint verified:** StorefrontProductLayout is extracted under
-`apps/storefront/app/layouts/StorefrontProductLayout/`. It receives breadcrumbs, gallery, details,
+`apps/storefront/features/product/layouts/StorefrontProductLayout/`. It receives breadcrumbs, gallery, details,
 related-design and feedback slots, preserving the main focus target, responsive grid, gallery
 wrapper and sticky details wrapper. Product View/logic retain controls, gallery/lightbox state,
 recent-history ErrorBoundary, purchase feedback, configuration, totals and purchase actions;
@@ -682,7 +681,7 @@ unrelated snapshot failures were not rerun. The next stage extracts the shop pag
 heading, sidebar and results slots.
 
 **Twenty-ninth checkpoint verified:** StorefrontShopLayout is extracted under
-`apps/storefront/app/layouts/StorefrontShopLayout/`. It receives heading, sidebar, compact-category,
+`apps/storefront/features/shop/layouts/StorefrontShopLayout/`. It receives heading, sidebar, compact-category,
 results and filter-dialog slots, preserving the main focus target, responsive columns, sticky
 sidebar and results wrapper. Shop View/logic retain controls, labels, result states, cards,
 favorites, paging, filtering, delivery rules, sorting and URL state. The existing layout-aware
@@ -701,7 +700,7 @@ unrelated snapshot failures were not rerun. The next stage extracts the bag page
 and summary slots.
 
 **Thirtieth checkpoint verified:** StorefrontBagLayout is extracted under
-`apps/storefront/app/layouts/StorefrontBagLayout/`. It receives externally controlled content visibility
+`apps/storefront/features/bag/layouts/StorefrontBagLayout/`. It receives externally controlled content visibility
 and notice, progress, heading, items/delivery, summary and empty-state slots. The main focus target,
 columns and sticky summary wrappers are preserved. Notices remain outside the populated-content
 group so Undo still works after the final line is removed. The View retains conditional slot
@@ -723,7 +722,7 @@ browser/device suites, known TV arrow-navigation failures and unrelated snapshot
 not rerun. The next stage extracts the checkout layout with review and payment slots.
 
 **Thirty-first checkpoint verified:** StorefrontCheckoutLayout is extracted under
-`apps/storefront/app/layouts/StorefrontCheckoutLayout/`. It receives externally controlled payment
+`apps/storefront/features/checkout/layouts/StorefrontCheckoutLayout/`. It receives externally controlled payment
 visibility and notices, progress, heading, delivery review, payment, summary, bank-status and
 success slots. The main focus target, payment columns, sticky summary and bank/success wrappers
 are preserved. Notices remain outside the payment group. The View retains conditional slot
@@ -747,7 +746,7 @@ The full browser/device suites, known TV arrow-navigation failures and unrelated
 were not rerun. The next stage extracts the account layout with heading, tabs and dialog slots.
 
 **Thirty-second checkpoint verified:** StorefrontAccountLayout is extracted under
-`apps/storefront/app/layouts/StorefrontAccountLayout/`. It receives heading, actions, notices, tabs,
+`apps/storefront/features/account/layouts/StorefrontAccountLayout/`. It receives heading, actions, notices, tabs,
 feedback and dialog slots. The main focus target, responsive header and heading wrappers, and
 slot order are preserved. The View retains tab controls/panels, fields, notices and the controlled
 address/reminder editor; account logic retains customer isolation, persistence, validation,
@@ -774,7 +773,7 @@ snapshot failures were not rerun. The next stage extracts the sign-in layout wit
 and feedback slots.
 
 **Thirty-third checkpoint verified:** StorefrontSigninLayout is extracted under
-`apps/storefront/app/layouts/StorefrontSigninLayout/`. It receives phone, code and
+`apps/storefront/features/signin/layouts/StorefrontSigninLayout/`. It receives phone, code and
 feedback/continuation slots and preserves the main focus target, narrow form wrapper and slot
 order. The View retains conditional step construction, all fields and validation summaries,
 headings, policy links, resend feedback and continuation controls. Sign-in logic retains validation,
@@ -795,7 +794,7 @@ failures were not rerun. The next stage extracts the tracking layout with lookup
 feedback slots.
 
 **Thirty-fourth checkpoint verified:** StorefrontTrackLayout is extracted under
-`apps/storefront/app/layouts/StorefrontTrackLayout/`. It receives externally controlled order visibility
+`apps/storefront/features/track/layouts/StorefrontTrackLayout/`. It receives externally controlled order visibility
 and lookup, heading, details, summary and feedback slots. The main focus target, order header,
 responsive columns and sticky summary wrappers are preserved; reorder feedback remains outside
 main. The View retains conditional slot construction, lookup form semantics, validation,
@@ -818,7 +817,7 @@ failures and unrelated snapshot failures were not rerun. The next stage extracts
 layout with heading, results and empty slots.
 
 **Thirty-fifth checkpoint verified:** StorefrontSavedLayout is extracted under
-`apps/storefront/app/layouts/StorefrontSavedLayout/`. It receives heading, notice, results and empty
+`apps/storefront/features/saved/layouts/StorefrontSavedLayout/`. It receives heading, notice, results and empty
 slots with externally controlled results/empty visibility. The main focus target, heading,
 responsive product grid, empty-state wrapper and `data-vf-keep-focus` are preserved. The Undo
 notice remains outside both conditional groups so removing the final product still exposes it.
@@ -840,7 +839,7 @@ TV arrow-navigation failures and unrelated snapshot failures were not rerun. The
 extracts the search layout with query, results and empty slots.
 
 **Thirty-sixth checkpoint verified:** StorefrontSearchLayout is extracted under
-`apps/storefront/app/layouts/StorefrontSearchLayout/`. It receives heading, query, close, popular,
+`apps/storefront/features/search/layouts/StorefrontSearchLayout/`. It receives heading, query, close, popular,
 results and empty slots. The main focus target, reading-width wrapper, query/close row and input
 wrapper are preserved. The View retains conditional content construction, all controls, result
 rows/count/links and empty-state recovery. Search and shared site logic retain matching,
@@ -862,7 +861,7 @@ known TV arrow-navigation failures and unrelated snapshot failures were not reru
 extracts the contact layout with details, form and feedback slots.
 
 **Thirty-seventh checkpoint verified:** StorefrontContactLayout is extracted under
-`apps/storefront/app/layouts/StorefrontContactLayout/`. It receives heading, details, form and feedback
+`apps/storefront/features/contact/layouts/StorefrontContactLayout/`. It receives heading, details, form and feedback
 slots. The main focus target, header, responsive contact columns and detail/form wrappers are
 preserved; API feedback remains after the columns. The View retains contact actions, map/error
 boundary, directions, fields, error summary, submission controls and success/edit content.
@@ -886,7 +885,7 @@ arrow-navigation failures and unrelated snapshot failures were not rerun. The ne
 the weddings layout with details, inquiry and feedback slots.
 
 **Thirty-eighth checkpoint verified:** StorefrontWeddingsLayout is extracted under
-`apps/storefront/app/layouts/StorefrontWeddingsLayout/`. It receives heading, hero media, services,
+`apps/storefront/features/weddings/layouts/StorefrontWeddingsLayout/`. It receives heading, hero media, services,
 story, inquiry introduction, inquiry and feedback slots. The main focus target, section order,
 hero/services grids and responsive inquiry section/anchor are preserved. The View retains actions,
 media, cards, gallery/process content, fields, validation, conditional form/success content and
@@ -914,7 +913,7 @@ suites, known TV arrow-navigation failures and unrelated snapshot failures were 
 The next stage extracts the FAQ layout with heading, questions and contact slots.
 
 **Thirty-ninth checkpoint verified:** StorefrontFaqLayout is extracted under
-`apps/storefront/app/layouts/StorefrontFaqLayout/`. It receives heading, questions and contact slots
+`apps/storefront/features/faq/layouts/StorefrontFaqLayout/`. It receives heading, questions and contact slots
 and owns the main focus target, page header, responsive information columns, question-list
 wrapper and contact aside. The View retains grouped sections and accessible headings, Accordion
 controls/default expansion, copy, help card, contact/WhatsApp links and sample-content note.
@@ -935,7 +934,7 @@ failures and unrelated snapshot failures were not rerun. The next stage extracts
 layout with heading, document and navigation slots.
 
 **Fortieth checkpoint verified:** StorefrontPolicyLayout is extracted under
-`apps/storefront/app/layouts/StorefrontPolicyLayout/`. It receives heading, policy navigation, notice,
+`apps/storefront/features/policy/layouts/StorefrontPolicyLayout/`. It receives heading, policy navigation, notice,
 table of contents and document slots. It owns the main focus target, page header, notice spacing,
 responsive policy columns and document wrapper. The View retains localized navigation labels,
 policy links/current state, sample notice, sticky contents navigation, section anchors and
@@ -956,7 +955,7 @@ arrow-navigation failures and unrelated snapshot failures were not rerun. The ne
 the journal page layout with heading, search, stories and pagination slots.
 
 **Forty-first checkpoint verified:** StorefrontJournalLayout is extracted under
-`apps/storefront/app/layouts/StorefrontJournalLayout/`. It receives heading, search, feedback, featured,
+`apps/storefront/features/journal/layouts/StorefrontJournalLayout/`. It receives heading, search, feedback, featured,
 stories and pagination slots and owns the main focus target, header/search wrappers and responsive
 article grid. The View retains category chips and focus scrolling, search controls, empty/loading
 feedback, conditional featured card, article cards and pagination controls. Journal logic retains
@@ -977,7 +976,7 @@ not rerun. The next stage extracts the post page layout with article, actions an
 slots.
 
 **Forty-second checkpoint verified:** StorefrontPostLayout is extracted under
-`apps/storefront/app/layouts/StorefrontPostLayout/`. It receives feedback, article, actions,
+`apps/storefront/features/post/layouts/StorefrontPostLayout/`. It receives feedback, article, actions,
 recommendations and related-story slots with externally controlled article visibility. It owns
 the main focus target, reading-width wrapper, article/actions wrappers and recommendation/related
 sections. The View retains loading/missing feedback, back link, headings/metadata, block/classic
@@ -999,7 +998,7 @@ and unrelated snapshot failures were not rerun. The next stage extracts the home
 with its storefront section slots.
 
 **Forty-third checkpoint verified:** StorefrontHomeLayout is extracted under
-`apps/storefront/app/layouts/StorefrontHomeLayout/`. It receives top/categories, featured, occasions,
+`apps/storefront/features/home/layouts/StorefrontHomeLayout/`. It receives top/categories, featured, occasions,
 arrivals, weddings, journal and newsletter slots with externally controlled optional visibility.
 It owns the main focus target, ordered sections, static labelled-by targets, spacing and the
 featured/wedding/newsletter bands. The View retains headings, collection carousels, controls,
@@ -1025,7 +1024,7 @@ suites, known TV arrow-navigation failures and unrelated snapshot failures were 
 The next stage extracts the not-found page layout with recovery and recommendation slots.
 
 **Forty-fourth checkpoint verified:** StorefrontNotfoundLayout is extracted under
-`apps/storefront/app/layouts/StorefrontNotfoundLayout/`. It receives message, recovery actions,
+`apps/storefront/features/notfound/layouts/StorefrontNotfoundLayout/`. It receives message, recovery actions,
 recommendation heading and recommendation slots. It owns the main focus target, centered
 message/actions wrappers, recommendation section and responsive product grid. The View retains
 localized empty-state content, home/search links, recommendation heading and product cards.
@@ -1047,7 +1046,7 @@ TV arrow-navigation failures and unrelated snapshot failures were not rerun. The
 extracts the error page layout with message and recovery-action slots.
 
 **Forty-fifth checkpoint verified:** StorefrontErrorLayout is extracted under
-`apps/storefront/app/layouts/StorefrontErrorLayout/`. It receives message and recovery-action slots
+`apps/storefront/features/error/layouts/StorefrontErrorLayout/`. It receives message and recovery-action slots
 and owns the main focus target and centered message/actions wrappers. The View retains the
 localized empty state and retry/home/phone controls. Error logic retains reload behavior and
 localized phone wording with bidi isolation; shared logic retains routing, locale, SEO and
@@ -1067,7 +1066,7 @@ snapshot failures were not rerun. The next stage extracts the presentation page'
 and major region slots.
 
 **Forty-sixth checkpoint verified:** StorefrontPresentationLayout is extracted under
-`apps/storefront/app/layouts/StorefrontPresentationLayout/`. It receives hidden heading, toolbar,
+`apps/storefront/features/presentation/layouts/StorefrontPresentationLayout/`. It receives hidden heading, toolbar,
 catalog, display, overlays and feedback slots with externally controlled density and catalog
 visibility. It owns the main focus target, density attribute, hidden heading, sticky toolbar
 and catalog wrappers. The View retains the bare Shell, density provider, offline preparation
@@ -1092,7 +1091,7 @@ add-to-bag arrow failures and unrelated snapshot failures were not rerun. The ne
 the presentation catalog composition into a storefront organism.
 
 **Forty-seventh checkpoint verified:** StorefrontPresentationCatalog is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationCatalog/`. It receives tile data/callbacks,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationCatalog/`. It receives tile data/callbacks,
 controlled empty/price visibility, localized labels, clear callback and label renderer. It owns
 tile list/buttons, pictures, Ready badges, optional prices, shortlist controls and empty-state
 composition. The View retains the shared Label helper through the renderer, toolbar, viewer/
@@ -1118,7 +1117,7 @@ snapshot failures were not rerun. The next stage extracts the presentation toolb
 into a storefront organism.
 
 **Forty-eighth checkpoint verified:** StorefrontPresentationToolbar is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationToolbar/`. It receives a controlled search
+`apps/storefront/features/presentation/organisms/StorefrontPresentationToolbar/`. It receives a controlled search
 descriptor, category label/items, result-count text and explicit resume/scan/shortlist/order/
 start-over/settings action descriptors. It owns search/category/status/control composition,
 existing IDs/classes, accessible labels and callback wiring. Layout sticky/density/visibility
@@ -1144,7 +1143,7 @@ checks, known storefront TV add-to-bag arrow failures and unrelated snapshot fai
 rerun. The next stage extracts the presentation display composition into a storefront organism.
 
 **Forty-ninth checkpoint verified:** StorefrontPresentationDisplay is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationDisplay/`. It receives controlled mode/direction,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationDisplay/`. It receives controlled mode/direction,
 visible/preload products, caption/price visibility, localized labels and image/navigation/tools
 callbacks. It owns display/paired/empty/fallback composition, captions, preload pictures, seller
 controls, image-decode reporting, pointer tracking and the existing four-second control-reveal
@@ -1167,7 +1166,7 @@ snapshot failures were not rerun. The next stage extracts the presentation viewe
 into a storefront organism.
 
 **Fiftieth checkpoint verified:** StorefrontPresentationViewer is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationViewer/`. It receives controlled items/index,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationViewer/`. It receives controlled items/index,
 calm/price/options/playback flags, localized labels, a label renderer and navigation/close/options
 callbacks. It owns lightbox captions, active-quote/base-price rendering, size/extra choices and
 shortlist/order/send action composition. View/logic retain the shared label, quote calculation,
@@ -1191,7 +1190,7 @@ failures and unrelated snapshot failures were not rerun. The next stage extracts
 send/share dialog into a storefront organism.
 
 **Fifty-first checkpoint verified:** StorefrontPresentationSend is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationSend/`. It receives a nullable send descriptor,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationSend/`. It receives a nullable send descriptor,
 localized action labels and a close callback. It owns dialog/QR/tag, warning/body and share/copy/
 print composition, retaining the existing memoized shared QR encoder. View/logic retain link
 construction and quoted options, stock/customer state, length validation, clipboard capability,
@@ -1223,7 +1222,7 @@ storefront TV add-to-bag arrow failures and unrelated snapshot failures were not
 stage fixes blank tag printing before extracting the presentation shortlist dialog.
 
 **Fifty-second checkpoint verified:** Presentation tag printing is repaired in
-`apps/storefront/pages/presentation/styles.css`, with its runtime CSS regenerated by the build.
+`apps/storefront/features/presentation/styles.css`, with its runtime CSS regenerated by the build.
 The page-hiding selector now uses `:where()` so the tag/descendant visibility rule wins. Non-tag
 body roots leave print layout, preventing the hidden catalog from generating additional pages.
 The six-centimeter tag, QR payload, product-code identity, language direction and screen styles
@@ -1247,7 +1246,7 @@ storefront TV add-to-bag arrow failures and unrelated snapshot failures were not
 stage extracts the presentation shortlist dialog into a storefront organism.
 
 **Fifty-third checkpoint verified:** StorefrontPresentationShortlist is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationShortlist/`. It receives controlled open/items/
+`apps/storefront/features/presentation/organisms/StorefrontPresentationShortlist/`. It receives controlled open/items/
 price visibility, localized labels, a label renderer and close/clear/send callbacks, with explicit
 show/remove callbacks on each item. It owns comparison cards, pictures, optional prices, item
 controls, dialog/footer and empty-state composition. View/logic retain shared labels, product
@@ -1271,7 +1270,7 @@ add-to-bag arrow failures and unrelated snapshot failures were not rerun. The ne
 the presentation order dialog into a storefront organism.
 
 **Fifty-fourth checkpoint verified:** StorefrontPresentationOrder is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationOrder/`. It receives controlled open/lines/price
+`apps/storefront/features/presentation/organisms/StorefrontPresentationOrder/`. It receives controlled open/lines/price
 visibility/total/handoff eligibility, localized labels, a quantity formatter and close/clear/handoff
 callbacks, with quantity-change/removal callbacks on each line. It owns dialog/footer, LineItem
 mapping, optional prices/total and empty-state composition. View/logic retain quoted configurations,
@@ -1300,7 +1299,7 @@ storefront TV add-to-bag arrow failures and unrelated snapshot failures were not
 stage extracts the presentation tag-scanning dialog into a storefront organism.
 
 **Fifty-fifth checkpoint verified:** StorefrontPresentationScan is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationScan/`. It receives controlled open state,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationScan/`. It receives controlled open state,
 localized title/body labels, warning text, the existing video ID and a close callback. It owns
 scan-dialog instructions, muted inline video and optional warning composition. View/logic retain
 the video ID contract, capability checks, camera acquisition/attachment/playback, QR polling and
@@ -1328,7 +1327,7 @@ add-to-bag arrow failures and unrelated snapshot failures were not rerun. The ne
 the presentation PIN-unlock dialog into a storefront organism.
 
 **Fifty-sixth checkpoint verified:** StorefrontPresentationUnlock is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationUnlock/`. It receives controlled open/value/error,
+`apps/storefront/shell/organisms/StorefrontPresentationUnlock/`. It receives controlled open/value/error,
 localized title/hint labels and change/complete/close callbacks. It owns dialog and four-digit
 CodeInput composition, preserving the input ID, autofocus and disabled Web OTP. View/logic retain
 PIN storage/comparison, entry/error/reset state, settings access and cancellation; shared CodeInput
@@ -1355,7 +1354,7 @@ snapshot failures were not rerun. The next stage extracts the presentation setti
 storefront organism.
 
 **Fifty-seventh checkpoint verified:** StorefrontPresentationSettings is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationSettings/`. It receives controlled open/setup/start
+`apps/storefront/features/presentation/organisms/StorefrontPresentationSettings/`. It receives controlled open/setup/start
 eligibility, explicit localized labels, home link, number formatter, close/start callbacks and
 fullscreen/collection/display/toggle/transfer/PIN control descriptors. Neither the page model nor
 the stored PIN is passed. It owns dialog/footer, setup instructions, collection selection/search/
@@ -1389,7 +1388,7 @@ and unrelated snapshot failures were not rerun. The next stage extracts the pres
 tools dialog into a storefront organism.
 
 **Fifty-eighth checkpoint verified:** StorefrontPresentationTools is extracted under
-`apps/storefront/app/organisms/StorefrontPresentationTools/`. It receives controlled open/close state,
+`apps/storefront/features/presentation/organisms/StorefrontPresentationTools/`. It receives controlled open/close state,
 explicit labels, offline progress/status, online/photo/stock state, setup/device descriptors and
 seller action callbacks. Optional scan/start-over descriptors preserve conditional actions.
 Dialog structure, width/placement, live status/data attribute, alerts, stock timestamp isolation,
@@ -1412,7 +1411,7 @@ were not rerun. Next: extract the shared presentation product-label composition 
 molecule.
 
 **Fifty-ninth checkpoint verified:** StorefrontPresentationLabel is extracted under
-`apps/storefront/app/molecules/StorefrontPresentationLabel/`, establishing the app molecule location for
+`apps/storefront/features/presentation/molecules/StorefrontPresentationLabel/`, establishing the app molecule location for
 small storefront-owned combinations. Catalog, viewer and shortlist keep their existing renderer
 slots; View supplies only code, sold-out state, localized sold-out label and the large variant.
 The molecule preserves stacked markup, LTR/nonwrapping product code, display typography and
@@ -1434,7 +1433,7 @@ production offline preparation were not rerun.
 Next: extract the home category-navigation section into a storefront organism.
 
 **Sixtieth checkpoint verified:** StorefrontHomeCategories is extracted under
-`apps/storefront/app/organisms/StorefrontHomeCategories/`. It composes the home h1 and circular category
+`apps/storefront/features/home/organisms/StorefrontHomeCategories/`. It composes the home h1 and circular category
 carousel from explicit category records and heading, region, count and previous/next labels.
 View retains normalization and count formatting; home logic retains category order, localized
 names, image mapping and filter URLs. Existing CollectionCarousel retains measurement, scroll
@@ -1456,7 +1455,7 @@ device suites and unrelated newsletter/product flows were not rerun.
 Next: extract the home featured-design section into a storefront organism.
 
 **Sixty-first checkpoint verified:** StorefrontHomeFeatured is extracted under
-`apps/storefront/app/organisms/StorefrontHomeFeatured/`. It receives explicit product records, localized
+`apps/storefront/features/home/organisms/StorefrontHomeFeatured/`. It receives explicit product records, localized
 labels, ready-filter URL and card frame, composing heading, responsive view-all links, description
 and ProductCard carousel. View retains normalization/count formatting; home/shared logic retains
 featured selection/order, product identity, prices, stock, images, links and favorite state/actions.
@@ -1479,7 +1478,7 @@ newsletter/payment flows were not rerun.
 Next: extract the home occasion-navigation section into a storefront organism.
 
 **Sixty-second checkpoint verified:** StorefrontHomeOccasions is extracted under
-`apps/storefront/app/organisms/StorefrontHomeOccasions/`. It receives explicit occasion records, localized
+`apps/storefront/features/home/organisms/StorefrontHomeOccasions/`. It receives explicit occasion records, localized
 heading/description/count/carousel labels and frame, composing the heading, description and square
 CategoryCard carousel. View retains normalization and row-count formatting; home/shared logic
 retains occasion order, localized names, per-occasion product counts, images and filter URLs.
@@ -1501,7 +1500,7 @@ not rerun.
 Next: extract the home studio-design section into a storefront organism.
 
 **Sixty-third checkpoint verified:** StorefrontHomeStudio is extracted under
-`apps/storefront/app/organisms/StorefrontHomeStudio/`. It receives explicit product records, localized
+`apps/storefront/features/home/organisms/StorefrontHomeStudio/`. It receives explicit product records, localized
 labels, shop URL and frame, composing heading, explore-all link, description and ProductCard
 carousel. View retains normalization/count formatting; home/shared logic retains collection
 selection/order and small-catalog fallback, product identity, prices, stock, images, URLs and
@@ -1525,7 +1524,7 @@ and unrelated newsletter/payment flows were not rerun.
 Next: extract the home wedding-promotion section into a storefront organism.
 
 **Sixty-fourth checkpoint verified:** StorefrontHomeWeddings is extracted under
-`apps/storefront/app/organisms/StorefrontHomeWeddings/`. It receives explicit localized labels and wedding/
+`apps/storefront/features/home/organisms/StorefrontHomeWeddings/`. It receives explicit localized labels and wedding/
 contact destination URLs, composing eyebrow, associated heading/accent, description and navigation
 links. View/logic retain content mapping, feature eligibility and localized URLs; layout retains
 optional visibility, section wrappers and inverse band. Heading ID, fragments, flex wrapping,
@@ -1545,7 +1544,7 @@ inspected. No screenshot baselines or tolerances changed.
 Next: extract the home journal-preview section into a storefront organism.
 
 **Sixty-fifth checkpoint verified:** StorefrontHomeJournal is extracted under
-`apps/storefront/app/organisms/StorefrontHomeJournal/`. It receives explicit post records, localized
+`apps/storefront/features/home/organisms/StorefrontHomeJournal/`. It receives explicit post records, localized
 labels and journal URL, composing heading, read-journal link, description and stacked BlogCard
 carousel. View retains normalization/count formatting; home/shared logic retains feature
 eligibility, selection/order, images, localized titles/excerpts/metadata and article destinations.
@@ -1569,7 +1568,7 @@ captures were visually inspected. No screenshot baselines or tolerances changed.
 Next: extract the home newsletter section into a storefront organism.
 
 **Sixty-sixth checkpoint verified:** StorefrontHomeNewsletter is extracted under
-`apps/storefront/app/organisms/StorefrontHomeNewsletter/`. It receives explicit open/done/completion text,
+`apps/storefront/features/home/organisms/StorefrontHomeNewsletter/`. It receives explicit open/done/completion text,
 draft/error/pending values, localized labels and change/submit callbacks. It composes heading,
 labelled email form, pending button and focusable completion status. View maps props; home/shared
 logic retains profile prefill, validation, request deduplication, API submission, tracking,
@@ -1620,7 +1619,7 @@ changed. Representative Persian phone failure and English desktop completion cap
 Next: extract the product gallery section into a storefront organism.
 
 **Sixty-eighth checkpoint verified:** StorefrontProductGallery is extracted under
-`apps/storefront/app/organisms/StorefrontProductGallery/`. It receives explicit product code, gallery
+`apps/storefront/features/product/organisms/StorefrontProductGallery/`. It receives explicit product code, gallery
 images, viewer items/index, localized photo/fullscreen labels and slide formatter, plus gallery/
 open/viewer/close callbacks. It composes Gallery, fullscreen action and controlled Lightbox. View
 maps props; product logic retains photo mapping, selection, current-gallery-photo entry, closing
@@ -1644,7 +1643,7 @@ viewer and English TV gallery captures were visually inspected.
 Next: extract the product heading/price/stock section into a storefront organism.
 
 **Sixty-ninth checkpoint verified:** StorefrontProductHeading is extracted under
-`apps/storefront/app/organisms/StorefrontProductHeading/`. It receives explicit code, subtitle, badge,
+`apps/storefront/features/product/organisms/StorefrontProductHeading/`. It receives explicit code, subtitle, badge,
 unit-price label/value, stock descriptor, description, copy label and callback, composing the
 heading/copy action, category/badge, price/availability and description. View maps props; product/
 shared logic retains identity/localization, pricing, stock interpretation, clipboard fallback and
@@ -1668,7 +1667,7 @@ were visually inspected. No screenshot baselines or tolerances changed.
 Next: extract the product size/add-on configuration section into a storefront organism.
 
 **Seventieth checkpoint verified:** StorefrontProductConfiguration is extracted under
-`apps/storefront/app/organisms/StorefrontProductConfiguration/`. It receives explicit size/add-on
+`apps/storefront/features/product/organisms/StorefrontProductConfiguration/`. It receives explicit size/add-on
 visibility, size options/value/change callback, add-on records with checked/toggle values and
 localized legends. It composes ChoiceGroup/ChoiceTile and the add-on fieldset. View retains record
 normalization and visibility; product/shared logic retains eligibility, selection/URL state,
@@ -1695,7 +1694,7 @@ Representative Persian phone configured and English desktop restricted-option ca
 Next: extract the product purchase summary/actions into a storefront organism.
 
 **Seventy-first checkpoint verified:** StorefrontProductPurchase is extracted under
-`apps/storefront/app/organisms/StorefrontProductPurchase/`. It receives explicit summary label/total/hint,
+`apps/storefront/features/product/organisms/StorefrontProductPurchase/`. It receives explicit summary label/total/hint,
 controlled quantity value/max/labels/change callback, save label/active/click callback and add
 label/disabled/click callback. View maps those records; product/shared logic retains quantities,
 URL/reload state, pricing, saved state, stock limits, bag mutations and confirmation. The sticky
@@ -1721,7 +1720,7 @@ and English desktop low-stock captures were viewed.
 Next: extract the product delivery/care section into a storefront organism.
 
 **Seventy-second checkpoint verified:** StorefrontProductCare is extracted under
-`apps/storefront/app/organisms/StorefrontProductCare/`. It receives explicit delivery text, optional
+`apps/storefront/features/product/organisms/StorefrontProductCare/`. It receives explicit delivery text, optional
 inquiry href/label and localized accordion items. It composes the delivery message, conditional
 WhatsApp link and Accordion with `care` initially expanded. Product View/logic retain delivery
 eligibility/cutoff wording, care fallback, localization and inquiry URL generation. Accordion
@@ -1747,7 +1746,7 @@ custom-care and both Persian TV care captures were viewed.
 Next: extract the recently viewed product section into a storefront organism.
 
 **Seventy-third checkpoint verified:** StorefrontProductRecent is extracted under
-`apps/storefront/app/organisms/StorefrontProductRecent/`. It receives normalized product records,
+`apps/storefront/features/product/organisms/StorefrontProductRecent/`. It receives normalized product records,
 localized heading/count/region/navigation/photo/save labels and an explicit carousel reset key.
 It composes SectionHeader, CollectionCarousel and ProductCards, preserving the single/multiple
 card image sizes, section/classes, ordering, four-card layout, compact peek and callbacks.
@@ -1773,7 +1772,7 @@ phone four-card and English desktop single-card captures were viewed.
 Next: extract the product added-to-bag dialog into a storefront organism.
 
 **Seventy-fourth checkpoint verified:** StorefrontProductAdded is extracted under
-`apps/storefront/app/organisms/StorefrontProductAdded/`. It receives explicit open/close, summary
+`apps/storefront/features/product/organisms/StorefrontProductAdded/`. It receives explicit open/close, summary
 lines/sums, checkout href/callback and localized title/close/checkout/continue labels. It composes
 Dialog, OrderSummary and checkout/keep-shopping actions, preserving scaled 440px maximum width,
 classes/order, checkout autofocus and link semantics. Product View/logic retain bag mutations,
@@ -1796,7 +1795,7 @@ default and English desktop configured captures were viewed.
 Next: extract the product sticky purchase action into a storefront organism.
 
 **Seventy-fifth checkpoint verified:** StorefrontProductSticky is extracted under
-`apps/storefront/app/organisms/StorefrontProductSticky/`. It receives explicit summary label/total and
+`apps/storefront/features/product/organisms/StorefrontProductSticky/`. It receives explicit summary label/total and
 add label/disabled/click callback. It composes the live total and purchase button in the existing
 Shell sticky slot, preserving root/child classes, order, status/atomic semantics, small price and
 button styling. Product View/logic retain formatting, configuration/quantity state, pricing,
@@ -1821,7 +1820,7 @@ unavailable captures were viewed.
 Next: extract shop category navigation into a storefront organism.
 
 **Seventy-sixth checkpoint verified:** StorefrontShopCategories is extracted under
-`apps/storefront/app/organisms/StorefrontShopCategories/`. It receives normalized category records,
+`apps/storefront/features/shop/organisms/StorefrontShopCategories/`. It receives normalized category records,
 the category label and an explicit compact presentation flag. Sidebar mode composes the label
 and selected/unselected native buttons; compact mode composes the named horizontal group and
 Chips. Fragments, classes/order, button type, on/off rendering, pressed states, formatted counts,
@@ -1845,7 +1844,7 @@ filtered captures were viewed.
 Next: extract shop sidebar filters into a storefront organism.
 
 **Seventy-seventh checkpoint verified:** StorefrontShopSidebarFilters is extracted under
-`apps/storefront/app/organisms/StorefrontShopSidebarFilters/`. It receives explicit occasion, date,
+`apps/storefront/features/shop/organisms/StorefrontShopSidebarFilters/`. It receives explicit occasion, date,
 price and stock descriptors: labels, options, controlled values, price bounds/step/formatter and
 individual callbacks. It composes the occasion fieldset/Chips, Select, labelled RangeSlider and
 Switch, preserving the wrapper/classes/order, legends, field IDs and label relationships.
@@ -1873,7 +1872,7 @@ English TV filtered captures were viewed, including the complete stock control.
 Next: extract the shop filter dialog into a storefront organism.
 
 **Seventy-eighth checkpoint verified:** StorefrontShopFilterDialog is extracted under
-`apps/storefront/app/organisms/StorefrontShopFilterDialog/`. It receives explicit open/close/clear,
+`apps/storefront/features/shop/organisms/StorefrontShopFilterDialog/`. It receives explicit open/close/clear,
 title/show/clear labels and controlled occasion/date/price/stock descriptors. It composes Dialog,
 scrolling fields and Show/Clear footer actions, preserving classes/order, legends, dialog-specific
 IDs/label relationships, default close wording and callback semantics. View retains normalization/
@@ -1899,7 +1898,7 @@ short-phone top/bottom and English tablet filtered-bottom captures were viewed.
 Next: extract the shop results toolbar into a storefront organism.
 
 **Seventy-ninth checkpoint verified:** StorefrontShopToolbar is extracted under
-`apps/storefront/app/organisms/StorefrontShopToolbar/`. It receives explicit labels, a controlled sort
+`apps/storefront/features/shop/organisms/StorefrontShopToolbar/`. It receives explicit labels, a controlled sort
 descriptor, normalized active/quick-filter records and open/clear/focus callbacks. It composes
 compact filters/sort, FilterBar, quick chips, live result count and desktop sort, preserving
 fragment structure, wrapper classes/order, pressed states and the `vf-shop-count` focus target.
@@ -1920,7 +1919,7 @@ No visual baselines/tolerances changed. Persian phone filtered and English deskt
 captures were viewed. Next: extract shop product results and feedback into a storefront organism.
 
 **Eightieth checkpoint verified:** StorefrontShopResults is extracted under
-`apps/storefront/app/organisms/StorefrontShopResults/`. It receives normalized product records, frame,
+`apps/storefront/features/shop/organisms/StorefrontShopResults/`. It receives normalized product records, frame,
 explicit content/paging visibility, paging data/callback, feedback flags/actions and localized
 labels. It composes loading Skeleton/status, error Alert/retry, product cards/LoadMore and empty
 feedback/clear without adding a wrapper or changing classes, card fields, first-two image priority,
@@ -1945,7 +1944,7 @@ suite and TV spatial-arrow navigation were not rerun. Next: extract bag line ite
 organism.
 
 **Eighty-first checkpoint verified:** StorefrontBagItems is extracted under
-`apps/storefront/app/organisms/StorefrontBagItems/`. It receives normalized line records, remove/quantity
+`apps/storefront/features/bag/organisms/StorefrontBagItems/`. It receives normalized line records, remove/quantity
 labels and a quantity formatter. It composes large LineItems and stock-warning Alerts, preserving
 the list/row classes/order, `data-vf-keep-focus`, configured metadata/card notes, prices, images,
 unavailable state, quantity bounds and individual quantity/remove callbacks. View retains bag-step/
@@ -1968,7 +1967,7 @@ were needed for it. No baselines/tolerances changed. Full browser/device suites 
 navigation were not rerun. Next: extract the bag summary into a storefront organism.
 
 **Eighty-second checkpoint verified:** StorefrontBagSummary is extracted under
-`apps/storefront/app/organisms/StorefrontBagSummary/`. It receives summary title/rows/sums, optional
+`apps/storefront/features/bag/organisms/StorefrontBagSummary/`. It receives summary title/rows/sums, optional
 free-delivery descriptor, controlled promo descriptor, visible delivery/payment/back actions and
 payment note. It composes Card/OrderSummary, Meter, PromoCodeField and navigation, preserving
 fragment structure, classes/order, padding, promo ID, button variants/icons, back href and responsive
@@ -1992,7 +1991,7 @@ moving clock allowed map animation/quoting to complete. Full browser/device suit
 arrow navigation were not rerun. Next: extract bag sticky actions into a storefront organism.
 
 **Eighty-third checkpoint verified:** StorefrontBagSticky is extracted under
-`apps/storefront/app/organisms/StorefrontBagSticky/`. It receives explicit total label/value and delivery/
+`apps/storefront/features/bag/organisms/StorefrontBagSticky/`. It receives explicit total label/value and delivery/
 payment descriptors with independent visibility, labels and callbacks. It composes the existing
 compact total/Price and continuation buttons inside Shell's sticky slot, preserving wrapper
 classes/order, price size/class, button variant/icon and labels. View retains content visibility
@@ -2016,7 +2015,7 @@ short-landscape delivery captures were viewed. No baselines/tolerances changed.
 Next: extract bag feedback and recovery into a storefront organism.
 
 **Eighty-fourth checkpoint verified:** StorefrontBagFeedback is extracted under
-`apps/storefront/app/organisms/StorefrontBagFeedback/`. It receives an explicit removed/empty variant,
+`apps/storefront/features/bag/organisms/StorefrontBagFeedback/`. It receives an explicit removed/empty variant,
 localized labels and action callback. It composes the removal Alert/Undo or empty-state recovery,
 preserving wrapper classes, Undo ID/focus marker, button variants, empty h1/icon and content order.
 View retains visibility and mounts the variants in the existing notice/empty layout slots, outside
@@ -2038,7 +2037,7 @@ Persian phone empty and English desktop removal captures were viewed. No baselin
 changed. Next: extract bag progress into a storefront organism.
 
 **Eighty-fifth checkpoint verified:** StorefrontBagProgress is extracted under
-`apps/storefront/app/organisms/StorefrontBagProgress/`. It receives explicit steps/current index,
+`apps/storefront/shell/organisms/StorefrontBagProgress/`. It receives explicit steps/current index,
 completed-step callback, region/done labels and number/caption formatters. It composes compact
 and wide Steppers, preserving wrappers/classes/order, CSS breakpoints and compact mode. View
 retains visibility/mapping; bag/shared logic retains stage/URL state, localization and permitted
@@ -2057,7 +2056,7 @@ Persian phone delivery and English desktop delivery captures were viewed. No bas
 changed. Next: extract bag recipient fields into a storefront organism.
 
 **Eighty-sixth checkpoint verified:** StorefrontBagRecipient is extracted under
-`apps/storefront/app/organisms/StorefrontBagRecipient/`. It receives a title, normalized saved-address
+`apps/storefront/features/bag/organisms/StorefrontBagRecipient/`. It receives a title, normalized saved-address
 options/visibility/label and controlled name/phone descriptors with values, callbacks, errors and
 labels. It composes the recipient h2, optional saved-address fieldset/chips and input grid as a
 fragment inside the page-owned delivery section. Classes/order, title/input IDs, section label
@@ -2083,7 +2082,7 @@ semantics; no source changes were needed for those probe errors.
 Next: extract bag delivery location into a storefront organism.
 
 **Eighty-seventh checkpoint verified:** StorefrontBagLocation is extracted under
-`apps/storefront/app/organisms/StorefrontBagLocation/`. It receives explicit picker/zone/fallback/address
+`apps/storefront/features/bag/organisms/StorefrontBagLocation/`. It receives explicit picker/zone/fallback/address
 descriptors and composes LocationPicker, zone status, failed-map hint/Select and address Input as a
 fragment. Classes/order, map/zone/address IDs, labels/status/errors, required/autocomplete settings
 and every map adapter/lifecycle callback are preserved. View retains mapping and surrounding
@@ -2110,7 +2109,7 @@ are 1/255. Persian phone pin error and desktop fallback captures were viewed. No
 tolerances changed. Next: extract bag delivery scheduling into a storefront organism.
 
 **Eighty-eighth checkpoint verified:** StorefrontBagSchedule is extracted under
-`apps/storefront/app/organisms/StorefrontBagSchedule/`. It receives explicit title, preparation notice,
+`apps/storefront/features/bag/organisms/StorefrontBagSchedule/`. It receives explicit title, preparation notice,
 review descriptor and controlled day/slot descriptors with normalized options. It composes the
 scheduling section/heading, preparation feedback, changed-window confirmation and ChoiceGroups,
 preserving section/heading IDs, focusable review ID, classes/order, legends, tile sizes/widths,
@@ -2135,7 +2134,7 @@ changed-window and English TV confirmed captures were viewed. No baselines/toler
 Next: extract bag gift-card messages into a storefront organism.
 
 **Eighty-ninth checkpoint verified:** StorefrontBagCards is extracted under
-`apps/storefront/app/organisms/StorefrontBagCards/`. It receives explicit labels, controlled card-addition
+`apps/storefront/features/bag/organisms/StorefrontBagCards/`. It receives explicit labels, controlled card-addition
 notice/Undo descriptor and normalized line records. It composes the cards section/heading/hint,
 Undo Alert and per-line message/add controls, preserving section/heading/input/add IDs, labels,
 accessible names, classes/order, textarea required/maxLength/rows, hints/errors, button styling and
@@ -2156,7 +2155,7 @@ actual PNG bytes. Persian phone error and English TV filled captures were viewed
 tolerances changed. Next: extract bag sender fields into a storefront organism.
 
 **Ninetieth checkpoint verified:** StorefrontBagSender is extracted under
-`apps/storefront/app/organisms/StorefrontBagSender/`. It receives explicit title/hint labels and controlled
+`apps/storefront/features/bag/organisms/StorefrontBagSender/`. It receives explicit title/hint labels and controlled
 sender name/phone descriptors with values, callbacks, errors and labels. It composes the sender
 section/heading/hint and grid, preserving section/heading/input IDs, classes/order, required/error
 props, name autocomplete and shared PhoneInput keypad/direction/autocomplete/placeholder defaults.
@@ -2178,7 +2177,7 @@ tolerances changed. Next: extract bag delivery sign-in and validation feedback i
 organism.
 
 **Ninety-first checkpoint verified:** StorefrontBagDeliveryIntro is extracted under
-`apps/storefront/app/organisms/StorefrontBagDeliveryIntro/`. It receives error records and an explicit
+`apps/storefront/shell/organisms/StorefrontBagDeliveryIntro/`. It receives error records and an explicit
 sign-in descriptor with visibility, prompt/label, href and callback. It composes ErrorSummary and
 the guest prompt, preserving fragment order, `vf-errors` ID, classes, link semantics and button
 styling/icon. View retains step visibility/mapping; bag/shared logic retains problems/validation,
@@ -2200,7 +2199,7 @@ Persian phone full summary and English TV prompt captures were viewed. No baseli
 changed. Next: extract checkout delivery review into a storefront organism.
 
 **Ninety-second checkpoint verified:** StorefrontCheckoutDeliveryReview is extracted under
-`apps/storefront/app/organisms/StorefrontCheckoutDeliveryReview/`. It receives explicit title/edit labels,
+`apps/storefront/features/checkout/organisms/StorefrontCheckoutDeliveryReview/`. It receives explicit title/edit labels,
 edit href/callback and delivery detail rows. It composes the labelled section, Card, heading/edit
 link and DetailList, preserving section/heading ID, classes/order, padding and edit styling/icon/
 link semantics. View retains payment visibility/mapping; checkout/shared logic retains delivery
@@ -2219,7 +2218,7 @@ Persian phone edited and English TV initial captures were viewed. No baselines/t
 Next: extract checkout payment methods into a storefront organism.
 
 **Ninety-third checkpoint verified:** StorefrontCheckoutMethods is extracted under
-`apps/storefront/app/organisms/StorefrontCheckoutMethods/`. It receives explicit intro, controlled methods,
+`apps/storefront/features/checkout/organisms/StorefrontCheckoutMethods/`. It receives explicit intro, controlled methods,
 unavailable/wallet descriptors and payment notice. It composes RadioGroup/options, unavailable
 contact Alert and wallet discount/top-up/remaining-balance context, preserving fragment order,
 classes, group name/legend, labels/descriptions/disabled states and link/button semantics. View
@@ -2244,7 +2243,7 @@ viewed. No baselines/tolerances changed. Next: extract checkout receipt details 
 organism.
 
 **Ninety-fourth checkpoint verified:** StorefrontCheckoutReceipt is extracted under
-`apps/storefront/app/organisms/` with explicit change, card, Sheba, last-four and reference descriptors.
+`apps/storefront/shell/organisms/` with explicit change, card, Sheba, last-four and reference descriptors.
 The organism preserves warning visibility independently of card visibility, warning/input IDs and
 focus targets, PaymentCard props, optional Sheba direction/tooltip/copy, receipt grid classes,
 numeric input mode/direction, maximum length and validation props. View maps data; checkout/shared
@@ -2270,7 +2269,7 @@ English TV payment-card captures were viewed. Next: extract checkout submission 
 feedback into a storefront organism.
 
 **Ninety-fifth checkpoint verified:** StorefrontCheckoutSubmission is extracted under
-`apps/storefront/app/organisms/` with explicit WhatsApp, processing, failure, safety and place/back
+`apps/storefront/shell/organisms/` with explicit WhatsApp, processing, failure, safety and place/back
 props. Fragment order, external-link target/rel, processing status role, alert tones/icon,
 responsive classes and button variants/sizes/icons/loading/disabled props are preserved. View
 maps descriptors; checkout/shared logic retains readiness/receipt validation, submission,
@@ -2305,7 +2304,7 @@ processing/actions captures were viewed. Next: extract checkout status notices i
 organism.
 
 **Ninety-sixth checkpoint verified:** StorefrontCheckoutNotices is extracted under
-`apps/storefront/app/organisms/` with explicit review and saveError props. Both notices retain their
+`apps/storefront/shell/organisms/` with explicit review and saveError props. Both notices retain their
 independent conditions and order, warning/danger tones, secondary review action and the
 vf-payment-review ID/tabIndex focus target. The layout keeps notices outside payment visibility,
 including bank-status transitions. View maps descriptors; checkout/shared logic retains retry
@@ -2330,7 +2329,7 @@ phone review, English phone storage error, Persian desktop bank error and Englis
 review captures were viewed. Next: extract checkout progress and heading into a storefront organism.
 
 **Ninety-seventh checkpoint verified:** StorefrontCheckoutProgress and
-StorefrontCheckoutHeading are extracted under `apps/storefront/app/organisms/` with explicit
+StorefrontCheckoutHeading are extracted under `apps/storefront/shell/organisms/` with explicit
 step/current/labels/formatters/optional callback and title/accent props. Progress shares compact
 and wide Steppers across payment, bank and success, retaining breakpoint wrappers, ordered lists,
 current/completed semantics, labels and compact captions. The payment-only spacing wrapper stays
@@ -2357,7 +2356,7 @@ English phone card heading, English desktop bank progress and Persian TV success
 viewed. Next: extract checkout bank status into a storefront organism.
 
 **Ninety-eighth checkpoint verified:** StorefrontCheckoutBank is extracted under
-`apps/storefront/app/organisms/` with explicit progress, payment and action descriptors. It composes
+`apps/storefront/shell/organisms/` with explicit progress, payment and action descriptors. It composes
 StorefrontCheckoutProgress and PaymentStatus in the original fragment order without adding a DOM
 wrapper. Current index/formatters, status/amount/order/redirect/support props, recovery callbacks
 and headingLevel 1 are preserved. Layout retains the bank wrapper and outside notices. View/logic
@@ -2389,7 +2388,7 @@ Persian desktop missing-record and English TV failed captures were also viewed. 
 checkout confirmation into a storefront organism.
 
 **Ninety-ninth checkpoint verified:** StorefrontCheckoutConfirmation is extracted under
-`apps/storefront/app/organisms/` with explicit progress, heading, status, rows, account and links props.
+`apps/storefront/shell/organisms/` with explicit progress, heading, status, rows, account and links props.
 It preserves noninteractive completion progress, h1/check/accent semantics, status Badge, details,
 conditional account Card and track/shop actions in the original fragment order without adding a
 wrapper. Classes, full-width detail/account wrappers, Card padding/variant and button variants/icons
@@ -2417,7 +2416,7 @@ TV heading captures were viewed. Next: extract checkout summary and sticky actio
 organisms.
 
 **One hundredth checkpoint verified:** StorefrontCheckoutSummary and StorefrontCheckoutSticky
-are extracted under `apps/storefront/app/organisms/` with explicit title/lines/sums and summary/place
+are extracted under `apps/storefront/shell/organisms/` with explicit title/lines/sums and summary/place
 props. Summary retains Card padding 20 and OrderSummary props. Sticky retains the total/caption/
 price classes, Price size and primary button icon/loading/disabled props. View retains visibility,
 formatting and validation/submission callbacks; logic retains totals, quote/payment rules and
@@ -2445,7 +2444,7 @@ Persian phone online action, English phone pending action, Persian tablet update
 TV pending summary captures were viewed. Next: extract account orders into a storefront organism.
 
 **One hundred and first checkpoint verified:** StorefrontAccountOrders is extracted under
-`apps/storefront/app/organisms/` with explicit normalized order presentation records. It retains the
+`apps/storefront/shell/organisms/` with explicit normalized order presentation records. It retains the
 orders grid/body/number/meta/total classes, positional keys, LTR order numbers, Card padding 20,
 Badge tone/text and secondary small tracking links. View retains tab visibility/list normalization;
 account/shared logic retains history selection, customer isolation, status interpretation, localized
@@ -2470,7 +2469,7 @@ Persian tablet delivered, English desktop received and Persian TV fallback-statu
 viewed. Next: extract account balance overview into a storefront organism.
 
 **One hundred and second checkpoint verified:** StorefrontAccountBalanceOverview is extracted
-under `apps/storefront/app/organisms/` with explicit title, formatted amount and status props. It preserves
+under `apps/storefront/shell/organisms/` with explicit title, formatted amount and status props. It preserves
 Card padding 24, the label/amount IDs and aria-labelledby relationship, amount typography, status
 classes and fragment order without adding a wrapper. View retains balance-tab visibility and the
 surrounding top-up/history composition; account/shared logic retains wallet reads, customer scope,
@@ -2498,7 +2497,7 @@ Persian tablet below-threshold, English desktop topped-up and Persian TV initial
 viewed. Next: extract account top-up controls into a storefront organism.
 
 **One hundred and third checkpoint verified:** StorefrontAccountTopUp is extracted under
-`apps/storefront/app/organisms/` with explicit title/quick-label/presets, amount/payment descriptors and
+`apps/storefront/shell/organisms/` with explicit title/quick-label/presets, amount/payment descriptors and
 demo text. It preserves the section and heading/input/completion IDs, positional preset keys,
 pressed state/callbacks, numeric LTR input props, loading/disabled primary banknote button, status
 roles and completion focus target. View retains tab visibility, list normalization and the surrounding
@@ -2525,7 +2524,7 @@ empty validation, Persian desktop failure and Persian TV selected captures were 
 Next: extract account balance history into a storefront organism.
 
 **One hundred and fourth checkpoint verified:** StorefrontAccountBalanceHistory is extracted
-under `apps/storefront/app/organisms/` with explicit title, empty/list visibility flags, empty text and
+under `apps/storefront/shell/organisms/` with explicit title, empty/list visibility flags, empty text and
 normalized entry records. It preserves the heading ID/section label, empty paragraph, list/row classes,
 positional keys, label/date order, signed amount text and data-tone attributes without adding a
 wrapper. View retains balance-tab visibility, normalization and surrounding overview/top-up/checkout-
@@ -2552,7 +2551,7 @@ Persian tablet added, English desktop sample and Persian TV added captures were 
 Next: extract account saved products into a storefront organism.
 
 **One hundred and fifth checkpoint verified:** StorefrontAccountSaved is extracted under
-`apps/storefront/app/organisms/` with explicit populated/empty visibility flags, normalized product records,
+`apps/storefront/shell/organisms/` with explicit populated/empty visibility flags, normalized product records,
 labels and shop destination. It preserves grid/empty classes, positional keys, ProductCard content and
 image/stock/badge props, accent badge/soft frame, favorite state/removal callbacks, product links and
 heart empty-state/browse action without adding a wrapper. View retains saved-tab visibility and list
@@ -2578,7 +2577,7 @@ empty, English desktop populated and Persian TV single captures were viewed.
 Next: extract account addresses into a storefront organism.
 
 **One hundred and sixth checkpoint verified:** StorefrontAccountAddresses is extracted under
-`apps/storefront/app/organisms/` with explicit map, normalized address records, labels and add descriptors.
+`apps/storefront/shell/organisms/` with explicit map, normalized address records, labels and add descriptors.
 It preserves the map ID/margin/height and loader/tiles/center/zoom/marker/failure props, grid classes,
 positional keys, AddressCard content/default/edit/delete callbacks and add-button ID/type/classes.
 View retains tab visibility and list normalization; account/shared logic retains customer scope,
@@ -2610,7 +2609,7 @@ Persian tablet and English TV original/rechecked maps, and Persian TV default ca
 Next: extract account reminders into a storefront organism.
 
 **One hundred and seventh checkpoint verified:** StorefrontAccountReminders is extracted under
-`apps/storefront/app/organisms/` with explicit add, empty/upcoming feedback, introduction, normalized
+`apps/storefront/shell/organisms/` with explicit add, empty/upcoming feedback, introduction, normalized
 reminder records, shop destination and labels. It preserves wrapper/intro classes, add ID/plus icon,
 neutral upcoming Alert and separator, positional keys, ReminderRow dates/occasion/channel/on/soon
 props, toggle/edit/delete callbacks and shop links. View retains tab visibility and list normalization;
@@ -2638,7 +2637,7 @@ upcoming, Persian tablet added, English desktop paused and Persian TV active cap
 Next: extract account profile controls into a storefront organism.
 
 **One hundred and eighth checkpoint verified:** StorefrontAccountProfile is extracted under
-`apps/storefront/app/organisms/` with explicit problems and name/phone/email/language/SMS/save descriptors.
+`apps/storefront/shell/organisms/` with explicit problems and name/phone/email/language/SMS/save descriptors.
 It preserves the wrapper classes, summary/field IDs, name autocomplete, disabled LTR phone and hint,
 email type/direction/error/hint, language options/hint, SMS switch and primary save action without
 adding a wrapper. View retains tab visibility and descriptor mapping; account/shared logic retains
@@ -2667,7 +2666,7 @@ language captures were also viewed.
 Next: extract account address editor fields into a storefront organism.
 
 **One hundred and ninth checkpoint verified:** StorefrontAccountAddressEditor is extracted under
-`apps/storefront/app/organisms/` with explicit label/zone/pin/address/recipient/phone descriptors. It preserves
+`apps/storefront/shell/organisms/` with explicit label/zone/pin/address/recipient/phone descriptors. It preserves
 field/map IDs, compact LocationPicker props/callbacks, independent map/fallback visibility, pin wrapper/
 fallback classes, multiline address/error/autocomplete, recipient autocomplete and PhoneInput/error.
 It returns a fragment so the existing dialog retains spacing. View retains address-branch visibility,
@@ -2698,7 +2697,7 @@ were viewed.
 Next: extract account reminder editor fields into a storefront organism.
 
 **One hundred and tenth checkpoint verified:** StorefrontAccountReminderEditor is extracted
-under `apps/storefront/app/organisms/` with explicit name/occasion/date/lead-time/channel descriptors.
+under `apps/storefront/shell/organisms/` with explicit name/occasion/date/lead-time/channel descriptors.
 It preserves name/date IDs, field order, errors, option/value/change props and DatePicker yearly/
 language/disabled/hint/labels props. It returns a fragment so the shared dialog retains spacing.
 View retains reminder-branch visibility, dialog, storage alert, error summary and save/cancel actions;
@@ -2730,7 +2729,7 @@ captures were viewed side by side; Persian phone and TV movable-date captures we
 Next: extract the shared account editor dialog into a storefront organism.
 
 **One hundred and eleventh checkpoint verified:** StorefrontAccountEditorDialog is extracted
-under `apps/storefront/app/organisms/` with explicit open/title/close, storage error, problems, save/cancel
+under `apps/storefront/shell/organisms/` with explicit open/title/close, storage error, problems, save/cancel
 labels/actions and field children. It preserves Dialog props, flex/gap wrappers, conditional danger
 Alert, error-summary ID, field position and primary-save/ghost-cancel action order. It adds no wrapper
 around supplied fields. View retains address/reminder branch selection and descriptor mapping;
@@ -2761,7 +2760,7 @@ tablet reminder summary, Persian desktop reminder storage and Persian TV address
 Next: extract account heading into a storefront organism.
 
 **One hundred and twelfth checkpoint verified:** StorefrontAccountHeading is extracted under
-`apps/storefront/app/organisms/` with explicit eyebrow/title/accent text. It preserves eyebrow classes,
+`apps/storefront/shell/organisms/` with explicit eyebrow/title/accent text. It preserves eyebrow classes,
 the title's trailing space, single h1, semantic em/accent classes and fragment order without adding
 a wrapper. StorefrontAccountLayout retains the heading/header wrappers; View/logic retain localized
 copy, visibility and navigation/focus behavior. No state, effects, browser APIs or account rules moved.
@@ -2781,7 +2780,7 @@ actual PNG bytes. English/Persian phone, Persian tablet and English TV captures 
 Next: extract account tab controls into a storefront organism.
 
 **One hundred and thirteenth checkpoint verified:** StorefrontAccountTabs is extracted under
-`apps/storefront/app/organisms/` with explicit items/value/change/label and selected-panel children.
+`apps/storefront/shell/organisms/` with explicit items/value/change/label and selected-panel children.
 It preserves the pill variant, scrolling list classes, panel class and child placement without
 adding a wrapper. View retains panel visibility/mapping; account/shared logic retains eligibility,
 allowed-tab selection/fallback, routing and state. Package Tabs retains ARIA links, roving focus and
@@ -2806,7 +2805,7 @@ verified against actual PNG bytes. English/Persian phone, Persian tablet, Englis
 TV captures were viewed. Next: extract account session action into a storefront organism.
 
 **One hundred and fourteenth checkpoint verified:** StorefrontAccountSessionAction is extracted
-under `apps/storefront/app/organisms/` with an explicit label and sign-out callback. It preserves the ghost
+under `apps/storefront/shell/organisms/` with an explicit label and sign-out callback. It preserves the ghost
 Button, leading log-out icon, label fragment and header placement without adding a wrapper.
 View retains localized copy; account/shared logic retains session removal and home navigation.
 Package Button retains semantics, focus and activation. No state, effects, browser APIs or session
@@ -2830,7 +2829,7 @@ English/Persian phone, Persian tablet, English desktop and Persian TV captures w
 Next: extract account feedback into a storefront organism.
 
 **One hundred and fifteenth checkpoint verified:** StorefrontAccountFeedback is extracted under
-`apps/storefront/app/organisms/` with an explicit notice. It preserves the always-mounted paragraph,
+`apps/storefront/shell/organisms/` with an explicit notice. It preserves the always-mounted paragraph,
 status role, text classes and notice fragment without adding a wrapper. View/layout retain feedback
 placement after the tabs; account/shared logic retains localized messages, save-success feedback,
 failure clearing, persistence and customer state. Page/editor error alerts retain their separate
@@ -2854,7 +2853,7 @@ English desktop and Persian TV captures were viewed. Next: extract account notic
 organism.
 
 **One hundred and sixteenth checkpoint verified:** StorefrontAccountNotices is extracted under
-`apps/storefront/app/organisms/` with an explicit save error. It preserves the danger Alert and title
+`apps/storefront/shell/organisms/` with an explicit save error. It preserves the danger Alert and title
 without adding a wrapper. View retains the exact `saveError && !formOpen` visibility condition;
 View/layout retain notices placement before the tabs. Account/shared logic retains localized error
 state, storage mutations and retry/clearing. StorefrontAccountEditorDialog retains editor alerts;
@@ -2884,7 +2883,7 @@ English tablet editor, Persian tablet page, English desktop and Persian TV captu
 Next: extract account balance panel composition into a storefront organism.
 
 **One hundred and seventeenth checkpoint verified:** StorefrontAccountBalancePanel is extracted
-under `apps/storefront/app/organisms/` with explicit overview, top-up, optional checkout-return and history
+under `apps/storefront/shell/organisms/` with explicit overview, top-up, optional checkout-return and history
 descriptors. It preserves the balance wrapper/classes, overview/top-up/return/history order and
 secondary return link with leading arrow-left icon, reusing the three existing balance organisms.
 View retains tab visibility, localized mapping, list normalization and return eligibility; conditional
@@ -2943,7 +2942,7 @@ Persian tablet tabs, English desktop reminder save and Persian TV tabs captures 
 Next: extract sign-in heading into a storefront organism.
 
 **One hundred and nineteenth checkpoint verified:** StorefrontSigninHeading is extracted under
-`apps/storefront/app/organisms/` with explicit title, accent and introduction text, shared by phone and
+`apps/storefront/shell/organisms/` with explicit title, accent and introduction text, shared by phone and
 code steps. It preserves the single h1, title trailing space, semantic em/accent classes, intro
 paragraph/classes and direct sibling order without adding a wrapper. View retains step visibility,
 localized text mapping and code-message phone bidi isolates. Sign-in/shared logic retains validation,
@@ -2969,7 +2968,7 @@ Persian phone code, Persian tablet initial, English desktop code and Persian TV 
 viewed. Next: extract sign-in phone controls into a storefront organism.
 
 **One hundred and twentieth checkpoint verified:** StorefrontSigninPhoneControls is extracted
-under `apps/storefront/app/organisms/` with explicit problems, phone and send descriptors. It preserves
+under `apps/storefront/shell/organisms/` with explicit problems, phone and send descriptors. It preserves
 the error-summary/input IDs, placeholder, controlled label/value/change/error props and primary
 large block send button, returning a fragment without adding a wrapper. View retains phone-step
 visibility, localized mapping, heading and policy links. Sign-in/shared logic retains phone state,
@@ -2996,7 +2995,7 @@ Persian tablet back, English desktop initial and Persian TV invalid captures wer
 Next: extract sign-in code controls into a storefront organism.
 
 **One hundred and twenty-first checkpoint verified:** StorefrontSigninCodeControls is extracted
-under `apps/storefront/app/organisms/` with explicit problems, code and verify descriptors. It preserves
+under `apps/storefront/shell/organisms/` with explicit problems, code and verify descriptors. It preserves
 the error-summary/input IDs, five-digit length, label/value/change/complete/error/hint props and
 primary large block verify button, returning a fragment without adding a wrapper. View retains
 code-step visibility, localized mapping, heading, resend feedback and change-number action.
@@ -3027,7 +3026,7 @@ phone partial, Persian tablet reset and Persian TV initial captures were also vi
 Next: extract sign-in resend controls into a storefront organism.
 
 **One hundred and twenty-second checkpoint verified:** StorefrontSigninResend is extracted under
-`apps/storefront/app/organisms/` with explicit seconds, resend callback and status text. It preserves the
+`apps/storefront/shell/organisms/` with explicit seconds, resend callback and status text. It preserves the
 wrapper/classes, package ResendCode props, child order and always-mounted status paragraph.
 View retains code-step visibility and mapping; sign-in/shared logic retains wait configuration,
 code/error reset, feedback state and code-field focus. Package ResendCode retains wall-clock timing,
@@ -3054,7 +3053,7 @@ ready, English desktop feedback and Persian TV ready-again captures were viewed.
 Next: extract sign-in policy links into a storefront organism.
 
 **One hundred and twenty-third checkpoint verified:** StorefrontSigninPolicies is extracted under
-`apps/storefront/app/organisms/` with explicit surrounding text and terms/privacy link descriptors.
+`apps/storefront/shell/organisms/` with explicit surrounding text and terms/privacy link descriptors.
 It preserves the paragraph/classes, native anchors, underline classes, fragment/text spacing and
 terms-before-privacy order without adding a wrapper. View retains phone-step visibility and localized
 mapping; sign-in/shared logic retains destinations, and the shared shell/router retains interception,
@@ -3080,7 +3079,7 @@ Persian phone invalid, Persian tablet back, English desktop initial and Persian 
 were viewed. Next: extract sign-in completion into a storefront organism.
 
 **One hundred and twenty-fourth checkpoint verified:** StorefrontSigninCompletion is extracted
-under `apps/storefront/app/organisms/` with explicit title/accent/body, independent checkout/non-checkout
+under `apps/storefront/shell/organisms/` with explicit title/accent/body, independent checkout/non-checkout
 flags and checkout/account descriptors. It preserves check/accent EmptyState feedback with h1,
 the action wrapper/classes, conditional branch order, primary checkout link with trailing arrow-right,
 ghost account alternative and ordinary primary account link. It returns a fragment without adding
@@ -3111,7 +3110,7 @@ checkout and Persian tablet checkout-actions captures were also viewed.
 Next: extract sign-in change-number action into a storefront organism.
 
 **One hundred and twenty-fifth checkpoint verified:** StorefrontSigninChangeNumber is extracted
-under `apps/storefront/app/organisms/` with an explicit label and callback. It preserves the ghost Button,
+under `apps/storefront/shell/organisms/` with an explicit label and callback. It preserves the ghost Button,
 leading arrow-left icon and label fragment without adding a wrapper. View retains code-step
 visibility, localized copy and placement after resend controls. Sign-in/shared logic retains the
 phone-step return, phone retention and code/resent reset; package Button retains semantics and
@@ -3171,7 +3170,7 @@ checkout and English desktop ordinary captures were also viewed.
 Next: extract tracking lookup into a storefront organism.
 
 **One hundred and twenty-seventh checkpoint verified:** StorefrontTrackLookup is extracted under
-`apps/storefront/app/organisms/` with explicit heading, failure, order-number, phone, submit and browse
+`apps/storefront/shell/organisms/` with explicit heading, failure, order-number, phone, submit and browse
 descriptors. It preserves the native form/classes/onSubmit/noValidate, h1/accent trailing space and
 intro, warning wrapper/focus target, required field IDs/native props, primary large block submit
 with package-search icon and ghost shop link, without adding a wrapper. View retains lookup
@@ -3201,7 +3200,7 @@ pixels were checked and all three differing pairs viewed without a visible layou
 phone mismatch was also viewed. Next: extract tracking order heading into a storefront organism.
 
 **One hundred and twenty-eighth checkpoint verified:** extracted StorefrontTrackHeading under
-`apps/storefront/app/organisms/` with explicit eyebrow, title, accent and intro props. It preserves the
+`apps/storefront/shell/organisms/` with explicit eyebrow, title, accent and intro props. It preserves the
 order eyebrow, single h1 with semantic em/accent and trailing space, status introduction, classes
 and sibling order without adding a wrapper. View retains order visibility, localized mapping and
 the pending-payment notice. Tracking logic retains order selection, status normalization/copy and
@@ -3225,7 +3224,7 @@ checked; no screenshot baselines or tolerances changed.
 Next: extract tracking pending-payment notice into a storefront organism.
 
 **One hundred and twenty-ninth checkpoint verified:** extracted StorefrontTrackPendingNotice
-under `apps/storefront/app/organisms/` with explicit title/body props. It preserves the measure-width
+under `apps/storefront/shell/organisms/` with explicit title/body props. It preserves the measure-width
 wrapper, neutral package Alert, clock icon, status semantics and message body without adding markup.
 View retains order/pending visibility and localized mapping; tracking logic retains payment-method/
 status eligibility, localized message selection, last-four/contact formatting and bidi isolation.
@@ -3246,7 +3245,7 @@ tolerances changed. The full browser/device and TV spatial-navigation suites and
 testing were not run. Next: extract tracking progress timeline into a storefront organism.
 
 **One hundred and thirtieth checkpoint verified:** extracted StorefrontTrackProgress under
-`apps/storefront/app/organisms/` with explicit steps/current/status/label/doneLabel props. It preserves
+`apps/storefront/shell/organisms/` with explicit steps/current/status/label/doneLabel props. It preserves
 the package Card with padding 24 and OrderTimeline, including the empty card when cancelled
 progress renders nothing. View retains order visibility and mapping. Tracking logic retains status
 normalization, current step, active/done/cancelled state and localized labels/times; package
@@ -3272,7 +3271,7 @@ checked and both differing pairs viewed without a visible layout shift. No basel
 changed. Next: extract tracking delivery photo into a storefront organism.
 
 **One hundred and thirty-first checkpoint verified:** extracted StorefrontTrackDeliveryPhoto
-under `apps/storefront/app/organisms/` with explicit src/placeholderLabel/alt/caption props. It preserves
+under `apps/storefront/shell/organisms/` with explicit src/placeholderLabel/alt/caption props. It preserves
 the figure/frame/caption classes, semantic figcaption and package ArchFrame with 4/5 ratio, soft
 shape and product tone, without adding a wrapper. View retains order/delivered visibility and
 localized mapping; tracking logic retains status interpretation and photo selection. Package
@@ -3296,7 +3295,7 @@ device and TV spatial-navigation suites and assistive-technology testing were no
 Next: extract tracking order details into a storefront organism.
 
 **One hundred and thirty-second checkpoint verified:** extracted StorefrontTrackOrderDetails
-under `apps/storefront/app/organisms/` with an explicit rows prop. It preserves the sunken package Card
+under `apps/storefront/shell/organisms/` with an explicit rows prop. It preserves the sunken package Card
 with padding 20 and DetailList without adding a wrapper. View retains order visibility and row
 mapping; tracking/shared logic retain delivery, zone, schedule, recipient, gift-message and payment
 formatting/localization. Package DetailList retains definition-list semantics, decorative icons and
@@ -3320,7 +3319,7 @@ changed. The full browser/device and TV spatial-navigation suites and assistive-
 were not run. Next: extract tracking order actions into a storefront organism.
 
 **One hundred and thirty-third checkpoint verified:** extracted StorefrontTrackOrderActions
-under `apps/storefront/app/organisms/` with explicit nullable contact and controlled repeat/lookup
+under `apps/storefront/shell/organisms/` with explicit nullable contact and controlled repeat/lookup
 descriptors. It preserves the flex/wrap container, primary external contact link/icon/rel/target,
 secondary repeat-order link/icon/href/callback and ghost lookup button/icon without adding markup.
 View retains order/contact visibility and localized descriptor mapping; tracking/shared logic retain
@@ -3383,7 +3382,7 @@ action captures were viewed. No styles, screenshot baselines or tolerances chang
 Next: extract tracking order summary into a storefront organism.
 
 **One hundred and thirty-fifth checkpoint verified:** extracted StorefrontTrackOrderSummary
-under `apps/storefront/app/organisms/` with explicit title/lines/sums props. It preserves the package Card
+under `apps/storefront/shell/organisms/` with explicit title/lines/sums props. It preserves the package Card
 with padding 20 and OrderSummary without adding a wrapper. View retains order visibility and
 localized prop mapping; tracking/shared logic retain order selection, line images/tokens/configuration,
 quantities/card notes/prices and total/discount/balance formatting. Package OrderSummary retains
@@ -3411,7 +3410,7 @@ and TV spatial-navigation suites and assistive-technology testing were not run.
 Next: extract tracking repeat-order review dialog into a storefront organism.
 
 **One hundred and thirty-sixth checkpoint verified:** extracted StorefrontTrackReorderDialog
-under `apps/storefront/app/organisms/` with explicit open/onClose/title/cancelLabel, confirm/choice,
+under `apps/storefront/shell/organisms/` with explicit open/onClose/title/cancelLabel, confirm/choice,
 intro/changes/empty descriptors. It preserves the package Dialog/footer, ghost cancel and controlled
 confirmation button, add/replace RadioGroup, no-bag intro, warning list and unavailable-order message.
 View maps localized copy, visibility, selection and confirmation descriptors and no longer imports
@@ -3468,7 +3467,7 @@ viewed. Original and repeated captures remain separate. No styles, baselines or 
 Next: extract saved-page heading into a storefront organism.
 
 **One hundred and thirty-eighth checkpoint verified:** extracted StorefrontSavedHeading under
-`apps/storefront/app/organisms/` with explicit eyebrow/title/accent props. It preserves the package
+`apps/storefront/shell/organisms/` with explicit eyebrow/title/accent props. It preserves the package
 SectionHeader at h1 level, count eyebrow and semantic title accent without adding a wrapper.
 View retains localized prop mapping; saved/shared logic retain list membership, count wording/locale
 formatting, removal/Undo, persistence and focus. Package SectionHeader retains heading semantics;
@@ -3490,7 +3489,7 @@ suites and assistive-technology testing were not run.
 Next: extract saved-page removal notice into a storefront organism.
 
 **One hundred and thirty-ninth checkpoint verified:** extracted StorefrontSavedRemovalNotice
-under `apps/storefront/app/organisms/` with explicit message and Undo label/callback props. It preserves
+under `apps/storefront/shell/organisms/` with explicit message and Undo label/callback props. It preserves
 the notice wrapper, package Alert title/action slot, secondary Undo button, vf-saved-undo ID and
 keep-focus attribute without adding markup. View retains removed-message visibility and localized
 mapping; saved/shared logic retain last-removed state, additive restoration, persistence,
@@ -3516,7 +3515,7 @@ Full browser/device and TV spatial-navigation suites and assistive-technology te
 Next: extract saved-page product results into a storefront organism.
 
 **One hundred and fortieth checkpoint verified:** extracted StorefrontSavedResults under
-`apps/storefront/app/organisms/` with explicit products and photo/unsave labels. It preserves product
+`apps/storefront/shell/organisms/` with explicit products and photo/unsave labels. It preserves product
 order and indexed fragment keys, card images/name/subtitle/price/stock/badge, accent badge tone,
 soft frame, favorite state, removal callback and product href without adding a DOM wrapper.
 View retains results visibility, list normalization and localized mapping; saved/shared logic retain
@@ -3540,7 +3539,7 @@ assistive-technology testing were not run.
 Next: extract saved-page empty state into a storefront organism.
 
 **One hundred and forty-first checkpoint verified:** extracted StorefrontSavedEmpty under
-`apps/storefront/app/organisms/` with explicit title/accent/body and browse href/label props. It preserves
+`apps/storefront/shell/organisms/` with explicit title/accent/body and browse href/label props. It preserves
 the heart package EmptyState and primary browse link as siblings without adding a DOM wrapper.
 View retains empty visibility and localized mapping and no longer imports DS directly; saved/shared
 logic retain membership, removal/Undo, persistence and navigation values. Package EmptyState/Button
@@ -3582,7 +3581,7 @@ browser/device and TV spatial-navigation suites and assistive-technology testing
 Next: extract search-page heading into a storefront organism.
 
 **One hundred and forty-third checkpoint verified:** extracted StorefrontSearchHeading under
-`apps/storefront/app/organisms/` with an explicit title prop. It preserves the display h1 and its child
+`apps/storefront/shell/organisms/` with an explicit title prop. It preserves the display h1 and its child
 without adding a wrapper. View retains localized mapping; search/shared logic retain matching,
 query and language URL/history state, reporting, navigation and focus. Layout retains heading
 placement. Inlining the extracted heading reproduces the previous View exactly. No state,
@@ -3606,7 +3605,7 @@ spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page query controls into a storefront organism.
 
 **One hundred and forty-fourth checkpoint verified:** extracted StorefrontSearchControls under
-`apps/storefront/app/organisms/` with explicit query (label, placeholder, value, onChange) and close
+`apps/storefront/shell/organisms/` with explicit query (label, placeholder, value, onChange) and close
 (label, href) descriptors. It preserves the controlled package SearchField, vf-q focus target,
 secondary close IconButton/link, responsive row/input wrappers, classes and control order.
 StorefrontSearchLayout now places a controls slot; View maps localized descriptors and callbacks.
@@ -3630,7 +3629,7 @@ spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page popular terms into a storefront organism.
 
 **One hundred and forty-fifth checkpoint verified:** extracted StorefrontSearchPopular under
-`apps/storefront/app/organisms/` with explicit title and normalized terms (label, pick). It preserves
+`apps/storefront/shell/organisms/` with explicit title and normalized terms (label, pick). It preserves
 the eyebrow, wrapping chip row, indexed fragment keys, term order and package Chip callbacks
 without adding a DOM wrapper. View retains empty-query visibility, localized title mapping and
 list normalization; search/shared logic retain term descriptors, matching, URL/history updates,
@@ -3655,7 +3654,7 @@ spatial-navigation suites and assistive-technology testing were not run.
 Next: extract search-page results into a storefront organism.
 
 **One hundred and forty-sixth checkpoint verified:** extracted StorefrontSearchResults under
-`apps/storefront/app/organisms/` with explicit countLabel and normalized result descriptors. It preserves
+`apps/storefront/shell/organisms/` with explicit countLabel and normalized result descriptors. It preserves
 the count/status, result order, indexed fragment keys, product hrefs, soft thumbnail frames,
 image alt/sizes, LTR product codes, localized subtitles, prices and responsive classes without
 adding a DOM wrapper. View retains results visibility, count mapping and list normalization;
@@ -3686,7 +3685,7 @@ browser/device and TV spatial-navigation suites and assistive-technology testing
 Next: extract search-page empty state into a storefront organism.
 
 **One hundred and forty-seventh checkpoint verified:** extracted StorefrontSearchEmpty under
-`apps/storefront/app/organisms/` with explicit countLabel/title/accent/body, retry (label, onClick) and
+`apps/storefront/shell/organisms/` with explicit countLabel/title/accent/body, retry (label, onClick) and
 browse (label, href) props. It preserves the zero-result status/content siblings, search-x package
 EmptyState, centered content and wrapping action row, primary retry button and secondary shop link
 without adding a DOM wrapper. View retains no-result visibility/localized mapping and no longer
@@ -3746,7 +3745,7 @@ browser/device and TV spatial-navigation suites and assistive-technology testing
 Next: extract contact-page heading into a storefront organism.
 
 **One hundred and forty-ninth checkpoint verified:** extracted StorefrontContactHeading under
-`apps/storefront/app/organisms/` with explicit eyebrow/title/accent/intro props. It preserves the original
+`apps/storefront/shell/organisms/` with explicit eyebrow/title/accent/intro props. It preserves the original
 eyebrow, spaced accented h1 and introduction as siblings with unchanged classes and no additional
 wrapper. View retains localized mapping; contact/shared logic retain customer prefill, validation,
 submission, map fallback, navigation and focus. Layout retains header placement/wrapper. No state,
@@ -3768,7 +3767,7 @@ full browser/device and TV spatial-navigation suites and assistive-technology te
 Next: extract contact-page studio details into a storefront organism.
 
 **One hundred and fiftieth checkpoint verified:** extracted StorefrontContactDetails under
-`apps/storefront/app/organisms/` with explicit rows, WhatsApp/phone/Instagram, map and directions
+`apps/storefront/shell/organisms/` with explicit rows, WhatsApp/phone/Instagram, map and directions
 descriptors. It preserves the sunken details card, action order/classes, safe external-link
 attributes, vf-contact-map target, map ErrorBoundary and original map props/callbacks without
 adding a DOM wrapper. View maps availability/localized descriptors/callbacks; contact/shared logic
@@ -3800,7 +3799,7 @@ assistive-technology testing were not run.
 Next: extract contact-page form controls into a storefront organism.
 
 **One hundred and fifty-first checkpoint verified:** extracted StorefrontContactFormControls under
-`apps/storefront/app/organisms/` with explicit problems, name/phone/email/message descriptors and send
+`apps/storefront/shell/organisms/` with explicit problems, name/phone/email/message descriptors and send
 (label, onClick, busy). It preserves summary/field IDs, autocomplete, email type/direction, required
 multiline message, hint/error wiring, field order, wrapper classes and large primary send button
 with loading/disabled state. View retains not-sent visibility, localized descriptor/callback mapping
@@ -3874,7 +3873,7 @@ spatial-navigation suites and assistive-technology testing were not run.
 Next: extract contact-page completion into a storefront organism.
 
 **One hundred and fifty-third checkpoint verified:** extracted StorefrontContactCompletion under
-`apps/storefront/app/organisms/` with explicit title/body and edit (label, onClick) props. It preserves the
+`apps/storefront/shell/organisms/` with explicit title/body and edit (label, onClick) props. It preserves the
 vf-contact-success focus target, tabindex, named region, success Alert, secondary return-to-form
 button and original wrappers/classes without adding a DOM wrapper. View retains sent visibility
 and localized demo/live copy mapping; contact/shared logic retain submission outcomes, busy/errors,
@@ -3903,7 +3902,7 @@ suites and assistive-technology testing were not run.
 Next: extract contact-page feedback into a storefront organism.
 
 **One hundred and fifty-fourth checkpoint verified:** extracted StorefrontContactFeedback under
-`apps/storefront/app/organisms/` with an explicit message prop. It preserves the package danger Alert's
+`apps/storefront/shell/organisms/` with an explicit message prop. It preserves the package danger Alert's
 role, decorative icon, title and original markup without adding a wrapper. View retains API-error
 visibility/message mapping and no longer imports DS directly. Contact/shared logic retain localized
 failure wording, submission, busy/errors, drafts and clearing on edit/retry. Package Alert retains
@@ -6144,7 +6143,7 @@ npm run new:component -- Name --level organisms --no-css
 
 One source folder holds the implementation, declarations, CSS (when needed), README, built-in
 wording and browser fixture/spec. Use direct relative imports between components. The app imports
-through `apps/storefront/app/ds.js`; package consumers still import named exports from
+through `apps/storefront/shell/ds.js`; package consumers still import named exports from
 `@vendra/design-system`. There are no new per-layer package entry points.
 
 The generator requires a layer and rejects duplicate component names. `npm test` checks that
@@ -6164,7 +6163,7 @@ npm --prefix apps/storefront run test:e2e -- --workers=2
 ```
 
 Run the migrated components' own browser specs first for fast feedback, then the broader suite.
-After moving component folders, restart an existing Vite preview before browser verification;
+After moving component folders, restart the storefront development server before browser verification;
 its cached CSS import graph can retain paths from before the move.
 Review visual differences before changing baselines. Record the exact scope and failures; a
 focused run does not prove the complete screenshot or device suite. Never edit generated `dist/`
@@ -6253,7 +6252,7 @@ AccountSessionAction, AccountTabs, ContactFeedback, ContactFormHeading, ErrorMes
 JournalPagination, JournalSearch, NotfoundMessage, NotfoundRecommendationHeading, PolicyNotice,
 ProductBreadcrumbs, SavedHeading, SearchHeading, ShopHeading, SigninChangeNumber,
 SiteCheckoutNotice, SiteIntegrationFeedback, TrackPendingNotice, WeddingsFeedback and
-WeddingsHeroMedia. Fifteen small combinations move to `apps/storefront/app/molecules/`:
+WeddingsHeroMedia. Fifteen small combinations move to `apps/storefront/shell/molecules/`:
 AccountHeading, CheckoutHeading, JournalEmpty, JournalLoading, NotfoundActions, PostActions,
 PostLoading, PostMissing, SavedEmpty, SigninHeading, SigninPolicies, SigninResend,
 TrackOrderDetails, TrackProgress and WeddingsInquiryIntro. The identical CheckoutSummary and
@@ -6266,7 +6265,7 @@ Next: audit the 26–40 line organisms against the same rule; duplicated heading
 ## Stage 251 checkpoint: audit 26–40 line storefront organisms (#122)
 
 Stage 251 audits the 27 storefront organisms of 26–40 lines against the organism rule. Six small
-combinations move to `apps/storefront/app/molecules/`: BagHeading and PolicyHeading (heading
+combinations move to `apps/storefront/shell/molecules/`: BagHeading and PolicyHeading (heading
 markup), BagDeliveryIntro (ErrorSummary plus sign-in prompt), PresentationUnlock (Dialog plus
 CodeInput) and TrackOrderActions (button group). The identical compact/wide Stepper pairs of
 BagProgress and CheckoutProgress merge into the shared `StorefrontStepProgress` molecule; bag View
@@ -6300,7 +6299,7 @@ organism and 19 molecule folders. Root unit, typecheck and check pass.
 
 Stage 253 gives storefront UI the package's component-test pattern. A storefront fixture host
 (`apps/storefront/e2e/fixtures/storefront-component.html`) loads the storefront styles and renders
-`app/<layer>/<Name>/<Name>.fixture.jsx` inside VendraProvider; `openStorefrontComponent` and
+the named fixture from `features/` or `shell/` inside VendraProvider; `openStorefrontComponent` and
 `expectStorefrontAccessible` open it, and the `storefront-components` Playwright project runs the
 specs with the development suite. Six interaction-heavy organisms have fixtures and specs:
 CheckoutMethods, CheckoutReceipt, CheckoutSubmission, BagSchedule, AccountEditorDialog and

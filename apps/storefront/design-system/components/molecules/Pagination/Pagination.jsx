@@ -1,0 +1,121 @@
+'use client';
+
+import React from 'react';
+import {Button, Link} from 'react-aria-components';
+import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {cx} from '../../utils/cx.js';
+import {format} from '../../utils/format.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
+import {messages} from './messages.js';
+import {useMergedRef} from '../../utils/refs.js';
+
+// The pages to show: the first, the last, and `siblings` either side of the current one, with null
+// for each gap. A gap of one page shows that page instead.
+export function paginationRange(page, pageCount, siblings = 1) {
+  const shown = new Set([1, pageCount]);
+  for (let number = page - siblings; number <= page + siblings; number++)
+    if (number >= 1 && number <= pageCount) shown.add(number);
+  const numbers = [...shown].sort((a, b) => a - b);
+  const range = [];
+  numbers.forEach((number, index) => {
+    const previous = numbers[index - 1];
+    if (previous && number - previous === 2) range.push(previous + 1);
+    else if (previous && number - previous > 2) range.push(null);
+    range.push(number);
+  });
+  return range;
+}
+
+// Numbered pages for a list split across pages: previous, the page numbers (with gaps), next. The
+// current page is marked aria-current="page". With `href(page)` every page is a real link (it works
+// without JavaScript and lets crawlers reach every page); onChange(page) alone makes them buttons
+// that change the page in place. Numbers follow the page's language (Persian digits under fa).
+export function Pagination({
+  page,
+  pageCount,
+  href,
+  onChange,
+  siblings = 1,
+  label,
+  previousLabel,
+  nextLabel,
+  className,
+  style,
+  ref,
+  ...rest
+}) {
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
+  const text = useMessages(
+    'Pagination',
+    messages,
+    {label, previous: previousLabel, next: nextLabel},
+    locale
+  );
+  const language = useLocaleConfig(locale).code;
+  if (!(pageCount > 1)) return null;
+  const current = Math.min(Math.max(1, page), pageCount);
+  const control = (target, content, props) => {
+    const disabled = target < 1 || target > pageCount;
+    const onPress = () => !disabled && onChange && onChange(target);
+    return href ? (
+      <Link
+        {...props}
+        href={disabled ? undefined : href(target)}
+        isDisabled={disabled}
+        onClick={event => {
+          if (onChange && !disabled) {
+            event.preventDefault();
+            onChange(target);
+          }
+        }}
+      >
+        {content}
+      </Link>
+    ) : (
+      <Button {...props} isDisabled={disabled} onPress={onPress}>
+        {content}
+      </Button>
+    );
+  };
+  return (
+    <nav
+      {...rest}
+      ref={rootRef}
+      aria-label={text.label}
+      className={cx('ag-pages', className)}
+      style={style}
+    >
+      <ul className="ag-pages__list">
+        <li>
+          {control(current - 1, <Icon name="chevron-left" size={18} />, {
+            className: 'ag-pages__step',
+            'aria-label': text.previous
+          })}
+        </li>
+        {paginationRange(current, pageCount, siblings).map((number, index) => (
+          <li key={number == null ? 'gap' + index : number}>
+            {number == null ? (
+              <span className="ag-pages__gap" aria-hidden="true">
+                …
+              </span>
+            ) : (
+              control(number, format.number(number, language), {
+                className: cx('ag-pages__page', number === current && 'ag-pages__page--current'),
+                'aria-label': text.page.replace('{page}', format.number(number, language)),
+                'aria-current': number === current ? 'page' : undefined
+              })
+            )}
+          </li>
+        ))}
+        <li>
+          {control(current + 1, <Icon name="chevron-right" size={18} />, {
+            className: 'ag-pages__step',
+            'aria-label': text.next
+          })}
+        </li>
+      </ul>
+    </nav>
+  );
+}

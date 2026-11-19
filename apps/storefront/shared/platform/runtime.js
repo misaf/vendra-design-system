@@ -1,7 +1,7 @@
 // The storefront's runtime: the browser integrations and page-wide state every page, the shell and
 // the shared logic use, in one object that modules import instead of reading window globals.
-// app/runtime.js installs the API client and analytics (shared/services/integrations/runtime.js) and
-// app/theme.js the asset base and tenant loader, both before the first render. In the build's
+// shell/runtime.js installs the API client and analytics (shared/services/integrations/runtime.js) and
+// shell/tenant-theme.js the asset base and tenant loader, both before the first render. In the build's
 // prerender nothing is installed: the integrations stay null, and code that renders on the server
 // must not call them (effects and event handlers run in the browser only).
 
@@ -43,12 +43,14 @@
  * @property {any} payment Card helpers (shared/domain/payments.js: bankOf, luhn, setPayCard); null
  *   until installed (and on the server).
  * @property {string} assetBase Where product images, map scripts and tenant themes are served
- *   from (the build's base path); '' until app/theme.js sets it.
+ *   from (the build's base path); '' until shell/tenant-theme.js sets it.
  * @property {(tenant: string) => void} useTenant Loads a tenant's theme stylesheet; a no-op until
- *   app/theme.js installs the loader.
+ *   shell/tenant-theme.js installs the loader.
+ * @property {boolean} offlineDisplay Whether this build ships the offline display worker and manifest.
  * @property {string} tenant The tenant whose theme this document shows ('' before the first).
  * @property {boolean} viewed Whether this document has shown a page yet (SPA page views).
- * @property {'' | 'hydrated' | 'rendered'} rendered How app/main.jsx showed the page, for tests.
+ * @property {(() => void) | null} restoreSession Restore browser state after the first page hydrates.
+ * @property {'' | 'hydrated'} rendered Whether the Next.js page has hydrated, for browser tests.
  */
 
 /** @type {VfRuntime} */
@@ -58,7 +60,9 @@ export const vfRuntime = {
   payment: null,
   assetBase: '',
   useTenant: () => {},
+  offlineDisplay: false,
   tenant: '',
   viewed: false,
+  restoreSession: null,
   rendered: ''
 };

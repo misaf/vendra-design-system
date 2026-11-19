@@ -2,8 +2,8 @@ import {test, expect} from '@playwright/test';
 import {SITE} from './helpers.mjs';
 import {storefrontRoutes} from '../build/routes.mjs';
 
-// The production build prerenders every public address (build/vite.config.mjs): a first-time
-// visitor's browser adopts that markup (hydration, app/main.jsx) instead of rendering it again. A
+// The production build prerenders every public address (Next.js static export): a first-time
+// visitor's browser hydrates that markup with the App Router. A
 // difference between the build's render and the browser's first one (a clock, a stored value, an
 // origin) makes React log an error and render the page again: none may.
 test.skip(process.env.E2E_TARGET !== 'build', 'Only the production build is prerendered');
@@ -50,15 +50,13 @@ test('a page with no script shows its prerendered content and head', async ({bro
   await context.close();
 });
 
-test('a returning visitor gets the page rendered afresh in place of the prerendered one', async ({
-  page
-}) => {
+test('a returning visitor hydrates the page and restores the saved session', async ({page}) => {
   await page.goto(SITE + 'en/shop/');
   await page.waitForFunction(() => window.__vfRuntime?.rendered);
   // The site keeps its session in storage from the first visit on.
   await page.reload();
   await page.waitForFunction(() => window.__vfRuntime?.rendered);
-  expect(await page.evaluate(() => window.__vfRuntime?.rendered)).toBe('rendered');
+  expect(await page.evaluate(() => window.__vfRuntime?.rendered)).toBe('hydrated');
   await expect(page.locator('main h1')).toContainText('The shop');
 });
 

@@ -6,9 +6,13 @@
     "target": "es2023",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["es2023", "dom", "dom.iterable"],
     "types": ["react"]
   },
-  "include": ["../../packages/design-system/components/**/*.d.ts"]
+  "include": [
+    "design-system/components/**/*.d.ts",
+    "tests/fixtures/component-types.tsx",
+    "tests/fixtures/theme-types.mts"
+  ]
 }

@@ -20,8 +20,11 @@ async function payStep(page, fa) {
   await expect(page.locator('.vf-checkout-summary')).toBeVisible();
 }
 async function signIn(page, fa, phone) {
+  await expect(page).toHaveURL(/\/signin\/(?:\?|$)/);
+  const send = button(page, fa ? 'ارسال کد' : 'Send code');
+  await expect(send).toBeVisible();
   await page.locator('#vf-phone').fill(phone);
-  await button(page, fa ? 'ارسال کد' : 'Send code').click();
+  await send.click();
   await page.locator('#vf-code').fill('12345');
 }
 for (const lang of ['en', 'fa']) {
@@ -140,6 +143,8 @@ for (const lang of ['en', 'fa']) {
     await page
       .getByRole('link', {name: fa ? 'رفتن به حساب' : 'Go to my account', exact: true})
       .click();
+    await expect(page).toHaveURL(/\/account\/(?:\?|$)/);
+    await expect(button(page, fa ? 'خروج' : 'Sign out')).toBeVisible();
     await expect(page.locator('main')).not.toContainText('VN-51001');
     await page.reload();
     await expect.poll(() => page.evaluate(() => window.__vfSite?.state.orders)).toEqual([]);

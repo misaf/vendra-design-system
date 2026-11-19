@@ -1,5 +1,4 @@
-// Precompressed copies of the production build's text files (npm run build:app, from
-// vite.config.mjs): beside each script, stylesheet, page and data file it writes `<name>.br` (Brotli,
+// Precompressed copies of the Next.js export's text files. Beside each script, stylesheet, page and data file it writes `<name>.br` (Brotli,
 // best quality) and `<name>.gz` (gzip, level 9), so a host that serves precompressed files
 // (deployment/nginx.conf: brotli_static, gzip_static) sends them without compressing per request.
 // Fonts and photos are compressed already and are left alone, as are files under MIN_SIZE and copies

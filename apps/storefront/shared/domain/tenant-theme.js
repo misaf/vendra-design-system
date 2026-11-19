@@ -192,7 +192,7 @@
   const FONT_WEIGHT = '^[1-9]00(?: [1-9]00)?$';
   const FONT_KEYS = ['family', 'licence', 'files', 'weight', 'body'];
   // Where the generated CSS finds the deployment root: the build writes
-  // packages/design-system/tokens/tenants/<slug>.css, four folders below it.
+  // apps/storefront/design-system/tokens/tenants/<slug>.css, four folders below it.
   const ASSET_BASE = /^(?:(?:https:\/\/[\w.-]+(?::\d+)?)?\/(?:[\w.~-]+\/)*|(?:\.\.\/)*)$/;
   const assetBase = base => {
     if (typeof base !== 'string' || !ASSET_BASE.test(base))
@@ -270,7 +270,7 @@
   }
 
   // The same rules as validate() as a JSON Schema (draft 2020-12), so a backend or an admin form
-  // can check a spec without running this file. Published as @vendra/design-system/theme.schema.json.
+  // can check a spec without running this file. Published as the storefront theme generator.schema.json.
   // Other top-level keys (such as brand) are allowed, as validate() allows them.
   function schema() {
     const hex = {type: 'string', pattern: '^#[0-9A-Fa-f]{6}$'};

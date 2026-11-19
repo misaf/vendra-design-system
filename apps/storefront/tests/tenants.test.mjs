@@ -26,7 +26,10 @@ function distance(a, b) {
 }
 
 // 1. The Vendra spec reproduces the hand-tuned default palette in tokens/colors.css.
-const colors = fs.readFileSync(path.join(root, 'packages/design-system/tokens/colors.css'), 'utf8');
+const colors = fs.readFileSync(
+  path.join(root, 'apps/storefront/design-system/tokens/colors.css'),
+  'utf8'
+);
 const vendra = theme.tokens(theme.VENDRA).ramps;
 for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
   const declared = colors.match(new RegExp(name + ':(#[0-9A-F]{6})', 'i'))[1];
@@ -38,7 +41,7 @@ for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
 
 // 2. Generation is deterministic, keeps the base colours and applies overrides.
 const clay = JSON.parse(
-  fs.readFileSync(path.join(root, 'packages/design-system/tokens/tenants/clay.json'), 'utf8')
+  fs.readFileSync(path.join(root, 'apps/storefront/design-system/tokens/tenants/clay.json'), 'utf8')
 );
 assert.equal(theme.css('clay', clay), theme.css('clay', clay));
 const ramps = theme.tokens(clay).ramps;
@@ -115,10 +118,13 @@ const accepts = spec => {
 };
 assert.deepEqual(
   JSON.parse(
-    fs.readFileSync(path.join(root, 'packages/design-system/dist/theme.schema.json'), 'utf8')
+    fs.readFileSync(
+      path.join(root, 'apps/storefront/design-system/tokens/theme.schema.json'),
+      'utf8'
+    )
   ),
   schema,
-  'dist/theme.schema.json is current (run the build)'
+  'tokens/theme.schema.json is current (run the build)'
 );
 assert.deepEqual(
   schema.properties.character.properties,

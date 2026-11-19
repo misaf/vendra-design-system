@@ -6,7 +6,7 @@ import vm from 'node:vm';
 const root = path.resolve(import.meta.dirname, '../../..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 import {generate} from '../build/generate.mjs';
-import {pageScript, sharedLogic} from './page-script.mjs';
+import {featureFiles, pageScript, sharedLogic} from './page-script.mjs';
 generate(true);
 // Sets the test page's address: a path under the app, with its query.
 function setAddress(ctx, url) {
@@ -271,10 +271,10 @@ function exposesMain(file, visited = new Set()) {
   visited.add(file);
   const code = fs.readFileSync(file, 'utf8');
   if (/<main\s+id="main"/.test(code)) return true;
-  const layouts = path.join(root, 'apps/storefront/app/layouts') + path.sep;
   for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"]([^'"]+\.jsx)['"]/g)) {
     const importedFile = path.resolve(path.dirname(file), match[2]);
-    if (!importedFile.startsWith(layouts)) continue;
+    const source = path.relative(root, importedFile).split(path.sep).join('/');
+    if (!/^apps\/storefront\/(?:shell|features\/[^/]+)\/layouts\//.test(source)) continue;
     for (const imported of match[1].split(',')) {
       const [name, localName = name] = imported.trim().split(/\s+as\s+/);
       if (new RegExp('<' + localName + '\\b').test(code) && exposesMain(importedFile, visited))
@@ -285,13 +285,14 @@ function exposesMain(file, visited = new Set()) {
 }
 
 let parsed = 0;
-for (const folder of fs
-  .readdirSync(path.join(root, 'apps/storefront/pages'))
-  .map(name => 'pages/' + name)) {
+for (const folder of [
+  ...fs.readdirSync(path.join(root, 'apps/storefront/features')).map(name => 'features/' + name),
+  'shell/session'
+]) {
   const script = pageScript(folder);
-  if (folder !== 'pages/site')
+  if (folder !== 'shell/session')
     assert.ok(
-      exposesMain(path.join(root, 'apps/storefront', folder, 'View.jsx')),
+      exposesMain(path.join(root, 'apps/storefront', folder, featureFiles(folder).view)),
       folder + ' must expose the skip-link destination'
     );
   const {ctx: c, history} = context();
@@ -301,13 +302,13 @@ for (const folder of fs
   const values = logic.renderVals();
   assert.ok(values);
   parsed++;
-  if (['pages/bag', 'pages/checkout'].includes(folder))
+  if (['features/bag', 'features/checkout'].includes(folder))
     assert.equal(
       values.totalLabel,
       values.sums.at(-1).value,
       'Sticky action total must match the order summary'
     );
-  if (folder === 'pages/site') {
+  if (folder === 'shell/session') {
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();
@@ -415,7 +416,7 @@ for (const folder of fs
     assert.ok(!('mob' in values) && !('desk' in values), 'no JavaScript layout breakpoint');
     assert.ok(values.href.shop.endsWith('/shop/'));
   }
-  if (folder === 'pages/faq') {
+  if (folder === 'features/faq') {
     const fa = new c.Logic({lang: 'fa', tenant: 'clay'}).renderVals();
     assert.equal(fa.dir, 'rtl');
     assert.equal(fa.tenant, 'clay');
@@ -437,7 +438,10 @@ function loadPage(name, props = {}, search = '') {
   const {ctx: c, history} = context();
   setAddress(c, search);
   vm.runInContext(sharedLogic, c);
-  vm.runInContext(pageScript('pages/' + name) + '\nthis.Logic=Component;', c);
+  vm.runInContext(
+    pageScript(name === 'site' ? 'shell/session' : 'features/' + name) + '\nthis.Logic=Component;',
+    c
+  );
   return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
 }
 // Mount must persist a consumed handover before the visitor makes any state edit.
@@ -1005,20 +1009,14 @@ console.log(
 // The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
 // Layout never branches on a JavaScript breakpoint: the shell and every view render all their
 // structures and CSS picks one, so the first paint already matches the final layout.
-for (const file of [
-  ...fs
-    .readdirSync(path.join(root, 'apps/storefront/app'), {recursive: true})
-    .filter(file => file.endsWith('.jsx'))
-    .map(file => 'apps/storefront/app/' + file.split(path.sep).join('/')),
-  ...fs
-    .readdirSync(path.join(root, 'apps/storefront/pages'))
-    .map(name => 'pages/' + name)
-    .flatMap(folder => [
-      'apps/storefront/' + folder + '/View.jsx',
-      'apps/storefront/' + folder + '/logic.js'
-    ])
-    .filter(file => fs.existsSync(path.join(root, file)))
-])
+for (const file of ['shell', 'features'].flatMap(folder =>
+  fs
+    .readdirSync(path.join(root, 'apps/storefront', folder), {recursive: true})
+    .filter(
+      file => /(?:\.jsx|(?:^|[\\/])use[A-Z]\w*\.js)$/.test(file) && !file.endsWith('.fixture.jsx')
+    )
+    .map(file => path.join('apps/storefront', folder, file))
+))
   assert.doesNotMatch(read(file), /\b(v|S)\.(mob|desk|compactShop)\b/, file);
 console.log('Passed: no view lays out from a JavaScript breakpoint.');
 
@@ -2187,7 +2185,7 @@ Promise.all([
       );
     }
   }
-  const copy = read('apps/storefront/pages/post/copy.js');
+  const copy = read('apps/storefront/features/post/copy.js');
   for (const word of ['autumn', 'October', 'پاییز', 'مهر'])
     assert.ok(!copy.includes(word), 'the post page copy carries no article text: ' + word);
   const nginx = read('apps/storefront/deployment/nginx.conf');

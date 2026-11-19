@@ -39,19 +39,21 @@ for (const lang of ['en', 'fa'])
           if (
             document.readyState === 'loading' ||
             !document.querySelector('.vf-shell-header') ||
-            !document.querySelector('.vf-shell-bottom-bar')
-          )
+            !document.querySelector('.vf-shell-bottom-bar') ||
+            [...document.querySelectorAll('link[rel="stylesheet"]')].some(link => !link.sheet)
+          ) {
+            requestAnimationFrame(recordFirstLayout);
             return;
-          observer.disconnect();
-          document.removeEventListener('DOMContentLoaded', recordFirstLayout);
+          }
           window.__firstLayout = window.__shellLayout();
         };
-        const observer = new MutationObserver(recordFirstLayout);
-        observer.observe(document, {childList: true, subtree: true});
-        document.addEventListener('DOMContentLoaded', recordFirstLayout, {once: true});
+        // Next.js loads its scripts asynchronously. DOMContentLoaded can fire while the
+        // render-blocking stylesheets are still loading, before the browser can paint the shell.
+        requestAnimationFrame(recordFirstLayout);
       }, SHELL_BOXES);
       await page.setViewportSize({width, height: 900});
       await openSite(page, 'home', lang);
+      await page.waitForFunction(() => window.__firstLayout);
       const [first, loaded, shifts] = await page.evaluate(() => [
         window.__firstLayout,
         window.__shellLayout(),

@@ -5,12 +5,12 @@ import os from 'node:os';
 import path from 'node:path';
 import {checkDependencies} from '../../../tools/app-dependencies.mjs';
 const repo = path.resolve(import.meta.dirname, '../../..');
-const ui = 'apps/storefront/app/organisms/Card/Card.jsx';
+const ui = 'apps/storefront/shell/organisms/Card/Card.jsx';
 const service = 'apps/storefront/shared/services/integrations/api.js';
-const bridge = 'apps/storefront/app/ds.js';
+const bridge = 'apps/storefront/shell/ds.js';
 const carousel = 'apps/storefront/shared/ui/collection-carousel.jsx';
 const qr = 'apps/storefront/shared/ui/qr.js';
-const component = 'packages/design-system/components/organisms/Carousel/Carousel.jsx';
+const component = 'apps/storefront/design-system/components/organisms/Carousel/Carousel.jsx';
 const cases = [];
 function check(name, sources, expected) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-app-dependencies-'));
@@ -37,12 +37,12 @@ const allowed = {
     import {CollectionCarousel} from '../../../shared/ui/collection-carousel.jsx';
     import {vfQrPath} from '../../../shared/ui/qr.js';
     import {Label} from '../../molecules/Label';`,
-  [bridge]: `export {Carousel} from '../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
+  [bridge]: `export {Carousel} from '../design-system/components/organisms/Carousel/Carousel.jsx';`,
   [component]: 'export const Carousel = () => null;',
-  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
+  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../design-system/components/organisms/Carousel/Carousel.jsx';`,
   [qr]: `import qrcode from 'qrcode-generator'; export const vfQrPath = qrcode;`,
-  'apps/storefront/app/molecules/Label/index.jsx': `export const Label = () => null;`,
-  'apps/storefront/app/layouts/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
+  'apps/storefront/shell/molecules/Label/index.jsx': `export const Label = () => null;`,
+  'apps/storefront/shell/layouts/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
 };
 check('UI helpers, bridge, lower layer and index resolution', allowed);
 for (const [name, statement] of [
@@ -70,10 +70,10 @@ check(
   /forbidden UI dependency/
 );
 check(
-  'package cannot import storefront services',
+  'design system cannot import storefront services',
   {
     ...allowed,
-    [component]: `import '../../../../../apps/storefront/shared/services/integrations/api.js';`,
+    [component]: `import '../../../../shared/services/integrations/api.js';`,
     [service]: ''
   },
   /outside the migrated design system/
@@ -82,7 +82,7 @@ check(
   'layout cannot own content organisms',
   {
     ...allowed,
-    'apps/storefront/app/layouts/Panel/Panel.jsx': `import '../../organisms/Card/Card.jsx';`
+    'apps/storefront/features/example/layouts/Panel/Panel.jsx': `import '../../../../shell/organisms/Card/Card.jsx';`
   },
   /forbidden UI dependency/
 );
@@ -90,13 +90,13 @@ check(
   'molecule cannot import organism',
   {
     ...allowed,
-    'apps/storefront/app/molecules/Label/index.jsx': `import '../../organisms/Card/Card.jsx';`
+    'apps/storefront/shell/molecules/Label/index.jsx': `import '../../organisms/Card/Card.jsx';`
   },
   /forbidden UI dependency/
 );
 check(
   'UI cannot import page coordinator',
-  {[ui]: `import '../../Shell.jsx';`, 'apps/storefront/app/Shell.jsx': ''},
+  {[ui]: `import '../../Shell.jsx';`, 'apps/storefront/shell/Shell.jsx': ''},
   /forbidden UI dependency/
 );
 check(
@@ -171,22 +171,22 @@ check(
 );
 check(
   'bare specifier cannot impersonate the relative bridge',
-  {[ui]: `import 'apps/storefront/app/ds.js';`},
+  {[ui]: `import 'apps/storefront/shell/ds.js';`},
   /forbidden UI dependency/
 );
 check(
   'UI cycle between otherwise allowed organisms',
   {
     [ui]: `import '../Other/Other.jsx';`,
-    'apps/storefront/app/organisms/Other/Other.jsx': `export * from '../Card/Card.jsx';`
+    'apps/storefront/shell/organisms/Other/Other.jsx': `export * from '../Card/Card.jsx';`
   },
   /Import cycle:/
 );
 check(
   'molecule cannot import layout',
   {
-    'apps/storefront/app/molecules/Label/Label.jsx': `import '../../layouts/Panel/Panel.jsx';`,
-    'apps/storefront/app/layouts/Panel/Panel.jsx': ''
+    'apps/storefront/shell/molecules/Label/Label.jsx': `import '../../layouts/Panel/Panel.jsx';`,
+    'apps/storefront/shell/layouts/Panel/Panel.jsx': ''
   },
   /forbidden UI dependency/
 );
@@ -199,9 +199,9 @@ const environment = 'apps/storefront/shared/platform/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
   [domain]: `import '../platform/environment.js'; import '../translations/shell.js';
-    import '../../../../packages/design-system/components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
+    import '../../design-system/components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
   'apps/storefront/shared/translations/shell.js': '',
-  'packages/design-system/components/utils/commerce.js': '',
+  'apps/storefront/design-system/components/utils/commerce.js': '',
   'apps/storefront/_runtime/tenant-slugs.js': '',
   [service]: `import React from 'react'; import '../../domain/catalog.js';`,
   [qr]: `import qrcode from 'qrcode-generator'; import '../domain/catalog.js';`
@@ -219,13 +219,13 @@ for (const [name, sources, expected] of [
   ],
   [
     'domain cannot import app UI',
-    {[domain]: `import '../../app/ds.js';`, [bridge]: ''},
+    {[domain]: `import '../../shell/ds.js';`, [bridge]: ''},
     /forbidden domain dependency/
   ],
   [
     'domain cannot import package components',
     {
-      [domain]: `import '../../../../packages/design-system/components/organisms/Carousel/Carousel.jsx';`,
+      [domain]: `import '../../design-system/components/organisms/Carousel/Carousel.jsx';`,
       [component]: ''
     },
     /forbidden domain dependency/
@@ -267,16 +267,16 @@ check('parse errors fail', {'apps/storefront/shared/domain/a.js': 'const = ;'}, 
 // Shared dependencies are imported: no module reads or sets window.VF_* / window.AG_* (or the cards'
 // window.VendraDesignSystem), only guidelines/card-runtime.js, the cards' compatibility layer.
 for (const [name, file, code] of [
-  ['page reads the API global', 'apps/storefront/pages/home/logic.js', 'window.VF_API.live;'],
+  ['page reads the API global', 'apps/storefront/features/home/useHome.js', 'window.VF_API.live;'],
   ['service sets a global', service, 'window.VF_TRACK = {};'],
   ['component reads a helper global', component, 'export const x = window.AG_FORMAT;'],
-  ['computed global name', 'apps/storefront/app/main.jsx', "globalThis['VF_TENANT'] = 'x';"],
+  ['computed global name', 'apps/storefront/shell/main.jsx', "globalThis['VF_TENANT'] = 'x';"],
   ['communications global', 'apps/storefront/communications/a.js', 'self.VF_NOTIFY = {};'],
-  ['cards namespace', 'apps/storefront/app/theme.js', 'window.VendraDesignSystem;']
+  ['cards namespace', 'apps/storefront/shell/theme.js', 'window.VendraDesignSystem;']
 ])
   check(name, {[file]: code}, /reads or sets the global/);
 check('card compatibility layer and other window names are allowed', {
-  'apps/storefront/app/main.jsx': `import '../../../guidelines/card-runtime.js';
+  'apps/storefront/shell/main.jsx': `import '../../../guidelines/card-runtime.js';
     window.__vfRuntime = {}; window.L; const VF_API = 1;`,
   'guidelines/card-runtime.js': 'window.VendraDesignSystem = {}; window.AG_DATES = {};'
 });

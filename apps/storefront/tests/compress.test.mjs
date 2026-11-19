@@ -1,6 +1,6 @@
 // The build's precompressed copies (build/compress.mjs) and the reference server that serves them
 // (deployment/nginx.conf): text files of MIN_SIZE or more get a .br and a .gz copy that decompress to
-// the same bytes; small files, fonts and photos get none; and the server caches exactly Vite's
+// the same bytes; small files, fonts and photos get none; and the server caches only Next.js's
 // content-hashed folder forever.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,10 +15,10 @@ const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-compress-test-'));
 try {
   const text = 'export const words = ' + JSON.stringify('flower '.repeat(MIN_SIZE)) + ';\n';
   const files = {
-    'assets/hashed/page-home-Ab12Cd34.js': text,
+    '_next/static/chunks/page-home-Ab12Cd34.js': text,
     'apps/storefront/app/en/index.html': '<!doctype html>' + '<p>Vendra</p>'.repeat(MIN_SIZE),
     'apps/storefront/app/small.js': 'export {};\n',
-    'assets/hashed/jost-Ab12Cd34.woff2': text,
+    '_next/static/chunks/jost-Ab12Cd34.woff2': text,
     'assets/products/rose.webp': text
   };
   for (const [name, source] of Object.entries(files)) {
@@ -27,8 +27,8 @@ try {
   }
   const compressed = (await precompress(outDir)).map(name => name.replaceAll(path.sep, '/')).sort();
   assert.deepEqual(compressed, [
-    'apps/storefront/app/en/index.html',
-    'assets/hashed/page-home-Ab12Cd34.js'
+    '_next/static/chunks/page-home-Ab12Cd34.js',
+    'apps/storefront/app/en/index.html'
   ]);
   for (const name of compressed) {
     const file = path.join(outDir, name);
@@ -41,7 +41,7 @@ try {
   }
   for (const name of [
     'apps/storefront/app/small.js',
-    'assets/hashed/jost-Ab12Cd34.woff2',
+    '_next/static/chunks/jost-Ab12Cd34.woff2',
     'assets/products/rose.webp'
   ])
     for (const suffix of ['.br', '.gz'])
@@ -53,11 +53,8 @@ try {
   fs.rmSync(outDir, {recursive: true, force: true});
 }
 
-// Vite writes its hashed files (and the page chunks) to assets/hashed/, which the server caches forever.
-const config = fs.readFileSync(path.join(templates, 'build/vite.config.mjs'), 'utf8');
-assert.match(config, /assetsDir: 'assets\/hashed'/);
-assert.match(config, /return 'assets\/hashed\/' \+/);
-assert.match(config, /await precompress\(outDir\);/);
+const build = fs.readFileSync(path.join(templates, 'next/finish-export.mjs'), 'utf8');
+assert.match(build, /await precompress\(out\);/);
 const nginx = fs.readFileSync(path.join(templates, 'deployment/nginx.conf'), 'utf8');
 const block = location => {
   const start = nginx.indexOf('location ' + location + ' {');
@@ -66,14 +63,17 @@ const block = location => {
 };
 assert.match(nginx, /^\s*brotli_static on;/m);
 assert.match(nginx, /^\s*gzip_static on;/m);
-assert.match(block('^~ /assets/hashed/'), /Cache-Control "public, max-age=31536000, immutable"/);
-assert.match(block('^~ /assets/hashed/'), /Access-Control-Allow-Origin/);
-assert.match(block('^~ /packages/design-system/assets/fonts/'), /Access-Control-Allow-Origin/);
-assert.doesNotMatch(block('^~ /packages/design-system/assets/fonts/'), /immutable/);
+assert.match(block('^~ /_next/static/'), /Cache-Control "public, max-age=31536000, immutable"/);
+assert.match(block('^~ /_next/static/'), /Access-Control-Allow-Origin/);
+assert.match(
+  block('^~ /apps/storefront/design-system/assets/fonts/'),
+  /Access-Control-Allow-Origin/
+);
+assert.doesNotMatch(block('^~ /apps/storefront/design-system/assets/fonts/'), /immutable/);
 assert.doesNotMatch(block('~ ^/(assets|apps/storefront/_vendor)/'), /immutable/);
 for (const location of [
   '= /apps/storefront/app/sw.js',
-  '^~ /packages/design-system/tokens/tenants/',
+  '^~ /apps/storefront/design-system/tokens/tenants/',
   '/apps/storefront/app/',
   '= /404.html',
   '/'

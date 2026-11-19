@@ -1,11 +1,11 @@
-// Where the @vendra/design-system package lives in the repository. Tools name it from here.
+// Where the storefront design system lives in the repository. Tools name it from here.
 import path from 'node:path';
 
 const repo = path.resolve(import.meta.dirname, '..');
 // Repo-relative, with / separators.
-const packageFolder = 'packages/design-system';
-const componentsFolder = packageFolder + '/components';
+const designSystemFolder = 'apps/storefront/design-system';
+const componentsFolder = designSystemFolder + '/components';
 
-const packageRoot = path.join(repo, packageFolder);
+const designSystemRoot = path.join(repo, designSystemFolder);
 
-export {repo, packageFolder, componentsFolder, packageRoot};
+export {repo, designSystemFolder, componentsFolder, designSystemRoot};

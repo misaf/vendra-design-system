@@ -1,4 +1,4 @@
-// Types for tenant-theme.js, published as @vendra/design-system/theme.
+// Types for tenant-theme.js, the storefront theme generator.
 export type Hex = `#${string}`;
 export interface TenantSpec {
   description?: string;
@@ -63,7 +63,7 @@ export declare const FONTS: Record<TenantSpec['character']['headings'], string>;
 export declare function validate(spec: unknown, label?: string): TenantSpec;
 /**
  * validate()'s rules as a JSON Schema (draft 2020-12), also published as
- * @vendra/design-system/theme.schema.json. Contrast is not covered: use checks().
+ * design-system/tokens/theme.schema.json. Contrast is not covered: use checks().
  */
 export declare function schema(): Record<string, unknown>;
 /** The seven contrast checks every tenant must pass. */
@@ -81,7 +81,7 @@ export declare function fromOklch(lch: [number, number, number]): string;
 /**
  * The tenant's CSS for a trusted spec (the build uses this): the brand font's @font-face rules, if
  * any, then the [data-tenant] block. assetBase leads to the deployment root from where the CSS is
- * served; the default fits the build's packages/design-system/tokens/tenants/<slug>.css.
+ * served; the default fits the build's apps/storefront/design-system/tokens/tenants/<slug>.css.
  */
 export declare function css(slug: string, spec: TenantSpec, options?: {assetBase?: string}): string;
 /** The brand font's @font-face rules (font-display: swap, one unicode-range per script). */
@@ -118,7 +118,7 @@ export interface DesignToken {
  * A custom-property map as W3C design tokens (DTCG JSON), for Style Dictionary and other tools
  * that write Swift, Kotlin, Android XML or CSS. '--peony-500' → peony.500, '--white' →
  * white.default, var(--x) → the alias {x…}. For a tenant, merge designTokens(tokens(spec).all)
- * over @vendra/design-system/tokens.json (its aliases point at tokens there).
+ * over design-system/tokens/design/tokens.json (its aliases point at tokens there).
  */
 export declare function designTokens(
   vars: Record<string, string>

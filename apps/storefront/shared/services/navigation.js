@@ -17,7 +17,7 @@ import {VF_SHELL} from '../translations/shell.js';
 import {vfDayMonth, vfDayName} from '../translations/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
-import {vfNow, vfOnServer} from '../platform/environment.js';
+import {vfNow, vfOnServer, vfStoredValue} from '../platform/environment.js';
 import {vfRuntime} from '../platform/runtime.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
@@ -50,7 +50,7 @@ export function vfAnnouncementText(lang, st, phone = false) {
   const text = vfAnnouncementSource(lang, phone);
   if (!text || st.vfAnnouncementClosed) return '';
   try {
-    if (sessionStorage.getItem('vf-announcement-closed') === VF_STORE.announcement.en) return '';
+    if (vfStoredValue('vf-announcement-closed', true) === VF_STORE.announcement.en) return '';
   } catch {}
   return text
     .replace('{delivery}', vfNextDelivery(lang).text)
@@ -60,7 +60,7 @@ export function vfAnnouncementText(lang, st, phone = false) {
 // A value saved on this device, or '' when storage is empty or blocked.
 export function vfStored(key) {
   try {
-    return localStorage.getItem(key) || '';
+    return vfStoredValue(key) || '';
   } catch {
     return '';
   }
@@ -161,7 +161,7 @@ export function vfShell(self, page) {
   // Closing it makes no choice (so nothing is sent) and hides it for this browser session only.
   let dismissed = !!st.vfConsentDismissed;
   try {
-    dismissed = dismissed || sessionStorage.getItem('vf-consent-dismissed') === '1';
+    dismissed = dismissed || vfStoredValue('vf-consent-dismissed', true) === '1';
   } catch {}
   const consentShown =
     (!(st.vfConsent ?? (vfOnServer() ? '' : vfRuntime.track.consent())) && !dismissed) ||

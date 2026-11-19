@@ -5,7 +5,7 @@ function customCss(root) {
   const styles = path.join(root, 'shared', 'styles');
   const entry = fs.readFileSync(path.join(styles, 'custom.css'), 'utf8');
   const css = entry.replace(
-    /@import ["'](\.\/[a-z-]+\.css|\.\.\/ui\/[a-z-]+\.css|\.\.\/\.\.\/pages\/[a-z-]+\/styles\.css)["'];/g,
+    /@import ["'](\.\/[a-z-]+\.css|\.\.\/ui\/[a-z-]+\.css|\.\.\/\.\.\/features\/[a-z-]+\/styles\.css)["'];/g,
     (_, source) => {
       const file = path.resolve(styles, source);
       const label = path.relative(root, file).split(path.sep).join('/');
@@ -24,7 +24,7 @@ function customCss(root) {
     throw new Error('Custom CSS must contain plain CSS only.');
   // The page CSS joins the components' cascade layer: it was written to meet the ag-* classes on
   // specificity (contextual exceptions win, generic heading rules don't), which only holds inside
-  // one layer. app/theme.js loads Tailwind first, so its utilities sit under both.
+  // one layer. The Next.js root layout loads Tailwind first, so its utilities sit under both.
   return '@layer vendra.components {\n' + css + '\n}\n';
 }
 export {customCss};

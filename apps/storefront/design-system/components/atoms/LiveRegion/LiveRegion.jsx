@@ -1,0 +1,29 @@
+'use client';
+
+import React from 'react';
+import {cx} from '../../utils/cx.js';
+
+// Mount once, keep mounted, change children to announce. polite → role="status"; assertive → role="alert" (errors only).
+export function LiveRegion({
+  children,
+  politeness = 'polite',
+  atomic = true,
+  id,
+  className = '',
+  ref,
+  ...rest
+}) {
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      id={id}
+      role={politeness === 'assertive' ? 'alert' : 'status'}
+      aria-live={politeness}
+      aria-atomic={atomic}
+      className={cx('ag-sr-only', className)}
+    >
+      {children}
+    </div>
+  );
+}

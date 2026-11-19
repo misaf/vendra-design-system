@@ -505,12 +505,12 @@ html {
 }
 
 
-/* Source: pages/account/styles.css */
+/* Source: features/account/styles.css */
 /* Custom styles for the account page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/bag/styles.css */
+/* Source: features/bag/styles.css */
 /* Custom styles for the bag page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Let the actual row width decide: a narrow bag column also occurs beside a tablet summary. */
@@ -574,27 +574,27 @@ html {
 }
 
 
-/* Source: pages/checkout/styles.css */
+/* Source: features/checkout/styles.css */
 /* Custom styles for the checkout page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/contact/styles.css */
+/* Source: features/contact/styles.css */
 /* Custom styles for the contact page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/error/styles.css */
+/* Source: features/error/styles.css */
 /* Custom styles for the server-error page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/faq/styles.css */
+/* Source: features/faq/styles.css */
 /* Custom styles for the faq page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/home/styles.css */
+/* Source: features/home/styles.css */
 /* Custom styles for the home page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* On the dark weddings band the accent words stay italic but keep the light text colour (the accent
@@ -730,7 +730,7 @@ html {
 }
 
 
-/* Source: pages/journal/styles.css */
+/* Source: features/journal/styles.css */
 /* Keep browsing controls compact while preserving readable stories and full tap targets. */
 @media (width < 1024px) {
   :where(html:not([data-density='tv'])) .vf-journal-header {
@@ -780,22 +780,22 @@ html {
 }
 
 
-/* Source: pages/notfound/styles.css */
+/* Source: features/notfound/styles.css */
 /* Custom styles for the notfound page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/policy/styles.css */
+/* Source: features/policy/styles.css */
 /* Custom styles for the policy page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/post/styles.css */
+/* Source: features/post/styles.css */
 /* Custom styles for the post page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/presentation/styles.css */
+/* Source: features/presentation/styles.css */
 /* Custom styles for the counter presentation. */
 /* The page uses Tailwind utilities in the template; add only contextual exceptions here. */
 
@@ -1116,7 +1116,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: pages/product/styles.css */
+/* Source: features/product/styles.css */
 /* Custom styles for the product page. */
 .vf-product-recent {
   gap: var(--space-5);
@@ -1274,7 +1274,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: pages/saved/styles.css */
+/* Source: features/saved/styles.css */
 /* Custom styles for the saved page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
@@ -1298,7 +1298,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: pages/search/styles.css */
+/* Source: features/search/styles.css */
 /* Result layout follows available reading space, including narrow embedded views. */
 .vf-search-results {
   container: vf-search-results / inline-size;
@@ -1331,7 +1331,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: pages/shop/styles.css */
+/* Source: features/shop/styles.css */
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
@@ -1446,17 +1446,17 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: pages/signin/styles.css */
+/* Source: features/signin/styles.css */
 /* Custom styles for the signin page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/track/styles.css */
+/* Source: features/track/styles.css */
 /* Custom styles for the track page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: pages/weddings/styles.css */
+/* Source: features/weddings/styles.css */
 /* Custom styles for the weddings page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 

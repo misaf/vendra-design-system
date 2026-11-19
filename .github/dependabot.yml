@@ -1,12 +1,10 @@
 # Weekly pull requests for the pinned tools, each tested by CI like any change. A release waits two
 # weeks before it is offered (cooldown), so a broken or hijacked version is usually pulled first.
-# - React's majors are left for a deliberate upgrade: the package supports React 19 only (its peer
-#   range starts at the version the workspace pins and tests).
+# - React's majors are left for a deliberate upgrade.
 # - @playwright/test must match the Playwright image in .github/workflows/*.yml (assets.test.mjs
 #   fails otherwise): on its pull request, bump the image tag too, then run "Update screenshots".
-# - packages/design-system and apps/storefront both pin React and React Aria. This one root entry
-#   updates every workspace manifest in the same pull request; tests/dependencies.test.mjs fails if
-#   their versions differ or the lockfile installs a second copy.
+# - The storefront pins React and React Aria. tests/dependencies.test.mjs checks that the lockfile
+#   installs one copy of each.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -31,7 +29,6 @@ updates:
       build-tools:
         patterns:
           [
-            'vite',
             'rolldown',
             'tailwindcss',
             '@tailwindcss/*',

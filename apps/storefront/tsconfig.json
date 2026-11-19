@@ -11,11 +11,11 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react",
-    "types": ["vite/client"],
+    "types": ["react"],
     "noUnusedLocals": true,
     "skipLibCheck": true
   },
-  "include": ["shared/**/*.js", "types/*.d.ts", "app/**/*", "pages/**/*"],
+  "include": ["shared/**/*.js", "types/*.d.ts", "shell/**/*", "features/**/*"],
   // Browser specs run in Node under Playwright, like the package components' specs.
-  "exclude": ["app/**/*.spec.mjs"]
+  "exclude": ["shell/**/*.spec.mjs", "features/**/*.spec.mjs"]
 }
