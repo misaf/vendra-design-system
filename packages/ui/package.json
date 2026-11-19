@@ -2,9 +2,41 @@
   "name": "@vendra/ui",
   "version": "0.0.0",
   "private": true,
-  "exports": {},
-  "description": "Shared React components and semantic tokens for Vendra.",
+  "exports": {
+    "./Button": {
+      "types": "./components/Button/Button.d.ts",
+      "default": "./components/Button/Button.jsx"
+    },
+    "./Input": {
+      "types": "./components/Input/Input.d.ts",
+      "default": "./components/Input/Input.jsx"
+    },
+    "./Dialog": {
+      "types": "./components/Dialog/Dialog.d.ts",
+      "default": "./components/Dialog/Dialog.jsx"
+    },
+    "./DatePicker": {
+      "types": "./components/DatePicker/DatePicker.d.ts",
+      "default": "./components/DatePicker/DatePicker.jsx"
+    },
+    "./VendraProvider": {
+      "types": "./components/VendraProvider/VendraProvider.d.ts",
+      "default": "./components/VendraProvider/VendraProvider.jsx"
+    },
+    "./styles.css": "./styles.css",
+    "./tokens.css": "./tokens.css",
+    "./tokens/tenants.css": "./tokens/tenants.css",
+    "./tokens/tenants/*.css": "./tokens/tenants/*.css",
+    "./tokens/theme": "./tokens/tenant-theme.js",
+    "./tokens/theme.schema.json": "./tokens/theme.schema.json",
+    "./tokens/design/*.json": "./tokens/design/*.json"
+  },
+  "dependencies": {
+    "@internationalized/date": "3.12.4"
+  },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-aria-components": "^1.22.1"
   }
 }

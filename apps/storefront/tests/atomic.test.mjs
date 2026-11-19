@@ -148,7 +148,7 @@ try {
     'tools/paths.mjs',
     'apps/storefront/shell/ds.js',
     'apps/storefront/design-system/components/index.css',
-    'apps/storefront/design-system/components/utils/messages.d.ts'
+    'packages/ui/components/utils/messages.d.ts'
   ]) {
     const target = path.join(temporary, file);
     fs.mkdirSync(path.dirname(target), {recursive: true});

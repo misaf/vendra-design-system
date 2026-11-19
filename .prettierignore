@@ -5,7 +5,7 @@ apps/storefront/_vendor/
 apps/storefront/e2e/__screenshots__/
 apps/storefront/e2e/test-results/
 apps/storefront/e2e/playwright-report/
-apps/storefront/design-system/tokens/
+packages/ui/tokens/
 apps/storefront/design-system/styles.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator

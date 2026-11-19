@@ -8,7 +8,7 @@ import {VF_SEO} from '../shared/services/seo.js';
 import {vfFaqData, vfFloristData} from '../shared/services/structured-data.js';
 import {VF_STORE} from '../shared/domain/store-config.js';
 import {VF_POSTS} from '../i18n/journal-content.js';
-import theme from '../shared/domain/tenant-theme.js';
+import theme from '@vendra/ui/tokens/theme';
 import {vfCopy as bag} from '../features/cart/copy.js';
 import {vfCopy as contact} from '../features/contact/copy.js';
 import {vfCopy as error} from '../features/error/copy.js';
@@ -54,7 +54,7 @@ const descriptions = {
 
 export async function tenantFontUrls(tenant, lang, base = '/') {
   if (!tenant || tenant === 'default') return [];
-  const {default: spec} = await import('../design-system/tokens/tenants/' + tenant + '.json', {
+  const {default: spec} = await import('../../../packages/ui/tokens/tenants/' + tenant + '.json', {
     with: {type: 'json'}
   });
   return theme.fontPreloads(spec, lang, base);

@@ -4,7 +4,7 @@ import {isBuiltin} from 'node:module';
 import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
 import {layer, dependencyViolation} from './atomic.mjs';
-import {componentsFolder} from './paths.mjs';
+import {componentsFolder, uiFolder} from './paths.mjs';
 
 // apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
@@ -69,7 +69,7 @@ function appDependencyViolation(source, target, relative) {
   const from = uiLayer(source);
   let allowed;
   if (source === 'apps/storefront/shell/ds.js') {
-    allowed = !!layer(target);
+    allowed = !!layer(target) || target.startsWith(uiFolder + '/components/');
   } else {
     const to = uiLayer(target);
     allowed =
@@ -176,10 +176,19 @@ function workspaceViolations(root) {
           ? path.posix.join('apps/storefront', target.slice('@storefront/'.length))
           : null;
       if (local !== null) {
+        // The existing design-system entry points still forward to the extracted UI components.
+        const uiCompatibilityExport =
+          source.startsWith(componentsFolder + '/') &&
+          local.startsWith(uiFolder + '/components/') &&
+          program.body.every(
+            statement =>
+              statement.type === 'ExportAllDeclaration' || statement.directive === 'use client'
+          );
         if (
           owner
             ? !local.startsWith(owner + '/')
-            : packageRoots.some(folder => local === folder || local.startsWith(folder + '/'))
+            : !uiCompatibilityExport &&
+              packageRoots.some(folder => local === folder || local.startsWith(folder + '/'))
         )
           violations.push(
             `${source}: use workspace package exports instead of importing ${target}`
@@ -233,6 +242,10 @@ function checkDependencies(root) {
   const files = runtimeSources(root);
   const graph = new Map(files.map(file => [file, new Set()]));
   const violations = workspaceViolations(root);
+  const uiManifest = path.join(root, uiFolder, 'package.json');
+  const uiExports = fs.existsSync(uiManifest)
+    ? (JSON.parse(fs.readFileSync(uiManifest, 'utf8')).exports ?? {})
+    : {};
   for (const [source] of graph) {
     if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));
@@ -261,8 +274,14 @@ function checkDependencies(root) {
         return;
       }
       let target = specifier;
-      if (specifier.startsWith('.')) {
-        const base = path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier));
+      const relative = specifier.startsWith('.');
+      const uiEntry = specifier.startsWith('@vendra/ui/')
+        ? uiExports['.' + specifier.slice('@vendra/ui'.length)]?.default
+        : undefined;
+      if (relative || uiEntry) {
+        const base = relative
+          ? path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier))
+          : path.posix.join(uiFolder, uiEntry);
         target = [base, base + '.js', base + '.jsx', base + '/index.js', base + '/index.jsx'].find(
           candidate =>
             fs.existsSync(path.join(root, candidate)) &&
@@ -286,7 +305,7 @@ function checkDependencies(root) {
         const violation = dependencyViolation(source, target);
         if (violation) violations.push(violation);
       }
-      const violation = appDependencyViolation(source, target, specifier.startsWith('.'));
+      const violation = appDependencyViolation(source, target, relative || !!uiEntry);
       if (violation) violations.push(violation);
     });
   }

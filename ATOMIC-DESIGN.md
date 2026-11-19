@@ -8,7 +8,7 @@ customer state and checkout rules forward.
 
 | Layer | Responsibility | Source | Dependencies |
 | --- | --- | --- | --- |
-| Foundations | Tokens, themes, shared utilities, locale/router/density context | `apps/storefront/design-system/tokens/`, `apps/storefront/design-system/components/utils/`, `apps/storefront/design-system/components/VendraProvider/` | External libraries and foundations |
+| Foundations | Tokens, themes, shared utilities, locale/router/density context | `packages/ui/tokens/`, `apps/storefront/design-system/components/utils/`, `apps/storefront/design-system/components/VendraProvider/` | External libraries and foundations |
 | Atoms | A basic control or visual primitive: Icon, Spinner, Button | `apps/storefront/design-system/components/atoms/<Name>/` | Foundations and atoms |
 | Molecules | A small reusable combination with one purpose: SearchField, PromoCodeField | `apps/storefront/design-system/components/molecules/<Name>/` | Foundations, atoms and molecules |
 | Organisms | A substantial reusable section: Gallery, OrderSummary | `apps/storefront/design-system/components/organisms/<Name>/` | Foundations, atoms, molecules and organisms |

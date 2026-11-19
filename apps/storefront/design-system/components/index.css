@@ -1,13 +1,14 @@
 /* Spacing, type and radii come from tokens. Remaining px literals are deliberate: 1–3px optical nudges, hairlines, and control dimensions such as the 44px tap targets. */
 /* Every component stylesheet, in cascade order. Each component keeps its CSS next to its code. */
-@import url('atoms/Icon/Icon.css');
-@import url('atoms/Spinner/Spinner.css');
-@import url('atoms/Button/Button.css');
-@import url('atoms/IconButton/IconButton.css');
+@import url('../../../../packages/ui/components/Icon/Icon.css');
+@import url('../../../../packages/ui/components/Spinner/Spinner.css');
+@import url('../../../../packages/ui/components/Button/Button.css');
+@import url('../../../../packages/ui/components/IconButton/IconButton.css');
 @import url('atoms/Chip/Chip.css');
 @import url('molecules/FilterBar/FilterBar.css');
 @import url('molecules/Tabs/Tabs.css');
 @import url('molecules/LanguageSwitch/LanguageSwitch.css');
+@import url('../../../../packages/ui/components/animations.css');
 @import url('shared.css');
 @import url('atoms/Picture/Picture.css');
 @import url('organisms/PaymentStatus/PaymentStatus.css');
@@ -17,8 +18,8 @@
 @import url('molecules/ProductCard/ProductCard.css');
 @import url('atoms/Badge/Badge.css');
 @import url('atoms/Card/Card.css');
-@import url('atoms/Field/Field.css');
-@import url('atoms/Select/Select.css');
+@import url('../../../../packages/ui/components/Field/Field.css');
+@import url('../../../../packages/ui/components/Select/Select.css');
 @import url('molecules/SearchField/SearchField.css');
 @import url('atoms/CodeInput/CodeInput.css');
 @import url('molecules/ResendCode/ResendCode.css');
@@ -27,7 +28,7 @@
 @import url('atoms/ChoiceGroup/ChoiceGroup.css');
 @import url('atoms/Switch/Switch.css');
 @import url('atoms/QuantityInput/QuantityInput.css');
-@import url('organisms/Dialog/Dialog.css');
+@import url('../../../../packages/ui/components/Dialog/Dialog.css');
 @import url('molecules/Toast/Toast.css');
 @import url('organisms/ToastRegion/ToastRegion.css');
 @import url('molecules/Tooltip/Tooltip.css');
@@ -54,7 +55,7 @@
 @import url('molecules/SectionHeader/SectionHeader.css');
 @import url('organisms/Carousel/Carousel.css');
 @import url('atoms/SkipLink/SkipLink.css');
-@import url('organisms/DatePicker/DatePicker.css');
+@import url('../../../../packages/ui/components/DatePicker/DatePicker.css');
 @import url('organisms/LocationPicker/LocationPicker.css');
 @import url('organisms/PlacesMap/PlacesMap.css');
 @import url('molecules/OrderTimeline/OrderTimeline.css');
