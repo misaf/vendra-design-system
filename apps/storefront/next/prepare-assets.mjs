@@ -3,7 +3,7 @@ import {cp, mkdir, readdir, rm} from 'node:fs/promises';
 import {dirname, join, resolve} from 'node:path';
 
 const root = resolve(import.meta.dirname, '../../..');
-const publicDir = join(import.meta.dirname, 'public');
+const publicDir = resolve(import.meta.dirname, '..', 'public');
 const tenants = 'packages/ui/tokens/tenants';
 const themes = (await readdir(join(root, tenants)))
   .filter(name => name.endsWith('.css'))

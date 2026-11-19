@@ -17,6 +17,6 @@ Run the export tests locally with Node 22 and Playwright Chromium.
 
 ```sh
 npm ci
-npm run build:app
+npm run build:demo
 npm --prefix apps/storefront run test:e2e:next
 ```

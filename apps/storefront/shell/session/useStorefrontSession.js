@@ -32,6 +32,7 @@ import {
   vfRouteUrl
 } from '../../shared/services/routing.js';
 import {vfOnServer, vfStoredValue} from '../../shared/platform/environment.js';
+import {VF_SEO} from '../../shared/services/seo.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
@@ -455,7 +456,8 @@ export function useStorefrontSession(props) {
         requested.lines ||
         requested.ids ||
         (['product', 'post'].includes(requested.view) &&
-          new URL(address, location.href).pathname !== new URL(canonical, location.href).pathname)
+          VF_SEO.publishedPath(new URL(address, location.href).pathname) !==
+            new URL(canonical, location.href).pathname)
       )
         page.navigate(initial.routeInfo, true);
     };

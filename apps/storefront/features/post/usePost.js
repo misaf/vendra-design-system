@@ -1,5 +1,5 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
-import {VF_JCATS, VF_POSTS} from '../../shared/translations/journal-content.js';
+import {VF_JCATS, VF_POSTS} from '../../i18n/journal-content.js';
 import {vfJournalImage} from '../../shared/domain/journal-images.js';
 import {vfSeparator} from '../../shared/domain/formatting.js';
 import {vfCopy, vfPostHead} from './copy.js';

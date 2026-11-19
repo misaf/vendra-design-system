@@ -23,7 +23,7 @@ import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../shared/domain/formattin
 import {vfShell} from '../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shared/services/routing.js';
 import {vfFeatures} from '../../shared/domain/store-config.js';
-import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../shared/translations/categories.js';
+import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../i18n/categories.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../shared/services/list-tracking.js';

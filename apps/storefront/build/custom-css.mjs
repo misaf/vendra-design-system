@@ -2,10 +2,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 function customCss(root) {
-  const styles = path.join(root, 'shared', 'styles');
+  const styles = path.join(root, 'styles');
   const entry = fs.readFileSync(path.join(styles, 'custom.css'), 'utf8');
   const css = entry.replace(
-    /@import ["'](\.\/[a-z-]+\.css|\.\.\/ui\/[a-z-]+\.css|\.\.\/\.\.\/features\/[a-z-]+\/styles\.css)["'];/g,
+    /@import ["'](\.\/[a-z-]+\.css|\.\.\/shared\/ui\/[a-z-]+\.css|\.\.\/features\/[a-z-]+\/styles\.css)["'];/g,
     (_, source) => {
       const file = path.resolve(styles, source);
       const label = path.relative(root, file).split(path.sep).join('/');

@@ -1,0 +1,7 @@
+{
+  "name": "@vendra/vendra-api",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {},
+  "description": "Typed client and resource adapters for the Vendra Laravel API."
+}

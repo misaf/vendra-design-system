@@ -162,6 +162,10 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
+      - name: Build and smoke-test the live Next.js storefront
+        run: |
+          npm run build:app
+          npm --prefix apps/storefront run test:e2e:live
       - run: npm --prefix apps/storefront run test:e2e:build
       - name: Test the Next.js export under the Pages base path
         env:

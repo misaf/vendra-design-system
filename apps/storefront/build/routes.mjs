@@ -5,7 +5,7 @@
 // `lastmod` is the date its content last changed (YYYY-MM-DD) when the data says so.
 import {VF_POLICIES, VF_ROUTES, vfAppBase, vfRouteUrl} from '../shared/services/routing.js';
 import {VF_PRODUCTS} from '../shared/domain/catalog.js';
-import {VF_POSTS} from '../shared/translations/journal-content.js';
+import {VF_POSTS} from '../i18n/journal-content.js';
 import {VF_CATEGORY_SLUGS} from '../shared/domain/product-categories.js';
 import {VF_STORE, vfFeatures} from '../shared/domain/store-config.js';
 import {VF_SEO} from '../shared/services/seo.js';

@@ -11,7 +11,7 @@ import {
   vfRouteUrl
 } from './routing.js';
 import {VF_STORE, vfLocale} from '../domain/store-config.js';
-import {VF_SHELL} from '../translations/shell.js';
+import {VF_SHELL} from '../../i18n/shell.js';
 import {VF_SEO} from './seo.js';
 import {useLifecycle} from './page-state.js';
 import {VF_NAV} from './page-focus.js';

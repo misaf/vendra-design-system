@@ -73,7 +73,14 @@ function featureFiles(folder) {
   }
   const slug = path.basename(folder);
   const name =
-    {signin: 'SignIn', notfound: 'NotFound'}[slug] || slug[0].toUpperCase() + slug.slice(1);
+    {
+      cart: 'Bag',
+      catalog: 'Shop',
+      counter: 'Presentation',
+      notfound: 'NotFound',
+      signin: 'SignIn',
+      tracking: 'Track'
+    }[slug] || slug[0].toUpperCase() + slug.slice(1);
   const hook = 'use' + name;
   return {hook, logic: hook + '.js', view: name + 'View.jsx', screen: name + 'Screen.jsx'};
 }
@@ -81,7 +88,7 @@ function featureFiles(folder) {
 function pageScript(folder) {
   const parts = [];
   if (['features/home', 'features/journal', 'features/post'].includes(folder))
-    parts.push(read('shared/translations/journal-content.js'));
+    parts.push(read('i18n/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
   if (folder === 'features/checkout') parts.push(read(folder + '/payment-recovery.js'));
   const files = featureFiles(folder);
@@ -101,36 +108,36 @@ function pageScript(folder) {
 // globals, as page logic expects them in a vm context. The runtime (shared/platform/runtime.js) is
 // installed at the end and exposed as the context's vfRuntime.
 const sharedFiles = [
-  'domain/store-config.js',
-  'domain/brand.js',
-  'domain/delivery.js',
-  'domain/store-hours.js',
-  'domain/location.js',
-  'domain/promotions.js',
-  'domain/product-categories.js',
-  'domain/category-images.js',
-  'domain/journal-images.js',
-  'domain/catalog.js',
-  'translations/shell.js',
-  'translations/categories.js',
-  'translations/journal-moved.js',
-  'translations/time.js',
-  'domain/order-message.js',
-  'translations/location.js',
-  'domain/account-data.js',
-  'domain/wallet.js',
-  'domain/payments.js',
-  'domain/payment-api.js',
-  'services/integrations/api.js',
-  'services/integrations/analytics.js',
-  'services/integrations/runtime.js',
-  'domain/formatting.js',
-  'services/routing.js',
-  'services/structured-data.js',
-  'services/page-state.js',
-  'services/list-tracking.js',
-  'services/page-lifecycle.js',
-  'services/navigation.js'
+  'shared/domain/store-config.js',
+  'shared/domain/brand.js',
+  'shared/domain/delivery.js',
+  'shared/domain/store-hours.js',
+  'shared/domain/location.js',
+  'shared/domain/promotions.js',
+  'shared/domain/product-categories.js',
+  'shared/domain/category-images.js',
+  'shared/domain/journal-images.js',
+  'shared/domain/catalog.js',
+  'i18n/shell.js',
+  'i18n/categories.js',
+  'i18n/journal-moved.js',
+  'i18n/time.js',
+  'shared/domain/order-message.js',
+  'i18n/location.js',
+  'shared/domain/account-data.js',
+  'shared/domain/wallet.js',
+  'shared/domain/payments.js',
+  'shared/domain/payment-api.js',
+  'shared/services/integrations/api.js',
+  'shared/services/integrations/analytics.js',
+  'shared/services/integrations/runtime.js',
+  'shared/domain/formatting.js',
+  'shared/services/routing.js',
+  'shared/services/structured-data.js',
+  'shared/services/page-state.js',
+  'shared/services/list-tracking.js',
+  'shared/services/page-lifecycle.js',
+  'shared/services/navigation.js'
 ];
 // The package helpers and the routing / focus helpers the shared logic imports, each in its own scope.
 const scoped = (name, file) =>
@@ -158,7 +165,7 @@ const sharedLogic =
   'const VF_TENANT_SLUGS = ' +
   JSON.stringify(tenantSlugs()) +
   ';\n\n' +
-  sharedFiles.map(file => strip(read('shared/' + file))).join('\n\n') +
+  sharedFiles.map(file => strip(read(file))).join('\n\n') +
   // Installs the integrations as shell/runtime.js does; tests stub them through this.vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
