@@ -42,6 +42,42 @@ test('loads active category data and keeps an empty live catalog empty', async t
   assert.deepEqual(await loadLiveProducts(base), []);
 });
 
+test('resolves JSON-LD latest price references across price pages', async t => {
+  const latest = {
+    '@id': '/api/catalog/product-prices/201',
+    id: 201,
+    amount: 240000,
+    currency: 'IRT'
+  };
+  const referenced = {...product, latestProductPrice: latest['@id']};
+  const missing = {token: 'MISSING', latestProductPrice: '/api/catalog/product-prices/999'};
+  const unpriced = {token: 'UNPRICED', latestProductPrice: null};
+  const paths = [];
+  t.mock.method(globalThis, 'fetch', async url => {
+    assert.equal(url.origin, new URL(base).origin);
+    paths.push(url.pathname + url.search);
+    if (url.pathname.endsWith('/products'))
+      return Response.json({member: [referenced, missing, unpriced]});
+    if (!url.searchParams.has('page'))
+      return Response.json({
+        member: [{id: 200, amount: 160000, currency: 'IRT'}],
+        view: {next: '?itemsPerPage=100&page=2'}
+      });
+    return Response.json({'hydra:member': [latest]});
+  });
+
+  assert.deepEqual(await loadLiveProducts(base), [
+    {...referenced, latestProductPrice: latest},
+    {...missing, latestProductPrice: null},
+    unpriced
+  ]);
+  assert.deepEqual(paths, [
+    '/store/api/catalog/products',
+    '/store/api/catalog/product-prices?itemsPerPage=100',
+    '/store/api/catalog/product-prices?itemsPerPage=100&page=2'
+  ]);
+});
+
 test('rejects upstream errors and malformed collections', async t => {
   const fetchMock = t.mock.method(
     globalThis,

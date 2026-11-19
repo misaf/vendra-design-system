@@ -1,3 +1,5 @@
+import {commerce} from '../shared/domain/commerce.js';
+
 function catalogLocation(base) {
   const url = new URL(base);
   if (
@@ -59,5 +61,21 @@ export async function loadLiveProducts(base, query) {
   const records = await readCollection(base, 'products', query);
   if (records.some(record => typeof record?.token !== 'string' || !record.token.trim()))
     throw new Error('Invalid florist product');
-  return records;
+
+  const isPriceReference = price =>
+    typeof price === 'string' && /\/api\/catalog\/product-prices\/\d+$/.test(price);
+  // Read prices from the configured backend and use the IRI only as a lookup key.
+  const prices = records.some(record => isPriceReference(record.latestProductPrice))
+    ? (await readCollection(base, 'product-prices', {itemsPerPage: '100'})).filter(record =>
+        Number.isSafeInteger(record?.id)
+      )
+    : [];
+  return records.map(record => {
+    const price = record.latestProductPrice;
+    if (typeof price !== 'string') return record;
+    return {
+      ...record,
+      latestProductPrice: isPriceReference(price) ? commerce.apiRecord(prices, price) : null
+    };
+  });
 }
