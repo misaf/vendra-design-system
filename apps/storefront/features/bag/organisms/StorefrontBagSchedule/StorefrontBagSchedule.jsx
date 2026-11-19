@@ -54,7 +54,7 @@ export function StorefrontBagSchedule({title, preparationNotice, review, day, sl
           </React.Fragment>
         ))}
       </DS.ChoiceGroup>
-      <div id="vf-slot" tabIndex={-1}>
+      <div id="vf-slot" tabIndex={-1} data-vf-keep-focus>
         <DS.ChoiceGroup
           legend={slot.label}
           error={slot.error}

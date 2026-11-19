@@ -9,6 +9,7 @@ export function StorefrontBagLocation({picker, zone, fallback, address}) {
           <>
             <DS.LocationPicker
               id="vf-map"
+              data-vf-keep-focus
               label={picker.label}
               status={picker.status}
               error={picker.error}

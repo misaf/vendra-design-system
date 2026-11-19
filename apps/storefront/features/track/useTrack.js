@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm --prefix apps/storefront run build.
+import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfCustomerId, vfKnownOrders} from '../../shared/domain/account-data.js';
 import {
@@ -19,6 +20,9 @@ import {VF_NAV} from '../../shared/services/page-focus.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
+
+const LOOKUP_FOCUS_KEY = 'vf-track-lookup-focus';
+
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function useTrack(props) {
@@ -37,7 +41,22 @@ export function useTrack(props) {
     };
   });
   useStorefrontPage(page);
-  return vals(page);
+  const view = vals(page);
+  const orderId = vfPageRoute(props).id;
+  React.useEffect(() => {
+    if (!props.ready || !orderId) return;
+    // Order URLs load through the static host's fallback document. Carry the focus
+    // request across that load and apply it only after the verified result renders.
+    let requested;
+    try {
+      requested = sessionStorage.getItem(LOOKUP_FOCUS_KEY);
+      if (requested) sessionStorage.removeItem(LOOKUP_FOCUS_KEY);
+    } catch {
+      return;
+    }
+    if (view.hasOrder && requested === orderId) VF_NAV.focusHeading({preserveFocus: true});
+  }, [props.ready, orderId, view.hasOrder]);
+  return view;
 }
 
 // Who may see an order, and how much of it: 'buyer' sees everything, 'recipient' only its
@@ -208,8 +227,12 @@ function vals(page) {
       const matchedViewer = vfMobile(match.delivery.senderPhone) === phone ? 'buyer' : 'recipient';
       page.setState({lookup: false, lookupTried: false, lookupId: '', lookupPhone: ''});
       if (page.props.store?.trackOrder) page.props.store.trackOrder(match.id, matchedViewer);
-      if (page.props.go) page.props.go({view: 'track', id: match.id});
-      else page.setState({found: match.id, foundViewer: matchedViewer});
+      if (page.props.go) {
+        try {
+          sessionStorage.setItem(LOOKUP_FOCUS_KEY, match.id);
+        } catch {}
+        page.props.go({view: 'track', id: match.id});
+      } else page.setState({found: match.id, foundViewer: matchedViewer});
     },
     trackAnother: () => {
       page.setState({lookup: true, lookupFailed: false, lookupId: '', lookupPhone: ''});

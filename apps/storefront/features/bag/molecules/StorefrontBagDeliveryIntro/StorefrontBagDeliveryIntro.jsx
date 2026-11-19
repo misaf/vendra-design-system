@@ -4,7 +4,7 @@ import * as DS from '../../../../shell/ds.js';
 export function StorefrontBagDeliveryIntro({errors, signin}) {
   return (
     <>
-      <DS.ErrorSummary id="vf-errors" errors={errors} />
+      <DS.ErrorSummary id="vf-errors" errors={errors} data-vf-keep-focus />
       {signin.visible ? (
         <>
           <div className="vf-bag-signin tw:flex tw:items-center tw:justify-between tw:gap-3 tw:flex-wrap tw:py-3 tw:px-4 tw:rounded-md tw:bg-sunken tw:text-sm">

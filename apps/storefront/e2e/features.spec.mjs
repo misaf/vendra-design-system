@@ -2264,7 +2264,10 @@ test('scanning a design’s tag opens it full screen', async ({page}) => {
     };
   });
   await openCounter(page, 'en');
-  await page.getByRole('button', {name: 'Scan a tag'}).click();
+  await page
+    .locator('.vf-presentation-bar')
+    .getByRole('button', {name: 'Scan a tag', exact: true})
+    .click();
   const viewer = page.getByRole('dialog', {name: 'Designs'});
   await expect(viewer.getByText('VF-8RD5WN')).toBeVisible();
   await expect(viewer.getByText('1 of 1')).toBeVisible();
