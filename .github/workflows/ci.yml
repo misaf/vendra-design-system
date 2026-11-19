@@ -166,11 +166,13 @@ jobs:
         run: |
           npm run build:app
           npm --prefix apps/florist run test:e2e:live
+          npm --prefix apps/florist run test:e2e:catalog
       - run: npm --prefix apps/florist run test:e2e:build
       - name: Test the Next.js export under the Pages base path
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
+          VF_API_BASE: http://127.0.0.1:1
         run: |
           npm --prefix apps/florist run build:next
           npm --prefix apps/florist run test:e2e:next

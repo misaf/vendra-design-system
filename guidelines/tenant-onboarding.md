@@ -85,6 +85,7 @@ The storefront reads all of this as data (`apps/florist/shared/domain/store-conf
 
 ## 5. Launch checks
 - [ ] Work through the *Storefront release checklist* in `brand-guide.md`.
+- [ ] On the deployed tenant domain, verify in English and Persian that shop, category and product pages display the tenant's products and prices. Open a demo-only product URL and confirm it returns 404. In staging, make the catalog backend unavailable and verify that the storefront shows a retry state. Confirm the bag and checkout stay unavailable until tenant-backed store settings, delivery and checkout are ready. See [server catalog mode](../apps/florist/API.md#server-catalog-mode).
 - [ ] Theme builder contrast checks pass, and the *Contrast* card in Colors still passes with `data-tenant` set.
 - [ ] `store-config.js` has the real address, map pin, hours and contact links.
 - [ ] Claim the shop on **Neshan** and **Balad** (and Google Business Profile), with the same name (EN + FA), address, map pin, phone, WhatsApp and opening hours as `store-config.js`. The contact page, footer and Florist structured data all read that one block, so the listings match the site; "Get directions" opens the map pin in Neshan, Balad and Google Maps (Neshan and Balad first in Persian).

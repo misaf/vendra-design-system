@@ -5,6 +5,7 @@
 - **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (tenant storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
 - **Scope:** the customer-facing storefront only. Admin screens live in a separate framework; the storefront reads products, currency, delivery rules, hours and contact details as data.
 - **Live florist pilot:** [roadmap audit and release gates](apps/florist/PILOT-AUDIT.md).
+- **Storefront modes:** the Pages export runs the sample florist. A server with `VF_API_BASE` serves a read-only backend catalog. See [server catalog mode](apps/florist/API.md#server-catalog-mode).
 - **Rules and brand:** [guidelines/brand-guide.md](guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, payments and the release checklist.
 - **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md): setup, the checks every change runs, and `npm run new:component -- Name` for a new component.
 

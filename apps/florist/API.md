@@ -2,7 +2,7 @@
 
 The [live florist pilot audit](PILOT-AUDIT.md#laravel-contract-findings) compares this snapshot with the Laravel source and records what to verify against the pilot deployment.
 
-The storefront's data contract is the Vendra backend API exported in `uploads/openapi-*.json` (API Platform, JSON-LD/Hydra, 42 endpoints). Sample data in `shared/` is written as API responses, and one adapter per resource (in `apps/florist/shared/domain/commerce.js`) turns them into what the pages use, so a live store only swaps the source. `npm --prefix apps/florist test` checks every sample record and the checkout request against the spec (`tests/api-contract.test.mjs`).
+The demo fixtures in `shared/` use the Vendra API snapshot in `uploads/openapi-*.json` (API Platform, JSON-LD/Hydra). The adapters in `shared/domain/commerce.js` map those records into storefront models. `npm --prefix apps/florist test` checks the sample records and checkout request against the snapshot (`tests/api-contract.test.mjs`).
 
 Part A is the state of this repo. Part B lists what the backend doesn't provide yet; those changes belong in the vendra backend.
 
@@ -11,6 +11,10 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 Start the Next.js server with `VF_API_BASE` set to the florist's backend origin, for example `VF_API_BASE=https://backend.example.test npm run preview` from the repository root after `npm run build:app`. If the API is deployed under a prefix, include that prefix without the trailing `/api`. One server deployment points to one storefront backend. Without an API base, the storefront runs the sample flow. The Pages export always uses the sample flow.
 
 In server catalog mode, home, shop, category and product URLs read the Laravel `GET /api/catalog/products` and `GET /api/catalog/product-categories` collections. The storefront displays the backend's current price in its reported currency and offers a retry when a catalog request fails. This mode is a read-only stage of [#250](https://github.com/misaf/vendra-design-system/issues/250). Opening live ordering requires API-backed store settings, delivery and the [checkout contract](https://github.com/misaf/vendra-design-system/issues/365). Until then the remaining storefront screens show an ordering-unavailable message.
+
+Configure `VF_API_BASE` on the server at startup. A static build rejects a populated `VF_STORE.apiBase` because that setting would let the browser's sample flow call the backend. The Pages build ignores the server-only `VF_API_BASE` setting.
+
+After `npm run build:app`, run `npm --prefix apps/florist run test:e2e:catalog` to check the production server against a local API fixture. CI runs this check in English and Persian alongside the Pages export tests. Use the [tenant launch checks](../../guidelines/tenant-onboarding.md#5-launch-checks) against the actual tenant before release.
 
 ## A. Sample data and adapters (this repo)
 

@@ -23,7 +23,8 @@
     "test:e2e:next": "playwright test -c tests/e2e/playwright.config.mjs",
     "build:live": "npm run build && node next/prepare-assets.mjs && next build",
     "start:live": "next start",
-    "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next"
+    "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next",
+    "test:e2e:catalog": "VF_TEST_CATALOG=1 npm run test:e2e:next"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
