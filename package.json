@@ -8,16 +8,16 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm --prefix apps/storefront run dev:next --",
-    "build": "npm --prefix apps/storefront run build",
-    "build:app": "npm --prefix apps/storefront run build:live",
-    "preview": "npm --prefix apps/storefront run start:live --",
-    "check": "npm --prefix apps/storefront run check",
-    "test": "npm --prefix apps/storefront test",
-    "test:e2e": "npm --prefix apps/storefront run test:e2e --",
-    "new:component": "npm --prefix apps/storefront run new:component --",
-    "build:demo": "npm --prefix apps/storefront run build:next",
-    "preview:demo": "npm --prefix apps/storefront run start:next --"
+    "dev": "npm --prefix apps/florist run dev:next --",
+    "build": "npm --prefix apps/florist run build",
+    "build:app": "npm --prefix apps/florist run build:live",
+    "preview": "npm --prefix apps/florist run start:live --",
+    "check": "npm --prefix apps/florist run check",
+    "test": "npm --prefix apps/florist test",
+    "test:e2e": "npm --prefix apps/florist run test:e2e --",
+    "new:component": "npm --prefix apps/florist run new:component --",
+    "build:demo": "npm --prefix apps/florist run build:next",
+    "preview:demo": "npm --prefix apps/florist run start:next --"
   },
   "overrides": {
     "@parcel/watcher": "2.6.0"

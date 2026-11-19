@@ -1,21 +1,21 @@
 # Generated, vendored or third-party files.
 **/node_modules/
-apps/storefront/_runtime/
-apps/storefront/_vendor/
-apps/storefront/e2e/__screenshots__/
-apps/storefront/e2e/test-results/
-apps/storefront/e2e/playwright-report/
+apps/florist/_runtime/
+apps/florist/_vendor/
+apps/florist/e2e/__screenshots__/
+apps/florist/e2e/test-results/
+apps/florist/e2e/playwright-report/
 packages/ui/tokens/
-apps/storefront/design-system/styles.css
+apps/florist/design-system/styles.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator
 # writes marked regions into the storefront pages.
 *.html
 *.md
-apps/storefront/_app-build/
-apps/storefront/.next/
-apps/storefront/public/
-apps/storefront/next/out/
-apps/storefront/.next-live/
-apps/storefront/next-env.d.ts
-apps/storefront/.next-types.tsbuildinfo
+apps/florist/_app-build/
+apps/florist/.next/
+apps/florist/public/
+apps/florist/next/out/
+apps/florist/.next-live/
+apps/florist/next-env.d.ts
+apps/florist/.next-types.tsbuildinfo

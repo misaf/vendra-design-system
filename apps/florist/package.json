@@ -1,0 +1,53 @@
+{
+  "name": "vendra-florist",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json",
+    "build": "node ../../tools/build.mjs",
+    "check": "node ../../tools/build.mjs --check && prettier --ignore-path ../../.prettierignore --check ../../tools ../../packages . && npm run lint:css",
+    "test": "npm run typecheck && node --test tests/*.test.mjs features/*/*.test.mjs",
+    "dev": "npm run dev:next --",
+    "build:app": "npm run build:live",
+    "preview": "npm run start:live --",
+    "test:e2e:dev": "E2E_TARGET=dev playwright test -c e2e/playwright.config.mjs",
+    "test:e2e:build": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
+    "test:e2e": "node e2e/run.mjs",
+    "test:e2e:update": "node e2e/run.mjs --update-snapshots",
+    "test:e2e:remote": "node e2e/remote.mjs",
+    "format": "prettier --ignore-path ../../.prettierignore --write ../../tools ../../packages .",
+    "lint:css": "stylelint \"./design-system/components/**/*.css\" \"../../packages/ui/components/**/*.css\" \"shared/**/*.css\" \"styles/**/*.css\" \"features/*/*.css\"",
+    "new:component": "node ../../tools/new-component.mjs",
+    "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-fixtures.mjs && next dev",
+    "build:next": "npm run build && node next/prepare-assets.mjs && VF_NEXT_EXPORT=1 next build && node next/finish-export.mjs",
+    "start:next": "node next/serve-export.mjs",
+    "test:e2e:next": "playwright test -c tests/e2e/playwright.config.mjs",
+    "build:live": "npm run build && node next/prepare-assets.mjs && next build",
+    "start:live": "next start",
+    "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/cli": "4.3.4",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "prettier": "3.9.10",
+    "rolldown": "1.2.16",
+    "stylelint": "18.0.0",
+    "tailwindcss": "4.3.4",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "dependencies": {
+    "@internationalized/date": "3.12.4",
+    "@vendra/ui": "0.0.0",
+    "next": "16.4.6",
+    "qrcode-generator": "2.0.4",
+    "react": "19.3.1",
+    "react-aria-components": "1.22.1",
+    "react-dom": "19.3.1"
+  }
+}
