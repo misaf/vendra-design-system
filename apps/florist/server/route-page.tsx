@@ -4,6 +4,8 @@ import type {ComponentType} from 'react';
 import {StorefrontScreen} from '../app/_components/StorefrontDocument.jsx';
 import {routeHead} from './route-head.mjs';
 import {requireLocale} from '@storefront/i18n/route-locale';
+import {liveCatalogBase} from './catalog-mode';
+import {liveCatalogPage} from './live-catalog-page';
 
 // Route files select their page component. Next.js serializes only that route's component
 // reference, with the persistent storefront session supplied by the shared layout.
@@ -16,6 +18,8 @@ export function storefrontPage<Segments extends object = Record<never, never>>(
     const values = await params;
     const lang = requireLocale(values.locale);
     const segment = typeof path === 'function' ? path(values) : path;
+    const apiBase = await liveCatalogBase();
+    if (apiBase) return liveCatalogPage(apiBase, lang, segment, fallback);
     const address = [lang, segment].filter(Boolean).join('/') + '/';
     const {tags, route} = routeHead(address, {
       lang,

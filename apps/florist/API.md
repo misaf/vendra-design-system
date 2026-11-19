@@ -6,6 +6,12 @@ The storefront's data contract is the Vendra backend API exported in `uploads/op
 
 Part A is the state of this repo. Part B lists what the backend doesn't provide yet; those changes belong in the vendra backend.
 
+## Server catalog mode
+
+Start the Next.js server with `VF_API_BASE` set to the florist's backend origin, for example `VF_API_BASE=https://backend.example.test npm run preview` from the repository root after `npm run build:app`. If the API is deployed under a prefix, include that prefix without the trailing `/api`. One server deployment points to one storefront backend. Without an API base, the storefront runs the sample flow. The Pages export always uses the sample flow.
+
+In server catalog mode, home, shop, category and product URLs read the Laravel `GET /api/catalog/products` and `GET /api/catalog/product-categories` collections. The storefront displays the backend's current price in its reported currency and offers a retry when a catalog request fails. This mode is a read-only stage of [#250](https://github.com/misaf/vendra-design-system/issues/250). Opening live ordering requires API-backed store settings, delivery and the [checkout contract](https://github.com/misaf/vendra-design-system/issues/365). Until then the remaining storefront screens show an ordering-unavailable message.
+
 ## A. Sample data and adapters (this repo)
 
 | Resource | Sample data (schema) | Adapter | Fields kept outside the API record |

@@ -16,3 +16,9 @@ html[data-vf-tenant-loading] body {
 html[data-vf-consent-known] :is(.vf-shell-consent-dock, .vf-shell-consent-bar) {
   display: none;
 }
+
+.vf-live-catalog {
+  max-inline-size: 56rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}

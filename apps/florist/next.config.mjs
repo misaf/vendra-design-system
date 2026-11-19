@@ -7,6 +7,10 @@ const basePath = process.env.VF_BASE_PATH || '';
 export default function config(phase) {
   const dev = phase === PHASE_DEVELOPMENT_SERVER;
   const demo = process.env.VF_NEXT_EXPORT === '1';
+  if (demo && VF_STORE.apiBase.trim())
+    throw new Error(
+      'Set VF_API_BASE on the server deployment. The demo requires an empty VF_STORE.apiBase.'
+    );
   return {
     ...(demo
       ? {output: 'export'}
