@@ -3,38 +3,50 @@ import * as DS from '../../../../shell/ds.js';
 
 function DisplayPhoto({product, onLoaded, onFailed, ...props}) {
   const ref = React.useRef(null);
-  const reported = React.useRef('');
-  const report = image => {
-    const src = image.currentSrc || image.src;
-    const key = product.imageKey + ':' + src;
-    if (reported.current === key) return;
-    reported.current = key;
-    if (!image.naturalWidth) {
-      onFailed(product.imageKey);
-      return;
-    }
+  const eventVersion = React.useRef(0);
+  const recoveredSource = React.useRef('');
+  const loaded = image => {
+    const version = ++eventVersion.current;
     Promise.resolve(image.decode?.()).then(
       () => {
-        if (ref.current === image && reported.current === key) onLoaded(product.imageKey);
+        if (ref.current === image && eventVersion.current === version) onLoaded(product.imageKey);
       },
       () => {
-        if (ref.current === image && reported.current === key) onFailed(product.imageKey);
+        if (ref.current === image && eventVersion.current === version) onFailed(product.imageKey);
       }
     );
+  };
+  const failed = () => {
+    eventVersion.current += 1;
+    onFailed(product.imageKey);
+  };
+  const handleEvent = (event, notify) => {
+    const image = event.currentTarget;
+    const source = image.currentSrc || image.src;
+    // A native event can still be queued for the same photo inspected at mount.
+    if (event.isTrusted && recoveredSource.current === source) {
+      recoveredSource.current = '';
+      return;
+    }
+    recoveredSource.current = '';
+    notify(image);
   };
   // The browser can finish a prerendered photo before React attaches its event handlers.
   React.useEffect(() => {
     const image = ref.current;
-    if (image?.complete) report(image);
-  }, [product.imageKey]);
+    if (!image?.complete || eventVersion.current) return;
+    recoveredSource.current = image.currentSrc || image.src;
+    if (image.naturalWidth) loaded(image);
+    else failed();
+  }, []);
   return (
     <DS.Picture
       {...props}
       ref={ref}
       image={product.image}
       priority
-      onLoad={event => report(event.currentTarget)}
-      onError={event => report(event.currentTarget)}
+      onLoad={event => handleEvent(event, loaded)}
+      onError={event => handleEvent(event, failed)}
     />
   );
 }
@@ -124,6 +136,7 @@ export function StorefrontPresentationDisplay({
                 </div>
               ) : (
                 <DisplayPhoto
+                  key={product.imageKey}
                   product={product}
                   sizes={products.length > 1 ? '50vw' : '100vw'}
                   draggable={false}
