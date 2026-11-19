@@ -1,0 +1,199 @@
+{
+  "products": {
+    "@context": "/api/contexts/Product",
+    "@id": "/api/catalog/products",
+    "@type": "Collection",
+    "totalItems": 1,
+    "member": [
+      {
+        "@id": "/api/catalog/products/1",
+        "@type": "Product",
+        "id": 1,
+        "name": {
+          "en": "Red roses",
+          "fa": "رز قرمز"
+        },
+        "slug": {
+          "en": "red-roses",
+          "fa": "رز-قرمز"
+        },
+        "token": "VF-7K2M4Q",
+        "inStock": true,
+        "options": []
+      }
+    ],
+    "view": {
+      "@id": "/api/catalog/products?token=968351894",
+      "@type": "PartialCollectionView"
+    }
+  },
+  "quote": {
+    "@context": {
+      "@vocab": "https://vendra.test/api/docs.jsonld#",
+      "hydra": "http://www.w3.org/ns/hydra/core#",
+      "zoneId": "QuotedDelivery/zoneId",
+      "zoneName": "QuotedDelivery/zoneName",
+      "distanceKm": "QuotedDelivery/distanceKm",
+      "feeAmount": "QuotedDelivery/feeAmount",
+      "currencyCode": "QuotedDelivery/currencyCode",
+      "requiresQuote": "QuotedDelivery/requiresQuote"
+    },
+    "@type": "QuotedDelivery",
+    "@id": "/api/.well-known/genid/96f1259667ffac8b6305",
+    "id": "current",
+    "zoneId": 1,
+    "zoneName": {
+      "@context": "/api/contexts/DeliveryQuote",
+      "@id": "/api/.well-known/genid/423c0746b9c532cd20d0",
+      "@type": "Collection",
+      "totalItems": 1,
+      "member": ["Delivery zone"]
+    },
+    "distanceKm": 14.513,
+    "feeAmount": 1500,
+    "currencyCode": "USD",
+    "requiresQuote": false
+  },
+  "schedule": {
+    "@context": "/api/contexts/DeliverySchedule",
+    "@id": "/api/delivery/schedule",
+    "@type": "DeliverySchedule",
+    "id": "current",
+    "dates": ["2026-11-20", "2026-11-21"],
+    "slots": [
+      {
+        "@type": "DeliverySlot",
+        "@id": "/api/.well-known/genid/4047239c19bb472d8540",
+        "id": 1,
+        "name": {
+          "en": "Afternoon"
+        },
+        "startsAt": "12:00:00",
+        "endsAt": "17:00:00"
+      }
+    ]
+  },
+  "checkout": {
+    "@context": "/api/contexts/Order",
+    "@id": "/api/sales/orders/1",
+    "@type": "Order",
+    "id": 1,
+    "number": "ORD-FLORIST01",
+    "status": "pending",
+    "currencyCode": "USD",
+    "itemsAmount": 9600,
+    "deliveryAmount": 2000,
+    "totalAmount": 11600,
+    "placedAt": "2026-11-20T01:55:39+03:30",
+    "lines": [
+      {
+        "@type": "OrderLine",
+        "@id": "/api/.well-known/genid/99ee3ae8c40857e5048d",
+        "id": 1,
+        "sellableType": "product",
+        "sellableId": 1,
+        "name": "Red roses",
+        "quantity": 2,
+        "unitAmount": 4800,
+        "lineAmount": 9600,
+        "metadata": {
+          "token": "VF-7K2M4Q",
+          "addons": "card,chocolate"
+        }
+      }
+    ]
+  },
+  "order": {
+    "@context": "/api/contexts/Order",
+    "@id": "/api/sales/orders/1",
+    "@type": "Order",
+    "id": 1,
+    "number": "ORD-FLORIST01",
+    "status": "pending",
+    "currencyCode": "USD",
+    "itemsAmount": 9600,
+    "deliveryAmount": 2000,
+    "totalAmount": 11600,
+    "placedAt": "2026-11-20T01:55:39+03:30",
+    "lines": [
+      {
+        "@type": "OrderLine",
+        "@id": "/api/.well-known/genid/ad9a7321f863e01eeae9",
+        "id": 1,
+        "sellableType": "product",
+        "sellableId": 1,
+        "name": "Red roses",
+        "quantity": 2,
+        "unitAmount": 4800,
+        "lineAmount": 9600,
+        "metadata": {
+          "token": "VF-7K2M4Q",
+          "addons": "card,chocolate"
+        }
+      }
+    ]
+  },
+  "replay": {
+    "@context": "/api/contexts/ValidationError",
+    "@id": "/api/validation_errors/cartToken",
+    "@type": "ValidationError",
+    "description": "سبد خرید باز با این توکن برای شما یافت نشد.",
+    "type": "/validation_errors/cartToken",
+    "title": "Validation Error",
+    "detail": "سبد خرید باز با این توکن برای شما یافت نشد.",
+    "status": 422,
+    "violations": [
+      {
+        "propertyPath": "cartToken",
+        "message": "سبد خرید باز با این توکن برای شما یافت نشد."
+      }
+    ]
+  },
+  "other-customer": {
+    "@context": "/api/contexts/Error",
+    "@id": "/api/errors/404",
+    "@type": "Error",
+    "type": "/errors/404",
+    "title": "An error occurred",
+    "status": 404,
+    "detail": "Not Found"
+  },
+  "cart": {
+    "@context": "/api/contexts/Cart",
+    "@id": "/api/sales/carts/1",
+    "@type": "Cart",
+    "id": 1,
+    "token": "dcb80a02-68c5-4d9d-aef2-a510784d21c3",
+    "expiresAt": "2026-11-27T02:00:17+03:30",
+    "lines": [
+      {
+        "@type": "CartLine",
+        "@id": "/api/.well-known/genid/43539560db7a26bd459e",
+        "id": 1,
+        "sellableType": "product",
+        "sellableId": 1,
+        "quantity": 2,
+        "metadata": {
+          "token": "VF-7K2M4Q",
+          "addons": "card,chocolate"
+        }
+      }
+    ]
+  },
+  "closedDate": {
+    "@context": "/api/contexts/ValidationError",
+    "@id": "/api/validation_errors/deliveryDate",
+    "@type": "ValidationError",
+    "description": "این تاریخ ارسال در دسترس نیست.",
+    "type": "/validation_errors/deliveryDate",
+    "title": "Validation Error",
+    "detail": "این تاریخ ارسال در دسترس نیست.",
+    "status": 422,
+    "violations": [
+      {
+        "propertyPath": "deliveryDate",
+        "message": "این تاریخ ارسال در دسترس نیست."
+      }
+    ]
+  }
+}
