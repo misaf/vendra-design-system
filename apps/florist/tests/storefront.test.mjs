@@ -321,11 +321,7 @@ for (const folder of [
         [['VF-8RD5WN', 2]],
         'a fresh visitor gets only the handed-over bag'
       );
-      assert.deepEqual(
-        [...handHistory.at(-1)],
-        ['replace', '/apps/storefront/app/en/bag/'],
-        'the link is dropped'
-      );
+      assert.deepEqual([...handHistory.at(-1)], ['replace', '/en/bag/'], 'the link is dropped');
       setAddress(hc, '/apps/storefront/app/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
       const shortlisted = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
@@ -336,7 +332,7 @@ for (const folder of [
     history.length = 0;
     logic.navigate('shop');
     assert.equal(logic.state.route, 'shop');
-    assert.deepEqual(history[0], ['push', '/apps/storefront/app/en/shop/']);
+    assert.deepEqual(history[0], ['push', '/en/shop/']);
     logic.navigate({view: 'product', id: 'ivory-classic', lang: 'fa'});
     assert.equal(logic.state.route, 'product');
     assert.equal(
@@ -522,7 +518,7 @@ for (const lang of ['en', 'fa']) {
   sc.setTimeout = () => 0;
   assert.equal(search.renderVals().q, query);
   const close = new URL(search.renderVals().closeHref, 'http://localhost');
-  assert.equal(close.pathname, '/apps/storefront/app/' + lang + '/shop/bouquets/');
+  assert.equal(close.pathname, '/' + lang + '/shop/bouquets/');
   assert.equal(close.searchParams.get('filters'), 'roses');
   search.renderVals().setQ('VF-8RD5WN');
   assert.equal(calls.at(-1)[0].q, 'VF-8RD5WN');
@@ -2118,7 +2114,7 @@ Promise.all([import('../build/routes.mjs'), import('../i18n/journal-content.js')
       assert.deepEqual(Object.keys(alternates), ['en', 'fa', 'x-default'], loc + ' alternates');
       assert.ok(Object.values(alternates).includes(loc), loc + ' lists itself as an alternate');
       assert.equal(alternates['x-default'], alternates.en, loc + ' x-default is English');
-      assert.equal(alternates.fa, alternates.en.replace('/app/en/', '/app/fa/'));
+      assert.equal(alternates.fa, alternates.en.replace('/en/', '/fa/'));
     }
     const months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
     for (const post of VF_POSTS) {
@@ -2135,7 +2131,7 @@ Promise.all([import('../build/routes.mjs'), import('../i18n/journal-content.js')
       for (const lang of ['en', 'fa'])
         assert.ok(
           sitemap.includes(
-            '<loc>https://shop.example/apps/storefront/app/' +
+            '<loc>https://shop.example/' +
               lang +
               '/journal/' +
               post.id +
@@ -2202,7 +2198,7 @@ Promise.all([
       );
     assert.ok(
       nginx.includes(
-        `rewrite ^/apps/storefront/app/(en|fa)/journal/${old}/?$ /apps/storefront/app/$1/journal/${next}/ permanent;`
+        `rewrite ^/(?:apps/storefront/app/)?(en|fa)/journal/${old}/?$ /$1/journal/${next}/ permanent;`
       ),
       'nginx redirects ' + old + ' to ' + next
     );

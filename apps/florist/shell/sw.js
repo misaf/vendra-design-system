@@ -8,7 +8,7 @@ const sw = /** @type {any} */ (self);
 // Cache each localized presentation document.
 // The file cache has a fixed limit, so a tablet that runs for months does not fill up.
 const SCOPE = new URL(sw.registration.scope).pathname;
-const ROOT = new URL('../../..', sw.location.href).pathname;
+const ROOT = SCOPE.replace(/apps\/storefront\/app\/$/, '');
 const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
 const PAGES = CACHE_PREFIX + '-pages-next-v1';
 const FILES = CACHE_PREFIX + '-files-next-v1';
@@ -103,7 +103,13 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
     event.respondWith(fromNetwork(request, url.origin + url.pathname));
   } else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
   else if (isApi(url.pathname)) return;
-  else if (FILE.test(url.pathname)) fromFiles(event, request, url);
+  else if (
+    FILE.test(url.pathname) &&
+    [ROOT + '_next/', ROOT + 'assets/', ROOT + 'apps/storefront/'].some(prefix =>
+      url.pathname.startsWith(prefix)
+    )
+  )
+    fromFiles(event, request, url);
 });
 
 // Cache hashed app assets from the build manifest and explicit product photos. Never cache a

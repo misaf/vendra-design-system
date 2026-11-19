@@ -8,10 +8,10 @@ import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
 
 const origin = 'https://shop.example';
-const app = origin + '/apps/storefront/app/';
+const app = origin + '/';
 // The <head> links of the page at `address` (a path under the app, with its query).
 function head(address) {
-  const url = '/apps/storefront/app/' + address;
+  const url = '/' + address;
   vfServerRender({url, origin});
   try {
     const route = vfReadRoute(url);
@@ -41,8 +41,8 @@ const cases = {
     'en/shop/boxes/',
     false
   ],
-  'shop/': ['en/shop/', true],
-  'shop/boxes/?tenant=default&utm_source=mail': ['en/shop/boxes/', true],
+  'apps/storefront/app/shop/': ['en/shop/', true],
+  'apps/storefront/app/shop/boxes/?tenant=default&utm_source=mail': ['en/shop/boxes/', true],
   'en/shop/?demo=loading': ['en/shop/', false],
   'fa/product/VF-7K2M4Q/?qty=2&size=generous&date=2026-11-10': ['fa/product/VF-7K2M4Q/', true],
   'en/journal/?page=2': ['en/journal/?page=2', true],
@@ -62,7 +62,7 @@ for (const [address, [expected, indexed]] of Object.entries(cases)) {
   const other = lang === 'en' ? 'fa' : 'en';
   assert.equal(
     alternates[other],
-    canonical.replace('/app/' + lang + '/', '/app/' + other + '/'),
+    canonical.replace(app + lang + '/', app + other + '/'),
     address + ': the other language differs only in its language'
   );
   assert.equal(alternates['x-default'], alternates.en, address + ': x-default is English');

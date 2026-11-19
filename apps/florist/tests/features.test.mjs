@@ -185,23 +185,17 @@ for (const route of [
     ctx.vfRouteUrl(route),
     route.view
   );
-assert.equal(ctx.vfRouteUrl({view: 'home', lang: 'en'}), '/apps/storefront/app/en/');
-assert.equal(
-  ctx.vfRouteUrl({view: 'shop', lang: 'fa', cat: 'all'}),
-  '/apps/storefront/app/fa/shop/'
-);
+assert.equal(ctx.vfRouteUrl({view: 'home', lang: 'en'}), '/en/');
+assert.equal(ctx.vfRouteUrl({view: 'shop', lang: 'fa', cat: 'all'}), '/fa/shop/');
 assert.equal(
   ctx.vfRouteUrl({view: 'product', lang: 'en', id: 'VF-7K2M4Q', cat: 'boxes'}),
-  '/apps/storefront/app/en/product/VF-7K2M4Q/'
+  '/en/product/VF-7K2M4Q/'
 );
 assert.equal(
   ctx.vfRouteUrl({view: 'post', lang: 'en', post: 'morning-at-the-studio'}),
-  '/apps/storefront/app/en/journal/morning-at-the-studio/'
+  '/en/journal/morning-at-the-studio/'
 );
-assert.equal(
-  ctx.vfRouteUrl({view: 'bag', lang: 'en', step: 'delivery'}),
-  '/apps/storefront/app/en/bag/?step=delivery'
-);
+assert.equal(ctx.vfRouteUrl({view: 'bag', lang: 'en', step: 'delivery'}), '/en/bag/?step=delivery');
 
 // Shop occasions round-trip through the URL; unknown ones fall back to all.
 assert.equal(ctx.vfReadRoute('/apps/storefront/app/shop/?occasion=sympathy').occasion, 'sympathy');

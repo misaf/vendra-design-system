@@ -4,8 +4,7 @@ import React from 'react';
 import {Alert} from '../design-system/components/molecules/Alert/Alert.jsx';
 import {Button} from '@vendra/ui/Button';
 import {vfRuntime} from '../shared/platform/runtime.js';
-import {vfLocation} from '../shared/platform/environment.js';
-import {vfAppBase} from '../shared/services/routing.js';
+import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_STORE, vfLocale} from '../shared/domain/store-config.js';
 
 const COPY = {
@@ -22,9 +21,7 @@ const COPY = {
 };
 
 export function PageError() {
-  // The language is the first segment after the app's path (apps/storefront/app/fa/…).
-  const segment = vfLocation().pathname.slice(vfAppBase().length).split('/')[0];
-  const locale = vfLocale(COPY[segment] ? segment : 'en');
+  const locale = vfLocale(vfReadRoute().lang || VF_STORE.languages[0]);
   const lang = locale.code;
   const copy = COPY[lang];
   React.useEffect(() => {

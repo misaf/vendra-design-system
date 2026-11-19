@@ -185,9 +185,7 @@ test('a new service worker activates without interrupting an open display', asyn
   await expect(page.locator('[data-offline-status="ready"]')).toBeVisible({timeout: 60000});
   await page.keyboard.press('Escape');
   const code = await page.locator('.vf-display-code').textContent();
-  const workerPath = fileURLToPath(
-    new URL('../next/out/apps/storefront/app/sw.js', import.meta.url)
-  );
+  const workerPath = fileURLToPath(new URL('../next/out/sw.js', import.meta.url));
   const original = await fs.readFile(workerPath, 'utf8');
   try {
     await fs.writeFile(workerPath, original + '\n// test revision ' + Date.now());

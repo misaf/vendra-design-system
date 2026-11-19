@@ -26,7 +26,7 @@ import {vfPageTenant} from '../../shared/services/page-lifecycle.js';
 import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,
-  vfAppBase,
+  vfLegacyAppBase,
   vfInApp,
   vfReadRoute,
   vfRouteUrl
@@ -37,7 +37,8 @@ import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
-const VF_SESSION = 'vendra-template:' + vfAppBase();
+// Retain bags and delivery state saved before the URL migration.
+const VF_SESSION = 'vendra-template:' + vfLegacyAppBase();
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.
 function vfCheckoutBlocked(state) {
   return (
@@ -95,7 +96,7 @@ function vfJoinLines(bag, lines) {
 function vfSearchReturnRoute() {
   if (vfOnServer()) return null;
   const value = history.state?.vfSearchReturn;
-  if (typeof value !== 'string' || !value.startsWith(vfAppBase())) return null;
+  if (typeof value !== 'string' || !vfInApp(value)) return null;
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
@@ -456,7 +457,7 @@ export function useStorefrontSession(props) {
         requested.lines ||
         requested.ids ||
         (['product', 'post'].includes(requested.view) &&
-          VF_SEO.publishedPath(new URL(address, location.href).pathname) !==
+          VF_SEO.canonicalPath(new URL(address, location.href).pathname) !==
             new URL(canonical, location.href).pathname)
       )
         page.navigate(initial.routeInfo, true);

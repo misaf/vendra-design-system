@@ -10,7 +10,7 @@ import {VF_SEO} from '../shared/services/seo.js';
 import {vfFindProduct} from '../shared/domain/catalog.js';
 
 const origin = 'https://shop.example';
-const app = origin + '/apps/storefront/app/';
+const app = origin + '/';
 const page = address => routeHead(address, {origin}).tags;
 const meta = (page, name) => page.meta.find(tag => tag.name === name)?.content || undefined;
 const link = (page, rel, lang) =>
@@ -68,7 +68,7 @@ assert.equal(link(missing, 'canonical'), undefined);
 assert.equal(meta(missing, 'og:url'), undefined);
 // Without VF_ORIGIN the store's own URLs start at the site root; an image on another host keeps
 // its origin. On the server a configured apiBase makes the store live, as in the browser.
-vfServerRender({url: '/apps/storefront/app/en/'});
+vfServerRender({url: '/en/'});
 try {
   assert.equal(vfAbsoluteUrl('/assets/products/rose.webp'), '/assets/products/rose.webp');
   assert.equal(

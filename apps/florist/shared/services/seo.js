@@ -1,6 +1,6 @@
 // Routing and <head> helpers for the storefront (VF_SEO).
-// URL scheme: <app base><lang>/<screen>/<id>/ — for example /apps/storefront/app/en/product/VF-7K2M4Q/,
-// /apps/storefront/app/fa/shop/boxes/ or /apps/storefront/app/en/journal/<postId>/. Every path ends in a slash,
+// URL scheme: <app base><lang>/<screen>/<id>/, such as /en/product/VF-7K2M4Q/ or /fa/shop/boxes/.
+// Every path ends in a slash,
 // so a static host serves each one from its own index.html. The path says which page it is; the
 // query only carries state on that page (filters, sorting, steps), added by routing.js.
 import {vfAbsoluteUrl, vfAssetBase, vfLocation} from '../platform/environment.js';
@@ -61,21 +61,24 @@ export const VF_SEO = (() => {
     keys.forEach(k => NUMERIC.add(k));
   };
   const valid = (k, v) => SAFE.test(v) && (!NUMERIC.has(k) || DIGITS.test(v));
-  // The path the storefront app is served at: apps/storefront/app/ under the build's base path
-  // (environment.js), or under the site root where that is not set (a relative asset base).
   const appBase = () => {
     const base = vfAssetBase();
-    if (!/^(\/|\w+:)/.test(base)) return '/apps/storefront/app/';
-    return new URL('apps/storefront/app/', new URL(base, vfLocation())).pathname;
+    return /^(\/|\w+:)/.test(base) ? new URL(base, vfLocation()).pathname : '/';
   };
-  // Short localized routes share the published routes' state and canonical links during cutover.
-  const publishedPath = pathname => {
+  const legacyAppBase = () => appBase() + 'apps/storefront/app/';
+  const canonicalPath = pathname => {
+    const legacy = legacyAppBase();
+    return pathname.startsWith(legacy) ? appBase() + pathname.slice(legacy.length) : pathname;
+  };
+  // Keep accepting previously published links, including older links without a language segment.
+  const routeSuffix = pathname => {
     const root = appBase();
-    if (pathname.startsWith(root)) return pathname;
-    const base = root.slice(0, -'apps/storefront/app/'.length);
-    if (!pathname.startsWith(base)) return pathname;
-    const suffix = pathname.slice(base.length);
-    return LANGUAGES.includes(suffix.split('/')[0]) ? root + suffix : pathname;
+    const legacy = legacyAppBase();
+    if (pathname.startsWith(legacy)) return pathname.slice(legacy.length);
+    if (pathname === root || pathname === root + 'index.html') return '';
+    if (!pathname.startsWith(root)) return null;
+    const suffix = pathname.slice(root.length);
+    return LANGUAGES.includes(suffix.split('/')[0]) ? suffix : null;
   };
   // Whether a URL is a page of the storefront app (not a file next to it, or another site).
   const inApp = url => {
@@ -84,7 +87,7 @@ export const VF_SEO = (() => {
       const target = new URL(url, here);
       return (
         target.origin === here.origin &&
-        publishedPath(target.pathname).startsWith(appBase()) &&
+        routeSuffix(target.pathname) != null &&
         !/\.\w+$/.test(target.pathname)
       );
     } catch {
@@ -98,15 +101,14 @@ export const VF_SEO = (() => {
     const r = {view: 'notfound'};
     let path;
     try {
-      path = publishedPath(new URL(url, vfLocation()).pathname);
+      path = routeSuffix(new URL(url, vfLocation()).pathname);
     } catch {
       return r;
     }
-    const root = appBase();
-    if (!path.startsWith(root)) return r;
+    if (path == null) return r;
     let parts;
     try {
-      parts = path.slice(root.length).split('/').filter(Boolean).map(decodeURIComponent);
+      parts = path.split('/').filter(Boolean).map(decodeURIComponent);
     } catch {
       return r;
     }
@@ -296,7 +298,8 @@ export const VF_SEO = (() => {
     register,
     setNumeric,
     appBase,
-    publishedPath,
+    legacyAppBase,
+    canonicalPath,
     inApp,
     readRoute,
     routePath,

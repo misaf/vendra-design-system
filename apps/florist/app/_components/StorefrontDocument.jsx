@@ -14,7 +14,7 @@ import {vfApplyTvMode} from '../../shared/services/tv.js';
 import {vfConfigureRendering, vfSetHydrating} from '../../shared/platform/environment.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
-import {vfReadRoute, VF_ROUTES} from '../../shared/services/routing.js';
+import {vfInApp, vfReadRoute, VF_ROUTES} from '../../shared/services/routing.js';
 import {vfBrandLinks} from '../../shared/domain/brand.js';
 import {VF_SEO} from '../../shared/services/seo.js';
 import {VF_STORE, vfLanguage, vfLocale} from '../../shared/domain/store-config.js';
@@ -33,10 +33,10 @@ if (typeof window !== 'undefined') {
 }
 
 function AppLink({href, ...props}) {
-  const appPath = base + '/apps/storefront/app/';
   if (
     typeof href !== 'string' ||
-    !href.startsWith(appPath) ||
+    !href.startsWith(base + '/') ||
+    !vfInApp(href) ||
     href.includes('#') ||
     props.download != null ||
     (props.target && props.target !== '_self') ||

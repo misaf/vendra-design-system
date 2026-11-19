@@ -12,7 +12,7 @@ export default function config(phase) {
       ? {output: 'export'}
       : {
           async redirects() {
-            const destination = '/apps/storefront/app/' + VF_STORE.languages[0] + '/';
+            const destination = '/' + VF_STORE.languages[0] + '/';
             return ['/', '/apps/storefront/app/'].map(source => ({
               source,
               destination,

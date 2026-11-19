@@ -64,9 +64,9 @@ for (const lang of ['en', 'fa']) {
               })
             );
         });
-      await openSite(page, 'saved', lang, {
-        ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'
-      });
+      const handoff = siteUrl('saved', lang, {ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'});
+      await page.goto(existing ? '/apps/storefront/app' + handoff : handoff);
+      await expect(page).toHaveURL(url => url.pathname === '/' + lang + '/saved/' && !url.search);
       const snapshot = async () => {
         // Full navigations can show prerendered content before the site's state has mounted.
         await page.waitForFunction(() => window.__vfSite?.state);
