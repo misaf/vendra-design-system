@@ -133,41 +133,40 @@ for (const lang of ['en', 'fa']) {
     expect(await scanAxe(page)).toEqual([]);
   });
 
-  test(
-    'header breakpoints, optional language and empty navigation (' + lang + ')',
-    async ({page}) => {
+  for (const width of [390, 768, 1024, 1440]) {
+    test(`header breakpoint at ${width}px (${lang})`, async ({page}) => {
+      await page.setViewportSize({width, height: 900});
       await openStorefrontComponent(page, 'StorefrontHeader', lang);
-      for (const width of [390, 768, 1024, 1440]) {
-        await page.setViewportSize({width, height: 900});
-        const header = page.getByRole('banner');
-        await expect(header.getByRole('button', {name: t.menu, exact: true})).toHaveCount(
-          width < 1024 ? 1 : 0
-        );
-        await expect(header.getByRole('link', {name: t.account, exact: true})).toHaveCount(
-          width >= 768 ? 1 : 0
-        );
-        await expect(header.getByRole('group', {name: t.language, exact: true})).toHaveCount(
-          width >= 768 ? 1 : 0
-        );
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-          true
-        );
-        expect(await scanAxe(page)).toEqual([]);
-      }
+      const header = page.getByRole('banner');
+      await expect(header.getByRole('button', {name: t.menu, exact: true})).toHaveCount(
+        width < 1024 ? 1 : 0
+      );
+      await expect(header.getByRole('link', {name: t.account, exact: true})).toHaveCount(
+        width >= 768 ? 1 : 0
+      );
+      await expect(header.getByRole('group', {name: t.language, exact: true})).toHaveCount(
+        width >= 768 ? 1 : 0
+      );
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true
+      );
+      expect(await scanAxe(page)).toEqual([]);
+    });
+  }
+
+  for (const width of [390, 768, 1440]) {
+    test(`header without language or navigation links at ${width}px (${lang})`, async ({page}) => {
+      await page.setViewportSize({width, height: 900});
+      await openStorefrontComponent(page, 'StorefrontHeader', lang);
       await page.getByRole('checkbox', {name: 'Show language', exact: true}).uncheck();
       await page.getByRole('checkbox', {name: 'Empty navigation', exact: true}).check();
-      for (const width of [390, 768, 1440]) {
-        await page.setViewportSize({width, height: 900});
-        const header = page.getByRole('banner');
-        await expect(header.getByRole('group')).toHaveCount(0);
-        await expect(header.getByRole('button', {name: /^(فا، فارسی|EN, English)$/})).toHaveCount(
-          0
-        );
-        await expect(header.getByRole('link', {name: t.shop, exact: true})).toHaveCount(0);
-        expect(await scanAxe(page)).toEqual([]);
-      }
-    }
-  );
+      const header = page.getByRole('banner');
+      await expect(header.getByRole('group')).toHaveCount(0);
+      await expect(header.getByRole('button', {name: /^(فا، فارسی|EN, English)$/})).toHaveCount(0);
+      await expect(header.getByRole('link', {name: t.shop, exact: true})).toHaveCount(0);
+      expect(await scanAxe(page)).toEqual([]);
+    });
+  }
 
   test('header selects supplied desktop logo and compact mark (' + lang + ')', async ({page}) => {
     await page.setViewportSize({width: 1440, height: 900});
