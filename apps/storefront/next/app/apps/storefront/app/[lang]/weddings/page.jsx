@@ -1,6 +1,6 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/weddings/Page.jsx';
-import {vfFeatures} from '../../../../../../../shared/domain/store-config.js';
-import NotFound from '../../../../../../../pages/notfound/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import WeddingsScreen from '@storefront/features/weddings/WeddingsScreen.jsx';
+import {vfFeatures} from '@storefront/shared/domain/store-config.js';
+import NotFound from '@storefront/features/notfound/NotFoundScreen.jsx';
 
-export default storefrontPage('weddings', vfFeatures().weddings ? View : NotFound);
+export default storefrontPage('weddings', vfFeatures().weddings ? WeddingsScreen : NotFound);

@@ -59,7 +59,7 @@ function environment() {
   return {c, storage, timers};
 }
 function page(name, c, props = {}) {
-  const logic = pageScript('pages/' + name);
+  const logic = pageScript('features/' + name);
   return vm.runInContext(
     `(()=>{${logic}\nreturn new Component(${JSON.stringify({lang: 'en', ...props})});})()`,
     c

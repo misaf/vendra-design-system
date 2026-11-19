@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/presentation/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import PresentationScreen from '@storefront/features/presentation/PresentationScreen.jsx';
 
-export default storefrontPage('presentation', View);
+export default storefrontPage('presentation', PresentationScreen);

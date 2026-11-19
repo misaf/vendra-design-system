@@ -1,5 +1,5 @@
 'use client';
 
-import {PageError} from '../../../../../../app/PageError.jsx';
+import {PageError} from '@storefront/shell/PageError.jsx';
 
 export default PageError;

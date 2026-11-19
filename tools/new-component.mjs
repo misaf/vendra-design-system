@@ -3,7 +3,7 @@
 // npm test pass from the first build: the component, its declarations, CSS (added to
 // the design system's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
-// re-exports the component for the storefront (app/ds.js). What it can't know is left as TODO.
+// re-exports the component for the storefront (shell/ds.js). What it can't know is left as TODO.
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -154,7 +154,7 @@ const insertSorted = (file, pattern, line) => {
   fs.writeFileSync(file, lines.join('\n'));
 };
 insertSorted(
-  path.join(repo, 'apps/storefront/app/ds.js'),
+  path.join(repo, 'apps/storefront/shell/ds.js'),
   /^export \* from '\.\.\/design-system\/components\//,
   `export * from '${path.posix.relative('apps/storefront/app', componentPath)}/${name}.jsx';`
 );
@@ -179,14 +179,14 @@ execFileSync(
     '--log-level=warn',
     '--write',
     folder,
-    path.join(repo, 'apps/storefront/app/ds.js'),
+    path.join(repo, 'apps/storefront/shell/ds.js'),
     path.join(repo, componentsFolder, 'utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to apps/storefront/app/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
+Added it to apps/storefront/shell/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 

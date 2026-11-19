@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/policy/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import PolicyScreen from '@storefront/features/policy/PolicyScreen.jsx';
 
-export default storefrontPage('policy', View);
+export default storefrontPage('policy', PolicyScreen);

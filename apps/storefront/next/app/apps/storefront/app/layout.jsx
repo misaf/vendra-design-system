@@ -1,8 +1,8 @@
-import {StorefrontDocument} from '../../../storefront.jsx';
-import {VF_STORE} from '../../../../../shared/domain/store-config.js';
-import '../../../../../_runtime/tailwind.css';
-import '../../../../../design-system/styles.css';
-import '../../../../../_runtime/custom.css';
+import {StorefrontDocument} from '@storefront/next/app/storefront.jsx';
+import {VF_STORE} from '@storefront/shared/domain/store-config.js';
+import '@storefront/_runtime/tailwind.css';
+import '@storefront/design-system/styles.css';
+import '@storefront/_runtime/custom.css';
 import './storefront.css';
 
 export default function Layout({children}) {

@@ -4,19 +4,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import playwrightPackage from '@playwright/test/package.json' with {type: 'json'};
 
+import {featureFiles} from './page-script.mjs';
+
 const root = path.resolve(import.meta.dirname, '..');
-for (const folder of fs.readdirSync(path.join(root, 'pages')).map(name => 'pages/' + name)) {
+for (const folder of fs.readdirSync(path.join(root, 'features')).map(name => 'features/' + name)) {
+  const {logic, screen, view} = featureFiles(folder);
   const files = fs.readdirSync(path.join(root, folder));
   for (const name of ['tailwind.css', 'custom.css'])
     assert.ok(!files.includes(name), folder + ' duplicates ' + name);
-  assert.ok(files.includes('logic.js'), folder + ' must own its behavior source');
-  if (folder === 'pages/site') continue; // Shared session state lives above the App Router pages.
+  assert.ok(files.includes(logic), folder + ' must own its behavior source');
   assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
   assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
-  for (const name of ['Page.jsx', 'View.jsx'])
+  for (const name of [screen, view])
     assert.ok(files.includes(name), folder + ' must have its ' + name);
-  const view = fs.readFileSync(path.join(root, folder, 'View.jsx'), 'utf8');
-  assert.ok(!/\bstyle=\{/.test(view), folder + ' must keep custom styles in CSS classes');
+  const markup = fs.readFileSync(path.join(root, folder, view), 'utf8');
+  assert.ok(!/\bstyle=\{/.test(markup), folder + ' must keep custom styles in CSS classes');
 }
 console.log('Passed page folders: sources, views and no duplicated runtime CSS.');
 

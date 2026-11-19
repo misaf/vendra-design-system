@@ -24,11 +24,7 @@ for (const file of sources) {
   for (const match of code.matchAll(/from '(?:\.\.?\/)+(?:[A-Za-z]+\/)*([A-Za-z]+)\.jsx'/g))
     buildingBlocks.add(match[1]);
 }
-for (const folder of [
-  'app',
-  'shared',
-  ...fs.readdirSync(path.join(root, 'pages')).map(name => 'pages/' + name)
-]) {
+for (const folder of ['shell', 'shared', 'features']) {
   for (const name of fs
     .readdirSync(path.join(root, folder), {recursive: true})
     .filter(name => name.endsWith('.jsx'))) {

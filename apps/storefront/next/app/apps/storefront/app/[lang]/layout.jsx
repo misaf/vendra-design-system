@@ -1,7 +1,7 @@
 import {notFound} from 'next/navigation';
-import {tenantFontUrls} from '../../../../../route-head.mjs';
-import {vfConfigureRendering} from '../../../../../../shared/platform/environment.js';
-import {VF_STORE} from '../../../../../../shared/domain/store-config.js';
+import {tenantFontUrls} from '@storefront/next/route-head.mjs';
+import {vfConfigureRendering} from '@storefront/shared/platform/environment.js';
+import {VF_STORE} from '@storefront/shared/domain/store-config.js';
 
 const base = process.env.NEXT_PUBLIC_VF_BASE_PATH + '/';
 vfConfigureRendering(base, 0);

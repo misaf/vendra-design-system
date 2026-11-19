@@ -45,7 +45,10 @@ function presentation(settings = {}) {
     matchMedia: () => ({matches: false, addEventListener() {}, removeEventListener() {}})
   };
   vm.createContext(ctx);
-  vm.runInContext(sharedLogic + pageScript('pages/presentation') + '\nthis.Logic=Component;', ctx);
+  vm.runInContext(
+    sharedLogic + pageScript('features/presentation') + '\nthis.Logic=Component;',
+    ctx
+  );
   return {page: new ctx.Logic({lang: 'en'}), timers, ctx};
 }
 {

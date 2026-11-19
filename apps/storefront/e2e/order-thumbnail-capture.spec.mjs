@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {openSite, pinDelivery, chooseDeliveryTime} from './helpers.mjs';
 import {captureImages} from './image-capture-helpers.mjs';
-import {vfCopy} from '../pages/bag/copy.js';
+import {vfCopy} from '../features/bag/copy.js';
 
 test.use({reducedMotion: 'reduce'});
 test.beforeEach(async ({page}, info) => {

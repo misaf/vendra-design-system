@@ -30,9 +30,10 @@ const sharedFolder = file => {
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
 const isShared = file => file.startsWith('apps/storefront/shared/');
-const uiLayer = file => /^apps\/storefront\/app\/(layouts|organisms|molecules)\//.exec(file)?.[1];
+const uiLayer = file =>
+  /^apps\/storefront\/(?:shell|features\/[^/]+)\/(layouts|organisms|molecules)\//.exec(file)?.[1];
 const protectedSource = file =>
-  uiLayer(file) || file === 'apps/storefront/app/ds.js' || isShared(file);
+  uiLayer(file) || file === 'apps/storefront/shell/ds.js' || isShared(file);
 
 const misplacedShared = file =>
   `${file}: shared module outside the ${Object.keys(sharedRules).join('/, ')}/ folders`;
@@ -59,12 +60,12 @@ function appDependencyViolation(source, target, relative) {
   if (!protectedSource(source)) return null;
   if (isShared(source)) return sharedDependencyViolation(source, target, relative);
   if (!relative) {
-    const allowed = source !== 'apps/storefront/app/ds.js' && target === 'react';
+    const allowed = source !== 'apps/storefront/shell/ds.js' && target === 'react';
     return allowed ? null : `${source}: forbidden UI dependency ${target}`;
   }
   const from = uiLayer(source);
   let allowed;
-  if (source === 'apps/storefront/app/ds.js') {
+  if (source === 'apps/storefront/shell/ds.js') {
     allowed = !!layer(target);
   } else {
     const to = uiLayer(target);
@@ -72,7 +73,7 @@ function appDependencyViolation(source, target, relative) {
       target === 'react' ||
       (from === 'layouts'
         ? to === 'layouts'
-        : target === 'apps/storefront/app/ds.js' ||
+        : target === 'apps/storefront/shell/ds.js' ||
           sharedFolder(target) === 'ui' ||
           to === 'molecules' ||
           (from === 'organisms' && to === 'organisms'));
@@ -112,15 +113,14 @@ function walk(directory) {
 }
 
 function runtimeSources(root) {
-  const files = [
+  return [
     componentsFolder,
-    'apps/storefront/app',
+    'apps/storefront/shell',
+    'apps/storefront/features',
     'apps/storefront/shared',
     'apps/storefront/communications'
-  ].flatMap(folder => walk(path.join(root, folder)));
-  const pages = path.join(root, 'apps/storefront/pages');
-  if (fs.existsSync(pages)) files.push(...walk(pages));
-  return files
+  ]
+    .flatMap(folder => walk(path.join(root, folder)))
     .filter(file => /\.(js|jsx)$/.test(file) && !/\.(fixture|spec)\.(js|jsx)$/.test(file))
     .map(file => path.relative(root, file).split(path.sep).join('/'))
     .sort();

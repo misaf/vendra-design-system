@@ -7,7 +7,10 @@ const root = resolve(import.meta.dirname, '../../..');
 const publicDir = join(import.meta.dirname, 'public');
 const app = 'apps/storefront';
 const designSystem = 'apps/storefront/design-system';
-const componentDirs = [designSystem + '/components', app + '/app'];
+const componentDirs = {
+  'design-system': [designSystem + '/components'],
+  storefront: [app + '/shell', app + '/features']
+};
 
 async function list(dir, suffix) {
   return (await readdir(join(root, dir), {recursive: true}))
@@ -59,9 +62,9 @@ await Promise.all(
 
 const fixtures = Object.fromEntries(
   await Promise.all(
-    componentDirs.map(async (dir, index) => [
-      '\0fixtures:' + (index === 0 ? 'design-system' : 'storefront'),
-      await list(dir, '.fixture.jsx')
+    Object.entries(componentDirs).map(async ([group, directories]) => [
+      '\0fixtures:' + group,
+      (await Promise.all(directories.map(dir => list(dir, '.fixture.jsx')))).flat()
     ])
   )
 );

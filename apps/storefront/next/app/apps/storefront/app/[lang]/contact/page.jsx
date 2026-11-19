@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/contact/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import ContactScreen from '@storefront/features/contact/ContactScreen.jsx';
 
-export default storefrontPage('contact', View);
+export default storefrontPage('contact', ContactScreen);

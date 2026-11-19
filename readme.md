@@ -9,7 +9,7 @@
 
 ## Using the storefront design system
 
-The Next.js storefront owns the [components, tokens, themes, and fonts](apps/storefront/design-system/). Components are imported as source through `apps/storefront/app/ds.js`. The App Router layout loads `design-system/styles.css`, and `VendraProvider` supplies the locale and client navigation to components.
+The Next.js storefront owns the [components, tokens, themes, and fonts](apps/storefront/design-system/). Components are imported as source through `apps/storefront/shell/ds.js`. The App Router layout loads `design-system/styles.css`, and `VendraProvider` supplies the locale and client navigation to components.
 
 Tenant themes are generated from `design-system/tokens/tenants/<slug>.json`. The storefront theme generator in `apps/storefront/shared/domain/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
@@ -80,11 +80,12 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `apps/storefront/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
 | `apps/storefront/design-system/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
-| `apps/storefront/pages/*` | Bilingual storefront views and the shared commerce session in `pages/site`. |
+| `apps/storefront/features/*` | Feature screens, state, bilingual copy, styles, and UI. |
+| `apps/storefront/shell/` | Shared storefront UI, navigation shell, and commerce session. |
 | `apps/storefront/next/app/` | App Router layouts and route files for both languages. |
 | `apps/storefront/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
 | `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/storefront` scripts. |
-| `apps/storefront/shared/` | Shared header/footer/menu, routing, SEO, catalogue, delivery rules, translations. |
+| `apps/storefront/shared/` | Routing, SEO, catalogue, delivery rules, translations, and shared helpers. |
 | `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
 | `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
 | `apps/storefront/_runtime/`, `apps/storefront/design-system/tokens/design/` | Generated: never edit. |

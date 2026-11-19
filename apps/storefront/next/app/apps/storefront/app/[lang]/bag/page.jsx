@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/bag/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import BagScreen from '@storefront/features/bag/BagScreen.jsx';
 
-export default storefrontPage('bag', View);
+export default storefrontPage('bag', BagScreen);

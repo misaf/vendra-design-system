@@ -33,7 +33,7 @@ export function vfPageTenant(props) {
   return tenant;
 }
 
-// Asks app/tenant-theme.js to load this tenant's stylesheet, and only that one. The loader
+// Asks shell/tenant-theme.js to load this tenant's stylesheet, and only that one. The loader
 // arrives asynchronously, so whichever of the two runs second does the loading. The build's prerender
 // links the store's own theme in the page instead.
 export function vfApplyTenant(tenant) {

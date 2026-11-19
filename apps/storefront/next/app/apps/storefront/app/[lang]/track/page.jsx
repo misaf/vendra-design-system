@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/track/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import TrackScreen from '@storefront/features/track/TrackScreen.jsx';
 
-export default storefrontPage('track', View);
+export default storefrontPage('track', TrackScreen);

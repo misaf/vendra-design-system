@@ -42,7 +42,7 @@ await writeFile(
   'User-agent: *\nAllow: /\nSitemap: ' + origin + base + 'sitemap.xml\n'
 );
 
-await copyFile(join(import.meta.dirname, '..', 'app', 'sw.js'), join(out, app, 'sw.js'));
+await copyFile(join(import.meta.dirname, '..', 'shell', 'sw.js'), join(out, app, 'sw.js'));
 const staticFiles = (await readdir(join(out, '_next', 'static'), {recursive: true})).filter(name =>
   /\.(js|css|woff2?)$/.test(name)
 );

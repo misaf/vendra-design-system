@@ -1,0 +1,93 @@
+// StorefrontSignin: the page inside the storefront shell.
+import React from 'react';
+import * as DS from '../../shell/ds.js';
+import {StorefrontSigninLayout} from './layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
+import {StorefrontPageHeading} from '../../shell/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontSigninPhoneControls} from './organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
+import {StorefrontSigninCodeControls} from './organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
+import {StorefrontSigninResend} from './molecules/StorefrontSigninResend/StorefrontSigninResend.jsx';
+import {StorefrontSigninPolicies} from './molecules/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
+import {StorefrontSigninCompletion} from './organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx';
+import {Shell} from '../../shell/Shell.jsx';
+
+export function View({v}) {
+  return (
+    <Shell
+      v={v}
+      content={
+        <StorefrontSigninLayout
+          phone={
+            v.isPhone ? (
+              <>
+                <StorefrontPageHeading title={v.t?.inA} accent={v.t?.inB} intro={v.t?.inP} />
+                <StorefrontSigninPhoneControls
+                  problems={v.phoneProblems}
+                  phone={{
+                    label: v.t?.phone,
+                    value: v.phone,
+                    onChange: v.setPhone,
+                    error: v.phoneErr
+                  }}
+                  send={{label: v.t?.send, onClick: v.send}}
+                />
+                <StorefrontSigninPolicies
+                  before={v.t?.terms?.before}
+                  terms={{href: v.termsLink?.href, label: v.t?.terms?.terms}}
+                  between={v.t?.terms?.and}
+                  privacy={{href: v.privacyLink?.href, label: v.t?.terms?.privacy}}
+                  after={v.t?.terms?.after}
+                />
+              </>
+            ) : null
+          }
+          code={
+            v.isCode ? (
+              <>
+                <StorefrontPageHeading title={v.t?.codeA} accent={v.t?.codeB} intro={v.codeP} />
+                <StorefrontSigninCodeControls
+                  problems={v.codeProblems}
+                  code={{
+                    label: v.t?.code,
+                    value: v.code,
+                    onChange: v.setCode,
+                    onComplete: v.completeCode,
+                    error: v.codeErr,
+                    hint: v.t?.codeHint
+                  }}
+                  verify={{label: v.t?.verify, onClick: v.verify}}
+                />
+                <StorefrontSigninResend
+                  seconds={v.resendSeconds}
+                  onResend={v.resend}
+                  resentText={v.resentText}
+                />
+                <DS.Button variant="ghost" iconStart="arrow-left" onClick={v.back}>
+                  {v.t?.change}
+                </DS.Button>
+              </>
+            ) : null
+          }
+          feedback={
+            v.isOk ? (
+              <StorefrontSigninCompletion
+                title={v.okTitle}
+                accent={v.okAccent}
+                body={v.t?.okP}
+                fromCheckout={v.fromCheckout}
+                notFromCheckout={v.notFromCheckout}
+                checkout={{
+                  href: v.checkoutHref,
+                  onClick: v.backToCheckout,
+                  label: v.t?.backToCheckout
+                }}
+                account={{href: v.href?.account, label: v.t?.toAccount}}
+                namePrompt={v.namePrompt}
+              />
+            ) : null
+          }
+        />
+      }
+      sticky={<></>}
+    />
+  );
+}

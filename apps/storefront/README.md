@@ -1,130 +1,132 @@
 # Storefront templates
 
-The bilingual storefront uses Next.js App Router for the static site and React views in `pages/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
+The bilingual storefront uses Next.js App Router for the static site and React views in `features/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
 The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
 `design-system/components/atoms/` and `design-system/components/molecules/`; organisms follow in separate batches.
-The app continues to import components through `app/ds.js`, and `pages/*` remains the source
+The app continues to import components through `shell/ds.js`, and `features/*` remains the source
 for routed pages.
 
 ## Where to edit
 
 | Change | File |
 | --- | --- |
-| Page markup | `pages/<page>/View.jsx` (JSX inside the shared `Shell`) |
-| Page behavior / copy / styles | `pages/<page>/logic.js` / `copy.js` / `styles.css` |
+| Route and URL parameters | `next/app/apps/storefront/app/[lang]/` |
+| Checkout screen and markup | `features/checkout/CheckoutScreen.jsx` and `CheckoutView.jsx` |
+| Checkout state, copy and styles | `features/checkout/useCheckout.js`, `copy.js` and `styles.css` |
+| Shared bag, checkout and account session | `shell/session/useStorefrontSession.js` |
 | Store name, contact, hours, currency, map, payment, balance, announcement | [shared/domain/store-config.js](shared/domain/store-config.js) |
 | Products, sizes, add-ons | [shared/domain/catalog.js](shared/domain/catalog.js) |
 | Delivery zones, fees, cut-offs, days, slots, free delivery | [shared/domain/delivery.js](shared/domain/delivery.js) |
 | Promo codes | [shared/domain/promotions.js](shared/domain/promotions.js) |
-| Header composition | `app/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
-| Footer composition | `app/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
-| Mobile menu composition | `app/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
-| Consent banner composition | `app/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `shared/services/navigation.js`) |
-| Announcement composition | `app/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
-| Bottom-bar layout | `app/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
-| Presentation display | `app/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
-| Presentation viewer | `app/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx` (controlled lightbox, captions/options and customer actions; quotes, stock and seller state remain in View/logic) |
-| Presentation send/share | `app/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx` (send descriptor, localized labels and close callback; QR/tag, warning and share/copy/print composition) |
-| Presentation shortlist | `app/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx` (controlled items/open/prices, localized labels, label renderer and close/clear/send/item callbacks) |
-| Presentation order | `app/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
-| Presentation tag scan | `app/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
-| Presentation PIN unlock | `app/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
-| Shop filter dialog | `app/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
-| Saved-page empty state | `app/molecules/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
-| Saved-page product results | `app/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
-| Saved-page removal notice | `app/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
-| Tracking repeat-order review | `app/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx` (controlled dialog/choice/confirmation/notices; reconciliation and bag changes remain in logic) |
-| Page heading (account, bag, checkout, contact, FAQ, policy, sign-in, tracking, weddings) | `app/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx` (explicit eyebrow/title/accent/intro/meta, level and page/info variant; visibility, copy and wrappers remain in Views) |
-| Order summary card (checkout and tracking) | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` (explicit title/lines/sums; formatting remains in logic and column/aside placement in layouts) |
-| Tracking order actions | `app/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
-| Tracking order details | `app/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx` (explicit rows; delivery/message/payment formatting remains in logic) |
-| Tracking delivery photo | `app/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx` (explicit src/placeholderLabel/alt/caption; status and photo selection remain in logic) |
-| Tracking progress | `app/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
-| Tracking lookup | `app/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx` (explicit heading/failure/fields/submit/browse descriptors; matching and validation remain in logic) |
-| Sign-in completion | `app/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx` (explicit feedback/flags/link descriptors; eligibility and checkout continuation remain in logic) |
-| Sign-in policy links | `app/molecules/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx` (explicit text and terms/privacy descriptors; destinations and navigation retain their shared owners) |
-| Sign-in resend controls | `app/molecules/StorefrontSigninResend/StorefrontSigninResend.jsx` (explicit seconds/callback/status; package timing and sign-in reset/focus retain their owners) |
-| Sign-in code controls | `app/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx` (explicit problems/code/verify descriptors; validation and verification remain in logic) |
-| Sign-in phone controls | `app/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx` (explicit problems/phone/send descriptors; validation and transitions remain in logic) |
-| Account balance panel composition | `app/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx` (overview/top-up/optional return/history descriptors; wallet rules remain in logic) |
-| Account editor dialog | `app/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx` (explicit open/title/close/error/problems/save/cancel/children; state and mutations remain in logic) |
-| Account reminder editor fields | `app/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx` (explicit name/occasion/date/before/channel descriptors; calendar rules and mutations remain in logic) |
-| Account address editor fields | `app/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx` (explicit label/zone/pin/address/recipient/phone descriptors; field mapping and mutations remain in View/logic) |
-| Account profile controls | `app/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx` (explicit problems/field/save descriptors; drafts, validation and profile merges remain in logic) |
-| Account reminders | `app/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx` (explicit add/feedback/intro/records/labels/shop link; reminder rules remain in logic) |
-| Account addresses | `app/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx` (explicit map/addresses/labels/add; editor and address rules remain in logic) |
-| Account saved products | `app/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx` (explicit visibility/items/labels/shop destination; favorites and mapping remain in logic) |
-| Account balance history | `app/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx` (explicit title/visibility/empty text/entries; wallet history mapping remains in logic) |
-| Account top-up controls | `app/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx` (explicit labels/presets/amount/payment/demo; validation and wallet changes remain in logic) |
-| Account balance overview | `app/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx` (explicit title/amount/status; wallet rules and persistence remain in logic) |
-| Account orders | `app/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx` (normalized presentation records; visibility/history/customer scope remain in View/logic) |
-| Checkout summary and sticky action | `app/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` and `app/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx` (explicit title/lines/sums and summary/place descriptors) |
-| Checkout confirmation | `app/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx` (explicit progress, heading, status, rows, account and links descriptors) |
-| Checkout bank status | `app/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx` (explicit progress, payment and recovery-action descriptors) |
-| Checkout progress | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` (explicit step state/labels/formatters/callback) |
-| Checkout status notices | `app/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
-| Checkout submission | `app/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
-| Checkout receipt details | `app/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
-| Checkout payment methods | `app/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
-| Checkout delivery review | `app/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx` (explicit labels, edit descriptor and detail rows) |
-| Bag delivery sign-in and feedback | `app/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
-| Bag sender fields | `app/organisms/StorefrontBagSender/StorefrontBagSender.jsx` (explicit labels and controlled sender name/phone descriptors) |
-| Bag card messages | `app/organisms/StorefrontBagCards/StorefrontBagCards.jsx` (explicit labels, card-addition notice and normalized line records) |
-| Bag delivery scheduling | `app/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx` (explicit title, preparation notice, review and day/slot descriptors) |
-| Bag delivery location | `app/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx` (explicit picker, zone, fallback and address descriptors) |
-| Bag recipient fields | `app/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
-| Bag progress | `app/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` inside bag View's `vf-bag-steps` wrapper (explicit steps/current, labels, formatters and step callback) |
-| Bag feedback and recovery | `app/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
-| Bag sticky actions | `app/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
-| Bag summary | `app/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx` (explicit summary, meter, promo, action descriptors and payment note) |
-| Bag line items | `app/organisms/StorefrontBagItems/StorefrontBagItems.jsx` (explicit line records, remove/quantity labels and quantity formatter) |
-| Shop product results | `app/organisms/StorefrontShopResults/StorefrontShopResults.jsx` (explicit products, frame, visibility, paging, feedback and labels) |
-| Shop results toolbar | `app/organisms/StorefrontShopToolbar/StorefrontShopToolbar.jsx` (explicit labels, sort descriptor, filter records and action/focus callbacks) |
-| Shop sidebar filters | `app/organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx` (explicit occasion, date, price and stock values/labels/options/callbacks) |
-| Shop category navigation | `app/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx` (explicit category records/label and compact presentation flag) |
-| Product sticky purchase action | `app/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx` (explicit total label/value and add label/availability/callback; remains in Shell sticky slot) |
-| Product added-to-bag dialog | `app/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx` (explicit open/close, summary lines/sums, checkout href/callback and localized labels) |
-| Recently viewed product section | `app/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx` (explicit product records, heading/carousel/card labels and carousel reset key) |
-| Product delivery/care | `app/organisms/StorefrontProductCare/StorefrontProductCare.jsx` (explicit delivery text, optional inquiry href/label and localized accordion items) |
-| Product purchase summary/actions | `app/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx` (explicit summary, controlled quantity, save state/action and add label/availability/action) |
-| Product size/add-on configuration | `app/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx` (explicit visibility, controlled size options/value/change, add-on records/toggles and legends) |
-| Product heading/price/stock | `app/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx` (explicit product text, unit price/stock, copy label and callback) |
-| Product gallery | `app/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx` (explicit product code, images, viewer items/index, localized labels and callbacks) |
-| Home newsletter | `app/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx` (controlled draft/error/pending/completion, localized labels and change/submit callbacks) |
-| Home journal preview | `app/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx` (explicit post records, localized labels and journal URL) |
-| Home wedding promotion | `app/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx` (explicit localized labels plus wedding/contact URLs) |
-| Home studio designs | `app/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx` (explicit product records, localized labels, shop URL and frame) |
-| Home occasion navigation | `app/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx` (explicit occasion records, localized heading/count/carousel labels and frame) |
-| Home featured designs | `app/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx` (explicit product records, localized labels, ready-filter URL and frame) |
-| Home category navigation | `app/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx` (explicit category records and localized heading, count and carousel labels) |
-| Presentation product label | `app/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx` (explicit code, sold-out state/label and large variant) |
-| Presentation seller tools | `app/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx` (explicit status, setup/device descriptors, labels and action callbacks) |
-| Presentation settings/setup | `app/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx` (explicit labels, grouped fullscreen/collection/display/toggle/transfer/PIN controls, formatter and close/start callbacks) |
-| Presentation toolbar | `app/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx` (controlled search, categories, status and explicit action descriptors from View) |
-| Presentation catalog | `app/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx` (tile data/callbacks, controlled empty/price visibility, localized labels, clear callback and label renderer from View) |
-| Presentation outer layout | `app/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx` (heading, bar, catalog, display, overlays and feedback slots; externally controlled density/catalog visibility) |
-| Error layout | `app/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx` (the inline EmptyState and StorefrontErrorActions composed directly by error View; explicit empty sticky slot retained) |
-| Not-found layout | `app/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx` (the inline EmptyState, StorefrontNotfoundActions, the inline SectionHeader and StorefrontNotfoundProducts composed directly by not-found View; explicit empty sticky slot retained) |
-| Home layout | `app/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx` (top, featured, occasions, arrivals, weddings, journal and newsletter slots from home View; externally controlled optional visibility) |
-| Post layout | `app/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx` (StorefrontPostLoading/StorefrontPostMissing feedback, StorefrontPostHeading/StorefrontPostBlocks/StorefrontPostClassic article content, StorefrontPostActions, StorefrontPostSocial/StorefrontPostProducts recommendations, and StorefrontPostRelated slots composed directly by post View; externally controlled article visibility) |
-| Journal layout | `app/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx` (StorefrontJournalHeading, the inline SearchField, StorefrontJournalEmpty/StorefrontJournalLoading feedback, StorefrontJournalFeatured, StorefrontJournalStories and the inline Pagination slots passed directly from journal View; feedback retains its multi-child fragment) |
-| Policy layout | `app/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (StorefrontPageHeading, StorefrontPolicyNavigation, the inline warning Alert, StorefrontPolicyContents and StorefrontPolicyDocument slots composed directly by policy View) |
-| FAQ layout | `app/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (StorefrontPageHeading, StorefrontFaqQuestions and StorefrontFaqContact slots composed directly by FAQ View) |
-| Weddings layout | `app/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (StorefrontWeddingsHeading, the inline ArchFrame, StorefrontWeddingsServices, StorefrontWeddingsStory, StorefrontWeddingsInquiryIntro, StorefrontWeddingsFormControls, StorefrontWeddingsCompletion and the inline danger Alert slots composed directly by weddings View) |
-| Contact layout | `app/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontPageHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, the inline danger Alert and form heading slots composed directly by contact View) |
-| Search layout | `app/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (the inline display h1, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots composed directly by search View) |
-| Saved-products layout | `app/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
-| Tracking layout | `app/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |
-| Sign-in layout | `app/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |
-| Account layout | `app/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx` (heading, actions, notices, tabs, feedback and dialog slots from account View) |
-| Checkout layout | `app/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx` (payment visibility, notices, progress, heading, review, payment, summary and bank/success slots from checkout View) |
-| Bag recipient/location layout | `app/layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx` (recipient/location React-node slots from bag View) |
-| Bag/delivery layout | `app/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx` (visibility and notice, progress, StorefrontPageHeading, items/delivery, summary and empty slots from bag View) |
-| Shop-page layout | `app/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (the inline h1 SectionHeader, sidebar, compact categories, results and filter-dialog slots from shop View) |
-| Product-page layout | `app/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (the inline Breadcrumb, gallery, details, related designs and feedback slots from product View) |
-| Main storefront layout | `app/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
-| Providers, bare presentation and sticky measurements | `app/Shell.jsx` (values in `shared/services/navigation.js`) |
+| Header composition | `shell/organisms/StorefrontHeader/StorefrontHeader.jsx` (explicit props and callbacks from Shell) |
+| Footer composition | `shell/organisms/StorefrontFooter/StorefrontFooter.jsx` (explicit content and consent callback from Shell) |
+| Mobile menu composition | `shell/organisms/StorefrontMenu/StorefrontMenu.jsx` (controlled state, content and callbacks from Shell) |
+| Consent banner composition | `shell/organisms/StorefrontConsent/StorefrontConsent.jsx` (visibility, content and callbacks from Shell; workflow in `shared/services/navigation.js`) |
+| Announcement composition | `shell/organisms/StorefrontAnnouncement/StorefrontAnnouncement.jsx` (text, optional link and dismissal callback from Shell) |
+| Bottom-bar layout | `shell/layouts/StorefrontBottomBar/StorefrontBottomBar.jsx` (consent, sticky-action and navigation slots from Shell) |
+| Presentation display | `features/presentation/organisms/StorefrontPresentationDisplay/StorefrontPresentationDisplay.jsx` (controlled products/mode/captions, localized labels and image/navigation/tool callbacks; local reveal/pointer UI state) |
+| Presentation viewer | `features/presentation/organisms/StorefrontPresentationViewer/StorefrontPresentationViewer.jsx` (controlled lightbox, captions/options and customer actions; quotes, stock and seller state remain in View/logic) |
+| Presentation send/share | `features/presentation/organisms/StorefrontPresentationSend/StorefrontPresentationSend.jsx` (send descriptor, localized labels and close callback; QR/tag, warning and share/copy/print composition) |
+| Presentation shortlist | `features/presentation/organisms/StorefrontPresentationShortlist/StorefrontPresentationShortlist.jsx` (controlled items/open/prices, localized labels, label renderer and close/clear/send/item callbacks) |
+| Presentation order | `features/presentation/organisms/StorefrontPresentationOrder/StorefrontPresentationOrder.jsx` (controlled lines/open/prices/total/eligibility, localized labels, formatter and close/clear/handoff/line callbacks) |
+| Presentation tag scan | `features/presentation/organisms/StorefrontPresentationScan/StorefrontPresentationScan.jsx` (controlled open/message, localized labels, video ID and close callback; camera/decoder lifecycle remains in logic) |
+| Presentation PIN unlock | `features/presentation/molecules/StorefrontPresentationUnlock/StorefrontPresentationUnlock.jsx` (controlled open/value/error, localized labels and change/complete/close callbacks; PIN state/checks remain in logic) |
+| Shop filter dialog | `features/shop/organisms/StorefrontShopFilterDialog/StorefrontShopFilterDialog.jsx` (explicit open/close/clear, labels and controlled occasion/date/price/stock descriptors) |
+| Saved-page empty state | `features/saved/molecules/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx` (explicit title/accent/body/browse; visibility remains in View and placement in layout) |
+| Saved-page product results | `features/saved/organisms/StorefrontSavedResults/StorefrontSavedResults.jsx` (explicit products/labels; selection/removal remain in logic and grid placement in layout) |
+| Saved-page removal notice | `features/saved/organisms/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx` (explicit message/undo; visibility and additive restoration remain in View/logic) |
+| Tracking repeat-order review | `features/track/organisms/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx` (controlled dialog/choice/confirmation/notices; reconciliation and bag changes remain in logic) |
+| Page heading (account, bag, checkout, contact, FAQ, policy, sign-in, tracking, weddings) | `shell/molecules/StorefrontPageHeading/StorefrontPageHeading.jsx` (explicit eyebrow/title/accent/intro/meta, level and page/info variant; visibility, copy and wrappers remain in Views) |
+| Order summary card (checkout and tracking) | `shell/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` (explicit title/lines/sums; formatting remains in logic and column/aside placement in layouts) |
+| Tracking order actions | `features/track/molecules/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx` (explicit contact/repeat/lookup descriptors; URLs/reorder/reset remain in logic) |
+| Tracking order details | `features/track/molecules/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx` (explicit rows; delivery/message/payment formatting remains in logic) |
+| Tracking delivery photo | `features/track/organisms/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx` (explicit src/placeholderLabel/alt/caption; status and photo selection remain in logic) |
+| Tracking progress | `features/track/molecules/StorefrontTrackProgress/StorefrontTrackProgress.jsx` (explicit steps/current/status/label/doneLabel; interpretation remains in logic) |
+| Tracking lookup | `features/track/organisms/StorefrontTrackLookup/StorefrontTrackLookup.jsx` (explicit heading/failure/fields/submit/browse descriptors; matching and validation remain in logic) |
+| Sign-in completion | `features/signin/organisms/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx` (explicit feedback/flags/link descriptors; eligibility and checkout continuation remain in logic) |
+| Sign-in policy links | `features/signin/molecules/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx` (explicit text and terms/privacy descriptors; destinations and navigation retain their shared owners) |
+| Sign-in resend controls | `features/signin/molecules/StorefrontSigninResend/StorefrontSigninResend.jsx` (explicit seconds/callback/status; package timing and sign-in reset/focus retain their owners) |
+| Sign-in code controls | `features/signin/organisms/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx` (explicit problems/code/verify descriptors; validation and verification remain in logic) |
+| Sign-in phone controls | `features/signin/organisms/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx` (explicit problems/phone/send descriptors; validation and transitions remain in logic) |
+| Account balance panel composition | `features/account/organisms/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx` (overview/top-up/optional return/history descriptors; wallet rules remain in logic) |
+| Account editor dialog | `features/account/organisms/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx` (explicit open/title/close/error/problems/save/cancel/children; state and mutations remain in logic) |
+| Account reminder editor fields | `features/account/organisms/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx` (explicit name/occasion/date/before/channel descriptors; calendar rules and mutations remain in logic) |
+| Account address editor fields | `features/account/organisms/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx` (explicit label/zone/pin/address/recipient/phone descriptors; field mapping and mutations remain in View/logic) |
+| Account profile controls | `features/account/organisms/StorefrontAccountProfile/StorefrontAccountProfile.jsx` (explicit problems/field/save descriptors; drafts, validation and profile merges remain in logic) |
+| Account reminders | `features/account/organisms/StorefrontAccountReminders/StorefrontAccountReminders.jsx` (explicit add/feedback/intro/records/labels/shop link; reminder rules remain in logic) |
+| Account addresses | `features/account/organisms/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx` (explicit map/addresses/labels/add; editor and address rules remain in logic) |
+| Account saved products | `features/account/organisms/StorefrontAccountSaved/StorefrontAccountSaved.jsx` (explicit visibility/items/labels/shop destination; favorites and mapping remain in logic) |
+| Account balance history | `features/account/organisms/StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx` (explicit title/visibility/empty text/entries; wallet history mapping remains in logic) |
+| Account top-up controls | `features/account/organisms/StorefrontAccountTopUp/StorefrontAccountTopUp.jsx` (explicit labels/presets/amount/payment/demo; validation and wallet changes remain in logic) |
+| Account balance overview | `features/account/organisms/StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx` (explicit title/amount/status; wallet rules and persistence remain in logic) |
+| Account orders | `features/account/organisms/StorefrontAccountOrders/StorefrontAccountOrders.jsx` (normalized presentation records; visibility/history/customer scope remain in View/logic) |
+| Checkout summary and sticky action | `shell/molecules/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx` and `features/checkout/organisms/StorefrontCheckoutSticky/StorefrontCheckoutSticky.jsx` (explicit title/lines/sums and summary/place descriptors) |
+| Checkout confirmation | `features/checkout/organisms/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx` (explicit progress, heading, status, rows, account and links descriptors) |
+| Checkout bank status | `features/checkout/organisms/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx` (explicit progress, payment and recovery-action descriptors) |
+| Checkout progress | `shell/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` (explicit step state/labels/formatters/callback) |
+| Checkout status notices | `features/checkout/organisms/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx` (explicit review descriptor and recovery-storage error text) |
+| Checkout submission | `features/checkout/organisms/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx` (explicit WhatsApp, processing, failure, safety and place/back descriptors) |
+| Checkout receipt details | `features/checkout/organisms/StorefrontCheckoutReceipt/StorefrontCheckoutReceipt.jsx` (explicit change, card, Sheba, last-four and reference descriptors) |
+| Checkout payment methods | `features/checkout/organisms/StorefrontCheckoutMethods/StorefrontCheckoutMethods.jsx` (explicit intro, controlled methods, unavailable/wallet descriptors and notice) |
+| Checkout delivery review | `features/checkout/organisms/StorefrontCheckoutDeliveryReview/StorefrontCheckoutDeliveryReview.jsx` (explicit labels, edit descriptor and detail rows) |
+| Bag delivery sign-in and feedback | `features/bag/molecules/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx` (explicit error records and controlled sign-in descriptor) |
+| Bag sender fields | `features/bag/organisms/StorefrontBagSender/StorefrontBagSender.jsx` (explicit labels and controlled sender name/phone descriptors) |
+| Bag card messages | `features/bag/organisms/StorefrontBagCards/StorefrontBagCards.jsx` (explicit labels, card-addition notice and normalized line records) |
+| Bag delivery scheduling | `features/bag/organisms/StorefrontBagSchedule/StorefrontBagSchedule.jsx` (explicit title, preparation notice, review and day/slot descriptors) |
+| Bag delivery location | `features/bag/organisms/StorefrontBagLocation/StorefrontBagLocation.jsx` (explicit picker, zone, fallback and address descriptors) |
+| Bag recipient fields | `features/bag/organisms/StorefrontBagRecipient/StorefrontBagRecipient.jsx` (explicit title, saved-address records and controlled name/phone descriptors) |
+| Bag progress | `shell/molecules/StorefrontStepProgress/StorefrontStepProgress.jsx` inside bag View's `vf-bag-steps` wrapper (explicit steps/current, labels, formatters and step callback) |
+| Bag feedback and recovery | `features/bag/organisms/StorefrontBagFeedback/StorefrontBagFeedback.jsx` (explicit removed/empty variant, localized labels and action callback) |
+| Bag sticky actions | `features/bag/organisms/StorefrontBagSticky/StorefrontBagSticky.jsx` (explicit total label/value and delivery/payment action descriptors) |
+| Bag summary | `features/bag/organisms/StorefrontBagSummary/StorefrontBagSummary.jsx` (explicit summary, meter, promo, action descriptors and payment note) |
+| Bag line items | `features/bag/organisms/StorefrontBagItems/StorefrontBagItems.jsx` (explicit line records, remove/quantity labels and quantity formatter) |
+| Shop product results | `features/shop/organisms/StorefrontShopResults/StorefrontShopResults.jsx` (explicit products, frame, visibility, paging, feedback and labels) |
+| Shop results toolbar | `features/shop/organisms/StorefrontShopToolbar/StorefrontShopToolbar.jsx` (explicit labels, sort descriptor, filter records and action/focus callbacks) |
+| Shop sidebar filters | `features/shop/organisms/StorefrontShopSidebarFilters/StorefrontShopSidebarFilters.jsx` (explicit occasion, date, price and stock values/labels/options/callbacks) |
+| Shop category navigation | `features/shop/organisms/StorefrontShopCategories/StorefrontShopCategories.jsx` (explicit category records/label and compact presentation flag) |
+| Product sticky purchase action | `features/product/organisms/StorefrontProductSticky/StorefrontProductSticky.jsx` (explicit total label/value and add label/availability/callback; remains in Shell sticky slot) |
+| Product added-to-bag dialog | `features/product/organisms/StorefrontProductAdded/StorefrontProductAdded.jsx` (explicit open/close, summary lines/sums, checkout href/callback and localized labels) |
+| Recently viewed product section | `features/product/organisms/StorefrontProductRecent/StorefrontProductRecent.jsx` (explicit product records, heading/carousel/card labels and carousel reset key) |
+| Product delivery/care | `features/product/organisms/StorefrontProductCare/StorefrontProductCare.jsx` (explicit delivery text, optional inquiry href/label and localized accordion items) |
+| Product purchase summary/actions | `features/product/organisms/StorefrontProductPurchase/StorefrontProductPurchase.jsx` (explicit summary, controlled quantity, save state/action and add label/availability/action) |
+| Product size/add-on configuration | `features/product/organisms/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx` (explicit visibility, controlled size options/value/change, add-on records/toggles and legends) |
+| Product heading/price/stock | `features/product/organisms/StorefrontProductHeading/StorefrontProductHeading.jsx` (explicit product text, unit price/stock, copy label and callback) |
+| Product gallery | `features/product/organisms/StorefrontProductGallery/StorefrontProductGallery.jsx` (explicit product code, images, viewer items/index, localized labels and callbacks) |
+| Home newsletter | `features/home/organisms/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx` (controlled draft/error/pending/completion, localized labels and change/submit callbacks) |
+| Home journal preview | `features/home/organisms/StorefrontHomeJournal/StorefrontHomeJournal.jsx` (explicit post records, localized labels and journal URL) |
+| Home wedding promotion | `features/home/organisms/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx` (explicit localized labels plus wedding/contact URLs) |
+| Home studio designs | `features/home/organisms/StorefrontHomeStudio/StorefrontHomeStudio.jsx` (explicit product records, localized labels, shop URL and frame) |
+| Home occasion navigation | `features/home/organisms/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx` (explicit occasion records, localized heading/count/carousel labels and frame) |
+| Home featured designs | `features/home/organisms/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx` (explicit product records, localized labels, ready-filter URL and frame) |
+| Home category navigation | `features/home/organisms/StorefrontHomeCategories/StorefrontHomeCategories.jsx` (explicit category records and localized heading, count and carousel labels) |
+| Presentation product label | `features/presentation/molecules/StorefrontPresentationLabel/StorefrontPresentationLabel.jsx` (explicit code, sold-out state/label and large variant) |
+| Presentation seller tools | `features/presentation/organisms/StorefrontPresentationTools/StorefrontPresentationTools.jsx` (explicit status, setup/device descriptors, labels and action callbacks) |
+| Presentation settings/setup | `features/presentation/organisms/StorefrontPresentationSettings/StorefrontPresentationSettings.jsx` (explicit labels, grouped fullscreen/collection/display/toggle/transfer/PIN controls, formatter and close/start callbacks) |
+| Presentation toolbar | `features/presentation/organisms/StorefrontPresentationToolbar/StorefrontPresentationToolbar.jsx` (controlled search, categories, status and explicit action descriptors from View) |
+| Presentation catalog | `features/presentation/organisms/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx` (tile data/callbacks, controlled empty/price visibility, localized labels, clear callback and label renderer from View) |
+| Presentation outer layout | `features/presentation/layouts/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx` (heading, bar, catalog, display, overlays and feedback slots; externally controlled density/catalog visibility) |
+| Error layout | `features/error/layouts/StorefrontErrorLayout/StorefrontErrorLayout.jsx` (the inline EmptyState and StorefrontErrorActions composed directly by error View; explicit empty sticky slot retained) |
+| Not-found layout | `features/notfound/layouts/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx` (the inline EmptyState, StorefrontNotfoundActions, the inline SectionHeader and StorefrontNotfoundProducts composed directly by not-found View; explicit empty sticky slot retained) |
+| Home layout | `features/home/layouts/StorefrontHomeLayout/StorefrontHomeLayout.jsx` (top, featured, occasions, arrivals, weddings, journal and newsletter slots from home View; externally controlled optional visibility) |
+| Post layout | `features/post/layouts/StorefrontPostLayout/StorefrontPostLayout.jsx` (StorefrontPostLoading/StorefrontPostMissing feedback, StorefrontPostHeading/StorefrontPostBlocks/StorefrontPostClassic article content, StorefrontPostActions, StorefrontPostSocial/StorefrontPostProducts recommendations, and StorefrontPostRelated slots composed directly by post View; externally controlled article visibility) |
+| Journal layout | `features/journal/layouts/StorefrontJournalLayout/StorefrontJournalLayout.jsx` (StorefrontJournalHeading, the inline SearchField, StorefrontJournalEmpty/StorefrontJournalLoading feedback, StorefrontJournalFeatured, StorefrontJournalStories and the inline Pagination slots passed directly from journal View; feedback retains its multi-child fragment) |
+| Policy layout | `features/policy/layouts/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx` (StorefrontPageHeading, StorefrontPolicyNavigation, the inline warning Alert, StorefrontPolicyContents and StorefrontPolicyDocument slots composed directly by policy View) |
+| FAQ layout | `features/faq/layouts/StorefrontFaqLayout/StorefrontFaqLayout.jsx` (StorefrontPageHeading, StorefrontFaqQuestions and StorefrontFaqContact slots composed directly by FAQ View) |
+| Weddings layout | `features/weddings/layouts/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx` (StorefrontWeddingsHeading, the inline ArchFrame, StorefrontWeddingsServices, StorefrontWeddingsStory, StorefrontWeddingsInquiryIntro, StorefrontWeddingsFormControls, StorefrontWeddingsCompletion and the inline danger Alert slots composed directly by weddings View) |
+| Contact layout | `features/contact/layouts/StorefrontContactLayout/StorefrontContactLayout.jsx` (StorefrontPageHeading, StorefrontContactDetails, StorefrontContactFormControls, StorefrontContactCompletion, the inline danger Alert and form heading slots composed directly by contact View) |
+| Search layout | `features/search/layouts/StorefrontSearchLayout/StorefrontSearchLayout.jsx` (the inline display h1, StorefrontSearchControls, StorefrontSearchPopular, StorefrontSearchResults and StorefrontSearchEmpty slots composed directly by search View) |
+| Saved-products layout | `features/saved/layouts/StorefrontSavedLayout/StorefrontSavedLayout.jsx` (results/empty visibility, heading, notice, results and empty slots composed directly by saved View) |
+| Tracking layout | `features/track/layouts/StorefrontTrackLayout/StorefrontTrackLayout.jsx` (order visibility, lookup, heading, details, summary and feedback/reorder-dialog slots composed directly by tracking View) |
+| Sign-in layout | `features/signin/layouts/StorefrontSigninLayout/StorefrontSigninLayout.jsx` (phone, code and feedback/continuation slots from sign-in View) |
+| Account layout | `features/account/layouts/StorefrontAccountLayout/StorefrontAccountLayout.jsx` (heading, actions, notices, tabs, feedback and dialog slots from account View) |
+| Checkout layout | `features/checkout/layouts/StorefrontCheckoutLayout/StorefrontCheckoutLayout.jsx` (payment visibility, notices, progress, heading, review, payment, summary and bank/success slots from checkout View) |
+| Bag recipient/location layout | `features/bag/layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx` (recipient/location React-node slots from bag View) |
+| Bag/delivery layout | `features/bag/layouts/StorefrontBagLayout/StorefrontBagLayout.jsx` (visibility and notice, progress, StorefrontPageHeading, items/delivery, summary and empty slots from bag View) |
+| Shop-page layout | `features/shop/layouts/StorefrontShopLayout/StorefrontShopLayout.jsx` (the inline h1 SectionHeader, sidebar, compact categories, results and filter-dialog slots from shop View) |
+| Product-page layout | `features/product/layouts/StorefrontProductLayout/StorefrontProductLayout.jsx` (the inline Breadcrumb, gallery, details, related designs and feedback slots from product View) |
+| Main storefront layout | `shell/layouts/StorefrontLayout/StorefrontLayout.jsx` (section slots and tenant/language metadata from Shell) |
+| Providers, bare presentation and sticky measurements | `shell/Shell.jsx` (values in `shared/services/navigation.js`) |
 | Routes and URL helpers | [shared/services/routing.js](shared/services/routing.js) |
 | Responsive state, focus, `<head>` | `shared/services/page-lifecycle.js`, `page-focus.js`, `seo.js` |
 | Shared translations | `shared/translations/` |
@@ -137,7 +139,9 @@ for routed pages.
 
 ## Editing a page
 
-Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.jsx`, which takes the page content and the sticky mobile action), `logic.js` (the `usePage(props)` hook: the page's state, effects and the values its view renders), `copy.js` and `styles.css`; `Page.jsx` is the function component that renders `<View v={{...props, ...usePage(props)}} />`. A view reads everything from `v`. Page state lives on one page object from `usePageLogic` (`shared/services/page-state.js`): `page.setState` applies at once and re-renders, `useLifecycle` runs didMount / didUpdate / willUnmount, and `useStorefrontPage` (`shared/services/page-lifecycle.js`) handles analytics and heading focus. `logic.js`, `copy.js` and the shared logic in `shared/` are ES modules that import what they use; the integrations (the API client and analytics) and page-wide state live on `vfRuntime` (`shared/platform/runtime.js`), which modules import; `app/runtime.js` installs the integrations once, before the first render (`window.__vfRuntime` exposes it to tests only). Card helpers (`shared/domain/payments.js`) are `vfRuntime.payment`. `shared/domain/product-categories.js` holds the category data that catalog and category names both read, so it loads before either.
+Start in the feature folder. For checkout, `CheckoutScreen.jsx` combines `useCheckout.js` with `CheckoutView.jsx`. The hook owns state and effects. The view reads the resulting values and renders the feature's layouts, organisms and molecules. Keep feature-specific components beside the screen and put UI reused across features in `shell/`. The design system provides reusable components and tokens.
+
+The Next.js layout keeps `shell/session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics and heading focus. `shell/runtime.js` installs the API client and analytics on `vfRuntime` in the browser.
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
@@ -154,7 +158,7 @@ Each page folder holds `View.jsx` (the page's JSX, rendered inside `app/Shell.js
 
 A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
 
-**Adding a page:** copy a similar folder (keep `Page.jsx`, `View.jsx`, `logic.js`, `copy.js`, `styles.css`). Add its file under `next/app/apps/storefront/app/[lang]/`, register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
+**Adding a page:** copy a similar folder under `features/`. Name its screen, view and state hook for the feature, and keep `copy.js` and `styles.css` beside them. Add its file under `next/app/apps/storefront/app/[lang]/`, register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -269,7 +273,7 @@ Every folder in `apps/storefront/design-system/components/` has its own browser 
 
 ### Storefront organism tests
 
-Storefront molecules, organisms and layouts may have the same pair beside them (`app/<layer>/<Name>/<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
+Storefront molecules, organisms and layouts may have the same pair beside them under `features/` or `shell/` (`<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
 
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
@@ -283,7 +287,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them (
 - **`next/app/`:** App Router layouts and route modules own the React tree and its hydration. The session stays in the shared layout as navigation replaces the page.
 - **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, design system fonts, the Leaflet files, `apps/storefront/design-system/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
-- **Components:** the app imports them from `design-system/components/` through `app/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
+- **Components:** the app imports them from `design-system/components/` through `shell/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (19.3.1) and React Aria.
 
 ## Styling rules

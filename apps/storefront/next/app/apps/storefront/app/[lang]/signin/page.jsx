@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/signin/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import SignInScreen from '@storefront/features/signin/SignInScreen.jsx';
 
-export default storefrontPage('signin', View);
+export default storefrontPage('signin', SignInScreen);

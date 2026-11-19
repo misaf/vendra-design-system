@@ -3,13 +3,13 @@
 import {createContext, Fragment, Suspense, useContext, useLayoutEffect, useState} from 'react';
 import Link from 'next/link';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {usePage} from '../../pages/site/logic.js';
+import {useStorefrontSession} from '../../shell/session/useStorefrontSession.js';
 import {StorefrontPageContext} from '../../shared/ui/storefront-page.js';
 import {StorefrontLinkContext} from '../../shared/ui/StorefrontLink.jsx';
-import {Alert, Button, LiveRegion, VendraProvider} from '../../app/ds.js';
-import {PageBoundary} from '../../app/PageError.jsx';
-import {lazyPage} from '../../app/pages.js';
-import {installTenantTheme, tenantRendered} from '../../app/tenant-theme.js';
+import {Alert, Button, LiveRegion, VendraProvider} from '../../shell/ds.js';
+import {PageBoundary} from '../../shell/PageError.jsx';
+import {lazyPage} from '../../shell/preview-screens.js';
+import {installTenantTheme, tenantRendered} from '../../shell/tenant-theme.js';
 import {vfApplyTvMode} from '../../shared/services/tv.js';
 import {vfConfigureRendering, vfSetHydrating} from '../../shared/platform/environment.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
@@ -18,7 +18,7 @@ import {vfReadRoute, VF_ROUTES} from '../../shared/services/routing.js';
 import {vfBrandLinks} from '../../shared/domain/brand.js';
 import {VF_SEO} from '../../shared/services/seo.js';
 import {VF_STORE, vfLanguage, vfLocale} from '../../shared/domain/store-config.js';
-import '../../app/runtime.js';
+import '../../shell/runtime.js';
 
 const base = process.env.NEXT_PUBLIC_VF_BASE_PATH;
 vfConfigureRendering(base + '/', Number(process.env.NEXT_PUBLIC_VF_RENDER_TIME));
@@ -97,7 +97,7 @@ export function StorefrontDocument({children, tenant}) {
 function Storefront({children, lang}) {
   const router = useRouter();
   const pathname = usePathname();
-  const values = usePage({
+  const values = useStorefrontSession({
     lang,
     initialUrl: base + pathname,
     navigate(url, {replace, scroll, document}) {

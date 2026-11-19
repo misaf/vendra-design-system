@@ -1,4 +1,4 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/search/Page.jsx';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import SearchScreen from '@storefront/features/search/SearchScreen.jsx';
 
-export default storefrontPage('search', View);
+export default storefrontPage('search', SearchScreen);

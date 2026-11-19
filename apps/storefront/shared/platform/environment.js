@@ -60,7 +60,7 @@ export function vfAbsoluteUrl(url) {
 }
 
 // Where product images, map scripts and tenant themes are served from: the build's base path
-// (app/tenant-theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
+// (shell/tenant-theme.js sets vfRuntime.assetBase in the browser), or three folders up for pages opened from files.
 export function vfAssetBase() {
   if (vfServerState) return vfServerState.base;
   return vfRuntime.assetBase || vfRenderBase || '../../../';

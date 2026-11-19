@@ -1,5 +1,5 @@
 // The component and helper sources exercised by the SSR and bundle-size checks.
-export * from '../../app/ds.js';
+export * from '../../shell/ds.js';
 export * from '../../design-system/components/atoms/Icon/icon-svgs.js';
 export * from '../../design-system/components/utils/analytics.js';
 export * from '../../design-system/components/utils/commerce.js';

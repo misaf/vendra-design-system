@@ -719,7 +719,7 @@ for (const lang of ['en', 'fa']) {
 
   test(`initial saved-list loading keeps newer customer actions (${lang})`, async ({page}) => {
     await page.addInitScript(() => {
-      // Swap in this client when app/runtime.js exposes the runtime, before the site mounts.
+      // Swap in this client when shell/runtime.js exposes the runtime, before the site mounts.
       let runtime;
       Object.defineProperty(window, '__vfRuntime', {
         configurable: true,

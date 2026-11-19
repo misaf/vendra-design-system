@@ -1,9 +1,8 @@
-// Renders one storefront UI fixture (app/<molecules|organisms|layouts>/<Name>/<Name>.fixture.jsx, its
-// `Fixture` export) inside VendraProvider with the storefront's styles, in the page language:
+// Renders one storefront UI fixture (the `Fixture` export beside the component in shell/ or features/) inside VendraProvider with the storefront's styles, in the page language:
 // ?component=StorefrontCheckoutMethods&lang=fa.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {VendraProvider} from '../../app/ds.js';
+import {VendraProvider} from '../../shell/ds.js';
 
 import fixtures from 'fixtures:storefront';
 const query = new URLSearchParams(location.search);

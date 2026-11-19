@@ -12,8 +12,8 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 | Delivery | `delivery.js`: `VF_API_DELIVERY_ZONES`, `VF_API_DELIVERY_SCHEDULE` | `vfZoneFromApi` → `VF_ZONES`, `VF_SLOTS` | `VF_DELIVERY_ZONE_EXTRAS` by zone id: key, same-day cut-off, distance centre; free-delivery and sold-out constants (B5, B6) |
 | Orders | `account-data.js`: `VF_API_ORDERS` | `vfOrderFromApi`, `vfLineFromApi` | `VF_SAMPLE_ORDER_EXTRAS`: delivery details, payment method, preferred language (B17) |
 | Checkout | built per order | `vfCheckoutRequest` → `vfRuntime.api.checkout` | everything in B4 |
-| FAQ | `pages/faq/copy.js`: `VF_API_FAQ_CATEGORIES`, `VF_API_FAQS` | `vfFaqGroups` | none; answers use delivery placeholders (below) |
-| Journal, policies | `translations/journal-content.js`, `pages/policy/copy.js` | waiting for B20–B21 | |
+| FAQ | `features/faq/copy.js`: `VF_API_FAQ_CATEGORIES`, `VF_API_FAQS` | `vfFaqGroups` | none; answers use delivery placeholders (below) |
+| Journal, policies | `translations/journal-content.js`, `features/policy/copy.js` | waiting for B20–B21 | |
 
 **Conventions the backend should accept**
 
@@ -55,7 +55,7 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 15. **Balance:** current balance and history.
 
 ### Orders
-16. **Track by order number and mobile:** a guest lookup takes the order `number` and a mobile, and answers only when the mobile is the order's sender or recipient (the track page uses `<lang>/track/VN-10522/`, and a link alone must not open an order). Answer the sender (or the signed-in customer who placed it) with the whole order. Answer a mobile that matches only the recipient with a recipient view: status and timeline, delivery window and address, the delivery photo and whether a card is included — no prices, totals, payment method or card ending, card message or sender details. Rate-limit lookups per IP and per mobile, and make order numbers hard to guess (non-sequential, or with a check suffix such as `VN-10522-K7`). The storefront's local matching (`pages/track/logic.js`) is only a demo of this split.
+16. **Track by order number and mobile:** a guest lookup takes the order `number` and a mobile, and answers only when the mobile is the order's sender or recipient (the track page uses `<lang>/track/VN-10522/`, and a link alone must not open an order). Answer the sender (or the signed-in customer who placed it) with the whole order. Answer a mobile that matches only the recipient with a recipient view: status and timeline, delivery window and address, the delivery photo and whether a card is included — no prices, totals, payment method or card ending, card message or sender details. Rate-limit lookups per IP and per mobile, and make order numbers hard to guess (non-sequential, or with a check suffix such as `VN-10522-K7`). The storefront's local matching (`features/track/useTrack.js`) is only a demo of this split.
 17. **Order detail:** document the `status` values above, with timestamps per step for the timeline, delivery date/slot/address, discount and balance amounts, delivery photo, cancellation.
 
 ### Store settings

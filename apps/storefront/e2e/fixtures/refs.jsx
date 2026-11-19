@@ -2,7 +2,7 @@
 // its own ErrorBoundary so a single render failure doesn't break the rest of the fixture.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import * as DS from '../../app/ds.js';
+import * as DS from '../../shell/ds.js';
 import {FieldMessage} from '../../design-system/components/atoms/Field/Field.jsx';
 
 const never = () => new Promise(() => {});

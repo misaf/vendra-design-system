@@ -1,6 +1,6 @@
-import {storefrontPage} from '../../../../../route-page.jsx';
-import View from '../../../../../../../pages/notfound/Page.jsx';
-import {VF_STORE} from '../../../../../../../shared/domain/store-config.js';
+import {storefrontPage} from '@storefront/next/app/route-page.jsx';
+import NotFoundScreen from '@storefront/features/notfound/NotFoundScreen.jsx';
+import {VF_STORE} from '@storefront/shared/domain/store-config.js';
 
 export function generateStaticParams({params}) {
   return params.lang === VF_STORE.languages[0]
@@ -8,6 +8,10 @@ export function generateStaticParams({params}) {
     : [{segments: ['notfound']}];
 }
 
-export default storefrontPage(({segments}) => segments.map(encodeURIComponent).join('/'), View, {
-  fallback: true
-});
+export default storefrontPage(
+  ({segments}) => segments.map(encodeURIComponent).join('/'),
+  NotFoundScreen,
+  {
+    fallback: true
+  }
+);

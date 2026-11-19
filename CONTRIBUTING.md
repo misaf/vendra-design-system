@@ -45,7 +45,7 @@ npm run new:component -- Name --level molecules --wording # plus English and Per
 npm run new:component -- Name --level organisms --no-css  # when it only reuses other components' classes
 ```
 
-The `--` matters: without it npm keeps the flags for itself. The generator adds the folder, imports its CSS in `apps/storefront/design-system/components/index.css`, exports it to the storefront (`apps/storefront/app/ds.js`) and, with `--wording`, adds its type to `ComponentMessages`. Then:
+The `--` matters: without it npm keeps the flags for itself. The generator adds the folder, imports its CSS in `apps/storefront/design-system/components/index.css`, exports it to the storefront (`apps/storefront/shell/ds.js`) and, with `--wording`, adds its type to `ComponentMessages`. Then:
 
 - **Fill in the TODOs.** Build on React Aria Components for anything interactive, on `Field` for form controls, and on the existing components (Alert, Button, Price…) before writing new markup. Class names are `ag-…` with `cx()`; tenant data (copy, prices, contact) comes in as props.
 - **Wording.** A component's own words (accessible names, small labels) go in its `messages.js` in English and Persian, read with `useMessages('Name', messages, props, locale)`; never an English default prop. Components that can sit on a page with both languages use `usePageLocale()`.
