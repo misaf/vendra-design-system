@@ -424,7 +424,7 @@
   }
 
   // Email clients need hex colours and web-safe fallbacks, so emails get a flat palette
-  // (keys match VF_EMAIL in apps/storefront/communications/email-templates.js).
+  // (keys match VF_EMAIL in apps/florist/communications/email-templates.js).
   const EMAIL_FONTS = {
     sans: "'Jost','Helvetica Neue',Helvetica,Arial,sans-serif",
     vazir: "Vazirmatn,Tahoma,'Segoe UI',Arial,sans-serif"
@@ -588,7 +588,7 @@
     return (
       '/* GENERATED from tokens/tenants/' +
       slug +
-      '.json by npm --prefix apps/storefront run build. Edit the JSON, not this file.\n   ' +
+      '.json by npm --prefix apps/florist run build. Edit the JSON, not this file.\n   ' +
       about +
       'Apply with data-tenant="' +
       slug +

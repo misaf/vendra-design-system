@@ -6,7 +6,7 @@ import theme from '@vendra/ui/tokens/theme';
 import {validateBrand} from './brand.mjs';
 import {uiRoot, uiFolder} from './paths.mjs';
 
-const root = path.resolve(import.meta.dirname, '../apps/storefront');
+const root = path.resolve(import.meta.dirname, '../apps/florist');
 const folder = path.join(uiRoot, 'tokens/tenants');
 
 // A brand font's files must ship with the deployment: present under the repo root and WOFF2.
@@ -74,7 +74,7 @@ function tenantOutputs() {
   // Storefronts load only their own tenant file; cards that compare tenants load them all.
   result.set(
     path.resolve(folder, '../tenants.css'),
-    '/* GENERATED from tokens/tenants/*.json by npm --prefix apps/storefront run build. Every tenant theme, for\n   design-system cards that compare tenants. Storefront pages load only their own tenant file. */\n' +
+    '/* GENERATED from tokens/tenants/*.json by npm --prefix apps/florist run build. Every tenant theme, for\n   design-system cards that compare tenants. Storefront pages load only their own tenant file. */\n' +
       Object.keys(specs)
         .map(slug => "@import url('tenants/" + slug + ".css');\n")
         .join('')
@@ -94,7 +94,7 @@ function tenantOutputs() {
   result.set(emails, withEmailThemes(fs.readFileSync(emails, 'utf8'), specs));
   result.set(
     path.join(root, '_runtime/tenants.js'),
-    '// GENERATED from tokens/tenants/*.json by npm --prefix apps/storefront run build.\nwindow.VF_TENANTS = ' +
+    '// GENERATED from tokens/tenants/*.json by npm --prefix apps/florist run build.\nwindow.VF_TENANTS = ' +
       JSON.stringify(specs, null, 2) +
       ';\n'
   );

@@ -1,5 +1,5 @@
 // npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
-// Starts apps/storefront/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
+// Starts apps/florist/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
 // npm test pass from the first build: the component, its declarations, CSS (added to
 // the design system's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
@@ -156,9 +156,9 @@ const insertSorted = (file, pattern, line) => {
   fs.writeFileSync(file, lines.join('\n'));
 };
 insertSorted(
-  path.join(repo, 'apps/storefront/shell/ds.js'),
+  path.join(repo, 'apps/florist/shell/ds.js'),
   /^export \* from '\.\.\/design-system\/components\//,
-  `export * from '${path.posix.relative('apps/storefront/shell', componentPath)}/${name}.jsx';`
+  `export * from '${path.posix.relative('apps/florist/shell', componentPath)}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
@@ -181,21 +181,21 @@ execFileSync(
     '--log-level=warn',
     '--write',
     folder,
-    path.join(repo, 'apps/storefront/shell/ds.js'),
+    path.join(repo, 'apps/florist/shell/ds.js'),
     path.join(uiRoot, 'components/utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to apps/storefront/shell/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
+Added it to apps/florist/shell/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 
 Next:
   1. Fill in the TODOs; use it in a storefront template (npm test fails on a component no page or
      component uses), and add it to a guideline card in guidelines/components/.
-  2. npm --prefix apps/storefront run format && npm --prefix apps/storefront run build
-  3. npm --prefix apps/storefront run check && npm --prefix apps/storefront test
-  4. npx playwright test -c apps/storefront/e2e/playwright.config.mjs ../${componentPath}
+  2. npm --prefix apps/florist run format && npm --prefix apps/florist run build
+  3. npm --prefix apps/florist run check && npm --prefix apps/florist test
+  4. npx playwright test -c apps/florist/e2e/playwright.config.mjs ../${componentPath}
      then the whole test:e2e (CLAUDE.md rule 5).`);

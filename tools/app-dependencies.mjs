@@ -6,7 +6,7 @@ import {parseSync} from 'rolldown/experimental';
 import {layer, dependencyViolation} from './atomic.mjs';
 import {componentsFolder, uiFolder} from './paths.mjs';
 
-// apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
+// apps/florist/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
 // shared/ itself, or in a folder not listed, fails: place it by what it does.
 //   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
@@ -27,16 +27,16 @@ const sharedRules = {
   styles: {folders: [], packages: []}
 };
 const sharedFolder = file => {
-  if (file.startsWith('apps/storefront/i18n/')) return 'translations';
-  const folder = /^apps\/storefront\/shared\/([^/]+)\//.exec(file)?.[1];
+  if (file.startsWith('apps/florist/i18n/')) return 'translations';
+  const folder = /^apps\/florist\/shared\/([^/]+)\//.exec(file)?.[1];
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
 const isShared = file =>
-  file.startsWith('apps/storefront/shared/') || file.startsWith('apps/storefront/i18n/');
+  file.startsWith('apps/florist/shared/') || file.startsWith('apps/florist/i18n/');
 const uiLayer = file =>
-  /^apps\/storefront\/(?:shell|features\/[^/]+)\/(layouts|organisms|molecules)\//.exec(file)?.[1];
+  /^apps\/florist\/(?:shell|features\/[^/]+)\/(layouts|organisms|molecules)\//.exec(file)?.[1];
 const protectedSource = file =>
-  uiLayer(file) || file === 'apps/storefront/shell/ds.js' || isShared(file);
+  uiLayer(file) || file === 'apps/florist/shell/ds.js' || isShared(file);
 
 const misplacedShared = file =>
   `${file}: shared module outside the ${Object.keys(sharedRules).join('/, ')}/ folders`;
@@ -53,7 +53,7 @@ function sharedDependencyViolation(source, target, relative) {
     allowed =
       from === 'ui' || (from !== 'styles' && target.startsWith(componentsFolder + '/utils/'));
   // Generated data (tenant slugs) the build writes for the store's rules.
-  else allowed = !!rules.runtime && target.startsWith('apps/storefront/_runtime/');
+  else allowed = !!rules.runtime && target.startsWith('apps/florist/_runtime/');
   return allowed
     ? null
     : `${source}: forbidden ${from === 'ui' ? 'UI' : from} dependency ${target}`;
@@ -63,12 +63,12 @@ function appDependencyViolation(source, target, relative) {
   if (!protectedSource(source)) return null;
   if (isShared(source)) return sharedDependencyViolation(source, target, relative);
   if (!relative) {
-    const allowed = source !== 'apps/storefront/shell/ds.js' && target === 'react';
+    const allowed = source !== 'apps/florist/shell/ds.js' && target === 'react';
     return allowed ? null : `${source}: forbidden UI dependency ${target}`;
   }
   const from = uiLayer(source);
   let allowed;
-  if (source === 'apps/storefront/shell/ds.js') {
+  if (source === 'apps/florist/shell/ds.js') {
     allowed = !!layer(target) || target.startsWith(uiFolder + '/components/');
   } else {
     const to = uiLayer(target);
@@ -76,7 +76,7 @@ function appDependencyViolation(source, target, relative) {
       target === 'react' ||
       (from === 'layouts'
         ? to === 'layouts'
-        : target === 'apps/storefront/shell/ds.js' ||
+        : target === 'apps/florist/shell/ds.js' ||
           sharedFolder(target) === 'ui' ||
           to === 'molecules' ||
           (from === 'organisms' && to === 'organisms'));
@@ -85,7 +85,7 @@ function appDependencyViolation(source, target, relative) {
 }
 
 // Shared dependencies are imported, never hung on window: the storefront runtime is vfRuntime
-// (apps/storefront/shared/platform/runtime.js). Only the guideline cards' compatibility layer,
+// (apps/florist/shared/platform/runtime.js). Only the guideline cards' compatibility layer,
 // guidelines/card-runtime.js (outside the checked folders), sets the design system's AG_* helpers and
 // window.VendraDesignSystem for the cards' classic scripts.
 const cardCompatibility = 'guidelines/card-runtime.js';
@@ -121,11 +121,11 @@ function walk(directory) {
 function runtimeSources(root) {
   return [
     componentsFolder,
-    'apps/storefront/shell',
-    'apps/storefront/features',
-    'apps/storefront/shared',
-    'apps/storefront/i18n',
-    'apps/storefront/communications'
+    'apps/florist/shell',
+    'apps/florist/features',
+    'apps/florist/shared',
+    'apps/florist/i18n',
+    'apps/florist/communications'
   ]
     .flatMap(folder => walk(path.join(root, folder)))
     .filter(file => /\.(js|jsx)$/.test(file) && !/\.(fixture|spec)\.(js|jsx)$/.test(file))
@@ -135,14 +135,14 @@ function runtimeSources(root) {
 
 const packageRoots = ['packages/ui', 'packages/vendra-api'];
 const workspaceSources = [
-  'apps/storefront/app',
-  'apps/storefront/server',
-  'apps/storefront/i18n',
-  'apps/storefront/features',
-  'apps/storefront/shell',
-  'apps/storefront/shared',
-  'apps/storefront/design-system',
-  'apps/storefront/communications',
+  'apps/florist/app',
+  'apps/florist/server',
+  'apps/florist/i18n',
+  'apps/florist/features',
+  'apps/florist/shell',
+  'apps/florist/shared',
+  'apps/florist/design-system',
+  'apps/florist/communications',
   ...packageRoots
 ];
 const moduleExtensions = /\.[cm]?[jt]sx?$/;
@@ -173,7 +173,7 @@ function workspaceViolations(root) {
       const local = target.startsWith('.')
         ? path.posix.normalize(path.posix.join(path.posix.dirname(source), target))
         : target.startsWith('@storefront/')
-          ? path.posix.join('apps/storefront', target.slice('@storefront/'.length))
+          ? path.posix.join('apps/florist', target.slice('@storefront/'.length))
           : null;
       if (local !== null) {
         // Existing utility entry points share the package's contexts and helper implementations.

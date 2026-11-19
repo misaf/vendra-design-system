@@ -18,7 +18,7 @@ function dependencyViolation(source, target) {
   const from = layer(source);
   if (!from) return null; // Existing flat components migrate one batch at a time.
   // These storefront controls use pure digit, phone and map-coordinate rules.
-  if (from !== 'foundation' && target === 'apps/storefront/shared/domain/commerce.js') return null;
+  if (from !== 'foundation' && target === 'apps/florist/shared/domain/commerce.js') return null;
   const uiComponents = uiFolder + '/components/';
   let to = layer(target);
   if (target.startsWith(uiComponents)) {

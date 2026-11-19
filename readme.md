@@ -4,17 +4,17 @@
 
 - **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (tenant storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
 - **Scope:** the customer-facing storefront only. Admin screens live in a separate framework; the storefront reads products, currency, delivery rules, hours and contact details as data.
-- **Live florist pilot:** [roadmap audit and release gates](apps/storefront/PILOT-AUDIT.md).
+- **Live florist pilot:** [roadmap audit and release gates](apps/florist/PILOT-AUDIT.md).
 - **Rules and brand:** [guidelines/brand-guide.md](guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, payments and the release checklist.
 - **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md): setup, the checks every change runs, and `npm run new:component -- Name` for a new component.
 
 ## Using the storefront design system
 
-The private [UI workspace](packages/ui/) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. The storefront imports components through `apps/storefront/shell/ds.js`. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
+The private [UI workspace](packages/ui/) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. The storefront imports components through `apps/florist/shell/ds.js`. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
 
 Tenant themes are generated from `packages/ui/tokens/tenants/<slug>.json`. The storefront theme generator in `packages/ui/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
-`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `apps/storefront/shared/domain/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
+`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `apps/florist/shared/domain/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
 
 Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
@@ -77,37 +77,37 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 | Path | Contents |
 |---|---|
-| `apps/storefront/design-system/` | Components, tokens, styles, and fonts compiled by the storefront. |
-| `apps/storefront/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
+| `apps/florist/design-system/` | Components, tokens, styles, and fonts compiled by the storefront. |
+| `apps/florist/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
 | `packages/ui/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
-| `apps/storefront/features/*` | Feature screens, state, bilingual copy, styles, and UI. |
-| `apps/storefront/shell/` | Shared storefront UI, navigation shell, and commerce session. |
-| `apps/storefront/app/[locale]/` | TypeScript routes and layouts for shop, checkout and counter in both languages. |
-| `apps/storefront/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
-| `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/storefront` scripts. |
-| `apps/storefront/shared/` | Routing, SEO, catalogue, delivery rules and shared helpers. |
-| `apps/storefront/server/`, `i18n/`, `styles/` | Server route data and metadata, shared bilingual copy, and storefront CSS. |
+| `apps/florist/features/*` | Feature screens, state, bilingual copy, styles, and UI. |
+| `apps/florist/shell/` | Shared storefront UI, navigation shell, and commerce session. |
+| `apps/florist/app/[locale]/` | TypeScript routes and layouts for shop, checkout and counter in both languages. |
+| `apps/florist/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
+| `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/florist` scripts. |
+| `apps/florist/shared/` | Routing, SEO, catalogue, delivery rules and shared helpers. |
+| `apps/florist/server/`, `i18n/`, `styles/` | Server route data and metadata, shared bilingual copy, and storefront CSS. |
 | `packages/ui/`, `packages/vendra-api/` | Private workspace boundaries for shared components and tokens, and the typed Laravel client. |
-| `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
-| `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
-| `apps/storefront/_runtime/`, `packages/ui/tokens/design/` | Generated: never edit. |
+| `apps/florist/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
+| `apps/florist/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
+| `apps/florist/_runtime/`, `packages/ui/tokens/design/` | Generated: never edit. |
 | `assets/` | Storefront and brand assets: logos, social images, app icons, placeholders. |
 | `uploads/` | Storefront OpenAPI spec. |
-| `apps/storefront/design-system/styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
+| `apps/florist/design-system/styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
 
 ## Commands
 
 ```sh
 npm ci                                   # first setup, at the repo root
 npm run dev                             # Next.js development at http://localhost:3000/
-npm --prefix apps/storefront run build   # design tokens, Tailwind, tenant CSS, generated template sections
-npm --prefix apps/storefront run format  # Prettier
-npm --prefix apps/storefront run check   # generated files current + formatting
-npm --prefix apps/storefront test        # typecheck and unit tests
-npm --prefix apps/storefront run test:e2e  # production storefront, then development fixtures/components
-npm --prefix apps/storefront run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
-npm --prefix apps/storefront run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
+npm --prefix apps/florist run build   # design tokens, Tailwind, tenant CSS, generated template sections
+npm --prefix apps/florist run format  # Prettier
+npm --prefix apps/florist run check   # generated files current + formatting
+npm --prefix apps/florist test        # typecheck and unit tests
+npm --prefix apps/florist run test:e2e  # production storefront, then development fixtures/components
+npm --prefix apps/florist run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
+npm --prefix apps/florist run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
 
-Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/storefront/README.md](apps/storefront/README.md). Preview states and integration boundaries: [Demo behavior](apps/storefront/README.md#demo-behavior). Working rules: [CLAUDE.md](CLAUDE.md).
+Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/florist/README.md](apps/florist/README.md). Preview states and integration boundaries: [Demo behavior](apps/florist/README.md#demo-behavior). Working rules: [CLAUDE.md](CLAUDE.md).

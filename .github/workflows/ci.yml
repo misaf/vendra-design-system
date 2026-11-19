@@ -1,6 +1,6 @@
 # Pushes to master and pull requests: formatting and generated files, unit tests, then the browser
 # tests. The browser tests run inside Playwright's Linux image, pinned to the version in
-# apps/storefront/package.json, so the -linux screenshot baselines stay comparable from run to run.
+# apps/florist/package.json, so the -linux screenshot baselines stay comparable from run to run.
 # After a deliberate visual change, run the "Update screenshots" workflow to refresh them.
 name: CI
 
@@ -34,10 +34,10 @@ jobs:
           cache: npm
       - run: npm ci
       # Formatting, and Tailwind, design tokens, tenant CSS and the tenant list match their sources.
-      - run: npm --prefix apps/storefront run check
+      - run: npm --prefix apps/florist run check
       # Types, storefront logic, tenants, the package's server render, its bundle size and the API
       # contract.
-      - run: npm --prefix apps/storefront test
+      - run: npm --prefix apps/florist test
 
   # Skips the browser tests when a push or pull request changes only .github/ (Dependabot's action
   # bumps, workflow edits): run CI by hand after a workflow change that the browser tests need to
@@ -124,15 +124,15 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm --prefix apps/storefront run test:e2e:dev
+      - run: npm --prefix apps/florist run test:e2e:dev
       - name: Keep the report and failing screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-report
           path: |
-            apps/storefront/e2e/playwright-report
-            apps/storefront/e2e/test-results
+            apps/florist/e2e/playwright-report
+            apps/florist/e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
@@ -165,23 +165,23 @@ jobs:
       - name: Build and smoke-test the live Next.js storefront
         run: |
           npm run build:app
-          npm --prefix apps/storefront run test:e2e:live
-      - run: npm --prefix apps/storefront run test:e2e:build
+          npm --prefix apps/florist run test:e2e:live
+      - run: npm --prefix apps/florist run test:e2e:build
       - name: Test the Next.js export under the Pages base path
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
         run: |
-          npm --prefix apps/storefront run build:next
-          npm --prefix apps/storefront run test:e2e:next
+          npm --prefix apps/florist run build:next
+          npm --prefix apps/florist run test:e2e:next
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: e2e-build-report
           path: |
-            apps/storefront/e2e/playwright-report
-            apps/storefront/e2e/test-results
+            apps/florist/e2e/playwright-report
+            apps/florist/e2e/test-results
           retention-days: 14
       # The container runs as root; hand the checkout back to the runner's user so a self-hosted
       # runner can clean it before the next job.
@@ -206,15 +206,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm --prefix apps/storefront run check
+      - run: npm --prefix apps/florist run check
       # Prerendered pages name their absolute address (canonical, og:url, og:image).
-      - run: npm --prefix apps/storefront run build:next
+      - run: npm --prefix apps/florist run build:next
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: apps/storefront/next/out
+          path: apps/florist/next/out
 
   pages-deploy:
     name: Deploy the Pages demo
