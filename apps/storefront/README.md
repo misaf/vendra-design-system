@@ -14,7 +14,7 @@ The bilingual storefront uses Next.js App Router for the server build and static
 | Storefront design-system theme sources | Edit the tenant's JSON in `../../packages/ui/tokens/tenants/` and run `npm run build` to regenerate its CSS and design tokens. |
 | `next/export.spec.mjs` | `tests/e2e/` exercises the live build and static export. Component browser tests use the dev server and `e2e/playwright.config.mjs`. |
 
-The remaining storefront controls live in `design-system/components/` and follow [Atomic Design](../../ATOMIC-DESIGN.md).
+The remaining storefront controls live in `design-system/components/` and follow Atomic Design.
 Storefront views consume both sets of controls through `shell/ds.js`.
 The demo serves published URLs under its configured base path, such as `/vendra-design-system/apps/storefront/app/fa/`.
 
