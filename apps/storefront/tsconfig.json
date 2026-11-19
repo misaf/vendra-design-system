@@ -17,5 +17,5 @@
   },
   "include": ["shared/**/*.js", "types/*.d.ts", "shell/**/*", "features/**/*"],
   // Browser specs run in Node under Playwright, like the package components' specs.
-  "exclude": ["shell/**/*.spec.mjs", "features/**/*.spec.mjs"]
+  "exclude": ["shell/**/*.spec.mjs", "features/**/*.spec.mjs", "features/**/*.test.mjs"]
 }

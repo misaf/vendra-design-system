@@ -1,12 +1,13 @@
 // Runtime import checks. Paths and diagnostics are repo-relative, with / separators.
 import fs from 'node:fs';
+import {isBuiltin} from 'node:module';
 import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
 import {layer, dependencyViolation} from './atomic.mjs';
 import {componentsFolder} from './paths.mjs';
 
 // apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
-// (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
+// (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
 // shared/ itself, or in a folder not listed, fails: place it by what it does.
 //   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
 //   domain/    pure store rules and sample data
@@ -26,10 +27,12 @@ const sharedRules = {
   styles: {folders: [], packages: []}
 };
 const sharedFolder = file => {
+  if (file.startsWith('apps/storefront/i18n/')) return 'translations';
   const folder = /^apps\/storefront\/shared\/([^/]+)\//.exec(file)?.[1];
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
-const isShared = file => file.startsWith('apps/storefront/shared/');
+const isShared = file =>
+  file.startsWith('apps/storefront/shared/') || file.startsWith('apps/storefront/i18n/');
 const uiLayer = file =>
   /^apps\/storefront\/(?:shell|features\/[^/]+)\/(layouts|organisms|molecules)\//.exec(file)?.[1];
 const protectedSource = file =>
@@ -106,10 +109,13 @@ function globalAccess(node) {
 
 function walk(directory) {
   if (!fs.existsSync(directory)) return [];
-  return fs.readdirSync(directory, {withFileTypes: true}).flatMap(entry => {
-    const file = path.join(directory, entry.name);
-    return entry.isDirectory() ? walk(file) : [file];
-  });
+  return fs
+    .readdirSync(directory, {withFileTypes: true})
+    .filter(entry => entry.name !== 'node_modules')
+    .flatMap(entry => {
+      const file = path.join(directory, entry.name);
+      return entry.isDirectory() ? walk(file) : [file];
+    });
 }
 
 function runtimeSources(root) {
@@ -118,12 +124,100 @@ function runtimeSources(root) {
     'apps/storefront/shell',
     'apps/storefront/features',
     'apps/storefront/shared',
+    'apps/storefront/i18n',
     'apps/storefront/communications'
   ]
     .flatMap(folder => walk(path.join(root, folder)))
     .filter(file => /\.(js|jsx)$/.test(file) && !/\.(fixture|spec)\.(js|jsx)$/.test(file))
     .map(file => path.relative(root, file).split(path.sep).join('/'))
     .sort();
+}
+
+const packageRoots = ['packages/ui', 'packages/vendra-api'];
+const workspaceSources = [
+  'apps/storefront/app',
+  'apps/storefront/server',
+  'apps/storefront/i18n',
+  'apps/storefront/features',
+  'apps/storefront/shell',
+  'apps/storefront/shared',
+  'apps/storefront/design-system',
+  'apps/storefront/communications',
+  ...packageRoots
+];
+const moduleExtensions = /\.[cm]?[jt]sx?$/;
+
+function workspaceViolations(root) {
+  const violations = [];
+  const manifests = new Map(
+    packageRoots.flatMap(folder => {
+      const file = path.join(root, folder, 'package.json');
+      return fs.existsSync(file) ? [[folder, JSON.parse(fs.readFileSync(file, 'utf8'))]] : [];
+    })
+  );
+  const files = workspaceSources
+    .flatMap(folder => walk(path.join(root, folder)))
+    .filter(file => moduleExtensions.test(file));
+  for (const file of files) {
+    const source = path.relative(root, file).split(path.sep).join('/');
+    const owner = packageRoots.find(folder => source.startsWith(folder + '/'));
+    const manifest = manifests.get(owner);
+    const {program, errors} = parseSync(source, fs.readFileSync(file, 'utf8'));
+    for (const error of errors) violations.push(`${source}: parse error: ${error.message}`);
+    const check = specifier => {
+      const target = specifier?.value;
+      if (typeof target !== 'string') {
+        if (owner) violations.push(`${source}: computed import crosses an unchecked boundary`);
+        return;
+      }
+      const local = target.startsWith('.')
+        ? path.posix.normalize(path.posix.join(path.posix.dirname(source), target))
+        : target.startsWith('@storefront/')
+          ? path.posix.join('apps/storefront', target.slice('@storefront/'.length))
+          : null;
+      if (local !== null) {
+        if (
+          owner
+            ? !local.startsWith(owner + '/')
+            : packageRoots.some(folder => local === folder || local.startsWith(folder + '/'))
+        )
+          violations.push(
+            `${source}: use workspace package exports instead of importing ${target}`
+          );
+        return;
+      }
+      if (!owner) return;
+      const name = target
+        .split('/')
+        .slice(0, target.startsWith('@') ? 2 : 1)
+        .join('/');
+      if (
+        ['next', 'server-only', 'client-only'].includes(name) ||
+        (owner === 'packages/vendra-api' && ['react', 'react-dom', '@vendra/ui'].includes(name)) ||
+        (!isBuiltin(target) &&
+          !Object.hasOwn(manifest?.dependencies || {}, name) &&
+          !Object.hasOwn(manifest?.peerDependencies || {}, name))
+      )
+        violations.push(`${source}: forbidden package dependency ${target}`);
+    };
+    visit(program, node => {
+      if (
+        [
+          'ImportDeclaration',
+          'ExportNamedDeclaration',
+          'ExportAllDeclaration',
+          'ImportExpression'
+        ].includes(node.type) &&
+        node.source
+      )
+        check(node.source);
+      if (node.type === 'TSImportType') check(node.source);
+      if (node.type === 'CallExpression' && node.callee?.name === 'require')
+        check(node.arguments[0]);
+      if (node.type === 'TSExternalModuleReference') check(node.expression);
+    });
+  }
+  return violations;
 }
 
 function visit(node, callback) {
@@ -138,7 +232,7 @@ function visit(node, callback) {
 function checkDependencies(root) {
   const files = runtimeSources(root);
   const graph = new Map(files.map(file => [file, new Set()]));
-  const violations = [];
+  const violations = workspaceViolations(root);
   for (const [source] of graph) {
     if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));

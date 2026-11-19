@@ -82,10 +82,12 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
 | `apps/storefront/features/*` | Feature screens, state, bilingual copy, styles, and UI. |
 | `apps/storefront/shell/` | Shared storefront UI, navigation shell, and commerce session. |
-| `apps/storefront/next/app/` | App Router layouts and route files for both languages. |
+| `apps/storefront/app/[locale]/` | TypeScript routes and layouts for shop, checkout and counter in both languages. |
 | `apps/storefront/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
 | `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/storefront` scripts. |
-| `apps/storefront/shared/` | Routing, SEO, catalogue, delivery rules, translations, and shared helpers. |
+| `apps/storefront/shared/` | Routing, SEO, catalogue, delivery rules and shared helpers. |
+| `apps/storefront/server/`, `i18n/`, `styles/` | Server route data and metadata, shared bilingual copy, and storefront CSS. |
+| `packages/ui/`, `packages/vendra-api/` | Private workspace boundaries for shared components and tokens, and the typed Laravel client. |
 | `apps/storefront/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
 | `apps/storefront/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
 | `apps/storefront/_runtime/`, `apps/storefront/design-system/tokens/design/` | Generated: never edit. |

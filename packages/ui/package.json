@@ -1,0 +1,10 @@
+{
+  "name": "@vendra/ui",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {},
+  "description": "Shared React components and semantic tokens for Vendra.",
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

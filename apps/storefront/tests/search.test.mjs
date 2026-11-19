@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {commerce} from '../design-system/components/utils/commerce.js';
 import {VF_PRODUCTS, vfSearchProducts} from '../shared/domain/catalog.js';
-import {VF_POSTS} from '../shared/translations/journal-content.js';
+import {VF_POSTS} from '../i18n/journal-content.js';
 
 const {normalizeSearchText, searchIndex, matchesSearch} = commerce;
 const finds = (text, query) => matchesSearch(searchIndex(text), query);

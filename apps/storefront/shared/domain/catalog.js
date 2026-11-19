@@ -7,7 +7,7 @@
 // says what kind of product it is. Product.name holds a short searchable description that cards don't show.
 // Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
-import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../translations/categories.js';
+import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../i18n/categories.js';
 import {commerce} from '../../design-system/components/utils/commerce.js';
 import {VF_STORE} from './store-config.js';
 import {vfSeparator} from './formatting.js';

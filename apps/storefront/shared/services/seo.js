@@ -68,6 +68,15 @@ export const VF_SEO = (() => {
     if (!/^(\/|\w+:)/.test(base)) return '/apps/storefront/app/';
     return new URL('apps/storefront/app/', new URL(base, vfLocation())).pathname;
   };
+  // Short localized routes share the published routes' state and canonical links during cutover.
+  const publishedPath = pathname => {
+    const root = appBase();
+    if (pathname.startsWith(root)) return pathname;
+    const base = root.slice(0, -'apps/storefront/app/'.length);
+    if (!pathname.startsWith(base)) return pathname;
+    const suffix = pathname.slice(base.length);
+    return LANGUAGES.includes(suffix.split('/')[0]) ? root + suffix : pathname;
+  };
   // Whether a URL is a page of the storefront app (not a file next to it, or another site).
   const inApp = url => {
     try {
@@ -75,7 +84,7 @@ export const VF_SEO = (() => {
       const target = new URL(url, here);
       return (
         target.origin === here.origin &&
-        target.pathname.startsWith(appBase()) &&
+        publishedPath(target.pathname).startsWith(appBase()) &&
         !/\.\w+$/.test(target.pathname)
       );
     } catch {
@@ -89,7 +98,7 @@ export const VF_SEO = (() => {
     const r = {view: 'notfound'};
     let path;
     try {
-      path = new URL(url, vfLocation()).pathname;
+      path = publishedPath(new URL(url, vfLocation()).pathname);
     } catch {
       return r;
     }
@@ -287,6 +296,7 @@ export const VF_SEO = (() => {
     register,
     setNumeric,
     appBase,
+    publishedPath,
     inApp,
     readRoute,
     routePath,

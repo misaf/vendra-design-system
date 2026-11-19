@@ -4,7 +4,7 @@ import {dirname, join, normalize, resolve} from 'node:path';
 import {rolldown} from 'rolldown';
 
 const root = resolve(import.meta.dirname, '../../..');
-const publicDir = join(import.meta.dirname, 'public');
+const publicDir = resolve(import.meta.dirname, '..', 'public');
 const app = 'apps/storefront';
 const designSystem = 'apps/storefront/design-system';
 const componentDirs = {

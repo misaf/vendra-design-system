@@ -9,7 +9,9 @@ scratch/
 screenshots/
 node_modules
 
-/apps/storefront/next/.next/
-/apps/storefront/next/public/
-/apps/storefront/next/_generated/
+/apps/storefront/.next/
+/apps/storefront/public/
 /apps/storefront/next/out/
+/apps/storefront/.next-live/
+/apps/storefront/next-env.d.ts
+/apps/storefront/.next-types.tsbuildinfo

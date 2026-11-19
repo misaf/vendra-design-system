@@ -1,7 +1,7 @@
 @layer vendra.components {
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 
-/* Source: shared/styles/shell.css */
+/* Source: styles/shell.css */
 /* Template document defaults. */
 body {
   margin: 0;
@@ -205,7 +205,7 @@ html {
 }
 
 
-/* Source: shared/styles/information-pages.css */
+/* Source: styles/information-pages.css */
 /* Shared presentation for FAQ, policies and contact. Copy stays in each page. */
 .vf-page .vf-info {
   max-width: 1088px;
@@ -259,7 +259,7 @@ html {
 }
 
 
-/* Source: shared/styles/page-layouts.css */
+/* Source: styles/page-layouts.css */
 /* Three storefront page families. Exceptions are named and kept here. */
 
 /* Product codes take --font-code inside the components; the storefront's cards keep them at body size. */
@@ -510,7 +510,7 @@ html {
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: features/bag/styles.css */
+/* Source: features/cart/styles.css */
 /* Custom styles for the bag page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Let the actual row width decide: a narrow bag column also occurs beside a tablet summary. */
@@ -795,7 +795,7 @@ html {
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: features/presentation/styles.css */
+/* Source: features/counter/styles.css */
 /* Custom styles for the counter presentation. */
 /* The page uses Tailwind utilities in the template; add only contextual exceptions here. */
 
@@ -1331,7 +1331,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: features/shop/styles.css */
+/* Source: features/catalog/styles.css */
 /* Custom styles for the shop page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 /* Small screens use compact cards rather than spreading metadata across shared grid tracks. */
@@ -1451,7 +1451,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: features/track/styles.css */
+/* Source: features/tracking/styles.css */
 /* Custom styles for the track page. */
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
@@ -1461,7 +1461,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 /* Presentation uses Tailwind utilities in the template; add only contextual exceptions here. */
 
 
-/* Source: shared/styles/responsive-spacing.css */
+/* Source: styles/responsive-spacing.css */
 /* Compact spacing for phones and tablets. Layout gaps and card text stacks get tighter;
    body type and control dimensions keep their normal readable, touch-friendly sizes. */
 @media (width < 1024px), (width < 1440px) and (any-pointer: coarse) {
@@ -1529,7 +1529,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: shared/styles/commerce-spacing.css */
+/* Source: styles/commerce-spacing.css */
 /* Keep the editable bag's summary itemized only when it sits beside the items.
    In the standard density, two columns need 480px + 380px + 20px gap + 48px page padding. */
 @container vf-storefront (width < 928px) {
@@ -1594,7 +1594,7 @@ body:has(.vf-presentation) .ag-dialog__foot {
 }
 
 
-/* Source: shared/styles/headings.css */
+/* Source: styles/headings.css */
 /* Storefront heading rhythm: page titles, collection titles and quiet supporting labels.
    Keep Persian letterforms upright and give wrapped headings enough room for their marks. */
 .vf-page .ag-sechead__title {
