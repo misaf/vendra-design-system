@@ -239,6 +239,7 @@ for (const lang of ['en', 'fa']) {
       return route.fulfill(responses.shift());
     });
     await page.goto(site + 'contact/');
+    await page.waitForFunction(() => window.__vfRuntime?.rendered === 'hydrated');
     await page.evaluate(() => window.__vfRuntime.api.setBase('/__pilot-api'));
     const phone = page.locator('#vf-cphone');
     const message = page.locator('#vf-cmsg');
@@ -247,6 +248,7 @@ for (const lang of ['en', 'fa']) {
     await message.fill('Please call me about my order.');
     await send.click();
     const summary = page.locator('#vf-contact-errors');
+    await expect(summary.getByRole('link')).toHaveText([phoneError, messageError]);
     await expect(summary).toBeFocused();
     await summary.getByRole('link', {name: phoneError}).click();
     await expect(phone).toBeFocused();
