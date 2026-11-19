@@ -1,7 +1,7 @@
-import {Button} from '../../design-system/components/atoms/Button/Button.jsx';
+import {Button} from '@vendra/ui/Button';
 import {ProductCard} from '../../design-system/components/molecules/ProductCard/ProductCard.jsx';
-import {VendraProvider} from '../../design-system/components/VendraProvider/VendraProvider.jsx';
-import {commerce, type Totals} from '../../design-system/components/utils/commerce.js';
+import {VendraProvider} from '@vendra/ui/VendraProvider';
+import {commerce, type Totals} from '../../shared/domain/commerce.js';
 
 export const App = () => (
   <VendraProvider locale="fa-IR">

@@ -1,7 +1,7 @@
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use the store's time zone.
 // VF_API_DELIVERY_ZONES and VF_API_DELIVERY_SCHEDULE are sample responses shaped like the Vendra API
 // (DeliveryZone, DeliverySchedule); a live store replaces them with API data.
-// The rules themselves are in components/utils/commerce.js (also exported by the package); the vf*
+// The rules themselves are in commerce.js; the vf*
 // functions below pass this store's data to them.
 // maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
 // delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
@@ -9,7 +9,7 @@ import {vfLineHasCard, vfLineToken, vfFindProduct, vfLineProductId} from './cata
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from './promotions.js';
 import {VF_STORE, vfFeatures} from './store-config.js';
-import {commerce} from '../../design-system/components/utils/commerce.js';
+import {commerce} from './commerce.js';
 import {vfNow} from '../platform/environment.js';
 
 // GET /api/delivery/zones

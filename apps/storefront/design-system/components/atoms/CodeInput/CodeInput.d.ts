@@ -1,4 +1,4 @@
-import type {InputProps} from '../Input/Input.js';
+import type {InputProps} from '@vendra/ui/Input';
 export interface CodeInputProps extends Omit<
   InputProps,
   'type' | 'multiline' | 'maxLength' | 'onChange'

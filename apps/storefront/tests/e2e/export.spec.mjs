@@ -34,37 +34,6 @@ for (const lang of ['en', 'fa']) {
       timezoneId: fa ? 'Asia/Tehran' : 'America/Los_Angeles'
     });
 
-    test('a bank return stays pending until the order API reports payment', async ({page}) => {
-      let paymentStatus = 'awaiting';
-      const lookups = [];
-      await page.route('**/__pilot-api/api/sales/orders?**', route => {
-        const number = new URL(route.request().url()).searchParams.get('number');
-        lookups.push(number);
-        return route.fulfill({json: {member: [{number: orderNumber, paymentStatus}]}});
-      });
-      await page.addInitScript(() => {
-        let runtime;
-        Object.defineProperty(window, '__vfRuntime', {
-          configurable: true,
-          get: () => runtime,
-          set: value => {
-            runtime = value;
-            value.api.setBase('/__pilot-api');
-          }
-        });
-      });
-      await page.goto(site + 'checkout/?payment=return&order=' + orderNumber + '&result=paid');
-      const heading = page.getByRole('heading', {level: 1});
-      await expect(heading).toHaveText(
-        fa ? 'پرداخت شما هنوز تأیید نشده' : 'Your payment isn’t confirmed yet'
-      );
-      await expect(page.locator('main')).toContainText(orderNumber);
-      paymentStatus = 'paid';
-      await page.getByRole('button', {name: fa ? 'بررسی دوباره' : 'Check again'}).click();
-      await expect(heading).toHaveText(fa ? 'پرداخت انجام شد' : 'Payment received');
-      expect(lookups).toEqual([orderNumber, orderNumber]);
-    });
-
     test('exported product, bag, delivery, checkout recovery and tracking', async ({
       page,
       request

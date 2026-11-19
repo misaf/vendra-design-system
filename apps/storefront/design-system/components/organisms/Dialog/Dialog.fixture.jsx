@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../atoms/Button/Button.jsx';
-import {Input} from '../../atoms/Input/Input.jsx';
-import {Dialog} from './Dialog.jsx';
+import {Button} from '@vendra/ui/Button';
+import {Input} from '@vendra/ui/Input';
+import {Dialog} from '@vendra/ui/Dialog';
 
 export function Fixture() {
   const [open, setOpen] = React.useState(false);

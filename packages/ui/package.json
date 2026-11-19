@@ -7,21 +7,45 @@
       "types": "./components/Button/Button.d.ts",
       "default": "./components/Button/Button.jsx"
     },
-    "./Input": {
-      "types": "./components/Input/Input.d.ts",
-      "default": "./components/Input/Input.jsx"
+    "./DatePicker": {
+      "types": "./components/DatePicker/DatePicker.d.ts",
+      "default": "./components/DatePicker/DatePicker.jsx"
     },
     "./Dialog": {
       "types": "./components/Dialog/Dialog.d.ts",
       "default": "./components/Dialog/Dialog.jsx"
     },
-    "./DatePicker": {
-      "types": "./components/DatePicker/DatePicker.d.ts",
-      "default": "./components/DatePicker/DatePicker.jsx"
+    "./Field": {
+      "types": "./components/Field/Field.d.ts",
+      "default": "./components/Field/Field.jsx"
+    },
+    "./Icon": {
+      "types": "./components/Icon/Icon.d.ts",
+      "default": "./components/Icon/Icon.jsx"
+    },
+    "./IconButton": {
+      "types": "./components/IconButton/IconButton.d.ts",
+      "default": "./components/IconButton/IconButton.jsx"
+    },
+    "./Input": {
+      "types": "./components/Input/Input.d.ts",
+      "default": "./components/Input/Input.jsx"
+    },
+    "./Select": {
+      "types": "./components/Select/Select.d.ts",
+      "default": "./components/Select/Select.jsx"
+    },
+    "./Spinner": {
+      "types": "./components/Spinner/Spinner.d.ts",
+      "default": "./components/Spinner/Spinner.jsx"
     },
     "./VendraProvider": {
       "types": "./components/VendraProvider/VendraProvider.d.ts",
       "default": "./components/VendraProvider/VendraProvider.jsx"
+    },
+    "./Icon/paths": {
+      "types": "./components/Icon/icon-svgs.d.ts",
+      "default": "./components/Icon/icon-svgs.js"
     },
     "./styles.css": "./styles.css",
     "./tokens.css": "./tokens.css",

@@ -147,7 +147,7 @@ const sharedLogic =
   // utils/locales.js declares LOCALES, localeConfig and plural at the top level.
   strip(read('../../packages/ui/components/utils/locales.js')) +
   '\n' +
-  scoped('commerce', 'design-system/components/utils/commerce.js') +
+  scoped('commerce', 'shared/domain/commerce.js') +
   scoped('analytics', '../../packages/ui/components/utils/analytics.js') +
   scoped('dates', '../../packages/ui/components/utils/dates.js') +
   scoped('format', 'design-system/components/utils/format.js') +

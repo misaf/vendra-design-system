@@ -2,8 +2,8 @@
 
 import React from 'react';
 import {Button as AriaButton} from 'react-aria-components';
-import {Button} from '../../atoms/Button/Button.jsx';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Button} from '@vendra/ui/Button';
+import {Icon} from '@vendra/ui/Icon';
 import {cx} from '../../utils/cx.js';
 import {useClientLayoutEffect} from '../../utils/effects.js';
 import {usePageLocale} from '../../utils/locale.js';

@@ -1,6 +1,6 @@
 import type {RootAttributes} from '../../utils/root-attributes.js';
 
-import type {LatLng} from '../../utils/commerce.js';
+import type {LatLng} from '../../../../shared/domain/commerce.js';
 import type {MapTiles} from '../../utils/maps.js';
 export interface Place {
   id: string;

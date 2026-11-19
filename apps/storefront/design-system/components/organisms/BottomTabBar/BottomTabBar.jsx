@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Button, Link} from 'react-aria-components';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Icon} from '@vendra/ui/Icon';
 import {cx} from '../../utils/cx.js';
 
 // The phone tab bar. Items with `href` are React Aria links (aria-current="page" when current); the rest

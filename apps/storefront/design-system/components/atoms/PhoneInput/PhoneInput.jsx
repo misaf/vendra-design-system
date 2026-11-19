@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import {Input} from '../Input/Input.jsx';
-import {commerce} from '../../utils/commerce.js';
+import {Input} from '@vendra/ui/Input';
+import {commerce} from '../../../../shared/domain/commerce.js';
 
 // A phone number field: the phone keypad on touch screens, autofill, and digits kept left to right
 // inside Persian text. onChange(typed, {number, mobile}) gets what the customer types, the number

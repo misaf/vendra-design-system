@@ -199,9 +199,9 @@ const environment = 'apps/storefront/shared/platform/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
   [domain]: `import '../platform/environment.js'; import '../../i18n/shell.js';
-    import '../../design-system/components/utils/commerce.js'; import '../../_runtime/tenant-slugs.js';`,
+    import './commerce.js'; import '../../_runtime/tenant-slugs.js';`,
   'apps/storefront/i18n/shell.js': '',
-  'apps/storefront/design-system/components/utils/commerce.js': '',
+  'apps/storefront/shared/domain/commerce.js': '',
   'apps/storefront/_runtime/tenant-slugs.js': '',
   [service]: `import React from 'react'; import '../../domain/catalog.js';`,
   [qr]: `import qrcode from 'qrcode-generator'; import '../domain/catalog.js';`

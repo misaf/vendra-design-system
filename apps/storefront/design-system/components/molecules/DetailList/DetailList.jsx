@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {Icon} from '../../atoms/Icon/Icon.jsx';
+import {Icon} from '@vendra/ui/Icon';
 import {cx} from '../../utils/cx.js';
 
 // Label / value pairs as a <dl>. Icons are decorative (aria-hidden) in --text-accent; values wrap anywhere (long addresses, references).

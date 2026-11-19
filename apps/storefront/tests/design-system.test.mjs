@@ -128,7 +128,7 @@ assert.match(link, /^<a class="ag-btn ag-btn--primary ag-btn--md"[^>]* href="\/s
 assert.ok(Object.keys(ds.ICON_SVGS).includes('flower-2'));
 // 'use client' leads every component module so React Server Components frameworks treat them as client components.
 assert.match(
-  fs.readFileSync(path.join(designSystem, 'components/atoms/Button/Button.jsx'), 'utf8'),
+  fs.readFileSync(path.join(ui, 'components/Button/Button.jsx'), 'utf8'),
   /^'use client';\n/
 );
 

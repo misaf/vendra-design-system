@@ -2,7 +2,7 @@
 // while the tab was open): an alert with a reload instead of a blank screen.
 import React from 'react';
 import {Alert} from '../design-system/components/molecules/Alert/Alert.jsx';
-import {Button} from '../design-system/components/atoms/Button/Button.jsx';
+import {Button} from '@vendra/ui/Button';
 import {vfRuntime} from '../shared/platform/runtime.js';
 import {vfLocation} from '../shared/platform/environment.js';
 import {vfAppBase} from '../shared/services/routing.js';

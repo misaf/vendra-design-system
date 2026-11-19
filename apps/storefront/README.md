@@ -2,10 +2,21 @@
 
 The bilingual storefront uses Next.js App Router for the server build and static demo and React views in `features/*`. App Router route files own rendering and navigation. The shared layout keeps the browser’s checkout and account session above the language and page segments. Pages run on sample data in `shared/`; its target shape is the Vendra API (see [API.md](API.md)). Preview states and integration boundaries: [Demo behavior](#demo-behavior).
 
-The UI library is migrating to [Atomic Design](../../ATOMIC-DESIGN.md). Migrated UI lives in
-`design-system/components/atoms/` and `design-system/components/molecules/`; organisms follow in separate batches.
-The app continues to import components through `shell/ds.js`, and `features/*` remains the source
-for routed pages.
+## Storefront file map
+
+| Previous location | Current location and what to edit there |
+| --- | --- |
+| `next/app/apps/storefront/app/[lang]/` | `app/[locale]/` owns localized routes, layouts and route parameters. `app/apps/storefront/app/[locale]/` forwards the published URLs to those same routes. |
+| `next/app/` route helpers | `server/` owns route data loading and metadata. `i18n/` owns locale selection and shared translations. |
+| Older `features/shop/`, `features/bag/`, `features/track/` and `features/presentation/` paths | Edit the workflow in `features/catalog/`, `features/cart/`, `features/tracking/` or `features/counter/`. Keep its views, copy, styles and focused tests together. |
+| `design-system/components/utils/commerce.{js,d.ts}` | Edit shared delivery, pricing and payment rules in `shared/domain/commerce.js` and their types in `shared/domain/commerce.d.ts`. |
+| Storefront wrappers for Button, DatePicker, Dialog, Field, Icon, IconButton, Input, Select, Spinner and VendraProvider | Edit the control in `../../packages/ui/components/<Name>/`. Import it through `@vendra/ui/<Name>`. Storefront browser specs and fixtures remain in `design-system/components/`. |
+| Storefront design-system theme sources | Edit the tenant's JSON in `../../packages/ui/tokens/tenants/` and run `npm run build` to regenerate its CSS and design tokens. |
+| `next/export.spec.mjs` | `tests/e2e/` exercises the live build and static export. Component browser tests use the dev server and `e2e/playwright.config.mjs`. |
+
+The remaining storefront controls live in `design-system/components/` and follow Atomic Design.
+Storefront views consume both sets of controls through `shell/ds.js`.
+The demo serves published URLs under its configured base path, such as `/vendra-design-system/apps/storefront/app/fa/`.
 
 ## Where to edit
 
@@ -135,7 +146,7 @@ for routed pages.
 | Tailwind entry and token aliases | [styles/tailwind.css](styles/tailwind.css) |
 | Tokens and tenant themes | `packages/ui/tokens/` at the repository root |
 | Number, currency and date formatting | `design-system/components/utils/` (wrapped by `shared/domain/formatting.js`) |
-| Delivery, totals, discount and API-adapter rules | `design-system/components/utils/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
+| Delivery, totals, discount and API-adapter rules | `shared/domain/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
 ## Editing a page
 

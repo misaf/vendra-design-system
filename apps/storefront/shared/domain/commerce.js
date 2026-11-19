@@ -582,7 +582,7 @@ const PAYMENT_METHODS = ['online', 'card', 'cod', 'wallet', 'whatsapp'];
 // dropped) for this order, each with `available` and, when it can't be used, `reason`: 'zone' (pay
 // on delivery doesn't reach the delivery zone), 'signIn' (no balance without an account) or
 // 'balance' (the balance doesn't cover `total`).
-const paymentOptions = (methods, {zone, balance = null, total = 0} = {}) =>
+const paymentOptions = (methods, {zone = undefined, balance = null, total = 0} = {}) =>
   (methods || [])
     .filter(method => method && PAYMENT_METHODS.includes(method.id))
     .map(method => {

@@ -176,10 +176,10 @@ function workspaceViolations(root) {
           ? path.posix.join('apps/storefront', target.slice('@storefront/'.length))
           : null;
       if (local !== null) {
-        // The existing design-system entry points still forward to the extracted UI components.
+        // Existing utility entry points share the package's contexts and helper implementations.
         const uiCompatibilityExport =
-          source.startsWith(componentsFolder + '/') &&
-          local.startsWith(uiFolder + '/components/') &&
+          source.startsWith(componentsFolder + '/utils/') &&
+          local.startsWith(uiFolder + '/components/utils/') &&
           program.body.every(
             statement =>
               statement.type === 'ExportAllDeclaration' || statement.directive === 'use client'

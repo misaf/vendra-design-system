@@ -12,28 +12,33 @@ const repo = path.resolve(import.meta.dirname, '../../..');
 
 assert.equal(
   dependencyViolation(
-    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
-    'apps/storefront/design-system/components/atoms/Icon/Icon.jsx'
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
+    'packages/ui/components/Icon/Icon.jsx'
   ),
   null
 );
 assert.equal(
   dependencyViolation(
     'apps/storefront/design-system/components/molecules/Search/Search.jsx',
-    'apps/storefront/design-system/components/atoms/Input/Input.jsx'
+    'packages/ui/components/Input/Input.jsx'
   ),
   null
 );
 assert.equal(
   dependencyViolation(
-    'apps/storefront/design-system/components/atoms/Spinner/Spinner.jsx',
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
     'apps/storefront/design-system/components/utils/messages.js'
   ),
   null
 );
 for (const [source, target] of [
   [
-    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
+    'packages/ui/components/Dialog/Dialog.jsx'
+  ],
+  ['packages/ui/components/Input/Input.jsx', 'apps/storefront/shared/domain/commerce.js'],
+  [
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
     'apps/storefront/design-system/components/molecules/Search/Search.jsx'
   ],
   [
@@ -42,14 +47,14 @@ for (const [source, target] of [
   ],
   [
     'apps/storefront/design-system/components/utils/messages.js',
-    'apps/storefront/design-system/components/atoms/Spinner/Spinner.jsx'
+    'packages/ui/components/Spinner/Spinner.jsx'
   ],
   [
-    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
     'apps/storefront/design-system/components/Legacy/Legacy.jsx'
   ],
   [
-    'apps/storefront/design-system/components/atoms/Button/Button.jsx',
+    'apps/storefront/design-system/components/atoms/Chip/Chip.jsx',
     'apps/storefront/shared/domain/catalog.js'
   ]
 ])
@@ -91,7 +96,8 @@ for (const level of levels) {
   for (const entry of fs.readdirSync(folder, {withFileTypes: true})) {
     if (!entry.isDirectory()) continue;
     assert.ok(
-      fs.existsSync(path.join(folder, entry.name, entry.name + '.jsx')),
+      fs.existsSync(path.join(folder, entry.name, entry.name + '.jsx')) ||
+        fs.existsSync(path.join(repo, 'packages/ui/components', entry.name, entry.name + '.jsx')),
       `${level}/${entry.name} needs its named component`
     );
   }
@@ -148,6 +154,7 @@ try {
     'tools/paths.mjs',
     'apps/storefront/shell/ds.js',
     'apps/storefront/design-system/components/index.css',
+    'packages/ui/components/Button/Button.jsx',
     'packages/ui/components/utils/messages.d.ts'
   ]) {
     const target = path.join(temporary, file);
@@ -198,6 +205,11 @@ try {
     generate('SampleAtoms', '--level', 'molecules').status,
     0,
     'names are unique across layers'
+  );
+  assert.notEqual(
+    generate('Button', '--level', 'atoms').status,
+    0,
+    'names are unique across the storefront and shared UI'
   );
   const noCss = generate('Unstyled', '--level', 'atoms', '--no-css');
   assert.equal(noCss.status, 0, noCss.stderr);

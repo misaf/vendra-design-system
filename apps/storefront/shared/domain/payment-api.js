@@ -1,5 +1,5 @@
 // The API's online-payment records under what the checkout page uses (apps/storefront/API.md B3, B30):
-// pure functions, kept out of the package (components/utils/commerce.js) until the backend ships
+// pure functions, kept separate from commerce.js until the backend ships
 // them, so they don't count against the package's size budget.
 // Where a payment gateway expects the browser, as the backend gives it: {url, method, fields}, with
 // `method` GET or POST (Shaparak gateways take a POSTed form). null unless `url` is an http(s) address.

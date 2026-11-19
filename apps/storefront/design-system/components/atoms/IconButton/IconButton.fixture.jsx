@@ -1,5 +1,5 @@
 import React from 'react';
-import {IconButton} from './IconButton.jsx';
+import {IconButton} from '@vendra/ui/IconButton';
 
 export function Fixture() {
   const [saved, setSaved] = React.useState(false);

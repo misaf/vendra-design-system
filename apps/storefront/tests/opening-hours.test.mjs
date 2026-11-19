@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
-import {commerce} from '../design-system/components/utils/commerce.js';
+import {commerce} from '../shared/domain/commerce.js';
 import {vfOpeningStatus} from '../shared/domain/store-hours.js';
 
 if (!process.env.VENDRA_OPENING_TZ_TEST) {

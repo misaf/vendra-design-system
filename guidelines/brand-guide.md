@@ -77,7 +77,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Iconography
 
-- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`apps/storefront/design-system/components/atoms/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
+- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`packages/ui/components/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
 - **Style:** outline only, 2px stroke, 16–22px. Ink colour by default; peony (`--text-accent`) only for small value-prop icons.
 - **Common glyphs:** flower-2, leaf, sprout, heart, shopping-bag, search, user, truck, gift, calendar, map-pin, arrow-right, chevron-down, x, plus, minus, check.
 - **No** emoji, icon fonts, PNG icons or unicode glyph icons.
@@ -230,7 +230,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Helpers** (not components)
 - `apps/storefront/design-system/components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
 - `apps/storefront/design-system/components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
-- `apps/storefront/design-system/components/utils/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
+- `apps/storefront/shared/domain/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
 - `apps/storefront/design-system/components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `apps/storefront/shared/services/seo.js` → `VF_SEO` and `apps/storefront/shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
 - `apps/storefront/communications/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.

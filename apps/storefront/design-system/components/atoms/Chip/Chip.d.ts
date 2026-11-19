@@ -1,4 +1,4 @@
-import type {ButtonDOMProps} from '../Button/Button.js';
+import type {ButtonDOMProps} from '@vendra/ui/Button';
 
 export interface ChipProps extends ButtonDOMProps {
   /** The button. */
