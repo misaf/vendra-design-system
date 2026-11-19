@@ -156,7 +156,7 @@ function page(name, c, props = {}) {
     };
     await assert.rejects(
       api.vfRuntime.api.checkout(order),
-      error => error.kind === 'http' && error.status === 503 && error.body.detail === 'busy'
+      error => error.kind === 'server' && error.status === 503 && error.body.detail === 'busy'
     );
     assert.equal(sent[2].key, sent[0].key);
     // A different order (another payment reference) is a new request with a new key.

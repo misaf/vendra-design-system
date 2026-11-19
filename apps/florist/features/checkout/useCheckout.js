@@ -45,6 +45,27 @@ import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
+const DELIVERY_FIELDS = new Map([
+  ['recipientName', 'name'],
+  ['recipientPhone', 'phone'],
+  ['addressId', 'address'],
+  ['latitude', 'location'],
+  ['longitude', 'location'],
+  ['deliveryDate', 'date'],
+  ['deliverySlotId', 'slot']
+]);
+
+function checkoutValidation(fields) {
+  const recovery = {delivery: {}, bag: '', payment: ''};
+  for (const [path, message] of Object.entries(fields || {})) {
+    if (DELIVERY_FIELDS.has(path)) recovery.delivery[DELIVERY_FIELDS.get(path)] = message;
+    if (/^(?:cartToken$|(?:cart\.)?(?:lines|items)(?:$|[.\[]))/.test(path))
+      recovery.bag ||= message;
+    if (path === 'paymentReference') recovery.payment = message;
+  }
+  return recovery;
+}
+
 export function useCheckout(props) {
   const page = usePageLogic(props, page => {
     page.state = {
@@ -58,6 +79,7 @@ export function useCheckout(props) {
       busy: false,
       failed: false,
       unconfirmed: false,
+      apiFailure: null,
       payment: null,
       paymentSaveError: false,
       retryReview: false,
@@ -132,6 +154,24 @@ function vals(page) {
   const method = order ? order.method || 'card' : commerce.defaultPaymentMethod(options, s.method),
     P = C.migration,
     PW = P.wallet;
+  const apiFailure = s.apiFailure;
+  const recovery = apiFailure?.recovery;
+  const reviewStep = recovery?.bag
+    ? 'bag'
+    : Object.keys(recovery?.delivery || {}).length
+      ? 'delivery'
+      : null;
+  const review =
+    reviewStep && page.props.go && st?.setCheckoutErrors
+      ? {
+          label: P.apiErrors[reviewStep],
+          onClick: () => {
+            st.setCheckoutErrors(recovery);
+            page.props.go({view: 'bag', step: reviewStep});
+            S.focus(reviewStep === 'bag' ? 'vf-checkout-bag-error' : 'vf-errors');
+          }
+        }
+      : null;
   const codZones = (options.find(option => option.id === 'cod') || {}).zones || [];
   const totals = order
     ? order.totals
@@ -279,6 +319,10 @@ function vals(page) {
     busy,
     placeDisabled: busy || s.failed || done || !method,
     failed: s.failed,
+    apiFailure,
+    apiFailureText: apiFailure && P.apiErrors[apiFailure.kind],
+    review,
+    receiptLocked: busy || methodLocked,
     // No answer came back (a timeout or a lost connection): the order may exist, so say so, and keep
     // the request unchanged so a retry reuses its idempotency key.
     unconfirmed,
@@ -306,17 +350,18 @@ function vals(page) {
         retryReview: false,
         err: false,
         failed: false,
-        unconfirmed: false
+        unconfirmed: false,
+        apiFailure: null
       }),
     migration: P,
     waOrder: S.waWith(vfOrderMessage(items, delivery, totals.total, L)),
     openWhatsapp: event => {
       orderReady(event);
     },
-    retry: () =>
-      page.setState({
-        failed: false
-      }),
+    retry: () => {
+      page.setState({failed: false, apiFailure: recovery?.payment ? apiFailure : null});
+      if (apiFailure?.recovery.payment && method === 'card') S.focus('vf-ref');
+    },
     otherMethod: () =>
       page._draft({
         failed: false,
@@ -372,13 +417,20 @@ function vals(page) {
     last4: s.last4,
     last4Err: s.err ? C.last4Err : undefined,
     ref: s.ref,
+    refError: recovery?.payment,
     setRef: value =>
+      !busy &&
+      !methodLocked &&
       page._draft({
         method,
         ref: value,
-        receiptAmount: !s.last4 && !s.ref ? totals.total : s.receiptAmount
+        receiptAmount: !s.last4 && !s.ref ? totals.total : s.receiptAmount,
+        apiFailure: null,
+        failed: false
       }),
     setLast4: value =>
+      !busy &&
+      !methodLocked &&
       page._draft({
         method,
         last4: value
@@ -386,10 +438,12 @@ function vals(page) {
           .replace(/\D/g, '')
           .slice(0, 4),
         receiptAmount: !s.last4 && !s.ref ? totals.total : s.receiptAmount,
-        err: false
+        err: false,
+        apiFailure: null,
+        failed: false
       }),
     place: () => {
-      if (busy || done || !orderReady()) return;
+      if (busy || s.failed || done || !orderReady()) return;
       if (!usable(method)) return;
       if (receiptChanged) {
         S.focus('vf-receipt-changed');
@@ -457,16 +511,20 @@ function vals(page) {
               };
               then(placed, result?.redirect || null);
             },
-            error =>
+            error => {
+              const kind = error?.kind || 'http';
+              const recovery = checkoutValidation(error?.fields);
               page.setState({
                 busy: false,
                 failed: true,
-                // 409: the first request with this key is still running on the server.
+                apiFailure: {kind, recovery},
+                // The server may already have accepted the order. Preserve the method and receipt.
                 unconfirmed:
-                  error?.kind === 'timeout' ||
-                  error?.kind === 'network' ||
-                  (error?.kind === 'http' && error.status === 409)
-              })
+                  ['timeout', 'network', 'conflict', 'server'].includes(kind) ||
+                  (methodLocked && kind === 'offline')
+              });
+              S.focus('vf-checkout-submit-error');
+            }
           )
           .finally(() => st?.endCheckout?.());
       };

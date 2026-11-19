@@ -121,11 +121,14 @@ export function View({v}) {
                     label: v.t?.last4,
                     hint: v.t?.last4Hint,
                     error: v.last4Err,
+                    disabled: v.receiptLocked,
                     value: v.last4,
                     onChange: v.setLast4
                   }}
                   reference={{
                     value: v.ref,
+                    error: v.refError,
+                    disabled: v.receiptLocked,
                     onChange: v.setRef,
                     label: v.t?.ref,
                     hint: v.t?.refHint
@@ -142,11 +145,18 @@ export function View({v}) {
                   failure={{
                     visible: v.failed,
                     title: v.unconfirmed ? v.migration?.unconfirmed : v.migration?.failed,
-                    body: v.unconfirmed ? v.migration?.unconfirmedBody : v.migration?.failureBody,
-                    retry: {onClick: v.retry, label: v.migration?.retry},
-                    other: v.unconfirmed
-                      ? null
-                      : {onClick: v.otherMethod, label: v.migration?.other}
+                    body: v.apiFailureText
+                      ? [v.apiFailureText, v.unconfirmed && v.migration?.unconfirmedBody]
+                          .filter(Boolean)
+                          .join(' ')
+                      : v.unconfirmed
+                        ? v.migration?.unconfirmedBody
+                        : v.migration?.failureBody,
+                    retry: v.review || {onClick: v.retry, label: v.migration?.retry},
+                    other:
+                      v.apiFailure || v.unconfirmed
+                        ? null
+                        : {onClick: v.otherMethod, label: v.migration?.other}
                   }}
                   safe={v.t?.safe}
                   place={{

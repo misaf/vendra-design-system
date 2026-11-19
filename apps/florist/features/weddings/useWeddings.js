@@ -7,15 +7,24 @@ import {usePageLogic} from '../../shared/services/page-state.js';
 import {vfAssetBase, vfNow} from '../../shared/platform/environment.js';
 import {vfLiveStore} from '../../shared/domain/store-config.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
+import {vfInquiryFailure} from '../../shared/services/integrations/api-errors.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
+const FIELDS = [
+  ['name', 'vf-wname'],
+  ['email', 'vf-wemail'],
+  ['phone', 'vf-wphone'],
+  ['msg', 'vf-wmsg']
+];
+
 export function useWeddings(props) {
   const page = usePageLogic(props, page => {
     page.state = {
       sent: false,
       email: '',
       apiError: '',
+      apiFields: {},
       busy: false,
       name: '',
       phone: '',
@@ -36,6 +45,20 @@ function vals(page) {
   const S = vfShell(page, 'weddings');
   const s = page.state;
   const C = vfCopy(S);
+  const localErrors = {name: s.e1 ? C.nameErr : undefined, phone: s.e2 ? C.phoneErr : undefined};
+  const fieldErrors = {...localErrors, ...s.apiFields};
+  const problems = FIELDS.filter(([key]) => fieldErrors[key]).map(([key, target]) => ({
+    text: fieldErrors[key],
+    target
+  }));
+  const field =
+    (key, apiKey = key, clear = {}) =>
+    value =>
+      page.setState(current => {
+        const apiFields = {...current.apiFields};
+        delete apiFields[apiKey];
+        return {[key]: value, ...clear, apiFields};
+      });
   return {
     ...S,
     t: {
@@ -50,15 +73,9 @@ function vals(page) {
     })),
     process: C.steps,
     guests: s.guests,
-    setGuests: value =>
-      page.setState({
-        guests: value
-      }),
+    setGuests: field('guests', 'msg'),
     wDate: s.wDate,
-    setWDate: v =>
-      page.setState({
-        wDate: v
-      }),
+    setWDate: field('wDate', 'msg'),
     today: (() => {
       const d = vfNow();
       return (
@@ -78,11 +95,7 @@ function vals(page) {
     apiError: s.apiError,
     busy: s.busy,
     email: s.email,
-    setEmail: value =>
-      page.setState({
-        email: value,
-        apiError: ''
-      }),
+    setEmail: field('email'),
     sent: s.sent,
     notSent: !s.sent,
     editMessage: () => {
@@ -92,39 +105,21 @@ function vals(page) {
       S.focus('vf-wname');
     },
     name: s.name,
-    setName: value =>
-      page.setState({
-        name: value,
-        e1: false
-      }),
-    nameErr: s.e1 ? C.nameErr : undefined,
+    setName: field('name', 'name', {e1: false}),
+    nameErr: fieldErrors.name,
     phone: s.phone,
-    setPhone: value =>
-      page.setState({
-        phone: value,
-        e2: false
-      }),
-    phoneErr: s.e2 ? C.phoneErr : undefined,
+    setPhone: field('phone', 'phone', {e2: false}),
+    phoneErr: fieldErrors.phone,
     // After a failed send, what to fix in form order, each linking to its field.
-    problems: [
-      s.e1 && {text: C.nameErr, target: 'vf-wname'},
-      s.e2 && {text: C.phoneErr, target: 'vf-wphone'}
-    ].filter(Boolean),
+    problems,
+    emailErr: fieldErrors.email,
+    msgErr: fieldErrors.msg,
     type: s.type,
     budget: s.budget,
-    setType: value =>
-      page.setState({
-        type: value
-      }),
-    setBudget: value =>
-      page.setState({
-        budget: value
-      }),
+    setType: field('type', 'msg'),
+    setBudget: field('budget', 'msg'),
     notes: s.notes,
-    setNotes: value =>
-      page.setState({
-        notes: value
-      }),
+    setNotes: field('notes', 'msg'),
     types: C.types,
     budgets: C.budgets,
     send: () => {
@@ -143,6 +138,7 @@ function vals(page) {
         page.setState({
           sent: true,
           busy: false,
+          apiFields: {},
           apiError: ''
         });
         S.focus('vf-weddings-success');
@@ -153,6 +149,7 @@ function vals(page) {
       }
       page.setState({
         busy: true,
+        apiFields: {},
         apiError: ''
       });
       return vfRuntime.api
@@ -167,12 +164,12 @@ function vals(page) {
           preferredLocale: vfRuntime.api.preferredLocale()
         })
         .then(success)
-        .catch(() =>
-          page.setState({
-            busy: false,
-            apiError: C.integrationError
-          })
-        );
+        .catch(error => {
+          const {fields, apiError} = vfInquiryFailure(error, S.lang);
+          const wrong = FIELDS.filter(([key]) => fields[key]);
+          page.setState({busy: false, apiFields: fields, apiError});
+          S.focus(wrong.length > 1 ? 'vf-wedding-errors' : wrong[0]?.[1] || 'vf-wedding-api-error');
+        });
     }
   };
 }

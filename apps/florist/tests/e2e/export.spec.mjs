@@ -8,10 +8,16 @@ const orderNumber = 'VN-PILOT-1042';
 async function replayCheckout(page) {
   const orders = new Map();
   const attempts = [];
+  const failures = [];
   await page.route('**/__pilot-api/api/sales/checkout', async route => {
     const request = route.request();
     const key = request.headers()['idempotency-key'];
     attempts.push({key, body: request.postDataJSON()});
+    const failure = failures.shift();
+    if (failure) {
+      await route.fulfill(failure);
+      return;
+    }
     if (!orders.has(key)) {
       orders.set(key, {number: orderNumber});
       // The order exists, but the first response never reaches the browser.
@@ -19,7 +25,7 @@ async function replayCheckout(page) {
     } else await route.fulfill({json: orders.get(key)});
   });
   await page.evaluate(() => window.__vfRuntime.api.setBase('/__pilot-api'));
-  return {orders, attempts};
+  return {orders, attempts, failures};
 }
 
 for (const lang of ['en', 'fa']) {
@@ -138,7 +144,7 @@ for (const lang of ['en', 'fa']) {
       // This is the demo's local amount review. Laravel quote changes are a separate pilot gate.
       const changedAmount = page.locator('#vf-receipt-changed');
       await expect(changedAmount).toBeVisible();
-      const {orders, attempts} = await replayCheckout(page);
+      const {orders, attempts, failures} = await replayCheckout(page);
       await place.click();
       await expect(changedAmount).toBeVisible();
       expect(attempts).toHaveLength(0);
@@ -148,19 +154,53 @@ for (const lang of ['en', 'fa']) {
         })
         .click();
 
+      const slotError = fa ? 'بازه ارسال پر شده است.' : 'The delivery slot is full.';
+      failures.push(
+        {
+          status: 422,
+          json: {violations: [{propertyPath: 'deliverySlotId', message: slotError}]}
+        },
+        {status: 409, json: {}},
+        {status: 503, json: {}}
+      );
       await place.click();
+      await button(fa ? 'بررسی اطلاعات ارسال' : 'Review delivery details').click();
+      await expect(page.locator('#vf-errors')).toBeFocused();
+      await expect(slots).toContainText(slotError);
+      await page.locator('#vf-errors').getByRole('link', {name: slotError}).click();
+      await expect(slots).toBeFocused();
+      await continueToPayment.click();
+      await expect(page).toHaveURL(/\/bag\/\?step=delivery$/);
+      // The rejected slot stays selected so the customer can see which one was rejected.
+      await page
+        .locator('#vf-date label.ag-choice:has(input:not(:checked):enabled)')
+        .first()
+        .click();
+      await chooseDeliveryTime(page);
+      await expect(slots).not.toContainText(slotError);
+      await continueToPayment.click();
+
       const unconfirmed = page.getByRole('alert').filter({
         hasText: fa ? 'ثبت سفارش شما تأیید نشد' : 'We couldn’t confirm your order'
       });
-      await expect(unconfirmed).toBeVisible();
-      await expect(page.locator('main')).not.toContainText(orderNumber);
-      await button(fa ? 'تلاش دوباره' : 'Try again').click();
+      for (const message of [
+        fa ? 'هنوز در حال پردازش باشد' : 'may still be processing',
+        fa ? 'موقتاً در دسترس نیست' : 'temporarily unavailable',
+        fa ? 'ارتباط قطع شد' : 'The connection was lost'
+      ]) {
+        await place.click();
+        await expect(unconfirmed).toContainText(message);
+        await expect(page.locator('#vf-last4')).toBeDisabled();
+        await expect(page.locator('main')).not.toContainText(orderNumber);
+        await button(fa ? 'تلاش دوباره' : 'Try again').click();
+      }
       await place.click();
       await expect(page.locator('main h1')).toContainText(fa ? 'سپاس' : 'Thank you');
       await expect(page.locator('main')).toContainText(orderNumber);
-      expect(attempts).toHaveLength(2);
-      expect(attempts[0].key).toMatch(/^[0-9a-f-]{36}$/);
-      expect(attempts[1]).toEqual(attempts[0]);
+      expect(attempts).toHaveLength(5);
+      expect(attempts[1].key).toMatch(/^[0-9a-f-]{36}$/);
+      expect(attempts[1].key).not.toBe(attempts[0].key);
+      expect(attempts.slice(2)).toEqual(Array(3).fill(attempts[1]));
       expect(orders.size).toBe(1);
       await page
         .getByRole('link', {name: fa ? 'پیگیری سفارش' : 'Track order', exact: true})
@@ -173,6 +213,66 @@ for (const lang of ['en', 'fa']) {
       await expect(page.locator('main h1')).toHaveText(fa ? 'پیگیری سفارش.' : 'Track an order.');
       expect(errors).toEqual([]);
     });
+  });
+
+  test('contact routes validation and retryable failures in ' + lang, async ({page}) => {
+    const phoneError = fa ? 'این شماره پذیرفته نمی‌شود.' : 'This number cannot be used.';
+    const messageError = fa ? 'پیام را اصلاح کنید.' : 'Please revise your message.';
+    const responses = [
+      {
+        status: 422,
+        json: {
+          violations: [
+            {propertyPath: 'phone', message: phoneError},
+            {propertyPath: 'message', message: messageError}
+          ]
+        }
+      },
+      {status: 409, json: {}},
+      {status: 503, json: {}},
+      {status: 204}
+    ];
+    const keys = [];
+    await stubMapTiles(page);
+    await page.route('**/__pilot-api/api/support/inquiries', route => {
+      keys.push(route.request().headers()['idempotency-key']);
+      return route.fulfill(responses.shift());
+    });
+    await page.goto(site + 'contact/');
+    await page.evaluate(() => window.__vfRuntime.api.setBase('/__pilot-api'));
+    const phone = page.locator('#vf-cphone');
+    const message = page.locator('#vf-cmsg');
+    const send = page.getByRole('button', {name: fa ? 'ارسال' : 'Send', exact: true});
+    await phone.fill('09120000000');
+    await message.fill('Please call me about my order.');
+    await send.click();
+    const summary = page.locator('#vf-contact-errors');
+    await expect(summary).toBeFocused();
+    await summary.getByRole('link', {name: phoneError}).click();
+    await expect(phone).toBeFocused();
+    await expect(phone).toHaveAttribute('aria-invalid', 'true');
+    await expect(message).toHaveAttribute('aria-invalid', 'true');
+    await phone.fill('09121111111');
+    await expect(summary).not.toContainText(phoneError);
+    await expect(summary).toContainText(messageError);
+    await message.fill('Please call me about tomorrow’s order.');
+    await expect(summary).toHaveCount(0);
+
+    for (const copy of [
+      fa ? 'هنوز در حال پردازش باشد' : 'may still be processing',
+      fa ? 'موقتاً در دسترس نیست' : 'temporarily unavailable'
+    ]) {
+      await send.click();
+      const error = page.locator('#vf-contact-api-error');
+      await expect(error).toContainText(copy);
+      await expect(error).toBeFocused();
+      await expect(message).toHaveValue('Please call me about tomorrow’s order.');
+    }
+    await send.click();
+    await expect(page.locator('#vf-contact-success')).toBeVisible();
+    expect(keys).toHaveLength(4);
+    expect(keys[1]).not.toBe(keys[0]);
+    expect(keys.slice(2)).toEqual([keys[1], keys[1]]);
   });
 
   test('offline presentation reloads in ' + lang, async ({page, context}) => {

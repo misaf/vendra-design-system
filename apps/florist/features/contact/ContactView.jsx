@@ -48,7 +48,7 @@ export function View({v}) {
               {v.notSent ? (
                 <StorefrontContactFormControls
                   problems={v.problems}
-                  name={{label: v.t?.name, value: v.name, onChange: v.setName}}
+                  name={{label: v.t?.name, value: v.name, onChange: v.setName, error: v.nameErr}}
                   phone={{
                     label: v.t?.phone,
                     value: v.phone,
@@ -80,7 +80,13 @@ export function View({v}) {
               ) : null}
             </>
           }
-          feedback={v.apiError ? <DS.Alert tone="danger" title={v.apiError} /> : null}
+          feedback={
+            v.apiError ? (
+              <div id="vf-contact-api-error" tabIndex={-1} data-vf-keep-focus>
+                <DS.Alert tone="danger" title={v.apiError} />
+              </div>
+            ) : null
+          }
         />
       }
       sticky={<></>}
