@@ -4,7 +4,8 @@
   "description": "Vendra Next.js storefront and its design system.",
   "license": "UNLICENSED",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm --prefix apps/storefront run dev:next --",

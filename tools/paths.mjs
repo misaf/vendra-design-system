@@ -6,6 +6,7 @@ const repo = path.resolve(import.meta.dirname, '..');
 const designSystemFolder = 'apps/storefront/design-system';
 const componentsFolder = designSystemFolder + '/components';
 
-const designSystemRoot = path.join(repo, designSystemFolder);
+const uiFolder = 'packages/ui';
+const uiRoot = path.join(repo, uiFolder);
 
-export {repo, designSystemFolder, componentsFolder, designSystemRoot};
+export {repo, componentsFolder, uiFolder, uiRoot};

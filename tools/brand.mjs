@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import theme from '../apps/storefront/shared/domain/tenant-theme.js';
+import theme from '@vendra/ui/tokens/theme';
 const root = path.resolve(import.meta.dirname, '..');
 
 // Only repository assets are accepted: all referenced files ship under the deployment's base URL.

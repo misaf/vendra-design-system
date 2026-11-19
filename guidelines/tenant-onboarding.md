@@ -7,9 +7,9 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
-- [ ] Save it as `apps/storefront/design-system/tokens/tenants/<slug>.json` and run `npm --prefix apps/storefront run build`. The build writes `apps/storefront/design-system/tokens/tenants/<slug>.css` and the tenant's email palette in `apps/storefront/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
+- [ ] Save it as `packages/ui/tokens/tenants/<slug>.json` and run `npm --prefix apps/storefront run build`. The build writes `packages/ui/tokens/tenants/<slug>.css` and the tenant's email palette in `apps/storefront/communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
-- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/shared/domain/store-config.js` and rebuild. The storefront then loads only `apps/storefront/design-system/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `apps/storefront/design-system/tokens/tenants.css`).
+- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `apps/storefront/shared/domain/store-config.js` and rebuild. The storefront then loads only `packages/ui/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `packages/ui/tokens/tenants.css`).
 
 **The tenant JSON**
 - `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
@@ -46,12 +46,12 @@ Instrument Serif, Jost and Vazirmatn stay the built-in presets. A tenant with it
 - Apps that render stored themes with `tenantCss()` pass `assetBase` (default `/`, or e.g. `https://cdn.example.com/`) to say where `assets/` is served, and can add `fontPreloads(spec, lang, assetBase)` as `<link rel="preload" as="font" type="font/woff2" crossorigin>` tags.
 
 **Validating a theme outside the build**
-The build generates the JSON Schema (draft 2020-12) at `apps/storefront/design-system/tokens/theme.schema.json` from the same settings that `validate()` uses. The storefront theme generator exposes the same object through `schema()`.
+The build generates the JSON Schema (draft 2020-12) at `packages/ui/tokens/theme.schema.json` from the same settings that `validate()` uses. The storefront theme generator exposes the same object through `schema()`.
 - A backend (for example Laravel with a PHP JSON Schema library) validates a theme against it before saving, and an admin form can build its fields and dropdowns from its `enum` lists.
 - The schema accepts and rejects exactly what `validate()` does. It can't check contrast: run `checks()` (or `tenantCss()`, which refuses a failing theme) before a theme goes live.
 
 ## 2. Brand assets (florist supplies · designer prepares)
-Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `apps/storefront/design-system/tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
+Until approved artwork arrives, omit the logo fields to show the localized store name. Add an optional `brand` object to `packages/ui/tokens/tenants/<slug>.json` (see Clay for a complete example). Keep files under `assets/tenants/<slug>/`; paths start with `assets/` and are relative to the deployment root. The production build copies this folder.
 
 | Field | Format / size | Use |
 |---|---|---|

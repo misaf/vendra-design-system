@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vendra UI gallery</title>
+    <link rel="stylesheet" href="../packages/ui/styles.css">
+    <link rel="stylesheet" href="../packages/ui/tokens/tenants.css">
+    <style>
+      body { background: var(--surface-page); color: var(--text-body); }
+      main { max-inline-size: 42rem; margin-inline: auto; padding: var(--space-6); }
+      nav { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-end: var(--space-6); }
+      .controls { display: grid; gap: var(--space-5); justify-items: start; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./ui-gallery.jsx"></script>
+  </body>
+</html>

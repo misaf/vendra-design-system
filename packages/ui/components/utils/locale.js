@@ -1,0 +1,35 @@
+import React from 'react';
+import {useLocale} from 'react-aria-components';
+import {useClientLayoutEffect} from './effects.js';
+import {LOCALES, localeConfig} from './locales.js';
+
+// The languages VendraProvider offers to the components below it (LOCALES unless it is given others).
+export const LocalesContext = React.createContext(LOCALES);
+
+// The offered languages, by code.
+export function useLocales() {
+  return React.useContext(LocalesContext);
+}
+
+// A locale's settings (utils/locales.js localeConfig) among the offered languages.
+export function useLocaleConfig(locale) {
+  return localeConfig(locale, useLocales());
+}
+
+// React Aria takes keyboard direction, number formatting and calendars from its locale, not from
+// the page's dir. usePageLocale follows the page instead: attach `ref` to the component's outer
+// element and wrap its React Aria parts in <I18nProvider locale={locale}>. The locale is the nearest
+// `lang` (cards show English and Persian side by side), read before the first paint once the
+// element is in the page; until then (and on the server, so hydration matches), and without any
+// `lang`, it is the app's own React Aria locale (an I18nProvider higher up, or the browser's).
+export function usePageLocale() {
+  const inherited = useLocale().locale;
+  const [lang, setLang] = React.useState('');
+  const ref = React.useRef(null);
+  useClientLayoutEffect(() => {
+    const owner = ref.current && ref.current.closest('[lang]');
+    const found = (owner && owner.getAttribute('lang')) || '';
+    if (found !== lang) setLang(found);
+  });
+  return {locale: lang || inherited, ref};
+}

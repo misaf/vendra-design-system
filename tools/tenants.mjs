@@ -2,12 +2,12 @@
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 import fs from 'node:fs';
 import path from 'node:path';
-import theme from '../apps/storefront/shared/domain/tenant-theme.js';
+import theme from '@vendra/ui/tokens/theme';
 import {validateBrand} from './brand.mjs';
-import {designSystemRoot, designSystemFolder} from './paths.mjs';
+import {uiRoot, uiFolder} from './paths.mjs';
 
 const root = path.resolve(import.meta.dirname, '../apps/storefront');
-const folder = path.join(designSystemRoot, 'tokens/tenants');
+const folder = path.join(uiRoot, 'tokens/tenants');
 
 // A brand font's files must ship with the deployment: present under the repo root and WOFF2.
 const repo = path.resolve(import.meta.dirname, '..');
@@ -35,7 +35,7 @@ function tenantSpecs() {
     const slug = file.slice(0, -5);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
       throw new Error('Tenant file names must be lowercase slugs: ' + file);
-    const label = designSystemFolder + '/tokens/tenants/' + file;
+    const label = uiFolder + '/tokens/tenants/' + file;
     let spec;
     try {
       spec = JSON.parse(fs.readFileSync(path.join(folder, file), 'utf8'));
@@ -69,10 +69,7 @@ function tenantOutputs() {
     .filter(name => name.endsWith('.css') && !specs[name.slice(0, -4)]);
   if (orphans.length)
     throw new Error(
-      'Tenant CSS without a JSON source (' +
-        designSystemFolder +
-        '/tokens/tenants/): ' +
-        orphans.join(', ')
+      'Tenant CSS without a JSON source (' + uiFolder + '/tokens/tenants/): ' + orphans.join(', ')
     );
   // Storefronts load only their own tenant file; cards that compare tenants load them all.
   result.set(
@@ -83,14 +80,14 @@ function tenantOutputs() {
         .join('')
   );
   const json = value => JSON.stringify(value, null, 2) + '\n';
-  result.set(path.join(designSystemRoot, 'tokens/theme.schema.json'), json(theme.schema()));
+  result.set(path.join(uiRoot, 'tokens/theme.schema.json'), json(theme.schema()));
   result.set(
-    path.join(designSystemRoot, 'tokens/design/tokens.json'),
+    path.join(uiRoot, 'tokens/design/tokens.json'),
     json(theme.designTokens(baseTokenVars()))
   );
   for (const [slug, spec] of Object.entries(specs))
     result.set(
-      path.join(designSystemRoot, 'tokens/design/tenants', slug + '.json'),
+      path.join(uiRoot, 'tokens/design/tenants', slug + '.json'),
       json(theme.designTokens(theme.tokens(spec).all))
     );
   const emails = path.join(root, 'communications/email-templates.js');
@@ -109,7 +106,7 @@ function baseTokenVars() {
   const vars = {};
   for (const file of ['colors', 'typography', 'spacing', 'effects', 'character']) {
     const css = fs
-      .readFileSync(path.join(designSystemRoot, 'tokens', file + '.css'), 'utf8')
+      .readFileSync(path.join(uiRoot, 'tokens', file + '.css'), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/@media[^{]*\{(?:[^{}]*\{[^}]*\})*[^}]*\}/g, '');
     for (const block of css.match(/:root(?:,\[data-density="comfortable"\])?\s*\{[^}]*\}/g) || [])

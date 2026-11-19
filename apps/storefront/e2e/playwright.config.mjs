@@ -15,7 +15,8 @@ const devSpecs = [
   'payment-live.spec.mjs',
   'shop-paging.spec.mjs',
   'refs.spec.mjs',
-  'attributes.spec.mjs'
+  'attributes.spec.mjs',
+  'ui-gallery.spec.mjs'
 ];
 const origin = build ? 'http://127.0.0.1:4173' : 'http://127.0.0.1:5173';
 const ci = !!process.env.CI;
