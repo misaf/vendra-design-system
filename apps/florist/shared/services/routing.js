@@ -54,7 +54,6 @@ export const VF_ROUTE_EXTRA = {
 export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 // The path the storefront app is served at, and whether a URL is one of its pages.
 export const vfAppBase = () => VF_SEO.appBase();
-export const vfLegacyAppBase = () => VF_SEO.legacyAppBase();
 export const vfInApp = url => VF_SEO.inApp(url);
 // This page's address as routes are written: path and query.
 export const vfCurrentUrl = () => vfLocation().pathname + vfLocation().search;

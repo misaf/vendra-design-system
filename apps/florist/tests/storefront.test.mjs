@@ -10,7 +10,7 @@ import {featureFiles, pageScript, sharedLogic} from './page-script.mjs';
 generate(true);
 // Sets the test page's address: a path under the app, with its query.
 function setAddress(ctx, url) {
-  const address = new URL(url, 'http://localhost/apps/storefront/app/');
+  const address = new URL(url, 'http://localhost/');
   ctx.location.pathname = address.pathname;
   ctx.location.search = address.search;
 }
@@ -32,9 +32,9 @@ function context() {
     setTimeout,
     clearTimeout,
     location: {
-      pathname: '/apps/storefront/app/',
+      pathname: '/',
       search: '',
-      href: 'http://localhost/apps/storefront/app/'
+      href: 'http://localhost/'
     },
     history: {
       pushState: (_, __, url) => history.push(['push', url]),
@@ -312,7 +312,7 @@ for (const folder of [
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();
-      setAddress(hc, '/apps/storefront/app/en/bag/?lines=VF-8RD5WN...2');
+      setAddress(hc, '/en/bag/?lines=VF-8RD5WN...2');
       vm.runInContext(sharedLogic, hc);
       vm.runInContext(script + '\nthis.Logic=Component;', hc);
       const handed = new hc.Logic({lang: 'en', tenant: 'default'});
@@ -322,7 +322,7 @@ for (const folder of [
         'a fresh visitor gets only the handed-over bag'
       );
       assert.deepEqual([...handHistory.at(-1)], ['replace', '/en/bag/'], 'the link is dropped');
-      setAddress(hc, '/apps/storefront/app/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
+      setAddress(hc, '/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
       const shortlisted = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
     }
@@ -445,11 +445,7 @@ for (const lang of ['en', 'fa']) {
     ['saved', 'ids=VF-3HX9TP'],
     ['bag', 'lines=VF-8RD5WN...2']
   ]) {
-    const {logic: site, ctx: c} = loadPage(
-      'site',
-      {lang},
-      `/apps/storefront/app/${lang}/${view}/?${handover}`
-    );
+    const {logic: site, ctx: c} = loadPage('site', {lang}, `/${lang}/${view}/?${handover}`);
     let stored;
     c.sessionStorage.setItem = (_, value) => {
       stored = value;
@@ -459,7 +455,7 @@ for (const lang of ['en', 'fa']) {
     c.window.addEventListener = c.document.addEventListener = () => {};
     site.lifecycle.didMount();
     assert.ok(stored, 'initial handover is saved on mount without an edit');
-    setAddress(c, `/apps/storefront/app/${lang}/${view}/`);
+    setAddress(c, `/${lang}/${view}/`);
     const restored = new c.Logic({lang});
     const plain = value => JSON.parse(JSON.stringify(value));
     assert.deepEqual(plain(restored.state.saved), plain(site.state.saved));
@@ -480,7 +476,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage(
     'site',
     {lang},
-    '/apps/storefront/app/' + lang + '/shop/bouquets/?filters=roses&sort=low'
+    '/' + lang + '/shop/bouquets/?filters=roses&sort=low'
   );
   const entries = [];
   for (const method of ['pushState', 'replaceState'])
@@ -505,7 +501,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(reloaded.renderVals().store.searchReturn.sort, 'low');
   c.history.state = {vfSearchReturn: 'https://example.com/'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
-  c.history.state = {vfSearchReturn: '/apps/storefront/app/search/?q=loop'};
+  c.history.state = {vfSearchReturn: '/en/search/?q=loop'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
 
   const calls = [];
@@ -704,18 +700,16 @@ for (const lang of ['en', 'fa']) {
 {
   const {ctx: c} = context();
   vm.runInContext(sharedLogic + '\nthis.read=vfReadRoute;this.params=vfRouteUrl;', c);
-  const route = c.read(
-    '/apps/storefront/app/en/product/VF-7K2M4Q/?size=classic&addons=vase,card,vase'
-  );
+  const route = c.read('/en/product/VF-7K2M4Q/?size=classic&addons=vase,card,vase');
   assert.equal(route.size, 'classic');
   assert.deepEqual(Array.from(route.addons), ['card', 'vase']);
   const restored = c.read(c.params(route));
   assert.equal(restored.size, route.size);
   assert.deepEqual(Array.from(restored.addons), ['card', 'vase']);
-  const invalid = c.read('/apps/storefront/app/product/VF-8RD5WN/?size=huge&addons=vase,unknown');
+  const invalid = c.read('/en/product/VF-8RD5WN/?size=huge&addons=vase,unknown');
   assert.equal(invalid.size, null);
   assert.deepEqual(Array.from(invalid.addons), []);
-  const badSize = c.read('/apps/storefront/app/product/VF-7K2M4Q/?size=huge&addons=unknown');
+  const badSize = c.read('/en/product/VF-7K2M4Q/?size=huge&addons=unknown');
   assert.equal(badSize.size, 'petite');
   assert.deepEqual(Array.from(badSize.addons), []);
   const {logic} = loadPage('product', {routeInfo: route});
@@ -800,7 +794,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: shop} = loadPage(
     'shop',
     {lang, go: r => (next = r)},
-    '/apps/storefront/app/shop/bouquets/?sort=low&filters=under3,same'
+    '/en/shop/bouquets/?sort=low&filters=under3,same'
   );
   let v = shop.renderVals();
   assert.equal(v.items.length, 2);
@@ -1018,7 +1012,7 @@ console.log('Passed: no view lays out from a JavaScript breakpoint.');
 // A bag kept from an earlier visit is priced from the current catalog when it opens and again
 // before delivery and payment; each changed line says so and the totals follow the new prices.
 for (const lang of ['en', 'fa']) {
-  const {logic: first, ctx: c} = loadPage('site', {lang}, `/apps/storefront/app/${lang}/bag/`);
+  const {logic: first, ctx: c} = loadPage('site', {lang}, `/${lang}/bag/`);
   const plain = value => JSON.parse(JSON.stringify(value));
   const money = value => vm.runInContext('VF_MONEY', c)(value, lang === 'fa');
   const current = plain(first.state.bag);
@@ -1035,11 +1029,11 @@ for (const lang of ['en', 'fa']) {
     to: current[0].unit
   });
   // Unseen price changes keep a direct checkout visit and an order on the bag.
-  setAddress(c, `/apps/storefront/app/${lang}/checkout/`);
+  setAddress(c, `/${lang}/checkout/`);
   const direct = new c.Logic({lang});
   assert.equal(direct.state.route, 'bag');
   assert.equal(direct.state.routeInfo.step, 'bag', 'a direct checkout visit opens the bag notices');
-  setAddress(c, `/apps/storefront/app/${lang}/bag/`);
+  setAddress(c, `/${lang}/bag/`);
   let unseenRoute;
   const {logic: unseen} = loadPage('checkout', {
     lang,
@@ -1298,10 +1292,10 @@ for (const lang of ['en', 'fa']) {
 
   const readRoute = vm.runInContext('vfReadRoute', c);
   const writeRoute = vm.runInContext('vfRouteUrl', c);
-  const route = readRoute(`/apps/storefront/app/${lang}/product/VF-7K2M4Q/?date=2026-10-06`);
+  const route = readRoute(`/${lang}/product/VF-7K2M4Q/?date=2026-10-06`);
   assert.equal(route.date, '2026-10-06');
   assert.equal(readRoute(writeRoute(route)).date, route.date);
-  assert.equal(readRoute('/apps/storefront/app/product/VF-7K2M4Q/?date=2026-02-31').date, '');
+  assert.equal(readRoute('/en/product/VF-7K2M4Q/?date=2026-02-31').date, '');
   const {logic: product} = loadPage('product', {
     lang,
     routeInfo: route,
@@ -1668,17 +1662,11 @@ console.log(
     assert.equal(profile.renderVals().saveError, '');
     assert.ok(profile.state.notice);
     assert.equal(vm.runInContext("vfAccountLoad('09120000000').profile.name", pc), 'Keep my input');
-    const route = vm.runInContext(
-      'vfReadRoute',
-      pc
-    )(`/apps/storefront/app/${lang}/account/?tab=balance&next=checkout`);
+    const route = vm.runInContext('vfReadRoute', pc)(`/${lang}/account/?tab=balance&next=checkout`);
     assert.equal(route.next, 'checkout');
     assert.ok(vm.runInContext('vfRouteUrl', pc)(route).includes('next=checkout'));
     assert.equal(
-      vm.runInContext(
-        'vfReadRoute',
-        pc
-      )('/apps/storefront/app/account/?tab=balance&next=https://example.com').next,
+      vm.runInContext('vfReadRoute', pc)('/en/account/?tab=balance&next=https://example.com').next,
       undefined
     );
     const returning = loadPage('account', {
@@ -2066,14 +2054,8 @@ for (const lang of ['en', 'fa']) {
   assert.equal(reload.qty, 2);
   assert.ok(reload.addons.some(addon => addon.on));
   assert.equal(restored.date, '2026-10-21');
-  assert.equal(
-    vm.runInContext('vfReadRoute', c)('/apps/storefront/app/product/VF-7K2M4Q/?qty=-1').qty,
-    1
-  );
-  assert.equal(
-    vm.runInContext('vfReadRoute', c)('/apps/storefront/app/product/VF-7K2M4Q/?qty=Infinity').qty,
-    1
-  );
+  assert.equal(vm.runInContext('vfReadRoute', c)('/en/product/VF-7K2M4Q/?qty=-1').qty, 1);
+  assert.equal(vm.runInContext('vfReadRoute', c)('/en/product/VF-7K2M4Q/?qty=Infinity').qty, 1);
   const scarce = loadPage('product', {
     lang,
     routeInfo: {view: 'product', id: 'VF-9FA2KE', qty: 99}
@@ -2082,7 +2064,7 @@ for (const lang of ['en', 'fa']) {
 }
 console.log('Passed product size, extras, quantity and delivery-date URL recovery.');
 {
-  const {logic: product, ctx: c} = loadPage('product', {}, '/apps/storefront/app/en/?page=product');
+  const {logic: product, ctx: c} = loadPage('product', {}, '/en/?page=product');
   c.history.replaceState = (_, __, url) => setAddress(c, url);
   product.renderVals().setSize('generous');
   product.renderVals().setQty(2);
@@ -2192,14 +2174,12 @@ Promise.all([
     assert.ok(ids.includes(next), old + ' moves to a listed post');
     for (const lang of ['en', 'fa'])
       assert.equal(
-        vfReadRoute(`/apps/storefront/app/${lang}/journal/${old}/`).post,
+        vfReadRoute(`/${lang}/journal/${old}/`).post,
         next,
         old + ' opens ' + next + ' in ' + lang
       );
     assert.ok(
-      nginx.includes(
-        `rewrite ^/(?:apps/storefront/app/)?(en|fa)/journal/${old}/?$ /$1/journal/${next}/ permanent;`
-      ),
+      nginx.includes(`rewrite ^/(en|fa)/journal/${old}/?$ /$1/journal/${next}/ permanent;`),
       'nginx redirects ' + old + ' to ' + next
     );
   }

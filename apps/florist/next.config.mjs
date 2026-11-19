@@ -12,12 +12,9 @@ export default function config(phase) {
       ? {output: 'export'}
       : {
           async redirects() {
-            const destination = '/' + VF_STORE.languages[0] + '/';
-            return ['/', '/apps/storefront/app/'].map(source => ({
-              source,
-              destination,
-              permanent: false
-            }));
+            return [
+              {source: '/', destination: '/' + VF_STORE.languages[0] + '/', permanent: false}
+            ];
           }
         }),
     distDir: demo ? 'next/out' : dev ? '.next' : '.next-live',

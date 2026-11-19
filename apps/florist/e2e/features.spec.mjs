@@ -303,9 +303,7 @@ test('the delivery pin is required and travels with the order', async ({page}) =
   await next.click();
   await expect(page.locator('#vf-last4')).toBeVisible();
   const location = await page.evaluate(
-    () =>
-      JSON.parse(sessionStorage.getItem('vendra-template:/apps/storefront/app/') || '{}').delivery
-        ?.location
+    () => JSON.parse(sessionStorage.getItem('vendra-template:/') || '{}').delivery?.location
   );
   expect(location).toEqual({lat: expect.any(Number), lng: expect.any(Number)});
 });
@@ -2259,7 +2257,7 @@ test('scanning a design’s tag opens it full screen', async ({page}) => {
     // @ts-ignore
     window.BarcodeDetector = class {
       async detect() {
-        return [{rawValue: location.origin + '/apps/storefront/app/en/product/VF-8RD5WN/'}];
+        return [{rawValue: location.origin + '/en/product/VF-8RD5WN/'}];
       }
     };
   });

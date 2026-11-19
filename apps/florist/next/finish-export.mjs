@@ -9,15 +9,13 @@ import {storefrontSitemap} from '../build/routes.mjs';
 const out = join(import.meta.dirname, 'out');
 const base = (process.env.VF_BASE_PATH || '') + '/';
 const origin = process.env.VF_ORIGIN || '';
-const legacyApp = 'apps/storefront/app/';
 const lang = VF_STORE.languages[0];
 await copyFile(join(out, lang, '_fallback', 'index.html'), join(out, '404.html'));
 
-for (const directory of ['', legacyApp]) {
-  const destination = base + lang + '/';
-  await writeFile(
-    join(out, directory, 'index.html'),
-    `<!doctype html>
+const destination = base + lang + '/';
+await writeFile(
+  join(out, 'index.html'),
+  `<!doctype html>
 <html lang="${lang}">
 <meta charset="utf-8">
 <title>Vendra Florist</title>
@@ -30,8 +28,7 @@ location.replace(target.href);
 <a href="${destination}">Open the Vendra storefront</a>
 </html>
 `
-  );
-}
+);
 
 vfServerRender({url: base, base, origin});
 await writeFile(join(out, 'sitemap.xml'), storefrontSitemap(origin));
@@ -43,15 +40,13 @@ await writeFile(
 const staticFiles = (await readdir(join(out, '_next', 'static'), {recursive: true})).filter(name =>
   /\.(js|css|woff2?)$/.test(name)
 );
-for (const directory of ['', legacyApp]) {
-  await copyFile(join(import.meta.dirname, '..', 'shell', 'sw.js'), join(out, directory, 'sw.js'));
-  await writeFile(
-    join(out, directory, 'offline-manifest.json'),
-    JSON.stringify([
-      ...VF_STORE.languages.map(code => base + directory + code + '/presentation/'),
-      ...staticFiles.map(name => base + '_next/static/' + name)
-    ])
-  );
-}
+await copyFile(join(import.meta.dirname, '..', 'shell', 'sw.js'), join(out, 'sw.js'));
+await writeFile(
+  join(out, 'offline-manifest.json'),
+  JSON.stringify([
+    ...VF_STORE.languages.map(code => base + code + '/presentation/'),
+    ...staticFiles.map(name => base + '_next/static/' + name)
+  ])
+);
 await writeFile(join(out, '.nojekyll'), '');
 await precompress(out);

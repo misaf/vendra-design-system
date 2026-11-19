@@ -325,7 +325,7 @@ function page(name, c, props = {}) {
   assert.equal(normalized.d, 14);
   const next = c.vfReminderNext({occ: 'valentine', cal: 'j', m: 1, d: 1}, new Date(2026, 1, 13));
   assert.equal(next.days, 1);
-  const route = c.vfReadRoute('/apps/storefront/app/fa/shop/?min=NaN&max=-5&stock=1');
+  const route = c.vfReadRoute('/fa/shop/?min=NaN&max=-5&stock=1');
   assert.equal(route.min, 0);
   assert.equal(route.max, 0);
   assert.equal(route.stock, true);
@@ -659,11 +659,11 @@ function page(name, c, props = {}) {
     assert.deepEqual(json(home.tabs.map(tab => tab.id)), ['home', 'shop', 'bag']);
     // Routes: its pages are gone, English opens in Persian, the same-day filter is dropped.
     const route = search => json(store.vfReadRoute(search));
-    assert.equal(route('/apps/storefront/app/weddings/').view, 'notfound');
-    assert.equal(route('/apps/storefront/app/journal/').view, 'notfound');
-    assert.equal(route('/apps/storefront/app/journal/morning-at-the-studio/').view, 'notfound');
-    assert.equal(route('/apps/storefront/app/en/faq/').lang, 'fa');
-    assert.deepEqual(route('/apps/storefront/app/shop/?filters=same,roses').filters, ['roses']);
+    assert.equal(route('/en/weddings/').view, 'notfound');
+    assert.equal(route('/en/journal/').view, 'notfound');
+    assert.equal(route('/en/journal/morning-at-the-studio/').view, 'notfound');
+    assert.equal(route('/en/faq/').lang, 'fa');
+    assert.deepEqual(route('/en/shop/?filters=same,roses').filters, ['roses']);
     // No same-day delivery: the first day is tomorrow, and nothing says "same day".
     assert.equal(store.vfDeliveryDays('central')[0].offset, 1);
     assert.equal(store.vfDeliveryHint(store.vfZone('central'), false), '');

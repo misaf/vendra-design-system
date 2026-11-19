@@ -65,16 +65,8 @@ export const VF_SEO = (() => {
     const base = vfAssetBase();
     return /^(\/|\w+:)/.test(base) ? new URL(base, vfLocation()).pathname : '/';
   };
-  const legacyAppBase = () => appBase() + 'apps/storefront/app/';
-  const canonicalPath = pathname => {
-    const legacy = legacyAppBase();
-    return pathname.startsWith(legacy) ? appBase() + pathname.slice(legacy.length) : pathname;
-  };
-  // Keep accepting previously published links, including older links without a language segment.
   const routeSuffix = pathname => {
     const root = appBase();
-    const legacy = legacyAppBase();
-    if (pathname.startsWith(legacy)) return pathname.slice(legacy.length);
     if (pathname === root || pathname === root + 'index.html') return '';
     if (!pathname.startsWith(root)) return null;
     const suffix = pathname.slice(root.length);
@@ -298,8 +290,6 @@ export const VF_SEO = (() => {
     register,
     setNumeric,
     appBase,
-    legacyAppBase,
-    canonicalPath,
     inApp,
     readRoute,
     routePath,

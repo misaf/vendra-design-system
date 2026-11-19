@@ -17,9 +17,9 @@ function presentation(settings = {}) {
     },
     navigator: {},
     location: {
-      pathname: '/apps/storefront/app/',
+      pathname: '/',
       search: '',
-      href: 'http://localhost/apps/storefront/app/'
+      href: 'http://localhost/'
     },
     localStorage: {
       getItem: key => (key === 'vf-presentation' ? JSON.stringify(settings) : null),

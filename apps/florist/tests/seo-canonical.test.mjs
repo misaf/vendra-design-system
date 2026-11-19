@@ -41,8 +41,7 @@ const cases = {
     'en/shop/boxes/',
     false
   ],
-  'apps/storefront/app/shop/': ['en/shop/', true],
-  'apps/storefront/app/shop/boxes/?tenant=default&utm_source=mail': ['en/shop/boxes/', true],
+  'en/shop/boxes/?tenant=default&utm_source=mail': ['en/shop/boxes/', true],
   'en/shop/?demo=loading': ['en/shop/', false],
   'fa/product/VF-7K2M4Q/?qty=2&size=generous&date=2026-11-10': ['fa/product/VF-7K2M4Q/', true],
   'en/journal/?page=2': ['en/journal/?page=2', true],

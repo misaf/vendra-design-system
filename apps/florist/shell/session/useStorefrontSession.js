@@ -26,19 +26,17 @@ import {vfPageTenant} from '../../shared/services/page-lifecycle.js';
 import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,
-  vfLegacyAppBase,
+  vfAppBase,
   vfInApp,
   vfReadRoute,
   vfRouteUrl
 } from '../../shared/services/routing.js';
 import {vfOnServer, vfStoredValue} from '../../shared/platform/environment.js';
-import {VF_SEO} from '../../shared/services/seo.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
-// Retain bags and delivery state saved before the URL migration.
-const VF_SESSION = 'vendra-template:' + vfLegacyAppBase();
+const VF_SESSION = 'vendra-template:' + vfAppBase();
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.
 function vfCheckoutBlocked(state) {
   return (
@@ -457,8 +455,7 @@ export function useStorefrontSession(props) {
         requested.lines ||
         requested.ids ||
         (['product', 'post'].includes(requested.view) &&
-          VF_SEO.canonicalPath(new URL(address, location.href).pathname) !==
-            new URL(canonical, location.href).pathname)
+          new URL(address, location.href).pathname !== new URL(canonical, location.href).pathname)
       )
         page.navigate(initial.routeInfo, true);
     };

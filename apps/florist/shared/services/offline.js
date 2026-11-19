@@ -1,5 +1,5 @@
 import {vfRuntime} from '../platform/runtime.js';
-import {vfAppBase, vfLegacyAppBase} from './routing.js';
+import {vfAppBase} from './routing.js';
 
 function mapPhotoSources(photo, map) {
   const mapSet = value =>
@@ -66,9 +66,7 @@ export function vfKeepOffline(
     report({status: 'preparing', completed: 0, total: 0});
     try {
       // The worker sits at the app's path, whichever page registers it, so it serves every page.
-      const legacyBase = vfLegacyAppBase();
-      const base = location.pathname.startsWith(legacyBase) ? legacyBase : vfAppBase();
-      await navigator.serviceWorker.register(base + 'sw.js', {
+      await navigator.serviceWorker.register(vfAppBase() + 'sw.js', {
         updateViaCache: 'none'
       });
       const registration = await navigator.serviceWorker.ready;

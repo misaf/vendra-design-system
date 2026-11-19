@@ -7,9 +7,8 @@
 const sw = /** @type {any} */ (self);
 // Cache each localized presentation document.
 // The file cache has a fixed limit, so a tablet that runs for months does not fill up.
-const SCOPE = new URL(sw.registration.scope).pathname;
-const ROOT = SCOPE.replace(/apps\/storefront\/app\/$/, '');
-const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
+const ROOT = new URL(sw.registration.scope).pathname;
+const CACHE_PREFIX = 'vf-' + encodeURIComponent(ROOT);
 const PAGES = CACHE_PREFIX + '-pages-next-v1';
 const FILES = CACHE_PREFIX + '-files-next-v1';
 const FILES_MAX = 400;
@@ -20,7 +19,7 @@ const FILE = /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/i;
 const PHOTO = /\.(svg|png|jpe?g|webp|avif)$/i;
 const immutable = url => url.pathname.startsWith(ROOT + '_next/static/');
 const displayDocument = pathname =>
-  pathname.startsWith(SCOPE) && /^[a-z-]+\/presentation\/$/.test(pathname.slice(SCOPE.length));
+  pathname.startsWith(ROOT) && /^[a-z-]+\/presentation\/$/.test(pathname.slice(ROOT.length));
 const noStore = response =>
   /(?:^|,)\s*no-store\s*(?:,|$)/i.test(response.headers.get('Cache-Control') || '');
 
