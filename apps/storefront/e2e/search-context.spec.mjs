@@ -16,6 +16,7 @@ for (const lang of ['en', 'fa']) {
     const origin = params(page);
     await headerSearch(page).click();
     const field = page.getByRole('searchbox');
+    await expect(field).toBeVisible();
     const length = await page.evaluate(() => history.length);
     await field.pressSequentially('VF-8RD5WN');
     await expect(field).toHaveValue('VF-8RD5WN');

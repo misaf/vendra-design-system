@@ -151,23 +151,30 @@ export function useBag(props) {
     };
   });
   useStorefrontPage(page);
+  const openBag = () => {
+    page._prefillSender();
+    const st = page.props.store;
+    // Prices repriced before the bag opened (on loading the session, or by checkout) are announced
+    // here too, beside any found now.
+    if (!page._reprice().length) {
+      const pending = (st ? st.priceChanges : page.state.priceChanges) || {};
+      const changes = Object.entries(pending).map(([id, change]) => ({id, ...change}));
+      if (changes.length) page._announcePrices(changes);
+    }
+    const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
+    if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
+      vfRuntime.track.event('view_cart', {
+        items: vfLineItems(lines),
+        value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
+      });
+  };
   useLifecycle(page, {
     didMount() {
-      page._prefillSender();
-      const st = page.props.store;
-      // Prices repriced before the bag opened (on loading the session, or by checkout) are announced
-      // here too, beside any found now.
-      if (!page._reprice().length) {
-        const pending = (st ? st.priceChanges : page.state.priceChanges) || {};
-        const changes = Object.entries(pending).map(([id, change]) => ({id, ...change}));
-        if (changes.length) page._announcePrices(changes);
-      }
-      const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
-      if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
-        vfRuntime.track.event('view_cart', {
-          items: vfLineItems(lines),
-          value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
-        });
+      // The exported bag mounts before the browser's saved bag has been restored.
+      if (page.props.ready !== false) openBag();
+    },
+    didUpdate(previous) {
+      if (previous.ready === false && page.props.ready) openBag();
     },
     willUnmount() {
       clearTimeout(page._priceTimer);

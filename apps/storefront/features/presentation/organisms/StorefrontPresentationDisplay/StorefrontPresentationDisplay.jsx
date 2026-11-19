@@ -1,6 +1,44 @@
 import React from 'react';
 import * as DS from '../../../../shell/ds.js';
 
+function DisplayPhoto({product, onLoaded, onFailed, ...props}) {
+  const ref = React.useRef(null);
+  const reported = React.useRef('');
+  const report = image => {
+    const src = image.currentSrc || image.src;
+    const key = product.imageKey + ':' + src;
+    if (reported.current === key) return;
+    reported.current = key;
+    if (!image.naturalWidth) {
+      onFailed(product.imageKey);
+      return;
+    }
+    Promise.resolve(image.decode?.()).then(
+      () => {
+        if (ref.current === image && reported.current === key) onLoaded(product.imageKey);
+      },
+      () => {
+        if (ref.current === image && reported.current === key) onFailed(product.imageKey);
+      }
+    );
+  };
+  // The browser can finish a prerendered photo before React attaches its event handlers.
+  React.useEffect(() => {
+    const image = ref.current;
+    if (image?.complete) report(image);
+  }, [product.imageKey]);
+  return (
+    <DS.Picture
+      {...props}
+      ref={ref}
+      image={product.image}
+      priority
+      onLoad={event => report(event.currentTarget)}
+      onError={event => report(event.currentTarget)}
+    />
+  );
+}
+
 export function StorefrontPresentationDisplay({
   mode,
   direction,
@@ -17,13 +55,6 @@ export function StorefrontPresentationDisplay({
   onPrevious,
   onOpenTools
 }) {
-  const loaded = (event, key) => {
-    const image = event.currentTarget;
-    Promise.resolve(image.decode ? image.decode() : undefined).then(
-      () => onLoaded(key),
-      () => onFailed(key)
-    );
-  };
   const [controls, setControls] = React.useState(false);
   const timer = React.useRef(null);
   const pointer = React.useRef(null);
@@ -92,13 +123,12 @@ export function StorefrontPresentationDisplay({
                   <DS.Icon name="image" size={48} />
                 </div>
               ) : (
-                <DS.Picture
-                  image={product.image}
-                  priority
+                <DisplayPhoto
+                  product={product}
                   sizes={products.length > 1 ? '50vw' : '100vw'}
                   draggable={false}
-                  onLoad={event => loaded(event, product.imageKey)}
-                  onError={() => onFailed(product.imageKey)}
+                  onLoaded={onLoaded}
+                  onFailed={onFailed}
                   className="vf-display-photo"
                 />
               )}
@@ -123,14 +153,13 @@ export function StorefrontPresentationDisplay({
       )}
       <div className="vf-display-preload" aria-hidden="true">
         {preloadProducts.map(product => (
-          <DS.Picture
+          <DisplayPhoto
             key={product.imageKey + ':' + preloadVersion}
-            image={product.image}
+            product={product}
             alt=""
-            priority
             sizes={products.length > 1 ? '50vw' : '100vw'}
-            onLoad={event => loaded(event, product.imageKey)}
-            onError={() => onFailed(product.imageKey)}
+            onLoaded={onLoaded}
+            onFailed={onFailed}
           />
         ))}
       </div>

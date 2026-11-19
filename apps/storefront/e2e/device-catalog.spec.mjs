@@ -38,8 +38,7 @@ for (const lang of ['en', 'fa']) {
     expect(cat).toBeTruthy();
     await finish(page, lang, info, category);
     await tap(category);
-    expect(params(page).get('view')).toBe('shop');
-    expect(params(page).get('cat')).toBe(cat);
+    await expect.poll(() => routeOf(page.url())).toMatchObject({view: 'shop', cat});
     await expect(page.locator('main h1')).toBeFocused();
     const product = page.locator('.vf-shop-product-grid .ag-product__link').first();
     const id = routeOf(await product.getAttribute('href')).id;

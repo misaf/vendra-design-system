@@ -199,19 +199,41 @@ for (const lang of ['en', 'fa']) {
   });
 }
 
-test('failed photos use a quiet fallback and can be retried by the seller', async ({page}) => {
-  await page.route('**/assets/products/**', route => route.abort());
-  await openSite(page, 'presentation', 'en');
-  await expect(page.locator('.vf-display-photo-fallback')).toBeVisible();
-  await expect(page.getByRole('alert')).toHaveCount(0);
-  await page.locator('.vf-display').press('Enter');
-  await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
-  await expect(page.getByRole('alert')).toContainText('Some photos could not load.');
-  await page.unroute('**/assets/products/**');
-  await page.getByRole('button', {name: 'Retry photos', exact: true}).click();
-  await page.keyboard.press('Escape');
-  await expect(page.locator('.vf-display-photo')).toBeVisible();
-  await expect(page.locator('.vf-display-photo-fallback')).toHaveCount(0);
+test.describe('photo recovery', () => {
+  // The production service worker precaches product photos and bypasses page.route.
+  test.use({serviceWorkers: 'block'});
+
+  test('failed photos use a quiet fallback and can be retried by the seller', async ({page}) => {
+    await page.route('**/assets/products/**', route => route.abort());
+    await openSite(page, 'presentation', 'en');
+    await expect(page.locator('.vf-display-photo-fallback')).toBeVisible();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    await page.locator('.vf-display').press('Enter');
+    await page.getByRole('button', {name: 'Seller tools', exact: true}).click();
+    await expect(page.getByRole('alert')).toContainText('Some photos could not load.');
+    await page.unroute('**/assets/products/**');
+    await page.getByRole('button', {name: 'Retry photos', exact: true}).click();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.vf-display-photo')).toBeVisible();
+    await expect(page.locator('.vf-display-photo-fallback')).toHaveCount(0);
+  });
+
+  test('automatic playback skips a failed product photo without freezing the collection', async ({
+    page
+  }) => {
+    await page.clock.install();
+    await page.addInitScript(() =>
+      localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv', slideSeconds: 6}))
+    );
+    await page.route('**/assets/products/pink-bouquet*', route => route.abort());
+    await openSite(page, 'presentation', 'en');
+    await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
+    await expect(page.locator('.vf-display-preload img[src*="pink-bouquet"]')).toHaveCount(0);
+    await page.clock.runFor(6100);
+    await expect(page.locator('.vf-display-code')).toHaveText('VF-8RD5WN');
+    await page.locator('.vf-display').press('Enter');
+    await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
+  });
 });
 
 test('pointer use of seller tools returns to a completely quiet display', async ({page}) => {
@@ -283,22 +305,6 @@ test('seller setup saves named collections and exports only display preferences'
       () => JSON.parse(localStorage.getItem('vf-presentation-collections'))[0].name
     )
   ).toBe('Window display');
-});
-
-test('automatic playback skips a failed product photo without freezing the collection', async ({
-  page
-}) => {
-  await page.clock.install();
-  await page.addInitScript(() =>
-    localStorage.setItem('vf-presentation', JSON.stringify({displayMode: 'tv', slideSeconds: 6}))
-  );
-  await page.route('**/assets/products/pink-bouquet*', route => route.abort());
-  await openSite(page, 'presentation', 'en');
-  await expect(page.locator('.vf-display-code')).toHaveText('VF-7K2M4Q');
-  await page.clock.runFor(6100);
-  await expect(page.locator('.vf-display-code')).toHaveText('VF-8RD5WN');
-  await page.locator('.vf-display').press('Enter');
-  await expect(page.getByRole('dialog', {name: 'Seller tools', exact: true})).toBeVisible();
 });
 
 for (const lang of ['en', 'fa']) {

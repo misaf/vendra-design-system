@@ -200,17 +200,19 @@ export function StorefrontScreen({children, view, fallbackLang, initialTags, add
     tenant,
     go,
     store,
+    ready: values.ready,
     setLang,
     updateHead
   };
   const key = ['account', 'bag', 'checkout', 'track'].includes(name) ? store.customerId : undefined;
   const Alternate = alternateScreens[name];
+  const useAlternate = !(view === name && children) && Alternate;
   const screen = Preview ? (
     <Preview lang={vfLanguage(preview.lang || lang)} updateHead={updateHead} />
-  ) : (view === name && children) || !Alternate ? (
-    children
-  ) : (
+  ) : useAlternate ? (
     <Alternate />
+  ) : (
+    children
   );
   return (
     <VendraProvider locale={vfLocale(lang).tag} navigate={values.routerNavigate}>
@@ -234,11 +236,12 @@ export function StorefrontScreen({children, view, fallbackLang, initialTags, add
       )}
       {values.integrationError && <Alert tone="danger" title={values.integrationErrorText} />}
       <PageBoundary view={name}>
-        <Suspense fallback={null}>
-          <StorefrontPageContext.Provider value={Preview ? null : pageProps}>
-            <Fragment key={key}>{screen}</Fragment>
-          </StorefrontPageContext.Provider>
-        </Suspense>
+        <StorefrontPageContext.Provider value={Preview ? null : pageProps}>
+          <Fragment key={key}>
+            {/* Keep native route content in the initial HTML's visible shell. */}
+            {Preview || useAlternate ? <Suspense fallback={null}>{screen}</Suspense> : screen}
+          </Fragment>
+        </StorefrontPageContext.Provider>
       </PageBoundary>
     </VendraProvider>
   );
