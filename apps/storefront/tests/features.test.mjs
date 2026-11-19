@@ -88,6 +88,14 @@ const lines = [
   {unit: 3_400_000, qty: 1}
 ];
 const totals = ctx.vfTotals(lines, {zone: 'central', promo: 'ROSES15'});
+const summaryLabels = {
+  sub: 'Subtotal',
+  discount: 'Discount',
+  balanceDiscount: 'Balance discount · {percent}%',
+  fee: 'Delivery',
+  free: 'Free',
+  total: 'Total'
+};
 assert.equal(totals.discount, 1_245_000);
 assert.equal(
   totals.total,
@@ -99,23 +107,13 @@ assert.equal(
   0,
   'a code below its minimum gives nothing'
 );
-const rows = ctx.vfSummaryRows(
-  totals,
-  'roses15',
-  {sub: 'Subtotal', discount: 'Discount', fee: 'Delivery', free: 'Free', total: 'Total'},
-  v => String(v)
-);
+const rows = ctx.vfSummaryRows(totals, 'roses15', summaryLabels, String);
 assert.deepEqual(
   [...rows.map(r => r.label)],
   ['Subtotal', 'Discount · ROSES15', 'Delivery', 'Total']
 );
 assert.equal(
-  ctx.vfSummaryRows(
-    ctx.vfTotals(lines, {zone: 'central'}),
-    '',
-    {sub: 'S', fee: 'F', free: '0', total: 'T'},
-    String
-  ).length,
+  ctx.vfSummaryRows(ctx.vfTotals(lines, {zone: 'central'}), '', summaryLabels, String).length,
   3
 );
 
@@ -449,6 +447,23 @@ const plainTotals = ctx.vfTotals(bag, {zone: 'central'});
 const balanceTotals = ctx.vfTotals(bag, {zone: 'central'}, 150_000_000);
 assert.equal(balanceTotals.balanceDiscount, 140_000);
 assert.equal(balanceTotals.total, plainTotals.total - 140_000, 'delivery is not discounted');
+const persianNumber = new Intl.NumberFormat('fa-IR').format;
+const persianRows = ctx.vfSummaryRows(
+  balanceTotals,
+  '',
+  {
+    sub: 'جمع کالاها',
+    discount: 'تخفیف',
+    balanceDiscount: 'تخفیف کیف پول، ٪{percent}',
+    fee: 'ارسال',
+    free: 'رایگان',
+    total: 'مبلغ نهایی'
+  },
+  persianNumber,
+  persianNumber
+);
+assert.equal(persianRows[1].label, 'تخفیف کیف پول، ٪۵');
+assert.equal(persianRows[1].value, '−\u2068۱۴۰٬۰۰۰\u2069');
 assert.equal(ctx.vfTotals(bag, {zone: 'central'}, 99_000_000).balanceDiscount, undefined);
 assert.equal(
   ctx.vfTotals(bag, {zone: 'central', promo: 'WELCOME10'}, 150_000_000).balanceDiscount,

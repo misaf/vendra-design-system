@@ -118,8 +118,8 @@ export interface SummaryRow {
 export interface SummaryLabels {
   sub: string;
   discount: string;
-  /** e.g. 'Balance discount · {percent}%'. */
-  balanceDiscount?: string;
+  /** Localized label template with a {percent} placeholder for the formatted percentage. */
+  balanceDiscount: string;
   fee: string;
   free: string;
   total: string;

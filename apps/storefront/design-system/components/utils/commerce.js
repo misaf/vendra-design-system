@@ -352,8 +352,7 @@ const totals = (lines, {zone, promo, balance = null}, rules) => {
   };
 };
 
-// Order summary rows; discounts sit under the subtotal. labels.balanceDiscount reads like
-// 'Balance discount · {percent}%'.
+// Order summary rows; discounts sit under the subtotal. The caller localizes the labels.
 const summaryRows = (result, code, labels, money, num = String) => [
   {label: labels.sub, value: money(result.sub)},
   ...(result.discount
@@ -367,10 +366,7 @@ const summaryRows = (result, code, labels, money, num = String) => [
   ...(result.balanceDiscount
     ? [
         {
-          label: (labels.balanceDiscount || 'Balance discount · {percent}%').replace(
-            '{percent}',
-            num(result.balancePercent)
-          ),
+          label: labels.balanceDiscount.replace('{percent}', num(result.balancePercent)),
           value: '−⁨' + money(result.balanceDiscount) + '⁩'
         }
       ]
