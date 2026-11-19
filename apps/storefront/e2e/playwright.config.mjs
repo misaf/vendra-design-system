@@ -7,6 +7,8 @@ import {fileURLToPath} from 'node:url';
 // The Next.js development server serves guideline and component fixtures and lets tests
 // configure a sample store. The remaining storefront tests use the production export.
 const build = process.env.E2E_TARGET !== 'dev';
+// Give the export and its font-budget tests the same clock, even across the delivery cutoff.
+if (build) process.env.VF_RENDER_TIME ??= String(Date.now());
 const devSpecs = [
   'cards.spec.mjs',
   'package.spec.mjs',
