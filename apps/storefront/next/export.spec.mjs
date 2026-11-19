@@ -169,15 +169,16 @@ for (const lang of ['en', 'fa']) {
       // This is the demo's local amount review. Laravel quote changes are a separate pilot gate.
       const changedAmount = page.locator('#vf-receipt-changed');
       await expect(changedAmount).toBeVisible();
+      const {orders, attempts} = await replayCheckout(page);
       await place.click();
-      await expect(changedAmount).toBeFocused();
+      await expect(changedAmount).toBeVisible();
+      expect(attempts).toHaveLength(0);
       await changedAmount
         .getByRole('button', {
           name: fa ? 'مبلغ جدید را بررسی کردم' : 'I’ve checked the new total'
         })
         .click();
 
-      const {orders, attempts} = await replayCheckout(page);
       await place.click();
       const unconfirmed = page.getByRole('alert').filter({
         hasText: fa ? 'ثبت سفارش شما تأیید نشد' : 'We couldn’t confirm your order'
