@@ -14,7 +14,7 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 
 ## Every change
 
-1. Edit the sources: `apps/storefront/design-system/components/`, `apps/storefront/design-system/tokens/`, `apps/storefront/`, `guidelines/`. Never edit `apps/storefront/design-system/tokens/design/`, `apps/storefront/_runtime/` or a tenant's generated `.css`: the build writes them.
+1. Edit the sources: `apps/storefront/design-system/components/`, `packages/ui/tokens/`, `apps/storefront/`, `guidelines/`. Never edit `packages/ui/tokens/design/`, `apps/storefront/_runtime/` or a tenant's generated `.css`: the build writes them.
 2. `npm --prefix apps/storefront run format`, then `npm run build`.
 3. `npm run check`: generated files match their sources, Prettier, and the CSS lint (colours only from tokens, start/end instead of left/right).
 4. `npm test`: types, storefront logic, copy parity, the package's server render, its size budget and the API contract.
@@ -64,4 +64,4 @@ The storefront's data has the shape of the Vendra API (`uploads/openapi-*.json`)
 
 ## Tenants
 
-A new or changed theme in `apps/storefront/design-system/tokens/tenants/*.json` must pass the seven Theme builder checks and the Colors → Contrast card; see [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md).
+A new or changed theme in `packages/ui/tokens/tenants/*.json` must pass the seven Theme builder checks and the Colors → Contrast card; see [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md).

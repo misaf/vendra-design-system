@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
 import {layer, dependencyViolation} from './atomic.mjs';
-import {componentsFolder} from './paths.mjs';
+import {componentsFolder, uiFolder} from './paths.mjs';
 
 // apps/storefront/shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). translations/ sits beside domain/ and shares its rules. A JS module loose in
@@ -66,7 +66,7 @@ function appDependencyViolation(source, target, relative) {
   const from = uiLayer(source);
   let allowed;
   if (source === 'apps/storefront/shell/ds.js') {
-    allowed = !!layer(target);
+    allowed = !!layer(target) || target.startsWith(uiFolder + '/components/');
   } else {
     const to = uiLayer(target);
     allowed =
@@ -139,6 +139,10 @@ function checkDependencies(root) {
   const files = runtimeSources(root);
   const graph = new Map(files.map(file => [file, new Set()]));
   const violations = [];
+  const uiManifest = path.join(root, uiFolder, 'package.json');
+  const uiExports = fs.existsSync(uiManifest)
+    ? JSON.parse(fs.readFileSync(uiManifest, 'utf8')).exports
+    : {};
   for (const [source] of graph) {
     if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));
@@ -167,8 +171,14 @@ function checkDependencies(root) {
         return;
       }
       let target = specifier;
-      if (specifier.startsWith('.')) {
-        const base = path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier));
+      const relative = specifier.startsWith('.');
+      const uiEntry = specifier.startsWith('@vendra/ui/')
+        ? uiExports['.' + specifier.slice('@vendra/ui'.length)]?.default
+        : undefined;
+      if (relative || uiEntry) {
+        const base = relative
+          ? path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier))
+          : path.posix.join(uiFolder, uiEntry);
         target = [base, base + '.js', base + '.jsx', base + '/index.js', base + '/index.jsx'].find(
           candidate =>
             fs.existsSync(path.join(root, candidate)) &&
@@ -192,7 +202,7 @@ function checkDependencies(root) {
         const violation = dependencyViolation(source, target);
         if (violation) violations.push(violation);
       }
-      const violation = appDependencyViolation(source, target, specifier.startsWith('.'));
+      const violation = appDependencyViolation(source, target, relative || !!uiEntry);
       if (violation) violations.push(violation);
     });
   }

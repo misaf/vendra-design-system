@@ -1,0 +1,19 @@
+/* Shared by several components: focus rings, disabled states and entrance animations. */
+@keyframes ag-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ag-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

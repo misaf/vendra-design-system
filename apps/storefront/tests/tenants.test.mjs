@@ -9,7 +9,7 @@ import {tenantSpecs, tenantOutputs, validateFontFiles} from '../../../tools/tena
 import {VF_EMAIL} from '../communications/email-templates.js';
 import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../shared/domain/brand.js';
 import {VF_STORE} from '../shared/domain/store-config.js';
-import theme from '../shared/domain/tenant-theme.js';
+import theme from '@vendra/ui/tokens/theme';
 import {vfServerRender} from '../shared/platform/environment.js';
 
 const root = path.resolve(import.meta.dirname, '../../..');
@@ -26,10 +26,7 @@ function distance(a, b) {
 }
 
 // 1. The Vendra spec reproduces the hand-tuned default palette in tokens/colors.css.
-const colors = fs.readFileSync(
-  path.join(root, 'apps/storefront/design-system/tokens/colors.css'),
-  'utf8'
-);
+const colors = fs.readFileSync(path.join(root, 'packages/ui/tokens/colors.css'), 'utf8');
 const vendra = theme.tokens(theme.VENDRA).ramps;
 for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
   const declared = colors.match(new RegExp(name + ':(#[0-9A-F]{6})', 'i'))[1];
@@ -41,7 +38,7 @@ for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
 
 // 2. Generation is deterministic, keeps the base colours and applies overrides.
 const clay = JSON.parse(
-  fs.readFileSync(path.join(root, 'apps/storefront/design-system/tokens/tenants/clay.json'), 'utf8')
+  fs.readFileSync(path.join(root, 'packages/ui/tokens/tenants/clay.json'), 'utf8')
 );
 assert.equal(theme.css('clay', clay), theme.css('clay', clay));
 const ramps = theme.tokens(clay).ramps;
@@ -117,12 +114,7 @@ const accepts = spec => {
   }
 };
 assert.deepEqual(
-  JSON.parse(
-    fs.readFileSync(
-      path.join(root, 'apps/storefront/design-system/tokens/theme.schema.json'),
-      'utf8'
-    )
-  ),
+  JSON.parse(fs.readFileSync(path.join(root, 'packages/ui/tokens/theme.schema.json'), 'utf8')),
   schema,
   'tokens/theme.schema.json is current (run the build)'
 );

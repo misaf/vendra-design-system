@@ -1,10 +1,4 @@
-import {
-  RAMPS,
-  shade,
-  VENDRA,
-  type ShadeStep,
-  type ThemeRamp
-} from '../../shared/domain/tenant-theme.js';
+import {RAMPS, shade, VENDRA, type ShadeStep, type ThemeRamp} from '@vendra/ui/tokens/theme';
 
 const step: ShadeStep = {lightness: 0.8, shift: 0, chroma: 0.5, maxChroma: 0.02};
 const ramp: ThemeRamp = RAMPS.accent;

@@ -63,7 +63,7 @@ export declare const FONTS: Record<TenantSpec['character']['headings'], string>;
 export declare function validate(spec: unknown, label?: string): TenantSpec;
 /**
  * validate()'s rules as a JSON Schema (draft 2020-12), also published as
- * design-system/tokens/theme.schema.json. Contrast is not covered: use checks().
+ * packages/ui/tokens/theme.schema.json. Contrast is not covered: use checks().
  */
 export declare function schema(): Record<string, unknown>;
 /** The seven contrast checks every tenant must pass. */
@@ -118,7 +118,7 @@ export interface DesignToken {
  * A custom-property map as W3C design tokens (DTCG JSON), for Style Dictionary and other tools
  * that write Swift, Kotlin, Android XML or CSS. '--peony-500' → peony.500, '--white' →
  * white.default, var(--x) → the alias {x…}. For a tenant, merge designTokens(tokens(spec).all)
- * over design-system/tokens/design/tokens.json (its aliases point at tokens there).
+ * over packages/ui/tokens/design/tokens.json (its aliases point at tokens there).
  */
 export declare function designTokens(
   vars: Record<string, string>

@@ -31,6 +31,7 @@ const BUDGET = {
 const SMALL = ['Badge', 'Card', 'Chip', 'Skeleton', 'Switch', 'VendraProvider', 'MenuList'];
 
 const dir = path.resolve(import.meta.dirname, '../design-system');
+const ui = path.resolve(dir, '../../../packages/ui/components');
 const entry = path.resolve(import.meta.dirname, 'fixtures/design-system.js');
 const gzipped = async source => {
   const input = '\0design-system-budget';
@@ -65,7 +66,8 @@ const gzipped = async source => {
       id === input ||
         id === entry ||
         id === path.resolve(dir, '../shell/ds.js') ||
-        id.startsWith(dir + path.sep),
+        id.startsWith(dir + path.sep) ||
+        id.startsWith(ui + path.sep),
       id + ' got bundled'
     );
   return {

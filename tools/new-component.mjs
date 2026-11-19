@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {levels} from './atomic.mjs';
-import {repo, componentsFolder} from './paths.mjs';
+import {repo, componentsFolder, uiRoot} from './paths.mjs';
 
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
@@ -164,7 +164,7 @@ if (css)
     `@import url('${level}/${name}/${name}.css');\n`
   );
 if (wording) {
-  const types = path.join(repo, componentsFolder, 'utils/messages.d.ts');
+  const types = path.join(uiRoot, 'components/utils/messages.d.ts');
   const text = fs.readFileSync(types, 'utf8');
   const marker = 'export interface ComponentMessages {\n';
   if (!text.includes(marker)) fail('ComponentMessages not found in ' + types);
@@ -180,7 +180,7 @@ execFileSync(
     '--write',
     folder,
     path.join(repo, 'apps/storefront/shell/ds.js'),
-    path.join(repo, componentsFolder, 'utils/messages.d.ts')
+    path.join(uiRoot, 'components/utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );

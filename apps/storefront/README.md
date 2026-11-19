@@ -133,7 +133,7 @@ for routed pages.
 | Maps: delivery pin and places (`LocationPicker`, `PlacesMap` components) | `design-system/components/`; Leaflet loading and location text in `shared/domain/location.js` |
 | Shared CSS: shell, page families, information pages | `shared/styles/shell.css`, `page-layouts.css`, `information-pages.css` |
 | Tailwind entry and token aliases | [shared/styles/tailwind.css](shared/styles/tailwind.css) |
-| Tokens and tenant themes | `design-system/tokens/`, `design-system/tokens/tenants/<slug>.json` |
+| Tokens and tenant themes | `packages/ui/tokens/` at the repository root |
 | Number, currency and date formatting | `design-system/components/utils/` (wrapped by `shared/domain/formatting.js`) |
 | Delivery, totals, discount and API-adapter rules | `design-system/components/utils/commerce.js` (wrapped by `shared/domain/delivery.js`, `promotions.js`, `wallet.js`, `catalog.js`, `account-data.js`) |
 
@@ -178,7 +178,7 @@ npm --prefix apps/storefront run test:e2e:remote  # optional: the same tests on 
 ```
 
 - **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `apps/storefront/design-system/tokens/tenants/`.
+- **Tenant list only:** `node build/generate.mjs` rewrites `_runtime/tenant-slugs.js` from `packages/ui/tokens/tenants/`.
 
 ## GitHub Pages demo
 
@@ -286,7 +286,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them u
 
 - **`next/app/`:** App Router layouts and route modules own the React tree and its hydration. The session stays in the shared layout as navigation replaces the page.
 - **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
-- **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, design system fonts, the Leaflet files, `apps/storefront/design-system/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
+- **Build:** `build:app` exports every known address through Next.js and copies what pages load by URL at run time (`assets/`, design system fonts, the Leaflet files, `packages/ui/tokens/tenants/*.css`) to the same paths under `next/out/`. CSS targets evergreen browsers and Safari 16+; list `-webkit-` properties before the standard one.
 - **Components:** the app imports them from `design-system/components/` through `shell/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Dependencies:** `apps/storefront` is an npm workspace of the root package: one lockfile and one `node_modules` at the repo root, where the components and the app both resolve React (19.3.1) and React Aria.
 
@@ -296,7 +296,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them u
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
 - **Custom CSS** is for contextual selectors and component internals, in `shared/styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
-- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `apps/storefront/design-system/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
+- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `packages/ui/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<DS.VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
 - **Layout tiers:** phone (< 768px), tablet (768–1023px) and desktop (1024px up) are chosen in CSS, never in JavaScript: the shell and views render every structure and Tailwind's `md:`/`lg:` (or `max-md:`/`max-lg:`) variants show one, so the first paint is the final layout. Phones get the compact header, the tab bar and the page's sticky action; tablets the menu header with the language switch and account but no tab bar; desktops the full header. Hide a component root with the important form (`tw:max-md:hidden!`), since the package's layers sit above Tailwind's utilities. JavaScript reads `matchMedia` only inside effects, for behaviour such as closing the menu or the shop's Filters dialog when the window widens.
 - **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px, 768px and desktop width.
@@ -318,7 +318,7 @@ First match wins:
 
 In TV mode:
 
-- **Sizes** come from the `tv` density (`apps/storefront/design-system/tokens/spacing.css`, `typography.css`): 24px body text, 64px
+- **Sizes** come from the `tv` density (`packages/ui/tokens/spacing.css`, `typography.css`): 24px body text, 64px
   tap minimum, 1760px content width and 48px gutters. Controls with a fixed size (the shell's text
   links, LanguageSwitch, Breadcrumb links, Gallery dots, Checkbox and Switch rows, the QuantityInput
   count, RangeSlider thumbs) take at least `--control-h-xs` (48px), so nothing interactive is smaller.
@@ -329,7 +329,7 @@ In TV mode:
   lists, menus, radio groups, sliders, the Lightbox, and the caret in text fields (up and down
   still leave a text field). With nothing in that direction, the arrow scrolls the page.
 - **Focus** shows the thicker `tv` ring (`--focus-width`, `--focus-offset`) plus a glow of
-  `--focus-ring` around the control, or around the card whose link has focus (`apps/storefront/design-system/tokens/base.css`).
+  `--focus-ring` around the control, or around the card whose link has focus (`packages/ui/tokens/base.css`).
 
 The `tv` Playwright project (1920×1080, no touch) runs `tv.spec.mjs`: home, shop and product in
 both languages with no horizontal overflow and no control under 48px, and the arrow keys reaching
@@ -358,7 +358,7 @@ and pressing Add to bag.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
-- **Preview states:** add `?tenant=clay` (any tenant in `apps/storefront/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
+- **Preview states:** add `?tenant=clay` (any tenant in `packages/ui/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
 - **Store configuration** (`shared/domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm --prefix apps/storefront run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`). `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 

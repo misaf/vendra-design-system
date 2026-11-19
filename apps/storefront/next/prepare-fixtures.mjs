@@ -6,6 +6,7 @@ import {rolldown} from 'rolldown';
 const root = resolve(import.meta.dirname, '../../..');
 const publicDir = join(import.meta.dirname, 'public');
 const app = 'apps/storefront';
+const ui = 'packages/ui';
 const designSystem = 'apps/storefront/design-system';
 const componentDirs = {
   'design-system': [designSystem + '/components'],
@@ -53,7 +54,11 @@ for (const dir of [
 await Promise.all(
   [
     designSystem + '/styles.css',
-    ...(await list(designSystem + '/tokens', '.css')),
+    ui + '/styles.css',
+    ui + '/tokens.css',
+    ...(await list(ui + '/tokens', '.css')),
+    ...(await list(ui + '/components', '.css')),
+    ...(await list(ui + '/assets/fonts', '.woff2')),
     ...(await list(designSystem + '/components', '.css')),
     app + '/_runtime/tailwind.css',
     app + '/_runtime/custom.css'
