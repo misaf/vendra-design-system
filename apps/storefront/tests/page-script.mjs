@@ -3,6 +3,7 @@
 // run against those stubs and tests can control the clock, storage and integration responses.
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import {tenantSlugs, tenantSpecs} from '../../../tools/tenants.mjs';
 
 const templates = path.resolve(import.meta.dirname, '..');
@@ -169,4 +170,63 @@ const sharedLogic =
   // Installs the integrations as shell/runtime.js does; tests stub them through this.vfRuntime.
   '\nvfInstallRuntime();\nthis.vfRuntime = vfRuntime;\n';
 
-export {featureFiles, pageScript, sharedLogic};
+// Sets the test page's address: a path under the app, with its query.
+function setAddress(ctx, url) {
+  const address = new URL(url, 'http://localhost/apps/storefront/app/');
+  ctx.location.pathname = address.pathname;
+  ctx.location.search = address.search;
+}
+function openDeliveryWindow(ctx, delivery, lines) {
+  const now = new Date();
+  const deliveryDate = vm.runInContext('vfDeliveryDate', ctx);
+  const deliverySlots = vm.runInContext('vfDeliverySlots', ctx);
+  const date = deliveryDate(delivery, now, lines);
+  const slot = deliverySlots(date, now).find(window => !window.closed).start;
+  return {date, slot};
+}
+function context() {
+  const history = [];
+  const ctx = {
+    URL,
+    URLSearchParams,
+    console,
+    document: {getElementById: () => null},
+    setTimeout,
+    clearTimeout,
+    location: {
+      pathname: '/apps/storefront/app/',
+      search: '',
+      href: 'http://localhost/apps/storefront/app/'
+    },
+    history: {
+      pushState: (_, __, url) => history.push(['push', url]),
+      replaceState: (_, __, url) => history.push(['replace', url])
+    },
+    sessionStorage: {getItem: () => null, setItem: () => {}},
+    DCLogic: class {
+      constructor(props) {
+        this.props = props;
+        this.state = {};
+      }
+      setState(update, cb) {
+        Object.assign(this.state, typeof update === 'function' ? update(this.state) : update);
+        if (cb) cb();
+      }
+    }
+  };
+  ctx.window = {React: {}, innerWidth: 390, scrollTo: () => {}};
+  vm.createContext(ctx);
+  return {ctx, history};
+}
+
+function loadPage(name, props = {}, search = '') {
+  const {ctx: c, history} = context();
+  setAddress(c, search);
+  vm.runInContext(sharedLogic, c);
+  const feature = {bag: 'cart', shop: 'catalog', presentation: 'counter', track: 'tracking'}[name];
+  const folder = name === 'site' ? 'shell/session' : 'features/' + (feature || name);
+  vm.runInContext(pageScript(folder) + '\nthis.Logic=Component;', c);
+  return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
+}
+
+export {context, featureFiles, loadPage, openDeliveryWindow, pageScript, setAddress, sharedLogic};
